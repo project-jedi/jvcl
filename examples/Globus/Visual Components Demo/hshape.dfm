@@ -323,13 +323,4 @@ object HShapeFrm: THShapeFrm
     RectEllipse.X = 45
     RectEllipse.Y = 45
   end
-  object glBevel1: TJvgBevel
-    Left = 504
-    Top = 0
-    Width = 127
-    Height = 65
-    Gradient.ToColor = 12615680
-    Gradient.Active = True
-    Gradient.Orientation = fgdVertical
-  end
 end

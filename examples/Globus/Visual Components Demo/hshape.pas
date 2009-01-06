@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, Buttons, StdCtrls,
-  JvgHoleShape, JvgBevel, JvComponent, JvExControls;
+  JvgHoleShape, JvComponent, JvExControls;
 
 type
   THShapeFrm = class(TForm)
@@ -56,7 +56,6 @@ type
     glHoleShape2: TJvgHoleShape;
     glHoleShape4: TJvgHoleShape;
     glHoleShape5: TJvgHoleShape;
-    glBevel1: TJvgBevel;
   private
   public
   end;
