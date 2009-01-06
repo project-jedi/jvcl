@@ -14,6 +14,7 @@
   <Requires>
     <Package Name="JvCore-D" Targets="VCL" Condition=""/>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
+    <Package Name="JvCtrls-R" Targets="VCL" Condition=""/>
     <Package Name="JvGlobus-R" Targets="VCL" Condition=""/>
     <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>
@@ -38,7 +39,6 @@
   <Contains>
     <File Name="..\..\design\JvgCompDescription.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\design\JvgComponentListEditorForm.pas" Targets="VCL" Formname="JvgCompListEditor" Condition=""/>
-    <File Name="..\..\design\JvgHelpPanelEditor.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\design\JvgLabelEditorForm.pas" Targets="VCL" Formname="JvgLabelEditorDlg" Condition=""/>
     <File Name="..\..\design\JvGlobusReg.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\design\JvgLogicItemEditorForm.pas" Targets="VCL" Formname="JvgLogicItemEditor" Condition=""/>

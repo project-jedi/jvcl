@@ -46,23 +46,23 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
-  {JvgBitBtn, } JvgRuler, JvgReport, JvgCaption, JvgReportParamsEditor,
+  {JvgBitBtn,  JvgRuler, }JvgReport, JvgCaption, JvgReportParamsEditor,
   JvgReportParamsForm, {JvgRichEditUtils, } JvgCommClasses, {JvgRttiUtils, }
   {JvgScrollBox, }JvgShade, JvgDigits,
-  JvgDrawTab, {JvgEdit, } JvgExceptionHandler, JvgShadowEditor,
-  JvgFileIterator, {JvgFileUtils, } JvgFixFont, JvgShadow, {JvgGraph,}
-  {JvgGraphicButton, }JvgSingleInstance, {JvgShape, }
-  JvgSpeedButton, JvgStaticText, JvgHoleShape, {JvgSplit,}
-  {JvgImageGroup, } JvgInspectorGrid, {JvgJump, } JvgSmallFontsDefense, {JvgSysInf, }
-  JvgLogicItemEditorForm, JvgLogics, JvgStringContainer,
+  JvgDrawTab, {JvgEdit, } {JvgExceptionHandler, }JvgShadowEditor,
+  JvgFileIterator, {JvgFileUtils, } {JvgFixFont, }JvgShadow, {JvgGraph,}
+  {JvgGraphicButton, }{JvgSingleInstance, }{JvgShape, }
+  JvgSpeedButton, {JvgStaticText, }JvgHoleShape, {JvgSplit,}
+  {JvgImageGroup, } {JvgInspectorGrid, }{JvgJump, } {JvgSmallFontsDefense, }{JvgSysInf, }
+  JvgLogicItemEditorForm, JvgLogics, {JvgStringContainer,}
   JvgStringGrid, JvgTabComm, JvgTab, {JvgSysRequirements,} {JvgProcess, }
   {JvgProcessUtils, } JvgPropertyCenter, {JvgTransparentMemo,} {JvgTreeView, }JvgTypes,
   JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
-  JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, {JvgBevel,}
+  {JvgWizardHeader, }JvgXMLSerializer, Jvg3DColors, JvgAskListBox, {JvgBevel,}
   JvgButton, JvgCheckBox, JvgCompDescription,
-  JvgComponentListEditorForm, JvgFlyingText,
-  JvgGroupBox, JvgHelpPanel, JvgHelpPanelEditor, JvgHint, JvgImage,
-  JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
+  JvgComponentListEditorForm, {JvgFlyingText,}
+  JvgGroupBox, {JvgHelpPanel, JvgHelpPanelEditor, }JvgHint, JvgImage,
+  JvgLabel, {JvgLanguageLoader, }JvgListBox, JvgLogicsEditorForm,
   JvgMultiResourceEditorForm, {JvgMultiResources, } JvgPage, JvgProgress,
   {JvgGridHeaderControl,} 
   {$IFNDEF DelphiPersonalEdition}
@@ -96,16 +96,15 @@ begin
     TJvgShade, TJvgButton, {TJvgImageGroup,} TJvgProgress, {TJvgTransparentMemo,}
     {TJvgWinMask,} TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
     TJvgAskListBox, {TJvgScrollBox, }TJvgStringGrid, TJvgSpeedButton,
-    TJvgExtSpeedButton, TJvgWizardHeader, TJvgCaption]);
+    TJvgExtSpeedButton, {TJvgWizardHeader, }TJvgCaption]);
 
   RegisterComponents(RsPaletteGlobusComponents2, [TJvgCheckBox,
-    TJvgRuler, TJvgPageControl, TJvgTabControl,
-    TJvgLabel, TJvgFlyingText,
-    TJvgDigits, TJvgStaticText, TJvgHoleShape, TJvgHelpPanel,
-    TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
-    {TJvgJumpingComponent,} TJvgStringContainer, {TJvgSysRequirements,}
-    TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
-    TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
+    {TJvgRuler, }TJvgPageControl, TJvgTabControl,
+    TJvgLabel, {TJvgFlyingText,}
+    TJvgDigits, {TJvgStaticText, }TJvgHoleShape, {TJvgHelpPanel,}
+    TJvgXMLSerializer, {TJvgLanguageLoader, TJvgExceptionHandler,}
+    {TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,}
+    TJvg3DColors, TJvgHint, {TJvginspectorGrid, }TJvgReport,
     {$IFNDEF DelphiPersonalEdition}
     TJvgExportExcel,
     {$IFDEF USEJVCL}
@@ -116,8 +115,10 @@ begin
     TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview,
     {$ENDIF JVCL_UseQuickReport}
     {$ENDIF !DelphiPersonalEdition}
-    {TJvgMultipleResources,} {TJvgComponentDescription,} TJvgSingleInstance,
-    TJvgFixFont]);
+    {TJvgMultipleResources,} {TJvgComponentDescription, TJvgSingleInstance,
+    TJvgFixFont}
+    TJvgReportParamsEditor, TJvgLogicProducer{, TJvgSmallFontsDefense}
+    ]);
 
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
     'ComponentList', TJvgComponentListProperty);
@@ -128,7 +129,7 @@ begin
   RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
   RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
   RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
-  RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
+//  RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);
   RegisterComponentEditor(TJvgLabel, TJvgLabelEditor);
 {  RegisterPropertyEditor(TypeInfo(TJvgResStringList), TJvgMultipleResources,
     'Resources', TJvgResourcesProperty); }

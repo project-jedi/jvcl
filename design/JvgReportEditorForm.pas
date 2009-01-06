@@ -42,7 +42,8 @@ uses
   {$IFDEF USEJVCL}
   JvComponentBase, JvExControls,
   {$ENDIF USEJVCL}
-  JvgReport, JvgRuler, JvgReportParamEditorForm;
+  JvRuler,
+  JvgReport, JvgReportParamEditorForm;
 
 type
   TJvgReportProperty = class(TPropertyEditor)
@@ -223,8 +224,8 @@ type
     procedure CheckBox1Click(Sender: TObject);
     procedure se_LeftClick(Sender: TObject; Button: TUDBtnType);
   private
-    VRuler: TJvgRuler;
-    HRuler: TJvgRuler;
+    VRuler: TJvRuler;
+    HRuler: TJvRuler;
     FReportParamEditor: TJvgReportParamEditor;
     FMouseDown: Boolean;
     FCanUndo: Boolean;
@@ -682,12 +683,12 @@ var
   R: TRect;
 begin
 
-   VRuler := TJvgRuler.Create(Self);
-   HRuler := TJvgRuler.Create(Self);
+   VRuler := TJvRuler.Create(Self);
+   HRuler := TJvRuler.Create(Self);
    with HRuler do
    begin
      Parent := P_HRuler;
-     Orientation := goHorizontal;
+     Orientation := roHorizontal;
      Left := 17;
       Top := 0;
       Width := 550;
@@ -701,7 +702,7 @@ begin
       Top := 0;
       Width := 15;
       Height := 231;
-      Orientation := goVertical;
+      Orientation := roVertical;
    end;
 
   R := Rect(0, 0, Screen.Width, Screen.Height);
