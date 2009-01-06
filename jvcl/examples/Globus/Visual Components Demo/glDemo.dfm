@@ -73,7 +73,7 @@ object GLDemoFrm: TGLDemoFrm
     Width = 656
     Height = 346
     Hint = 'Globus Lib v1.0 1998 - 2002'
-    ActivePage = TabSheet12
+    ActivePage = TabSheet19
     Align = alTop
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -2709,7 +2709,7 @@ object GLDemoFrm: TGLDemoFrm
         TabSelectedStyle.Gradient.Orientation = fgdHorizontal
         Wallpaper.Bitmap.Data = {
           361D0000424D361D000000000000360400002800000050000000500000000100
-          08000000000000190000130B0000130B00000001000000010000000000000000
+          08000000000000190000130B0000130B00000001000000000000000000000000
           80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
           A600CFCFC000CFD0C000CFD0CF00D0D0CF00D0D7CF00D0D8CF00D0D7D000D0D8
           D000D0DFD000DFD8D000DFDFD000DFD8DF00DFDFDF00DFE0D000DFE0DF00DFE7
@@ -2996,7 +2996,7 @@ object GLDemoFrm: TGLDemoFrm
         TabSelectedStyle.Gradient.Orientation = fgdHorizontal
         Wallpaper.Bitmap.Data = {
           36550000424D3655000000000000360400002800000090000000900000000100
-          08000000000000510000130B0000130B00000001000000010000000000000000
+          08000000000000510000130B0000130B00000001000000000000000000000000
           80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
           A600C0C0C000CFC8CF00CFCFCF00000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000000000000000
@@ -3692,166 +3692,12 @@ object GLDemoFrm: TGLDemoFrm
         end
       end
     end
-    object TabSheet5: TTabSheet
-      Caption = 'Bevel '
-      object glBevel2: TJvgBevel
-        Left = 61
-        Top = 98
-        BevelOuter = bvRaised
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-      end
-      object glBevel1: TJvgBevel
-        Left = 5
-        Top = 10
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-      end
-      object glBevel3: TJvgBevel
-        Left = 72
-        Top = 75
-        Width = 93
-        Height = 92
-        BevelOuter = bvLowered
-        BevelBold = True
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-      end
-      object glBevel5: TJvgBevel
-        Left = 213
-        Top = 52
-        Width = 157
-        Height = 139
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.Active = True
-        Gradient.Orientation = fgdHorizontal
-      end
-      object glBevel4: TJvgBevel
-        Left = 138
-        Top = 136
-        Width = 117
-        Height = 101
-        BevelOuter = bvRaised
-        BevelBold = True
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-      end
-      object glBevel6: TJvgBevel
-        Left = 156
-        Top = 14
-        BevelOuter = bvRaised
-        BevelBold = True
-        Gradient.FromColor = clSilver
-        Gradient.ToColor = clBlue
-        Gradient.Active = True
-        Gradient.BufferedDraw = True
-        Gradient.Orientation = fgdVertical
-      end
-      object glBevel7: TJvgBevel
-        Left = 4
-        Top = 266
-        Width = 149
-        BevelInner = bvRaised
-        BevelOuter = bvLowered
-        BevelSides = [fsdLeft, fsdBottom]
-        BevelBold = True
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-      end
-      object glBevel8: TJvgBevel
-        Left = 253
-        Top = 10
-        Width = 116
-        Height = 26
-        BevelInner = bvRaised
-        BevelOuter = bvLowered
-        BevelSides = [fsdTop]
-        BevelBold = True
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-      end
-      object FrBevel1: TJvgBevel
-        Left = 176
-        Top = 296
-        Width = 257
-        Height = 33
-        BevelInner = bvNone
-        BevelOuter = bvSpace
-        InteriorOffset = 10
-        Gradient.FromColor = clBtnFace
-        Gradient.ToColor = 4227327
-        Gradient.Active = True
-        Gradient.Orientation = fgdVertConvergent
-      end
-      object glBevel1a: TJvgBevel
-        Left = 349
-        Top = 172
-        Width = 124
-        Height = 117
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.Active = True
-        Gradient.Orientation = fgdRectangle
-      end
-      object glBevel2a: TJvgBevel
-        Left = 448
-        Top = 256
-        Width = 65
-        Height = 65
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.Active = True
-        Gradient.Orientation = fgdRightBias
-      end
-      object glBevel3a: TJvgBevel
-        Left = 456
-        Top = 4
-        Width = 73
-        Height = 69
-        Gradient.FromColor = clGreen
-        Gradient.Active = False
-        Gradient.Orientation = fgdRectangle
-        HorLines.Count = 6
-      end
-      object glBevel4a: TJvgBevel
-        Left = 392
-        Top = 68
-        Width = 73
-        Height = 69
-        Gradient.FromColor = clGreen
-        Gradient.Active = False
-        Gradient.Orientation = fgdRectangle
-        VertLines.Count = 3
-        VertLines.Bold = True
-      end
-      object glBevel8a: TJvgBevel
-        Left = 16
-        Top = 208
-        Width = 105
-        Height = 97
-        Gradient.Active = False
-        Gradient.Orientation = fgdHorizontal
-        VertLines.Count = 6
-        VertLines.Style = bvSpace
-        HorLines.Count = 8
-        HorLines.Style = bvSpace
-      end
-    end
     object TabSheet6: TTabSheet
       Caption = 'TreeView '
-      object glSplitter2: TJvgSplitter
-        Left = 259
-        Top = 0
-        Width = 5
-        Height = 336
-        Align = alRight
-        ResizeStyle = rsUpdate
-      end
       object glTreeView2: TJvgCheckTreeView
         Left = 0
         Top = 0
-        Width = 259
+        Width = 264
         Height = 336
         GlyphChecked.Data = {
           36030000424D3603000000000000360000002800000010000000100000000100
@@ -3977,20 +3823,11 @@ object GLDemoFrm: TGLDemoFrm
         Align = alRight
         BevelOuter = bvNone
         TabOrder = 1
-        object glSplitter3: TJvgSplitter
-          Left = 0
-          Top = 173
-          Width = 274
-          Height = 5
-          Cursor = crVSplit
-          Align = alBottom
-          ResizeStyle = rsUpdate
-        end
         object glCheckTreeView1: TJvgCheckTreeView
           Left = 0
           Top = 0
           Width = 274
-          Height = 173
+          Height = 178
           GlyphChecked.Data = {
             36030000424D3603000000000000360000002800000010000000100000000100
             1800000000000003000000000000000000000000000000000000C0C0C0FFFFFF
@@ -4407,18 +4244,6 @@ object GLDemoFrm: TGLDemoFrm
         AutoTransparentColor = ftcLeftBottomPixel
         MaskedShadow = True
         TransparentColor = clWhite
-      end
-      object glBevel9: TJvgBevel
-        Left = 0
-        Top = 0
-        Width = 65
-        Height = 336
-        Align = alLeft
-        BevelInner = bvNone
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.Active = True
-        Gradient.Orientation = fgdRightBias
       end
       object glShadow1: TJvgShadow
         Left = 16
@@ -8167,54 +7992,8 @@ object GLDemoFrm: TGLDemoFrm
         Alignment = taLeftJustify
       end
     end
-    object TabSheet13: TTabSheet
-      Caption = 'Splitter '
-      object glSplitter1: TJvgSplitter
-        Left = 157
-        Top = 0
-        Width = 5
-        Height = 336
-      end
-      object glBevel6a: TJvgBevel
-        Left = 0
-        Top = 0
-        Width = 157
-        Height = 336
-        Align = alLeft
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.Active = True
-        Gradient.BufferedDraw = True
-        Gradient.Orientation = fgdVertical
-      end
-      object glBevel7a: TJvgBevel
-        Left = 162
-        Top = 0
-        Width = 376
-        Height = 336
-        Align = alClient
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.Active = True
-        Gradient.BufferedDraw = True
-        Gradient.Orientation = fgdVertical
-      end
-    end
     object TabSheet14: TTabSheet
       Caption = ' HoleShape '
-      object glBevel5a: TJvgBevel
-        Left = 0
-        Top = 0
-        Width = 538
-        Height = 336
-        Align = alClient
-        BevelInner = bvNone
-        BevelBold = True
-        Gradient.FromColor = clGreen
-        Gradient.ToColor = clLime
-        Gradient.Active = True
-        Gradient.Orientation = fgdHorizontal
-      end
       object glSpeedButton4: TJvgSpeedButton
         Left = 8
         Top = 8

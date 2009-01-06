@@ -30,13 +30,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvgPage, StdCtrls, JvgListBox, JvgAskListBox, JvgLabel, JvgGroupBox, JvgBevel,
+  ComCtrls, JvgPage, StdCtrls, JvgListBox, JvgAskListBox, JvgLabel, JvgGroupBox,
   JvgTreeView, ExtCtrls, Buttons, JvgTab, JvgImage, JvgFlyingText, JvgDigits,
   JvgTypes, JvgCaption, JvgHint, ImgList, JvgHoleShape, JvgRuler, JvgGridHeaderControl,
-  Grids, DBGrids, JvgSplit, JvgStringGrid, JvgCheckBox, JvgSpeedButton,
+  Grids, DBGrids, JvgStringGrid, JvgCheckBox, JvgSpeedButton,
   JvgShadow, JvgWizardHeader, Mask, JvgProgress,
   Spin, JvComponent, JvgStaticText, JvgSmallFontsDefense, JvExButtons,
-  JvExExtCtrls, JvExComCtrls, JvExControls, JvComponentBase;
+  JvExExtCtrls, JvExComCtrls, JvExControls, JvComponentBase, JvExtComponent;
 
 type
   TGLDemoFrm = class(TForm)
@@ -45,7 +45,6 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
-    TabSheet5: TTabSheet;
     TabSheet6: TTabSheet;
     TabSheet7: TTabSheet;
     TabSheet8: TTabSheet;
@@ -57,10 +56,8 @@ type
     Panel5: TPanel;
     glFlyingText: TJvgFlyingText;
     TabSheet12: TTabSheet;
-    TabSheet13: TTabSheet;
     Image2: TImage;
     FrAskListBox1: TJvgAskListBox;
-    FrBevel1: TJvgBevel;
     FrAskListBox2: TJvgAskListBox;
     HeaderControl1: THeaderControl;
     MainPageControlIL: TImageList;
@@ -75,14 +72,9 @@ type
     TabSheet14: TTabSheet;
     glHint1: TJvgHint;
     Timer1: TTimer;
-    glBevel1: TJvgBevel;
-    glBevel2: TJvgBevel;
-    glBevel3: TJvgBevel;
-    glBevel4: TJvgBevel;
     glDigits2: TJvgDigits;
     glGroupBox4: TJvgGroupBox;
     Shape1: TShape;
-    glBevel5: TJvgBevel;
     TabSheet15: TTabSheet;
     glRuler1: TJvgRuler;
     glRuler2: TJvgRuler;
@@ -91,20 +83,15 @@ type
     FrCaption1: TJvgCaption;
     glStaticText1: TJvgStaticText;
     glLabel3: TJvgLabel;
-    glSplitter1: TJvgSplitter;
-    glBevel6: TJvgBevel;
-    glBevel7: TJvgBevel;
     glHoleShape1: TJvgHoleShape;
     Panel2: TPanel;
     glLabel4: TJvgLabel;
     Label1: TLabel;
-    glBevel8: TJvgBevel;
     glGroupBox5: TJvgGroupBox;
     glSpeedButton1: TJvgSpeedButton;
     glSpeedButton2: TJvgSpeedButton;
     glSpeedButton3: TJvgSpeedButton;
     ImageList1: TImageList;
-    glSplitter2: TJvgSplitter;
     ShapeColor: TShape;
     glTabControl2: TJvgTabControl;
     glTabControl1: TJvgTabControl;
@@ -148,7 +135,6 @@ type
     Panel7: TPanel;
     glCheckTreeView1: TJvgCheckTreeView;
     tvInstallDemo: TJvgCheckTreeView;
-    glSplitter3: TJvgSplitter;
     lCite: TJvgLabel;
     TabSheet20: TTabSheet;
     glCheckBox1: TJvgCheckBox;
@@ -209,7 +195,6 @@ type
     Edit2: TEdit;
     glShadow3: TJvgShadow;
     glShadow4: TJvgShadow;
-    glBevel9: TJvgBevel;
     Memo2: TMemo;
     glShadow5: TJvgShadow;
     glShadow6: TJvgShadow;
