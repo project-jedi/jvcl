@@ -40,21 +40,15 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgRuler.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgShade.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgShadow.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgSingleInstance.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgSmallFontsDefense.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgSpeedButton.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgStaticText.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgStringContainer.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgStringGrid.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTab.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTabComm.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTypes.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgUtils.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="DB" Formname="" Condition="INTERNET_COMPONENTS"/>
-    <File Name="..\..\run\JvgWizardHeader.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\Jvg3DColors.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAlignFunction.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAskListBox.pas" Targets="VCL" Formname="" Condition=""/>
@@ -65,20 +59,15 @@
     <File Name="..\..\run\JvgCrossTable.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDigits.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDrawTab.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgExceptionHandler.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExport.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExportComponents.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFileIterator.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgFlyingText.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgGroupBox.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgHelpPanel.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHint.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHoleShape.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="DB" Formname="" Condition="INTERNET_COMPONENTS"/>
     <File Name="..\..\run\JvgImage.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgInspectorGrid.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLabel.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgLanguageLoader.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgListBox.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLogics.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgPage.pas" Targets="VCL" Formname="" Condition=""/>
@@ -88,6 +77,5 @@
     <File Name="..\..\run\JvgQRLabel.pas" Targets="DB" Formname="" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgReport.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvgXMLSerializer.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgFixFont.pas" Targets="VCL" Formname="" Condition=""/>
   </Contains>
 </Package>
