@@ -70,7 +70,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     property CaretOwner: TWinControl read FCaretOwner;
     property UpdateCount: Integer read FUpdateCount;
-    property CaretCreated: Boolean read FCaretCreated;
   public
     constructor Create(Owner: TWinControl);
     destructor Destroy; override;
@@ -79,6 +78,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
+    property CaretCreated: Boolean read FCaretCreated;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   published
     { Note: streaming system does not deal properly with a published persistent
@@ -170,25 +170,22 @@ begin
   Result := (Width = 0) and (Height = 0) and not Gray and Bitmap.Empty;
 end;
 
-
-
 procedure TJvCaret.CreateCaret;
 const
   GrayHandles: array [Boolean] of THandle = (0, THandle(1));
-
 begin
   if FCaretOwner.Focused and
     not (csDesigning in FCaretOwner.ComponentState) and not IsDefaultCaret then
   begin
-      if UsingBitmap then
-        OSCheck(Windows.CreateCaret(FCaretOwner.Handle, Bitmap.Handle, 0, 0))
-      else
-      { Gray carets seem to be unsupported on Win95 at least, so if the create
-        failed for the gray caret, try again with a standard black caret }
-      if not Windows.CreateCaret(FCaretOwner.Handle, GrayHandles[Gray], Width, Height) then
-        OSCheck(Windows.CreateCaret(FCaretOwner.Handle, 0, Width, Height));
-      FCaretCreated := True;
-      ShowCaret(FCaretOwner.Handle);
+    if UsingBitmap then
+      OSCheck(Windows.CreateCaret(FCaretOwner.Handle, Bitmap.Handle, 0, 0))
+    else
+    { Gray carets seem to be unsupported on Win95 at least, so if the create
+      failed for the gray caret, try again with a standard black caret }
+    if not Windows.CreateCaret(FCaretOwner.Handle, GrayHandles[Gray], Width, Height) then
+      OSCheck(Windows.CreateCaret(FCaretOwner.Handle, 0, Width, Height));
+    FCaretCreated := True;
+    ShowCaret(FCaretOwner.Handle);
   end;
 end;
 
