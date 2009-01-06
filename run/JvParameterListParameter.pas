@@ -1214,8 +1214,7 @@ end;
 
 procedure TJvGroupBoxParameter.SetWinControlProperties;
 var
-  ITmpPanel: IJvDynControlPanel;
-  ITmpArrangePanel : IJvArrangePanel;
+  ITmpArrangePanel: IJvArrangePanel;
 begin
   inherited SetWinControlProperties;
   if Supports(ParentControl, IJvArrangePanel, ITmpArrangePanel) then
@@ -2450,8 +2449,6 @@ begin
 end;
 
 function TJvPageControlParameter.PageWinControl(Index: Integer): TWinControl;
-var
-  ITmpPageControl: IJvDynControlPageControl;
 begin
   if Assigned(Pages.Objects[Index]) and (Pages.Objects[Index] is TWinControl) then
     Result := TWinControl(Pages.Objects[Index])
