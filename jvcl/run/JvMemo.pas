@@ -53,9 +53,6 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvCaret, JvTypes, JvComponent, JvExStdCtrls;
 
-//const  (ahuser): not used
-//  WM_AUTOBAR = WM_USER + 43;
-
 type
   TJvCustomMemo = class(TJvExCustomMemo)
   private
@@ -109,7 +106,7 @@ type
   protected
     property Caret: TJvCaret read FCaret write SetCaret;
     property HideCaret: Boolean read FHideCaret write SetHideCaret default False;
-    property MaxLines: Integer read FMaxLines write SetMaxLines;
+    property MaxLines: Integer read FMaxLines write SetMaxLines default 0;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Lines: TStrings read GetLines write SetLines;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
@@ -121,7 +118,7 @@ type
 
   TJvMemo = class(TJvCustomMemo)
   published
-    property AutoSize;
+    property AutoSize default False; // TCustomMemo.Create sets AutoSize:=False
     property Caret;
     property ClipboardCommands;
     property MaxLines;
