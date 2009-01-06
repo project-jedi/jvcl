@@ -92,7 +92,6 @@ type
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure WndProc(var Msg: TMessage); override;
     procedure KeyPress(var Key: Char); override;
     procedure Change; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -105,10 +104,11 @@ type
     { these wrap the windows messages }
     procedure LineScroll(X, Y: Integer);
     function CharOfLine(iLine: Integer): Integer;
+    procedure DefaultHandler(var Message); override;
     property CurrentLine: Integer read GetCurrentLine write SetCurrentLine;
   protected
     property Caret: TJvCaret read FCaret write SetCaret;
-    property HideCaret: Boolean read FHideCaret write SetHideCaret;
+    property HideCaret: Boolean read FHideCaret write SetHideCaret default False;
     property MaxLines: Integer read FMaxLines write SetMaxLines;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
     property Lines: TStrings read GetLines write SetLines;
@@ -429,7 +429,19 @@ end;
 procedure TJvCustomMemo.SetHideCaret(const Value: Boolean);
 begin
   if FHideCaret <> Value then
+  begin
     FHideCaret := Value;
+    if [csDesigning, csLoading] * ComponentState = [] then
+    begin
+      if Focused and FCaret.CaretCreated then
+      begin
+        if FHideCaret then
+          Windows.HideCaret(Handle)
+        else
+          Windows.ShowCaret(Handle);
+      end;
+    end;
+  end;
 end;
 
 procedure TJvCustomMemo.FocusKilled(NextWnd: THandle);
@@ -440,7 +452,7 @@ begin
   inherited FocusKilled(NextWnd);
 end;
 
-procedure TJvCustomMemo.WndProc(var Msg: TMessage);
+procedure TJvCustomMemo.DefaultHandler(var Message);
 
   procedure Scroll(Msg, ScrollCode: Integer);
   begin
@@ -451,19 +463,20 @@ procedure TJvCustomMemo.WndProc(var Msg: TMessage);
 begin
   if FHideCaret and not (csDesigning in ComponentState) then
   begin
-    case Msg.Msg of
-      WM_LBUTTONDOWN, WM_LBUTTONUP, WM_MOUSEMOVE,
-      WM_LBUTTONDBLCLK, WM_CHAR, WM_KEYUP:
+    case TMessage(Message).Msg of
+      WM_LBUTTONDOWN:
         begin
-          Msg.Result := 0;
-          if Msg.Msg = WM_LBUTTONDOWN then
-            if not Focused then
-              SetFocus;
-          Exit;
+          if not Focused then
+            SetFocus;
+          TMessage(Message).Result := 0;
         end;
+
+      WM_LBUTTONUP, WM_MOUSEMOVE, WM_LBUTTONDBLCLK, WM_CHAR, WM_KEYUP:
+        TMessage(Message).Result := 0;
+
       WM_KEYDOWN:
         begin
-          case Msg.WParam of
+          case TWMKeyDown(Message).CharCode of
             VK_DOWN:
               Scroll(WM_VSCROLL, SB_LINEDOWN);
             VK_UP:
@@ -481,18 +494,21 @@ begin
             VK_END:
               Scroll(WM_VSCROLL, SB_BOTTOM);
           end;
-          Msg.Result := 0;
-          Exit;
+          TMessage(Message).Result := 0;
         end;
+    else
+      inherited DefaultHandler(Message);
     end;
-  end;
-  inherited WndProc(Msg);
+  end
+  else
+    inherited DefaultHandler(Message);
 end;
 
 procedure TJvCustomMemo.WMPaint(var Msg: TWMPaint);
 var
   DC: HDC;
 begin
+  // ahuser: Does this really work? Under Vista I can't see a transparent memo
   DC := GetDC(Handle);
   if Transparent then
     SetBkMode(DC, Windows.TRANSPARENT)
