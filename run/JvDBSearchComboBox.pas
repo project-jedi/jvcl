@@ -66,6 +66,12 @@ type
     property DataFieldName: string read FDataFieldName write SetDataFieldName;
   end;
 
+  {$IFDEF SUPPORTS_GENERICS}
+  TBookmarkList = TList<TBookmark>;
+  {$ELSE}
+  TBookmarkList = TList;
+  {$ENDIF SUPPORTS_GENERICS}
+
   TJvDBCustomSearchComboBox = class(TJvCustomComboBox)
   private
     FDataLink: TJvSearchComboBoxLink;
@@ -79,7 +85,7 @@ type
     // To avoid this, we could have fiddled with the reference counting
     // ourselves, but we used the new more elegant way of using the generics
     // which makes the compiler do all the work for us.
-    FBookmarks: TList{$IFDEF SUPPORTS_GENERICS}<TBookmark>{$ENDIF SUPPORTS_GENERICS};
+    FBookmarks: TBookmarkList;
 
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -266,7 +272,7 @@ end;
 constructor TJvDBCustomSearchComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FBookmarks := TList{$IFDEF SUPPORTS_GENERICS}<TBookmark>{$ENDIF SUPPORTS_GENERICS}.Create;
+  FBookmarks := TBookmarkList.Create;
   FDataLink := TJvSearchComboBoxLink.Create(Self);
   FChanging := False;
 end;
