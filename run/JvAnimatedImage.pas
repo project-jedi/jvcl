@@ -172,8 +172,6 @@ type
     property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
-//procedure HookBitmap;
-
 type
   TJvLockedBitmap = class(TBitmap)
   protected
@@ -200,11 +198,7 @@ uses
   //JclSysUtils,
   JvConsts, JvJVCLUtils;
 
-
 //=== { TJvLockedBitmap } ====================================================
-
-// (rom) do we really need this ugly hack?
-// (ahuser) lets try without the hook by using TJvLockedBitmap directly
 
 procedure TJvLockedBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
 begin
@@ -218,28 +212,6 @@ begin
   end;
 end;
 
-{
-type
-  TJvHack = class(TBitmap);
-
-var
-  Hooked: Boolean = False;
-
-procedure HookBitmap;
-var
-  Index: Integer;
-begin
-  if Hooked then
-    Exit;
-  for Index := 0 to GetVirtualMethodCount(TJvHack) - 1 do
-    if GetVirtualMethod(TJvHack, Index) = @TJvHack.Draw then
-    begin
-      SetVirtualMethod(TBitmap, Index, @TJvLockedBitmap.Draw);
-      Hooked := True;
-      Break;
-    end;
-end;
-}
 //=== { TJvImageControl } ====================================================
 
 constructor TJvImageControl.Create(AOwner: TComponent);
@@ -329,8 +301,6 @@ begin
     end;
 end;
 
-
-
 procedure TJvImageControl.DoPaintControl;
 var
   DC: HDC;
@@ -353,7 +323,6 @@ begin
     ReleaseDC(Parent.Handle, DC);
   end;
 end;
-
 
 function TJvImageControl.DoPaletteChange: Boolean;
 var
@@ -383,14 +352,13 @@ begin
   end;
 end;
 
-
 procedure TJvImageControl.PictureChanged;
 begin
   if not (csDestroying in ComponentState) then
   begin
     AdjustSize;
     if FGraphic <> nil then
-      if  DoPaletteChange and  FDrawing then
+      if DoPaletteChange and FDrawing then
         Update;
     if not FDrawing then
       Invalidate;
@@ -436,14 +404,12 @@ begin
   UpdateInactive;
 end;
 
-
 function TJvAnimatedImage.GetPalette: HPALETTE;
 begin
   Result := 0;
   if not FGlyph.Empty then
     Result := FGlyph.Palette;
 end;
-
 
 procedure TJvAnimatedImage.ImageChanged(Sender: TObject);
 begin
@@ -477,7 +443,6 @@ begin
     ((FGlyph.TransparentColor and not PaletteMask) <> FTransparentColor);
 end;
 
-
 procedure TJvAnimatedImage.SetTransparent(const Value:Boolean);
 begin
   if Value <> FTransparent then
@@ -491,7 +456,6 @@ begin
     PictureChanged;
   end;
 end;
-
 
 procedure TJvAnimatedImage.SetTransparentColor(Value: TColor);
 begin
@@ -705,7 +669,7 @@ end;
 procedure TJvAnimatedImage.BufferedPaint;
 begin
   PaintImage;
-  if  Transparent or  FGlyph.Empty then
+  if Transparent or FGlyph.Empty then
     PaintDesignRect;
 end;
 
@@ -765,7 +729,6 @@ begin
       FOnStart(Self);
 end;
 
-
 function TJvAnimatedImage.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := True;
@@ -778,7 +741,6 @@ begin
       NewHeight := FImageHeight;
   end;
 end;
-
 
 procedure TJvAnimatedImage.SetInterval(Value: Cardinal);
 begin
@@ -831,8 +793,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvAnimatedImage.ReadOpaque(Reader: TReader);
 begin
   Transparent := not Reader.ReadBoolean;
@@ -843,8 +803,6 @@ begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('Opaque', ReadOpaque, nil, False);
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization
