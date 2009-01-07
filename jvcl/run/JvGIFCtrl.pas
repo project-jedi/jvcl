@@ -75,7 +75,7 @@ type
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
-    procedure Paint; override;
+    procedure BufferedPaint; override;
     procedure DoPaintImage; override;
     procedure Change; dynamic;
     procedure FrameChanged; dynamic;
@@ -408,7 +408,7 @@ begin
   Change;
 end;
 
-procedure TJvGIFAnimator.Paint;
+procedure TJvGIFAnimator.BufferedPaint;
 begin
   PaintImage;
   if FImage.Transparent or FImage.Empty then
