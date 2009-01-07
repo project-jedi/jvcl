@@ -27,7 +27,7 @@ object frmProgress: TfrmProgress
     IncrementalDisplay = True
     Visible = False
   end
-  object Label1: TLabel
+  object lblStatus: TLabel
     Left = 16
     Top = 70
     Width = 26

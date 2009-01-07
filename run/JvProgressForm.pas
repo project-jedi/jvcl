@@ -49,7 +49,7 @@ type
   TfrmProgress = class(TJvForm)
     pbProgress: TProgressBar;
     imProgress: TImage;
-    Label1: TLabel;
+    lblStatus: TLabel;
     btnCancel: TButton;
     tmProgress: TTimer;
     ActionList1: TActionList;
@@ -68,12 +68,30 @@ type
     procedure RemoveCaption;
     procedure AddCaption;
   public
+    class function Execute(const ACaption, ALabel: string;
+      AImage: TPicture = nil; ATransparent: Boolean = False;
+      AMin: Integer = 0; AMax: Integer = 100; APosition: Integer = 0;
+      AInterval: Integer = 200; ShowCancel: Boolean = False; Smooth: Boolean = False;
+      AOnProgress: TJvPrivateProgressUpdate = nil;
+      AOnCancel: TNotifyEvent = nil): Boolean; overload;
+
     class function Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
       AImage: TPicture = nil; ATransparent: Boolean = False;
       AMin: Integer = 0; AMax: Integer = 100; APosition: Integer = 0;
       AInterval: Integer = 200; ShowCancel: Boolean = False; Smooth: Boolean = False;
       AOnProgress: TJvPrivateProgressUpdate = nil;
-      AOnCancel: TNotifyEvent = nil): Boolean;
+      AOnCancel: TNotifyEvent = nil): Boolean; overload;
+      {$IFDEF SUPPORTS_DEPRECATED}
+      deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'Use Execute(ACaption...) instead'{$ENDIF};
+      {$ENDIF SUPPORTS_DEPRECATED}
+
+    procedure Init(const ACaption, ALabel: string;
+      AImage: TPicture = nil; ATransparent: Boolean = False;
+      AMin: Integer = 0; AMax: Integer = 100; APosition: Integer = 0;
+      AInterval: Integer = 200; ShowCancel: Boolean = False; Smooth: Boolean = False;
+      AOnProgress: TJvPrivateProgressUpdate = nil;
+      AOnCancel: TNotifyEvent = nil);
+
     function ShowModal: Integer; override;
   end;
 
@@ -94,6 +112,22 @@ uses
 
 {$R *.dfm}
 
+class function TfrmProgress.Execute(const ACaption, ALabel: string;
+  AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;
+  ShowCancel, Smooth: Boolean; AOnProgress: TJvPrivateProgressUpdate; AOnCancel: TNotifyEvent): Boolean;
+var
+  Frm: TfrmProgress;
+begin
+  Frm := Self.Create(nil);
+  try
+    Frm.Init(ACaption, ALabel, AImage, ATransparent, AMin, AMax, APosition, AInterval,
+      ShowCancel, Smooth, AOnProgress, AOnCancel);
+    Result := Frm.ShowModal <> mrCancel
+  finally
+    Frm.Free;
+  end;
+end;
+
 class function TfrmProgress.Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
   AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;
   ShowCancel, Smooth: Boolean; AOnProgress: TJvPrivateProgressUpdate; AOnCancel: TNotifyEvent): Boolean;
@@ -102,31 +136,15 @@ var
 begin
   if Frm = nil then
   begin
-    Frm := Self.Create(Application);
+    Frm := Self.Create(nil);
     DoModal := True;
   end
   else
     DoModal := False;
   try
-    with Frm do
-    begin
-      Caption := ACaption;
-      Label1.Caption := ALabel;
-      pbProgress.Min := AMin;
-      pbProgress.Max := AMax;
-      pbProgress.Position := APosition;
-      pbProgress.Smooth := Smooth;
-      FOnProgress := AOnProgress;
-      imProgress.Picture := AImage;
-      imProgress.Transparent := ATransparent;
-      tmProgress.Interval := AInterval;
-      tmProgress.Enabled := AInterval > 0;
-      btnCancel.Visible := ShowCancel;
-      FCanClose := ShowCancel;
-      btnCancel.Caption := SCancelButton;
-      FOnCancel := AOnCancel;
-      AdjustComponents;
-    end;
+    Frm.Init(ACaption, ALabel, AImage, ATransparent, AMin, AMax, APosition, AInterval,
+      ShowCancel, Smooth, AOnProgress, AOnCancel);
+
     if DoModal then
       Result := Frm.ShowModal <> mrCancel
     else
@@ -136,8 +154,30 @@ begin
     end;
   finally
     if DoModal then
-      FreeAndNil(Frm);
+      Frm.Free;
   end;
+end;
+
+procedure TfrmProgress.Init(const ACaption, ALabel: string;
+  AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;
+  ShowCancel, Smooth: Boolean; AOnProgress: TJvPrivateProgressUpdate; AOnCancel: TNotifyEvent);
+begin
+  Caption := ACaption;
+  lblStatus.Caption := ALabel;
+  pbProgress.Min := AMin;
+  pbProgress.Max := AMax;
+  pbProgress.Position := APosition;
+  pbProgress.Smooth := Smooth;
+  FOnProgress := AOnProgress;
+  imProgress.Picture := AImage;
+  imProgress.Transparent := ATransparent;
+  tmProgress.Interval := AInterval;
+  tmProgress.Enabled := AInterval > 0;
+  btnCancel.Visible := ShowCancel;
+  FCanClose := ShowCancel;
+  btnCancel.Caption := SCancelButton;
+  FOnCancel := AOnCancel;
+  AdjustComponents;
 end;
 
 function TfrmProgress.DoProgress: Boolean;
@@ -157,7 +197,7 @@ begin
     APosition := pbProgress.Position;
     AInterval := tmProgress.Interval;
     ACaption := Caption;
-    ALabel := Label1.Caption;
+    ALabel := lblStatus.Caption;
     FOnProgress(Self, AMin, AMax, APosition, AInterval, ACaption, ALabel, imProgress.Picture, Result);
     pbProgress.Min := AMin;
     pbProgress.Max := AMax;
@@ -165,7 +205,7 @@ begin
     tmProgress.Interval := AInterval;
     tmProgress.Enabled := AInterval > 0;
     Caption := ACaption;
-    Label1.Caption := ALabel;
+    lblStatus.Caption := ALabel;
     AdjustComponents;
     Update;
   end;
@@ -175,8 +215,6 @@ begin
     Close;
   end;
 end;
-
-
 
 procedure TfrmProgress.AddCaption;
 var
@@ -211,9 +249,10 @@ end;
 function TfrmProgress.ShowModal: Integer;
 begin
   // (p3) put topmost but only if not debugging
-  {$IFNDEF DEBUGINFO_ON}
-  SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-  {$ENDIF !DEBUGINFO_ON}
+  {$WARNINGS OFF}
+  if DebugHook = 0 then
+  {$WARNINGS ON}
+    SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   if not tmProgress.Enabled then
     DoProgress; // call at least once
   Result := inherited ShowModal;
@@ -221,9 +260,7 @@ end;
 
 procedure TfrmProgress.tmProgressTimer(Sender: TObject);
 begin
-  if FCancelled then
-    Exit;
-  if not DoProgress or not tmProgress.Enabled then
+  if not FCancelled and not DoProgress or not tmProgress.Enabled then
   begin
     ModalResult := mrOk;
     Close;
@@ -253,8 +290,8 @@ begin
     if ClientWidth - imProgress.Left * 2 < imProgress.Width then
       ClientWidth := imProgress.Width + imProgress.Left * 2;
   end;
-  Label1.Top := Offset;
-  Offset := Label1.Top + Label1.Height + 8;
+  lblStatus.Top := Offset;
+  Offset := lblStatus.Top + lblStatus.Height + 8;
   pbProgress.Top := Offset;
   Offset := pbProgress.Top + pbProgress.Height + 16;
   if btnCancel.Visible then
