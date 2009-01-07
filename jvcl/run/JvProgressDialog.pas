@@ -59,7 +59,7 @@ Image - (optional) image to display in dialog. The image can be any size as the 
         auto-adjusts to it's size but you should keep them fairly small (say, less than 160x100 something)
         as large images doesn't look too good (IMO)
 Transparent - set to true if Image should be rendered transparently (this value cannot be changed in OnProgress)
-ScreenPosition - Position of the dialog form (initially set to poDesktopCenter), added 28/05/2004, RK
+ScreenPosition - Position of the dialog form (is now initially set to poScreenCenter), added 07/01/2009
 
 Events:
 OnProgress: TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: Boolean) of object;
@@ -154,6 +154,7 @@ type
     procedure Hide;
     // set most values at once
     property Cancelled: Boolean read FCancelled;
+    property Form: TForm read FForm;
   published
     property Caption: string read FCaption write SetCaption;
     property Image: TPicture read FImage write SetPicture;
@@ -165,7 +166,7 @@ type
     property Smooth: Boolean read FSmooth write FSmooth default False;
     property Text: string read FText write SetText;
     property Transparent: Boolean read FTransparent write FTransparent default False;
-    property ScreenPosition: TPosition read FScreenPosition write FScreenPosition; // added 28/05/2004, RK
+    property ScreenPosition: TPosition read FScreenPosition write FScreenPosition default poScreenCenter;
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnProgress: TJvProgressDialogEvent read FOnProgress write FOnProgress;
@@ -198,12 +199,11 @@ begin
   FInterval := 200;
   FTransparent := False;
   FShowCancel := True;
-  FScreenPosition := poDesktopCenter;   // added 28/05/2004, RK
+  FScreenPosition := poScreenCenter;
 end;
 
 destructor TJvProgressDialog.Destroy;
 begin
-  // Hide;
   if Assigned(FForm) then
     FForm.Close; // OnClose sets CloseAction:=caFree and FForm = nil
   FreeAndNil(FImage);
@@ -274,19 +274,23 @@ begin
   Result := mrCancel;
   FCancelled := False;
   FreeAndNil(FForm);
-  DoShow;
-  StoreValues;
+  FForm := TfrmProgress.Create(nil);
   try
-// asn: commented out 24-06-2004,
-//      you cannot assign to a nil fform
-//    FForm.Position := FScreenPosition; // added 28/05/2004, RK
-//
-    if TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval,
-      ShowCancel or (csDesigning in ComponentState), Smooth, InternalDoProgress, InternalDoCancel) then
-      Result := mrOK;
+    FForm.Position := FScreenPosition;
+    TfrmProgress(FForm).Init(Caption, Text, Image, Transparent, Min, Max, Position, Interval,
+      ShowCancel or (csDesigning in ComponentState), Smooth, InternalDoProgress, InternalDoCancel);
+
+    DoShow;
+    StoreValues;
+    try
+      if FForm.ShowModal <> mrCancel then
+        Result := mrOK;
+    finally
+      RestoreValues;
+      DoClose;
+    end;
   finally
-    RestoreValues;
-    DoClose;
+    FreeAndNil(FForm);
   end;
 end;
 
@@ -306,13 +310,13 @@ begin
     FForm.Release;
     FForm := nil;
   end;
-  FForm := TfrmProgress.Create(Application);
+  FForm := TfrmProgress.Create(nil);
   FForm.OnClose := InternalDoClose;
-  FForm.Position := FScreenPosition;   // added 28/05/2004, RK
+  FForm.Position := FScreenPosition;
   FCancelled := False;
   DoShow;
   StoreValues;
-  TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position,
+  TfrmProgress(FForm).Init(Caption, Text, Image, Transparent, Min, Max, Position,
     Interval, ShowCancel, Smooth, InternalDoProgress, InternalDoCancel);
 end;
 
@@ -389,7 +393,7 @@ procedure TJvProgressDialog.SetText(const Value: string);
 begin
   if FForm <> nil then
   begin
-    TfrmProgress(FForm).Label1.Caption := Value;
+    TfrmProgress(FForm).lblStatus.Caption := Value;
     TfrmProgress(FForm).Update;
   end;
   FText := Value;
