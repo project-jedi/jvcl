@@ -304,6 +304,9 @@ type
     FOnBeforePaint: TNotifyEvent;
     FOnAfterPaint: TNotifyEvent;
 
+    {$IFDEF COMPILER10_UP}
+    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    {$ENDIF COMPILER10_UP}
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
 
@@ -1798,7 +1801,10 @@ begin
   { Fill the area between the two scroll bars. }
   Size.cx := GetSystemMetrics(SM_CXVSCROLL);
   Size.cy := GetSystemMetrics(SM_CYHSCROLL);
-  R := Bounds(Width - Size.cx, Height - Size.cy, Size.cx, Size.cy);
+  if UseRightToLeftAlignment then
+    R := Bounds(0, Height - Size.cy, Size.cx, Size.cy)
+  else
+    R := Bounds(Width - Size.cx, Height - Size.cy, Size.cx, Size.cy);
   Canvas.Brush.Color := Color;
   Canvas.FillRect(R);
 
@@ -2969,8 +2975,6 @@ end;
 
 procedure TJvDBGrid.DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
 {$IFDEF JVCLThemesEnabled}
-const
-  ArrowDirection: array [TCanvasOrientation] of TScrollDirection = (sdRight, sdLeft);
 var
   Details: TThemedElementDetails;
   lCaptionRect: TRect;
@@ -3028,9 +3032,10 @@ begin
         PenRecall := TPenRecall.Create(Canvas.Pen);
         try
           Canvas.Pen.Color := clWhite;
-          DrawArrow(Canvas, ArrowDirection[Canvas.CanvasOrientation], Point(lCellRect.Left + 4, lCellRect.Top + 3), 5);
+          { BiDiMode <> bidiLeftToRight is handled by the CanvasOrientation }
+          DrawArrow(Canvas, sdRight, Point(lCellRect.Left + 4, lCellRect.Top + 3), 5);
           Canvas.Pen.Color := clBlack;
-          DrawArrow(Canvas, ArrowDirection[Canvas.CanvasOrientation], Point(lCellRect.Left + 3, lCellRect.Top + 3), 5);
+          DrawArrow(Canvas, sdRight, Point(lCellRect.Left + 3, lCellRect.Top + 3), 5);
         finally
           PenRecall.Free;
         end;
@@ -4714,6 +4719,23 @@ begin
   Result := inherited BeginColumnDrag(Origin, Destination, MousePt);
   FPaintInfo.ColMoving := Result;
 end;
+
+{$IFDEF COMPILER10_UP}
+procedure TJvDBGrid.WMPaint(var Message: TWMPaint);
+var
+  R: TRect;
+begin
+  if UseRightToLeftAlignment then
+  begin
+    { Workaround for a RightToLeft painting bug (QC #70075)
+      Side effect: The grid needs more time to paint }
+    R.TopLeft := ClientRect.TopLeft;
+    R.BottomRight := ClientRect.BottomRight;
+    Windows.InvalidateRect(Handle, @R, False);
+  end;
+  inherited;
+end;
+{$ENDIF COMPILER10_UP}
 
 procedure TJvDBGrid.CMMouseEnter(var Message: TMessage);
 {$IFDEF JVCLThemesEnabled}
