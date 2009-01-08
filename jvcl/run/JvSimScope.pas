@@ -55,6 +55,12 @@ uses
   {$ENDIF COMPILER5}
   Graphics, Controls, Forms, ExtCtrls;
 
+const
+  JvScopeDefaultCapacity = 128;
+  JvMinimumScopeWidth = 20;
+  JvMinimumScopeHeight = 20;
+
+
 type
   TJvSimScope = class;
 
@@ -247,6 +253,10 @@ uses
 
 procedure TJvScopeLineValues.Add(Value: Integer);
 begin
+  Assert(Assigned(Self));
+  if Length(FValues)=Count then // auto-growby JvScopeDefaultCapacity
+      SetCapacity( GetCapacity+JvScopeDefaultCapacity);
+
   if Count < Capacity then
   begin
     FValues[FCount] := Value;
@@ -263,6 +273,8 @@ procedure TJvScopeLineValues.Assign(Source: TJvScopeLineValues);
 var
   I: Integer;
 begin
+  if (not Assigned(Source)) then
+      raise Exception.Create('TJvScopeLineValues.Assign:Source not assigned');
   FCount := Source.FCount;
   FZeroIndex := Source.FZeroIndex;
   Capacity := Source.Capacity;
@@ -449,8 +461,8 @@ begin
   FDisplayUnits := jduPixels;
   FUpdateTimeSteps := 2;
 
-  Height := 120;
-  Width := 208;
+  Height := 120;  { property default }
+  Width := 208;   { property default }
 
   Color := clBlack;
   FGridColor := clGreen;
@@ -760,6 +772,13 @@ end;
 
 procedure TJvSimScope.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
+  { BUGFIX/Workaround:JAN 2009 - ACCESS VIOLATIONS AND ODD BEHAVIOUR - SIZE/WIDTH BEING ZAPPED TO ZERO.}
+  if AWidth < JvMinimumScopeWidth then
+      AWidth := JvMinimumScopeWidth;
+  if AHeight < JvMinimumScopeHeight then
+      AHeight := JvMinimumScopeHeight;
+
+
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   FDrawBuffer.Height := Height;
   FDrawBuffer.Width := Width;
