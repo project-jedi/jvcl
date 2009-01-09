@@ -196,7 +196,8 @@ procedure TJvCheckBoxDataConnector.RecordChanged;
 begin
   if Field.IsValid and (ValueChecked <> '') and (ValueUnchecked <> '') then
   begin
-    FCheckBox.ReadOnly := not Field.CanModify;
+    if not (csDesigning in FCheckBox.ComponentState) then
+      FCheckBox.ReadOnly := not Field.CanModify;
     if not Field.IsNull then
       FCheckBox.Checked := AnsiCompareText(Field.AsString, ValueUnchecked) <> 0
     else
@@ -205,7 +206,8 @@ begin
   else
   begin
     FCheckBox.State := cbGrayed;
-    FCheckBox.ReadOnly := True;
+    if not (csDesigning in FCheckBox.ComponentState) then
+      FCheckBox.ReadOnly := True;
   end;
 end;
 
@@ -284,7 +286,6 @@ begin
   Result := TJvCheckBoxDataConnector.Create(Self);
 end;
 
-
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
@@ -297,7 +298,6 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
-
 
 procedure TJvCheckBox.UpdateProperties;
 begin
@@ -325,8 +325,6 @@ begin
   end;
   inherited DoExit;
 end;
-
-
 
 procedure TJvCheckBox.MouseEnter(AControl: TControl);
 begin
@@ -495,7 +493,6 @@ begin
       with LinkedControls[I] do
         if Control <> nil then
           Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self.Checked, Options);
-
 end;
 
 procedure TJvCheckBox.LinkedControlsChange(Sender: TObject);
@@ -547,7 +544,6 @@ begin
   Filer.DefineProperty('Associated', ReadAssociated, nil, False);
 end;
 
-
 procedure TJvCheckBox.BmSetCheck(var Msg: TMessage);
 begin
 //  if not ReadOnly then
@@ -556,9 +552,6 @@ begin
     CheckLinkedControls;
 //  end;
 end;
-
-
-
 
 procedure TJvCheckBox.EnabledChanged;
 begin
