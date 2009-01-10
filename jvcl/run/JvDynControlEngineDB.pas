@@ -331,11 +331,11 @@ function TJvDynControlEngineDB.CreateDBTextControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName: string;
   ADataSource: TDataSource; const ADataField: string; const ACaption: string): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrl: IJvDynControlCaption;
 begin
   Result := TWinControl(CreateDBControl(jctDBText, AOwner, AParentControl,
     AControlName, ADataSource, ADataField));
-  if not Supports(Result, IJvDynControl, DynCtrl) then
+  if not Supports(Result, IJvDynControlCaption, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrl.ControlSetCaption(ACaption);
 end;
@@ -354,11 +354,11 @@ end;
 function TJvDynControlEngineDB.CreateDBCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
   const AControlName: string; ADataSource: TDataSource; const ADataField, ACaption: string): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrl: IJvDynControlCaption;
 begin
   Result := TWinControl(CreateDBControl(jctDBCheckBox, AOwner, AParentControl,
     AControlName, ADataSource, ADataField));
-  if not Supports(Result, IJvDynControl, DynCtrl) then
+  if not Supports(Result, IJvDynControlCaption, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrl.ControlSetCaption(ACaption);
 end;
@@ -387,12 +387,12 @@ function TJvDynControlEngineDB.CreateDBRadioGroupControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName: string; ADataSource: TDataSource;
   const ADataField, ACaption: string; AItems: TStrings): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrl: IJvDynControlCaption;
   DynCtrlItems: IJvDynControlItems;
 begin
   Result := TWinControl(CreateDBControl(jctDBRadioGroup, AOwner, AParentControl,
     AControlName, ADataSource, ADataField));
-  if not Supports(Result, IJvDynControl, DynCtrl) then
+  if not Supports(Result, IJvDynControlCaption, DynCtrl) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   DynCtrl.ControlSetCaption(ACaption);
   if not Supports(Result, IJvDynControlItems, DynCtrlItems) then

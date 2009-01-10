@@ -473,7 +473,6 @@ type
     IJvDynControl, IJvDynControlCaption, IJvDynControlPanel, IJvDynControlAlign,
     IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor,
     IJvDynControlAlignment)
-  strict private
   public
     function ControlGetCaption: string;
     procedure ControlSetDefaultProperties;

@@ -63,7 +63,7 @@ type
     FInspectedObjectEditorHandlerIntf: IJvPropertyEditorHandler;
     FInspectedObjectListEditorHandlerIntf: IJvPropertyListEditorHandler;
     FPropertyStore: TComponent;
-    InfoGroupBoxDynControlIntf: IJvDynControl;
+    InfoGroupBoxDynControlCaptionIntf: IJvDynControlCaption;
     InfoMemoDynControlDataIntf: IJvDynControlData;
     InfoMemo: TWinControl;
     InfoPanel: TWinControl;
@@ -295,7 +295,7 @@ begin
   InfoPanel.Height := 100;
   InfoGroupBox := DefaultDynControlEngine.CreateGroupBoxControl(Self, InfoPanel, 'InfoGroupBox', 'Info');
   InfoGroupBox.Align := alClient;
-  Supports(InfoGroupBox, IJvDynControl, InfoGroupBoxDynControlIntf);
+  Supports(InfoGroupBox, IJvDynControlCaption, InfoGroupBoxDynControlCaptionIntf);
   InfoMemoPanel  := DefaultDynControlEngine.CreatePanelControl(Self, InfoGroupBox, 'InfoMemoPanel', '', alClient);
   if InfoMemoPanel is TCustomPanel then
   begin
@@ -374,7 +374,7 @@ begin
   InspectedObject := nil;
   FInspectedObjectEditorHandlerIntf := nil;
   FInspectedObjectListEditorHandlerIntf := nil;
-  InfoGroupBoxDynControlIntf := nil;
+  InfoGroupBoxDynControlCaptionIntf := nil;
   InfoMemoDynControlDataIntf := nil;
   ListBoxControlItemsIntf := nil;
   ListBoxControlItemIndexIntf := nil;
@@ -803,7 +803,7 @@ begin
   if csDestroying in Componentstate then
     Exit;
   InfoMemoDynControlDataIntf.ControlValue := iInfo;
-  InfoGroupBoxDynControlIntf.ControlSetCaption(iCaption);
+  InfoGroupBoxDynControlCaptionIntf.ControlSetCaption(iCaption);
   InfoPanel.Visible := iInfo <> '';
 end;
 

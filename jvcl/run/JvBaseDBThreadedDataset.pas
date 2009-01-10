@@ -496,7 +496,7 @@ procedure TJvDatasetThreadDialogForm.CreateFormControls;
 var
   MainPanel: TWinControl;
   ITmpPanel: IJvDynControlPanel;
-  ITmpControl: IJvDynControl;
+  ITmpControl: IJvDynControlCaption;
 begin
   MainPanel := DynControlEngine.CreatePanelControl(Self, Self, 'MainPanel', '', alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
@@ -504,10 +504,10 @@ begin
   ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, 5);
 
   CreateTextPanel(Self, MainPanel, FTimePanel, FTimeLabel, FTimeStaticText, 'Time');
-  if Supports(FTimeLabel, IJvDynControl, ITmpControl) then
+  if Supports(FTimeLabel, IJvDynControlCaption, ITmpControl) then
     ITmpControl.ControlSetCaption(RsODSOpenFetch);
   CreateTextPanel(Self, MainPanel, FRowsPanel, FRowsLabel, FRowsStaticText, 'Rows');
-  if Supports(FRowsLabel, IJvDynControl, ITmpControl) then
+  if Supports(FRowsLabel, IJvDynControlCaption, ITmpControl) then
     ITmpControl.ControlSetCaption(RsODSCurrentRecord);
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self, MainPanel, 'ButtonPanel', '', alTop);
   FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
@@ -561,7 +561,7 @@ end;
 
 procedure TJvDatasetThreadDialogForm.FillDialogData;
 var
-  ITmpControl: IJvDynControl;
+  ITmpControl: IJvDynControlCaption;
 begin
   if Assigned(ConnectedDatasetHandler) then
   begin
@@ -569,9 +569,9 @@ begin
       Caption := DialogOptions.Caption +' - '+ConnectedDatasetHandler.CurrentOperationAction
     else
       Caption := ConnectedDatasetHandler.CurrentOperationAction ;
-    if Supports(FRowsStaticText, IJvDynControl, ITmpControl) then
+    if Supports(FRowsStaticText, IJvDynControlCaption, ITmpControl) then
       ITmpControl.ControlSetCaption(IntToStr(ConnectedDatasetHandler.CurrentRow));
-    if Supports(FTimeStaticText, IJvDynControl, ITmpControl) then
+    if Supports(FTimeStaticText, IJvDynControlCaption, ITmpControl) then
       ITmpControl.ControlSetCaption(
         FormatDateTime('hh:nn:ss', ConnectedDatasetHandler.CurrentOpenDuration) + ' / ' +
           FormatDateTime('hh:nn:ss', ConnectedDatasetHandler.CurrentFetchDuration));
