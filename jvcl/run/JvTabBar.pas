@@ -258,6 +258,7 @@ type
   TJvTabBarItemEvent = procedure(Sender: TObject; Item: TJvTabBarItem) of object;
   TJvTabBarSelectingEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var AllowSelect: Boolean) of object;
   TJvTabBarClosingEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var AllowClose: Boolean) of object;
+  TJvTabBarCloseQueryEvent = procedure(Sender: TObject; Item: TJvTabBarItem; var CanClose: Boolean) of object;
   TJvTabBarScrollButtonClickEvent = procedure(Sender: TObject; Button: TJvTabBarScrollButtonKind) of object;
 
   TJvTabBarScrollButtonInfo = record
@@ -290,6 +291,7 @@ type
     FOnTabClosing: TJvTabBarClosingEvent;
     FOnTabSelected: TJvTabBarItemEvent;
     FOnTabSelecting: TJvTabBarSelectingEvent;
+    FOnTabCloseQuery: TJvTabBarCloseQueryEvent;
     FOnTabClosed: TJvTabBarItemEvent;
     FOnTabMoved: TJvTabBarItemEvent;
     FOnChange: TNotifyEvent;
@@ -346,6 +348,7 @@ type
     procedure Notification(Component: TComponent; Operation: TOperation); override;
 
     function TabClosing(Tab: TJvTabBarItem): Boolean; virtual;
+    function TabCloseQuery(Tab: TJvTabBarItem): Boolean; virtual;
     procedure TabClosed(Tab: TJvTabBarItem); virtual;
     function TabSelecting(Tab: TJvTabBarItem): Boolean; virtual;
     procedure TabSelected(Tab: TJvTabBarItem); virtual;
@@ -408,7 +411,11 @@ type
     property AllowTabMoving: Boolean read FAllowTabMoving write FAllowTabMoving default False;
 
     // Events
+
+    { With OnTabClosing you can prevent the close button [X] in the tab from shrinking.
+      If you want to ask the user you should use OnTabCloseQuery }
     property OnTabClosing: TJvTabBarClosingEvent read FOnTabClosing write FOnTabClosing;
+    property OnTabCloseQuery: TJvTabBarCloseQueryEvent read FOnTabCloseQuery write FOnTabCloseQuery;
     property OnTabClosed: TJvTabBarItemEvent read FOnTabClosed write FOnTabClosed;
     property OnTabSelecting: TJvTabBarSelectingEvent read FOnTabSelecting write FOnTabSelecting;
     property OnTabSelected: TJvTabBarItemEvent read FOnTabSelected write FOnTabSelected;
@@ -447,6 +454,7 @@ type
     property Tabs;
 
     property OnTabClosing;
+    property OnTabCloseQuery;
     property OnTabClosed;
     property OnTabSelecting;
     property OnTabSelected;
@@ -482,11 +490,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
-type
-  TCanvasX = TCanvas;
-
-
 
 //=== { TJvCustomTabBar } ====================================================
 
@@ -731,6 +734,13 @@ begin
     FOnTabClosing(Self, Tab, Result);
 end;
 
+function TJvCustomTabBar.TabCloseQuery(Tab: TJvTabBarItem): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnTabCloseQuery) then
+    FOnTabCloseQuery(Self, Tab, Result);
+end;
+
 procedure TJvCustomTabBar.TabClosed(Tab: TJvTabBarItem);
 begin
   if AutoFreeClosed and not (csDesigning in ComponentState) then
@@ -918,8 +928,6 @@ begin
   inherited DragDrop(Source, X, Y);
 end;
 
-
-
 procedure TJvCustomTabBar.CMMouseLeave(var Msg: TMessage);
 begin
   SetHotTab(nil);
@@ -930,10 +938,6 @@ procedure TJvCustomTabBar.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;
 end;
-
-
-
-
 
 function TJvCustomTabBar.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
 begin
@@ -1040,9 +1044,11 @@ begin
       if Assigned(FClosingTab) and CloseButton then
       begin
         CalcTabsRects;
-        if PtInRect(CurrentPainter.GetCloseRect(Canvas, FClosingTab,
-          FClosingTab.DisplayRect), Point(X, Y)) then
-          TabClosed(FClosingTab);
+        if PtInRect(CurrentPainter.GetCloseRect(Canvas, FClosingTab, FClosingTab.DisplayRect), Point(X, Y)) then
+        begin
+          if TabCloseQuery(FClosingTab) then
+            TabClosed(FClosingTab)
+        end;
       end;
     end;
   finally
@@ -2079,7 +2085,7 @@ end;
 
 procedure TJvModernTabBarPainter.DrawBackground(Canvas: TCanvas; TabBar: TJvCustomTabBar; R: TRect);
 begin
-  with TCanvasX(Canvas) do
+  with Canvas do
   begin
     Brush.Style := bsSolid;
     Brush.Color := Color;
@@ -2088,19 +2094,18 @@ begin
     Brush.Style := bsClear;
     Pen.Color := BorderColor;
     Pen.Width := 1;
-    case TabBar.Orientation of
-      toBottom:
-        begin
-          MoveTo(0, R.Bottom - 1);
-          LineTo(0, 0);
-          Pen.Color := ControlDivideColor;
-          LineTo(R.Right - 1, 0);
-          Pen.Color := BorderColor;
-          LineTo(R.Right - 1, R.Bottom - 1);
-          LineTo(0, R.Bottom - 1);
-        end;
-    else
-      // toTop
+    if TabBar.Orientation = toBottom then
+    begin
+      MoveTo(0, R.Bottom - 1);
+      LineTo(0, 0);
+      Pen.Color := ControlDivideColor;
+      LineTo(R.Right - 1, 0);
+      Pen.Color := BorderColor;
+      LineTo(R.Right - 1, R.Bottom - 1);
+      LineTo(0, R.Bottom - 1);
+    end
+    else // toTop
+    begin
       MoveTo(0, R.Bottom - 1);
       LineTo(0, 0);
       LineTo(R.Right - 1, 0);
@@ -2118,7 +2123,7 @@ begin
     if not Assigned(LeftTab.TabBar.SelectedTab) or
       (LeftTab.GetNextVisible <> LeftTab.TabBar.SelectedTab) then
     begin
-      with TCanvasX(Canvas) do
+      with Canvas do
       begin
         Pen.Color := DividerColor;
         Pen.Width := 1;
@@ -2133,7 +2138,7 @@ procedure TJvModernTabBarPainter.DrawMoveDivider(Canvas: TCanvas; Tab: TJvTabBar
 var
   R: TRect;
 begin
-  with TCanvasX(Canvas) do
+  with Canvas do
   begin
     R := Tab.DisplayRect;
     Inc(R.Top, 4);
@@ -2157,7 +2162,7 @@ procedure TJvModernTabBarPainter.DrawTab(Canvas: TCanvas; Tab: TJvTabBarItem; R:
 var
   CloseR: TRect;
 begin
-  with TCanvasX(Canvas) do
+  with Canvas do
   begin
     Brush.Style := bsSolid;
     Brush.Color := Color;
@@ -2172,16 +2177,15 @@ begin
       FillRect(R);
 
       Pen.Color := ControlDivideColor;
-      case Tab.TabBar.Orientation of
-        toBottom:
-          begin
-            MoveTo(R.Left, R.Top);
-            LineTo(R.Left, R.Bottom - 1);
-            LineTo(R.Right - 1, R.Bottom - 1);
-            LineTo(R.Right - 1, R.Top - 1{end});
-          end;
-      else
-        // toTop
+      if Tab.TabBar.Orientation = toBottom then
+      begin
+        MoveTo(R.Left, R.Top);
+        LineTo(R.Left, R.Bottom - 1);
+        LineTo(R.Right - 1, R.Bottom - 1);
+        LineTo(R.Right - 1, R.Top - 1{end});
+      end
+      else // toTop
+      begin
         MoveTo(R.Left, R.Bottom - 1);
         LineTo(R.Left, R.Top);
         LineTo(R.Right - 1, R.Top);
