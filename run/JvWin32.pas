@@ -295,7 +295,7 @@ const
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JVCL\common'
+    LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
 
