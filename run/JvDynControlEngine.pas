@@ -618,12 +618,12 @@ function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
     AParentControl: TWinControl; const AControlName, ACaption: string;
     AFocusControl: TWinControl = nil): TControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
   DynCtrlLabel: IJvDynControlLabel;
 begin
   Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
   IntfCast(Result, IJvDynControlLabel, DynCtrlLabel);
   if Assigned(AFocusControl) then
     DynCtrlLabel.ControlSetFocusControl(AFocusControl);
@@ -632,22 +632,22 @@ end;
 function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
 begin
   Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string;
   AAlign: TAlign): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
 begin
   Result := TWinControl(CreateControl(jctPanel, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
   Result.Align := AAlign;
 end;
 
@@ -669,12 +669,12 @@ end;
 function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
   DynCtrlFont: IJvDynControlFont;
 begin
   Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
   if Supports(Result, IJvDynControlFont,DynCtrlFont) then
     Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'XXXXXX');
 end;
@@ -695,11 +695,11 @@ end;
 function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
 begin
   Result := TWinControl(CreateControl(jctGroupBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreateImageControl(AOwner: TComponent;
@@ -712,13 +712,13 @@ function TJvDynControlEngine.CreateRadioGroupControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string;
   AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
   DynCtrlItems: IJvDynControlItems;
   DynCtrlData: IJvDynControlData;
 begin
   Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
   IntfCast(Result, IJvDynControlItems, DynCtrlItems);
   DynCtrlItems.ControlSetItems(AItems);
   IntfCast(Result, IJvDynControlData, DynCtrlData);
@@ -859,11 +859,11 @@ end;
 function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
   const ARadioButtonName, ACaption: string): TWinControl;
 var
-  DynCtrl: IJvDynControl;
+  DynCtrlCaption: IJvDynControlCaption;
 begin
   Result := TWinControl(CreateControl(jctRadioButton, AOwner, AParentControl, ARadioButtonName));
-  IntfCast(Result, IJvDynControl, DynCtrl);
-  DynCtrl.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
