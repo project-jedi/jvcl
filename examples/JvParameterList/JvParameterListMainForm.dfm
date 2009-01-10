@@ -1611,11 +1611,22 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       end
       object ThickLinesCheckBox: TCheckBox
         Left = 5
-        Top = 35
+        Top = 30
         Width = 97
         Height = 17
         Caption = 'Thick Lines'
         TabOrder = 1
+        OnClick = DevExpCxLookAndFeelRadioGroupClick
+      end
+      object NativeCheckBox: TCheckBox
+        Left = 5
+        Top = 45
+        Width = 97
+        Height = 17
+        Caption = 'Native'
+        Checked = True
+        State = cbChecked
+        TabOrder = 2
         OnClick = DevExpCxLookAndFeelRadioGroupClick
       end
     end
@@ -1999,6 +2010,8 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Width = 90
       Height = 25
       Caption = '&Load Settings'
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       TabOrder = 0
       OnClick = BitBtn1Click
     end
@@ -2008,6 +2021,8 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Width = 90
       Height = 25
       Caption = '&Store Settings'
+      DoubleBuffered = True
+      ParentDoubleBuffered = False
       TabOrder = 1
       OnClick = BitBtn2Click
     end
@@ -2072,6 +2087,26 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Caption = 'Edit DBMS_JOB Entry'
         TabOrder = 3
         OnClick = Button18Click
+      end
+      object Button19: TButton
+        Left = 5
+        Top = 61
+        Width = 120
+        Height = 25
+        Hint = 'Demonstrates the LabelArrangeMode '
+        Caption = 'LabelArrangeMode'
+        TabOrder = 4
+        OnClick = Button19Click
+      end
+      object Button20: TButton
+        Left = 128
+        Top = 61
+        Width = 120
+        Height = 25
+        Hint = 'Demonstrates the Before/AfterParameterName'
+        Caption = 'BeforeAfterParameter'
+        TabOrder = 5
+        OnClick = Button20Click
       end
     end
   end

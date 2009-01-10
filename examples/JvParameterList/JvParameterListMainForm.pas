@@ -28,7 +28,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{.DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   JclUnitVersioning,
@@ -124,6 +124,9 @@ type
     Button15: TButton;
     Button17: TButton;
     Button18: TButton;
+    Button19: TButton;
+    Button20: TButton;
+    NativeCheckBox: TCheckBox;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -149,6 +152,8 @@ type
     procedure Button16Click(Sender: TObject);
     procedure Button17Click(Sender: TObject);
     procedure Button18Click(Sender: TObject);
+    procedure Button19Click(Sender: TObject);
+    procedure Button20Click(Sender: TObject);
   private
     { Private-Deklarationen }
     UnitVersionForm: TCustomForm;
@@ -167,6 +172,8 @@ type
     function DefaultStorage: TJvCustomAppStorage;
     procedure TreeViewOnChange(Sender: TObject; Node: TTreeNode);
     procedure CloseButtonOnClick(Sender: TObject);
+    procedure SetDevExpressDynControlEngineProperties(ParameterList:
+        TJvParameterList);
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
@@ -234,27 +241,18 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
-      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
-      begin
-        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-          1:
-            cxProperties.LookAndFeel.Kind := lfFlat;
-          2:
-            cxProperties.LookAndFeel.Kind := lfUltraFlat;
-        else
-          cxProperties.LookAndFeel.Kind := lfStandard;
-        end;
-        if Assigned(CxProperties.StyleController) then
-        begin
-          CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
-          if ThickLinesCheckBox.Checked then
-            CxProperties.StyleController.Style.BorderStyle := ebsThick
-          else
-            CxProperties.StyleController.Style.BorderStyle := ebsNone;
-        end;
-      end;
+    SetDevExpressDynControlEngineProperties(ParameterList);
     {$ENDIF INCLUDE_DEVEXP_CX}
+    if AutoHeightCheckBox.Checked then
+      if AutoWidthCheckBox.Checked then
+        ParameterList.ArrangeSettings.AutoSize := asBoth
+      else
+        ParameterList.ArrangeSettings.AutoSize := asHeight
+    else
+    if AutoWidthCheckBox.Checked then
+      ParameterList.ArrangeSettings.AutoSize := asWidth
+    else
+      ParameterList.ArrangeSettings.AutoSize := asNone;
     Parameter := tjvTimeParameter.Create(ParameterList);
     with tjvTimeParameter(Parameter) do
     begin
@@ -281,7 +279,7 @@ begin
       Caption := 'DateTimeTest';
       AsDate := Now;
       Width := 365;
-      RightSpace := 100;
+      EditWidth := 200;
 //      Width      := 200;
 //      Height     := 50;
     end;
@@ -428,16 +426,6 @@ begin
       Width := 340;
     end;
     ParameterList.AddParameter(Parameter);
-    if AutoHeightCheckBox.Checked then
-      if AutoWidthCheckBox.Checked then
-        ParameterList.ArrangeSettings.AutoSize := asBoth
-      else
-        ParameterList.ArrangeSettings.AutoSize := asHeight
-    else
-    if AutoWidthCheckBox.Checked then
-      ParameterList.ArrangeSettings.AutoSize := asWidth
-    else
-      ParameterList.ArrangeSettings.AutoSize := asNone;
 
     ParameterList.DefaultParameterWidth := 180;
     ParameterList.DefaultParameterLabelWidth := 80;
@@ -474,23 +462,7 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
-      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
-      begin
-        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-          1:
-            cxProperties.LookAndFeel.Kind := lfFlat;
-          2:
-            cxProperties.LookAndFeel.Kind := lfUltraFlat;
-        else
-          cxProperties.LookAndFeel.Kind := lfStandard;
-        end;
-        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
-        if ThickLinesCheckBox.Checked then
-          CxProperties.StyleController.Style.BorderStyle := ebsThick
-        else
-          CxProperties.StyleController.Style.BorderStyle := ebsNone;
-      end;
+    SetDevExpressDynControlEngineProperties(ParameterList);
     {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvRadioGroupParameter.Create(ParameterList);
     with tjvRadioGroupParameter(Parameter) do
@@ -601,21 +573,7 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
-      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
-      begin
-        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-          1: cxProperties.LookAndFeel.Kind := lfFlat;
-          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-        else
-          cxProperties.LookAndFeel.Kind := lfStandard;
-        end;
-        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
-        if ThickLinesCheckBox.Checked then
-          CxProperties.StyleController.Style.BorderStyle := ebsThick
-        else
-          CxProperties.StyleController.Style.BorderStyle := ebsNone;
-      end;
+    SetDevExpressDynControlEngineProperties(ParameterList);
     {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvButtonParameter.Create(ParameterList);
     with tjvButtonParameter(Parameter) do
@@ -700,21 +658,7 @@ begin
     if Assigned(aDynControlEngine) then
       ParameterList.DynControlEngine := aDynControlEngine;
     {$IFDEF INCLUDE_DEVEXP_CX}
-    if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
-      with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
-      begin
-        case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-          1: cxProperties.LookAndFeel.Kind := lfFlat;
-          2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
-        else
-          cxProperties.LookAndFeel.Kind := lfStandard;
-        end;
-        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
-        if ThickLinesCheckBox.Checked then
-          CxProperties.StyleController.Style.BorderStyle := ebsThick
-        else
-          CxProperties.StyleController.Style.BorderStyle := ebsNone;
-      end;
+    SetDevExpressDynControlEngineProperties(ParameterList);
     {$ENDIF INCLUDE_DEVEXP_CX}
     Parameter := tjvEditParameter.Create(ParameterList);
     with tjvEditParameter(Parameter) do
@@ -755,6 +699,7 @@ begin
   DevExpCxStyleGroupBox.Enabled := False;
   ShadowCheckBox.Enabled := False;
   ThickLinesCheckBox.Enabled := False;
+  NativeCheckBox.Enabled := False;
   CxRadioButton.Enabled := False;
   if CxRadioButton.Checked then
     VCLRadioButton.Checked := True;
@@ -806,6 +751,7 @@ begin
     else
       cxProperties.LookAndFeel.Kind := lfStandard;
     end;
+    cxProperties.LookAndFeel.NativeStyle := NativeCheckBox.Checked;
     if Assigned(CxProperties.StyleController) then
     begin
       CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
@@ -928,6 +874,9 @@ var
     Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(Self);
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  SetDevExpressDynControlEngineProperties(ParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
   try
     ParameterList.AppStoragePath := 'Analyze Table';
     ParameterList.AppStorage := DefaultStorage;
@@ -1089,6 +1038,9 @@ var
   BaseParameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  SetDevExpressDynControlEngineProperties(ParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
   try
     BaseParameter := TJvBaseParameter(tJvMemoParameter.Create(ParameterList));
     with tJvMemoParameter(BaseParameter) do
@@ -1246,7 +1198,7 @@ begin
       with GetUnitVersioning do
         for I := 0 to Count - 1 do
           Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Items[I].LogPath),
-            Items[I].RCSfile + ' - ' + Items[I].Revision, Items[I]);
+           StrRestOf(Items[I].RCSfile, StrLastPos('/', Items[I].RCSfile)+1) + ' - ' + Items[I].Revision, Items[I]);
       IJvTreeView.ControlSetSortType(stText);
       if TreeView is TTreeView then
         TTreeView(TreeView).FullExpand;
@@ -1330,6 +1282,9 @@ var
   Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(Self);
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  SetDevExpressDynControlEngineProperties(ParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
   try
     Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
     with TJvEditParameter(Parameter) do
@@ -1401,6 +1356,170 @@ begin
   finally
     FreeAndNil(ParameterList);
   end;
+end;
+
+procedure TJvParameterListDemoMainFrm.Button19Click(Sender: TObject);
+var
+  ParameterList: TJvParameterList;
+  Parameter: TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(Self);
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  SetDevExpressDynControlEngineProperties(ParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
+  try
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamGroupbox;
+      Caption := '&Groupbox';
+      SearchName := 'Groupbox';
+      ReadOnly := True;
+      Width := 250;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamAbove;
+      Caption := '&Above';
+      SearchName := 'Above';
+      ReadOnly := True;
+      Width := 250;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamBefore;
+      Caption := '&Before';
+      SearchName := 'Before';
+      ReadOnly := True;
+      Width := 250;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    ParameterList.Messages.OkButton := '&Ok';
+    ParameterList.Messages.CancelButton := '&Cancel';
+    ParameterList.MaxWidth := 310;
+    ParameterList.ShowParameterDialog;
+  finally
+    FreeAndNil(ParameterList);
+  end;
+end;
+
+procedure TJvParameterListDemoMainFrm.Button20Click(Sender: TObject);
+var
+  ParameterList: TJvParameterList;
+  Parameter: TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(Self);
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  SetDevExpressDynControlEngineProperties(ParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
+  try
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamGroupbox;
+      Caption := '&Groupbox';
+      SearchName := 'Groupbox';
+      Width := 250;
+      BeforeParameterName := 'Before';
+      AfterParameterName := 'After';
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamGroupbox;
+      Caption := '&Groupbox';
+      SearchName := 'Groupbox2';
+      Width := 250;
+      BeforeParameterName := 'Before2';
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamGroupbox;
+      Caption := '&Groupbox';
+      SearchName := 'Groupbox3';
+      Width := 250;
+      AfterParameterName := 'After2';
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamNone;
+      Caption := '&After';
+      SearchName := 'After';
+      AsString := 'A';
+      Width := 20;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamNone;
+      SearchName := 'Before';
+      AsString := 'B';
+      Width := 40;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamNone;
+      Caption := '&After';
+      SearchName := 'After2';
+      AsString := 'A2';
+      Width := 20;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
+    with TJvEditParameter(Parameter) do
+    begin
+      LabelArrangeMode := lamNone;
+      SearchName := 'Before2';
+      AsString := 'B2';
+      Width := 22;
+    end; {*** WITH TJvEditParameter(Parameter) DO ***}
+    ParameterList.AddParameter(Parameter);
+    ParameterList.Messages.OkButton := '&Ok';
+    ParameterList.Messages.CancelButton := '&Cancel';
+    ParameterList.MaxWidth := 310;
+    ParameterList.ShowParameterDialog;
+  finally
+    FreeAndNil(ParameterList);
+  end;
+end;
+
+procedure TJvParameterListDemoMainFrm.SetDevExpressDynControlEngineProperties(
+    ParameterList: TJvParameterList);
+begin
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
+    with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
+    begin
+      case DevExpCxLookAndFeelRadioGroup.ItemIndex of
+        1:
+          cxProperties.LookAndFeel.Kind := lfFlat;
+        2:
+          cxProperties.LookAndFeel.Kind := lfUltraFlat;
+      else
+        cxProperties.LookAndFeel.Kind := lfStandard;
+      end;
+      if Assigned(CxProperties.StyleController) then
+      begin
+        CxProperties.StyleController.Style.Shadow := ShadowCheckBox.Checked;
+        if ThickLinesCheckBox.Checked then
+          CxProperties.StyleController.Style.BorderStyle := ebsThick
+        else
+          CxProperties.StyleController.Style.BorderStyle := ebsNone;
+      end;
+    end;
+  {$ENDIF INCLUDE_DEVEXP_CX};
 end;
 
 initialization

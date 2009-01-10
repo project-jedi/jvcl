@@ -160,8 +160,7 @@ type
     function GetParameterNameExt: string; virtual;
     function GetParameterNameBase: string;
     function GetParameterName: string;
-    procedure SetWinControl(Value: TWinControl);
-    function GetWinControl: TWinControl;
+    procedure SetWinControl(const Value: TWinControl);
     function GetWinControlData: Variant; virtual;
     procedure SetWinControlData(Value: Variant); virtual;
     procedure SetSearchName(Value: string);
@@ -181,7 +180,6 @@ type
     property JvDynControl: IJvDynControl read FJvDynControl;
     property JvDynControlData: IJvDynControlData read FJvDynControlData;
     property Value: Variant read FValue write FValue;
-    property WinControl: TWinControl read GetWinControl write SetWinControl;
     procedure SetWinControlProperties; virtual;
   public
     constructor Create(AParameterList: TJvParameterList); reintroduce; virtual;
@@ -195,6 +193,7 @@ type
     property AdditionalData: Pointer read FAdditionalData write FAdditionalData;
     property ParameterList: TJvParameterList read FParameterList write FParameterList;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine;
+    property WinControl: TWinControl read FWinControl;
   published
     {the next properties implements the possibilities to read and write the AdditionalData }
     property AsString: string read GetAsString write SetAsString;
@@ -211,9 +210,9 @@ type
       FStoreValueToAppStorage;
     {should this value be crypted before save }
     property StoreValueCrypted: Boolean read FStoreValueCrypted write FStoreValueCrypted;
-    {the searchname of the parentparameter. The parameter must be a
+    {the searchname of the parentparameter. The parentparameter must be a
      descent of TJvGroupBoxParameter, TJvPanelParameter or TJvPageControlParameter. If the
-     parent parameter is a TJvTabControlParameter, then the ParentParameterName must be
+     parent parameter is a TJvPageControlParameter, then the ParentParameterName must be
      "searchname.tabname" of the TJvPageControlParameter}
     property ParentParameterName: string read FParentParameterName write FParentParameterName;
     {Is the value required, will be checked in the validate function}
@@ -941,7 +940,7 @@ end;
 //type
 //  TWinControlAccessProtected = class(TWinControl);
 
-procedure TJvBaseParameter.SetWinControl(Value: TWinControl);
+procedure TJvBaseParameter.SetWinControl(const Value: TWinControl);
 begin
   FJvDynControl := nil;
   FWinControl := Value;
@@ -982,11 +981,6 @@ begin
     if Assigned(JvDynControlData) then
       JvDynControlData.ControlSetOnChange(ParameterList.OnChangeParameterControl);
   end;
-end;
-
-function TJvBaseParameter.GetWinControl: TWinControl;
-begin
-  Result := FWinControl
 end;
 
 procedure TJvBaseParameter.SetEnabled(Value: Boolean);
@@ -1796,32 +1790,57 @@ procedure TJvParameterList.CreateWinControlsOnWinControl(ParameterParent:
     TWinControl);
 var
   I: Integer;
+  BeforeAfterParameterNames : TStringList;
 begin
+  BeforeAfterParameterNames := TStringList.Create;
+  BeforeAfterParameterNames.Sorted := True;
+  BeforeAfterParameterNames.Duplicates := dupError;
   try
+    for I := 0 to Count - 1 do
+      if Parameters[I].Visible and (Parameters[I] is TJvBasePanelEditParameter) then
+      begin
+        try
+          if TJvBasePanelEditParameter(Parameters[I]).BeforeParameterName <> '' then
+            BeforeAfterParameterNames.Add(TJvBasePanelEditParameter(Parameters[I]).BeforeParameterName);
+        except
+          on e:exception do
+            raise Exception.CreateResFmt(@RsECreateWinControlsOnWinControlDuplicateBeforeAfterNotAllowed, ['BeforeParameterName', TJvBasePanelEditParameter(Parameters[I]).BeforeParameterName]);
+        end;
+        try
+          if TJvBasePanelEditParameter(Parameters[I]).AfterParameterName <> '' then
+            BeforeAfterParameterNames.Add(TJvBasePanelEditParameter(Parameters[I]).AfterParameterName);
+        except
+          on e:exception do
+            raise Exception.CreateResFmt(@RsECreateWinControlsOnWinControlDuplicateBeforeAfterNotAllowed, ['AfterParameterName', TJvBasePanelEditParameter(Parameters[I]).AfterParameterName]);
+        end;
+      end;
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).DisableArrange;
     for I := 0 to Count - 1 do
-      if Parameters[I].Visible then
+      if Parameters[I].Visible and (BeforeAfterParameterNames.IndexOf(Parameters[I].SearchName) < 0)then
       begin
         Parameters[I].CreateWinControlOnParent(
           GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
-        Parameters[I].WinControlData := Parameters[I].AsVariant;
         if (Parameters[I] is TJvArrangeParameter) then
           TJvArrangeParameter(Parameters[I]).DisableArrange;
       end;
+
+    // Splitted in a Separate Loop because the order could be changed when Before/AfterParameterName is Used
     for I := 0 to Count - 1 do
-      if Parameters[I].Visible then
+      if Assigned(Parameters[I].WinControl) then
+        Parameters[I].WinControlData := Parameters[I].AsVariant;
+
+    for I := 0 to Count - 1 do
+      if (Parameters[I] is TJvArrangeParameter) and Assigned(Parameters[I].WinControl) then
       begin
-        if (Parameters[I] is TJvArrangeParameter) then
-        begin
-          TJvArrangeParameter(Parameters[I]).EnableArrange;
-          TJvArrangeParameter(Parameters[I]).ArrangeControls;
-        end;
+        TJvArrangeParameter(Parameters[I]).EnableArrange;
+        TJvArrangeParameter(Parameters[I]).ArrangeControls;
       end;
     HandleEnableDisable;
   finally
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).EnableArrange;
+    BeforeAfterParameterNames.Free;
   end;
   if ParameterParent is TJvCustomArrangePanel then
     TJvCustomArrangePanel(ParameterParent).ArrangeControls;
