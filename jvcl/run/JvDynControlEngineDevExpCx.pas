@@ -556,7 +556,8 @@ type
     procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
 
-  TJvDynControlCxGroupBox = class(TcxGroupBox, IUnknown, IJvDynControl)
+  TJvDynControlCxGroupBox = class(TcxGroupBox, IUnknown, IJvDynControl,
+    IJvDynControlColor)
   public
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDefaultProperties;
@@ -567,9 +568,13 @@ type
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
+
+    // IJvDynControlColor
+    procedure ControlSetColor(Value: TColor);
+    procedure ControlSetParentColor(Value: Boolean);
   end;
 
-  TJvDynControlCxPanel = class(TPanel, IUnknown, IJvDynControl, IJvDynControlPanel,
+  TJvDynControlCxPanel = class(TcxGroupBox, IUnknown, IJvDynControl, IJvDynControlPanel,
     IJvDynControlAlign, IJvDynControlAutoSize, IJvDynControlBevelBorder, IJvDynControlColor,
     IJvDynControlAlignment)
   public
@@ -2718,6 +2723,11 @@ begin
   Caption := Value;
 end;
 
+procedure TJvDynControlCxGroupBox.ControlSetColor(Value: TColor);
+begin
+  Color := Value;
+end;
+
 procedure TJvDynControlCxGroupBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
@@ -2742,12 +2752,22 @@ begin
   Hint := Value;
 end;
 
+procedure TJvDynControlCxGroupBox.ControlSetParentColor(Value: Boolean);
+begin
+  ParentColor := Value;
+end;
+
 //=== { TJvDynControlCxPanel } ===============================================
 
 procedure TJvDynControlCxPanel.ControlSetDefaultProperties;
 begin
   BevelInner := bvNone;
   BevelOuter := bvNone;
+  PanelStyle.Active := True;
+  Transparent := True;
+  Style.TransparentBorder := True;
+  Style.Shadow := False;
+  Style.Edges := [];
 end;
 
 procedure TJvDynControlCxPanel.ControlSetCaption(const Value: string);
@@ -2781,11 +2801,11 @@ end;
 
 procedure TJvDynControlCxPanel.ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: Integer; ABorderStyle: TBorderStyle; ABorderWidth: Integer);
 begin
-  BorderWidth := ABorderWidth;
-  BorderStyle := ABorderStyle;
-  BevelInner  := ABevelInner;
-  BevelOuter  := ABevelOuter;
-  BevelWidth  := ABevelWidth;
+  ControlSetBorderWidth (ABorderWidth);
+  ControlSetBorderStyle (ABorderStyle);
+  ControlSetBevelInner  (ABevelInner);
+  ControlSetBevelOuter  (ABevelOuter);
+  BevelWidth := ABevelWidth;
 end;
 
 
@@ -2821,12 +2841,15 @@ end;
 
 procedure TJvDynControlCxPanel.ControlSetBorderStyle(Value: TBorderStyle);
 begin
-  BorderStyle:= Value;
+  if value = bsNone then
+    BorderStyle := cxcbsNone
+  else
+    BorderStyle := cxcbsDefault;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetBorderWidth(Value: Integer);
 begin
-  BorderWidth := Value;
+  PanelStyle.BorderWidth := Value;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetColor(Value: TColor);
@@ -2841,7 +2864,7 @@ end;
 
 procedure TJvDynControlCxPanel.ControlSetAlignment(Value: TAlignment);
 begin
-  Alignment := Value;
+  Properties.Alignment.Horz := Value;
 end;
 
 
@@ -2997,6 +3020,7 @@ procedure TJvDynControlCxLabel.ControlSetDefaultProperties;
 begin
   AutoSize := False;
   Transparent := True;
+  Style.BorderStyle := ebsNone;
 end;
 
 procedure TJvDynControlCxLabel.ControlSetCaption(const Value: string);

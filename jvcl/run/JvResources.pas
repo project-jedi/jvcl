@@ -1640,6 +1640,7 @@ resourcestring
   RsEAddObjectWrongObjectType = 'TJvParameterList.AddObject: Wrong object type';
   RsEAddObjectSearchNameNotDefined = 'TJvParameterList.AddObject: SearchName not defined';
   RsEAddObjectDuplicateSearchNamesNotAllowed = 'TJvParameterList.AddObject: Duplicate SearchNames ("%s") not allowed';
+  RsECreateWinControlsOnWinControlDuplicateBeforeAfterNotAllowed = 'TJvParameterList.CreateWinControlsOnWinControl: %s "%s" already used';
 
 //=== JvParameterListParameter.pas ===========================================
 resourcestring

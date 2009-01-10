@@ -1,5 +1,12 @@
 Changelog for JVCL 3.X
 ======================
+2009-01-10
+- Enancements to the JvParameterList
+  EditParameter can now be combined to one label with BeforeParameterName and AfterParameterName
+  The RightSpace Property has been removed
+  Additional TJvParameterLabelArrangeMode = (lamBefore, lamAbove, lamGroupBox, lamNone);
+  WinControl Property is not Readonly and Public
+
 2008-11-02
 - Renamed TJvgMailSlots to TJvMailSlots and moved it from JvGlobus to the JvSystem package (ahuser)
 - Added property TJvNavPaneButton.WordWrap (ahuser)

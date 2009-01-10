@@ -69,7 +69,7 @@ type
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
-    destructor Destroy;override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
@@ -93,43 +93,71 @@ type
     property OnClick: TJvParameterListEvent read FOnClick write FOnClick;
   end;
 
-  TJvParameterLabelArrangeMode = (lamBefore, lamAbove);
+  TJvParameterLabelArrangeMode = (lamBefore, lamAbove, lamGroupBox, lamNone);
 
   TJvBasePanelEditParameter = class(TJvBaseParameter)
   private
-    FLabelControl: TControl;
-    FFramePanel: TWinControl;
-    FLabelArrangeMode: TJvParameterLabelArrangeMode;
-    FLabelWidth: Integer;
-    FEditWidth: Integer;
-    FRightSpace: Integer;
+    FAfterParameterControl: TControl;
+    FAfterParameterName: string;
     FArrangeLabelAndWinControlDisabled: Boolean;
+    FBeforeParameterControl: TControl;
+    FBeforeParameterName: string;
+    FEditWidth: Integer;
+    FFrameControl: TWinControl;
+    FLabelArrangeMode: TJvParameterLabelArrangeMode;
+    FLabelControl: TControl;
+    FLabelWidth: Integer;
+    FOrgWinControlHeight: Integer;
+    FOrgWinControlWidth: Integer;
+    procedure ArrangeLabelAndWinControlOnPanelAbove;
+    procedure ArrangeLabelAndWinControlOnPanelBefore;
+    procedure ArrangeLabelAndWinControlOnPanelGroupBox;
+    procedure ArrangeLabelAndWinControlOnPanelNone;
+    procedure ArrangeWinControlsonPanel(iLeft, iTop: Integer; var iWidth: Integer;
+        iHeight: Integer);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetWinControlProperties; override;
     procedure ArrangeLabelAndWinControlOnPanel; virtual;
-    procedure CreateLabelControl(AParameterParent: TWinControl); virtual;
+    procedure CreateAfterParameterControl(AParameterParent: TWinControl); virtual;
+    procedure CreateBeforeParameterControl(AParameterParent: TWinControl); virtual;
     procedure CreateFramePanel(AParameterParent: TWinControl); virtual;
+    procedure CreateLabelControl(AParameterParent: TWinControl); virtual;
     procedure CreateWinControl(AParameterParent: TWinControl); virtual; abstract;
-    function  GetLabelWidth: Integer; virtual;
+    function GetLabelWidth: Integer; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetLabelWidth(Value: Integer); virtual;
+    procedure SetWinControlProperties; override;
+    property FrameControl: TWinControl read FFrameControl;
     property LabelControl: TControl read FLabelControl write FLabelControl;
-    property FramePanel: TWinControl read FFramePanel write FFramePanel;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
-    procedure SetEnabled(Value: Boolean); override;
-    procedure SetVisible(Value: Boolean); override;
-    procedure SetHeight(Value: Integer); override;
-    procedure SetWidth(Value: Integer); override;
-    procedure SetTabOrder(Value: Integer); override;
-    procedure SetLabelArrangeMode(Value: TJvParameterLabelArrangeMode); virtual;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetHeight(Value: Integer); override;
+    procedure SetLabelArrangeMode(Value: TJvParameterLabelArrangeMode); virtual;
+    procedure SetTabOrder(Value: Integer); override;
+    procedure SetVisible(Value: Boolean); override;
+    procedure SetWidth(Value: Integer); override;
   published
-    property LabelArrangeMode: TJvParameterLabelArrangeMode read FLabelArrangeMode write SetLabelArrangeMode;
-    property LabelWidth: Integer read GetLabelWidth write SetLabelWidth;
+    /// The searchname of the afterparameter.
+    /// The afterparameter will positioned behind the edit control.
+    property AfterParameterName: string read FAfterParameterName write
+      FAfterParameterName;
+    /// The searchname of the beforeparameter.
+    /// The beforeparameter will positioned before the edit control.
+    property BeforeParameterName: string read FBeforeParameterName write
+      FBeforeParameterName;
+    /// Width of the edit control
     property EditWidth: Integer read FEditWidth write FEditWidth;
-    property RightSpace: Integer read FRightSpace write FRightSpace;
+    /// Mode how the label and the edit control will be arranged :
+    /// - lamBefire : The label is before the edit control
+    /// - lamAbove : The label is positioned on top of the edit control
+    /// - lamGroupBox : A Groupbox is created arround the edit control
+    /// - lamNone : No Label is shown
+    property LabelArrangeMode: TJvParameterLabelArrangeMode read FLabelArrangeMode
+      write SetLabelArrangeMode;
+    /// Width of the label, only valid when LabelArrangeMode = lamBefore
+    property LabelWidth: Integer read GetLabelWidth write SetLabelWidth;
   end;
 
   TJvArrangeParameter = class(TJvNoDataParameter)
@@ -562,7 +590,7 @@ type
   protected
     function GetParameterNameExt: string; override;
     procedure RearrangePageControl(Sender: TObject; nLeft, nTop, nWidth, nHeight:
-        Integer);
+      Integer);
     procedure SetPages(Value: TStringList);
     procedure SetWinControlProperties; override;
   public
@@ -597,8 +625,8 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
-{$ENDIF UNITVERSIONING}
+    );
+  {$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -665,8 +693,8 @@ end;
 
 procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateButton(Self, ParameterParent,
-    GetParameterName, Caption, Hint, Click, False, False);
+  SetWinControl (DynControlEngine.CreateButton(Self, ParameterParent,
+    GetParameterName, Caption, Hint, Click, False, False));
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -712,8 +740,8 @@ end;
 
 procedure TJvRadioButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateRadioButton(Self, ParameterParent,
-    GetParameterName, Caption);
+  SetWinControl (DynControlEngine.CreateRadioButton(Self, ParameterParent,
+    GetParameterName, Caption));
   WinControl.Hint := Hint;
   if Height > 0 then
     WinControl.Height := Height;
@@ -734,25 +762,357 @@ begin
   FLabelArrangeMode := lamAbove;
   FLabelWidth := 0;
   FEditWidth := 0;
-  FRightSpace := 0;
   FArrangeLabelAndWinControlDisabled := False;
+end;
+
+procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
+var
+  TmpLabelArrangeMode: TJvParameterLabelArrangeMode;
+begin
+  if not Assigned(FrameControl) or not Assigned(WinControl) or FArrangeLabelAndWinControlDisabled then
+    Exit;
+  if not Assigned(LabelControl) and (LabelArrangeMode in [lamBefore, lamAbove]) then
+    TmpLabelArrangeMode := lamNone
+  else
+    TmpLabelArrangeMode := LabelArrangeMode;
+
+  case TmpLabelArrangeMode of
+    lamBefore:
+      ArrangeLabelAndWinControlOnPanelBefore;
+    lamAbove:
+      ArrangeLabelAndWinControlOnPanelAbove;
+    lamNone:
+      ArrangeLabelAndWinControlOnPanelNone;
+    lamGroupBox:
+      ArrangeLabelAndWinControlOnPanelGroupBox;
+  end;
+end;
+
+procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanelAbove;
+var
+  l, t, w, h: Integer;
+begin
+  t := LabelControl.Height;
+  l := 0;
+
+  if Height > 0 then
+    h := Height - t
+  else
+    h := fOrgWinControlHeight;
+
+  if EditWidth > 0 then
+    w := EditWidth
+  else if Width > 0 then
+    w := Width
+  else
+    w := 0;
+
+  ArrangeWinControlsonPanel(l, t, w, h);
+
+  FrameControl.Height := t + h;
+  FrameControl.Width := l + w;
+end;
+
+procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanelBefore;
+var
+  DynCtrlFont: IJvDynControlFont;
+  l, t, w, h: Integer;
+begin
+  if LabelWidth > 0 then
+    LabelControl.Width := LabelWidth
+  else
+    if Supports(LabelControl, IJvDynControlFont, DynCtrlFont) then
+      LabelControl.Width :=
+         DynControlEngine.GetControlTextWidth(LabelControl,
+                                              DynCtrlFont.ControlFont, Caption+'X');
+
+  t := LabelControl.Top;
+  l := LabelControl.Left + LabelControl.Width + 4;
+
+  if Height > 0 then
+    h := Height
+  else
+    h := fOrgWinControlHeight;
+
+  if EditWidth > 0 then
+    w := EditWidth
+  else if Width > 0 then
+    w := Width - l
+  else
+    w := 0;
+
+  ArrangeWinControlsonPanel(l, t, w, h);
+
+  LabelControl.Top := t + Round((h - LabelControl.Height) / 2);
+
+  FrameControl.Height := t + h;
+  FrameControl.Width := l + w;
+
+end;
+
+procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanelGroupBox;
+var
+  l, t, w, h: Integer;
+begin
+  t := 16;
+  l := 5;
+
+  if Height > 0 then
+    h := Height - 20
+  else
+    h := fOrgWinControlHeight;
+
+  if EditWidth > 0 then
+    w := EditWidth
+  else if Width > 0 then
+    w := Width - 9
+  else
+    w := 0;
+
+  ArrangeWinControlsonPanel(l, t, w, h);
+
+  FrameControl.Height := h + 20;
+  FrameControl.Width := w + 9;
+end;
+
+procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanelNone;
+var
+  l, t, w, h: Integer;
+begin
+  t := 0;
+  l := 0;
+
+  if Height > 0 then
+    h := Height
+  else
+    h := fOrgWinControlHeight;
+
+  if EditWidth > 0 then
+    w := EditWidth
+  else if Width > 0 then
+    w := Width
+  else
+    w := 0;
+
+  ArrangeWinControlsonPanel(l, t, w, h);
+
+  FrameControl.Height := h;
+  FrameControl.Width := w;
+end;
+
+procedure TJvBasePanelEditParameter.ArrangeWinControlsonPanel(iLeft, iTop:
+    Integer; var iWidth: Integer; iHeight: Integer);
+const
+  Space = 2;
+var
+  l, w: Integer;
+begin
+  l := iLeft;
+  w := 0;
+  if Assigned(FBeforeParameterControl) then
+  begin
+    FBeforeParameterControl.Left := l;
+    FBeforeParameterControl.Top := iTop;
+    FBeforeParameterControl.Height := iHeight;
+    l := FBeforeParameterControl.Left + FBeforeParameterControl.Width+ Space;
+    w := w + FBeforeParameterControl.Width+ Space;
+  end;
+  WinControl.Left := l;
+  WinControl.Top := iTop;
+  WinControl.Height := iHeight;
+  if iWidth > 0 then
+  begin
+    WinControl.Width := iWidth-l+iLeft;
+    if Assigned (FAfterParameterControl) then
+      WinControl.Width := WinControl.Width - (FAfterParameterControl.Width + Space);
+  end
+  else
+    WinControl.Width := FOrgWinControlWidth;
+  w := w + WinControl.Width;
+  if Assigned(FAfterParameterControl) then
+  begin
+    l := WinControl.Left + WinControl.Width + Space;
+    FAfterParameterControl.Left := l;
+    FAfterParameterControl.Top := iTop;
+    FAfterParameterControl.Height := iHeight;
+    w := w + FAfterParameterControl.Width+ Space;
+  end;
+  iWidth := w;
+end;
+
+procedure TJvBasePanelEditParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvBasePanelEditParameter then
+  begin
+    LabelArrangeMode := TJvBasePanelEditParameter(Source).LabelArrangeMode;
+    LabelWidth := TJvBasePanelEditParameter(Source).LabelWidth;
+    EditWidth := TJvBasePanelEditParameter(Source).EditWidth;
+    AfterParameterName := TJvBasePanelEditParameter(Source).AfterParameterName ;
+    BeforeParameterName := TJvBasePanelEditParameter(Source).BeforeParameterName ;
+  end;
+end;
+
+procedure TJvBasePanelEditParameter.CreateAfterParameterControl(
+  AParameterParent: TWinControl);
+var
+  AfterParameter: TJvBaseParameter;
+begin
+  AfterParameter := ParameterList.ParameterByName(AfterParameterName);
+  if Assigned(AfterParameter) and AfterParameter.Visible then
+  begin
+    AfterParameter.CreateWinControlOnParent(AParameterParent);
+    if AfterParameter is TJvBasePanelEditParameter then
+      FAfterParameterControl := TJvBasePanelEditParameter(AfterParameter).FrameControl
+    else
+      FAfterParameterControl := AfterParameter.WinControl;
+    FAfterParameterControl.Parent := AParameterParent;
+  end
+  else
+    FAfterParameterControl := nil;
+end;
+
+procedure TJvBasePanelEditParameter.CreateBeforeParameterControl(
+  AParameterParent: TWinControl);
+var
+  BeforeParameter: TJvBaseParameter;
+begin
+  BeforeParameter := ParameterList.ParameterByName(BeforeParameterName);
+  if Assigned(BeforeParameter) and BeforeParameter.Visible then
+  begin
+    BeforeParameter.CreateWinControlOnParent(AParameterParent);
+    if BeforeParameter is TJvBasePanelEditParameter then
+      FBeforeParameterControl := TJvBasePanelEditParameter(BeforeParameter).FrameControl
+    else
+      FBeforeParameterControl := BeforeParameter.WinControl;
+    FBeforeParameterControl.Parent := AParameterParent;
+  end
+  else
+    FBeforeParameterControl := nil;
+end;
+
+procedure TJvBasePanelEditParameter.CreateFramePanel(AParameterParent: TWinControl);
+var
+  DynBevel: IJvDynControlBevelBorder;
+begin
+  if LabelArrangeMode = lamGroupBox then
+    FFrameControl := DynControlEngine.CreateGroupBoxControl(Self, AParameterParent,
+      GetParameterName + 'GroupBox', Caption)
+  else
+    FFrameControl := DynControlEngine.CreatePanelControl(Self, AParameterParent,
+      GetParameterName + 'Panel', '', alNone);
+  FrameControl.Height := Height;
+  FrameControl.Width := Width;
+  if Supports(FrameControl, IJvDynControlBevelBorder, DynBevel) then
+  begin
+    DynBevel.ControlSetBevelInner(bvNone);
+    DynBevel.ControlSetBevelOuter(bvNone);
+  end
+  else if FrameControl is TPanel then
+  begin
+    TPanel(FrameControl).BevelInner := bvNone;
+    TPanel(FrameControl).BevelOuter := bvNone;
+  end;
+end;
+
+procedure TJvBasePanelEditParameter.CreateLabelControl(AParameterParent: TWinControl);
+begin
+  if (Caption = '') or (LabelArrangeMode in [lamGroupBox, lamNone]) then
+    Exit;
+  LabelControl := DynControlEngine.CreateLabelControl(Self, AParameterParent,
+    GetParameterName + 'Label', Caption, WinControl);
+  LabelControl.Visible := True;
+  LabelControl.Enabled := Enabled;
+  LabelControl.Height := 16;
+  LabelControl.Parent := AParameterParent;
 end;
 
 procedure TJvBasePanelEditParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   CreateFramePanel(ParameterParent);
-  CreateWinControl(FramePanel);
-  CreateLabelControl(FramePanel);
+  CreateBeforeParameterControl(FrameControl);
+  CreateWinControl(FrameControl);
+  CreateAfterParameterControl(FrameControl);
+  CreateLabelControl(FrameControl);
+  fOrgWinControlHeight := WinControl.Height;
+  fOrgWinControlWidth := WinControl.Width;
   ArrangeLabelAndWinControlOnPanel;
+end;
+
+function TJvBasePanelEditParameter.GetLabelWidth: Integer;
+begin
+  if Assigned(ParameterList) and (FLabelWidth <= 0) then
+    Result := ParameterList.DefaultParameterLabelWidth
+  else
+    Result := FLabelWidth;
 end;
 
 procedure TJvBasePanelEditParameter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent = FFramePanel) and (Operation = opRemove) then
-    FFramePanel := nil;
-  if (AComponent = FLabelControl) and (Operation = opRemove) then
-    FLabelControl := nil;
+  if (Operation = opRemove)  then
+  begin
+    if (AComponent = FFrameControl) then
+      FFrameControl := nil;
+    if (AComponent = FLabelControl) then
+      FLabelControl := nil;
+    if (AComponent = FAfterParameterControl) then
+      FAfterParameterControl := nil;
+    if (AComponent = FBeforeParameterControl) then
+      FBeforeParameterControl := nil;
+  end;
+end;
+
+procedure TJvBasePanelEditParameter.SetEnabled(Value: Boolean);
+begin
+  inherited SetEnabled(Value);
+  if Assigned(FrameControl) then
+    FrameControl.Enabled := Value;
+  if Assigned(LabelControl) then
+    LabelControl.Enabled := Value;
+  if Assigned(FAfterParameterControl) then
+    FAfterParameterControl.Enabled := Value;
+  if Assigned(FBeforeParameterControl) then
+    FBeforeParameterControl.Enabled := Value;
+end;
+
+procedure TJvBasePanelEditParameter.SetHeight(Value: Integer);
+begin
+  inherited SetHeight(Value);
+  ArrangeLabelAndWinControlOnPanel;
+end;
+
+procedure TJvBasePanelEditParameter.SetLabelArrangeMode(Value:
+  TJvParameterLabelArrangeMode);
+begin
+  FLabelArrangeMode := Value;
+  ArrangeLabelAndWinControlOnPanel;
+end;
+
+procedure TJvBasePanelEditParameter.SetLabelWidth(Value: Integer);
+begin
+  FLabelWidth := Value;
+  if Assigned(WinControl) then
+    ArrangeLabelAndWinControlOnPanel;
+end;
+
+procedure TJvBasePanelEditParameter.SetTabOrder(Value: Integer);
+begin
+  if Assigned(FrameControl) then
+    FrameControl.TabOrder := Value;
+end;
+
+procedure TJvBasePanelEditParameter.SetVisible(Value: Boolean);
+begin
+  inherited SetVisible(Value);
+  if Assigned(FrameControl) then
+    FrameControl.Visible := Value;
+end;
+
+procedure TJvBasePanelEditParameter.SetWidth(Value: Integer);
+begin
+  inherited SetWidth(Value);
+  ArrangeLabelAndWinControlOnPanel;
 end;
 
 procedure TJvBasePanelEditParameter.SetWinControlProperties;
@@ -765,235 +1125,15 @@ begin
   end;
 end;
 
-procedure TJvBasePanelEditParameter.CreateFramePanel(AParameterParent: TWinControl);
-begin
-  FramePanel := DynControlEngine.CreatePanelControl(Self, AParameterParent,
-    GetParameterName + 'Panel', '', alNone);
-  FramePanel.Height := Height;
-  FramePanel.Width := Width;
-  if FramePanel is TPanel then
-    begin
-      TPanel(FramePanel).BevelInner := bvNone;
-      TPanel(FramePanel).BevelOuter := bvNone;
-    end;
-end;
-
-procedure TJvBasePanelEditParameter.CreateLabelControl(AParameterParent: TWinControl);
-begin
-  if Caption = '' then
-    Exit;
-  LabelControl := DynControlEngine.CreateLabelControl(Self, AParameterParent,
-    GetParameterName + 'Label', Caption, WinControl);
-  LabelControl.Visible := True;
-  LabelControl.Enabled := Enabled;
-  LabelControl.Parent := AParameterParent;
-end;
-
-function TJvBasePanelEditParameter.GetLabelWidth: Integer;
-begin
-  if Assigned(ParameterList) and (FLabelWidth <= 0) then
-    Result := ParameterList.DefaultParameterLabelWidth
-  else
-    Result := FLabelWidth;
-end;
-
-procedure TJvBasePanelEditParameter.SetLabelWidth(Value: Integer);
-begin
-  FLabelWidth := Value;
-  if Assigned(WinControl) then
-    ArrangeLabelAndWinControlOnPanel;
-end;
-
 type
   TAccessCustomControl = class(TCustomControl);
 
-procedure TJvBasePanelEditParameter.ArrangeLabelAndWinControlOnPanel;
-var
-  TmpLabelArrangeMode: TJvParameterLabelArrangeMode;
-  DynCtrlFont : IJvDynControlFont;
-begin
-  if not Assigned(FramePanel) or not Assigned(WinControl) or FArrangeLabelAndWinControlDisabled then
-    Exit;
-  if (LabelArrangeMode = lamBefore) and not Assigned(LabelControl) then
-    TmpLabelArrangeMode := lamAbove
-  else
-    TmpLabelArrangeMode := LabelArrangeMode;
-
-  if not Assigned(LabelControl) then
-  begin
-    WinControl.Top := 0;
-    WinControl.Left := 0;
-    if FramePanel.Height > 0 then
-      FramePanel.Height := WinControl.Height
-    else
-      WinControl.Height := FramePanel.Height;
-    if EditWidth > 0 then
-    begin
-      WinControl.Width := EditWidth;
-      if FramePanel.Width <= 0 then
-        FramePanel.Width := WinControl.Width;
-    end
-    else
-    if RightSpace > 0 then
-      if FramePanel.Width > 0 then
-        WinControl.Width := FramePanel.Width - RightSpace
-      else
-      begin
-        FramePanel.Width := WinControl.Width;
-        WinControl.Width := WinControl.Width - RightSpace;
-      end
-    else
-    if FramePanel.Width > 0 then
-      WinControl.Width := FramePanel.Width
-    else
-      FramePanel.Width := WinControl.Width;
-    Exit;
-  end
-  else
-  begin
-    LabelControl.Top := 0;
-    LabelControl.Left := 0;
-  end;
-  if (TmpLabelArrangeMode = lamAbove) or not Assigned(LabelControl) then
-  begin
-    if Assigned(LabelControl) then
-      WinControl.Top := LabelControl.Height + 0
-    else
-      WinControl.Top := 0;
-    WinControl.Left := 0;
-
-    if EditWidth > 0 then
-    begin
-      WinControl.Width := EditWidth;
-      if FramePanel.Width <= 0 then
-        FramePanel.Width := WinControl.Width;
-    end
-    else
-    if RightSpace > 0 then
-      if FramePanel.Width > 0 then
-        WinControl.Width := FramePanel.Width - RightSpace
-      else
-      begin
-        FramePanel.Width := WinControl.Width;
-        WinControl.Width := WinControl.Width - RightSpace;
-      end
-    else
-    if FramePanel.Width > 0 then
-      WinControl.Width := FramePanel.Width
-    else
-      FramePanel.Width := WinControl.Width;
-    if Assigned(LabelControl) then
-      LabelControl.Width := FramePanel.Width;
-
-    if Height > 0 then
-      if Assigned(LabelControl) then
-        WinControl.Height := Height - (WinControl.Top + 1)
-      else
-        WinControl.Height := Height
-    else
-      if Assigned(LabelControl) then
-        FramePanel.Height := WinControl.Height + WinControl.Top + 1
-      else
-        FramePanel.Height := WinControl.Height;
-  end
-  else
-  begin
-    if LabelWidth > 0 then
-      LabelControl.Width := LabelWidth
-    else
-      if Supports(LabelControl, IJvDynControlFont,DynCtrlFont) then
-        LabelControl.Width := DynControlEngine.GetControlTextWidth(LabelControl, DynCtrlFont.ControlFont, Caption+'X');
-
-    WinControl.Top := LabelControl.Top;
-    WinControl.Left := LabelControl.Left + LabelControl.Width + 4;
-    if FramePanel.Height > 0 then
-      WinControl.Height := FramePanel.Height
-    else
-      FramePanel.Height := WinControl.Height;
-    LabelControl.Top := WinControl.Top + Round((WinControl.Height - LabelControl.Height) / 2);
-    if EditWidth > 0 then
-    begin
-      WinControl.Width := EditWidth;
-      if FramePanel.Width <= 0 then
-        FramePanel.Width := WinControl.Width + WinControl.Left + 1;
-    end
-    else
-    begin
-      if FramePanel.Width > 0 then
-        if RightSpace > 0 then
-          WinControl.Width := FramePanel.Width - (WinControl.Left + 1) - RightSpace
-        else
-          WinControl.Width := FramePanel.Width - (WinControl.Left + 1)
-      else
-        FramePanel.Width := WinControl.Width + WinControl.Left + 1;
-    end;
-  end;
-end;
-
-procedure TJvBasePanelEditParameter.SetEnabled(Value: Boolean);
-begin
-  inherited SetEnabled(Value);
-  if Assigned(FramePanel) then
-    FramePanel.Enabled := Value;
-  if Assigned(LabelControl) then
-    LabelControl.Enabled := Value;
-end;
-
-procedure TJvBasePanelEditParameter.SetVisible(Value: Boolean);
-begin
-  inherited SetVisible(Value);
-  if Assigned(FramePanel) then
-    FramePanel.Visible := Value;
-  if Assigned(LabelControl) then
-    LabelControl.Visible := Value;
-end;
-
-procedure TJvBasePanelEditParameter.SetHeight(Value: Integer);
-begin
-  inherited SetHeight(Value);
-  if Assigned(FramePanel) then
-    FramePanel.Height := Value;
-  ArrangeLabelAndWinControlOnPanel;
-end;
-
-procedure TJvBasePanelEditParameter.SetWidth(Value: Integer);
-begin
-  inherited SetWidth(Value);
-  if Assigned(FramePanel) then
-    FramePanel.Width := Value;
-  ArrangeLabelAndWinControlOnPanel;
-end;
-
-procedure TJvBasePanelEditParameter.SetTabOrder(Value: Integer);
-begin
-  if Assigned(FramePanel) then
-    FramePanel.TabOrder := Value;
-end;
-
-procedure TJvBasePanelEditParameter.SetLabelArrangeMode(Value: TJvParameterLabelArrangeMode);
-begin
-  FLabelArrangeMode := Value;
-  ArrangeLabelAndWinControlOnPanel;
-end;
-
-procedure TJvBasePanelEditParameter.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TJvBasePanelEditParameter then
-  begin
-    LabelArrangeMode := TJvBasePanelEditParameter(Source).LabelArrangeMode;
-    LabelWidth := TJvBasePanelEditParameter(Source).LabelWidth;
-    EditWidth := TJvBasePanelEditParameter(Source).EditWidth;
-    RightSpace := TJvBasePanelEditParameter(Source).RightSpace;
-  end;
-end;
-
-//=== { TJvLabelParameter } ==================================================
+  //=== { TJvLabelParameter } ==================================================
 
 procedure TJvLabelParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateStaticTextControl(Self, ParameterParent,
-    GetParameterName, Caption);
+  SetWinControl (DynControlEngine.CreateStaticTextControl(Self, ParameterParent,
+    GetParameterName, Caption));
 end;
 
 //=== { TJvImageParameter } ==================================================
@@ -1051,16 +1191,16 @@ procedure TJvImageParameter.CreateWinControl(AParameterParent: TWinControl);
 var
   ITmpImage: IJvDynControlImage;
 begin
-  WinControl := DynControlEngine.CreateImageControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateImageControl(Self, AParameterParent, GetParameterName));
   if Supports(WinControl, IJvDynControlImage, ITmpImage) then
-    begin
-      ITmpImage.ControlSetPicture(Picture);
-      //      ITmpImage.ControlSetAutoSize(AutoSize);
-      ITmpImage.ControlSetIncrementalDisplay(IncrementalDisplay);
-      ITmpImage.ControlSetCenter(Center);
-      ITmpImage.ControlSetStretch(Stretch);
-      ITmpImage.ControlSetTransparent(Transparent);
-    end;
+  begin
+    ITmpImage.ControlSetPicture(Picture);
+    //      ITmpImage.ControlSetAutoSize(AutoSize);
+    ITmpImage.ControlSetIncrementalDisplay(IncrementalDisplay);
+    ITmpImage.ControlSetCenter(Center);
+    ITmpImage.ControlSetStretch(Stretch);
+    ITmpImage.ControlSetTransparent(Transparent);
+  end;
 end;
 
 //=== { TJvArrangeParameter } ================================================
@@ -1149,8 +1289,8 @@ end;
 
 procedure TJvPanelParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreatePanelControl(Self, ParameterParent,
-    GetParameterName, Caption, alNone);
+  SetWinControl (DynControlEngine.CreatePanelControl(Self, ParameterParent,
+    GetParameterName, Caption, alNone));
   ParentControl := WinControl;
   if Height > 0 then
     WinControl.Height := Height;
@@ -1161,7 +1301,7 @@ end;
 procedure TJvPanelParameter.SetWinControlProperties;
 var
   ITmpPanel: IJvDynControlPanel;
-  ITmpArrangePanel : IJvArrangePanel;
+  ITmpArrangePanel: IJvArrangePanel;
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlPanel, ITmpPanel) then
@@ -1187,8 +1327,8 @@ procedure TJvGroupBoxParameter.CreateWinControlOnParent(ParameterParent: TWinCon
 var
   Panel: TJvPanel;
 begin
-  WinControl := DynControlEngine.CreateGroupBoxControl(Self, ParameterParent,
-    GetParameterName, Caption);
+  SetWinControl (DynControlEngine.CreateGroupBoxControl(Self, ParameterParent,
+    GetParameterName, Caption));
   Panel := TJvPanel.Create(ParameterParent.Owner);
   ParentControl := Panel;
   Panel.Name := GetParameterName;
@@ -1201,14 +1341,14 @@ begin
   Panel.Caption := '';
   Panel.Color := Color;
   Panel.OnResizeParent := ReArrangeGroupbox;
-//  Panel.Transparent := True;
+  //  Panel.Transparent := True;
 end;
 
 procedure TJvGroupBoxParameter.ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 begin
   if ArrangeSettings.AutoSize in [asWidth, asBoth] then
     WinControl.Width := nWidth + 5;
-  if ArrangeSettings.AutoSize in [asHeight , asBoth] then
+  if ArrangeSettings.AutoSize in [asHeight, asBoth] then
     WinControl.Height := nHeight + 22;
 end;
 
@@ -1220,7 +1360,6 @@ begin
   if Supports(ParentControl, IJvArrangePanel, ITmpArrangePanel) then
     ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
 end;
-
 
 //=== { TJvListParameter } ===================================================
 
@@ -1277,10 +1416,9 @@ procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
   if VarIsNull(Value) then
     ItemIndex := -1
-  else
-  if VariantAsItemIndex then
+  else if VariantAsItemIndex then
     if VarType(Value) in [varSmallInt, varInteger, varByte
-      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord {$ENDIF}] then
+      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
       ItemIndex := Value
     else
       SetAsString(Value)
@@ -1318,8 +1456,7 @@ begin
       FItemIndex := Value;
     if VariantAsItemIndex then
       inherited SetAsVariant(FItemIndex)
-    else
-    if (FItemIndex >= 0) and (FItemIndex < ItemList.Count) then
+    else if (FItemIndex >= 0) and (FItemIndex < ItemList.Count) then
       inherited SetAsVariant(ItemList[FItemIndex])
     else
       inherited SetAsVariant('');
@@ -1344,8 +1481,7 @@ begin
     Index := -1;
   if VariantAsItemIndex then
     Result := Index
-  else
-  if (Index >= 0) and (Index < ItemList.Count) then
+  else if (Index >= 0) and (Index < ItemList.Count) then
     Result := ItemList[Index]
   else
     Result := JvDynControlData.ControlValue;
@@ -1395,10 +1531,10 @@ end;
 procedure TJvListParameter.GetData;
 begin
   inherited GetData;
-//  if Assigned(WinControl) then
-//    ItemIndex := ItemList.IndexOf(Inherited GetAsString)
-//  else
-//    ItemIndex := -1;
+  //  if Assigned(WinControl) then
+  //    ItemIndex := ItemList.IndexOf(Inherited GetAsString)
+  //  else
+  //    ItemIndex := -1;
 end;
 
 procedure TJvListParameter.SetData;
@@ -1408,7 +1544,6 @@ begin
   //  IF Assigned (WinControl) THEN
   //    ItemList.IndexOf (AsString) := ItemIndex;
 end;
-
 
 //=== { TJvRadioGroupParameter } =============================================
 
@@ -1421,8 +1556,8 @@ end;
 
 procedure TJvRadioGroupParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateRadioGroupControl(Self, ParameterParent,
-    GetParameterName, Caption, ItemList);
+  SetWinControl (DynControlEngine.CreateRadioGroupControl(Self, ParameterParent,
+    GetParameterName, Caption, ItemList));
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -1446,8 +1581,8 @@ end;
 
 procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateCheckBoxControl(Self, ParameterParent,
-    GetParameterName, Caption);
+  SetWinControl (DynControlEngine.CreateCheckBoxControl(Self, ParameterParent,
+    GetParameterName, Caption));
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -1494,8 +1629,8 @@ end;
 
 procedure TJvComboBoxParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateComboBoxControl(Self, AParameterParent,
-    GetParameterName, ItemList);
+  SetWinControl (DynControlEngine.CreateComboBoxControl(Self, AParameterParent,
+    GetParameterName, ItemList));
 end;
 
 procedure TJvComboBoxParameter.SetWinControlProperties;
@@ -1520,8 +1655,7 @@ begin
     Index := -1;
   if VariantAsItemIndex then
     Result := Index
-  else
-  if (Index >= 0) and (Index < ItemList.Count) then
+  else if (Index >= 0) and (Index < ItemList.Count) then
     Result := ItemList[Index]
   else
     Result := JvDynControlData.ControlValue;
@@ -1554,8 +1688,8 @@ procedure TJvListBoxParameter.CreateWinControl(AParameterParent: TWinControl);
 var
   ITmpItems: IJvDynControlItems;
 begin
-  WinControl := DynControlEngine.CreateListBoxControl(Self, AParameterParent,
-    GetParameterName, ItemList);
+  SetWinControl (DynControlEngine.CreateListBoxControl(Self, AParameterParent,
+    GetParameterName, ItemList));
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
   if Height > 0 then
@@ -1628,11 +1762,11 @@ begin
   inherited GetData;
   if Supports(WinControl, IJvDynControlCheckListBox, ITmpCheckListBox) then
     for I := 0 to ItemList.Count - 1 do
-      begin
-        ItemData[I].ItemEnabled := ITmpCheckListBox.ControlGetItemEnabled(I);
-        ItemData[I].State := ITmpCheckListBox.ControlGetState(I);
-        ItemData[I].Header := ITmpCheckListBox.ControlGetHeader(I);
-      end;
+    begin
+      ItemData[I].ItemEnabled := ITmpCheckListBox.ControlGetItemEnabled(I);
+      ItemData[I].State := ITmpCheckListBox.ControlGetState(I);
+      ItemData[I].Header := ITmpCheckListBox.ControlGetHeader(I);
+    end;
 end;
 
 procedure TJvCheckListBoxParameter.SetData;
@@ -1643,11 +1777,11 @@ begin
   inherited SetData;
   if Supports(WinControl, IJvDynControlCheckListBox, ITmpCheckListBox) then
     for I := 0 to ItemList.Count - 1 do
-      begin
-        ITmpCheckListBox.ControlSetItemEnabled(I, ItemData[I].ItemEnabled);
-        ITmpCheckListBox.ControlSetState(I, ItemData[I].State);
-        ITmpCheckListBox.ControlSetHeader(I, ItemData[I].Header);
-      end;
+    begin
+      ITmpCheckListBox.ControlSetItemEnabled(I, ItemData[I].ItemEnabled);
+      ITmpCheckListBox.ControlSetState(I, ItemData[I].State);
+      ITmpCheckListBox.ControlSetHeader(I, ItemData[I].Header);
+    end;
 end;
 
 procedure TJvCheckListBoxParameter.AddCheckListBoxItem(const AText: string;
@@ -1669,8 +1803,8 @@ procedure TJvCheckListBoxParameter.CreateWinControl(AParameterParent: TWinContro
 var
   ITmpItems: IJvDynControlItems;
 begin
-  WinControl := DynControlEngine.CreateCheckListBoxControl(Self, AParameterParent,
-    GetParameterName, ItemList);
+  SetWinControl (DynControlEngine.CreateCheckListBoxControl(Self, AParameterParent,
+    GetParameterName, ItemList));
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
   if Height > 0 then
@@ -1753,7 +1887,7 @@ end;
 
 procedure TJvTimeParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateTimeControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateTimeControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvTimeParameter.SetWinControlProperties;
@@ -1791,7 +1925,7 @@ end;
 
 procedure TJvDateTimeParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateDateTimeControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateDateTimeControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvDateTimeParameter.SetWinControlProperties;
@@ -1800,11 +1934,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlDate, DynControlDate) then
-    begin
-      DynControlDate.ControlSetFormat(Format);
-      DynControlDate.ControlSetMinDate(MinDate);
-      DynControlDate.ControlSetMaxDate(MaxDate);
-    end;
+  begin
+    DynControlDate.ControlSetFormat(Format);
+    DynControlDate.ControlSetMinDate(MinDate);
+    DynControlDate.ControlSetMaxDate(MaxDate);
+  end;
 end;
 
 //=== { TJvDateParameter } ===================================================
@@ -1833,7 +1967,7 @@ end;
 
 procedure TJvDateParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateDateControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateDateControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvDateParameter.SetWinControlProperties;
@@ -1842,11 +1976,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlDate, DynControlDate) then
-    begin
-      DynControlDate.ControlSetFormat(Format);
-      DynControlDate.ControlSetMinDate(MinDate);
-      DynControlDate.ControlSetMaxDate(MaxDate);
-    end;
+  begin
+    DynControlDate.ControlSetFormat(Format);
+    DynControlDate.ControlSetMinDate(MinDate);
+    DynControlDate.ControlSetMaxDate(MaxDate);
+  end;
 end;
 
 //=== { TJvEditParameter } ===================================================
@@ -1858,7 +1992,6 @@ begin
   FEditMask := '';
   FLabelWidth := 0;
   FEditWidth := 0;
-  FRightSpace := 0;
   LabelArrangeMode := lamBefore;
 end;
 
@@ -1869,9 +2002,6 @@ begin
   begin
     EditMask := TJvEditParameter(Source).EditMask;
     PasswordChar := TJvEditParameter(Source).PasswordChar;
-    LabelWidth := TJvEditParameter(Source).LabelWidth;
-    EditWidth := TJvEditParameter(Source).EditWidth;
-    RightSpace := TJvEditParameter(Source).RightSpace;
   end;
 end;
 
@@ -1884,7 +2014,7 @@ procedure TJvEditParameter.CreateWinControl(AParameterParent: TWinControl);
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName));
   if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
   begin
     DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
@@ -1903,7 +2033,7 @@ procedure TJvButtonEditParameter.CreateWinControl(AParameterParent: TWinControl)
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  WinControl := DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnClick);
+  SetWinControl (DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnClick));
   if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
   begin
     DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
@@ -1943,12 +2073,11 @@ var
   DynCtrlEdit: IJvDynControlEdit;
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
-    WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
+    SetWinControl (DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName))
+  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+    SetWinControl (DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName))
   else
-  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
-    WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
-  else
-    WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
+    SetWinControl (DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName));
   if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
   begin
     DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
@@ -1962,12 +2091,12 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlSpin, ITmpSpin) then
-    begin
-      ITmpSpin.ControlSetIncrement(Increment);
-      ITmpSpin.ControlSetMinValue(MinValue);
-      ITmpSpin.ControlSetMaxValue(MaxValue);
-      ITmpSpin.ControlSetUseForInteger(True);
-    end;
+  begin
+    ITmpSpin.ControlSetIncrement(Increment);
+    ITmpSpin.ControlSetMinValue(MinValue);
+    ITmpSpin.ControlSetMaxValue(MaxValue);
+    ITmpSpin.ControlSetUseForInteger(True);
+  end;
 end;
 
 procedure TJvIntegerEditParameter.Assign(Source: TPersistent);
@@ -2028,12 +2157,11 @@ var
   DynCtrlEdit: IJvDynControlEdit;
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
-    WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
+    SetWinControl (DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName))
+  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+    SetWinControl (DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName))
   else
-  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
-    WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
-  else
-    WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
+    SetWinControl (DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName));
   if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
   begin
     DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
@@ -2047,12 +2175,12 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlSpin, ITmpSpin) then
-    begin
-      ITmpSpin.ControlSetIncrement(Increment);
-      ITmpSpin.ControlSetMinValue(MinValue);
-      ITmpSpin.ControlSetMaxValue(MaxValue);
-      ITmpSpin.ControlSetUseForInteger(True);
-    end;
+  begin
+    ITmpSpin.ControlSetIncrement(Increment);
+    ITmpSpin.ControlSetMinValue(MinValue);
+    ITmpSpin.ControlSetMaxValue(MaxValue);
+    ITmpSpin.ControlSetUseForInteger(True);
+  end;
 end;
 
 procedure TJvDoubleEditParameter.Assign(Source: TPersistent);
@@ -2102,7 +2230,7 @@ constructor TJvFileNameParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
   LabelArrangeMode := lamBefore;
-  FDialogOptions := [ofHideReadOnly,ofEnableSizing];
+  FDialogOptions := [ofHideReadOnly, ofEnableSizing];
 end;
 
 procedure TJvFileNameParameter.Assign(Source: TPersistent);
@@ -2127,7 +2255,7 @@ end;
 
 procedure TJvFileNameParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateFileNameControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateFileNameControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvFileNameParameter.SetWinControlProperties;
@@ -2136,15 +2264,15 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlFileName, ITmpControlFileName) then
-    begin
-      ITmpControlFileName.ControlSetDialogKind(DialogKind);
-      ITmpControlFileName.ControlSetDefaultExt(DefaultExt);
-      ITmpControlFileName.ControlSetFilter(Filter);
-      ITmpControlFileName.ControlSetFilterIndex(FilterIndex);
-      ITmpControlFileName.ControlSetInitialDir(InitialDir);
-      ITmpControlFileName.ControlSetDialogOptions(DialogOptions);
-      ITmpControlFileName.ControlSetDialogTitle(DialogTitle);
-    end;
+  begin
+    ITmpControlFileName.ControlSetDialogKind(DialogKind);
+    ITmpControlFileName.ControlSetDefaultExt(DefaultExt);
+    ITmpControlFileName.ControlSetFilter(Filter);
+    ITmpControlFileName.ControlSetFilterIndex(FilterIndex);
+    ITmpControlFileName.ControlSetInitialDir(InitialDir);
+    ITmpControlFileName.ControlSetDialogOptions(DialogOptions);
+    ITmpControlFileName.ControlSetDialogTitle(DialogTitle);
+  end;
 end;
 
 function TJvFileNameParameter.Validate(var AData: Variant): Boolean;
@@ -2216,7 +2344,7 @@ end;
 
 procedure TJvDirectoryParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateDirectoryControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateDirectoryControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvDirectoryParameter.SetWinControlProperties;
@@ -2225,11 +2353,11 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlDirectory, ITmpControlDirectory) then
-    begin
-      ITmpControlDirectory.ControlSetDialogTitle(DialogTitle);
-      ITmpControlDirectory.ControlSetDialogOptions(DialogOptions);
-      ITmpControlDirectory.ControlSetInitialDir(InitialDir);
-    end;
+  begin
+    ITmpControlDirectory.ControlSetDialogTitle(DialogTitle);
+    ITmpControlDirectory.ControlSetDialogOptions(DialogOptions);
+    ITmpControlDirectory.ControlSetInitialDir(InitialDir);
+  end;
 end;
 
 function TJvDirectoryParameter.Validate(var AData: Variant): Boolean;
@@ -2271,7 +2399,7 @@ end;
 
 procedure TJvMemoParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateMemoControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateMemoControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvMemoParameter.SetWinControlProperties;
@@ -2280,12 +2408,12 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
-    begin
-      ITmpMemo.ControlSetWantTabs(WantTabs);
-      ITmpMemo.ControlSetWantReturns(WantReturns);
-      ITmpMemo.ControlSetWordWrap(WordWrap);
-      ITmpMemo.ControlSetScrollbars(ScrollBars);
-    end;
+  begin
+    ITmpMemo.ControlSetWantTabs(WantTabs);
+    ITmpMemo.ControlSetWantReturns(WantReturns);
+    ITmpMemo.ControlSetWordWrap(WordWrap);
+    ITmpMemo.ControlSetScrollbars(ScrollBars);
+  end;
 end;
 
 ///=== { TJvRichEditParameter } ==============================================
@@ -2306,7 +2434,7 @@ end;
 
 procedure TJvRichEditParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
-  WinControl := DynControlEngine.CreateRichEditControl(Self, AParameterParent, GetParameterName);
+  SetWinControl (DynControlEngine.CreateRichEditControl(Self, AParameterParent, GetParameterName));
 end;
 
 procedure TJvRichEditParameter.SetWinControlProperties;
@@ -2315,12 +2443,12 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
-    begin
-      ITmpMemo.ControlSetWantTabs(WantTabs);
-      ITmpMemo.ControlSetWantReturns(WantReturns);
-      ITmpMemo.ControlSetWordWrap(WordWrap);
-      ITmpMemo.ControlSetScrollbars(ScrollBars);
-    end;
+  begin
+    ITmpMemo.ControlSetWantTabs(WantTabs);
+    ITmpMemo.ControlSetWantReturns(WantReturns);
+    ITmpMemo.ControlSetWordWrap(WordWrap);
+    ITmpMemo.ControlSetScrollbars(ScrollBars);
+  end;
 end;
 
 ///=== { TJvPageControlParameter } ==============================================
@@ -2328,11 +2456,11 @@ end;
 constructor TJvPageControlParameter.Create(AParameterList: TJvParameterList);
 begin
   inherited Create(AParameterList);
-  fHotTrack:= True;
-  fMultiline:= True;
-  fScrollOpposite:= True;
-  fTabIndex:= 0;
-  FRaggedRight:= False;
+  fHotTrack := True;
+  fMultiline := True;
+  fScrollOpposite := True;
+  fTabIndex := 0;
+  FRaggedRight := False;
   FPages := TStringList.Create;
 end;
 
@@ -2346,8 +2474,8 @@ procedure TJvPageControlParameter.ArrangeControls;
 var
   i: Integer;
   ITmpArrangePanel: IJvArrangePanel;
-  w, h : Integer;
-  c : TWinControl;
+  w, h: Integer;
+  c: TWinControl;
 begin
   w := 0;
   h := 0;
@@ -2359,15 +2487,15 @@ begin
     if (ArrangeSettings.AutoSize in [asWidth, asBoth]) then
       if c.Width > w then
         w := c.Width;
-    if (ArrangeSettings.AutoSize in [asHeight , asBoth])then
+    if (ArrangeSettings.AutoSize in [asHeight, asBoth]) then
       if c.Height > h then
         h := c.Height;
   end;
   if (ArrangeSettings.AutoSize in [asWidth, asBoth])
-     and (w <> WinControl.Width) then
+    and (w <> WinControl.Width) then
     WinControl.Width := w;
-  if (ArrangeSettings.AutoSize in [asHeight , asBoth])
-     and (h <> WinControl.Height) then
+  if (ArrangeSettings.AutoSize in [asHeight, asBoth])
+    and (h <> WinControl.Height) then
     WinControl.Height := h;
 end;
 
@@ -2376,30 +2504,30 @@ begin
   inherited Assign(Source);
   if Source is TJvPageControlParameter then
   begin
-    HotTrack:= TJvPageControlParameter(Source).HotTrack;
-    Multiline:= TJvPageControlParameter(Source).Multiline;
-    ScrollOpposite:= TJvPageControlParameter(Source).Scrollopposite;
-    TabIndex:= TJvPageControlParameter(Source).TabIndex;
-    RaggedRight:= TJvPageControlParameter(Source).RaggedRight;
-    Pages.Assign (TJvPageControlParameter(Source).Pages);
+    HotTrack := TJvPageControlParameter(Source).HotTrack;
+    Multiline := TJvPageControlParameter(Source).Multiline;
+    ScrollOpposite := TJvPageControlParameter(Source).Scrollopposite;
+    TabIndex := TJvPageControlParameter(Source).TabIndex;
+    RaggedRight := TJvPageControlParameter(Source).RaggedRight;
+    Pages.Assign(TJvPageControlParameter(Source).Pages);
   end;
 end;
 
 procedure TJvPageControlParameter.CreateWinControlOnParent(ParameterParent:
-    TWinControl);
+  TWinControl);
 var
   i: Integer;
   ITmpPageControl: IJvDynControlPageControl;
-  Scrollbox : TScrollBox;
+  Scrollbox: TScrollBox;
   Panel: TJvPanel;
 begin
-  WinControl := DynControlEngine.CreatePageControlControl(Self, ParameterParent,
-    GetParameterName, Pages);
+  SetWinControl (DynControlEngine.CreatePageControlControl(Self, ParameterParent,
+    GetParameterName, Pages));
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
     WinControl.Width := Width;
-  Supports(WinControl, IJvDynControlPageControl, ITmpPageControl) ;
+  Supports(WinControl, IJvDynControlPageControl, ITmpPageControl);
   for i := 0 to Pages.Count - 1 do
   begin
     Scrollbox := TScrollbox.Create(ParameterParent.Owner);
@@ -2408,7 +2536,7 @@ begin
     ScrollBox.AutoScroll := False;
     ScrollBox.BorderStyle := bsNone;
     Panel := TJvPanel.Create(ParameterParent.Owner);
-    Panel.Name := GenerateUniqueComponentName (ParameterParent.Owner, Panel, GetParameterName+'_'+Pages[i]);
+    Panel.Name := GenerateUniqueComponentName(ParameterParent.Owner, Panel, GetParameterName + '_' + Pages[i]);
     Panel.ArrangeSettings := ArrangeSettings;
     Panel.BevelInner := bvNone;
     Panel.BevelOuter := bvNone;
@@ -2457,14 +2585,14 @@ begin
 end;
 
 procedure TJvPageControlParameter.RearrangePageControl(Sender: TObject; nLeft,
-    nTop, nWidth, nHeight: Integer);
+  nTop, nWidth, nHeight: Integer);
 begin
   if Assigned(Sender) and (Sender is TWinControl) then
   begin
     if (ArrangeSettings.AutoSize in [asWidth, asBoth])
       and (TWinControl(Sender).Width <> nWidth + 5) then
       TWinControl(Sender).Width := nWidth + 5;
-    if (ArrangeSettings.AutoSize in [asHeight , asBoth])
+    if (ArrangeSettings.AutoSize in [asHeight, asBoth])
       and (TWinControl(Sender).Height <> nHeight + 45) then
       TWinControl(Sender).Height := nHeight + 45;
   end;
@@ -2473,7 +2601,7 @@ end;
 procedure TJvPageControlParameter.SetPages(Value: TStringList);
 begin
   FPages.Assign(Value);
-end;   
+end;
 
 procedure TJvPageControlParameter.SetWinControlProperties;
 var
@@ -2483,12 +2611,12 @@ var
 begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlTabControl, ITmpTabControl) then
-    begin
-      ITmpTabControl.ControlSetRaggedRight(RaggedRight);
-      ITmpTabControl.ControlSetMultiline(Multiline);
-      ITmpTabControl.ControlSetScrollOpposite(ScrollOpposite);
-      ITmpTabControl.ControlSetHotTrack(HotTrack);
-    end;
+  begin
+    ITmpTabControl.ControlSetRaggedRight(RaggedRight);
+    ITmpTabControl.ControlSetMultiline(Multiline);
+    ITmpTabControl.ControlSetScrollOpposite(ScrollOpposite);
+    ITmpTabControl.ControlSetHotTrack(HotTrack);
+  end;
   for i := 0 to Pages.Count - 1 do
     if Supports(PageWinControl(i), IJvArrangePanel, ITmpArrangePanel) then
       ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
@@ -2500,9 +2628,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
-
-
 
