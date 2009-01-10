@@ -215,6 +215,7 @@ var
   OkButton, CancelButton: TWinControl;
   ITmpPanel: IJvDynControlPanel;
   ITmpControl: IJvDynControl;
+  ITmpControlCaption: IJvDynControlCaption;
   ITmpComboBox: IJvDynControlComboBox;
   ITmpDblClick: IJvDynControlDblClick;
 begin
@@ -303,14 +304,14 @@ begin
   ListBox.Align := alClient;
   ComboBox.Align := alClient;
 
-  IntfCast(OkButton, IJvDynControl, ITmpControl);
+  IntfCast(OkButton, IJvDynControlCaption, ITmpControlCaption);
   case AOperation of
     sloLoad:
-      ITmpControl.ControlSetCaption(RsLoadCaption);
+      ITmpControlCaption.ControlSetCaption(RsLoadCaption);
     sloStore:
-      ITmpControl.ControlSetCaption(RsSaveCaption);
+      ITmpControlCaption.ControlSetCaption(RsSaveCaption);
     sloManage:
-      ITmpControl.ControlSetCaption(RsDeleteCaption);
+      ITmpControlCaption.ControlSetCaption(RsDeleteCaption);
   end;
 end;
 

@@ -47,13 +47,19 @@ type
   IJvDynControl = interface
     ['{E5A52F18-A7B2-4BE8-BAB6-D4F70A0999B3}']
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
     procedure ControlSetAnchors(Value: TAnchors);
+  end;
+
+  IJvDynControlCaption = interface
+    ['{4D666A7B-5982-401F-915A-69FFD8264276}']
+    procedure ControlSetCaption(const Value: string);
+    function ControlGetCaption: string;
+    property ControlCaption : string read ControlGetCaption write ControlSetCaption;
   end;
 
   IJvDynControlAction = interface

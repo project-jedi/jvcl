@@ -433,14 +433,15 @@ end;
 
 procedure TJvThreadSimpleDialogForm.SetFormData;
 var
-  ITmpControl: IJvDynControl;
+  ITmpControl: IJvDynControlCaption;
 begin
   if Assigned(DialogOptions) then
   begin
     if Assigned(ChangeThreadDialogOptions) then
       ChangeThreadDialogOptions(DialogOptions);
-    if Supports(FInfoText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
+    if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
+      if DialogOptions.FInfoText <> ITmpControl.ControlGetCaption then
+        ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
     Caption := DialogOptions.Caption;
     FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
     FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
@@ -465,9 +466,11 @@ begin
     ITmpAutoSize.ControlSetAutoSize(False);
   end;
   W := FInfoText.Width + 80;
+  W := Round(W/10)*10;
   if W < 250 then
     W := 250;
-  ClientWidth := W;
+  if ClientWidth <> W then
+    ClientWidth := W;
   FCancelBtn.Left := (FCancelButtonPanel.Width - FCancelBtn.Width) div 2;
   FInfoText.Width := FInfoTextPanel.Width-FDefaultBorderWidth*2;
   FInfoTextPanel.Height := FInfoText.Height+FDefaultBorderWidth*2;
@@ -488,16 +491,18 @@ end;
 
 procedure TJvThreadSimpleDialogForm.UpdateFormContents;
 var
-  ITmpControl: IJvDynControl;
+  ITmpControl: IJvDynControlCaption;
   ITmpProgressbar : IJvDynControlProgressbar;
 begin
   inherited UpdateFormContents;
   FCounter := FCounter + 1;
-  if Supports(FInfoText, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
+  if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
+    if DialogOptions.FInfoText <> ITmpControl.ControlGetCaption then
+      ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
   Caption := DialogOptions.Caption;
-  if Supports(FTimeText, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
+  if Supports(FTimeText, IJvDynControlCaption, ITmpControl) then
+    if FormatDateTime('hh:nn:ss', Now - FStartTime) <> ITmpControl.ControlGetCaption then
+      ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
   if Supports(FProgressbar, IJvDynControlProgressbar, ITmpProgressbar) then
     ITmpProgressbar.ControlSetPosition((FCounter*10) mod 100);
   case FCounter mod 4 of
@@ -608,16 +613,18 @@ end;
 
 procedure TJvThreadAnimateDialogForm.SetFormData;
 var
-  ITmpControl: IJvDynControl;
+  ITmpControl: IJvDynControlCaption;
 begin
   if Assigned(DialogOptions) then
   begin
     if Assigned(ChangeThreadDialogOptions) then
       ChangeThreadDialogOptions(DialogOptions);
-    if Supports(FInfoText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
-    if Supports(FTimeText, IJvDynControl, ITmpControl) then
-      ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', 0));
+    if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
+      if DialogOptions.FInfoText <> ITmpControl.ControlGetCaption then
+        ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
+    if Supports(FTimeText, IJvDynControlCaption, ITmpControl) then
+      if FormatDateTime('hh:nn:ss', Now - FStartTime) <> ITmpControl.ControlGetCaption then
+        ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
     Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
     FAnimatePanel.Visible := FileExists(FAnimate.FileName) or
@@ -685,12 +692,8 @@ begin
 end;
 
 procedure TJvThreadAnimateDialogForm.UpdateFormContents;
-var
-  ITmpControl: IJvDynControl;
 begin
   inherited UpdateFormContents;
-  if Supports(FTimeText, IJvDynControl, ITmpControl) then
-    ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
   SetFormData;
   SetFormHeightWidth;
 end;

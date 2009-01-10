@@ -141,6 +141,7 @@ type
     FHelpContext: THelpContext;
     FDisableReasons: TJvParameterListEnableDisableReasonList;
     FEnableReasons: TJvParameterListEnableDisableReasonList;
+    FJvDynControlCaption: IJvDynControlCaption;
     FVisible: Boolean;
     FOnEnterParameter: TJvParameterListEvent;
     FOnExitParameter: TJvParameterListEvent;
@@ -178,6 +179,7 @@ type
     function GetDynControlEngine: TJvDynControlEngine;
     property Color: TColor read FColor write FColor;
     property JvDynControl: IJvDynControl read FJvDynControl;
+    property JvDynControlCaption: IJvDynControlCaption read FJvDynControlCaption;
     property JvDynControlData: IJvDynControlData read FJvDynControlData;
     property Value: Variant read FValue write FValue;
     procedure SetWinControlProperties; virtual;
@@ -788,6 +790,7 @@ begin
   FParameterList := AParameterList;
   FWinControl := nil;
   FJvDynControl := nil;
+  FJvDynControlCaption := nil;
   FJvDynControlData := nil;
   Color := clBtnFace;
   FEnabled := True;
@@ -879,15 +882,10 @@ end;
 procedure TJvBaseParameter.SetAsVariant(Value: Variant);
 begin
   FValue := Value;
-  //  if Assigned(FJvDynControlData) then
-  //    FJvDynControlData.Value := Value;
 end;
 
 function TJvBaseParameter.GetAsVariant: Variant;
 begin
-  //  if Assigned(FJvDynControlData) then
-  //    Result := FJvDynControlData.Value
-  //  else
   Result := FValue;
 end;
 
@@ -898,6 +896,7 @@ begin
   begin
     FWinControl := nil;
     FJvDynControl := nil;
+    FJvDynControlCaption := nil;
     FJvDynControlData := nil;
   end;
 end;
@@ -943,10 +942,12 @@ end;
 procedure TJvBaseParameter.SetWinControl(const Value: TWinControl);
 begin
   FJvDynControl := nil;
+  FJvDynControlCaption := nil;
   FWinControl := Value;
   if not Assigned(Value) then
     Exit;
   Supports(FWinControl, IJvDynControl, FJvDynControl);
+  Supports(FWinControl, IJvDynControlCaption, FJvDynControlCaption);
   Supports(FWinControl, IJvDynControlData, FJvDynControlData);
 
   SetWinControlProperties;
@@ -958,7 +959,8 @@ var
 begin
   if Assigned(WinControl) then
   begin
-    JvDynControl.ControlSetCaption(Caption);
+    if Assigned(JvDynControlCaption) then
+      JvDynControlCaption.ControlSetCaption(Caption);
     if Supports(FWinControl, IJvDynControlReadOnly, IDynControlReadOnly) then
     begin
       IDynControlReadOnly.ControlSetReadOnly(ReadOnly);
