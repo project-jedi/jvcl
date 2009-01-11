@@ -32,7 +32,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvThread, JvComponent, JvThreadDialog, ComCtrls, //JvThreadGifDialog,
   JvExControls, JvAnimatedImage, JvGIFCtrl, JvProgressBar, JvExComCtrls,
-  JvComponentBase, ActnList, JvDBActions, ExtCtrls;
+  JvComponentBase, ActnList, ExtCtrls;
 
 type
   TForm1 = class(TForm)
@@ -68,6 +68,9 @@ var
 
 implementation
 
+uses
+  JvDynControlEngineDevExpcx;
+
 {$R *.dfm}
 
 procedure TForm1.JvThread1Execute(Sender: TObject; params: Pointer);
@@ -77,7 +80,7 @@ begin
   //Do the job here
   k := 0;
   for i := 0 to 100 do
-    for j := 0 to 100 do
+    for j := 0 to 500 do
     begin
       Inc(k);
 
