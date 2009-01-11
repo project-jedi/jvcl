@@ -801,26 +801,26 @@ type
   end;
 
   TJvDynControlCxProgressBar = class(TcxProgressBar, IUnknown, IJvDynControl,
-      IJvDynControlProgressBar, IJvDynControlDevExpCx)
-    procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(const Value: string);
-    procedure ControlSetTabOrder(Value: Integer);
-
-    procedure ControlSetOnEnter(Value: TNotifyEvent);
-    procedure ControlSetOnExit(Value: TNotifyEvent);
-    procedure ControlSetOnClick(Value: TNotifyEvent);
-    procedure ControlSetHint(const Value: string);
+      IJvDynControlProgressBar, IJvDynControlAlign, IJvDynControlDevExpCx)
+  public
+    procedure ControlSetAlign(Value: TAlign);
     procedure ControlSetAnchors(Value: TAnchors);
-
+    procedure ControlSetCaption(const Value: string);
+    // IJvDynControlDevExpCx
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetHint(const Value: string);
     //IJvDynControlProgressBar
     procedure ControlSetMax(Value: Integer);
     procedure ControlSetMin(Value: Integer);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOrientation(Value: TProgressBarOrientation);
     procedure ControlSetPosition(Value: Integer);
     procedure ControlSetSmooth(Value: Boolean);
     procedure ControlSetStep(Value: Integer);
-    // IJvDynControlDevExpCx
-    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+    procedure ControlSetTabOrder(Value: Integer);
   end;
 
 
@@ -1899,7 +1899,8 @@ end;
 
 procedure TJvDynControlCxCheckBox.ControlSetCaption(const Value: string);
 begin
-  Properties.Caption := Value;
+  if Properties.Caption <> Value then
+    Properties.Caption := Value;
 end;
 
 procedure TJvDynControlCxCheckBox.ControlSetTabOrder(Value: Integer);
@@ -2209,7 +2210,8 @@ end;
 
 procedure TJvDynControlCxRadioGroup.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxRadioGroup.ControlSetTabOrder(Value: Integer);
@@ -2667,12 +2669,13 @@ end;
 
 procedure TJvDynControlCxGroupBox.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxGroupBox.ControlSetColor(Value: TColor);
 begin
-  Color := Value;
+  Style.Color := Value;
 end;
 
 procedure TJvDynControlCxGroupBox.ControlSetTabOrder(Value: Integer);
@@ -2701,7 +2704,7 @@ end;
 
 procedure TJvDynControlCxGroupBox.ControlSetParentColor(Value: Boolean);
 begin
-  ParentColor := Value;
+  Parentcolor := Value;
 end;
 
 //=== { TJvDynControlCxPanel } ===========================================
@@ -2717,14 +2720,15 @@ begin
   BevelOuter := bvNone;
   PanelStyle.Active := True;
   Transparent := True;
-  Style.TransparentBorder := True;
+//  Style.TransparentBorder := True;
   Style.Shadow := False;
   Style.Edges := [];
 end;
 
 procedure TJvDynControlCxPanel.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetTabOrder(Value: Integer);
@@ -2806,7 +2810,7 @@ end;
 
 procedure TJvDynControlCxPanel.ControlSetColor(Value: TColor);
 begin
-  Color := Value;
+  Style.Color := Value;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetParentColor(Value: Boolean);
@@ -2934,7 +2938,8 @@ end;
 
 procedure TJvDynControlCxScrollBox.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxScrollBox.ControlSetTabOrder(Value: Integer);
@@ -2982,7 +2987,8 @@ end;
 
 procedure TJvDynControlCxLabel.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxLabel.ControlSetTabOrder(Value: Integer);
@@ -3034,7 +3040,7 @@ end;
 
 procedure TJvDynControlCxLabel.ControlSetColor(Value: TColor);
 begin
-  Color := Value;
+  Style.Color := Value;
 end;
 
 procedure TJvDynControlCxLabel.ControlSetParentColor(Value: Boolean);
@@ -3076,7 +3082,8 @@ end;
 
 procedure TJvDynControlCxStaticText.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxStaticText.ControlSetTabOrder(Value: Integer);
@@ -3118,7 +3125,7 @@ end;
 
 procedure TJvDynControlCxStaticText.ControlSetColor(Value: TColor);
 begin
-  Color := Value;
+  Style.Color := Value;
 end;
 
 procedure TJvDynControlCxStaticText.ControlSetParentColor(Value: Boolean);
@@ -3155,7 +3162,8 @@ end;
 
 procedure TJvDynControlCxButton.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxButton.ControlSetTabOrder(Value: Integer);
@@ -3353,6 +3361,11 @@ begin
   Selected := Value;
 end;
 
+procedure TJvDynControlCxProgressBar.ControlSetAlign(Value: TAlign);
+begin
+  Align := Value;
+end;
+
 //=== { TJvDynControlCxProgressbar } =========================================
 
 procedure TJvDynControlCxProgressbar.ControlSetDefaultProperties;
@@ -3362,7 +3375,8 @@ end;
 
 procedure TJvDynControlCxProgressbar.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxProgressbar.ControlSetTabOrder(Value: Integer);
@@ -3452,7 +3466,8 @@ end;
 
 procedure TJvDynControlCxRadioButton.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlCxRadioButton.ControlSetTabOrder(Value: Integer);
