@@ -82,6 +82,7 @@ object Form1: TForm1
   end
   object JvThread1: TJvThread
     Exclusive = True
+    MaxCount = 0
     RunOnCreate = True
     FreeOnTerminate = False
     ThreadDialog = JvThreadSimpleDialog1
@@ -91,6 +92,7 @@ object Form1: TForm1
   end
   object JvThread2: TJvThread
     Exclusive = True
+    MaxCount = 0
     RunOnCreate = True
     FreeOnTerminate = False
     ThreadDialog = JvThreadAnimateDialog1
@@ -105,7 +107,8 @@ object Form1: TForm1
     DialogOptions.CancelButtonCaption = 'Cancel'
     DialogOptions.Caption = '23423423423432'
     DialogOptions.InfoText = 'Infotext'#13#10'Multiline'#13#10'Third Line'
-    DialogOptions.InfoTextAlignment = taCenter
+    DialogOptions.InfoTextAlignment = taRightJustify
+    DialogOptions.ShowProgressBar = True
     Left = 260
     Top = 20
   end
