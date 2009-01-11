@@ -709,9 +709,10 @@ type
   end;
 
   TJvDynControlJVCLProgressBar = class(TJvProgressBar, IUnknown, IJvDynControl,
-      IJvDynControlCaption, IJvDynControlProgressBar)
+      IJvDynControlCaption, IJvDynControlAlign, IJvDynControlProgressBar)
   public
     function ControlGetCaption: string;
+    procedure ControlSetAlign(Value: TAlign);
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetDefaultProperties;
@@ -1581,7 +1582,8 @@ end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetTabOrder(Value: Integer);
@@ -1859,7 +1861,8 @@ end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLRadioGroup.ControlSetTabOrder(Value: Integer);
@@ -2236,7 +2239,8 @@ end;
 
 procedure TJvDynControlJVCLGroupBox.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLGroupBox.ControlSetTabOrder(Value: Integer);
@@ -2278,7 +2282,8 @@ end;
 
 procedure TJvDynControlJVCLPanel.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLPanel.ControlSetTabOrder(Value: Integer);
@@ -2468,7 +2473,8 @@ end;
 
 procedure TJvDynControlJVCLScrollBox.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLScrollBox.ControlSetTabOrder(Value: Integer);
@@ -2503,7 +2509,8 @@ end;
 
 procedure TJvDynControlJVCLLabel.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLLabel.ControlSetTabOrder(Value: Integer);
@@ -2611,7 +2618,8 @@ end;
 
 procedure TJvDynControlJVCLStaticText.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLStaticText.ControlSetTabOrder(Value: Integer);
@@ -2685,7 +2693,8 @@ end;
 
 procedure TJvDynControlJVCLButton.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLButton.ControlSetTabOrder(Value: Integer);
@@ -2760,7 +2769,8 @@ end;
 
 procedure TJvDynControlJVCLRadioButton.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLRadioButton.ControlSetTabOrder(Value: Integer);
@@ -2943,6 +2953,11 @@ begin
   Result := Caption;
 end;
 
+procedure TJvDynControlJVCLProgressBar.ControlSetAlign(Value: TAlign);
+begin
+  Align := Value;
+end;
+
 //=== { TJvDynControlJVCLProgressbar } =======================================
 
 procedure TJvDynControlJVCLProgressbar.ControlSetDefaultProperties;
@@ -2951,7 +2966,8 @@ end;
 
 procedure TJvDynControlJVCLProgressbar.ControlSetCaption(const Value: string);
 begin
-  Caption := Value;
+  if Caption <> Value then
+    Caption := Value;
 end;
 
 procedure TJvDynControlJVCLProgressbar.ControlSetTabOrder(Value: Integer);
