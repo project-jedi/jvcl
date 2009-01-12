@@ -2720,7 +2720,7 @@ begin
   BevelOuter := bvNone;
   PanelStyle.Active := True;
   Transparent := True;
-//  Style.TransparentBorder := True;
+  Style.TransparentBorder := True;
   Style.Shadow := False;
   Style.Edges := [];
 end;

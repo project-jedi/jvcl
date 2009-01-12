@@ -244,6 +244,7 @@ type
     procedure AddToListBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
     procedure AdditionalBtnClick(Sender: TObject);
+    function CalculatePanelHeight(iPanel: TWinControl): Integer;
     procedure ConnectBtnClick(Sender: TObject);
     procedure ConnectionListPageControlChange(Sender: TObject);
     procedure ConnectListListBoxClick(Sender: TObject);
@@ -288,8 +289,7 @@ type
   protected
     procedure ActivateDatabaseControl;
     procedure ActivatePasswordControl;
-    procedure AlignControlTop(aControl: TControl);
-    function CalculatePanelHeight(LastControl: TWinControl): Integer;
+    procedure AlignControlTop(aControl, aPreviousControl: TControl);
     function ChangePassword: Boolean;
     procedure ClearControlInterfaceObjects; virtual;
     procedure ClearFormControls; virtual;
@@ -317,6 +317,7 @@ type
     procedure SetAppStoragePath(Value: string); override;
     procedure SetGroupByDatabase(Value: Boolean);
     procedure SetGroupByUser(Value: Boolean);
+    procedure SetPanelHeight(iPanel: TWinControl);
     procedure SetSession(const Value: TComponent); override;
     procedure TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo); virtual;
     procedure TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo); virtual;
@@ -456,15 +457,6 @@ begin
   FillAllConnectionLists;
 end;
 
-function TJvBaseDBLogonDialog.CalculatePanelHeight(LastControl: TWinControl):
-  Integer;
-begin
-  if Assigned(LastControl) then
-    Result := LastControl.Top + LastControl.Height + 2
-  else
-    Result := 20;
-end;
-
 procedure TJvBaseDBLogonDialog.CancelBtnClick(Sender: TObject);
 begin
   DBDialog.ModalResult := mrCancel;
@@ -581,6 +573,7 @@ var
   Items: TStringList;
   ITabControl: IJvDynControlTabControl;
   IDynControl: IJvDynControl;
+  IDynControlAutoSize: IJvDynControlAutoSize;
   IDynControlDblClick: IJvDynControlDblClick;
   IDynControlReadOnly: IJvDynControlReadOnly;
   IDynControlPageControl: IJvDynControlPageControl;
@@ -592,9 +585,7 @@ var
   ConnectListLabel: TWinControl;
 begin
   AForm.Name := 'DBDialog';
-  AForm.Left := 472;
-  AForm.Top := 229;
-  AForm.BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
+//  AForm.BorderIcons := [biSystemMenu, biMinimize, biMaximize, biHelp];
   AForm.BorderStyle := bsDialog;
   AForm.Caption := RsLogonToDatabase;
   AForm.ClientHeight := 440;
@@ -609,22 +600,24 @@ begin
   ConnectBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'ConnectBtn',
     RsBtnConnect, '', ConnectBtnClick, True, False);
   ConnectBtn.Left := 60;
-  ConnectBtn.Top := 11;
+  ConnectBtn.Top := 3;
   ConnectBtn.Width := 90;
   ConnectBtn.Height := 25;
   CancelBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'CancelBtn',
     RsButtonCancelCaption, '', CancelBtnClick, False, True);
   CancelBtn.Left := 460;
-  CancelBtn.Top := 11;
+  CancelBtn.Top := ConnectBtn.Top;
   CancelBtn.Width := 90;
   CancelBtn.Height := 25;
 
   AdditionalBtn := DynControlEngine.CreateButton(AForm, ButtonPanel, 'AdditionalBtn',
     RsBtnAdditional, '', AdditionalBtnClick, False, False);
   AdditionalBtn.Left := 460;
-  AdditionalBtn.Top := 11;
+  AdditionalBtn.Top := ConnectBtn.Top;
   AdditionalBtn.Width := 100;
   AdditionalBtn.Height := 25;
+
+  SetPanelHeight(ButtonPanel);
 
   AdditionalPopupMenu := TPopupMenu.Create(AForm);
   FillAdditionalPopupMenuEntries(AdditionalPopupMenu);
@@ -646,7 +639,7 @@ begin
   ConnectListLabel := DynControlEngine.CreateStaticTextControl(AForm, ListPanel, 'ConnectListLabel',
     'Connection List');
 
-  AlignControlTop(ConnectListLabel);
+  AlignControlTop(ConnectListLabel, nil);
   ConnectListLabel.Height := 18;
 
   ListBtnPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'ListBtnPanel', '', alLeft);
@@ -793,9 +786,11 @@ begin
   ConnectPanel.Height := 126;
 
   LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'UserNameLabel', RsUsername);
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, nil);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
   UsernameEdit := DynControlEngine.CreateEditControl(AForm, ConnectPanel, 'UserNameEdit');
-  AlignControlTop(UsernameEdit);
+  AlignControlTop(UsernameEdit, LabelControl);
   UsernameEdit.TabOrder := 0;
   Supports(UsernameEdit, IJvDynControlData, IUsernameEditData);
   IUsernameEditData.ControlSetOnChange(PasswordEditChange);
@@ -804,10 +799,12 @@ begin
     IDynControlLabel.ControlSetFocusControl(UserNameEdit);
 
   LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'PasswordEditLabel', RsPassword);
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, UsernameEdit);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
 
   PasswordEdit := DynControlEngine.CreateEditControl(AForm, ConnectPanel, 'PasswordEdit');
-  AlignControlTop(PasswordEdit);
+  AlignControlTop(PasswordEdit, LabelControl);
   PasswordEdit.TabOrder := 1;
   if Supports(PasswordEdit, IJvDynControlEdit, IDynControlEdit) then
     IDynControlEdit.ControlSetPasswordChar('*');
@@ -816,11 +813,13 @@ begin
   IPasswordEditData.ControlValue := '';
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(PasswordEdit);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
 
   LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectPanel, 'DatabaseLabel', RsDatabase);
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, PasswordEdit);
   DatabaseComboBox := DynControlEngine.CreateComboBoxControl(AForm, ConnectPanel, 'DatabaseComboBox', nil);
-  AlignControlTop(DatabaseComboBox);
+  AlignControlTop(DatabaseComboBox, LabelControl);
   DatabaseComboBox.TabOrder := 2;
   Supports(DatabaseComboBox, IJvDynControlData, IDatabaseComboBoxData);
   IDatabaseComboBoxData.ControlSetOnChange(DatabaseComboBoxChange);
@@ -829,11 +828,15 @@ begin
   IDatabaseComboBoxData.ControlValue := '';
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(DatabaseComboBox);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
+
+  SetPanelHeight(ConnectPanel);
 
   ShortCutPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ShortCutPanel', '', alTop);
-  AlignControlTop(ShortCutPanel);
+  AlignControlTop(ShortCutPanel, DatabaseComboBox);
   LabelControl := DynControlEngine.CreateLabelControl(AForm, ShortCutPanel, 'ShortCutLabel', RsShortcut);
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, nil);
   Items := tStringList.Create;
   try
     FillShortCutList(Items);
@@ -843,49 +846,61 @@ begin
     if Supports(ShortCutComboBox, IJvDynControlComboBox, IDynControlComboBox) then
       IDynControlComboBox.ControlSetNewEntriesAllowed(False);
 
-    AlignControlTop(ShortCutComboBox);
+    AlignControlTop(ShortCutComboBox, LabelControl);
   finally
     Items.Free;
   end;
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(ShortCutComboBox);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
   ShortCutPanel.Visible := Options.ShowShortcuts;
 
+  SetPanelHeight(ShortcutPanel);
+
   ConnectGroupPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ConnectGroupPanel', '', alTop);
-  AlignControlTop(ConnectGroupPanel);
+  AlignControlTop(ConnectGroupPanel, ShortCutPanel);
 
   LabelControl := DynControlEngine.CreateLabelControl(AForm, ConnectGroupPanel, 'ConnectGroupLabel', 'Connect &Group');
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, nil);
   Items := tStringList.Create;
   try
     ConnectGroupComboBox := DynControlEngine.CreateComboBoxControl(AForm, ConnectGroupPanel, 'ConnectGroupComboBox',
       Items);
     Supports(ConnectGroupComboBox, IJvDynControlData, IConnectGroupComboBoxData);
-    AlignControlTop(ConnectGroupComboBox);
+    AlignControlTop(ConnectGroupComboBox, LabelControl);
   finally
     Items.Free;
   end;
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(ConnectGroupComboBox);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
   ConnectGroupPanel.Visible := Options.ShowConnectGroup;
 
+  SetPanelHeight(ConnectGroupPanel);
+
   ColorBoxPanel := DynControlEngine.CreatePanelControl(AForm, LeftPanel, 'ColorBoxPanel', '', alTop);
-  AlignControlTop(ColorBoxPanel);
+  AlignControlTop(ColorBoxPanel, ConnectGroupPanel);
 
   LabelControl := DynControlEngine.CreateLabelControl(AForm, ColorBoxPanel, 'ColorBoxLabel', 'Co&lor');
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, nil);
   Items := tStringList.Create;
   try
     ColorComboBox := DynControlEngine.CreateColorComboBoxControl(AForm, ColorBoxPanel, 'ColorComboBox',
       cDefaultColorComboBoxColor);
     Supports(ColorComboBox, IJvDynControlColorComboBoxControl, IColorComboBox);
-    AlignControlTop(ColorComboBox);
+    AlignControlTop(ColorComboBox, LabelControl);
   finally
     Items.Free;
   end;
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(ColorComboBox);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
   ColorBoxPanel.Visible := Options.ShowColors;
+
+  SetPanelHeight(ColorBoxPanel);
 
   CreateAdditionalConnectDialogControls(AForm, LeftPanel);
 end;
@@ -1594,15 +1609,14 @@ end;
 
 procedure TJvBaseDBLogonDialog.ResizeFormControls;
 begin
-  ConnectPanel.Height := CalculatePanelHeight(DatabaseComboBox);
-  if Assigned(ConnectGroupComboBox) then
-    ConnectGroupPanel.Height := CalculatePanelHeight(ConnectGroupComboBox);
-  if Assigned(ColorBoxPanel) then
-    ColorBoxPanel.Height := CalculatePanelHeight(ColorComboBox);
-  ShortCutPanel.Height := CalculatePanelHeight(ShortCutComboBox);
-  CancelBtn.Left := DBDialog.ClientWidth - CancelBtn.Width - 5;
+  SetPanelHeight(ConnectPanel);
+  SetPanelHeight(ConnectGroupPanel);
+  SetPanelHeight(ColorBoxPanel);
+  SetPanelHeight(ShortCutPanel);
+  CancelBtn.Left := DBDialog.ClientWidth - CancelBtn.Width - 10;
   ConnectBtn.Left := CancelBtn.Left - ConnectBtn.Width - 5;
-  AdditionalBtn.Left := 5;
+  AdditionalBtn.Left := 10;
+  SetPanelHeight(ButtonPanel);
 end;
 
 function TJvBaseDBLogonDialog.SavePasswords: Boolean;
@@ -1872,31 +1886,53 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvBaseDBLogonDialog.AlignControlTop(aControl: TControl);
+procedure TJvBaseDBLogonDialog.AlignControlTop(aControl, aPreviousControl:
+    TControl);
 begin
   aControl.Align := alTop;
-  aControl.Top := aControl.Parent.Height;
+  if Assigned(aPreviousControl) then
+    aControl.Top := aPreviousControl.Top + aPreviousControl.Height
+  else
+    aControl.Top := CalculatePanelHeight(aControl.Parent);
+end;
+
+function TJvBaseDBLogonDialog.CalculatePanelHeight(iPanel: TWinControl):
+    Integer;
+var
+  i: Integer;
+  t: Integer;
+  h: Integer;
+begin
+  t := 99999;
+  h := 0;
+  for i := 0 to iPanel.ControlCount - 1 do
+  begin
+    if iPanel.Controls[i].Top < t then
+      t := iPanel.Controls[i].Top;
+    if iPanel.Controls[i].Top+iPanel.Controls[i].Height > h then
+      h := iPanel.Controls[i].Top+iPanel.Controls[i].Height;
+  end;
+  Result := t+h+1;
 end;
 
 procedure TJvBaseDBLogonDialog.ResizeLeftPanel;
 var
-  I: Integer;
   m : Integer;
-  h: Integer;
 begin
-  m := 0;
-  for I := 0 to LeftPanel.ControlCount - 1 do
-  begin
-    h := LeftPanel.Controls[i].Top+LeftPanel.Controls[i].Height;
-    if h > m then
-      m := h;
-  end;
+  m := CalculatePanelHeight(LeftPanel);
   if m > LeftPanel.Height then
     if m + ButtonPanel.Height > DBDialog.ClientHeight then
     begin
       DBDialog.ClientHeight := m + ButtonPanel.Height;
       DBDialog.Refresh;
     end;
+end;
+
+procedure TJvBaseDBLogonDialog.SetPanelHeight(iPanel: TWinControl);
+begin
+  if not Assigned(iPanel) then
+    Exit;
+  iPanel.Height := CalculatePanelHeight(iPanel);
 end;
 
 //=== { TJvBaseDBOracleLogonDialogOptions } ==================================
@@ -1926,11 +1962,12 @@ var
   LabelControl: TControl;
   IDynControlLabel: IJvDynControlLabel;
   IDynControlComboBox: IJvDynControlComboBox;
+  IDynControlAutoSize: IJvDynControlAutoSize;
 begin
   ConnectAsPanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'ConnectAsPanel', '', alTop);
-  AlignControlTop(ConnectAsPanel);
+  AlignControlTop(ConnectAsPanel, nil);
   LabelControl := DynControlEngine.CreateLabelControl(AOwner, ConnectAsPanel, 'ConnectAsLabel', RsConnectAs, nil);
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, nil);
   Items := tStringList.Create;
   try
     Items.Add('NORMAL');
@@ -1940,12 +1977,15 @@ begin
     Supports(ConnectAsComboBox, IJvDynControlData, IConnectAsComboBoxData);
     if Supports(ConnectAsComboBox, IJvDynControlComboBox, IDynControlComboBox) then
       IDynControlComboBox.ControlSetNewEntriesAllowed(False);
-    AlignControlTop(ConnectAsComboBox);
+    AlignControlTop(ConnectAsComboBox, LabelControl);
   finally
     Items.Free;
   end;
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(ConnectAsComboBox);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
+  SetPanelHeight(ConnectAsPanel);
   ConnectAsPanel.Visible := Options.ShowConnectAs;
 end;
 
@@ -1980,7 +2020,7 @@ end;
 procedure TJvBaseDBOracleLogonDialog.ResizeFormControls;
 begin
   inherited ResizeFormControls;
-  ConnectAsPanel.Height := CalculatePanelHeight(ConnectAsComboBox);
+  SetPanelHeight(ConnectAsPanel);
 end;
 
 procedure TJvBaseDBOracleLogonDialog.SetDialogConnectAs(const Value: string);
