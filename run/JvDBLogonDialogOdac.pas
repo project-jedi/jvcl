@@ -393,12 +393,13 @@ var
   Items : TStringList;
   i: Integer;
   IDynControlComboBox: IJvDynControlComboBox;
+  IDynControlAutoSize: IJvDynControlAutoSize;
 begin
   inherited CreateAdditionalConnectDialogControls (AOwner, AParentControl);
   OracleHomePanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'OracleHomePanel', '', alTop);
-  AlignControlTop(OracleHomePanel);
+  AlignControlTop(OracleHomePanel, nil);
   LabelControl := DynControlEngine.CreateLabelControl(AOwner, OracleHomePanel, 'OracleHomeLabel', RsOracleHome, nil);
-  AlignControlTop(LabelControl);
+  AlignControlTop(LabelControl, nil);
   Items := TStringList.Create;
   try
     for i := 0 to OracleHomeCount - 1 do
@@ -411,13 +412,16 @@ begin
   end;
   Supports(OracleHomeEdit, IJvDynControlData, IOracleHomeEditData);
   IOracleHomeEditData.ControlValue := '';
-  AlignControlTop(OracleHomeEdit);
+  AlignControlTop(OracleHomeEdit, LabelControl);
   if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
     IDynControlLabel.ControlSetFocusControl(OracleHomeEdit);
+  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
+    IDynControlAutoSize.ControlSetAutoSize(True);
+  SetPanelHeight(OracleHomePanel);
   OracleHomePanel.Visible := Options.ShowOracleHome;
   NetOptionCheckBox := DynControlEngine.CreateCheckboxControl(AOwner,AParentControl, 'NetOptionCheckBox',
     RsUseNetOptionForDirectConnect);
-  AlignControlTop(NetOptionCheckBox);
+  AlignControlTop(NetOptionCheckBox, OracleHomePanel);
   NetOptionCheckBox.Visible := Options.ShowNetOption;
   Supports(NetOptionCheckBox, IJvDynControlCheckBox, INetOptionCheckBox);
   NetOptionCheckBox.Hint := RsNetOptionCheckBoxHint;
@@ -477,7 +481,7 @@ end;
 procedure TJvDBOdacLogonDialog.ResizeFormControls;
 begin
   inherited ResizeFormControls;
-  OracleHomePanel.Height := CalculatePanelHeight(OracleHomeEdit);
+  SetPanelHeight(OracleHomePanel);
 end;
 
 function TJvDBOdacLogonDialog.SessionIsConnected: Boolean;

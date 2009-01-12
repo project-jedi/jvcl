@@ -181,30 +181,29 @@ begin
 end;
 
 procedure TJvPropertyStoreEditorForm.CreateFormControls;
-var BottomPanel, BottomButtonPanel : TWinControl;
+var BottomPanel: TWinControl;
   Button: TButton;
+  ITmpBevelBorder: IJvDynControlBevelBorder;
 begin
   BottomPanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'BottomPanel', '', alBottom);
-  BottomPanel.Height := 34;
-  if BottomPanel is TPanel then
-    TPanel(BottomPanel).BevelOuter := bvNone;
+  if Supports(BottomPanel, IJvDynControlBevelBorder, ITmpBevelBorder) then
+    ITmpBevelBorder.ControlSetBevelOuter(bvNone);
   BottomPanel.TabOrder := 0;
-  BottomButtonPanel := DefaultDynControlEngine.CreatePanelControl(Self, BottomPanel, 'BottomButtonPanel', '', alRight);
-  BottomButtonPanel.Width := 166;
-  if BottomButtonPanel is TPanel then
-    TPanel(BottomButtonPanel).BevelOuter := bvNone;
-  Button := DefaultDynControlEngine.CreateButton(Self, BottomButtonPanel, 'OKButton', RSPropertyStoreEditorDialogButtonOk, '', OkButtonClick);
-  Button.Left := 4;
-  Button.Top := 6;
+  Button := DefaultDynControlEngine.CreateButton(Self, BottomPanel, 'OKButton', RSPropertyStoreEditorDialogButtonOk, '', OkButtonClick);
+  Button.Top := 3;
   Button.Width := 75;
   Button.Height := 25;
+  Button.Left := BottomPanel.Width-2*Button.Width-10;
+  Button.Anchors := [akTop, akRight];
   Button.ModalResult := mrOk;
-  Button := DefaultDynControlEngine.CreateButton(Self, BottomButtonPanel, 'CancelButton', RSPropertyStoreEditorDialogButtonCancel, '', CancelButtonClick);
-  Button.Left := 85;
-  Button.Top := 6;
+  Button := DefaultDynControlEngine.CreateButton(Self, BottomPanel, 'CancelButton', RSPropertyStoreEditorDialogButtonCancel, '', CancelButtonClick);
+  Button.Top := 3;
   Button.Width := 75;
   Button.Height := 25;
+  Button.Left := BottomPanel.Width-Button.Width-5;
+  Button.Anchors := [akTop, akRight];
   Button.ModalResult := mrCancel;
+  BottomPanel.Height := 2*Button.Top+Button.Height+1;
 
   FPropertyStoreEditorControl:= TJvPropertyStoreEditorControl.Create(self);
   FPropertyStoreEditorControl.Parent := Self;
@@ -383,8 +382,8 @@ begin
   FreeAndNil(TreePanel);
   FreeAndNil(InfoMemo);
   FreeAndNil(InfoPanel);
-  FreeAndNil(ListPanel);
   FreeAndNil(Inspector);
+  FreeAndNil(ListPanel);
   FreeAndNil(InspectorPanel);
 end;
 
@@ -711,9 +710,10 @@ begin
   if Assigned(PropertyStoreTreeViewIntf.ControlSelected) and
     Assigned(PropertyStoreTreeViewIntf.ControlSelected.Data) and
     (TObject(PropertyStoreTreeViewIntf.ControlSelected.Data) is TPersistent) then
-    if Supports(TObject(PropertyStoreTreeViewIntf.ControlSelected.Data), IJvPropertyEditorHandler, JvPropertyEditorHandler) then
-    if (JvPropertyEditorHandler.EditIntf_GetVisibleObjectName  <> '') then
-      PropertyStoreTreeViewIntf.ControlSelected.Text := JvPropertyEditorHandler.EditIntf_GetVisibleObjectName;
+    if Supports(TObject(PropertyStoreTreeViewIntf.ControlSelected.Data),
+      IJvPropertyEditorHandler, JvPropertyEditorHandler) then
+      if (JvPropertyEditorHandler.EditIntf_GetVisibleObjectName  <> '') then
+        PropertyStoreTreeViewIntf.ControlSelected.Text := JvPropertyEditorHandler.EditIntf_GetVisibleObjectName;
 end;
 
 procedure TJvPropertyStoreEditorControl.SetInspectedObject(const Value:
@@ -724,6 +724,8 @@ begin
     FInspectedObject := nil;
     FInspectedObjectEditorHandlerIntf := nil;
     FInspectedObjectListEditorHandlerIntf := nil;
+    if Assigned(RTTIInspectorControlIntf) then
+      RTTIInspectorControlIntf.ControlInspectedObject := Value;
     Exit;
   end;
   FInspectedObject := Value;

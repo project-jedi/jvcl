@@ -34,10 +34,11 @@ implementation
 
 {$R *.dfm}
 
-Uses JclFileUtils, JvTypes,
+Uses JclFileUtils,
   JvDynControlEngineJVCLInspector,
   //JvDynControlEngineDevExpCx,
-  JvDynControlEngineJVCL;
+  JvDynControlEngineJVCL,
+  JvTypes;
 
 constructor TForm1.Create(AOwner: TComponent);
 begin
@@ -49,7 +50,6 @@ end;
 destructor TForm1.Destroy;
 begin
   FreeAndNil(FVersionHistory);
-  FJvPropertyStoreEditorControl.Free;
   inherited Destroy;
 end;
 
@@ -68,5 +68,5 @@ begin
 end;
 
 begin
- RegisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
+  RegisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
 end.
