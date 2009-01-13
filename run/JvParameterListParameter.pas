@@ -1016,6 +1016,8 @@ begin
 end;
 
 procedure TJvBasePanelEditParameter.CreateLabelControl(AParameterParent: TWinControl);
+var
+  IDynAutoSize: IJvDynControlAutoSize;
 begin
   if (Caption = '') or (LabelArrangeMode in [lamGroupBox, lamNone]) then
     Exit;
@@ -1023,8 +1025,15 @@ begin
     GetParameterName + 'Label', Caption, WinControl);
   LabelControl.Visible := True;
   LabelControl.Enabled := Enabled;
-  LabelControl.Height := 16;
   LabelControl.Parent := AParameterParent;
+  if Supports (LabelControl, IJvDynControlAutoSize, IDynAutoSize) then
+  begin
+    IDynAutoSize.ControlSetAutosize(True);
+    IDynAutoSize.ControlSetAutosize(False);
+  end
+  else
+    LabelControl.Height := 16;
+
 end;
 
 procedure TJvBasePanelEditParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
