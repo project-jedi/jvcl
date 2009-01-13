@@ -1634,7 +1634,8 @@ begin
   for I := 0 to Count - 1 do
     if Parameters[I].Visible then
       if Assigned(Parameters[I].WinControl) then
-        if Parameters[I].WinControl.CanFocus then
+        if not Parameters[i].ReadOnly and
+           Parameters[I].WinControl.CanFocus then
         begin
           Parameters[I].WinControl.SetFocus;
           Break;
