@@ -300,7 +300,8 @@ end;
 
 function TJvGroupBox.StoredCheckable: Boolean;
 begin
-  Result := FCheckable and Checked;
+  { Write "False" to the DFM file because the checkbox is initialized with "True" }
+  Result := FCheckable and not Checked;
 end;
 
 {$IFDEF UNITVERSIONING}
