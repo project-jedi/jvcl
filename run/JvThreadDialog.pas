@@ -187,7 +187,7 @@ type
     FTimeTextPanel: TWinControl;
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
-    procedure SetFormInfoText;
+    //procedure SetFormInfoText;
   protected
     procedure CreateFormControls;
     procedure InitializeFormContents; override;
@@ -428,7 +428,6 @@ end;
 procedure TJvThreadSimpleDialogForm.SetFormHeightWidth;
 var
   H, W: Integer;
-  ITmpAutoSize: IJvDynControlAutoSize;
 begin
   if FInfoTextPanel.Visible then
     W := FOrgInfoTextWidth + 80
@@ -588,7 +587,6 @@ end;
 procedure TJvThreadAnimateDialogForm.SetFormHeightWidth;
 var
   H, W: Integer;
-  ITmpAutoSize:  IJvDynControlAutoSize;
 begin
   H := 0;
   W := 200;
@@ -633,7 +631,7 @@ begin
     ClientHeight := H;
 end;
 
-procedure TJvThreadAnimateDialogForm.SetFormInfoText;
+{procedure TJvThreadAnimateDialogForm.SetFormInfoText;
 var
   ITmpControl: IJvDynControlCaption;
   ITmpAutoSize: IJvDynControlAutoSize;
@@ -650,7 +648,7 @@ begin
       FInfoText.Left := FDefaultBorderWidth; // Some Components change the left position when activating autosize (TcxStaticText)
       FOrgInfoTextWidth := FInfoText.Width;
     end;
-end;
+end;}
 
 procedure TJvThreadAnimateDialogForm.UpdateFormContents;
 var ITmpControl : IJvDynControlCaption;
