@@ -1983,7 +1983,7 @@ begin
         FreeBookmark(SB);
       end;
       if DisableAllControls then
-        Dest.EnableControls;
+        EnableControls;
       //**************************************
     end;
   finally
