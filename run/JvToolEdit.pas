@@ -1343,8 +1343,6 @@ end;
 //=== Global procedures ======================================================
 
 procedure DateFormatChanged;
-var
-  I: Integer;
 
   procedure IterateControls(AControl: TWinControl);
   var
@@ -1361,6 +1359,8 @@ var
       end;
   end;
 
+var
+  I: Integer;
 begin
   if Screen <> nil then
     for I := 0 to Screen.FormCount - 1 do
@@ -1433,7 +1433,6 @@ begin
   {$ENDIF CLR}
   Result := Bmp.Handle <> 0;
 end;
-
 
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
@@ -1706,20 +1705,20 @@ end;
 
 procedure TDateHook.Hook;
 begin
-  if FHooked then
-    Exit;
-
-  Application.HookMainWindow(FormatSettingsChange);
-  FHooked := True;
+  if not FHooked then
+  begin
+    Application.HookMainWindow(FormatSettingsChange);
+    FHooked := True;
+  end;
 end;
 
 procedure TDateHook.UnHook;
 begin
-  if not FHooked then
-    Exit;
-
-  Application.UnhookMainWindow(FormatSettingsChange);
-  FHooked := False;
+  if FHooked then
+  begin
+    Application.UnhookMainWindow(FormatSettingsChange);
+    FHooked := False;
+  end;
 end;
 
 //=== { TJvCustomComboEditDataConnector } ====================================
@@ -2376,7 +2375,6 @@ begin
   { Same as IsCtl3DStored }
   Result := not ParentCtl3D;
 end;
-
 
 function TJvCustomComboEdit.IsImageIndexStored: Boolean;
 begin
@@ -3218,7 +3216,8 @@ var
   DrawRect: TRect;
   Details: TThemedElementDetails;
 begin
-  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
+  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) and
+     (Win32MajorVersion < 6) then // Vista draws the border animated and not with teEditTextNormal
   begin
     DC := GetWindowDC(Handle);
     try
@@ -3238,7 +3237,6 @@ begin
     inherited;
 end;
 {$ENDIF JVCLThemesEnabled}
-
 
 procedure TJvCustomComboEdit.WMPaint(var Msg: TWMPaint);
 var
