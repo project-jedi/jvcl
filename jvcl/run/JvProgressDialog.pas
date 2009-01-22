@@ -314,10 +314,11 @@ begin
   FForm.OnClose := InternalDoClose;
   FForm.Position := FScreenPosition;
   FCancelled := False;
-  DoShow;
-  StoreValues;
   TfrmProgress(FForm).Init(Caption, Text, Image, Transparent, Min, Max, Position,
     Interval, ShowCancel, Smooth, InternalDoProgress, InternalDoCancel);
+  DoShow;
+  StoreValues;
+  FForm.Show;
 end;
 
 procedure TJvProgressDialog.InternalDoClose(Sender: TObject;
