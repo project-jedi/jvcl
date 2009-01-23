@@ -2828,7 +2828,7 @@ end;
 
 procedure TJvDynControlCxImage.ControlSetDefaultProperties;
 begin
-  //Properties.GraphicTransparency := gtOpaque;
+  Properties.GraphicTransparency := gtDefault;
   ParentColor := True;
 end;
 
