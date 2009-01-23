@@ -46,6 +46,9 @@ type
   TJvParameterListSelectList = class;
   TJvBaseParameter = class;
 
+  TJvBaseParameterClass = class of TJvBaseParameter;
+  TJvParameterListClass = class of TJvParameterList;
+
   TJvParameterListEvent = procedure(const ParameterList: TJvParameterList; const Parameter:
     TJvBaseParameter) of object;
 
@@ -190,6 +193,8 @@ type
     function Validate(var AData: Variant): Boolean; virtual;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); virtual; abstract;
     property WinControlData: Variant read GetWinControlData write SetWinControlData;
+    //1 Creates a new instance of the same objecttype and assigns the property contents to the new instance
+    function Clone(AOwner: TJvParameterlist): TJvBaseParameter;
     procedure GetData; virtual;
     procedure SetData; virtual;
     property AdditionalData: Pointer read FAdditionalData write FAdditionalData;
@@ -250,6 +255,7 @@ type
     FHistoryClearCaption: string;
   public
     constructor Create;
+    procedure Assign(Source: TPersistent); override;
   published
     property Caption: string read FCaption write FCaption;
     property OkButton: string read FOkButton write FOkButton;
@@ -392,6 +398,10 @@ type
     property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList read
       FOkButtonEnableReasons write
       FOkButtonEnableReasons;
+    procedure AssignValues(iSourceList: TJvParameterList);
+    procedure AssignValuesTo(iDestinationList: TJvParameterList);
+    //1 Creates a new instance of the same objecttype and assigns the property contents to the new instance
+    function Clone(AOwner: TComponent): TJvParameterList;
     {creates the components of all parameters on any TWInControl}
     procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
     { load the data of all allowed parameters from the AppStorage }
@@ -526,6 +536,24 @@ begin
   HistoryLoadCaption := RsHistoryLoadCaption;
   HistorySaveCaption := RsHistorySaveCaption;
   HistoryClearCaption := RsHistoryClearCaption;
+end;
+
+procedure TJvParameterListMessages.Assign(Source: TPersistent);
+begin
+  if Source is TJvParameterListMessages then
+  begin
+    Caption := TJvParameterListMessages(Source).Caption;
+    OkButton := TJvParameterListMessages(Source).OkButton;
+    CancelButton := TJvParameterListMessages(Source).CancelButton;
+    HistoryLoadButton := TJvParameterListMessages(Source).HistoryLoadButton;
+    HistorySaveButton := TJvParameterListMessages(Source).HistorySaveButton;
+    HistoryClearButton := TJvParameterListMessages(Source).HistoryClearButton;
+    HistoryLoadCaption := TJvParameterListMessages(Source).HistoryLoadCaption;
+    HistorySaveCaption := TJvParameterListMessages(Source).HistorySaveCaption;
+    HistoryClearCaption := TJvParameterListMessages(Source).HistoryClearCaption;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 //=== { TJvParameterListEnableDisableReason } ================================
@@ -1072,6 +1100,12 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+function TJvBaseParameter.Clone(AOwner: TJvParameterlist): TJvBaseParameter;
+begin
+  Result := TJvBaseParameterClass(ClassType).Create(AOwner);
+  Result.Assign(Self);
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
@@ -1915,6 +1949,30 @@ begin
   Result := IntParameterList.AddObject(S, AObject);
 end;
 
+procedure TJvParameterList.AssignValues(iSourceList: TJvParameterList);
+var
+  i: Integer;
+  SourceParam : TJvBaseParameter;
+begin
+  if not assigned(iSourceList) then
+    Exit;
+  for i := 0 to Count - 1 do
+  begin
+    SourceParam := iSourceList.ParameterByName(Parameters[i].SearchName);
+    if Assigned(SourceParam) then
+      Parameters[i].AsVariant := SourceParam.AsVariant
+    else
+      Parameters[i].AsVariant := null;
+  end;
+end;
+
+procedure TJvParameterList.AssignValuesTo(iDestinationList: TJvParameterList);
+begin
+  if not assigned(iDestinationList) then
+    Exit;
+  iDestinationList.AssignValues(Self);
+end;
+
 procedure TJvParameterList.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
@@ -1977,7 +2035,19 @@ begin
   IntParameterList.Clear;
 end;
 
-
+function TJvParameterList.Clone(AOwner: TComponent): TJvParameterList;
+var
+  i: Integer;
+  List : TJvParameterList;
+begin
+  List := TJvParameterListClass(ClassType).Create(AOwner);
+  List.Assign(Self);
+  while List.IntParameterList.Count > 0 do
+    List.IntParameterList.Delete(0);
+  for i := 0 to Count - 1 do
+    List.AddParameter(Parameters[i].Clone(List));
+  Result := List;
+end;
 
 //=== { TJvParameterListPropertyStore } ======================================
 
