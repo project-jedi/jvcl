@@ -572,15 +572,27 @@ end;
 procedure TDSAMessageForm.CustomShow(Sender: TObject);
 var
   I: Integer;
+  First : Boolean;
+  Btn : {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF};
 begin
   if Timeout <> 0 then
     FTimer.Enabled := True;
+  First := True;
   for I := 0 to ComponentCount - 1 do
   begin
-    if (Components[I] is TButton) and (Components[I] as TButton).Default then
+    if (Components[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}) then
     begin
-      (Components[I] as TButton).SetFocus;
-      Break;
+      Btn := (Components[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF});
+      if First then
+      begin
+        First := False;
+        Btn.SetFocus;
+      end
+      else if Btn.Default then
+      begin
+        Btn.SetFocus;
+        Break;
+      end;
     end;
   end;
   FCountdown := TLabel(FindComponent('Countdown'));
@@ -876,6 +888,7 @@ begin
           DynControlImage.ControlSetCenter(True);
         end;
         Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 4, APicture.Height + 4);
+        Image.Enabled := False;
       end;
       MessageLabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Message', Msg, nil);
       if Supports(MessageLabel, IJvDynControlAutoSize, DynControlAutoSize) then
