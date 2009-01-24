@@ -440,12 +440,20 @@ type
     // Do a Reload if the function ReloadNeeded returns true
     procedure ReloadIfNeeded;
     function ReloadNeeded: Boolean; virtual;
+    //1 Do a Flush if the function FlushNeeded returns true
     procedure FlushIfNeeded;
     function FlushNeeded: Boolean; virtual;
+    //1 Disables all AutoFlush/AutoReload activities
     procedure BeginUpdate;
+    //1 Reanables all AutoFlush/AutoReload activities
     procedure EndUpdate;
+    //1 Property to show whether the storage is in a beginupdate/endupdate block or not
     property IsUpdating: Boolean read GetUpdating;
+    // Property to define that after every change in the data this
+    // changes should automaticly stored
     property AutoFlush: Boolean read FAutoFlush write FAutoFlush default False;
+    // Property to define that before any data is read from the storage
+    // the contents should be reread
     property AutoReload: Boolean read FAutoReload write FAutoReload default False;
     { This procedure gives the possibility to delete a tree out of the Appstorage
       depending on a stored value named "Version".
