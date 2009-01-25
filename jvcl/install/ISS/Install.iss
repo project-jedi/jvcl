@@ -82,6 +82,7 @@ DefaultGroupName=DelphiComponents\JEDI Visual Component Library
 DisableProgramGroupPage=no
 ;LicenseFile={#JvclRoot}\help\MPL-1.1.html
 OutputBaseFilename=JVCLSetup
+PrivilegesRequired=none
 #ifdef DEBUGGING
 Compression=zip/1
 #else
