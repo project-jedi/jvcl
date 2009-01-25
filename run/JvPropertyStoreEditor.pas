@@ -53,6 +53,8 @@ type
     procedure ListEditButtonClick(Sender: TObject);
     procedure ListInsertButtonClick(Sender: TObject);
     procedure ListUpButtonClick(Sender: TObject);
+    procedure ListSortUpButtonClick(Sender: TObject);
+    procedure ListSortDownButtonClick(Sender: TObject);
     procedure PropertyStoreTreeViewEnter(Sender: TObject);
     procedure PropertyStoreTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure PropertyStoreTreeViewChanging(Sender: TObject; Node: TTreeNode; var
@@ -260,7 +262,7 @@ var
   Button: TButton;
 begin
   TreePanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'TreePanel', '', alLeft);
-  TreePanel.Width := 200;
+  TreePanel.Width := 250;
   if TreePanel is TCustomPanel then
   begin
     tAccessCustomPanel(TreePanel).BevelOuter := bvNone;
@@ -270,6 +272,7 @@ begin
   TreeView := DefaultDynControlEngine.CreateTreeViewControl(Self, TreePanel, 'PropertyStoreTreeViewIntf');
   Supports(TreeView, IJvDynControlTreeView, PropertyStoreTreeViewIntf);
   TreeView.Align := alClient;
+  PropertyStoreTreeViewIntf.ControlSetReadOnly (True);
   PropertyStoreTreeViewIntf.ControlSetHotTrack (True);
   PropertyStoreTreeViewIntf.ControlSetOnChange (PropertyStoreTreeViewChange);
   PropertyStoreTreeViewIntf.ControlSetOnChanging (PropertyStoreTreeViewChanging);
@@ -344,6 +347,12 @@ begin
   Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDownButton', RSPropertyStoreEditorListButtonDown, '', ListDownButtonClick);
   Button.Left := 205;
   Button.Width := 40;
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListSortUpButton', RSPropertyStoreEditorListButtonSortUp, '', ListSortUpButtonClick);
+  Button.Left := 245;
+  Button.Width := 50;
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListSortDownButton', RSPropertyStoreEditorListButtonSortDown, '', ListSortDownButtonClick);
+  Button.Left := 295;
+  Button.Width := 60;
   ListBox := DefaultDynControlEngine.CreateListBoxControl(Self, ListPanel, 'ListBox', Nil);
   ListBox.Align := alClient;
   Supports (ListBox, IJvDynControlItems, ListBoxControlItemsIntf);
@@ -647,6 +656,33 @@ begin
     InspectedObjectListEditorHandler.ListEditIntf_MoveObjectPosition(ListBoxControlItemIndexIntf.ControlItemIndex, ListBoxControlItemIndexIntf.ControlItemIndex-1);
     FillTreeView (EditObject);
     ListBoxControlItemIndexIntf.ControlItemIndex := Ind -1;
+  end;
+end;
+
+procedure TJvPropertyStoreEditorControl.ListSortUpButtonClick(Sender: TObject);
+var
+  EditObject: TPersistent;
+begin
+  if Assigned(InspectedObjectListEditorHandler) and (ListBoxControlItemsIntf.ControlItems.Count > 0) then
+  begin
+    EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
+    InspectedObjectListEditorHandler.ListEditIntf_SortObjects(True);
+    FillTreeView (EditObject);
+    ListBoxControlItemIndexIntf.ControlItemIndex := 0;
+  end;
+end;
+
+procedure TJvPropertyStoreEditorControl.ListSortDownButtonClick(Sender:
+    TObject);
+var
+  EditObject: TPersistent;
+begin
+  if Assigned(InspectedObjectListEditorHandler) and (ListBoxControlItemsIntf.ControlItems.Count > 0) then
+  begin
+    EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
+    InspectedObjectListEditorHandler.ListEditIntf_SortObjects(False);
+    FillTreeView (EditObject);
+    ListBoxControlItemIndexIntf.ControlItemIndex := 0;
   end;
 end;
 

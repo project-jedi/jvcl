@@ -2,8 +2,8 @@ object JvPropertyStoreEditorForm: TJvPropertyStoreEditorForm
   Left = 0
   Top = 0
   BorderIcons = []
-  ClientHeight = 394
-  ClientWidth = 586
+  ClientHeight = 541
+  ClientWidth = 751
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
