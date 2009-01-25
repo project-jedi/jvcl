@@ -849,7 +849,7 @@ begin
       SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
     CalcTextRect (False, PChar(Msg), Length(Msg) + 1, TextRect);
 
-    IconTextWidth := TextRect.Right;
+    IconTextWidth := TextRect.Right+10;
     IconTextHeight := TextRect.Bottom;
     if CheckCaption <> '' then
     begin
