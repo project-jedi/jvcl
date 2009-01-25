@@ -295,6 +295,7 @@ type
     FOnExitParameter: TNotifyEvent;
     function GetIntParameterList: TStrings;
     function AddObject(const S: string; AObject: TObject): Integer;
+    function GetVisibleCount: Integer;
     procedure OnOkButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
     procedure ShowParameterDialogThread;
@@ -398,6 +399,8 @@ type
     property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList read
       FOkButtonEnableReasons write
       FOkButtonEnableReasons;
+    //1 Number of visible parameters
+    property VisibleCount: Integer read GetVisibleCount;
     procedure AssignValues(iSourceList: TJvParameterList);
     procedure AssignValuesTo(iDestinationList: TJvParameterList);
     //1 Creates a new instance of the same objecttype and assigns the property contents to the new instance
@@ -825,6 +828,7 @@ begin
   FVisible := True;
   FEnableReasons := TJvParameterListEnableDisableReasonList.Create;
   FDisableReasons := TJvParameterListEnableDisableReasonList.Create;
+  FValue := null;
 end;
 
 destructor TJvBaseParameter.Destroy;
@@ -1066,9 +1070,10 @@ end;
 
 procedure TJvBaseParameter.GetData;
 begin
-  AsVariant := Null;
   if Assigned(WinControl) then
-    AsVariant := WinControlData;
+    AsVariant := WinControlData
+  else
+    AsVariant := Null;
 end;
 
 procedure TJvBaseParameter.SetData;
@@ -1834,7 +1839,7 @@ begin
   BeforeAfterParameterNames.Duplicates := dupError;
   try
     for I := 0 to Count - 1 do
-      if Parameters[I].Visible and (Parameters[I] is TJvBasePanelEditParameter) then
+      if (Parameters[I] is TJvBasePanelEditParameter) then
       begin
         try
           if TJvBasePanelEditParameter(Parameters[I]).BeforeParameterName <> '' then
@@ -1854,7 +1859,7 @@ begin
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).DisableArrange;
     for I := 0 to Count - 1 do
-      if Parameters[I].Visible and (BeforeAfterParameterNames.IndexOf(Parameters[I].SearchName) < 0)then
+      if (BeforeAfterParameterNames.IndexOf(Parameters[I].SearchName) < 0)then
       begin
         Parameters[I].CreateWinControlOnParent(
           GetParentByName(ParameterParent, Parameters[I].ParentParameterName));
@@ -1896,8 +1901,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    if Parameters[I].Visible then
-      Parameters[I].GetData;
+    Parameters[I].GetData;
 end;
 
 procedure TJvParameterList.SetDataToWinControls;
@@ -1905,8 +1909,7 @@ var
   I: Integer;
 begin
   for I := 0 to Count - 1 do
-    if Parameters[I].Visible then
-      Parameters[I].SetData;
+    Parameters[I].SetData;
 end;
 
 function TJvParameterList.ValidateDataAtWinControls: Boolean;
@@ -2047,6 +2050,16 @@ begin
   for i := 0 to Count - 1 do
     List.AddParameter(Parameters[i].Clone(List));
   Result := List;
+end;
+
+function TJvParameterList.GetVisibleCount: Integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to Count - 1 do
+    if Parameters[i].Visible then
+      Inc(Result);
 end;
 
 //=== { TJvParameterListPropertyStore } ======================================
