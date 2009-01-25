@@ -885,9 +885,9 @@ procedure TJvPluginProjectCreator.NewDefaultProjectModule(const Project: IOTAPro
 var
   Module: IOTAModule;
   ModuleCreator: TJvPluginModuleCreator;
-  {$IFDEF COMPILER8_UP}
+  {$IFDEF COMPILER10_UP}
   DllModuleCreator: TJvPluginDLLModuleCreator;
-  {$ENDIF COMPILER8_UP}
+  {$ENDIF COMPILER10_UP}
 begin
   if Wizard.IsCBuilder then
   begin
