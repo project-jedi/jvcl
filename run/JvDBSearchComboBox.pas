@@ -33,6 +33,10 @@ unit JvDBSearchComboBox;
 
 interface
 
+{$IFDEF COMPILER12}
+  {$DEFINE COMPILER_GENERICS_WORKAROUND}
+{$ENDIF COMPILER12}
+
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -67,7 +71,18 @@ type
   end;
 
   {$IFDEF SUPPORTS_GENERICS}
+    {$IFDEF COMPILER_GENERICS_WORKAROUND}
+  // Workaround for QC 70845: Compiler crashes when generating *.lib file with generics in unit
+  TBookmarkList = class(TList)
+  protected
+    function GetItem(Index: Integer): TBookmark;
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
+  public
+    property Items[Index: Integer]: TBookmark read GetItem; default;
+  end;
+    {$ELSE}
   TBookmarkList = TList<TBookmark>;
+    {$ENDIF COMPILER_GENERICS_WORKAROUND}
   {$ELSE}
   TBookmarkList = TList;
   {$ENDIF SUPPORTS_GENERICS}
@@ -188,6 +203,30 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils;
+
+{$IFDEF COMPILER_GENERICS_WORKAROUND}
+//=== { TBookmarkList } ======================================================
+
+function TBookmarkList.GetItem(Index: Integer): TBookmark;
+begin
+  Result := TBookmark(inherited Items[Index]);
+end;
+
+procedure TBookmarkList.Notify(Ptr: Pointer; Action: TListNotification);
+var
+  Helper: TBookmark;
+begin
+  case Action of
+    lnAdded:
+      begin
+        Helper := TBookmark(Ptr); // AddRef
+        Pointer(Helper) := nil; // do not call ReleaseRef
+      end;
+    lnExtracted, lnDeleted:
+      TBookmark(Ptr) := nil; // ReleaseRef
+  end;
+end;
+{$ENDIF COMPILER_GENERICS_WORKAROUND}
 
 //=== { TJvSearchComboBoxLink } ==============================================
 
