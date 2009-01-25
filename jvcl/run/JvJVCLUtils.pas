@@ -1421,7 +1421,7 @@ begin
   TmpCount := Strings.Count;
   Strings.BeginUpdate;
   try
-    @CplCall := GetProcAddress(hLib, PChar(cCplAddress));
+    @CplCall := GetProcAddress(hLib, cCplAddress);
     if not Assigned(CplCall) then
       Exit;
     CplCall(HWND, CPL_INIT, 0, 0); // Init the *.cpl file
