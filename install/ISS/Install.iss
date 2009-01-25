@@ -8,7 +8,7 @@
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
 #define JvclVersionStr "3.36.0.0"
-#define JclVersionStr "1.103."
+#define JclVersionStr "1.105."
 #define MyAppName "Jedi Visual Component Library"
 #define MyAppVerName "Jedi Visual Component Library " + JvclVersionStr
 #define MyAppPublisher "JVCL Team"
