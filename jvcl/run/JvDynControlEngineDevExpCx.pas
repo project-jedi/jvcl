@@ -1079,7 +1079,7 @@ end;
 
 procedure TJvDynControlCxMaskEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxMaskEdit.ControlGetValue: Variant;
@@ -1157,7 +1157,7 @@ end;
 
 procedure TJvDynControlCxButtonEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxButtonEdit.ControlGetValue: Variant;
@@ -1490,7 +1490,7 @@ end;
 
 procedure TJvDynControlCxFileNameEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxFileNameEdit.ControlGetValue: Variant;
@@ -1611,7 +1611,7 @@ end;
 
 procedure TJvDynControlCxDirectoryEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxDirectoryEdit.ControlGetValue: Variant;
@@ -1690,12 +1690,12 @@ end;
 
 procedure TJvDynControlCxDateTimeEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Date := Value;
 end;
 
 function TJvDynControlCxDateTimeEdit.ControlGetValue: Variant;
 begin
-  Result := Text;
+  Result := Date;
 end;
 
 procedure TJvDynControlCxDateTimeEdit.ControlSetAnchors(Value: TAnchors);
@@ -1770,12 +1770,12 @@ end;
 
 procedure TJvDynControlCxDateEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Date := Value;
 end;
 
 function TJvDynControlCxDateEdit.ControlGetValue: Variant;
 begin
-  Result := Text;
+  Result := Date;
 end;
 
 procedure TJvDynControlCxDateEdit.ControlSetAnchors(Value: TAnchors);
@@ -1849,12 +1849,12 @@ end;
 
 procedure TJvDynControlCxTimeEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Time := Value;
 end;
 
 function TJvDynControlCxTimeEdit.ControlGetValue: Variant;
 begin
-  Result := Text;
+  Result := Time;
 end;
 
 procedure TJvDynControlCxTimeEdit.ControlSetAnchors(Value: TAnchors);
@@ -2139,7 +2139,7 @@ end;
 
 procedure TJvDynControlCxRichEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxRichEdit.ControlGetValue: Variant;
@@ -2609,7 +2609,7 @@ end;
 
 procedure TJvDynControlCxComboBox.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxComboBox.ControlGetValue: Variant;
@@ -3999,7 +3999,7 @@ end;
 
 procedure TJvDynControlCxColorComboBox.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxColorComboBox.ControlGetValue: Variant;
