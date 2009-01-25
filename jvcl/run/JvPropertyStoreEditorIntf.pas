@@ -54,6 +54,7 @@ type
     function ListEditIntf_ObjectCount : integer;
     function ListEditIntf_GetObject(Index : integer): TPersistent;
     procedure ListEditIntf_MoveObjectPosition (Index : Integer; PosDelta : Integer);
+    procedure ListEditIntf_SortObjects (iAscending : Boolean);
     function ListEditIntf_CreateNewObject: TPersistent;
     function ListEditIntf_CloneNewObject(Index : integer): TPersistent;
     procedure ListEditIntf_DeleteObject (Index : integer);

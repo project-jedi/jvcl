@@ -215,6 +215,7 @@ type
     function ListEditIntf_ObjectCount: integer;
     function ListEditIntf_GetObject(Index: integer): TPersistent;
     procedure ListEditIntf_MoveObjectPosition(CurIndex, NewIndex: Integer);
+    procedure ListEditIntf_SortObjects(iAscending : Boolean);
     function ListEditIntf_CreateNewObject: TPersistent;
     function ListEditIntf_CloneNewObject(Index: integer): TPersistent;
     procedure ListEditIntf_DeleteObject(Index: integer);
@@ -1223,6 +1224,25 @@ end;
 function TJvCustomPropertyListStore.ListEditIntf_ObjectCount: integer;
 begin
   Result := Count;
+end;
+
+function StringListSortCompareDesc(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  if List[Index1] = List[Index2] then
+    Result := 0
+  else if List[Index1] < List[Index2] then
+    Result := 1
+  else
+    Result := -1;
+end;
+
+procedure TJvCustomPropertyListStore.ListEditIntf_SortObjects(iAscending :
+    Boolean);
+begin
+  if iAscending then
+    FItems.Sort
+  else
+    FItems.CustomSort(StringListSortCompareDesc);
 end;
 
 {$IFDEF UNITVERSIONING}

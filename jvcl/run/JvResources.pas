@@ -1791,6 +1791,8 @@ resourcestring
   RSPropertyStoreEditorListButtonDelete = '&Delete';
   RSPropertyStoreEditorListButtonUp = '&Up';
   RSPropertyStoreEditorListButtonDown = 'Do&wn';
+  RSPropertyStoreEditorListButtonSortUp = 'Sort &Asc';
+  RSPropertyStoreEditorListButtonSortDown = 'Sort Desc';
   RSPropertyStoreEditorDialogCaptionEditProperties = 'Edit Properties';
   RSPropertyStoreEditorDeleteEntry = 'Delete Entry?';
 
