@@ -759,9 +759,33 @@ var
   Image: TWinControl;
   DynControlImage: IJvDynControlImage;
   DynControlLabel: IJvDynControlLabel;
-  DynControlAutoSize: IJvDynControlAutoSize;
-  Panel: TWinControl;
+//  DynControlAutoSize: IJvDynControlAutoSize;
+  DynControlAlign: IJvDynControlAlign;
+  MessagePanel: TWinControl;
+  BottomPanel: TWinControl;
+  ResultForm : TDSAMessageForm;
+  Button : TButton;
+  CheckBox : TWinControl;
+  ImagePanel: TWinControl;
+  DynControlBorder: IJvDynControlBevelBorder;
+
+  {$IFDEF COMPILER12_UP}
+  procedure CalcTextRect (iSingle : Boolean; lpString: PWideChar; nCount: Integer;var lpRect: TRect);
+  {$ELSE}
+  procedure CalcTextRect (iSingle : Boolean; lpString: PChar; nCount: Integer;var lpRect: TRect);
+  {$ENDIF}
+  begin
+    if iSingle then
+      DrawText(ResultForm.Canvas.Handle, lpString, nCount, lpRect,
+          DT_CALCRECT or DT_LEFT or DT_SINGLELINE or ResultForm.DrawTextBiDiModeFlagsReadingOnly)
+    else
+      DrawText(ResultForm.Canvas.Handle, lpString, nCount, lpRect,
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or ResultForm.DrawTextBiDiModeFlagsReadingOnly);
+  end;
+
+
 begin
+  ResultForm := nil;
   if Assigned(ADynControlEngine) then
     DynControlEngine := ADynControlEngine
   else
@@ -787,167 +811,161 @@ begin
   end
   else
   begin
-    with TWinControl(CenterParent) do
-    begin
-      CenterParLeft := Left;
-      CenterParTop := Top;
-      CenterParWidth := Width;
-      CenterParHeight := Height;
-    end;
+    CenterParLeft := TWinControl(CenterParent).Left;
+    CenterParTop := TWinControl(CenterParent).Top;
+    CenterParWidth := TWinControl(CenterParent).Width;
+    CenterParHeight := TWinControl(CenterParent).Height;
   end;
   if HelpButton = High(Integer) then
     HelpButton := High(Buttons);
-  Result := TDSAMessageForm.CreateNew(Screen.ActiveCustomForm);
+  ResultForm := TDSAMessageForm.CreateNew(Screen.ActiveCustomForm);
   try
-    with Result do
+    ResultForm.Position := poDesigned; // Delphi 2005 has a new default
+    ResultForm.BiDiMode := Application.BiDiMode;
+    ResultForm.BorderStyle := bsDialog;
+    ResultForm.Canvas.Font := ResultForm.Font;
+    ResultForm.KeyPreview := True;
+    ResultForm.OnKeyDown := ResultForm.CustomKeyDown;
+    ResultForm.OnShow := ResultForm.CustomShow;
+    ResultForm.OnMouseDown := ResultForm.CustomMouseDown;
+    DialogUnits := GetAveCharSize(ResultForm.Canvas);
+    HorzMargin := MulDiv(mcHorzMargin, DialogUnits.X, 4);
+    VertMargin := MulDiv(mcVertMargin, DialogUnits.Y, 8);
+    HorzSpacing := MulDiv(mcHorzSpacing, DialogUnits.X, 4);
+    VertSpacing := MulDiv(mcVertSpacing, DialogUnits.Y, 8);
+    ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
+    ResultForm.Timeout := Abs(ATimeout);
+    for I := Low(Buttons) to High(Buttons) do
     begin
-      Position := poDesigned; // Delphi 2005 has a new default
-      BiDiMode := Application.BiDiMode;
-      BorderStyle := bsDialog;
-      Canvas.Font := Font;
-      KeyPreview := True;
-      OnKeyDown := CustomKeyDown;
-      OnShow := CustomShow;
-      OnMouseDown := CustomMouseDown;
-      DialogUnits := GetAveCharSize(Canvas);
-      HorzMargin := MulDiv(mcHorzMargin, DialogUnits.X, 4);
-      VertMargin := MulDiv(mcVertMargin, DialogUnits.Y, 8);
-      HorzSpacing := MulDiv(mcHorzSpacing, DialogUnits.X, 4);
-      VertSpacing := MulDiv(mcVertSpacing, DialogUnits.Y, 8);
-      ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
-      Timeout := Abs(ATimeout);
-      for I := Low(Buttons) to High(Buttons) do
-      begin
-        TextRect := Rect(0, 0, 0, 0);
-        {Windows.}DrawText(Canvas.Handle, PChar(Buttons[I]), -1, TextRect,
-          DT_CALCRECT or DT_LEFT or DT_SINGLELINE or DrawTextBiDiModeFlagsReadingOnly);
-        with TextRect do
-          if (Right - Left + 8) > ButtonWidth then
-            ButtonWidth := (Right - Left + 8);
-      end;
-      ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
-      ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
-      if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
-        SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
-      else
-        SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
-      DrawText(Canvas.Handle, PChar(Msg), Length(Msg) + 1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
+      TextRect := Rect(0, 0, 0, 0);
+      CalcTextRect (true, PChar(Buttons[I]), -1, TextRect);
+      if (TextRect.Right - TextRect.Left + 8) > ButtonWidth then
+        ButtonWidth := (TextRect.Right - TextRect.Left + 8);
+    end;
+    ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
+    ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
+    if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
+      SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
+    else
+      SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
+    CalcTextRect (False, PChar(Msg), Length(Msg) + 1, TextRect);
 
-      IconTextWidth := TextRect.Right;
-      IconTextHeight := TextRect.Bottom;
-      if CheckCaption <> '' then
+    IconTextWidth := TextRect.Right;
+    IconTextHeight := TextRect.Bottom;
+    if CheckCaption <> '' then
+    begin
+      SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
+      CalcTextRect (False, PChar(CheckCaption), Length(CheckCaption) + 1, TempRect);
+      ChkTextWidth := TempRect.Right;
+    end
+    else
+      ChkTextWidth := 0;
+    if ATimeout > 0 then
+    begin
+      SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
+      CalcTextRect (False, PChar(TimeFormatter(ResultForm.Timeout)),
+        Length(TimeFormatter(ResultForm.Timeout)) + 1, TempRect);
+      TimeoutTextWidth := TempRect.Right;
+    end
+    else
+      TimeoutTextWidth := 0;
+    if APicture <> nil then
+    begin
+      Inc(IconTextWidth, APicture.Width + HorzSpacing);
+      if IconTextHeight < APicture.Height then
+        IconTextHeight := APicture.Height;
+    end;
+    ButtonCount := Length(Buttons);
+    ButtonGroupWidth := 0;
+    if ButtonCount <> 0 then
+      ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
+    ResultForm.ClientWidth := Max(TimeoutTextWidth,
+                                  Max(17 + ChkTextWidth,
+                                      Max(IconTextWidth, ButtonGroupWidth)))
+                              + HorzMargin * 2;
+    ResultForm.ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
+    if CheckCaption <> '' then
+      ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 17;
+    if ATimeout > 0 then
+      ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 13;
+    if ResultForm.Width > Screen.Width then
+      ResultForm.Width := Screen.Width;
+    if ResultForm.Height > Screen.Height then
+      ResultForm.Height := Screen.Height;
+    ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
+    ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
+    if ACaption <> '' then
+      ResultForm.Caption := ACaption
+    else
+      ResultForm.Caption := Application.Title;
+    BottomPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'BottomPanel', '', alBottom);
+    BottomPanel.Height := VertMargin+ButtonHeight;
+    if APicture <> nil then
+    begin
+      ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'BottomPanel', '', alLeft);
+      ImagePanel.Width := APicture.Width + 4 + HorzMargin - 2;
+      Image := DynControlEngine.CreateImageControl(ResultForm, ImagePanel, 'Image');
+      if Supports(Image, IJvDynControlImage, DynControlImage) then
       begin
-        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(CheckCaption), Length(CheckCaption) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-        ChkTextWidth := TempRect.Right;
-      end
+        DynControlImage.ControlSetGraphic(APicture);
+        DynControlImage.ControlSetCenter(True);
+      end;
+      Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 4, APicture.Height + 4);
+      Image.Enabled := False;
+    end;
+    MessagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'Panel', '', alClient);
+    if Supports(MessagePanel, IJvDynControlBevelBorder, DynControlBorder) then
+      DynControlBorder.ControlSetBorderWidth(VertMargin-1);
+    MessageLabel := DynControlEngine.CreateLabelControl(ResultForm, MessagePanel, 'Message', Msg, nil);
+
+    if Supports(MessageLabel, IJvDynControlAlign, DynControlAlign) then
+      DynControlAlign.ControlSetAlign(alClient);
+
+    if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
+      DynControlLabel.ControlSetWordWrap(True);
+
+    MessageLabel.BoundsRect := TextRect;
+    MessageLabel.BiDiMode := ResultForm.BiDiMode;
+
+    X := (ResultForm.ClientWidth - ButtonGroupWidth) div 2;
+    for I := Low(Buttons) to High(Buttons) do
+    begin
+      Button := DynControlEngine.CreateButton(ResultForm, BottomPanel, 'Button' + IntToStr(I), Buttons[I], '', nil, False, False);
+      Button.ModalResult := Results[I];
+      if I = DefaultButton then
+        Button.Default := True;
+      if I = CancelButton then
+        Button.Cancel := True;
+      Button.SetBounds(X, 0,//IconTextHeight + VertMargin + VertSpacing,
+                   ButtonWidth, ButtonHeight);
+      Inc(X, ButtonWidth + ButtonSpacing);
+      if I = HelpButton then
+        Button.OnClick := ResultForm.HelpButtonClick;
+    end;
+    if CheckCaption <> '' then
+    begin
+      CheckBox := DynControlEngine.CreateCheckboxControl(ResultForm, BottomPanel, 'DontShowAgain', CheckCaption);
+      CheckBox.BiDiMode := ResultForm.BiDiMode;
+      CheckBox.SetBounds(HorzMargin, VertSpacing+ButtonHeight,//IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
+        ResultForm.ClientWidth - 2 * HorzMargin, CheckBox.Height);
+    end;
+    if ATimeout > 0 then
+    begin
+      CountDownlabel := DynControlEngine.CreateLabelControl(ResultForm, BottomPanel, 'Countdown',
+        TimeFormatter(ResultForm.Timeout), nil);
+      CountDownlabel.BiDiMode := ResultForm.BiDiMode;
+      if CheckCaption = '' then
+        CountDownlabel.SetBounds(HorzMargin, VertSpacing+ButtonHeight,//IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
+          ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height)
       else
-        ChkTextWidth := 0;
-      if ATimeout > 0 then
-      begin
-        SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
-        DrawText(Canvas.Handle, PChar(TimeFormatter(Timeout)),
-          Length(TimeFormatter(Timeout)) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
-        TimeoutTextWidth := TempRect.Right;
-      end
-      else
-        TimeoutTextWidth := 0;
-      if APicture <> nil then
-      begin
-        Inc(IconTextWidth, APicture.Width + HorzSpacing);
-        if IconTextHeight < APicture.Height then
-          IconTextHeight := APicture.Height;
-      end;
-      ButtonCount := Length(Buttons);
-      ButtonGroupWidth := 0;
-      if ButtonCount <> 0 then
-        ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
-      ClientWidth := Max(TimeoutTextWidth, Max(17 + ChkTextWidth, Max(IconTextWidth, ButtonGroupWidth))) + HorzMargin *
-        2;
-      ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
-      if CheckCaption <> '' then
-        Result.ClientHeight := Result.ClientHeight + VertMargin + 17;
-      if ATimeout > 0 then
-        Result.ClientHeight := Result.ClientHeight + VertMargin + 13;
-      Left := (CenterParWidth div 2) - (Width div 2) + CenterParLeft;
-      Top := (CenterParHeight div 2) - (Height div 2) + CenterParTop;
-      if ACaption <> '' then
-        Caption := ACaption
-      else
-        Caption := Application.Title;
-      Panel := DynControlEngine.CreatePanelControl(Result, Result, 'Panel', '', alClient);
-      if APicture <> nil then
-      begin
-        Image := DynControlEngine.CreateImageControl(Result, Panel, 'Image');
-        if Supports(Image, IJvDynControlImage, DynControlImage) then
-        begin
-          DynControlImage.ControlSetGraphic(APicture);
-          DynControlImage.ControlSetCenter(True);
-        end;
-        Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 4, APicture.Height + 4);
-        Image.Enabled := False;
-      end;
-      MessageLabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Message', Msg, nil);
-      if Supports(MessageLabel, IJvDynControlAutoSize, DynControlAutoSize) then
-        DynControlAutoSize.ControlSetAutoSize(True);
-      if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
-        DynControlLabel.ControlSetWordWrap(True);
-      with MessageLabel do
-      begin
-        BoundsRect := TextRect;
-        BiDiMode := Result.BiDiMode;
-        ALeft := IconTextWidth - TextRect.Right + HorzMargin;
-        if UseRightToLeftAlignment then
-          ALeft := Result.ClientWidth - ALeft - Width;
-        SetBounds(ALeft, VertMargin,
-          TextRect.Right, TextRect.Bottom);
-      end;
-      X := (ClientWidth - ButtonGroupWidth) div 2;
-      for I := Low(Buttons) to High(Buttons) do
-      begin
-        with DynControlEngine.CreateButton(Result, Panel, 'Button' + IntToStr(I), Buttons[I], '', nil, False, False) do
-        begin
-          ModalResult := Results[I];
-          if I = DefaultButton then
-            Default := True;
-          if I = CancelButton then
-            Cancel := True;
-          SetBounds(X, IconTextHeight + VertMargin + VertSpacing, ButtonWidth, ButtonHeight);
-          Inc(X, ButtonWidth + ButtonSpacing);
-          if I = HelpButton then
-            OnClick := HelpButtonClick;
-        end;
-      end;
-      if CheckCaption <> '' then
-        with DynControlEngine.CreateCheckboxControl(Result, Panel, 'DontShowAgain', CheckCaption) do
-        begin
-          BiDiMode := Result.BiDiMode;
-          SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
-            Result.ClientWidth - 2 * HorzMargin, Height);
-        end;
-      if ATimeout > 0 then
-      begin
-        CountDownlabel := DynControlEngine.CreateLabelControl(Result, Panel, 'Countdown',
-          TimeFormatter(Timeout), nil);
-        with CountDownlabel do
-        begin
-          BiDiMode := Result.BiDiMode;
-          if CheckCaption = '' then
-            SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
-              Result.ClientWidth - 2 * HorzMargin, Height)
-          else
-            SetBounds(HorzMargin, IconTextHeight + 2 * VertMargin + VertSpacing * 2 + ButtonHeight + 17,
-              Result.ClientWidth - 2 * HorzMargin, Height);
-        end;
-      end;
+        CountDownlabel.SetBounds(HorzMargin, VertMargin+VertSpacing+ButtonHeight,//IconTextHeight + 2 * VertMargin + VertSpacing * 2 + ButtonHeight + 17,
+          ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height);
     end;
   except
-    Result.Free;
+    FreeAndNil(ResultForm);
     raise;
   end;
+  Result := ResultForm;
 end;
 
 //=== { TDSARegister } =======================================================
