@@ -759,7 +759,6 @@ var
   Image: TWinControl;
   DynControlImage: IJvDynControlImage;
   DynControlLabel: IJvDynControlLabel;
-//  DynControlAutoSize: IJvDynControlAutoSize;
   DynControlAlign: IJvDynControlAlign;
   MessagePanel: TWinControl;
   BottomPanel: TWinControl;
@@ -936,8 +935,7 @@ begin
         Button.Default := True;
       if I = CancelButton then
         Button.Cancel := True;
-      Button.SetBounds(X, 0,//IconTextHeight + VertMargin + VertSpacing,
-                   ButtonWidth, ButtonHeight);
+      Button.SetBounds(X, 0, ButtonWidth, ButtonHeight);
       Inc(X, ButtonWidth + ButtonSpacing);
       if I = HelpButton then
         Button.OnClick := ResultForm.HelpButtonClick;
@@ -946,7 +944,7 @@ begin
     begin
       CheckBox := DynControlEngine.CreateCheckboxControl(ResultForm, BottomPanel, 'DontShowAgain', CheckCaption);
       CheckBox.BiDiMode := ResultForm.BiDiMode;
-      CheckBox.SetBounds(HorzMargin, VertSpacing+ButtonHeight,//IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
+      CheckBox.SetBounds(HorzMargin, VertSpacing+ButtonHeight,
         ResultForm.ClientWidth - 2 * HorzMargin, CheckBox.Height);
     end;
     if ATimeout > 0 then
@@ -955,10 +953,10 @@ begin
         TimeFormatter(ResultForm.Timeout), nil);
       CountDownlabel.BiDiMode := ResultForm.BiDiMode;
       if CheckCaption = '' then
-        CountDownlabel.SetBounds(HorzMargin, VertSpacing+ButtonHeight,//IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
+        CountDownlabel.SetBounds(HorzMargin, VertSpacing+ButtonHeight,
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height)
       else
-        CountDownlabel.SetBounds(HorzMargin, VertMargin+VertSpacing+ButtonHeight,//IconTextHeight + 2 * VertMargin + VertSpacing * 2 + ButtonHeight + 17,
+        CountDownlabel.SetBounds(HorzMargin, VertMargin+VertSpacing+ButtonHeight,
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height);
     end;
   except
