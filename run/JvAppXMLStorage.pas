@@ -468,7 +468,7 @@ end;
 procedure TJvCustomAppXMLStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
   inherited SplitKeyPath(Path, Key, ValueName);
-//  ValueName := CheckNodeNameCharacters(ValueName);
+  ValueName := CheckNodeNameCharacters(ValueName);
   if Key = '' then
     Key := Path;
 end;
