@@ -81,6 +81,7 @@ begin
      UseLanguage(CmdOptions.Lang);
   {$ENDIF USE_DXGETTEXT}
   Application.Initialize;
+  Application.Title := 'JVCL Installer';
   Application.CreateForm(TFormMain, FormMain);
   Application.CreateForm(TFormJvclIncConfig, FormJvclIncConfig);
   Application.CreateForm(TFormCompileMessages, FormCompileMessages);
