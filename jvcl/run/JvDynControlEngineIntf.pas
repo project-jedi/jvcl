@@ -266,6 +266,7 @@ type
 
   IJvDynControlTreeView = interface
     ['{8DFBBAB2-C9C4-4709-A71F-E522D3998650}']
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetAutoExpand(Value: Boolean);
     procedure ControlSetHotTrack(Value: Boolean);
     procedure ControlSetShowHint(Value: Boolean);
