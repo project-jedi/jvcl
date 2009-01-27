@@ -29,6 +29,12 @@ Description:
             Button: TJvOutlookBarButton
 
 Known Issues:
+  VISTA/THEMING CHANGES: WARREN POSTMA, NOV 2007 :
+                  Vista paint fix, and support for completely user decided color
+                  schemes, such as white on black, for  low-visibility-users
+                  (high contrast black on white) support.
+                  Outlook bar buttons now have color properties (instead of
+                  assuming we will use the clBtnFace type system colors)
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -50,12 +56,19 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvConsts, JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
+
+  JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
+
+const
+  CM_CAPTION_EDITING = CM_BASE + 756;
+  CM_CAPTION_EDIT_ACCEPT = CM_CAPTION_EDITING + 1;
+  CM_CAPTION_EDIT_CANCEL = CM_CAPTION_EDITING + 2;
 
 type
   TJvBarButtonSize = (olbsLarge, olbsSmall);
   TJvCustomOutlookBar = class;
   TJvOutlookBarButton = class;
+
 
   TJvOutlookBarButtonActionLink = class(TActionLink)
   private
@@ -220,8 +233,44 @@ type
   TJvOutlookBarCustomDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
     AStage: TJvOutlookBarCustomDrawStage; AIndex: Integer; ADown, AInside: Boolean; var DefaultDraw: Boolean) of object;
 
+
+
+
+  TJvPageBtnProps = class {warren added}
+
+  private
+    FOwner      : TJvCustomOutlookBar;
+    FHighlight  : TColor;
+    FFace       : TColor;
+    FShadow     : TColor;
+    FDkShadow   : TColor;
+
+    FBorderWidth      : INteger;
+
+    procedure SetDkShadow(const Value: TColor);
+    procedure SetFace(const Value: TColor);
+    procedure SetHighlight(const Value: TColor);
+    procedure SetShadow(const Value: TColor);
+    procedure SetBorderWidth(const Value: INteger);
+
+  public
+      constructor Create(owner:TJvCustomOUtlookBar);
+  published
+          property Shadow:TColor      read FShadow write SetShadow        default clBtnShadow;
+          property Highlight:TColor   read FHighlight write SetHighlight  default clBtnHighlight;
+          property DkShadow:TColor    read FDkShadow write SetDkShadow    default cl3DDkShadow;
+          property Face:TColor        read FFace write SetFace            default clBtnFace;
+
+          property BorderWidth      : INteger read FBorderWidth write SetBorderWidth default 1;
+
+  end;
+
+
+
+
   TJvCustomOutlookBar = class(TJvCustomControl)
   private
+    FPageBtnProps:TJvPageBtnProps;
     FTopButton: TSpeedButton;
     FBtmButton: TSpeedButton;
     FPages: TJvOutlookBarPages;
@@ -240,6 +289,7 @@ type
     FHotPageBtn: Integer;
     FThemedBackGround: Boolean;
     {$ENDIF JVCLThemesEnabled}
+    FThemed:Boolean;
     FOnPageChange: TOutlookBarPageChange;
     FOnPageChanging: TOutlookBarPageChanging;
     FButtonRect: TRect;
@@ -252,6 +302,9 @@ type
     FOnEditPage: TOutlookBarEditCaption;
     FOnCustomDraw: TJvOutlookBarCustomDrawEvent;
     FPageImages: TCustomImageList;
+    FDisabledFontColor1:TColor; //clWhite;
+    FDisabledFontColor2:TColor;
+
     procedure SetPages(const Value: TJvOutlookBarPages);
     procedure DoChangeLinkChange(Sender: TObject);
     procedure SetActivePageIndex(const Value: Integer);
@@ -283,6 +336,9 @@ type
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
+    procedure SetDisabledFontColor1(const Value: TColor);
+    procedure SetDisabledFontColor2(const Value: TColor);
+    procedure SetThemed(const Value: Boolean);
   protected
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override;
@@ -343,6 +399,13 @@ type
     property OnEditButton: TOutlookBarEditCaption read FOnEditButton write FOnEditButton;
     property OnEditPage: TOutlookBarEditCaption read FOnEditPage write FOnEditPage;
     property OnCustomDraw: TJvOutlookBarCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
+
+    property Themed:Boolean read FThemed write SetThemed;
+    property PageBtnProps:TJvPageBtnProps read FPageBtnProps;
+
+    property DisabledFontColor1:TColor read FDisabledFontColor1 write SetDisabledFontColor1; //clWhite;
+    property DisabledFontColor2:TColor read FDisabledFontColor2 write SetDisabledFontColor2; //clGrayText;
+
   public
     property ActivePage: TJvOutlookBarPage read GetActivePage;
   end;
@@ -350,6 +413,14 @@ type
   TJvOutlookBar = class(TJvCustomOutlookBar)
   public
     property PopUpObject;
+
+    property Themed;
+
+    property DisabledFontColor1;
+    property DisabledFontColor2;
+
+    property PageBtnProps;
+
   published
     property Align;
     property Pages;
@@ -415,7 +486,8 @@ const
 implementation
 
 uses
-  Math;
+  Math,
+  JvConsts;
 
 {$R JvOutlookBar.res}
 
@@ -424,6 +496,12 @@ const
   cButtonTopOffset = 2;
   cInitRepeatPause = 400;
   cRepeatPause = 100;
+
+
+function IsVista:Boolean;
+begin
+  result := (Win32MajorVersion>=6);
+end;
 
 function MethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
@@ -1292,7 +1370,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  if ThemeServices.ThemesEnabled and not Flat then
+  if {Themed}ThemeServices.ThemesEnabled and (not Flat) then
   begin
     if not Enabled then
       Button := tsArrowBtnUpDisabled
@@ -1330,10 +1408,19 @@ var
   Bmp: TBitmap;
 begin
   inherited Create(AOwner);
+
+  FPageBtnProps := TJvPageBtnProps.Create(self);
   DoubleBuffered := True;
+  {$IFDEF JVCLThemesEnabled}
+  FThemed := ThemeServices.ThemesEnabled;
+  {$endif}
+
   ControlStyle := ControlStyle - [csAcceptsControls] + [csOpaque];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   Bmp := TBitmap.Create;
+  FDisabledFontColor1 := clWhite;
+  FDisabledFontColor2 := clGrayText;
+
   try
     {$IFDEF JVCLThemesEnabled}
     FTopButton := TJvThemedTopBottomButton.Create(Self);
@@ -1410,6 +1497,7 @@ begin
   FSmallChangeLink.Free;
   FPageChangeLink.Free;
   FPages.Free;
+  FPageBtnProps.Free;
   inherited Destroy;
 end;
 
@@ -1478,6 +1566,8 @@ begin
   end;
 end;
 
+
+{ Warren modified this so you can have some weird page button colors that aren't standard windows colors } 
 procedure TJvCustomOutlookBar.DrawPageButton(R: TRect; Index: Integer; Pressed: Boolean);
 var
   SavedDC, ATop: Integer;
@@ -1485,25 +1575,26 @@ var
   Flags: Cardinal;
   HasImage: Boolean;
 begin
+  Assert(Assigned(FPageBtnProps));
   ATop := R.Top + 1;
   if Pressed then
   begin
     if BorderStyle = bsNone then
-      Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
+      Frame3D(Canvas, R, FPageBtnProps.Shadow, FPageBtnProps.Highlight,   FPageBtnProps.BorderWidth)
     else
     begin
-      Frame3D(Canvas, R, cl3DDkShadow, clBtnHighlight, 1);
-      Frame3D(Canvas, R, clBtnShadow, clBtnFace, 1);
+      Frame3D(Canvas, R, FPageBtnProps.DkShadow, FPageBtnProps.Highlight, FPageBtnProps.BorderWidth);
+      Frame3D(Canvas, R, FPageBtnProps.Shadow,   FPageBtnProps.Face,      FPageBtnProps.BorderWidth);
     end;
   end
   else
   begin
     if BorderStyle = bsNone then
-      Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1)
+      Frame3D(Canvas, R, FPageBtnProps.Highlight, FPageBtnProps.Shadow,    FPageBtnProps.BorderWidth)
     else
     begin
-      Frame3D(Canvas, R, clBtnHighlight, cl3DDkShadow, 1);
-      Frame3D(Canvas, R, clBtnFace, clBtnShadow, 1);
+      Frame3D(Canvas, R, FPageBtnProps.Highlight, FPageBtnProps.DkShadow,  FPageBtnProps.BorderWidth);
+      Frame3D(Canvas, R, FPageBtnProps.Face,      FPageBtnProps.Shadow,    FPageBtnProps.BorderWidth);
     end;
   end;
   Flags := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
@@ -1515,7 +1606,8 @@ begin
         begin
           if HasImage then
           begin
-            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,  Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+               Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end
           else
@@ -1525,14 +1617,16 @@ begin
       taCenter:
         if HasImage then
         begin
-          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,  Pages[Index].Enabled);
+          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+             Pages[Index].Enabled);
           Inc(R.Left, PageImages.Width + 4);
         end;
       taRightJustify:
         begin
           if HasImage then
           begin
-            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,  Pages[Index].Enabled);
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+              Pages[Index].Enabled);
             Inc(R.Left, PageImages.Width + 8);
           end;
           Dec(R.Right, 4);
@@ -1549,10 +1643,10 @@ begin
     if not Pages[Index].Enabled then
     begin
       OffsetRect(R, 1, 1);
-      Canvas.Font.Color := clWhite;
+      Canvas.Font.Color := FDisabledFontColor1; //clWhite;
       DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
       OffsetRect(R, -1, -1);
-      Canvas.Font.Color := clGrayText;
+      Canvas.Font.Color := FDisabledFontColor2; //clGrayText;
     end;
     DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
   finally
@@ -1581,7 +1675,7 @@ begin
     if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
+      if Themed then // Warren changed.
       begin
         if (FPressedPageBtn = I) or (FHotPageBtn = I) then
           ToolBar := ttbButtonPressed
@@ -1616,7 +1710,7 @@ begin
       else
       {$ENDIF JVCLThemesEnabled}
       begin
-        Canvas.Brush.Color := clBtnFace;
+        Canvas.Brush.Color := PageBtnProps.Face;// clBtnFace;
         Canvas.FillRect(R);
       end;
       DrawPageButton(R, I, FPressedPageBtn = I);
@@ -1655,7 +1749,7 @@ begin
   Canvas.Font := Pages[Index].Font;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if Themed then
   begin
     Details := ThemeServices.GetElementDetails(ttbButtonNormal);
     with Details do
@@ -1669,7 +1763,7 @@ begin
       Canvas.Font := Pages[Index].Font;
 //      Canvas.Rectangle(R);  // DEBUG
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
+      if Themed then
         Canvas.Font.Color := ThemedColor;
       {$ENDIF JVCLThemesEnabled}
       if Pages[Index].Buttons[I].Down then
@@ -1688,6 +1782,7 @@ begin
                   if LargeImages <> nil then
                     LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
                       Pages[Index].Buttons[I].ImageIndex,
+                      
                       Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
@@ -1697,7 +1792,7 @@ begin
                 if not Pages[Index].Enabled or not Pages[Index].Buttons[I].Enabled then
                 begin
                   if ColorToRGB(Pages[Index].Color) = ColorToRGB(clGrayText) then
-                    Canvas.Font.Color := clBtnFace
+                    Canvas.Font.Color := PageBtnProps.Face//clBtnFace
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
@@ -1725,7 +1820,7 @@ begin
                 if not Pages[Index].Enabled or not Pages[Index].Buttons[I].Enabled then
                 begin
                   if ColorToRGB(Pages[Index].Color) = ColorToRGB(clGrayText) then
-                    Canvas.Font.Color := clBtnFace
+                    Canvas.Font.Color := PageBtnProps.Face//clBtnFace
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
@@ -1827,7 +1922,7 @@ begin
       if not DrawPicture(R, Pages[PageIndex].Picture) then
       begin
         {$IFDEF JVCLThemesEnabled}
-        if (Canvas.Brush.Color = clDefault) and ThemedBackground and ThemeServices.ThemesEnabled then
+        if (Canvas.Brush.Color = clDefault) and ThemedBackground and Themed then
         begin
           Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
           ThemeServices.DrawElement(Canvas.Handle, Details, R);
@@ -1870,7 +1965,7 @@ begin
     if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
+      if Themed then
       begin
         if (FPressedPageBtn = I) or (FHotPageBtn = I) then
           ToolBar := ttbButtonPressed
@@ -1905,7 +2000,7 @@ begin
       else
       {$ENDIF JVCLThemesEnabled}
       begin
-        Canvas.Brush.Color := clBtnFace;
+        Canvas.Brush.Color := PageBtnProps.Face;//clBtnFace;
         Canvas.FillRect(R);
       end;
       DrawPageButton(R, I, FPressedPageBtn = I);
@@ -2097,7 +2192,7 @@ begin
   if Pages.Count = 0 then // we only need to draw the background when there are no pages
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemedBackground and ThemeServices.ThemesEnabled then
+    if ThemedBackground and Themed then
     begin
       R := ClientRect;
       ClipRect := R;
@@ -2112,6 +2207,11 @@ begin
         Canvas.FillRect(ClientRect);
     end;
   end;
+
+  if IsVista then { Warren Vista paint bug workaround }
+      Canvas.FillRect(ClientRect);
+  
+
   SetBkMode(Canvas.Handle, TRANSPARENT);
   I := DrawTopPages;
   if I >= 0 then
@@ -2195,6 +2295,16 @@ begin
   end;
 end;
 
+procedure TJvCustomOutlookBar.SetDisabledFontColor1(const Value: TColor); {Warren add}
+begin
+  FDisabledFontColor1 := Value;
+end;
+
+procedure TJvCustomOutlookBar.SetDisabledFontColor2(const Value: TColor); {Warren add}
+begin
+  FDisabledFontColor2 := Value;
+end;
+
 procedure TJvCustomOutlookBar.SetLargeImages(const Value: TCustomImageList);
 begin
   if FLargeImages <> Value then
@@ -2235,6 +2345,13 @@ begin
   end;
 end;
 
+procedure TJvCustomOutlookBar.SetThemed(const Value: Boolean);
+begin
+  if Value and (not ThemeServices.ThemesEnabled) then  { Warren added ability to theme/detheme this component for yourself instead of just checking if XP is themed.}
+      exit;
+  FThemed := Value;
+end;
+
 procedure TJvCustomOutlookBar.DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
 var
   R: TRect;
@@ -2251,7 +2368,7 @@ begin
   if DoDrawButtonFrame(R, ButtonIndex, (PressedIndex = ButtonIndex) or Pages[PageIndex].Buttons[ButtonIndex].Down, True) then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if Themed then
     begin
       if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
         Details := ThemeServices.GetElementDetails(ttbButtonPressed)
@@ -2319,7 +2436,7 @@ begin
     the currently pressed page button }
   P := GetPageButtonAtPos(Point(X, Y));
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if Themed then
   begin
     if ((P = nil) and (FHotPageBtn >= 0)) or (Assigned(P) and (P.Index <> FHotPageBtn)) then
     begin
@@ -2438,7 +2555,7 @@ begin
   FPressedPageBtn := -1;
   FLastButtonIndex := -1;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and (FHotPageBtn >= 0) then
+  if Themed and (FHotPageBtn >= 0) then
   begin
     R := GetPageButtonRect(FHotPageBtn);
     RedrawRect(R);
@@ -2598,7 +2715,7 @@ begin
   if Value <> FThemedBackGround then
   begin
     FThemedBackGround := Value;
-    if ([csDesigning, csLoading] * ComponentState = []) and ThemeServices.ThemesEnabled then
+    if ([csDesigning, csLoading] * ComponentState = []) and Themed then
       Repaint;
   end;
 end;
@@ -2726,6 +2843,46 @@ begin
     for J := 0 to Pages[I].Buttons.Count - 1 do
       Pages[I].Buttons[J].ActionChange(Pages[I].Buttons[J].Action, csLoading in ComponentState);
 end;
+
+//---- Warren added page button properties Nov 2008
+
+constructor TJvPageBtnProps.Create(owner: TJvCustomOUtlookBar);
+begin
+    Fowner     := owner;
+    FShadow    := clBtnShadow;
+    FHighlight := clBtnHighlight;
+    FDkShadow  := cl3DDkShadow;
+    FFace      := clBtnFace;
+
+    FBorderWidth := 1;
+end;
+
+procedure TJvPageBtnProps.SetBorderWidth(const Value: INteger);
+begin
+  FBorderWidth := Value;
+end;
+
+procedure TJvPageBtnProps.SetDkShadow(const Value: TColor);
+begin
+  FDkShadow := Value;
+end;
+
+procedure TJvPageBtnProps.SetFace(const Value: TColor);
+begin
+  FFace := Value;
+end;
+
+procedure TJvPageBtnProps.SetHighlight(const Value: TColor);
+begin
+  FHighlight := Value;
+end;
+
+procedure TJvPageBtnProps.SetShadow(const Value: TColor);
+begin
+  FShadow := Value;
+end;
+
+
 
 {$IFDEF UNITVERSIONING}
 initialization
