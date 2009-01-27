@@ -154,6 +154,7 @@ type
     procedure Button18Click(Sender: TObject);
     procedure Button19Click(Sender: TObject);
     procedure Button20Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
   private
     { Private-Deklarationen }
     UnitVersionForm: TCustomForm;
@@ -1493,6 +1494,20 @@ begin
   finally
     FreeAndNil(ParameterList);
   end;
+end;
+
+procedure TJvParameterListDemoMainFrm.Button9Click(Sender: TObject);
+begin
+  JVDSADialogs.MessageDlg('Simple confirmation box, standard title, VCL buttons and image. Multi Lines'#13#10+
+  'Line2'#13#10+
+  'Line3'#13#10+
+  'Line4'#13#10+
+  'Line5'#13#10+
+  'Line6'#13#10+
+  'Line7'#13#10+
+  'Line8'#13#10+
+  'Line9'#13#10,
+    mtConfirmation, [mbYes, mbNo], 0);
 end;
 
 procedure TJvParameterListDemoMainFrm.SetDevExpressDynControlEngineProperties(
