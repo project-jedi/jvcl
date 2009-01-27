@@ -1391,7 +1391,7 @@ procedure TJvListParameter.SetAsString(const Value: string);
 var
   I: Integer;
 begin
-  I := ItemList.IndexOf(Value);
+  I := ItemList.IndexOf(VarToStr(Value));
   if (I >= 0) and (I < ItemList.Count) then
     ItemIndex := I
   else
@@ -1505,7 +1505,7 @@ begin
       JvDynControlData.ControlValue := Value
     else
     begin
-      Index := ItemList.IndexOf(Value);
+      Index := ItemList.IndexOf(VarToStr(Value));
       if (Index >= 0) and (Index < ItemList.Count) then
         JvDynControlData.ControlValue := ItemList[Index]
       else
