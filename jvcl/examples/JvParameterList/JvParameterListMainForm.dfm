@@ -1744,8 +1744,8 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Width = 126
         Height = 25
         Caption = 'MessageDlg &E'
-        Enabled = False
         TabOrder = 5
+        OnClick = Button9Click
       end
       object Button10: TButton
         Left = 134
