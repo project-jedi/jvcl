@@ -765,7 +765,7 @@ var
   Button : TButton;
   CheckBox : TWinControl;
   ImagePanel: TWinControl;
-  DynControlBorder: IJvDynControlBevelBorder;
+  CheckPanel : TWinControl;
 
   {$IFDEF COMPILER12_UP}
   procedure CalcTextRect (iSingle : Boolean; lpString: PWideChar; nCount: Integer;var lpRect: TRect);
@@ -897,11 +897,20 @@ begin
       ResultForm.Caption := ACaption
     else
       ResultForm.Caption := Application.Title;
+
+    CheckPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'CheckPanel', '', alBottom);
+    CheckPanel.Visible := (CheckCaption <> '') or (ATimeout > 0);
     BottomPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'BottomPanel', '', alBottom);
-    BottomPanel.Height := 2*VertMargin+ButtonHeight;
-    if APicture <> nil then
+    if CheckPanel.Visible then
+      BottomPanel.Height := VertSpacing+ButtonHeight
+    else
+      BottomPanel.Height := VertSpacing+VertMargin+ButtonHeight;
+    CheckPanel.Top := BottomPanel.Top +1;
+    ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'ImagePanel', '', alLeft);
+    ImagePanel.Visible := Assigned(APicture);
+
+    if Assigned(APicture) then
     begin
-      ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'ImagePanel', '', alLeft);
       ImagePanel.Width := APicture.Width + 4 + HorzMargin - 2;
       Image := DynControlEngine.CreateImageControl(ResultForm, ImagePanel, 'Image');
       if Supports(Image, IJvDynControlImage, DynControlImage) then
@@ -913,17 +922,20 @@ begin
       Image.Enabled := False;
     end;
     MessagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'Panel', '', alClient);
-    if Supports(MessagePanel, IJvDynControlBevelBorder, DynControlBorder) then
-      DynControlBorder.ControlSetBorderWidth(VertMargin-1);
+
     MessageLabel := DynControlEngine.CreateLabelControl(ResultForm, MessagePanel, 'Message', Msg, nil);
 
-    if Supports(MessageLabel, IJvDynControlAlign, DynControlAlign) then
-      DynControlAlign.ControlSetAlign(alClient);
+    if Assigned(APicture) then
+      MessageLabel.Left := HorzSpacing
+    else
+      MessageLabel.Left := HorzMargin;
+    MessageLabel.Top := VertMargin;
+    MessageLabel.Width := MessagePanel.Width-MessageLabel.Left;
+    MessageLabel.Height := MessagePanel.Height - MessageLabel.Top;
 
     if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
       DynControlLabel.ControlSetWordWrap(True);
 
-    MessageLabel.BoundsRect := TextRect;
     MessageLabel.BiDiMode := ResultForm.BiDiMode;
 
     X := (ResultForm.ClientWidth - ButtonGroupWidth) div 2;
@@ -935,29 +947,36 @@ begin
         Button.Default := True;
       if I = CancelButton then
         Button.Cancel := True;
-      Button.SetBounds(X, VertMargin, ButtonWidth, ButtonHeight);
+      Button.SetBounds(X, VertSpacing, ButtonWidth, ButtonHeight);
       Inc(X, ButtonWidth + ButtonSpacing);
       if I = HelpButton then
         Button.OnClick := ResultForm.HelpButtonClick;
     end;
     if CheckCaption <> '' then
     begin
-      CheckBox := DynControlEngine.CreateCheckboxControl(ResultForm, BottomPanel, 'DontShowAgain', CheckCaption);
+      CheckBox := DynControlEngine.CreateCheckboxControl(ResultForm, CheckPanel, 'DontShowAgain', CheckCaption);
       CheckBox.BiDiMode := ResultForm.BiDiMode;
-      CheckBox.SetBounds(HorzMargin, VertSpacing+ButtonHeight,
+      CheckBox.SetBounds(HorzMargin, 0,
         ResultForm.ClientWidth - 2 * HorzMargin, CheckBox.Height);
+      CheckPanel.Height := CheckBox.Height;
     end;
     if ATimeout > 0 then
     begin
-      CountDownlabel := DynControlEngine.CreateLabelControl(ResultForm, BottomPanel, 'Countdown',
+      CountDownlabel := DynControlEngine.CreateLabelControl(ResultForm, CheckPanel, 'Countdown',
         TimeFormatter(ResultForm.Timeout), nil);
       CountDownlabel.BiDiMode := ResultForm.BiDiMode;
       if CheckCaption = '' then
-        CountDownlabel.SetBounds(HorzMargin, VertSpacing+ButtonHeight,
+      begin
+        CheckPanel.Height := CheckPanel.Height+CountDownlabel.Height+VertSpacing+VertMargin;
+        CountDownlabel.SetBounds (HorzMargin, CheckPanel.Height+VertSpacing,
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height)
+      end
       else
-        CountDownlabel.SetBounds(HorzMargin, VertMargin+VertSpacing+ButtonHeight,
+      begin
+        CheckPanel.Height := CountDownlabel.Height+VertMargin;
+        CountDownlabel.SetBounds(HorzMargin, 0,
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height);
+      end;
     end;
   except
     FreeAndNil(ResultForm);
