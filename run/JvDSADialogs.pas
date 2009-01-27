@@ -49,6 +49,7 @@ type
     FTimeout: Integer;
     FTimer: TTimer;
     FCountdown: TLabel;
+    FMsg: string;
   protected
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -62,6 +63,7 @@ type
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     function IsDSAChecked: Boolean;
+    property Msg: string read FMsg write FMsg;
     property Timeout: Integer read FTimeout write FTimeout;
   end;
 
@@ -616,9 +618,9 @@ begin
       FTimer.Enabled := False;
       for I := 0 to ComponentCount - 1 do
       begin
-        if (Components[I] is TButton) and (Components[I] as TButton).Default then
+        if (Components[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}) and (Components[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}).Default then
         begin
-          (Components[I] as TButton).Click;
+          (Components[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}).Click;
           Exit;
         end;
       end;
@@ -672,14 +674,11 @@ var
 begin
   DividerLine := StringOfChar('-', 27) + CrLf;
   for I := 0 to ComponentCount - 1 do
-    if Components[I] is TButton then
+    if Components[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} then
       ButtonCaptions := ButtonCaptions + TButton(Components[I]).Caption + StringOfChar(' ', 3);
   ButtonCaptions := StringReplace(ButtonCaptions, '&', '', [rfReplaceAll]);
-  I := ComponentCount - 1;
-  while (I > -1) and not (Components[I] is TLabel) do
-    Dec(I);
   Result := Format('%s%s%s%s%s%s%s%s%s%s', [DividerLine, Caption, CrLf, DividerLine,
-    TLabel(Components[I]).Caption, CrLf, DividerLine, ButtonCaptions, CrLf, DividerLine]);
+    Msg, CrLf, DividerLine, ButtonCaptions, CrLf, DividerLine]);
 end;
 
 class function TDSAMessageForm.TimeoutUnit(Count: Integer; Seconds: Boolean): string;
@@ -819,6 +818,7 @@ begin
     HelpButton := High(Buttons);
   ResultForm := TDSAMessageForm.CreateNew(Screen.ActiveCustomForm);
   try
+    ResultForm.Msg := Msg;
     ResultForm.Position := poDesigned; // Delphi 2005 has a new default
     ResultForm.BiDiMode := Application.BiDiMode;
     ResultForm.BorderStyle := bsDialog;
@@ -887,10 +887,10 @@ begin
       ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 17;
     if ATimeout > 0 then
       ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 13;
-    if ResultForm.Width > Screen.Width then
-      ResultForm.Width := Screen.Width;
-    if ResultForm.Height > Screen.Height then
-      ResultForm.Height := Screen.Height;
+    if ResultForm.ClientWidth > Screen.Width-100 then
+      ResultForm.ClientWidth := Screen.Width-100;
+    if ResultForm.ClientHeight > Screen.Height-100 then
+      ResultForm.ClientHeight := Screen.Height-100;
     ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
     ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
     if ACaption <> '' then
@@ -898,10 +898,10 @@ begin
     else
       ResultForm.Caption := Application.Title;
     BottomPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'BottomPanel', '', alBottom);
-    BottomPanel.Height := VertMargin+ButtonHeight;
+    BottomPanel.Height := 2*VertMargin+ButtonHeight;
     if APicture <> nil then
     begin
-      ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'BottomPanel', '', alLeft);
+      ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'ImagePanel', '', alLeft);
       ImagePanel.Width := APicture.Width + 4 + HorzMargin - 2;
       Image := DynControlEngine.CreateImageControl(ResultForm, ImagePanel, 'Image');
       if Supports(Image, IJvDynControlImage, DynControlImage) then
@@ -935,7 +935,7 @@ begin
         Button.Default := True;
       if I = CancelButton then
         Button.Cancel := True;
-      Button.SetBounds(X, 0, ButtonWidth, ButtonHeight);
+      Button.SetBounds(X, VertMargin, ButtonWidth, ButtonHeight);
       Inc(X, ButtonWidth + ButtonSpacing);
       if I = HelpButton then
         Button.OnClick := ResultForm.HelpButtonClick;
