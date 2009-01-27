@@ -1890,6 +1890,7 @@ end;
 
 procedure TJvDynControlCxCheckBox.ControlSetDefaultProperties;
 begin
+  Transparent := True;
 end;
 
 procedure TJvDynControlCxCheckBox.ControlSetReadOnly(Value: Boolean);
@@ -2719,10 +2720,7 @@ begin
   BevelInner := bvNone;
   BevelOuter := bvNone;
   PanelStyle.Active := True;
-  Transparent := True;
-  Style.TransparentBorder := True;
-  Style.Shadow := False;
-  Style.Edges := [];
+  Style.BorderStyle := ebsNone;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetCaption(const Value: string);
@@ -3078,6 +3076,8 @@ end;
 procedure TJvDynControlCxStaticText.ControlSetDefaultProperties;
 begin
   AutoSize := False;
+  Transparent := True;
+  Style.BorderStyle := ebsNone;
 end;
 
 procedure TJvDynControlCxStaticText.ControlSetCaption(const Value: string);
