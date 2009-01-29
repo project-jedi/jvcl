@@ -51,7 +51,6 @@ JvgCaption.res \
 JvgCheckBox.res \
 JvgHint.res \
 JvgLabelEditorForm.res \
-JvgTreeView.res \
 JvLED.res \
 JvOutlookBar.res \
 JvPageSetupTitled.res \
