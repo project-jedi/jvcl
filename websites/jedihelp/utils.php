@@ -1,6 +1,7 @@
 <?php
 
 require_once("conf.php");
+require_once("data_access.php");
   
 define("WrappingColumn", 100);
 define("IndentationSpaces", 2);
@@ -619,16 +620,18 @@ function GenerateTable($tableContent)
 }
 
 
-function GetItemImageUrl($itemName)
+function GetItemImageUrl($itemName, $itemProjectId)
 {
   global $itemImageBaseUrl;
   
-  return $itemImageBaseUrl.strtoupper($itemName).".png";
+  $projectInfos = GetProjectInfos($itemProjectId);
+  
+  return $itemImageBaseUrl.strtolower($projectInfos["Name"])."/".strtoupper($itemName).".bmp";
 }
 
-function ItemHasImage($itemName)
+function ItemHasImage($itemName, $itemProjectId)
 {
-  $url = GetItemImageUrl($itemName);
+  $url = GetItemImageUrl($itemName, $itemProjectId);
   $result = ! (! $f1 = @fopen($url, "rb"));
 
   if ($result)
@@ -737,7 +740,9 @@ function ImageCreateFromBMP($filename)
         $COLOR[1] = $PALETTE[$COLOR[1]+1];
       }
       else
+      {
         return FALSE;
+      }
       
       // Create a new palette color if it has never been created before
       if (!array_key_exists($COLOR[1], $imagePalette))

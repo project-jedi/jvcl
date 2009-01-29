@@ -121,7 +121,7 @@
   
   if (is_numeric($itemId))
   {
-    SetItemImage($tpl, $itemInfos["Name"]);
+    SetItemImage($tpl, $itemInfos["Name"], GetProjectIdForItem($itemId));
     $tpl->setVariable("ITEM_NAME", $itemInfos["Name"]);
     $tpl->setVariable("ITEM_ID", $itemId);  
     $baseclass = trim(substr($itemInfos["Name"], 0, strpos($itemInfos["Name"],".")));

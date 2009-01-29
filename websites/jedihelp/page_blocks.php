@@ -118,15 +118,16 @@
     $tpl->setVariable("LAST_CHANGED", $last_changed_tpl->get());
   }
   
-  function SetItemImage(&$tpl, $itemName)
+  function SetItemImage(&$tpl, $itemName, $itemProjectId)
   {
     $itemimage_tpl = new HTML_Template_IT("./"); 
     $itemimage_tpl->loadTemplatefile("itemimage.tpl.html", true, true);
     
-    if (ItemHasImage($itemName))
+    if (ItemHasImage($itemName, $itemProjectId))
     {
       $itemimage_tpl->setCurrentBlock("image_available");
       $itemimage_tpl->setVariable("ITEM_NAME", urlencode($itemName));
+      $itemimage_tpl->setVariable("ITEM_PROJECT_ID", $itemProjectId);
       $itemimage_tpl->parseCurrentBlock("image_available");
     }
     else
