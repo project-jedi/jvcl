@@ -99,7 +99,6 @@ JvPreviewReg.dcr \
 JvStdCtrlsReg.dcr \
 JvSystemReg.dcr \
 JvTimeFrameWorkReg.dcr \
-JvUIBReg.dcr \
 JvValidatorsReg.dcr \
 JvWizardReg.dcr \
 JvXPCtrlsReg.dcr \
