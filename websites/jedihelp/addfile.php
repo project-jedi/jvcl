@@ -23,12 +23,36 @@
   SetAdminToolbar($tpl);
   SetCommonFooter($tpl);
   
+  // From the comments on php.net for sys_get_temp_dir
+  if ( !function_exists('sys_get_temp_dir')) 
+  {
+    function sys_get_temp_dir() 
+    {
+      if (!empty($_ENV['TMP'])) 
+        return realpath($_ENV['TMP']);
+        
+      if (!empty($_ENV['TMPDIR'])) 
+        return realpath( $_ENV['TMPDIR']);
+        
+      if (!empty($_ENV['TEMP']))
+        return realpath( $_ENV['TEMP']);
+        
+      $tempfile = tempnam(uniqid(rand(), true), '');
+      if (file_exists($tempfile)) 
+      {
+        unlink($tempfile);
+        return realpath(dirname($tempfile));
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+
   function GetTmpPath()
   {
-    if ($_SERVER["HTTP_HOST"] == "test.obones.com")
-      return dirname($_SERVER["SCRIPT_FILENAME"])."/tmp";
-    else
-      return dirname($_FILES["uploadedfile"]["tmp_name"])."/jh";
+    return sys_get_temp_dir()."/jh";
   }
    
   function ProcessItem($lines, &$index, $unitId)
