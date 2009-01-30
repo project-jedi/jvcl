@@ -2347,9 +2347,13 @@ end;
 
 procedure TJvCustomOutlookBar.SetThemed(const Value: Boolean);
 begin
+  {$IFDEF JVCLThemesEnabled}
   if Value and (not ThemeServices.ThemesEnabled) then  { Warren added ability to theme/detheme this component for yourself instead of just checking if XP is themed.}
       exit;
   FThemed := Value;
+  {$ELSE}
+  FThemed := False;
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvCustomOutlookBar.DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
