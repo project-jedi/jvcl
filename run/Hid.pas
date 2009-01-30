@@ -1,4 +1,4 @@
-﻿{******************************************************************}
+{******************************************************************}
 {                                                                  }
 {       Borland Delphi Runtime Library                             }
 {       Public Definitions of HID functions from HID.DLL           }
@@ -1046,7 +1046,7 @@ function HidP_GetButtonsEx(ReportType: THIDPReportType; LinkCollection: Word;
 //     This function sets binary values (buttons) in a report.  Given an
 //     initialized packet of correct length, it modifies the report packet so that
 //     each element in the given list of usages has been set in the report packet.
-//     For example, in an output report with 5 LED’s, each with a given usage,
+//     For example, in an output report with 5 LED�s, each with a given usage,
 //     an application could turn on any subset of these lights by placing their
 //     usages in any order into the usage array (UsageList).  HidP_SetUsages would,
 //     in turn, set the appropriate bit or add the corresponding byte into the
