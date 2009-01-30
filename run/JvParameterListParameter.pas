@@ -43,6 +43,7 @@ uses
 type
   TJvNoDataParameter = class(TJvBaseParameter)
   protected
+    function IsDataValid(const AData: Variant; var vMsg: String): Boolean; override;
     property AsString;
     property AsDouble;
     property AsInteger;
@@ -53,7 +54,6 @@ type
     property ReadOnly;
   public
     constructor Create(AParameterList: TJvParameterList); override;
-    function Validate(var AData: Variant): Boolean; override;
   end;
 
   TJvButtonParameter = class(TJvNoDataParameter)
@@ -126,8 +126,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetLabelWidth(Value: Integer); virtual;
     procedure SetWinControlProperties; override;
-    property FrameControl: TWinControl read FFrameControl;
-    property LabelControl: TControl read FLabelControl write FLabelControl;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
@@ -138,6 +136,8 @@ type
     procedure SetTabOrder(Value: Integer); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetWidth(Value: Integer); override;
+    property FrameControl: TWinControl read FFrameControl;
+    property LabelControl: TControl read FLabelControl;
   published
     /// The searchname of the afterparameter.
     /// The afterparameter will positioned behind the edit control.
@@ -294,11 +294,11 @@ type
     FIncrement: Integer;
   protected
     procedure CreateWinControl(AParameterParent: TWinControl); override;
+    function IsDataValid(const AData: Variant; var vMsg: String): Boolean; override;
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
-    function Validate(var AData: Variant): Boolean; override;
   published
     property Increment: Integer read FIncrement write FIncrement;
     property MinValue: Integer read FMinValue write FMinValue;
@@ -312,11 +312,11 @@ type
     FIncrement: Integer;
   protected
     procedure CreateWinControl(AParameterParent: TWinControl); override;
+    function IsDataValid(const AData: Variant; var vMsg: String): Boolean; override;
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
-    function Validate(var AData: Variant): Boolean; override;
   published
     property Increment: Integer read FIncrement write FIncrement;
     property MinValue: Double read FMinValue write FMinValue;
@@ -335,6 +335,7 @@ type
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
+    function IsDataValid(const AData: Variant; var vMsg: String): Boolean; override;
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
@@ -359,11 +360,11 @@ type
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
+    function IsDataValid(const AData: Variant; var vMsg: String): Boolean; override;
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     procedure Assign(Source: TPersistent); override;
-    function Validate(var AData: Variant): Boolean; override;
   published
     property Directory: string read GetAsString write SetAsString;
     property InitialDir: string read FInitialDir write FInitialDir;
@@ -651,7 +652,8 @@ begin
   StoreValueToAppStorage := False;
 end;
 
-function TJvNoDataParameter.Validate(var AData: Variant): Boolean;
+function TJvNoDataParameter.IsDataValid(const AData: Variant; var vMsg:
+    String): Boolean;
 begin
   Result := True;
 end;
@@ -1021,7 +1023,7 @@ var
 begin
   if (Caption = '') or (LabelArrangeMode in [lamGroupBox, lamNone]) then
     Exit;
-  LabelControl := DynControlEngine.CreateLabelControl(Self, AParameterParent,
+  fLabelControl := DynControlEngine.CreateLabelControl(Self, AParameterParent,
     GetParameterName + 'Label', Caption, WinControl);
   LabelControl.Visible := True;
   LabelControl.Enabled := Enabled;
@@ -1659,15 +1661,20 @@ var
   Index: Integer;
 begin
   if Assigned(JvDynControlData) then
-    Index := ItemList.IndexOf(JvDynControlData.ControlValue)
+  begin
+    Index := ItemList.IndexOf(JvDynControlData.ControlValue);
+    if VariantAsItemIndex then
+      Result := Index
+    else if (Index >= 0) and (Index < ItemList.Count) then
+      Result := ItemList[Index]
+    else
+      Result := JvDynControlData.ControlValue;
+  end
   else
-    Index := -1;
-  if VariantAsItemIndex then
-    Result := Index
-  else if (Index >= 0) and (Index < ItemList.Count) then
-    Result := ItemList[Index]
-  else
-    Result := JvDynControlData.ControlValue;
+    if VariantAsItemIndex then
+      Result := -1
+    else
+      Result := null;
 end;
 
 procedure TJvComboBoxParameter.SetWinControlData(Value: Variant);
@@ -2118,35 +2125,26 @@ begin
   end;
 end;
 
-function TJvIntegerEditParameter.Validate(var AData: Variant): Boolean;
+function TJvIntegerEditParameter.IsDataValid(const AData: Variant; var vMsg:
+    String): Boolean;
 var
   I: Integer;
 begin
-  Result := not Enabled;
-  if Result then
-    Exit;
-  if VarIsNull(AData) or (AData = '') then
-    if Required then
-    begin
-      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
-      Exit;
-    end
-    else
-    begin
-      Result := True;
-      Exit;
+  Result := Inherited IsDataValid(AData, vMsg);
+  if Result and (VarToStr(AData) <> '') then
+  begin
+    try
+      I := AData;
+      if (I < MinValue) or (I > MaxValue) then
+      begin
+        vMsg:= Format(RsErrParameterMustBeBetween, [Caption, AData, IntToStr(MinValue), IntToStr(MaxValue)]);
+        Result := False;
+      end;
+    except
+      Result := False;
+      vMsg := Format(RsErrParameterIsNotAValidNumber, [Caption, AData]);
     end;
-  try
-    I := AData;
-  except
-    DSADialogsMessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
-    Exit;
   end;
-  if (I < MinValue) or (I > MaxValue) then
-    DSADialogsMessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, IntToStr(MinValue),
-      IntToStr(MaxValue)]), mtError, [mbOK], 0)
-  else
-    Result := True;
 end;
 
 //=== { TJvDoubleEditParameter } =============================================
@@ -2202,35 +2200,27 @@ begin
   end;
 end;
 
-function TJvDoubleEditParameter.Validate(var AData: Variant): Boolean;
+function TJvDoubleEditParameter.IsDataValid(const AData: Variant; var vMsg:
+    String): Boolean;
 var
-  D: Double;
+  I: Integer;
 begin
-  if not Enabled then
+  Result := Inherited IsDataValid(AData, vMsg);
+  if Result and (VarToStr(AData) <> '') then
   begin
-    Result := True;
-    Exit;
+    try
+      I := AData;
+      if (I < MinValue) or (I > MaxValue) then
+      begin
+        vMsg:= Format(RsErrParameterMustBeBetween,
+                      [Caption, AData, FloatToStr(MinValue), FloatToStr(MaxValue)]);
+        Result := False;
+      end;
+    except
+      Result := False;
+      vMsg := Format(RsErrParameterIsNotAValidNumber, [Caption, AData]);
+    end;
   end;
-  Result := False;
-  if VarIsNull(AData) then
-  begin
-    if Required then
-      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0)
-    else
-      Result := True;
-    Exit;
-  end;
-  try
-    D := AData;
-  except
-    DSADialogsMessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
-    Exit;
-  end;
-  if (D < MinValue) or (D > MaxValue) then
-    DSADialogsMessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, FloatToStr(MinValue),
-      FloatToStr(MaxValue)]), mtError, [mbOK], 0)
-  else
-    Result := True;
 end;
 
 //=== { TJvFileNameParameter } ===============================================
@@ -2267,6 +2257,39 @@ begin
   SetWinControl (DynControlEngine.CreateFileNameControl(Self, AParameterParent, GetParameterName));
 end;
 
+function TJvFileNameParameter.IsDataValid(const AData: Variant; var vMsg:
+    String): Boolean;
+var
+  Data : Variant;
+begin
+  Data := Trim(AData);
+  if Data = DefaultExt then
+    Data := '';
+  Result := Inherited IsDataValid(Data, vMsg);
+  if Result then
+  begin
+    if Data <> '' then
+      if ExtractFileExt(Data) = '' then
+        if DefaultExt <> '' then
+          if DefaultExt[1] = '.' then
+            Data := Data + DefaultExt
+          else
+            Data := Data + '.' + DefaultExt;
+    if (ofFileMustExist in DialogOptions) and not FileExists(Data) then
+      begin
+        vMsg := Format(RsErrParameterFileDoesNotExist, [Caption, Data]);
+        Result := False;
+      end
+    else if (ofPathMustExist in DialogOptions) and
+            (ExtractFilePath(Data) <> '') and
+            not DirectoryExists(ExtractFilePath(Data)) then
+      begin
+        vMsg := Format(RsErrParameterDirectoryNotExist, [Caption, ExtractFilePath(Data)]);
+        Result:= False;
+      end;
+  end;
+end;
+
 procedure TJvFileNameParameter.SetWinControlProperties;
 var
   ITmpControlFileName: IJvDynControlFileName;
@@ -2286,45 +2309,12 @@ end;
 
 function TJvFileNameParameter.Validate(var AData: Variant): Boolean;
 begin
-  Result := not Enabled;
+  Result := Inherited Validate(AData);
   if Result then
-    Exit;
-  AData := Trim(AData);
-  if AData = DefaultExt then
-    AData := '';
-  if Required then
-    if AData = '' then
-    begin
-      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
-      Exit;
-    end;
-  if AData <> '' then
-    if ExtractFileExt(AData) = '' then
-      if DefaultExt <> '' then
-        if DefaultExt[1] = '.' then
-          AData := AData + DefaultExt
-        else
-          AData := AData + '.' + DefaultExt;
-  if ofFileMustExist in DialogOptions then
-    if not FileExists(AData) then
-    begin
-      DSADialogsMessageDlg(Format(RsErrParameterFileDoesNotExist, [Caption, AData]), mtError, [mbOK], 0);
-      Exit;
-    end;
-  if ofOverwritePrompt in DialogOptions then
-    if FileExists(AData) then
+    if (ofOverwritePrompt in DialogOptions) and FileExists(AData) then
       if DSADialogsMessageDlg(Format(RsErrParameterFileExistOverwrite, [Caption, AData]), mtConfirmation, [mbYes,
         mbNo], 0) = mrNo then
-        Exit;
-  if ofPathMustExist in DialogOptions then
-    if ExtractFilePath(AData) <> '' then
-      if not DirectoryExists(ExtractFilePath(AData)) then
-      begin
-        DSADialogsMessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, ExtractFilePath(AData)]), mtError,
-          [mbOK], 0);
-        Exit;
-      end;
-  Result := True;
+        Result := False;
 end;
 
 //=== { TJvDirectoryParameter } ==============================================
@@ -2356,6 +2346,21 @@ begin
   SetWinControl (DynControlEngine.CreateDirectoryControl(Self, AParameterParent, GetParameterName));
 end;
 
+function TJvDirectoryParameter.IsDataValid(const AData: Variant; var vMsg:
+    String): Boolean;
+var
+  Data : Variant;
+begin
+  Data := Trim(AData);
+  Result := Inherited IsDataValid(Data, vMsg);
+  if Result then
+    if not DirectoryExists(AData) and not (sdAllowCreate in DialogOptions) then
+      begin
+        vMsg := Format(RsErrParameterDirectoryNotExist, [Caption, AData]);
+        Result := False;
+      end;
+end;
+
 procedure TJvDirectoryParameter.SetWinControlProperties;
 var
   ITmpControlDirectory: IJvDynControlDirectory;
@@ -2367,27 +2372,6 @@ begin
     ITmpControlDirectory.ControlSetDialogOptions(DialogOptions);
     ITmpControlDirectory.ControlSetInitialDir(InitialDir);
   end;
-end;
-
-function TJvDirectoryParameter.Validate(var AData: Variant): Boolean;
-begin
-  Result := not Enabled;
-  if Result then
-    Exit;
-  AData := Trim(AData);
-  if Required then
-    if AData = '' then
-    begin
-      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
-      Exit;
-    end;
-  if not DirectoryExists(AData) then
-    if not (sdAllowCreate in DialogOptions) then
-    begin
-      DSADialogsMessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, AData]), mtError, [mbOK], 0);
-      Exit;
-    end;
-  Result := True;
 end;
 
 ///=== { TJvMemoParameter } ==================================================
