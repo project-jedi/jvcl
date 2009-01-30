@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -270,7 +270,7 @@ type
       var Report; ReportLength: ULONG): NTSTATUS;
     function GetUsageValue(var UsageValue: ULONG;
       var Report; ReportLength: ULONG): NTSTATUS;
-    function GetUsageValueArray(UsageValue: PChar; UsageValueByteLength: WORD;
+    function GetUsageValueArray(UsageValue: PAnsiChar; UsageValueByteLength: WORD;
       var Report; ReportLength: ULONG): NTSTATUS;
     function GetValueCaps(ValueCaps: PHIDPValueCaps; var Count: WORD): NTSTATUS;
     function OpenFile: Boolean;
@@ -286,7 +286,7 @@ type
       var Report; ReportLength: ULONG): NTSTATUS;
     function SetUsageValue(UsageValue: ULONG;
       var Report; ReportLength: ULONG): NTSTATUS;
-    function SetUsageValueArray(UsageValue: PChar; UsageValueByteLength: WORD;
+    function SetUsageValueArray(UsageValue: PAnsiChar; UsageValueByteLength: WORD;
       var Report; ReportLength: ULONG): NTSTATUS;
     function UnsetButtons(UsageList: PUsage; var UsageLength: ULONG;
       var Report; ReportLength: ULONG): NTSTATUS;
@@ -672,7 +672,7 @@ begin
   BytesReturned := 0;
   RegDataType := 0;
   Buffer[0] := #0;
-  SetupDiGetDeviceRegistryPropertyA(PnPHandle, DevData, Prop,
+  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
     RegDataType, PByte(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := Buffer;
 end;
@@ -688,7 +688,7 @@ begin
   BytesReturned := 0;
   RegDataType := 0;
   Buffer[0] := #0;
-  SetupDiGetDeviceRegistryPropertyA(PnPHandle, DevData, Prop,
+  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
     RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := TStringList.Create;
   P := @Buffer[0];
@@ -1452,7 +1452,7 @@ begin
       UsageParam, UsageValue, PreparsedData, Report, ReportLength);
 end;
 
-function TJvHidDevice.GetUsageValueArray(UsageValue: PChar;
+function TJvHidDevice.GetUsageValueArray(UsageValue: PAnsiChar;
   UsageValueByteLength: WORD; var Report; ReportLength: ULONG): NTSTATUS;
 begin
   Result := HIDP_STATUS_NULL; // for not plugged in
@@ -1478,7 +1478,7 @@ begin
       UsageParam, UsageValue, PreparsedData, Report, ReportLength);
 end;
 
-function TJvHidDevice.SetUsageValueArray(UsageValue: PChar;
+function TJvHidDevice.SetUsageValueArray(UsageValue: PAnsiChar;
   UsageValueByteLength: WORD; var Report; ReportLength: ULONG): NTSTATUS;
 begin
   Result := HIDP_STATUS_NULL; // for not plugged in
@@ -1720,7 +1720,7 @@ var
     PnPHandle: HDEVINFO;
     DevData: TSPDevInfoData;
     DeviceInterfaceData: TSPDeviceInterfaceData;
-    FunctionClassDeviceData: PSPDeviceInterfaceDetailDataA;
+    FunctionClassDeviceData: PSPDeviceInterfaceDetailData;
     Success: LongBool;
     Devn: Integer;
     BytesReturned: DWORD;
@@ -1743,12 +1743,12 @@ var
       begin
         DevData.cbSize := SizeOf(DevData);
         BytesReturned := 0;
-        SetupDiGetDeviceInterfaceDetailA(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
+        SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
         if (BytesReturned <> 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
         begin
           FunctionClassDeviceData := AllocMem(BytesReturned);
-          FunctionClassDeviceData^.cbSize := SizeOf(TSPDeviceInterfaceDetailDataA);
-          if SetupDiGetDeviceInterfaceDetailA(PnPHandle, @DeviceInterfaceData,
+          FunctionClassDeviceData^.cbSize := SizeOf(TSPDeviceInterfaceDetailData);
+          if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
             FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
           begin
             // fill in PnPInfo of device

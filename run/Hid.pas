@@ -1,4 +1,4 @@
-{******************************************************************}
+﻿{******************************************************************}
 {                                                                  }
 {       Borland Delphi Runtime Library                             }
 {       Public Definitions of HID functions from HID.DLL           }
@@ -348,7 +348,7 @@ type
 // NB: if IsAlias is set, then NextSibling should be one more than the current
 // link collection node index.
 
-  PHIDPReportDescriptor = PChar;
+  PHIDPReportDescriptor = PAnsiChar;
 
   PHIDPCaps = ^THIDPCaps;
   HIDP_CAPS = record
@@ -425,7 +425,7 @@ type
   // (rom) maybe calling convention is incorrect
   THIDPInsertScanCodes = function(
     Context:      Pointer; // Some caller supplied context
-    NewScanCodes: PChar;   // A list of i8042 scan codes
+    NewScanCodes: PAnsiChar;   // A list of i8042 scan codes
     Length:       ULONG    // the length of the scan code list
    ): Boolean; stdcall;
 
@@ -438,7 +438,7 @@ type
 // (rom)       always returns 20 even if buffer length is less than 20
 // (rom)       but does not produce buffer overflow
 
-function HidD_Hello(Buffer: PChar; BufferLength: ULONG): ULONG; stdcall;
+function HidD_Hello(Buffer: PAnsiChar; BufferLength: ULONG): ULONG; stdcall;
 
 procedure HidD_GetHidGuid(var HidGuid: TGUID) stdcall;
 
@@ -1046,7 +1046,7 @@ function HidP_GetButtonsEx(ReportType: THIDPReportType; LinkCollection: Word;
 //     This function sets binary values (buttons) in a report.  Given an
 //     initialized packet of correct length, it modifies the report packet so that
 //     each element in the given list of usages has been set in the report packet.
-//     For example, in an output report with 5 LED�s, each with a given usage,
+//     For example, in an output report with 5 LED’s, each with a given usage,
 //     an application could turn on any subset of these lights by placing their
 //     usages in any order into the usage array (UsageList).  HidP_SetUsages would,
 //     in turn, set the appropriate bit or add the corresponding byte into the
@@ -1480,7 +1480,7 @@ function HidP_GetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
 //                                         in any reports for this ReportType
 
 function HidP_GetUsageValueArray(ReportType: THIDPReportType; UsagePage: TUsage;
-  LinkCollection: Word; Usage: TUsage; UsageValue: PChar;
+  LinkCollection: Word; Usage: TUsage; UsageValue: PAnsiChar;
   UsageValueByteLength: Word; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
 
@@ -1734,7 +1734,7 @@ function HidP_SetScaledUsageValue(ReportType: THIDPReportType; UsagePage: TUsage
 //                                         in any reports for this ReportType
 
 function HidP_SetUsageValueArray(ReportType: THIDPReportType; UsagePage: TUsage;
-  LinkCollection: Word; Usage: TUsage; UsageValue: PChar;
+  LinkCollection: Word; Usage: TUsage; UsageValue: PAnsiChar;
   UsageValueByteLength: Word; PreparsedData: PHIDPPreparsedData;
   var Report; ReportLength: ULONG): NTSTATUS; stdcall;
 
@@ -1850,7 +1850,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
 
 {$ELSE}
 
-  THidD_Hello = function(Buffer: PChar; BufferLength: ULONG): ULONG; stdcall;
+  THidD_Hello = function(Buffer: PAnsiChar; BufferLength: ULONG): ULONG; stdcall;
   THidD_GetHidGuid = procedure(var HidGuid: TGUID) stdcall;
   THidD_GetPreparsedData = function(HidDeviceObject: THandle;
     var PreparsedData: PHIDPPreparsedData): LongBool; stdcall;
@@ -1950,7 +1950,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
     PreparsedData: PHIDPPreparsedData; var Report;
     ReportLength: ULONG): NTSTATUS; stdcall;
   THidP_GetUsageValueArray = function(ReportType: THIDPReportType; UsagePage: TUsage;
-    LinkCollection: Word; Usage: TUsage; UsageValue: PChar;
+    LinkCollection: Word; Usage: TUsage; UsageValue: PAnsiChar;
     UsageValueByteLength: Word; PreparsedData: PHIDPPreparsedData;
     var Report; ReportLength: ULONG): NTSTATUS; stdcall;
   THidP_SetUsageValue = function(ReportType: THIDPReportType; UsagePage: TUsage;
@@ -1962,7 +1962,7 @@ function HidP_InitializeReportForID(ReportType: THIDPReportType;
     PreparsedData: PHIDPPreparsedData; var Report;
     ReportLength: ULONG): NTSTATUS; stdcall;
   THidP_SetUsageValueArray = function(ReportType: THIDPReportType; UsagePage: TUsage;
-    LinkCollection: Word; Usage: TUsage; UsageValue: PChar;
+    LinkCollection: Word; Usage: TUsage; UsageValue: PAnsiChar;
     UsageValueByteLength: Word; PreparsedData: PHIDPPreparsedData;
     var Report; ReportLength: ULONG): NTSTATUS; stdcall;
   THidP_UsageListDifference = function(PreviousUsageList: PUsage;
