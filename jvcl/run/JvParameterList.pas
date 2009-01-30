@@ -52,6 +52,8 @@ type
   TJvParameterListEvent = procedure(const ParameterList: TJvParameterList; const Parameter:
     TJvBaseParameter) of object;
 
+  TJvParameterOnValidateData = procedure (const Data : Variant; var Msg : String; var Valid : Boolean) of Object;
+
   TJvParameterListEnableDisableReason = class(TPersistent)
   private
     FRemoteParameterName: string;
@@ -126,7 +128,6 @@ type
     FWidth: Integer;
     FHeight: Integer;
     FSearchName: string;
-    FRequired: Boolean;
     FReadOnly: Boolean;
     FStoreValueToAppStorage: Boolean;
     FStoreValueCrypted: Boolean;
@@ -148,6 +149,8 @@ type
     FVisible: Boolean;
     FOnEnterParameter: TJvParameterListEvent;
     FOnExitParameter: TJvParameterListEvent;
+    FOnValidateData: TJvParameterOnValidateData;
+    FRequired: Boolean;
   protected
     procedure SetAsString(const Value: string); virtual;
     function GetAsString: string; virtual;
@@ -185,6 +188,7 @@ type
     property JvDynControlCaption: IJvDynControlCaption read FJvDynControlCaption;
     property JvDynControlData: IJvDynControlData read FJvDynControlData;
     property Value: Variant read FValue write FValue;
+    function IsDataValid(const AData: Variant; var vMsg: String): Boolean; virtual;
     procedure SetWinControlProperties; virtual;
   public
     constructor Create(AParameterList: TJvParameterList); reintroduce; virtual;
@@ -196,6 +200,7 @@ type
     //1 Creates a new instance of the same objecttype and assigns the property contents to the new instance
     function Clone(AOwner: TJvParameterlist): TJvBaseParameter;
     procedure GetData; virtual;
+    function IsValid(const AData: Variant): Boolean; virtual;
     procedure SetData; virtual;
     property AdditionalData: Pointer read FAdditionalData write FAdditionalData;
     property ParameterList: TJvParameterList read FParameterList write FParameterList;
@@ -237,6 +242,9 @@ type
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
     property EnableReasons: TJvParameterListEnableDisableReasonList read FEnableReasons;
+    /// Use this event to implement a custom logic to validate the parameter contents
+    property OnValidateData: TJvParameterOnValidateData read FOnValidateData write
+        FOnValidateData;
     property OnEnterParameter: TJvParameterListEvent read FOnEnterParameter write
       FOnEnterParameter;
     property OnExitParameter: TJvParameterListEvent read FOnExitParameter write FOnExitParameter;
@@ -293,6 +301,7 @@ type
     FOnChangeParameter: TNotifyEvent;
     FOnEnterParameter: TNotifyEvent;
     FOnExitParameter: TNotifyEvent;
+    FShowParameterValidState: Boolean;
     function GetIntParameterList: TStrings;
     function AddObject(const S: string; AObject: TObject): Integer;
     function GetVisibleCount: Integer;
@@ -407,6 +416,12 @@ type
     function Clone(AOwner: TComponent): TJvParameterList;
     {creates the components of all parameters on any TWInControl}
     procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
+    {
+    Checks the IsDataValid of each Parameter, When the ShowParameterValidStatus is
+    activated the
+    labels invalid parameters will be shown italic
+    }
+    procedure HandleShowValidState;
     { load the data of all allowed parameters from the AppStorage }
     procedure LoadData;
     { load the data of all allowed parameters from the AppStorage }
@@ -440,6 +455,9 @@ type
     property HistoryEnabled: Boolean read FHistoryEnabled write FHistoryEnabled;
     property LastHistoryName: string read FLastHistoryName write FLastHistoryName;
     property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
+    /// Show the state of each invalid parameter by drawing the label italic
+    property ShowParameterValidState: Boolean read FShowParameterValidState write
+        FShowParameterValidState default False;
     property OnChangeParameter: TNotifyEvent read FOnChangeParameter write
       FOnChangeParameter;
     property OnEnterParameter: TNotifyEvent read FOnEnterParameter write
@@ -935,9 +953,10 @@ end;
 
 function TJvBaseParameter.GetWinControlData: Variant;
 begin
-  Result := Null;
   if Assigned(JvDynControlData) then
-    Result := JvDynControlData.ControlValue;
+    Result := JvDynControlData.ControlValue
+  else
+    Result := Null;
 end;
 
 procedure TJvBaseParameter.SetWinControlData(Value: Variant);
@@ -1114,13 +1133,11 @@ begin
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
+var Msg : String;
 begin
-  if not Required or not Enabled then
-    Result := True
-  else
-    Result := VarToStr(AData) <> '';
+  Result := IsDataValid(AData, Msg);
   if not Result then
-    DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+    DSADialogsMessageDlg(Msg, mtError, [mbOK], 0);
 end;
 
 function TJvBaseParameter.GetParameterNameExt: string;
@@ -1136,6 +1153,26 @@ end;
 function TJvBaseParameter.GetParameterName: string;
 begin
   Result := GetParameterNameBase + GetParameterNameExt;
+end;
+
+function TJvBaseParameter.IsValid(const AData: Variant): Boolean;
+var Msg : String;
+begin
+  if Assigned(OnValidateData) then
+    OnValidateData(AData, Msg, Result)
+  else
+    Result := IsDataValid(AData, Msg);
+end;
+
+function TJvBaseParameter.IsDataValid(const AData: Variant; var vMsg: String):
+    Boolean;
+begin
+  if not Required or not Enabled then
+    Result := True
+  else
+    Result := VarToStr(AData) <> '';
+  if not Result then
+    vMsg := Format(RsErrParameterMustBeEntered, [Caption]);
 end;
 
 //=== { TJvParameterList } ===================================================
@@ -1172,6 +1209,7 @@ begin
   FParameterListSelectList.ParameterList := Self;
   FOkButtonDisableReasons := TJvParameterListEnableDisableReasonList.Create;
   FOkButtonEnableReasons := TJvParameterListEnableDisableReasonList.Create;
+  FShowParameterValidState := False;
 end;
 
 destructor TJvParameterList.Destroy;
@@ -1236,6 +1274,7 @@ begin
     FIntParameterList.Assign(TJvParameterList(Source).IntParameterList);
     HistoryEnabled := TJvParameterList(Source).HistoryEnabled;
     AppStoragePath := TJvParameterList(Source).AppStoragePath;
+    ShowParameterValidState := TJvParameterList(Source).ShowParameterValidState;
   end
   else
     inherited Assign(Source);
@@ -1373,6 +1412,7 @@ begin
         Break;
       end;
   HandleEnableDisable;
+  HandleShowValidState;
 end;
 
 procedure TJvParameterList.OnChangeParameterControl(Sender: TObject);
@@ -1388,6 +1428,7 @@ begin
         Break;
       end;
   HandleEnableDisable;
+  HandleShowValidState;
 end;
 
 type
@@ -1769,16 +1810,6 @@ begin
           Parameter.Enabled := True;
       end;
     end;
-  if Assigned(OkButton) then
-  begin
-    IEnable := GetEnableDisableReasonState(OkButtonDisableReasons, OkButtonEnableReasons);
-    case IEnable of
-      -1:
-        OkButton.Enabled := False;
-      1:
-        OkButton.Enabled := True;
-    end;
-  end;
 end;
 
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent: TWinControl);
@@ -1879,6 +1910,7 @@ begin
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
       end;
     HandleEnableDisable;
+    HandleShowValidState;
   finally
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).EnableArrange;
@@ -2060,6 +2092,57 @@ begin
   for i := 0 to Count - 1 do
     if Parameters[i].Visible then
       Inc(Result);
+end;
+
+type tAccessControl = class(tControl);
+
+procedure TJvParameterList.HandleShowValidState;
+var
+  I: Integer;
+  Parameter: TJvBaseParameter;
+  Control : TControl;
+  Valid: Boolean;
+  ParValid: Boolean;
+  IEnable: Integer;
+
+  procedure SetControlFont (iControl : TControl;iValid : Boolean);
+  begin
+    if Assigned(iControl) then
+    begin
+      if iValid then
+        tAccessControl(iControl).Font.Style := tAccessControl(iControl).Font.Style - [fsItalic]
+      else
+        tAccessControl(iControl).Font.Style := tAccessControl(iControl).Font.Style + [fsItalic];
+    end;
+  end;
+
+begin
+  Valid := True;
+  if ShowParameterValidState then
+    for I := 0 to Count - 1 do
+    begin
+      Parameter := ParameterByIndex(I);
+      if Parameter is TJvBasePanelEditParameter then
+        if Assigned(TJvBasePanelEditParameter(Parameter).LabelControl) then
+          Control := TJvBasePanelEditParameter(Parameter).LabelControl
+        else
+          Control := TJvBasePanelEditParameter(Parameter).WinControl
+      else if Parameter is TJvCheckBoxParameter then
+        Control := TJvCheckBoxParameter(Parameter).WinControl
+      else
+        Control := nil;
+      ParValid := Parameter.IsValid(Parameter.GetWinControlData);
+      Valid := Valid And ParValid;
+      SetControlFont (Control, ParValid);
+    end;
+  if Assigned(OkButton) then
+  begin
+    IEnable := GetEnableDisableReasonState(OkButtonDisableReasons, OkButtonEnableReasons) ;
+    if IEnable = -1 then
+      OkButton.Enabled := False
+    else
+      OkButton.Enabled := Valid;
+  end;
 end;
 
 //=== { TJvParameterListPropertyStore } ======================================
