@@ -233,11 +233,7 @@ type
   TJvOutlookBarCustomDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
     AStage: TJvOutlookBarCustomDrawStage; AIndex: Integer; ADown, AInside: Boolean; var DefaultDraw: Boolean) of object;
 
-
-
-
-  TJvPageBtnProps = class {warren added}
-
+  TJvPageBtnProps = class
   private
     FOwner      : TJvCustomOutlookBar;
     FHighlight  : TColor;
@@ -252,21 +248,16 @@ type
     procedure SetHighlight(const Value: TColor);
     procedure SetShadow(const Value: TColor);
     procedure SetBorderWidth(const Value: INteger);
-
   public
-      constructor Create(owner:TJvCustomOUtlookBar);
-  published
-          property Shadow:TColor      read FShadow write SetShadow        default clBtnShadow;
-          property Highlight:TColor   read FHighlight write SetHighlight  default clBtnHighlight;
-          property DkShadow:TColor    read FDkShadow write SetDkShadow    default cl3DDkShadow;
-          property Face:TColor        read FFace write SetFace            default clBtnFace;
-
-          property BorderWidth      : INteger read FBorderWidth write SetBorderWidth default 1;
-
+    constructor Create(owner:TJvCustomOUtlookBar);
+  public
+    property Shadow:TColor      read FShadow write SetShadow        default clBtnShadow;
+    property Highlight:TColor   read FHighlight write SetHighlight  default clBtnHighlight;
+    property DkShadow:TColor    read FDkShadow write SetDkShadow    default cl3DDkShadow;
+    property Face:TColor        read FFace write SetFace            default clBtnFace;
+  
+    property BorderWidth      : INteger read FBorderWidth write SetBorderWidth default 1;
   end;
-
-
-
 
   TJvCustomOutlookBar = class(TJvCustomControl)
   private
