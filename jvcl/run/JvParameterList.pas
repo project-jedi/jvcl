@@ -1952,7 +1952,7 @@ var
 begin
   Result := False;
   for I := 0 to Count - 1 do
-    if Parameters[I].Visible then
+    if Parameters[I].Visible and Parameters[I].Enabled then
     begin
       V := Parameters[I].WinControlData;
       B := Parameters[I].Validate(V);
