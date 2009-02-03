@@ -1695,7 +1695,10 @@ end;
 
 function TJvDynControlCxDateTimeEdit.ControlGetValue: Variant;
 begin
-  Result := Date;
+  if Text = '' then
+    Result := Null
+  else
+    Result := Date;
 end;
 
 procedure TJvDynControlCxDateTimeEdit.ControlSetAnchors(Value: TAnchors);
@@ -1775,7 +1778,10 @@ end;
 
 function TJvDynControlCxDateEdit.ControlGetValue: Variant;
 begin
-  Result := Date;
+  if Text = '' then
+    Result := Null
+  else
+    Result := Date;
 end;
 
 procedure TJvDynControlCxDateEdit.ControlSetAnchors(Value: TAnchors);
@@ -1854,7 +1860,10 @@ end;
 
 function TJvDynControlCxTimeEdit.ControlGetValue: Variant;
 begin
-  Result := Time;
+  if Text = '' then
+    Result := Null
+  else
+    Result := Time;
 end;
 
 procedure TJvDynControlCxTimeEdit.ControlSetAnchors(Value: TAnchors);
