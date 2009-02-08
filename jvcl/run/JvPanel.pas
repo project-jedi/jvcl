@@ -697,9 +697,10 @@ begin
   inherited AdjustSize;
   if Transparent {and not IsThemed} then
   begin
+    // (ahuser) 2009-02-07: This causes critical flicker
     // (ahuser) That is the only way to draw the border of the contained controls.
-    Width := Width + 1;
-    Width := Width - 1;
+{    Width := Width + 1;
+    Width := Width - 1;}
   end;
 end;
 
