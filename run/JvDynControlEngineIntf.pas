@@ -338,10 +338,14 @@ type
         TJvDynControlInspectorControlOnDisplayPropertyEvent);
     procedure ControlSetOnTranslatePropertyName(const Value:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
+    function GetControlDividerWidth: Integer;
     function GetControlOnPropertyChange:
         TJvDynControlInspectorControlOnPropertyChangeEvent;
+    procedure SetControlDividerWidth(const Value: Integer);
     procedure SetControlOnPropertyChange(const Value:
         TJvDynControlInspectorControlOnPropertyChangeEvent);
+    property ControlDividerWidth: Integer read GetControlDividerWidth write
+        SetControlDividerWidth;
     property ControlInspectedObject: TObject read ControlGetInspectedObject write
         ControlSetInspectedObject;
     property ControlOnDisplayProperty:

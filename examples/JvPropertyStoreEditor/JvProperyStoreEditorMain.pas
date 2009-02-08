@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvProgramVersionCheck, JvComponent, JvAppStorage, JvAppIniStorage,
   StdCtrls, JvUrlListGrabber, JvUrlGrabbers, ImgList, JvPropertyStore,JvAppxmlStorage,
-  JvComponentBase, ExtCtrls, JvPropertyStoreEditor;
+  JvComponentBase, ExtCtrls, JvPropertyStoreEditor, JvExControls, JvInspector;
 
 type
   TForm1 = class(TForm)
@@ -34,10 +34,16 @@ implementation
 
 {$R *.dfm}
 
+{.$DEFINE USE_DEVEXPRESS}
+
 Uses JclFileUtils,
+
+  {$IFDEF USE_DEVEXPRESS}
+  JvDynControlEngineDevExpCx,
+  {$ELSE}
   JvDynControlEngineJVCLInspector,
-  //JvDynControlEngineDevExpCx,
   JvDynControlEngineJVCL,
+  {$ENDIF}
   JvTypes;
 
 constructor TForm1.Create(AOwner: TComponent);
@@ -68,5 +74,8 @@ begin
 end;
 
 begin
+  {$IFDEF USE_DEVEXPRESS}
+  {$ELSE}
   RegisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
+  {$ENDIF}
 end.

@@ -903,6 +903,8 @@ type
         TJvDynControlInspectorControlOnDisplayPropertyEvent); overload;
     procedure ControlSetOnTranslatePropertyName(const Value:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
+    function GetControlDividerWidth: Integer;
+    procedure SetControlDividerWidth(const Value: Integer);
   public
     function ControlGetCurrentPropertyName: string;
     procedure ControlSetDefaultProperties;
@@ -3925,6 +3927,11 @@ begin
   fOnTranslatePropertyName := Value;
 end;
 
+function TJvDynControlCxRTTIInspectorControl.GetControlDividerWidth: Integer;
+begin
+  Result := OptionsView.RowHeaderWidth;
+end;
+
 procedure TJvDynControlCxRTTIInspectorControl.InspectorOnItemChanged(Sender:
     TObject; AOldRow: TcxCustomRow; AOldCellIndex: Integer);
 var
@@ -3949,6 +3956,12 @@ procedure TJvDynControlCxRTTIInspectorControl.InspectorOnFilterProperty(Sender:
 begin
   if Assigned(fonDisplayProperty) And IsPublishedProp(InspectedObject, PropertyName) then
     Accept := fOnDisplayProperty(PropertyName) and ControlIsPropertySupported(PropertyName);
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.SetControlDividerWidth(const
+    Value: Integer);
+begin
+  OptionsView.RowHeaderWidth := Value;
 end;
 
 procedure TJvDynControlCxRTTIInspectorControl.SetControlOnPropertyChange(const
