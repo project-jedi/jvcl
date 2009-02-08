@@ -97,6 +97,7 @@ type
         aPropertyStore: TPersistent);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function OnDisplayProperty(const aPropertyName : String): Boolean;
+    function OnInspectorTranslatePropertyName(const aPropertyName : String): string;
     procedure OnPropertyChange(var OldPropertyName, NewPropertyName : string);
     function OnTranslatePropertyName(const aPropertyName : String): string;
     procedure SetInformation(const iCaption, iInfo: string);
@@ -367,8 +368,10 @@ begin
       'Inspector', OnDisplayProperty, OnTranslatePropertyName);
   Supports (Inspector, IJvDynControlRTTIInspectorControl, RTTIInspectorControlIntf);
   RTTIInspectorControlIntf.ControlOnPropertyChange := OnPropertyChange;
+  RTTIInspectorControlIntf.ControlOnTranslatePropertyName := OnInspectorTranslatePropertyName;
   Inspector.Align := alClient;
   Supports(RTTIInspectorControlIntf, IJvDynControl, DynControl);
+  RTTIInspectorControlIntf.ControlDividerWidth := Round(Inspector.Width/3);
   DynControl.ControlSetOnEnter(RTTIInspectorEnter);
 
   Caption := RSPropertyStoreEditorDialogCaptionEditProperties;
@@ -711,6 +714,15 @@ begin
        and InspectedObjectEditorHandlerIntf.EditIntf_IsPropertySimple(aPropertyName)
   else
     Result := False;
+end;
+
+function TJvPropertyStoreEditorControl.OnInspectorTranslatePropertyName(const
+    aPropertyName : String): string;
+begin
+  if Assigned(InspectedObjectEditorHandlerIntf) then
+    Result := InspectedObjectEditorHandlerIntf.EditIntf_TranslatePropertyName(aPropertyName)
+  else
+    Result := aPropertyName;
 end;
 
 procedure TJvPropertyStoreEditorControl.OnPropertyChange(var OldPropertyName,

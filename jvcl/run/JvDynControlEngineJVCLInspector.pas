@@ -61,6 +61,8 @@ type
         TJvDynControlInspectorControlOnDisplayPropertyEvent); overload;
     procedure ControlSetOnTranslatePropertyName(const Value:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent);
+    function GetControlDividerWidth: Integer;
+    procedure SetControlDividerWidth(const Value: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     procedure ControlSetDefaultProperties;
@@ -240,6 +242,11 @@ begin
   fOnTranslatePropertyName := Value;
 end;
 
+function TJvDynControlRTTIInspectorControl.GetControlDividerWidth: Integer;
+begin
+  Result := Divider;
+end;
+
 function TJvDynControlRTTIInspectorControl.GetControlOnPropertyChange:
     TJvDynControlInspectorControlOnPropertyChangeEvent;
 begin
@@ -255,6 +262,12 @@ begin
   if Assigned(fControlOnPropertyChange) then
     fControlOnPropertyChange(OldPropertyName, NewPropertyName);
   OldPropertyName := NewPropertyName;
+end;
+
+procedure TJvDynControlRTTIInspectorControl.SetControlDividerWidth(const Value:
+    Integer);
+begin
+  Divider := Value;
 end;
 
 procedure TJvDynControlRTTIInspectorControl.SetControlOnPropertyChange(const
