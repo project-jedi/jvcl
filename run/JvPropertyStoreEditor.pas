@@ -78,6 +78,9 @@ type
     PropertyStoreTreeViewIntf: IJvDynControlTreeView;
     RTTIInspectorControlIntf: IJvDynControlRTTIInspectorControl;
     TreePanel: TWinControl;
+    TreeSplitter: TSplitter;
+    ListSplitter: TSplitter;
+    ListButtonPanel: TWinControl;
     function GetPropCount(Instance: TPersistent): Integer;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
     procedure SetInspectedObject(const Value: TPersistent);
@@ -89,6 +92,8 @@ type
     property InspectedObjectEditorHandlerIntf: IJvPropertyEditorHandler read
         FInspectedObjectEditorHandlerIntf;
     procedure FillListBox;
+    procedure RTTIInspectorOnCanResize(Sender: TObject; var NewWidth, NewHeight:
+        Integer; var Resize: Boolean);
   protected
     procedure CreateControls;
     procedure DestroyControls;
@@ -117,6 +122,7 @@ type
     FPropertyStore: TComponent;
     FPropertyStoreEditorControl: TJvPropertyStoreEditorControl;
     procedure CancelButtonClick(Sender: TObject);
+    procedure IntOnShow(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure SetPropertyStore(const Value: TComponent);
   protected
@@ -149,6 +155,8 @@ uses
 
 {$R *.dfm}
 
+type tAccessControl = class(TControl);
+
 
 function EditPropertyStore(PropertyStore: TJvCustomPropertyStore): Boolean;
 var
@@ -174,6 +182,7 @@ end;
 procedure TJvPropertyStoreEditorForm.FormCreate(Sender: TObject);
 begin
   CreateFormControls;
+  OnShow := IntOnShow;
 end;
 
 type tAccessCustomPanel = class(tCustomPanel);
@@ -210,7 +219,6 @@ begin
 
   FPropertyStoreEditorControl:= TJvPropertyStoreEditorControl.Create(self);
   FPropertyStoreEditorControl.Parent := Self;
-  FPropertyStoreEditorControl.PropertyStore := PropertyStore;
   FPropertyStoreEditorControl.Align := alClient;
 
   Caption := RSPropertyStoreEditorDialogCaptionEditProperties;
@@ -239,6 +247,14 @@ begin
   FreeAndNil(FPropertyStoreEditorControl);
 end;
 
+procedure TJvPropertyStoreEditorForm.IntOnShow(Sender: TObject);
+begin
+  if Assigned(FPropertyStoreEditorControl) then
+  begin
+    FPropertyStoreEditorControl.PropertyStore := PropertyStore;
+  end;
+end;
+
 
 destructor TJvPropertyStoreEditorControl.Destroy;
 begin
@@ -249,11 +265,8 @@ end;
 procedure TJvPropertyStoreEditorControl.CreateControls;
 var
   TreeView: TWinControl;
-  TreeSplitter: TSplitter;
   EditPanel: TWinControl;
-  ListSplitter: TSplitter;
   DynControlDblClick : IJvDynControlDblClick;
-  ListButtonPanel: TWinControl;
   ListBox: TWinControl;
   InfoGroupBox: TWinControl;
   InfoMemoPanel: TWinControl;
@@ -284,6 +297,7 @@ begin
   TreeSplitter := TSplitter.Create(Self);
   TreeSplitter.Align := alLeft;
   TreeSplitter.Parent := Self;
+  TreeSplitter.Left := TreePanel.Left+TreePanel.Width+1;
   EditPanel  := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'EditPanel', '', alClient);
   if EditPanel is TPanel then
   begin
@@ -370,8 +384,10 @@ begin
   RTTIInspectorControlIntf.ControlOnPropertyChange := OnPropertyChange;
   RTTIInspectorControlIntf.ControlOnTranslatePropertyName := OnInspectorTranslatePropertyName;
   Inspector.Align := alClient;
+  tAccessControl(Inspector).OnCanResize := RTTIInspectorOnCanResize;
   Supports(RTTIInspectorControlIntf, IJvDynControl, DynControl);
-  RTTIInspectorControlIntf.ControlDividerWidth := Round(Inspector.Width/3);
+  RTTIInspectorControlIntf.ControlDividerWidth := 200;
+
   DynControl.ControlSetOnEnter(RTTIInspectorEnter);
 
   Caption := RSPropertyStoreEditorDialogCaptionEditProperties;
@@ -787,6 +803,9 @@ begin
     Inspector.Parent := ListInspectorPanel;
     InspectorPanel.visible := False;
     ListInspectorPanel.visible := RTTIInspectorControlIntf.ControlGetVisibleItemsCount > 0;
+    ListSplitter.visible := ListInspectorPanel.visible;
+    ListButtonPanel.Top := ListInspectorPanel.Top+ListInspectorPanel.Height+1;
+    ListSplitter.Top := ListButtonPanel.Top-1;
     FillListBox;
   end
   else
@@ -845,6 +864,17 @@ begin
   if Assigned(InspectedObjectEditorHandlerIntf) and Assigned(RTTIInspectorControlIntf) then
     SetInformation (InspectedObjectEditorHandlerIntf.EditIntf_TranslatePropertyName(RTTIInspectorControlIntf.ControlGetCurrentPropertyName),
                     InspectedObjectEditorHandlerIntf.EditIntf_GetPropertyHint(RTTIInspectorControlIntf.ControlGetCurrentPropertyName));
+end;
+
+procedure TJvPropertyStoreEditorControl.RTTIInspectorOnCanResize(Sender:
+    TObject; var NewWidth, NewHeight: Integer; var Resize: Boolean);
+var
+  Ratio: Double;
+begin
+  if not Assigned(RTTIInspectorControlIntf) then
+    Exit;
+  Ratio := Inspector.Width / RTTIInspectorControlIntf.ControlDividerWidth;
+  RTTIInspectorControlIntf.ControlDividerWidth := Round(NewWidth/Ratio);
 end;
 
 procedure TJvPropertyStoreEditorControl.SetInformation(const iCaption, iInfo:
