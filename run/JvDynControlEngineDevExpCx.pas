@@ -46,9 +46,9 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
-  cxProgressBar, cxPC, cxColorComboBox,
+  cxProgressBar, cxPC, cxColorComboBox, cxGraphics,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
-  cxOi, cxVGrid,
+  cxOi, cxVGrid, cxVGridViewInfo,
   {$ENDIF}
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -893,6 +893,8 @@ type
         string; var Accept: Boolean);
     procedure InspectorOnItemChanged(Sender: TObject; AOldRow: TcxCustomRow;
         AOldCellIndex: Integer);
+    procedure ReplaceOnDrawRowHeader(Sender: TObject; ACanvas: TcxCanvas; APainter:
+        TcxvgPainter; AHeaderViewInfo: TcxCustomRowHeaderInfo; var Done: Boolean);
   protected
     //IJvDynControlRTTIInspectorControl
     function ControlGetOnDisplayProperty:
@@ -3815,6 +3817,7 @@ procedure TJvDynControlCxRTTIInspectorControl.ControlSetDefaultProperties;
 begin
   OnFilterProperty := InspectorOnFilterProperty;
   OnItemChanged := InspectorOnItemChanged;
+  OnDrawRowHeader := ReplaceOnDrawRowHeader;
 end;
 
 function TJvDynControlCxRTTIInspectorControl.ControlGetCurrentPropertyName:
@@ -3956,6 +3959,14 @@ procedure TJvDynControlCxRTTIInspectorControl.InspectorOnFilterProperty(Sender:
 begin
   if Assigned(fonDisplayProperty) And IsPublishedProp(InspectedObject, PropertyName) then
     Accept := fOnDisplayProperty(PropertyName) and ControlIsPropertySupported(PropertyName);
+end;
+
+procedure TJvDynControlCxRTTIInspectorControl.ReplaceOnDrawRowHeader(Sender:
+    TObject; ACanvas: TcxCanvas; APainter: TcxvgPainter; AHeaderViewInfo:
+    TcxCustomRowHeaderInfo; var Done: Boolean);
+begin
+  if (AHeaderViewInfo is TcxEditorRowHeaderInfo) and Assigned(fOnTranslatePropertyName)then
+    TcxEditorRowHeaderInfo(AHeaderViewInfo).CaptionsInfo[0].Caption := fOnTranslatePropertyName(TcxEditorRowHeaderInfo(AHeaderViewInfo).CaptionsInfo[0].Caption);
 end;
 
 procedure TJvDynControlCxRTTIInspectorControl.SetControlDividerWidth(const
