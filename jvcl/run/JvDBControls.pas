@@ -111,6 +111,7 @@ type
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
+    property Alignment;
     property Anchors;
     property AutoSelect;
     property AutoSize;
@@ -227,8 +228,8 @@ type
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
-    //Polaris
     property AlwaysShowPopup default False;
+    property Alignment;
     property Align;
     property Action;
     property AutoSelect;
@@ -357,6 +358,7 @@ type
     property MinDate;
     property MaxDate;
     property Align;
+    property Alignment;
     property Action;
     property AutoSize;
     property BeepOnError;
@@ -499,7 +501,6 @@ type
     property Field: TField read GetField;
     property Value;
   published
-    //Polaris
     property AlwaysShowPopup default False;
     property Align;
     property DecimalPlaceRound;
