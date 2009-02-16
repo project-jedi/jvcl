@@ -650,29 +650,39 @@ var
   I: Integer;
   c: string;
   lastLower: Boolean;
+  LastBlank: Boolean;
 begin
   s := '';
   LastLower := False;
+  LastBlank := False;
   for I := 1 to Length(PropertyName) do
   begin
     c := Copy(PropertyName, i, 1);
-    if (c = Uppercase(c)) then
-    begin
-      if LastLower then
-        s := s + ' ' + c
-      else
-        s := s + c;
-      LastLower := False;
-    end
-    else if (c = '_') or (c = '.') then
+    if (c = '_') or (c = '.') or (c = ' ') then
     begin
       s := s + ' ';
+      LastBlank := True;
+      LastLower := False;
+    end
+    else if (c = Uppercase(c)) then
+    begin
+      if LastLower and not LastBlank then
+      begin
+        s := s + ' ' + c;
+        LastBlank := True;
+      end
+      else
+      begin
+        s := s + c;
+        LastBlank := False;
+      end;
       LastLower := False;
     end
     else
     begin
       s := s + c;
       LastLower := true;
+      LastBlank := False;
     end
   end;
   Result := s;
