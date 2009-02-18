@@ -54,6 +54,8 @@ type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
   TJvPanelChangedSizeEvent = procedure(Sender: TObject; ChangedSize: Integer) of object;
   TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
+  TJvArrangeSettingsVAlignment = (asTop, asVCenter, asBottom);
+  TJvArrangeSettingsHAlignment = (asLeft, asCenter, asRight);
 
   TJvArrangeSettings = class(TJvPersistentProperty)
   private
@@ -66,6 +68,10 @@ type
     FDistanceHorizontal: Integer;
     FShowNotVisibleAtDesignTime: Boolean;
     FMaxWidth: Integer;
+    FVerticalAlignment: TJvArrangeSettingsVAlignment;
+    FHorizontalAlignment: TJvArrangeSettingsHAlignment;
+    FMaxControlsPerLine: Integer;
+    FHorizontalAlignLines: Boolean;
     procedure SetWrapControls(Value: Boolean);
     procedure SetAutoArrange(Value: Boolean);
     procedure SetAutoSize(Value: TJvAutoSizePanel);
@@ -74,6 +80,10 @@ type
     procedure SetDistanceVertical(Value: Integer);
     procedure SetDistanceHorizontal(Value: Integer);
     procedure SetMaxWidth(Value: Integer);
+    procedure SetHorizontalAlignment(const Value: TJvArrangeSettingsHAlignment);
+    procedure SetVerticalAlignment(const Value: TJvArrangeSettingsVAlignment);
+    procedure SetMaxControlsPerLine(const Value: Integer);
+    procedure SetHorizontalAlignLines(const Value: Boolean);
   public
     constructor Create(AOwner: TPersistent); override;
     procedure Assign(Source: TPersistent); override;
@@ -87,17 +97,26 @@ type
     property AutoSize: TJvAutoSizePanel read FAutoSize write SetAutoSize default asNone;
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 0;
+    { MaxControlsPerLine specifies the max. number of controls that fit into a line. The following
+      controls are moved to the next line. A value of zero means no limit. WrapControls is still
+      considered. }
+    property MaxControlsPerLine: Integer read FMaxControlsPerLine write SetMaxControlsPerLine default 0;
+    { VerticalAlignment aligns the arranged control-block. in the panel unless AutoSize is asBoth or asHeight. }
+    property VerticalAlignment: TJvArrangeSettingsVAlignment read FVerticalAlignment write SetVerticalAlignment default asTop;
+    { HorizontalAlignment aligns the arranged control-block in the panel unless AutoSize is asBoth or asWidth. }
+    property HorizontalAlignment: TJvArrangeSettingsHAlignment read FHorizontalAlignment write SetHorizontalAlignment default asLeft;
+    { HorizontalAlignLines aligns the control-lines. This only works if WrapControls or MaxControlsPerLine is enabled }
+    property HorizontalAlignLines: Boolean read FHorizontalAlignLines write SetHorizontalAlignLines default False;
   end;
 
   IJvArrangePanel = interface
   ['{8EE63749-CDDC-4436-9067-4EF0434B43C2}']
-    procedure ArrangeControls; 
+    procedure ArrangeControls;
     procedure DisableArrange;
     procedure EnableArrange;
     function GetArrangeSettings: TJvArrangeSettings;
     procedure SetArrangeSettings(const Value: TJvArrangeSettings);
-    property ArrangeSettings: TJvArrangeSettings read GetArrangeSettings write
-        SetArrangeSettings;
+    property ArrangeSettings: TJvArrangeSettings read GetArrangeSettings write SetArrangeSettings;
   end;
 
   TJvPanelHotTrackOptions = class(TJvHotTrackOptions)
@@ -216,8 +235,7 @@ type
     property OnAfterMove: TNotifyEvent Read FOnAfterMove write FOnAfterMove;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
 
-    property ArrangeSettings: TJvArrangeSettings read GetArrangeSettings write
-        SetArrangeSettings;
+    property ArrangeSettings: TJvArrangeSettings read GetArrangeSettings write SetArrangeSettings;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
@@ -355,8 +373,9 @@ begin
   FBorderTop := 0;
   FDistanceVertical := 0;
   FDistanceHorizontal := 0;
-  WrapControls := True;
-  ShowNotVisibleAtDesignTime := True;
+  FMaxControlsPerLine := 0;
+  FWrapControls := True;
+  FShowNotVisibleAtDesignTime := True;
   FAutoSize := asNone;
   AutoArrange := False;
 end;
@@ -421,6 +440,18 @@ begin
   end;
 end;
 
+procedure TJvArrangeSettings.SetMaxControlsPerLine(const Value: Integer);
+begin
+  if Value <> FMaxControlsPerLine then
+  begin
+    Changing;
+    ChangingProperty('MaxControlsPerLine');
+    FMaxControlsPerLine := Value;
+    ChangedProperty('MaxControlsPerLine');
+    Changed;
+  end;
+end;
+
 procedure TJvArrangeSettings.SetDistanceVertical(Value: Integer);
 begin
   if Value <> FDistanceVertical then
@@ -429,6 +460,18 @@ begin
     ChangingProperty('DistanceVertical');
     FDistanceVertical := Value;
     ChangedProperty('DistanceVertical');
+    Changed;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetHorizontalAlignment(const Value: TJvArrangeSettingsHAlignment);
+begin
+  if Value <> FHorizontalAlignment then
+  begin
+    Changing;
+    ChangingProperty('HorizontalAlignment');
+    FHorizontalAlignment := Value;
+    ChangedProperty('HorizontalAlignment');
     Changed;
   end;
 end;
@@ -457,6 +500,30 @@ begin
   end;
 end;
 
+procedure TJvArrangeSettings.SetHorizontalAlignLines(const Value: Boolean);
+begin
+  if Value <> FHorizontalAlignLines then
+  begin
+    Changing;
+    ChangingProperty('HorizontalAlignLines');
+    FHorizontalAlignLines := Value;
+    ChangedProperty('HorizontalAlignLines');
+    Changed;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetVerticalAlignment(const Value: TJvArrangeSettingsVAlignment);
+begin
+  if Value <> FVerticalAlignment then
+  begin
+    Changing;
+    ChangingProperty('VerticalAlignment');
+    FVerticalAlignment := Value;
+    ChangedProperty('VerticalAlignment');
+    Changed;
+  end;
+end;
+
 procedure TJvArrangeSettings.Assign(Source: TPersistent);
 var
   A: TJvArrangeSettings;
@@ -474,6 +541,8 @@ begin
       DistanceVertical := A.DistanceVertical;
       DistanceHorizontal := A.DistanceHorizontal;
       ShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
+      VerticalAlignment := A.VerticalAlignment;
+      HorizontalAlignment := A.HorizontalAlignment;
       MaxWidth := A.MaxWidth;
     finally
       EndUpdate;
@@ -504,19 +573,15 @@ begin
   FHotTrack := False;
   FHotTrackFont := TFont.Create;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  FHotTrackOptions := TJvPanelHotTrackOptions.Create(self);
-
-  FArrangeSettings := TJvArrangeSettings.Create(nil);   // Do Not Assign Self, In some circumstances the autoarrange does not work
-                                                        // TODO: Check why this happens
+  FHotTrackOptions := TJvPanelHotTrackOptions.Create(Self);
+  FArrangeSettings := TJvArrangeSettings.Create(Self); // "Self" is a must, otherwise the ObjectInspector has problems
   FArrangeSettings.OnChangedProperty := DoArrangeSettingsPropertyChanged;
 end;
 
 destructor TJvCustomArrangePanel.Destroy;
 begin
-  FreeAndNil(FArrangeSettings);
-//  FreeAndNil(FHotTrackOptions); // No longer necessary, autofree because of the self parent
-  FreeAndNil(FHotTrackFont);
   inherited Destroy;
+  FreeAndNil(FHotTrackFont);
 end;
 
 procedure TJvCustomArrangePanel.CreateParams(var Params: TCreateParams);
@@ -1041,6 +1106,12 @@ begin
 end;
 
 procedure TJvCustomArrangePanel.ArrangeControls;
+type
+  TControlRect = record
+    Control: TControl;
+    BoundsRect: TRect;
+    LineBreak: Boolean;
+  end;
 var
   AktX, AktY, NewX, NewY, MaxY, NewMaxX: Integer;
   ControlMaxX, ControlMaxY: Integer;
@@ -1049,103 +1120,181 @@ var
   CurrControl: TWinControl;
   I: Integer;
   OldHeight, OldWidth: Integer;
+  OffsetX, OffsetY: Integer;
+  NumControlsPerLine: Integer;
+  ControlRects: array of TControlRect;
+  LineOffsets: array of Integer;
+  LineCount, Len: Integer;
+  ArrS: TJvArrangeSettings;
 begin
-  if (not ArrangeEnabled) or FArrangeControlActive or (ControlCount = 0) then
-    Exit;
-  if [csLoading, csReading] * ComponentState <> [] then
+  if not ArrangeEnabled or FArrangeControlActive or (ControlCount = 0) or
+     ([csLoading, csReading] * ComponentState <> []) then
     Exit;
   FArrangeWidth := 0;
   FArrangeHeight := 0;
   FArrangeControlActive := True;
+  ArrS := FArrangeSettings;
   try
     OldHeight := Height;
     OldWidth := Width;
     TmpHeight := Height;
     TmpWidth := Width;
-    AktY := FArrangeSettings.BorderTop;
-    AktX := FArrangeSettings.BorderLeft;
+    AktY := ArrS.BorderTop;
+    AktX := ArrS.BorderLeft;
     LastTabOrder := -1;
     MaxY := -1;
-    if (FArrangeSettings.AutoSize in [asWidth, asBoth]) then
-      ControlMaxX := TmpWidth - 2 * FArrangeSettings.BorderLeft
+    if (ArrS.AutoSize in [asWidth, asBoth]) then
+      ControlMaxX := TmpWidth - 2 * ArrS.BorderLeft
     else
       ControlMaxX := -1;
-    if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
-      ControlMaxY := TmpHeight - 2 * FArrangeSettings.BorderTop
+    if (ArrS.AutoSize in [asHeight, asBoth]) then
+      ControlMaxY := TmpHeight - 2 * ArrS.BorderTop
     else
       ControlMaxY := -1;
 
+    SetLength(ControlRects, ControlCount);
     for I := 0 to ControlCount - 1 do
       if Controls[I] is TWinControl then
       begin
         if Controls[I] is TJvCustomArrangePanel then
           TJvCustomArrangePanel(Controls[I]).Rearrange;
-        if (Controls[I].Width + 2 * FArrangeSettings.BorderLeft > TmpWidth) then
-          TmpWidth := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
+        if (Controls[I].Width + 2 * ArrS.BorderLeft > TmpWidth) then
+          TmpWidth := Controls[I].Width + 2 * ArrS.BorderLeft;
       end;
 
-    if (TmpWidth > FArrangeSettings.MaxWidth) and (FArrangeSettings.MaxWidth > 0) then
-      TmpWidth := FArrangeSettings.MaxWidth ;
-    CurrControl := GetNextControlByTabOrder(LastTabOrder+1);
+    if (TmpWidth > ArrS.MaxWidth) and (ArrS.MaxWidth > 0) then
+      TmpWidth := ArrS.MaxWidth;
+    CurrControl := GetNextControlByTabOrder(LastTabOrder + 1);
+    I := 0;
+    NumControlsPerLine := 0;
+    LineCount := 0;
     while Assigned(CurrControl) do
     begin
       LastTabOrder := CurrControl.TabOrder;
+      ControlRects[I].Control := nil;
+      ControlRects[I].LineBreak := False;
       if CurrControl.Visible or
-        ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
+        ((csDesigning in ComponentState) and ArrS.ShowNotVisibleAtDesignTime) then
       begin
-        NewMaxX := AktX + CurrControl.Width + FArrangeSettings.DistanceHorizontal +
-          FArrangeSettings.BorderLeft;
-        if (((NewMaxX > TmpWidth) and not (FArrangeSettings.AutoSize in [asWidth, asBoth])) or
-            ((NewMaxX > FArrangeSettings.MaxWidth) and (FArrangeSettings.MaxWidth > 0))) and
-           (AktX > FArrangeSettings.BorderLeft) and // Only Valid if there is one control in the current line
-           FArrangeSettings.WrapControls then
+        NewMaxX := AktX + CurrControl.Width + ArrS.DistanceHorizontal + ArrS.BorderLeft;
+        if ((ArrS.MaxControlsPerLine > 0) and (NumControlsPerLine >= ArrS.MaxControlsPerLine)) or
+           ((((NewMaxX > TmpWidth) and not (ArrS.AutoSize in [asWidth, asBoth])) or
+            ((NewMaxX > ArrS.MaxWidth) and (ArrS.MaxWidth > 0))) and
+           (AktX > ArrS.BorderLeft) and // Only Valid if there is one control in the current line
+           ArrS.WrapControls) then
         begin
-          AktX := FArrangeSettings.BorderLeft;
-          AktY := AktY + MaxY + FArrangeSettings.DistanceVertical;
+          AktX := ArrS.BorderLeft;
+          AktY := AktY + MaxY + ArrS.DistanceVertical;
           MaxY := -1;
           NewX := AktX;
           NewY := AktY;
+          NumControlsPerLine := 1;
+          ControlRects[I].LineBreak := True;
+          Inc(LineCount);
         end
         else
         begin
           NewX := AktX;
           NewY := AktY;
+          Inc(NumControlsPerLine);
         end;
         AktX := AktX + CurrControl.Width;
         if AktX > ControlMaxX then
           ControlMaxX := AktX;
-        AktX := AktX + FArrangeSettings.DistanceHorizontal;
-        CurrControl.Left := NewX;
-        CurrControl.Top := NewY;
+        AktX := AktX + ArrS.DistanceHorizontal;
+        ControlRects[I].Control := CurrControl;
+        ControlRects[I].BoundsRect := Rect(NewX, NewY, NewX + CurrControl.Width, NewY + CurrControl.Height);
         if CurrControl.Height > MaxY then
           MaxY := CurrControl.Height;
         ControlMaxY := AktY + MaxY;
       end;
-      CurrControl := GetNextControlByTabOrder(LastTabOrder+1);
+      CurrControl := GetNextControlByTabOrder(LastTabOrder + 1);
+      Inc(I);
     end;
 
+    { Vertical/Horizontal alignment }
+    OffsetX := 0;
+    OffsetY := 0;
+    if not (ArrS.AutoSize in [asBoth, asHeight]) then
+      case ArrS.VerticalAlignment of
+        asVCenter:
+          OffsetY := (ClientHeight - ControlMaxY) div 2;
+        asBottom:
+          OffsetY := ClientHeight - ControlMaxY;
+      end;
+    if not (ArrS.AutoSize in [asBoth, asWidth]) then
+      case ArrS.HorizontalAlignment of
+        asCenter:
+          OffsetX := (ClientWidth - ControlMaxX) div 2;
+        asRight:
+          OffsetX := ClientWidth - ControlMaxX;
+      end;
+
+    { Calculate the horizontal line alignment }
+    if Arrs.HorizontalAlignLines then
+    begin
+      SetLength(LineOffsets, LineCount);
+      Len := Length(ControlRects);
+      I := 0;
+      LineCount := 0;
+      while I < Len do
+      begin
+        { Skip unused slots }
+        while (I < Len) and (ControlRects[I].Control = nil) do
+          Inc(I);
+        if I < Len then
+        begin
+          LineOffsets[LineCount] := ControlRects[I].BoundsRect.Left;
+          { Find last control in the line }
+          while (I + 1 < Len) and not ControlRects[I + 1].LineBreak do
+            Inc(I);
+          LineOffsets[LineCount] := (ControlMaxX - (ControlRects[I].BoundsRect.Right - LineOffsets[LineCount])) div 2;
+          Inc(LineCount);
+        end;
+        Inc(I);
+      end;
+    end;
+
+    { Apply the new BoundRects to the controls }
+    LineCount := 0;
+    for I := 0 to High(ControlRects) do
+    begin
+      if ControlRects[I].Control <> nil then
+      begin
+        OffsetRect(ControlRects[I].BoundsRect, OffsetX, OffsetY);
+        if ArrS.HorizontalAlignLines then
+        begin
+          if ControlRects[I].LineBreak then
+            Inc(LineCount);
+          OffsetRect(ControlRects[I].BoundsRect, LineOffsets[LineCount], 0);
+        end;
+        ControlRects[I].Control.BoundsRect := ControlRects[I].BoundsRect;
+      end;
+    end;
+
+    { Adjust panel bounds }
     if not (csLoading in ComponentState) then
     begin
-      if (FArrangeSettings.AutoSize in [asWidth, asBoth]) then
+      if ArrS.AutoSize in [asWidth, asBoth] then
         if ControlMaxX >= 0 then
-          if (FArrangeSettings.MaxWidth > 0) and (ControlMaxX >= FArrangeSettings.MaxWidth) then
-            TmpWidth := FArrangeSettings.MaxWidth
+          if (ArrS.MaxWidth > 0) and (ControlMaxX >= ArrS.MaxWidth) then
+            TmpWidth := ArrS.MaxWidth
           else
-            TmpWidth := ControlMaxX + FArrangeSettings.BorderLeft
+            TmpWidth := ControlMaxX + ArrS.BorderLeft
         else
           TmpWidth := 0;
-      if (FArrangeSettings.AutoSize in [asHeight, asBoth]) then
+      if ArrS.AutoSize in [asHeight, asBoth] then
         if ControlMaxY >= 0 then
-          TmpHeight := ControlMaxY + FArrangeSettings.BorderTop
+          TmpHeight := ControlMaxY + ArrS.BorderTop
         else
           TmpHeight := 0;
       Width := TmpWidth;
       Height := TmpHeight;
     end;
-    FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
-    FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
+    FArrangeWidth := ControlMaxX + 2 * ArrS.BorderLeft;
+    FArrangeHeight := ControlMaxY + 2 * ArrS.BorderTop;
     if (OldWidth <> TmpWidth) or (OldHeight <> Height) then
-      SendMessage(GetFocus, WM_PAINT, 0, 0);
+      UpdateWindow(GetFocus); //SendMessage(GetFocus, WM_PAINT, 0, 0);
   finally
     FArrangeControlActive := False;
   end;
