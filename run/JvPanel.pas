@@ -86,6 +86,7 @@ type
     procedure SetHorizontalAlignLines(const Value: Boolean);
   public
     constructor Create(AOwner: TPersistent); override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
     property WrapControls: Boolean read FWrapControls write SetWrapControls default True;
@@ -349,7 +350,7 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  JvJCLUtils, JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils, JvResources;
 
 const
   BkModeTransparent = TRANSPARENT;
@@ -378,6 +379,23 @@ begin
   FShowNotVisibleAtDesignTime := True;
   FAutoSize := asNone;
   AutoArrange := False;
+end;
+
+destructor TJvArrangeSettings.Destroy;
+begin
+  if (Owner is TJvPanel) and not (csDestroying in TJvPanel(Owner).ComponentState) then
+  begin
+    // User code tried to destroy the TJvPanel.ArrangeSettings
+    // objects leaving the panel in a broken state. Please fix your code by adding
+    //
+    //    if not ((Components[I] is TJvArrangeSettings) or
+    //            (Components[I] is TJvPanelHotTrackOptions)) then
+    //
+    // or by using the Controls[] array property if possible.
+
+    raise EJVCLException.CreateRes(@RsDestroyingArrangeSettingsNotAllowed);
+  end;
+  inherited Destroy;
 end;
 
 procedure TJvArrangeSettings.SetWrapControls(Value: Boolean);

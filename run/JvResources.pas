@@ -2388,6 +2388,14 @@ resourcestring
   RsUnknownFilterFunction = 'Unknown filter function "%s"';
   RsMissingFilterFunctionParameters = 'Missing filter function parameters for "%s"';
 
+//=== JvPanel ================================================================
+resourcestring
+  RsDestroyingArrangeSettingsNotAllowed = 'Your code tried to destroy the TJvPanel.ArrangeSettings ' +
+    'objects leaving the panel in a broken state. Please fix your code by adding'#13#10#13#10 +
+    '    if not ((Components[I] is TJvArrangeSettings) or'#13#10 +
+    '            (Components[I] is TJvPanelHotTrackOptions)) then'#13#10#13#10 +
+    'or by using the Controls[] array property if possible.';
+
 //=== not taken into JVCL ====================================================
 {
 resourcestring
