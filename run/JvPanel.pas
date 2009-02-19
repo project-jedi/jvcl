@@ -559,9 +559,11 @@ begin
       DistanceVertical := A.DistanceVertical;
       DistanceHorizontal := A.DistanceHorizontal;
       ShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
+      MaxWidth := A.MaxWidth;
+      MaxControlsPerLine := A.MaxControlsPerLine;
       VerticalAlignment := A.VerticalAlignment;
       HorizontalAlignment := A.HorizontalAlignment;
-      MaxWidth := A.MaxWidth;
+      HorizontalAlignLines := A.HorizontalAlignLines;
     finally
       EndUpdate;
     end;
