@@ -1924,7 +1924,7 @@ begin
   if VarIsInt(Value) then
     ItemIndex := Value
   else
-    ItemIndex := Items.IndexOf(Value);
+    ItemIndex := Items.IndexOf(VarToStr(Value));
 end;
 
 function TJvDynControlVCLRadioGroup.ControlGetValue: Variant;
@@ -2002,7 +2002,7 @@ begin
   if VarIsInt(Value) then
     ItemIndex := Value
   else
-    ItemIndex := Items.IndexOf(Value);
+    ItemIndex := Items.IndexOf(VarToStr(Value));
 end;
 
 function TJvDynControlVCLListBox.ControlGetValue: Variant;
@@ -2081,7 +2081,7 @@ begin
   if VarIsInt(Value) then
     ItemIndex := Value
   else
-    ItemIndex := Items.IndexOf(Value);
+    ItemIndex := Items.IndexOf(VarToStr(Value));
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetValue: Variant;
@@ -2206,7 +2206,7 @@ end;
 procedure TJvDynControlVCLComboBox.ControlSetValue(Value: Variant);
 begin
   if Style = csDropDownList then
-    ItemIndex := Items.IndexOf(Value)
+    ItemIndex := Items.IndexOf(VarToStr(Value))
   else
     Text := Value;
 end;
