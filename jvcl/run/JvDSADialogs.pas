@@ -580,11 +580,11 @@ begin
   if Timeout <> 0 then
     FTimer.Enabled := True;
   First := True;
-  for I := 0 to ComponentCount - 1 do
+  for I := 0 to ControlCount - 1 do
   begin
-    if (Components[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}) then
+    if (Controls[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}) then
     begin
-      Btn := (Components[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF});
+      Btn := (Controls[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF});
       if First then
       begin
         First := False;
@@ -616,11 +616,11 @@ begin
     if FTimeout = 0 then
     begin
       FTimer.Enabled := False;
-      for I := 0 to ComponentCount - 1 do
+      for I := 0 to ControlCount - 1 do
       begin
-        if (Components[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}) and (Components[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}).Default then
+        if (Controls[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}) and (Controls[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}).Default then
         begin
-          (Components[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}).Click;
+          (Controls[I] as {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}).Click;
           Exit;
         end;
       end;
@@ -673,9 +673,9 @@ var
   I: Integer;
 begin
   DividerLine := StringOfChar('-', 27) + CrLf;
-  for I := 0 to ComponentCount - 1 do
-    if Components[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} then
-      ButtonCaptions := ButtonCaptions + TButton(Components[I]).Caption + StringOfChar(' ', 3);
+  for I := 0 to ControlCount - 1 do
+    if Controls[I] is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} then
+      ButtonCaptions := ButtonCaptions + TButton(Controls[I]).Caption + StringOfChar(' ', 3);
   ButtonCaptions := StringReplace(ButtonCaptions, '&', '', [rfReplaceAll]);
   Result := Format('%s%s%s%s%s%s%s%s%s%s', [DividerLine, Caption, CrLf, DividerLine,
     Msg, CrLf, DividerLine, ButtonCaptions, CrLf, DividerLine]);
@@ -705,11 +705,11 @@ function TDSAMessageForm.IsDSAChecked: Boolean;
 var
   I: Integer;
 begin
-  I := ComponentCount - 1;
-  while (I > -1) and not (Components[I] is TCustomCheckBox) do
+  I := ControlCount - 1;
+  while (I > -1) and not (Controls[I] is TCustomCheckBox) do
     Dec(I);
   if (I > -1) then
-    Result := TCheckBox(Components[I]).Checked
+    Result := TCheckBox(Controls[I]).Checked
   else
     Result := False;
 end;
