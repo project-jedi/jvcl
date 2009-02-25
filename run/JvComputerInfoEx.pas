@@ -255,8 +255,8 @@ type
     function GetMMX: Boolean;
     function GetSSE: TSSESupports;
     function GetModel: Byte;
-    function GetNormFreq: Cardinal;
-    function GetRawFreq: Cardinal;
+    function GetNormFreq: Int64;
+    function GetRawFreq: Int64;
     function GetStepping: Byte;
     function GetVendorIDString: string;
     function GetProcessorCount: Integer;
@@ -286,8 +286,8 @@ type
     procedure SetMMX(const Value: Boolean);
     procedure SetSSE(const Value: TSSESupports);
     procedure SetModel(const Value: Byte);
-    procedure SetNormFreq(const Value: Cardinal);
-    procedure SetRawFreq(const Value: Cardinal);
+    procedure SetNormFreq(const Value: Int64);
+    procedure SetRawFreq(const Value: Int64);
     procedure SetStepping(const Value: Byte);
     procedure SetVendorIDString(const Value: string);
     procedure SetProcessorCount(const Value: Integer);
@@ -338,8 +338,8 @@ type
     property L2Cache: Cardinal read GetL2Cache write SetL2Cache stored False;
     property L3Cache: Cardinal read GetL3Cache write SetL3Cache stored False;
     // FreqInfo
-    property RawFreq: Cardinal read GetRawFreq write SetRawFreq stored False;
-    property NormFreq: Cardinal read GetNormFreq write SetNormFreq stored False;
+    property RawFreq: Int64 read GetRawFreq write SetRawFreq stored False;
+    property NormFreq: Int64 read GetNormFreq write SetNormFreq stored False;
     property DEPCapable: Boolean read GetDEPCapable write SetDEPCapable stored False;
     property PhysicalCore: Byte read GetPhysicalCore write SetPhysicalCore stored False;
     property LogicalCore: Byte read GetLogicalCore write SetLogicalCore stored False;
@@ -1908,7 +1908,7 @@ begin
   Result := GetCPUInfo.Model;
 end;
 
-function TJvCPUInfo.GetNormFreq: Cardinal;
+function TJvCPUInfo.GetNormFreq: Int64;
 begin
   Result := GetCPUSpeed.NormFreq;
 end;
@@ -1923,7 +1923,7 @@ begin
   Result := JclSysInfo.ProcessorCount;
 end;
 
-function TJvCPUInfo.GetRawFreq: Cardinal;
+function TJvCPUInfo.GetRawFreq: Int64;
 begin
   Result := GetCPUSpeed.RawFreq;
 end;
@@ -2073,7 +2073,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvCPUInfo.SetNormFreq(const Value: Cardinal);
+procedure TJvCPUInfo.SetNormFreq(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
@@ -2088,7 +2088,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvCPUInfo.SetRawFreq(const Value: Cardinal);
+procedure TJvCPUInfo.SetRawFreq(const Value: Int64);
 begin
   RaiseReadOnly;
 end;
