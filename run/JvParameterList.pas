@@ -1385,6 +1385,8 @@ procedure TJvParameterList.OnEnterParameterControl(Sender: TObject);
 var
   I: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Assigned(Sender) then
     for I := 0 to Count - 1 do
       if Parameters[I].WinControl = Sender then
@@ -1401,6 +1403,8 @@ procedure TJvParameterList.OnExitParameterControl(Sender: TObject);
 var
   I: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Assigned(Sender) then
     for I := 0 to Count - 1 do
       if Parameters[I].WinControl = Sender then
@@ -1419,6 +1423,8 @@ procedure TJvParameterList.OnChangeParameterControl(Sender: TObject);
 var
   I: Integer;
 begin
+  if csDestroying in ComponentState then
+    Exit;
   if Assigned(Sender) then
     for I := 0 to Count - 1 do
       if Parameters[I].WinControl = Sender then
