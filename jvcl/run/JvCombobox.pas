@@ -108,10 +108,8 @@ type
     FOnSelect: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     {$ENDIF COMPILER5}
-    FKey: Word;
-    FSearching: Boolean;
     FMaxPixel: TJvMaxPixel;
-    FReadOnly: Boolean; // ain
+    FReadOnly: Boolean;
     {$IFNDEF CLR}
     FConsumerSvc: TJvDataConsumer;
     FProviderToggle: Boolean;
@@ -124,20 +122,22 @@ type
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
+    FDropDownWidth: Integer;
     procedure SetEmptyValue(const Value: string);
     procedure MaxPixelChanged(Sender: TObject);
-    procedure SetReadOnly(const Value: Boolean); // ain
+    procedure SetReadOnly(const Value: Boolean);
     procedure ReadCtl3D(Reader: TReader);
     procedure ReadParentCtl3D(Reader: TReader);
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMInitDialog(var Msg: TWMInitDialog); message WM_INITDIALOG;
-    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     function GetFlat: Boolean;
     function GetParentFlat: Boolean;
     procedure SetFlat(const Value: Boolean);
     procedure SetParentFlat(const Value: Boolean);
+    procedure SetDropDownWidth(Value: Integer);
   protected
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); reintroduce; virtual;
@@ -145,16 +145,17 @@ type
     procedure DoExit; override;
     procedure DoEmptyValueEnter; virtual;
     procedure DoEmptyValueExit; virtual;
-    procedure CreateWnd; override; // ain
+    procedure CreateWnd; override;
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
     {$ENDIF COMPILER6_UP}
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     {$IFDEF COMPILER5}
     procedure DoChange(Sender: TObject);
     procedure DoDropDown(Sender: TObject);
     procedure DoValueChange(Sender: TObject);
+    procedure CloseUp; dynamic;
+    procedure Select; dynamic;
     {$ENDIF COMPILER5}
     procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetMeasureStyle: TJvComboBoxMeasureStyle;
@@ -163,57 +164,51 @@ type
     procedure PerformMeasureItem(Index: Integer; var Height: Integer); virtual;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
-    {$IFDEF COMPILER5}
-    procedure CloseUp; dynamic;
-    procedure Select; dynamic;
-    {$ENDIF COMPILER5}
-    {$IFNDEF CLR}
-    procedure SetConsumerService(Value: TJvDataConsumer);
-    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
-    procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
-    {$ENDIF !CLR}
     function IsProviderSelected: Boolean;
     procedure DeselectProvider;
     procedure UpdateItemCount;
     function HandleFindString(StartIndex: Integer; Value: string; ExactMatch: Boolean): Integer;
     procedure Loaded; override;
     {$IFNDEF CLR}
+    procedure SetConsumerService(Value: TJvDataConsumer);
+    procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
+    procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     {$ENDIF !CLR}
     {$IFDEF COMPILER5}
     property IsDropping: Boolean read FIsDropping write FIsDropping;
     property ItemHeight write SetItemHeight;
-    {$ENDIF COMPILER5}
-    property IsFixedHeight: Boolean read FIsFixedHeight;
-    property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
-      default cmsStandard;
-    {$IFDEF COMPILER5}
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
     property AutoDropDown: Boolean read FAutoDropDown write FAutoDropDown default False;
     {$ENDIF COMPILER5}
+    property IsFixedHeight: Boolean read FIsFixedHeight;
+    property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
+      default cmsStandard;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
-    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False;
     property Text: TCaption read GetText write SetText;
     property EmptyValue: string read FEmptyValue write SetEmptyValue;
     property EmptyFontColor: TColor read FEmptyFontColor write FEmptyFontColor default clGrayText;
     property Flat: Boolean read GetFlat write SetFlat default False;
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
+    property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default 0;
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
-    procedure WndProc(var Msg: TMessage); override; // ain
+    procedure WndProc(var Msg: TMessage); override;
     function GetItemCount: Integer; {$IFDEF COMPILER6_UP} override; {$ELSE} virtual; {$ENDIF}
     procedure DefineProperties(Filer: TFiler);override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     function GetItemText(Index: Integer): string; virtual;
-    function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
-    function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
-    function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
-    function DeleteExactString(Value: string; All: Boolean; CaseSensitive: Boolean = True): Integer;
+    function SearchExactString(const Value: string; CaseSensitive: Boolean = True): Integer;
+    function SearchPrefix(const Value: string; CaseSensitive: Boolean = True): Integer;
+    function SearchSubString(const Value: string; CaseSensitive: Boolean = True): Integer;
+    function DeleteExactString(const Value: string; All: Boolean; CaseSensitive: Boolean = True): Integer;
   end;
 
   TJvComboBox = class(TJvCustomComboBox)
@@ -258,7 +253,7 @@ type
     property Provider;
     {$ENDIF !CLR}
     property PopupMenu;
-    property ReadOnly; // ain
+    property ReadOnly;
     property ShowHint;
     property Sorted;
     property TabOrder;
@@ -287,6 +282,7 @@ type
     property OnStartDrag;
     property Items; { Must be published after OnMeasureItem }
     property ItemIndex default -1;  { Must be published after Items (see Mantis 3512) }
+    property DropDownWidth;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -452,8 +448,6 @@ const
   MaxDropLines = 50;
 
 type
-  PStrings = ^TStrings;
-
   TJvPrivForm = class(TJvPopupWindow)
   protected
     function GetValue: Variant; override;
@@ -1237,13 +1231,6 @@ end;
 //=== { TJvCustomComboBox } ==================================================
 
 constructor TJvCustomComboBox.Create(AOwner: TComponent);
-{$IFNDEF CLR}
-{.$IFNDEF COMPILER7_UP}
-var
-  PI: PPropInfo;
-  PStringsAddr: PStrings;
-{.$ENDIF COMPILER7_UP}
-{$ENDIF !CLR}
 begin
   inherited Create(AOwner);
   {$IFDEF COMPILER5}
@@ -1254,19 +1241,17 @@ begin
     DPA_ConsumerDisplaysList]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
-  {.$IFNDEF COMPILER7_UP}
+  {$IFDEF COMPILER5}
   { The following hack assumes that TJvComboBox.Items reads directly from the private FItems field
     of TCustomComboBox and that TJvComboBox.Items is actually published.
 
     What we do here is remove the original string list used and place our own version in it's place.
     This would give us the benefit of keeping the list of strings (and objects) even if a provider
     is active and the combo box windows has no strings at all. }
-  PI := GetPropInfo(TJvComboBox, 'Items');
-  PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
-  Items.Free;                                 // remove original item list (TComboBoxStrings instance)
-  PStringsAddr^ := TJvComboBoxStrings.Create; // create our own implementation and put it in place.
-  TJvComboBoxStrings(Items).ComboBox := Self; // link it to the combo box.
-  {.$ENDIF COMPILER7_UP}
+  Items.Free;                                                   // remove original item list (TComboBoxStrings instance)
+  TStrings(Pointer(@Self.Items)^) := TJvComboBoxStrings.Create; // create our own implementation and put it in place.
+  TJvComboBoxStrings(Items).ComboBox := Self;                   // link it to the combo box.
+  {$ENDIF COMPILER5}
   {$ENDIF !CLR}
   {$IFDEF COMPILER5}
   FAutoCompleteCode := TJvComboBoxAutoComplete.Create(Self);
@@ -1274,10 +1259,8 @@ begin
   FAutoCompleteCode.OnChange := DoChange;
   FAutoCompleteCode.OnValueChange := DoValueChange;
   {$ENDIF COMPILER5}
-  FSearching := False;
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
-  FReadOnly := False; // ain
   FEmptyFontColor := clGrayText;
 end;
 
@@ -1446,6 +1429,8 @@ procedure TJvCustomComboBox.CreateWnd;
 begin
   inherited CreateWnd;
   SendMessage(EditHandle, EM_SETREADONLY, Ord(ReadOnly), 0);
+  if (FDropDownWidth > 0) and not (csDesigning in ComponentState) then
+    SendMessage(Handle, CB_SETDROPPEDWIDTH, FDropDownWidth, 0);
   UpdateItemCount;
   if Focused then
     DoEmptyValueEnter
@@ -1461,7 +1446,7 @@ begin
   Filer.DefineProperty('ParentCtl3D', ReadParentCtl3D, nil, False);
 end;
 
-function TJvCustomComboBox.DeleteExactString(Value: string; All: Boolean;
+function TJvCustomComboBox.DeleteExactString(const Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
   Result := TJvItemsSearchs.DeleteExactString(Items, Value, CaseSensitive);
@@ -1761,12 +1746,6 @@ begin
   Result := FProviderIsActive;
 end;
 
-procedure TJvCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-  FKey := Key;
-end;
-
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
 begin
   if (ReadOnly) and (Key = Chr(VK_BACK)) then
@@ -1908,19 +1887,19 @@ begin
   ParentFlat := Reader.ReadBoolean;
 end;
 
-function TJvCustomComboBox.SearchExactString(Value: string;
+function TJvCustomComboBox.SearchExactString(const Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := TJvItemsSearchs.SearchExactString(Items, Value, CaseSensitive);
 end;
 
-function TJvCustomComboBox.SearchPrefix(Value: string;
+function TJvCustomComboBox.SearchPrefix(const Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := TJvItemsSearchs.SearchPrefix(Items, Value, CaseSensitive);
 end;
 
-function TJvCustomComboBox.SearchSubString(Value: string;
+function TJvCustomComboBox.SearchSubString(const Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := TJvItemsSearchs.SearchSubString(Items, Value, CaseSensitive);
@@ -1931,6 +1910,18 @@ procedure TJvCustomComboBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
 {$ENDIF !CLR}
+
+procedure TJvCustomComboBox.SetDropDownWidth(Value: Integer);
+begin
+  if Value < 0 then
+    Value := 0;
+  if Value <> FDropDownWidth then
+  begin
+    FDropDownWidth := Value;
+    if HandleAllocated and not (csDesigning in ComponentState) then
+      SendMessage(Handle, CB_SETDROPPEDWIDTH, Value, 0);
+  end;
+end;
 
 procedure TJvCustomComboBox.SetEmptyValue(const Value: string);
 begin
@@ -1961,7 +1952,6 @@ begin
   end;
 end;
 
-
 function TJvCustomComboBox.GetFlat: Boolean;
 begin
   Result := not Ctl3D;
@@ -1981,7 +1971,6 @@ procedure TJvCustomComboBox.SetParentFlat(const Value: Boolean);
 begin
   ParentCtl3D := Value;
 end;
-
 
 procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
 begin

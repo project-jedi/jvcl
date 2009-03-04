@@ -40,77 +40,11 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   Classes, Graphics, Controls, StdCtrls, DB, DBCtrls,
-  JvExStdCtrls, JvDBUtils;
+  JvExStdCtrls, JvDBUtils, JvCombobox;
 
 type
   TJvCustomDBComboBox = class;
   TJvDBComboBox = class;
-
-  TJvCustomDBComboBox = class(TJvExCustomComboBox, IJvDataControl)
-  private
-    FDataLink: TFieldDataLink;
-    FPaintControl: TPaintControl;
-    FBeepOnError: Boolean;
-    FResetValue: Boolean;
-    FUpdateFieldImmediatelly: Boolean;
-    procedure DataChange(Sender: TObject);
-    procedure EditingChange(Sender: TObject);
-    function GetDataField: string;
-    function GetDataSource: TDataSource;
-    function GetField: TField;
-    function GetReadOnly: Boolean;
-    procedure SetDataField(const Value: string);
-    procedure SetDataSource(Value: TDataSource);
-    procedure SetEditReadOnly;
-    {$IFDEF COMPILER5}
-    procedure SetItems(const Value: TStrings);
-    {$ENDIF COMPILER5}
-    procedure SetReadOnly(Value: Boolean);
-    procedure UpdateData(Sender: TObject);
-    function GetComboText: string; virtual;
-    procedure SetComboText(const Value: string); virtual;
-    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-  protected
-    function GetDataLink: TDataLink;
-
-    procedure DoExit; override;
-    procedure Change; override;
-    procedure Click; override;
-    procedure Reset;
-
-    // This may cause trouble with BCB because it uses a HWND parameter
-    // but as it is defined in the VCL itself, we can't do much.
-    procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
-      ComboProc: Pointer); override;
-    procedure CreateWnd; override;
-    procedure DropDown; override;
-    function GetPaintText: string; virtual;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: Char); override;
-    procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetStyle(Value: TComboBoxStyle); override;
-    {$IFDEF COMPILER6_UP}
-    procedure SetItems(const Value: TStrings); override;
-    {$ENDIF COMPILER6_UP}
-    procedure WndProc(var Msg: TMessage); override;
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default False;
-    property ComboText: string read GetComboText write SetComboText;
-    property DataField: string read GetDataField write SetDataField;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    function ExecuteAction(Action: TBasicAction): Boolean; override;
-    function UpdateAction(Action: TBasicAction): Boolean; override;
-    function UseRightToLeftAlignment: Boolean; override;
-    property Field: TField read GetField;
-    property Items write SetItems;
-    property Text;
-    property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
-  end;
 
   TJvComboBoxFilterEvent = procedure(Sender: TObject; DataSet: TDataSet; var Accept: Boolean) of object;
 
@@ -134,7 +68,7 @@ type
     FOnFilter: TJvComboBoxFilterEvent;
     FShowOutfilteredValue: Boolean;
     FOutfilteredValueFont: TFont;
-    FComboBox: TJvDBComboBox;
+    FComboBox: TJvCustomDBComboBox;
     procedure SetDataSource(const Value: TDataSource);
     {$IFDEF COMPILER6_UP}
     procedure SetFilter(const Value: string);
@@ -149,9 +83,9 @@ type
     procedure FontChange(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation);
 
-    property ComboBox: TJvDBComboBox read FComboBox;
+    property ComboBox: TJvCustomDBComboBox read FComboBox;
   public
-    constructor Create(AComboBox: TJvDBComboBox);
+    constructor Create(AComboBox: TJvCustomDBComboBox);
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
 
@@ -179,37 +113,93 @@ type
     property OnFilter: TJvComboBoxFilterEvent read FOnFilter write FOnFilter;
   end;
 
-  TJvDBComboBox = class(TJvCustomDBComboBox)
+  TJvCustomDBComboBox = class(TJvCustomComboBox, IJvDataControl)
   private
+    FDataLink: TFieldDataLink;
+    FPaintControl: TPaintControl;
+    FBeepOnError: Boolean;
+    FResetValue: Boolean;
+    FUpdateFieldImmediatelly: Boolean;
+    FListSettings: TJvDBComboBoxListSettings;
     FValues: TStringList;
     FEnableValues: Boolean;
-    FListSettings: TJvDBComboBoxListSettings;
     procedure SetEnableValues(Value: Boolean);
     function GetValues: TStrings;
     procedure SetValues(Value: TStrings);
     procedure ValuesChanged(Sender: TObject);
+    procedure DataChange(Sender: TObject);
+    procedure EditingChange(Sender: TObject);
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    procedure SetDataField(const Value: string);
+    procedure SetDataSource(Value: TDataSource);
+    procedure SetEditReadOnly;
+    {$IFDEF COMPILER5}
+    procedure SetItems(const Value: TStrings);
+    {$ENDIF COMPILER5}
+    procedure SetReadOnly(Value: Boolean);
+    procedure UpdateData(Sender: TObject);
+    function GetComboText: string;
+    procedure SetComboText(const Value: string);
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SetListSettings(const Value: TJvDBComboBoxListSettings);
   protected
-    function FilterAccepted: Boolean; virtual;
-    procedure SetStyle(Value: TComboBoxStyle); override;
-    function GetComboText: string; override;
-    function GetPaintText: string; override;
-    procedure SetComboText(const Value: string); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure Loaded; override;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
+    function GetDataLink: TDataLink;
+
     procedure DoExit; override;
+    procedure Change; override;
+    procedure Click; override;
+    procedure Reset;
+
+    // This may cause trouble with BCB because it uses a HWND parameter
+    // but as it is defined in the VCL itself, we can't do much.
+    procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND; ComboProc: Pointer); override;
+
+    procedure CreateWnd; override;
+    procedure DropDown; override;
+    function GetPaintText: string; virtual;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyPress(var Key: Char); override;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetStyle(Value: TComboBoxStyle); override;
+    function FilterAccepted: Boolean; virtual;
+
+    {$IFDEF COMPILER6_UP}
+    procedure SetItems(const Value: TStrings); override;
+    {$ENDIF COMPILER6_UP}
+    procedure WndProc(var Msg: TMessage); override;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default False;
+    property ComboText: string read GetComboText write SetComboText;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ListSettings: TJvDBComboBoxListSettings read FListSettings write SetListSettings;
+    property Values: TStrings read GetValues write SetValues;
+    property EnableValues: Boolean read FEnableValues write SetEnableValues default True;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure UpdateDropDownItems; virtual;
-  published
-    property ListSettings: TJvDBComboBoxListSettings read FListSettings write SetListSettings;
 
-    property Align; // Polaris
+    procedure UpdateDropDownItems; virtual;
+    function ExecuteAction(Action: TBasicAction): Boolean; override;
+    function UpdateAction(Action: TBasicAction): Boolean; override;
+    function UseRightToLeftAlignment: Boolean; override;
+
+    property Field: TField read GetField;
+    property Items write SetItems;
+    property Text;
+    property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
+  end;
+
+  TJvDBComboBox = class(TJvCustomDBComboBox)
+  published
+    property Align;
     property AutoSize;
-    property Style { must be published before Items }
-      default csDropDownList; // Polaris
+    property Style default csDropDownList; { must be published before Items }
     property BeepOnError;
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
@@ -223,8 +213,9 @@ type
     property DragMode;
     property DragCursor;
     property DropDownCount;
+    property DropDownWidth;
     property Enabled;
-    property EnableValues: Boolean read FEnableValues write SetEnableValues default True;
+    property EnableValues;
     property Font;
     property Anchors;
     property BiDiMode;
@@ -244,9 +235,10 @@ type
     property Sorted;
     property TabOrder;
     property TabStop;
-    property UpdateFieldImmediatelly; 
-    property Values: TStrings read GetValues write SetValues;
+    property UpdateFieldImmediatelly;
+    property Values;
     property Visible;
+    property ListSettings; { should be published after Items and Values }
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -310,6 +302,12 @@ begin
   FDataLink.OnEditingChange := EditingChange;
   FPaintControl := TPaintControl.Create(Self, 'COMBOBOX');
   FBeepOnError := False;
+
+  FListSettings := TJvDBComboBoxListSettings.Create(Self);
+  FValues := TStringList.Create;
+  FValues.OnChange := ValuesChanged;
+  FEnableValues := True;
+  Style := csDropDownList;
 end;
 
 destructor TJvCustomDBComboBox.Destroy;
@@ -319,6 +317,9 @@ begin
   FDataLink.OnUpdateData := nil;
   FDataLink.Free;
   FDataLink := nil;
+  FreeAndNil(FListSettings);
+  FValues.OnChange := nil;
+  FValues.Free;
   inherited Destroy;
 end;
 
@@ -327,15 +328,18 @@ begin
   inherited Loaded;
   if csDesigning in ComponentState then
     DataChange(Self);
+  UpdateDropDownItems;
 end;
 
 procedure TJvCustomDBComboBox.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then
+  if (Operation = opRemove) and (FDataLink <> nil) and (AComponent = DataSource) then
     DataSource := nil;
+
+  if FListSettings <> nil then
+    FListSettings.Notification(AComponent, Operation);
 end;
 
 procedure TJvCustomDBComboBox.CreateWnd;
@@ -382,7 +386,13 @@ begin
         if Value = '' then
           I := -1
         else
+        begin
           I := Items.IndexOf(Value);
+          if (I = -1) and FEnableValues then
+            I := Values.IndexOf(Value);
+        end;
+        if I >= Items.Count then
+          I := -1;
         ItemIndex := I;
       finally
         if Redraw then
@@ -403,13 +413,16 @@ function TJvCustomDBComboBox.GetComboText: string;
 var
   I: Integer;
 begin
-  if Style in [csDropDown, csSimple] then
+  if (Style in [csDropDown, csSimple]) and not FEnableValues then
     Result := Text
   else
   begin
     I := ItemIndex;
-    if I < 0 then
+    if (I < 0) or (FEnableValues and (FValues.Count < I + 1)) then
       Result := ''
+    else
+    if FEnableValues then
+      Result := FValues[I]
     else
       Result := Items[I];
   end;
@@ -564,8 +577,7 @@ begin
   inherited WndProc(Msg);
 end;
 
-procedure TJvCustomDBComboBox.ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
-  ComboProc: Pointer);
+procedure TJvCustomDBComboBox.ComboWndProc(var Msg: TMessage; ComboWnd: HWND; ComboProc: Pointer);
 begin
   if not (csDesigning in ComponentState) then
     case Msg.Msg of
@@ -588,6 +600,8 @@ begin
     raise;
   end;
   inherited DoExit;
+  if ListSettings.IsValid and ListSettings.ShowOutfilteredValue and (ItemIndex = -1) then
+    Invalidate;
 end;
 
 procedure TJvCustomDBComboBox.CMGetDataLink(var Msg: TMessage);
@@ -601,51 +615,118 @@ begin
 end;
 
 procedure TJvCustomDBComboBox.WMPaint(var Msg: TWMPaint);
-var
-  S: string;
-  R: TRect;
-  P: TPoint;
-  Child: HWND;
-begin
-  if csPaintCopy in ControlState then
+
+  procedure DefaultPaint;
+  var
+    S: string;
+    R: TRect;
+    P: TPoint;
+    Child: HWND;
   begin
-    S := GetPaintText;
-    if Style = csDropDown then
+    if csPaintCopy in ControlState then
     begin
-      SendMessage(FPaintControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(S)));
-      SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
-      Child := GetWindow(FPaintControl.Handle, GW_CHILD);
-      if Child <> 0 then
+      S := GetPaintText;
+      if Style = csDropDown then
       begin
-        Windows.GetClientRect(Child, R);
-        Windows.MapWindowPoints(Child, FPaintControl.Handle, R.TopLeft, 2);
-        GetWindowOrgEx(Msg.DC, P);
-        SetWindowOrgEx(Msg.DC, P.X - R.Left, P.Y - R.Top, nil);
-        IntersectClipRect(Msg.DC, 0, 0, R.Right - R.Left, R.Bottom - R.Top);
-        SendMessage(Child, WM_PAINT, Msg.DC, 0);
+        SendMessage(FPaintControl.Handle, WM_SETTEXT, 0, LPARAM(PChar(S)));
+        SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
+        Child := GetWindow(FPaintControl.Handle, GW_CHILD);
+        if Child <> 0 then
+        begin
+          Windows.GetClientRect(Child, R);
+          Windows.MapWindowPoints(Child, FPaintControl.Handle, R.TopLeft, 2);
+          GetWindowOrgEx(Msg.DC, P);
+          SetWindowOrgEx(Msg.DC, P.X - R.Left, P.Y - R.Top, nil);
+          IntersectClipRect(Msg.DC, 0, 0, R.Right - R.Left, R.Bottom - R.Top);
+          SendMessage(Child, WM_PAINT, Msg.DC, 0);
+        end;
+      end
+      else
+      begin
+        SendMessage(FPaintControl.Handle, CB_RESETCONTENT, 0, 0);
+        if Items.IndexOf(S) <> -1 then
+        begin
+          SendMessage(FPaintControl.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
+          SendMessage(FPaintControl.Handle, CB_SETCURSEL, 0, 0);
+        end;
+        SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
       end;
     end
     else
+      inherited;
+  end;
+
+var
+  S: string;
+  R: TRect;
+  PaintStruct: TPaintStruct;
+  DC: HDC;
+  OldFont: HFONT;
+begin
+  { If the field value is not part of the DataSource }
+  if (Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable]) and
+     ListSettings.ShowOutfilteredValue and (ItemIndex = -1) and
+     FDataLink.Active and (FDataLink.Field <> nil) and not FDataLink.Field.IsNull and
+     ListSettings.IsValid then
+  begin
+    if ListSettings.DisplayField <> '' then
+      S := VarToStr(ListSettings.DataSource.DataSet.Lookup(ListSettings.KeyField, FDataLink.Field.AsVariant, ListSettings.DisplayField))
+    else
+      S := FDataLink.Field.Text;
+
+    if Trim(S) = '' then
     begin
-      SendMessage(FPaintControl.Handle, CB_RESETCONTENT, 0, 0);
-      if Items.IndexOf(S) <> -1 then
+      DefaultPaint;
+      Exit;
+    end;
+
+    DC := Msg.DC;
+    if DC = 0 then
+      DC := BeginPaint(Handle, PaintStruct);
+    try
+      Msg.DC := DC;
+      DefaultPaint;
+
+      R := ClientRect;
+      InflateRect(R, -1, -1);
+      Inc(R.Left, 3);
+      SetTextColor(DC, ColorToRGB(ListSettings.OutfilteredValueFont.Color));
+      SetBkMode(DC, TRANSPARENT);
+      OldFont := SelectObject(DC, ListSettings.OutfilteredValueFont.Handle);
+      if Style = csDropDownList then
+        DrawText(DC, PChar(S), Length(S), R, DT_VCENTER or DT_END_ELLIPSIS or DT_SINGLELINE or DT_NOPREFIX)
+      else
       begin
-        SendMessage(FPaintControl.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
-        SendMessage(FPaintControl.Handle, CB_SETCURSEL, 0, 0);
+        Inc(R.Left);
+        R.Top := 3;
+        DrawText(DC, PChar(S), Length(S), R, DT_END_ELLIPSIS or DT_SINGLELINE or DT_NOPREFIX)
       end;
-      SendMessage(FPaintControl.Handle, WM_PAINT, Msg.DC, 0);
+      SelectObject(DC, OldFont);
+    finally
+      if PaintStruct.hdc <> 0 then
+        EndPaint(Handle, PaintStruct);
     end;
   end
   else
-    inherited;
+    DefaultPaint;
 end;
 
 function TJvCustomDBComboBox.GetPaintText: string;
+var
+  I: Integer;
 begin
+  Result := '';
   if FDataLink.Field <> nil then
-    Result := FDataLink.Field.Text
-  else
-    Result := '';
+  begin
+    if FEnableValues then
+    begin
+      I := Values.IndexOf(FDataLink.Field.AsString);
+      if I >= 0 then
+        Result := Items.Strings[I];
+    end
+    else
+      Result := FDataLink.Field.Text;
+  end;
 end;
 
 procedure TJvCustomDBComboBox.SetItems(const Value: TStrings);
@@ -661,6 +742,9 @@ end;
 
 procedure TJvCustomDBComboBox.SetStyle(Value: TComboBoxStyle);
 begin
+  if (Value in [csSimple, csDropDown]) and FEnableValues then
+    FEnableValues := False;
+
   if (Value = csSimple) and Assigned(FDataLink) and FDataLink.DataSourceFixed then
     _DBError(SNotReplicatable);
   inherited SetStyle(Value);
@@ -683,167 +767,13 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
-//=== { TJvDBComboBox } ======================================================
-
-constructor TJvDBComboBox.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FListSettings := TJvDBComboBoxListSettings.Create(Self);
-  FValues := TStringList.Create;
-  FValues.OnChange := ValuesChanged;
-  FEnableValues := True;
-  Style := csDropDownList;
-end;
-
-destructor TJvDBComboBox.Destroy;
-begin
-  FreeAndNil(FListSettings);
-  FValues.OnChange := nil;
-  FValues.Free;
-  inherited Destroy;
-end;
-
-procedure TJvDBComboBox.DoExit;
-begin
-  inherited DoExit;
-  if ListSettings.IsValid and ListSettings.ShowOutfilteredValue and (ItemIndex = -1) then
-    Invalidate;
-end;
-
-procedure TJvDBComboBox.ValuesChanged(Sender: TObject);
+procedure TJvCustomDBComboBox.ValuesChanged(Sender: TObject);
 begin
   if FEnableValues then
     DataChange(Self);
 end;
 
-procedure TJvDBComboBox.WMPaint(var Message: TWMPaint);
-var
-  S: string;
-  R: TRect;
-  PaintStruct: TPaintStruct;
-  DC: HDC;
-  OldFont: HFONT;
-begin
-  { If the field value is not part of the DataSource }
-  if (Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable]) and
-     ListSettings.ShowOutfilteredValue and (ItemIndex = -1) and
-     FDataLink.Active and (FDataLink.Field <> nil) and not FDataLink.Field.IsNull and
-     ListSettings.IsValid then
-  begin
-    PaintStruct.hdc := 0;
-    DC := Message.DC;
-    if DC = 0 then
-      DC := BeginPaint(Handle, PaintStruct);
-    try
-      Message.DC := DC;
-      inherited;
-
-      if ListSettings.DisplayField <> '' then
-        S := VarToStr(ListSettings.DataSource.DataSet.Lookup(ListSettings.KeyField, FDataLink.Field.AsVariant, ListSettings.DisplayField))
-      else
-        S := FDataLink.Field.Text;
-
-      R := ClientRect;
-      InflateRect(R, -1, -1);
-      Inc(R.Left, 3);
-      SetBkMode(DC, TRANSPARENT);
-      SetTextColor(DC, ColorToRGB(ListSettings.OutfilteredValueFont.Color));
-      OldFont := SelectObject(DC, ListSettings.OutfilteredValueFont.Handle);
-      if Style = csDropDownList then
-        DrawText(DC, PChar(S), Length(S), R, DT_VCENTER or DT_END_ELLIPSIS or DT_SINGLELINE or DT_NOPREFIX)
-      else
-      begin
-        Inc(R.Left);
-        R.Top := 3;
-        DrawText(DC, PChar(S), Length(S), R, DT_END_ELLIPSIS or DT_SINGLELINE or DT_NOPREFIX)
-      end;
-      SelectObject(DC, OldFont);
-    finally
-      if PaintStruct.hdc <> 0 then
-        EndPaint(Handle, PaintStruct);
-    end;
-  end
-  else
-    inherited;
-end;
-
-function TJvDBComboBox.GetPaintText: string;
-var
-  I: Integer;
-begin
-  Result := '';
-  if FDataLink.Field <> nil then
-  begin
-    if FEnableValues then
-    begin
-      I := Values.IndexOf(FDataLink.Field.AsString);
-      if I >= 0 then
-        Result := Items.Strings[I];
-    end
-    else
-      Result := FDataLink.Field.Text;
-  end;
-end;
-
-function TJvDBComboBox.GetComboText: string;
-var
-  I: Integer;
-begin
-  if (Style in [csDropDown, csSimple]) and not FEnableValues then
-    Result := Text
-  else
-  begin
-    I := ItemIndex;
-    if (I < 0) or (FEnableValues and (FValues.Count < I + 1)) then
-      Result := ''
-    else
-    if FEnableValues then
-      Result := FValues[I]
-    else
-      Result := Items[I];
-  end;
-end;
-
-procedure TJvDBComboBox.SetComboText(const Value: string);
-var
-  I: Integer;
-  Redraw: Boolean;
-begin
-  if Value <> ComboText then
-  begin
-    if Style <> csDropDown then
-    begin
-      Redraw := (Style <> csSimple) and HandleAllocated;
-      if Redraw then
-        SendMessage(Handle, WM_SETREDRAW, 0, 0);
-      try
-        if Value = '' then
-          I := -1
-        else
-        begin
-          I := Items.IndexOf(Value);
-          if (I = -1) and FEnableValues then
-            I := Values.IndexOf(Value);
-        end;
-        if I >= Items.Count then
-          I := -1;
-        ItemIndex := I;
-      finally
-        if Redraw then
-        begin
-          SendMessage(Handle, WM_SETREDRAW, 1, 0);
-          Invalidate;
-        end;
-      end;
-      if I >= 0 then
-        Exit;
-    end;
-    if Style in [csDropDown, csSimple] then
-      Text := Value;
-  end;
-end;
-
-procedure TJvDBComboBox.SetEnableValues(Value: Boolean);
+procedure TJvCustomDBComboBox.SetEnableValues(Value: Boolean);
 begin
   if FEnableValues <> Value then
   begin
@@ -854,30 +784,23 @@ begin
   end;
 end;
 
-procedure TJvDBComboBox.SetListSettings(const Value: TJvDBComboBoxListSettings);
+procedure TJvCustomDBComboBox.SetListSettings(const Value: TJvDBComboBoxListSettings);
 begin
   if Value <> FListSettings then
     FListSettings.Assign(Value);
 end;
 
-function TJvDBComboBox.GetValues: TStrings;
+function TJvCustomDBComboBox.GetValues: TStrings;
 begin
   Result := FValues;
 end;
 
-procedure TJvDBComboBox.SetValues(Value: TStrings);
+procedure TJvCustomDBComboBox.SetValues(Value: TStrings);
 begin
   FValues.Assign(Value);
 end;
 
-procedure TJvDBComboBox.SetStyle(Value: TComboBoxStyle);
-begin
-  if (Value in [csSimple, csDropDown]) and FEnableValues then
-    FEnableValues := False;
-  inherited SetStyle(Value);
-end;
-
-function TJvDBComboBox.FilterAccepted: Boolean;
+function TJvCustomDBComboBox.FilterAccepted: Boolean;
 begin
   Result := True;
   with ListSettings do
@@ -885,20 +808,7 @@ begin
       FOnFilter(Self, DataSource.DataSet, Result);
 end;
 
-procedure TJvDBComboBox.Loaded;
-begin
-  inherited Loaded;
-  UpdateDropDownItems;
-end;
-
-procedure TJvDBComboBox.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if FListSettings <> nil then
-    FListSettings.Notification(AComponent, Operation);
-end;
-
-procedure TJvDBComboBox.UpdateDropDownItems;
+procedure TJvCustomDBComboBox.UpdateDropDownItems;
 var
   Bookmark: TBookmark;
   {$IFDEF COMPILER6_UP}
@@ -991,7 +901,7 @@ end;
 
 { TJvDBComboBoxListSettings }
 
-constructor TJvDBComboBoxListSettings.Create(AComboBox: TJvDBComboBox);
+constructor TJvDBComboBoxListSettings.Create(AComboBox: TJvCustomDBComboBox);
 begin
   inherited Create;
   FComboBox := AComboBox;
