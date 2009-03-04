@@ -37,7 +37,7 @@ type
   private
     FDataSet: TDataSet;
     FParser: TExprParser;
-    FNodes: PExprNode;
+    FRoot: PExprNode;
     function EvalOpNode(N: PExprNode): Boolean;
     function EvalFuncNode(N: PExprNode): Variant;
     function EvaluateNode(N: PExprNode): Variant;
@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-  SqlTimSt, DateUtils, {DSIntf,} JvResources;
+  SqlTimSt, DateUtils, JvResources;
 
 var
   FieldTypeMapInitialized: Boolean = False;
@@ -223,9 +223,27 @@ end;
 
 { TJvDBFilterExpression }
 
-constructor TJvDBFilterExpression.Create(ADataSet: TDataSet; const Filter: string; const FilterOptions: TFilterOptions);
+constructor TJvDBFilterExpression.Create(ADataSet: TDataSet; const Filter: string;
+  const FilterOptions: TFilterOptions);
 var
   FieldType: TFieldType;
+  Nodes: PExprNode;
+
+  function NodesContainsLeftRight(Root: PExprNode): Boolean;
+  var
+    Node: PExprNode;
+  begin
+    Result := True;
+    Node := Nodes;
+    while Node <> nil do
+    begin
+      if (Node.FLeft = Root) or (Node.FRight = Root) then
+        Exit;
+      Node := Node.FNext;
+    end;
+    Result := False;
+  end;
+
 begin
   inherited Create;
   FDataSet := ADataSet;
@@ -236,10 +254,17 @@ begin
     for FieldType := Low(FieldType) to High(FieldType) do
       FieldTypeMap[FieldType] := Ord(FieldType);
   end;
-
-
   FParser := TExprParser.Create(ADataSet, Filter, [], [poExtSyntax], '', nil, FieldTypeMap);
-  FNodes := TFilterExprAccess(TExprParserAccess(FParser).FFilter).FNodes;
+  Nodes := TFilterExprAccess(TExprParserAccess(FParser).FFilter).FNodes;
+
+  { Find root node because FNodes is the last added node which must not be the root node.
+    The root node is the node which istn't referenced by any other node's Left or Right field. }
+  if Nodes <> nil then
+  begin
+    FRoot := Nodes;
+    while (FRoot.FNext <> nil) and not ((FRoot.FKind = enOperator) and not NodesContainsLeftRight(FRoot)) do
+      FRoot := FRoot.FNext;
+  end;
 end;
 
 destructor TJvDBFilterExpression.Destroy;
@@ -250,7 +275,7 @@ end;
 
 function TJvDBFilterExpression.Evaluate: Boolean;
 begin
-  Result := EvalOpNode(FNodes);
+  Result := EvalOpNode(FRoot);
 end;
 
 function TJvDBFilterExpression.EvaluateNode(N: PExprNode): Variant;
@@ -279,60 +304,65 @@ var
   I: Integer;
   V: Variant;
 begin
-  Assert(N.FKind = enOperator);
-  case N.FOperator of
-    coEQ:
-      Result := EvaluateNode(N.FLeft) = EvaluateNode(N.FRight);
-    coNE:
-      Result := EvaluateNode(N.FLeft) <> EvaluateNode(N.FRight);
-    coGT:
-      Result := EvaluateNode(N.FLeft) > EvaluateNode(N.FRight);
-    coLT:
-      Result := EvaluateNode(N.FLeft) < EvaluateNode(N.FRight);
-    coGE:
-      Result := EvaluateNode(N.FLeft) >= EvaluateNode(N.FRight);
-    coLE:
-      Result := EvaluateNode(N.FLeft) <= EvaluateNode(N.FRight);
-    coNOT:
-      Result := not EvaluateNode(N.FLeft);
-    coAND:
-      Result := LongBool(EvaluateNode(N.FLeft)) and LongBool(EvaluateNode(N.FRight));
-    coOR:
-      Result := LongBool(EvaluateNode(N.FLeft)) or LongBool(EvaluateNode(N.FRight));
-    coISBLANK:
-      Result := VarIsNull(EvaluateNode(N.FLeft));
-    coNOTBLANK:
-      Result := not VarIsNull(EvaluateNode(N.FLeft));
-    coLIKE:
-      Result := IsLike(EvaluateNode(N.FLeft), EvaluateNode(N.FRight));
-    coIN:
-      begin
-        Result := False;
-        V := EvaluateNode(N.FLeft);
-        if N.FArgs <> nil then
+  if N = nil then
+    Result := False
+  else
+  begin
+    Assert(N.FKind = enOperator);
+    case N.FOperator of
+      coEQ:
+        Result := EvaluateNode(N.FLeft) = EvaluateNode(N.FRight);
+      coNE:
+        Result := EvaluateNode(N.FLeft) <> EvaluateNode(N.FRight);
+      coGT:
+        Result := EvaluateNode(N.FLeft) > EvaluateNode(N.FRight);
+      coLT:
+        Result := EvaluateNode(N.FLeft) < EvaluateNode(N.FRight);
+      coGE:
+        Result := EvaluateNode(N.FLeft) >= EvaluateNode(N.FRight);
+      coLE:
+        Result := EvaluateNode(N.FLeft) <= EvaluateNode(N.FRight);
+      coNOT:
+        Result := not EvaluateNode(N.FLeft);
+      coAND:
+        Result := LongBool(EvaluateNode(N.FLeft)) and LongBool(EvaluateNode(N.FRight));
+      coOR:
+        Result := LongBool(EvaluateNode(N.FLeft)) or LongBool(EvaluateNode(N.FRight));
+      coISBLANK:
+        Result := VarIsNull(EvaluateNode(N.FLeft));
+      coNOTBLANK:
+        Result := not VarIsNull(EvaluateNode(N.FLeft));
+      coLIKE:
+        Result := IsLike(EvaluateNode(N.FLeft), EvaluateNode(N.FRight));
+      coIN:
         begin
-          for I := 0 to N.FArgs.Count - 1 do
+          Result := False;
+          V := EvaluateNode(N.FLeft);
+          if N.FArgs <> nil then
           begin
-            if V = EvaluateNode(N.FArgs[I]) then
+            for I := 0 to N.FArgs.Count - 1 do
             begin
-              Result := True;
-              Break;
+              if V = EvaluateNode(N.FArgs[I]) then
+              begin
+                Result := True;
+                Break;
+              end;
             end;
           end;
         end;
-      end;
-    coMINUS:
-      Result := -EvaluateNode(N.FLeft);
-    coADD:
-      Result := EvaluateNode(N.FLeft) + EvaluateNode(N.FRight);
-    coSUB:
-      Result := EvaluateNode(N.FLeft) - EvaluateNode(N.FRight);
-    coMUL:
-      Result := EvaluateNode(N.FLeft) * EvaluateNode(N.FRight);
-    coDIV:
-      Result := EvaluateNode(N.FLeft) / EvaluateNode(N.FRight);
-  else
-    raise Exception.CreateRes(@RsUnknownFilterOperation);
+      coMINUS:
+        Result := -EvaluateNode(N.FLeft);
+      coADD:
+        Result := EvaluateNode(N.FLeft) + EvaluateNode(N.FRight);
+      coSUB:
+        Result := EvaluateNode(N.FLeft) - EvaluateNode(N.FRight);
+      coMUL:
+        Result := EvaluateNode(N.FLeft) * EvaluateNode(N.FRight);
+      coDIV:
+        Result := EvaluateNode(N.FLeft) / EvaluateNode(N.FRight);
+    else
+      raise Exception.CreateRes(@RsUnknownFilterOperation);
+    end;
   end;
 end;
 
