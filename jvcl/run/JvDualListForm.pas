@@ -46,10 +46,11 @@ type
     IncAllBtn: TButton;
     ExclBtn: TButton;
     ExclAllBtn: TButton;
+    Bevel1: TBevel;
+    PanelButtons: TPanel;
     OkBtn: TButton;
     CancelBtn: TButton;
     HelpBtn: TButton;
-    Bevel1: TBevel;
     procedure IncBtnClick(Sender: TObject);
     procedure IncAllBtnClick(Sender: TObject);
     procedure ExclBtnClick(Sender: TObject);

@@ -4,7 +4,7 @@ object JvDualListForm: TJvDualListForm
   ActiveControl = SrcList
   BorderIcons = []
   BorderStyle = bsSingle
-  ClientHeight = 297
+  ClientHeight = 286
   ClientWidth = 398
   Color = clBtnFace
   Constraints.MinHeight = 320
@@ -37,7 +37,7 @@ object JvDualListForm: TJvDualListForm
     Left = 4
     Top = 7
     Width = 384
-    Height = 248
+    Height = 237
     Anchors = [akLeft, akTop, akRight, akBottom]
     ParentShowHint = False
     ShowHint = True
@@ -58,7 +58,7 @@ object JvDualListForm: TJvDualListForm
     Left = 12
     Top = 30
     Width = 164
-    Height = 218
+    Height = 207
     Anchors = [akLeft, akTop, akBottom]
     DragMode = dmAutomatic
     ItemHeight = 13
@@ -79,7 +79,7 @@ object JvDualListForm: TJvDualListForm
     Left = 216
     Top = 30
     Width = 164
-    Height = 218
+    Height = 207
     Anchors = [akLeft, akTop, akBottom]
     DragMode = dmAutomatic
     ItemHeight = 13
@@ -156,36 +156,45 @@ object JvDualListForm: TJvDualListForm
     TabOrder = 4
     OnClick = ExclAllBtnClick
   end
-  object OkBtn: TButton
-    Left = 130
-    Top = 263
-    Width = 77
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
+  object PanelButtons: TPanel
+    Left = 0
+    Top = 248
+    Width = 398
+    Height = 38
+    Align = alBottom
+    BevelOuter = bvNone
     TabOrder = 6
-  end
-  object CancelBtn: TButton
-    Left = 213
-    Top = 263
-    Width = 77
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 7
-  end
-  object HelpBtn: TButton
-    Left = 310
-    Top = 263
-    Width = 77
-    Height = 25
-    Anchors = [akRight, akBottom]
-    Caption = 'Help'
-    TabOrder = 8
-    OnClick = HelpBtnClick
+    object OkBtn: TButton
+      Left = 130
+      Top = 5
+      Width = 77
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = 'OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object CancelBtn: TButton
+      Left = 213
+      Top = 5
+      Width = 77
+      Height = 25
+      Anchors = [akTop, akRight]
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object HelpBtn: TButton
+      Left = 310
+      Top = 5
+      Width = 77
+      Height = 25
+      Anchors = [akTop, akRight]
+      Caption = 'Help'
+      TabOrder = 2
+      OnClick = HelpBtnClick
+    end
   end
 end
