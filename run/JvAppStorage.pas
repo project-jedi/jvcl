@@ -169,6 +169,7 @@ type
 
   TJvCustomAppStorage = class(TJvComponent)
   private
+    CachedFormatSettings: TFormatSettings;
     FRoot: string;
     FCurPath: string;
     FStorageOptions: TJvCustomAppStorageOptions;
@@ -420,8 +421,11 @@ type
     function GetPhysicalReadOnly: Boolean; virtual;
 
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
+    function DecodeStrToDateTime(Value: string): TDateTime; virtual;
+    function EncodeDateTimeToStr(Value: TDateTime): string; virtual;
     procedure Loaded; override;
     procedure DoError(const msg: string);
+    function GetFormatSettings: TFormatSettings;
     function ReadListItemCount(const Path: string; const ItemName: string = cItem):
         Integer; virtual;
     procedure WriteListItemCount(const Path: string; const ItemCount: Integer;
@@ -1853,7 +1857,7 @@ begin
   try
     if StorageOptions.DateTimeAsString then
     try
-      Result := StrToDateTime(DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(DateTimeToStr(Default)))));
+      Result := DecodeStrToDateTime(DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(EncodeDateTimeToStr(Default)))));
     except
       on E: EConvertError do
         Result := DoReadDateTime(Path, Default);
@@ -1863,8 +1867,8 @@ begin
       Result := DoReadDateTime(Path, Default);
     except
       on E: EConvertError do
-        Result := StrToDateTime(DecryptPropertyValue(DoReadString(Path,
-          EncryptPropertyValue(DateTimeToStr(Default)))));
+        Result := DecodeStrToDateTime(DecryptPropertyValue(DoReadString(Path,
+          EncryptPropertyValue(EncodeDateTimeToStr(Default)))));
     end
   except
     on E: EConvertError do
@@ -1878,7 +1882,7 @@ end;
 procedure TJvCustomAppStorage.WriteDateTimeInt(const Path: string; Value: TDateTime);
 begin
   if StorageOptions.DateTimeAsString then
-    DoWriteString(Path, EncryptPropertyValue(DateTimeToStr(Value)))
+    DoWriteString(Path, EncryptPropertyValue(EncodeDateTimeToStr(Value)))
   else
     DoWriteFloat(Path, Value);
 end;
@@ -3064,6 +3068,7 @@ end;
 procedure TJvCustomAppStorage.BeginUpdate;
 var i : Integer;
 begin
+  GetFormatSettings;
   ReloadIfNeeded;
   Inc(FUpdateCount);
   for i  := 0 to SubStorages.Count - 1 do
@@ -3098,6 +3103,16 @@ begin
   end;
 end;
 
+function TJvCustomAppStorage.DecodeStrToDateTime(Value: string): TDateTime;
+begin
+  Result := StrToDateTime(Value, GetFormatSettings);
+end;
+
+function TJvCustomAppStorage.EncodeDateTimeToStr(Value: TDateTime): string;
+begin
+  Result := DateTimeToStr(Value, GetFormatSettings);
+end;
+
 procedure TJvCustomAppStorage.EndUpdate;
 var i : Integer;
 begin
@@ -3116,6 +3131,28 @@ begin
     Result := TranslateStringEngine
   else
     Result := FInternalTranslateStringEngine;
+end;
+
+function TJvCustomAppStorage.GetFormatSettings: TFormatSettings;
+begin
+  if Not IsUpdating then
+  begin
+    GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, CachedFormatSettings);
+    if Assigned(ActiveTranslateStringEngine) then
+    begin
+      if (ActiveTranslateStringEngine.DateFormat <> '') then
+      begin
+        CachedFormatSettings.ShortDateFormat := Self.ActiveTranslateStringEngine.DateFormat;
+        CachedFormatSettings.LongDateFormat := Self.ActiveTranslateStringEngine.DateFormat;
+      end;
+      if (ActiveTranslateStringEngine.TimeFormat <> '') then
+      begin
+        CachedFormatSettings.ShortTimeFormat := Self.ActiveTranslateStringEngine.TimeFormat;
+        CachedFormatSettings.LongTimeFormat := Self.ActiveTranslateStringEngine.TimeFormat;
+      end;
+    end;
+  end;
+  Result := CachedFormatSettings;
 end;
 
 function TJvCustomAppStorage.GetUpdating: Boolean;
