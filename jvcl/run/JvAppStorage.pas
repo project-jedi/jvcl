@@ -752,6 +752,7 @@ type
     FStoreDefaultValues: Boolean;
     FStoreStringListAsSingleString: Boolean;
     FUseOldItemNameFormat: Boolean;
+    FUseTranslateStringEngineDateTimeFormats: Boolean;
   protected
     procedure SetBooleanAsString(Value: Boolean); virtual;
     procedure SetBooleanStringTrueValues(Value: string); virtual;
@@ -802,6 +803,10 @@ type
     /// removed.
     property UseOldItemNameFormat: Boolean read FUseOldItemNameFormat write
         SetUseOldItemNameFormat default True;
+    //1 Property to define that the TranslateEngine DateFormat and TimeFormat Property Values will be used to read/write DateTime values
+    property UseTranslateStringEngineDateTimeFormats: Boolean read
+        FUseTranslateStringEngineDateTimeFormats write
+        FUseTranslateStringEngineDateTimeFormats default False;
   end;
 
   TJvAppStorageOptions = class(TJvCustomAppStorageOptions)
@@ -818,6 +823,7 @@ type
     property DefaultIfValueNotExists;
     property StoreDefaultValues;
     property UseOldItemNameFormat;
+    property UseTranslateStringEngineDateTimeFormats;
   end;
 
   TJvAppSubStorages = class(TOwnedCollection)
@@ -1139,6 +1145,7 @@ begin
   StoreDefaultValues := True;
   StoreStringListAsSingleString := False;
   UseOldItemNameFormat := True;
+  FUseTranslateStringEngineDateTimeFormats := False;
 end;
 
 procedure TJvCustomAppStorageOptions.Assign(Source: TPersistent);
@@ -1159,6 +1166,7 @@ begin
     StoreDefaultValues := TJvCustomAppStorageOptions(Source).StoreDefaultValues;
     StoreStringListAsSingleString := TJvCustomAppStorageOptions(Source).StoreStringListAsSingleString;
     UseOldItemNameFormat := TJvCustomAppStorageOptions(Source).UseOldItemNameFormat;
+    UseTranslateStringEngineDateTimeFormats := TJvCustomAppStorageOptions(Source).UseTranslateStringEngineDateTimeFormats;
   end
   else
     inherited assign(Source);
@@ -3105,12 +3113,23 @@ end;
 
 function TJvCustomAppStorage.DecodeStrToDateTime(Value: string): TDateTime;
 begin
-  Result := StrToDateTime(Value{$IFDEF COMPILER7_UP}, GetFormatSettings{$ENDIF COMPILER7_UP});
+  if StorageOptions.UseTranslateStringEngineDateTimeFormats then
+    try
+      Result := StrToDateTime(Value{$IFDEF COMPILER7_UP}, GetFormatSettings{$ENDIF COMPILER7_UP});
+    except
+      on E: EConvertError do
+        Result := StrToDateTime(Value);
+    end
+  else
+    Result := StrToDateTime(Value);
 end;
 
 function TJvCustomAppStorage.EncodeDateTimeToStr(Value: TDateTime): string;
 begin
-  Result := DateTimeToStr(Value{$IFDEF COMPILER7_UP}, GetFormatSettings{$ENDIF COMPILER7_UP});
+  if StorageOptions.UseTranslateStringEngineDateTimeFormats then
+    Result := DateTimeToStr(Value{$IFDEF COMPILER7_UP}, GetFormatSettings{$ENDIF COMPILER7_UP})
+  else
+    Result := DateTimeToStr(Value);
 end;
 
 procedure TJvCustomAppStorage.EndUpdate;
