@@ -573,7 +573,7 @@ begin
         begin
           Field := Column.Field;
           Control := ADynControlEngineDB.CreateDBFieldControl(Field, AParentControl, AParentControl, '', ds);
-          Control.Enabled := not Field.CanModify;
+          Control.Enabled := Field.CanModify;
           if AFieldCreateOptions.FieldDefaultWidth > 0 then
             Control.Width := AFieldCreateOptions.FieldDefaultWidth
           else
@@ -599,7 +599,7 @@ begin
                 Control.Width := AFieldCreateOptions.FieldMinWidth;
           end;
           if AFieldCreateOptions.UseParentColorForReadOnly then
-            if (Assigned(ds.DataSet) and not ds.DataSet.CanModify) or Field.ReadOnly then
+            if (Assigned(ds.DataSet) and not ds.DataSet.CanModify) or not Field.CanModify then
               if isPublishedProp(Control, 'ParentColor') then
                 SetOrdProp(Control, 'ParentColor', Ord(True));
           LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl,
