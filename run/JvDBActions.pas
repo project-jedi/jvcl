@@ -276,17 +276,26 @@ type
 
   TJvDatabaseInsertType = ( itInsert, itAppend);
 
+  TJvDatabaseSingleRecordWindowAction = class;
+
   TJvDatabaseInsertAction = class(TJvDatabaseBaseEditAction)
   private
     FInsertType: TJvDatabaseInsertType;
+    FSingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction;
+    procedure SetSingleRecordWindowAction(const Value:
+        TJvDatabaseSingleRecordWindowAction);
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     //1 The property defines that the new record is created via the insert or the append method
     property InsertType: TJvDatabaseInsertType read FInsertType write FInsertType
         default itInsert;
+    //1 Use this property to show a single record window after inserting a new record
+    property SingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction read
+        FSingleRecordWindowAction write SetSingleRecordWindowAction;
   end;
 
   TJvDatabaseOnCopyRecord = procedure(Field: TField; OldValue: Variant) of object;
@@ -299,24 +308,40 @@ type
     FAfterCopyRecord: TJvDatabaseAfterCopyRecord;
     FInsertType: TJvDatabaseInsertType;
     FOnCopyRecord: TJvDatabaseOnCopyRecord;
+    FSingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction;
+    procedure SetSingleRecordWindowAction(const Value:
+        TJvDatabaseSingleRecordWindowAction);
   public
     constructor Create(AOwner: TComponent); override;
     procedure CopyRecord;
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
     //1 The property defines that the new record is created via the insert or the append method
     property InsertType: TJvDatabaseInsertType read FInsertType write FInsertType
         default itInsert;
+    //1 Use this property to show a single record window after inserting a new record
+    property SingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction read
+        FSingleRecordWindowAction write SetSingleRecordWindowAction;
     property BeforeCopyRecord: TJvDatabaseBeforeCopyRecord read FBeforeCopyRecord write FBeforeCopyRecord;
     property AfterCopyRecord: TJvDatabaseAfterCopyRecord read FAfterCopyRecord write FAfterCopyRecord;
     property OnCopyRecord: TJvDatabaseOnCopyRecord read FOnCopyRecord write FOnCopyRecord;
   end;
 
   TJvDatabaseEditAction = class(TJvDatabaseBaseEditAction)
+  private
+    FSingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction;
+    procedure SetSingleRecordWindowAction(const Value:
+        TJvDatabaseSingleRecordWindowAction);
   public
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  published
+    //1 Use this property to show a single record window after inserting a new record
+    property SingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction read
+        FSingleRecordWindowAction write SetSingleRecordWindowAction;
   end;
 
   TJvDatabaseDeleteAction = class(TJvDatabaseBaseEditAction)
@@ -1132,6 +1157,25 @@ begin
     DataSet.Append
   else
     DataSet.Insert;
+  if Assigned(SingleRecordWindowAction) then
+    FSingleRecordWindowAction.ExecuteTarget(Target);
+end;
+
+procedure TJvDatabaseInsertAction.Notification(AComponent: TComponent;
+    Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FSingleRecordWindowAction then
+      SingleRecordWindowAction := nil;
+end;
+
+procedure TJvDatabaseInsertAction.SetSingleRecordWindowAction(const Value:
+    TJvDatabaseSingleRecordWindowAction);
+begin
+  FSingleRecordWindowAction := Value;
+  if Assigned(FSingleRecordWindowAction) then
+    FSingleRecordWindowAction.FreeNotification(Self);
 end;
 
 //=== { TJvDatabaseCopyAction } ==============================================
@@ -1152,6 +1196,8 @@ procedure TJvDatabaseCopyAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
   CopyRecord;
+  if Assigned(SingleRecordWindowAction) then
+    FSingleRecordWindowAction.ExecuteTarget(Target);
 end;
 
 procedure TJvDatabaseCopyAction.CopyRecord;
@@ -1194,6 +1240,23 @@ begin
     FAfterCopyRecord(DataSet);
 end;
 
+procedure TJvDatabaseCopyAction.Notification(AComponent: TComponent; Operation:
+    TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FSingleRecordWindowAction then
+      SingleRecordWindowAction := nil;
+end;
+
+procedure TJvDatabaseCopyAction.SetSingleRecordWindowAction(const Value:
+    TJvDatabaseSingleRecordWindowAction);
+begin
+  FSingleRecordWindowAction := Value;
+  if Assigned(FSingleRecordWindowAction) then
+    FSingleRecordWindowAction.FreeNotification(Self);
+end;
+
 //=== { TJvDatabaseEditAction } ==============================================
 
 procedure TJvDatabaseEditAction.UpdateTarget(Target: TObject);
@@ -1206,6 +1269,25 @@ procedure TJvDatabaseEditAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
   DataSet.Edit;
+  if Assigned(SingleRecordWindowAction) then
+    FSingleRecordWindowAction.ExecuteTarget(Target);
+end;
+
+procedure TJvDatabaseEditAction.Notification(AComponent: TComponent; Operation:
+    TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FSingleRecordWindowAction then
+      SingleRecordWindowAction := nil;
+end;
+
+procedure TJvDatabaseEditAction.SetSingleRecordWindowAction(const Value:
+    TJvDatabaseSingleRecordWindowAction);
+begin
+  FSingleRecordWindowAction := Value;
+  if Assigned(FSingleRecordWindowAction) then
+    FSingleRecordWindowAction.FreeNotification(Self);
 end;
 
 //=== { TJvDatabaseDeleteAction } ============================================
