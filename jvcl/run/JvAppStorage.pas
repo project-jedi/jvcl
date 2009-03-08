@@ -100,6 +100,9 @@ uses
   {$ENDIF COMPILER10_UP}
   SysUtils, Classes, TypInfo,
   JclBase,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
   JvVCL5Utils, JvComponentBase, JvTypes, JvTranslateString;
 
 const
@@ -958,9 +961,6 @@ uses
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
   JclFileUtils, JclSysInfo, JclRTTI, JclMime,
-  {$IFNDEF COMPILER12_UP}
-  JvJCLUtils,
-  {$ENDIF ~COMPILER12_UP}
   JvPropertyStore, JvConsts, JvResources, JvStrings, JclSynch;
 
 type
@@ -3105,12 +3105,12 @@ end;
 
 function TJvCustomAppStorage.DecodeStrToDateTime(Value: string): TDateTime;
 begin
-  Result := StrToDateTime(Value, GetFormatSettings);
+  Result := StrToDateTime(Value{$IFDEF COMPILER7_UP}, GetFormatSettings{$ENDIF COMPILER7_UP});
 end;
 
 function TJvCustomAppStorage.EncodeDateTimeToStr(Value: TDateTime): string;
 begin
-  Result := DateTimeToStr(Value, GetFormatSettings);
+  Result := DateTimeToStr(Value{$IFDEF COMPILER7_UP}, GetFormatSettings{$ENDIF COMPILER7_UP});
 end;
 
 procedure TJvCustomAppStorage.EndUpdate;
@@ -3135,6 +3135,7 @@ end;
 
 function TJvCustomAppStorage.GetFormatSettings: TFormatSettings;
 begin
+  {$IFDEF COMPILER7_UP}
   if Not IsUpdating then
   begin
     GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, CachedFormatSettings);
@@ -3152,6 +3153,7 @@ begin
       end;
     end;
   end;
+  {$ENDIF COMPILER7_UP}
   Result := CachedFormatSettings;
 end;
 
