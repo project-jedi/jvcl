@@ -44,7 +44,8 @@ uses
   {$IFDEF USE_3RDPARTY_SMIMPORT}
   SMIWiz, SMIBase,
   {$ENDIF USE_3RDPARTY_SMIMPORT}
-  DBGrids, JvActionsEngine, JvDBActionsEngine, JvDynControlEngineDBTools;
+  DBGrids, JvActionsEngine, JvDBActionsEngine, JvDynControlEngineDBTools,
+  JvDynControlEngineDB;
 
 type
 
@@ -284,6 +285,8 @@ type
     FSingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction;
     procedure SetSingleRecordWindowAction(const Value:
         TJvDatabaseSingleRecordWindowAction);
+    procedure SingleRecordOnFormShowEvent(ADatacomponent : TComponent;
+        ADynControlEngineDB: TJvDynControlEngineDB);
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
@@ -311,6 +314,8 @@ type
     FSingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction;
     procedure SetSingleRecordWindowAction(const Value:
         TJvDatabaseSingleRecordWindowAction);
+    procedure SingleRecordOnFormShowEvent(ADatacomponent : TComponent;
+        ADynControlEngineDB: TJvDynControlEngineDB);
   public
     constructor Create(AOwner: TComponent); override;
     procedure CopyRecord;
@@ -366,6 +371,10 @@ type
   private
     FOnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent;
     FOptions: TJvShowSingleRecordWindowOptions;
+  protected
+    FOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent;
+    property OnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent read
+        FOnFormShowEvent write FOnFormShowEvent;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1153,12 +1162,17 @@ end;
 procedure TJvDatabaseInsertAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  if InsertType = itAppend then
-    DataSet.Append
-  else
-    DataSet.Insert;
   if Assigned(SingleRecordWindowAction) then
-    FSingleRecordWindowAction.ExecuteTarget(Target);
+  begin
+    try
+      FSingleRecordWindowAction.OnFormShowEvent := SingleRecordOnFormShowEvent;
+      FSingleRecordWindowAction.ExecuteTarget(Target);
+    finally
+      FSingleRecordWindowAction.OnFormShowEvent := nil;
+    end;
+  end
+  else
+    SingleRecordOnFormShowEvent(nil, nil);
 end;
 
 procedure TJvDatabaseInsertAction.Notification(AComponent: TComponent;
@@ -1178,6 +1192,15 @@ begin
     FSingleRecordWindowAction.FreeNotification(Self);
 end;
 
+procedure TJvDatabaseInsertAction.SingleRecordOnFormShowEvent(ADatacomponent :
+    TComponent; ADynControlEngineDB: TJvDynControlEngineDB);
+begin
+  if InsertType = itAppend then
+    DataSet.Append
+  else
+    DataSet.Insert;
+end;
+
 //=== { TJvDatabaseCopyAction } ==============================================
 
 constructor TJvDatabaseCopyAction.Create(AOwner: TComponent);
@@ -1195,9 +1218,17 @@ end;
 procedure TJvDatabaseCopyAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  CopyRecord;
   if Assigned(SingleRecordWindowAction) then
-    FSingleRecordWindowAction.ExecuteTarget(Target);
+  begin
+    try
+      FSingleRecordWindowAction.OnFormShowEvent := SingleRecordOnFormShowEvent;
+      FSingleRecordWindowAction.ExecuteTarget(Target);
+    finally
+      FSingleRecordWindowAction.OnFormShowEvent := nil;
+    end;
+  end
+  else
+    SingleRecordOnFormShowEvent(nil, nil);
 end;
 
 procedure TJvDatabaseCopyAction.CopyRecord;
@@ -1255,6 +1286,12 @@ begin
   FSingleRecordWindowAction := Value;
   if Assigned(FSingleRecordWindowAction) then
     FSingleRecordWindowAction.FreeNotification(Self);
+end;
+
+procedure TJvDatabaseCopyAction.SingleRecordOnFormShowEvent(ADatacomponent :
+    TComponent; ADynControlEngineDB: TJvDynControlEngineDB);
+begin
+  CopyRecord;
 end;
 
 //=== { TJvDatabaseEditAction } ==============================================
@@ -1347,12 +1384,12 @@ end;
 procedure TJvDatabaseSingleRecordWindowAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  ShowSingleRecordWindow
+  ShowSingleRecordWindow;
 end;
 
 procedure TJvDatabaseSingleRecordWindowAction.ShowSingleRecordWindow;
 begin
-  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options, onCreateDataControlsEvent);
+  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options, onCreateDataControlsEvent, OnFormShowEvent);
 end;
 
 //=== { TJvDatabaseOpenAction } ==============================================

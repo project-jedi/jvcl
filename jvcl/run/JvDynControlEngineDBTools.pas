@@ -40,8 +40,12 @@ type
       TComponent; ADynControlEngineDB: TJvDynControlEngineDB; AParentControl:
       TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of
       object;
+  TJvDataSourceEditDialogOnFormShowEvent = procedure(ADatacomponent :
+      TComponent; ADynControlEngineDB: TJvDynControlEngineDB) of
+      object;
 
   TJvDynControlDataSourceEditDialog = class(TJvPersistentProperty)
+    procedure OnFormShow(Sender: TObject);
   private
     FForm: TCustomForm;
     FDynControlEngineDB: TJvDynControlEngineDB;
@@ -70,6 +74,7 @@ type
     FButtonPanel: TWinControl;
     FPostAction: TCustomAction;
     FCancelAction: TCustomAction;
+    FOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent;
   protected
     function GetDynControlEngineDB: TJvDynControlEngineDB;
     procedure SetDataComponent(Value: TComponent);
@@ -114,6 +119,8 @@ type
         SetArrangeSettings;
     property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read
         FFieldCreateOptions write SetFieldCreateOptions;
+    property OnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent read
+        FOnFormShowEvent write FOnFormShowEvent;
   end;
 
 
@@ -123,7 +130,9 @@ function ShowDataSourceEditDialog(ADataComponent: TComponent; const
     AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
     AArrangeConstraints: TSizeConstraints = nil; AArrangeSettings:
     TJvArrangeSettings = nil; ADynControlEngineDB: TJvDynControlEngineDB = nil;
-    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil): TModalResult;
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
+    nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil):
+    TModalResult;
 
 
 {$IFDEF UNITVERSIONING}
@@ -370,6 +379,12 @@ begin
   Result := Form;
 end;
 
+procedure TJvDynControlDataSourceEditDialog.OnFormShow(Sender: TObject);
+begin
+  if Assigned(OnFormShowEvent) then
+    OnFormShowEvent(DataComponent, DynControlEngineDB);
+end;
+
 function TJvDynControlDataSourceEditDialog.ShowDialog: TModalResult;
 var
   MainPanel: TWinControl;
@@ -418,6 +433,7 @@ begin
     TForm(FForm).Left := Left;
     TForm(FForm).Height := Height;
     TForm(FForm).Width := Width;
+    TForm(FForm).OnShow := OnFormShow;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
     MainPanel.TabOrder := 0;
     Result := FForm.ShowModal;
@@ -432,7 +448,9 @@ function ShowDataSourceEditDialog(ADataComponent: TComponent; const
     AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
     AArrangeConstraints: TSizeConstraints = nil; AArrangeSettings:
     TJvArrangeSettings = nil; ADynControlEngineDB: TJvDynControlEngineDB = nil;
-    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil): TModalResult;
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
+    nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil):
+    TModalResult;
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
@@ -452,6 +470,7 @@ begin
     if Assigned(AArrangeConstraints) then
       Dialog.ArrangeConstraints := AArrangeConstraints;
     Dialog.OnCreateDataControlsEvent := ACreateDataControlsEvent;
+    Dialog.OnFormShowEvent := AOnFormShowEvent;
     Result := Dialog.ShowDialog;
   finally
     Dialog.Free;
