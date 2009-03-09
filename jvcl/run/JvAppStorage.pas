@@ -90,9 +90,7 @@ uses
   System.IO,
   Variants, // necessary for automatic string<-variant typecast
   {$ELSE}
-  {$IFDEF COMPILER9_UP}
   Windows,
-  {$ENDIF COMPILER9_UP}
   {$ENDIF CLR}
   JclStrings, // must be included before WideStrings
   {$IFDEF COMPILER10_UP}
