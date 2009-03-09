@@ -473,31 +473,31 @@ begin
   end;
 end;
 
-function GetHasAlphaChannel(Data: PChar; Count: Integer): Boolean;
+function GetHasAlphaChannel(Data: PRGBQuad; Count: Integer): Boolean;
 begin
   Result := False;
 
   while Count > 0 do
   begin
-    Result := PRGBQuad(Data).rgbReserved <> 0;
+    Result := Data.rgbReserved <> 0;
     if Result then
-      Exit;
-    Inc(Data, 4);
+      Break;
+    Inc(Data);
     Dec(Count);
   end;
 end;
 
-procedure PreMultiplyAlphaChannel(Data: PChar; Count: Integer);
+procedure PreMultiplyAlphaChannel(Data: PRGBQuad; Count: Integer);
 begin
   while Count > 0 do
   begin
-    with PRGBQuad(Data)^ do
+    with Data^ do
     begin
       rgbBlue := (rgbBlue * rgbReserved + 128) div 255;
       rgbGreen := (rgbGreen * rgbReserved + 128) div 255;
       rgbRed := (rgbRed * rgbReserved + 128) div 255;
     end;
-    Inc(Data, 4);
+    Inc(Data);
     Dec(Count);
   end;
 end;
