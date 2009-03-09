@@ -339,6 +339,8 @@ type
     FSingleRecordWindowAction: TJvDatabaseSingleRecordWindowAction;
     procedure SetSingleRecordWindowAction(const Value:
         TJvDatabaseSingleRecordWindowAction);
+    procedure SingleRecordOnFormShowEvent(ADatacomponent : TComponent;
+        ADynControlEngineDB: TJvDynControlEngineDB);
   public
     procedure UpdateTarget(Target: TObject); override;
     procedure ExecuteTarget(Target: TObject); override;
@@ -1305,9 +1307,17 @@ end;
 procedure TJvDatabaseEditAction.ExecuteTarget(Target: TObject);
 begin
   inherited ExecuteTarget(Target);
-  DataSet.Edit;
   if Assigned(SingleRecordWindowAction) then
-    FSingleRecordWindowAction.ExecuteTarget(Target);
+  begin
+    try
+      FSingleRecordWindowAction.OnFormShowEvent := SingleRecordOnFormShowEvent;
+      FSingleRecordWindowAction.ExecuteTarget(Target);
+    finally
+      FSingleRecordWindowAction.OnFormShowEvent := nil;
+    end;
+  end
+  else
+    SingleRecordOnFormShowEvent(nil, nil);
 end;
 
 procedure TJvDatabaseEditAction.Notification(AComponent: TComponent; Operation:
@@ -1325,6 +1335,12 @@ begin
   FSingleRecordWindowAction := Value;
   if Assigned(FSingleRecordWindowAction) then
     FSingleRecordWindowAction.FreeNotification(Self);
+end;
+
+procedure TJvDatabaseEditAction.SingleRecordOnFormShowEvent(ADatacomponent :
+    TComponent; ADynControlEngineDB: TJvDynControlEngineDB);
+begin
+  DataSet.Edit;
 end;
 
 //=== { TJvDatabaseDeleteAction } ============================================
