@@ -143,7 +143,8 @@ type
     function SelectedRowsCount(aActionComponent: TComponent): Integer; virtual;
     procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
         TJvShowSingleRecordWindowOptions; ACreateDataControlsEvent:
-        TJvDataSourceEditDialogCreateDataControlsEvent = nil); virtual;
+        TJvDataSourceEditDialogCreateDataControlsEvent = nil; AOnFormShowEvent:
+        TJvDataSourceEditDialogOnFormShowEvent = nil); virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
   end;
@@ -167,7 +168,8 @@ type
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
     procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
         TJvShowSingleRecordWindowOptions; ACreateDataControlsEvent:
-        TJvDataSourceEditDialogCreateDataControlsEvent = nil); override;
+        TJvDataSourceEditDialogCreateDataControlsEvent = nil; AOnFormShowEvent:
+        TJvDataSourceEditDialogOnFormShowEvent = nil); override;
   end;
 
   TJvDatabaseActionEngineList = class(TJvActionEngineList)
@@ -474,7 +476,8 @@ end;
 
 procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(
     aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions;
-    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil);
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
+    nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
@@ -485,6 +488,7 @@ begin
     else
       Dialog.DataComponent := DataSource(aActionComponent);
     Dialog.OnCreateDataControlsEvent := ACreateDataControlsEvent;
+    Dialog.OnFormShowEvent := AOnFormShowEvent;
     AOptions.SetOptionsToDialog(Dialog);
     if Assigned(Dialog.DataComponent) then
       Dialog.ShowDialog;
@@ -638,7 +642,8 @@ end;
 
 procedure TJvDatabaseActionDBGridControlEngine.ShowSingleRecordWindow(
     aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions;
-    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil);
+    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
+    nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
@@ -655,6 +660,7 @@ begin
         Dialog.OnCreateDataControlsEvent := OnCreateDataControls
       else
         Dialog.OnCreateDataControlsEvent := ACreateDataControlsEvent;
+      Dialog.OnFormShowEvent := AOnFormShowEvent;
       Dialog.ShowDialog;
     end;
   finally
