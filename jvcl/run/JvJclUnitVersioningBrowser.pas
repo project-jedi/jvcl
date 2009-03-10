@@ -8,17 +8,13 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvJCLUtils.pas, released on 2002-07-04.
+The Original Code is: JvJclUnitVersioningBrowser.pas, released on 2009-03-09.
 
-The Initial Developers of the Original Code are: Andrei Prygounkov <a dott prygounkov att gmx dott de>
-Copyright (c) 1999, 2002 Andrei Prygounkov
+The Initial Developers of the Original Code is: Jens Fudickar
 All Rights Reserved.
 
 Contributor(s):
-  Andreas Hausladen
-  Ralf Kaiser
-  Vladimir Gaitanoff
-  Dejoy den
+  Jens Fudickar
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
