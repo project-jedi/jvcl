@@ -50,7 +50,8 @@ type
     procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
   end;
 
-procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
+procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine =
+    nil);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -68,7 +69,8 @@ uses
   StdCtrls, SysUtils, JclStrings, JvDynControlEngineIntf, ExtCtrls,
   JclFileUtils;
 
-procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
+procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine =
+    nil);
 var
   JvJclUnitVersioningBrowser : TJvJclUnitVersioningBrowser;
 begin
