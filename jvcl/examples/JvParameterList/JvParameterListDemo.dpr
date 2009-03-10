@@ -2,7 +2,8 @@ program JvParameterListDemo;
 
 uses
   Forms,
-  JvParameterListMainForm in 'JvParameterListMainForm.pas' {JvParameterListDemoMainFrm};
+  JvParameterListMainForm in 'JvParameterListMainForm.pas' {JvParameterListDemoMainFrm},
+  JvJclUnitVersioningBrowser in '..\..\run\JvJclUnitVersioningBrowser.pas';
 
 {$R *.res}
 
