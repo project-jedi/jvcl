@@ -26,7 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 
 -----------------------------------------------------------------------------}
-// $Id: JvJCLUtils.pas 11963 2008-10-16 09:12:52Z obones $
+// $Id$
 
 unit JvJclUnitVersioningBrowser;
 
@@ -59,9 +59,9 @@ procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDSADialogs.pas $';
-    Revision: '$Revision: 12216 $';
-    Date: '$Date: 2009-02-19 22:33:09 +0100 (Do, 19 Feb 2009) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
