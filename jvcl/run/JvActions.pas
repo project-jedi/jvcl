@@ -35,6 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
   JclMapi,
+  JclAnsiStrings,
   Windows, ShellAPI,
   {$ENDIF MSWINDOWS}
   ActnList,
@@ -50,7 +51,7 @@ type
   private
     FMailer: TJclEmail;
     FShowDialogs: Boolean;
-    function GetAttachments: TStrings;
+    function GetAttachments: TAnsiStrings;
     function GetBody: string;
     function GetFindOptions: TJclEmailFindOptions;
     function GetHtmlBody: Boolean;
@@ -58,7 +59,7 @@ type
     function GetReadMsg: TJclEmailReadMsg;
     function GetSubject: string;
     function GetUserLogged: Boolean;
-    procedure SetAttachments(const Value: TStrings);
+    procedure SetAttachments(const Value: TAnsiStrings);
     procedure SetBody(const Value: string);
     procedure SetFindOptions(const Value: TJclEmailFindOptions);
     procedure SetHtmlBody(const Value: Boolean);
@@ -72,7 +73,7 @@ type
     function Execute: Boolean;
     property Mailer: TJclEmail read FMailer write FMailer;
   published
-    property Attachments: TStrings read GetAttachments write SetAttachments;
+    property Attachments: TAnsiStrings read GetAttachments write SetAttachments;
     property Body: string read GetBody write SetBody;
     property FindOptions: TJclEmailFindOptions read GetFindOptions write SetFindOptions;
     property HtmlBody: Boolean read GetHtmlBody write SetHtmlBody;
@@ -163,7 +164,7 @@ begin
   Result := Mailer.Send(ShowDialogs);
 end;
 
-function TJvSendMailOptions.GetAttachments: TStrings;
+function TJvSendMailOptions.GetAttachments: TAnsiStrings;
 begin
   Result := Mailer.Attachments;
 end;
@@ -211,7 +212,7 @@ begin
   Result := Mailer.UserLogged;
 end;
 
-procedure TJvSendMailOptions.SetAttachments(const Value: TStrings);
+procedure TJvSendMailOptions.SetAttachments(const Value: TAnsiStrings);
 begin
   Mailer.Attachments.Assign(Value);
 end;
