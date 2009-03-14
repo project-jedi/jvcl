@@ -102,16 +102,17 @@ begin
 
   with stgTargets do
   begin
-    Cells[0, 0] := 'name';
-    Cells[1, 0] := 'dir';
-    Cells[2, 0] := 'pname';
-    Cells[3, 0] := 'pdir';
-    Cells[4, 0] := 'env';
-    Cells[5, 0] := 'ver';
-    Cells[6, 0] := 'PathSep';
-    Cells[7, 0] := 'IsClx';
-    Cells[8, 0] := 'IsBds';
-    Cells[9, 0] := 'IsDotNet';
+    Cells[0, 0]  := 'name';
+    Cells[1, 0]  := 'dir';
+    Cells[2, 0]  := 'pname';
+    Cells[3, 0]  := 'pdir';
+    Cells[4, 0]  := 'env';
+    Cells[5, 0]  := 'ver';
+    Cells[6, 0]  := 'defines';
+    Cells[7, 0]  := 'PathSep';
+    Cells[8, 0]  := 'IsClx';
+    Cells[9, 0]  := 'IsBds';
+    Cells[10, 0] := 'IsDotNet';
 
     ColWidths[0] := 40;
     ColWidths[1] := 30;
@@ -119,10 +120,11 @@ begin
     ColWidths[3] := 35;
     ColWidths[4] := 25;
     ColWidths[5] := 25;
-    ColWidths[6] := 45;
-    ColWidths[7] := 30;
+    ColWidths[6] := 70;
+    ColWidths[7] := 45;
     ColWidths[8] := 30;
-    ColWidths[9] := 45;
+    ColWidths[9] := 30;
+    ColWidths[10] := 45;
   end;
 
   with stgAliases do
@@ -256,14 +258,16 @@ begin
       row[4] := target.properties.ItemNamed['env'].value;
     if Assigned(target.properties.ItemNamed['ver']) then
       row[5] := target.properties.ItemNamed['ver'].value;
+    if Assigned(target.properties.ItemNamed['defines']) then
+      row[6] := target.properties.ItemNamed['defines'].value;
     if Assigned(target.properties.ItemNamed['PathSep']) then
-      row[6] := target.properties.ItemNamed['PathSep'].value;
+      row[7] := target.properties.ItemNamed['PathSep'].value;
     if Assigned(target.properties.ItemNamed['IsClx']) then
-      row[7] := target.properties.ItemNamed['IsClx'].value;
+      row[8] := target.properties.ItemNamed['IsClx'].value;
     if Assigned(target.properties.ItemNamed['IsBds']) then
-      row[8] := target.properties.ItemNamed['IsBds'].value;
+      row[9] := target.properties.ItemNamed['IsBds'].value;
     if Assigned(target.properties.ItemNamed['IsDotNet']) then
-      row[9] := target.properties.ItemNamed['IsDotNet'].value;
+      row[10] := target.properties.ItemNamed['IsDotNet'].value;
 
     stgTargets.InsertRow(stgTargets.RowCount);
   end;
@@ -380,13 +384,15 @@ begin
         if row[5] <> '' then
           target.properties.Add('ver', row[5]);
         if row[6] <> '' then
-          target.properties.Add('PathSep', row[6]);
+          target.properties.Add('defines', row[6]);
         if row[7] <> '' then
-          target.properties.Add('IsClx', row[7]);
+          target.properties.Add('PathSep', row[7]);
         if row[8] <> '' then
-          target.properties.Add('IsBds', row[8]);
+          target.properties.Add('IsClx', row[8]);
         if row[9] <> '' then
-          target.Properties.Add('IsDotNet', row[9]);
+          target.properties.Add('IsBds', row[9]);
+        if row[10] <> '' then
+          target.Properties.Add('IsDotNet', row[10]);
       end;
 
       // aliases

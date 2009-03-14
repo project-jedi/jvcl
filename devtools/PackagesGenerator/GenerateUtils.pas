@@ -1197,6 +1197,7 @@ var
   UnitFileName, UnitFilePath, UnitFileExtension, NoLinkPackageList: string;
   PathPAS, PathCPP, PathRC, PathASM, PathLIB: string;
   VersionMajorNumber, VersionMinorNumber, ReleaseNumber, BuildNumber: string;
+  CompilerDefines: TStrings;
 begin
   Result := '';
 
@@ -1206,6 +1207,7 @@ begin
 
   repeatLines := TStringList.Create;
   tmpLines := TStringList.Create;
+  CompilerDefines := TStringList.Create;
   try
     // generate list of pathes
     PathPAS := '.;';
@@ -1282,6 +1284,9 @@ begin
     BuildNumber := xml.BuildNumber;
     if BuildNumber = '' then
       BuildNumber := ProjectProperties.Values['BuildNumber'];
+
+    CompilerDefines.Assign(TargetList[GetNonPersoTarget(Target)].Defines);
+    CompilerDefines.AddStrings(xml.CompilerDefines);
 
     // The time stamp hasn't been found yet
     TimeStampLine := -1;
@@ -1468,6 +1473,23 @@ begin
             end;
           end;
         end
+        else if curLine = '<%%% START COMPILER DEFINES %%%>' then
+        begin
+          Inc(i);
+          repeatLines.Clear;
+          while (i < Count) and
+                not IsTrimmedString(template[i], '<%%% END COMPILER DEFINES %%%>') do
+          begin
+            repeatLines.Add(template[i]);
+            Inc(i);
+          end;
+          for j := 0 to CompilerDefines.Count - 1 do
+          begin
+            tmpLines.Assign(repeatLines);
+            MacroReplaceLines(tmpLines, '%', ['COMPILERDEFINE%', CompilerDefines[j]]);
+            outFile.AddStrings(tmpLines);
+          end;
+        end
         else if curLine = '<%%% DO NOT GENERATE %%%>' then
           Exit
         else for j := Low(ProjectConditionals) to High(ProjectConditionals) do
@@ -1515,7 +1537,9 @@ begin
              'ISDLL%', Iff(ProjectTypeIsDLL(xml.ProjectType), 'True', 'False'),
              'ISPACKAGE%', Iff(ProjectTypeIsPackage(xml.ProjectType), 'True', 'False'),
              'SOURCEEXTENSION%', ProjectTypeToSourceExtension(xml.ProjectType),
-             'NOLINKPACKAGELIST%', NoLinkPackageList]) then
+             'NOLINKPACKAGELIST%', NoLinkPackageList,
+             'DEFINES%', StringsToStr(CompilerDefines, ';', False),
+             'COMPILERDEFINES%', Iff(CompilerDefines.Count > 0, '-D' + StringsToStr(CompilerDefines, ';', False), '')]) then
            begin
              if Pos('%DATETIME%', tmpStr) > 0 then
                TimeStampLine := I;
@@ -1598,6 +1622,7 @@ begin
   finally
     tmpLines.Free;
     repeatLines.Free;
+    CompilerDefines.Free;
     outFile.Free;
   end;
 end;

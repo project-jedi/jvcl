@@ -106,6 +106,8 @@ type
     btnGenerateGUID: TButton;
     edtGUID: TEdit;
     ComboBoxType: TComboBox;
+    edtCompilerDefines: TEdit;
+    lblCompilerDefines: TLabel;
     procedure ComboBoxTypeSelect(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
@@ -159,6 +161,7 @@ type
     procedure btnCLXDescriptionClick(Sender: TObject);
     procedure edtGUIDChange(Sender: TObject);
     procedure btnGenerateGUIDClick(Sender: TObject);
+    procedure edtCompilerDefinesChange(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -401,6 +404,11 @@ begin
   Changed := True;
 end;
 
+procedure TfrmMain.edtCompilerDefinesChange(Sender: TObject);
+begin
+  Changed := True;
+end;
+
 procedure TfrmMain.edtGUIDChange(Sender: TObject);
 begin
   Changed := True;
@@ -479,6 +487,7 @@ begin
       rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
       rootNode.Items.Add('C5Libs', frmAdvancedOptions.edtBCB5.Text);
       rootNode.Items.Add('C6Libs', frmAdvancedOptions.edtBCB6.Text);
+      rootNode.Items.Add('CompilerDefines', edtCompilerDefines.Text);
       if frmAdvancedOptions.edtImageBase.Text <> '' then
         rootNode.Items.Add('ImageBase', frmAdvancedOptions.edtImageBase.Text);
       if frmAdvancedOptions.edtVersionMajorNumber.Text <> '' then
@@ -602,6 +611,8 @@ begin
         edtGUID.Text := rootNode.Items.ItemNamed['GUID'].Value;
       frmAdvancedOptions.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
       frmAdvancedOptions.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
+      if Assigned(rootNode.Items.ItemNamed['CompilerDefines']) then
+        edtCompilerDefines.Text := rootNode.Items.ItemNamed['CompilerDefines'].Value;
       if Assigned(rootNode.Items.ItemNamed['ClxDescription']) then
         FClxDescription := rootNode.Items.ItemNamed['ClxDescription'].Value;
       if Assigned(RootNode.Items.ItemNamed['ImageBase']) then             // do not localize
@@ -930,6 +941,7 @@ begin
   edtGUID.Text := '';
   ledC5PFlags.Text := '';
   ledC6PFlags.Text := '';
+  edtCompilerDefines.Text := '';
   jsgDependencies.Rows[1].Text := '';
   jsgDependencies.RowCount := 2;
   jsgFiles.Rows[1].Text := '';

@@ -325,7 +325,7 @@ object frmModels: TfrmModels
       Width = 245
       Height = 124
       Anchors = [akLeft, akTop, akRight, akBottom]
-      ColCount = 10
+      ColCount = 11
       DefaultColWidth = 30
       DefaultRowHeight = 18
       FixedCols = 0
