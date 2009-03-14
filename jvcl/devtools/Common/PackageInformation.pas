@@ -117,6 +117,7 @@ type
     FC6Libs: TStrings;
     FC10Libs: TStrings;
     FGUID: string;
+    FCompilerDefines: TStrings;
     FReleaseNumber: string;
     FVersionMinorNumber: string;
     FVersionMajorNumber: string;
@@ -158,6 +159,7 @@ type
     property C6Libs: TStrings read FC6Libs;
     property C10Libs: TStrings read FC10Libs;
 
+    property CompilerDefines: TStrings read FCompilerDefines;
     property GUID: string read FGUID;  // D9 support
   end;
 
@@ -746,6 +748,7 @@ begin
   FC5Libs := TStringList.Create;
   FC6Libs := TStringList.Create;
   FC10Libs := TStringList.Create;
+  FCompilerDefines := TStringList.Create;
 
   LoadFromFile(FFilename);
 end;
@@ -757,6 +760,7 @@ begin
   FC10Libs.Free;
   FRequires.Free;
   FContains.Free;
+  FCompilerDefines.Free;
   inherited Destroy;
 end;
 
@@ -802,12 +806,15 @@ begin
     RootNode := xml.Root;
 
     FGUID := RootNode.Items.Value('GUID');
+    if Assigned(RootNode.Items.ItemNamed['CompilerDefines']) then
+      StrToStrings(RootNode.Items.Value('CompilerDefines'), ' ', CompilerDefines, False);
+
     FC5PFlags := RootNode.Items.Value('C5PFlags');
     FC6PFlags := RootNode.Items.Value('C6PFlags');
     FC10PFlags := FC6PFlags;
     if Assigned(RootNode.Items.ItemNamed['C10PFlags']) then
       FC10PFlags := RootNode.Items.Value('C10PFlags');
-      
+
     StrToStrings(RootNode.Items.Value('C5Libs'), ' ', C5Libs, False);
     StrToStrings(RootNode.Items.Value('C6Libs'), ' ', C6Libs, False);
     FC10Libs.Assign(FC6Libs);
