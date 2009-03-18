@@ -1029,7 +1029,7 @@ begin
     WinControl.Hint := Hint;
     WinControl.Tag := Tag;
     WinControl.HelpContext := HelpContext;
-    JvDynControl.ControlSetOnEnter(ParameterList.OnExitParameterControl);
+    JvDynControl.ControlSetOnEnter(ParameterList.OnEnterParameterControl);
     JvDynControl.ControlSetOnExit(ParameterList.OnExitParameterControl);
     if Assigned(JvDynControlData) then
       JvDynControlData.ControlSetOnChange(ParameterList.OnChangeParameterControl);
