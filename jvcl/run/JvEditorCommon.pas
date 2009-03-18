@@ -4325,7 +4325,7 @@ var
   ECR: TRect;
   BX, EX, BY, EY: Integer;
 begin
-  if (UpdateLock > 0) and (CellRect.Width > 1) and (CellRect.Height > 0) then
+  if (UpdateLock > 0) or (CellRect.Width <= 1) or (CellRect.Height <= 1) then
     Exit;
   PaintCaret(False);
 
