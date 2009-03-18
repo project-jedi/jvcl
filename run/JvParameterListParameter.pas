@@ -390,13 +390,12 @@ type
     function GetAsVariant: Variant; override;
     function GetWinControlData: Variant; override;
     procedure SetWinControlData(Value: Variant); override;
+    procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure SearchItemIndex(const Search: string);
-    procedure GetData; override;
-    procedure SetData; override;
   published
     property ItemList: TStringList read GetItemList write SetItemList;
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
@@ -1455,6 +1454,8 @@ begin
   FItemList.Assign(Value);
   if Assigned(Value) then
     SetItemIndex(FItemIndex);
+  if Assigned(WinControl) then
+    SetWinControlProperties;
 end;
 
 procedure TJvListParameter.SetItemIndex(Value: Integer);
@@ -1539,21 +1540,14 @@ begin
     end;
 end;
 
-procedure TJvListParameter.GetData;
+procedure TJvListParameter.SetWinControlProperties;
+var
+  ITmpComboBox: IJvDynControlComboBox;
+  ITmpItems: IJvDynControlItems;
 begin
-  inherited GetData;
-  //  if Assigned(WinControl) then
-  //    ItemIndex := ItemList.IndexOf(Inherited GetAsString)
-  //  else
-  //    ItemIndex := -1;
-end;
-
-procedure TJvListParameter.SetData;
-begin
-  inherited SetData;
-  //  IF Assigned (
-  //  IF Assigned (WinControl) THEN
-  //    ItemList.IndexOf (AsString) := ItemIndex;
+  inherited SetWinControlProperties;
+  if Supports(WinControl, IJvDynControlItems, ITmpItems) then
+    ITmpItems.ControlItems := ItemList;
 end;
 
 //=== { TJvRadioGroupParameter } =============================================
