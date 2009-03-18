@@ -1231,6 +1231,8 @@ begin
       CurrControl := GetNextControlByTabOrder(LastTabOrder + 1);
       Inc(I);
     end;
+    if (Length(ControlRects) > 0) and not ControlRects[High(ControlRects)].LineBreak then
+      Inc(LineCount);
 
     { Vertical/Horizontal alignment }
     OffsetX := 0;
