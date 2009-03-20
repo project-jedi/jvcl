@@ -263,6 +263,7 @@ type
   TOnGutterClick = procedure(Sender: TObject; Line: Integer) of object;
 
   TJvLineChangeEvent = procedure(Sender: TObject; Line: Integer) of object;
+  TJvCaretChangedEvent = procedure(Sender: TObject; LastCaretX, LastCaretY: Integer) of object;
 
   TEditCommand = Word;
   TMacro = AnsiString; { used as buffer (array of char) }
@@ -756,6 +757,7 @@ type
 
     FOnLineInserted: TJvLineChangeEvent;
     FOnLineDeleted: TJvLineChangeEvent;
+    FOnCaretChanged: TJvCaretChangedEvent;
 
     { internal message processing }
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
@@ -973,6 +975,8 @@ type
     procedure Undo;
     procedure Redo; // not implemented yet
 
+    procedure CaretChanged(LastCaretX, LastCaretY: Integer); virtual;
+
     procedure SelectRange(BegX, BegY, EndX, EndY: Integer);
     function CalcCellRect(X, Y: Integer): TRect;
     procedure SetCaret(X, Y: Integer);
@@ -1077,6 +1081,7 @@ type
     property OnPaintGutter: TOnPaintGutter read FOnPaintGutter write FOnPaintGutter;
     property OnGutterClick: TOnGutterClick read FOnGutterClick write FOnGutterClick;
     property OnGutterDblClick: TOnGutterClick read FOnGutterDblClick write FOnGutterDblClick;
+    property OnCaretChanged: TJvCaretChangedEvent read FOnCaretChanged write FOnCaretChanged;
 
     property OnCompletionIdentifier: TOnCompletion read FOnCompletionIdentifier write FOnCompletionIdentifier;
     property OnCompletionTemplate: TOnCompletion read FOnCompletionTemplate write FOnCompletionTemplate;
@@ -4859,6 +4864,12 @@ begin
     CY := LineCount - 1;
 end;
 
+procedure TJvCustomEditorBase.CaretChanged(LastCaretX, LastCaretY: Integer);
+begin
+  if Assigned(FOnCaretChanged) then
+    FOnCaretChanged(Self, LastCaretX, LastCaretY);
+end;
+
 procedure TJvCustomEditorBase.CaretCoord(X, Y: Integer; var CX, CY: Integer);
 begin
   CX := X - FLeftCol;
@@ -4885,7 +4896,7 @@ end;
 procedure TJvCustomEditorBase.SetCaretInternal(X, Y: Integer);
 var
   R: TRect;
-  LastCaretY: Integer;
+  LastCaretX, LastCaretY: Integer;
 begin
   if (X = FCaretX) and (Y = FCaretY) then
     Exit;
@@ -4916,6 +4927,7 @@ begin
 
   if (FCaretX <> X) or (FCaretY <> Y) then
   begin
+    LastCaretX := FCaretX;
     LastCaretY := FCaretY;
     FCaretX := X;
     FCaretY := Y;
@@ -4925,6 +4937,7 @@ begin
       PaintLine(FCaretY);
     end;
     StatusChanged;
+    CaretChanged(LastCaretX, LastCaretY);
   end;
 end;
 

@@ -197,6 +197,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnChange;
+    property OnCaretChanged;
     property OnSelectionChange;
     property OnMouseDown;
     property OnMouseMove;
