@@ -837,7 +837,7 @@ procedure PError(const Text: string);
 // execute a program without waiting
 procedure Exec(const FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
-function ExecuteAndWait(const CommandLine, WorkingDirectory: string; Visibility: Integer = SW_SHOW): Integer;
+function ExecuteAndWait(CommandLine: string; const WorkingDirectory: string; Visibility: Integer = SW_SHOW): Integer;
 
 
 // returns True if this is the first instance of the program that is running
@@ -7453,7 +7453,7 @@ end;
 
 { (rb) Duplicate of JclMiscel.WinExec32AndWait }
 
-function ExecuteAndWait(const CommandLine, WorkingDirectory: string; Visibility: Integer): Integer;
+function ExecuteAndWait(CommandLine: string; const WorkingDirectory: string; Visibility: Integer): Integer;
 {$IFDEF CLR}
 var
   Proc: Process;
@@ -7490,6 +7490,7 @@ begin
   StartupInfo.cb := SizeOf(StartupInfo);
   StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
   StartupInfo.wShowWindow := Visibility;
+  UniqueString(CommandLine);//in the Unicode version the parameter lpCommandLine needs to be writable
   if not CreateProcess(nil, PChar(CommandLine), nil, nil, False, CREATE_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
     nil, Pointer(WorkingDirectory), StartupInfo, ProcessInfo) then
   begin
