@@ -283,8 +283,8 @@ type
     procedure Done; virtual;
     function Retry: Boolean; virtual;
 
-    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; virtual;
-    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; virtual;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; virtual;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; virtual;
 
     function UserCancel: Boolean; virtual;
     function Error: Boolean; virtual;
@@ -307,8 +307,8 @@ type
     function Open(Stream: TStream; const AKind: TJvConversionKind): Boolean; override;
     procedure Done; override;
     function Retry: Boolean; override;
-    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
-    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
     property Stream: TStream read FStream;
   end;
 
@@ -330,8 +330,8 @@ type
 
   TJvOEMConversion = class(TJvStreamConversion)
   public
-    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
-    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
     function TextKind: TJvConversionTextKind; override;
   end;
 
@@ -340,7 +340,7 @@ type
   { typedef long (PASCAL *PFN_RTF)(long, long); }
   PFN_RTF = function(I1, I2: Longint): Longint; stdcall;
   { long PASCAL InitConverter32(HANDLE hWnd, char *szModule); }
-  TInitConverter32 = function(hWnd: THandle; szModule: PChar): LongBool; stdcall;
+  TInitConverter32 = function(hWnd: THandle; szModule: PAnsiChar): LongBool; stdcall;
   { void PASCAL UninitConverter(void); }
   TUninitConverter = procedure; stdcall;
   { void PASCAL GetReadNames(HANDLE haszClass, HANDLE haszDescrip, HANDLE haszExt); }
@@ -358,7 +358,7 @@ type
   TRtfToForeign32 = function(ghszFile: THandle; pstgForeign: Pointer; ghBuff, ghshClass: THandle;
     lpfnIn: PFN_RTF): FCE; stdcall;
   { long PASCAL CchFetchLpszError(long fce, char FAR *lpszError, long cb); }
-  TCchFetchLpszError = function(fce: Longint; lpszError: PChar; cb: Longint): Longint; stdcall;
+  TCchFetchLpszError = function(fce: Longint; lpszError: PAnsiChar; cb: Longint): Longint; stdcall;
   { long PASCAL FRegisterConverter(HANDLE hkeyRoot); }
   TFRegisterConverter = function(hkeyRoot: THandle): Longint; stdcall;
 
@@ -386,7 +386,7 @@ type
     FBytesAvailable: Integer;
     { Buffer accessable by the converter dll }
     FBuffer: HGLOBAL;
-    FBufferPtr: PChar;
+    FBufferPtr: PAnsiChar;
     FTempProgress: Integer;
 
     { Thread synchronization based on the source of Wordpad, see
@@ -472,8 +472,8 @@ type
     function IsFormatCorrect(const AFileName: string): Boolean; override;
     function TranslateError(ErrorCode: FCE): string;
 
-    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
-    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
+    function ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}; BufSize: Integer): Integer; override;
 
     function UserCancel: Boolean; override;
     function Error: Boolean; override;
@@ -1423,7 +1423,7 @@ const
   RichLangOptions: array[TRichLangOption] of DWORD = (IMF_AUTOKEYBOARD,
     IMF_AUTOFONT, IMF_IMECANCELCOMPLETE, IMF_IMEALWAYSSENDNOTIFY);
 
-  CHex: array[0..$F] of Char =
+  CHex: array[0..$F] of AnsiChar =
   ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
     'A', 'B', 'C', 'D', 'E', 'F');
 
@@ -1685,7 +1685,7 @@ end;
 
 function CoAllocCStr(const S: string): PChar;
 begin
-  Result := StrCopy(CoTaskMemAlloc(Length(S) + 1), PChar(S));
+  Result := StrCopy(CoTaskMemAlloc(Length(S) * SizeOf(Char) + 1), PChar(S));
 end;
 
 function WStrToString(P: PWideChar): string;
@@ -1757,7 +1757,7 @@ begin
   try
     pcb := 0;
     if Converter <> nil then
-      pcb := Converter.ConvertWrite({$IFNDEF COMPILER12_UP}PChar{$ENDIF !COMPILER12_UP}(pbBuff), cb);
+      pcb := Converter.ConvertWrite({$IFNDEF COMPILER12_UP}PAnsiChar{$ENDIF !COMPILER12_UP}(pbBuff), cb);
   except
     Result := WriteError;
   end;
@@ -1881,11 +1881,11 @@ end;
 
 function TCookie.Load(Buffer: PByte; BufferSize: Longint): Longint;
 var
-  pBuff: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+  pBuff: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
 begin
   BufferSize := BufferSize div 2;
   Result := 0;
-  pBuff := {$IFNDEF COMPILER12_UP}PChar{$ENDIF !COMPILER12_UP}(Buffer) + BufferSize;
+  pBuff := {$IFNDEF COMPILER12_UP}PAnsiChar{$ENDIF !COMPILER12_UP}(Buffer) + BufferSize;
   if Converter <> nil then
     Result := Converter.ConvertRead(pBuff, BufferSize);
   if Result > 0 then
@@ -1902,7 +1902,7 @@ begin
   Result := 0;
   pBuff := PWideChar(Buffer) + BufferSize div 2;
   if Converter <> nil then
-    Result := Converter.ConvertRead({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(pBuff), BufferSize);
+    Result := Converter.ConvertRead({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(pBuff), BufferSize);
   if Result > 0 then
     Result := 2 * AdjustLineBreaksW(PWideChar(Buffer), PWideChar(pBuff), Result div 2);
 end;
@@ -1958,7 +1958,7 @@ begin
   end;
 end;
 
-function StringToHGLOBAL(const S: string): HGLOBAL;
+function AnsiStringToHGLOBAL(const S: AnsiString): HGLOBAL;
 var
   DataPtr: Pointer;
 begin
@@ -1966,7 +1966,7 @@ begin
   try
     DataPtr := GlobalLock(Result);
     try
-      Move(PChar(S)^, DataPtr^, Length(S));
+      Move(PAnsiChar(S)^, DataPtr^, Length(S) + 1);
     finally
       GlobalUnlock(Result);
     end;
@@ -2013,12 +2013,12 @@ end;
 procedure BitmapToRTF(ABitmap: TBitmap; AStream: TStream);
 const
   CPrefix = '{\rtf1 {\pict\picw%d\pich%d\dibitmap0 ';
-  CPostfix = ' }}';
+  CPostfix = AnsiString(' }}');
 var
-  Header, Bits: PChar;
+  Header, Bits: PAnsiChar;
   HeaderSize, BitsSize: DWORD;
-  P, Q: PChar;
-  S: string;
+  P, Q: PAnsiChar;
+  S: AnsiString;
 begin
   GetDIBSizes(ABitmap.Handle, HeaderSize, BitsSize);
   GetMem(Header, 2 * (HeaderSize + BitsSize));
@@ -2045,8 +2045,8 @@ begin
       Dec(P);
       Dec(Q);
     end;
-    S := Format(CPrefix, [ABitmap.Width, ABitmap.Height]);
-    AStream.Write(PChar(S)^, Length(S));
+    S := AnsiString(Format(CPrefix, [ABitmap.Width, ABitmap.Height]));
+    AStream.Write(PAnsiChar(S)^, Length(S));
     AStream.Write(Header^, (HeaderSize + BitsSize) * 2);
     AStream.Write(CPostfix, Length(CPostfix));
   finally
@@ -2074,15 +2074,15 @@ function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
 
 const
   CPrefix = '{\rtf1 {\pict\wmetafile8\picw%d\pich%d\picwgoal%d\pichgoal%d ';
-  CPostfix = ' }}';
+  CPostfix = AnsiString(' }}');
 var
-  P, Q: PChar;
-  S: string;
+  P, Q: PAnsiChar;
+  S: AnsiString;
   DC: HDC;
   MetafileHandle: HMETAFILE;
   Size: TPoint;
   BitsLength: UINT;
-  Bits: PChar;
+  Bits: PAnsiChar;
 begin
   Result := False;
 
@@ -2123,10 +2123,10 @@ begin
         Dec(Q);
       end;
 
-      S := Format(CPrefix, [Size.X, Size.Y,
+      S := AnsiString(Format(CPrefix, [Size.X, Size.Y,
         MulDiv(ABitmap.Width, CTwipsPerInch, Screen.PixelsPerInch),
-          MulDiv(ABitmap.Height, CTwipsPerInch, Screen.PixelsPerInch)]);
-      AStream.Write(PChar(S)^, Length(S));
+          MulDiv(ABitmap.Height, CTwipsPerInch, Screen.PixelsPerInch)]));
+      AStream.Write(PAnsiChar(S)^, Length(S));
       AStream.Write(Bits^, BitsLength * 2);
       AStream.Write(CPostfix, Length(CPostfix));
 
@@ -2390,13 +2390,13 @@ begin
   Result := True;
 end;
 
-function TJvConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := -1;
 end;
 
-function TJvConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := -1;
@@ -4669,11 +4669,11 @@ begin
     DoError(Result);
 end;
 
-function TJvMSTextConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvMSTextConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   AvailableBufferSize: Integer;
-  DestBufferPtr: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+  DestBufferPtr: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   ByteCount: Integer;
 begin
   { Fill Buffer with BufSize bytes data from FBuffer }
@@ -4719,10 +4719,10 @@ begin
   Result := BufSize;
 end;
 
-function TJvMSTextConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvMSTextConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
-  DestBufferPtr: PChar;
+  DestBufferPtr: PAnsiChar;
 begin
   if not Assigned(FForeignToRtf32) then
     DoError(fceWriteErr);
@@ -4774,8 +4774,8 @@ begin
     Exit;
   end;
 
-  hDesc := StringToHGLOBAL('');
-  hSubset := StringToHGLOBAL('');
+  hDesc := AnsiStringToHGLOBAL('');
+  hSubset := AnsiStringToHGLOBAL('');
 
   if FConverterKind = ckImport then
   begin
@@ -4981,7 +4981,7 @@ begin
 
   LoadConverter;
   if not Assigned(FInitConverter32) or
-    not FInitConverter32(ParentWindow, PChar(AnsiUpperCaseFileName(Application.ExeName))) then
+    not FInitConverter32(ParentWindow, PAnsiChar(AnsiString(AnsiUpperCaseFileName(Application.ExeName)))) then
 
     raise EMSTextConversionError.CreateRes(@RsECouldNotInitConverter);
 end;
@@ -4999,7 +4999,7 @@ begin
     Exit;
 
   hFile := FileNameToHGLOBAL({$IFDEF SUPPORTS_UNICODE}UTF8Encode{$ENDIF SUPPORTS_UNICODE}(AFileName));
-  hClass := StringToHGLOBAL('');
+  hClass := AnsiStringToHGLOBAL('');
   try
     Result := FIsFormatCorrect32(hFile, hClass) = fceTrue;
   finally
@@ -5090,7 +5090,7 @@ const
   CMaxErrorStrSize = 1024; { arbitrary value }
 var
   Data: THandle;
-  DataPtr: PChar;
+  DataPtr: PAnsiChar;
   Size: Longint;
 begin
   InitConverter;
@@ -5161,7 +5161,7 @@ end;
 
 //=== { TJvOEMConversion } ===================================================
 
-function TJvOEMConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvOEMConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   Mem: TMemoryStream;
@@ -5169,14 +5169,14 @@ begin
   Mem := TMemoryStream.Create;
   try
     Mem.SetSize(BufSize);
-    Result := inherited ConvertRead({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Mem.Memory), BufSize);
+    Result := inherited ConvertRead({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(Mem.Memory), BufSize);
     OemToCharBuffA(PAnsiChar(Mem.Memory), PAnsiChar(Buffer), Result);
   finally
     Mem.Free;
   end;
 end;
 
-function TJvOEMConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvOEMConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 var
   Mem: TMemoryStream;
@@ -5185,7 +5185,7 @@ begin
   try
     Mem.SetSize(BufSize);
     CharToOemBuffA(PAnsiChar(Buffer), PAnsiChar(Mem.Memory), BufSize);
-    Result := inherited ConvertWrite({$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}(Mem.Memory), BufSize);
+    Result := inherited ConvertWrite({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(Mem.Memory), BufSize);
   finally
     Mem.Free;
   end;
@@ -6373,11 +6373,11 @@ end;
 
 function TJvRTFConversion.IsFormatCorrect(AStream: TStream): Boolean;
 const
-  CRTFHeader = '{\rtf';
+  CRTFHeader = AnsiString('{\rtf');
   CRTFHeaderSize = Length(CRTFHeader);
 var
   SavedPosition: Int64;
-  Buffer: array[0..CRTFHeaderSize] of Char; // + #0
+  Buffer: array[0..CRTFHeaderSize] of AnsiChar; // + #0
 begin
   SavedPosition := AStream.Position;
   try
@@ -6385,14 +6385,13 @@ begin
 
     Result :=
       (AStream.Read(Buffer, CRTFHeaderSize) = CRTFHeaderSize) and
-      (StrIComp(PChar(CRTFHeader), Buffer) = 0);
+      (StrIComp(PAnsiChar(CRTFHeader), Buffer) = 0);
   finally
     AStream.Position := SavedPosition;
   end;
 end;
 
-function TJvRTFConversion.IsFormatCorrect(
-  const AFileName: string): Boolean;
+function TJvRTFConversion.IsFormatCorrect(const AFileName: string): Boolean;
 var
   LStream: TStream;
 begin
@@ -6415,7 +6414,7 @@ end;
 
 //=== { TJvStreamConversion } ================================================
 
-function TJvStreamConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvStreamConversion.ConvertRead(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := FStream.Read(Buffer^, BufSize);
@@ -6426,7 +6425,7 @@ begin
   end;
 end;
 
-function TJvStreamConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+function TJvStreamConversion.ConvertWrite(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};
   BufSize: Integer): Integer;
 begin
   Result := FStream.Write(Buffer^, BufSize);
@@ -7353,8 +7352,7 @@ begin
   if @lpszLocation <> nil then
   begin
     if Trim(FRichEdit.Title) <> '' then
-      lpszLocation := CoAllocCStr(Format('%s - %s',
-        [FRichEdit.Title, Application.Title]))
+      lpszLocation := CoAllocCStr(Format('%s - %s', [FRichEdit.Title, Application.Title]))
     else
       lpszLocation := CoAllocCStr(Application.Title);
   end;

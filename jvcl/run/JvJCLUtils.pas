@@ -139,6 +139,10 @@ function AnsiLastChar(const S: AnsiString): AnsiChar;
 function ReadCharsFromStream(Stream: TStream; var Buf: array of AnsiChar; BufSize: Integer): Integer; // ANSI-Stream
 function WriteStringToStream(Stream: TStream; const Buf: AnsiString; BufSize: Integer): Integer; // ANSI-Stream
 
+{$IFNDEF COMPILER12_UP}
+function UTF8ToString(const S: UTF8String): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+{$ENDIF ~COMPILER12_UP}
+
 const
   DefaultDateOrder = doDMY;
   CenturyOffset: Byte = 60;
@@ -1505,6 +1509,12 @@ begin
   {$ENDIF CLR}
 end;
 
+{$IFNDEF COMPILER12_UP}
+function UTF8ToString(const S: UTF8String): string;
+begin
+  Result := UTF8Decode(S);
+end;
+{$ENDIF ~COMPILER12_UP}
 
 // DEPRECATED:
 // StrToFloatUS uses US '.' as decimal separator and ',' as thousand separator
@@ -4009,12 +4019,9 @@ end;
 
 {$IFNDEF CLR}
 procedure MemStreamToClipBoard(MemStream: TMemoryStream; const Format: Word);
-
 var
   Data: THandle;
   DataPtr: Pointer;
-
-
 begin
   Clipboard.Open;
   try
@@ -4038,11 +4045,9 @@ begin
 end;
 
 procedure ClipBoardToMemStream(MemStream: TMemoryStream; const Format: Word);
-
 var
   Data: THandle;
   DataPtr: Pointer;
-
 begin
   Clipboard.Open;
   try

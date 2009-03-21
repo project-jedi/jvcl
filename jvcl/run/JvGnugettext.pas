@@ -2639,7 +2639,7 @@ begin
   begin
     marker := sLineBreak +
       '===========================================================================' + sLineBreak; 
-    fs.WriteBuffer(marker[1], Length(marker)); 
+    fs.Write(marker[1], Length(marker));
   end; 
 
   if DebugLog <> nil then
@@ -2684,7 +2684,7 @@ begin
         sLineBreak + sLineBreak + sLineBreak + sLineBreak + sLineBreak; 
       DebugLogOutputPaused := True; 
     end; 
-    DebugLog.WriteBuffer(Line[1], Length(Line)); 
+    DebugLog.Write(Line[1], Length(Line));
   finally
     DebugLogCS.EndWrite; 
   end; 
@@ -3125,8 +3125,7 @@ end;
 
 function TFileLocator.ReadInt64(str: TStream): Int64;
 begin
-  Assert(SizeOf(Result) = 8);
-  str.ReadBuffer(Result, 8);
+  str.ReadBuffer(Result, SizeOf(Int64));
 end;
 
 procedure TFileLocator.ReleaseMoFile(var moFile: TMoFile);

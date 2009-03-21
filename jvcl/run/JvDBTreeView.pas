@@ -1486,7 +1486,7 @@ begin
     begin
       FMastersStream.Read(strLength, SizeOf(strLength));
       SetLength(temp, strLength);
-      FMastersStream.Read(temp[1], strLength);
+      FMastersStream.Read(temp[1], strLength * SizeOf(Char)); // internally used stream
       TJvDBTreeNode(Node).SetMasterValue(temp);
       FMastersStream.Read(HasChildren, SizeOf(HasChildren));
       Node.HasChildren := HasChildren <> 0;
@@ -1516,7 +1516,7 @@ begin
       temp := VarToStr(TJvDBTreeNode(Node).MasterValue);
       strLength := length(temp);
       FMastersStream.Write(strLength, SizeOf(strLength));
-      FMastersStream.Write(temp[1], strLength);
+      FMastersStream.Write(temp[1], strLength * SizeOf(Char)); // internally used stream
       HasChildren := Byte(Node.HasChildren);
       FMastersStream.Write(HasChildren, SizeOf(HasChildren));
       Node := Node.GetNext;

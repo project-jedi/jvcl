@@ -544,7 +544,6 @@ begin
     Checked[I] := True;
 end;
 
-
 procedure TJvCheckListBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -554,7 +553,6 @@ begin
     else
       Style := Style xor WS_HSCROLL;
 end;
-
 
 function TJvCheckListBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
@@ -621,7 +619,6 @@ begin
       Selected[I] := not Selected[I];
 end;
 
-
 procedure TJvCheckListBox.LBNSelCancel(var Msg: TMessage);
 begin
   if Assigned(FOnSelectCancel) then
@@ -643,7 +640,6 @@ begin
   inherited;
 end;
 
-
 procedure TJvCheckListBox.LoadFromFile(FileName: TFileName);
 var
   Stream: TFileStream;
@@ -659,7 +655,10 @@ end;
 procedure TJvCheckListBox.LoadFromStream(Stream: TStream);
 var
   CheckLst: TCheckListRecord;
-  Buf: array [0..1023] of Char;
+  UTF8Item: UTF8String;
+  {$IFDEF CLR}
+  Buf: TBytes;
+  {$ENDIF CLR}
 begin
   Items.Clear;
   while Stream.Position + SizeOf(TCheckListRecord) <= Stream.Size do
@@ -670,21 +669,20 @@ begin
     {$ELSE}
     Stream.Read(CheckLst, SizeOf(TCheckListRecord));
     {$ENDIF CLR}
-    if (Stream.Position + CheckLst.StringSize <= Stream.Size) and
-       (CheckLst.StringSize < High(Buf)) then
+    if Stream.Position + CheckLst.StringSize <= Stream.Size then
     begin
       {$IFDEF CLR}
       ReadCharsFromStream(Stream, Buf, CheckLst.StringSize);
+      UTF8Item := Buf;
       {$ELSE}
-      Stream.Read(Buf, CheckLst.StringSize);
+      SetLength(UTF8Item, CheckLst.StringSize);
+      if CheckLst.StringSize > 0 then
+        Stream.Read(PAnsiChar(UTF8Item)^, CheckLst.StringSize);
       {$ENDIF CLR}
-      Buf[CheckLst.StringSize] := #0;
-      Checked[Items.Add(Buf)] := CheckLst.Checked;
+      Checked[Items.Add(UTF8ToString(UTF8Item))] := CheckLst.Checked;
     end;
   end;
 end;
-
-
 
 procedure TJvCheckListBox.MouseEnter(Control: TControl);
 begin
@@ -724,8 +722,6 @@ begin
   SetHScroll(FScroll);
 end;
 
-
-
 procedure TJvCheckListBox.SaveToFile(FileName: TFileName);
 var
   Stream: TFileStream;
@@ -740,26 +736,25 @@ end;
 
 procedure TJvCheckListBox.SaveToStream(Stream: TStream);
 var
-  I, J: Integer;
+  I: Integer;
   CheckLst: TCheckListRecord;
-  Buf: array [1..1023] of Char;
+  UTF8Item: UTF8String;
 begin
   for I := 0 to Items.Count - 1 do
   begin
+    UTF8Item := UTF8Encode(Items[I]);
     CheckLst.Checked := Checked[I];
-    CheckLst.StringSize := Length(Items[I]);
+    CheckLst.StringSize := Length(UTF8Item);
     {$IFDEF CLR}
     Stream.Write(CheckLst.Checked);
     Stream.Write(CheckLst.StringSize);
     {$ELSE}
     Stream.Write(CheckLst, SizeOf(TCheckListRecord));
     {$ENDIF CLR}
-    for J := 1 to Length(Items[I]) do
-      Buf[J] := Items[I][J];
     {$IFDEF CLR}
-    WriteStringToStream(Stream, Buf, CheckLst.StringSize)
+    Stream.Write(BytesOf(Buf), CheckLst.StringSize);
     {$ELSE}
-    Stream.Write(Buf, CheckLst.StringSize);
+    Stream.Write(PAnsiChar(UTF8Item)^, CheckLst.StringSize);
     {$ENDIF CLR}
   end;
 end;
@@ -790,8 +785,6 @@ begin
       Selected[I] := True;
 end;
 
-
-
 procedure TJvCheckListBox.SetHotTrack(const Value: Boolean);
 begin
   FHotTrack := Value;
@@ -805,8 +798,6 @@ begin
   if FScroll then
     SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);
 end;
-
-
 
 procedure TJvCheckListBox.UnCheckAll;
 var
@@ -824,8 +815,6 @@ begin
     for I := 0 to Items.Count - 1 do
       Selected[I] := False;
 end;
-
-
 
 procedure TJvCheckListBox.WMHScroll(var Msg: TWMHScroll);
 var
@@ -903,8 +892,6 @@ begin
   end;
   inherited WndProc(Msg);
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization

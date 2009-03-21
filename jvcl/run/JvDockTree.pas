@@ -3516,14 +3516,14 @@ end;
 procedure TJvDockTree.WriteControlName(Stream: TStream; const ControlName: string);
 var
   NameLen: Longint;
-  UTF8ControlName: {$IFDEF SUPPORTS_UNICODE}UTF8String{$ELSE}string{$ENDIF SUPPORTS_UNICODE};
+  UTF8ControlName: UTF8String;
 begin
-  UTF8ControlName := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(ControlName);
+  UTF8ControlName := UTF8Encode(ControlName);
 
   NameLen := Length(UTF8ControlName);
   Stream.Write(NameLen, SizeOf(NameLen));
   if NameLen > 0 then
-    Stream.Write(PAnsiChar(UTF8ControlName)^, NameLen);
+    Stream.Write(UTF8ControlName[1], NameLen);
 end;
 
 procedure TJvDockTree.DoLoadZone(Stream: TStream);
