@@ -217,12 +217,12 @@ type
     // [1, 3, 0, 2], column 3 is used when the items in column 1 are identical
     procedure SortGridByCols(ColOrder: array of Integer; Fixed: Boolean = False);
 
-    procedure SaveToFile(FileName: string);
-    procedure LoadFromFile(FileName: string);
-    procedure LoadFromCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
-    procedure SaveToCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"');
-    procedure LoadFromStream(Stream: TStream);
-    procedure SaveToStream(Stream: TStream);
+    procedure SaveToFile(const FileName: string {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
+    procedure LoadFromFile(const FileName: string {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
+    procedure LoadFromCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
+    procedure SaveToCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"');
+    procedure LoadFromStream(Stream: TStream {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
+    procedure SaveToStream(Stream: TStream {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
   published
     property HintColor;
     property Alignment: TAlignment read FAlignment write SetAlignment;
@@ -263,10 +263,8 @@ implementation
 
 uses
   Math,
+  JclBase, // TBytes for Pre-Delphi 2007
   JvVCL5Utils, JvJVCLUtils;
-
-const
-  BufSize = 1024;
 
 //=== { TExInplaceEditList } =================================================
 
@@ -325,7 +323,6 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-
 procedure TExInplaceEditList.CreateParams(var Params: TCreateParams);
 const
   Flags: array [TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
@@ -333,7 +330,6 @@ begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Flags[TJvStringGrid(Grid).Alignment];
 end;
-
 
 procedure TExInplaceEditList.FocusKilled(NextWnd: THandle);
 begin
@@ -364,80 +360,6 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
-
-// ahuser: TExPopupListBox is not used anywhere
-(*
-//=== { TExPopupListBox } ====================================================
-
-type
-  // TExPopupListBox - a popup listbox has no parent.
-  TExPopupListBox = class(TCustomListBox)
-  private
-    FSearchText: string;
-    FSearchTickCount: Longint;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
-    procedure KeyPress(var Key: Char); override;
-    {$IFDEF COMPILER6_UP}
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    {$ENDIF COMPILER6_UP}
-  end;
-
-procedure TExPopupListBox.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := Style or WS_BORDER;
-    ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
-    AddBiDiModeExStyle(ExStyle);
-    WindowClass.Style := CS_SAVEBITS;
-  end;
-end;
-
-procedure TExPopupListBox.CreateWnd;
-begin
-  inherited CreateWnd;
-  Windows.SetParent(Handle, 0);
-  CallWindowProc(DefWndProc, Handle, wm_SetFocus, 0, 0);
-end;
-
-procedure TExPopupListBox.Keypress(var Key: Char);
-var
-  TickCount: Integer;
-begin
-  case Key of
-    #8, #27:
-      FSearchText := '';
-    #32..#255:
-      begin
-        TickCount := GetTickCount;
-        if TickCount - FSearchTickCount > 2000 then
-          FSearchText := '';
-        FSearchTickCount := TickCount;
-        if Length(FSearchText) < 32 then
-          FSearchText := FSearchText + Key;
-        SendMessage(Handle, LB_SelectString, WPARAM(-1), LPARAM(PChar(FSearchText)));
-        Key := #0;
-      end;
-  end;
-  inherited Keypress(Key);
-end;
-
-{$IFDEF COMPILER6_UP}
-procedure TExPopupListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  Accept: Boolean;
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  Accept := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
-  TExInplaceEditList(Owner).CloseUp(Accept);
-end;
-{$ENDIF COMPILER6_UP}
-
-*)
 
 //=== { TJvStringGrid } ======================================================
 
@@ -697,20 +619,19 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.LoadFromFile(FileName: string);
+procedure TJvStringGrid.LoadFromFile(const FileName: string {$IFDEF UNICODE}; Encoding: TEncoding{$ENDIF});
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-  // (rom) secured
   try
-    LoadFromStream(Stream);
+    LoadFromStream(Stream {$IFDEF UNICODE}, Encoding{$ENDIF});
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJvStringGrid.LoadFromCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
+procedure TJvStringGrid.LoadFromCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
 var
   I: Longint;
   Lines, Fields: TStringList;
@@ -800,19 +721,48 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.LoadFromStream(Stream: TStream);
+procedure TJvStringGrid.LoadFromStream(Stream: TStream {$IFDEF UNICODE}; Encoding: TEncoding{$ENDIF});
+const
+  BufSize = 4096;
+  GrowSize = 1024;
 var
   Col, Row, I, Count: Integer;
   Buffer: array [0..BufSize - 1] of Byte;
-  St: string;
+  Bytes: TBytes;
+  Len: Integer;
+  Size: Int64;
+
+  procedure SetCell;
+  var
+    St: string;
+  begin
+    {$IFDEF UNICODE}
+    St := Encoding.GetString(Bytes, 0, Len);
+    {$ELSE}
+    SetString(St, PAnsiChar(@Bytes[0]), Len);
+    {$ENDIF UNICODE}
+    Cells[Col - 1, Row - 1] := St;
+
+    if Length(Bytes) > BufSize then
+      SetLength(Bytes, BufSize);
+    Len := 0;
+  end;
+
 begin
+  {$IFDEF UNICODE}
+  if Encoding = nil then
+    Encoding := TEncoding.Default;
+  {$ENDIF UNICODE}
   Col := 0;
   Row := 1;
-  DoLoadProgress(0, Stream.Size);
-  while Stream.Position < Stream.Size do
+  Size := Stream.Size;
+  DoLoadProgress(0, Size);
+  Len := 0;
+  SetLength(Bytes, BufSize);
+  while Stream.Position < Size do
   begin
-    Count := Stream.Read(Buffer, 1024);
-    DoLoadProgress(Stream.Position, Stream.Size);
+    Count := Stream.Read(Buffer, BufSize);
+    DoLoadProgress(Stream.Position, Size);
     for I := 0 to Count - 1 do
       case Buffer[I] of
         0:
@@ -822,29 +772,29 @@ begin
               RowCount := Row;
             if Col > ColCount then
               ColCount := Col;
-            Cells[Col - 1, Row - 1] := St;
-            St := '';
+            SetCell;
           end;
         1:
           begin
             Inc(Col);
             if Col > ColCount then
               ColCount := Col;
-            Cells[Col - 1, Row - 1] := St;
+            SetCell;
             Inc(Row);
             if Row > RowCount then
               RowCount := Row;
             Col := 0;
-            St := '';
           end;
       else
-        St := St + Char(Buffer[I]);
+        if Len >= Length(Bytes) then
+          SetLength(Bytes, Len + GrowSize);
+        Bytes[Len] := Buffer[I];
+        Inc(Len);
       end;
   end;
   RowCount := RowCount - 1;
   DoLoadProgress(Stream.Size, Stream.Size);
 end;
-
 
 procedure TJvStringGrid.WMHScroll(var Msg: TWMHScroll);
 begin
@@ -860,21 +810,19 @@ begin
     FOnVerticalScroll(Self);
 end;
 
-
-
-procedure TJvStringGrid.SaveToFile(FileName: string);
+procedure TJvStringGrid.SaveToFile(const FileName: string {$IFDEF UNICODE}; Encoding: TEncoding{$ENDIF});
 var
   Stream: TFileStream;
 begin
   Stream := TFileStream.Create(FileName, fmCreate or fmShareDenyWrite);
   try
-    SaveToStream(Stream);
+    SaveToStream(Stream {$IFDEF UNICODE}, Encoding{$ENDIF});
   finally
     Stream.Free;
   end;
 end;
 
-procedure TJvStringGrid.SaveToCSV(FileName: string; Separator: Char = ';'; QuoteChar: Char = '"');
+procedure TJvStringGrid.SaveToCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"');
 var
   I, J: Longint;
   BufStr, Value: string;
@@ -890,12 +838,9 @@ begin
       DoSaveProgress(I, RowCount);
       for J := 0 to ColCount - 1 do
       begin
-        {* added John *}
         Value := Cells[J, I];
         if Pos(Separator, Value) > 0 then
           Value := AnsiQuotedStr(Value, QuoteChar);
-        {* end added John *}
-
         BufStr := BufStr + Value;
         if J <> (ColCount - 1) then
           BufStr := BufStr + Separator;
@@ -909,13 +854,21 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.SaveToStream(Stream: TStream);
+procedure TJvStringGrid.SaveToStream(Stream: TStream {$IFDEF UNICODE}; Encoding: TEncoding{$ENDIF});
 var
-  I, J, K, ATotal: Integer;
-  St: array [0..BufSize - 1] of Char;
-  Stt: string;
+  I, J, ATotal: Integer;
+  {$IFNDEF UNICODE}
+  K: Integer;
+  {$ENDIF ~UNICODE}
+  Bytes: TBytes;
+  St: string;
+  Len: Integer;
   A, B: Byte;
 begin
+  {$IFDEF UNICODE}
+  if Encoding = nil then
+    Encoding := TEncoding.Default;
+  {$ENDIF UNICODE}
   A := 0;
   B := 1; // A for end of string, B for end of line
   ATotal := RowCount * ColCount;
@@ -925,10 +878,21 @@ begin
     for J := 0 to ColCount - 1 do
     begin
       DoSaveProgress(I * ColCount + J, ATotal);
-      Stt := Cells[J, I];
-      for K := 1 to Length(Stt) do
-        St[K - 1] := Stt[K];
-      Stream.Write(St, Length(Cells[J, I]));
+      St := Cells[J, I];
+      {$IFDEF UNICODE}
+      Bytes := Encoding.GetBytes(St);
+      Len := Length(Bytes);
+      {$ELSE}
+      Len := Length(St);
+      if Length(Bytes) < Len then
+        SetLength(Bytes, Len);
+      for K := 0 to Len - 1 do
+        if (St[K + 1] = #1) or (St[K + 1] = #0) then
+          Bytes[K] := 32
+        else
+          Bytes[K] := Byte(St[K + 1]);
+      {$ENDIF}
+      Stream.Write(Bytes[0], Len);
       if J <> ColCount - 1 then
         Stream.Write(A, 1);
     end;
@@ -1016,8 +980,6 @@ begin
     FGetCellAlignment(Self, AColumn, ARow, State, Result);
 end;
 
-
-
 procedure TJvStringGrid.GMActivateCell(var Msg: TGMActivateCell);
 begin
   Col := Msg.Column;
@@ -1083,7 +1045,6 @@ begin
     FSetCanvasProperties(Self, AColumn, ARow, Rect, State);
 end;
 
-
 procedure TJvStringGrid.WMCommand(var Msg: TWMCommand);
 begin
   if EditorMode and (Msg.Ctl = InplaceEditor.Handle) then
@@ -1092,7 +1053,6 @@ begin
   if Msg.Ctl <> 0 then
     Msg.Result := SendMessage(Msg.Ctl, CN_COMMAND, TMessage(Msg).wParam, TMessage(Msg).lParam);
 end;
-
 
 function TJvStringGrid.InsertCol(Index: Integer): TStrings;
 var
@@ -1281,7 +1241,6 @@ begin
       RowHeights[I] := -1;
 end;
 
-
 procedure TJvStringGrid.ClearSelection; // Clears selection rectangle!
 var
  S: TGridRect;
@@ -1293,7 +1252,6 @@ begin
   Self.Selection  := S;
   Refresh;
 end;
-
 
 procedure TJvStringGrid.ShowAll(AWidth, AHeight: Integer);
 var
