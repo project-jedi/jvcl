@@ -112,6 +112,44 @@ type
     property InspectedObjectListEditorHandler: IJvPropertyListEditorHandler read
         FInspectedObjectListEditorHandlerIntf;
     property PropertyStore: TComponent read FPropertyStore write SetPropertyStore;
+  published
+    property Align;
+    property Anchors;
+    property AutoSize;
+    property BiDiMode;
+    property UseDockManager default True;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property ParentBiDiMode;
+    property OnCanResize;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnEndDock;
+    property OnGetSiteInfo;
+    property OnStartDock;
+    property OnUnDock;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property BorderWidth;
+    property Color;
+    property Constraints;
+    property Enabled;
+    property Font;
+    {$IFDEF JVCLThemesEnabled}
+    property ParentBackground default True;
+    {$ENDIF JVCLThemesEnabled}
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnEnter;
+    property OnExit;
+    property OnResize;
   end;
 
 type
