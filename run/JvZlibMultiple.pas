@@ -243,21 +243,21 @@ var
   procedure WriteFileRecord(const Directory, FileName: string; FileSize: Integer; CompressedSize: Integer);
   var
     B: Byte;
-    Tab: array [1..256] of Char;
+    AnsiStr: AnsiString;
   begin
-    { (RB) Can be improved }
-    for B := 1 to Length(Directory) do
-         Tab[B] := Directory[B];
-    B := Length(Directory);
+    AnsiStr := AnsiString(Directory);
+    if Length(AnsiStr) > 255 then
+      SetLength(AnsiStr, 255);
+    B := Length(AnsiStr);
     DestStream.Write(B, SizeOf(B));
-    DestStream.Write(Tab, B);
+    DestStream.Write(PAnsiChar(AnsiStr)^, B);
 
-    { (RB) Can be improved }
-    for B := 1 to Length(FileName) do
-      Tab[B] := FileName[B];
-    B := Length(FileName);
+    AnsiStr := AnsiString(FileName);
+    if Length(AnsiStr) > 255 then
+      SetLength(AnsiStr, 255);
+    B := Length(AnsiStr);
     DestStream.Write(B, SizeOf(B));
-    DestStream.Write(Tab, B);
+    DestStream.Write(PAnsiChar(AnsiStr)^, B);
 
     DestStream.Write(FileSize, SizeOf(FileSize));
     DestStream.Write(CompressedSize, SizeOf(CompressedSize));
@@ -378,6 +378,7 @@ var
   ZStream: TJclZLibDecompressStream;
   CStream: TMemoryStream;
   B, LastPos: Byte;
+  AnsiS: AnsiString;
   S: string;
   Count, FileSize, I: Integer;
   Buffer: array [0..1023] of Byte;
@@ -394,13 +395,14 @@ begin
   begin
     //Read and force the directory
     Stream.Read(B, SizeOf(B));
-    SetLength(S, B);
+    SetLength(AnsiS, B);
     if B > 0 then
-      Stream.Read(S[1], B);
+      Stream.Read(AnsiS[1], B);
+    S := string(AnsiS);
 
     fd := Directory + S;
     if (fd <> '') and (ForceDirectoriesFlag) then
-          ForceDirectories(fd);
+      ForceDirectories(fd);
 
     if S <> '' then
       S := IncludeTrailingPathDelimiter(S);
@@ -413,9 +415,11 @@ begin
     Stream.Read(B, SizeOf(B));
     if B > 0 then
     begin
-      LastPos := Length(S);
-      SetLength(S, LastPos + B);
-      Stream.Read(S[LastPos + 1], B);
+      AnsiS := AnsiString(S);
+      LastPos := Length(AnsiS);
+      SetLength(AnsiS, LastPos + B);
+      Stream.Read(AnsiS[LastPos + 1], B);
+      S := string(AnsiS);
     end;
 
     Stream.Read(FileSize, SizeOf(FileSize));
@@ -522,6 +526,7 @@ var
   ZStream: TFileStream;
   FHByte: Byte;
   FilePos, HeaderPos, CompressedSize, UnCompressedSize: Integer;
+  AnsiFileInfo: AnsiString;
   FileInfo: string;
   ZStreamSize: Int64;
 begin
@@ -531,18 +536,21 @@ begin
     while ZStream.Position < ZStreamSize do
     begin
       ZStream.Read(FHByte, SizeOf(FHByte));
-      SetLength(FileInfo, FHByte);
+      SetLength(AnsiFileInfo, FHByte);
       if FHByte > 0 then
-        ZStream.Read(FileInfo[1], FHByte);
+        ZStream.Read(AnsiFileInfo[1], FHByte);
+      FileInfo := string(AnsiFileInfo);
 
       if FileInfo <> '' then
         FileInfo := IncludeTrailingPathDelimiter(FileInfo);
       ZStream.Read(FHByte, SizeOf(FHByte));
       if FHByte > 0 then
       begin
-        HeaderPos := Length(FileInfo);
-        SetLength(FileInfo, HeaderPos + FHByte);
-        ZStream.Read(FileInfo[HeaderPos + 1], FHByte);
+        AnsiFileInfo := AnsiString(FileInfo);
+        HeaderPos := Length(AnsiFileInfo);
+        SetLength(AnsiFileInfo, HeaderPos + FHByte);
+        ZStream.Read(AnsiFileInfo[HeaderPos + 1], FHByte);
+        FileInfo := string(AnsiFileInfo);
       end;
 
       FileList.Add(FileInfo);

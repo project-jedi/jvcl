@@ -140,7 +140,7 @@ var
 
 function JvDockStreamDataToString(Stream: TStream): string;
 var
-  Ch: Char;
+  Ch: AnsiChar;
 begin
   Result := '';
   Stream.Position := 0;
@@ -154,12 +154,12 @@ end;
 procedure JvDockStringToStreamData(Stream: TStream; const Data: string);
 var
   I: Integer;
-  Ch: Char;
+  Ch: AnsiChar;
 begin
   I := 1;
   while I < Length(Data) do
   begin
-    Ch := Char(StrToInt('$' + Copy(Data, I, 2)));
+    Ch := AnsiChar(StrToInt('$' + Copy(Data, I, 2)));
     Stream.Write(Ch, SizeOf(Ch));
     Inc(I, 2);
   end;

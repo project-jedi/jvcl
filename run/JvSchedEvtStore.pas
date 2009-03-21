@@ -549,7 +549,7 @@ end;
 
 procedure TBinStore.CheckSignature;
 var
-  S: string;
+  S: AnsiString;
 begin
   SetLength(S, Length(BinStreamID));
   FStream.ReadBuffer(S[1], Length(BinStreamID));
@@ -734,7 +734,7 @@ end;
 
 procedure TBinStore.StoreSignature;
 var
-  S: string;
+  S: AnsiString;
 begin
   S := BinStreamID;
   FStream.WriteBuffer(S[1], Length(S));
@@ -1385,27 +1385,29 @@ var
   OrgPos: Integer;
   SIdx: Integer;
   Done: Boolean;
+  AnsiStr: AnsiString;
 begin
   OrgPos := FStream.Position;
-  Result := '';
+  AnsiStr := '';
   SIdx := 0;
   repeat
     Inc(SIdx);
-    SetLength(Result, Length(Result) + 255);
-    SetLength(Result, SIdx + FStream.Read(Result[SIdx], 255));
-    Done := SIdx = Length(Result);
+    SetLength(AnsiStr, Length(AnsiStr) + 255);
+    SetLength(AnsiStr, SIdx + FStream.Read(AnsiStr[SIdx], 255));
+    Done := SIdx = Length(AnsiStr);
     if not Done then
     begin
-      while (SIdx < Length(Result)) and (Copy(Result, SIdx, Length(sLineBreak)) <> sLineBreak) do
+      while (SIdx < Length(AnsiStr)) and (Copy(AnsiStr, SIdx, Length(sLineBreak)) <> sLineBreak) do
         Inc(SIdx);
-      Done := Copy(Result, SIdx, Length(sLineBreak)) = sLineBreak;
+      Done := Copy(AnsiStr, SIdx, Length(sLineBreak)) = sLineBreak;
       if Done then
-        SetLength(Result, SIdx + 1);
+        SetLength(AnsiStr, SIdx + 1);
     end;
   until Done;
-  FStream.Position := OrgPos + Length(Result);
-  if Copy(Result, Length(Result) - 1, Length(sLineBreak)) = sLineBreak then
-    SetLength(Result, Length(Result) - Length(sLineBreak));
+  FStream.Position := OrgPos + Length(AnsiStr);
+  if Copy(AnsiStr, Length(AnsiStr) - 1, Length(sLineBreak)) = sLineBreak then
+    SetLength(AnsiStr, Length(AnsiStr) - Length(sLineBreak));
+  Result := string(AnsiStr);
 end;
 
 function TTxtStore.ReadNextLine: string;
@@ -1435,10 +1437,11 @@ end;
 
 procedure TTxtStore.WriteLn(const S: string);
 var
-  S2: string;
+  S2: AnsiString;
 begin
-  S2 := S + sLineBreak;
-  FStream.WriteBuffer(S2[1], Length(S2));
+  S2 := AnsiString(S + sLineBreak);
+  if S2 <> '' then
+    FStream.WriteBuffer(S2[1], Length(S2));
 end;
 
 function TTxtStore.ReadEnum(const AName: string;  TypeInfo: PTypeInfo): Integer;

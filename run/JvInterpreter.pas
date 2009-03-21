@@ -1760,23 +1760,25 @@ end;
 procedure StringSaveToStream(Stream: TStream; const S: string);
 var
   L: Integer;
-  P: PChar;
+  UTF8Str: UTF8String;
 begin
-  L := Length(S);
+  UTF8Str := UTF8Encode(S);
+  L := Length(UTF8Str);
   Stream.WriteBuffer(L, SizeOf(L));
-  P := PChar(S);
-  Stream.WriteBuffer(P^, L);
+  if L > 0 then
+    Stream.WriteBuffer(UTF8Str[1], L);
 end;
 
 function StringLoadFromStream(Stream: TStream): string;
 var
   L: Integer;
-  P: PChar;
+  UTF8Str: UTF8String;
 begin
   Stream.ReadBuffer(L, SizeOf(L));
-  SetLength(Result, L);
-  P := PChar(Result);
-  Stream.ReadBuffer(P^, L);
+  SetLength(UTF8Str, L);
+  if L > 0 then
+    Stream.ReadBuffer(UTF8Str[1], L);
+  Result := UTF8ToString(UTF8Str);
 end;
 
 procedure IntSaveToStream(Stream: TStream; AInt: Integer);

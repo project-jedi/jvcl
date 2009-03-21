@@ -964,7 +964,8 @@ end;
 //=== { TJvListView } ========================================================
 
 const
-  cLISTVIEW01 = 'LISTVIEW01';
+  cLISTVIEW01 = 'LISTVIEW01'; // 10 chars
+  cLISTVIEW02 = 'LISTVIEW01'; // 10 chars
 
 constructor TJvListView.Create(AOwner: TComponent);
 begin
@@ -1277,18 +1278,15 @@ begin
   end;
 end;
 
-// (rom) a 100 char buffer is silly
-
 procedure TJvListView.LoadFromStream(Stream: TStream);
 var
-  Buf: array [0..100] of Char;
   Start: Integer;
 
   procedure LoadOldStyle(Stream: TStream);
   var
     I, J, K: Integer;
     Buf: array [0..100] of Byte;
-    st: string;
+    st: AnsiString;
     ch1, checks: Boolean;
     t: TListItem;
   begin
@@ -1302,7 +1300,7 @@ var
     ch1 := CheckBoxes;
     while I < Stream.Size do
     begin
-      J := Stream.Read(Buf, 100);
+      J := Stream.Read(Buf, SizeOf(Buf));
       if Assigned(FOnLoadProgress) then
         FOnLoadProgress(Self, J, Stream.Size - Start);
       I := I + J;
@@ -1311,21 +1309,21 @@ var
       begin
         while (K < J) and (Buf[K] <> 0) and (Buf[K] <> 1) do
         begin
-          st := st + Char(Buf[K]);
+          st := st + AnsiChar(Buf[K]);
           Inc(K);
         end;
 
         if K < J then
         begin
           if t <> nil then
-            t.SubItems.Add(st)
+            t.SubItems.Add(string(st))
           else
           begin
             t := Items.Add;
             checks := checks or (st[1] = 'T');
             t.Checked := st[1] = 'T';
             st := Copy(st, 2, Length(st));
-            t.Caption := st;
+            t.Caption := string(st);
           end;
           if Buf[K] = 1 then
             t := nil;
@@ -1341,13 +1339,13 @@ var
   procedure LoadNewStyle(Stream: TStream);
   const
     LV_HASCHECKBOXES = $80;
-    // hs-    LV_CHECKED = $8000;
   var
     Count, I, J: SmallInt;
     Options: Byte;
+    UTF8St: UTF8String;
     st: string;
     t: TListItem;
-    Buf: array [0..2048] of Char;
+    Buf: array of AnsiChar;
   begin
     try
       Self.Items.BeginUpdate;
@@ -1370,33 +1368,29 @@ var
         t := Self.Items.Add;
         for I := 1 to Count do
         begin
-          // hs-
           if I = 1 then
           begin
             Stream.Read(Options, SizeOf(Options));
             if CheckBoxes then
               t.Checked := Boolean(Options and Ord(True));
           end;
-          // -hs
 
-          (* hs-
-                    Stream.Read(J, SizeOf(I));
-          -hs *)
           Stream.Read(J, SizeOf(J));
 
           //Read the string
-          FillChar(Buf, SizeOf(Buf), #0);
-          Stream.Read(Buf, J);
-          st := Buf;
+          if Length(Buf) < J then
+            SetLength(Buf, J);
+          if J > 0 then
+          begin
+            Stream.Read(Buf, J);
+            SetString(UTF8St, PAnsiChar(Buf[0]), J);
+            st := UTF8ToString(UTF8St);
+          end
+          else
+            st := '';
 
           if I = 1 then
-          begin
-            t.Caption := st;
-            (* hs-
-                        if CheckBoxes then
-                          t.Checked := (I and LV_CHECKED) = LV_CHECKED;
-            -hs *)
-          end
+            t.Caption := st
           else
             t.SubItems.Add(st);
         end;
@@ -1405,6 +1399,8 @@ var
     end;
   end;
 
+var
+  Buf: array [0..10] of AnsiChar;
 begin
   Start := Stream.Position;
   Stream.Read(Buf, 10);
@@ -1436,7 +1432,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
   var
     I, J, K: Integer;
     b, c, d, e: Byte;
-    st: string;
+    st: AnsiString;
     Buf: array [0..1000] of Byte;
   begin
     b := 0;
@@ -1449,7 +1445,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     begin
       if Assigned(FOnSaveProgress) then
         FOnSaveProgress(Self, I + 1, Self.Items.Count);
-      st := Self.Items[I].Caption;
+      st := AnsiString(Self.Items[I].Caption);
       for K := 1 to Length(st) do
         Buf[K - 1] := Byte(st[K]);
       K := Length(st);
@@ -1466,7 +1462,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
         Stream.Write(b, 1);
         for J := 0 to Self.Items[I].SubItems.Count - 2 do
         begin
-          st := Self.Items[I].SubItems[J];
+          st := AnsiString(Self.Items[I].SubItems[J]);
           for K := 1 to Length(st) do
             Buf[K - 1] := Byte(st[K]);
           K := Length(st);
@@ -1474,7 +1470,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
           Stream.Write(b, 1);
         end;
         J := Self.Items[I].SubItems.Count - 1;
-        st := Self.Items[I].SubItems[J];
+        st := AnsiString(Self.Items[I].SubItems[J]);
         for K := 1 to Length(st) do
           Buf[K - 1] := Byte(st[K]);
         K := Length(st);
@@ -1487,26 +1483,24 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
   procedure SaveNewStyle(Stream: TStream);
   const
     LV_HASCHECKBOXES = $80;
-    // hs-    LV_CHECKED = $8000;
-  var
-    Buf: array [0..100] of Char;
-    // hs-    I, J: Word;
-    I: Integer;
-    J: SmallInt;
-
-    // hs    Options : Byte;
-    Options, IsChecked: Byte;
 
     procedure WriteString(const Txt: string);
     var
       I: Word;
+      UTF8Txt: UTF8String;
     begin
-      I := Length(Txt);
+      UTF8Txt := UTF8Encode(Txt);
+      I := Length(UTF8Txt);
       Stream.Write(I, SizeOf(I));
       if I > 0 then
-        Stream.Write(Txt[1], I);
+        Stream.Write(UTF8Txt[1], I);
     end;
 
+  var
+    Buf: array [0..100] of AnsiChar;
+    I: Integer;
+    J: SmallInt;
+    Options, IsChecked: Byte;
   begin
     Buf := cLISTVIEW01;
     Stream.Write(Buf, 10);
@@ -1520,10 +1514,8 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
       begin
         J := SubItems.Count + 1;
         Stream.Write(J, SizeOf(J));
-        // hs-
         IsChecked := Options or (Byte(Ord(Checked)));
         Stream.Write(IsChecked, SizeOf(IsChecked));
-        // -hs
         WriteString(Items[I].Caption);
         for J := 0 to Items[I].SubItems.Count - 1 do
           WriteString(SubItems[J]);

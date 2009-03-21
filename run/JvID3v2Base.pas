@@ -1898,7 +1898,7 @@ function SearchSync(AStream: TStream;
 const
   CBufferSize = $0F00;
 var
-  LBuffer: PAnsiChar;
+  LBuffer: array[0..CBufferSize - 1] of Byte;
   I: Integer;
   LastWasFF: Boolean;
   BytesRead: Longint;
@@ -1907,40 +1907,35 @@ begin
   LastWasFF := False;
   Result := AStream.Seek(BeginOffset, soFromBeginning);
 
-  GetMem(LBuffer, CBufferSize);
-  try
-    while True do
+  while True do
+  begin
+    BytesRead := AStream.Read(LBuffer, CBufferSize);
+    if BytesRead = 0 then
     begin
-      BytesRead := AStream.Read(LBuffer^, CBufferSize);
-      if BytesRead = 0 then
-      begin
-        Result := -1;
-        Break;
-      end;
-
-      for I := 0 to BytesRead - 1 do
-      begin
-        if LastWasFF and (Byte(LBuffer[I]) and $E0 = $E0) then
-        begin
-          Inc(Result, I - 1);
-          if (I + BufferSize - 1 >= BytesRead) or (I = 0) then
-          begin
-            AStream.Seek(Result, soFromBeginning);
-            if not AStream.Read(Buffer, BufferSize) = BufferSize then
-              Result := -1;
-          end
-          else
-            Move((LBuffer + I - 1)^, Buffer, BufferSize);
-
-          Exit;
-        end;
-
-        LastWasFF := LBuffer[I] = #$FF;
-      end;
-      Inc(Result, BytesRead);
+      Result := -1;
+      Break;
     end;
-  finally
-    FreeMem(LBuffer);
+
+    for I := 0 to BytesRead - 1 do
+    begin
+      if LastWasFF and (LBuffer[I] and $E0 = $E0) then
+      begin
+        Inc(Result, I - 1);
+        if (I + BufferSize - 1 >= BytesRead) or (I = 0) then
+        begin
+          AStream.Seek(Result, soFromBeginning);
+          if not AStream.Read(Buffer, BufferSize) = BufferSize then
+            Result := -1;
+        end
+        else
+          Move(LBuffer[I - 1], Buffer, BufferSize);
+
+        Exit;
+      end;
+
+      LastWasFF := LBuffer[I] = $FF;
+    end;
+    Inc(Result, BytesRead);
   end;
 end;
 
@@ -1981,44 +1976,37 @@ var
   LastWasFF: Boolean;
   BytesRead: Integer;
   SourcePtr, DestPtr: Integer;
-  SourceBuf, DestBuf: PAnsiChar;
+  SourceBuf, DestBuf: array[0..MaxBufSize - 1] of Byte;
 begin
   { Replace $FF 00 with $FF }
 
-  GetMem(SourceBuf, Min(MaxBufSize, BytesToRead));
-  GetMem(DestBuf, Min(MaxBufSize, BytesToRead));
-  try
-    LastWasFF := False;
-    while BytesToRead > 0 do
+  LastWasFF := False;
+  while BytesToRead > 0 do
+  begin
+    { Read at max CBufferSize bytes from the stream }
+    BytesRead := Source.Read(SourceBuf[0], Min(MaxBufSize, BytesToRead));
+    if BytesRead = 0 then
+      ID3Error(RsECouldNotReadData);
+
+    Dec(BytesToRead, BytesRead);
+
+    DestPtr := 0;
+    SourcePtr := 0;
+
+    while SourcePtr < BytesRead do
     begin
-      { Read at max CBufferSize bytes from the stream }
-      BytesRead := Source.Read(SourceBuf^, Min(MaxBufSize, BytesToRead));
-      if BytesRead = 0 then
-        ID3Error(RsECouldNotReadData);
-
-      Dec(BytesToRead, BytesRead);
-
-      DestPtr := 0;
-      SourcePtr := 0;
-
-      while SourcePtr < BytesRead do
+      { If previous was $FF and current is $00 then skip.. }
+      if not LastWasFF or (SourceBuf[SourcePtr] <> $00) then
       begin
-        { If previous was $FF and current is $00 then skip.. }
-        if not LastWasFF or (SourceBuf[SourcePtr] <> #$00) then
-        begin
-          { ..otherwise copy }
-          DestBuf[DestPtr] := SourceBuf[SourcePtr];
-          Inc(DestPtr);
-        end;
-
-        LastWasFF := SourceBuf[SourcePtr] = #$FF;
-        Inc(SourcePtr);
+        { ..otherwise copy }
+        DestBuf[DestPtr] := SourceBuf[SourcePtr];
+        Inc(DestPtr);
       end;
-      Dest.Write(DestBuf^, DestPtr);
+
+      LastWasFF := SourceBuf[SourcePtr] = $FF;
+      Inc(SourcePtr);
     end;
-  finally
-    FreeMem(DestBuf);
-    FreeMem(SourceBuf);
+    Dest.Write(DestBuf[0], DestPtr);
   end;
 end;
 

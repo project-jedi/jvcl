@@ -5092,7 +5092,7 @@ end;
 procedure TJvDockTabPageControl.LoadFromStream(Stream: TStream);
 var
   I, ACount, NameLen, SheetVisible, ActiveSheetIndex: Integer;
-  ControlName: string;
+  ControlName: UTF8String;
   AControl: TControl;
   Index: Integer;
 begin
@@ -5108,14 +5108,14 @@ begin
     if NameLen > 0 then
     begin
       SetLength(ControlName, NameLen);
-      Stream.Read(Pointer(ControlName)^, NameLen);
+      Stream.Read(ControlName[1], NameLen);
     end;
 
     Stream.Read(SheetVisible, SizeOf(SheetVisible));
 
     if ControlName <> '' then
     begin
-      ReloadDockedControl(ControlName, AControl);
+      ReloadDockedControl({$IFDEF UNICODE}UTF8ToString{$ELSE}UTF8Decode{$ENDIF}(ControlName), AControl);
       if AControl <> nil then
       begin
         AControl.ManualDock(Self, nil, alClient);
@@ -5142,7 +5142,7 @@ end;
 procedure TJvDockTabPageControl.SaveToStream(Stream: TStream);
 var
   I, ACount, NameLen, SheetVisible, ActiveSheetIndex: Integer;
-  ControlName: string;
+  ControlName: UTF8String;
   CurrentControl: TControl;
   TabPageStreamEndFlag: Integer;
 begin
@@ -5155,13 +5155,13 @@ begin
     if Pages[I].ControlCount > 0 then
     begin
       CurrentControl := Pages[I].Controls[0];
-      ControlName := CurrentControl.Name;
+
+      ControlName := UTF8Encode(CurrentControl.Name);
       NameLen := Length(ControlName);
-
       Stream.Write(NameLen, SizeOf(NameLen));
-
       if NameLen > 0 then
-        Stream.Write(Pointer(ControlName)^, NameLen);
+        Stream.Write(ControlName[1], NameLen);
+
       SheetVisible := 0;
       if (Self is TJvDockVSNETTabPageControl) and (ParentForm.HostDockSite is TJvDockPanel) then
         SheetVisible := Integer(TJvDockVSNETTabSheet(Pages[I]).OldVisible)

@@ -214,9 +214,14 @@ end;
 { writes string to output stream. Used for serialization. [translated] }
 
 procedure TJvgXMLSerializer.WriteOutStream(const Value: string);
+var
+  AnsiValue: AnsiString;
 begin
   if Value <> '' then
-    OutStream.Write(PChar(Value)[0], Length(Value));
+  begin
+    AnsiValue := AnsiString(Value);
+    OutStream.Write(AnsiValue[1], Length(AnsiValue));
+  end;
 end;
 
 //  Конвертирует компонент в XML-код в соответствии
@@ -251,11 +256,11 @@ begin
 
   OutStream := Stream;
 
-  WriteOutStream(PChar(Result));
+  WriteOutStream(Result);
 
-  WriteOutStream(PChar(CR + '<' + Component.ClassName + '>'));
+  WriteOutStream(CR + '<' + Component.ClassName + '>');
   SerializeInternal(Component);
-  WriteOutStream(PChar(CR + '</' + Component.ClassName + '>'));
+  WriteOutStream(CR + '</' + Component.ClassName + '>');
 end;
 
 //  Внутренняя процедура конвертации объекта в XML
@@ -886,6 +891,7 @@ const
   procedure addElement(const ElementName: string; Data: string);
   var
     S: string;
+    UTF8S: UTF8String;
   begin
     if DTDList.IndexOf(ElementName) <> -1 then
       exit;
@@ -894,7 +900,8 @@ const
     if Data = '' then
       Data := PCDATA;
     S := S + '(' + Data + ')>'#13#10;
-    Stream.Write(PChar(S)[0], Length(S));
+    UTF8S := UTF8Encode(S);
+    Stream.Write(UTF8S[1], Length(UTF8S));
   end;
 
 begin

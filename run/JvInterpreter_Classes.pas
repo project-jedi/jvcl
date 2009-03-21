@@ -741,12 +741,12 @@ end;
 
 procedure TStream_ReadBuffer(var Value: Variant; Args: TJvInterpreterArgs);
 var
-  P: PChar;
-  S: string;
+  S: AnsiString;
 begin
+  // ahuser: Shouldn't this be the opposite of TStream_WriteBuffer ?
   SetLength(S, Integer(Args.Values[1]));
-  P := PChar(S);
-  TStream(Args.Obj).ReadBuffer(P^, Args.Values[1]);
+  if S <> '' then
+    TStream(Args.Obj).ReadBuffer(S[1], Args.Values[1]);
   Args.Values[0] := S;
 end;
 
