@@ -238,7 +238,27 @@ begin
   end;
 end;
 {******************************************************************************}
-function Execute(const Cmd, StartDir: string; HideOutput: Boolean): Integer;
+function GetSysErrorMessage(ErrorCode: Cardinal): string;
+var
+  Buffer: array[0..4096] of Char;
+  Len: Integer;
+begin
+  Len := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_IGNORE_INSERTS or
+    FORMAT_MESSAGE_ARGUMENT_ARRAY, nil, ErrorCode, 0, Buffer,
+    Length(Buffer), nil);
+  while (Len > 0) and ((Buffer[Len - 1] <= ' ') or (Buffer[Len - 1] = '.')) do
+    Dec(Len);
+  SetString(Result, Buffer, Len);
+end;
+{******************************************************************************}
+procedure FailedToStart(const Cmd: string; ErrorCode: Cardinal);
+begin
+  WriteLn(ErrOutput, 'Failed to start: ', Cmd);
+  if ErrorCode <> ERROR_SUCCESS then
+    WriteLn(ErrOutput, '  System error (', ErrorCode, '): ', GetSysErrorMessage(ErrorCode));
+end;
+{******************************************************************************}
+function Execute(Cmd: string; const StartDir: string; HideOutput: Boolean): Integer;
 var
   ProcessInfo: TProcessInformation;
   StartupInfo: TStartupInfo;
@@ -251,6 +271,7 @@ begin
     StartupInfo.hStdError := 0;
     StartupInfo.dwFlags := STARTF_USESTDHANDLES;
   end;
+  UniqueString(Cmd);
   if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil,
     Pointer(StartDir), StartupInfo, ProcessInfo) then
   begin
@@ -344,10 +365,13 @@ var
   f: TextFile;
   TestFilename, VersionOutputFilename: string;
   Status: Integer;
+  CmdLine: string;
+  LastError: Cardinal;
 begin
   Result := '';
 
-  // Get the JCL/JVCL Version number from the JCL/JVCL itself
+  // Get the JCL/JVCL Version number from the JCL/JVCL itself by compiling and
+  // starting a test application.
   TestFilename := GetTempDir + '\JediVersionCheck.dpr';
   VersionOutputFilename := ChangeFileExt(TestFilename, '.output');
   DeleteFile(PChar(VersionOutputFilename));
@@ -384,9 +408,10 @@ begin
   else
   begin
     // compile <TestFilename>.dpr
-    Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' +
-                      '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename),
-                      ExtractFileDir(TestFilename), {HideOutput:}True);
+    CmdLine := '"' + Target.RootDir + '\bin\dcc32.exe" ' +
+               '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename);
+    Status := Execute(CmdLine, ExtractFileDir(TestFilename), {HideOutput:}True);
+    LastError := GetLastError;
     DeleteFile(PChar(TestFilename));
     if LibraryType = ltJCL then
       DeleteFile(PChar(ExtractFileDir(TestFilename) + '\JclBase.dcu'))
@@ -398,7 +423,7 @@ begin
     if Status <> 0 then
     begin
       if Status = -1 then
-        WriteLn(ErrOutput, 'Failed to start "', Target.RootDir, '\bin\dcc32.exe"')
+        FailedToStart(CmdLine, LastError)
       else
         ;//WriteLn(ErrOutput, 'Compilation of "', TestFilename, '" failed.');
       Exit;
@@ -427,7 +452,7 @@ begin
   end;
 end;
 {******************************************************************************}
-
+{ ReadTargetInfo }
 function ReadTargetInfo(Typ: TTargetType; IDEVersion: Integer): TTarget;
 var
   Reg: HKEY;
@@ -683,11 +708,16 @@ begin
   end;
 end;
 {******************************************************************************}
+{ TestDelphi6Update2 tests the Delphi 6 installation for the Update 2 which is
+  required by JCL and JVCL. This is achieved by compiling and starting a simple
+  test application that tests for the Update 2 Graphics.pas symbol clHotLight. }
 procedure TestDelphi6Update2(const Target: TTarget);
 var
   f: TextFile;
   TestFilename: string;
   Status: Integer;
+  CmdLine: string;
+  LastError: Cardinal;
 begin
   // Test for Delphi 6 Update 2
   TestFilename := GetTempDir + '\delphi6compiletest.dpr';
@@ -714,27 +744,29 @@ begin
   else
   begin
     // compile <TestFilename>.dpr
-    Status := Execute('"' + Target.RootDir + '\bin\dcc32.exe" ' +
-                      '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename),
-                      ExtractFileDir(TestFilename), True);
+    CmdLine := '"' + Target.RootDir + '\bin\dcc32.exe" ' +
+               '-Q -E. -N. -U"' + Target.LibDirs + '" ' + ExtractFileName(TestFilename);
+    Status := Execute(CmdLine, ExtractFileDir(TestFilename), True);
+    LastError := GetLastError;
     DeleteFile(PChar(TestFilename));
     if Status <> 0 then
     begin
       if Status = -1 then
-        WriteLn(ErrOutput, 'Failed to start "', Target.RootDir, '\bin\dcc32.exe"')
+        FailedToStart(CmdLine, LastError)
       else
         ;//WriteLn(ErrOutput, 'Compilation of "', TestFilename, '" failed.');
       Halt(1);
     end;
 
     // start <TextFilename>.exe
-    Status := Execute('"' + ChangeFileExt(TestFilename, '.exe') + '"',
-                      ExtractFileDir(TestFilename), False);
+    CmdLine := '"' + ChangeFileExt(TestFilename, '.exe') + '"';
+    Status := Execute(CmdLine, ExtractFileDir(TestFilename), False);
+    LastError := GetLastError;
     DeleteFile(PChar(ChangeFileExt(TestFilename, '.exe')));
     if Status <> 0 then
     begin
       if Status = -1 then
-        WriteLn(ErrOutput, '"' + ChangeFileExt(TestFilename, '.exe') + '"')
+        FailedToStart(CmdLine, LastError)
       else
       begin
         WriteLn(ErrOutput, 'Delphi 6 Update 2 is not installed.');
@@ -744,7 +776,7 @@ begin
     end;
   end;
 end;
-
+{******************************************************************************}
 function ParseVersionNumber(const VersionStr: string): Cardinal;
 const
   Shifts: array[0..3] of Integer = (24, 16, 15, 0);
@@ -774,7 +806,7 @@ begin
     end;
   end;
 end;
-
+{******************************************************************************}
 function IsVersionCompatible(const RequiredVersion, Version: string): Boolean;
 var
   ReqVer, Ver: Cardinal;
@@ -790,7 +822,7 @@ begin
     Result := ReqVer < Ver;
   end;
 end;
-
+{******************************************************************************}
 procedure CheckTargets(const PreferedTyp: TTargetType; const PreferedVersion: Integer; var NewestTarget: TTarget; ShowErrors: Boolean);
 var
   PreferedTarget: TTarget;
@@ -890,7 +922,7 @@ begin
     MessageBox(0, PChar(ErrMsg), 'dcc32ex.exe', MB_ICONERROR or MB_OK);
   end;
 end;
-
+{******************************************************************************}
 function SkipOption(CmdLine: PChar): PChar;
 begin
   Result := CmdLine;
@@ -930,7 +962,7 @@ begin
       Result := nil;
   end;
 end;
-
+{******************************************************************************}
 function ParseParams(CmdLine: PChar): PChar;
 var
   S: string;
@@ -1001,6 +1033,8 @@ begin
   end;
 end;
 
+{******************************************************************************}
+{******************************************************************************}
 var
   NewestTarget: TTarget;
   f: TextFile;
@@ -1145,7 +1179,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d11   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d12   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1157,8 +1191,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d11    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, ...)');
+    WriteLn('  DELPHIVERSION = d12    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, ...)');
   end;
 
   ExitCode := Status;
