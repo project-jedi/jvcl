@@ -777,7 +777,7 @@ begin
   SavePasswordsCheckBox.Visible := Options.ShowSavePasswords;
 
   LeftPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'LeftPanel', '', alLeft);
-  LeftPanel.Width := 216;
+  LeftPanel.Width := 240;
   if Supports(LeftPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
     IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
   LeftPanel.TabOrder := 0;
@@ -1919,7 +1919,7 @@ procedure TJvBaseDBLogonDialog.ResizeLeftPanel;
 var
   m : Integer;
 begin
-  m := CalculatePanelHeight(LeftPanel);
+  m := CalculatePanelHeight(LeftPanel)+10;
   if m > LeftPanel.Height then
     if m + ButtonPanel.Height > DBDialog.ClientHeight then
     begin
