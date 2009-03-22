@@ -1542,7 +1542,6 @@ end;
 
 procedure TJvListParameter.SetWinControlProperties;
 var
-  ITmpComboBox: IJvDynControlComboBox;
   ITmpItems: IJvDynControlItems;
 begin
   inherited SetWinControlProperties;
