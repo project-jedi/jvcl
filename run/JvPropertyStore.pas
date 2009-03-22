@@ -952,7 +952,8 @@ begin
   FItemName := cItem;
   FIntIgnoreProperties.Add('ItemName');
   FIntIgnoreProperties.Add('FreeObjects');
-  FIntIgnoreProperties.Add('CreateListEntries')
+  FIntIgnoreProperties.Add('CreateListEntries');
+  FItemsObjectName := 'ItemName';
 end;
 
 destructor TJvCustomPropertyListStore.Destroy;

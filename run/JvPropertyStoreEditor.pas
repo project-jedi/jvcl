@@ -111,8 +111,8 @@ type
     procedure GotoEditObject(EditObject: TPersistent);
     property InspectedObjectListEditorHandler: IJvPropertyListEditorHandler read
         FInspectedObjectListEditorHandlerIntf;
-    property PropertyStore: TComponent read FPropertyStore write SetPropertyStore;
   published
+    property PropertyStore: TComponent read FPropertyStore write SetPropertyStore;
     property Align;
     property Anchors;
     property AutoSize;
