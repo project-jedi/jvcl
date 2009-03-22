@@ -87,6 +87,9 @@ type
 
   TJvDatabaseActionBaseEngineClass = class of TJvDatabaseActionBaseControlEngine;
 
+  TJvDatabaseBeforeExecuteEvent = procedure(Sender: TObject; ControlEngine:
+      TJvDatabaseActionBaseControlEngine; DataComponent: TComponent; var
+      ContinueExecute: Boolean) of object;
   TJvDatabaseExecuteEvent = procedure(Sender: TObject; ControlEngine: TJvDatabaseActionBaseControlEngine;
     DataComponent: TComponent) of object;
   TJvDatabaseExecuteDataSourceEvent = procedure(Sender: TObject; DataSource: TDataSource) of object;
@@ -101,6 +104,7 @@ type
     FOnExecute: TJvDatabaseExecuteEvent;
     FOnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent;
     fAfterExecute: TJvDatabaseExecuteEvent;
+    FBeforeExecute: TJvDatabaseBeforeExecuteEvent;
     FDatasetEngine: TJvDatabaseActionBaseDatasetEngine;
     FOnChangeDataComponent: TJvChangeDataComponent;
     FOnCheckEnabled: TJvDatabaseActionCheckEnabledEvent;
@@ -147,6 +151,8 @@ type
         FOnCheckEnabled write FOnCheckEnabled;
     property OnExecute: TJvDatabaseExecuteEvent read FOnExecute write FOnExecute;
     property AfterExecute: TJvDatabaseExecuteEvent read FAfterExecute write FAfterExecute;
+    property BeforeExecute: TJvDatabaseBeforeExecuteEvent read FBeforeExecute write
+        FBeforeExecute;
     property OnExecuteDataSource: TJvDatabaseExecuteDataSourceEvent
       read FOnExecuteDataSource write FOnExecuteDataSource;
     property DataComponent: TComponent read GetDataComponent write SetDataComponent;
@@ -374,14 +380,14 @@ type
     FOnCreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent;
     FOptions: TJvShowSingleRecordWindowOptions;
   protected
-    FOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent;
-    property OnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent read
-        FOnFormShowEvent write FOnFormShowEvent;
+    FOnFormShow: TJvDataSourceEditDialogOnFormShowEvent;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ExecuteTarget(Target: TObject); override;
     procedure ShowSingleRecordWindow;
+    property OnFormShow: TJvDataSourceEditDialogOnFormShowEvent read FOnFormShow
+        write FOnFormShow;
   published
     property OnCreateDataControlsEvent:
         TJvDataSourceEditDialogCreateDataControlsEvent read
@@ -762,10 +768,18 @@ begin
 end;
 
 function TJvDatabaseBaseAction.Execute: Boolean;
+var
+  ContinueExecute: Boolean;
 begin
-  Result := inherited Execute;
-  if Result and Assigned(FAfterExecute) then
-    FAfterExecute(Self, DatabaseControlEngine, DataComponent)
+  Result := False;
+  if Assigned(FBeforeExecute) then
+    FBeforeExecute(Self, DatabaseControlEngine, DataComponent, ContinueExecute);
+  if ContinueExecute then
+  begin
+    Result := inherited Execute;
+    if Result and Assigned(FAfterExecute) then
+      FAfterExecute(Self, DatabaseControlEngine, DataComponent)
+  end;
 end;
 
 function TJvDatabaseBaseAction.HandlesTarget(Target: TObject): Boolean;
@@ -1167,10 +1181,10 @@ begin
   if Assigned(SingleRecordWindowAction) then
   begin
     try
-      FSingleRecordWindowAction.OnFormShowEvent := SingleRecordOnFormShowEvent;
-      FSingleRecordWindowAction.ExecuteTarget(Target);
+      FSingleRecordWindowAction.OnFormShow := SingleRecordOnFormShowEvent;
+      FSingleRecordWindowAction.Execute;
     finally
-      FSingleRecordWindowAction.OnFormShowEvent := nil;
+      FSingleRecordWindowAction.OnFormShow := nil;
     end;
   end
   else
@@ -1223,10 +1237,10 @@ begin
   if Assigned(SingleRecordWindowAction) then
   begin
     try
-      FSingleRecordWindowAction.OnFormShowEvent := SingleRecordOnFormShowEvent;
-      FSingleRecordWindowAction.ExecuteTarget(Target);
+      FSingleRecordWindowAction.OnFormShow := SingleRecordOnFormShowEvent;
+      FSingleRecordWindowAction.Execute;
     finally
-      FSingleRecordWindowAction.OnFormShowEvent := nil;
+      FSingleRecordWindowAction.OnFormShow := nil;
     end;
   end
   else
@@ -1310,10 +1324,10 @@ begin
   if Assigned(SingleRecordWindowAction) then
   begin
     try
-      FSingleRecordWindowAction.OnFormShowEvent := SingleRecordOnFormShowEvent;
-      FSingleRecordWindowAction.ExecuteTarget(Target);
+      FSingleRecordWindowAction.OnFormShow := SingleRecordOnFormShowEvent;
+      FSingleRecordWindowAction.Execute;
     finally
-      FSingleRecordWindowAction.OnFormShowEvent := nil;
+      FSingleRecordWindowAction.OnFormShow := nil;
     end;
   end
   else
@@ -1405,7 +1419,7 @@ end;
 
 procedure TJvDatabaseSingleRecordWindowAction.ShowSingleRecordWindow;
 begin
-  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options, onCreateDataControlsEvent, OnFormShowEvent);
+  DatabaseControlEngine.ShowSingleRecordWindow(DataComponent, Options, onCreateDataControlsEvent, OnFormShow);
 end;
 
 //=== { TJvDatabaseOpenAction } ==============================================
