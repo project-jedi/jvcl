@@ -965,7 +965,6 @@ end;
 
 const
   cLISTVIEW01 = 'LISTVIEW01'; // 10 chars
-  cLISTVIEW02 = 'LISTVIEW01'; // 10 chars
 
 constructor TJvListView.Create(AOwner: TComponent);
 begin
