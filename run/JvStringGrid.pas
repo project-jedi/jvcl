@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvStringGrid.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
-Portions created by S?stien Buysse are Copyright (C) 2001 S?stien Buysse.
+The Initial Developer of the Original Code is Sebastien Buysse [sbuysse att buypin dott com]
+Portions created by Sebastien Buysse are Copyright (C) 2001 S?stien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
@@ -892,7 +892,8 @@ begin
         else
           Bytes[K] := Byte(St[K + 1]);
       {$ENDIF}
-      Stream.Write(Bytes[0], Len);
+      if Len > 0 then
+        Stream.Write(Bytes[0], Len);
       if J <> ColCount - 1 then
         Stream.Write(A, 1);
     end;
