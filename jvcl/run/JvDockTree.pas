@@ -296,7 +296,6 @@ type
     procedure SetDockSiteBegin(const Value: Integer);
     function GetDockSiteSizeAlternate: Integer;
     procedure SetDockSiteSizeAlternate(const Value: Integer);
-    procedure SetVersion(const Value: Integer);
     function GetDockSiteSizeWithOrientation(Orient: TDockOrientation): Integer;
     procedure SetDockSiteSizeWithOrientation(Orient: TDockOrientation; const Value: Integer);
     function GetDockRect: TRect;
@@ -305,45 +304,28 @@ type
     function HasZoneWithControl(Control: TControl): Boolean;
     procedure DockStyleChanged(Sender: TObject);
     function GetDockStyle: TJvDockObservableStyle;
-   protected
+  protected
     procedure WindowProc(var Msg: TMessage); virtual;
-    procedure BeginDrag(Control: TControl;
-      Immediate: Boolean; Threshold: Integer = -1); virtual;
-    function DoMouseEvent(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer): TWMNCHitMessage; virtual;
-    procedure DoMouseMove(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    function DoLButtonDown(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer): Boolean; virtual;
-    procedure DoLButtonUp(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoLButtonDbClk(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoMButtonDown(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoMButtonUp(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoMButtonDbClk(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoRButtonDown(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoRButtonUp(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoRButtonDbClk(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure BeginDrag(Control: TControl; Immediate: Boolean; Threshold: Integer = -1); virtual;
+    function DoMouseEvent(var Msg: TWMMouse; var Zone: TJvDockZone;
+      out HTFlag: Integer): TWMNCHitMessage; virtual;
+    procedure DoMouseMove(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    function DoLButtonDown(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer): Boolean; virtual;
+    procedure DoLButtonUp(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoLButtonDbClk(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoMButtonDown(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoMButtonUp(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoMButtonDbClk(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoRButtonDown(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoRButtonUp(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoRButtonDbClk(var Msg: TWMMouse; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
     procedure DoHideZoneChild(AZone: TJvDockZone); virtual;
-    procedure DoSetCursor(var Msg: TWMSetCursor;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoHintShow(var Msg: TCMHintShow;
-      var Zone: TJvDockZone; out HTFlag: Integer); virtual;
-    procedure DoOtherHint(Zone: TJvDockZone;
-      HTFlag: Integer; var HintStr: string); virtual;
-    procedure CustomSaveZone(Stream: TStream;
-      Zone: TJvDockZone); virtual;
-    procedure CustomLoadZone(Stream: TStream;
-      var Zone: TJvDockZone); virtual;
-    procedure DoSaveZone(Stream: TStream;
-      Zone: TJvDockZone; Level: Integer); virtual;
+    procedure DoSetCursor(var Msg: TWMSetCursor; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoHintShow(var Msg: TCMHintShow; var Zone: TJvDockZone; out HTFlag: Integer); virtual;
+    procedure DoOtherHint(Zone: TJvDockZone; HTFlag: Integer; var HintStr: string); virtual;
+    procedure CustomSaveZone(Stream: TStream; Zone: TJvDockZone); virtual;
+    procedure CustomLoadZone(Stream: TStream; var Zone: TJvDockZone); virtual;
+    procedure DoSaveZone(Stream: TStream; Zone: TJvDockZone; Level: Integer); virtual;
     procedure DoLoadZone(Stream: TStream); virtual;
     procedure AdjustDockRect(Control: TControl; var ARect: TRect); virtual;
     procedure BeginResizeDockSite;
@@ -351,8 +333,8 @@ type
     procedure CalcSplitterPos; virtual;
     procedure ControlVisibilityChanged(Control: TControl; Visible: Boolean); virtual;
     function GetDockAlign(Client: TControl; var DropCtl: TControl): TAlign; virtual;
-    function DoFindZone(const MousePos: TPoint;
-      out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
+    function DoFindZone(const MousePos: TPoint; out HTFlag: Integer;
+      Zone: TJvDockZone): TJvDockZone; virtual;
     procedure DrawSizeSplitter; virtual;
     procedure EndResizeDockSite;
     procedure EndUpdate;
@@ -363,18 +345,18 @@ type
       ScanKind: TJvDockTreeScanKind = tskForward; ScanPriority: TJvDockTreeScanPriority = tspSibling); virtual;
     function GetActiveControl: TControl; virtual;
     function GetGrabberSize: Integer; virtual;
-    function GetBorderHTFlag(const MousePos: TPoint;
-      out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
-    function GetLeftGrabbersHTFlag(const MousePos: TPoint;
-      out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
-    function GetRightGrabbersHTFlag(const MousePos: TPoint;
-      out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
-    function GetTopGrabbersHTFlag(const MousePos: TPoint;
-      out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
-    function GetBottomGrabbersHTFlag(const MousePos: TPoint;
-      out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; virtual;
-    function GetDockEdge(DockRect: TRect; MousePos: TPoint;
-      var DropAlign: TAlign; Control: TControl): TControl; virtual;
+    function GetBorderHTFlag(const MousePos: TPoint; out HTFlag: Integer;
+      Zone: TJvDockZone): TJvDockZone; virtual;
+    function GetLeftGrabbersHTFlag(const MousePos: TPoint; out HTFlag: Integer;
+      Zone: TJvDockZone): TJvDockZone; virtual;
+    function GetRightGrabbersHTFlag(const MousePos: TPoint; out HTFlag: Integer;
+      Zone: TJvDockZone): TJvDockZone; virtual;
+    function GetTopGrabbersHTFlag(const MousePos: TPoint; out HTFlag: Integer;
+      Zone: TJvDockZone): TJvDockZone; virtual;
+    function GetBottomGrabbersHTFlag(const MousePos: TPoint; out HTFlag: Integer;
+      Zone: TJvDockZone): TJvDockZone; virtual;
+    function GetDockEdge(DockRect: TRect; MousePos: TPoint; var DropAlign: TAlign;
+      Control: TControl): TControl; virtual;
     function GetDockClientLimit(Orient: TDockOrientation; IsMin: Boolean): Integer; virtual;
     function GetFrameRect(Control: TControl): TRect; virtual;
     function GetFrameRectEx(Control: TControl): TRect; virtual;
@@ -407,8 +389,7 @@ type
     procedure DrawZoneBorder(Zone: TJvDockZone); virtual;
     procedure DrawDockBorder(DockControl: TControl; R1, R2: TRect); virtual;
     procedure GetCaptionRect(var Rect: TRect); virtual;
-    procedure PositionDockRect(Client, DropCtl: TControl;
-      DropAlign: TAlign; var DockRect: TRect); virtual;
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign; var DockRect: TRect); virtual;
     procedure PruneZone(Zone: TJvDockZone); virtual;
     procedure RemoveZone(Zone: TJvDockZone; Hide: Boolean = True); virtual;
     procedure ScaleZone(Zone: TJvDockZone); virtual;
@@ -441,7 +422,7 @@ type
     property DockSiteSizeAlternate: Integer read GetDockSiteSizeAlternate write SetDockSiteSizeAlternate;
     property DockSiteBegin: Integer read GetDockSiteBegin write SetDockSiteBegin;
     property DockSiteSizeWithOrientation[Orient: TDockOrientation]: Integer
-    read GetDockSiteSizeWithOrientation write SetDockSiteSizeWithOrientation;
+      read GetDockSiteSizeWithOrientation write SetDockSiteSizeWithOrientation;
 
     property GrabberSize: Integer read GetGrabberSize write SetGrabberSize;
     property GrabberShowLines: Boolean read FGrabberShowLines write FGrabberShowLines; {should there be bump-lines to make the grabber look 'grabby'? }
@@ -464,7 +445,7 @@ type
     property SizingZone: TJvDockZone read FSizingZone write FSizingZone;
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
     property UpdateCount: Integer read FUpdateCount write FUpdateCount;
-    property Version: Integer read FVersion write SetVersion;
+    property Version: Integer read FVersion write FVersion;
 
     {$IFDEF JVDOCK_DEBUG}
     // internal helper functions used recursively from DebugDump:
@@ -492,19 +473,18 @@ type
     // Descends the Tree and Finds and return TWinControls docked to a particular parent.
     procedure ControlQuery(DockedTo: TWinControl; FoundItems: TList);
     {$ENDIF JVDOCK_QUERY}
-    // (rom) deactivated  completely unused
-    // SplitterCanvas: TControlCanvas;
     constructor Create(ADockSite: TWinControl; ADockZoneClass: TJvDockZoneClass; ADockStyle: TJvDockObservableStyle); virtual;
     destructor Destroy; override;
     procedure AfterConstruction; override;
-    property DockSite: TWinControl read FDockSite write FDockSite;
-    property DockSiteOrientation: TDockOrientation read GetDockSiteOrientation;
     procedure SetSplitterCursor(CursorIndex: TDockOrientation); virtual;
     procedure PaintSite(DC: HDC); virtual;
-    property TopXYLimit: Integer read FTopXYLimit write SetTopXYLimit;
-    property TopZone: TJvDockZone read FTopZone write SetTopZone; // ROOT NODE!
     procedure UpdateAll;
     procedure UpdateChild(Zone: TJvDockZone);
+
+    property DockSite: TWinControl read FDockSite write FDockSite;
+    property DockSiteOrientation: TDockOrientation read GetDockSiteOrientation;
+    property TopXYLimit: Integer read FTopXYLimit write SetTopXYLimit;
+    property TopZone: TJvDockZone read FTopZone write SetTopZone; // ROOT NODE!
     property DockZoneClass: TJvDockZoneClass read FDockZoneClass write SetDockZoneClass;
     property DockStyle: TJvDockObservableStyle read GetDockStyle;
   end;
@@ -640,6 +620,13 @@ uses
 
 type
   TWinControlAccessProtected = class(TWinControl);
+
+{$IFNDEF UNICODE}
+function UTF8ToString(const S: UTF8String): string; // also declared in JvJCLUtils
+begin
+  Result := UTF8Decode(S);
+end;
+{$ENDIF ~UNICODE}
 
 //=== { TJvDockZone } ========================================================
 
@@ -3493,19 +3480,10 @@ begin
   end;
 end;
 
-procedure TJvDockTree.SetVersion(const Value: Integer);
+procedure TJvDockTree.DoSaveZone(Stream: TStream; Zone: TJvDockZone; Level: Integer);
 begin
-  FVersion := Value;
-end;
-
-procedure TJvDockTree.DoSaveZone(Stream: TStream;
-  Zone: TJvDockZone; Level: Integer);
-begin
-  with Stream do
-  begin
-    Write(Level, SizeOf(Level));
-    CustomSaveZone(Stream, Zone);
-  end;
+  Stream.Write(Level, SizeOf(Level));
+  CustomSaveZone(Stream, Zone);
 
   if Zone.ChildZones <> nil then
     DoSaveZone(Stream, Zone.ChildZones, Level + 1);
@@ -3535,18 +3513,16 @@ begin
   LastZone := nil;
   while True do
   begin
-    with Stream do
-    begin
-      if Read(Level, SizeOf(Level)) <> SizeOf(Level) then
-        Break;
-      if Level = TreeStreamEndFlag then
-        Break;
-      Zone := FDockZoneClass.Create(Self);
-      CustomLoadZone(Stream, Zone);
-      if Zone = nil then
-        Continue;
-    end;
-    if Level = 0 then
+    if Stream.Read(Level, SizeOf(Level)) <> SizeOf(Level) then
+      Break;
+    if Level <= TreeStreamEndFlag then // stream end and invalid data
+      Break;
+    Zone := FDockZoneClass.Create(Self);
+    CustomLoadZone(Stream, Zone);
+    if Zone = nil then
+      Continue;
+
+    if (Level = 0) or (LastZone = nil) then
       FTopZone := Zone
     else
     if Level = LastLevel then
@@ -3584,7 +3560,7 @@ end;
 procedure TJvDockTree.ReadControlName(Stream: TStream; var ControlName: string);
 var
   Size: Longint;
-  UTF8ControlName: {$IFDEF SUPPORTS_UNICODE}UTF8String{$ELSE}string{$ENDIF SUPPORTS_UNICODE};
+  UTF8ControlName: UTF8String;
 begin
   ControlName := '';
   Size := 0;
@@ -3592,9 +3568,8 @@ begin
   if Size > 0 then
   begin
     SetLength(UTF8ControlName, Size);
-    Stream.Read(PAnsiChar(UTF8ControlName)^, Size);
-
-    ControlName := {$IFDEF SUPPORTS_UNICODE}UTF8ToString{$ELSE}{$IFDEF COMPILER6_UP}UTF8Decode{$ENDIF COMPILER6_UP}{$ENDIF SUPPORTS_UNICODE}(UTF8ControlName);
+    Stream.Read(UTF8ControlName[1], Size);
+    ControlName := UTF8ToString(UTF8ControlName);
   end;
 end;
 
@@ -3624,30 +3599,27 @@ procedure TJvDockTree.CustomSaveZone(Stream: TStream; Zone: TJvDockZone);
 var
   AVisible: Boolean;
 begin
-  with Stream do
-  begin
-    Write(Zone.Orientation, SizeOf(Zone.Orientation));
-    Write(Zone.ZoneLimit, SizeOf(Zone.ZoneLimit));
+  Stream.Write(Zone.Orientation, SizeOf(Zone.Orientation));
+  Stream.Write(Zone.ZoneLimit, SizeOf(Zone.ZoneLimit));
 
-    if Zone.ChildControl <> nil then
-      AVisible := Zone.ChildControl.Visible;
-    Write(Zone.Visibled, SizeOf(Zone.Visibled));
+  if Zone.ChildControl <> nil then
+    AVisible := Zone.ChildControl.Visible;
+  Stream.Write(Zone.Visibled, SizeOf(Zone.Visibled));
 
-    AVisible := False;
-    if Zone.ChildControl <> nil then
-      AVisible := Zone.ChildControl.Visible;
-    Write(AVisible, SizeOf(AVisible));
+  AVisible := False;
+  if Zone.ChildControl <> nil then
+    AVisible := Zone.ChildControl.Visible;
+  Stream.Write(AVisible, SizeOf(AVisible));
 
-    Write(Zone.VisibleSize, SizeOf(Zone.VisibleSize));
+  Stream.Write(Zone.VisibleSize, SizeOf(Zone.VisibleSize));
 
-    Zone.IsInside := True;
-    if (Zone.ChildControl <> nil) and (Zone.ChildControl.HostDockSite <> DockSite) and
-      not (DockSite is TJvDockVSPopupPanel) then
-      Zone.IsInside := False;
-    Write(Zone.IsInside, SizeOf(Zone.IsInside));
+  Zone.IsInside := True;
+  if (Zone.ChildControl <> nil) and (Zone.ChildControl.HostDockSite <> DockSite) and
+    not (DockSite is TJvDockVSPopupPanel) then
+    Zone.IsInside := False;
+  Stream.Write(Zone.IsInside, SizeOf(Zone.IsInside));
 
-    WriteControlName(Stream, Zone.GetControlName);
-  end;
+  WriteControlName(Stream, Zone.GetControlName);
 end;
 
 procedure TJvDockTree.SetDockSiteSizeWithOrientation(Orient: TDockOrientation;
