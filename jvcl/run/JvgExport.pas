@@ -107,7 +107,7 @@ begin
     XL := CreateOleObject(cExcelApplication);
   end;
 
-  GetTempPath(SizeOf(Buffer), Buffer);
+  GetTempPath(Length(Buffer), Buffer);
   TempFileName := Buffer + 'JvgExportToExcelTemp.txt';
   AExportFilter := TQRCommaSeparatedFilter.Create(TempFileName);
   try
