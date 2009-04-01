@@ -407,6 +407,7 @@ end;
 
 procedure TJvCustomThreadDialogForm.CloseThreadForm;
 begin
+  Hide;
   if fsModal in FormState then
     ModalResult := mrCancel
   else
@@ -447,18 +448,12 @@ begin
   if not (csDestroying in ComponentState) then
   begin
     if not Assigned(ConnectedThread) then
-    begin
-      Hide; // no connected component
-      CloseThreadForm;
-    end
+      CloseThreadForm
     else  // connected component present
       if ConnectedThread.Terminated or not ConnectedThread.OneThreadIsRunning then
       begin
         if FormIsShown then
-        begin
-          Hide;
           CloseThreadForm;
-        end;
       end
       else // not terminated
       begin
