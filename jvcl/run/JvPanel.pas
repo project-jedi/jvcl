@@ -1010,8 +1010,11 @@ begin
     FDragging := True;
     FLastPos := Point(X, Y);
     MouseCapture := True;
-    FLastScreenCursor := Screen.Cursor;
-    Screen.Cursor := crSizeNWSE;
+    if Screen.Cursor <> crSizeNWSE then
+    begin
+      FLastScreenCursor := Screen.Cursor;
+      Screen.Cursor := crSizeNWSE;
+    end;
   end
   else
     inherited MouseDown(Button, Shift, X, Y);
@@ -1021,6 +1024,7 @@ procedure TJvCustomArrangePanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
   X1, Y1: Integer;
+  Changed : Boolean;
 begin
   if FDragging and Sizeable then
   begin
@@ -1029,12 +1033,30 @@ begin
     Y1 := R.Bottom - R.Top + Y - FLastPos.Y;
     if (X1 > 1) and (Y1 > 1) then
     begin
-      if X1 >= 0 then
+      if (Constraints.MinWidth > 0) and (X1 < Constraints.MinWidth) then
+        X1 := Constraints.MinWidth;
+      if (Constraints.MinHeight > 0) and (Y1 < Constraints.MinHeight) then
+        Y1 := Constraints.MinHeight;
+      if (Constraints.MaxWidth > 0) and (X1 > Constraints.MaxWidth) then
+        X1 := Constraints.MaxWidth;
+      if (Constraints.MaxHeight > 0) and (Y1 > Constraints.MaxHeight) then
+        Y1 := Constraints.MaxHeight;
+      Changed := False;
+      if (X1 >= 0) and (X1 <> Width) then
+      begin
         FLastPos.X := X;
-      if Y1 >= 0 then
+        Changed:= True;
+      end;
+      if (Y1 >= 0) and (Y1 <> Height) then
+      begin
         FLastPos.Y := Y;
-      SetBounds(Left, Top, X1, Y1);
-      Refresh;
+        Changed := True;
+      end;
+      if Changed then
+      begin
+        SetBounds(Left, Top, X1, Y1);
+        Refresh;
+      end;
     end;
   end
   else
@@ -1042,10 +1064,11 @@ begin
   if Sizeable then
   begin
     if ((Width - X) < 12) and ((Height - Y) < 12) then
-      Screen.Cursor := crSizeNWSE
-    else
-      if Screen.Cursor = crSizeNWSE then
-        Screen.Cursor := FLastScreenCursor;
+    if Screen.Cursor <> crSizeNWSE then
+    begin
+      FLastScreenCursor := Screen.Cursor;
+      Screen.Cursor := crSizeNWSE;
+    end;
   end;
 end;
 
