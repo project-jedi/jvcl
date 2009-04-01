@@ -300,7 +300,7 @@ begin
   if Supports(ListBox, IJvDynControlDblClick, ITmpDblClick) then  // ListBox instead of ListBox.ClassType and ITmpControl are needed here for D5/C5 support (obones)
     ITmpDblClick.ControlSetOnDblClick(DialogOnOkButtonClick);
 
-  ComboBoxPanel.Height := ComboBox.Height + 10;
+  ComboBoxPanel.Height := ComboBox.Height + 12;
   ListBox.Align := alClient;
   ComboBox.Align := alClient;
 
