@@ -337,7 +337,7 @@ implementation
 
 uses
   Consts,
-  JvJCLUtils, JvJVCLUtils, JvThemes;
+  JvJCLUtils, JvJVCLUtils, JvVCL5Utils, JvThemes;
 
 {$R JvTMTimeLine.res}
 
@@ -580,7 +580,7 @@ begin
     Self.Date := Delta;
 end;
 
-function TJvCustomTMTimeline.GetRectForDate(ADate: TDate): TRect;
+function TJvCustomTMTimeline.GetRectForDate(ADate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate): TRect;
 begin
   // all rects are the same size...
   Result := Rect(0, 0, DayWidth, ClientHeight + 1);
@@ -593,7 +593,7 @@ begin
     OffsetRect(Result, ButtonWidth, 0);
 end;
 
-function TJvCustomTMTimeline.DateFromPos(APos: Integer): TDate;
+function TJvCustomTMTimeline.DateFromPos(APos: Integer): {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate;
 var
   Tmp: Integer;
 begin
@@ -785,7 +785,7 @@ begin
   end;
 end;
 
-procedure TJvCustomTMTimeline.DrawImage(ACanvas: TCanvas; ADate: TDate; const ARect: TRect);
+procedure TJvCustomTMTimeline.DrawImage(ACanvas: TCanvas; ADate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate; const ARect: TRect);
 var
   I, X, Y: Integer;
 begin
@@ -826,7 +826,7 @@ begin
   end;
 end;
 
-procedure TJvCustomTMTimeline.SetFirstDate(const Value: TDate);
+procedure TJvCustomTMTimeline.SetFirstDate(const Value: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate);
 begin
   if Trunc(FDate) <> Trunc(Value) then
   begin
@@ -859,7 +859,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomTMTimeline.SetSelDate(const Value: TDate);
+procedure TJvCustomTMTimeline.SetSelDate(const Value: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate);
 var
   R: TRect;
 begin
@@ -941,14 +941,14 @@ begin
     FImages := nil;
 end;
 
-function TJvCustomTMTimeline.GetImageIndex(ADate: TDate): Integer;
+function TJvCustomTMTimeline.GetImageIndex(ADate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate): Integer;
 begin
   Result := FDateImages.IndexOf(IntToStr(Trunc(ADate)));
   if Result > -1 then
     Result := Integer(FDateImages.Objects[Result]);
 end;
 
-procedure TJvCustomTMTimeline.SetImageIndex(ADate: TDate;
+procedure TJvCustomTMTimeline.SetImageIndex(ADate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate;
   const Value: Integer);
 var
   I: Integer;
@@ -960,7 +960,7 @@ begin
   Invalidate;
 end;
 
-function TJvCustomTMTimeline.GetObjects(ADate: TDate): TObject;
+function TJvCustomTMTimeline.GetObjects(ADate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate): TObject;
 var
   I: Integer;
 begin
@@ -970,7 +970,7 @@ begin
     Result := FObjects.Objects[I];
 end;
 
-procedure TJvCustomTMTimeline.SetObjects(ADate: TDate; const Value: TObject);
+procedure TJvCustomTMTimeline.SetObjects(ADate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate; const Value: TObject);
 var
   I: Integer;
 begin
@@ -1092,7 +1092,7 @@ begin
     FRightClickSelect := Value;
 end;
 
-procedure TJvCustomTMTimeline.SetMaxDate(const Value: TDate);
+procedure TJvCustomTMTimeline.SetMaxDate(const Value: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate);
 begin
   if Trunc(FMaxDate) <> Trunc(Value) then
   begin
@@ -1106,7 +1106,7 @@ begin
   end;
 end;
 
-procedure TJvCustomTMTimeline.SetMinDate(const Value: TDate);
+procedure TJvCustomTMTimeline.SetMinDate(const Value: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate);
 begin
   if Trunc(FMinDate) <> Trunc(Value) then
   begin
@@ -1145,7 +1145,7 @@ begin
   FDateImages.Clear;
 end;
 
-function TJvCustomTMTimeline.GetLastVisibleDate: TDate;
+function TJvCustomTMTimeline.GetLastVisibleDate: {$IFNDEF RTL200_UP}Controls.{$ENDIF ~RTL200_UP}TDate;
 var
   Tmp: Integer;
 begin

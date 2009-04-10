@@ -616,7 +616,7 @@ uses
   {$ENDIF JVCLThemesEnabled}
   Consts, SysUtils, Math,
   JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle,
-  JvDockAdvTree;
+  JvDockAdvTree, JvVCL5Utils;
 
 type
   TWinControlAccessProtected = class(TWinControl);
