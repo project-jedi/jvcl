@@ -894,7 +894,7 @@ uses
   {$ELSE}
   IniFiles, Registry,
   {$ENDIF USEJVCL}
-  JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle;
+  JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvVCL5Utils;
 
 {$R JvDockableForm.dfm}
 {$R JvDockConjoinHost.dfm}

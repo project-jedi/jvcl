@@ -178,7 +178,7 @@ implementation
 
 uses
   {$IFDEF USEJVCL}
-  JvResources,
+  JvVCL5Utils, JvResources,
   {$ENDIF USEJVCL}
   JvgUtils;
 

@@ -502,7 +502,7 @@ uses
   {$ELSE}
   ActiveX,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JclWideStrings,
+  JclWideStrings, 
   JvConsts, JvResources;
 
 type
