@@ -39,7 +39,8 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, Contnrs, Graphics, Controls, Forms, StdCtrls, Dialogs,
   ExtCtrls, JvComponent,
-  JvComponentBase, JvDynControlEngine, JvTypes, JvAppStorage;
+  JvComponentBase, JvDynControlEngine, JvTypes, JvAppStorage,
+  JvDynControlEngineIntf;
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
@@ -48,7 +49,7 @@ type
   private
     FTimeout: Integer;
     FTimer: TTimer;
-    FCountdown: TLabel;
+    FCountdown: IJvDynControlCaption;
     FMsg: string;
   protected
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -477,7 +478,7 @@ uses
   JclRegistry,
   {$ENDIF MSWINDOWS}
   JclBase, JclSysUtils,
-  JvDynControlEngineIntf, JvConsts, JvResources;
+  JvConsts, JvResources;
 
 const
   cDSAStateValueName = 'DSA_State'; // do not localize
@@ -559,8 +560,6 @@ begin
   CancelAutoClose;
   if (Shift = [ssCtrl]) and (Key = Word('C')) then
   begin
-    // (rom) deactivated  annoying
-    // SysUtils.Beep;
     WriteToClipboard(GetFormText);
   end;
 end;
@@ -597,7 +596,7 @@ begin
       end;
     end;
   end;
-  FCountdown := TLabel(FindComponent('Countdown'));
+  Supports(FindComponent('CountDown'),IJvDynControlCaption, FCountDown);
 end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
@@ -628,8 +627,8 @@ begin
       Close;
     end
     else
-    if FCountdown <> nil then
-      FCountdown.Caption := TimeFormatter(Timeout);
+    if Assigned(FCountdown) then
+      FCountdown.ControlCaption := TimeFormatter(Timeout);
   end;
 end;
 
@@ -698,7 +697,6 @@ end;
 procedure TDSAMessageForm.CancelAutoClose;
 begin
   FTimer.Enabled := False;
-  FreeAndNil(FCountdown);
 end;
 
 function TDSAMessageForm.IsDSAChecked: Boolean;
@@ -737,7 +735,7 @@ const
   mcHorzMargin = 8;
   mcVertMargin = 8;
   mcHorzSpacing = 10;
-  mcVertSpacing = 10;
+  mcVertSpacing = 4;
   mcButtonWidth = 50;
   mcButtonHeight = 14;
   mcButtonSpacing = 4;
@@ -766,6 +764,8 @@ var
   CheckBox : TWinControl;
   ImagePanel: TWinControl;
   CheckPanel : TWinControl;
+  MainPanel : TWinControl;
+  DynControlAutoSize: IJvDynControlAutoSize;
 
   {$IFDEF COMPILER12_UP}
   procedure CalcTextRect (iSingle : Boolean; lpString: PWideChar; nCount: Integer;var lpRect: TRect);
@@ -843,14 +843,16 @@ begin
     end;
     ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
     ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
+
     if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
       SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
     else
       SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
-    CalcTextRect (False, PChar(Msg), Length(Msg) + 1, TextRect);
 
+
+    CalcTextRect (False, PChar(Msg), Length(Msg) + 1, TextRect);
     IconTextWidth := TextRect.Right+10;
-    IconTextHeight := TextRect.Bottom;
+    IconTextHeight := TextRect.Bottom+4;
     if CheckCaption <> '' then
     begin
       SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
@@ -874,41 +876,46 @@ begin
       if IconTextHeight < APicture.Height then
         IconTextHeight := APicture.Height;
     end;
+
     ButtonCount := Length(Buttons);
     ButtonGroupWidth := 0;
     if ButtonCount <> 0 then
       ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
+
     ResultForm.ClientWidth := Max(TimeoutTextWidth,
                                   Max(17 + ChkTextWidth,
                                       Max(IconTextWidth, ButtonGroupWidth)))
                               + HorzMargin * 2;
     ResultForm.ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
+
     if CheckCaption <> '' then
       ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 17;
     if ATimeout > 0 then
       ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 13;
+
     if ResultForm.ClientWidth > Screen.Width-100 then
       ResultForm.ClientWidth := Screen.Width-100;
     if ResultForm.ClientHeight > Screen.Height-100 then
       ResultForm.ClientHeight := Screen.Height-100;
+
     ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
     ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
+
     if ACaption <> '' then
       ResultForm.Caption := ACaption
     else
       ResultForm.Caption := Application.Title;
 
-    CheckPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'CheckPanel', '', alBottom);
-    CheckPanel.Visible := (CheckCaption <> '') or (ATimeout > 0);
     BottomPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'BottomPanel', '', alBottom);
-    if CheckPanel.Visible then
-      BottomPanel.Height := VertSpacing+ButtonHeight
-    else
-      BottomPanel.Height := VertSpacing+VertMargin+ButtonHeight;
-    CheckPanel.Top := BottomPanel.Top +1;
-    ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'ImagePanel', '', alLeft);
-    ImagePanel.Visible := Assigned(APicture);
+    BottomPanel.Height := VertSpacing+VertMargin+ButtonHeight;
 
+    MainPanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'MainPanel', '', alClient);
+
+    CheckPanel := DynControlEngine.CreatePanelControl(ResultForm, MainPanel, 'CheckPanel', '', alBottom);
+    CheckPanel.Visible := (CheckCaption <> '') or (ATimeout > 0);
+
+    ImagePanel := DynControlEngine.CreatePanelControl(ResultForm, MainPanel, 'ImagePanel', '', alLeft);
+    ImagePanel.Visible := Assigned(APicture);
     if Assigned(APicture) then
     begin
       ImagePanel.Width := APicture.Width + 4 + HorzMargin - 2;
@@ -918,11 +925,15 @@ begin
         DynControlImage.ControlSetGraphic(APicture);
         DynControlImage.ControlSetCenter(True);
       end;
-      Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 4, APicture.Height + 4);
+      Image.SetBounds(HorzMargin - 2, VertMargin - 2, APicture.Width + 2, APicture.Height + 2);
       Image.Enabled := False;
     end;
-    MessagePanel := DynControlEngine.CreatePanelControl(ResultForm, ResultForm, 'Panel', '', alClient);
 
+    MessagePanel := DynControlEngine.CreatePanelControl(ResultForm, MainPanel, 'Panel', '', alClient);
+    if ImagePanel.Visible then
+      MessagePanel.Width := MainPanel.Width-ImagePanel.Width
+    else
+      MessagePanel.Width := MainPanel.Width;
     MessageLabel := DynControlEngine.CreateLabelControl(ResultForm, MessagePanel, 'Message', Msg, nil);
 
     if Assigned(APicture) then
@@ -935,6 +946,8 @@ begin
 
     if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
       DynControlLabel.ControlSetWordWrap(True);
+    if Supports(MessageLabel, IJvDynControlAutoSize, DynControlAutoSize) then
+      DynControlAutoSize.ControlSetAutoSize(True);
 
     MessageLabel.BiDiMode := ResultForm.BiDiMode;
 
@@ -964,16 +977,17 @@ begin
     begin
       CountDownlabel := DynControlEngine.CreateLabelControl(ResultForm, CheckPanel, 'Countdown',
         TimeFormatter(ResultForm.Timeout), nil);
+
       CountDownlabel.BiDiMode := ResultForm.BiDiMode;
-      if CheckCaption = '' then
+      if CheckCaption <> '' then
       begin
-        CheckPanel.Height := CheckPanel.Height+CountDownlabel.Height+VertSpacing+VertMargin;
-        CountDownlabel.SetBounds (HorzMargin, CheckPanel.Height+VertSpacing,
+        CheckPanel.Height := CheckBox.Height+CountDownlabel.Height+VertSpacing;;
+        CountDownlabel.SetBounds (HorzMargin, CheckBox.Height+VertSpacing,
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height)
       end
       else
       begin
-        CheckPanel.Height := CountDownlabel.Height+VertMargin;
+        CheckPanel.Height := CountDownlabel.Height;;
         CountDownlabel.SetBounds(HorzMargin, 0,
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height);
       end;

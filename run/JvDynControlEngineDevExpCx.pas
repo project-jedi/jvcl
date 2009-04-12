@@ -2923,7 +2923,9 @@ end;
 
 procedure TJvDynControlCxImage.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
+  Properties.Center := True;
   Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Properties.ShowFocusRect := False;
   if Assigned(Style.StyleController) then
   begin
     Style.StyleController := Value.StyleController;
