@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvComponent, JvDSADialogs;
+  StdCtrls, JvComponent, JvDSADialogs, JvComponentBase;
 
 type
   TfrmDSAExamplesCustomDlg1 = class(TForm)
