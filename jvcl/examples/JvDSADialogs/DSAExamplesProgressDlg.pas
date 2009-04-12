@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, JvProgressBar;
+  StdCtrls, ComCtrls, JvProgressBar, JvExComCtrls;
 
 type
   TMsgProgressCallback = function(const Position, Max: Integer): Integer of object;

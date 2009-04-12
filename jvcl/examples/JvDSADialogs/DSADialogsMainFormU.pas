@@ -66,6 +66,7 @@ type
     function DoDlg9Callback(const Position, Max: Integer): Integer;
     procedure DoDlg10;
     function DoDlg10Callback(const Position, Max: Integer): Integer;
+    procedure DoDlg11;
     procedure DoExecute(const DlgID: Integer);
     procedure FillListView;
     procedure RefreshDSAState(DlgID: Integer = 0; UpdateStatus: Boolean = False; ResCode: Integer = Integer($80000000); ResStr: string = '');
@@ -82,8 +83,9 @@ implementation
 
 uses
   DSAExamplesCustom1, DSAExamplesCustom2, DSAExamplesProgressDlg,
+//  JvDynControlEngineDevExpcx,
   JclBase;
-  
+
 const
   ctkMyMark: TDSACheckTextKind = 25;
 
@@ -104,7 +106,15 @@ procedure TDSADialogsMainForm.DoDlg2;
 begin
   RefreshDSAState(2, True, DSAMessageDlg(
     2,
-    'Simple warning box, standard title, VCL buttons and image.',
+    'Simple warning box, standard title, VCL buttons and image.'#13#10+
+    'The warning text is a little bit longer'#13#10+
+    'and has a lot of lines'#13#10+
+    '...'#13#10+
+    '...'#13#10+
+    '...'#13#10+
+    '...'#13#10+
+    '...'#13#10+
+    'Stop',
     mtWarning,
     [mbOK],
     0)
@@ -215,6 +225,12 @@ begin
     mtConfirmation, [mbYes, mbNo], 0, dckActiveForm);
 end;
 
+procedure TDSADialogsMainForm.DoDlg11;
+begin
+  DSAMessageDlg(11, 'Test MessageDlg with timeout.', mtWarning, [mbOK], 0,dckScreen, 5);
+  RefreshDSAState(11, True);
+end;
+
 procedure TDSADialogsMainForm.DoExecute(const DlgID: Integer);
 begin
   Status := 'Executing...';
@@ -229,6 +245,7 @@ begin
     8: DoDlg8;
     9: DoDlg9;
     10: DoDlg10;
+    11: DoDlg11;
     else Status := 'Error: invalid dialog ID (' + IntToStr(DlgID) + ')';
   end;
 end;
@@ -308,7 +325,7 @@ procedure TDSADialogsMainForm.FormCreate(Sender: TObject);
 begin
   // Alter registry location
   DSARegStore.Key := 'Software\JEDI-VCL\DSAExamples';
-  
+
   // Add custom checkmark text
   RegisterDSACheckMarkText(ctkMyMark, 'Check to suppress this dialog');
 
@@ -329,6 +346,8 @@ begin
   // Create Queue tests
   RegisterDSA(9, 'Queue1', 'Simple queue ShowMessage', DSAQueueStore, ctkShow);
   RegisterDSA(10, 'Queue2', 'Queue MessageDlg confirmation', DSAQueueStore, ctkAsk);
+
+  RegisterDSA(11, 'TimeOut', 'Simple TimeOut Example', DSARegStore, ctkWarn);
 
   // Fill the user interface.
   FillListview;

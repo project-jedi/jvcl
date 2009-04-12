@@ -1,7 +1,6 @@
 object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
   Left = 415
   Top = 266
-  AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Queue test form.'
   ClientHeight = 162
@@ -19,6 +18,9 @@ object frmDSAExamplesProgressDlg: TfrmDSAExamplesProgressDlg
   Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
   OnResize = FormResize
+  DesignSize = (
+    245
+    162)
   PixelsPerInch = 96
   TextHeight = 13
   object lblItemCount: TLabel
