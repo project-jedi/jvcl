@@ -8248,7 +8248,8 @@ var
   function GenerateName(const AName: string; ANumber: Integer): string;
   begin
     Result := ValidateName (AName);
-    Result := AOwner.Name + '_' + Result;
+    if Assigned(AOwner) and (AOwner.Name <> '') then
+      Result := AOwner.Name + '_' + Result;
     if ANumber > 0 then
       Result := Result + IntToStr(ANumber);
   end;
