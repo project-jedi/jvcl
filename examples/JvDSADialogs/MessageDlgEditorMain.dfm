@@ -1,9 +1,9 @@
 object frmMessageDlgEditor: TfrmMessageDlgEditor
   Left = 406
   Top = 185
-  Width = 518
-  Height = 540
   Caption = 'MessageDlg editor'
+  ClientHeight = 510
+  ClientWidth = 502
   Color = clBtnFace
   Constraints.MaxWidth = 518
   Constraints.MinWidth = 518
@@ -15,6 +15,9 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
   OldCreateOrder = False
   Position = poDesktopCenter
   OnCreate = FormCreate
+  DesignSize = (
+    502
+    510)
   PixelsPerInch = 96
   TextHeight = 13
   object lblSource: TLabel
@@ -25,8 +28,8 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     Caption = 'Source:'
   end
   object btnClose: TButton
-    Left = 430
-    Top = 485
+    Left = 425
+    Top = 484
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -402,20 +405,61 @@ object frmMessageDlgEditor: TfrmMessageDlgEditor
     Left = 65
     Top = 405
     Width = 431
-    Height = 69
+    Height = 75
     Anchors = [akLeft, akTop, akRight, akBottom]
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 4
     WordWrap = False
+    ExplicitHeight = 69
   end
   object btnTest: TButton
-    Left = 350
-    Top = 485
+    Left = 348
+    Top = 484
     Width = 75
     Height = 25
     Caption = 'Test'
     TabOrder = 5
     OnClick = btnTestClick
+  end
+  object JvFormStorage1: TJvFormStorage
+    AppStorage = JvAppRegistryStorage1
+    AppStoragePath = '%FORM_NAME%'
+    StoredProps.Strings = (
+      'cxAutoClose.Checked'
+      'cxAutoCloseShow.Checked'
+      'cxCustomTitle.Checked'
+      'cxIsDSADialog.Checked'
+      'edAutoCloseDelay.Text'
+      'edCustomTitle.Text'
+      'edDSA_ID.Text'
+      'edHelpCtx.Text'
+      'rbActiveFormCenter.Checked'
+      'rbCenterScreen.Checked'
+      'rbConfirmation.Checked'
+      'rbCustom.Checked'
+      'rbCustomButtons.Checked'
+      'rbError.Checked'
+      'rbInformation.Checked'
+      'rbMainFormCenter.Checked'
+      'rbStdButtons.Checked'
+      'rbWarning.Checked'
+      'mmMessage.Lines'
+      'mmCustomButtons.Lines'
+      'clbStdButtons.Items'
+      'cbCancelButton.ItemIndex'
+      'cbDefaultButton.ItemIndex'
+      'cbHelpButton.ItemIndex')
+    StoredValues = <>
+    Left = 245
+    Top = 260
+  end
+  object JvAppRegistryStorage1: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\JVCL\MEssageDlg Editor'
+    SubStorages = <>
+    Left = 245
+    Top = 310
   end
 end
