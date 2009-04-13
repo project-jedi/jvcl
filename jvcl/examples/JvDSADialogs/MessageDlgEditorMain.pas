@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, CheckLst,
-  JclBase, JvDSADialogs;
+  JclBase, JvDSADialogs, JvAppStorage, JvAppRegistryStorage, JvComponentBase, JvFormPlacement;
 
 type
   TfrmMessageDlgEditor = class(TForm)
@@ -78,6 +78,8 @@ type
     edAutoCloseDelay: TEdit;
     lblAutoCloseUnit: TLabel;
     cxAutoCloseShow: TCheckBox;
+    JvFormStorage1: TJvFormStorage;
+    JvAppRegistryStorage1: TJvAppRegistryStorage;
     procedure FormCreate(Sender: TObject);
     procedure imgWarningClick(Sender: TObject);
     procedure rbWarningClick(Sender: TObject);
@@ -153,6 +155,7 @@ implementation
 
 uses
   TypInfo,
+//  JvDynControlEngineDevExpcx,
   MessageDlgEditorSelectIcon;
 
 function MsgToSource(const S: TStrings): string;
