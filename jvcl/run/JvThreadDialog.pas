@@ -430,13 +430,15 @@ var
   H, W: Integer;
 begin
   if FInfoTextPanel.Visible then
-    W := FOrgInfoTextWidth + 80
+    W := FOrgInfoTextWidth + 20
   else
     W := 0;
   W := Round(W/10)*10;
   if W < 250 then
     W := 250;
-  if ClientWidth <> W then
+  if W > Screen.Width-100 then
+    W := Screen.Width-100;
+  if (ClientWidth < W) or (ClientWidth > W+50)then // Reduces the resize flickering when the text is changed to often
     ClientWidth := W;
   FCancelBtn.Left := (FCancelButtonPanel.Width - FCancelBtn.Width) div 2;
   FInfoText.Width := FInfoTextPanel.Width-FDefaultBorderWidth*2;
@@ -454,6 +456,8 @@ begin
   if FCancelButtonPanel.Visible then
     H := H + FCancelButtonPanel.Height;
   H := H + FDefaultBorderWidth*2;
+  if H > Screen.Height-100 then
+    H := Screen.Height-100;
   if ClientHeight <> H then
     ClientHeight := H;
 end;
