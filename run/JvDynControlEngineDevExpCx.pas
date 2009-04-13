@@ -2733,6 +2733,7 @@ begin
   BevelInner := bvNone;
   BevelOuter := bvNone;
   PanelStyle.Active := True;
+  PanelStyle.BorderWidth := 0;
   Style.BorderStyle := ebsNone;
 end;
 

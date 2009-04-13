@@ -743,7 +743,9 @@ var
   DialogUnits: TPoint;
   HorzMargin, VertMargin, HorzSpacing, VertSpacing, ButtonWidth: Integer;
   ButtonHeight, ButtonSpacing, ButtonCount, ButtonGroupWidth: Integer;
-  IconTextWidth, IconTextHeight, X, ALeft: Integer;
+  IconWidth, IconHeight,
+  TextWidth, TextHeight,
+  X, ALeft: Integer;
   ChkTextWidth: Integer;
   TimeoutTextWidth: Integer;
   IconID: PChar;
@@ -780,6 +782,29 @@ var
       DrawText(ResultForm.Canvas.Handle, lpString, nCount, lpRect,
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or ResultForm.DrawTextBiDiModeFlagsReadingOnly);
   end;
+
+  Procedure ResizeResultForm;
+  begin
+    ResultForm.ClientWidth := Max(TimeoutTextWidth,
+                                  Max(17 + ChkTextWidth,
+                                      Max(IconWidth+TextWidth, ButtonGroupWidth)))
+                              + HorzMargin * 2;
+    ResultForm.ClientHeight := Max(IconHeight, TextHeight) + ButtonHeight + VertSpacing * 2 + VertMargin * 2;
+
+    if CheckCaption <> '' then
+      ResultForm.ClientHeight := ResultForm.ClientHeight + VertSpacing + 17;
+    if ATimeout > 0 then
+      ResultForm.ClientHeight := ResultForm.ClientHeight + VertSpacing + 13;
+
+    if ResultForm.ClientWidth > Screen.Width-100 then
+      ResultForm.ClientWidth := Screen.Width-100;
+    if ResultForm.ClientHeight > Screen.Height-100 then
+      ResultForm.ClientHeight := Screen.Height-100;
+
+    ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
+    ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
+  end;
+
 
 
 begin
@@ -851,8 +876,8 @@ begin
 
 
     CalcTextRect (False, PChar(Msg), Length(Msg) + 1, TextRect);
-    IconTextWidth := TextRect.Right+10;
-    IconTextHeight := TextRect.Bottom+4;
+    TextWidth := TextRect.Right;
+    TextHeight := TextRect.Bottom;
     if CheckCaption <> '' then
     begin
       SetRect(TempRect, 0, 0, Screen.Width div 2, 0);
@@ -872,9 +897,13 @@ begin
       TimeoutTextWidth := 0;
     if APicture <> nil then
     begin
-      Inc(IconTextWidth, APicture.Width + HorzSpacing);
-      if IconTextHeight < APicture.Height then
-        IconTextHeight := APicture.Height;
+      IconWidth := APicture.Width + HorzSpacing;
+      IconHeight := APicture.Height;
+    end
+    else
+    begin
+      IconWidth := 0;
+      IconHeight := 0;
     end;
 
     ButtonCount := Length(Buttons);
@@ -882,24 +911,7 @@ begin
     if ButtonCount <> 0 then
       ButtonGroupWidth := ButtonWidth * ButtonCount + ButtonSpacing * (ButtonCount - 1);
 
-    ResultForm.ClientWidth := Max(TimeoutTextWidth,
-                                  Max(17 + ChkTextWidth,
-                                      Max(IconTextWidth, ButtonGroupWidth)))
-                              + HorzMargin * 2;
-    ResultForm.ClientHeight := IconTextHeight + ButtonHeight + VertSpacing * 2 + VertMargin;
-
-    if CheckCaption <> '' then
-      ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 17;
-    if ATimeout > 0 then
-      ResultForm.ClientHeight := ResultForm.ClientHeight + VertMargin + 13;
-
-    if ResultForm.ClientWidth > Screen.Width-100 then
-      ResultForm.ClientWidth := Screen.Width-100;
-    if ResultForm.ClientHeight > Screen.Height-100 then
-      ResultForm.ClientHeight := Screen.Height-100;
-
-    ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
-    ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
+    ResizeResultForm;
 
     if ACaption <> '' then
       ResultForm.Caption := ACaption
@@ -947,7 +959,11 @@ begin
     if Supports(MessageLabel, IJvDynControlLabel, DynControlLabel) then
       DynControlLabel.ControlSetWordWrap(True);
     if Supports(MessageLabel, IJvDynControlAutoSize, DynControlAutoSize) then
+    begin
       DynControlAutoSize.ControlSetAutoSize(True);
+      TextWidth := MessageLabel.Width;
+      TextHeight := MessageLabel.Height;
+    end;
 
     MessageLabel.BiDiMode := ResultForm.BiDiMode;
 
@@ -992,6 +1008,9 @@ begin
           ResultForm.ClientWidth - 2 * HorzMargin, CountDownlabel.Height);
       end;
     end;
+
+    ResizeResultForm;
+
   except
     FreeAndNil(ResultForm);
     raise;
