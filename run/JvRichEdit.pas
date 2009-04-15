@@ -3496,7 +3496,9 @@ begin
 end;
 
 function TJvCustomRichEdit.InsertObjectDialog: Boolean;
-{$DEFINE WIDEWORKAROUND}
+{$IFDEF UNICODE}
+  {$DEFINE WIDEWORKAROUND}
+{$ENDIF UNICODE}
 { Mantis #4738: OleUIInsertObjectW() returns with OLEUI_IOERR_LPCLSIDEXCLUDEINVALID }
 var
   {$IFDEF WIDEWORKAROUND}
