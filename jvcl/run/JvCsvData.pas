@@ -178,8 +178,6 @@ const
   JvCsv_ON_EOF_CRACK = -2;
 
 
-
-
   RowAlreadySaved=0;
   RowNeedsSaving=1;
   { return values from CompareBookmarks: }
@@ -276,7 +274,6 @@ type
 
 
 
-
   { Memory usage by JvCsvDataSet:
 
         A row is an allocated BLOCK of memory grabbed by ALLOCMEM and it must be copyable
@@ -311,7 +308,6 @@ type
   end;
 
   PJvCsvRowWordFields = ^TJvCsvRowWordFields;
-
 
 
   { Row collection }
@@ -371,10 +367,8 @@ type
 
 
     { these properties should ONLY be set before any actual rows have been allocated. }
-    property TextBufferSize : Integer   read FTextBufferSize    write FTextBufferSize; // How big is TJvCsvRow.Text effectively?
-    property MarginSize     : Integer   read FMarginSize        write FMarginSize; // How much margin space after the calculated fields? (typically 2 bytes)
-
-
+    property TextBufferSize: Integer read FTextBufferSize write FTextBufferSize; // How big is TJvCsvRow.Text effectively?
+    property MarginSize: Integer read FMarginSize write FMarginSize; // How much margin space after the calculated fields? (typically 2 bytes)
   end;
 
   TArrayOfPCsvColumn = array of PCsvColumn;
@@ -438,8 +432,6 @@ type
   // Easily Customizeable DataSet descendant our CSV handler and
   // any other variants we create:
   //-------------------------------------------------------------------------
-
-
   TJvCustomCsvDataSet = class(TDataSet)
   private
     FOpenFileName: string; // This is the Fully Qualified path and filename expanded from the FTableName property when InternalOpen was last called.
@@ -450,9 +442,9 @@ type
 
     procedure SetSeparator(const Value: AnsiChar);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
-      SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
+      SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
 
-    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
+    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
     procedure AutoCreateDir(const FileName: string);
     function GetEnquoteBackslash: Boolean;
     procedure SetEnquoteBackslash(const Value: Boolean);
@@ -466,7 +458,7 @@ type
     function GetDecimalSeparator: AnsiChar;
     procedure SetDecimalSeparator(const Value: AnsiChar);
 
-    function _CsvFloatToStr(fvalue:Double):string;
+    function _CsvFloatToStr(fvalue: Double): string;
 
   protected
     // (rom) inacceptable names. Probably most of this should be private.
@@ -548,8 +540,7 @@ type
     function InternalSkipFiltered(DefaultResult: TGetResult; ForwardBackwardMode: Boolean): TGetResult;
 
     function ReadCsvFileStream: Boolean;
-
-    function WriteCsvFileStream:Boolean;
+    function WriteCsvFileStream: Boolean;
 
     // Internal methods used by sorting:
     function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
@@ -635,7 +626,7 @@ type
     function _Dequote(const StrVal: AnsiString): AnsiString; virtual; // removes quotes
 
     property Separator: AnsiChar read GetSeparator write SetSeparator default ',';
-    property DecimalSeparator:AnsiChar read GetDecimalSeparator write SetDecimalSeparator default ' '; // space means system default.
+    property DecimalSeparator: AnsiChar read GetDecimalSeparator write SetDecimalSeparator default ' '; // space means system default.
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -644,7 +635,7 @@ type
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
 
 
-    function _AllocateRow:PCsvRow; // Don't try to create your own CsvRow Objects outside JvCsvDataSet by just allocating a TJvCsvDataRow object. Call this instead.
+    function _AllocateRow: PCsvRow; // Don't try to create your own CsvRow Objects outside JvCsvDataSet by just allocating a TJvCsvDataRow object. Call this instead.
 
     // Autoincrement feature: Get next available auto-incremented value for numbered/indexed autoincrementing fields.
     function GetAutoincrement(const FieldName: string): Integer;
@@ -654,7 +645,7 @@ type
 
     // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
     procedure SetFilter(const FieldName: string; Pattern: AnsiString); // Make Rows Visible Only if they match filterString
-    procedure SetFilterNum(const FieldName: string; compareOperator:TJvCsvFilterNumCompare; numValue: Double );
+    procedure SetFilterNum(const FieldName: string; compareOperator: TJvCsvFilterNumCompare; numValue: Double);
 
     // SELECT * FROM TABLE WHERE <fieldname> IS <NULL|NOT NULL>:
     procedure SetFilterOnNull(const FieldName: string; NullFlag: Boolean);
@@ -722,7 +713,7 @@ type
 
     { Special declarations }
     // as long as the field names and positions have not changed.
-    procedure AssignFromStrings(const Strings: TStrings); virtual; // update string Data directly.
+    procedure AssignFromStrings(Strings: TStrings); virtual; // update string Data directly.
     procedure AssignToStrings(Strings: TStrings); virtual;
 
     procedure DeleteRows(FromRow, ToRow: Integer); // NEW: Quickly zap a bunch of rows:
@@ -821,7 +812,7 @@ type
     property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
     property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
     // not currently valuable, but maybe soon:
-    //property CsvColumns:TJvCsvColumns read FCsvColumns;
+    //property CsvColumns: TJvCsvColumns read FCsvColumns;
 
     property OpenFileName: string read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
@@ -830,17 +821,14 @@ type
     property HeaderRow: AnsiString read FHeaderRow; // first row of CSV file.
     property SavesChanges: Boolean read FSavesChanges write FSavesChanges default True;
 
-    property AlwaysEnquoteStrings:Boolean read FAlwaysEnquoteStrings write FAlwaysEnquoteStrings; // Always put Double quotes around strings (for some CSV file reading software this is required.)
-    property AlwaysEnquoteFloats:Boolean  read FAlwaysEnquoteFloats  write FAlwaysEnquoteFloats; // Always put Double quotes around floating point values (useful when DecimalSeparator==CsvSeparator)
-    property UseSystemDecimalSeparator:Boolean read FUseSystemDecimalSeparator write FUseSystemDecimalSeparator default false; // Default is false which always uses US mode.  Must be false by default because of existing code assuming this behaviour.
-
+    property AlwaysEnquoteStrings: Boolean read FAlwaysEnquoteStrings write FAlwaysEnquoteStrings; // Always put Double quotes around strings (for some CSV file reading software this is required.)
+    property AlwaysEnquoteFloats: Boolean read FAlwaysEnquoteFloats write FAlwaysEnquoteFloats; // Always put Double quotes around floating point values (useful when DecimalSeparator==CsvSeparator)
+    property UseSystemDecimalSeparator: Boolean read FUseSystemDecimalSeparator write FUseSystemDecimalSeparator default false; // Default is false which always uses US mode.  Must be false by default because of existing code assuming this behaviour.
 
     property AppendOnly:Boolean read FAppendOnly write FAppendOnly; // If true, we don't load the entire content of the CSV from disk, only the last row, and every time we append and write, we only maintain the last row in memory (saves a lot of RAM.)
 
-
-    property TextBufferSize : Integer   read GetTextBufferSize    write SetTextBufferSize; // How big is TJvCsvRow.Text effectively?
-    property MarginSize     : Integer   read GetMarginSize        write SetMarginSize; // How much margin space after the calculated fields? (typically 2 bytes)
-
+    property TextBufferSize: Integer read GetTextBufferSize write SetTextBufferSize; // How big is TJvCsvRow.Text effectively?
+    property MarginSize: Integer read GetMarginSize write SetMarginSize; // How much margin space after the calculated fields? (typically 2 bytes)
   end;
 
   // TJvCsvDataSet is just a TJvCustomCsvDataSet with all properties and events exposed:
@@ -1122,7 +1110,7 @@ begin
 end;
 
 { TJvCsvStream.ReadLine:
-  This reads a line of text, normally terminated by carriage return + linefeed
+  This reads a line of text, normally terminated by carriage return and/or linefeed
   but it is a bit special, and adapted for CSV usage because CR/LF characters
   inside quotes are read as a single line.
 
@@ -1135,84 +1123,84 @@ function TJvCsvStream.ReadLine: AnsiString;
 var
   Buf: array of {$IFDEF COMPILER12_UP}Byte{$ELSE}Char{$ENDIF COMPILER12_UP};
   n: Integer;
-  ok: Boolean;
-  QuoteFlag, LfFlag, CrFlag: Boolean;
+  QuoteFlag: Boolean;
+  LStreamBuffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+  LStreamSize: Integer;
+  LStreamIndex: Integer;
+
+  procedure FillStreamBuffer;
+  begin
+    FStreamSize := Stream.Read(LStreamBuffer[0], JvCsvStreamReadChunkSize);
+    LStreamSize := FStreamSize;
+    if LStreamSize = 0 then
+    begin
+      if FStream.Position >= FStream.Size then
+        FLastReadFlag := True
+      else
+        raise EJvCsvDataSetError.CreateResFmt(@RsECannotReadCsvFile, [FFilename]);
+    end
+    else
+    if LStreamSize < JvCsvStreamReadChunkSize then
+      FLastReadFlag := True;
+    FStreamIndex := 0;
+    LStreamIndex := 0;
+  end;
+
 begin
   { Ignore linefeeds, read until carriage return, strip carriage return, and return it }
-  SetLength(Buf,150);
+  SetLength(Buf, 150);
 
-//  SetLength(Buf,JvCsv_MAXLINELENGTH);//16384;
-
-//  count := 1;
   n := 0;
-  LfFlag := False;
-  CrFlag := False;
   QuoteFlag := False;
 
-  repeat
+  LStreamBuffer := FStreamBuffer;
+  LStreamSize := FStreamSize;
+  LStreamIndex := FStreamIndex;
+  while True do
+  begin
     if n >= Length(Buf) then
       SetLength(Buf, n + 100);
 
-    if FStreamIndex >= FStreamSize then
-    begin
-      FStreamSize := Stream.Read(FStreamBuffer[0], JvCsvStreamReadChunkSize);
-      if FStreamSize = 0 then
-      begin
-        if FStream.Position >= FStream.Size then
-          FLastReadFlag:= True
-        else
-          raise EJvCsvDataSetError.CreateFmt('Can''t read CSV file %s', [FFilename]);
-      end
-      else
-      if FStreamSize < JvCsvStreamReadChunkSize then
-        FLastReadFlag := True;
-      FStreamIndex := 0;
-    end;
+    if LStreamIndex >= LStreamSize then
+      FillStreamBuffer;
 
-    if FStreamIndex >= FStreamSize then
-      ok := False
-    else
-    begin
-      Buf[n] := FStreamBuffer[FStreamIndex]; // p^;
-      Inc(FStreamIndex);
-      ok := True;
-    end;
+    if LStreamIndex >= LStreamSize then
+      Break;
 
-    if ok then
-    begin
-      if Buf[n]> JvCsvQuote {34} then // test for MOST common case first!
-      begin
-        Inc(n);
-        CrFlag := False;
-        LfFlag := False;
-      end
-      else
-      begin
-        if Buf[n] = JvCsvQuote {34} then // quote
-          QuoteFlag := not QuoteFlag;
+    Buf[n] := LStreamBuffer[LStreamIndex]; // p^;
+    Inc(LStreamIndex);
 
-        if Buf[n] = JvCsvLf {10} then // linefeed
-        begin
-          LfFlag := True;
-          Inc(n);
-        end else
-        if Buf[n]= JvCsvCR {13} then // carriage return
-        begin
-          CrFlag := True;
-          Inc(n);
-        end else
+    case Buf[n] of
+      JvCsvQuote: {34} // quote
+        QuoteFlag := not QuoteFlag;
+      JvCsvLf: {10} // linefeed
         begin
           Inc(n);
-          CrFlag := False;
-          LfFlag := False;
+          if not QuoteFlag then
+            Break;
         end;
+      JvCsvCR: {13} // carriage return
+        begin
+          Inc(n);
+          if not QuoteFlag then
+          begin
+            { If it is a CRLF we must skip the LF. Otherwise the next call to ReadLine
+              would return an empty line. }
+            if LStreamIndex >= LStreamSize then
+              FillStreamBuffer;
+            if LStreamBuffer[LStreamIndex] = JvCsvLf then
+              Inc(LStreamIndex);
 
-        if CrFlag and LfFlag and not QuoteFlag then
-          Break;
-      end;
+            Break;
+          end;
+        end
+    else
+      Inc(n);
     end;
-  until not ok;
-  Inc(n);
+  end;
+  FStreamIndex := LStreamIndex;
+
+  //Inc(n); { ahuser: This cause the string to include CR or LF. Is this by intention? }
   Buf[n] := {$IFDEF COMPILER12_UP}0{$ELSE}#0{$ENDIF COMPILER12_UP};
   SetLength(Buf, n);
 
@@ -1344,7 +1332,7 @@ begin
   Result := FData.Separator;
 end;
 
-function TJvCustomCsvDataSet._CsvFloatToStr(fvalue:Double):string;
+function TJvCustomCsvDataSet._CsvFloatToStr(fvalue: Double): string;
 begin
   // raises exception EJvConvertError (same as EConvertError)
   FFormatSettings.DecimalSeparator := {$IFDEF COMPILER12_UP}Char({$ENDIF COMPILER12_UP}GetDecimalSeparator {$IFDEF COMPILER12_UP}){$ENDIF COMPILER12_UP};
@@ -1676,14 +1664,14 @@ end;
 // Numeric Filtering: Make Rows Visible Only if they match an Integer or floating point numeric comparison operator.
 // evaluate condition:
 //   [FieldName]  [numericoperator: < > = <> ] [Numeric Value Parameter]
-procedure TJvCustomCsvDataSet.SetFilterNum(const FieldName: string; compareOperator:TJvCsvFilterNumCompare; numValue: Double );
+procedure TJvCustomCsvDataSet.SetFilterNum(const FieldName: string; compareOperator: TJvCsvFilterNumCompare; numValue: Double);
 var
   I: Integer;
   PRow: PCsvRow;
   FieldRec: PCsvColumn;
   FieldIndex: Integer;
   sFieldValue: AnsiString;
-  FieldValue:Double;
+  FieldValue: Double;
   //stillVisible : Integer;
   //m: TBookmark;
 begin
@@ -4051,7 +4039,7 @@ begin
 end;
 
 procedure TJvCustomCsvDataSet.InternalQuickSort(SortList: PPointerList;
-  L, R: Integer; SortColumns: TArrayOfPCsvColumn; ACount: Integer; SortAscending: Array of Boolean);
+  L, R: Integer; SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
 var
   I, J: Integer;
   P, T: Pointer;
@@ -4082,7 +4070,7 @@ begin
 end;
 
 procedure TJvCustomCsvDataSet.QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn;
-  ACount: Integer; SortAscending: Array of Boolean);
+  ACount: Integer; const SortAscending: array of Boolean);
 begin
   if (AList <> nil) and (AList.Count > 1) then
     InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, SortAscending);
@@ -4420,7 +4408,7 @@ end;
 
 { Additional Custom Methods - internal use }
 
-procedure TJvCustomCsvDataSet.AssignFromStrings(const Strings: TStrings);
+procedure TJvCustomCsvDataSet.AssignFromStrings(Strings: TStrings);
 var
   // HeaderRowFound: Boolean;
   I: Integer;

@@ -502,6 +502,7 @@ resourcestring
   RsECsvFieldLocationError = 'CSV field location error: %s';
   RsEFieldNotFound = 'Field %s not found in the data file';
   RsECsvStringTooLong = 'CSV string is too long: %s...';
+  RsECannotReadCsvFile = 'Can''t read CSV file %s';
   RsEInternalLimit = 'JvCsvData - Internal Limit of MAXCOLUMNS (%d) reached. CSV Data has too many columns';
   RsETableNameNotSet = 'TableName not specified';
   RsEGetMode = 'Invalid option to GetMode';
