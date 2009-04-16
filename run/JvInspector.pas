@@ -5470,6 +5470,8 @@ end;
 procedure TJvCustomInspectorItem.ButtonClick(Sender: TObject);
 begin
   Edit;
+  if EditCtrl <> nil then
+    EditCtrl.Text := DisplayValue;
 end;
 
 function TJvCustomInspectorItem.CanEdit: Boolean;
@@ -5719,22 +5721,26 @@ end;
 procedure TJvCustomInspectorItem.EditFocusLost(Sender: TObject);
 begin
   if Inspector.HandleAllocated and not Inspector.Focused then
+  begin
+    // Mantis 3391: When the focus is lost, the editing is finished, so that
+    // moving to another item or another control always updates the value.
+    try
+      Apply;
+    except
+      Application.HandleException(Self);
+      if (EditCtrl <> nil) and EditCtrl.CanFocus then
+        EditCtrl.SetFocus;
+    end;
+    InvalidateItem;
+
     Inspector.Invalidate;
+  end;
 end;
 
 procedure TJvCustomInspectorItem.EditKillFocus(Sender: TObject);
 begin
   if DroppedDown then
     CloseUp(False);
-
-  // Mantis 3391: When the focus is lost, the editing is finished, so that
-  // moving to another item or another control always updates the value.
-
-  // Don't ever call DoneEdit() here because it will destroy the EditCtrl in
-  // whos event handler we are at the moment. And we don't want to destroy
-  // the EditCtrl anyway.
-  Apply;
-  InvalidateItem;
 end;
 
 procedure TJvCustomInspectorItem.AutoCompleteStart(Sender: TObject);
@@ -6315,8 +6321,7 @@ begin
   end;
 end;
 
-procedure TJvCustomInspectorItem.MouseUp(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TJvCustomInspectorItem.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   WasPressed: Boolean;
 begin
@@ -10213,8 +10218,8 @@ var
 begin
   for I := High(FItems) downto Low(FItems) do
     Items[I].Free;
-  if FRegistered then
-    DataRegister.Remove(Self);
+  if FRegistered and (GlobalDataRegister <> nil) then
+    DataRegister().Remove(Self);
   inherited BeforeDestruction;
 end;
 
