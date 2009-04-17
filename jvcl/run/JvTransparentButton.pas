@@ -620,10 +620,10 @@ end;
 
 destructor TJvTransparentButton.Destroy;
 begin
-  FGlyph.Free;
-  FGrayGlyph.Free;
-  FDisabledGlyph.Free;
-  // FImages.Free; // owner-destroyed
+  FreeAndNil(FGlyph);
+  FreeAndNil(FGrayGlyph);
+  FreeAndNil(FDisabledGlyph);
+  FreeAndNil(FImages);
   // FImList.Free; // owner-destroyed
   inherited Destroy;
 end;
@@ -1227,7 +1227,7 @@ begin
         Glyph.Width := 0;
         Glyph.Height := 0;
 
-        if not CheckDefaults or (Images.ActiveIndex = -1) then
+        if not CheckDefaults or ((Images <> nil) and (Images.ActiveIndex = -1)) then
         begin
           Images.ActiveImage := ActionList.Images;
           Images.ActiveIndex := ImageIndex;
@@ -1252,7 +1252,7 @@ var
   var
     Icon: HICON;
   begin
-    Result := Assigned(Images) and (Index >= 0);
+    Result := (Images <> nil) and (Index >= 0);
     if Result then
     begin
       Icon := ImageList_GetIcon(Images.Handle, Index, ILD_TRANSPARENT);
