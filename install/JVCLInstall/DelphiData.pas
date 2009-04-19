@@ -873,6 +873,7 @@ begin
       try
         EnvOptions.LoadFromFile(GetEnvOptionsFileName);
         EnvOptions.Options := EnvOptions.Options - [sxoAutoCreate];
+        EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
         PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
         if Assigned(PropertyGroupNode) then
