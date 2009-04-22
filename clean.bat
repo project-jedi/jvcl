@@ -29,6 +29,9 @@ del /S lib\d10\debug\*.dcp lib\d10\debug\*.bpl lib\d10\debug\*.dfm lib\d10\debug
 del /S lib\d11\*.dcp lib\d11\*.bpl lib\d11\*.dfm lib\d11\*.obj lib\d11\*.bpi lib\d11\*.lib >NUL
 del /S lib\d11\debug\*.dcp lib\d11\debug\*.bpl lib\d11\debug\*.dfm lib\d11\debug\*.obj lib\d11\debug\*.bpi lib\d11\debug\*.lib >NUL
 
+del /S lib\d12\*.dcp lib\d12\*.bpl lib\d12\*.dfm lib\d12\*.obj lib\d12\*.bpi lib\d12\*.lib >NUL
+del /S lib\d12\debug\*.dcp lib\d12\debug\*.bpl lib\d12\debug\*.dfm lib\d12\debug\*.obj lib\d12\debug\*.bpi lib\d12\debug\*.lib >NUL
+
 del /S run\*.hpp >NUL
 del /S design\*.hpp >NUL
 del /S common\*.hpp >NUL
