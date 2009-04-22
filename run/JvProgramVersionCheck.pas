@@ -1744,6 +1744,7 @@ function TJvProgramVersionHTTPLocationIndy.LoadFileFromRemoteIndy(
 var
   ResultStream: TFileStream;
   ResultName: string;
+  RemoteURL: string;
 begin
   Result := '';
   if (DirectoryExists(ALocalPath) or (ALocalPath = '')) then
@@ -1754,10 +1755,20 @@ begin
   else
     Exit;
 
+  if (ARemotePath <> '') and (ARemotePath[Length(ARemotePath)] <> '/') then
+    RemoteURL := ARemotePath + '/' + ARemoteFileName
+  else
+    RemoteURL := ARemotePath + ARemoteFileName;
+
   ResultStream := TFileStream.Create(ResultName, fmCreate);
   try
     {$IFDEF USE_3RDPARTY_INDY10}
-    FIdHTTP.BoundPort := Port;
+    FIdHTTP.URL.URI := RemoteURL;
+    if (FIdHTTP.URL.Port = '') and (Port <> 0) then
+    begin
+      FIdHTTP.URL.Port := IntToStr(Port)
+      RemoteURL := FIdHTTP.URL.URI;
+    end;
     {$ELSE}
     FIdHTTP.Port := Port;
     {$ENDIF USE_3RDPARTY_INDY10}
@@ -1771,10 +1782,7 @@ begin
       FIdHTTP.Request.Password := Password;
     FIdHTTP.Request.BasicAuthentication := PasswordRequired;
     try
-      if Copy(ARemotePath, Length(ARemotePath), 1) <> '/' then
-        FIdHTTP.Get(ARemotePath + '/' + ARemoteFileName, ResultStream)
-      else
-        FIdHTTP.Get(ARemotePath + ARemoteFileName, ResultStream);
+      FIdHTTP.Get(RemoteURL, ResultStream)
     except
       on E: Exception do
         DownloadError := E.Message;
