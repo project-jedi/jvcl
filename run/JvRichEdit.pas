@@ -3496,18 +3496,15 @@ begin
 end;
 
 function TJvCustomRichEdit.InsertObjectDialog: Boolean;
-{$IFDEF UNICODE}
-  {$DEFINE WIDEWORKAROUND}
-{$ENDIF UNICODE}
-{ Mantis #4738: OleUIInsertObjectW() returns with OLEUI_IOERR_LPCLSIDEXCLUDEINVALID }
 var
-  {$IFDEF WIDEWORKAROUND}
-  Data: TOleUIInsertObjectA;
-  NameBuffer: array[0..255] of AnsiChar;
-  {$ELSE}
   Data: TOleUIInsertObject;
+  {$IFDEF UNICODE}
+  { Mantis #4738: OleUIInsertObjectW() returns with OLEUI_IOERR_LPCLSIDEXCLUDEINVALID }
+  { Probably windows error; cchFile must be exactly MAXPATH }
+  NameBuffer: array[0..MAX_PATH div SizeOf(Char) - 1] of Char;
+  {$ELSE}
   NameBuffer: array[0..255] of Char;
-  {$ENDIF WIDEWORKAROUND}
+  {$ENDIF UNICODE}
   OleClientSite: IOleClientSite;
   Storage: IStorage;
   OleObject: IOleObject;
@@ -3539,11 +3536,7 @@ begin
         ppvObj := @OleObject;
       end;
       try
-        {$IFDEF WIDEWORKAROUND}
-        Result := OleUIInsertObjectA(Data) = OLEUI_OK;
-        {$ELSE}
         Result := OleUIInsertObject(Data) = OLEUI_OK;
-        {$ENDIF WIDEWORKAROUND}
         if Result then
         try
           IsNewObject := Data.dwFlags and IOF_SELECTCREATENEW = IOF_SELECTCREATENEW;
@@ -3586,7 +3579,6 @@ begin
   end
   else
     Result := False;
-{$UNDEF WIDEWORKAROUND}
 end;
 
 procedure TJvCustomRichEdit.InsertObjectFromFile(const FileName: string;
