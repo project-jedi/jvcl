@@ -631,8 +631,8 @@ end;
 procedure TJvCustomFormDesktopAlert.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if IsLibrary then
-    Params.ExStyle := Params.ExStyle or WS_EX_TOOLWINDOW;
+  Params.ExStyle := Params.ExStyle or WS_EX_TOOLWINDOW;
+  Params.WndParent := HWND_DESKTOP;
 end;
 
 procedure TJvCustomFormDesktopAlert.DoClose(var Action: TCloseAction);
