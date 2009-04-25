@@ -981,6 +981,7 @@ begin
       if I = HelpButton then
         Button.OnClick := ResultForm.HelpButtonClick;
     end;
+    CheckBox := nil; // to avoid warnings
     if CheckCaption <> '' then
     begin
       CheckBox := DynControlEngine.CreateCheckboxControl(ResultForm, CheckPanel, 'DontShowAgain', CheckCaption);
