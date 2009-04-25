@@ -9,7 +9,7 @@ echo [Compiling installer...]
 cd install\JVCLInstall
 
 if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
-..\..\packages\bin\dcc32ex.exe --requires-jcl=%JCLVERSION% -Q -B -DDEFAULT_JVCL_INC -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\run -R..\..\resources -n..\..\dcu JVCLInstall.dpr
+..\..\packages\bin\dcc32ex.exe --requires-jcl=%JCLVERSION% --runtime-package-vcl -Q -B -DDEFAULT_JVCL_INC -DUSE_DXGETTEXT -E..\..\bin -I.;..\..\common -U..\..\run -R..\..\resources -n..\..\dcu JVCLInstall.dpr
 :: --runtime-package-rtl --runtime-package-vcl 
 if ERRORLEVEL 1 goto Failed
 
