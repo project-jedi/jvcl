@@ -2735,6 +2735,7 @@ begin
   PanelStyle.Active := True;
   PanelStyle.BorderWidth := 0;
   Style.BorderStyle := ebsNone;
+  Style.TransparentBorder := False;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetCaption(const Value: string);
