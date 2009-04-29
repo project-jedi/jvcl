@@ -884,7 +884,11 @@ begin
               if PosChangedHandle = Control.Handle then
               begin
                 if not (csDestroyingHandle in Control.ControlState) then
+                  {$IFDEF DELPHI6_UP}
                   Control.UpdateBounds;
+                  {$ELSE}
+                  SendMessage(Control.Handle, AMsg.Msg, AMsg.wParam, AMsg.lParam);
+                  {$ENDIF DELPHI6_UP}
 
                 UpdateDesigner;
               end;
