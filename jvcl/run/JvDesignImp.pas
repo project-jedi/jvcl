@@ -1063,7 +1063,6 @@ begin
     CalcDragRects;
     for I := 0 to Surface.Count - 1 do
       Surface.Selection[I].BoundsRect := FDragRects[I];
-    Surface.UpdateDesigner;
     Surface.Change;
   end;
 end;
@@ -1185,7 +1184,6 @@ end;
 procedure TJvDesignSizer.ApplyDragRect;
 begin
   Surface.Selection[0].BoundsRect := FDragRect;
-  Surface.UpdateDesigner;
   Surface.Change;
 end;
 
