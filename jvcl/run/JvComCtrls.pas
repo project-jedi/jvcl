@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -2961,10 +2961,14 @@ begin
   // Need to indicate ClearBeforeSelect if the item is about to change
   // or we would get rendering glitches because of an inconsistent
   // selection list. (Mantis 3250)
-  case Msg.NMHdr.code of
-    TVN_SELCHANGEDA, TVN_SELCHANGEDW:
-      if not Multiselect then
-        FClearBeforeSelect := True;
+  // Mantis 4699: Further limit this to when HideSelection is set to True. 
+  if HideSelection then
+  begin
+    case Msg.NMHdr.code of
+      TVN_SELCHANGEDA, TVN_SELCHANGEDW:
+        if not Multiselect then
+          FClearBeforeSelect := True;
+    end;
   end;
 
   inherited;
