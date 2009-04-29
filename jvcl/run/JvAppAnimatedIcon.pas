@@ -48,6 +48,8 @@ type
     procedure SetDelay(const Value: Cardinal);
     procedure SetIcons(const Value: TImageList);
     procedure Animate(Sender: TObject);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -90,6 +92,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvAppAnimatedIcon.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  
+  if Operation = opRemove then
+  begin
+    if AComponent = FIcons then
+      SetIcons(nil);
+  end;
+end;
+
 procedure TJvAppAnimatedIcon.Animate(Sender: TObject);
 
 begin
@@ -114,7 +128,13 @@ end;
 
 procedure TJvAppAnimatedIcon.SetIcons(const Value: TImageList);
 begin
+  if FIcons <> nil then
+    FIcons.RemoveFreeNotification(Self);
+
   FIcons := Value;
+
+  if Value <> nil then
+    FIcons.FreeNotification(Self);
 end;
 
 {$IFDEF UNITVERSIONING}
