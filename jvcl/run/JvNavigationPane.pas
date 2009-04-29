@@ -1258,7 +1258,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -1703,7 +1706,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -2173,7 +2179,10 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(Self);
       FImages.UnregisterChanges(FChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
     begin
@@ -2199,7 +2208,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -2400,7 +2412,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -2948,7 +2963,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -2982,6 +3000,8 @@ procedure TJvNavPanelPage.SetIconPanel(const Value: TJvIconPanel);
 begin
   if (FIconPanel <> Value) and not (csDestroying in ComponentState) then
   begin
+    if FIconPanel <> nil then
+      FIconPanel.RemoveFreeNotification(Self);
     FIconPanel := Value;
     if IconButton <> nil then
     begin
@@ -3304,7 +3324,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -3542,7 +3565,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -3580,7 +3606,10 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(Self);
       FImages.UnregisterChanges(FChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
     begin
@@ -3751,7 +3780,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -4535,7 +4567,10 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(Self);
       FImages.UnregisterChanges(FChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
     begin
@@ -4563,7 +4598,10 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
+    begin
+      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
+    end;
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
@@ -4945,7 +4983,10 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(Self);
       FImages.UnregisterChanges(FChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
     begin

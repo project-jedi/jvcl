@@ -858,6 +858,8 @@ end;
 
 procedure TJvPropertyStoreEditorControl.SetPropertyStore(const Value: TComponent);
 begin
+  if FPropertyStore <> nil then
+    FPropertyStore.RemoveFreeNotification(Self);
   FPropertyStore := Value;
   if csDestroying in Componentstate then
     Exit;

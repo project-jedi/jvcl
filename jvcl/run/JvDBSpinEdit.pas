@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -303,7 +303,11 @@ procedure TJvDBSpinEdit.SetDataSource(Value: TDataSource); { Assigns new data so
 begin
   { FDataLink is built in TJvDBSpinEdit.Create; there's no need to check to see if it's assigned. }
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
+  begin
+    if FDataLink.DataSource <> nil then
+      FDataLink.DataSource.RemoveFreeNotification(Self);
     FDataLink.DataSource := Value;
+  end;
   { Tell the new DataSource that our TJvDBSpinEdit component should be notified
     (using the Notification method) if the DataSource is ever removed from
     a data module or form that is different than the owner of this control. }

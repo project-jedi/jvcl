@@ -397,7 +397,12 @@ begin
   try
     if not (csLoading in ComponentState) then
       ActiveChanged;
+      
+    if FDataLink.DataSource <> nil then
+      FDataLink.DataSource.RemoveFreeNotification(Self);
+
     FDataLink.DataSource := Value;
+    
     if Value <> nil then
       Value.FreeNotification(Self);
   finally

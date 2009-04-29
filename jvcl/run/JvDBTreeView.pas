@@ -526,6 +526,8 @@ begin
   if Value = FDataLink.DataSource then
     Exit;
   Items.Clear;
+  if FDataLink.DataSource <> nil then
+    FDataLink.DataSource.RemoveFreeNotification(Self);
   FDataLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

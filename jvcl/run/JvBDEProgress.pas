@@ -518,6 +518,8 @@ end;
 
 procedure TJvDBProgress.SetMessageControl(Value: TControl);
 begin
+  if FMessageControl <> nil then
+    FMessageControl.RemoveFreeNotification(Self);
   FMessageControl := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
@@ -525,6 +527,8 @@ end;
 
 procedure TJvDBProgress.SetGauge(Value: TControl);
 begin
+  if FGauge <> nil then
+    FGauge.RemoveFreeNotification(Self);
   FGauge := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

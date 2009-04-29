@@ -533,6 +533,8 @@ procedure TJvxSplitter.SetControlFirst(Value: TControl);
 begin
   if Value <> FControlFirst then
   begin
+    if FControlFirst <> nil then
+      FControlFirst.RemoveFreeNotification(Self);
     if (Value = Self) or (Value is TForm) then
       FControlFirst := nil
     else
@@ -549,6 +551,8 @@ procedure TJvxSplitter.SetControlSecond(Value: TControl);
 begin
   if Value <> FControlSecond then
   begin
+    if FControlSecond <> nil then
+      FControlSecond.RemoveFreeNotification(Self);
     if (Value = Self) or (Value is TForm) then
       FControlSecond := nil
     else

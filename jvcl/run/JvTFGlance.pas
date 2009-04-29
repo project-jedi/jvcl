@@ -2067,7 +2067,10 @@ begin
   if Value <> FCellPics then
   begin
     if Assigned(FCellPics) then
+    begin
+      FCellPics.RemoveFreeNotification(Self);
       FCellPics.UnregisterChanges(FImageChangeLink);
+    end;
 
     FCellPics := Value;
 

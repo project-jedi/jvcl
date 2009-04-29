@@ -137,6 +137,8 @@ procedure TJvDBSecurity.SetDatabase(Value: TDatabase);
 begin
   if FDatabase <> Value then
   begin
+    if FDatabase <> nil then
+      FDatabase.RemoveFreeNotification(Self);
     FDatabase := Value;
     if Value <> nil then
       Value.FreeNotification(Self);

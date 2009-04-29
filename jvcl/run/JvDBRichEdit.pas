@@ -317,6 +317,8 @@ end;
 
 procedure TJvDBRichEdit.SetDataSource(Value: TDataSource);
 begin
+  if FDataLink.DataSource <> nil then
+    FDataLink.DataSource.RemoveFreeNotification(Self);
   FDataLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

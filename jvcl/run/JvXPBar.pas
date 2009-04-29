@@ -1035,6 +1035,8 @@ end;
 
 procedure TJvXPBarItem.SetAction(Value: TBasicAction);
 begin
+  if (FActionLink <> nil) and (FActionLink.Action <> nil) then
+    FActionLink.Action.RemoveFreeNotification(FWinXPBar);
   if Value = nil then
   begin
     FActionLink.Free;
@@ -1933,7 +1935,10 @@ begin
   if Value <> FImageList then
   begin
     if FImageList <> nil then
+    begin
+      FImageList.RemoveFreeNotification(Self);
       FImageList.UnRegisterChanges(FImageChangeLink);
+    end;
     FImageList := Value;
     if FImageList <> nil then
     begin
@@ -2267,7 +2272,10 @@ begin
   if FRollImages <> Value then
   begin
     if FRollImages <> nil then
+    begin
+      FRollImages.RemoveFreeNotification(Self);
       FRollImages.UnRegisterChanges(FRollChangeLink);
+    end;
     FRollImages := Value;
     if FRollImages <> nil then
     begin

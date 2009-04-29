@@ -539,7 +539,10 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(Self);
       FImages.UnRegisterChanges(FChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
     begin

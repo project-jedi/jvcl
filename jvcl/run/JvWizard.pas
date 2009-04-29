@@ -3046,7 +3046,10 @@ end;
 procedure TJvWizard.SetHeaderImages(Value: TCustomImageList);
 begin
   if Assigned(FHeaderImages) then
+  begin
+    FHeaderImages.RemoveFreeNotification(Self);
     FHeaderImages.UnRegisterChanges(FImageChangeLink);
+  end;
   FHeaderImages := Value;
   if Assigned(FHeaderImages) then
   begin

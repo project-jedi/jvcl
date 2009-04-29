@@ -1535,7 +1535,10 @@ end;
 procedure TJvDockCustomTabControl.SetImages(Value: TCustomImageList);
 begin
   if Images <> nil then
+  begin
+    Images.RemoveFreeNotification(Self);
     Images.UnRegisterChanges(FImageChangeLink);
+  end;
   FImages := Value;
   if Images <> nil then
   begin

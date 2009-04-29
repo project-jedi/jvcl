@@ -307,7 +307,11 @@ end;
 procedure TJvDBLookupComboEdit.SetDataSource(Value: TDataSource);
 begin
   if not (FDataLink.DataSourceFixed and (csLoading in ComponentState)) then
+  begin
+    if FDataLink.DataSource <> nil then
+      FDataLink.DataSource.RemoveFreeNotification(Self);
     FDataLink.DataSource := Value;
+  end;
   if Value <> nil then
     Value.FreeNotification(Self);
 end;

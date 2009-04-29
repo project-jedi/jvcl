@@ -2664,7 +2664,10 @@ end;
 procedure TJvTFScheduleManager.SetStateImages(Value: TCustomImageList);
 begin
   if Assigned(FStateImages) then
+  begin
+    FStateImages.RemoveFreeNotification(Self);
     FStateImages.UnRegisterChanges(FImageChangeLink);
+  end;
 
   FStateImages := Value;
 
@@ -2678,7 +2681,10 @@ end;
 procedure TJvTFScheduleManager.SetCustomImages(Value: TCustomImageList);
 begin
   if Assigned(FCustomImages) then
+  begin
+    FCustomImages.RemoveFreeNotification(Self);
     FCustomImages.UnRegisterChanges(FImageChangeLink);
+  end;
 
   FCustomImages := Value;
 

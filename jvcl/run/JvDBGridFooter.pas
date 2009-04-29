@@ -406,6 +406,8 @@ begin
   if Assigned(DBGrid) then
     if Value <> DBGrid.DataSource then
       Value := DBGrid.DataSource;
+  if FDataLink.DataSource <> nil then
+    FDataLink.DataSource.RemoveFreeNotification(Self);
   FDataLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

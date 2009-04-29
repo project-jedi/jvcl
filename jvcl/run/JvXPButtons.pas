@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -911,7 +911,10 @@ begin
   if FImages <> Value then
   begin
     if FImages <> nil then
+    begin
+      FImages.RemoveFreeNotification(Self);
       FImages.UnRegisterChanges(FChangeLink);
+    end;
     FImages := Value;
     if FImages <> nil then
     begin
@@ -935,6 +938,8 @@ procedure TJvXPCustomToolButton.SetDropDownMenu(const Value: TPopupMenu);
 begin
   if FDropDownMenu <> Value then
   begin
+    if FDropDownMenu <> nil then
+      FDropDownMenu.RemoveFreeNotification(Self);
     FDropDownMenu := Value;
     if FDropDownMenu <> nil then
       FDropDownMenu.FreeNotification(Self);

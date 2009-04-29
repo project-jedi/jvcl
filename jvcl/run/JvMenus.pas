@@ -1043,8 +1043,13 @@ var
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
   if FImages <> nil then
+  begin
+    FImages.RemoveFreeNotification(Self);
     FImages.UnregisterChanges(FImageChangeLink);
+  end;
+
   FImages := Value;
+
   if Value <> nil then
   begin
     FImages.RegisterChanges(FImageChangeLink);
@@ -1070,8 +1075,13 @@ var
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
   if FDisabledImages <> nil then
+  begin
+    FDisabledImages.RemoveFreeNotification(Self);
     FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
+  end;
+
   FDisabledImages := Value;
+  
   if Value <> nil then
   begin
     FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
@@ -1093,8 +1103,13 @@ var
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
   if FHotImages <> nil then
+  begin
+    FHotImages.RemoveFreeNotification(Self);
     FHotImages.UnregisterChanges(FHotImageChangeLink);
+  end;
+
   FHotImages := Value;
+  
   if Value <> nil then
   begin
     FHotImages.RegisterChanges(FHotImageChangeLink);
@@ -1350,7 +1365,10 @@ begin
   begin
     // Remove menu from current item painter
     if FItemPainter <> nil then
+    begin
+      FItemPainter.RemoveFreeNotification(Self);
       FItemPainter.Menu := nil;
+    end;
 
     // set value and if not nil, setup the painter correctly
     FItemPainter := Value;
@@ -1593,8 +1611,13 @@ var
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
   if FImages <> nil then
+  begin
+    FImages.RemoveFreeNotification(Self);
     FImages.UnregisterChanges(FImageChangeLink);
+  end;
+
   FImages := Value;
+  
   if Value <> nil then
   begin
     FImages.RegisterChanges(FImageChangeLink);
@@ -1620,8 +1643,13 @@ var
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
   if FDisabledImages <> nil then
+  begin
+    FDisabledImages.RemoveFreeNotification(Self);
     FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
+  end;
+
   FDisabledImages := Value;
+
   if Value <> nil then
   begin
     FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
@@ -1643,8 +1671,13 @@ var
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
   if FHotImages <> nil then
+  begin
+    FImages.RemoveFreeNotification(Self);
     FImages.UnregisterChanges(FHotImageChangeLink);
+  end;
+
   FHotImages := Value;
+  
   if Value <> nil then
   begin
     FHotImages.RegisterChanges(FHotImageChangeLink);
@@ -2000,7 +2033,10 @@ begin
   begin
     // Remove menu from current item painter
     if FItemPainter <> nil then
+    begin
+      FItemPainter.RemoveFreeNotification(Self);
       FItemPainter.Menu := nil;
+    end;
 
     // set value and if not nil, setup the painter correctly
     FItemPainter := Value;

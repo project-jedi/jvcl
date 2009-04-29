@@ -269,6 +269,8 @@ begin
       raise Exception.CreateRes(@RsELinkCircularRef)
     else
     begin
+      if FLink <> nil then
+        FLink.RemoveFreeNotification(Self);
       FLink := Value;
       FLink.FreeNotification(Self);
       InitLinkedForm;

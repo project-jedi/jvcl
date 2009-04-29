@@ -1842,7 +1842,10 @@ begin
   if FTabPainter <> Value then
   begin
     if FTabPainter <> nil then
+    begin
+      FTabPainter.RemoveFreeNotification(Self);
       FTabPainter.UnRegisterChange(Self);
+    end;
     FTabPainter := Value;
     if FTabPainter <> nil then
     begin
@@ -2112,7 +2115,10 @@ begin
   if FTabPainter <> Value then
   begin
     if FTabPainter <> nil then
+    begin
+      FTabPainter.RemoveFreeNotification(Self);
       FTabPainter.UnRegisterChange(Self);
+    end;
     FTabPainter := Value;
     if FTabPainter <> nil then
     begin
@@ -3209,12 +3215,16 @@ procedure TJvTreeView.SetMenu(const Value: TMenu);
 begin
   if FMenu <> Value then
   begin
-    if (FMenu <> nil) and not (csDesigning in ComponentState) then
-      {$IFDEF CLR}
-      SetProtectedObjectEvent(FMenu, 'OnChange', @FOldMenuChange);
-      {$ELSE}
-      TMenuAccessProtected(FMenu).OnChange := FOldMenuChange;
-      {$ENDIF CLR}
+    if (FMenu <> nil) then
+    begin
+      FMenu.RemoveFreeNotification(Self);
+      if not (csDesigning in ComponentState) then
+        {$IFDEF CLR}
+        SetProtectedObjectEvent(FMenu, 'OnChange', @FOldMenuChange);
+        {$ELSE}
+        TMenuAccessProtected(FMenu).OnChange := FOldMenuChange;
+        {$ENDIF CLR}
+    end;
     FMenu := Value;
     if FMenu <> nil then
     begin
@@ -3306,6 +3316,8 @@ procedure TJvTreeView.SetPageControl(const Value: TPageControl);
 begin
   if FPageControl <> Value then
   begin
+    if FPageControl <> nil then
+      FPageControl.RemoveFreeNotification(Self);
     FPageControl := Value;
     if FPageControl <> nil then
       FPageControl.FreeNotification(Self);

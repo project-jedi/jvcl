@@ -2935,6 +2935,8 @@ end;
 
 procedure TJvCustomComboEdit.SetImages(const Value: TCustomImageList);
 begin
+  if FImages <> nil then
+    FImages.RemoveFreeNotification(Self);
   FImages := Value;
   if FImages <> nil then
     FImages.FreeNotification(Self)

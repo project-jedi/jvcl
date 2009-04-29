@@ -419,6 +419,8 @@ var
 begin
   if Value <> FVersionControlComponent then
   begin
+    if FVersionControlComponent <> nil then
+      FVersionControlComponent.RemoveFreeNotification(Self);
     FVersionControlComponent := Value;
     if FVersionControlComponent <> nil then
       FVersionControlComponent.FreeNotification(Self);

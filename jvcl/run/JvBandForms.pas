@@ -382,10 +382,13 @@ end;
 
 procedure TJvBandForm.SetContextMenu(const Value: TPopupMenu);
 begin
+  if FBandContextMenu <> nil then
+    FBandContextMenu.RemoveFreeNotification(Self);
+
   FBandContextMenu := Value;
-  if Value = nil then
-    Exit;
-  Value.FreeNotification(Self);
+  
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvBandForm.Notification(AComponent: TComponent;
