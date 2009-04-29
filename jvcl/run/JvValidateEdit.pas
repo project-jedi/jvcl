@@ -46,7 +46,8 @@ uses
 type
   TJvValidateEditDisplayFormat = (dfAlphabetic, dfAlphaNumeric, dfBinary,
     dfCheckChars, dfCurrency, dfCustom, dfFloat, dfFloatGeneral, dfHex, dfInteger,
-    dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear, dfDecimal);
+    dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear, dfDecimal,
+    dfIdentifier);
 
   TJvValidateEditCriticalPointsCheck = (cpNone, cpMinValue, cpMaxValue, cpBoth);
 
@@ -586,6 +587,12 @@ begin
           if FAutoAlignment then
             Alignment := taLeftJustify;
         end;
+      dfIdentifier:
+        begin
+          FCheckChars := Alphabet + Numbers + '_';
+          if FAutoAlignment then
+            Alignment := taLeftJustify;
+        end;
       dfBinary:
         begin
           FCheckChars := '01';
@@ -709,7 +716,7 @@ end;
 procedure TJvCustomValidateEdit.SetAsInteger(NewValue: Int64);
 begin
   case FDisplayFormat of
-    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
+    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfIdentifier, dfCustom,
     dfNonCheckChars, dfNone:
       EditText := IntToStr(NewValue);
     dfBinary:
@@ -740,7 +747,7 @@ end;
 procedure TJvCustomValidateEdit.SetAsCurrency(NewValue: Currency);
 begin
   case FDisplayFormat of
-    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
+    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfIdentifier, dfCustom,
     dfNonCheckChars, dfNone:
       EditText := CurrToStr(NewValue);
     dfBinary:
@@ -784,7 +791,7 @@ end;
 procedure TJvCustomValidateEdit.SetAsFloat(NewValue: Double);
 begin
   case FDisplayFormat of
-    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
+    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfIdentifier, dfCustom,
     dfNonCheckChars, dfNone:
       EditText := FloatToStr(NewValue);
     dfBinary:
@@ -843,7 +850,7 @@ end;
 procedure TJvCustomValidateEdit.SetValue(NewValue: Variant);
 begin
   case FDisplayFormat of
-    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfNone, dfCustom:
+    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfIdentifier, dfNone, dfCustom:
       EditText := NewValue;
     dfBinary, dfHex, dfInteger, dfOctal, dfYear:
       {$IFDEF COMPILER5}
@@ -1002,6 +1009,13 @@ begin
             Result := (Posn = 1) or (Posn = iPosE + 1);
         end;
       end;
+    dfIdentifier:
+      begin
+        if Posn = 1 then
+          Result := (Key = '_') or (IsCharAlpha(Key))
+        else
+          Result := Pos(Key, FCheckChars) > 0;
+      end
   else
     Result := False;
   end;
