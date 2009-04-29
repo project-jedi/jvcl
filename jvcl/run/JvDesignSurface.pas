@@ -329,7 +329,7 @@ begin
     case AMessage.Msg of
       WM_MOUSEFIRST..WM_MOUSELAST:
         Result := FOnDesignMessage(ASender, AMessage, MousePoint);
-      WM_KEYDOWN..WM_KEYUP, WM_PAINT, WM_ERASEBKGND, WM_WINDOWPOSCHANGED:
+      WM_KEYDOWN..WM_KEYUP, WM_PAINT, WM_ERASEBKGND, WM_WINDOWPOSCHANGED, CN_KEYDOWN..CN_KEYUP:
         Result := FOnDesignMessage(ASender, AMessage, Point(0, 0));
       else
         Result := False;
@@ -859,9 +859,9 @@ begin
         Result := Controller.MouseUp(mbLeft, APt.X, APt.Y);
       WM_MOUSEMOVE:
         Result := Controller.MouseMove(APt.X, APt.Y);
-      WM_KEYDOWN:
+      WM_KEYDOWN, CN_KEYDOWN:
         Result := Controller.KeyDown(VirtKey);
-      WM_KEYUP:
+      WM_KEYUP, CN_KEYUP:
         Result := Controller.KeyUp(VirtKey);
       WM_WINDOWPOSCHANGED:
         begin
