@@ -2092,7 +2092,7 @@ end;
 
 procedure TJvCustomMenuItemPainter.DrawMenuBitmap(X, Y: Integer; Bitmap: TBitmap);
 begin
-  if mdDisabled in FState then
+  if (mdDisabled in FState) and (FNumGlyphs < 2) then
     DrawDisabledBitmap(X, Y, Bitmap)
   else
   begin
@@ -2309,11 +2309,11 @@ begin
   // Force glyph to fit inside its allocated space, if it's not empty and it
   // does not fit into the glyph allocated space
   if not FGlyph.Empty and
-    ((ImageWidth <> FGlyph.Width) or (ImageHeight <> FGlyph.Height)) then
+    ((ImageWidth <> FGlyph.Width * FNumGlyphs) or (ImageHeight <> FGlyph.Height)) then
   begin
     Bmp := TBitmap.Create;
     try
-      Bmp.Width := ImageWidth;
+      Bmp.Width := ImageWidth * FNumGlyphs;
       Bmp.Height := ImageHeight;
       Bmp.Canvas.StretchDraw(Rect(0, 0, Bmp.Width, Bmp.Height), FGlyph);
       FGlyph.Width := Bmp.Width;
