@@ -1110,7 +1110,7 @@ uses
   {$IFNDEF CLR}
   JvBrowseFolder,
   {$ENDIF !CLR}
-  JclFileUtils,
+  JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources;
 
@@ -4331,9 +4331,9 @@ var
   Temp: string;
 begin
   if FileExists(AFileName) then
-    Temp := ExtractFilePath(AFileName)
+    Temp := StrEnsureNoSuffix(PathDelim, ExtractFilePath(AFileName))
   else
-    Temp := AFileName;
+    Temp := StrEnsureNoSuffix(PathDelim, AFileName);
   if (Text = '') or not MultipleDirs then
     Text := Temp
   else
