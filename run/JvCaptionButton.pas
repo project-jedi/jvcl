@@ -2270,6 +2270,8 @@ end;
 
 procedure TJvCaptionButton.SetAction(const Value: TBasicAction);
 begin
+  if (FActionLink <> nil) and (FActionLink.Action <> nil) then
+    FActionLink.Action.RemoveFreeNotification(Self);
   if Value = nil then
   begin
     FActionLink.Free;
@@ -2368,7 +2370,10 @@ end;
 procedure TJvCaptionButton.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> nil then
+  begin
+    FImages.RemoveFreeNotification(Self);
     FImages.UnRegisterChanges(FImageChangeLink);
+  end;
   FImages := Value;
   if FImages <> nil then
   begin

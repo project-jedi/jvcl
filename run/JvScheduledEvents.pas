@@ -521,6 +521,8 @@ end;
 
 procedure TJvCustomScheduledEvents.SetAppStorage(Value: TJvCustomAppStorage);
 begin
+  if FAppStorage <> nil then
+    FAppStorage.RemoveFreeNotification(Self);
   FAppStorage := Value;
   if Assigned(FAppStorage) then
     FAppStorage.FreeNotification(Self);

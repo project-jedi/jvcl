@@ -952,6 +952,8 @@ type
 
 procedure TJvOutlookBarButton.SetAction(Value: TBasicAction);
 begin
+  if (FActionLink <> nil) and (FActionLink.Action <> nil) then
+    FActionLink.Action.RemoveFreeNotification(GetOutlookBar);
   if Value = nil then
   begin
     FActionLink.Free;

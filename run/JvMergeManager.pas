@@ -178,6 +178,8 @@ procedure TJvMergeManager.SetMergeFrame(Value: TWinControl);
 begin
   if FMergeFrame <> Value then
   begin
+    if FMergeFrame <> nil then
+      FMergeFrame.RemoveFreeNotification(Self);
     FMergeFrame := Value;
     if Value <> nil then
       Value.FreeNotification(Self);

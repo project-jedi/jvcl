@@ -1288,6 +1288,8 @@ end;
 
 procedure TJvLookupControl.SetDataSource(Value: TDataSource);
 begin
+  if FDataLink.DataSource <> nil then
+    FDataLink.DataSource.RemoveFreeNotification(Self);
   FDataLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
@@ -1458,6 +1460,8 @@ end;
 procedure TJvLookupControl.SetLookupSource(Value: TDataSource);
 begin
   CheckNotFixed;
+  if FLookupLink.DataSource <> nil then
+    FLookupLink.DataSource.RemoveFreeNotification(Self);
   FLookupLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

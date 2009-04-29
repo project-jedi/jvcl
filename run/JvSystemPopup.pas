@@ -465,7 +465,10 @@ end;
 procedure TJvSystemPopup.SetPopup(const Value: TPopupMenu);
 begin
   if Assigned(FPopup) then
+  begin
+    FPopup.RemoveFreeNotification(Self);
     FPopup.OnChange := nil;
+  end;
   FPopup := Value;
   if Assigned(FPopup) then
   begin

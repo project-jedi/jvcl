@@ -770,6 +770,8 @@ end;
 
 procedure TJvDBLookupControl.SetDataSource(Value: TDataSource);
 begin
+  if FDataLink.DataSource <> nil then
+    FDataLink.DataSource.RemoveFreeNotification(Self);
   FDataLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
@@ -806,6 +808,8 @@ end;
 procedure TJvDBLookupControl.SetListSource(Value: TDataSource);
 begin
   CheckNotLookup;
+  if FListLink.DataSource <> nil then
+    FListLink.DataSource.RemoveFreeNotification(Self);
   FListLink.DataSource := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -1466,6 +1466,8 @@ end;
 
 procedure TJvCustomSpeedButton.SetDropdownMenu(Value: TPopupMenu);
 begin
+  if FDropDownMenu <> nil then
+    FDropDownMenu.RemoveFreeNotification(Self);
   FDropDownMenu := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
@@ -1913,7 +1915,10 @@ end;
 procedure TJvImageSpeedButton.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> nil then
+  begin
+    FImages.RemoveFreeNotification(Self);
     FImages.UnRegisterChanges(FImageChangeLink);
+  end;
   FImages := Value;
   if FImages <> nil then
   begin

@@ -977,6 +977,8 @@ procedure TJvDesktopAlert.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
+    if FImages <> nil then
+      FImages.RemoveFreeNotification(Self);
     FImages := Value;
     if FImages <> nil then
       FImages.FreeNotification(Self);
@@ -1734,6 +1736,8 @@ procedure TJvCustomDesktopAlert.SetAlertStack(const Value: TJvDesktopAlertStack)
 begin
   if FStacker <> Value then
   begin
+    if FStacker <> nil then
+      FStacker.RemoveFreeNotification(Self);
     FStacker := Value;
     if FStacker <> nil then
     begin

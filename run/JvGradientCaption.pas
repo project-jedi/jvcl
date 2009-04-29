@@ -490,6 +490,8 @@ end;
 
 procedure TJvGradientCaption.SetPopupMenu(Value: TPopupMenu);
 begin
+  if FPopupMenu <> nil then
+    FPopupMenu.RemoveFreeNotification(Self);
   FPopupMenu := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

@@ -388,6 +388,8 @@ procedure TJvCustomAppDBStorage.SetDataSource(const Value: TDataSource);
 begin
   if Assigned(FSectionLink) and not (FSectionLink.DataSourceFixed and (csLoading in ComponentState)) then
   begin
+    FSectionLink.DataSource.RemoveFreeNotification(Self);
+
     FSectionLink.DataSource := Value;
     FKeyLink.DataSource := Value;
     FValueLink.DataSource := Value;

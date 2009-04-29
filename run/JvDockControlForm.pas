@@ -3520,6 +3520,8 @@ end;
 
 procedure TJvDockClient.SetNCPopupMenu(Value: TPopupMenu);
 begin
+  if FNCPopupMenu <> nil then
+    FNCPopupMenu.RemoveFreeNotification(Self);
   FNCPopupMenu := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

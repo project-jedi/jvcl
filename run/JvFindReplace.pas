@@ -685,6 +685,8 @@ end;
 
 procedure TJvFindReplace.SetEditControl(Value: TJvEditControlName);
 begin
+  if FEditControl <> nil then
+    FEditControl.RemoveFreeNotification(Self);
   FEditControl := Value;
   if Value <> nil then
     Value.FreeNotification(Self);

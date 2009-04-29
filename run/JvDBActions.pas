@@ -562,6 +562,8 @@ var
 begin
   if Value <> FDataComponent then
   begin
+    if FDataComponent <> nil then
+      FDataComponent.RemoveFreeNotification(Self);
     FDataComponent := Value;
     if FDataComponent <> nil then
       FDataComponent.FreeNotification(Self);
@@ -1203,6 +1205,8 @@ end;
 procedure TJvDatabaseInsertAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
+  if FSingleRecordWindowAction <> nil then
+    FSingleRecordWindowAction.RemoveFreeNotification(Self);
   FSingleRecordWindowAction := Value;
   if Assigned(FSingleRecordWindowAction) then
     FSingleRecordWindowAction.FreeNotification(Self);
@@ -1299,6 +1303,8 @@ end;
 procedure TJvDatabaseCopyAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
+  if FSingleRecordWindowAction <> nil then
+    FSingleRecordWindowAction.RemoveFreeNotification(Self);
   FSingleRecordWindowAction := Value;
   if Assigned(FSingleRecordWindowAction) then
     FSingleRecordWindowAction.FreeNotification(Self);
@@ -1346,6 +1352,8 @@ end;
 procedure TJvDatabaseEditAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
+  if FSingleRecordWindowAction <> nil then
+    FSingleRecordWindowAction.RemoveFreeNotification(Self);
   FSingleRecordWindowAction := Value;
   if Assigned(FSingleRecordWindowAction) then
     FSingleRecordWindowAction.FreeNotification(Self);

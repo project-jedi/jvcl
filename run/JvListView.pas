@@ -1771,7 +1771,10 @@ begin
   if FHeaderImages <> Value then
   begin
     if FHeaderImages <> nil then
+    begin
+      FHeaderImages.RemoveFreeNotification(Self);
       FHeaderImages.UnRegisterChanges(FImageChangeLink);
+    end;
     FHeaderImages := Value;
     if Assigned(FHeaderImages) then
     begin

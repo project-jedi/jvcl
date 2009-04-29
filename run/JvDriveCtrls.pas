@@ -1147,7 +1147,10 @@ end;
 procedure TJvDirectoryListBox.SetFileList(Value: TJvFileListBox);
 begin
   if FFileList <> nil then
+  begin
+    FFileList.RemoveFreeNotification(Self);
     FFileList.FDirList := nil;
+  end;
   FFileList := Value;
   if FFileList <> nil then
   begin
@@ -1158,6 +1161,8 @@ end;
 
 procedure TJvDirectoryListBox.SetDirLabel(Value: TLabel);
 begin
+  if FDirLabel <> nil then
+    FDirLabel.RemoveFreeNotification(Self);
   FDirLabel := Value;
   if Value <> nil then
     Value.FreeNotification(Self);
@@ -1481,7 +1486,10 @@ end;
 procedure TJvDirectoryListBox.SetDriveCombo(const Value: TJvDriveCombo);
 begin
   if FDriveCombo <> nil then
+  begin
+    FDriveCombo.RemoveFreeNotification(Self);
     FDriveCombo.FDirList := nil;
+  end;
   FDriveCombo := Value;
   if FDriveCombo <> nil then
   begin
