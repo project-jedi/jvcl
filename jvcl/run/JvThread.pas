@@ -96,8 +96,6 @@ type
     procedure SetInternalTimerInterval(Value: Integer);
     procedure SetOnClose(Value: TCloseEvent);
     procedure OnInternalTimer(Sender: TObject); virtual;
-    property SaveOnClose: TCloseEvent read FSaveOnClose write FSaveOnClose;
-    property SaveOnShow: TNotifyEvent read FSaveOnShow write FSaveOnShow;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeFormContents; virtual;
@@ -110,6 +108,9 @@ type
     property FormIsShown: Boolean read FFormIsShown default False;
     property OnPressCancel: TJvThreadCancelEvent read FOnPressCancel
         write FOnPressCancel;
+        
+    property SaveOnClose: TCloseEvent read FSaveOnClose write FSaveOnClose;
+    property SaveOnShow: TNotifyEvent read FSaveOnShow write FSaveOnShow;
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     constructor CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
