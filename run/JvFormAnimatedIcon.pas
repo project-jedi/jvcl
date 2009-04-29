@@ -49,12 +49,14 @@ type
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure Animate(Sender: TObject);
+    procedure SetIcons(const Value: TImageList);
   protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Icons: TImageList read FIcons write FIcons;
+    property Icons: TImageList read FIcons write SetIcons;
     property Active: Boolean read FActive write SetActive default True;
     property Delay: Cardinal read FDelay write SetDelay default 100;
   end;
@@ -97,6 +99,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvFormAnimatedIcon.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  
+  if Operation = opRemove then
+  begin
+    if AComponent = FIcons then
+      SetIcons(nil);
+  end;
+end;
+
 procedure TJvFormAnimatedIcon.Animate(Sender: TObject);
 
 begin
@@ -119,6 +133,17 @@ begin
   FDelay := Value;
   if not (csDesigning in ComponentState) then
     FTimer.Interval := FDelay;
+end;
+
+procedure TJvFormAnimatedIcon.SetIcons(const Value: TImageList);
+begin
+  if FIcons <> nil then
+    FIcons.RemoveFreeNotification(Self);
+
+  FIcons := Value;
+
+  if Value <> nil then
+    FIcons.FreeNotification(Self);
 end;
 
 {$IFDEF UNITVERSIONING}
