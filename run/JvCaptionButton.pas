@@ -144,7 +144,6 @@ type
     FSaveRgn: HRGN;
     FShowHint: Boolean;
     FParentShowHint: Boolean;
-
     {tool tip specific}
     FToolTipHandle: THandle;
     {tool tip specific end}
@@ -152,6 +151,7 @@ type
     {$IFDEF JVCLThemesEnabled}
     FCaptionActive: Boolean;
     FForceDrawSimple: Boolean;
+    FForceRedraw: Boolean;
     function GetIsThemed: Boolean;
     procedure SetForceDrawSimple(const Value: Boolean);
     {$ENDIF JVCLThemesEnabled}
@@ -429,6 +429,12 @@ var
   GGlobalXPData: TGlobalXPData;
 
 //=== Local procedures =======================================================
+
+function IsVistaOrNewer: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
+            (Win32MajorVersion >= 6);
+end;
 
 function GlobalXPData: TGlobalXPData;
 begin
@@ -1216,6 +1222,11 @@ begin
   GlobalXPData.AddClient;
   {$ENDIF JVCLThemesEnabled}
 
+  {$IFDEF JVCLThemesEnabled}
+  if IsVistaOrNewer and IsThemed then // Windows Vista
+    FForceRedraw := True;
+  {$ENDIF JVCLThemesEnabled}
+
   Hook;
 end;
 
@@ -1399,7 +1410,21 @@ begin
   { 3. Calc FDefaultButtonWidth }
   {$IFDEF JVCLThemesEnabled}
   if IsThemed then
-    FDefaultButtonWidth := FDefaultButtonHeight
+  begin
+    if IsVistaOrNewer then
+    begin
+      // This is not exactly correct but WM_GETTITLEBARINFOEX returns the coordinates
+      // for the "Glass" style. But because we paint into the NC area, out window uses
+      // the "Basic" style.
+      FDefaultButtonWidth := GetSystemMetrics(SM_CXSIZE) - 4;
+
+      // Adjust position
+      FDefaultButtonTop := FDefaultButtonTop - 2;
+      FDefaultButtonHeight := FCaptionHeight - 3;
+    end
+    else
+      FDefaultButtonWidth := FDefaultButtonHeight;
+  end
   else
   {$ENDIF JVCLThemesEnabled}
   if FHasSmallCaption then
@@ -2041,8 +2066,15 @@ begin
   GetWindowRect(Wnd, WindowRect);
   OffsetRect(LButtonRect, WindowRect.Left, WindowRect.Top);
   { Check if button rect is in the to be updated region.. }
-  if RectInRegion(FSaveRgn, LButtonRect) then
+  if RectInRegion(FSaveRgn, LButtonRect)
+    {$IFDEF JVCLThemesEnabled}
+    or FForceRedraw
+    {$ENDIF JVCLThemesEnabled}
+    then
   begin
+    {$IFDEF JVCLThemesEnabled}
+    FForceRedraw := False;
+    {$ENDIF JVCLThemesEnabled}
     { ..If so remove the button rectangle from the region (otherwise the caption
       background would be drawn over the button, which causes flicker) }
     with LButtonRect do
