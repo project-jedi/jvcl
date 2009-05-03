@@ -108,9 +108,7 @@ type
     property FormIsShown: Boolean read FFormIsShown default False;
     property OnPressCancel: TJvThreadCancelEvent read FOnPressCancel
         write FOnPressCancel;
-        
-    property SaveOnClose: TCloseEvent read FSaveOnClose write FSaveOnClose;
-    property SaveOnShow: TNotifyEvent read FSaveOnShow write FSaveOnShow;
+
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
     constructor CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
