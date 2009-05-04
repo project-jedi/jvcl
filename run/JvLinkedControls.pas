@@ -179,7 +179,8 @@ begin
     begin
       if Assigned(FOwnerControl) then
         FControl.RemoveFreeNotification(FOwnerControl);
-      if (Collection is TJvLinkedControls) and TJvLinkedControls(Collection).RestoreEnabled then
+      if (Collection is TJvLinkedControls) and TJvLinkedControls(Collection).RestoreEnabled and
+         not (csDestroying in FControl.ComponentState) then
         FControl.Enabled := FOriginalEnabled;
     end;
     if (FOwnerControl <> nil) and (csDestroying in FOwnerControl.ComponentState) then
