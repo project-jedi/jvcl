@@ -11,7 +11,13 @@
       <value>(Mantis #%BUGID%)</value>
     </property>
     <property name="bugtraq:url">
-      <value>http://homepages.codegear.com/jedi/issuetracker/view.php?id=%BUGID%</value>
+      <value>http://issuetracker.delphi-jedi.org/view.php?id=%BUGID%</value>
+    </property>
+    <property name="tsvn:projectlanguage">
+      <value>0x0409</value>
+    </property>
+    <property name="tsvn:logminsize">
+      <value>5</value>
     </property>
 
     <!-- general properties based on extensions -->
@@ -216,6 +222,8 @@
         <value>*.~*</value>
         <value>*.hpp</value>
         <value>__history</value>
+        <value>*.xml</value>
+        <value>*.bak</value>
       </property>
     </setting>
 
