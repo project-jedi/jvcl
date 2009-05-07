@@ -1330,8 +1330,7 @@ begin
   DoChange;
 end;
 
-procedure TJvDropCalendar.CalSelect(Sender: TObject;
-  StartDate, EndDate: TDateTime);
+procedure TJvDropCalendar.CalSelect(Sender: TObject; StartDate, EndDate: TDateTime);
 begin
   DoSelect;
 end;
@@ -1382,9 +1381,19 @@ begin
 end;
 
 procedure TJvDropCalendar.DoSelect;
+var
+  LastCloseOnLeave: Boolean;
 begin
-  if Assigned(OnSelect) then
-    OnSelect(Self);
+  { Protect against releasing the calendar in the message loop of the
+    Application.HandleException dialog. }
+  LastCloseOnLeave := CloseOnLeave;
+  try
+    CloseOnLeave := False;
+    if Assigned(OnSelect) then
+      OnSelect(Self);
+  finally
+    CloseOnLeave := LastCloseOnLeave;
+  end;
 end;
 
 procedure TJvDropCalendar.DoShow;
