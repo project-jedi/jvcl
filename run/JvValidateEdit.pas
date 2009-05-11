@@ -141,6 +141,8 @@ type
     FOnDecimalRounding: TJvCustomDecimalRoundingEvent;
     FAllowEmpty: Boolean;
     FEnforcingMinMaxValue: Boolean;
+    FForceDecimalSeparatorInput: Boolean;
+    FLastDownKey: Word;
     procedure DisplayText;
     function ScientificStrToFloat(SciString: string): Double;
     procedure SetHasMaxValue(NewValue: Boolean);
@@ -217,6 +219,16 @@ type
     function CreateDataConnector: TJvFieldDataConnector; override;
 
     property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
+
+    // If true and the user presses the VK_DECIMAL key, the key read in KeyPress
+    // will always be replaced by the value of DecimalSeparator. This is made
+    // to overcome the problem where some keyboard layouts send "." instead of
+    // the decimal separator when using the decimal key on the numerical keypad.
+    // The most commonly encountered layout is the French AZERTY one.
+    // Note that this property will be set automatically to True by the
+    // constructor when the conversion of VK_DECIMAL into a character does not
+    // return the DecimalSeparator value
+    property ForceDecimalSeparatorInput: Boolean read FForceDecimalSeparatorInput write FForceDecimalSeparatorInput;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -427,6 +439,10 @@ end;
 //=== { TJvCustomValidateEdit } ==============================================
 
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
+var
+  MappedDecimal: Cardinal;
+const
+  MAPVK_VK_TO_CHAR = 2;
 begin
   inherited Create(AOwner);
   FSelfChange := False;
@@ -447,6 +463,10 @@ begin
   FStandardFontColor := Font.Color;
   FOldFontChange := Font.OnChange;
   Font.OnChange := FontChange;
+
+  MappedDecimal := MapVirtualKey(VK_DECIMAL, MAPVK_VK_TO_CHAR);
+  if MappedDecimal <> 0 then
+    FForceDecimalSeparatorInput := Char(MappedDecimal) <> DecimalSeparator;
 end;
 
 destructor TJvCustomValidateEdit.Destroy;
@@ -919,6 +939,9 @@ var
   ExpectedNegPos: Integer;
   ExpectedNegChar: Char;
 begin
+  if (FLastDownKey = VK_DECIMAL) and ForceDecimalSeparatorInput then
+    Key := DecimalSeparator;
+
   case FDisplayFormat of
     dfBinary, dfCheckChars, dfHex, dfOctal, dfYear:
       Result := Pos(Key, FCheckChars) > 0;
@@ -1031,6 +1054,7 @@ end;
 
 procedure TJvCustomValidateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
+  FLastDownKey := Key;
 // if Key = VK_DELETE then    EditText := MakeValid(inherited Text);
   if Key = VK_ESCAPE then
   begin
