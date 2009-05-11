@@ -212,6 +212,7 @@ type
     property AutoAlignment: Boolean read FAutoAlignment write FAutoAlignment;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     function DoValidate(const Key: Char; const AText: string;
       const Posn: Integer): Boolean;
     procedure Loaded; override;
@@ -904,6 +905,12 @@ begin
   if not IsValidChar(Text, Key, SelStart + 1) and (Key >= #32) then
     Key := #0;
   inherited KeyPress(Key);
+end;
+
+procedure TJvCustomValidateEdit.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  FLastDownKey := 0;
+  inherited KeyUp(Key, Shift);
 end;
 
 procedure TJvCustomValidateEdit.WMPaste(var Msg: TMessage);
