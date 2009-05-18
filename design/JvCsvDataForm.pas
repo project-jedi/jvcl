@@ -78,7 +78,7 @@ type
   private
     FUpdating: Boolean;
     FOriginalCsvStr: String;
-    FSeparator: AnsiChar;
+    FSeparator: Char;
     FTypeChars: array [0..JvCsvAsciiTypeArrayLimit] of AnsiChar;
     FFieldTypeCh: AnsiChar;
     procedure ItemChange;
@@ -89,7 +89,7 @@ type
     procedure SetCsvStr(ACsvStr: string);
     function GetCsvStr: string;
   public
-    property Separator: AnsiChar read FSeparator write FSeparator;
+    property Separator: Char read FSeparator write FSeparator;
     property CsvStr: string read GetCsvStr write SetCsvStr;
   end;
 
@@ -113,7 +113,7 @@ begin
     if S = '' then
       S := ListBoxFields.Items[I]
     else
-      S := S + Char(FSeparator) + ListBoxFields.Items[I];
+      S := S + FSeparator + ListBoxFields.Items[I];
   EditCsvStr.Text := S;
 end;
 
@@ -218,7 +218,7 @@ begin
   SetLength(Fields, JvCsv_MAXCOLUMNS); { MAXCOLUMNS is a constant from CsvDataSource.pas }
   EditCsvStr.Text := ACsvStr;
   if Length(FieldDefStr) > 0 then
-    Count := JvStrSplit(FieldDefStr, Char(FSeparator), Char(0), Fields, JvCsv_MAXCOLUMNS)
+    Count := JvStrSplit(FieldDefStr, FSeparator, #0, Fields, JvCsv_MAXCOLUMNS)
   else
     Count := 0;
 

@@ -81,7 +81,7 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-function DoCsvDefDialog(OldValue: string; ASeparator: AnsiChar): string;
+function DoCsvDefDialog(OldValue: string; ASeparator: Char): string;
 var
   WindowList: Pointer;
 begin
@@ -110,7 +110,7 @@ begin
   S1 := GetValue;
   if S1 = '' then
     S1 := Component.GetCsvHeader;
-  S2 := DoCsvDefDialog(S1, TJvCsvDataSet(Component).Separator); {AnsiChar}
+  S2 := DoCsvDefDialog(S1, TJvCsvDataSet(Component).Separator);
 
   //if S1 <> S2 then begin // on change of csv value.
   SetValue(S2);
