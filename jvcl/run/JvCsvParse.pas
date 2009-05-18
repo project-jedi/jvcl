@@ -71,7 +71,7 @@ function GetString(var Source: AnsiString; const Separator: AnsiString): AnsiStr
 function PadString(const S: AnsiString; Len: Integer; PadChar: AnsiChar): AnsiString;
 //procedure Gibble(var S: AnsiString); // Deprecated. With a name like Gibble, are you surprised?
 function BuildPathName(const PathName, FileName: AnsiString): AnsiString;
-function StrEatWhiteSpace(const S: AnsiString): AnsiString;
+function StrEatWhiteSpace(const S: string): string;
 function HexToAscii(const S: AnsiString): AnsiString;
 function AsciiToHex(const S: AnsiString): AnsiString;
 function StripQuotes(const S1: AnsiString): AnsiString;
@@ -99,7 +99,11 @@ function IsKeyword(S1: PAnsiChar): Boolean;
 function JvValidVarReference(S1: PAnsiChar): Boolean;
 function GetParenthesis(S1, S2: PAnsiChar): Boolean;
 procedure JvGetVarReference(S1, S2, SIdx: PAnsiChar);
-procedure JvEatWhitespaceChars(S1: PAnsiChar);
+procedure JvEatWhitespaceChars(S1: PAnsiChar); overload;
+
+{$IFDEF COMPILER12_UP}
+procedure JvEatWhitespaceChars(S1: PWideChar); overload;
+{$ENDIF COMPILER12_UP}
 
 { Debugging functions related to JvGetToken function. }
 function GetTokenCount: Integer;
@@ -465,18 +469,18 @@ begin
   Inc(TokenCount);
 end;
 
-function StrEatWhiteSpace(const S: AnsiString): AnsiString;
+function StrEatWhiteSpace(const S: string): string;
 var
-  Buf: array [0..1024] of AnsiChar;
+  Buf: array [0..1024] of Char;
 begin
   if Length(S) > 1024 then
   begin
     Result := S;
     Exit;
   end;
-  StrCopy(Buf, PAnsiChar(S));
+  StrCopy(Buf, PChar(S));
   JvEatWhitespaceChars(Buf);
-  Result := AnsiString(Buf);
+  Result := string(Buf);
 end;
 
 { strip whitespace from pchar - space or tab }
@@ -503,6 +507,31 @@ begin
     else
       StrLCopy(S1, S1 + T, (U - T) + 1);
 end;
+
+{$IFDEF COMPILER12_UP}
+procedure JvEatWhitespaceChars(S1: PWideChar);
+var
+  T, U, L: Integer;
+begin
+  L := StrLen(S1);
+  // U := L;
+  if L <= 0 then
+    Exit;
+  { skip spaces starting at the beginning }
+  for T := 0 to L do
+    if (S1[T] <> ' ') and (S1[T] <> Tab) then
+      Break;
+  { skip spaces starting at the end }
+  for U := L - 1 downto T do
+    if (S1[U] <> ' ') and (S1[U] <> Tab) then
+      Break;
+  if (T > 0) or (U < L - 1) then
+    if T > U then  // was T>=U (test me!)
+      S1[0] := Chr(0)
+    else
+      StrLCopy(S1, S1 + T, (U - T) + 1);
+end;
+{$ENDIF COMPILER12_UP}
 
 function GetParenthesis(S1, S2: PAnsiChar): Boolean;
 var

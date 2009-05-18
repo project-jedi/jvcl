@@ -245,6 +245,10 @@ procedure MoveString(const Source: string; SrcStartIdx: Integer; var Dest: strin
 procedure FillWideChar(var Buffer; Count: Integer; const Value: WideChar);
 { MoveWideChar copies Count WideChars from Source to Dest }
 procedure MoveWideChar(const Source; var Dest; Count: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+{ FillNativeChar fills Buffer with Count NativeChars }
+procedure FillNativeChar(var Buffer; Count: Integer; const Value: Char); // D2009 internal error {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+{ MoveWideChar copies Count WideChars from Source to Dest }
+procedure MoveNativeChar(const Source; var Dest; Count: Integer); // D2009 internal error {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 {$ENDIF !CLR}
 { IsSubString() compares the sub string to the string. Indices are 1th based. }
 function IsSubString(const S: string; StartIndex: Integer; const SubStr: string): Boolean;
@@ -2452,6 +2456,24 @@ end;
 procedure MoveWideChar(const Source; var Dest; Count: Integer);
 begin
   Move(Source, Dest, Count * SizeOf(WideChar));
+end;
+
+procedure FillNativeChar(var Buffer; Count: Integer; const Value: Char);
+begin
+  {$IFDEF COMPILER12_UP}
+  FillWideChar(Buffer, Count, Value);
+  {$ELSE}
+  FillChar(Buffer, Count, Value);
+  {$ENDIF COMPILER12_UP}
+end;
+
+procedure MoveNativeChar(const Source; var Dest; Count: Integer);
+begin
+  {$IFDEF COMPILER12_UP}
+  MoveWideChar(Source, Dest, Count);
+  {$ELSE}
+  Move(Source, Dest, Count);
+  {$ENDIF COMPILER12_UP}
 end;
 {$ELSE}
 procedure FillString(var Buffer: string; Count: Integer; const Value: Char);
