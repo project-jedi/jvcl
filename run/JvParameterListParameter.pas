@@ -2386,7 +2386,6 @@ end;
 procedure TJvMemoParameter.CreateWinControl(AParameterParent: TWinControl);
 begin
   SetWinControl (DynControlEngine.CreateMemoControl(Self, AParameterParent, GetParameterName));
-  AsVariant := '';
 end;
 
 procedure TJvMemoParameter.SetWinControlProperties;
