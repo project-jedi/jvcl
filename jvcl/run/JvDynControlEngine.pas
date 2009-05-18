@@ -727,8 +727,12 @@ end;
 
 function TJvDynControlEngine.CreateMemoControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName: string): TWinControl;
+var
+  DynCtrlData: IJvDynControlData;
 begin
   Result := TWinControl(CreateControl(jctMemo, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlData, DynCtrlData);
+  DynCtrlData.ControlValue := '';
 end;
 
 function TJvDynControlEngine.CreateRichEditControl(AOwner: TComponent;
