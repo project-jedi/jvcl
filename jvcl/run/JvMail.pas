@@ -98,10 +98,10 @@ type
 
   TJvMail = class(TJvComponent)
   private
-    FAttachment: TStringList;
+    FAttachment: TStrings;
     FAttachArray: array of TMapiFileDesc;
     FBlindCopy: TJvMailRecipients;
-    FBody: TStringList;
+    FBody: TStrings;
     FBodyText: string;
     FCarbonCopy: TJvMailRecipients;
     FRecipient: TJvMailRecipients;
@@ -124,13 +124,10 @@ type
     procedure SetBlindCopy(const Value: TJvMailRecipients);
     procedure SetCarbonCopy(const Value: TJvMailRecipients);
     procedure SetRecipient(const Value: TJvMailRecipients);
-    function GetBody: TStrings;
     procedure SetBody(const Value: TStrings);
     function GetUserLogged: Boolean;
-    function GetAttachment: TStrings;
     procedure SetAttachment(const Value: TStrings);
     function GetSimpleMapi: TJclSimpleMapi;
-    procedure SetSeedMessageID(const Value: string);
   protected
     procedure CheckLoadLib;
     procedure CheckUserLogged;
@@ -158,14 +155,14 @@ type
     function SaveMail(const MessageID: string): string;
     procedure SendMail(ShowDialog: Boolean = True);
     property ReadedMail: TJvMailReadedData read FReadedMail;
-    property SeedMessageID: string read FSeedMessageID write SetSeedMessageID;
+    property SeedMessageID: string read FSeedMessageID write FSeedMessageID;
     property SessionHandle: THandle read FSessionHandle;
     property SimpleMAPI: TJclSimpleMapi read GetSimpleMapi;
     property UserLogged: Boolean read GetUserLogged;
   published
-    property Attachment: TStrings read GetAttachment write SetAttachment;
+    property Attachment: TStrings read FAttachment write SetAttachment;
     property BlindCopy: TJvMailRecipients read FBlindCopy write SetBlindCopy;
-    property Body: TStrings read GetBody write SetBody;
+    property Body: TStrings read FBody write SetBody;
     property CarbonCopy: TJvMailRecipients read FCarbonCopy write SetCarbonCopy;
     property LogonOptions: TJvMailLogonOptions read FLogonOptions write FLogonOptions
       default [loLogonUI, loNewSession];
@@ -193,19 +190,6 @@ implementation
 
 uses
   JvConsts, JvResources;
-
-// attempt to find separators (#0) between physical and virtual file name
-// if not separator is found, same as ExtractFileName, except it returns a pointer to a position in AFileName.
-
-function ExtractFileNamePtr(const AFileName: AnsiString): PAnsiChar;
-var
-  I: Integer;
-begin
-  I := Pos(#0, string(AFileName));
-  if I = 0 then
-    I := LastDelimiter(PathDelim + DriveDelim, string(AFileName));
-  Result := PAnsiChar(AFileName) + I;
-end;
 
 //=== { TJvMailRecipient } ===================================================
 
@@ -402,32 +386,48 @@ procedure TJvMail.CreateMapiMessage;
   procedure MakeAttachments;
   var
     I: Integer;
+    FileNames: array of AnsiString;
+    PathNames: array of AnsiString;
   begin
     if Attachment.Count > 0 then
     begin
+      SetLength(FileNames, Attachment.Count);
+      SetLength(PathNames, Attachment.Count);
+
       SetLength(FAttachArray, Attachment.Count);
       for I := 0 to Attachment.Count - 1 do
       begin
         if not FileExists(Attachment[I]) then
           raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
+
+        FileNames[I] := AnsiString(ExtractFileName(Attachment[I]));
+        PathNames[I] := AnsiString(Attachment[I]);
+
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := ExtractFileNamePtr(AnsiString(Attachment[I]));
-        FAttachArray[I].lpszPathName := PAnsiChar(AnsiString(Attachment[I]));
+        FAttachArray[I].lpszFileName := PAnsiChar(FileNames[I]);
+        FAttachArray[I].lpszPathName := PAnsiChar(PathNames[I]);
       end;
     end
     else
       FAttachArray := nil;
   end;
 
+var
+  AnsiSubject: AnsiString;
+  AnsiBody: AnsiString;
 begin
   try
     CreateRecips;
     MakeAttachments;
+
     FBodyText := Body.Text;
+    AnsiSubject := AnsiString(FSubject);
+    AnsiBody := AnsiString(FBodyText);
+
     FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
-    FMapiMessage.lpszSubject := PAnsiChar(AnsiString(FSubject));
-    FMapiMessage.lpszNoteText := PAnsiChar(AnsiString(FBodyText));
+    FMapiMessage.lpszSubject := PAnsiChar(AnsiSubject);
+    FMapiMessage.lpszNoteText := PAnsiChar(AnsiBody);
     FMapiMessage.lpRecips := PMapiRecipDesc(FRecipArray);
     FMapiMessage.nRecipCount := Length(FRecipArray);
     FMapiMessage.lpFiles := PMapiFileDesc(FAttachArray);
@@ -445,21 +445,27 @@ var
   procedure MakeRecips(RecipList: TJvMailRecipients);
   var
     I: Integer;
+    Names, Addresses: array of AnsiString;
   begin
+    SetLength(Names, RecipList.Count);
+    SetLength(Addresses, RecipList.Count);
     for I := 0 to RecipList.Count - 1 do
     begin
       if not RecipList[I].Valid then
         raise EJclMapiError.CreateResFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
+
+      Addresses[I] := AnsiString(RecipList[I].Address);
+      if Name <> '' then
+        Names[I] := AnsiString(RecipList[I].Name);
+
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
-      with FRecipArray[RecipIndex], RecipList[I] do
-      begin
-        ulRecipClass := RecipList.RecipientClass;
-        if Name = '' then // some clients requires Name item always filled
-          lpszName := PAnsiChar(AnsiString(Address))
-        else
-          lpszName := PAnsiChar(AnsiString(Name));
-        lpszAddress := PAnsiChar(AnsiString(Address));
-      end;
+      FRecipArray[RecipIndex].ulRecipClass := RecipList.RecipientClass;
+      FRecipArray[RecipIndex].lpszAddress := PAnsiChar(Addresses[I]);
+      if Name = '' then // some clients requires Name item always filled
+        FRecipArray[RecipIndex].lpszName := FRecipArray[RecipIndex].lpszAddress
+      else
+        FRecipArray[RecipIndex].lpszName := PAnsiChar(Names[I]);
+
       Inc(RecipIndex);
     end;
   end;
@@ -700,25 +706,25 @@ end;
 
 function TJvMail.SaveMail(const MessageID: string): string;
 var
-  MsgID: array [0..512] of Char;
+  MsgID: array [0..512] of AnsiChar;
   Flags: ULONG;
 begin
   Result := '';
   CheckLoadLib;
   CreateMapiMessage;
   try
-    StrPCopy(MsgID, MessageID);
+    StrPCopy(MsgID, AnsiString(MessageID));
     SaveTaskWindowsState;
     Flags := LogonFlags;
     if FLongMsgId then
       Flags := Flags or MAPI_LONG_MSGID;
     try
       ErrorCheck(FSimpleMapi.MapiSaveMail(FSessionHandle, Application.Handle,
-        FMapiMessage, Flags, 0, PAnsiChar(@AnsiString(MsgID)[1])));
+        FMapiMessage, Flags, 0, MsgID));
     finally
       RestoreTaskWindowsState;
     end;
-    Result := MsgID;
+    Result := string(MsgID);
   finally
     FreeMapiMessage;
   end;
@@ -761,11 +767,6 @@ begin
   end;
 end;
 
-function TJvMail.GetAttachment: TStrings;
-begin
-  Result := FAttachment;
-end;
-
 procedure TJvMail.SetAttachment(const Value: TStrings);
 begin
   FAttachment.Assign(Value);
@@ -774,11 +775,6 @@ end;
 procedure TJvMail.SetBlindCopy(const Value: TJvMailRecipients);
 begin
   FBlindCopy.Assign(Value);
-end;
-
-function TJvMail.GetBody: TStrings;
-begin
-  Result := FBody;
 end;
 
 procedure TJvMail.SetBody(const Value: TStrings);
@@ -794,11 +790,6 @@ end;
 procedure TJvMail.SetRecipient(const Value: TJvMailRecipients);
 begin
   FRecipient.Assign(Value);
-end;
-
-procedure TJvMail.SetSeedMessageID(const Value: string);
-begin
-  FSeedMessageID := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
