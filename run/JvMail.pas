@@ -102,7 +102,6 @@ type
     FAttachArray: array of TMapiFileDesc;
     FBlindCopy: TJvMailRecipients;
     FBody: TStrings;
-    FBodyText: string;
     FCarbonCopy: TJvMailRecipients;
     FRecipient: TJvMailRecipients;
     FSimpleMapi: TJclSimpleMapi;
@@ -136,6 +135,7 @@ type
     procedure DecodeAttachments(Attachments: PMapiFileDesc; AttachCount: Integer);
     procedure DecodeRecipients(Recips: PMapiRecipDesc; RecipCount: Integer);
     procedure FreeMapiMessage;
+    procedure FreeRecipArray;
     function LogonFlags: DWORD;
     procedure RestoreTaskWindowsState;
     procedure SaveTaskWindowsState;
@@ -330,17 +330,21 @@ var
 begin
   CheckLoadLib;
   CreateRecips;
-  SaveTaskWindowsState;
   try
-    Result := (ErrorCheck(FSimpleMapi.MapiAddress(FSessionHandle, Application.Handle,
-      PAnsiChar(AnsiString(Caption)), EditFields, nil, Length(FRecipArray), FRecipArray[0],
-      LogonFlags, 0, @NewRecipCount, NewRecips)) = SUCCESS_SUCCESS);
+    SaveTaskWindowsState;
+    try
+      Result := (ErrorCheck(FSimpleMapi.MapiAddress(FSessionHandle, Application.Handle,
+        PAnsiChar(AnsiString(Caption)), EditFields, nil, Length(FRecipArray), FRecipArray[0],
+        LogonFlags, 0, @NewRecipCount, NewRecips)) = SUCCESS_SUCCESS);
+    finally
+      RestoreTaskWindowsState;
+    end;
+    if Result then
+      DecodeRecipients(NewRecips, NewRecipCount);
+    FSimpleMapi.MapiFreeBuffer(NewRecips);
   finally
-    RestoreTaskWindowsState;
+    FreeRecipArray;
   end;
-  if Result then
-    DecodeRecipients(NewRecips, NewRecipCount);
-  FSimpleMapi.MapiFreeBuffer(NewRecips);
 end;
 
 procedure TJvMail.BeforeClientLibUnload(Sender: TObject);
@@ -386,48 +390,33 @@ procedure TJvMail.CreateMapiMessage;
   procedure MakeAttachments;
   var
     I: Integer;
-    FileNames: array of AnsiString;
-    PathNames: array of AnsiString;
   begin
     if Attachment.Count > 0 then
     begin
-      SetLength(FileNames, Attachment.Count);
-      SetLength(PathNames, Attachment.Count);
-
       SetLength(FAttachArray, Attachment.Count);
       for I := 0 to Attachment.Count - 1 do
       begin
         if not FileExists(Attachment[I]) then
           raise EJclMapiError.CreateResFmt(@RsAttachmentNotFound, [Attachment[I]]);
 
-        FileNames[I] := AnsiString(ExtractFileName(Attachment[I]));
-        PathNames[I] := AnsiString(Attachment[I]);
-
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := PAnsiChar(FileNames[I]);
-        FAttachArray[I].lpszPathName := PAnsiChar(PathNames[I]);
+        FAttachArray[I].lpszFileName := StrNew(PAnsiChar(AnsiString(ExtractFileName(Attachment[I]))));
+        FAttachArray[I].lpszPathName := StrNew(PAnsiChar(AnsiString(Attachment[I])));
       end;
     end
     else
       FAttachArray := nil;
   end;
 
-var
-  AnsiSubject: AnsiString;
-  AnsiBody: AnsiString;
 begin
   try
+    FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
     CreateRecips;
     MakeAttachments;
 
-    FBodyText := Body.Text;
-    AnsiSubject := AnsiString(FSubject);
-    AnsiBody := AnsiString(FBodyText);
-
-    FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
-    FMapiMessage.lpszSubject := PAnsiChar(AnsiSubject);
-    FMapiMessage.lpszNoteText := PAnsiChar(AnsiBody);
+    FMapiMessage.lpszSubject := StrNew(PAnsiChar(AnsiString(FSubject)));
+    FMapiMessage.lpszNoteText := StrNew(PAnsiChar(AnsiString(FBody.Text)));
     FMapiMessage.lpRecips := PMapiRecipDesc(FRecipArray);
     FMapiMessage.nRecipCount := Length(FRecipArray);
     FMapiMessage.lpFiles := PMapiFileDesc(FAttachArray);
@@ -445,26 +434,19 @@ var
   procedure MakeRecips(RecipList: TJvMailRecipients);
   var
     I: Integer;
-    Names, Addresses: array of AnsiString;
   begin
-    SetLength(Names, RecipList.Count);
-    SetLength(Addresses, RecipList.Count);
     for I := 0 to RecipList.Count - 1 do
     begin
       if not RecipList[I].Valid then
         raise EJclMapiError.CreateResFmt(@RsRecipNotValid, [RecipList[I].GetNamePath]);
 
-      Addresses[I] := AnsiString(RecipList[I].Address);
-      if Name <> '' then
-        Names[I] := AnsiString(RecipList[I].Name);
-
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       FRecipArray[RecipIndex].ulRecipClass := RecipList.RecipientClass;
-      FRecipArray[RecipIndex].lpszAddress := PAnsiChar(Addresses[I]);
+      FRecipArray[RecipIndex].lpszAddress := StrNew(PAnsiChar(AnsiString(RecipList[I].Address)));
       if Name = '' then // some clients requires Name item always filled
         FRecipArray[RecipIndex].lpszName := FRecipArray[RecipIndex].lpszAddress
       else
-        FRecipArray[RecipIndex].lpszName := PAnsiChar(Names[I]);
+        FRecipArray[RecipIndex].lpszName := StrNew(PAnsiChar(AnsiString(RecipList[I].Name)));
 
       Inc(RecipIndex);
     end;
@@ -551,9 +533,7 @@ begin
     PAnsiChar(AnsiString(FSeedMessageID)), Flags, 0, @MsgID[0]);
   Result := (Res = SUCCESS_SUCCESS);
   if Result then
-  begin
-    FSeedMessageID := string(MsgID);
-  end
+    FSeedMessageID := string(MsgID)
   else
   begin
     FSeedMessageID := '';
@@ -563,16 +543,46 @@ begin
 end;
 
 procedure TJvMail.FreeMapiMessage;
+var
+  I: Integer;
 begin
+  for I := 0 to High(FAttachArray) do
+  begin
+    if FAttachArray[I].lpszPathName <> FAttachArray[I].lpszFileName then
+      StrDispose(FAttachArray[I].lpszPathName);
+    StrDispose(FAttachArray[I].lpszFileName);
+  end;
   FAttachArray := nil;
-  FRecipArray := nil;
-  FBodyText := '';
+  FreeRecipArray;
+  StrDispose(FMapiMessage.lpszSubject);
+  StrDispose(FMapiMessage.lpszNoteText);
   FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
+end;
+
+procedure TJvMail.FreeRecipArray;
+var
+  I: Integer;
+begin
+  for I := 0 to High(FRecipArray) do
+  begin
+    if FRecipArray[I].lpszName <> FRecipArray[I].lpszAddress then
+      StrDispose(FRecipArray[I].lpszName);
+    StrDispose(FRecipArray[I].lpszAddress);
+  end;
+  FRecipArray := nil;
 end;
 
 procedure TJvMail.FreeSimpleMapi;
 begin
-  FreeAndNil(FSimpleMapi);
+  try
+    if FSimpleMapi <> nil then
+    begin
+      FSimpleMapi.BeforeUnloadClient := nil; // prevent memory leak
+      LogOff;
+    end;
+  finally
+    FreeAndNil(FSimpleMapi);
+  end;
 end;
 
 function TJvMail.GetSimpleMapi: TJclSimpleMapi;
