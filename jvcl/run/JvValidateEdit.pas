@@ -229,7 +229,6 @@ type
     // Note that this property will be set automatically to True by the
     // constructor when the conversion of VK_DECIMAL into a character does not
     // return the DecimalSeparator value
-    property ForceDecimalSeparatorInput: Boolean read FForceDecimalSeparatorInput write FForceDecimalSeparatorInput;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -240,6 +239,7 @@ type
     property AsInteger: Int64 read GetAsInteger write SetAsInteger;
     property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
+    property ForceDecimalSeparatorInput: Boolean read FForceDecimalSeparatorInput write FForceDecimalSeparatorInput;
   end;
 
   TJvValidateEdit = class(TJvCustomValidateEdit)
