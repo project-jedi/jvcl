@@ -32,7 +32,8 @@ Description:
   - It is possible to specify a NoDateText which will be displayed when no date
     is selected. The original datetimepicker would display 1899-12-31 in such
     cases. This feature could be further controlled by the AllowNoDate and
-    NoDateShortcut properties.
+    NoDateShortcut properties. With the NoDateValue you can control what TDateTime
+    value should be used. It defaults to 0, what means 1899-12-31.
 
 Known issues / not (yet) implemented features:
 
@@ -80,7 +81,7 @@ type
     Length: Byte;
     Index: Byte;
   end;
-  TJvDateFigures = array[ 0..2] of TJvDateFigureInfo;
+  TJvDateFigures = array[0..2] of TJvDateFigureInfo;
 
   {A dropdown form with an embedded calendar control.}
   TJvDropCalendar = class(TJvCustomDropDownForm)
@@ -135,6 +136,7 @@ type
     FStoreDateFormat: Boolean;
     FDateSeparator: Char;
     FPopupDate: TDateTime;
+    FNoDateValue: TDateTime;
     FOnGetValidDateString: TJvGetValidDateStringEvent;
     //    FMinYear: Word;
     //    FMaxYear: Word;
@@ -157,6 +159,7 @@ type
     procedure SetDateFormat(const AValue: string);
     function GetDropped: Boolean;
     procedure SetNoDateText(const AValue: string);
+    procedure SetNoDateValue(const AValue: TDateTime);
     procedure SetDateSeparator(const AValue: Char);
     function GetEditMask: string;
     procedure SetEditMask(const AValue: string);
@@ -173,6 +176,7 @@ type
     function AcceptPopup(var Value: Variant): Boolean; override;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
+    function IsNoDateValueStored: Boolean;
     procedure PopupChange; override;
     procedure Change; override;
     procedure Loaded; override;
@@ -210,6 +214,7 @@ type
     //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
     property NoDateText: string read FNoDateText write SetNoDateText stored IsNoDateTextStored;
+    property NoDateValue: TDateTime read FNoDateValue write SetNoDateValue stored IsNoDateValueStored; 
     property ShowButton default True;
     property StoreDate: Boolean read FStoreDate write FStoreDate default False;
     property StoreDateFormat: Boolean read FStoreDateFormat write FStoreDateFormat default False;
@@ -290,6 +295,7 @@ type
     property Images;
     property NoDateShortcut;
     property NoDateText;
+    property NoDateValue;
     property NumGlyphs;
     property ParentColor;
     property ParentFont;
@@ -446,7 +452,7 @@ begin
       SysUtils.DateSeparator := FDateSeparator;
       ShortDateFormat := FInternalDateFormat;
       if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
-        ADate := 0.0
+        ADate := NoDateValue
       else
       begin
         if ARaise then
@@ -588,7 +594,7 @@ begin
       end;
       {make sure querying the date in an OnChange event handler always reflects
        the current contents of the control and not just the last valid value.}
-      lDate := 0;
+      lDate := NoDateValue;
       AttemptTextToDate(Text, lDate, lActFig.Index = High(TJvDateFigures));
       if AlwaysReturnEditDate then
         FDate := lDate;
@@ -717,7 +723,7 @@ end;
 function TJvCustomDatePickerEdit.DetermineDateSeparator(AFormat: string): Char;
 begin
   AFormat := StrRemoveChars(Trim(AFormat), ['d', 'M', 'y']);
-  if Length(AFormat) > 0 then
+  if AFormat <> '' then
     Result := AFormat[1]
   else
     Result := SysUtils.DateSeparator;
@@ -749,9 +755,9 @@ begin
         raise;
       end
       else
-        Self.Date := 0;
+        Self.Date := NoDateValue;
   end;
-  if AllowNoDate and (lDate = 0.0) then
+  if AllowNoDate and (lDate = NoDateValue) then
   begin
     Result := EditText;
     EditText := '';
@@ -894,7 +900,7 @@ end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
 begin
-  Result := (FDate = 0);
+  Result := FDate = NoDateValue;
 end;
 
 function TJvCustomDatePickerEdit.IsEmptyMaskText(const AText: string): Boolean;
@@ -909,7 +915,12 @@ end;
 
 function TJvCustomDatePickerEdit.IsNoDateTextStored: Boolean;
 begin
-  Result := (NoDateText <> '');
+  Result := NoDateText <> '';
+end;
+
+function TJvCustomDatePickerEdit.IsNoDateValueStored: Boolean;
+begin
+  Result := NoDateValue <> 0;
 end;
 
 procedure TJvCustomDatePickerEdit.RestoreMaskForKeyPress;
@@ -932,27 +943,28 @@ var
   // Indicates whether FDeleting is set here from False to True.
   DeleteSetHere: Boolean;
   OrgEditText: string;
+  WasUnmasked: Boolean;
 begin
   DeleteSetHere := False;
+  WasUnmasked := not IsMasked;
   RestoreMaskForKeyPress;
 
   if AllowNoDate and (ShortCut(Key, Shift) = NoDateShortcut) and EditCanModify then
-    Date := 0
+    Date := NoDateValue
   else
   if Shift * KeyboardShiftStates = [] then
     case Key of
-//      VK_ESCAPE:
-//        begin
-//          CloseUp;
-//          Reset;
-//        end;
-//      VK_DOWN:
-//        if AShift = [ssAlt] then
-//          DropDown;
       VK_BACK, VK_CLEAR, VK_DELETE, VK_EREOF, VK_OEM_CLEAR:
         begin
           DeleteSetHere := not FDeleting;
           FDeleting := True;
+
+          { Workaround for an TMaskEdit bug: If the NoDateText is visible and the
+            user presses VK_BACK the TCustomMaskEdit.DeleteKeys will raise an
+            access violation.
+            Fortunately we have already cleared the edit in RestoreMaskForKeyPress(). }
+          if (Key = VK_BACK) and (SelStart = 0) and (SelLength = 1) and WasUnmasked then
+            Key := 0;
         end;
       VK_RETURN:
         begin
@@ -1109,11 +1121,11 @@ begin
   begin
     if AValue then
     begin
-      if Self.Date = 0 then
+      if Self.Date = NoDateValue then
         Self.Date := SysUtils.Date;
     end
     else
-      Self.Date := 0;
+      Self.Date := NoDateValue;
     Change;
   end;
 end;
@@ -1124,7 +1136,7 @@ begin
   begin
     StoreDate := Trunc(AValue) = Trunc(FDate);
     FDate := AValue;
-    if AValue <> 0 then
+    if AValue <> NoDateValue then
       Checked := True;
     DoChange;
   end;
@@ -1173,6 +1185,15 @@ procedure TJvCustomDatePickerEdit.SetNoDateText(const AValue: string);
 begin
   FNoDateText := AValue;
   UpdateDisplay;
+end;
+
+procedure TJvCustomDatePickerEdit.SetNoDateValue(const AValue: TDateTime);
+begin
+  if AValue <> FNoDateValue then
+  begin
+    FNoDateValue := AValue;
+    UpdateDisplay;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.SetPopupValue(const Value: Variant);
@@ -1263,7 +1284,7 @@ end;
 
 function TJvCustomDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
-  if (not AllowNoDate) and (ADate = 0) then
+  if not AllowNoDate and (ADate = NoDateValue) then
     RaiseNoDate;
   if (ADate < EncodeDate(1752, 09, 14)) or ((ADate > EncodeDate(1752, 09, 19)) and (ADate < EncodeDate(1752, 10, 1))) then
     { For historical/political reasons the days 1752-09-03 - 1752-09-13 do not
