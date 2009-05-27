@@ -161,6 +161,7 @@ type
     property Images;
     property NoDateShortcut;
     property NoDateText;
+    property NoDateValue;
     property NumGlyphs;
     property ParentColor;
     property ParentFont;
@@ -252,13 +253,18 @@ procedure TJvCustomDBDatePickerEdit.Loaded;
 begin
   inherited Loaded;
   if AllowNoDate and not IsLinked then
-    InternalDate := 0.0;
+    InternalDate := NoDateValue;
 end;
 
 procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
 begin
   if IsLinked and FDataLink.Active then
-    InternalDate := FDataLink.Field.AsDateTime;
+  begin
+    if AllowNoDate and FDataLink.Field.IsNull then
+      InternalDate := NoDateValue
+    else
+      InternalDate := FDataLink.Field.AsDateTime;
+  end;
 end;
 
 destructor TJvCustomDBDatePickerEdit.Destroy;
@@ -349,7 +355,7 @@ begin
       Result := True;
   end
   else
-    Result := AllowNoDate and (Date = 0.0);
+    Result := AllowNoDate and (Date = NoDateValue);
 end;
 
 function TJvCustomDBDatePickerEdit.IsLinked: Boolean;
