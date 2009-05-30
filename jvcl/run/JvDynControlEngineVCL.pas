@@ -2185,7 +2185,7 @@ end;
 
 procedure TJvDynControlVCLComboBox.ControlSetOnChange(Value: TNotifyEvent);
 begin
-  //  OnChange := Value;
+  OnChange := Value;
 end;
 
 procedure TJvDynControlVCLComboBox.ControlSetOnClick(Value: TNotifyEvent);
