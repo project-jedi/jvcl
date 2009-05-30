@@ -248,7 +248,7 @@ uses
   JvStrings, JvResources;
 
 const
-  cLastSaveTime = 'Last Save Time';
+  cLastSaveTime = 'LastSaveTime';
   cObject = 'Object';
   cItem = 'Item';
 
