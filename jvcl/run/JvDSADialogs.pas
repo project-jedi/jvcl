@@ -849,6 +849,7 @@ begin
     ResultForm.BorderStyle := bsDialog;
     ResultForm.Canvas.Font := ResultForm.Font;
     ResultForm.KeyPreview := True;
+    ResultForm.HelpContext := HelpCtx;
     ResultForm.OnKeyDown := ResultForm.CustomKeyDown;
     ResultForm.OnShow := ResultForm.CustomShow;
     ResultForm.OnMouseDown := ResultForm.CustomMouseDown;
