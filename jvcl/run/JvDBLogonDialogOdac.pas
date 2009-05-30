@@ -47,6 +47,7 @@ type
     constructor Create(AOwner: TComponent); override;
     function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
         override;
+  published
     property Net: Boolean read FNet write FNet default false;
     property OracleHome: string read FOracleHome write FOracleHome;
   end;
