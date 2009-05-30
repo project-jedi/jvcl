@@ -1306,6 +1306,7 @@ begin
   TransferSessionDataToDialog;
   if (DialogUserName = '') and Options.SaveLastConnect then
     TransferConnectionInfoToDialog(ConnectionList.LastConnect);
+  SetConnectBtnEnabled;
 end;
 
 function TJvBaseDBLogonDialog.GetActivePage: TJvDBLogonDialogActivePage;
