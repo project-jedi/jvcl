@@ -84,6 +84,8 @@ type
     Button1: TButton;
     BitBtn11: TBitBtn;
     JvDatabaseEditAction2: TJvDatabaseEditAction;
+    BitBtn12: TBitBtn;
+    BitBtn13: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
     procedure JvDatabaseFirstAction1AfterExecute(Sender: TObject; ControlEngine:
@@ -103,8 +105,16 @@ implementation
 
 {$R *.dfm}
 
-uses JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineVCLDB, JvDynControlEngineJVCLDB,
-  JvDynControlEngineTools, JvDynControlEngineDBTools,
+uses JvDynControlEngine,
+  JvDynControlEngineDB,
+  JvDynControlEngineDBToolscxVGrid,
+  JvDynControlEngineDevExpcx,
+
+  JvDynControlEngineDevExpcxDb,
+//  JvDynControlEngineVCLDB,
+//  JvDynControlEngineJVCLDB,
+  JvDynControlEngineTools,
+  JvDynControlEngineDBTools,
   JvDBActionsEngineControlCxGrid,
   JvDBActionsEngineDatasetAdo,
   JvDBActionsEngineDatasetOdac,
@@ -114,7 +124,9 @@ uses JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineVCLDB, JvDynCon
 
 procedure TJvDBActionMainFrm.FormCreate(Sender: TObject);
 begin
-  SetDefaultDynControlEngineDB(DynControlEngineJVCLDB);
+//  SetDefaultDynControlEngineDB(DynControlEngineJVCLDB);
+  SetDefaultDynControlEngineDB(DynControlEngineCxDB);
+  JvDatabaseSingleRecordWindowAction1.OnCreateDataControlsEvent := DefaultDataSourceEditDialogCreateDataControlscxVGridEventClass.CreateDataControls;
 end;
 
 procedure TJvDBActionMainFrm.DBGrid1Enter(Sender: TObject);
@@ -146,14 +158,14 @@ procedure TJvDBActionMainFrm.JvDatabaseFirstAction1AfterExecute(Sender:
     TObject; ControlEngine: TJvDatabaseActionBaseControlEngine; DataComponent:
     TComponent);
 begin
-   showmessage(TComponent(Sender).Name+' AfterExecute: '+StateName(JvCsvDataSet2.State));
+//   showmessage(TComponent(Sender).Name+' AfterExecute: '+StateName(JvCsvDataSet2.State));
 end;
 
 procedure TJvDBActionMainFrm.JvDatabaseFirstAction1Execute(Sender: TObject;
     ControlEngine: TJvDatabaseActionBaseControlEngine; DataComponent:
     TComponent);
 begin
-   showmessage(TComponent(Sender).Name+' OnExecute: '+StateName(JvCsvDataSet2.State));
+//   showmessage(TComponent(Sender).Name+' OnExecute: '+StateName(JvCsvDataSet2.State));
 end;
 
 procedure TJvDBActionMainFrm.JvDatabaseSimpleAction2CheckEnabled(aDataset:

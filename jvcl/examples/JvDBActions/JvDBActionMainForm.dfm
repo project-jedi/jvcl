@@ -88,6 +88,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseFirstAction1
     Caption = 'First Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 2
   end
   object BitBtn2: TBitBtn
@@ -97,6 +99,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabasePriorAction1
     Caption = 'Prior Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 3
   end
   object BitBtn3: TBitBtn
@@ -106,6 +110,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseLastAction1
     Caption = 'Last Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 4
   end
   object BitBtn4: TBitBtn
@@ -115,6 +121,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseNextAction1
     Caption = 'Next Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 5
   end
   object BitBtn5: TBitBtn
@@ -124,6 +132,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabasePositionAction1
     Caption = '0/0'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 6
   end
   object BitBtn6: TBitBtn
@@ -133,6 +143,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseSingleRecordWindowAction1
     Caption = 'Single Record Window'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 7
   end
   object JvDBGrid1: TJvDBGrid
@@ -170,24 +182,30 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseOpenAction1
     Caption = 'Open'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 9
   end
   object BitBtn8: TBitBtn
-    Left = 255
+    Left = 135
     Top = 570
     Width = 121
     Height = 25
     Action = JvDatabaseCloseAction1
     Caption = 'Close'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 10
   end
   object BitBtn9: TBitBtn
-    Left = 375
+    Left = 255
     Top = 570
     Width = 121
     Height = 25
     Action = JvDatabaseModifyAllAction1
     Caption = 'Modify All'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 11
   end
   object BitBtn10: TBitBtn
@@ -197,7 +215,9 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseShowSQLStatementAction1
     Caption = 'Show SQL'
-    TabOrder = 12
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 15
   end
   object Button1: TButton
     Left = 720
@@ -205,16 +225,40 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Width = 91
     Height = 25
     Action = JvDatabaseSimpleAction2
-    TabOrder = 13
+    TabOrder = 16
   end
   object BitBtn11: TBitBtn
-    Left = 135
-    Top = 570
+    Left = 255
+    Top = 595
     Width = 121
     Height = 25
     Action = JvDatabaseEditAction1
     Caption = 'Edit Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 14
+  end
+  object BitBtn12: TBitBtn
+    Left = 135
+    Top = 595
+    Width = 121
+    Height = 25
+    Action = JvDatabaseCopyAction1
+    Caption = 'Copy Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 13
+  end
+  object BitBtn13: TBitBtn
+    Left = 15
+    Top = 595
+    Width = 121
+    Height = 25
+    Action = JvDatabaseInsertAction1
+    Caption = 'Insert Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 12
   end
   object JvCsvDataSet2: TJvCsvDataSet
     FieldDefs = <
@@ -262,6 +306,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     AutoBackupCount = 0
     StoreDefs = True
     AlwaysEnquoteStrings = False
+    AlwaysEnquoteFloats = False
+    AppendOnly = False
     Left = 123
     Top = 86
     object JvCsvDataSet1NAME: TStringField
@@ -376,18 +422,20 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
       Caption = 'Insert Record'
       OnExecute = JvDatabaseFirstAction1Execute
       AfterExecute = JvDatabaseFirstAction1AfterExecute
+      SingleRecordWindowAction = JvDatabaseSingleRecordWindowAction1
     end
     object JvDatabaseCopyAction1: TJvDatabaseCopyAction
       Category = 'JVCL-DB'
       Caption = 'Copy Record'
       OnExecute = JvDatabaseFirstAction1Execute
-      AfterExecute = JvDatabaseFirstAction1AfterExecute
+      SingleRecordWindowAction = JvDatabaseSingleRecordWindowAction1
     end
     object JvDatabaseEditAction1: TJvDatabaseEditAction
       Category = 'JVCL-DB'
       Caption = 'Edit Record'
       OnExecute = JvDatabaseFirstAction1Execute
       AfterExecute = JvDatabaseFirstAction1AfterExecute
+      SingleRecordWindowAction = JvDatabaseSingleRecordWindowAction1
     end
     object JvDatabaseDeleteAction1: TJvDatabaseDeleteAction
       Category = 'JVCL-DB'
