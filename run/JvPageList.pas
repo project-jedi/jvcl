@@ -690,7 +690,8 @@ end;
 procedure TJvCustomPageList.ShowControl(AControl: TControl);
 begin
   if AControl is TJvCustomPage then
-    ActivePage := TJvCustomPage(AControl);
+    if ActivePage <> AControl then
+      ActivePage := TJvCustomPage(AControl);
   inherited ShowControl(AControl);
 end;
 
