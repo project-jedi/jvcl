@@ -643,6 +643,10 @@ begin
   NextPage := FindNextPage(APage, True, not (csDesigning in ComponentState));
   if NextPage = APage then
     NextPage := nil;
+  { If the last page is removed, go back to the prior page }
+  if (NextPage <> nil) and (NextPage.PageIndex = 0) and (APage.PageIndex > 0) then
+    NextPage := Pages[APage.PageIndex - 1];
+
   APage.Visible := False;
   APage.FPageList := nil;
   FPages.Remove(APage);
@@ -864,7 +868,7 @@ begin
       if GoForward then
       begin
         Inc(I);
-        if I >= FPages.Count - 1 then
+        if I >= FPages.Count then
           I := 0;
       end
       else
