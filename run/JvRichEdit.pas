@@ -6082,20 +6082,20 @@ end;
 
 function TJvRichEditStrings.Get(Index: Integer): string;
 var
-  Text: array[0..4095] of Char;
   L: Integer;
-  W: Word;
 begin
-  // (rom) reimplemented as Move
-  W := SizeOf(Text);
-  System.Move(W, Text[0], SizeOf(Word));
-  L := SendMessage(FRichEdit.Handle, EM_GETLINE, Index, Longint(@Text));
-  if (Text[L - 2] = Cr) and (Text[L - 1] = Lf) then
-    Dec(L, 2)
-  else
-  if (RichEditVersion >= 2) and (Text[L - 1] = Cr) then
-    Dec(L);
-  SetString(Result, Text, L);
+  L := FRichEdit.GetLineLength(Index);
+  SetLength(Result, L);
+  if L > 0 then
+  begin
+    PWord(Pointer(Result))^ := L;
+    L := SendMessage(FRichEdit.Handle, EM_GETLINE, Index, LPARAM(Pointer(Result)));
+    if (Result[L - 2] = Cr) and (Result[L - 1] = Lf) then
+      SetLength(Result, L - 2)
+    else
+    if (RichEditVersion >= 2) and (Result[L - 1] = Cr) then
+      SetLength(Result, L - 1);
+  end;
 end;
 
 function TJvRichEditStrings.GetCount: Integer;
