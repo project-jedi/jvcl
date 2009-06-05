@@ -644,9 +644,9 @@ begin
   case FieldType of
     ftString:
       if CaseInsensitive then
-        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
+        Result := AnsiCompareText(PAnsiChar(Data1), PAnsiChar(Data2))
       else
-        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
+        Result := AnsiCompareStr(PAnsiChar(Data1), PAnsiChar(Data2));
     ftSmallint:
       if Smallint(Data1^) > Smallint(Data2^) then
         Result := 1
@@ -688,9 +688,9 @@ begin
         Result := -1;
     ftFixedChar:
       if CaseInsensitive then
-        Result := AnsiCompareText(PChar(Data1), PChar(Data2))
+        Result := AnsiCompareText(PAnsiChar(Data1), PAnsiChar(Data2))
       else
-        Result := AnsiCompareStr(PChar(Data1), PChar(Data2));
+        Result := AnsiCompareStr(PAnsiChar(Data1), PAnsiChar(Data2));
     ftWideString:
       if CaseInsensitive then
         Result := AnsiCompareText(WideCharToString(PWideChar(Data1)),
@@ -707,7 +707,7 @@ begin
     ftVariant:
       Result := 0;
     ftGuid:
-      Result := CompareText(PChar(Data1), PChar(Data2));
+      Result := CompareText(PAnsiChar(Data1), PAnsiChar(Data2));
   end;
 end;
 
