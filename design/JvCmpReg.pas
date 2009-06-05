@@ -47,7 +47,7 @@ uses
   JvPageManager, JvPatchFile, JvStringHolder, JvTimeLimit,
   JvTranslator, JvPrint, JvEasterEgg, JvMouseGesture, JvLogFile,
   JvDataEmbeddedEditor, JvPatcherEditor, JvProfilerForm, JvPageManagerForm,
-  JvDsgnEditors, JvSpellChecker, JvspellerForm;
+  JvDsgnEditors, JvSpellChecker, JvSpellerForm;
 
 {$R JvCmpReg.dcr}
 
