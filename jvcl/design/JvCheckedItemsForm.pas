@@ -36,7 +36,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvComponent;
+  JvComponent, JvExControls, JvxCheckListBox;
 
 type
   TJvCheckItemEditor = class(TJvForm)
@@ -57,7 +57,7 @@ type
     cbUncheckedItem: TMenuItem;
     N2: TMenuItem;
     EnabledItem: TMenuItem;
-    CheckList: TCheckListBox;
+    CheckList: TJvxCheckListBox;
     PanelButtons: TPanel;
     EditBtn: TButton;
     NewBtn: TButton;
@@ -126,11 +126,11 @@ begin
       Caption := TComponent(Comp).Name + '.' + Self.GetName
     else
       Caption := Self.GetName;
-    if Comp is TCheckListBox then
+    if Comp is TJvxCheckListBox then
     begin
-      CheckList.AllowGrayed := TCheckListBox(Comp).AllowGrayed;
-      CheckList.Sorted := TCheckListBox(Comp).Sorted;
-//      CheckList.CheckKind := TJvxCheckListBox(Comp).CheckKind;
+      CheckList.AllowGrayed := TJvxCheckListBox(Comp).AllowGrayed;
+      CheckList.Sorted := TJvxCheckListBox(Comp).Sorted;
+      CheckList.CheckKind := TJvxCheckListBox(Comp).CheckKind;
     end;
     CheckList.Items := TStrings(GetOrdValue);
     if ShowModal = mrOk then
@@ -260,12 +260,12 @@ begin
       end;
       FEdit.Text := CheckList.Items[I];
       FComboBox.ItemIndex := Integer(CheckList.State[I]);
-      FEnableBox.Checked := CheckList.ItemEnabled[I];
+      FEnableBox.Checked := CheckList.EnabledItem[I];
       if ShowModal = mrOk then
       begin
         CheckList.Items[I] := FEdit.Text;
         CheckList.State[I] := TCheckBoxState(FComboBox.ItemIndex);
-        CheckList.ItemEnabled[I] := FEnableBox.Checked;
+        CheckList.EnabledItem[I] := FEnableBox.Checked;
       end;
       Self.CheckList.ItemIndex := I;
     finally
@@ -286,7 +286,7 @@ begin
     begin
       Index := CheckList.Items.Add(FEdit.Text);
       CheckList.State[Index] := TCheckBoxState(FComboBox.ItemIndex);
-      CheckList.ItemEnabled[Index] := FEnableBox.Checked;
+      CheckList.EnabledItem[Index] := FEnableBox.Checked;
       CheckButtons;
     end;
   finally
@@ -310,8 +310,8 @@ end;
 
 procedure TJvCheckItemsEditor.EnabledItemClick(Sender: TObject);
 begin
-  CheckList.ItemEnabled[CheckList.ItemIndex] :=
-    not CheckList.ItemEnabled[CheckList.ItemIndex];
+  CheckList.EnabledItem[CheckList.ItemIndex] :=
+    not CheckList.EnabledItem[CheckList.ItemIndex];
 end;
 
 procedure TJvCheckItemsEditor.PopupPopup(Sender: TObject);
@@ -328,7 +328,7 @@ begin
   cbUncheckedItem.Checked := False;
   if Enable then
   begin
-    EnabledItem.Checked := CheckList.ItemEnabled[CheckList.ItemIndex];
+    EnabledItem.Checked := CheckList.EnabledItem[CheckList.ItemIndex];
     case CheckList.State[CheckList.ItemIndex] of
       cbChecked:
         cbCheckedItem.Checked := True;

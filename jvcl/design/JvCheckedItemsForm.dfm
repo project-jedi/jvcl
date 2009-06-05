@@ -1,9 +1,9 @@
 object JvCheckItemsEditor: TJvCheckItemsEditor
-  Left = 285
-  Top = 129
-  Width = 367
-  Height = 320
+  Left = 289
+  Top = 179
   BorderIcons = [biSystemMenu]
+  ClientHeight = 286
+  ClientWidth = 359
   Color = clBtnFace
   Constraints.MinHeight = 305
   Constraints.MinWidth = 350
@@ -43,28 +43,28 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object CheckList: TCheckListBox
-    Left = 6
-    Top = 6
-    Width = 246
-    Height = 275
+  object CheckList: TJvxCheckListBox
+    Left = 0
+    Top = 0
+    Width = 273
+    Height = 286
     AllowGrayed = True
-    Ctl3D = True
+    Align = alClient
     DragMode = dmAutomatic
     ItemHeight = 13
-    ParentCtl3D = False
     PopupMenu = Popup
     TabOrder = 0
     OnClick = CheckListClick
     OnDragDrop = CheckListDragDrop
     OnDragOver = CheckListDragOver
     OnKeyDown = CheckListKeyDown
-  end
+    InternalVersion = 202
+  end  
   object PanelButtons: TPanel
     Left = 273
     Top = 0
     Width = 86
-    Height = 289
+    Height = 286
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
