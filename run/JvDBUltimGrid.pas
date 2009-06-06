@@ -597,6 +597,7 @@ var
   Start, ColNo, I: Integer;
   Found: Boolean;
   FieldText: string;
+  ValueToSearchStr: string;
 begin
   Result := False;
   if Assigned(DataLink) and DataLink.Active then
@@ -619,6 +620,7 @@ begin
         DSet.First;
       end;
 
+      ValueToSearchStr := VarToStr(FValueToSearch);
       // The search begins...
       while not DSet.Eof do
       begin
@@ -638,16 +640,16 @@ begin
                   if CaseSensitive then
                   begin
                     if WholeFieldOnly then
-                      Found := AnsiSameStr(string(FValueToSearch), FieldText)
+                      Found := AnsiSameStr(ValueToSearchStr, FieldText)
                     else
-                      Found := (StrSearch(string(FValueToSearch), FieldText) > 0);
+                      Found := StrSearch(ValueToSearchStr, FieldText) > 0;
                   end
                   else
                   begin
                     if WholeFieldOnly then
-                      Found := AnsiSameText(string(FValueToSearch), FieldText)
+                      Found := AnsiSameText(ValueToSearchStr, FieldText)
                     else
-                      Found := (StrFind(string(FValueToSearch), FieldText) > 0);
+                      Found := StrFind(ValueToSearchStr, FieldText) > 0;
                   end;
 
                   // Text found ! -> exit
