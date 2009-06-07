@@ -1707,7 +1707,6 @@ begin
   Result := 0;
 end;
 
-
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
   I: Integer;
@@ -7188,18 +7187,22 @@ var
   TempPathPtr: PChar;
 begin
   Result := '';
-  TempPathPtr := PChar(ShortName);
-  LastSlash := StrRScan(TempPathPtr, PathDelim);
-  while LastSlash <> nil do
-  begin
-    Result := PathDelim + ShortToLongFileName(TempPathPtr) + Result;
-    if LastSlash <> nil then
+  TempPathPtr := StrNew(PChar(ShortName));
+  try
+    LastSlash := StrRScan(TempPathPtr, PathDelim);
+    while LastSlash <> nil do
     begin
-      LastSlash^ := #0;
-      LastSlash := StrRScan(TempPathPtr, PathDelim);
+      Result := PathDelim + ShortToLongFileName(TempPathPtr) + Result;
+      if LastSlash <> nil then
+      begin
+        LastSlash^ := #0;
+        LastSlash := StrRScan(TempPathPtr, PathDelim);
+      end;
     end;
+    Result := TempPathPtr + Result;
+  finally
+    StrDispose(TempPathPtr);
   end;
-  Result := TempPathPtr + Result;
 end;
 {$ENDIF CLR}
 
@@ -7214,18 +7217,22 @@ var
   TempPathPtr: PChar;
 begin
   Result := '';
-  TempPathPtr := PChar(LongName);
-  LastSlash := StrRScan(TempPathPtr, PathDelim);
-  while LastSlash <> nil do
-  begin
-    Result := PathDelim + LongToShortFileName(TempPathPtr) + Result;
-    if LastSlash <> nil then
+  TempPathPtr := StrNew(PChar(LongName));
+  try
+    LastSlash := StrRScan(TempPathPtr, PathDelim);
+    while LastSlash <> nil do
     begin
-      LastSlash^ := #0;
-      LastSlash := StrRScan(TempPathPtr, PathDelim);
+      Result := PathDelim + LongToShortFileName(TempPathPtr) + Result;
+      if LastSlash <> nil then
+      begin
+        LastSlash^ := #0;
+        LastSlash := StrRScan(TempPathPtr, PathDelim);
+      end;
     end;
+    Result := TempPathPtr + Result;
+  finally
+    StrDispose(TempPathPtr);
   end;
-  Result := TempPathPtr + Result;
 end;
 {$ENDIF CLR}
 
