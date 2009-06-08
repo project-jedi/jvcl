@@ -33,6 +33,8 @@ unit JvExprParser;
 
 {DEFINE TESTING_PARSER}
 
+{$I jvcl.inc}
+
 interface
 
 uses
