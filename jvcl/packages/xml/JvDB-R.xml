@@ -136,6 +136,7 @@
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvMemoryDataset.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExprParser.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvData.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvParse.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActions.pas" Targets="DB" Formname="" Condition=""/>
