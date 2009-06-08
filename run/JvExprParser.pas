@@ -77,7 +77,9 @@ var
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
+  {$ENDIF HAS_UNIT_VARIANTS}
   Masks,
   SysUtils;
 
@@ -693,9 +695,9 @@ var
     tmp := lefNode.eval;
     tmp2 := rightNode.eval;
     // Special case, at least one of both is null:
-    if (tmp = Variants.NULL) or (tmp2 = Variants.NULL) then
+    if (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) or (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) then
     begin
-      Result := (tmp = Variants.NULL) and (tmp2 = Variants.NULL);
+      Result := (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) and (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL);
     end
     else
     begin
@@ -727,10 +729,10 @@ var
     tmp := lefNode.eval;
     tmp2 := rightNode.eval;
     // Special case, at least one of both is null:
-    if (tmp = Variants.NULL) or (tmp2 = Variants.NULL) then
+    if (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) or (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) then
     begin
       // null is considered to be smaller than any value.
-      Result := (tmp = Variants.NULL);
+      Result := (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL);
     end
     else
     begin
@@ -743,10 +745,10 @@ var
     tmp := lefNode.eval;
     tmp2 := rightNode.eval;
     // Special case, at least one of both is null:
-    if (tmp = Variants.NULL) or (tmp2 = Variants.NULL) then
+    if (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) or (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) then
     begin
       // null is considered to be smaller than any value.
-      Result := (tmp2 = Variants.NULL);
+      Result := (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL);
     end
     else
     begin
