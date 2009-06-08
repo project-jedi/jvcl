@@ -217,9 +217,9 @@ type
     function GetRecordCount: Integer; override;
     function GetRecNo: Integer; override;
     procedure SetRecNo(Value: Integer); override;
-    procedure DoAfterOpen; Override;
+    procedure DoAfterOpen; override;
     procedure SetFilterText(const Value: string); override;
-    function ParserGetVariableValue(Sender: TObject; Varname: WideString; var Value: Variant): boolean; virtual;
+    function ParserGetVariableValue(Sender: TObject; const VarName: string; var Value: Variant): Boolean; virtual;
     property Records[Index: Integer]: TJvMemoryRecord read GetMemoryRecord;
   public
     constructor Create(AOwner: TComponent); override;
@@ -353,7 +353,13 @@ const
 implementation
 
 uses
-  Forms, Dialogs, DBConsts, Math,
+  {$IFDEF COMPILER5}
+  Forms,
+  {$ENDIF COMPILER5}
+  DBConsts, Math,
+  {$IFDEF HAS_UNIT_ANSISTRINGS}
+  AnsiStrings,
+  {$ENDIF HAS_UNIT_ANSISTRINGS}
   {$IFDEF COMPILER6_UP}
   FMTBcd,
   {$ENDIF COMPILER6_UP}
@@ -436,6 +442,16 @@ begin
 end;
 
 {$ENDIF COMPILER5}
+
+procedure AppHandleException(Sender: TObject);
+begin
+  {$IFDEF COMPILER5}
+  Application.HandleException(Sender);
+  {$ELSE}
+  if Assigned(ApplicationHandleException) then
+    ApplicationHandleException(Sender);
+  {$ENDIF COMPILER5}
+end;
 
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
 begin
@@ -1144,15 +1160,15 @@ begin
       SaveState := SetTempState(dsFilter);
       try
         RecordToBuffer(Records[FRecordPos], TempBuffer);
-        if Assigned(FFilterParser) and FFilterParser.eval() then
+        if Assigned(FFilterParser) and FFilterParser.Eval() then
         begin
-          FFilterParser.EnableWildcardMatching := true;
-          Result:=FFilterParser.value;
+          FFilterParser.EnableWildcardMatching := True;
+          Result := FFilterParser.Value;
         end;
         if Assigned(OnFilterRecord) then
           OnFilterRecord(Self, Result);
       except
-        Application.HandleException(Self);
+        AppHandleException(Self);
       end;
       RestoreState(SaveState);
     end
@@ -1551,13 +1567,13 @@ End;
 // Filtering contribution June 2009 - C.Schiffler - MANTIS # 0004328
 // Uses expression parser.
 procedure TJvMemoryData.SetFilterText(const Value: string);
+
   procedure UpdateFilter;
   begin
-    if Assigned(FFilterParser) then
-      FreeAndNil(FFilterParser);
-    if Filter > '' then
+    FreeAndNil(FFilterParser);
+    if Filter <> '' then
     begin
-      FFilterParser:= TExprParser.Create;
+      FFilterParser := TExprParser.Create;
       FFilterParser.OnGetVariable := ParserGetVariableValue;
       FFilterParser.Expression := Filter;
     end;
@@ -1579,18 +1595,18 @@ begin
   end;
 end;
 
-function TJvMemoryData.ParserGetVariableValue(Sender: TObject; Varname: WideString; var Value: Variant): boolean;
+function TJvMemoryData.ParserGetVariableValue(Sender: TObject; const VarName: string; var Value: Variant): Boolean;
 var
-  Field                                 : TField;
+  Field: TField;
 begin
   Field := FieldByName(Varname);
   if Assigned(Field) then
   begin
     Value := Field.Value;
-    Result := true;
+    Result := True;
   end
   else
-    Result := false;
+    Result := False;
 end;
 
 procedure TJvMemoryData.InternalClose;
@@ -1606,7 +1622,7 @@ end;
 
 procedure TJvMemoryData.InternalHandleException;
 begin
-  Application.HandleException(Self);
+  AppHandleException(Self);
 end;
 
 procedure TJvMemoryData.InternalInitFieldDefs;
@@ -2818,9 +2834,8 @@ begin
     try
       FDataSet.DataEvent(deFieldChange, Longint(FField));
     except
-      Application.HandleException(Self);
+      AppHandleException(Self);
     end;
-  // (rom) added inherited Destroy;
   inherited Destroy;
 end;
 

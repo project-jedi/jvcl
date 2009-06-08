@@ -31,6 +31,8 @@ This unit is used as a helper for JvMemoryDataSet.pas.
 
 unit JvExprParser;
 
+{$I jvcl.inc}
+
 {DEFINE TESTING_PARSER}
 
 {$I jvcl.inc}
@@ -38,43 +40,49 @@ unit JvExprParser;
 interface
 
 uses
-  Contnrs;
+  SysUtils, Contnrs;
 
 type
-  TOnGetVariableValue = function(Sender: TObject; Varname: WideString; var Value: Variant): boolean of object;
-  TOnExecuteFunction = function(Sender: TObject; FuncName: WideString; Args: Variant; var ResVal: Variant): boolean of
-    object;
+  TOnGetVariableValue = function(Sender: TObject; const VarName: string;
+    var Value: Variant): Boolean of object;
+  TOnExecuteFunction = function(Sender: TObject; const FuncName: string;
+    const Args: Variant; var ResVal: Variant): Boolean of object;
 
   TExprParser = class
   private
     FValue: Variant;
-    FParser: TObject;
-    FScan: TObject;
-    FExpression: Widestring;
+    FParser: TObject; // TParser
+    FScan: TObject; // TScan
+    FExpression: string;
     FOnGetVariable: TOnGetVariableValue;
     FOnExecuteFunction: TOnExecuteFunction;
-    FEnableWildcardMatching: boolean;
-    procedure SetExpression(const Value: Widestring);
-    function DoGetVariable(Varname: WideString; var Value: Variant): boolean;
-    function DoExecuteFunction(FuncName: WideString; Args: Variant; var ResVal: Variant): boolean;
+    FEnableWildcardMatching: Boolean;
+    FErrorMessage: string;
+    procedure SetExpression(const Value: string);
+    function DoGetVariable(const VarName: string; var Value: Variant): Boolean;
+    function DoExecuteFunction(const FuncName: string; const Args: Variant; var ResVal: Variant): Boolean;
   public
-    ErrorMessage: WideString;
     constructor Create();
     destructor Destroy; override;
-    function eval: boolean; overload;
-    function eval(Expression: Widestring): boolean; overload;
-  published
-    property Expression: Widestring read FExpression write SetExpression;
+    function Eval: Boolean; overload;
+    function Eval(const AExpression: string): Boolean; overload;
+
+    property ErrorMessage: string read FErrorMessage;
+
+  {published} // ahuser: not a TPersistent derived class
+    property Expression: string read FExpression write SetExpression;
     property OnGetVariable: TOnGetVariableValue read FOnGetVariable write FOnGetVariable;
     property OnExecuteFunction: TOnExecuteFunction read FOnExecuteFunction write FOnExecuteFunction;
     property Value: Variant read FValue;
-    property EnableWildcardMatching: boolean read FEnableWildcardMatching write FEnableWildcardMatching;
+    property EnableWildcardMatching: Boolean read FEnableWildcardMatching write FEnableWildcardMatching;
   end;
 
-  {$IFDEF TESTING_PARSER}
+  EExprParserError = class(Exception);
+
+{$IFDEF TESTING_PARSER}
 var
-  debugText                             : WideString;
-  {$ENDIF}
+  DebugText: string;
+{$ENDIF TESTING_PARSER}
 
 implementation
 
@@ -82,625 +90,604 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  Masks,
-  SysUtils;
+  Masks;
+
+{$IFDEF COMPILER12_UP}
+  // Our charsets do not contain any char > 127 what makes it safe because the
+  // compiler generates correct code.
+  {$WARN WIDECHAR_REDUCED OFF}
+{$ENDIF COMPILER12_UP}
+
+{$IFDEF COMPILER5}
+  // Delphi 5 compiler shows hints abount not exported or used symbol
+  // TNode.Eval. This is a compiler bug that is caused by the "abstract" keyword.
+  {$HINTS OFF}
+{$ENDIF COMPILER5}
 
 const
-  NUMBERS                               = [
-    WideChar('0')..WideChar('9')];
-
-  LETTERS                               = [
-    WideChar('a')..WideChar('z'),
-    WideChar('A')..WideChar('Z'),
-    WideChar('_')];
-
-  LETTERS_NUMBERS                       = [
-    WideChar('0')..WideChar('9'),
-    WideChar('a')..WideChar('z'),
-    WideChar('A')..WideChar('Z'),
-    WideChar('_')];
-
-  OPERATORS                             = [
-    WideChar('+'), WideChar('-'),
-    WideChar('/'), WideChar('*'),
-    WideChar('='),
-    WideChar('<'),
-    WideChar('>'),
-    WideChar('&'),
-    WideChar('|'),
-    WideChar('!')];
+  cNumbers = ['0'..'9'];
+  cLetters = ['a'..'z', 'A'..'Z', '_'];
+  cLettersAndNumbers = cLetters + cNumbers;
+  cOperators = [
+    '+', '-',
+    '/', '*',
+    '=',
+    '<',
+    '>',
+    '&',
+    '|',
+    '!'];
 
 type
-
-  EToken = (tkNA, tkEOF, tkError,
+  TToken = (tkNA, tkEOF, tkError,
     tkLParen, tkRParen, tkComa,
     tkOperator, tkIdentifier,
     tkNumber, tkInteger, tkString);
 
-  ELex = class
-  public
-    token: EToken;
-    chr: Char;
-    str: WideString;
-    pos: integer;
-    constructor Create(token: EToken; pos: integer); overload;
-    constructor Create(token: EToken; str: WideString; pos: integer); overload;
-    constructor Create(token: EToken; chr: WideChar; pos: integer); overload;
-    function debug(): WideString;
-  end;
-
-  EScan = class(TObjectList)
+  TLex = class
   private
-    function GetItem(Index: Integer): ELex;
+    FToken: TToken;
+    FChr: Char;
+    FStr: string;
+    FPos: Integer;
   public
-    ErrorMessage: WideString;
+    constructor Create(AToken: TToken; APos: Integer); overload;
+    constructor Create(AToken: TToken; const AStr: string; APos: Integer); overload;
+    constructor Create(AToken: TToken; AChr: Char; APos: Integer); overload;
+    function Debug(): string;
+
+    property Token: TToken read FToken;
+    property Chr: Char read FChr;
+    property Str: string read FStr;
+    property Pos: Integer read FPos;
+  end;
+
+  TScan = class(TObjectList)
+  private
+    FErrorMessage: string;
+    function GetItem(Index: Integer): TLex;
+  public
     constructor Create();
-    destructor Destroy; override;
-    property Items[Index: Integer]: ELex read GetItem; default;
-    function pars(str: WideString): boolean;
+    property Items[Index: Integer]: TLex read GetItem; default;
+    function Parse(const Str: string): Boolean;
     {$IFDEF TESTING_PARSER}
-    procedure debugPrint();
-    {$ENDIF}
+    procedure DebugPrint();
+    {$ENDIF TESTING_PARSER}
+    property ErrorMessage: string read FErrorMessage;
   end;
 
-  EVariant = variant;
+  TParser = class;
 
-  EParser = class;
-
-  ENode = class
-    FParser: EParser;
-    constructor Create(Parser: EParser); virtual;
-    function eval(): EVariant; virtual; abstract;
-  end;
-
-  ParserException = class(Exception)
+  TNode = class
+  private
+    FParser: TParser;
   public
-    constructor Create(const Msg: string; lex: ELex); overload;
-    constructor Create(const E: Exception); overload;
+    constructor Create(Parser: TParser); virtual;
+    function Eval(): Variant; virtual; abstract;
   end;
 
-  ENodeCValue = class(ENode)
+  EParserError = class(EExprParserError)
   public
-    cvalue: ELex;
-    constructor Create(Parser: EParser; cvalue: ELex); reintroduce;
-    function eval(): EVariant; override;
+    constructor Create(const Msg: string; Lex: TLex); overload;
   end;
 
-  ENodeVariable = class(ENode)
+  TNodeCValue = class(TNode)
+  private
+    FCValue: TLex;
   public
-    lex: ELex;
-    constructor Create(Parser: EParser; lex: ELex); reintroduce;
-    function eval(): EVariant; override;
+    constructor Create(AParser: TParser; ACValue: TLex); reintroduce;
+    function Eval(): Variant; override;
   end;
 
-  ENodeUnary = class(ENode)
+  TNodeVariable = class(TNode)
+  private
+    FLex: TLex;
   public
-    operator: ELex;
-    rightNode: ENode;
-    constructor Create(Parser: EParser; operator: ELex; rightNode: ENode); reintroduce;
+    constructor Create(AParser: TParser; ALex: TLex); reintroduce;
+    function Eval(): Variant; override;
+  end;
+
+  TNodeUnary = class(TNode)
+  private
+    FOperator: TLex;
+    FRightNode: TNode;
+  public
+    constructor Create(AParser: TParser; AOperator: TLex; ARightNode: TNode); reintroduce;
     destructor Destroy; override;
-    function eval(): EVariant; override;
+    function Eval(): Variant; override;
   end;
 
-  ENodeBin = class(ENode)
+  TNodeBin = class(TNode)
+  private
+    FOperator: TLex;
+    FLeftNode, FRightNode: TNode;
   public
-    operator: ELex;
-    lefNode, rightNode: ENode;
-    constructor Create(Parser: EParser; operator: ELex; lefNode, rightNode: ENode); reintroduce;
+    constructor Create(AParser: TParser; AOperator: TLex; ALeftNode, ARightNode: TNode); reintroduce;
     destructor Destroy; override;
-    function eval(): EVariant; override;
+    function Eval(): Variant; override;
   end;
 
-  ENodeFunction = class(ENode)
+  TNodeFunction = class(TNode)
+  private
+    FFunc: TLex;
+    FArgs: TObjectList;
   public
-    func: ELex;
-    args: TObjectList;
-    constructor Create(Parser: EParser; func: ELex); reintroduce;
+    constructor Create(AParser: TParser; AFunc: TLex); reintroduce;
     destructor Destroy; override;
-    procedure arg(Node: ENode);
-    function eval(): EVariant; override;
+    procedure AddArg(Node: TNode);
+    function Eval(): Variant; override;
   end;
 
-  EParser = class
+  TParser = class
+  private
+    FParent: TExprParser;
+    FScan: TScan;
+    FScanIdx: Integer;
+    FRoot: TNode;
+    FErrorMessage: string;
+    FValue: Variant;
   public
-    Parent: TExprParser;
-    scan: EScan;
-    scan_idx: integer;
-    root: ENode;
-    ErrorMessage: WideString;
-    value: EVariant;
-
-    constructor Create();
     destructor Destroy; override;
 
-    function pars(): boolean;
-    function execute(): boolean;
+    function Parse(): Boolean;
+    function Execute(): Boolean;
 
-    function Expr(): ENode;
-    function Term(): ENode;
-    function Factor(): ENode;
+    function Expr(): TNode;
+    function Term(): TNode;
+    function Factor(): TNode;
 
-    function LexC(): ELex;
-    function LexLook(look_ahead: integer = 1): ELex;
-    procedure LexAcept();
+    function LexC(): TLex;
+    function LexLook(LookAhead: Integer = 1): TLex;
+    procedure LexAccept();
+
+    property Parent: TExprParser read FParent write FParent;
+    property Value: Variant read FValue;
+    property ErrorMessage: string read FErrorMessage;
+    property Scan: TScan read FScan write FScan;
   end;
 
 var
-  ELexEOF                               : ELex;
+  ELexEOF: TLex; // ahuser: what the...
 
-  {$IFDEF TESTING_PARSER}
-
-procedure DebugMessage(msg: WideString);
+{$IFDEF TESTING_PARSER}
+procedure DebugMessage(const msg: string);
 begin
-  debugText := debugText + msg + sLineBreak;
+  DebugText := DebugText + msg + sLineBreak;
 end;
-{$ENDIF}
+{$ENDIF TESTING_PARSER}
 
-{ ELex }
+{ TLex }
 
-constructor ELex.Create(token: EToken; pos: integer);
+constructor TLex.Create(AToken: TToken; APos: Integer);
 begin
-  self.token := token;
-  self.pos := pos;
-end;
-
-constructor ELex.Create(token: EToken; str: WideString; pos: integer);
-begin
-  self.token := token;
-  self.str := str;
-  self.pos := pos;
+  FToken := AToken;
+  FPos := APos;
 end;
 
-constructor ELex.Create(token: EToken; chr: WideChar; pos: integer);
+constructor TLex.Create(AToken: TToken; const AStr: string; APos: Integer);
 begin
-  self.token := token;
-  self.chr := Char(chr);
-  self.pos := pos;
+  inherited Create;
+  FToken := AToken;
+  FStr := AStr;
+  FPos := APos;
 end;
 
-function ELex.debug: WideString;
+constructor TLex.Create(AToken: TToken; AChr: Char; APos: Integer);
+begin
+  FToken := AToken;
+  FChr := Char(AChr);
+  FPos := APos;
+end;
+
+function TLex.debug: string;
 const
-  tokenStr                              : array[EToken] of string =
+  TokenStr: array[TToken] of string =
     ('N/A', 'End of expression', 'Error',
     '(', ')', ',',
     'Operator', 'Identifier',
     'Number', 'Integer', 'String');
 begin
-  Result := tokenStr[token];
-  case token of
-    tkOperator: Result := Result + ': ' + chr;
-    tkIdentifier,
-      tkNumber,
-      tkInteger,
-      tkString:
-      Result := Result + ': ' + str;
+  Result := TokenStr[Token];
+  case Token of
+    tkOperator:
+      Result := Result + ': ' + Chr;
+    tkIdentifier, tkNumber, tkInteger, tkString:
+      Result := Result + ': ' + Str;
   end;
-  Result := Result + ' at pos: ' + IntToStr(pos);
+  Result := Result + ' at pos: ' + IntToStr(Pos);
 end;
 
-{ EScan }
+{ TScan }
 
-constructor EScan.Create;
+constructor TScan.Create;
 begin
-  inherited;
-  OwnsObjects := true;
-  ErrorMessage := '';
+  inherited Create;
+  OwnsObjects := True;
+  FErrorMessage := '';
 end;
 
-destructor EScan.Destroy;
+function TScan.GetItem(Index: Integer): TLex;
 begin
-  inherited;
+  Result := inherited Items[Index] as TLex;
 end;
 
-function EScan.GetItem(Index: Integer): ELex;
-begin
-  result := inherited Items[Index] as ELex;
-end;
-
-function EScan.pars(str: WideString): boolean;
+function TScan.Parse(const Str: string): Boolean;
 var
-  idx, start_idx, len                   : integer;
-  c                                     : WideChar;
-  s                                     : WideString;
-  ctoken                                : EToken;
+  Idx, StartIdx, Len: Integer;
+  C: Char;
+  S: string;
+  CToken: TToken;
 begin
-  len := Length(str);
-  idx := 1;
-  s := '';
-  ctoken := tkNA;
+  Len := Length(Str);
+  Idx := 1;
+  S := '';
+  CToken := tkNA;
 
-  while (idx <= len) do
+  while Idx <= Len do
   begin
-    c := str[idx];
-    start_idx := idx;
-    Inc(idx);
-    ctoken := tkNA;
+    C := Str[Idx];
+    StartIdx := Idx;
+    Inc(Idx);
+    CToken := tkNA;
 
-    case c of
-      '(': ctoken := tkLParen;
-      ')': ctoken := tkRParen;
-      ',': ctoken := tkComa;
+    case C of
+      '(': CToken := tkLParen;
+      ')': CToken := tkRParen;
+      ',': CToken := tkComa;
       ' ', #09: ;
+    else
+      if C in cOperators then
+        CToken := tkOperator
       else
-        if (c in OPERATORS) then
+        if (C = '"') or (C = '''') then
         begin
-          ctoken := tkOperator;
+          CToken := tkString;
+          while (Idx <= Len) and (Str[Idx] <> C) do
+          begin
+            S := S + Str[Idx]; // ahuser: performance suicide
+            Inc(Idx);
+          end;
+          if (Idx <= Len) and (Str[Idx] = C) then
+            Inc(Idx)
+          else
+          begin
+            CToken := tkError;
+            FErrorMessage := 'No end of string found';
+          end
         end
         else
-          if (c = '"') or (c = '''') then
+        if C in cNumbers then
+        begin
+          CToken := tkInteger;
+          S := S + C;
+          while (Idx <= Len) and (Str[Idx] in cNumbers) do
           begin
-            ctoken := tkString;
-            while (idx <= len) and (str[idx] <> c) do
+            S := S + Str[Idx]; // ahuser: performance suicide
+            Inc(Idx);
+          end;
+          if ((Idx <= Len) and (Str[Idx] = '.')) then
+          begin
+            CToken := tkNumber;
+            Inc(Idx);
+            S := S + '.';
+            while (Idx <= Len) and (Str[Idx] in cNumbers) do
             begin
-              s := s + str[idx];
-              Inc(idx);
+              S := S + Str[Idx]; // ahuser: performance suicide
+              Inc(Idx);
             end;
-            if (idx <= len) and (str[idx] = c) then
-              Inc(idx)
-            else
-            begin
-              ctoken := tkError;
-              ErrorMessage := 'No end of string found';
-            end
-
-          end
-          else
-            if (c in NUMBERS) then
-            begin
-              ctoken := tkInteger;
-              s := s + c;
-              while (idx <= len) and (str[idx] in NUMBERS) do
-              begin
-                s := s + str[idx];
-                Inc(idx);
-              end;
-              if ((idx <= len) and (str[idx] = '.')) then
-              begin
-                ctoken := tkNumber;
-                Inc(idx);
-                s := s + '.';
-                while (idx <= len) and (str[idx] in NUMBERS) do
-                begin
-                  s := s + str[idx];
-                  Inc(idx);
-                end;
-              end;
-            end
-            else
-              if (c = '.') then         // .55
-              begin
-                ctoken := tkNumber;
-                s := s + c;
-                while (idx <= len) and (str[idx] in NUMBERS) do
-                begin
-                  s := s + str[idx];
-                  Inc(idx);
-                end;
-              end
-              else
-                if (c in LETTERS) then
-                begin
-                  ctoken := tkIdentifier;
-                  s := s + c;
-                  while (idx <= len) and (str[idx] in LETTERS_NUMBERS) do
-                  begin
-                    s := s + str[idx];
-                    Inc(idx);
-                  end;
-                end
-                else
-                begin
-                  ctoken := tkError;
-                  ErrorMessage := 'Bad character ''' + c + '''';
-                end;
+          end;
+        end
+        else
+        if C = '.' then         // .55
+        begin
+          CToken := tkNumber;
+          S := S + C;
+          while (Idx <= Len) and (Str[Idx] in cNumbers) do
+          begin
+            S := S + Str[Idx]; // ahuser: performance suicide
+            Inc(Idx);
+          end;
+        end
+        else
+        if C in cLetters then
+        begin
+          CToken := tkIdentifier;
+          S := S + C;
+          while (Idx <= Len) and (Str[Idx] in cLettersAndNumbers) do
+          begin
+            S := S + Str[Idx]; // ahuser: performance suicide
+            Inc(Idx);
+          end;
+        end
+        else
+        begin
+          CToken := tkError;
+          FErrorMessage := Format('Bad character ''%s''', [string(C)]);
+        end;
     end;
 
-    case ctoken of
+    case CToken of
       tkError: break;
       tkNA: ;                           // continue
-      tkOperator: Add(ELex.Create(tkOperator, c, start_idx));
+      tkOperator: Add(TLex.Create(tkOperator, C, StartIdx));
       tkIdentifier,
         tkNumber,
         tkInteger,
         tkString:
         begin
-          if Lowercase(s) = 'and' then
-            Add(ELex.Create(tkOperator, WideChar('&'), start_idx))
+          if CompareText(S, 'and') = 0 then
+            Add(TLex.Create(tkOperator, '&', StartIdx))
           else
-            if Lowercase(s) = 'or' then
-              Add(ELex.Create(tkOperator, WideChar('|'), start_idx))
-            else
-              Add(ELex.Create(ctoken, s, start_idx));
-          s := '';
+          if CompareText(S, 'or') = 0 then
+            Add(TLex.Create(tkOperator, '|', StartIdx))
+          else
+            Add(TLex.Create(CToken, S, StartIdx));
+          S := '';
         end
       else
-        Add(ELex.Create(ctoken, start_idx));
+        Add(TLex.Create(CToken, StartIdx));
     end;
   end;
-  Result := (ctoken <> tkError);
-  ELexEOF := ELex.Create(tkEOF, idx);
+  Result := CToken <> tkError;
+  ELexEOF := TLex.Create(tkEOF, Idx);
   Add(ELexEOF);
 end;
 
 {$IFDEF TESTING_PARSER}
-
-procedure EScan.debugPrint;
+procedure TScan.DebugPrint;
 var
-  i                                     : integer;
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    DebugMessage(Items[i].debug);
+  for I := 0 to Count - 1 do
+    DebugMessage(Items[I].Debug);
 end;
-{$ENDIF}
+{$ENDIF TESTING_PARSER}
 
-{ EParser }
+{ TParser }
 
-constructor EParser.Create;
+destructor TParser.Destroy;
 begin
-  scan_idx := 0;
-  ErrorMessage := '';
-end;
-
-destructor EParser.Destroy;
-begin
-  root.Free;
-  inherited;
+  FRoot.Free;
+  inherited Destroy;
 end;
 
-function EParser.pars: boolean;
+function TParser.Parse: Boolean;
 begin
-  if (root <> nil) then
-    FreeAndNil(root);
+  FreeAndNil(FRoot);
   try
-    root := Expr();
-    if (scan_idx < scan.Count - 1) then
+    FRoot := Expr();
+    if FScanIdx < FScan.Count - 1 then
     begin
-      FreeAndNil(root);
-      raise ParserException.Create('Unexpected ', LexC());
+      FreeAndNil(FRoot);
+      raise EParserError.Create('Unexpected ', LexC());
     end;
   except
     on E: Exception do
-    begin
-      ErrorMessage := E.Message;
-    end
+      FErrorMessage := E.Message;
   end;
-  Result := (root <> nil);
+  Result := FRoot <> nil;
 end;
 
-function EParser.execute: boolean;
+function TParser.Execute: Boolean;
 begin
-  Result := false;
-  if (root <> nil) then
+  Result := False;
+  if FRoot <> nil then
   begin
     try
-      value := root.eval();
-      Result := true;
+      FValue := FRoot.Eval();
+      Result := True;
     except
       on E: Exception do
-      begin
-        ErrorMessage := E.Message;
-      end
+        FErrorMessage := E.Message;
     end;
   end;
 end;
 
-procedure EParser.LexAcept;
+procedure TParser.LexAccept;
 begin
-  Inc(scan_idx);
+  Inc(FScanIdx);
 end;
 
-function EParser.LexC: ELex;
+function TParser.LexC: TLex;
 begin
   Result := LexLook(0);
 end;
 
-function EParser.LexLook(look_ahead: integer): ELex;
+function TParser.LexLook(LookAhead: Integer): TLex;
 begin
-  if ((scan_idx + look_ahead) < scan.Count) then
-    Result := scan[scan_idx + look_ahead]
+  if (FScanIdx + LookAhead) < FScan.Count then
+    Result := FScan[FScanIdx + LookAhead]
   else
     Result := ELexEOF;
 end;
 
-function EParser.Expr: ENode;
+function TParser.Expr: TNode;
 var
-  cNode, rightNode                      : ENode;
-  lex                                   : ELex;
+  CNode, RightNode: TNode;
+  Lex: TLex;
 begin
-  cNode := nil;
+  CNode := nil;
   try
-    cNode := Term();
-    lex := LexC();
+    CNode := Term();
+    Lex := LexC();
 
-    if (lex.token = tkOperator) then
+    if Lex.Token = tkOperator then
     begin
-      if (lex.chr in ['+', '-']) then
+      if Lex.Chr in ['+', '-'] then
       begin
-        LexAcept();
-        rightNode := Expr();
-        if (rightNode = nil) then
-          raise ParserException.Create('Expression expected after', lex);
-        cNode := ENodeBin.Create(Self, lex, cNode, rightNode);
+        LexAccept();
+        RightNode := Expr();
+        if RightNode = nil then
+          raise EParserError.Create('Expression expected after', Lex);
+        CNode := TNodeBin.Create(Self, Lex, CNode, RightNode);
       end;
     end;
   except
-    on PE: ParserException do
-    begin
-      FreeAndNil(cNode);
-      raise;
-    end;
     on E: Exception do
     begin
-      FreeAndNil(cNode);
-      raise ParserException.Create(E.Message);
+      FreeAndNil(CNode);
+      if E is EParserError then
+        raise
+      else
+        raise EParserError.Create(E.Message);
     end;
   end;
-  Result := cNode;
+  Result := CNode;
 end;
 
-function EParser.Term: ENode;
+function TParser.Term: TNode;
 var
-  cNode, rightNode                      : ENode;
-  lex                                   : ELex;
+  CNode, RightNode: TNode;
+  Lex: TLex;
 begin
-  cNode := nil;
+  CNode := nil;
   try
-    cNode := Factor();
-    lex := LexC();
+    CNode := Factor();
+    Lex := LexC();
 
-    if (lex.token = tkOperator) then
+    if Lex.Token = tkOperator then
     begin
-      if (lex.chr in ['*', '/', '=', '&', '|', '<', '>']) then
+      if Lex.Chr in ['*', '/', '=', '&', '|', '<', '>'] then
       begin
-        LexAcept();
-        rightNode := Expr();
-        if (rightNode = nil) then
-          raise ParserException.Create('Expression expected after', lex);
-        cNode := ENodeBin.Create(Self, lex, cNode, rightNode);
+        LexAccept();
+        RightNode := Expr();
+        if RightNode = nil then
+          raise EParserError.Create('Expression expected after', Lex);
+        CNode := TNodeBin.Create(Self, Lex, CNode, RightNode);
       end;
     end;
   except
-    on PE: ParserException do
-    begin
-      FreeAndNil(cNode);
-      raise;
-    end;
     on E: Exception do
     begin
-      FreeAndNil(cNode);
-      raise ParserException.Create(E.Message);
+      FreeAndNil(CNode);
+      if E is EParserError then
+        raise
+      else
+        raise EParserError.Create(E.Message);
     end;
   end;
-  Result := cNode;
+  Result := CNode;
 end;
 
-function EParser.Factor: ENode;
+function TParser.Factor: TNode;
 var
-  cNode                                 : ENode;
-  fNode                                 : ENodeFunction;
-  lex                                   : ELex;
+  CNode: TNode;
+  fNode: TNodeFunction;
+  Lex: TLex;
 begin
-  cNode := nil;
+  CNode := nil;
   try
-    lex := LexC();
-    case lex.token of
+    Lex := LexC();
+    case Lex.token of
       tkLParen:
         begin
-          LexAcept();
-          cNode := Expr();
-          if ((LexC().token = tkRParen)) then
-          begin
-            LexAcept();
-          end
+          LexAccept();
+          CNode := Expr();
+          if (LexC().Token = tkRParen) then
+            LexAccept()
           else
-            raise ParserException.Create('Expected closing parenthesis instead of', LexC());
+            raise EParserError.Create('Expected closing parenthesis instead of', LexC());
         end;
       tkOperator:                       // unary minus
         begin
-          if (lex.chr in ['+', '-', '!']) then
+          if Lex.Chr in ['+', '-', '!'] then
           begin
-            LexAcept();
-            cNode := ENodeUnary.Create(Self, lex, Factor());
+            LexAccept();
+            CNode := TNodeUnary.Create(Self, Lex, Factor());
           end
           else
-            raise ParserException.Create('Unexpected ', lex);
+            raise EParserError.Create('Unexpected ', Lex);
         end;
       tkNumber, tkInteger, tkString:
         begin
-          cNode := ENodeCValue.Create(Self, lex);
-          LexAcept();
+          CNode := TNodeCValue.Create(Self, Lex);
+          LexAccept();
         end;
       tkIdentifier:
         begin
-          if (LexLook().token = tkLParen) then
+          if LexLook().Token = tkLParen then
           begin
             // function call
-            LexAcept();
-            fNode := ENodeFunction.Create(Self, lex);
-            LexAcept();
-            cNode := fNode;
-            if ((LexC().token <> tkRParen)) then
+            LexAccept();
+            fNode := TNodeFunction.Create(Self, Lex);
+            LexAccept();
+            CNode := fNode;
+            if (LexC().token <> tkRParen) then
             begin
-              fNode.arg(Expr());
-              while (LexC().token = tkComa) do
+              fNode.AddArg(Expr());
+              while LexC().Token = tkComa do
               begin
-                LexAcept();
-                fNode.arg(Expr());
+                LexAccept();
+                fNode.AddArg(Expr());
               end;
             end;
 
-            if ((LexC().token = tkRParen)) then
-            begin
-              LexAcept();
-            end
+            if (LexC().token = tkRParen) then
+              LexAccept()
             else
-              raise ParserException.Create('Expected closing parenthesis instead of', LexC());
+              raise EParserError.Create('Expected closing parenthesis instead of', LexC());
           end
           else
           begin
-            cNode := ENodeVariable.Create(Self, lex);
-            LexAcept();
+            CNode := TNodeVariable.Create(Self, Lex);
+            LexAccept();
           end;
         end;
       else
-        raise ParserException.Create('Unexpected ', lex);
+        raise EParserError.Create('Unexpected ', Lex);
     end;
   except
-    on PE: ParserException do
-    begin
-      FreeAndNil(cNode);
-      raise;
-    end;
     on E: Exception do
     begin
-      FreeAndNil(cNode);
-      raise ParserException.Create(E.Message);
+      FreeAndNil(CNode);
+      if E is EParserError then
+        raise
+      else
+        raise EParserError.Create(E.Message);
     end;
   end;
-  Result := cNode;
+  Result := CNode;
 end;
 
-{ ENode }
+{ TNode }
 
-constructor ENode.Create(Parser: EParser);
+constructor TNode.Create(Parser: TParser);
 begin
+  inherited Create;
   FParser := Parser;
 end;
 
-{ ENodeBin }
+{ TNodeBin }
 
-constructor ENodeBin.Create(Parser: EParser; operator: ELex; lefNode, rightNode: ENode);
+constructor TNodeBin.Create(AParser: TParser; AOperator: TLex; ALeftNode, ARightNode: TNode);
 begin
-  inherited Create(Parser);
-  self.operator := operator;
-  self.lefNode := lefNode;
-  self.rightNode := rightNode;
+  inherited Create(AParser);
+  FOperator := AOperator;
+  FLeftNode := ALeftNode;
+  FRightNode := ARightNode;
 end;
 
-destructor ENodeBin.Destroy;
+destructor TNodeBin.Destroy;
 begin
-  lefNode.Free;
-  rightNode.Free;
-  inherited;
+  FLeftNode.Free;
+  FRightNode.Free;
+  inherited Destroy;
 end;
 
-function ENodeBin.eval: EVariant;
-var
-  tmp, tmp2                             : variant;
-  tmp_s, tmp_s2                         : WideString;
+function TNodeBin.Eval: Variant;
 
-  function EvalEquality: boolean;
+  function EvalEquality: Boolean;
   var
-    wildcard1, wildcard2                : boolean;
+    Wildcard1, Wildcard2: Boolean;
+    LeftValue, RightValue: Variant;
+    LeftStr, RightStr: string;
   begin
     // Determine values to have them handy.
-    tmp := lefNode.eval;
-    tmp2 := rightNode.eval;
+    LeftValue := FLeftNode.Eval;
+    RightValue := FRightNode.Eval;
     // Special case, at least one of both is null:
-    if (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) or (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) then
-    begin
-      Result := (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) and (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL);
-    end
+    if (LeftValue = Null) or (RightValue = Null) then
+      Result := (LeftValue = Null) and (RightValue = Null)
     else
     begin
       // Possiblilities:
@@ -709,279 +696,276 @@ var
       // Both hands contain wildcards -> Match for string equality as if no wildcards are supported.
       if FParser.Parent.FEnableWildcardMatching then
       begin
-        tmp_s := tmp;
-        tmp_s2 := tmp2;
-        wildcard1 := (Pos('*', tmp_s) > 0) or (Pos('?', tmp_s) > 0);
-        wildcard2 := (Pos('*', tmp_s2) > 0) or (Pos('?', tmp_s2) > 0);
-        if wildcard1 and (not wildcard2) then
-          Result := MatchesMask(tmp_s2, tmp_s)
+        LeftStr := LeftValue;
+        RightStr := RightValue;
+        Wildcard1 := (Pos('*', LeftStr) > 0) or (Pos('?', LeftStr) > 0);
+        Wildcard2 := (Pos('*', RightStr) > 0) or (Pos('?', RightStr) > 0);
+        if Wildcard1 and not Wildcard2 then
+          Result := MatchesMask(RightStr, LeftStr)
         else
-          if wildcard2 then
-            Result := MatchesMask(tmp_s, tmp_s2)
-          else
-            Result := (tmp = tmp2);
+        if Wildcard2 then
+          Result := MatchesMask(LeftStr, RightStr)
+        else
+          Result := LeftValue = RightValue;
       end
       else
-        Result := (tmp = tmp2);
+        Result := LeftValue = RightValue;
     end;
   end;
-  function EvalLT: boolean;
+
+  function EvalLT: Boolean;
+  var
+    LeftValue, RightValue: Variant;
   begin
     // Determine values to have them handy.
-    tmp := lefNode.eval;
-    tmp2 := rightNode.eval;
-    // Special case, at least one of both is null:
-    if (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) or (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) then
-    begin
-      // null is considered to be smaller than any value.
-      Result := (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL);
-    end
+    LeftValue := FLeftNode.Eval;
+    RightValue := FRightNode.Eval;
+    //RightValue := FRightNode.Eval;
+    // Special case, at least one of both is Null:
+    if (LeftValue = Null) or (RightValue = Null) then
+      // Null is considered to be smaller than any value.
+      Result := LeftValue = Null
     else
-    begin
-      Result := (tmp < tmp2);
-    end;
+      Result := LeftValue < RightValue;
   end;
-  function EvalGT: boolean;
+
+  function EvalGT: Boolean;
+  var
+    LeftValue, RightValue: Variant;
   begin
     // Determine values to have them handy.
-    tmp := lefNode.eval;
-    tmp2 := rightNode.eval;
-    // Special case, at least one of both is null:
-    if (tmp = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) or (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL) then
-    begin
-      // null is considered to be smaller than any value.
-      Result := (tmp2 = {$IFDEF HAS_UNIT_VARIANTS}Variants.{$ENDIF HAS_UNIT_VARIANTS}NULL);
-    end
+    LeftValue := FLeftNode.Eval;
+    RightValue := FRightNode.Eval;
+    // Special case, at least one of both is Null:
+    if (LeftValue = Null) or (RightValue = Null) then
+      // Null is considered to be smaller than any value.
+      Result := RightValue = Null
     else
-    begin
-      Result := (tmp > tmp2);
-    end;
+      Result := LeftValue > RightValue;
   end;
+
+var
+  LeftValue: Variant;
+  LeftStr, RightStr: string;
 begin
-  case operator.chr of
+  case FOperator.Chr of
     '+':
       begin
-        tmp := lefNode.eval;
+        LeftValue := FLeftNode.Eval;
         // force string concatenation
-        if (TVarData(tmp).VType = varString) or
-          (TVarData(tmp).VType = varOleStr) then
+        if (TVarData(LeftValue).VType = varString) or
+          (TVarData(LeftValue).VType = varOleStr) then
         begin
-          tmp_s := tmp;
-          tmp_s2 := rightNode.eval;
-          tmp_s := tmp_s + tmp_s2;
-          Result := tmp_s;
+          LeftStr := LeftValue;
+          RightStr := FRightNode.Eval;
+          LeftStr := LeftStr + RightStr;
+          Result := LeftStr;
         end
         else
         begin
-          Result := tmp + rightNode.eval;
+          Result := LeftValue + FRightNode.Eval;
         end;
       end;
-    '-': Result := lefNode.eval - rightNode.eval;
-    '*': Result := lefNode.eval * rightNode.eval;
-    '/': Result := lefNode.eval / rightNode.eval;
+    '-': Result := FLeftNode.Eval - FRightNode.Eval;
+    '*': Result := FLeftNode.Eval * FRightNode.Eval;
+    '/': Result := FLeftNode.Eval / FRightNode.Eval;
     '=': Result := EvalEquality();
     '<': Result := EvalLT();
     '>': Result := EvalGT();
-    '&': Result := lefNode.eval and rightNode.eval;
-    '|': Result := lefNode.eval or rightNode.eval;
+    '&': Result := FLeftNode.Eval and FRightNode.Eval;
+    '|': Result := FLeftNode.Eval or FRightNode.Eval;
+  else
+    Result := Null;
   end;
 end;
 
-{ ENodeUnary }
+{ TNodeUnary }
 
-constructor ENodeUnary.Create(Parser: EParser; operator: ELex; rightNode: ENode);
+constructor TNodeUnary.Create(AParser: TParser; AOperator: TLex; ARightNode: TNode);
 begin
-  inherited Create(Parser);
-  self.operator := operator;
-  self.rightNode := rightNode;
+  inherited Create(AParser);
+  FOperator := AOperator;
+  FRightNode := ARightNode;
 end;
 
-destructor ENodeUnary.Destroy;
+destructor TNodeUnary.Destroy;
 begin
-  rightNode.Free;
-  inherited;
+  FRightNode.Free;
+  inherited Destroy;
 end;
 
-function ENodeUnary.eval: EVariant;
+function TNodeUnary.Eval: Variant;
 begin
-  Result := rightNode.eval();
-  if operator.chr = '-' then
+  Result := FRightNode.Eval();
+  if FOperator.Chr = '-' then
     Result := -Result;
-  if operator.chr = '!' then
+  if FOperator.Chr = '!' then
     Result := not Result;
 end;
 
-{ ENodeCValue }
+{ TNodeCValue }
 
-constructor ENodeCValue.Create(Parser: EParser; cvalue: ELex);
+constructor TNodeCValue.Create(AParser: TParser; ACValue: TLex);
 begin
-  inherited Create(Parser);
-  self.cvalue := cvalue;
+  inherited Create(AParser);
+  FCValue := ACValue;
 end;
 
-function ENodeCValue.eval: EVariant;
+function TNodeCValue.Eval: Variant;
 begin
-  case cvalue.token of
+  case FCValue.Token of
     tkNumber:
-      Result := StrToFloat(cvalue.str);
+      Result := StrToFloat(FCValue.Str);
     tkInteger:
-      Result := StrToInt(cvalue.str);
+      Result := StrToInt(FCValue.Str);
     tkString:
-      Result := cvalue.str;
+      Result := FCValue.Str;
+  else
+    Result := Null;
   end;
 end;
 
-{ ENodeFunction }
+{ TNodeFunction }
 
-constructor ENodeFunction.Create(Parser: EParser; func: ELex);
+constructor TNodeFunction.Create(AParser: TParser; AFunc: TLex);
 begin
-  inherited Create(Parser);
-  args := TObjectList.Create();
-  args.OwnsObjects := true;
-  self.func := func;
+  inherited Create(AParser);
+  FArgs := TObjectList.Create(True);
+  FFunc := AFunc;
 end;
 
-destructor ENodeFunction.Destroy;
+destructor TNodeFunction.Destroy;
 begin
-  args.Free;
-  inherited;
+  FArgs.Free;
+  inherited Destroy;
 end;
 
-procedure ENodeFunction.arg(Node: ENode);
+procedure TNodeFunction.AddArg(Node: TNode);
 begin
-  args.Add(Node);
+  FArgs.Add(Node);
 end;
 
-function ENodeFunction.eval: EVariant;
+function TNodeFunction.Eval: Variant;
 var
-  Value                                 : EVariant;
-  vargs                                 : Variant;
-  i                                     : integer;
+  Value: Variant;
+  VArgs: Variant;
+  I: Integer;
 begin
-  vargs := VarArrayCreate([0, args.Count - 1], varVariant);
-  for i := 0 to args.Count - 1 do
-  begin
-    vargs[i] := ENode(args[i]).eval;
-  end;
-  Value := NULL;
-  if FParser.Parent.DoExecuteFunction(func.str, vargs, Value) then
+  VArgs := VarArrayCreate([0, FArgs.Count - 1], varVariant);
+  for I := 0 to FArgs.Count - 1 do
+    VArgs[I] := TNode(FArgs[I]).Eval();
+  Value := Null;
+  if FParser.Parent.DoExecuteFunction(FFunc.Str, VArgs, Value) then
     Result := Value
   else
-    raise ParserException.Create('Function ' + func.str + ' could not be executed.');
+    raise EParserError.CreateFmt('Function %s could not be executed.', [FFunc.Str]);
 end;
 
-{ ENodeVariable }
+{ TNodeVariable }
 
-constructor ENodeVariable.Create(Parser: EParser; lex: ELex);
+constructor TNodeVariable.Create(AParser: TParser; ALex: TLex);
 begin
-  inherited Create(Parser);
-  self.lex := lex;
+  inherited Create(AParser);
+  FLex := ALex;
 end;
 
-function ENodeVariable.eval: EVariant;
+function TNodeVariable.Eval: Variant;
 var
-  Value                                 : EVariant;
+  Value: Variant;
 begin
-  Value := NULL;
-  if FParser.Parent.DoGetVariable(lex.str, Value) then
+  Value := Null;
+  if FParser.Parent.DoGetVariable(FLex.Str, Value) then
     Result := Value
   else
-    raise ParserException.Create('Variable ' + lex.str + ' could not be fetched.');
+    raise EParserError.Create('Variable ' + FLex.Str + ' could not be fetched.');
 end;
 
-{ ParserException }
+{ EParserError }
 
-constructor ParserException.Create(const Msg: string; lex: ELex);
+constructor EParserError.Create(const Msg: string; Lex: TLex);
 begin
-  inherited Create(Msg + ' ' + lex.debug);
-end;
-
-constructor ParserException.Create(const E: Exception);
-begin
-  inherited Create(E.Message);
+  inherited CreateFmt('%s %s', [Msg, Lex.Debug]);
 end;
 
 { TExprParser }
 
 constructor TExprParser.Create;
 begin
-  ErrorMessage := '';
+  inherited Create;
+  FErrorMessage := '';
 end;
 
 destructor TExprParser.Destroy;
 begin
   FParser.Free;
   FScan.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-function TExprParser.eval(): boolean;
+function TExprParser.Eval(): Boolean;
 var
-  parser                                : EParser;
+  Parser: TParser;
   {$IFDEF TESTING_PARSER}
-  scan                                  : EScan;
-  {$ENDIF}
+  Scan: TScan;
+  {$ENDIF TESTING_PARSER}
 begin
-  ErrorMessage := '';
+  FErrorMessage := '';
   {$IFDEF TESTING_PARSER}
-  debugText := '';
-  scan := EScan(FScan);
-  scan.debugPrint();
-  {$ENDIF}
-  parser := EParser(FParser);
-  if (parser.execute()) then
+  DebugText := '';
+  Scan := TScan(FScan);
+  Scan.DebugPrint();
+  {$ENDIF TESTING_PARSER}
+  Parser := TParser(FParser);
+  if Parser.Execute() then
   begin
-    FValue := parser.value;
-    Result := true;
+    FValue := Parser.Value;
+    Result := True;
   end
   else
   begin
-    ErrorMessage := parser.ErrorMessage;
-    Result := false;
+    FErrorMessage := Parser.ErrorMessage;
+    Result := False;
   end
 end;
 
-function TExprParser.eval(Expression: Widestring): boolean;
+function TExprParser.Eval(const AExpression: string): Boolean;
 begin
-  Self.Expression := Expression;
-  Result := eval();
+  SetExpression(AExpression);
+  Result := Eval();
 end;
 
-procedure TExprParser.SetExpression(const Value: Widestring);
+procedure TExprParser.SetExpression(const Value: string);
 begin
-  FExpression := Value;
-  if Assigned(FParser) then
+  if Value <> FExpression then
+  begin
+    FExpression := Value;
     FParser.Free;
-  if Assigned(FScan) then
     FScan.Free;
-  FParser := EParser.Create;
-  EParser(FParser).Parent := Self;
-  FScan := EScan.Create;
-  if (not EScan(FScan).pars(FExpression)) then
-  begin
-    ErrorMessage := EScan(FScan).ErrorMessage;
-  end
-  else
-  begin
-    EParser(FParser).scan := EScan(FScan);
-    EParser(FParser).pars();
+    FParser := TParser.Create;
+    TParser(FParser).Parent := Self;
+    FScan := TScan.Create;
+    if not TScan(FScan).Parse(FExpression) then
+      FErrorMessage := TScan(FScan).ErrorMessage
+    else
+    begin
+      TParser(FParser).Scan := TScan(FScan);
+      TParser(FParser).Parse();
+    end;
   end;
 end;
 
-function TExprParser.DoGetVariable(Varname: WideString; var Value: Variant): boolean;
+function TExprParser.DoGetVariable(const VarName: string; var Value: Variant): Boolean;
 begin
+  Result := False;
   if Assigned(FOnGetVariable) then
-    Result := FOnGetVariable(Self, Varname, Value)
-  else
-    Result := false;
+    Result := FOnGetVariable(Self, VarName, Value);
 end;
 
-function TExprParser.DoExecuteFunction(FuncName: WideString; Args: Variant; var ResVal: Variant): boolean;
+function TExprParser.DoExecuteFunction(const FuncName: string; const Args: Variant; var ResVal: Variant): Boolean;
 begin
+  Result := False;
   if Assigned(FOnExecuteFunction) then
-    Result := FOnExecuteFunction(Self, FuncName, Args, ResVal)
-  else
-    Result := false;
+    Result := FOnExecuteFunction(Self, FuncName, Args, ResVal);
 end;
 
 end.
