@@ -99,7 +99,7 @@ uses
 {$ENDIF COMPILER12_UP}
 
 {$IFDEF COMPILER5}
-  // Delphi 5 compiler shows hints abount not exported or used symbol
+  // Delphi 5 compiler shows hints about not exported or used symbol
   // TNode.Eval. This is a compiler bug that is caused by the "abstract" keyword.
   {$HINTS OFF}
 {$ENDIF COMPILER5}
