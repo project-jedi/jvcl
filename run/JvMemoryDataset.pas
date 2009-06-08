@@ -50,7 +50,9 @@ Known Issues:
              (rsOriginal, rsInserted, rsUpdated), in the hidden field.
              Likewise, have a private List (FDeletedValues) with the primary key values
              from the Deleted records (rsDeleted).
-
+//********************** Added by c.schiffler (CS) **************************
+  Methods  (protected) SetFilterText <== hook up expression parsing.
+  Field FFilterParser - see unit JvExprParser.pas
 Implementation : 2004/03/03
 Revisions : 1st = 2004/09/19
             2nd = 2004/10/19
@@ -80,7 +82,8 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvDBUtils;
+  JvDBUtils,
+  JvExprParser;
 
 type
   TPVariant = ^Variant;
@@ -139,6 +142,7 @@ type
     FAfterApply: TApplyEvent;
     FBeforeApplyRecord: TApplyRecordEvent;
     FAfterApplyRecord: TApplyRecordEvent;
+    FFilterParser: TExprParser; // CSchiffler. June 2009.  See JvExprParser.pas
     function AddRecord: TJvMemoryRecord;
     function InsertRecord(Index: Integer): TJvMemoryRecord;
     function FindRecordID(ID: Integer): TJvMemoryRecord;
@@ -213,7 +217,9 @@ type
     function GetRecordCount: Integer; override;
     function GetRecNo: Integer; override;
     procedure SetRecNo(Value: Integer); override;
-    procedure DoAfterOpen; override;
+    procedure DoAfterOpen; Override;
+    procedure SetFilterText(const Value: string); override;
+    function ParserGetVariableValue(Sender: TObject; Varname: WideString; var Value: Variant): boolean; virtual;
     property Records[Index: Integer]: TJvMemoryRecord read GetMemoryRecord;
   public
     constructor Create(AOwner: TComponent); override;
@@ -609,6 +615,7 @@ begin
   FRowsAffected := 0;
   FSaveLoadState := slsNone;
   FOneValueInArray := True;
+  FDataSetClosed := True; //???
 end;
 
 destructor TJvMemoryData.Destroy;
@@ -618,6 +625,8 @@ var
 begin
   if Active then
     Close;
+  if Assigned(FFilterParser) then
+    FreeAndNil(FFilterParser);
   if Assigned(FDeletedValues) then
   begin
     if FDeletedValues.Count > 0 then
@@ -1101,8 +1110,10 @@ begin
   begin
     CheckBrowseMode;
     if Filtered <> Value then
+    begin
       inherited SetFiltered(Value);
-    First;
+      First;
+    end;
   end
   else
     inherited SetFiltered(Value);
@@ -1126,14 +1137,20 @@ var
   SaveState: TDataSetState;
 begin
   Result := True;
-  if Assigned(OnFilterRecord) then
+  if Assigned(OnFilterRecord) or Assigned(FFilterParser) then
   begin
     if (FRecordPos >= 0) and (FRecordPos < RecordCount) then
     begin
       SaveState := SetTempState(dsFilter);
       try
         RecordToBuffer(Records[FRecordPos], TempBuffer);
-        OnFilterRecord(Self, Result);
+        if Assigned(FFilterParser) and FFilterParser.eval() then
+        begin
+          FFilterParser.EnableWildcardMatching := true;
+          Result:=FFilterParser.value;
+        end;
+        if Assigned(OnFilterRecord) then
+          OnFilterRecord(Self, Result);
       except
         Application.HandleException(Self);
       end;
@@ -1191,10 +1208,12 @@ begin
   if (Bookmark1 = nil) and (Bookmark2 <> nil) then
     Result := -1
   else
-  if TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) > TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
+  if TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) >
+   TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
     Result := 1
   else
-  if TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) < TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
+  if TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) < 
+  TBookmarkData({$IFDEF RTL200_UP}PByte(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
     Result := -1
   else
     Result := 0;
@@ -1527,6 +1546,51 @@ begin
   if not IsEmpty then
     SortOnFields();
   inherited DoAfterOpen;
+End;
+
+// Filtering contribution June 2009 - C.Schiffler - MANTIS # 0004328
+// Uses expression parser.
+procedure TJvMemoryData.SetFilterText(const Value: string);
+  procedure UpdateFilter;
+  begin
+    if Assigned(FFilterParser) then
+      FreeAndNil(FFilterParser);
+    if Filter > '' then
+    begin
+      FFilterParser:= TExprParser.Create;
+      FFilterParser.OnGetVariable := ParserGetVariableValue;
+      FFilterParser.Expression := Filter;
+    end;
+  end;
+
+begin
+  if Active then
+  begin
+    CheckBrowseMode;
+    inherited SetFilterText(Value);
+    UpdateFilter;
+    if Filtered then
+      First;
+  end
+  else
+  begin
+    inherited SetFilterText(Value);
+    UpdateFilter;
+  end;
+end;
+
+function TJvMemoryData.ParserGetVariableValue(Sender: TObject; Varname: WideString; var Value: Variant): boolean;
+var
+  Field                                 : TField;
+begin
+  Field := FieldByName(Varname);
+  if Assigned(Field) then
+  begin
+    Value := Field.Value;
+    Result := true;
+  end
+  else
+    Result := false;
 end;
 
 procedure TJvMemoryData.InternalClose;
