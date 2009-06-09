@@ -153,7 +153,7 @@ implementation
 uses
   CommCtrl,
   Math,
-  JvJCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 //=== { TJvImageListViewerOptions } ==========================================
 
@@ -333,15 +333,12 @@ procedure TJvImageListViewer.SetImages(const Value: TCustomImageList);
 begin
   if FImages <> Value then
   begin
-    if FImages <> nil then
-      FImages.UnRegisterChanges(FChangeLink);
+    ReplaceImageListReference(Self, Value, FImages, FChangeLink);
     Count := 0;
-    FImages := Value;
     if FImages <> nil then
     begin
       Options.Width := Max(Options.Width, FImages.Width);
       Options.Height := Max(Options.Height, FImages.Height);
-      FImages.RegisterChanges(FChangeLink);
     end;
     DoImageChange(Value);
   end;

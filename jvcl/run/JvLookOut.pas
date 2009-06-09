@@ -97,8 +97,8 @@ type
     FButtonBorder: TJvButtonBorder;
     FPopUpMenu: TPopupMenu;
     FGroupIndex: Integer;
-    FSmallImages: TImageList;
-    FLargeImages: TImageList;
+    FSmallImages: TCustomImageList;
+    FLargeImages: TCustomImageList;
     FOnEdited: TJvLookOutEditedEvent;
     FLargeImageChangeLink: TChangeLink;
     FSmallImageChangeLink: TChangeLink;
@@ -112,8 +112,8 @@ type
     procedure SetSpacing(Value: Integer);
     procedure SetParentImageSize(Value: Boolean);
     procedure SetButtonBorder(Value: TJvButtonBorder);
-    procedure SetSmallImages(Value: TImageList);
-    procedure SetLargeImages(Value: TImageList);
+    procedure SetSmallImages(const Value: TCustomImageList);
+    procedure SetLargeImages(const Value: TCustomImageList);
     procedure SetImageIndex(Value: TImageIndex);
     procedure SetImageSize(Value: TJvImageSize);
     procedure DrawSmallImages;
@@ -157,9 +157,9 @@ type
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
     property PopupMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
-    property LargeImages: TImageList read FLargeImages write SetLargeImages;
+    property LargeImages: TCustomImageList read FLargeImages write SetLargeImages;
     property Spacing: Integer read FSpacing write SetSpacing default 4; { border offset from bitmap }
-    property SmallImages: TImageList read FSmallImages write SetSmallImages;
+    property SmallImages: TCustomImageList read FSmallImages write SetSmallImages;
     property Data: Pointer read FData write FData;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property OnEdited: TJvLookOutEditedEvent read FOnEdited write FOnEdited;
@@ -486,7 +486,7 @@ uses
   {$IFDEF COMPILER10_UP}
   Types,
   {$ENDIF COMPILER10_UP}
-  ActnList;
+  ActnList, JvJVCLUtils;
 
 const
   cSpeed = 20;
@@ -1143,25 +1143,15 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SetSmallImages(Value: TImageList);
+procedure TJvCustomLookOutButton.SetSmallImages(const Value: TCustomImageList);
 begin
-  if FSmallImages <> nil then
-    FSmallImages.UnRegisterChanges(FSmallImageChangeLink);
-  FSmallImages := Value;
-
-  if FSmallImages <> nil then
-    FSmallImages.RegisterChanges(FSmallImageChangeLink);
+  ReplaceImageListReference(Self, Value, FSmallImages, FSmallImageChangeLink);
   Invalidate;
 end;
 
-procedure TJvCustomLookOutButton.SetLargeImages(Value: TImageList);
+procedure TJvCustomLookOutButton.SetLargeImages(const Value: TCustomImageList);
 begin
-  if Assigned(FLargeImages) then
-    FLargeImages.UnRegisterChanges(FLargeImageChangeLink);
-  FLargeImages := Value;
-
-  if Assigned(FLargeImages) then
-    FLargeImages.RegisterChanges(FLargeImageChangeLink);
+  ReplaceImageListReference(Self, Value, FLargeImages, FLargeImageChangeLink);
   Invalidate;
 end;
 

@@ -1147,25 +1147,15 @@ end;
 procedure TJvDirectoryListBox.SetFileList(Value: TJvFileListBox);
 begin
   if FFileList <> nil then
-  begin
-    FFileList.RemoveFreeNotification(Self);
     FFileList.FDirList := nil;
-  end;
-  FFileList := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FFileList));
   if FFileList <> nil then
-  begin
-    FFileList.FreeNotification(Self);
     FFileList.Directory := Directory;
-  end;
 end;
 
 procedure TJvDirectoryListBox.SetDirLabel(Value: TLabel);
 begin
-  if FDirLabel <> nil then
-    FDirLabel.RemoveFreeNotification(Self);
-  FDirLabel := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FDirLabel));
   SetDirLabelCaption;
 end;
 
@@ -1486,16 +1476,12 @@ end;
 procedure TJvDirectoryListBox.SetDriveCombo(const Value: TJvDriveCombo);
 begin
   if FDriveCombo <> nil then
-  begin
-    FDriveCombo.RemoveFreeNotification(Self);
     FDriveCombo.FDirList := nil;
-  end;
-  FDriveCombo := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FDriveCombo));
   if FDriveCombo <> nil then
   begin
     FDriveCombo.FDirList := Self;
     FDriveCombo.Drive := Drive;
-    FDriveCombo.FreeNotification(Self);
   end;
 end;
 

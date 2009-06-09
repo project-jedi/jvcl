@@ -1301,21 +1301,8 @@ end;
 
 procedure TJvCustomTimeLine.SetImages(Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnRegisterChanges(FImageChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.FreeNotification(Self);
-      FImages.RegisterChanges(FImageChangeLink);
-    end;
+  if ReplaceImageListReference(Self, Value, FImages, FImageChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvCustomTimeLine.SetSelectedItem(Value: TJvTimeItem);

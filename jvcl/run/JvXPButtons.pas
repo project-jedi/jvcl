@@ -908,21 +908,8 @@ end;
 
 procedure TJvXPCustomToolButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnRegisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.FreeNotification(Self);
-      FImages.RegisterChanges(FChangeLink);
-    end;
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
     LockedInvalidate;
-  end;
 end;
 
 procedure TJvXPCustomToolButton.SetImageIndex(const Value: TImageIndex);
@@ -936,15 +923,8 @@ end;
 
 procedure TJvXPCustomToolButton.SetDropDownMenu(const Value: TPopupMenu);
 begin
-  if FDropDownMenu <> Value then
-  begin
-    if FDropDownMenu <> nil then
-      FDropDownMenu.RemoveFreeNotification(Self);
-    FDropDownMenu := Value;
-    if FDropDownMenu <> nil then
-      FDropDownMenu.FreeNotification(Self);
+  if ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu)) then
     LockedInvalidate;
-  end;
 end;
 
 procedure TJvXPCustomToolButton.DoImagesChange(Sender: TObject);

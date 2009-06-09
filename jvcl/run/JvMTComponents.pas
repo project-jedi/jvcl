@@ -261,7 +261,7 @@ implementation
 
 {$IFDEF USEJVCL}
 uses
-  JvResources;
+  JvResources, JvJVCLUtils;
 {$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
@@ -356,13 +356,7 @@ end;
 
 procedure TJvMTManagedComponent.SetManager(Value: TJvMTManager);
 begin
-  if Assigned(FManager) then
-    FManager.RemoveFreeNotification(Self);
-
-  FManager := Value;
-
-  if Assigned(FManager) then
-    FManager.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FManager));
 end;
 
 //=== { TJvMTThread } ========================================================

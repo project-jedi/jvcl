@@ -1314,11 +1314,10 @@ begin
   begin
     FColorTrackBar.OnColorChange := nil;
     FColorTrackBar.OnAxisConfigChange := nil;
-    FColorTrackBar.RemoveFreeNotification(Self);
     FColorTrackBar.FreeLink;
   end;
 
-  FColorTrackBar := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FColorTrackBar));
 
   if Assigned(FColorTrackBar) then
   begin
@@ -1326,7 +1325,6 @@ begin
     FColorTrackBar.OnAxisConfigChange := TrackBarAxisConfigChange;
     FColorTrackBar.FullColor := FullColor;
     FColorTrackBar.AxisConfig := AxisConfig;
-    FColorTrackBar.FreeNotification(Self);
     FColorTrackBar.SetLink(Self);
   end;
 end;
@@ -2095,11 +2093,10 @@ begin
   begin
     FBlueColorTrackBar.OnColorChange := nil;
     FBlueColorTrackBar.OnAxisConfigChange := nil;
-    FBlueColorTrackBar.RemoveFreeNotification(Self);
     FBlueColorTrackBar.FreeLink;
   end;
 
-  FBlueColorTrackBar := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FBlueColorTrackBar));
 
   if Assigned(FBlueColorTrackBar) then
   begin
@@ -2107,7 +2104,6 @@ begin
     FBlueColorTrackBar.OnAxisConfigChange := TrackBarAxisConfigChange;
     FBlueColorTrackBar.FullColor := BlueColor;
     FBlueColorTrackBar.AxisConfig := AxisConfig;
-    FBlueColorTrackBar.FreeNotification(Self);
     FBlueColorTrackBar.SetLink(Self);
   end;
 end;
@@ -2121,11 +2117,10 @@ begin
   begin
     FGreenColorTrackBar.OnColorChange := nil;
     FGreenColorTrackBar.OnAxisConfigChange := nil;
-    FGreenColorTrackBar.RemoveFreeNotification(Self);
     FGreenColorTrackBar.FreeLink;
   end;
 
-  FGreenColorTrackBar := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FGreenColorTrackBar));
 
   if Assigned(FGreenColorTrackBar) then
   begin
@@ -2133,7 +2128,6 @@ begin
     FGreenColorTrackBar.OnAxisConfigChange := TrackBarAxisConfigChange;
     FGreenColorTrackBar.FullColor := GreenColor;
     FGreenColorTrackBar.AxisConfig := AxisConfig;
-    FGreenColorTrackBar.FreeNotification(Self);
     FGreenColorTrackBar.SetLink(Self);
   end;
 end;
@@ -2147,11 +2141,10 @@ begin
   begin
     FRedColorTrackBar.OnColorChange := nil;
     FRedColorTrackBar.OnAxisConfigChange := nil;
-    FRedColorTrackBar.RemoveFreeNotification(Self);
     FRedColorTrackBar.FreeLink;
   end;
 
-  FRedColorTrackBar := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FRedColorTrackBar));
 
   if Assigned(FRedColorTrackBar) then
   begin
@@ -2159,7 +2152,6 @@ begin
     FRedColorTrackBar.OnAxisConfigChange := TrackBarAxisConfigChange;
     FRedColorTrackBar.FullColor := RedColor;
     FRedColorTrackBar.AxisConfig := AxisConfig;
-    FRedColorTrackBar.FreeNotification(Self);
     FRedColorTrackBar.SetLink(Self);
   end;
 end;
@@ -2173,11 +2165,10 @@ begin
   begin
     FCommonColorTrackBar.OnColorChange := nil;
     FCommonColorTrackBar.OnAxisConfigChange := nil;
-    FCommonColorTrackBar.RemoveFreeNotification(Self);
     FCommonColorTrackBar.FreeLink;
   end;
 
-  FCommonColorTrackBar := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FCommonColorTrackBar));
 
   if Assigned(FCommonColorTrackBar) then
   begin
@@ -2185,7 +2176,6 @@ begin
     FCommonColorTrackBar.OnAxisConfigChange := TrackBarAxisConfigChange;
     FCommonColorTrackBar.FullColor := FullColor;
     FCommonColorTrackBar.AxisConfig := AxisConfig;
-    FCommonColorTrackBar.FreeNotification(Self);
     FCommonColorTrackBar.SetLink(Self);
   end;
 end;

@@ -110,10 +110,11 @@ type
 
 implementation
 
-{$IFDEF COMPILER5}
 uses
-  JvVCL5Utils;
+{$IFDEF COMPILER5}
+  JvVCL5Utils, 
 {$ENDIF COMPILER5}
+  JvJVCLUtils;
 
 //=== { TJvEditAction } ==========================================================
 
@@ -156,12 +157,7 @@ begin
   begin
     if not SupportsControl(Value) then
       Value := nil;
-
-    if FControl <> nil then
-      FControl.RemoveFreeNotification(Self);
-    FControl := Value;
-    if Value <> nil then
-      Value.FreeNotification(Self);
+    ReplaceComponentReference (Self, Value, TComponent(FControl));
   end;
 end;
 

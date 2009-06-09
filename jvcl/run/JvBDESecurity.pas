@@ -107,6 +107,7 @@ const
 
 implementation
 
+Uses JvJVCLUtils;
 
 constructor TJvDBSecurity.Create(AOwner: TComponent);
 begin
@@ -135,14 +136,7 @@ end;
 
 procedure TJvDBSecurity.SetDatabase(Value: TDatabase);
 begin
-  if FDatabase <> Value then
-  begin
-    if FDatabase <> nil then
-      FDatabase.RemoveFreeNotification(Self);
-    FDatabase := Value;
-    if Value <> nil then
-      Value.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, TComponent(FDatabase));
 end;
 
 procedure TJvDBSecurity.SetUsersTableName(const Value: TFileName);

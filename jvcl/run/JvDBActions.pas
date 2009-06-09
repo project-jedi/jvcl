@@ -552,7 +552,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  Dialogs, StdCtrls, Clipbrd;
+  Dialogs, StdCtrls, Clipbrd, JvJVCLUtils;
 
 //=== { TJvDatabaseActionList } ==============================================
 
@@ -560,13 +560,8 @@ procedure TJvDatabaseActionList.SetDataComponent(Value: TComponent);
 var
   I: Integer;
 begin
-  if Value <> FDataComponent then
+  if ReplaceComponentReference (Self, Value, FDataComponent) then
   begin
-    if FDataComponent <> nil then
-      FDataComponent.RemoveFreeNotification(Self);
-    FDataComponent := Value;
-    if FDataComponent <> nil then
-      FDataComponent.FreeNotification(Self);
     for I := 0 to ActionCount - 1 do
       if Actions[I] is TJvDatabaseBaseAction then
         TJvDatabaseBaseAction(Actions[I]).DataComponent := Value;
@@ -1205,11 +1200,7 @@ end;
 procedure TJvDatabaseInsertAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
-  if FSingleRecordWindowAction <> nil then
-    FSingleRecordWindowAction.RemoveFreeNotification(Self);
-  FSingleRecordWindowAction := Value;
-  if Assigned(FSingleRecordWindowAction) then
-    FSingleRecordWindowAction.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FSingleRecordWindowAction));
 end;
 
 procedure TJvDatabaseInsertAction.SingleRecordOnFormShowEvent(ADatacomponent :
@@ -1303,11 +1294,7 @@ end;
 procedure TJvDatabaseCopyAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
-  if FSingleRecordWindowAction <> nil then
-    FSingleRecordWindowAction.RemoveFreeNotification(Self);
-  FSingleRecordWindowAction := Value;
-  if Assigned(FSingleRecordWindowAction) then
-    FSingleRecordWindowAction.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FSingleRecordWindowAction));
 end;
 
 procedure TJvDatabaseCopyAction.SingleRecordOnFormShowEvent(ADatacomponent :
@@ -1352,11 +1339,7 @@ end;
 procedure TJvDatabaseEditAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
-  if FSingleRecordWindowAction <> nil then
-    FSingleRecordWindowAction.RemoveFreeNotification(Self);
-  FSingleRecordWindowAction := Value;
-  if Assigned(FSingleRecordWindowAction) then
-    FSingleRecordWindowAction.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FSingleRecordWindowAction));
 end;
 
 procedure TJvDatabaseEditAction.SingleRecordOnFormShowEvent(ADatacomponent :

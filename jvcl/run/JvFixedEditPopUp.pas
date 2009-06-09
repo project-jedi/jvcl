@@ -142,7 +142,7 @@ uses
   {$IFDEF CLR}
   JclBase,
   {$ENDIF CLR}
-  JvVCL5Utils, JvJclUtils, JvResources;
+  JvVCL5Utils, JvJclUtils, JvResources, JvJVCLUtils;
 
 type
   THiddenPopupObject = class(TComponent)
@@ -556,14 +556,7 @@ end;
 
 procedure THiddenPopupObject.SetEdit(const Value: TWinControl);
 begin
-  if FEdit <> Value then
-  begin
-    if FEdit <> nil then
-      FEdit.RemoveFreeNotification(Self);
-    FEdit := Value;
-    if FEdit <> nil then
-      FEdit.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, TComponent(FEdit));
 end;
 
 procedure THiddenPopupObject.Notification(AComponent: TComponent;

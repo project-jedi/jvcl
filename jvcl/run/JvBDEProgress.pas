@@ -141,7 +141,7 @@ implementation
 
 uses
   SysUtils, Math, Forms, StdCtrls,
-  JvProgressUtils;
+  JvProgressUtils, JvJVCLUtils;
 
 const
   cbQRYPROGRESS = cbRESERVED4;
@@ -518,20 +518,12 @@ end;
 
 procedure TJvDBProgress.SetMessageControl(Value: TControl);
 begin
-  if FMessageControl <> nil then
-    FMessageControl.RemoveFreeNotification(Self);
-  FMessageControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FMessageControl));
 end;
 
 procedure TJvDBProgress.SetGauge(Value: TControl);
 begin
-  if FGauge <> nil then
-    FGauge.RemoveFreeNotification(Self);
-  FGauge := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FGauge));
 end;
 
 procedure TJvDBProgress.Notification(AComponent: TComponent; AOperation: TOperation);

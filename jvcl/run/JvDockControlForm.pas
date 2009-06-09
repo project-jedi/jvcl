@@ -894,7 +894,7 @@ uses
   {$ELSE}
   IniFiles, Registry,
   {$ENDIF USEJVCL}
-  JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvVCL5Utils;
+  JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvVCL5Utils, JvJVCLUtils;
 
 {$R JvDockableForm.dfm}
 {$R JvDockConjoinHost.dfm}
@@ -2442,8 +2442,6 @@ begin
     try
       if FDockStyle <> nil then
       begin
-        FDockStyle.RemoveFreeNotification(Self);
-
         { Remove Self from the internal list of the dock style component }
         FDockStyle.RemoveDockBaseControl(Self);
 
@@ -2451,7 +2449,7 @@ begin
         RemoveDockStyle(FDockStyle);
       end;
 
-      FDockStyle := ADockStyle;
+      ReplaceComponentReference (Self, ADockStyle, TComponent(FDockStyle));
 
       if FDockStyle <> nil then
       begin
@@ -2464,7 +2462,6 @@ begin
         { Give the ancestors a change to respond }
         AddDockStyle(FDockStyle);
 
-        FDockStyle.FreeNotification(Self);
       end;
     finally
       ParentForm.EnableAlign;
@@ -3491,17 +3488,11 @@ begin
   begin
     if FLastDockSite <> nil then
     begin
-      FLastDockSite.RemoveFreeNotification(Self);
-
       if TWinControlAccessProtected(FLastDockSite).UseDockManager and
         Supports(TWinControlAccessProtected(FLastDockSite).DockManager, IJvDockManager, JvDockManager) then
         JvDockManager.RemoveControl(Self.ParentForm);
     end;
-
-    FLastDockSite := ALastDockSite;
-
-    if FLastDockSite <> nil then
-      FLastDockSite.FreeNotification(Self);
+    ReplaceComponentReference (Self, ALastDockSite, TComponent(FLastDockSite));
   end;
 end;
 
@@ -3520,11 +3511,7 @@ end;
 
 procedure TJvDockClient.SetNCPopupMenu(Value: TPopupMenu);
 begin
-  if FNCPopupMenu <> nil then
-    FNCPopupMenu.RemoveFreeNotification(Self);
-  FNCPopupMenu := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FNCPopupMenu));
 end;
 
 procedure TJvDockClient.SetParentVisible(const Value: Boolean);

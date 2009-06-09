@@ -157,7 +157,7 @@ uses
   ShlObj, SysUtils, Forms,
   JvVCL5Utils,
   JvJCLUtils,
-  JvWndProcHook;
+  JvWndProcHook, JvJVCLUtils;
 
 var
   GlobalCF_FILEDESCRIPTOR: UINT = $FFFFFFF;
@@ -334,13 +334,7 @@ begin
     { This will implicitly unhook the current DropTarget }
     AcceptDrag := False;
 
-    if Assigned(FDropTarget) then
-      FDropTarget.RemoveFreeNotification(Self);
-
-    FDropTarget := Value;
-
-    if Assigned(FDropTarget) then
-      FDropTarget.FreeNotification(Self);
+    ReplaceComponentReference (Self, Value, TComponent(FDropTarget));
 
     if WasActive then
       { And hook again.. }
@@ -567,14 +561,7 @@ begin
   if Value <> FControl then
   begin
     UnregisterControl;
-    if Assigned(FControl) then
-      FControl.RemoveFreeNotification(Self);
-
-    FControl := Value;
-
-    if Assigned(FControl) then
-      FControl.FreeNotification(Self);
-
+    ReplaceComponentReference (Self, Value, TComponent(FControl));
     RegisterControl;
   end;
 end;

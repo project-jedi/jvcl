@@ -141,6 +141,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 
 constructor TJvSimPID.Create(AOwner: TComponent);
 begin
@@ -331,14 +334,7 @@ end;
 
 procedure TJvSimPID.SetSource(const Value: TJvSimPID);
 begin
-  if FSource <> Value then
-  begin
-    if FSource <> nil then
-      FSource.RemoveFreeNotification(Self);
-    FSource := Value;
-    if FSource <> nil then
-      FSource.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, TComponent(FSource));
 end;
 
 procedure TJvSimPID.Execute;

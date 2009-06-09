@@ -109,7 +109,7 @@ implementation
 
 uses
   Math,
-  JvThemes, JvResources, JvTypes;
+  JvThemes, JvResources, JvTypes, JvJVCLUtils;
 
 //=== { TJvStatusBar } =======================================================
 
@@ -292,9 +292,7 @@ var
   S: TJvStatusBar;
 begin
   S := TStatusPanelsAccessProtected(Collection).Owner as TJvStatusBar;
-  if FControl <> nil then
-    FControl.RemoveFreeNotification(S);
-  FControl := Value;
+  ReplaceComponentReference (S, Value, TComponent(FControl));
   if FControl <> nil then
   begin
     if FControl = S then
@@ -304,7 +302,6 @@ begin
     end;
     FControl.Parent := S;
     FControl.Height := S.ClientHeight - 4;
-    FControl.FreeNotification(S);
   end;
   Changed(False);
 end;

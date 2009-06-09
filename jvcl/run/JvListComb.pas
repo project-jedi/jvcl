@@ -400,7 +400,7 @@ const
 implementation
 
 uses
-  Math;
+  Math, JvJVCLUtils;
 
 type
   TWinControlAccessProtected = class(TWinControl);
@@ -866,23 +866,7 @@ procedure TJvImageComboBox.SetImageList(Value: TCustomImageList);
 begin
   if FImageList <> Value then
   begin
-    if FImageList <> nil then
-      FImageList.UnRegisterChanges(FChangeLink);
-    FImageList := Value;
-
-    if FImageList <> nil then
-      FImageList.RegisterChanges(FChangeLink);
-
-{    if Assigned(FImageList) then
-    begin
-      FWidth := FImageList.Width;
-      FHeight := FImageList.Height;
-    end
-    else
-    begin
-      FWidth := 0;
-      FHeight := 0;
-    end; }
+    ReplaceImageListReference(Self, Value, FImageList, FChangeLink);
     ResetItemHeight;
     RecreateWnd;
   end;
@@ -1288,25 +1272,8 @@ end;
 
 procedure TJvImageListBox.SetImageList(Value: TCustomImageList);
 begin
-  if FImageList <> Value then
+  if ReplaceImageListReference(Self, Value, FImageList, FChangeLink) then
   begin
-    if FImageList <> nil then
-      FImageList.UnRegisterChanges(FChangeLink);
-    FImageList := Value;
-
-    if FImageList <> nil then
-      FImageList.RegisterChanges(FChangeLink);
-
-{    if Assigned(FImageList) then
-    begin
-      FWidth := FImageList.Width;
-      FHeight := FImageList.Height;
-    end
-    else
-    begin
-      FWidth := 0;
-      FHeight := 0;
-    end;}
     ResetItemHeight;
     RecreateWnd;
   end;

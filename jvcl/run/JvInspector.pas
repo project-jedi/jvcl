@@ -3638,18 +3638,14 @@ begin
         raise EJvInspector.CreateRes(@RsEJvInspPaintOnlyUsedOnce);
 
     if Painter <> nil then
-    begin
-      Painter.RemoveFreeNotification(Self);
       Painter.SetInspector(nil);
-    end;
 
-    FPainter := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FPainter));
 
     if Painter <> nil then
     begin
       Style := isItemPainter;
       Painter.SetInspector(Self);
-      Painter.FreeNotification(Self);
 
       if HandleAllocated then
         UpdateScrollBars;

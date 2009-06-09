@@ -301,7 +301,7 @@ const
 implementation
 
 uses
-  JvJCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 constructor TJvBandForm.Create(AOwner: TComponent);
 begin
@@ -382,13 +382,7 @@ end;
 
 procedure TJvBandForm.SetContextMenu(const Value: TPopupMenu);
 begin
-  if FBandContextMenu <> nil then
-    FBandContextMenu.RemoveFreeNotification(Self);
-
-  FBandContextMenu := Value;
-  
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FBandContextMenu));
 end;
 
 procedure TJvBandForm.Notification(AComponent: TComponent;

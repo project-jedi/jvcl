@@ -107,7 +107,7 @@ implementation
 
 uses
   Consts, SysUtils,
-  JvDualListForm, JvResources;
+  JvDualListForm, JvResources, JvJVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
@@ -140,14 +140,7 @@ end;
 
 procedure TJvDualListDialog.SetCenterOnControl(const Value: TControl);
 begin
-  if Value <> FCenterOnControl then
-  begin
-    if FCenterOnControl <> nil then
-      FCenterOnControl.RemoveFreeNotification(Self);
-    FCenterOnControl := Value;
-    if FCenterOnControl <> nil then
-      FCenterOnControl.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, TComponent(FCenterOnControl));
 end;
 
 procedure TJvDualListDialog.SetList1(Value: TStrings);

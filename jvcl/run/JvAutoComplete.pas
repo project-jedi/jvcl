@@ -258,7 +258,7 @@ uses
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
   {$ENDIF CLR}
-  JvConsts;
+  JvConsts, JvJVCLUtils;
 
 //=== { TJvControlAutoComplete } =============================================
 
@@ -486,11 +486,7 @@ end;
 
 procedure TJvBaseEditListAutoComplete.SetEditCtrl(Value: TCustomEdit);
 begin
-  if Assigned(FEditCtrl) then
-    FEditCtrl.RemoveFreeNotification(Self);
-  FEditCtrl := Value;
-  if Assigned(FEditCtrl) then
-    FEditCtrl.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FEditCtrl));
 
   if FEditCtrl <> nil then
     SetFilter(FEditCtrl.Text)
@@ -631,11 +627,7 @@ end;
 
 procedure TJvEditListBoxAutoComplete.SetListBox(Value: TCustomListBox);
 begin
-  if Assigned(FListBox) then
-    FListBox.RemoveFreeNotification(Self);
-  FListBox := Value;
-  if Assigned(FListBox) then
-    FListBox.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FListBox));
 
   if FListBox <> nil then
     List := FListBox.Items
@@ -926,11 +918,7 @@ procedure TJvLookupAutoComplete.SetListBox(Value: TCustomListBox);
 begin
   if Value <> FListBox then
   begin
-    if FListBox <> nil then
-      FListBox.RemoveFreeNotification(Self);
-    FListBox := Value;
-    if FListBox <> nil then
-      FListBox.FreeNotification(Self);
+    ReplaceComponentReference (Self, Value, TComponent(FListBox));
     if Kind = akListBox then
     begin
       if FListBox <> nil then

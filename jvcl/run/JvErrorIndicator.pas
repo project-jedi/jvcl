@@ -218,7 +218,7 @@ implementation
 uses
   CommCtrl,
   SysUtils,
-  JvTypes, JvResources;
+  JvTypes, JvResources, JvJVCLUtils;
 
 {$R JvErrorIndicator.res}
 
@@ -492,17 +492,7 @@ begin
   if FImageList <> Value then
   begin
     StopThread;
-    if Assigned(FImageList) then
-    begin
-      FImageList.UnRegisterChanges(FChangeLink);
-      FImageList.RemoveFreeNotification(Self);
-    end;
-    FImageList := Value;
-    if Assigned(FImageList) then
-    begin
-      FImageList.RegisterChanges(FChangeLink);
-      FImageList.FreeNotification(Self);
-    end;
+    ReplaceImageListReference(Self, Value, FImageList, FChangeLink);
     UpdateControls;
   end;
 end;
@@ -744,14 +734,9 @@ procedure TJvErrorControl.SetControl(const Value: TControl);
 begin
   if FControl <> Value then
   begin
+    ReplaceComponentReference (Self, Value, TComponent(FControl));
     if FControl <> nil then
-      FControl.RemoveFreeNotification(Self);
-    FControl := Value;
-    if FControl <> nil then
-    begin
-      FControl.FreeNotification(Self);
-      Parent := FControl.Parent;
-    end
+      Parent := FControl.Parent
     else
       Parent := nil;
   end;

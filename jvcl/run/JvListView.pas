@@ -1768,21 +1768,8 @@ end;
 
 procedure TJvListView.SetHeaderImages(const Value: TCustomImageList);
 begin
-  if FHeaderImages <> Value then
-  begin
-    if FHeaderImages <> nil then
-    begin
-      FHeaderImages.RemoveFreeNotification(Self);
-      FHeaderImages.UnRegisterChanges(FImageChangeLink);
-    end;
-    FHeaderImages := Value;
-    if Assigned(FHeaderImages) then
-    begin
-      FHeaderImages.RegisterChanges(FImageChangeLink);
-      FHeaderImages.FreeNotification(Self);
-    end;
+  if ReplaceImageListReference(Self, Value, FHeaderImages, FImageChangeLink) then
     UpdateHeaderImages(ListView_GetHeader(Handle));
-  end;
 end;
 
 procedure TJvListView.SetExtendedColumns(

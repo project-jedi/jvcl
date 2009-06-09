@@ -491,6 +491,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 //=== { TJvCustomTabBar } ====================================================
 
 constructor TJvCustomTabBar.Create(AOwner: TComponent);
@@ -640,15 +643,11 @@ begin
   if Value <> FPainter then
   begin
     if Assigned(FPainter) then
-    begin
       FPainter.FOnChangeList.Extract(Self);
-      FPainter.RemoveFreeNotification(Self);
-    end;
-    FPainter := Value;
+    ReplaceComponentReference (Self, Value, tComponent(FPainter));
     if Assigned(FPainter) then
     begin
       FreeAndNil(FDefaultPainter);
-      FPainter.FreeNotification(Self);
       FPainter.FOnChangeList.Add(Self);
       if Parent <> nil then
         UpdateScrollButtons;
@@ -661,23 +660,9 @@ end;
 
 procedure TJvCustomTabBar.SetImages(Value: TCustomImageList);
 begin
-  if Value <> FImages then
-  begin
-    if Assigned(FImages) then
-    begin
-      FImages.UnregisterChanges(FChangeLink);
-      FImages.RemoveFreeNotification(Self);
-    end;
-    FImages := Value;
-    if Assigned(FImages) then
-    begin
-      FImages.RegisterChanges(FChangeLink);
-      FImages.FreeNotification(Self);
-    end;
-
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
     if not (csDestroying in ComponentState) then
       Invalidate;
-  end;
 end;
 
 procedure TJvCustomTabBar.SetCloseButton(Value: Boolean);

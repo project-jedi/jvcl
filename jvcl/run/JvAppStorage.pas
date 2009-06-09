@@ -965,7 +965,7 @@ uses
   StrUtils,
   {$ENDIF HAS_UNIT_STRUTILS}
   JclFileUtils, JclSysInfo, JclRTTI, JclMime,
-  JvPropertyStore, JvConsts, JvResources, JvStrings, JclSynch;
+  JvPropertyStore, JvConsts, JvResources, JvStrings, JclSynch, JvJVCLUtils;
 
 type
   TJvAppStoragePropertyEngineList = class(TList)
@@ -3574,11 +3574,7 @@ begin
       {$ELSE}
       raise EJVCLAppStorageError.CreateRes(@RsECircularReferenceOfStorages);
       {$ENDIF CLR}
-    if AppStorage <> nil then
-      AppStorage.RemoveFreeNotification(OwnerStore);
-    FAppStorage := Value;
-    if AppStorage <> nil then
-      AppStorage.FreeNotification(OwnerStore);
+    ReplaceComponentReference (OwnerStore, Value, TComponent(FAppstorage));
   end;
 end;
 

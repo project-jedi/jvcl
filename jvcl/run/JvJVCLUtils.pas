@@ -910,6 +910,11 @@ function IsChildWindow(const AChild, AParent: THandle): Boolean;
 function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
     AComponentName: string = ''): string;
 
+function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList; var VarReference:
+        TCustomImageList; ChangeLink: TChangeLink): Boolean;
+
+function ReplaceComponentReference(This, NewReference: TComponent; var VarReference: TComponent): Boolean;
+
 
 
 {$IFDEF UNITVERSIONING}
@@ -8286,6 +8291,38 @@ begin
     end;
 end;
 
+function ReplaceComponentReference(This, NewReference: TComponent; var VarReference: TComponent): Boolean;
+begin
+  Result := (VarReference <> NewReference) and Assigned(This);
+  if Result then
+    begin
+      if Assigned(VarReference) then
+        VarReference.RemoveFreeNotification(This);
+      VarReference := NewReference;
+      if Assigned(VarReference) then
+        VarReference.FreeNotification(This);
+    end;
+end;
+
+function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList; var VarReference:
+        TCustomImageList; ChangeLink: TChangeLink): Boolean;
+begin
+  Result := (VarReference <> NewReference) and Assigned(This);
+  if Result then
+    begin
+      if Assigned(VarReference) then
+      begin
+        VarReference.RemoveFreeNotification(This);
+        VarReference.UnRegisterChanges(ChangeLink);
+      end;
+      VarReference := NewReference;
+      if Assigned(VarReference) then
+      begin
+        VarReference.RegisterChanges(ChangeLink);
+        VarReference.FreeNotification(This);
+      end;
+    end;
+end;
 
 initialization
   {$IFDEF UNITVERSIONING}
