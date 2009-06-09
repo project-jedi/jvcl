@@ -73,6 +73,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 
 constructor TJvFormAnimatedIcon.Create(AOwner: TComponent);
 begin
@@ -137,13 +140,7 @@ end;
 
 procedure TJvFormAnimatedIcon.SetIcons(const Value: TImageList);
 begin
-  if FIcons <> nil then
-    FIcons.RemoveFreeNotification(Self);
-
-  FIcons := Value;
-
-  if Value <> nil then
-    FIcons.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FIcons));
 end;
 
 {$IFDEF UNITVERSIONING}

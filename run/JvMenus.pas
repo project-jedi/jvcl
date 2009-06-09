@@ -1042,19 +1042,8 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FImages <> nil then
-  begin
-    FImages.RemoveFreeNotification(Self);
-    FImages.UnregisterChanges(FImageChangeLink);
-  end;
+  ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
 
-  FImages := Value;
-
-  if Value <> nil then
-  begin
-    FImages.RegisterChanges(FImageChangeLink);
-    FImages.FreeNotification(Self);
-  end;
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
 
@@ -1074,19 +1063,9 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FDisabledImages <> nil then
-  begin
-    FDisabledImages.RemoveFreeNotification(Self);
-    FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
-  end;
 
-  FDisabledImages := Value;
-  
-  if Value <> nil then
-  begin
-    FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
-    FDisabledImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FDisabledImages, FDisabledImageChangeLink);
+
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
 end;
@@ -1102,19 +1081,7 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FHotImages <> nil then
-  begin
-    FHotImages.RemoveFreeNotification(Self);
-    FHotImages.UnregisterChanges(FHotImageChangeLink);
-  end;
-
-  FHotImages := Value;
-  
-  if Value <> nil then
-  begin
-    FHotImages.RegisterChanges(FHotImageChangeLink);
-    FHotImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FHotImages, FHotImageChangeLink);
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
 end;
@@ -1610,19 +1577,7 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FImages <> nil then
-  begin
-    FImages.RemoveFreeNotification(Self);
-    FImages.UnregisterChanges(FImageChangeLink);
-  end;
-
-  FImages := Value;
-  
-  if Value <> nil then
-  begin
-    FImages.RegisterChanges(FImageChangeLink);
-    FImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
 
@@ -1642,19 +1597,7 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FDisabledImages <> nil then
-  begin
-    FDisabledImages.RemoveFreeNotification(Self);
-    FDisabledImages.UnregisterChanges(FDisabledImageChangeLink);
-  end;
-
-  FDisabledImages := Value;
-
-  if Value <> nil then
-  begin
-    FDisabledImages.RegisterChanges(FDisabledImageChangeLink);
-    FDisabledImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FDisabledImages, FDisabledImageChangeLink);
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
 end;
@@ -1670,19 +1613,7 @@ var
   OldOwnerDraw: Boolean;
 begin
   OldOwnerDraw := IsOwnerDrawMenu;
-  if FHotImages <> nil then
-  begin
-    FImages.RemoveFreeNotification(Self);
-    FImages.UnregisterChanges(FHotImageChangeLink);
-  end;
-
-  FHotImages := Value;
-  
-  if Value <> nil then
-  begin
-    FHotImages.RegisterChanges(FHotImageChangeLink);
-    FHotImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FHotImages, FHotImageChangeLink);
   if IsOwnerDrawMenu <> OldOwnerDraw then
     RefreshMenu(not OldOwnerDraw);
 end;
@@ -2033,17 +1964,13 @@ begin
   begin
     // Remove menu from current item painter
     if FItemPainter <> nil then
-    begin
-      FItemPainter.RemoveFreeNotification(Self);
       FItemPainter.Menu := nil;
-    end;
 
+    ReplaceComponentReference (Self, Value, TComponent(FItemPainter));
     // set value and if not nil, setup the painter correctly
-    FItemPainter := Value;
     if FItemPainter <> nil then
     begin
       Style := msItemPainter;
-      FItemPainter.FreeNotification(Self);
       FItemPainter.Menu := Self;
     end;
     Refresh;

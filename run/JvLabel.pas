@@ -1050,11 +1050,7 @@ end;
 
 procedure TJvCustomLabel.SetFocusControl(Value: TWinControl);
 begin
-  if FFocusControl <> nil then
-    FFocusControl.RemoveFreeNotification(Self);
-  FFocusControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FFocusControl));
   if FShowFocus then
     Invalidate;
 end;
@@ -1280,17 +1276,7 @@ begin
   if FImages <> Value then
   begin
     NonProviderChange;
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnRegisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.FreeNotification(Self);
-      FImages.RegisterChanges(FChangeLink);
-    end;
+    ReplaceImageListReference(Self, Value, FImages, FChangeLink);
     if AutoSize then
     begin
       FNeedsResize := True;

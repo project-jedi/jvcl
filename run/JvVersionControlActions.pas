@@ -365,6 +365,9 @@ const
   
 implementation
 
+uses
+  JvJVCLUtils;
+
 constructor TJvVersionControlActionList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -417,13 +420,8 @@ procedure TJvVersionControlActionList.SetVersionControlComponent(Value: TCompone
 var
   I: Integer;
 begin
-  if Value <> FVersionControlComponent then
+  if ReplaceComponentReference (Self, Value, TComponent(FVersionControlComponent)) then
   begin
-    if FVersionControlComponent <> nil then
-      FVersionControlComponent.RemoveFreeNotification(Self);
-    FVersionControlComponent := Value;
-    if FVersionControlComponent <> nil then
-      FVersionControlComponent.FreeNotification(Self);
     for I := 0 to ActionCount - 1 do
       if Actions[I] is TJvVersionControlBaseAction then
         TJvVersionControlBaseAction(Actions[I]).VersionControlComponent := Value;

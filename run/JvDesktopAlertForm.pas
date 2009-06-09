@@ -536,21 +536,8 @@ end;
 
 procedure TJvDesktopAlertButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnRegisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.FreeNotification(Self);
-      FImages.RegisterChanges(FChangeLink);
-    end;
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvDesktopAlertButton.SetToolType(const Value: TJvDesktopAlertButtonType);

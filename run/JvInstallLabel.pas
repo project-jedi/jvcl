@@ -203,11 +203,7 @@ end;
 
 procedure TJvInstallLabel.SetImageList(Value: TCustomImageList);
 begin
-  if Images <> nil then
-    Images.UnRegisterChanges(FImageChangeLink);
-  FImageList := Value;
-  if Images <> nil then
-    Images.RegisterChanges(FImageChangeLink);
+  ReplaceImageListReference(Self, Value, FImageList, FImageChangeLink);
 end;
 
 function TJvInstallLabel.GetLines: TStrings;

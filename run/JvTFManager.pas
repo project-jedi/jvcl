@@ -1065,7 +1065,7 @@ uses
   {$IFDEF USEJVCL}
   JvConsts, JvResources,
   {$ENDIF USEJVCL}
-  Dialogs, Forms;
+  Dialogs, Forms, JvJVCLUtils;
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -2663,36 +2663,12 @@ end;
 
 procedure TJvTFScheduleManager.SetStateImages(Value: TCustomImageList);
 begin
-  if Assigned(FStateImages) then
-  begin
-    FStateImages.RemoveFreeNotification(Self);
-    FStateImages.UnRegisterChanges(FImageChangeLink);
-  end;
-
-  FStateImages := Value;
-
-  if Assigned(FStateImages) then
-  begin
-    FStateImages.RegisterChanges(FImageChangeLink);
-    FStateImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FStateImages, FImageChangeLink);
 end;
 
 procedure TJvTFScheduleManager.SetCustomImages(Value: TCustomImageList);
 begin
-  if Assigned(FCustomImages) then
-  begin
-    FCustomImages.RemoveFreeNotification(Self);
-    FCustomImages.UnRegisterChanges(FImageChangeLink);
-  end;
-
-  FCustomImages := Value;
-
-  if Assigned(FCustomImages) then
-  begin
-    FCustomImages.RegisterChanges(FImageChangeLink);
-    FCustomImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FCustomImages, FImageChangeLink);
 end;
 
 procedure TJvTFScheduleManager.SetCache(Value: TJvTFScheduleManagerCache);

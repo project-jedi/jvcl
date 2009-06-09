@@ -928,7 +928,7 @@ uses
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
-  Consts;
+  Consts, JvJVCLUtils;
 
 const
   ciButtonWidth = 75;
@@ -3045,17 +3045,7 @@ end;
 
 procedure TJvWizard.SetHeaderImages(Value: TCustomImageList);
 begin
-  if Assigned(FHeaderImages) then
-  begin
-    FHeaderImages.RemoveFreeNotification(Self);
-    FHeaderImages.UnRegisterChanges(FImageChangeLink);
-  end;
-  FHeaderImages := Value;
-  if Assigned(FHeaderImages) then
-  begin
-    FHeaderImages.RegisterChanges(FImageChangeLink);
-    FHeaderImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FHeaderImages, FImageChangeLink);
   if Assigned(FActivePage) then
     FActivePage.Invalidate;
 end;

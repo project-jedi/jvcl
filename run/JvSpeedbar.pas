@@ -2487,17 +2487,7 @@ end;
 
 procedure TJvSpeedBar.SetImages(Value: TCustomImageList);
 begin
-  if Images <> nil then
-  begin
-    Images.RemoveFreeNotification(Self);
-    Images.UnRegisterChanges(FImageChangeLink);
-  end;
-  FImages := Value;
-  if FImages <> nil then
-  begin
-    FImages.RegisterChanges(FImageChangeLink);
-    FImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
   ImageListChange(FImages);
 end;
 

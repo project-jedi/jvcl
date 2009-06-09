@@ -159,15 +159,10 @@ begin
   if FRemoteServer <> Value then
   begin
     UnprepareRemoteServer;
-    if FRemoveServer <> nil then
-      FRemoveServer.RemoveFreeNotification(Self);
-    FRemoteServer := Value;
-    if Value <> nil then
-    begin
-      Value.FreeNotification(Self);
+    ReplaceComponentReference (Self, Value, TComponent(FRemoteServer));
+    if FRemoteServer <> nil then
       if not (csLoading in ComponentState) then
         PrepareRemoteServer;
-    end;
   end;
 end;
 

@@ -153,7 +153,7 @@ implementation
 
 uses
   Math,
-  JvgUtils;
+  JvgUtils, JvJVCLUtils;
 
 const
   FontDirs: array [TglSide] of TglLabelDir =
@@ -412,12 +412,9 @@ var
   I: Integer;
   B: Boolean;
 begin
-  if Assigned(FGlyphs) then
-    FGlyphs.UnregisterChanges(FGlyphsChangeLink);
-  FGlyphs := Value;
+  ReplaceImageListReference(Self, Value, TCustomImageList(FGlyphs), FGlyphsChangeLink);
   if Assigned(FGlyphs) then
   begin
-    FGlyphs.RegisterChanges(FGlyphsChangeLink);
     SendMessage(Handle, TCM_SETIMAGELIST, 0, Longint(FGlyphs.Handle));
     B := True;
     for I := 0 to Min(Tabs.Count - 1, FGlyphs.Count - 1) do

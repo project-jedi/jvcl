@@ -204,6 +204,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 
 var
   Registered: Boolean = False;
@@ -371,11 +374,7 @@ begin
   begin
     if not (csLoading in ComponentState) then
       SyncBtnClick(Index, False);
-    if FButtons[Boolean(Index)] <> nil then
-      FButtons[Boolean(Index)].RemoveFreeNotification(Self);
-    FButtons[Boolean(Index)] := Value;
-    if Value <> nil then
-      Value.FreeNotification(Self);
+    ReplaceComponentReference (Self, Value, tComponent(FButtons[Boolean(Index)]));
     if not (csLoading in ComponentState) then
       SyncBtnClick(Index, True);
   end;
@@ -453,13 +452,8 @@ end;
 
 procedure TJvPageManager.SetPageOwner(Value: TPageOwner);
 begin
-  if FPageOwner <> Value then
+  if ReplaceComponentReference (Self, Value, tComponent(FPageOwner)) then
   begin
-    if FPageOwner <> nil then
-      FPageOwner.RemoveFreeNotification(Self);
-    FPageOwner := Value;
-    if Value <> nil then
-      Value.FreeNotification(Self);
     if not (csLoading in ComponentState) then
     begin
       Resync;

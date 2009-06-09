@@ -1727,11 +1727,7 @@ end;
 
 procedure TJvBalloonHint.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> nil then
-    FImages.RemoveFreeNotification(Self);
-  FImages := Value;
-  if FImages <> nil then
-    FImages.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FImages));
 end;
 
 procedure TJvBalloonHint.SetOptions(const Value: TJvBalloonOptions);

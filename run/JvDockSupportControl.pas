@@ -560,7 +560,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvDockGlobals, JvDockControlForm, JvDockSupportProc;
+  JvDockGlobals, JvDockControlForm, JvDockSupportProc, JvJVCLUtils;
 
 type
   TlbNCButtonProc = procedure(Msg: TWMNCHitMessage; Button: TMouseButton;
@@ -1534,18 +1534,9 @@ end;
 
 procedure TJvDockCustomTabControl.SetImages(Value: TCustomImageList);
 begin
+  ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
   if Images <> nil then
-  begin
-    Images.RemoveFreeNotification(Self);
-    Images.UnRegisterChanges(FImageChangeLink);
-  end;
-  FImages := Value;
-  if Images <> nil then
-  begin
-    Images.RegisterChanges(FImageChangeLink);
-    Images.FreeNotification(Self);
-    Perform(TCM_SETIMAGELIST, 0, Images.Handle);
-  end
+    Perform(TCM_SETIMAGELIST, 0, Images.Handle)
   else
     Perform(TCM_SETIMAGELIST, 0, 0);
 end;

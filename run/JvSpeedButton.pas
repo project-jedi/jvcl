@@ -1466,11 +1466,7 @@ end;
 
 procedure TJvCustomSpeedButton.SetDropdownMenu(Value: TPopupMenu);
 begin
-  if FDropDownMenu <> nil then
-    FDropDownMenu.RemoveFreeNotification(Self);
-  FDropDownMenu := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu));
   if FMarkDropDown then
     Invalidate;
 end;
@@ -1914,18 +1910,8 @@ end;
 
 procedure TJvImageSpeedButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> nil then
-  begin
-    FImages.RemoveFreeNotification(Self);
-    FImages.UnRegisterChanges(FImageChangeLink);
-  end;
-  FImages := Value;
-  if FImages <> nil then
-  begin
-    FImages.RegisterChanges(FImageChangeLink);
-    FImages.FreeNotification(Self);
-  end
-  else
+  ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
+  if FImages = nil then
     SetImageIndex(-1);
   InvalidateImage;
 end;

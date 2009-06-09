@@ -303,7 +303,7 @@ const
 implementation
 
 uses
-  Forms; // for IsAccel()
+  Forms, JvJVCLUtils; // for IsAccel()
 
 
 // (p3) not used
@@ -394,20 +394,7 @@ end;
 
 procedure TJvRollOutImageOptions.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> nil then
-  begin
-    FImages.UnRegisterChanges(FChangeLink);
-    if FOwner <> nil then
-      FImages.RemoveFreeNotification(FOwner);
-  end;
-
-  FImages := Value;
-  if FImages <> nil then
-  begin
-    FImages.RegisterChanges(FChangeLink);
-    if FOwner <> nil then
-      FImages.FreeNotification(FOwner);
-  end;
+  ReplaceImageListReference(FOwner, Value, FImages, FChangeLink);
   Change;
 end;
 

@@ -375,14 +375,7 @@ end;
 procedure TJvCustomPreviewRenderer.SetPrintPreview(
   const Value: TJvCustomPreviewControl);
 begin
-  if FPrintPreview <> Value then
-  begin
-    if FPrintPreview <> nil then
-      FPrintPreview.RemoveFreeNotification(Self);
-    FPrintPreview := Value;
-    if FPrintPreview <> nil then
-      FPrintPreview.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, tComponent(FPrintPreview));
 end;
 
 //=== { TJvPreviewRenderRichEdit } ===========================================
@@ -461,14 +454,7 @@ end;
 procedure TJvPreviewRenderRichEdit.SetRichEdit(
   const Value: TCustomRichEdit);
 begin
-  if FRichEdit <> Value then
-  begin
-    if FRichEdit <> nil then
-      FRichEdit.RemoveFreeNotification(Self);
-    FRichEdit := Value;
-    if FRichEdit <> nil then
-      FRichEdit.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, tComponent(FRichEdit));
 end;
 
 //=== { TJvPreviewRenderJvRichEdit } =========================================
@@ -558,14 +544,7 @@ end;
 
 procedure TJvPreviewRenderJvRichEdit.SetRichEdit(const Value: TJvCustomRichEdit);
 begin
-  if FRichEdit <> Value then
-  begin
-    if FRichEdit <> nil then
-      FRichEdit.RemoveFreeNotification(Self);
-    FRichEdit := Value;
-    if FRichEdit <> nil then
-      FRichEdit.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, tComponent(FRichEdit));
 end;
 
 //=== { TJvPreviewRenderStrings } ============================================
@@ -707,14 +686,7 @@ end;
 
 procedure TJvPreviewRenderControl.SetControl(const Value: TControl);
 begin
-  if FControl <> Value then
-  begin
-    if FControl <> nil then
-      FControl.RemoveFreeNotification(Self);
-    FControl := Value;
-    if FControl <> nil then
-      FControl.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, tComponent(FControl));
 end;
 
 procedure TJvPreviewRenderControl.DrawControl(ACanvas: TCanvas; AWidth, AHeight: Integer);
@@ -1045,14 +1017,7 @@ end;
 procedure TJvPreviewPrinter.SetPrintPreview(const Value: TJvCustomPreviewControl);
 begin
   CheckActive;
-  if FPrintPreview <> Value then
-  begin
-    if FPrintPreview <> nil then
-      FPrintPreview.RemoveFreeNotification(Self);
-    FPrintPreview := Value;
-    if FPrintPreview <> nil then
-      FPrintPreview.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, tComponent(FPrintPreview));
 end;
 
 procedure TJvPreviewPrinter.SetTitle(const Value: string);

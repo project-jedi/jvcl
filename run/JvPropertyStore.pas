@@ -245,7 +245,7 @@ uses
 {$ENDIF HAS_UNIT_RTLCONSTS}
   Consts, SysUtils, TypInfo,
   JclSynch,
-  JvStrings, JvResources;
+  JvStrings, JvResources, JvJVCLUtils;
 
 const
   cLastSaveTime = 'LastSaveTime';
@@ -740,7 +740,7 @@ var
   PropName: string;
   PropertyStore: TJvCustomPropertyStore;
 begin
-  if Value <> FAppStorage then
+  if ReplaceComponentReference (Self, Value, tComponent(FAppStorage)) then
   begin
     for Index := 0 to GetPropCount(Self) - 1 do
     begin
@@ -752,11 +752,6 @@ begin
           PropertyStore.AppStorage := Value;
       end;
     end;
-    if Assigned(FAppStorage) then
-      FAppStorage.RemoveFreeNotification(Self);
-    FAppStorage := Value;
-    if Assigned(FAppStorage) then
-      FAppStorage.FreeNotification(Self);
     UpdateChildPaths;
   end;
 end;

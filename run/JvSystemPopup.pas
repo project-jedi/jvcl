@@ -91,7 +91,7 @@ const
 implementation
 
 uses
-  JvWndProcHook, JvConsts, JvResources;
+  JvWndProcHook, JvConsts, JvResources, JvJVCLUtils;
 
 type
   TMenuItemAccessProtected = class(TMenuItem);
@@ -465,16 +465,10 @@ end;
 procedure TJvSystemPopup.SetPopup(const Value: TPopupMenu);
 begin
   if Assigned(FPopup) then
-  begin
-    FPopup.RemoveFreeNotification(Self);
     FPopup.OnChange := nil;
-  end;
-  FPopup := Value;
-  if Assigned(FPopup) then
-  begin
-    //FPopup.OnChange := MenuChanged;
-    FPopup.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, TComponent(FPopup));
+  //if Assigned(FPopup) then
+  //  FPopup.OnChange := MenuChanged;
   //if not (csLoading in ComponentState) then
   //  Refresh;
 end;

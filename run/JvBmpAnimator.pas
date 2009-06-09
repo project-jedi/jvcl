@@ -138,6 +138,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 
 constructor TJvCustomBmpAnimator.Create(AOwner: TComponent);
 begin
@@ -281,26 +284,17 @@ procedure TJvCustomBmpAnimator.Notification(AComponent: TComponent; AOperation: 
 begin
   inherited Notification(AComponent, AOperation);
   if (AOperation = opRemove) and (AComponent = FImageList) then
-  begin
     SetImage(nil);
-    Active := False;
-  end;
 end;
 
 procedure TJvCustomBmpAnimator.SetImage(Value: TCustomImageList);
 begin
   if FImageList <> nil then
-  begin
-    FImageList.UnRegisterChanges(FImageChangeLink);
     SetNumGlyphs(0);
-  end;
 
-  FImageList := Value;
+  ReplaceImageListReference(Self, Value, FImageList, FImageChangeLink);
   if FImageList <> nil then
-  begin
-    FImageList.RegisterChanges(FImageChangeLink);
-    SetNumGlyphs(FImageList.Count);
-  end
+    SetNumGlyphs(FImageList.Count)
   else
     Active := False;
   Repaint;

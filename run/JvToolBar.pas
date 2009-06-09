@@ -89,6 +89,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -128,15 +131,11 @@ begin
   end;
   ShowCaptions := True;
   if Assigned(FMenu) then
-  begin
     for I := ButtonCount - 1 downto 0 do
       Buttons[I].Free;
-    FMenu.RemoveFreeNotification(Self);
-  end;
-  FMenu := AMenu;
+  ReplaceComponentReference (Self, AMenu, TComponent(FMenu));
   if not Assigned(FMenu) then
     Exit;
-  FMenu.FreeNotification(Self);
 
   for I := ButtonCount to FMenu.Items.Count - 1 do
   begin

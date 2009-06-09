@@ -1251,31 +1251,22 @@ begin
 end;
 
 procedure TJvIconPanel.SetStyleManager(const Value: TJvNavPaneStyleManager);
-//var
-//  I: Integer;
 begin
   if FStyleManager <> Value then
   begin
     ParentStyleManager := False;
+
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
     end;
   end;
   //  FDropButton.StyleManager := Value;
   InternalStyleManagerChanged(Self, Value);
-  // TODO: should this be removed?
-//  for I := 0 to ControlCount - 1 do
-//    if Controls[I] is TJvNavIconButton then
-//      TJvNavIconButton(Controls[I]).StyleManager := Value;
 end;
 
 procedure TJvIconPanel.SetDropDownMenu(const Value: TPopupMenu);
@@ -1706,15 +1697,11 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
       NavPanelFont := FStyleManager.Fonts.FNavPanelFont;
       NavPanelHotTrackFont := FStyleManager.Fonts.FNavPanelHotTrackFont;
@@ -2176,21 +2163,8 @@ end;
 
 procedure TJvNavIconButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnregisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.FreeNotification(Self);
-      FImages.RegisterChanges(FChangeLink);
-    end;
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvNavIconButton.SetButtonType(const Value: TJvNavIconButtonType);
@@ -2208,15 +2182,11 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
     end;
   end;
@@ -2412,15 +2382,12 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
     FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
     end;
   end;
@@ -2963,15 +2930,12 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
     FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
     end;
   end;
@@ -3000,19 +2964,12 @@ procedure TJvNavPanelPage.SetIconPanel(const Value: TJvIconPanel);
 begin
   if (FIconPanel <> Value) and not (csDestroying in ComponentState) then
   begin
-    if FIconPanel <> nil then
-      FIconPanel.RemoveFreeNotification(Self);
-    FIconPanel := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FIconPanel));
     if IconButton <> nil then
-    begin
       if FIconPanel <> nil then
-      begin
-        IconButton.Parent := FIconPanel;
-        FIconPanel.FreeNotification(Self);
-      end
+        IconButton.Parent := FIconPanel
       else
         IconButton.Parent := nil;
-    end;
   end;
 end;
 
@@ -3324,15 +3281,12 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
+    ReplaceComponentReference (Self, Value, tComponent(FStyleManager));
     FStyleManager := Value;
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       ColorFrom := FStyleManager.Colors.SplitterColorFrom;
       ColorTo := FStyleManager.Colors.SplitterColorTo;
     end;
@@ -3565,15 +3519,11 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, tComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       FColorFrom := FStyleManager.Colors.HeaderColorFrom;
       FColorTo := FStyleManager.Colors.HeaderColorTo;
       Font := FStyleManager.Fonts.HeaderFont;
@@ -3603,21 +3553,8 @@ end;
 
 procedure TJvNavPanelHeader.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnregisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.RegisterChanges(FChangeLink);
-      FImages.FreeNotification(Self);
-    end;
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvNavPanelHeader.TextChanged;
@@ -3780,15 +3717,11 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, tComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       ColorFrom := FStyleManager.Colors.DividerColorFrom;
       ColorTo := FStyleManager.Colors.DividerColorTo;
       Font := FStyleManager.Fonts.DividerFont;
@@ -4564,19 +4497,8 @@ procedure TJvCustomNavPaneToolPanel.SetImages(const Value: TCustomImageList);
 var
   I: Integer;
 begin
-  if FImages <> Value then
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
   begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnregisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.RegisterChanges(FChangeLink);
-      FImages.FreeNotification(Self);
-    end;
     for I := 0 to Buttons.Count - 1 do
       Buttons[I].Button.Images := FImages;
     Invalidate;
@@ -4598,15 +4520,11 @@ begin
   begin
     ParentStyleManager := False;
     if FStyleManager <> nil then
-    begin
-      FStyleManager.RemoveFreeNotification(Self);
       FStyleManager.UnregisterChanges(FStyleLink);
-    end;
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, tComponent(FStyleManager));
     if FStyleManager <> nil then
     begin
       FStyleManager.RegisterChanges(FStyleLink);
-      FStyleManager.FreeNotification(Self);
       Colors := FStyleManager.Colors;
       Invalidate;
     end;
@@ -4980,21 +4898,8 @@ end;
 
 procedure TJvNavPanelToolButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    if FImages <> nil then
-    begin
-      FImages.RemoveFreeNotification(Self);
-      FImages.UnregisterChanges(FChangeLink);
-    end;
-    FImages := Value;
-    if FImages <> nil then
-    begin
-      FImages.RegisterChanges(FChangeLink);
-      FImages.FreeNotification(Self);
-    end;
+  if ReplaceImageListReference(Self, Value, FImages, FChangeLink) then
     Invalidate;
-  end;
 end;
 
 //=== { TJvNavPaneBackgroundImage } ==========================================

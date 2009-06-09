@@ -598,7 +598,7 @@ uses
   {$IFDEF USEJVCL}
   JvJCLUtils, JvResources,
   {$ENDIF USEJVCL}
-  Menus;
+  Menus, JvJVCLUtils;
 
 {$R JvXPBar.res}
 
@@ -1932,21 +1932,8 @@ end;
 
 procedure TJvXPCustomWinXPBar.SetImageList(Value: TCustomImageList);
 begin
-  if Value <> FImageList then
-  begin
-    if FImageList <> nil then
-    begin
-      FImageList.RemoveFreeNotification(Self);
-      FImageList.UnRegisterChanges(FImageChangeLink);
-    end;
-    FImageList := Value;
-    if FImageList <> nil then
-    begin
-      FImageList.FreeNotification(Self);
-      FImageList.RegisterChanges(FImageChangeLink);
-    end;
+  if ReplaceImageListReference(Self, Value, FImageList, FImageChangeLink) then
     InternalRedraw;
-  end;
 end;
 
 procedure TJvXPCustomWinXPBar.SetItemHeight(Value: Integer);
@@ -2269,21 +2256,8 @@ end;
 
 procedure TJvXPCustomWinXPBar.SetRollImages(const Value: TCustomImageList);
 begin
-  if FRollImages <> Value then
-  begin
-    if FRollImages <> nil then
-    begin
-      FRollImages.RemoveFreeNotification(Self);
-      FRollImages.UnRegisterChanges(FRollChangeLink);
-    end;
-    FRollImages := Value;
-    if FRollImages <> nil then
-    begin
-      FRollImages.FreeNotification(Self);
-      FRollImages.RegisterChanges(FRollChangeLink);
-    end;
+  if ReplaceImageListReference(Self, Value, FRollImages, FImageChangeLink) then
     InternalRedraw;
-  end;
 end;
 
 procedure TJvXPCustomWinXPBar.GroupMessage;

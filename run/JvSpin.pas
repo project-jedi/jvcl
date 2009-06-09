@@ -1745,11 +1745,7 @@ end;
 
 procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
 begin
-  if FFocusControl <> nil then
-    FFocusControl.RemoveFreeNotification(Self);
-  FFocusControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FFocusControl));
 end;
 
 procedure TJvSpinButton.SetUpGlyph(Value: TBitmap);

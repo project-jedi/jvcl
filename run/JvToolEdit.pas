@@ -2935,12 +2935,8 @@ end;
 
 procedure TJvCustomComboEdit.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> nil then
-    FImages.RemoveFreeNotification(Self);
-  FImages := Value;
-  if FImages <> nil then
-    FImages.FreeNotification(Self)
-  else
+  ReplaceComponentReference (Self, Value, TComponent(FImages));
+  if FImages = nil then
     SetImageIndex(-1);
   if ImageKind = ikCustom then
   begin

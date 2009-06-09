@@ -509,11 +509,7 @@ end;
 procedure TJvMRUManager.SetRecentMenu(Value: TMenuItem);
 begin
   ClearRecentMenu;
-  if FRecentMenu <> nil then
-    FRecentMenu.RemoveFreeNotification(Self);
-  FRecentMenu := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FRecentMenu));
   FreeAndNil(FCanvas);
   UpdateRecentMenu;
 end;

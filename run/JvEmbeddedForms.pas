@@ -146,7 +146,7 @@ implementation
 
 uses
   SysUtils, Graphics, Controls,
-  JvResources, JvConsts;
+  JvResources, JvConsts, JvJVCLUtils;
 
 //=== { TJvEmbeddedFormLink } ================================================
 
@@ -269,10 +269,7 @@ begin
       raise Exception.CreateRes(@RsELinkCircularRef)
     else
     begin
-      if FLink <> nil then
-        FLink.RemoveFreeNotification(Self);
-      FLink := Value;
-      FLink.FreeNotification(Self);
+      ReplaceComponentReference (Self, Value, TComponent(FLink));
       InitLinkedForm;
     end;
   end;

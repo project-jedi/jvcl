@@ -314,9 +314,8 @@ uses
   {$IFNDEF COMPILER7_UP}
   TmSchema,
   {$ENDIF !COMPILER7_UP}
-  JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf, JvConsts, JvJCLUtils, JvResources, JvWndProcHook;
+  JvDsgnIntf, JvConsts, JvJCLUtils, JvResources, JvWndProcHook, JvJVCLUtils;
 
 const
   { Msimg32.dll is included in Windows 98 and later }
@@ -2401,17 +2400,7 @@ end;
 
 procedure TJvCaptionButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> nil then
-  begin
-    FImages.RemoveFreeNotification(Self);
-    FImages.UnRegisterChanges(FImageChangeLink);
-  end;
-  FImages := Value;
-  if FImages <> nil then
-  begin
-    FImages.RegisterChanges(FImageChangeLink);
-    FImages.FreeNotification(Self);
-  end;
+  ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
   if Standard = tsbNone then
     Redraw(rkIndirect);
 end;
