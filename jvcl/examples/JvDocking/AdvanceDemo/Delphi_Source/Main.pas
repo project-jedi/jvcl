@@ -23,12 +23,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Menus, ComCtrls, ToolWin, JvDockControlForm, JvDockTree,
-  JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle, JvDockVIDVCStyle, 
-  JvDockSupportClass, ActnList, JvComponentBase
-  {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppRegistryStorage, JvAppIniStorage, JvAppXmlStorage
-  {$ENDIF}
-  {$IFDEF VER150}, XPMan{$ENDIF};
+  JvDockVCStyle, JvDockDelphiStyle, JvDockVIDStyle, JvDockVSNetStyle, JvDockVIDVCStyle,
+  {$IFDEF VER150}{$IFNDEF COMPILER11_UP}XPMan,{$ENDIF} {$ENDIF}
+  JvDockSupportClass, ActnList, JvComponentBase, JvComponent, JvAppStorage, JvAppRegistryStorage,
+  JvAppIniStorage, JvAppXmlStorage;
 
 type
   TRunTimeForm = class(TForm)
@@ -145,16 +143,13 @@ type
     procedure NewWindowExecute(Sender: TObject);
   private
     { Private declarations }
-    {$IFDEF USEJVCL}
     FJvAppRegistryStorage: TJvAppRegistryStorage;
     FJvAppIniFileStorage: TJvAppIniFileStorage;
     FJvAppXmlStorage: TJvAppXmlFileStorage;
-    {$ENDIF}
     FFormCount: array[0..4] of Integer;
     procedure AddRunTimeItemToShowDockMenu(AForm: TRunTimeForm);
     procedure ShowDockWindowMenuClick(Sender: TObject);
 
-    {$IFDEF USEJVCL}
     procedure LoadFromAppStorage(AppStorage: TJvCustomAppStorage);
     procedure SaveToAppStorage(AppStorage: TJvCustomAppStorage);
 
@@ -162,7 +157,6 @@ type
     procedure LoadFormsFromAppStorage(AppStorage: TJvCustomAppStorage);
 
     procedure FreeRunTimeForms;
-    {$ENDIF}
 
     function GetFormCount(AStyle: TJvDockBasicStyle): Integer;
     procedure SetFormCount(AStyle: TJvDockBasicStyle;
@@ -455,7 +449,6 @@ begin
   AllDocked.Checked := lbDockServer1.EnableDock;
   Memo1.WordWrap := True;
   UpdateCaption;
-  {$IFDEF USEJVCL}
   FJvAppRegistryStorage := TJvAppRegistryStorage.Create(self);
   FJvAppRegistryStorage.Path := '\Software\JVCL\Examples\JvDocking\AdvancePro';
   FJvAppRegistryStorage.AutoFlush := True;
@@ -468,12 +461,10 @@ begin
   FJvAppXMLStorage.FileName := 'DockInfo.xml';
   FJvAppXMLStorage.AutoFlush := True;
   FJvAppXMLStorage.AutoReload := True;
-  {$ENDIF}
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   { Prevent last Flush by setting Path/FileName to '' }
   FJvAppRegistryStorage.Path := '';
   FreeAndNil(FJvAppRegistryStorage);
@@ -481,10 +472,8 @@ begin
   FreeAndNil(FJvAppIniFileStorage);
   FJvAppXmlStorage.FileName := '';
   FreeAndNil(FJvAppXmlStorage);
-  {$ENDIF}
 end;
 
-{$IFDEF USEJVCL}
 procedure TMainForm.FreeRunTimeForms;
 var
   I: Integer;
@@ -501,7 +490,6 @@ begin
       Frm.Free;
     end;
 end;
-{$ENDIF USEJVCL}
 
 function TMainForm.GetFormCount(AStyle: TJvDockBasicStyle): Integer;
 begin
@@ -526,8 +514,6 @@ begin
   LeftDocked.Checked := not LeftDocked.Checked;
   lbDockServer1.LeftDock := LeftDocked.Checked;
 end;
-
-{$IFDEF USEJVCL}
 
 procedure TMainForm.LoadFormsFromAppStorage(
   AppStorage: TJvCustomAppStorage);
@@ -581,33 +567,19 @@ begin
   end;
 end;
 
-{$ENDIF USEJVCL}
-
 procedure TMainForm.LoadFromIniFileClick(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   LoadFromAppStorage(FJvAppIniFileStorage);
-  {$ELSE}
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
-  {$ENDIF}
 end;
 
 procedure TMainForm.LoadFromRegClick(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   LoadFromAppStorage(FJvAppRegistryStorage);
-  {$ELSE}
-  LoadDockTreeFromReg(HKEY_CURRENT_USER, '\Software\DockInfo');
-  {$ENDIF}
 end;
 
 procedure TMainForm.LoadFromXmlFileClick(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   LoadFromAppStorage(FJvAppXmlStorage);
-  {$ELSE}
-  ShowMessage('Not supported unless USEJVCL is defined');
-  {$ENDIF}
 end;
 
 procedure TMainForm.NewWindowExecute(Sender: TObject);
@@ -644,8 +616,6 @@ begin
   RightDocked.Checked := not RightDocked.Checked;
   lbDockServer1.RightDock := RightDocked.Checked;
 end;
-
-{$IFDEF USEJVCL}
 
 procedure TMainForm.SaveFormsToAppStorage(AppStorage: TJvCustomAppStorage);
 var
@@ -695,33 +665,19 @@ begin
   end;
 end;
 
-{$ENDIF USEJVCL}
-
 procedure TMainForm.SaveToIniFileClick(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   SaveToAppStorage(FJvAppIniFileStorage);
-  {$ELSE}
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
-  {$ENDIF}
 end;
 
 procedure TMainForm.SaveToRegClick(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   SaveToAppStorage(FJvAppRegistryStorage);
-  {$ELSE}
-  SaveDockTreeToReg(HKEY_CURRENT_USER, '\Software\DockInfo');
-  {$ENDIF}
 end;
 
 procedure TMainForm.SaveToXmlFileClick(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   SaveToAppStorage(FJvAppXmlStorage);
-  {$ELSE}
-  ShowMessage('Not supported unless USEJVCL is defined');
-  {$ENDIF}
 end;
 
 procedure TMainForm.SetFormCount(AStyle: TJvDockBasicStyle;

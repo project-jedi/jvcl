@@ -31,26 +31,18 @@ unit JvgGraph;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 const
   MaxPointsCount = 30;
 
 type
-  {$IFDEF USEJVCL}
   TJvgGraph = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgGraph = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   protected
     procedure Paint; override;
   public
@@ -66,7 +58,6 @@ type
     property Width default 50;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -76,7 +67,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -138,7 +128,6 @@ begin
   Canvas.Polyline(Slice(Points, DrawPointsCount + 1));
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -146,7 +135,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

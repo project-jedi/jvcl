@@ -31,15 +31,11 @@ unit JvXPCore;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Controls, Graphics, Forms, Messages, // asn: messages after controls for clx
-  {$IFDEF USEJVCL}
   JvComponentBase, JvComponent,
-  {$ENDIF USEJVCL}
   Classes;
 
 const
@@ -127,38 +123,15 @@ type
    );
 
   { baseclass for non-focusable component descendants. }
-  {$IFDEF USEJVCL}
-  TJvXPCustomComponent = class(TJvComponent)
-  public
-    constructor Create(AOwner: TComponent); override;
-  end;
-  {$ELSE}
-  TJvXPCustomComponent = class(TComponent)
-  private
-    FVersion: string;
-    procedure SetVersion(const Value: string);
-  public
-    constructor Create(AOwner: TComponent); override;
-  published
-    property Version: string read FVersion write SetVersion stored False;
-  end;
-  {$ENDIF USEJVCL}
+  TJvXPCustomComponent = class(TJvComponent);
 
-  {$IFDEF USEJVCL}
   TJvXPWinControl = class(TJvWinControl)
-  {$ELSE}
-  TJvXPWinControl = class(TWinControl)
-  {$ENDIF USEJVCL}
   published
     property Color;
   end;
   { baseclass for focusable control descendants. }
 
-  {$IFDEF USEJVCL}
   TJvXPCustomControl = class(TJvCustomControl)
-  {$ELSE}
-  TJvXPCustomControl = class(TCustomControl)
-  {$ENDIF USEJVCL}
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -167,10 +140,6 @@ type
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
-    {$IFNDEF USEJVCL}
-    FVersion: string;
-    procedure SetVersion(const Value: string);
-    {$ENDIF !USEJVCL}
     procedure CMFocusChanged(var Msg: TMessage); message CM_FOCUSCHANGED;
     procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMBorderChanged(var Msg: TMessage); message CM_BORDERCHANGED;
@@ -214,10 +183,6 @@ type
     property DrawState: TJvXPDrawState read FDrawState write FDrawState;
     property IsLocked: Boolean read FIsLocked write FIsLocked;
     property IsSibling: Boolean read FIsSibling write FIsSibling;
-  published
-    {$IFNDEF USEJVCL}
-    property Version: string read FVersion write SetVersion stored False;
-    {$ENDIF !USEJVCL}
   end;
 
   TJvXPUnlimitedControl = class(TJvXPCustomControl)
@@ -357,7 +322,6 @@ type
     property Style: TJvXPGradientStyle read FGradientStyle write SetGradientStyle default gsLeft;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -367,41 +331,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvResources,
-  {$ENDIF USEJVCL}
   JvXPCoreUtils;
 
 {$R JvXPCore.res}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsCopyright = 'Design eXperience. (c) 2002 M. Hoffmann Version ';
-  RsCopyright2 = 'Design eXperience II - (c) 2002 M. Hoffmann Version ';
-  RsVersion = '2.0.1'; // always increase version number on new releases!
-{$ENDIF !USEJVCL}
-
-//=== { TJvXPCustomComponent } ===============================================
-
-constructor TJvXPCustomComponent.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  {$IFNDEF USEJVCL}
-  FVersion := RsCopyright + RsVersion;
-  {$ENDIF !USEJVCL}
-end;
-
-{$IFNDEF USEJVCL}
-procedure TJvXPCustomComponent.SetVersion(const Value: string);
-begin
-  // do not enable overwriting this constant.
-end;
-{$ENDIF !USEJVCL}
 
 //=== { TJvXPCustomControl } =================================================
 
@@ -418,17 +355,7 @@ begin
   FIsLocked := False;
   FIsSibling := False;
   FModalResult := 0;
-  {$IFNDEF USEJVCL}
-  FVersion := RsCopyright2 + RsVersion;
-  {$ENDIF !USEJVCL}
 end;
-
-{$IFNDEF USEJVCL}
-procedure TJvXPCustomControl.SetVersion(const Value: string);
-begin
-  // disallow changing this property.
-end;
-{$ENDIF !USEJVCL}
 
 procedure TJvXPCustomControl.BeginUpdate;
 begin
@@ -937,7 +864,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -945,7 +871,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

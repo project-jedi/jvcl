@@ -30,11 +30,9 @@ unit JvDockDelphiStyle;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics,
   JvDockControlForm, JvDockSupportControl, JvDockTree;
 
@@ -45,9 +43,6 @@ type
       Source: TJvDockDragDockObject; X, Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    {$IFNDEF USEJVCL}
-    function GetControlName: string; override;
-    {$ENDIF !USEJVCL}
   published
     property ConjoinServerOption;
     property TabServerOption;
@@ -70,7 +65,6 @@ type
 
   TJvDockDelphiDragDockObject = class(TJvDockDragDockObject);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -80,7 +74,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -198,13 +191,6 @@ begin
   end;
 end;
 
-{$IFNDEF USEJVCL}
-function TJvDockDelphiStyle.GetControlName: string;
-begin
-  Result := Format(RsDockLikeDelphiStyle, [inherited GetControlName]);
-end;
-{$ENDIF !USEJVCL}
-
 procedure TJvDockDelphiTabPageControl.CMDockClient(var Msg: TCMDockClient);
 var
   I: Integer;
@@ -227,7 +213,6 @@ begin
     inherited;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -235,7 +220,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

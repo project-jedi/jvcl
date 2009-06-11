@@ -22,10 +22,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, ActnList, Menus, ToolWin, ComCtrls, ExtCtrls, StdCtrls,
-  JvDockControlForm, JvDockVIDStyle
-  {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppIniStorage
-  {$ENDIF};
+  JvDockControlForm, JvDockVIDStyle, JvComponent, JvAppStorage, JvAppIniStorage,
+  JvDockTree, JvComponentBase;
 
 type
   TMainForm = class(TForm)
@@ -494,7 +492,6 @@ type
     procedure Action_Script_OutlineExecute(Sender: TObject);
     procedure Action_Define_Window_LayoutExecute(Sender: TObject);
     procedure Action_Find_and_ReplaceExecute(Sender: TObject);
-    procedure Load_Save_WindowUI_ComboBoxChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -508,22 +505,22 @@ type
     procedure LoadDefaultLayout;
   public
     { Public declarations }
-    {$IFDEF USEJVCL}
-    JvAppStorage:TJvAppIniFileStorage;
-    {$ENDIF}
+    JvAppStorage: TJvAppIniFileStorage;
     procedure LoadDockInfo;
   end;
 
 var
   MainForm: TMainForm;
 
-const DefineWindowLayoutFileName: string = 'DefineWindowLayout.ini';
-const SectionString: string = 'DefineWindowLayout';
-const DefaultLayout: string = 'DefaultLayout';
+const
+  DefineWindowLayoutFileName: string = 'DefineWindowLayout.ini';
+  SectionString: string = 'DefineWindowLayout';
+  DefaultLayout: string = 'DefaultLayout';
 
 implementation
 
-uses IniFiles, ProjectExplorerUnit, PropertiesUnit, ToolboxUnit, ImmediateUnit,
+uses
+  IniFiles, ProjectExplorerUnit, PropertiesUnit, ToolboxUnit, ImmediateUnit,
   AutosUnit, LocalsUnit, WatchUnit, ThreadsUnit, CallStackUnit,
   RunningDocumentsUnit, TaskListUnit, DocumentOutlineUnit, OutputUnit,
   ScriptOutlineUnit, DefineWindowLayoutUnit, FindAndReplaceUnit, SplashUnit;
@@ -596,91 +593,76 @@ end;
 
 procedure TMainForm.Action_Task_ListExecute(Sender: TObject);
 begin
-  { 显示Task List工具窗体 }
   ShowDockForm(TaskListForm);
 end;
 
 procedure TMainForm.Action_Project_ExplorerExecute(Sender: TObject);
 begin
-  { 显示Task List工具窗体 }
   ShowDockForm(ProjectExplorerForm);
 end;
 
 procedure TMainForm.Action_Properties_WindowExecute(Sender: TObject);
 begin
-  { 显示Properties工具窗体 }
   ShowDockForm(PropertiesForm);
 end;
 
 procedure TMainForm.Action_ToolboxExecute(Sender: TObject);
 begin
-  { 显示Toolbox工具窗体 }
   ShowDockForm(ToolboxForm);
 end;
 
 procedure TMainForm.Action_ImmediateExecute(Sender: TObject);
 begin
-  { 显示Immediate工具窗体 }
   ShowDockForm(ImmediateForm);
 end;
 
 procedure TMainForm.Action_AutosExecute(Sender: TObject);
 begin
-  { 显示Autos工具窗体 }
   ShowDockForm(AutosForm);
 end;
 
 procedure TMainForm.Action_LocalsExecute(Sender: TObject);
 begin
-  { 显示Locals工具窗体 }
   ShowDockForm(LocalsForm);
 end;
 
 procedure TMainForm.Action_WatchExecute(Sender: TObject);
 begin
-  { 显示Watch工具窗体 }
   ShowDockForm(WatchForm);
 end;
 
 procedure TMainForm.Action_ThreadsExecute(Sender: TObject);
 begin
-  { 显示Threads工具窗体 }
   ShowDockForm(ThreadsForm);
 end;
 
 procedure TMainForm.Action_Call_StackExecute(Sender: TObject);
 begin
-  { 显示Call Stack工具窗体 }
   ShowDockForm(CallStackForm);
 end;
 
 procedure TMainForm.Action_Running_DocumentsExecute(Sender: TObject);
 begin
-  { 显示Running Documents工具窗体 }
   ShowDockForm(RunningDocumentsForm);
 end;
 
 procedure TMainForm.Action_Document_OutlineExecute(Sender: TObject);
 begin
-  { 显示Document Outline工具窗体 }
   ShowDockForm(DocumentOutlineForm);
 end;
 
 procedure TMainForm.Action_OutputExecute(Sender: TObject);
 begin
-  { 显示Output工具窗体 }
   ShowDockForm(OutputForm);
 end;
 
 procedure TMainForm.Action_Script_OutlineExecute(Sender: TObject);
 begin
-  { 显示Script Outline工具窗体 }
   ShowDockForm(ScriptOutlineForm);
 end;
 
 procedure TMainForm.Action_Find_and_ReplaceExecute(Sender: TObject);
 begin
-  { 显示Find And Replace工具窗体 }
   ShowDockForm(FindAndReplaceForm);
 end;
 
@@ -704,7 +686,8 @@ begin
 end;
 
 procedure TMainForm.LoadDefaultLayout;
-var IniFile: TIniFile;
+var
+  IniFile: TIniFile;
   Str: string;
   Sections: TStringList;
   Index: Integer;
@@ -723,12 +706,8 @@ begin
     if Str <> 'ERROR' then
     begin
       Load_Save_WindowUI_ComboBox.ItemIndex := Load_Save_WindowUI_ComboBox.Items.IndexOf(Str);
-      {$IFDEF USEJVCL}
       JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + Str + '.ini';
       LoadDockTreeFromAppStorage(JvAppStorage);
-      {$ELSE}
-      LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Str + '.ini');
-      {$ENDIF}
     end;
   finally
     Sections.Free;
@@ -739,7 +718,6 @@ end;
 procedure TMainForm.SaveDefaultLayout;
 //var IniFile: TIniFile;
 begin
-  {$IFDEF USEJVCL}
   JvAppStorage.Filename := ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini';
   SaveDockTreeToAppStorage(JvAppStorage, Load_Save_WindowUI_ComboBox.Text);
 {  JvAppStorage.WriteString(JvAppStorage.ConcatPaths([SectionString, DefaultLayout]), Load_Save_WindowUI_ComboBox.Text);
@@ -749,21 +727,10 @@ begin
   finally
     IniFile.Free;
   end;}
-  {$ELSE}
-    SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
-  {$ENDIF}
-end;
-
-procedure TMainForm.Load_Save_WindowUI_ComboBoxChange(Sender: TObject);
-begin
-  {$IFNDEF USEJVCL}
-  LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
-  {$ENDIF}
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  { 保存停靠信息的代码不能放在OnDestroy事件中，因为这时候有些窗口已经被释放了，不能被保存。 }
   SaveDefaultLayout;
 end;
 
@@ -791,20 +758,18 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  {$IFDEF USEJVCL}
   JvAppStorage := TJvAppIniFileStorage.Create(self);
-  {$ENDIF}
   LoadDockInfo;
 end;
 
 procedure TMainForm.Action_AboutExecute(Sender: TObject);
 begin
- with TSplashForm.Create(nil) do
- try
-   ShowModal;
- finally
-   Free;
- end;
+  with TSplashForm.Create(nil) do
+  try
+    ShowModal;
+  finally
+    Free;
+  end;
 end;
 
 end.

@@ -38,16 +38,12 @@ unit JvgListBox;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, ImgList,
-  {$IFDEF USEJVCL}
   JVCLVer,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, Jvg3DColors;
 
 const
@@ -63,9 +59,7 @@ type
 
   TJvgListBox = class(TCustomListBox)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FAutoTransparentColor: TglAutoTransparentColor;
     FWallpaper: TBitmap;
     FWallpaperImage: TImage;
@@ -134,9 +128,7 @@ type
     property SelectedObject: Pointer read GetSelectedObject;
     property SelCount: Integer read GetSelCount;
   published
-    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF USEJVCL}
     property Anchors;
     property Align;
     property BorderStyle;
@@ -210,7 +202,6 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -220,7 +211,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -1050,7 +1040,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1058,7 +1047,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

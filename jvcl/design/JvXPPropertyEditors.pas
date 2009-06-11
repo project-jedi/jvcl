@@ -84,17 +84,8 @@ type
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvDsgnConsts,
-  {$ENDIF USEJVCL}
   JvXPBar;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsItemEditorEllipsis = 'Item Editor...';
-  RsDefaultColorItem = 'Restore Default Colors';
-  RsDefaultFontsItem = 'Restore Default Fonts';
-{$ENDIF !USEJVCL}
 
 type
   TCustomWinXPBar = class(TJvXPCustomWinXPBar)

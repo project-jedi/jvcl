@@ -30,14 +30,10 @@ unit JvXPProgressBar;
 
 interface
 
-{$IFDEF USEJVCL}
-
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, SysUtils, Classes, Graphics,
   JvProgressBar;
 
@@ -98,9 +94,6 @@ type
     property OnStartDrag;
   end;
 
-{$ENDIF USEJVCL}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -110,11 +103,8 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
-
-{$IFDEF USEJVCL}
 
 uses
   Controls, Forms, ComCtrls,
@@ -315,8 +305,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-
-{$ENDIF USEJVCL}
 
 end.
 

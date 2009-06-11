@@ -40,16 +40,12 @@ unit JvgAskListBox;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, CommCtrl, ExtCtrls,
-  {$IFDEF USEJVCL}
   JVCLVer,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses;
 
 type
@@ -59,9 +55,7 @@ type
 
   TJvgAskListBox = class(TCustomListBox)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FAutoTransparentColor: TglAutoTransparentColor;
     FWallpaper: TBitmap;
     FWallpaperImage: TImage;
@@ -129,9 +123,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF USEJVCL}
     property Align;
     property BorderStyle;
     property Color;
@@ -186,7 +178,6 @@ type
     property Options: TglAskLBOptions read FOptions write SetOptions;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -196,21 +187,12 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvConsts, JvJCLUtils, JvResources,
-  {$ENDIF USEJVCL}
   JvgUtils;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsYes = 'yes';
-  RsNo = 'no';
-{$ENDIF !USEJVCL}
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
@@ -978,7 +960,6 @@ begin
     Glyphs := nil;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -986,7 +967,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -49,20 +49,11 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF USEJVCL}
   JvDsgnConsts,
-  {$ELSE}
-  JvWizardAboutInfoForm,
-  {$ENDIF USEJVCL}
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps,
   JvWizardRouteMapList, JvWizardEditorForm;
 
 {$R JvWizardReg.dcr}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteWizard = 'Jv Wizard';
-{$ENDIF !USEJVCL}
 
 procedure Register;
 const
@@ -83,11 +74,6 @@ begin
     TJvWizardActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TJvWizardInteriorPage), TJvWizard, cActivePage,
     TJvWizardActivePageProperty);
-  // Added By Steve Forbes
-  {$IFNDEF USEJVCL}
-  RegisterPropertyEditor(TypeInfo(TJvWizardAboutInfoForm), nil, 'About',
-    TJvWizardAboutDialogProperty);
-  {$ENDIF !USEJVCL}
   // JvWizard Page List Editor
   RegisterPropertyEditor(TypeInfo(TJvWizardPageList), TJvWizard, cPages,
     TJvWizardPageListProperty);

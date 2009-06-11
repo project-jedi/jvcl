@@ -2,8 +2,8 @@
 <Package Name="JvXPCtrls" Design="0">
   <Description>JVCL XP Controls Runtime Package</Description>
   <GUID>{CFE6ED76-BD93-4A2E-BE82-A8C22E686277}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50(USEJVCL)</C5PFlags>
-  <C6PFlags>-LUJcl(USEJVCL) -LUJclVcl(USEJVCL)</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>4B5C0000</ImageBase>
@@ -12,11 +12,11 @@
   <ReleaseNumber>0</ReleaseNumber>
   <BuildNumber>0</BuildNumber>
   <Requires>
-    <Package Name="JvCore-R" Targets="all" Condition="USEJVCL"/>
-    <Package Name="JvStdCtrls-R" Targets="all" Condition="USEJVCL"/>
-    <Package Name="JclC50" Targets="Cv5" Condition="USEJVCL"/>
-    <Package Name="JclD50" Targets="Dv5" Condition="USEJVCL"/>
-    <Package Name="Jcl" Targets="allv6up" Condition="USEJVCL"/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+	<Package Name="JclC50" Targets="Cv5" Condition=""/>
+	<Package Name="JclD50" Targets="Dv5" Condition=""/>
+	<Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
     <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
@@ -36,6 +36,6 @@
     <File Name="..\..\run\JvXPCoreUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPCheckCtrls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvXPProgressBar.pas" Targets="VCL" Formname="" Condition="USEJVCL"/>
+    <File Name="..\..\run\JvXPProgressBar.pas" Targets="VCL" Formname="" Condition=""/>
   </Contains>
 </Package>

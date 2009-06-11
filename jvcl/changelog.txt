@@ -1,5 +1,8 @@
 Changelog for JVCL 3.X
 ======================
+2009-06-10
+- Removed the USEJVCL define that was used to keep JvUIB, JvWizard and JvTimeFrameWork as separate packages
+
 2009-01-10
 - Enancements to the JvParameterList
   EditParameter can now be combined to one label with BeforeParameterName and AfterParameterName

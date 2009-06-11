@@ -33,22 +33,14 @@ unit JvControlComponent;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Controls, Forms,
   JvComponentBase;
-  {$ELSE}
-  SysUtils, Classes, Windows, Messages, Controls, Forms;
-  {$ENDIF USEJVCL}
 
 type
-  {$IFDEF USEJVCL}
   TJvCustomControlComponent = class(TJvComponent)
-  {$ELSE}
-  TJvCustomControlComponent = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FActive: Boolean;
     FParent: TWinControl;
@@ -66,7 +58,6 @@ type
     property Parent: TWinControl read GetParent write SetParent;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -76,7 +67,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -146,7 +136,6 @@ begin
   inherited DesignInfo := Value;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -154,6 +143,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

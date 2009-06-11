@@ -31,11 +31,9 @@ unit JvTFUtils;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Graphics, Controls, Classes, SysUtils;
 
 {$HPPEMIT '#ifndef TDate'}
@@ -114,7 +112,6 @@ function RectHeight(ARect: TRect): Integer;
 function EmptyRect: TRect;
 function IsClassByName(Obj: TObject; ClassName: string): Boolean;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -124,21 +121,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
-  RsEInvalidMonthValue = 'Invalid Month Value (%d)';
-  RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
-{$ENDIF !USEJVCL}
 
 function ExtractYear(ADate: TDateTime): Word;
 var
@@ -647,7 +634,6 @@ begin
       ClassRef := ClassRef.ClassParent;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -655,7 +641,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

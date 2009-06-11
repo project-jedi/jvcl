@@ -31,16 +31,12 @@ unit JvgButton;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, Forms, Dialogs, ExtCtrls, Imglist,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgUtils, JvgCommClasses;
 
 type
@@ -106,11 +102,7 @@ type
     property GlyphDisabled: TBitmap read FGlyphDisabled write SetGlyphDisabled;
   end;
 
-  {$IFDEF USEJVCL}
   TJvgButton = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgButton = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   private
     FGlyph: TBitmap;
     FGlyphs: TJvgBtnGlyphs;
@@ -178,9 +170,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    {$IFDEF USEJVCL}
     procedure MouseLeave(Control: TControl); override;
-    {$ENDIF USEJVCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -207,16 +197,13 @@ type
     property AutoTransparentColor: TglAutoTransparentColor read FAutoTrColor write SetAutoTrColor default ftcUser;
     property BlinkTimer: TTimer read GetBlinkTimer write SetBlinkTimer;
     property TestMode: Boolean read FTestMode write SetTestMode default False;
-    {$IFDEF USEJVCL}
     property HintColor;
     property OnParentColorChange;
     property OnMouseEnter;
     property OnMouseLeave;
-    {$ENDIF USEJVCL}
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -226,21 +213,13 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvConsts, JvJCLUtils, JvResources, JvThemes;
-{$ENDIF USEJVCL}
 
 {$R JvgButton.res}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEErrorDuringAccessGlyphsListOrGlyphP = 'Error during access GlyphsList or Glyph property';
-{$ENDIF !USEJVCL}
 
 //=== { TJvgBtnGlyphs } ======================================================
 
@@ -295,9 +274,7 @@ constructor TJvgButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csOpaque, csDoubleClicks];
-  {$IFDEF USEJVCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF USEJVCL}
   FGlyph := TBitmap.Create;
   FGlyphs := TJvgBtnGlyphs.Create;
   DefaultGlyphsList := TImageList.CreateSize(30, 30);
@@ -665,21 +642,18 @@ begin
     MouseInControl := IsMouseInControl;
     if MouseInControl <> FMouseInControl then
     begin
-      {$IFDEF USEJVCL}
       if FMouseInControl then
         if Assigned(OnMouseEnter) then
           OnMouseEnter(Self)
         else
         if Assigned(OnMouseLeave) then
           OnMouseLeave(Self);
-      {$ENDIF USEJVCL}
       FMouseInControl := MouseInControl;
       Paint_;
     end;
   end;
 end;
 
-{$IFDEF USEJVCL}
 procedure TJvgButton.MouseLeave(Control: TControl);
 begin
   if MouseOver then
@@ -689,7 +663,6 @@ begin
     Paint_;
   end;
 end;
-{$ENDIF USEJVCL}
 
 procedure TJvgButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
@@ -1511,7 +1484,6 @@ begin
   DoChanged;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1519,7 +1491,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

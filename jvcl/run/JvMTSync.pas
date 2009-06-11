@@ -30,11 +30,9 @@ unit JvMTSync;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, SyncObjs,
   {$IFDEF MSWINDOWS}
   Windows,
@@ -101,7 +99,6 @@ type
     function WaitFor(Timeout: LongWord): Boolean; override;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -111,22 +108,12 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvResources,
-  {$ENDIF USEJVCL}
   JvMTThreading;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsESemaphoreFailure = 'Semaphore failure (%d)';
-  RsESemaphoreAbandoned = 'Semaphore was abandoned';
-  RsEThreadAbandoned = 'Thread was abandoned';
-{$ENDIF !USEJVCL}
 
 //=== { TMTSemaphore } =======================================================
 
@@ -343,7 +330,6 @@ begin
   Windows.SetEvent(FHandle);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -351,6 +337,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

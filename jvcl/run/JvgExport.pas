@@ -33,11 +33,9 @@ unit JvgExport;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
   DB,
   {$IFDEF JVCL_USEQuickReport}
@@ -53,7 +51,6 @@ procedure ExportToExcel(QuickRep: TCustomQuickRep);
 {$ENDIF JVCL_UseQuickReport}
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -63,13 +60,10 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
-  {$ENDIF USEJVCL}
   ComObj,
   JvgUtils;
 
@@ -235,7 +229,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -243,7 +236,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

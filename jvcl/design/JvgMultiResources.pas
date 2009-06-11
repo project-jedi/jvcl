@@ -33,9 +33,7 @@ interface
 uses
   Windows, Controls, Classes, Forms, SysUtils,
   Dialogs, TypInfo,
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories;
   {$ELSE}
@@ -45,11 +43,7 @@ uses
 type
   TJvgResStringList = class(TStringList);
 
-  {$IFDEF USEJVCL}
   TJvgMultipleResources = class(TJvComponent)
-  {$ELSE}
-  TJvgMultipleResources = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FComps: TStringList;
     FResources: TJvgResStringList;

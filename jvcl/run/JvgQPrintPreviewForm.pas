@@ -32,26 +32,18 @@ unit JvgQPrintPreviewForm;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
   QuickRpt, QRCtrls, QRPrntr,
   ComCtrls, ToolWin, ImgList, ShellAPI, StdCtrls,
-  {$IFDEF USEJVCL}
   JvComponent, JvExControls,
-  {$ENDIF USEJVCL}
   JvgQRLabel;
 
 type
-  {$IFDEF USEJVCL}
   TJvgfPrintPreview = class(TJvForm)
-  {$ELSE}
-  TJvgfPrintPreview = class(TForm)
-  {$ENDIF USEJVCL}
     Panel2: TPanel;
     ToolBar1: TToolBar;
     tbPrior: TToolButton;
@@ -110,7 +102,6 @@ var
   fPrintPreview: TJvgfPrintPreview;
   l: TJvgQRLabel;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -120,23 +111,15 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
   Printers,
-  {$IFDEF USEJVCL}
   JvResources, JvConsts,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgExport, JvgQPrintSetupForm;
 
 {$R *.dfm}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPageOfPages = 'Page %d of %d';
-{$ENDIF !USEJVCL}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin
@@ -311,7 +294,6 @@ begin
   ShowModal;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -319,6 +301,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

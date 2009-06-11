@@ -81,18 +81,12 @@ unit JvgXMLSerializer;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  {$IFDEF USEJVCL}
   Dialogs, ComCtrls, TypInfo,
   JvComponentBase;
-  {$ELSE}
-  Dialogs, ComCtrls, TypInfo;
-  {$ENDIF USEJVCL}
 
 type
   TOnGetXMLHeader = procedure(Sender: TObject; var Value: string) of object;
@@ -106,11 +100,7 @@ type
 
   TJvgXMLSerializerException = class of XMLSerializerException;
 
-  {$IFDEF USEJVCL}
   TJvgXMLSerializer = class(TJvComponent)
-  {$ELSE}
-  TJvgXMLSerializer = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     Buffer: PChar;
     BufferEnd: PChar;
@@ -162,7 +152,6 @@ type
     property BeforeParsing: TBeforeParsingEvent read FBeforeParsing write FBeforeParsing;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -172,14 +161,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvVCL5Utils, JvResources,
-  {$ENDIF USEJVCL}
   JvgUtils;
 
 const
@@ -188,18 +174,6 @@ const
 var
   TAB: string;
   CR: string;
-
-{$IFNDEF USEJVCL}
-resourcestring
-(* RUSSIAN
-  RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
-  RsCloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
-  RsUnknownProperty = 'Unknown property: %s';
-*)
-  RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
-  RsCloseXMLTagNotFound = 'Close tag not found: </%s>';
-  RsUnknownProperty = 'Unknown property: %s';
-{$ENDIF !USEJVCL}
 
 constructor TJvgXMLSerializer.Create(AOwner: TComponent);
 begin
@@ -539,57 +513,6 @@ var
   begin
     while TagEnd[0] <= #33 do
       Inc(TagEnd);
-  end;
-
-  //  StrPosExt - ищет позицию одной строки в другой с заданной длиной.
-  //  На длинных строках превосходит StrPos.
-
-  function StrPosExt(const Str1, Str2: PChar; Str1Len: DWORD): PChar; assembler;
-  asm
-        PUSH    EDI
-        PUSH    ESI
-        PUSH    EBX
-        OR      EAX,EAX         // Str1
-        JE      @@2             // если строка Str1 пуста - на выход
-        OR      EDX,EDX         // Str2
-        JE      @@2             // если строка Str2 пуста - на выход
-        MOV     EBX,EAX
-        MOV     EDI,EDX         // установим смещение для SCASB - подстрока Str2
-        XOR     AL,AL           // обнулим AL
-
-        push ECX                // длина строки
-
-        MOV     ECX,0FFFFFFFFH  // счетчик с запасом
-        REPNE   SCASB           // ищем конец подстроки Str2
-        NOT     ECX             // инвертируем ECX - получаем длину строки+1
-        DEC     ECX             // в ECX - длина искомой подстроки Str2
-
-        JE      @@2             // при нулевой длине - все на выход
-        MOV     ESI,ECX         // сохраняем длину подстроки в ESI
-
-        pop ECX
-
-        SUB     ECX,ESI         // ECX == разница длин строк : Str1 - Str2
-        JBE     @@2             // если длина подсроки больше длине строки - выход
-        MOV     EDI,EBX         // EDI  - начало строки Str1
-        LEA     EBX,[ESI-1]     // EBX - длина сравнения строк
-  @@1:  MOV     ESI,EDX         // ESI - смещение строки Str2
-        LODSB                   // загужаем первый символ подстроки в AL
-        REPNE   SCASB           // ищем этот символ в строке EDI
-        JNE     @@2             // если символ не обнаружен - на выход
-        MOV     EAX,ECX         // сохраним разницу длин строк
-        PUSH    EDI             // запомним текущее смещение поиска
-        MOV     ECX,EBX
-        REPE    CMPSB           // побайтно сравниваем строки
-        POP     EDI
-        MOV     ECX,EAX
-        JNE     @@1             // если строки различны - ищем следующее совпадение первого символа
-        LEA     EAX,[EDI-1]
-        JMP     @@3
-  @@2:  XOR     EAX,EAX
-  @@3:  POP     EBX
-        POP     ESI
-        POP     EDI
   end;
 
 begin
@@ -999,7 +922,6 @@ begin
     raise E.Create('XMLSerializerException'#13#10#13#10 + Msg);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1007,7 +929,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

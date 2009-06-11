@@ -34,16 +34,12 @@ unit JvWizardRouteMapList;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms,
-  {$IFDEF USEJVCL}
   JvTypes, JvConsts, JvJVCLUtils,
-  {$ENDIF USEJVCL}
   JvWizard, JvVCL5Utils;
 
 type
@@ -73,10 +69,8 @@ type
     FHotTrackBorder: Integer;
     FBorderColor: TColor;
     FTextOnly: Boolean;
-    {$IFDEF USEJVCL}
     FHotTrackFontOptions: TJvTrackFontOptions;
     FActiveFontOptions: TJvTrackFontOptions;
-    {$ENDIF USEJVCL}
     procedure SetItemHeight(const Value: Integer);
     procedure SetHorzOffset(const Value: Integer);
     procedure SetVertOffset(const Value: Integer);
@@ -93,10 +87,8 @@ type
     procedure SetCurvature(const Value: Integer);
     procedure SetTextOnly(const Value: Boolean);
     procedure SetBorderColor(Value: TColor);
-    {$IFDEF USEJVCL}
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
-    {$ENDIF USEJVCL}
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -112,10 +104,8 @@ type
     destructor Destroy; override;
   published
     property ActiveFont: TFont read FActiveFont write SetActiveFont;
-    {$IFDEF USEJVCL}
     property ActiveFontOptions: TJvTrackFontOptions read FActiveFontOptions write SetActiveFontOptions default
       DefaultTrackFontOptions;
-    {$ENDIF USEJVCL}
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Clickable: Boolean read FClickable write FClickable default True;
     property Color default $00C08000;
@@ -127,10 +117,8 @@ type
     property HotTrack: Boolean read FHotTrack write FHotTrack default True;
 
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    {$IFDEF USEJVCL}
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
-    {$ENDIF USEJVCL}
     property Image;
     property TextOnly: Boolean read FTextOnly write SetTextOnly default False;
     property IncludeDisabled: Boolean read FIncludeDisabled write SetIncludeDisabled default False;
@@ -145,7 +133,6 @@ type
     property OnDrawItem: TJvWizardDrawRouteMapListItem read FOnDrawItem write FOnDrawItem;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -155,7 +142,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -169,10 +155,8 @@ begin
   FHotTrackFont.Color := clNavy;
   FHotTrackFont.Style := [fsUnderline];
   FHotTrackFont.OnChange := DoFontChange;
-  {$IFDEF USEJVCL}
   FActiveFontOptions := DefaultTrackFontOptions;
   FHotTrackFontOptions := DefaultTrackFontOptions;
-  {$ENDIF USEJVCL}
   Color := $00C08000;
   FHotTrackCursor := crHandPoint;
   FVertOffset := 8;
@@ -537,8 +521,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
-
 procedure TJvWizardRouteMapList.SetActiveFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FActiveFontOptions <> Value then
@@ -556,8 +538,6 @@ begin
     UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
 end;
-
-{$ENDIF USEJVCL}
 
 procedure TJvWizardRouteMapList.SetBorderColor(Value: TColor);
 begin
@@ -585,13 +565,10 @@ end;
 
 procedure TJvWizardRouteMapList.FontChanged;
 begin
-  {$IFDEF USEJVCL}
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
-  {$ENDIF USEJVCL}
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -599,7 +576,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

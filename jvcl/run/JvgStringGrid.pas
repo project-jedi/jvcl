@@ -31,16 +31,12 @@ unit JvgStringGrid;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
   Grids, StdCtrls, Forms,
-  {$IFDEF USEJVCL}
   JVCLVer,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 const
@@ -73,9 +69,7 @@ type
 
   TJvgStringGrid = class(TStringGrid)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FCaptionTextAlignment: TAlignment;
     FCaptionFont: TFont;
     FBitmap: TBitmap;
@@ -151,9 +145,7 @@ type
     procedure GetNextCell(var X, Y: Longint);
     procedure ClearSelection;
   published
-    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF USEJVCL}
     property CaptionTextAlignment: TAlignment read FCaptionTextAlignment write
       SetCaptionTextAlignment default taCenter;
     property TextAlignment: TAlignment read FTextAlignment write
@@ -170,7 +162,6 @@ type
       FOnGetCellGradientParams write FOnGetCellGradientParams;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -180,7 +171,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -795,7 +785,6 @@ begin
     Result := False;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -803,7 +792,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

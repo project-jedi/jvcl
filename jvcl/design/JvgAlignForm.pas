@@ -31,23 +31,14 @@ unit JvgAlignForm;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Classes, Forms,
-  {$IFDEF USEJVCL}
-  JvComponent,
-  {$ENDIF USEJVCL}
-  JvgTypes, StdCtrls, Controls, ExtCtrls;
+  JvComponent, JvgTypes, StdCtrls, Controls, ExtCtrls;
 
 type
-  {$IFDEF USEJVCL}
   TAlignForm = class(TJvForm)
-  {$ELSE}
-  TAlignForm = class(TForm)
-  {$ENDIF USEJVCL}
     g_Horz: TRadioGroup;
     g_Vert: TRadioGroup;
     B_Ok: TButton;
@@ -58,7 +49,6 @@ type
     Vert: TglVComponentAlign;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -68,7 +58,6 @@ const
     LogPath: 'JVCL\design'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -80,7 +69,6 @@ begin
   Vert := TglVComponentAlign(g_Vert.ItemIndex);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -88,7 +76,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

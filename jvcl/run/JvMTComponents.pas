@@ -30,24 +30,16 @@ unit JvMTComponents;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, SyncObjs,
   Consts,
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   JvMTThreading, JvMTConsts, JvMTData, JvMTSync, JvMTSyncMon;
 
 type
-  {$IFDEF USEJVCL}
   TJvMTComponent = class(TJvComponent);
-  {$ELSE}
-  TJvMTComponent = class(TComponent);
-  {$ENDIF USEJVCL}
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -245,7 +237,6 @@ type
     property Condition[ID: Integer]: TMTCondition read GetCondition; default;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -255,22 +246,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources, JvJVCLUtils;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsENoThreadManager = 'No ThreadManager specified';
-  RsEOperatorNotAvailable = 'Operation not available while thread is active';
-  RsECannotChangePropertySection = 'Cannot change property of active section';
-  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
-{$ENDIF !USEJVCL}
 
 constructor TJvMTManager.Create(AOwner: TComponent);
 begin
@@ -818,7 +798,6 @@ begin
   FMonitor.Leave;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -826,6 +805,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

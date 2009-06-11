@@ -36,11 +36,9 @@ unit JvgFileIterator;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Classes, SysUtils;
 
 type
@@ -84,7 +82,6 @@ type
     function IsDone: Boolean;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -94,14 +91,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvVCL5Utils, JvJCLUtils;
-{$ENDIF USEJVCL}
 
 constructor TJvgFileIterator.Create;
 begin
@@ -223,7 +217,6 @@ begin
   Result := PSearchData(FLSearchRecs[FLSearchRecs.Count - 1])^.Path;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -231,7 +224,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

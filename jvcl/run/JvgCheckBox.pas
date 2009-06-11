@@ -32,24 +32,16 @@ unit JvgCheckBox;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 type
-  {$IFDEF USEJVCL}
   TJvgCheckBox = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgCheckBox = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   private
     FChecked: Boolean;
     FColors: TJvgLabelColors;
@@ -104,12 +96,10 @@ type
     procedure WMLButtonDown(var Msg: TMessage); message WM_LBUTTONDOWN;
     procedure SetAlignment(const Value: TLeftRight);
   protected
-    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
     procedure TextChanged; override;
-    {$ENDIF USEJVCL}
     procedure Resize; override;
     procedure Paint; override;
     procedure HookFocusControlWndProc;
@@ -162,14 +152,11 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property FocusControlMethod: TFocusControlMethod read FFocusControlMethod write FFocusControlMethod default fcmOnMouseDown;
 
-    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
-    {$ENDIF USEJVCL}
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -179,43 +166,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   Math,
   JvThemes, JvJVCLUtils;
-{$ELSE}
-uses
-  Math;
-{$ENDIF USEJVCL}
 
 {$R JvgCheckBox.res}
-
-{$IFNDEF USEJVCL}
-
-function JvMakeObjectInstance(Method: TWndMethod): Pointer;
-begin
-  {$IFDEF COMPILER6_UP}
-  Result := Classes.MakeObjectInstance(Method);
-  {$ELSE}
-  Result := MakeObjectInstance(Method);
-  {$ENDIF COMPILER6_UP}
-end;
-
-procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-begin
-  if ObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(ObjectInstance);
-    {$ELSE}
-    FreeObjectInstance(ObjectInstance);
-    {$ENDIF COMPILER6_UP}
-end;
-
-{$ENDIF !USEJVCL}
 
 constructor TJvgCheckBox.Create(AOwner: TComponent);
 begin
@@ -223,9 +181,7 @@ begin
   ControlStyle :=
     [csCaptureMouse, csOpaque, csClickEvents, csSetCaption, csReplicatable];
   //  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  {$IFDEF USEJVCL}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF USEJVCL}
 
   //  FGlyphOn := TBitmap.Create;
   //  FGlyphOff := TBitmap.Create;
@@ -277,8 +233,6 @@ begin
   SetFocusControl(nil);
   inherited Destroy;
 end;
-
-{$IFDEF USEJVCL}
 
 procedure TJvgCheckBox.FontChanged;
 begin
@@ -353,8 +307,6 @@ begin
   inherited TextChanged;
   Invalidate;
 end;
-
-{$ENDIF USEJVCL}
 
 procedure TJvgCheckBox.WMLButtonUp(var Msg: TMessage);
 var
@@ -618,17 +570,13 @@ begin
   case Msg.Msg of
     WM_SETFOCUS:
       begin
-        {$IFDEF USEJVCL}
         MouseEnter(Self);
-        {$ENDIF USEJVCL}
         FShowAsActiveWhileControlFocused := True;
       end;
     WM_KILLFOCUS:
       begin
         FShowAsActiveWhileControlFocused := False;
-        {$IFDEF USEJVCL}
         MouseLeave(Self);
-        {$ENDIF USEJVCL}
       end;
     WM_DESTROY: {fNeedRehookFocusControl := True};
   end;
@@ -832,12 +780,10 @@ begin
   if FTransparent <> Value then
   begin
     FTransparent := Value;
-    {$IFDEF USEJVCL}
     if FTransparent then
       ExcludeThemeStyle(Self, [csParentBackground])
     else
       IncludeThemeStyle(Self, [csParentBackground]);
-    {$ENDIF USEJVCL}
     Repaint;
   end;
 end;
@@ -906,7 +852,6 @@ begin
   Invalidate;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -914,6 +859,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

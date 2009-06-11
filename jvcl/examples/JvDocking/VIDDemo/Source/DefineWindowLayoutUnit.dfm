@@ -3,8 +3,8 @@ object DefineWindowLayoutForm: TDefineWindowLayoutForm
   Top = 281
   BorderStyle = bsDialog
   Caption = 'Define Window Layout'
-  ClientHeight = 229
-  ClientWidth = 364
+  ClientHeight = 196
+  ClientWidth = 312
   Color = clBtnFace
   Font.Charset = CHINESEBIG5_CHARSET
   Font.Color = clWindowText
@@ -16,89 +16,89 @@ object DefineWindowLayoutForm: TDefineWindowLayoutForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 12
   object Label1: TLabel
-    Left = 9
-    Top = 9
-    Width = 66
-    Height = 14
+    Left = 8
+    Top = 8
+    Width = 57
+    Height = 12
     Caption = 'View Name:'
   end
   object Label2: TLabel
-    Left = 9
-    Top = 65
-    Width = 36
-    Height = 14
+    Left = 8
+    Top = 56
+    Width = 31
+    Height = 12
     Caption = 'Views:'
   end
   object ViewName_Edit: TEdit
-    Left = 9
-    Top = 28
-    Width = 244
+    Left = 8
+    Top = 24
+    Width = 209
     Height = 22
     TabOrder = 0
     OnChange = ViewName_EditChange
   end
   object Views_ListBox: TListBox
-    Left = 9
-    Top = 84
-    Width = 244
-    Height = 135
+    Left = 8
+    Top = 72
+    Width = 209
+    Height = 116
     ItemHeight = 14
     Sorted = True
     TabOrder = 1
     OnClick = Views_ListBoxClick
   end
   object Close_Button: TButton
-    Left = 266
-    Top = 9
-    Width = 86
-    Height = 25
+    Left = 228
+    Top = 8
+    Width = 74
+    Height = 21
     Caption = '&Close'
     TabOrder = 2
     OnClick = Close_ButtonClick
   end
   object Apply_Button: TButton
-    Left = 266
-    Top = 47
-    Width = 86
-    Height = 24
+    Left = 228
+    Top = 40
+    Width = 74
+    Height = 21
     Caption = 'A&pply'
     TabOrder = 3
     OnClick = Apply_ButtonClick
   end
   object Update_Button: TButton
-    Left = 266
-    Top = 84
-    Width = 86
-    Height = 25
+    Left = 228
+    Top = 72
+    Width = 74
+    Height = 21
     Caption = '&Update'
     TabOrder = 4
     OnClick = Update_ButtonClick
   end
   object Delete_Button: TButton
-    Left = 266
-    Top = 121
-    Width = 86
-    Height = 25
+    Left = 228
+    Top = 104
+    Width = 74
+    Height = 21
     Caption = '&Delete'
     TabOrder = 5
     OnClick = Delete_ButtonClick
   end
   object Rename_Button: TButton
-    Left = 266
-    Top = 159
-    Width = 86
-    Height = 24
+    Left = 228
+    Top = 136
+    Width = 74
+    Height = 21
     Caption = '&Rename'
     TabOrder = 6
     OnClick = Rename_ButtonClick
   end
   object Help_Button: TButton
-    Left = 266
-    Top = 196
-    Width = 86
-    Height = 25
+    Left = 228
+    Top = 168
+    Width = 74
+    Height = 21
     Caption = '&Help'
     TabOrder = 7
   end

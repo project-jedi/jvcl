@@ -30,11 +30,9 @@ unit JvMTData;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, Contnrs, SyncObjs,
   {$IFDEF MSWINDOWS}
   {$IFDEF DEBUGINFO_ON}
@@ -109,7 +107,6 @@ type
   end;
   {$M-}
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -119,20 +116,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
-{$ENDIF !USEJVCL}
 
 var
   GlobalDataThreadsMan: TMTManager = nil;
@@ -372,11 +360,9 @@ begin
 end;
 
 initialization
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 finalization
   {$IFDEF MSWINDOWS}
@@ -388,10 +374,8 @@ finalization
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
   FreeAndNil(GlobalDataThreadsMan);
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 end.

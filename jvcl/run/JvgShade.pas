@@ -31,24 +31,16 @@ unit JvgShade;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvExtComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgUtils, JvgCommClasses;
 
 type
-  {$IFDEF USEJVCL}
   TJvgShade = class(TJvCustomPanel)
-  {$ELSE}
-  TJvgShade = class(TCustomPanel)
-  {$ENDIF USEJVCL}
   private
     FImage: TBitmap;
     FLoaded: Boolean;
@@ -71,7 +63,6 @@ type
     property Width default 105;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -81,7 +72,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -163,7 +153,6 @@ begin
   Invalidate;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -171,7 +160,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

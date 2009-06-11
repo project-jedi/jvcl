@@ -30,13 +30,11 @@ unit JvDockGlobals;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Messages, Graphics,
-  JvDockControlForm {, JvDockInfo, JvDockSupportControl};
+  JvDockControlForm;
 
 const
   RsDockBaseDockTreeVersion = $00040000;
@@ -66,9 +64,6 @@ const
   JvDockXorColor = TColor($00FFD8CE);
 
 resourcestring
-  {$IFNDEF USEJVCL}
-  RsPaletteDocking = 'Jv Docking';
-  {$ENDIF !USEJVCL}
   RsDockServerName = 'JVCL Dock Server Component';
   RsDockClientName = 'JVCL Dock Client Component';
   RsDockStyleName = 'JVCL Dock Style Component';
@@ -120,12 +115,6 @@ resourcestring
   RsEDockCannotSetTabPosition = 'Cannot set TabPosition property to tpLeft or tpRight';
   RsEDockTabPositionMustBetpBottom = 'TabPosition property must be tpBottom';
 
-  RsDockLikeDelphiStyle = 'Similar to Delphi''s %s';
-  RsDockLikeVCStyle = 'Similar to Visual C++''s %s';
-  RsDockLikeVIDStyle = 'Similar to Visual InterDev''s %s';
-  RsDockLikeVSNETStyle = 'Similar to Visual Studio.Net''s %s';
-  RsDockLikeEclipseStyle = 'Similar to Java Eclipse''s %s';
-
   RsDockCannotFindWindow = 'Cannot find window';
 
   RsEInvalidDockSiteOrientationValue = 'Invalid DockSiteOrientation value doNoOrient';
@@ -145,7 +134,6 @@ var
   JvGlobalDockManager: TJvGlobalDockManager = nil;
   JvGlobalDockClient: TJvDockClient = nil;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -155,11 +143,9 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -167,7 +153,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

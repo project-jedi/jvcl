@@ -31,16 +31,12 @@ unit JvgDigits;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgUtils, JvgCommClasses;
 
 const
@@ -49,11 +45,7 @@ const
 type
   TJvgSpecialSymbol = (ssyNone, ssyColon, ssySlash, ssyBackslash);
 
-  {$IFDEF USEJVCL}
   TJvgDigits = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgDigits = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   private
     FValue: Double;
     FDSize: TJvgPointClass;
@@ -147,7 +139,6 @@ const
     [dlDOT]                                  // ','
    );
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -157,7 +148,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -608,7 +598,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -616,7 +605,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -208,11 +208,7 @@ begin
   FCanvas.Handle := DrawItemStruct.hDC;
   R := ClientRect;
   IsDown := DrawItemStruct.itemState and ODS_SELECTED <> 0;
-  {$IFDEF USEJVCL}
-  if (not MouseOver) and (not IsDown) then
-  {$ELSE}
-  if not IsDown then
-  {$ENDIF USEJVCL}
+  if not MouseOver and not IsDown then
   begin
     with FCanvas do
     begin

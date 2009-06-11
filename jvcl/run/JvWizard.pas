@@ -334,19 +334,15 @@ unit JvWizard;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF USEJVCL}
   JvComponent, JvThemes,
-  {$ENDIF USEJVCL}
   JvWizardCommon;
 
 type
@@ -677,7 +673,6 @@ type
     procedure SetEnabledButtons(Value: TJvWizardButtonSet);
     procedure SetVisibleButtons(Value: TJvWizardButtonSet);
     procedure ImageChanged(Sender: TObject);
-    // (ahuser) Do not convert to JvExVCL: This package is USEJVCL'ed
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
@@ -777,11 +772,7 @@ type
   end;
 
   { JvWizard Control }
-  {$IFDEF USEJVCL}
   TJvWizard = class(TJvCustomControl)
-  {$ELSE}
-  TJvWizard = class(TCustomControl)
-  {$ENDIF USEJVCL}
   private
     FPages: TJvWizardPageList;
     FActivePage: TJvWizardCustomPage;
@@ -799,9 +790,6 @@ type
     FImageChangeLink: TChangeLink;
     FAutoHideButtonBar: Boolean;
     FDefaultButtons: Boolean;
-    {$IFNDEF USEJVCL}
-    FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
-    {$ENDIF !USEJVCL}
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -869,10 +857,6 @@ type
     property WizardPages[Index: Integer]: TJvWizardCustomPage read GetWizardPages;
   published
     property Pages: TJvWizardPageList read FPages;
-    {$IFNDEF USEJVCL}
-    // Add by Steve Forbes
-    property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
-    {$ENDIF !USEJVCL}
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
     property AutoHideButtonBar: Boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
@@ -910,7 +894,6 @@ type
     property Visible;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -920,14 +903,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvResources,
-  {$ENDIF USEJVCL}
   Consts, JvJVCLUtils;
 
 const
@@ -935,22 +915,6 @@ const
   ciButtonHeight = 25;
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsBackButtonCaption = '< &Back';
-  RsNextButtonCaption = '&Next >';
-
-  RsFirstButtonCaption = 'To &Start Page';
-  RsLastButtonCaption = 'To &Last Page';
-  RsFinishButtonCaption = '&Finish';
-  RsWelcome = 'Welcome';
-  RsTitle = 'Title';
-  RsSubtitle = 'Subtitle';
-
-  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
-  RsEInvalidWizardPage = 'The pages belong to another wizard';
-{$ENDIF !USEJVCL}
 
 type
   // (ahuser) introduced for refactoring the WizardButtons
@@ -3318,7 +3282,6 @@ begin
   FNavigateButtons[TJvWizardButtonKind(Index)] := Value;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -3326,7 +3289,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

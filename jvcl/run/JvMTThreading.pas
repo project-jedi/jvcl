@@ -30,11 +30,9 @@ unit JvMTThreading;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}
   Windows, Messages,
@@ -144,7 +142,6 @@ type
 
 function CurrentMTThread: TMTThread;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -154,23 +151,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
-  RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
-  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
-  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
-  RsEReleaseOfUnusedTicket = 'Release of unused ticket';
-{$ENDIF !USEJVCL}
 
 threadvar
   _CurrentMTThread: TMTThread;
@@ -820,11 +805,9 @@ end;
 {$ENDIF COMPILER5}
 
 initialization
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   {$IFDEF COMPILER5}
   InitializeCriticalSection(ThreadSyncLock);
   CreateSyncWindow;
@@ -837,10 +820,8 @@ finalization
   DestroyWindow(SyncWindow);
   SyncWindow := 0;
   {$ENDIF COMPILER5}
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 end.

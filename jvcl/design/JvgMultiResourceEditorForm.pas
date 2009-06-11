@@ -69,18 +69,10 @@ var
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
-{$ENDIF USEJVCL}
 
 {$R *.dfm}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsCellControlCaption = 'Control';
-  RsCellDefaultCaption = 'Default';
-{$ENDIF !USEJVCL}
 
 function TJvgResourcesProperty.GetAttributes: TPropertyAttributes;
 begin

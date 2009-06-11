@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, XPMan, Mask, JvExMask, JvToolEdit, ComCtrls,
-  JvComponent, JvSearchFiles, dpp_PascalParser;
+  JvComponent, JvSearchFiles, dpp_PascalParser, JvComponentBase;
 
 type
   TFormMain = class(TForm)
@@ -41,7 +41,6 @@ uses
 
 var
   ConditionStack: TStrings;
-  IsUseJVCL: Boolean;
 
 procedure TFormMain.BtnQuitClick(Sender: TObject);
 begin
@@ -98,8 +97,6 @@ begin
         if AnsiStartsText('{$IF', Token.Value) then
         begin
           ConditionStack.Add(Token.Value);
-          if Pos('USEJVCL', AnsiUpperCase(Token.Value)) > 0 then
-            IsUseJVCL := True;
         end;
       end;
     end;
@@ -147,7 +144,6 @@ var
   ConstDecl: string;
 begin
   Modified := False;
-  IsUseJVCL := False;
   Stream := TFileStream.Create(Filename, fmOpenReadWrite or fmShareExclusive);
   ConditionStack := TStringList.Create;
   try
@@ -290,14 +286,6 @@ begin
                       'uses' + sLineBreak +
                       '  JclUnitVersioning;' + sLineBreak +
                       '{$ENDIF UNITVERSIONING}');
-        if IsUseJVCL then
-        begin
-          Parser.Insert(ImplToken.StartIndex,
-                        '{$IFNDEF USEJVCL}' + sLineBreak +
-                        '  {$UNDEF UNITVERSIONING}' + sLineBreak +
-                        '{$ENDIF ~USEJVCL}' + sLineBreak +
-                        sLineBreak);
-        end;
       end;
 
       if Modified then

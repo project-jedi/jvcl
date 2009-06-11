@@ -31,11 +31,9 @@ unit Jvg3DColors;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms;
 
 type
@@ -72,7 +70,6 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -82,21 +79,13 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
   Math,
-  {$IFDEF USEJVCL}
   JvConsts, JvResources,
-  {$ENDIF USEJVCL}
   JvgUtils, JvgTypes;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEOnlyOneInstanceOfTJvg3DLocalColors = 'Cannot create more than one instance of TJvg3DLocalColors component';
-{$ENDIF !USEJVCL}
 
 //=== { TJvg3DLocalColors } ==================================================
 
@@ -177,7 +166,6 @@ begin
     raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvg3DLocalColors);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -185,7 +173,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

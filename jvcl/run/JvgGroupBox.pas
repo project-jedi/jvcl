@@ -32,25 +32,19 @@ unit JvgGroupBox;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls,
-  {$IFDEF USEJVCL}
   JVCLVer,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses;
 
 type
   TCaptionAlignment = (fcaNone, fcaLeft, fcaRight, fcaCenter, fcaWidth);
   TJvgGroupBox = class(TCustomGroupBox)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FBorder: TJvgBevelOptions;
     FCaptionBorder: TJvgBevelOptions;
     FGradient: TJvgGradient;
@@ -112,9 +106,7 @@ type
     destructor Destroy; override;
     procedure DefineProperties(Filer: TFiler); override;
   published
-    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF USEJVCL}
     property Anchors;
     property Align;
     property Caption: string read GetCaption write SetCaption;
@@ -164,7 +156,6 @@ type
     property OnExpanded: TNotifyEvent read FOnExpanded write FOnExpanded;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -174,7 +165,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -823,7 +813,6 @@ begin
   CaptionRect := R;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -831,7 +820,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

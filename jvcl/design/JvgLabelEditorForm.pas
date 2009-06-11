@@ -180,19 +180,11 @@ var
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
-{$ENDIF USEJVCL}
 
 {$R *.dfm}
-
 {$R JvgLabelEditorForm.res}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEditLabel = 'Edit &Label...';
-{$ENDIF !USEJVCL}
 
 function IntToTextStyle(Tag: Integer): TglTextStyle;
 begin

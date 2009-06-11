@@ -32,26 +32,16 @@ unit JvDotNetControls;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls,
-  {$IFDEF USEJVCL}
   JvRichEdit, JvListView, JvCheckListBox, JvEdit, JvHotKey, JvListBox,
   JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit, JVCLVer,
-  {$ELSE}
-  Forms, CheckLst, ComCtrls, Mask,
-  {$ENDIF USEJVCL}
   StdCtrls;
 
 type
-  {$IFDEF USEJVCL}
   TJvDotNetCheckListBox = class(TJvCheckListBox)
-  {$ELSE}
-  TJvDotNetCheckListBox = class(TCheckListBox)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -61,11 +51,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetEdit = class(TJvEdit)
-  {$ELSE}
-  TJvDotNetEdit = class(TEdit)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -75,11 +61,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetHotKey = class(TJvHotKey)
-  {$ELSE}
-  TJvDotNetHotKey = class(THotKey)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -89,11 +71,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetListBox = class(TJvListBox)
-  {$ELSE}
-  TJvDotNetListBox = class(TListBox)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -103,11 +81,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetListView = class(TJvListView)
-  {$ELSE}
-  TJvDotNetListView = class(TListView)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -117,11 +91,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetMaskEdit = class(TJvMaskEdit)
-  {$ELSE}
-  TJvDotNetMaskEdit = class(TMaskEdit)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -131,11 +101,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetMemo = class(TJvMemo)
-  {$ELSE}
-  TJvDotNetMemo = class(TMemo)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -145,11 +111,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetRichEdit = class(TJvRichEdit)
-  {$ELSE}
-  TJvDotNetRichEdit = class(TRichEdit)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -159,24 +121,7 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetScrollBox = class(TJvScrollBox)
-  {$ELSE}
-  TJvDotNetScrollBox = class(TScrollBox)
- {$ENDIF USEJVCL}
-  private
-    FHighlighted: Boolean;
-    FOldWindowProc: TWndMethod;
-    procedure InternalWindowProc(var Msg: TMessage);
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-  {$IFDEF USEJVCL}
-  TJvDotNetTreeView = class(TJvTreeView)
-  {$ELSE}
-  TJvDotNetTreeView = class(TTreeView)
-  {$ENDIF USEJVCL}
   private
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
@@ -186,7 +131,15 @@ type
     destructor Destroy; override;
   end;
 
-  {$IFDEF USEJVCL}
+  TJvDotNetTreeView = class(TJvTreeView)
+  private
+    FHighlighted: Boolean;
+    FOldWindowProc: TWndMethod;
+    procedure InternalWindowProc(var Msg: TMessage);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
 
   TJvDotNetFilenameEdit = class(TJvFilenameEdit)
   private
@@ -208,8 +161,6 @@ type
     destructor Destroy; override;
   end;
 
-  {$ENDIF USEJVCL}
-
   TJvDotNetButton = class(TButton)
   private
     FHighlighted: Boolean;
@@ -229,7 +180,6 @@ type
   end;
 *)
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -239,7 +189,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -456,8 +405,6 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{$IFDEF USEJVCL}
-
 //=== { TJvDotNetFilenameEdit } ==============================================
 
 constructor TJvDotNetFilenameEdit.Create(AOwner: TComponent);
@@ -500,8 +447,6 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{$ENDIF USEJVCL}
-
 //=== { TJvDotNetButton } ====================================================
 
 constructor TJvDotNetButton.Create(AOwner: TComponent);
@@ -526,7 +471,6 @@ begin
     Invalidate; // redraw 3D border
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -534,6 +478,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

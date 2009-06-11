@@ -35,11 +35,9 @@ unit JvTFGantt;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, Windows, Messages, Graphics, Controls,
   Forms, Dialogs, Menus, StdCtrls, ExtCtrls,
   JvTFUtils, JvTFManager;
@@ -127,7 +125,6 @@ type
     property Anchors;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -137,20 +134,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvJVCLUtils, JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsThisIsTheMajorScale = 'This is the Major Scale';
-  RsThisIsTheMinorScale = 'This is the Minor Scale';
-{$ENDIF !USEJVCL}
 
 //=== { TJvTFGantt } =========================================================
 
@@ -234,18 +222,10 @@ begin
   Result := 0;
 
   Canvas.Font.Assign(FMajorScale.Font);
-  {$IFDEF USEJVCL}
   Result := Result + CanvasMaxTextHeight(Canvas);
-  {$ELSE}
-  Result := Result + Canvas.TextHeight('Ay');
-  {$ENDIF USEJVCL}
 
   Canvas.Font.Assign(FMinorScale.Font);
-  {$IFDEF USEJVCL}
   Result := Result + CanvasMaxTextHeight(Canvas);
-  {$ELSE}
-  Result := Result + Canvas.TextHeight('Ay');
-  {$ENDIF USEJVCL}
 
   Result := Result + 4;
 end;
@@ -575,7 +555,6 @@ begin
   SetScrollInfo(Handle, SB_CTL, Info, True);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -583,7 +562,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

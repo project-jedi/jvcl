@@ -107,9 +107,7 @@ begin
     TJvg3DColors, TJvgHint, {TJvginspectorGrid, }TJvgReport,
     {$IFNDEF DelphiPersonalEdition}
     TJvgExportExcel,
-    {$IFDEF USEJVCL}
     TJvgExportXML,
-    {$ENDIF USEJVCL}
     TJvgExportDataset,
     {$IFDEF JVCL_UseQuickReport}
     TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview,

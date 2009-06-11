@@ -34,11 +34,9 @@ unit JvWizardRouteMapSteps;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms,
   JvWizard;
@@ -89,7 +87,6 @@ type
     property ShowNavigation: Boolean read FShowNavigation write SetShowNavigation default True;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -99,21 +96,11 @@ const
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsActiveStepFormat = 'Step %d of %d';
-  RsBackTo = 'Back to';
-  RsNextStep = 'Next Step';
-{$ENDIF !USEJVCL}
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -400,7 +387,6 @@ begin
   Result := PreviousStepText <> RsBackTo;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 
 initialization
@@ -409,7 +395,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

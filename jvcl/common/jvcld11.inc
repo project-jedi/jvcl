@@ -26,14 +26,6 @@ Known Issues:
 { Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
 {.$DEFINE DelphiPersonalEdition}
 
-{ Some new libraries and packages (currently JvUIB, JvWizard and JvTimeFrameWork) can be
-installed either in "stand-alone" mode or in "JVCL" mode. These packages use the
-USEJVCL define to determine whether they are installed in JVCL mode or not.
-By default, this define is enabled.
-NOTE: if you undefine USEJVCL, you can/should remove JvCoreXXX.dcp from the
-requires node in the affected package(s). }
-{$DEFINE USEJVCL}
-
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }
 {.$DEFINE USE_DXGETTEXT}

@@ -50,15 +50,8 @@ implementation
 
 uses
   StdCtrls,
-  {$IFDEF USEJVCL}
   JvDsgnConsts,
-  {$ENDIF USEJVCL}
   JvgShadow;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsUpdateAllEditControl = 'Update all edit control';
-{$ENDIF !USEJVCL}
 
 procedure TJvgShadowEditor.ExecuteVerb(Index: Integer);
 var

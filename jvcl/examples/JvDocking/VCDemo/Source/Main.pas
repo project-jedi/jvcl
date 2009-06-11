@@ -18,20 +18,14 @@ unit Main;
 
 {$I jvcl.inc}
 
-{$IFNDEF USEJVCL}
-Sorry, this demo requires the JVCL!
-{$ENDIF}
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, ImgList, ExtCtrls, StdCtrls, Menus, ActnList,
   JvDockControlForm, JvDockVCStyle, Grids, StdActns, JVHLEditor,
-  JvDockDelphiStyle, JvDockVIDStyle
-  {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppIniStorage
-  {$ENDIF};
+  JvDockDelphiStyle, JvDockVIDStyle, JvComponent, JvAppStorage, JvAppIniStorage, JvComponentBase,
+  JvDockTree;
 
 type
   TMainForm = class(TForm)
@@ -476,9 +470,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    {$IFDEF USEJVCL}
-    JvAppStorage:TJvAppIniFileStorage;
-    {$ENDIF}
+    JvAppStorage: TJvAppIniFileStorage;
     procedure GetToolbarWidthArr;
     function GetCloseButtonRect: TRect;
     function ActionEnable: Boolean;
@@ -499,7 +491,8 @@ var
 
 implementation
 
-uses WorkSpaceUnit, OutputUnit, SourceEditUnit, WatchUnit, RegistersUnit,
+uses
+  WorkSpaceUnit, OutputUnit, SourceEditUnit, WatchUnit, RegistersUnit,
   MemoryUnit, VariablesUnit, CallStackUnit;
 
 var
@@ -547,14 +540,14 @@ begin
   View_Debug_Toolbar_Action.Checked := tb_Debug_Toolbar.Visible;
   View_Build_Minibar_Toolbar_Action.Checked := tb_Build_Minibar_Toolbar.Visible;
   View_Edit_Toolbar_Action.Checked := tb_Edit_Toolbar.Visible;
-
 end;
 
 procedure TMainForm.GetToolbarWidthArr;
-var i: Integer;
+var
+  I: Integer;
 begin
-  for i := 0 to MainControlBar.ControlCount - 1 do
-    MainControlBar.Controls[i].Tag := MainControlBar.Controls[i].Width;
+  for I := 0 to MainControlBar.ControlCount - 1 do
+    MainControlBar.Controls[I].Tag := MainControlBar.Controls[I].Width;
 end;
 
 procedure TMainForm.View_Workspace_ActionExecute(Sender: TObject);
@@ -563,7 +556,8 @@ begin
   View_WorkSpace_Action.Checked := WorkSpace_ToolButton.Down;
   if WorkSpace_ToolButton.Down then
     ShowDockForm(WorkSpaceForm)
-  else WorkSpaceForm.Close;
+  else
+    WorkSpaceForm.Close;
 end;
 
 procedure TMainForm.View_OutPut_ActionExecute(Sender: TObject);
@@ -587,48 +581,46 @@ end;
 
 procedure TMainForm.File_New_ActionExecute(Sender: TObject);
 begin
-  { 没事做，显示一个提示信息 }
   ShowMessage(Format('You have click ''%s''', [TAction(Sender).Caption]));
 end;
 
-
 function TMainForm.FindExistFile(AFileName: string): TCustomForm;
-  var i: Integer;
-  begin
-    Result := nil;
-    for i := 0 to MDIChildCount - 1 do
-      if MDIChildren[i].Caption = AFileName then
-      begin
-        Result := MDIChildren[i];
-        Exit;
-      end;
-  end;
+var i: Integer;
+begin
+  Result := nil;
+  for i := 0 to MDIChildCount - 1 do
+    if MDIChildren[i].Caption = AFileName then
+    begin
+      Result := MDIChildren[i];
+      Exit;
+    end;
+end;
 
 function TMainForm.FindOrOpenFile(filename:String):TCustomForm;
 var
   ExistForm: TCustomForm;
 begin
-        ExistForm := FindExistFile(filename);
-        if ExistForm = nil then
-        begin
-          with TSourceEditForm.Create(nil) do
-          begin
-            try
-              LoadFromFile(filename);
-            except
-              Release;
-              ShowMessage('Open file Failed!');
-            end;
-          end;
-        end else if not ExistForm.Active then begin
-          ExistForm.Show;
-        end;
+  ExistForm := FindExistFile(filename);
+  if ExistForm = nil then
+  begin
+    with TSourceEditForm.Create(nil) do
+    begin
+      try
+        LoadFromFile(filename);
+      except
+        Release;
+        ShowMessage('Open file Failed!');
+      end;
+    end;
+  end
+  else
+  if not ExistForm.Active then
+    ExistForm.Show;
 end;
 
 procedure TMainForm.File_Open_ActionExecute(Sender: TObject);
 var
-  i: Integer;
-
+  I: Integer;
 begin
   if OpenDialog1.Execute then
   begin
@@ -637,29 +629,24 @@ begin
       if MDIChildCount + OpenDialog1.Files.Count >= 100 then
       begin
         ShowMessage('Files are too large to show, there are 100 files can be displayed at most');
-        for i := OpenDialog1.Files.Count - 1 downto 100 - MDIChildCount do
-          OpenDialog1.Files.Delete(i);
+        for I := OpenDialog1.Files.Count - 1 downto 100 - MDIChildCount do
+          OpenDialog1.Files.Delete(I);
       end;
 
-      for i := 0 to OpenDialog1.Files.Count - 1 do
-      begin
-          FindOrOpenFile(OpenDialog1.Files[i]);
-      end;
+      for I := 0 to OpenDialog1.Files.Count - 1 do
+        FindOrOpenFile(OpenDialog1.Files[I]);
     end;
   end;
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
-var i: Integer;
+var
+  I: Integer;
 begin
-  for i := MDIChildCount - 1 downto 0 do
-    MDIChildren[i].Close;
-  {$IFDEF USEJVCL}
+  for I := MDIChildCount - 1 downto 0 do
+    MDIChildren[I].Close;
   JvAppStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
   SaveDockTreeToAppStorage(JvAppStorage);
-  {$ELSE}
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
-  {$ENDIF}
 end;
 
 procedure TMainForm.MainControlBarResize(Sender: TObject);
@@ -689,12 +676,13 @@ end;
 
 procedure TMainForm.MainMenu_ToolBarMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var p: TPoint;
+var
+  Pt: TPoint;
 begin
-  P := Point(X, Y);
+  Pt := Point(X, Y);
   DrawButtonRect := GetCloseButtonRect;
   DrawButtonRect.Left := DrawButtonRect.Left - 34;
-  if PtInRect(DrawButtonRect, P) and (MDIChildCount > 0) and (MDIChildren[0].WindowState = wsMaximized) then
+  if PtInRect(DrawButtonRect, Pt) and (MDIChildCount > 0) and (MDIChildren[0].WindowState = wsMaximized) then
   begin
     IsDown := True;
     MainMenu_ToolBarMouseMove(Sender, Shift, X, Y);
@@ -703,24 +691,25 @@ end;
 
 procedure TMainForm.MainMenu_ToolBarMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
-var p: TPoint;
+var
+  Pt: TPoint;
   OldMouseDownButton: Integer;
 begin
   if not IsDown then Exit;
   OldMouseDownButton := MouseDownButton;
   MouseDownButton := 0;
-  P := Point(X, Y);
+  Pt := Point(X, Y);
   DrawButtonRect := GetCloseButtonRect;
 
-  if PtInRect(DrawButtonRect, P) and (MouseDownButton = 0) then
+  if PtInRect(DrawButtonRect, Pt) and (MouseDownButton = 0) then
     MouseDownButton := 3;
 
   OffsetRect(DrawButtonRect, - 18, 0);
-  if PtInRect(DrawButtonRect, P) and (MouseDownButton = 0) then
+  if PtInRect(DrawButtonRect, Pt) and (MouseDownButton = 0) then
     MouseDownButton := 2;
 
   OffsetRect(DrawButtonRect, - 16, 0);
-  if PtInRect(DrawButtonRect, P) and (MouseDownButton = 0) then
+  if PtInRect(DrawButtonRect, Pt) and (MouseDownButton = 0) then
     MouseDownButton := 1;
 
   if MouseDownButton <> OldMouseDownButton then
@@ -731,7 +720,8 @@ procedure TMainForm.MainMenu_ToolBarMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var p: TPoint;
 begin
-  if (not IsDown) or (MDIChildCount = 0) then Exit;
+  if not IsDown or (MDIChildCount = 0) then
+    Exit;
   IsDown := False;
   MouseDownButton := 0;
   P := Point(X, Y);
@@ -982,13 +972,9 @@ procedure TMainForm.LoadDockInfo;
 begin
   CreateDockableForm;
   GetToolbarWidthArr;
-  {$IFDEF USEJVCL}
   JvAppStorage := TJvAppIniFileStorage.Create(self);
   JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
   LoadDockTreeFromAppStorage(JvAppStorage);
-  {$ELSE}
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
-  {$ENDIF}
   SetToolButtonDownAndActionCheck;
 end;
 
@@ -999,18 +985,18 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 var
-  openfilename:String;
+  FileName: string;
 begin
-  openfilename := ExtractFilePath(Application.ExeName)+'..\C++ File\MyApp.cpp';
-  if FileExists( openfilename) then begin
-      FindOrOpenFile(openfilename);
-  end;
+  FileName := ExtractFilePath(Application.ExeName)+'..\C++ File\MyApp.cpp';
+  if FileExists(FileName) then
+    FindOrOpenFile(FileName);
   View_Workspace_ActionExecute(Sender);
-  if Assigned(WorkSpaceForm) then begin
-     ShowDockForm(WorkSpaceForm);
-     WorkSpaceForm.ClassView_TreeView.FullExpand;
-     // --- HOW TO DOCK A WINDOW TO A DOCK SERVER IN CODE: ---
-     WorkSpaceForm.ManualDock(lbDockServer1.LeftDockPanel );
+  if Assigned(WorkSpaceForm) then
+  begin
+    ShowDockForm(WorkSpaceForm);
+    WorkSpaceForm.ClassView_TreeView.FullExpand;
+    // --- HOW TO DOCK A WINDOW TO A DOCK SERVER IN CODE: ---
+    WorkSpaceForm.ManualDock(lbDockServer1.LeftDockPanel);
   end;
 end;
 

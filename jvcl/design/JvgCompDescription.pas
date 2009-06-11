@@ -33,9 +33,7 @@ interface
 
 uses
   Classes, TypInfo,
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories;
   {$ELSE}
@@ -46,11 +44,7 @@ type
   TJvgPropInfos = class;
   TJvgPropInform = class;
 
-  {$IFDEF USEJVCL}
   TJvgComponentDescription = class(TJvComponent)
-  {$ELSE}
-  TJvgComponentDescription = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FPropInfos: TJvgPropInfos;
     FNote: string;
