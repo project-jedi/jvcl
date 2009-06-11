@@ -95,8 +95,6 @@ resourcestring
   RsPalettePlugin = 'Jv Plugin';
   RsPaletteNavPane = 'Jv NavPane';
   RsPaletteRuntimeDesign  = 'Jv Runtime Design';
-  {$IFDEF USEJVCL}
-  RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
   RsPaletteTimeFramework = 'Jv TimeFrameWork';
   RsPaletteWizard = 'Jv Wizard';
@@ -104,7 +102,6 @@ resourcestring
   RsPaletteDocking = 'Jv Docking';
   RsPaletteDotNet = 'Jv DotNet';
   RsPaletteDotNetDB = 'Jv DotNet DB';
-  {$ENDIF USEJVCL}
 
 //=== JvAnimatedEditor.pas ===================================================
 resourcestring
@@ -267,13 +264,11 @@ resourcestring
   RsBorrowStructure = 'Borrow structure...';
 
 //=== JvDockPropertyEditors.pas ==============================================
-{$IFDEF USEJVCL}
 resourcestring
   RsDockNewPage = 'Ne&w Page';
   RsDockNextPage = 'Ne&xt Page';
   RsDockPreviousPage = '&Previous Page';
   RsDockDeletePage = '&Delete Page';
-{$ENDIF USEJVCL}
 
 //=== JvDsgnEditors.pas ======================================================
 resourcestring
@@ -305,47 +300,35 @@ resourcestring
   RsUnnamedColorFmt = '%s : Unnamed color $%.8x';
 
 //=== JvgComponentListEditorForm.pas =========================================
-{$IFDEF USEJVCL}
 resourcestring
   RsEditComponentListEllipsis = 'Edit component list...';
-{$ENDIF USEJVCL}
 
 //=== JvgHelpPanelEditor.pas =================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsRTFAndTextFilesrtftxtrtftxt = 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
   RsLoadRTFFile = 'Load RTF file';
   RsPreviewRTFText = 'Preview RTF text';
-{$ENDIF USEJVCL}
 
 //=== JvgLabelEditorForm.pas =================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsEditLabel = 'Edit &Label...';
-{$ENDIF USEJVCL}
 
 //=== JvgLogicItemEditorForm.pas =============================================
-{$IFDEF USEJVCL}
 resourcestring
   RsLogicElements = 'Logic Element: %s';
   RsResult = '[RESULT]';
   RsNotDefined = '[ not defined ]';
-{$ENDIF USEJVCL}
 
 //=== JvgLogicsEditorForm.pas ================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsCaption = 'Caption';
   RsComments = 'Comments';
   RsEditComponentEllipsis = 'Edit component...';
-{$ENDIF USEJVCL}
 
 //=== JvgMultiResourceEditorForm.pas =========================================
-{$IFDEF USEJVCL}
 resourcestring
   RsCellControlCaption = 'Control';
   RsCellDefaultCaption = 'Default';
-{$ENDIF USEJVCL}
 
 //=== JvGradientCaptionForm.pas ==============================================
 resourcestring
@@ -353,19 +336,15 @@ resourcestring
   RsGradientCaptions = 'Captions';
 
 //=== JvgReportEditorForm.pas ================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsEditReport = 'Edit report...';
   RsPreviewReportEllipsis = 'Preview report...';
   RsDeleteObject = 'Delete object?';
   RsPagePreview = 'Page Preview';
-{$ENDIF USEJVCL}
 
 //=== JvgReportParamsForm.pas ================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsEditParamsEllipsis = 'Edit params...';
-{$ENDIF USEJVCL}
 
 //=== JvGroupHeaderEditor.pas ================================================
 resourcestring
@@ -373,10 +352,8 @@ resourcestring
   RsWeb = 'Web';
 
 //=== JvgShadowEditor.pas ====================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsUpdateAllEditControl = 'Update all edit control';
-{$ENDIF USEJVCL}
 
 //=== JVHLEditEditor.pas =====================================================
 resourcestring
@@ -699,21 +676,17 @@ resourcestring
   RsJvValidatorItemsEditorEllipsis = 'JvValidator Items Editor...';
 
 //=== JvWizardEditorForm.pas =================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsPageListEllipsis = 'Page List...';
   RsNewWelcomePage = 'New Welcome Page';
   RsNewInteriorPage = 'New Interior Page';
   RsDeletePage = 'Delete Page';
-{$ENDIF USEJVCL}
 
 //=== JvXPPropertyEditors.pas ================================================
-{$IFDEF USEJVCL}
 resourcestring
   RsItemEditorEllipsis = 'Item Editor...';
   RsDefaultColorItem = 'Restore Default Colors';
   RsDefaultFontsItem = 'Restore Default Fonts';
-{$ENDIF USEJVCL}
 
 //=== DataProvider design time constants =====================================
 resourcestring

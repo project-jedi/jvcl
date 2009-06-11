@@ -37,16 +37,12 @@ unit JvgPage;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, CommCtrl, ImgList, ExtCtrls,
-  {$IFDEF USEJVCL}
   JVCLVer,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgDrawTab, JvgTabComm, JvgCommClasses;
 
 // (rom) disabled  unused
@@ -56,9 +52,7 @@ uses
 type
   TJvgPageControl = class(TPageControl)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FGlyphs: TImageList;
     FSingleGlyph: Boolean;
     FTabStyle: TJvgTabStyle;
@@ -114,9 +108,7 @@ type
     property TabColor[Index: Integer]: TColor read GetTabColor write SetTabColor;
     //     property GlyphState[Index: Integer]: Integer read GetGlyphState write SetGlyphState;
   published
-    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF USEJVCL}
     property Glyphs: TImageList read FGlyphs write SetGlyphs;
     property SingleGlyph: Boolean read FSingleGlyph write SetSingleGlyph default False;
     property TabStyle: TJvgTabStyle read FTabStyle write SetTabStyle;
@@ -137,7 +129,6 @@ type
       write FOnGetGradientColors;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -147,7 +138,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -576,7 +566,6 @@ begin
   RemakeFonts;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -584,7 +573,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

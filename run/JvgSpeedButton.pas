@@ -31,24 +31,18 @@ unit JvgSpeedButton;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics,
   ExtCtrls, Buttons, StdCtrls, Forms,
-  {$IFDEF USEJVCL}
   JVCLVer,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 type
   TJvgSpeedButton = class(TSpeedButton)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FMouseEnter: Boolean;
     FColor: TColor;
     FIsDown: Boolean;
@@ -81,9 +75,7 @@ type
     procedure Click; override;
     property Canvas;
   published
-    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    {$ENDIF USEJVCL}
     property Color: TColor read FColor write SetColor;
     property ActiveColor: TColor read FActiveColor write FActiveColor;
     property Control: TControl read FControl write SetControl;
@@ -126,7 +118,6 @@ type
     property Font: TFont read GetFont write SetFont;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -136,7 +127,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -525,7 +515,6 @@ begin
   FStylePushed.Assign(Value);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -533,7 +522,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

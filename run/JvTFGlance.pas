@@ -31,11 +31,9 @@ unit JvTFGlance;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
   {$IFDEF BCB}
   JvTypes, // TDate/TTime
@@ -756,7 +754,6 @@ type
     property OnConfigCells;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -766,27 +763,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvConsts, JvResources, JclStrings;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsECellDatesCannotBeChanged = 'Cell Dates cannot be changed';
-  RsECellMapHasBeenCorrupteds = 'Cell map has been corrupted %s';
-  RsECellObjectNotAssigned = 'Cell object not assigned';
-  RsEInvalidColIndexd = 'Invalid col index (%d)';
-  RsEInvalidRowIndexd = 'Invalid row index (%d)';
-  RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
-  RsECellCannotBeSplit = 'Cell cannot be split';
-  RsEASubcellCannotBeSplit = 'A subcell cannot be split';
-  RsGlanceMainTitle = '(Title)';
-{$ENDIF !USEJVCL}
 
 //=== { TJvTFGlanceCell } ====================================================
 
@@ -2882,14 +2863,7 @@ var
   Handled: Boolean;
 begin
   if Assigned(FViewer) and FViewer.ShowSchedNamesInHint then
-{$IFDEF USEJVCL}
     ExtraDesc := StringsToStr(SchedNames, ', ', False);
-{$ELSE}
-  begin
-    SchedNames.Delimiter := ', ';
-    ExtraDesc := SchedNames.DelimitedText;
-  end;
-{$ENDIF USEJVCL}
   ExtraDesc := ExtraDesc + #13#10;
 
   Handled := False;
@@ -4123,7 +4097,6 @@ begin
     FOnApptHint(Sender, Appt, Handled);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -4131,6 +4104,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

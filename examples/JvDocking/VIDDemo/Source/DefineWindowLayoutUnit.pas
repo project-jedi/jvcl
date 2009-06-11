@@ -153,11 +153,7 @@ procedure TDefineWindowLayoutForm.Apply_ButtonClick(Sender: TObject);
 begin
   if Views_ListBox.ItemIndex <> -1 then
   begin
-    {$IFDEF USEJVCL}
     LoadDockTreeFromAppStorage(MainForm.JvAppStorage, Views_ListBox.Items[Views_ListBox.ItemIndex]);
-    {$ELSE}
-    LoadDocktreeFromFile(ExtractFilePath(Application.EXEName) + Views_ListBox.Items[Views_ListBox.ItemIndex] + '.ini');
-    {$ENDIF}
     SelectItemIndex := Views_ListBox.ItemIndex;
     SetForegroundWindow(Handle);
   end;
@@ -169,11 +165,7 @@ begin
   begin
     Views_ListBox.Items.Add(Trim(ViewName_Edit.Text));
   end;
-  {$IFDEF USEJVCL}
   SaveDockTreeToAppStorage(MainForm.JvAppStorage, Trim(ViewName_Edit.Text));
-  {$ELSE}
-  SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Trim(ViewName_Edit.Text) + '.ini');
-  {$ENDIF}
   ViewName_EditChange(ViewName_Edit);
 end;
 

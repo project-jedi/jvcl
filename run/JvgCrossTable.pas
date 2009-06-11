@@ -185,16 +185,12 @@ unit JvgCrossTable;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, DBTables, Printers,
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 const
@@ -292,11 +288,7 @@ type
     property _Bottom: Single read FBottom write FBottom;
   end;
 
-  {$IFDEF USEJVCL}
   TJvgPrintCrossTable = class(TJvComponent)
-  {$ELSE}
-  TJvgPrintCrossTable = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FDataSet: TDataSet;
     FColumnFieldName: string;
@@ -404,7 +396,6 @@ type
     property TitleAlignment: TAlignment read FTitleAlignment write FTitleAlignment;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -414,7 +405,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -1195,7 +1185,6 @@ begin
   FOptions := Value;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1203,7 +1192,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

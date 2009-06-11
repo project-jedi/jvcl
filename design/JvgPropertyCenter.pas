@@ -32,12 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
-  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, TypInfo,
   JvComponentBase;
-  {$ELSE}
-  Controls, Forms, Dialogs, TypInfo;
-  {$ENDIF USEJVCL}
 
 type
   TglProperty = (fupColor, fupFont, fupFontColor);
@@ -46,11 +42,7 @@ type
   Tgl_Property = (f_upColor, f_upFont, f_upFontColor);
   Tgl_Properties = set of Tgl_Property;
 
-  {$IFDEF USEJVCL}
   TJvgPropertyCenter = class(TJvComponent)
-  {$ELSE}
-  TJvgPropertyCenter = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FColorProperty: TColor;
     FFontColorProperty: TColor;

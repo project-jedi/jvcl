@@ -31,24 +31,16 @@ unit JvgCaption;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgUtils, JvgCommClasses;
 
 type
-  {$IFDEF USEJVCL}
   TJvgCaption = class(TJvComponent)
-  {$ELSE}
-  TJvgCaption = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FExcludeButtons: Boolean;
     FExcludeIcon: Boolean;
@@ -71,7 +63,9 @@ type
     FGlyphClose: TBitmap;
     FOwnerWidth: Integer;
     FBtnCount: Integer;
+    {$IFDEF GL_CAPT_BUTTONS}
     FCloseRect: TRect;
+    {$ENDIF GL_CAPT_BUTTONS}
     FCYCaption: Integer;
     FCXFrame: Integer;
     FCYFrame: Integer;
@@ -129,9 +123,6 @@ type
       read FTransparentColor write SetTransparentColor default clBlack;
   end;
 
-{$DEFINE GL_CAPT_BUTTONS}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -141,48 +132,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   Math,
   JvResources, JvJVCLUtils;
-{$ELSE}
-uses
-  Math;
-{$ENDIF USEJVCL}
 
-{$IFDEF GL_CAPT_BUTTONS}
 {$R JvgCaption.res}
-{$ENDIF GL_CAPT_BUTTONS}
-
-{$IFNDEF USEJVCL}
-
-resourcestring
-  RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
-
-function JvMakeObjectInstance(Method: TWndMethod): Pointer;
-begin
-  {$IFDEF COMPILER6_UP}
-  Result := Classes.MakeObjectInstance(Method);
-  {$ELSE}
-  Result := MakeObjectInstance(Method);
-  {$ENDIF COMPILER6_UP}
-end;
-
-procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-begin
-  if ObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(ObjectInstance);
-    {$ELSE}
-    FreeObjectInstance(ObjectInstance);
-    {$ENDIF COMPILER6_UP}
-end;
-
-{$ENDIF !USEJVCL}
 
 constructor TJvgCaption.Create(AOwner: TComponent);
 begin
@@ -208,13 +165,11 @@ begin
   if not (AOwner is TForm) then
     Exit; //FParent:=TForm(AOwner) else Exit;
 
-  {$IFDEF GL_CAPT_BUTTONS}
   //if (csDesigning in ComponentState)and not (csLoading in ComponentState) then
   begin
     FGlyphClose := TBitmap.Create;
     FGlyphClose.LoadFromResourceName(HInstance, 'JvgCaptionCLOSE');
   end;
-  {$ENDIF GL_CAPT_BUTTONS}
 
   FCYCaption := GetSystemMetrics(SM_CYCAPTION);
   FCYFrame := GetSystemMetrics(SM_CYFRAME);
@@ -280,8 +235,6 @@ begin
 end;
 
 procedure TJvgCaption.ParentWindowHookProc(var Msg: TMessage);
-var
-  Pt: TPoint;
 
   procedure DefaultProc;
   begin
@@ -289,6 +242,10 @@ var
       Msg.WParam, Msg.LParam);
   end;
 
+{$IFDEF GL_CAPT_BUTTONS}
+var
+  Pt: TPoint;
+{$ENDIF GL_CAPT_BUTTONS}
 begin
   FOwnerWidth := TForm(Owner).Width;
   case Msg.Msg of
@@ -634,7 +591,6 @@ begin
     DrawCaption(True);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -642,7 +598,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -30,11 +30,9 @@ unit JvDockVCStyle;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockAdvTree;
 
@@ -63,9 +61,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean; override;
-    {$IFNDEF USEJVCL}
-    function GetControlName: string; override;
-    {$ENDIF !USEJVCL}
     procedure SetDockBaseControl(IsCreate: Boolean;
       DockBaseControl: TJvDockBaseControl); override;
   published
@@ -196,7 +191,6 @@ type
     property DockOverBrush: TBrush read FDockOverBrush;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -206,7 +200,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -743,13 +736,6 @@ begin
   inherited FormStartDock(DockClient, Source);
   Source := TJvDockVCDragDockObject.Create(DockClient.ParentForm);
 end;
-
-{$IFNDEF USEJVCL}
-function TJvDockVCStyle.GetControlName: string;
-begin
-  Result := Format(RsDockLikeVCStyle, [inherited GetControlName]);
-end;
-{$ENDIF !USEJVCL}
 
 procedure TJvDockVCStyle.SetDockBaseControl(IsCreate: Boolean;
   DockBaseControl: TJvDockBaseControl);
@@ -2134,7 +2120,6 @@ begin
     BorderWidth := TJvDockVCConjoinServerOption(DockStyle.ConjoinServerOption).BorderWidth;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -2142,7 +2127,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

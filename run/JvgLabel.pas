@@ -32,16 +32,12 @@ unit JvgLabel;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 const
@@ -52,11 +48,7 @@ type
   TFontWeight = (fwDONTCARE, fwTHIN, fwEXTRALIGHT, fwLIGHT, fwNORMAL, fwMEDIUM,
     fwSEMIBOLD, fwBOLD, fwEXTRABOLD, fwHEAVY);
 
-  {$IFDEF USEJVCL}
   TJvgCustomLabel = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgCustomLabel = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   private
     FAutoSize: Boolean;
     FFocusControl: TWinControl;
@@ -78,10 +70,8 @@ type
     procedure UnhookFocusControlWndProc;
     procedure FocusControlWndHookProc(var Msg: TMessage);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure TextChanged; override;
-    {$ENDIF USEJVCL}
 
     property AutoSize: Boolean read FAutoSize write FAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
@@ -136,11 +126,9 @@ type
     procedure CreateLabelFont;
     procedure InvalidateLabel(UpdateBackgr: Boolean);
   protected
-    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
-    {$ENDIF USEJVCL}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Loaded; override;
   public
@@ -175,10 +163,8 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
-    {$ENDIF USEJVCL}
     property FocusControl;
     property FocusControlMethod;
     property AutoSize;
@@ -211,10 +197,8 @@ type
     function GetAutoSize: Boolean;
   protected
     procedure SetAutoSize(Value: Boolean); override;
-    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    {$ENDIF USEJVCL}
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -244,10 +228,8 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    {$IFDEF USEJVCL}
     property OnMouseEnter;
     property OnMouseLeave;
-    {$ENDIF USEJVCL}
     property FocusControl;
     property FocusControlMethod;
     property Transparent;
@@ -283,7 +265,6 @@ type
       SetGlyphDisabled stored IsCustomGlyph;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -293,40 +274,12 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   Math,
   JvJVCLUtils;
-  {$ELSE}
-  Math;
-  {$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-
-function JvMakeObjectInstance(Method: TWndMethod): Pointer;
-begin
-  {$IFDEF COMPILER6_UP}
-  Result := Classes.MakeObjectInstance(Method);
-  {$ELSE}
-  Result := MakeObjectInstance(Method);
-  {$ENDIF COMPILER6_UP}
-end;
-
-procedure JvFreeObjectInstance(ObjectInstance: Pointer);
-begin
-  if ObjectInstance <> nil then
-    {$IFDEF COMPILER6_UP}
-    Classes.FreeObjectInstance(ObjectInstance);
-    {$ELSE}
-    FreeObjectInstance(ObjectInstance);
-    {$ENDIF COMPILER6_UP}
-end;
-
-{$ENDIF !USEJVCL}
 
 //=== { TJvgCustomLabel } ====================================================
 
@@ -364,7 +317,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 procedure TJvgCustomLabel.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
@@ -373,7 +325,6 @@ begin
   if Assigned(FocusControl) and (FocusControlMethod = fcmOnMouseEnter) then
     FocusControl.SetFocus;
 end;
-{$ENDIF USEJVCL}
 
 procedure TJvgCustomLabel.WMLMouseUp(var Msg: TMessage);
 begin
@@ -391,13 +342,11 @@ begin
     FocusControl.SetFocus;
 end;
 
-{$IFDEF USEJVCL}
 procedure TJvgCustomLabel.TextChanged;
 begin
   inherited TextChanged;
   Invalidate;
 end;
-{$ENDIF USEJVCL}
 
 procedure TJvgCustomLabel.HookFocusControlWndProc;
 var
@@ -430,17 +379,13 @@ begin
   case Msg.Msg of
     WM_SETFOCUS:
       begin
-        {$IFDEF USEJVCL}
         MouseEnter(Self);
-        {$ENDIF USEJVCL}
         FShowAsActiveWhileControlFocused := True;
       end;
     WM_KILLFOCUS:
       begin
         FShowAsActiveWhileControlFocused := False;
-        {$IFDEF USEJVCL}
         MouseLeave(Self);
-        {$ENDIF USEJVCL}
       end;
     WM_DESTROY:
       FNeedRehookFocusControl := True;
@@ -526,8 +471,6 @@ begin
     TextureImage := nil;
 end;
 
-{$IFDEF USEJVCL}
-
 procedure TJvgLabel.FontChanged;
 begin
   inherited FontChanged;
@@ -595,8 +538,6 @@ begin
     end;
   inherited MouseLeave(Control);
 end;
-
-{$ENDIF USEJVCL}
 
 procedure TJvgLabel.Loaded;
 begin
@@ -1098,7 +1039,6 @@ begin
   Height := 16;
 end;
 
-{$IFDEF USEJVCL}
 procedure TJvgStaticTextLabel.MouseEnter(Control: TControl);
 begin
   if (ftoIgnoreMouse in Options) or FShowAsActiveWhileControlFocused then
@@ -1119,8 +1059,6 @@ begin
     Repaint;
   inherited MouseLeave(Control);
 end;
-
-{$ENDIF USEJVCL}
 
 procedure TJvgStaticTextLabel.Paint;
 const
@@ -1427,7 +1365,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1435,7 +1372,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -66,19 +66,10 @@ implementation
 
 uses
   Classes,
-  {$IFDEF USEJVCL}
   JvDsgnConsts,
-  {$ENDIF USEJVCL}
   JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays,
   JvTFAlarm, JvTFManager;
   
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteTimeFramework = 'Jv TimeFrameWork';
-  RsGridLayout = 'Grid Layout';
-  RsCustomDraw = 'Custom Draw';
-{$ENDIF !USEJVCL}
-
 //=== { TJvTFGridLayoutCategory } ============================================
 
 {$IFDEF COMPILER5}

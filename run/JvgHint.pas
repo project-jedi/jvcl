@@ -32,23 +32,15 @@ unit JvgHint;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Graphics, Controls, Classes, Forms,
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   JvgCommClasses;
 
 type
-  {$IFDEF USEJVCL}
   TJvgHint = class(TJvComponent)
-  {$ELSE}
-  TJvgHint = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FOnShowHint: TShowHintEvent;
     FOnHint: TNotifyEvent;
@@ -86,7 +78,6 @@ type
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -96,23 +87,15 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
   Math, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvResources, JvConsts,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgUtils;
 
 {$R JvgHint.res}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEOnlyOneInstanceOfTJvgHint = 'Cannot create more than one instance of TJvgHint component';
-{$ENDIF !USEJVCL}
 
 type
   TJvgHintWindow = class(THintWindow)
@@ -371,7 +354,6 @@ begin
   FGlyph.Assign(Value);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -379,7 +361,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -32,18 +32,12 @@ unit JvgExportComponents;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics,
-  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, DB,
   JvComponentBase;
-  {$ELSE}
-  Controls, Forms, Dialogs, DB;
-  {$ENDIF USEJVCL}
 
 type
   TJvExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
@@ -65,11 +59,7 @@ type
 
   TJvgExportOptions = set of (jeoOutputInvisibleColumns, jeoOutputFormattedStrings);
 
-  {$IFDEF USEJVCL}
   TJvgCommonExport = class(TJvComponent)
-  {$ELSE}
-  TJvgCommonExport = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FOptions: TJvgExportOptions;
     FSaveToFileName: string;
@@ -190,7 +180,6 @@ type
     property OnSaveDest: TJvCreateDataset read FOnSaveDest write FOnSaveDest;
   end;
 
-  {$IFDEF USEJVCL}
   TJvgExportXML = class(TJvgCommonExport)
   public
     procedure Execute; override;
@@ -206,9 +195,7 @@ type
     property OnExportField;
     property OnProgress;
   end;
-  {$ENDIF USEJVCL}
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -218,22 +205,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
   ComObj, FileCtrl,
-  {$IFDEF USEJVCL}
   JvResources,
   JvConsts, JvSimpleXML,
-  {$ENDIF USEJVCL}
   JvgUtils;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEDataSetIsUnassigned = 'DataSet is unassigned';
-{$ENDIF !USEJVCL}
 
 {$IFDEF COMPILER5}
 function BoolToStr(Value: Boolean; AsString: Boolean = False): string;
@@ -628,98 +607,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
-
-//=== { TJvgExportXML } ======================================================
-(*
-procedure TJvgExportXML.Execute;
-var
-  RecNo, RecCount: Integer;
-  XML: TJvSimpleXML;
-  Header: TJvSimpleXMLElemClassic;
-  Table: TJvSimpleXMLElemClassic;
-  Field: TJvSimpleXMLElemClassic;
-  Records: TJvSimpleXMLElemClassic;
-  XMLRecord: TJvSimpleXMLElemClassic;
-  AllowExportRecord: Boolean;
-  AName, FieldValue: string;
-  I: Integer;
-
-  function CreateNode(Name: string; Base: TJvSimpleXMLElemClassic):
-      TJvSimpleXMLElemClassic;
-  begin
-    result := TJvSimpleXMLElemClassic.Create(XML.Root);
-    Base.Items.add(result);
-    result.Name := Name;
-  end;
-
-begin
-  XML := TJvSimpleXML.Create(Self);
-  XML.Root.Name := 'Database';
-  XML.IndentString := '  ';
-
-  Header := CreateNode('Header', XML.Root);
-  Table := CreateNode('Table', Header);
-  AName := DataSet.Name;
-  DoGetTableName(AName);
-  Table.Properties.Add('Name', AName);
-  DataSet.Open;
-  RecNo := 0;
-  RecCount := DataSet.RecordCount;
-  {$IFDEF DEBUG}
-  dbg.LogInteger('FieldCount', DataSet.FieldCount);
-  {$ENDIF DEBUG}
-  for I := 0 to DataSet.FieldCount - 1 do
-  begin
-    Field := CreateNode('Field', Table);
-    Field.Properties.Add('Name', DataSet.Fields[I].DisplayName);
-    Field.Properties.Add('Size', DataSet.Fields[I].Size);
-    Field.Properties.Add('DataType', Ord(DataSet.Fields[I].DataType));
-    Field.Properties.Add('Blob', BoolToStr(DataSet.Fields[I].IsBlob));
-    Field.Properties.Add('Required', BoolToStr(DataSet.Fields[I].Required));
-    {$IFDEF DEBUG}
-    dbg.LogObject('Properties', Field.Properties);
-    {$ENDIF DEBUG}
-  end;
-  Records := CreateNode('Records', XML.Root);
-  XMLRecord := CreateNode('Record', Records);
-  DataSet.First;
-  RecNo := 0;
-  while not DataSet.Eof do
-  begin
-    Inc(RecNo);
-    XMLRecord := CreateNode('Record', Records);
-    XMLRecord.Properties.Add('Nr', RecNo);
-    AllowExportRecord := True;
-    if Assigned(OnExportRecord) then
-      OnExportRecord(Self, DataSet, AllowExportRecord);
-    if AllowExportRecord then
-    begin
-      for I := 0 to DataSet.FieldCount - 1 do
-      begin
-        if not (DataSet.Fields[I].DataType in [ftBlob, ftGraphic,
-          ftParadoxOle, ftDBaseOle, ftTypedBinary,
-            ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface,
-            ftIDispatch]) then
-        begin
-          Field := CreateNode('RecordField', XMLRecord);
-          Field.Properties.Add('Name', DataSet.Fields[I].DisplayName);
-          FieldValue := DataSet.Fields[I].AsString;
-          if Assigned(OnExportField) then
-            OnExportField(Self, DataSet.Fields[I], FieldValue);
-        end;
-        Field.Value := FieldValue;
-      end;
-    end;
-    DoProgress(0, RecCount, RecNo, '');
-    Inc(RecNo);
-    DataSet.Next;
-  end;
-  DoProgress(0, RecCount, RecCount, '');
-  XML.SaveToFile(Self.FSaveToFileName);
-end;
-*)
-
 procedure TJvgExportXML.Execute;
 var
   RecNo, RecCount: Integer;
@@ -734,7 +621,7 @@ var
   I: Integer;
 
   function CreateNode(const Name: string; Base: TJvSimpleXMLElemClassic):
-      TJvSimpleXMLElemClassic;
+    TJvSimpleXMLElemClassic;
   begin
     Result := TJvSimpleXMLElemClassic.Create(XML.Root);
     Base.Items.Add(Result);
@@ -810,8 +697,6 @@ begin
   XML.SaveToFile(Self.FSaveToFileName);
 end;
 
-{$ENDIF USEJVCL}
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -819,7 +704,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

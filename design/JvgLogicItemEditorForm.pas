@@ -109,19 +109,10 @@ type
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvDsgnConsts;
-{$ENDIF USEJVCL}
 
 {$R *.dfm}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsLogicElements = 'Logic Element: %s';
-  RsResult = '[RESULT]';
-  RsNotDefined = '[ not defined ]';
-{$ENDIF !USEJVCL}
 
 const
   cLocalColor = $E0E0E0;

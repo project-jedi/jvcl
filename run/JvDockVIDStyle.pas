@@ -30,11 +30,9 @@ unit JvDockVIDStyle;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, ComCtrls, ImgList,
   JvConsts, JvDockControlForm, JvDockSupportControl, JvDockTree,
   JvDockAdvTree, JvDockGlobals;
@@ -168,9 +166,6 @@ type
     procedure DoSystemInfoChange(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    {$IFNDEF USEJVCL}
-    function GetControlName: string; override;
-    {$ENDIF !USEJVCL}
     procedure SetDockBaseControl(IsCreate: Boolean; DockBaseControl: TJvDockBaseControl); override;
   published
     property AlwaysShowGrabber: Boolean read FAlwaysShowGrabber write SetAlwaysShowGrabber; {NEW}
@@ -587,7 +582,6 @@ type
 procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor;
   Vertical: Boolean = False);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -597,7 +591,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -3881,13 +3874,6 @@ begin
   SetSheetSort(PChar(Msg.LParam));
 end;
 
-{$IFNDEF USEJVCL}
-function TJvDockVIDStyle.GetControlName: string;
-begin
-  Result := Format(RsDockLikeVIDStyle, [inherited GetControlName]);
-end;
-{$ENDIF !USEJVCL}
-
 //=== { TJvDockVIDDragDockObject } ===========================================
 
 constructor TJvDockVIDDragDockObject.Create(AControl: TControl);
@@ -4828,7 +4814,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -4836,7 +4821,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

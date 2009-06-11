@@ -32,17 +32,12 @@ unit JvDockTree;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   ComCtrls,
   Windows, Messages, Classes, Graphics, Controls, Forms,
-  {$IFDEF USEJVCL}
-  JvComponentBase,
-  {$ENDIF USEJVCL}
-  JvDockSupportClass;
+  JvComponentBase, JvDockSupportClass;
 
 type
   TJvDockTree = class;
@@ -555,11 +550,7 @@ type
     property OnStyleChanged: TNotifyEvent read FOnStyleChanged write FOnStyleChanged;
   end;
 
-  {$IFDEF USEJVCL}
   TJvDockObservableStyle = class(TJvComponent)
-  {$ELSE}
-  TJvDockObservableStyle = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FConjoinServerOptionClass: TJvDockBasicConjoinServerOptionClass;
     FTabServerOptionClass: TJvDockBasicTabServerOptionClass;
@@ -596,7 +587,6 @@ type
 const
   TreeStreamEndFlag: Integer = -1;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -606,7 +596,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -4460,7 +4449,6 @@ begin
     FOnStyleChanged(Self);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -4468,7 +4456,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

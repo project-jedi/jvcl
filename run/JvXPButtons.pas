@@ -31,12 +31,10 @@ unit JvXPButtons;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JvJVCLUtils,
-  {$ENDIF USEJVCL}
   Classes, TypInfo,
   Windows, Messages, Graphics, Controls, Forms, ActnList, ImgList, Menus,
   JvXPCore, JvXPCoreUtils;
@@ -61,7 +59,7 @@ type
     FCkGradient: TBitmap;
     FDefault: Boolean;
     FFcGradient: TBitmap;
-    FGlyph: {$IFDEF USEJVCL}TJvPicture{$ELSE}TBitmap{$ENDIF USEJVCL};
+    FGlyph: TJvPicture;
     FHlGradient: TBitmap;
     FImageChangeLink: TChangeLink;
     FImageIndex: Integer;
@@ -82,7 +80,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure SetAutoGray(Value: Boolean); virtual;
     procedure SetDefault(Value: Boolean); virtual;
-    procedure SetGlyph(Value: {$IFDEF USEJVCL}TJvPicture{$ELSE}TBitmap{$ENDIF USEJVCL}); virtual;
+    procedure SetGlyph(Value: TJvPicture); virtual;
     procedure SetLayout(Value: TJvXPLayout); virtual;
     procedure SetShowAccelChar(Value: Boolean); virtual;
     procedure SetShowFocusRect(Value: Boolean); virtual;
@@ -95,7 +93,7 @@ type
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
     property Cancel: Boolean read FCancel write FCancel default False;
     property Default: Boolean read FDefault write SetDefault default False;
-    property Glyph: {$IFDEF USEJVCL}TJvPicture{$ELSE}TBitmap{$ENDIF USEJVCL} read FGlyph write SetGlyph;
+    property Glyph: TJvPicture read FGlyph write SetGlyph;
     property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default False;
@@ -286,7 +284,6 @@ type
     property OnStartDrag;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -296,7 +293,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -345,7 +341,7 @@ begin
   FImageIndex := -1;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := ImageListChange;
-  FGlyph := {$IFDEF USEJVCL}TJvPicture{$ELSE}TBitmap{$ENDIF USEJVCL}.Create;
+  FGlyph := TJvPicture.Create;
   FGlyph.OnChange := GlyphChange;
   FLayout := blGlyphLeft;
   FShowAccelChar := True;
@@ -421,10 +417,13 @@ begin
   end;
 end;
 
-procedure TJvXPCustomButton.SetGlyph(Value: {$IFDEF USEJVCL}TJvPicture{$ELSE}TBitmap{$ENDIF USEJVCL});
+procedure TJvXPCustomButton.SetGlyph(Value: TJvPicture);
 begin
-  FGlyph.Assign(Value);
-  LockedInvalidate;
+  if FGlyph <> Value then
+  begin
+    FGlyph.Assign(Value);
+    LockedInvalidate;
+  end;
 end;
 
 procedure TJvXPCustomButton.SetLayout(Value: TJvXPLayout);
@@ -932,7 +931,6 @@ begin
   LockedInvalidate;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -940,7 +938,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -30,11 +30,9 @@ unit JvDockVSNetStyle;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle,
   JvDockGlobals, ContNrs;
@@ -298,9 +296,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFNDEF USEJVCL}
-    function GetControlName: string; override;
-    {$ENDIF !USEJVCL}
     procedure DoUnAutoHideDockForm(DockWindow: TWinControl); virtual;
     procedure DoShowDockForm(DockWindow: TWinControl); override;
     procedure DoHideDockForm(DockWindow: TWinControl); override;
@@ -537,7 +532,6 @@ function RetrieveChannel(HostDockSite: TWinControl): TJvDockVSChannel;
 var
   DefaultVSChannelClass: TJvDockVSChannelClass = nil;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -547,7 +541,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -592,27 +585,13 @@ type
     procedure HideForm(AChannel: TJvDockVSChannel; MaxWidth: Integer); virtual;
   end;
 
-  { (ahuser) not used:
-  TJvDockAppEvents = class(TApplicationEvents)
-  private
-    FOldOnMessage: TMessageEvent;
-    procedure NewOnMessage(var Msg: TMsg; var Handled: Boolean);
-  public
-    constructor Create(AOwner: TComponent); override;
-  end;}
-
 var
   GlobalPopupPanelAnimate: TPopupPanelAnimate = nil;
-  // (ahuser) not used:
-  // GlobalApplicationEvents: TJvDockAppEvents = nil;
   GlobalPopupPanelAnimateInterval: Integer = 20;
   GlobalPopupPanelAnimateMoveWidth: Integer = 20;
   GlobalPopupPanelStartAnimateInterval: Integer = 400;
 
 //=== Local procedures =======================================================
-
-// (p3) not used:
-//  AnimateSleepTime: Integer = 500;
 
 function PopupPanelAnimate: TPopupPanelAnimate;
 begin
@@ -677,23 +656,6 @@ begin
 end;
 
 //=== Global procedures ======================================================
-
-{ (ahuser) not used:
-function ApplicationEvents: TJvDockAppEvents;
-begin
-  if GlobalApplicationEvents = nil then
-    GlobalApplicationEvents := TJvDockAppEvents.Create(nil);
-  Result := GlobalApplicationEvents;
-end;
-
-procedure DragControl(WinControl: TWinControl);
-const
-  SM = $F012;
-begin
-  ReleaseCapture;
-  WinControl.Perform(WM_SYSCOMMAND, SM, 0);
-end;
-}
 
 procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
 var
@@ -775,63 +737,6 @@ begin
     FIndex := I;
 end;
 
-{ (ahuser) not used:
-
-constructor TJvDockAppEvents.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FOldOnMessage := OnMessage;
-  OnMessage := NewOnMessage;
-end;
-
-procedure TJvDockAppEvents.NewOnMessage(var Msg: TMsg; var Handled: Boolean);
-var
-  CurrControl: TWinControl;
-  DockServer: TJvDockServer;
-  Channel: TJvDockVSChannel;
-  I: Integer;
-  J: TAlign;
-
-  function CanHide: Boolean;
-  begin
-    Result := False;
-    CurrControl := FindControl(Msg.hwnd);
-    if CurrControl = nil then
-      Exit;
-    repeat
-      if csDesigning in CurrControl.ComponentState then
-      begin
-        Result := False;
-        Exit;
-      end;
-      Result := not ((CurrControl is TJvDockVSChannel) or (CurrControl is TJvDockVSPopupPanel) or (CurrControl is
-        TJvDockVSPopupPanelSplitter));
-      CurrControl := CurrControl.Parent;
-    until (CurrControl = nil) or not Result;
-  end;
-
-begin
-  if Assigned(FOldOnMessage) then
-    FOldOnMessage(Msg, Handled);
-  if Msg.message = WM_LBUTTONDOWN then
-    if CanHide then
-      for I := 0 to Screen.CustomFormCount - 1 do
-      begin
-        DockServer := FindDockServer(Screen.CustomForms[I]);
-        if (DockServer <> nil) and (DockServer.DockStyle is TJvDockVSNetStyle) then
-        begin
-          if DockServer.DockPanel[0] = nil then
-            Exit;
-          for J := alTop to alRight do
-          begin
-            Channel := TJvDockVSNETPanel(DockServer.DockPanelWithAlign[J]).VSChannel;
-            Channel.HidePopupPanelWithAnimate;
-          end;
-        end;
-      end;
-end;
-}
-
 //=== { TJvDockVSBlock } =====================================================
 
 constructor TJvDockVSBlock.Create(AOwner: TJvDockVSChannel);
@@ -906,7 +811,7 @@ end;
 
 function TJvDockVSBlock.AddPane(AControl: TControl; const AWidth: Integer): TJvDockVSPane;
 const
-  ANDbits: array[0..2*16-1] of  byte = ($FF,$FF,
+  ANDbits: array[0..2*16-1] of  Byte = ($FF,$FF,
                                         $FF,$FF,
                                         $FF,$FF,
                                         $FF,$FF,
@@ -922,7 +827,7 @@ const
                                         $FF,$FF,
                                         $FF,$FF,
                                         $FF,$FF);
-  XORbits: array[0..2*16-1] of  byte = ($00,$00,
+  XORbits: array[0..2*16-1] of  Byte = ($00,$00,
                                         $00,$00,
                                         $00,$00,
                                         $00,$00,
@@ -2483,13 +2388,6 @@ begin
   Result := FChannelOption;
 end;
 
-{$IFNDEF USEJVCL}
-function TJvDockVSNetStyle.GetControlName: string;
-begin
-  Result := Format(RsDockLikeVSNETStyle, [RsDockStyleName]);
-end;
-{$ENDIF !USEJVCL}
-
 function TJvDockVSNetStyle.GetDockFormVisible(ADockClient: TJvDockClient): Boolean;
 var
   Channel: TJvDockVSChannel;
@@ -3950,23 +3848,16 @@ begin
 end;
 
 initialization
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 finalization
   GlobalPopupPanelAnimate.Free;
   GlobalPopupPanelAnimate := nil;
-  { (ahuser) not used:
-  GlobalApplicationEvents.Free;
-  GlobalApplicationEvents := nil; }
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 end.
 

@@ -31,15 +31,11 @@ unit JvTFWeeks;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$IFDEF USEJVCL}
   JvTypes,
-  {$ENDIF USEJVCL}
   JvTFManager, JvTFGlance, JvTFUtils;
 
 type
@@ -102,7 +98,6 @@ type
 //    property OnNavigate;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -112,19 +107,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsWeekOf = 'Week of %s';
-{$ENDIF !USEJVCL}
 
 procedure TJvTFWeeks.ConfigCells;
 var
@@ -513,7 +500,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -521,7 +507,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

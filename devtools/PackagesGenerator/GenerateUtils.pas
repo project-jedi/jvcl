@@ -832,7 +832,7 @@ begin
   // then this is considered to be a condition.
   // If the condition is not in the Defines list, then the
   // corresponding PFLAG is discarded. This has been done mostly for
-  // packages that have extended functionnality when USEJVCL is
+  // packages that have extended functionality if USEJVCL is
   // activated and as such require the JCL dcp file.
   PFlagsList := TStringList.Create;
   Result := pflags;

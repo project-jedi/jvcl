@@ -31,24 +31,16 @@ unit JvgShadow;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics, Forms, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Mask,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgCommClasses, JvgTypes, Jvg3DColors;
 
 type
-  {$IFDEF USEJVCL}
   TJvgShadow = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgShadow = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   private
     FControl: TControl;
     FStyle: TJvgTextBoxStyle;
@@ -123,7 +115,6 @@ type
     property OnControlExit: TNotifyEvent read FOnExit write FOnExit;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -133,7 +124,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -522,7 +512,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -530,7 +519,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

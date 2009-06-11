@@ -23,11 +23,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ActnList, Menus, ImgList, JvDockControlForm, JvDockVIDStyle, JvDockGlobals,
-  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, OleCtrls, shdocvw
-
-  {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppIniStorage, JvMenus
-  {$ENDIF};
+  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, OleCtrls, SHDocVw,
+  JvComponent, JvAppStorage, JvAppIniStorage, JvMenus, JvDockTree, JvComponentBase;
 
 type
   { Helper class; set property Form, and then use the properties or methods
@@ -258,9 +255,7 @@ type
   private
     { Private declarations }
     InternalWebBrowser: TWebBrowser;
-    {$IFDEF USEJVCL}
     JvAppStorage:TJvAppIniFileStorage;
-    {$ENDIF}
     FAdapter: TDockFormAdapter;
     //procedure CreateXPMenu;          //
     procedure CreateToolForm;        // create everything
@@ -364,24 +359,16 @@ end;
 
 procedure TMSDN2002.LoadToolFormLayout;
 begin
-  {$IFDEF USEJVCL}
   JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + cStorageFilename;
   JvAppStorage.Reload; // !!!
   LoadDockTreeFromAppStorage(JvAppStorage);
-  {$ELSE}
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + cStorageFilename);
-  {$ENDIF}
 end;
 
 procedure TMSDN2002.SaveToolFormLayout;
 begin
-  {$IFDEF USEJVCL}
   JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + cStorageFilename;
   SaveDockTreeToAppStorage(JvAppStorage);
   JvAppStorage.Flush;  // !!!
-  {$ELSE}
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + cStorageFilename);
-  {$ENDIF}
 end;
 
 procedure TMSDN2002.FormClose(Sender: TObject;
@@ -394,9 +381,7 @@ end;
 procedure TMSDN2002.FormCreate(Sender: TObject);
 begin
   FAdapter := TDockFormAdapter.Create(nil);
-  {$IFDEF USEJVCL}
   JvAppStorage := TJvAppIniFileStorage.Create(self);
-  {$ENDIF}
   CreateVSNETPageControl;
   LoadDockInfo;
 end;

@@ -171,22 +171,12 @@ implementation
 
 uses
   Clipbrd,
-  {$IFDEF USEJVCL}
-  JvDsgnConsts,
-  {$ENDIF USEJVCL}
-  JvgTypes, JvgUtils, JvgLogicItemEditorForm;
+  JvDsgnConsts, JvgTypes, JvgUtils, JvgLogicItemEditorForm;
 
 {$R *.dfm}
 
 var
   JvgLogicItemEditor: TJvgLogicItemEditor;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsCaption = 'Caption';
-  RsComments = 'Comments';
-  RsEditComponentEllipsis = 'Edit component...';
-{$ENDIF !USEJVCL}
 
 //=== { TJvgLogicsEditorMain } ===============================================
 

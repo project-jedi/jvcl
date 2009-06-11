@@ -33,18 +33,14 @@ unit JvHidControllerClass;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, SysUtils,
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF USEJVCL}
   JvComponentBase,
-  {$ENDIF USEJVCL}
   DBT, SetupApi, HID;
 
 const
@@ -351,11 +347,7 @@ type
 
   // controller class to manage all HID devices
 
-  {$IFDEF USEJVCL}
   TJvHidDeviceController = class(TJvComponent)
-  {$ELSE}
-  TJvHidDeviceController = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     // internal properties part
     FHidGuid: TGUID;
@@ -445,14 +437,6 @@ function HidCheck(const RetVal: LongBool): LongBool; overload;
 function HidError(const RetVal: NTSTATUS): NTSTATUS;
 function HidErrorString(const RetVal: NTSTATUS): string;
 
-{$IFNDEF USEJVCL}
-
-// to register the component in the palette
-procedure Register;
-
-{$ENDIF !USEJVCL}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -462,11 +446,8 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
-
-{$IFDEF USEJVCL}
 
 uses
   JvResources, JvTypes;
@@ -474,43 +455,6 @@ uses
 type
   EControllerError = class(EJVCLException);
   EHidClientError = class(EJVCLException);
-
-{$ELSE}
-
-type
-  EControllerError = class(Exception);
-  EHidClientError = class(Exception);
-
-resourcestring
-  RsUnknownLocaleIDFmt = 'unknown Locale ID $%.4x';
-  RsHIDP_STATUS_NULL = 'device not plugged in';
-  RsHIDP_STATUS_INVALID_PREPARSED_DATA = 'invalid preparsed data';
-  RsHIDP_STATUS_INVALID_REPORT_TYPE = 'invalid report type';
-  RsHIDP_STATUS_INVALID_REPORT_LENGTH = 'invalid report length';
-  RsHIDP_STATUS_USAGE_NOT_FOUND = 'usage not found';
-  RsHIDP_STATUS_VALUE_OUT_OF_RANGE = 'value out of range';
-  RsHIDP_STATUS_BAD_LOG_PHY_VALUES = 'bad logical or physical values';
-  RsHIDP_STATUS_BUFFER_TOO_SMALL = 'buffer too small';
-  RsHIDP_STATUS_INTERNAL_ERROR = 'internal error';
-  RsHIDP_STATUS_I8042_TRANS_UNKNOWN = '8042 key translation impossible';
-  RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID = 'incompatible report ID';
-  RsHIDP_STATUS_NOT_VALUE_ARRAY = 'not a value array';
-  RsHIDP_STATUS_IS_VALUE_ARRAY = 'is a value array';
-  RsHIDP_STATUS_DATA_INDEX_NOT_FOUND = 'data index not found';
-  RsHIDP_STATUS_DATA_INDEX_OUT_OF_RANGE = 'data index out of range';
-  RsHIDP_STATUS_BUTTON_NOT_PRESSED = 'button not pressed';
-  RsHIDP_STATUS_REPORT_DOES_NOT_EXIST = 'report does not exist';
-  RsHIDP_STATUS_NOT_IMPLEMENTED = 'not implemented';
-  RsUnknownHIDFmt = 'unknown HID error %x';
-  RsHIDErrorPrefix = 'HID Error: ';
-
-  RsEDirectThreadCreationNotAllowed = 'Direct creation of a TJvDeviceReadThread object is not allowed';
-  RsEDirectHidDeviceCreationNotAllowed = 'Direct creation of a TJvHidDevice object is not allowed';
-  RsEDeviceCannotBeIdentified = 'device cannot be identified';
-  RsEDeviceCannotBeOpened = 'device cannot be opened';
-  RsEHIDBooleanError = 'HID Error: a boolean function failed';
-
-{$ENDIF USEJVCL}
 
 //=== these are declared inconsistent in Windows.pas =========================
 
@@ -2316,20 +2260,6 @@ begin
   end;
 end;
 
-{$IFNDEF USEJVCL}
-
-// We place the component on the new 'Project JEDI' palette.
-// This is to encourage you to become a member.
-// Have a look at http://delphi-jedi.org for further details.
-
-procedure Register;
-begin
-  RegisterComponents('Project JEDI', [TJvHidDeviceController]);
-end;
-
-{$ENDIF !USEJVCL}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -2337,7 +2267,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

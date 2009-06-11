@@ -32,11 +32,9 @@ unit JvgUtils;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Graphics, ExtCtrls,
   SysUtils, Classes, Controls, Forms, MMSystem,
   JvgTypes, JvgCommClasses, Jvg3DColors;
@@ -134,22 +132,12 @@ function IsSmallFonts: Boolean;
 function SystemColorDepth: Integer;
 function GetFileType(const FileName: string): TglFileType;
 function FindControlAtPt(Control: TWinControl; Pt: TPoint; MinClass: TClass): TControl;
-function StrPosExt(const Str1, Str2: PAnsiChar; Str2Len: DWORD): PAnsiChar; assembler;
+function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar;
 
 {$IFDEF glDEBUG}
 function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
 {$ENDIF glDEBUG}
 
-{$IFNDEF USEJVCL}
-function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
-function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect;
-  WinFlags: Integer): Integer; overload;
-function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
-function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
-{$ENDIF !USEJVCL}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -159,36 +147,14 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
   JvJCLUtils,
-  {$IFDEF USEJVCL}
   ShlObj, Math,
   JvResources, JvConsts,
-  {$ELSE}
-  ShlObj, Math,
-  {$ENDIF USEJVCL}
   JvVCL5Utils;
-
-{$IFNDEF USEJVCL}
-
-resourcestring
-  RsERightBracketsNotFound = 'Right brackets not found';
-  RsERightBracketHavntALeftOnePosd = 'Right bracket havn''t a left one. Pos: %d';
-  RsEDivideBy = 'Divide by 0';
-  RsEDuplicateSignsAtPos = 'Duplicate signs at Pos: %d';
-  RsEExpressionStringIsEmpty = 'Expression string is empty.';
-  {$IFDEF glDEBUG}
-  RsEObjectMemoryLeak = 'object memory leak';
-  {$ENDIF glDEBUG}
-
-const
-  ROP_DSPDxax = $00E20746;
-
-{$ENDIF !USEJVCL}
 
 { debug func }
 {$IFDEF glDEBUG}
@@ -2076,7 +2042,7 @@ end;
 { StrPosExt - Looks for position of one string inside another with given length
   Outperforms StrPos on long strings in 10-100 times (1-2 orders) }
 
-function StrPosExt(const Str1, Str2: PAnsiChar; Str2Len: DWORD): PAnsiChar; assembler;
+function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar;
 asm
         PUSH    EDI
         PUSH    ESI
@@ -2087,12 +2053,12 @@ asm
         JE      @@2             // If Str2 is empty - get out
         MOV     EBX,EAX
         MOV     EDI,EDX         // Setting offset for SCASB - substring Str2
-        XOR     AL,AL           // Zero AL
+        XOR     AX,AX           // Zero AX
 
         push ECX                // String length
 
         MOV     ECX,0FFFFFFFFH  // to be assured it will never underflow
-        REPNE   SCASB           // Searching for end of Str2 substring
+        REPNE   SCASW           // Searching for end of Str2 substring
         NOT     ECX             // Inverting ECX - getting string length +1
         DEC     ECX             // And here is exact length
 
@@ -2106,17 +2072,17 @@ asm
         MOV     EDI,EBX         // EDI points to the beginning od Str1
         LEA     EBX,[ESI-1]     // EBX - length of comparision of strings
 @@1:    MOV     ESI,EDX         // ESI - offset of Str2 string
-        LODSB                   // Loading 1st byte of substring into AL
-        REPNE   SCASB           // Searching that very char in EDI string
+        LODSW                   // Loading 1st byte of substring into AL
+        REPNE   SCASW           // Searching that very char in EDI string
         JNE     @@2             // Char not found? get out!
         MOV     EAX,ECX         // Saving difference of lengths of strings
         PUSH    EDI             // Saving current offset of search
         MOV     ECX,EBX
-        REPE    CMPSB           // per-byte comparision of strings
+        REPE    CMPSW           // per-byte comparision of strings
         POP     EDI
         MOV     ECX,EAX
         JNE     @@1             // If strings do not match - searching for 1st substring's char again
-        LEA     EAX,[EDI-1]
+        LEA     EAX,[EDI-2]
         JMP     @@3
 @@2:    XOR     EAX,EAX
 @@3:    POP     EBX
@@ -2124,39 +2090,6 @@ asm
         POP     EDI
 end;
 
-{$IFNDEF USEJVCL}
-
-function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
-begin
-  Result := Windows.DrawText(Canvas.Handle, Text, Len, R, WinFlags);
-end;
-
-function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect;
-  WinFlags: Integer): Integer; overload;
-begin
-  Result := DrawText(Canvas, PChar(Text), Len, R, WinFlags and not DT_MODIFYSTRING); // make sure the string cannot be modified
-end;
-
-function PtInRectExclusive(R: TRect; Pt: TPoint): Boolean;
-begin
-  R.Left := R.Left + 1;
-  R.Top := R.Top + 1;
-  Result := PtInRect(R, Pt);
-end;
-
-function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
-var
-  tt: TTextMetric;
-begin
-  // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
-  GetTextMetrics(Canvas.Handle, tt);
-  Result := tt.tmHeight;
-end;
-
-{$ENDIF !USEJVCL}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -2164,7 +2097,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

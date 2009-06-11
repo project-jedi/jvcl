@@ -41,11 +41,9 @@ unit JvWizardCommon;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Controls, Graphics,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
@@ -72,7 +70,6 @@ function JvWizardDrawBorderEdges(ACanvas: TCanvas; ABounds: TRect;
 procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
   Align: TJvWizardImageAlignment; ALayout: TJvWizardImageLayout);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -82,19 +79,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsETilingError = 'Tiling only works on images with dimensions > 0';
-{$ENDIF !USEJVCL}
 
 const
   { Frame Style Color constant arrays }
@@ -295,7 +284,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -303,7 +291,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

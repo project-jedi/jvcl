@@ -30,11 +30,9 @@ unit JvDockSupportProc;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Graphics, Controls, Forms;
 
 type
@@ -92,7 +90,6 @@ function JvDockGetControlSize(AControl: TControl): Integer;
 procedure RegisterSettingChangeClient(Client: TObject; Event: TNotifyEvent);
 procedure UnRegisterSettingChangeClient(Client: TObject);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -102,16 +99,12 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
   SysUtils, Math,
-  {$IFDEF USEJVCL}
-  JvJVCLUtils,
-  {$ENDIF USEJVCL}
-  JvDockControlForm, JvDockGlobals;
+  JvJVCLUtils, JvDockControlForm, JvDockGlobals;
 
 type
   { The dock style components used to hook the form they were dropped on, so
@@ -438,21 +431,13 @@ begin
   inherited Create;
   FClients := TList.Create;
   FNotifyEvents := TList.Create;
-  {$IFDEF USEJVCL}
   FHandle := AllocateHWndEx(WndProc);
-  {$ELSE}
-  FHandle := AllocateHWnd(WndProc);
-  {$ENDIF USEJVCL}
 end;
 
 destructor TJvMsgWindow.Destroy;
 begin
   if FHandle <> 0 then
-    {$IFDEF USEJVCL}
     DeallocateHWndEx(FHandle);
-    {$ELSE}
-    DeallocateHWnd(FHandle);
-    {$ENDIF USEJVCL}
   FClients.Free;
   FNotifyEvents.Free;
   inherited Destroy;
@@ -510,20 +495,16 @@ begin
 end;
 
 initialization
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 finalization
   FreeAndNil(JvDockTitleFont);
   FreeAndNil(GMsgHook);
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
 
 end.
 

@@ -31,25 +31,18 @@ unit JvTFManager;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Classes, SysUtils, Windows, Controls, Messages,
   Graphics, ImgList, ExtCtrls, Printers,
-  {$IFDEF USEJVCL}
   JvComponentBase, JvComponent, JvTypes,
-  {$ENDIF USEJVCL}
   JvTFUtils;
 
 const
   CN_REQUESTREFRESH = $BD01;
 
 type
-  {$IFNDEF USEJVCL}
-  THintString = string;
-  {$ENDIF !USEJVCL}
   // Redeclaration of this type.  It is used in JvTFMonths.TJvTFDrawDWTitleEvent.
   // If not redeclared here, Delphi complains of 'unknown type' because it
   // will not automatically bring in 'JvTFUtils' into the uses clause when
@@ -742,11 +735,7 @@ type
     property Shift: TShiftState read FShift write FShift;
   end;
 
-  {$IFDEF USEJVCL}
   TJvTFComponent = class(TJvComponent)
-  {$ELSE}
-  TJvTFComponent = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringList;
@@ -785,11 +774,7 @@ type
     property ScheduleManager: TJvTFScheduleManager read FScheduleManager write SetManager;
   end;
 
-  {$IFDEF USEJVCL}
   TJvTFControl = class(TJvCustomControl)
-  {$ELSE}
-  TJvTFControl = class(TCustomControl)
-  {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringList;
@@ -1047,7 +1032,6 @@ type
   //      write FAfterNavigate;
   //  end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1057,58 +1041,12 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvConsts, JvResources,
-  {$ENDIF USEJVCL}
   Dialogs, Forms, JvJVCLUtils;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsECouldNotCreateCustomImageMap = 'Could not create CustomImageMap.  ' +
-    'Appointment not assigned';
-  RsECouldNotCreateAppointmentObject = 'Could not create Appointment object.  ' +
-    'ScheduleManager not assigned';
-  RsEScheduleManagerNotificationFailedSc = 'ScheduleManager notification failed.  ScheduleManager not assigned';
-  RsEScheduleNotificationFailed = 'Schedule notification failed.  ' +
-    'Schedule not assigned';
-  RsEInvalidStartAndEndTimes = 'Invalid start and end times';
-  RsEInvalidStartAndEndDates = 'Invalid start and end dates';
-  RsEAppointmentNotificationFailed = 'Appointment notification failed.  ' +
-    'Appointment not assigned';
-  RsECouldNotCreateNewAppointment = 'Could not create new appointment. ' +
-    'Appointment with given ID already exists';
-  RsEInvalidTriggerForRefreshControls = 'Invalid Trigger for RefreshControls';
-  RsEInvalidScopeInReconcileRefresh = 'Invalid Scope in ReconcileRefresh';
-  RsECouldNotRetrieveSchedule = 'Could not retrieve schedule.  ' +
-    'ScheduleManager not assigned';
-  RsECouldNotReleaseSchedule = 'Could not release schedule.  ' +
-    'ScheduleManager not assigned';
-  RsECouldNotCreateADocumentBecauseA = 'Could not create a document because a ' +
-    'document already exists';
-  RsECouldNotFinishDocumentBecauseNo = 'Could not finish document because no ' +
-    'document has been created';
-  RsEDocumentDoesNotExist = 'Document does not exist';
-  RsEDocumentPagesCannotBeAccessedIf = 'Document pages cannot be accessed if ' +
-    'printing directly to the printer';
-  RsEDocumentPagesAreInaccessibleUntil = 'Document pages are inaccessible until ' +
-    'the document has been finished';
-  RsECouldNotRetrievePageCount = 'Could not retrieve page count ' +
-    'because document does not exist';
-  RsEOnlyAFinishedDocumentCanBePrinted = 'Only a finished document can be printed';
-  RsEThereAreNoPagesToPrint = 'There are no pages to print';
-  RsEDocumentMustBeFinishedToSaveToFile = 'Document must be Finished to save to file';
-  RsEThisPropertyCannotBeChangedIfA = 'This property cannot be changed if a ' +
-    'document exists';
-  RsECouldNotCreateTJvTFPrinterPageLayou = 'Could not create TJvTFPrinterPageLayout ' +
-    'because aPrinter must be assigned';
-  RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
-  RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
-{$ENDIF !USEJVCL}
 
 function AdjustEndTime(ATime: TTime): TTime;
 begin
@@ -5410,7 +5348,6 @@ end;
 //    FControls.Delete(I);
 //end;
 
-  {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -5418,7 +5355,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

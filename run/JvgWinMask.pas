@@ -31,24 +31,16 @@ unit JvgWinMask;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ExtCtrls, CommCtrl, ImgList,
-  {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses;
 
 type
-  {$IFDEF USEJVCL}
   TJvgWinMask = class(TJvCustomPanel)
-  {$ELSE}
-  TJvgWinMask = class(TCustomPanel)
-  {$ENDIF USEJVCL}
   private
     FMask: TBitmap;
     FMaskBuff: TBitmap;
@@ -66,7 +58,6 @@ type
     property Mask: TBitmap read FMask write FMask; // stored fDontUseDefaultImage;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -76,7 +67,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -160,7 +150,6 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -168,7 +157,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

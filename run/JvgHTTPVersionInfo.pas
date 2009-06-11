@@ -31,25 +31,15 @@ unit JvgHTTPVersionInfo;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, SysUtils, Classes, Graphics,
-  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, SHDocVw,
   JvComponentBase;
-  {$ELSE}
-  Controls, Forms, Dialogs, SHDocVw;
-  {$ENDIF USEJVCL}
 
 type
-  {$IFDEF USEJVCL}
   TJvgHTTPVersionInfo = class(TJvComponent)
-  {$ELSE}
-  TJvgHTTPVersionInfo = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FVersionInfo: TStringList;
     FWebBrowser: TWebBrowser;
@@ -75,7 +65,6 @@ type
     property VersionDataURL: string read FVersionDataURL write FVersionDataURL;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -85,19 +74,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources, JvConsts;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEUnknownURLPropertyVersionDataURLIs = 'Unknown URL: property VersionDataURL is empty';
-{$ENDIF !USEJVCL}
 
 constructor TJvgHTTPVersionInfo.Create(AOwner: TComponent);
 begin
@@ -171,7 +152,6 @@ begin
   //  VersionInfo.Names[i] := LowerCase(VersionInfo.Names[i]);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -179,7 +159,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

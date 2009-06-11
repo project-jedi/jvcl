@@ -31,16 +31,12 @@ unit JvXPContainer;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   TypInfo, Classes,
   Windows, Controls, Graphics, StdCtrls, ExtCtrls,
-  {$IFDEF USEJVCL}
   JvJCLUtils,
-  {$ENDIF USEJVCL}
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -186,7 +182,6 @@ type
     property OnStartDrag;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -196,7 +191,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -399,12 +393,7 @@ var
   procedure DoDrawText(ACanvas: TCanvas; const ACaption: TCaption; var ARect: TRect;
     AFlags: Integer);
   begin
-    {$IFDEF USEJVCL}
     DrawText(ACanvas, ACaption, -1, ARect, AFlags);
-    {$ELSE}
-    // (rom) Kludge! This will probably not work for CLX
-    DrawText(ACanvas.Handle, PChar(ACaption), -1, ARect, AFlags);
-    {$ENDIF USEJVCL}
   end;
 
 begin
@@ -475,7 +464,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -483,6 +471,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

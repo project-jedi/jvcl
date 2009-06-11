@@ -43,24 +43,15 @@ uses
   {$ELSE}
   Contnrs, DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF USEJVCL}
   JvDsgnConsts, JvXPProgressBar,
-  {$ENDIF USEJVCL}
   JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
   JvXPButtons, JvXPCheckCtrls;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsPaletteXPControls = 'Jv XP Controls';
-{$ENDIF !USEJVCL}
 
 procedure Register;
 begin
   RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
     TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);
-  {$IFDEF USEJVCL}
   RegisterComponents(RsPaletteXPControls, [TJvXPProgressBar]);
-  {$ENDIF USEJVCL}
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexProperty);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);

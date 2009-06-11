@@ -2,8 +2,8 @@
 <Package Name="JvDocking" Design="-1">
   <Description>JVCL Docking Components</Description>
   <GUID>{2EE6377F-B2BB-4036-87FA-15C2DEC8BFFE}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50(USEJVCL)</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUJcl(USEJVCL)</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <ImageBase>4A200000</ImageBase>
@@ -12,7 +12,7 @@
   <ReleaseNumber>0</ReleaseNumber>
   <BuildNumber>0</BuildNumber>
   <Requires>
-    <Package Name="JvCore-D" Targets="VCL" Condition="USEJVCL"/>
+    <Package Name="JvCore-D" Targets="VCL" Condition=""/>
     <Package Name="JvDocking-R" Targets="VCL" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>

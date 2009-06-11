@@ -33,11 +33,9 @@ unit JvMessageControl;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, Windows, Messages, Controls, Forms,
   JvControlComponent;
 
@@ -58,11 +56,6 @@ type
     property Parent;
   end;
 
-{$IFNDEF USEJVCL}
-procedure Register;
-{$ENDIF !USEJVCL}
-
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -72,16 +65,8 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
-
-{$IFNDEF USEJVCL}
-procedure Register;
-begin
-  RegisterComponents('Jv Non-Visual', [TJvMessageControl]);
-end;
-{$ENDIF !USEJVCL}
 
 procedure TJvMessageControl.ControlWinProc(var Message: TMessage);
 begin
@@ -118,7 +103,6 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -126,6 +110,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

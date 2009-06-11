@@ -36,8 +36,6 @@ interface
 
 {***************** Conditional Compiler Symbols ************************
 
- USEJVCL        JEDI VCL installed (http://sourceforge.net/projects/jvcl/)
-
  USE_JvGIF      use TGIFImage class from JVCL
 
  USE_AM_GIF     use GIFImage library by Anders Melander et alii
@@ -50,7 +48,6 @@ interface
                 procedure.
  *********************************************************************** }
 
-{$DEFINE USEJVCL}
 {.$DEFINE USE_AM_GIF}
 {.$DEFINE USE_JvGIF}
 
@@ -59,11 +56,9 @@ interface
 {$ENDIF USE_JvGIF}
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Contnrs, Graphics, Controls, Forms, Classes,
   JclGraphUtils,
   JvTypes;
@@ -242,7 +237,6 @@ type
 
 procedure GetMappedGrays(var Shades: array of TColor; StartIntensity: Byte);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -252,7 +246,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 

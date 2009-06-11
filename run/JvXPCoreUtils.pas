@@ -31,16 +31,11 @@ unit JvXPCoreUtils;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   SysUtils, Classes, TypInfo, Windows, Graphics, Controls,
-  {$IFDEF USEJVCL}
-  JvJCLUtils,
-  {$ENDIF USEJVCL}
-  JvXPCore;
+  JvJCLUtils, JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -69,7 +64,6 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
   const AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
   const AAlignment: TAlignment; const AWordWrap: Boolean; var Rect: TRect);
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -79,7 +73,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -293,12 +286,7 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
 
   procedure DoDrawText;
   begin
-    {$IFDEF USEJVCL}
     DrawText(ACanvas, ACaption, -1, ARect, AFlags);
-    {$ELSE}
-    // (rom) Kludge! This will probably not work for CLX
-    DrawText(ACanvas.Handle, PChar(ACaption), -1, ARect, AFlags);
-    {$ENDIF USEJVCL}
   end;
 
 begin
@@ -412,7 +400,6 @@ begin
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -420,7 +407,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

@@ -32,7 +32,6 @@ unit JvDBDotNetControls;
 
 interface
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
@@ -45,7 +44,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -54,104 +52,78 @@ implementation
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, DBCtrls,
-  {$IFDEF USEJVCL}
-  JvDBFindEdit, JVCLVer,
-  {$ENDIF USEJVCL}
-  JvDotNetUtils;
+  JvDBFindEdit, JVCLVer, JvDotNetUtils;
 
 type
   TJvDotNetDBEdit = class(TDBEdit)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
   TJvDotNetDBListBox = class(TDBListBox)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
   TJvDotNetDBLookupListBox = class(TDBLookupListBox)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
   TJvDotNetDBMemo = class(TDBMemo)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
   TJvDotNetDBRichEdit = class(TDBRichEdit)
   private
-    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
-    {$ENDIF USEJVCL}
     FHighlighted: Boolean;
     FOldWindowProc: TWndMethod;
     procedure InternalWindowProc(var Msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  {$IFDEF USEJVCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  {$ENDIF USEJVCL}
   end;
 
-  {$IFDEF USEJVCL}
   TJvDotNetDBFindEdit = class(TJvDBFindEdit)
   private
     FHighlighted: Boolean;
@@ -161,9 +133,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  {$ENDIF USEJVCL}
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -173,7 +143,6 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
@@ -284,8 +253,6 @@ end;
 
 //=== { TJvDotNetDBFindEdit } ================================================
 
-{$IFDEF USEJVCL}
-
 constructor TJvDotNetDBFindEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -305,10 +272,8 @@ begin
   DotNetMessageHandler(Msg, Self, Color, FHighlighted);
 end;
 
-{$ENDIF USEJVCL}
 {$ENDIF DelphiPersonalEdition}
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -316,6 +281,5 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.

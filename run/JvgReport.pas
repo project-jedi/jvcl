@@ -31,16 +31,12 @@ unit JvgReport;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Windows, Messages, Classes, Controls, Graphics,
   Forms, OleCtnrs, ExtCtrls, SysUtils, Printers,
-  {$IFDEF USEJVCL}
   JvComponentBase, JvComponent,
-  {$ENDIF USEJVCL}
   JvgUtils, JvgTypes, JvgCommClasses;
 
 type
@@ -59,11 +55,7 @@ type
     property OnDraw: TNotifyEvent read FOnDraw write FOnDraw;
   end;
 
-  {$IFDEF USEJVCL}
   TJvgReportItem = class(TJvGraphicControl)
-  {$ELSE}
-  TJvgReportItem = class(TGraphicControl)
-  {$ENDIF USEJVCL}
   private
     FSelected: Boolean;
     FBkColor: Integer;
@@ -116,20 +108,10 @@ type
     procedure WMLMouseDown(var Msg: TWMMouse); message WM_LBUTTONDOWN;
     procedure WMLMouseUp(var Msg: TWMMouse); message WM_LBUTTONUP;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-  {$IFDEF USEJVCL}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
-  {$ELSE}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-  protected
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    procedure FontChanged; dynamic;
-  {$ENDIF USEJVCL}
   public
     procedure Paint; override;
     procedure PaintTo(Canvas: TCanvas);
@@ -175,11 +157,7 @@ type
 
   TJvgReportBeforePrintEvent = procedure(Sender: TJvgReport) of object;
 
-  {$IFDEF USEJVCL}
   TJvgReport = class(TJvComponent)
-  {$ELSE}
-  TJvgReport = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     procedure ValidateWnds;
     function GetReportText: TStringList;
@@ -217,7 +195,6 @@ type
     property BeforePrint: TJvgReportBeforePrintEvent read FBeforePrint write FBeforePrint;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -227,28 +204,16 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   Math,
   JvResources, JvConsts;
-  {$ELSE}
-  Math;
-  {$ENDIF USEJVCL}
 
 const
   S = 2;
   DS = 2 * S + 1;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsOLELinkedObjectNotFound = 'OLE: Linked object not found.';
-  RsErrorText = 'Error';
-  RsErrorReadingComponent = 'Error reading component.';
-{$ENDIF !USEJVCL}
 
 //=== { TJvgReportScrollBox } ================================================
 
@@ -498,9 +463,7 @@ end;
 
 procedure TJvgReportItem.MouseEnter(Control: TControl);
 begin
-  {$IFDEF USEJVCL}
   inherited MouseEnter(Control);
-  {$ENDIF USEJVCL}
   if csDesigning in ComponentState then
     Exit;
   //Cursor := crCross;
@@ -512,9 +475,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   Cursor := crDefault;
-  {$IFDEF USEJVCL}
   inherited MouseLeave(Control);
-  {$ENDIF USEJVCL}
   //  SetCursor( Screen.Cursors[crDefault] );
 end;
 
@@ -653,9 +614,7 @@ end;
 
 procedure TJvgReportItem.FontChanged;
 begin
-  {$IFDEF USEJVCL}
   inherited FontChanged;
-  {$ENDIF USEJVCL}
   FName := Font.Name;
   FFSize := Font.Size;
   FFColor := Font.Color;
@@ -674,28 +633,6 @@ begin
   inherited;
   // if Assigned(OnResize) then OnResize(Self);
 end;
-
-{$IFNDEF USEJVCL}
-
-procedure TJvgReportItem.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(TControl(Msg.LParam));
-end;
-
-procedure TJvgReportItem.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(TControl(Msg.LParam));
-end;
-
-procedure TJvgReportItem.CMFontChanged(var Msg: TMessage);
-begin
-  inherited;
-  FontChanged;
-end;
-
-{$ENDIF !USEJVCL}
 
 procedure TJvgReportItem.SetSelected(Value: Boolean);
 begin
@@ -985,11 +922,7 @@ var
 begin
   if Assigned(BeforePrint) then
     BeforePrint(Self);
-  {$IFDEF USEJVCL}
-  OwnerWnd := TForm(TJvForm).Create(nil);
-  {$ELSE}
-  OwnerWnd := TForm.Create(nil);
-  {$ENDIF}
+  OwnerWnd := TForm(TJvForm).Create(nil); // ahuser: what was the intention here???
   TForm(OwnerWnd).WindowState := wsMaximized;
   ParentWnd := OwnerWnd;
   //OwnerWnd.Show;
@@ -1466,7 +1399,6 @@ begin
   FReportList.Assign(Value);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -1474,7 +1406,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

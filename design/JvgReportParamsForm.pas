@@ -60,17 +60,10 @@ type
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvDsgnConsts,
-  {$ENDIF USEJVCL}
   JvgReportParamsEditor;
 
 {$R *.dfm}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEditParamsEllipsis = 'Edit params...';
-{$ENDIF !USEJVCL}
 
 procedure TJvgRepParamsEditor.ExecuteVerb(Index: Integer);
 begin

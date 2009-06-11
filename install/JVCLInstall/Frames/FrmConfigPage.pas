@@ -44,7 +44,6 @@ type
     CheckBoxRegisterGlobalDesignEditors: TCheckBox;
     CheckBoxDxgettextSupport: TCheckBox;
     CheckBoxRegisterJvGif: TCheckBox;
-    CheckBoxUseJVCL: TCheckBox;
     GroupBoxInstallOptions: TGroupBox;
     CheckBoxDeveloperInstall: TCheckBox;
     CheckBoxCleanPalettes: TCheckBox;
@@ -406,7 +405,6 @@ begin
   GetJvclDesigntimeConfig('RegisterGlobalDesignEditors', CheckBoxRegisterGlobalDesignEditors);
   GetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
   GetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
-  GetJVCLConfig('USEJVCL', CheckBoxUseJVCL);
   GetJVCLConfig('UNITVERSIONING', CheckBoxUnitVersioning);
 end;
 
@@ -446,7 +444,6 @@ begin
     SetJvclDesigntimeConfig('RegisterGlobalDesignEditors', CheckBoxRegisterGlobalDesignEditors);
     SetJVCLConfig('USE_DXGETTEXT', CheckBoxDxgettextSupport);
     SetJVCLConfig('USE_JV_GIF', CheckBoxRegisterJvGif);
-    SetJVCLConfig('USEJVCL', CheckBoxUseJVCL);
     SetJVCLConfig('UNITVERSIONING', CheckBoxUnitVersioning);
   except
     on E: Exception do

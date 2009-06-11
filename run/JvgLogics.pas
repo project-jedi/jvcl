@@ -32,27 +32,11 @@ unit JvgLogics;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, Graphics,
   JvComponentBase, JvResources;
-  {$ELSE}
-  Classes, SysUtils, Graphics;
-  {$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEqualTo = 'equal to';
-  RsStartingWith = 'starting with';
-  RsEndsWith = 'ends with';
-  RsContains = 'contains';
-  RsIsContainedWithin = 'is contained within';
-  RsNotEmpty = 'not empty';
-  RsStep = 'Step ';
-  RsComments = 'Comments';
-{$ENDIF !USEJVCL}
 
 type
   TLogicRule = (lrEqual, lrBeginWith, lrEndWith, lrContains, lrContainsIn,
@@ -73,11 +57,7 @@ type
   TOnTraceMessage = procedure(Sender: TJvgLogics; AStepResult: Boolean;
     const StepResult, ParsedResult, Msg: string) of object;
 
-  {$IFDEF USEJVCL}
   TJvgLogicProducer = class(TJvComponent)
-  {$ELSE}
-  TJvgLogicProducer = class(TComponent)
-  {$ENDIF USEJVCL}
   private
     FLogics: TJvgLogics;
     FCommentAreas: TJvgCommentAreas;
@@ -236,7 +216,6 @@ type
     property Items[Index: Integer]: TJvgCommentArea read GetItem write SetItem; default;
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -246,14 +225,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
 uses
-  {$IFDEF USEJVCL}
   JvConsts,
-  {$ENDIF USEJVCL}
   JvgUtils;
 
 //=== { TJvgLogicElement } ===================================================
@@ -628,7 +604,6 @@ begin
   Items[Index].Assign(Value);
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -636,7 +611,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 

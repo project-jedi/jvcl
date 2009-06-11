@@ -28,7 +28,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object LblEnvPathWarning: TLabel
     Left = 279
-    Top = 280
+    Top = 257
     Width = 236
     Height = 98
     AutoSize = False
@@ -51,7 +51,7 @@ object FrameConfigPage: TFrameConfigPage
     Left = 279
     Top = 31
     Width = 234
-    Height = 157
+    Height = 130
     Caption = ' JVCL Options  '
     TabOrder = 1
     object CheckBoxXPTheming: TCheckBox
@@ -120,23 +120,9 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 3
       OnClick = CheckBoxXPThemingClick
     end
-    object CheckBoxUseJVCL: TCheckBox
-      Left = 8
-      Top = 108
-      Width = 223
-      Height = 17
-      Hint = 
-        'Disable this if you want some packages that are not yet'#13#10'complet' +
-        'ely integrated to JVCL to be stand alone packages.'
-      Caption = '&Use JVCL for all packages'
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 4
-      OnClick = CheckBoxXPThemingClick
-    end
     object CheckBoxUnitVersioning: TCheckBox
       Left = 8
-      Top = 131
+      Top = 108
       Width = 223
       Height = 17
       Hint = 
@@ -146,7 +132,7 @@ object FrameConfigPage: TFrameConfigPage
       Caption = 'Unit Versioning'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 5
+      TabOrder = 4
       OnClick = CheckBoxXPThemingClick
     end
   end
@@ -233,7 +219,7 @@ object FrameConfigPage: TFrameConfigPage
         Caption = 'BP&L Directory:'
       end
       inherited Bevel: TBevel
-        Width = 309
+        Width = 261
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -255,7 +241,7 @@ object FrameConfigPage: TFrameConfigPage
       Visible = False
       inherited LblCaption: TLabel
         Left = 7
-        Width = 70
+        Width = 71
         Caption = '&DCP Directory:'
       end
       inherited Bevel: TBevel
@@ -285,7 +271,7 @@ object FrameConfigPage: TFrameConfigPage
         ParentShowHint = False
       end
       inherited Bevel: TBevel
-        Width = 309
+        Width = 261
         Visible = False
       end
       inherited EditDirectory: TEdit
@@ -384,7 +370,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxVerbose: TCheckBox
     Left = 279
-    Top = 199
+    Top = 173
     Width = 223
     Height = 17
     Hint = 
@@ -398,7 +384,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxIgnoreMakeErrors: TCheckBox
     Left = 279
-    Top = 222
+    Top = 196
     Width = 223
     Height = 17
     Hint = 
@@ -443,7 +429,7 @@ object FrameConfigPage: TFrameConfigPage
     object LblOptionsFor: TLabel
       Left = 8
       Top = 4
-      Width = 54
+      Width = 58
       Height = 13
       Caption = '&Options for:'
       FocusControl = ComboBoxTargetIDE
@@ -451,7 +437,7 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxAddBplDirToPath: TCheckBox
     Left = 279
-    Top = 260
+    Top = 234
     Width = 220
     Height = 17
     Caption = 'Add BPL directory to PATH'

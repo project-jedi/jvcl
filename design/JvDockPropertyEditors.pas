@@ -38,24 +38,6 @@ uses
   JvDockControlForm, JvDockVIDStyle;
 
 type
-  {$IFNDEF USEJVCL}
-
-  TJvDockControlEditor = class(TComponentEditor)
-  public
-    function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
-  end;
-
-  TJvDockStyleEditor = class(TComponentEditor)
-  public
-    function GetVerbCount: Integer; override;
-    function GetVerb(Index: Integer): string; override;
-    procedure ExecuteVerb(Index: Integer); override;
-  end;
-
-  {$ENDIF !USEJVCL}
-
   TJvDockVIDTabPageControlEditor = class(TComponentEditor)
   public
     function GetVerbCount: Integer; override;
@@ -67,89 +49,7 @@ implementation
 
 uses
   Classes, SysUtils, Dialogs,
-  {$IFDEF USEJVCL}
-  JvDsgnConsts,
-  {$ENDIF USEJVCL}
-  JvDockGlobals;
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsDockNewPage = 'Ne&w Page';
-  RsDockNextPage = 'Ne&xt Page';
-  RsDockPreviousPage = '&Previous Page';
-  RsDockDeletePage = '&Delete Page';
-{$ENDIF !USEJVCL}
-
-{$IFNDEF USEJVCL}
-
-//=== { TJvDockControlEditor } ===============================================
-
-procedure TJvDockControlEditor.ExecuteVerb(Index: Integer);
-var
-  ProductStr: string;
-begin
-  inherited ExecuteVerb(Index);
-  case Index of
-    0:
-    begin
-      if Component is TJvDockServer then
-        ProductStr := RsDockServerName
-      else
-      if Component is TJvDockClient then
-        ProductStr := RsDockClientName
-      else
-        Exit;
-      ShowMessageFmt(RsDockManagerAbout,
-        [ProductStr, RsDockManagerVersion, RsDockManagerCopyrightBegin,
-         RsDockManagerCopyrightEnd, RsDockAuthorName, RsDockCompanyName,
-         RsDockHomePage, RsDockEmail]);
-    end;
-  end;
-end;
-
-function TJvDockControlEditor.GetVerb(Index: Integer): string;
-begin
-  case Index of
-    0:
-      if Component is TJvDockServer then
-        Result := Format('%s %s', [RsDockAbout, RsDockServerName])
-      else
-      if Component is TJvDockClient then
-        Result := Format('%s %s', [RsDockAbout, RsDockClientName])
-  end;
-end;
-
-function TJvDockControlEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
-end;
-
-//=== { TJvDockStyleEditor } =================================================
-
-procedure TJvDockStyleEditor.ExecuteVerb(Index: Integer);
-begin
-  inherited ExecuteVerb(Index);
-  case Index of
-    0:
-      ShowMessageFmt(RsDockManagerAbout,
-        [TJvDockBasicStyle(Component).GetControlName,
-        RsDockStyleVersion, RsDockStyleCopyrightBegin,
-        RsDockStyleCopyrightEnd, RsDockAuthorName, RsDockCompanyName,
-        RsDockHomePage, RsDockEmail]);
-  end;
-end;
-
-function TJvDockStyleEditor.GetVerb(Index: Integer): string;
-begin
-  Result := Format('%s %s', [RsDockAbout, TJvDockBasicStyle(Component).GetControlName]);
-end;
-
-function TJvDockStyleEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
-end;
-
-{$ENDIF !USEJVCL}
+  JvDsgnConsts, JvDockGlobals;
 
 //=== { TJvDockVIDTabPageControlEditor } =====================================
 

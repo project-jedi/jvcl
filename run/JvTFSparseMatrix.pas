@@ -31,11 +31,9 @@ unit JvTFSparseMatrix;
 interface
 
 uses
-  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$ENDIF USEJVCL}
   Classes, SysUtils;
 
 type
@@ -68,7 +66,6 @@ type
     procedure Dump(const DumpList: TStrings);
   end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -78,19 +75,11 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 implementation
 
-{$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF USEJVCL}
-
-{$IFNDEF USEJVCL}
-resourcestring
-  RsEMatrixMustBeEmpty = 'Matrix must be empty before setting null value';
-{$ENDIF !USEJVCL}
 
 destructor TJvTFSparseMatrix.Destroy;
 begin
@@ -287,7 +276,6 @@ begin
   end;
 end;
 
-{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -295,7 +283,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USEJVCL}
 
 end.
 
