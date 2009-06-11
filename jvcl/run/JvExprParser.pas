@@ -98,12 +98,6 @@ uses
   {$WARN WIDECHAR_REDUCED OFF}
 {$ENDIF COMPILER12_UP}
 
-{$IFDEF COMPILER5}
-  // Delphi 5 compiler shows hints about not exported or used symbol
-  // TNode.Eval. This is a compiler bug that is caused by the "abstract" keyword.
-  {$HINTS OFF}
-{$ENDIF COMPILER5}
-
 const
   cNumbers = ['0'..'9'];
   cLetters = ['a'..'z', 'A'..'Z', '_'];
@@ -163,7 +157,11 @@ type
     FParser: TParser;
   public
     constructor Create(Parser: TParser); virtual;
-    function Eval(): Variant; virtual; abstract;
+
+    // Delphi 5 compiler shows hints about a not exported or used symbol
+    // TNode.Eval. This is a compiler bug that is caused by the "abstract" keyword.
+	
+    function Eval(): Variant; virtual; {$IFNDEF COMPILER5} abstract; {$ENDIF}
   end;
 
   EParserError = class(EExprParserError)
@@ -656,6 +654,13 @@ begin
   inherited Create;
   FParser := Parser;
 end;
+
+{$IFDEF COMPILER5}
+function TNode.Eval(): Variant;
+begin
+  Result := Null;
+end;
+{$ENDIF COMPILER5}
 
 { TNodeBin }
 
