@@ -426,9 +426,10 @@ type
 
     procedure SetSeparator(const Value: Char);
     procedure InternalQuickSort(SortList: PPointerList; L, R: Integer;
-      SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
+      const SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
 
-    procedure QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
+    procedure QuickSort(AList: TList; const SortColumns: TArrayOfPCsvColumn; ACount: Integer;
+      const SortAscending: array of Boolean);
     procedure AutoCreateDir(const FileName: string);
     function GetEnquoteBackslash: Boolean;
     procedure SetEnquoteBackslash(const Value: Boolean);
@@ -531,8 +532,8 @@ type
 
     // Internal methods used by sorting:
     function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): Integer;
-    function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer;
-      Left, Right: PCsvRow; SortAscending: Array of Boolean): Integer;
+    function InternalCompare(const SortColumns: TArrayOfPCsvColumn; SortColumnCount: Integer;
+      Left, Right: PCsvRow; const SortAscending: array of Boolean): Integer;
 
     // key uniqueness needs this:
     function InternalFindByKey(Row: PCsvRow): Integer;
@@ -3961,8 +3962,8 @@ end;
 // Record comparison between two PCsvRows:
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
-function TJvCustomCsvDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn;
-  SortColumnCount: Integer; Left, Right: PCsvRow; SortAscending: Array of Boolean): Integer;
+function TJvCustomCsvDataSet.InternalCompare(const SortColumns: TArrayOfPCsvColumn;
+  SortColumnCount: Integer; Left, Right: PCsvRow; const SortAscending: array of Boolean): Integer;
 var
   I: Integer;
 begin
@@ -3991,7 +3992,7 @@ begin
 end;
 
 procedure TJvCustomCsvDataSet.InternalQuickSort(SortList: PPointerList;
-  L, R: Integer; SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
+  L, R: Integer; const SortColumns: TArrayOfPCsvColumn; ACount: Integer; const SortAscending: array of Boolean);
 var
   I, J: Integer;
   P, T: Pointer;
@@ -4002,9 +4003,9 @@ begin
     J := R;
     P := SortList^[(L + R) shr 1];
     repeat
-      while InternalCompare(SortColumns, ACount, SortList^[I], P, SortAscending ) < 0 do
+      while InternalCompare(SortColumns, ACount, SortList^[I], P, SortAscending) < 0 do
         Inc(I);
-      while InternalCompare(SortColumns, ACount, SortList^[J], P, SortAscending ) > 0 do
+      while InternalCompare(SortColumns, ACount, SortList^[J], P, SortAscending) > 0 do
         Dec(J);
       if I <= J then
       begin
@@ -4024,7 +4025,7 @@ begin
   until I >= R;
 end;
 
-procedure TJvCustomCsvDataSet.QuickSort(AList: TList; SortColumns: TArrayOfPCsvColumn;
+procedure TJvCustomCsvDataSet.QuickSort(AList: TList; const SortColumns: TArrayOfPCsvColumn;
   ACount: Integer; const SortAscending: array of Boolean);
 begin
   if (AList <> nil) and (AList.Count > 1) then
@@ -4879,13 +4880,13 @@ procedure SetCsvRowItemData(PItem: PCsvRow; ColumnIndex: Integer; const NewValue
 var
   TempBuf, RowItemText: PAnsiChar;
   Copy1, Copy2: Integer;
-  Dif, I, Old: Integer;
+  Diff, I, Old: Integer;
 begin
   Assert(Assigned(PItem));
   Assert(PItem^.Magic = JvCsvRowMagic);
   Assert(PItem^.TextMaxLen>0);
   Assert(PItem^.Separator<>Chr(0));
-  Dif := 0;
+  Diff := 0;
   if (ColumnIndex < 0) or (ColumnIndex > JvCsv_MAXCOLUMNS) then
     Exit;
   RowItemText := @PItem^._Text[0];
@@ -4923,9 +4924,9 @@ begin
       if Copy2 < 0 then
         Exit;
       if Length(NewValue) = Copy2 - Copy1 then
-        Dif := 0
+        Diff := 0
       else
-        Dif := Length(NewValue) - (Copy2 - Copy1);
+        Diff := Length(NewValue) - (Copy2 - Copy1);
       StrLCat(TempBuf, RowItemText + Copy2, PItem^.TextMaxLen);
     end;
 
@@ -4934,13 +4935,13 @@ begin
 
     // Now that we've copied a new item of a different length into the place of the old one
     // we have to update the positions of the columns after ColumnIndex:
-    if Dif <> 0 then
+    if Diff <> 0 then
       for I := ColumnIndex + 1 to JvCsv_MAXCOLUMNS do
       begin
         Old := CsvRowGetColumnMarker(PItem, I);
         if Old = JvCsv_COLUMN_ENDMARKER then
           Exit;
-        CsvRowSetColumnMarker(PItem, I, Old + Dif);
+        CsvRowSetColumnMarker(PItem, I, Old + Diff);
       end;
 
   finally
