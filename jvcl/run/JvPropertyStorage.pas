@@ -95,7 +95,7 @@ procedure UpdateStoredList(AComponent: TComponent; AStoredList: TStrings; FromFo
 function CreateStoredItem(const CompName, PropName: string): string;
 function ParseStoredItem(const Item: string; var CompName, PropName: string): Boolean;
 
-const
+var
   sPropNameDelimiter: string = '_';
 
 {$IFDEF UNITVERSIONING}
