@@ -359,7 +359,7 @@ begin
     Exit;
   S := Copy(AText, P + L, P2 - (P + L));
   AValue := SysUtils.StringReplace(S, '~~', Cr, [rfReplaceAll]);
-  Result := False;
+  Result := True;
 end;
 
 function GetStrValue(const AText, AName, ADefault: string): string;
