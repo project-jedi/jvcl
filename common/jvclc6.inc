@@ -24,7 +24,7 @@ Known Issues:
 
 {%hidden%}
 { Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
-{$DEFINE DelphiPersonalEdition}
+{.$DEFINE DelphiPersonalEdition}
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }
