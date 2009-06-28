@@ -1123,7 +1123,8 @@ begin
     Result := (Field.DataType = ftBoolean);
     if not Result and Assigned(FOnCheckIfBooleanField) and
       (Field.DataType in [ftSmallint, ftInteger, ftLargeint, ftWord, ftString, ftWideString,
-                          ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}]) then
+                          ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}
+                          {$IFDEF COMPILER12_UP},ftLongWord, ftShortint{$ENDIF COMPILER12_UP}]) then
     begin
       FStringForTrue := '1';
       FStringForFalse := '0';
@@ -1148,6 +1149,7 @@ begin
         Result := Ord(gpOle);
       ftCursor, ftReference, ftDataSet:
         Result := Ord(gpData);
+      {$IFDEF COMPILER10_UP}ftWideMemo,{$ENDIF COMPILER10_UP}
       ftMemo, ftFmtMemo:
         if not ShowMemos then
           Result := Ord(gpMemo);
@@ -1159,12 +1161,18 @@ begin
             Result := Ord(gpChecked)
           else
             Result := Ord(gpUnChecked);
+      {$IFDEF COMPILER10_UP}
+      ftFixedWideChar,
+      {$ENDIF COMPILER10_UP}
       ftString, ftWideString:
         if EditWithBoolBox(Field) and not Field.IsNull then
           if AnsiSameText(Field.AsString, FStringForFalse) then
             Result := Ord(gpUnChecked)
           else
             Result := Ord(gpChecked);
+      {$IFDEF COMPILER12_UP}
+      ftLongWord, ftShortint,
+      {$ENDIF COMPILER12_UP}
       ftSmallint, ftInteger, ftLargeint, ftWord, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
         if EditWithBoolBox(Field) and not Field.IsNull then
           if Field.AsInteger = 0 then
@@ -1925,7 +1933,7 @@ function TJvDBGrid.CanEditShow: Boolean;
 
       // The default editor cannot modify a binary or memo field
       if (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc, ftBlob,
-        ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary, ftDBaseOle, ftParadoxOle,
+        ftMemo, ftFmtMemo{$IFDEF COMPILER10_UP}, ftWideMemo{$ENDIF COMPILER10_UP}, ftGraphic, ftTypedBinary, ftDBaseOle, ftParadoxOle,
         ftCursor, ftADT, ftReference, ftDataSet, ftOraBlob, ftOraClob]) then
       begin
         Result := False;
@@ -2797,7 +2805,7 @@ begin
       else
       if FieldKind = fkData then
       begin
-        if DataType = ftFloat then
+        if DataType in [db.ftFloat{$IFDEF COMPILER12_UP},db.ftExtended{$ENDIF COMPILER12_UP}] then
           if CharInSet(Key, ['.', ',']) then
             Key := DecimalSeparator{$IFDEF CLR}[1]{$ENDIF};
 
@@ -3710,6 +3718,7 @@ begin
         case FBooleanFieldToEdit.DataType of
           ftBoolean:
             FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK);
+          {$IFDEF COMPILER10_UP}ftFixedWideChar,{$ENDIF COMPILER10_UP}
           ftString, ftWideString, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
             begin
               if FieldValueChange = JvGridBool_CHECK then
@@ -3729,6 +3738,7 @@ begin
         case FBooleanFieldToEdit.DataType of
           ftBoolean:
             FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean;
+          {$IFDEF COMPILER10_UP}ftFixedWideChar,{$ENDIF COMPILER10_UP}
           ftString, ftWideString, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
             begin
               if AnsiSameText(FBooleanFieldToEdit.AsString, FStringForTrue) then

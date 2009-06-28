@@ -306,11 +306,20 @@ const
   DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftFloat, ftString, ftWideString, ftBCD
     {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
   DefaultValidDetailFields = DefaultValidMasterFields;
-  DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftSmallInt, ftInteger, ftAutoInc,
+  DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftFmtMemo, ftSmallInt, ftInteger, ftAutoInc,
     ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD
-	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
+	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}
+  {$IFDEF COMPILER10_UP}
+  , ftFixedWideChar, ftWideMemo, ftOraTimeStamp
+  {$ENDIF COMPILER10_UP}
+  {$IFDEF COMPILER12_UP}
+  ,ftLongWord, ftShortint, ftByte, ftExtended
+  {$ENDIF COMPILER12_UP}];
   DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD
-	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
+	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}
+  {$IFDEF COMPILER12_UP}
+  ,ftLongWord, ftShortint
+  {$ENDIF COMPILER12_UP}];
 
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 begin

@@ -370,13 +370,20 @@ uses
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
-    ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob];
+    ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob
+    {$IFDEF COMPILER10_UP}, ftWideMemo{$ENDIF COMPILER10_UP}];
 
   ftSupported = [ftString, ftSmallint, ftInteger, ftWord, ftBoolean,
     ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD,
     {$IFDEF COMPILER6_UP}
-    ftFMTBCD,
+    ftFMTBCD, ftTimestamp,
     {$ENDIF COMPILER6_UP}
+    {$IFDEF COMPILER10_UP}
+    ftOraTimestamp, ftFixedWideChar,
+    {$ENDIF COMPILER10_UP}
+    {$IFDEF COMPILER12_UP}
+    ftLongWord, ftShortint, ftByte, ftExtended,
+    {$ENDIF COMPILER12_UP}
     ftBytes, ftVarBytes, ftADT, ftFixedChar, ftWideString, ftLargeint,
     ftVariant, ftGuid] + ftBlobTypes;
 

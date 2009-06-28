@@ -674,19 +674,37 @@ begin
   begin
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftString, System.TypeInfo(string)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftSmallint, System.TypeInfo(Smallint)));
+    {$IFDEF COMPILER12_UP}
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftShortint, System.TypeInfo(ShortInt)));
+    {$ENDIF COMPILER12_UP}
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftInteger, System.TypeInfo(Integer)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftWord, System.TypeInfo(Word)));
+    {$IFDEF COMPILER12_UP}
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftLongWord, System.TypeInfo(LongWord)));
+    {$ENDIF COMPILER12_UP}
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftBoolean, System.TypeInfo(Boolean)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftFloat, System.TypeInfo(Double)));
+    {$IFDEF COMPILER12_UP}
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', DB.ftExtended, System.TypeInfo(Extended)));
+    {$ENDIF COMPILER12_UP}
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftCurrency, System.TypeInfo(Currency)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftBCD, System.TypeInfo(Currency)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftDate, System.TypeInfo(TDateTime)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftTime, System.TypeInfo(TDateTime)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftDateTime, System.TypeInfo(TDateTime)));
+    {$IFDEF COMPILER10_UP}
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftOraTimeStamp, System.TypeInfo(TDateTime)));
+    {$ENDIF COMPILER10_UP}
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftAutoInc, System.TypeInfo(Integer)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftMemo, System.TypeInfo(string)));
+    {$IFDEF COMPILER10_UP}
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftWideMemo, System.TypeInfo(string)));
+    {$ENDIF COMPILER10_UP}
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftFmtMemo, System.TypeInfo(string)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftFixedChar, System.TypeInfo(string)));
+    {$IFDEF COMPILER10_UP}
+    Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftFixedWideChar, System.TypeInfo(string)));
+    {$ENDIF COMPILER10_UP}
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftWideString, System.TypeInfo(WideString)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftLargeint, System.TypeInfo(Int64)));
     Add(TJvInspectorTFieldTypeRegItem.Create('', '', ftVariant, System.TypeInfo(Variant)));

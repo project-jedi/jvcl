@@ -288,7 +288,7 @@ begin
   if not Assigned(AField) then
     raise EJVCLException.CreateRes(@RsEUnassignedField);
   case AField.DataType of
-    ftOraClob, ftMemo:
+    ftOraClob, ftMemo, ftFmtMemo{$IFDEF COMPILER10_UP}, ftWideMemo{$ENDIF COMPILER10_UP}:
       Result := jctDBMemo;
     ftGraphic:
       Result := jctDBImage;
@@ -298,7 +298,9 @@ begin
       Result := jctDBDateEdit;
     ftTime:
       Result := jctDBTimeEdit;
-    ftDateTime:
+    ftDateTime 
+      {$IFDEF COMPILER6_UP}, ftTimestamp{$ENDIF COMPILER6_UP} 
+      {$IFDEF COMPILER10_UP}, ftOraTimestamp{$ENDIF COMPILER10_UP}:
       Result := jctDBDateTimeEdit;
     ftBoolean:
       Result := jctDBCheckBox;
