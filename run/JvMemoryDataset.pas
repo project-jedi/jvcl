@@ -631,7 +631,7 @@ begin
   FRowsAffected := 0;
   FSaveLoadState := slsNone;
   FOneValueInArray := True;
-  FDataSetClosed := True; //???
+  FDataSetClosed := False;
 end;
 
 destructor TJvMemoryData.Destroy;
