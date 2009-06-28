@@ -153,7 +153,9 @@ begin
         if Assigned(Column.Field) then
           if Column.Field.DataType in [ftString, ftSmallint, ftInteger, ftWord, ftBoolean,
             ftFloat, ftCurrency, ftBCD, ftDate, ftTime, ftDateTime,
-            ftBytes, ftVarBytes, ftAutoInc, ftMemo, ftFmtMemo] then
+            ftBytes, ftVarBytes, ftAutoInc, ftMemo, ftFmtMemo
+            {$IFDEF COMPILER10_UP}, ftOraTimestamp, ftWideMemo, ftFixedWideChar{$ENDIF COMPILER10_UP}
+            {$IFDEF COMPILER12_UP}, ftLongWord, ftShortint, ftByte, ftExtended{$ENDIF COMPILER12_UP}] then
             if Column.Field.Visible and Column.Visible and not Column.Field.IsNull then
               if TAccessCustomDBGrid(DBGrid).Canvas.TextWidth(Column.Field.AsString + '  ') > Column.Width then
                 Column.Width := TAccessCustomDBGrid(DBGrid).Canvas.TextWidth(Column.Field.AsString + '  ');

@@ -2574,6 +2574,25 @@ begin
     AddConst(cDb, 'ftDBaseOle', Ord(ftDBaseOle));
     AddConst(cDb, 'ftTypedBinary', Ord(ftTypedBinary));
     AddConst(cDb, 'ftCursor', Ord(ftCursor));
+    {$IFDEF COMPILER6_UP}
+    AddConst(cDb, 'ftFMTBCD', Ord(ftFMTBCD));
+    AddConst(cDb, 'ftTimestamp', Ord(ftTimestamp));
+    {$ENDIF COMPILER6_UP}
+    {$IFDEF COMPILER10_UP}
+    AddConst(cDb, 'ftFixedWideChar', Ord(ftFixedWideChar));
+    AddConst(cDb, 'ftWideMemo', Ord(ftWideMemo));
+    AddConst(cDb, 'ftOraTimeStamp', Ord(ftOraTimeStamp));
+    AddConst(cDb, 'ftOraInterval', Ord(ftOraInterval));
+    {$ENDIF COMPILER10_UP}
+    {$IFDEF COMPILER12_UP}
+    AddConst(cDb, 'ftLongWord', Ord(ftLongWord));
+    AddConst(cDb, 'ftShortint', Ord(ftShortint));
+    AddConst(cDb, 'ftByte', Ord(ftByte));
+    AddConst(cDb, 'ftExtended', Ord(ftExtended));
+    AddConst(cDb, 'ftConnection', Ord(ftConnection));
+    AddConst(cDb, 'ftParams', Ord(ftParams));
+    AddConst(cDb, 'ftStream', Ord(ftStream));
+    {$ENDIF COMPILER12_UP}
     { TFieldDef }
     AddClass(cDb, TFieldDef, 'TFieldDef');
     AddGet(TFieldDef, 'Create', TFieldDef_Create, 6, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty, varEmpty],

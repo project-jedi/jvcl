@@ -229,13 +229,13 @@ begin
           end;
         if not Fieldfound then
           CurrentRow.Visible := FALSE;
-        if DBDatabinding.Field.Datatype in [ftOraClob, ftMemo] then
+        if DBDatabinding.Field.Datatype in [ftOraClob, ftMemo, ftFMTMemo{$IFDEF COMPILER10_UP}, ftWideMemo{$ENDIF COMPILER10_UP}] then
         begin
           CurrentRow.Properties.EditPropertiesClass := TcxMemoProperties;
           TcxMemoProperties(CurrentRow.Properties.EditProperties).Scrollbars := ssBoth;
         end
         else
-          if DBDatabinding.Field.Datatype in [ftSmallint, ftInteger, ftWord, ftLargeint, ftAutoInc] then
+          if DBDatabinding.Field.Datatype in [ftSmallint, ftInteger, ftWord, ftLargeint, ftAutoInc{$IFDEF COMPILER12_UP},ftLongWord, ftShortint{$ENDIF COMPILER12_UP}] then
           begin
             CurrentRow.Properties.EditPropertiesClass := TcxSpinEditProperties;
             TcxSpinEditProperties(CurrentRow.Properties.EditProperties).ValueType := vtInt;
@@ -243,12 +243,12 @@ begin
 //            TcxSpinEditPropertiesAccess(CurrentRow.Properties.EditProperties).Buttons[1].Visible := False;
           end
           else
-            if DBDatabinding.Field.Datatype in [ftFloat, ftCurrency, ftBCD, ftFMTBcd] then
+            if DBDatabinding.Field.Datatype in [ftFloat, ftCurrency, ftBCD, ftFMTBcd{$IFDEF COMPILER12_UP}ftExtended,{$ENDIF COMPILER12_UP}] then
             begin
               CurrentRow.Properties.EditPropertiesClass := TcxCalcEditProperties;
             end
             else
-              if DBDatabinding.Field.Datatype in [ftDate, ftTime, ftDateTime] then
+              if DBDatabinding.Field.Datatype in [ftDate, ftTime, ftDateTime {$IFDEF COMPILER10_UP},ftOraTimestamp{$ENDIF COMPILER10_UP}] then
               begin
                 CurrentRow.Properties.EditPropertiesClass := TcxDateEditProperties;
                 TcxDateEditProperties(CurrentRow.Properties.EditProperties).InputKind := ikStandard;
