@@ -123,7 +123,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvResources;
+  JvResources, JvJVCLUtils;
 
 //=== { TJvActionEngineList } ========================================
 
@@ -239,7 +239,7 @@ begin
     else
       intValue := nil;
     Changed := FActionComponent <> intValue;
-    FActionComponent := intValue;
+    ReplaceComponentReference (Self, intValue, FActionComponent);
     if changed then
       ChangeActionComponent(FActionComponent);
   end;

@@ -770,7 +770,9 @@ var
 begin
   Result := False;
   if Assigned(FBeforeExecute) then
-    FBeforeExecute(Self, DatabaseControlEngine, DataComponent, ContinueExecute);
+    FBeforeExecute(Self, DatabaseControlEngine, DataComponent, ContinueExecute)
+  else
+    ContinueExecute := True;
   if ContinueExecute then
   begin
     Result := inherited Execute;
