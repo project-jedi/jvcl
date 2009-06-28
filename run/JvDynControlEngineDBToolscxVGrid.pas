@@ -243,7 +243,7 @@ begin
 //            TcxSpinEditPropertiesAccess(CurrentRow.Properties.EditProperties).Buttons[1].Visible := False;
           end
           else
-            if DBDatabinding.Field.Datatype in [ftFloat, ftCurrency, ftBCD, ftFMTBcd{$IFDEF COMPILER12_UP}db.ftExtended,{$ENDIF COMPILER12_UP}] then
+            if DBDatabinding.Field.Datatype in [ftFloat, ftCurrency, ftBCD, ftFMTBcd{$IFDEF COMPILER12_UP},ftExtended{$ENDIF COMPILER12_UP}] then
             begin
               CurrentRow.Properties.EditPropertiesClass := TcxCalcEditProperties;
             end
