@@ -7,10 +7,6 @@
   <C5Libs/>
   <C6Libs/>
   <ImageBase>49A20000</ImageBase>
-  <VersionMajorNumber>3</VersionMajorNumber>
-  <VersionMinorNumber>31</VersionMinorNumber>
-  <ReleaseNumber>0</ReleaseNumber>
-  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
     <Package Name="JclC50" Targets="Cv5" Condition=""/>

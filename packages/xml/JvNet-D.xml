@@ -7,10 +7,6 @@
   <C5Libs/>
   <C6Libs/>
   <ImageBase>4A320000</ImageBase>
-  <VersionMajorNumber>3</VersionMajorNumber>
-  <VersionMinorNumber>31</VersionMinorNumber>
-  <ReleaseNumber>0</ReleaseNumber>
-  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvNet-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
