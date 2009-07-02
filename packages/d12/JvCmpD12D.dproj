@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{B2603E49-5F7D-4817-8484-71DD7B1EA69C}</ProjectGuid>
 			<MainSource>JvCmpD12D.dpk</MainSource>
