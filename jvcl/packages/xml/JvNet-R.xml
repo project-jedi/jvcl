@@ -28,11 +28,11 @@
     <Package Name="IndySystem50" Targets="allv5" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndySystem60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndySystem70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
-    <Package Name="IndySystem" Targets="D9,D9p,D10,D10p,D11" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
+    <Package Name="IndySystem" Targets="D9,D9p,D10,D10p,D11,D12" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols50" Targets="allv5" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
-    <Package Name="IndyProtocols" Targets="D9,D9p,D10,D10p,D11" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
+    <Package Name="IndyProtocols" Targets="D9,D9p,D10,D10p,D11,D12" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IcsBcb50" Targets="Cv5" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsBcb60" Targets="C6,C6p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel50" Targets="Dv5" Condition="USE_3RDPARTY_ICS"/>
