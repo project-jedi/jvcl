@@ -2814,6 +2814,16 @@ begin
     BorderStyle := cxcbsNone
   else
     BorderStyle := cxcbsDefault;
+  if BorderStyle = cxcbsNone then
+  begin
+    if Style.BorderStyle <> ebsNone then
+      Style.BorderStyle := ebsNone;
+  end
+  else
+  begin
+    if svBorderStyle in Style.AssignedValues then
+      Style.AssignedValues := Style.AssignedValues - [ svBorderStyle ];
+  end;
 end;
 
 procedure TJvDynControlCxPanel.ControlSetBorderWidth(Value: Integer);
