@@ -47,7 +47,7 @@
            <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
            <VersionInfo Name="MajorVer">3</VersionInfo>
-           <VersionInfo Name="MinorVer">31</VersionInfo>
+           <VersionInfo Name="MinorVer">38</VersionInfo>
            <VersionInfo Name="Release">0</VersionInfo>
            <VersionInfo Name="Build">0</VersionInfo>
            <VersionInfo Name="Debug">False</VersionInfo>
@@ -61,13 +61,13 @@
          <VersionInfoKeys>
           <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="FileDescription">JVCL Standard Controls</VersionInfoKeys>
-          <VersionInfoKeys Name="FileVersion">3.31.0.0</VersionInfoKeys>
+          <VersionInfoKeys Name="FileVersion">3.38.0.0</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JvStdCtrlsD11D</VersionInfoKeys>
           <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
           <VersionInfoKeys Name="OriginalFilename">JvStdCtrlsD11D.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
-          <VersionInfoKeys Name="ProductVersion">3.31 Build 0</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductVersion">3.38 Build 0</VersionInfoKeys>
          </VersionInfoKeys>
         <Source>
           <Source Name="MainSource">JvStdCtrlsD11D.dpk</Source>
