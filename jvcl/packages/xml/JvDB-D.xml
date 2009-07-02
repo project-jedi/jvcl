@@ -7,10 +7,6 @@
   <C5Libs/>
   <C6Libs/>
   <ImageBase>4A180000</ImageBase>
-  <VersionMajorNumber>3</VersionMajorNumber>
-  <VersionMinorNumber>31</VersionMinorNumber>
-  <ReleaseNumber>0</ReleaseNumber>
-  <BuildNumber>0</BuildNumber>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
