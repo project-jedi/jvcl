@@ -146,7 +146,7 @@
       <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
       <VersionInfo Name="AutoIncBuild">False</VersionInfo>
       <VersionInfo Name="MajorVer">3</VersionInfo>
-      <VersionInfo Name="MinorVer">31</VersionInfo>
+      <VersionInfo Name="MinorVer">38</VersionInfo>
       <VersionInfo Name="Release">0</VersionInfo>
       <VersionInfo Name="Build">0</VersionInfo>
       <VersionInfo Name="Debug">False</VersionInfo>
