@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{177EF676-53B7-41C5-8B88-62DEC3EDD002}</ProjectGuid>
 			<MainSource>JvGlobusD12D.dpk</MainSource>

@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{D6D9B4EE-4AC3-4971-8178-DC1EA29EC16F}</ProjectGuid>
 			<MainSource>JvTimeFrameworkD12D.dpk</MainSource>
