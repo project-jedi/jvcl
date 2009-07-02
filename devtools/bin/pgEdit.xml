@@ -93,6 +93,12 @@
         <alias name="allv12up" value="d12"/>
         <alias name="windows" value="c5,c5s,d5,d5s,c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
       </aliases>
+      <ProjectProperties>
+        <ProjectProperty name="VersionMajorNumber" value="3"/>
+        <ProjectProperty name="VersionMinorNumber" value="38"/>
+        <ProjectProperty name="ReleaseNumber" value="0"/>
+        <ProjectProperty name="BuildNumber" value="0"/>
+      </ProjectProperties>
     </model>
   </models>
 </Configuration>
