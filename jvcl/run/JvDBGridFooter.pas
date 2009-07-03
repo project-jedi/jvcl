@@ -145,11 +145,12 @@ type
   protected
     procedure JvDBGridLayoutChanged(Grid: TJvDBGrid; Kind: TJvDBGridLayoutChangeKind); dynamic;
 
-    procedure ReCalc;
     procedure DrawPanels; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure ReCalc;
   published
     property Columns: TFooterColumns read FColumns write SetColumns;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
