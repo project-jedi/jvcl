@@ -72,7 +72,6 @@ type
     procedure UpdateTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property ActionControl: TControl read GetActionControl write SetActionControl;
     property ControlOperation: TJvControlActionOperation read FControlOperation
         write SetControlOperation;
@@ -216,11 +215,6 @@ begin
       Result := False
   else
     Result := False;
-end;
-
-procedure TJvControlBaseAction.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvControlBaseAction.SetActionComponent(const Value: TComponent);

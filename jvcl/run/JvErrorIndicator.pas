@@ -719,9 +719,8 @@ end;
 
 procedure TJvErrorControl.SetImageList(const Value: TCustomImageList);
 begin
-  if FImageList <> Value then
+  if ReplaceComponentReference (Self, Value, TComponent(FImageList)) then
   begin
-    FImageList := Value;
     if FImageList <> nil then
       BoundsRect := CalcBoundsRect
     else
@@ -746,8 +745,11 @@ procedure TJvErrorControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = Control) then
-    Control := nil;
+  if (Operation = opRemove) then
+    if (AComponent = Control) then
+      Control := nil
+    else if (AComponent = FImageList) then
+      FImageList := nil
 end;
 
 //=== { TJvBlinkThread } =====================================================

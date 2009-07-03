@@ -26,6 +26,10 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblEditorSpeedSettings: TLabel
         Left = 30
         Top = 11
@@ -48,7 +52,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Width = 267
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 0
         Items.Strings = (
           'Default keymapping')

@@ -409,7 +409,7 @@ const
 implementation
 
 uses
-  Math;
+  Math, JvJVCLUtils;
 
 const
   MAX_COLS = 1024;
@@ -1162,7 +1162,7 @@ end;
 
 procedure TJvgPrintCrossTable.SetDataSet(Value: TDataSet);
 begin
-  FDataSet := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FDataSet));
 end;
 
 procedure TJvgPrintCrossTable.SetColumnFieldName(const Value: string);

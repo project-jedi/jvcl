@@ -478,7 +478,7 @@ implementation
 
 uses
   Math,
-  JvConsts;
+  JvConsts, JvJVCLUtils;
 
 {$R JvOutlookBar.res}
 
@@ -2300,15 +2300,8 @@ end;
 
 procedure TJvCustomOutlookBar.SetLargeImages(const Value: TCustomImageList);
 begin
-  if FLargeImages <> Value then
-  begin
-    if Assigned(FLargeImages) then
-      FLargeImages.UnRegisterChanges(FLargeChangeLink);
-    FLargeImages := Value;
-    if Assigned(FLargeImages) then
-      FLargeImages.RegisterChanges(FLargeChangeLink);
+  if ReplaceImageListReference(Self, Value, FLargeImages, FLargeChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvCustomOutlookBar.SetPageButtonHeight(const Value: Integer);
@@ -2327,15 +2320,8 @@ end;
 
 procedure TJvCustomOutlookBar.SetSmallImages(const Value: TCustomImageList);
 begin
-  if FSmallImages <> Value then
-  begin
-    if Assigned(FSmallImages) then
-      FSmallImages.UnRegisterChanges(FSmallChangeLink);
-    FSmallImages := Value;
-    if Assigned(FSmallImages) then
-      FSmallImages.RegisterChanges(FSmallChangeLink);
+  if ReplaceImageListReference(Self, Value, FSmallImages, FSmallChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvCustomOutlookBar.SetThemed(const Value: Boolean);
@@ -2820,15 +2806,8 @@ end;
 
 procedure TJvCustomOutlookBar.SetPageImages(const Value: TCustomImageList);
 begin
-  if FPageImages <> Value then
-  begin
-    if Assigned(FPageImages) then
-      FPageImages.UnRegisterChanges(FPageChangeLink);
-    FPageImages := Value;
-    if Assigned(FPageImages) then
-      FPageImages.RegisterChanges(FPageChangeLink);
+  if ReplaceImageListReference(Self, Value, FPageImages, FPageChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvCustomOutlookBar.InitiateAction;

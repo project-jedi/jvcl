@@ -62,8 +62,8 @@ type
     FOnRead: TJvDBStorageReadEvent;
     FOnWrite: TJvDBStorageWriteEvent;
     FBookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
+    FDataSource: TDataSource;
     procedure SetDataSource(const Value: TDataSource);
-    function GetDataSource: TDataSource;
     function GetKeyField: string;
     function GetSectionField: string;
     function GetValueField: string;
@@ -103,7 +103,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   protected
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DataSource: TDataSource read FDataSource write SetDataSource;
     property KeyField: string read GetKeyField write SetKeyField;
     property SectionField: string read GetSectionField write SetSectionField;
     property ValueField: string read GetValueField write SetValueField;
@@ -143,7 +143,7 @@ uses
   Windows,
   {$ENDIF SUPPORTS_INLINE}
   JclMime,
-  JvJCLUtils, JvResources, JclStrings;
+  JvJCLUtils, JvResources, JclStrings, JvJVCLUtils;
 
 constructor TJvCustomAppDBStorage.Create(AOwner: TComponent);
 begin
@@ -291,11 +291,6 @@ begin
   Result := (FSectionLink.Field <> nil) and (FKeyLink.Field <> nil) and (FValueLink.Field <> nil);
 end;
 
-function TJvCustomAppDBStorage.GetDataSource: TDataSource;
-begin
-  Result := FSectionLink.DataSource;
-end;
-
 function TJvCustomAppDBStorage.GetKeyField: string;
 begin
   Result := FKeyLink.FieldName;
@@ -388,14 +383,11 @@ procedure TJvCustomAppDBStorage.SetDataSource(const Value: TDataSource);
 begin
   if Assigned(FSectionLink) and not (FSectionLink.DataSourceFixed and (csLoading in ComponentState)) then
   begin
-    FSectionLink.DataSource.RemoveFreeNotification(Self);
-
     FSectionLink.DataSource := Value;
     FKeyLink.DataSource := Value;
     FValueLink.DataSource := Value;
   end;
-  if Value <> nil then
-    Value.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(fDatasource));
 end;
 
 procedure TJvCustomAppDBStorage.SetKeyField(const Value: string);

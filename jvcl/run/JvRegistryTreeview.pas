@@ -66,6 +66,7 @@ type
     procedure CloseRegistry;
     function FindChildNode(ParentNode: TTreeNode;
       const Name: string): TTreeNode;
+    procedure SetListView(const Value: TCustomListView);
   protected
     procedure RefreshSubTrees(ANode: TTreeNode; Key, OldKey: string; Level: Integer); virtual;
     function CanCollapse(Node: TTreeNode): Boolean; override;
@@ -105,7 +106,7 @@ type
     property HideSelection;
     property RegistryKeys: TJvRegKeys read FRegistryKeys write SetRegistryKeys default
       [hkCurrentUser, hkLocalMachine];
-    property ListView: TCustomListView read FListView write FListView;
+    property ListView: TCustomListView read FListView write SetListView;
     property RootCaption: string read FRootCaption write SetRootCaption;
     property DefaultCaption: string read FDefaultCaption write SetDefaultCaption;
     property DefaultNoValueCaption: string read FDefaultNoValue write SetDefaultNoValue;
@@ -156,7 +157,7 @@ const
 implementation
 
 uses
-  JvResources;
+  JvResources, JvJVCLUtils;
 
 {$R JvRegistryTreeView.res}
 
@@ -661,14 +662,15 @@ procedure TJvRegistryTreeView.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent = FListView) and (Operation = opRemove) then
-  begin
-    if TListViewAccessProtected(FListView).SmallImages = FInternalImages then
-      TListViewAccessProtected(FListView).SmallImages := nil;
-    FListView := nil;
-  end;
-  if (AComponent = Images) and (Operation = opRemove) then
-    SetDefaultImages;
+  if (Operation = opRemove) then
+    if (AComponent = FListView) then
+    begin
+      if TListViewAccessProtected(FListView).SmallImages = FInternalImages then
+        TListViewAccessProtected(FListView).SmallImages := nil;
+      FListView := nil;
+    end
+    else if (AComponent = Images) then
+      SetDefaultImages;
 end;
 
 procedure TJvRegistryTreeView.RefreshNode(Node: TTreeNode);
@@ -798,6 +800,11 @@ begin
   OpenRegistry(Selected);
   Result := FReg.SaveKey(ShortPath, Filename);
   CloseRegistry;
+end;
+
+procedure TJvRegistryTreeView.SetListView(const Value: TCustomListView);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FListView));
 end;
 
 {$IFDEF UNITVERSIONING}

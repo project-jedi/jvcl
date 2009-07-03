@@ -342,6 +342,9 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 
 {$R JvSimImages.res}
 
@@ -703,9 +706,10 @@ end;
 procedure TJvSIMConnector.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  if (Operation = opRemove) and (AComponent = FromLogic) then
-    FromLogic := nil;
-  if (Operation = opRemove) and (AComponent = ToLogic) then
+  if (Operation = opRemove) then
+  if (AComponent = FromLogic) then
+    FromLogic := nil
+  else if (AComponent = ToLogic) then
     ToLogic := nil;
 end;
 
@@ -819,7 +823,7 @@ end;
 
 procedure TJvSIMConnector.SetFromLogic(const Value: TJvLogic);
 begin
-  FFromLogic := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FFromLogic));
 end;
 
 procedure TJvSIMConnector.SetToGate(const Value: Integer);
@@ -829,7 +833,7 @@ end;
 
 procedure TJvSIMConnector.SetToLogic(const Value: TJvLogic);
 begin
-  FToLogic := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FToLogic));
 end;
 
 procedure TJvSIMConnector.SetFromPoint(const Value: TJvPointX);

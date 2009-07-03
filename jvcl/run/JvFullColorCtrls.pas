@@ -1331,9 +1331,9 @@ end;
 
 procedure TJvFullColorPanel.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = ColorTrackBar) then
     ColorTrackBar := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvFullColorPanel.SetFullColor(const Value: TJvFullColor);

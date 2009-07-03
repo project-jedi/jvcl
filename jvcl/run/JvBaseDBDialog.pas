@@ -45,7 +45,6 @@ type
     FDynControlEngine: TJvDynControlEngine;
     FSession: TComponent;
     function GetDynControlEngine: TJvDynControlEngine;
-    procedure SetDynControlEngine(const Value: TJvDynControlEngine);
   protected
     function CreateForm: TForm; virtual;
     procedure CreateFormControls(aForm: TForm); virtual;
@@ -62,8 +61,7 @@ type
     property DBDialog: TForm read FDBDialog ;
     property Session: TComponent read FSession write SetSession;
   published
-    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write
-        SetDynControlEngine;
+    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write FDynControlEngine;
   end;
 
 
@@ -83,7 +81,7 @@ uses Sysutils,
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  ExtCtrls, ComCtrls, StdCtrls;
+  ExtCtrls, ComCtrls, StdCtrls, JvJVCLUtils;
 
 function TJvBaseDBDialog.CreateForm: TForm;
 begin
@@ -125,12 +123,13 @@ procedure TJvBaseDBDialog.Notification(AComponent: TComponent; Operation:
     TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FAppStorage) then
-    AppStorage := nil;
-  if (Operation = opRemove) and (AComponent = FSession) then
-    Session := nil;
-  if (Operation = opRemove) and (AComponent = FDBDialog) then
-    FDBDialog := nil;
+  if (Operation = opRemove) then
+    if (AComponent = FAppStorage) then
+      FAppStorage := nil
+    else if (AComponent = FSession) then
+      FSession := nil
+    else if (AComponent = FDBDialog) then
+      FDBDialog := nil;
 end;
 
 function TJvBaseDBDialog.SessionIsConnected: Boolean;
@@ -140,8 +139,7 @@ end;
 
 procedure TJvBaseDBDialog.SetAppStorage(Value: TJvCustomAppStorage);
 begin
-  if Value <> FAppStorage then
-    FAppStorage := Value;
+  ReplaceComponentReference (self, Value, TComponent(FAppStorage));
 end;
 
 procedure TJvBaseDBDialog.SetAppStoragePath(Value: string);
@@ -150,14 +148,9 @@ begin
     FAppStoragePath := Value;
 end;
 
-procedure TJvBaseDBDialog.SetDynControlEngine(const Value: TJvDynControlEngine);
-begin
-  FDynControlEngine := Value;
-end;
-
 procedure TJvBaseDBDialog.SetSession(const Value: TComponent);
 begin
-  FSession := Value;
+  ReplaceComponentReference (self, Value, FSession);
 end;
 
 {$IFDEF UNITVERSIONING}

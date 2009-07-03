@@ -102,7 +102,9 @@ type
     function GetApplicationVisible: Boolean;
     procedure SetApplicationVisible(const Value: Boolean);
     function GetIconVisible: Boolean;
+    procedure SetDropDownMenu(const Value: TPopupMenu);
     procedure SetIconVisible(const Value: Boolean);
+    procedure SetPopupMenu(const Value: TPopupMenu);
   protected
     FActive: Boolean;
     FIcon: TIcon;
@@ -216,8 +218,8 @@ type
     property IconIndex: Integer read FIconIndex write SetIconIndex;
     property Icons: TCustomImageList read FIcons write SetIcons;
     property Hint: string read FHint write SetHint;
-    property DropDownMenu: TPopupMenu read FDropDownMenu write FDropDownMenu;
-    property PopupMenu: TPopupMenu read FPopupMenu write FPopupMenu;
+    property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
+    property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property Snap: Boolean read FSnap write FSnap default False;
     property SwingForthAndBack: Boolean read FSwingForthAndBack write FSwingForthAndBack default False;
@@ -1175,6 +1177,11 @@ begin
   end;
 end;
 
+procedure TJvTrayIcon.SetDropDownMenu(const Value: TPopupMenu);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu));
+end;
+
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
   //Remove sLineBreak on w98/me as they are not supported
@@ -1206,11 +1213,8 @@ end;
 
 procedure TJvTrayIcon.SetIcons(const Value: TCustomImageList);
 begin
-  if FIcons <> Value then
-  begin
-    FIcons := Value;
+  if ReplaceComponentReference (Self, Value, TComponent(FIcons)) then
     IconPropertyChanged; //HEG: New
-  end;
 end;
 
 procedure TJvTrayIcon.SetIconVisible(const Value: Boolean);
@@ -1219,6 +1223,11 @@ begin
     ShowTrayIcon
   else
     HideTrayIcon;
+end;
+
+procedure TJvTrayIcon.SetPopupMenu(const Value: TPopupMenu);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FPopupMenu));
 end;
 
 procedure TJvTrayIcon.SetTask(const Value: Boolean);

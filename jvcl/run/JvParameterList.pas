@@ -151,6 +151,7 @@ type
     FOnExitParameter: TJvParameterListEvent;
     FOnValidateData: TJvParameterOnValidateData;
     FRequired: Boolean;
+    procedure SetParameterList(const Value: TJvParameterList);
   protected
     procedure SetAsString(const Value: string); virtual;
     function GetAsString: string; virtual;
@@ -203,7 +204,7 @@ type
     function IsValid(const AData: Variant): Boolean; virtual;
     procedure SetData; virtual;
     property AdditionalData: Pointer read FAdditionalData write FAdditionalData;
-    property ParameterList: TJvParameterList read FParameterList write FParameterList;
+    property ParameterList: TJvParameterList read FParameterList write SetParameterList;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine;
     property WinControl: TWinControl read FWinControl;
   published
@@ -327,8 +328,6 @@ type
 
     procedure ResizeDialogAfterArrange(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
 
-    procedure SetDynControlEngine(Value: TJvDynControlEngine);
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     function GetParentByName(MainParent: TWinControl; const ASearchName: string): TWinControl;
@@ -397,8 +396,7 @@ type
     property CurrentWidth: Integer read GetCurrentWidth;
     {returns the current height of the created main-parameter-panel}
     property CurrentHeight: Integer read GetCurrentHeight;
-    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write
-      SetDynControlEngine;
+    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write FDynControlEngine;
     { Property to get access to the parameters }
     property Parameters[Index: Integer]: TJvBaseParameter read GetParameters write SetParameters;
     // Enable/DisableReason for the OkButton
@@ -471,7 +469,6 @@ type
     FParameterList: TJvParameterList;
   protected
     function GetDynControlEngine: TJvDynControlEngine; override;
-    function GetParameterList: TJvParameterList; virtual;
     procedure SetParameterList(Value: TJvParameterList); virtual;
     function GetAppStorage: TJvCustomAppStorage; override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); override;
@@ -480,17 +477,19 @@ type
     procedure RestoreParameterList(const ACaption: string = '');
     procedure SaveParameterList(const ACaption: string = '');
   published
-    property ParameterList: TJvParameterList read GetParameterList write SetParameterList;
+    property ParameterList: TJvParameterList read FParameterList write SetParameterList;
   end;
 
   TJvParameterListPropertyStore = class(TJvCustomPropertyStore)
   private
     FParameterList: TJvParameterList;
+    procedure SetParameterList(const Value: TJvParameterList);
   protected
     procedure LoadData; override;
     procedure StoreData; override;
   public
-    property ParameterList: TJvParameterList read FParameterList write FParameterList;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    property ParameterList: TJvParameterList read FParameterList write SetParameterList;
   end;
 
   {$IFDEF UNITVERSIONING}
@@ -508,7 +507,7 @@ implementation
 
 uses
   JclStrings,
-  JvParameterListParameter, JvResources;
+  JvParameterListParameter, JvResources, JvJVCLUtils;
 
 const
   cFalse = 'FALSE';
@@ -836,7 +835,7 @@ begin
   FStoreValueToAppStorage := True;
   FStoreValueCrypted := False;
   FTabOrder := -1;
-  FParameterList := AParameterList;
+  SetParameterList (AParameterList);
   FWinControl := nil;
   FJvDynControl := nil;
   FJvDynControlCaption := nil;
@@ -942,13 +941,16 @@ end;
 procedure TJvBaseParameter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent = FWinControl) and (Operation = opRemove) then
-  begin
-    FWinControl := nil;
-    FJvDynControl := nil;
-    FJvDynControlCaption := nil;
-    FJvDynControlData := nil;
-  end;
+  if (Operation = opRemove)  then
+    if (AComponent = FWinControl) then
+    begin
+      FWinControl := nil;
+      FJvDynControl := nil;
+      FJvDynControlCaption := nil;
+      FJvDynControlData := nil;
+    end
+  else if (AComponent = FParameterList) then
+    fParameterList := nil;
 end;
 
 function TJvBaseParameter.GetWinControlData: Variant;
@@ -994,7 +996,7 @@ procedure TJvBaseParameter.SetWinControl(const Value: TWinControl);
 begin
   FJvDynControl := nil;
   FJvDynControlCaption := nil;
-  FWinControl := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FWinControl));
   if not Assigned(Value) then
     Exit;
   Supports(FWinControl, IJvDynControl, FJvDynControl);
@@ -1175,6 +1177,11 @@ begin
     vMsg := Format(RsErrParameterMustBeEntered, [Caption]);
 end;
 
+procedure TJvBaseParameter.SetParameterList(const Value: TJvParameterList);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FParameterList));
+end;
+
 //=== { TJvParameterList } ===================================================
 
 constructor TJvParameterList.Create(AOwner: TComponent);
@@ -1321,11 +1328,6 @@ begin
     if AComponent = OkButton then
       OkButton := nil;
   end;
-end;
-
-procedure TJvParameterList.SetDynControlEngine(Value: TJvDynControlEngine);
-begin
-  FDynControlEngine := Value;
 end;
 
 procedure TJvParameterList.LoadData;
@@ -2157,7 +2159,7 @@ procedure TJvParameterListPropertyStore.LoadData;
 var
   I: Integer;
 begin
-  if Assigned(AppStorage) then
+  if Assigned(AppStorage) And Assigned(ParameterList) then
     for I := 0 to ParameterList.Count - 1 do
       if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
         if ParameterList.Parameters[I].StoreValueToAppStorage then
@@ -2177,6 +2179,18 @@ begin
           if ParameterList.Parameters[I].StoreValueCrypted then
             AppStorage.DisablePropertyValueCrypt;
         end;
+end;
+
+procedure TJvParameterListPropertyStore.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FParameterList) then
+    FParameterList := nil;
+end;
+
+procedure TJvParameterListPropertyStore.SetParameterList(const Value: TJvParameterList);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FParameterList));
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -2209,14 +2223,9 @@ begin
   Result := FParameterList.DynControlEngine;
 end;
 
-function TJvParameterListSelectList.GetParameterList: TJvParameterList;
-begin
-  Result := FParameterList;
-end;
-
 procedure TJvParameterListSelectList.SetParameterList(Value: TJvParameterList);
 begin
-  FParameterList := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FParameterList));
 end;
 
 function TJvParameterListSelectList.GetAppStorage: TJvCustomAppStorage;

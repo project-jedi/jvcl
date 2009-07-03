@@ -478,7 +478,7 @@ uses
   JclRegistry,
   {$ENDIF MSWINDOWS}
   JclBase, JclSysUtils,
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvJVCLUtils;
 
 const
   cDSAStateValueName = 'DSA_State'; // do not localize
@@ -2431,15 +2431,14 @@ end;
 
 procedure TJvDSADialog.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = CheckControl) then
     CheckControl := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvDSADialog.SetCheckControl(Value: TWinControl);
 begin
-  if Value <> CheckControl then
-  begin
+  if ReplaceComponentReference (Self, Value, TComponent(FCheckControl)) then
     if Value <> nil then
     begin
       if GetPropInfo(Value, 'Checked') = nil then
@@ -2447,8 +2446,6 @@ begin
       if GetPropInfo(Value, 'Caption') = nil then
         raise EJvDSADialog.CreateRes(@RsECtrlHasNoCaptionProp);
     end;
-    FCheckControl := Value;
-  end;
 end;
 
 procedure TJvDSADialog.SetDialogID(Value: Integer);

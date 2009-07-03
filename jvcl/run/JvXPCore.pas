@@ -336,7 +336,7 @@ implementation
 
 uses
   JvResources,
-  JvXPCoreUtils;
+  JvXPCoreUtils, JvJVCLUtils;
 
 {$R JvXPCore.res}
 
@@ -759,9 +759,9 @@ end;
 procedure TJvXPCustomStyleControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (AComponent is TJvXPStyleManager) and (Operation = opRemove) then
     FStyleManager := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvXPCustomStyleControl.SetStyleManager(Value: TJvXPStyleManager);
@@ -770,9 +770,9 @@ begin
   begin
     if Value <> nil then
       Value.RegisterControls([Self])
-    else
+    else if Assigned(FStyleManager) then
       FStyleManager.UnregisterControls([Self]);
-    FStyleManager := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
     InternalRedraw;
   end;
 end;

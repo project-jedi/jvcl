@@ -192,7 +192,7 @@ implementation
 
 uses
   JvConsts, JvJCLUtils, JvResources,
-  JvgUtils;
+  JvgUtils, JvJVCLUtils;
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
@@ -639,7 +639,7 @@ end;
 
 procedure TJvgAskListBox.SetWallpaperImage(Value: TImage);
 begin
-  FWallpaperImage := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FWallpaperImage));
   if (not IsItAFilledBitmap(FWallpaper)) and Assigned(Value) then
   begin
     WallpaperBmp := Value.Picture.Bitmap;
@@ -682,7 +682,7 @@ end;
 procedure TJvgAskListBox.SetGlyphs(Value: TImageList);
 begin
   //if (Value=nil)or(Value.Width<=0)or(Value.Height<=0) then Exit;
-  FGlyphs := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FGlyphs));
   if FShowGlyphs then
     Invalidate;
 end;

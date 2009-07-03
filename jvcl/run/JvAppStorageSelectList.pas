@@ -108,7 +108,7 @@ uses
   {$IFDEF CLR}
   Variants,
   {$ENDIF CLR}
-  JvConsts, JvResources;
+  JvConsts, JvResources, JvJVCLUtils;
 
 constructor TJvAppStorageSelectList.Create(AOwner: TComponent);
 begin
@@ -128,8 +128,9 @@ end;
 procedure TJvAppStorageSelectList.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FAppStorage) then
-    FAppStorage := nil;
+  if (Operation = opRemove) then
+    if (AComponent = FAppStorage) then
+      FAppStorage := nil;
 end;
 
 function TJvAppStorageSelectList.GetSelectList: TStrings;
@@ -149,7 +150,7 @@ end;
 
 procedure TJvAppStorageSelectList.SetAppStorage(Value: TJvCustomAppStorage);
 begin
-  FAppStorage := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FAppStorage));
 end;
 
 procedure TJvAppStorageSelectList.SetSelectPath(Value: string);

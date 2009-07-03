@@ -170,7 +170,7 @@ implementation
 uses
   SysUtils, Windows, ExtCtrls, Dialogs,
   JvWndProcHook,
-  JvButton, JvResources, JvComponent;
+  JvButton, JvResources, JvComponent, JvJVCLUtils;
 
 {$R JvTipOfDay.res}
 
@@ -227,7 +227,7 @@ end;
 
 procedure TJvTipOfDay.SetAppStorage(Value: TJvCustomAppStorage);
 begin
-  FAppStorage := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FAppStorage));
 end;
 
 procedure TJvTipOfDay.AutoExecute;

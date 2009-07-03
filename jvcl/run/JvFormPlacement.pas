@@ -118,6 +118,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
     function GetForm: TForm;
+    procedure SetAppStorage(const Value: TJvCustomAppStorage);
   protected
     procedure ResolveAppStoragePath;
     procedure Loaded; override;
@@ -147,7 +148,7 @@ type
     procedure EraseSections;
   published
     property Active: Boolean read FActive write FActive default True;
-    property AppStorage: TJvCustomAppStorage read FAppStorage write FAppStorage;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write SetAppStoragePath;
     property MinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
     property Options: TPlacementOptions read FOptions write FOptions default [fpState, fpSize, fpLocation];
@@ -1387,6 +1388,11 @@ begin
     else if (Owner is TCustomFrame) then
       StrReplace(FAppStoragePath, cFormNameMask,
         GetFullFrameName(Owner), [rfIgnoreCase])
+end;
+
+procedure TJvFormPlacement.SetAppStorage(const Value: TJvCustomAppStorage);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FAppStorage));
 end;
 
 { TJvFormStorageStringList }

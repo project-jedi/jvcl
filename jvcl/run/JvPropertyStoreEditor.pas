@@ -189,7 +189,7 @@ uses
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
   JvResources,
-  TypInfo, JvDynControlEngine;
+  TypInfo, JvDynControlEngine, JvJVCLUtils;
 
 {$R *.dfm}
 
@@ -858,15 +858,11 @@ end;
 
 procedure TJvPropertyStoreEditorControl.SetPropertyStore(const Value: TComponent);
 begin
-  if FPropertyStore <> nil then
-    FPropertyStore.RemoveFreeNotification(Self);
-  FPropertyStore := Value;
   if csDestroying in Componentstate then
     Exit;
   if Assigned(Value) and not Supports(Value, IJvPropertyEditorHandler) then
     Raise Exception.Create ('TJvPropertyStoreEditorControl.SetPropertyStore : PropertyStore must support IJvPropertyEditorHandler');
-  if Assigned(FPropertyStore) then
-    FPropertyStore.FreeNotification(Self);
+  ReplaceComponentReference (Self, Value, TComponent(FPropertyStore));
   FillTreeView(Value);
 end;
 

@@ -178,7 +178,7 @@ implementation
 
 uses
   Math,
-  JvConsts, JvJCLUtils;
+  JvConsts, JvJCLUtils, JvJVCLUtils;
 
 function LastNonSpaceChar(const S: string): Char;
 var
@@ -298,9 +298,9 @@ end;
 
 procedure TJvHLEditor.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FSyntaxHighlighter) then
     SyntaxHighlighter := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvHLEditor.Loaded;
@@ -1874,7 +1874,7 @@ begin
       if FHighlighter = hlSyntaxHighlighter then
         FHighlighter := hlNone;
 
-    FSyntaxHighlighter := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FSyntaxHighlighter));
     RescanLong(0);
     Invalidate;
   end;
