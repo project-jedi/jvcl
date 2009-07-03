@@ -216,7 +216,7 @@ implementation
 
 uses
   Math,
-  JvgUtils;
+  JvgUtils, JvJVCLUtils;
 
 //=== { TJvgListBox } ========================================================
 
@@ -785,7 +785,7 @@ end;
 
 procedure TJvgListBox.SetWallpaperImage(Value: TImage);
 begin
-  FWallpaperImage := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FWallpaperImage));
   Invalidate;
 end;
 

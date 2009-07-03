@@ -95,7 +95,7 @@ type
     FFillColor: TColor;
     FHighlightFont: TFont;
     FButtonBorder: TJvButtonBorder;
-    FPopUpMenu: TPopupMenu;
+    FPopupMenu: TPopupMenu;
     FGroupIndex: Integer;
     FSmallImages: TCustomImageList;
     FLargeImages: TCustomImageList;
@@ -124,6 +124,7 @@ type
     procedure CMLeaveButton(var Msg: TMessage); message CM_LEAVEBUTTON;
     procedure CMTextChanged(var Msg:TMessage); message CM_TEXTCHANGED;
     function ParentVisible: Boolean;
+    procedure SetPopupMenu(const Value: TPopupMenu);
   protected
 
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -156,7 +157,7 @@ type
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ParentImageSize: Boolean read FParentImageSize write SetParentImageSize default True;
-    property PopupMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
+    property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
     property LargeImages: TCustomImageList read FLargeImages write SetLargeImages;
     property Spacing: Integer read FSpacing write SetSpacing default 4; { border offset from bitmap }
     property SmallImages: TCustomImageList read FSmallImages write SetSmallImages;
@@ -1591,6 +1592,11 @@ end;
 function TJvCustomLookOutButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvLookOutButtonActionLink;
+end;
+
+procedure TJvCustomLookOutButton.SetPopupMenu(const Value: TPopupMenu);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FPopupMenu));
 end;
 
 procedure TJvCustomLookOutButton.VisibleChanged;

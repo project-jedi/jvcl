@@ -42,12 +42,13 @@ type
   TJvgReportParamsEditor = class(TComponent)
   private
     FReport: TJvgReport;
+    procedure SetReport(const Value: TJvgReport);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     procedure Edit;
   published
-    property Report: TJvgReport read FReport write FReport;
+    property Report: TJvgReport read FReport write SetReport;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -62,12 +63,15 @@ const
 
 implementation
 
+uses
+  JvJVCLUtils;
+
 procedure TJvgReportParamsEditor.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (AComponent = Report) and (Operation = opRemove) then
     Report := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvgReportParamsEditor.Edit;
@@ -175,6 +179,11 @@ begin //temporary commented
       Form.Free;
     end;
     }
+end;
+
+procedure TJvgReportParamsEditor.SetReport(const Value: TJvgReport);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FReport));
 end;
 
 {$IFDEF UNITVERSIONING}

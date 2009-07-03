@@ -123,7 +123,7 @@ implementation
 uses
   Math,
   JvHLEditor, // for Assign
-  JvJCLUtils, JvConsts;
+  JvJCLUtils, JvConsts, JvJVCLUtils;
 
 function LastNonSpaceChar(const S: WideString): WideChar;
 var
@@ -236,9 +236,9 @@ end;
 procedure TJvWideHLEditor.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FSyntaxHighlighter) then
     SyntaxHighlighter := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvWideHLEditor.Loaded;
@@ -1814,7 +1814,7 @@ begin
       if FHighlighter = hlSyntaxHighlighter then
         FHighlighter := hlNone;
 
-    FSyntaxHighlighter := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FSyntaxHighlighter));
     RescanLong(0);
     Invalidate;
   end;

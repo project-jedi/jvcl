@@ -767,7 +767,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources, JclStrings;
+  JvConsts, JvResources, JclStrings, JvJVCLUtils;
 
 //=== { TJvTFGlanceCell } ====================================================
 
@@ -2045,24 +2045,8 @@ end;
 
 procedure TJvTFCustomGlance.SetCellPics(Value: TCustomImageList);
 begin
-  if Value <> FCellPics then
-  begin
-    if Assigned(FCellPics) then
-    begin
-      FCellPics.RemoveFreeNotification(Self);
-      FCellPics.UnregisterChanges(FImageChangeLink);
-    end;
-
-    FCellPics := Value;
-
-    if Assigned(FCellPics) then
-    begin
-      FCellPics.RegisterChanges(FImageChangeLink);
-      FCellPics.FreeNotification(Self);
-    end;
-
+  if ReplaceImageListReference (Self, Value, FCellPics, FImageChangeLink) then
     Invalidate;
-  end;
 end;
 
 procedure TJvTFCustomGlance.SetCells(Value: TJvTFGlanceCells);
@@ -2159,7 +2143,7 @@ begin
       FViewer.Notify(Self, sncDisconnectControl);
     if Assigned(Value) then
       Value.Notify(Self, sncConnectControl);
-    FViewer := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FViewer));
     if Assigned(FViewer) then
     begin
       FViewer.MoveTo(Cells.Cells[0, 0]);

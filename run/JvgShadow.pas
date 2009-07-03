@@ -128,7 +128,7 @@ const
 implementation
 
 uses
-  JvgUtils;
+  JvgUtils, JvJVCLUtils;
 
 constructor TJvgShadow.Create(AOwner: TComponent);
 begin
@@ -361,8 +361,7 @@ end;
 
 procedure TJvgShadow.SetControl(Value: TControl);
 begin
-  if Value <> Self then
-    FControl := Value;
+  ReplaceComponentReference (Self, Value, TComponent(fControl));
   if FControl is TWinControl then
   begin
     TJvgPublicWinControl(FControl).OnEnter := ControlEnter;

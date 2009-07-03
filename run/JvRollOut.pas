@@ -1232,14 +1232,7 @@ end;
 
 procedure TJvRollOutAction.SetRollOut(const Value: TJvCustomRollOut);
 begin
-  if FRollOut <> Value then
-  begin
-    if FRollOut <> nil then
-      FRollOut.RemoveFreeNotification(Self);
-    FRollOut := Value;
-    if FRollOut <> nil then
-      FRollOut.FreeNotification(Self);
-  end;
+  ReplaceComponentReference (Self, Value, TComponent(FRollOut));
 end;
 
 procedure TJvRollOutAction.UpdateTarget(Target: TObject);

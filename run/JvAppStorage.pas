@@ -190,6 +190,7 @@ type
     FSynchronizeFlushReload: Boolean;
     function GetActiveTranslateStringEngine: TJvTranslateString;
     function GetUpdating: Boolean;
+    procedure SetTranslateStringEngine(const Value: TJvTranslateString);
   protected
     FFlushOnDestroy: Boolean;
 
@@ -676,8 +677,7 @@ type
         GetActiveTranslateStringEngine;
     property StorageOptions: TJvCustomAppStorageOptions read FStorageOptions write SetStorageOptions;
     //1 This engine gives you the possibility to translate Strings with %-Replacements
-    property TranslateStringEngine: TJvTranslateString read FTranslateStringEngine
-      write FTranslateStringEngine;
+    property TranslateStringEngine: TJvTranslateString read FTranslateStringEngine write SetTranslateStringEngine;
     property OnTranslatePropertyName: TJvAppStoragePropTranslateEvent read FOnTranslatePropertyName
       write FOnTranslatePropertyName;
     property OnEncryptPropertyValue: TJvAppStorageCryptEvent read FOnEncryptPropertyValue
@@ -1344,12 +1344,11 @@ end;
 procedure TJvCustomAppStorage.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent is TJvCustomAppStorage) and (Operation = opRemove) and
-    Assigned(SubStorages) then
-    SubStorages.Delete(AComponent as TJvCustomAppStorage);
-  if (Operation = opRemove) and
-    (AComponent = FTranslateStringEngine) then
-    FTranslateStringEngine := nil;
+  if (Operation = opRemove) then
+    if (AComponent is TJvCustomAppStorage) and Assigned(SubStorages) then
+      SubStorages.Delete(AComponent as TJvCustomAppStorage)
+    else if (AComponent = FTranslateStringEngine) then
+      FTranslateStringEngine := nil;
 end;
 
 procedure TJvCustomAppStorage.SetFlushOnDestroy(Value: Boolean);
@@ -3215,6 +3214,10 @@ begin
   WriteInteger(ConcatPaths([Path, cCount]), ItemCount);
 end;
 
+procedure TJvCustomAppStorage.SetTranslateStringEngine(const Value: TJvTranslateString);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FTranslateStringEngine));
+end;
 
 {$IFDEF COMPILER6_UP}
 function TJvCustomAppStorage.ReadWideString(const Path: string;

@@ -580,12 +580,9 @@ end;
 
 procedure TJvCustomGraphicButton.SetDropDownMenu(const Value: TPopupMenu);
 begin
-  if FDropDownMenu <> Value then
-  begin
-    FDropDownMenu := Value;
+  if ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu)) then
     if DropArrow then
       Invalidate;
-  end;
 end;
 
 

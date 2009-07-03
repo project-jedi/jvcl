@@ -52,7 +52,6 @@ type
   protected
     function GetEngineList: TJvActionEngineList; virtual; abstract;
     function GetSupportedOperations: TJvControlActionOperations; virtual; abstract;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property EngineList: TJvActionEngineList read GetEngineList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -140,12 +139,6 @@ function TJvControlActionEngine.ExecuteOperation(const aOperation:
     TJvControlActionOperation; const aActionControl: TControl): Boolean;
 begin
   Result := False;
-end;
-
-procedure TJvControlActionEngine.Notification(AComponent: TComponent;
-    Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
 end;
 
 function TJvControlActionEngine.SupportsAction(AAction:

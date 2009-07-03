@@ -164,6 +164,7 @@ type
   private
     FArrangeSettings: TJvArrangeSettings;
     FParentControl: TWinControl;
+    procedure SetParentControl(const Value: TWinControl);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetArrangeSettings(Value: TJvArrangeSettings);
@@ -174,7 +175,7 @@ type
     procedure ArrangeControls; virtual;
     procedure DisableArrange; virtual;
     procedure EnableArrange; virtual;
-    property ParentControl: TWinControl read GetParentControl write FParentControl;
+    property ParentControl: TWinControl read GetParentControl write SetParentControl;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Color;
@@ -1268,6 +1269,11 @@ begin
     Result := FParentControl
   else
     Result := WinControl;
+end;
+
+procedure TJvArrangeParameter.SetParentControl(const Value: TWinControl);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FParentControl));
 end;
 
 //=== { TJvPanelParameter } ==================================================

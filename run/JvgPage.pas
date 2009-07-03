@@ -248,9 +248,12 @@ procedure TJvgPageControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Assigned(Wallpaper) and (AComponent = Wallpaper.Image) and
-    (Operation = opRemove) then
-    Wallpaper.Image := nil;
+  if (Operation = opRemove)  then
+    if Assigned(Wallpaper) and (AComponent = Wallpaper.Image) then
+      Wallpaper.Image := nil
+    else if (AComponent = Glyphs) then
+      Glyphs := nil;
+
 end;
 
 procedure TJvgPageControl.CNDrawItem(var Msg: TWMDrawItem);

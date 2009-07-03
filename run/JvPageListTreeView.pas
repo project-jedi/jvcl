@@ -407,7 +407,7 @@ implementation
 
 uses
   JvResources,
-  Forms;
+  Forms, JvJVCLUtils;
 
 (* (ahuser) make Delphi 5 compiler happy
 procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);

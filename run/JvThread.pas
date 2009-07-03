@@ -222,6 +222,7 @@ type
     function GetCurrentThread: TJvBaseThread;
     procedure SetConnectedDataComponent(Value: TComponent);
     procedure SetConnectedDataObject(Value: TObject);
+    procedure SetThreadDialog(const Value: TJvCustomThreadDialog);
     procedure ShowThreadDialogForm;
   protected
     procedure InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
@@ -294,7 +295,7 @@ type
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
     property Priority: TThreadPriority read FPriority write FPriority default tpNormal;
-    property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
+    property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write SetThreadDialog;
     property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent
       read FAfterCreateDialogForm write FAfterCreateDialogForm;
     property BeforeResume: TNotifyEvent read FBeforeResume write FBeforeResume;
@@ -326,7 +327,7 @@ const
 implementation
 
 uses
-  JvResources;
+  JvResources, JvJVCLUtils;
 
 var
   SyncMtx: THandle = 0;
@@ -547,9 +548,11 @@ end;
 procedure TJvCustomThreadDialogForm.SetConnectedDataComponent(Value:
     TComponent);
 begin
-  FConnectedDataObject := Value;
-  if Assigned(Value) then
-    FreeNotification(Value);
+  if Assigned(FConnectedDataObject) and (FConnectedDataObject is TComponent) then
+    TComponent(FConnectedDataObject).RemoveFreeNotification(self);
+  ConnectedDataObject := Value;
+  if Assigned(FConnectedDataObject) and (FConnectedDataObject is TComponent) then
+    TComponent(FConnectedDataObject).FreeNotification(self);
 end;
 
 procedure TJvCustomThreadDialogForm.SetConnectedDataObject(Value: TObject);
@@ -1145,9 +1148,11 @@ end;
 
 procedure TJvThread.SetConnectedDataComponent(Value: TComponent);
 begin
-  FConnectedDataObject := Value;
-  if Assigned(Value) then
-    FreeNotification(Value);
+  if Assigned(FConnectedDataObject) and (FConnectedDataObject is TComponent) then
+    TComponent(FConnectedDataObject).RemoveFreeNotification(self);
+  ConnectedDataObject := Value;
+  if Assigned(FConnectedDataObject) and (FConnectedDataObject is TComponent) then
+    TComponent(FConnectedDataObject).FreeNotification(self);
 end;
 
 procedure TJvThread.SetConnectedDataObject(Value: TObject);
@@ -1155,6 +1160,11 @@ begin
   FConnectedDataObject := Value;
   if Assigned(FThreadDialogForm) then
     FThreadDialogForm.ConnectedDataObject := Value;
+end;
+
+procedure TJvThread.SetThreadDialog(const Value: TJvCustomThreadDialog);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FThreadDialog));
 end;
 
 procedure TJvThread.ShowThreadDialogForm;

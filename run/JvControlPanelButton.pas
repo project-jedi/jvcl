@@ -177,11 +177,8 @@ end;
 
 procedure TJvControlPanelButton.SetImages(const Value: TCustomImageList);
 begin
-  if FImages <> Value then
-  begin
-    FImages := Value;
+  if ReplaceComponentReference (Self, Value, TComponent(FImages)) then
     Refresh;
-  end;
 end;
 
 procedure TJvControlPanelButton.DoLinkClick(Sender: TObject);

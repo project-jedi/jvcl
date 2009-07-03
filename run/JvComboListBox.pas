@@ -78,6 +78,7 @@ type
     function DestRect(Picture: TPicture; ARect: TRect): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
     procedure SetButtonWidth(const Value: Integer);
+    procedure SetDropdownMenu(const Value: TPopupMenu);
     procedure SetHotTrackCombo(const Value: Boolean);
   protected
     procedure InvalidateItem(Index: Integer);
@@ -103,7 +104,7 @@ type
   published
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 20;
     property HotTrackCombo: Boolean read FHotTrackCombo write SetHotTrackCombo default False;
-    property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu;
+    property DropdownMenu: TPopupMenu read FDropdownMenu write SetDropdownMenu;
     property DrawStyle: TJvComboListBoxDrawStyle read FDrawStyle write SetDrawStyle default dsOriginal;
     property OnDrawText: TJvComboListDrawTextEvent read FOnDrawText write FOnDrawText;
     property OnDrawImage: TJvComboListDrawImageEvent read FOnDrawImage write FOnDrawImage;
@@ -183,7 +184,7 @@ const
 implementation
 
 uses
-  Math;
+  Math, JvJVCLUtils;
 
 constructor TJvComboListBox.Create(AOwner: TComponent);
 begin
@@ -628,6 +629,11 @@ begin
   Invalidate;
 end;
 
+procedure TJvComboListBox.SetDropdownMenu(const Value: TPopupMenu);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FDropdownMenu));
+end;
+
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -637,4 +643,5 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
 

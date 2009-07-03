@@ -475,6 +475,10 @@ type
         TjvProgramVersionHistoryFileFormat): TJvCustomAppMemoryFileStorage;
     function GetDownloadError: string;
     function GetSelectedLocation: TJvCustomProgramVersionLocation;
+    procedure SetLocationDatabase(const Value: TJvProgramVersionDatabaseLocation);
+    procedure SetLocationFTP(const Value: TJvProgramVersionFTPLocation);
+    procedure SetLocationHTTP(const Value: TJvProgramVersionHTTPLocation);
+    procedure SetLocationNetwork(const Value: TJvProgramVersionNetworkLocation);
     procedure SetVersionHistoryFileOptions(const Value:
         TJvProgramVersionHistoryAppStorageOptions);
   protected
@@ -537,14 +541,13 @@ type
     property LocalVersionInfoFileName: string
       read FLocalVersionInfoFileName write FLocalVersionInfoFileName;
     { Database Location }
-    property LocationDatabase: TJvProgramVersionDatabaseLocation
-      read FLocationDatabase write FLocationDatabase;
+    property LocationDatabase: TJvProgramVersionDatabaseLocation read FLocationDatabase write SetLocationDatabase;
     { FTP Location }
-    property LocationFTP: TJvProgramVersionFTPLocation read FLocationFTP write FLocationFTP;
+    property LocationFTP: TJvProgramVersionFTPLocation read FLocationFTP write SetLocationFTP;
     { HTTP Location }
-    property LocationHTTP: TJvProgramVersionHTTPLocation read FLocationHTTP write FLocationHTTP;
+    property LocationHTTP: TJvProgramVersionHTTPLocation read FLocationHTTP write SetLocationHTTP;
     { Network Location }
-    property LocationNetwork: TJvProgramVersionNetworkLocation read FLocationNetwork write FLocationNetwork;
+    property LocationNetwork: TJvProgramVersionNetworkLocation read FLocationNetwork write SetLocationNetwork;
     { Defines location which is used for the version check,
     only assigned locations are supported }
     property LocationType: TJvProgramVersionLocationType read FLocationType write FLocationType;
@@ -571,7 +574,7 @@ implementation
 uses
   SysUtils, Dialogs, Controls, ComCtrls, StdCtrls, Forms,
   JclBase, JclFileUtils, JclShell,
-  JvDSADialogs, JvParameterListParameter, JvResources, Windows, Messages;
+  JvDSADialogs, JvParameterListParameter, JvResources, Windows, Messages, JvJVCLUtils;
 
 const
   SParamNameVersionButtonInfo = 'VersionButtonInfo';
@@ -1695,6 +1698,26 @@ begin
     RemoteProgramVersionHistory.AppStorage := nil;
     VersionHistoryAppStorage.Free;
   end;
+end;
+
+procedure TJvProgramVersionCheck.SetLocationDatabase(const Value: TJvProgramVersionDatabaseLocation);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FLocationDatabase));
+end;
+
+procedure TJvProgramVersionCheck.SetLocationFTP(const Value: TJvProgramVersionFTPLocation);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FLocationFTP));
+end;
+
+procedure TJvProgramVersionCheck.SetLocationHTTP(const Value: TJvProgramVersionHTTPLocation);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FLocationHTTP));
+end;
+
+procedure TJvProgramVersionCheck.SetLocationNetwork(const Value: TJvProgramVersionNetworkLocation);
+begin
+  ReplaceComponentReference (Self, Value, TComponent(FLocationNetwork));
 end;
 
 

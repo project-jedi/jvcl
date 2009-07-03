@@ -66,7 +66,7 @@ const
 implementation
 
 uses
-  JvTypes, JvResources;
+  JvTypes, JvResources, JvJVCLUtils;
 
 function TJvSyncSplitter.GetResizeStyle: TResizeStyle;
 begin
@@ -75,16 +75,16 @@ end;
 
 procedure TJvSyncSplitter.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Partner) then
     Partner := nil;
-  inherited Notification(AComponent, Operation);
 end;
 
 procedure TJvSyncSplitter.SetPartner(const Value: TJvSyncSplitter);
 begin
   if Value <> Self then
   begin
-    FPartner := Value;
+    ReplaceComponentReference (Self, Value, TComponent(FPartner));
     VerifyPartner;
   end
   else

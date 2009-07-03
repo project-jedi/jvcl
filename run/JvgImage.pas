@@ -146,7 +146,7 @@ const
 implementation
 
 uses
-  Math;
+  Math, JvJVCLUtils;
 
 constructor TJvgBitmapImage.Create(AOwner: TComponent);
 begin
@@ -414,7 +414,7 @@ end;
 
 procedure TJvgBitmapImage.SetImage(Value: TImage);
 begin
-  FImage := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FImage));
   if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
     FBmp := FImage.Picture.Bitmap

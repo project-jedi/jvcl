@@ -36,7 +36,6 @@ type
   private
     FFormStorage: TJvFormStorage;
   protected
-    function GetFormStorage: TJvFormStorage; virtual;
     procedure SetFormStorage(Value: TJvFormStorage); virtual;
     function GetAppStorage: TJvCustomAppStorage; override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); override;
@@ -46,7 +45,7 @@ type
     function RestoreFormStorage(const ACaption: string = ''): Boolean;
     function SaveFormStorage(const ACaption: string = ''): Boolean;
   published
-    property FormStorage: TJvFormStorage read GetFormStorage write SetFormStorage;
+    property FormStorage: TJvFormStorage read FFormStorage write SetFormStorage;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -62,16 +61,11 @@ const
 implementation
 
 uses
-  JvConsts;
-
-function TJvFormStorageSelectList.GetFormStorage: TJvFormStorage;
-begin
-  Result := FFormStorage;
-end;
+  JvConsts, JvJVCLUtils;
 
 procedure TJvFormStorageSelectList.SetFormStorage(Value: TJvFormStorage);
 begin
-  FFormStorage := Value;
+  ReplaceComponentReference (Self, Value, TComponent(FFormStorage));
 end;
 
 function TJvFormStorageSelectList.GetAppStorage: TJvCustomAppStorage;

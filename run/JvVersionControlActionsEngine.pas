@@ -42,7 +42,6 @@ type
     FOnChangeActionComponent: TJvChangeActionComponent;
   protected
     function GetEngineList: TJvActionEngineList; virtual; abstract;
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property EngineList: TJvActionEngineList read GetEngineList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -135,12 +134,6 @@ function TjvVersionControlActionEngine.GetFilename(aActionComponent:
     TComponent): string;
 begin
   Result := '';
-end;
-
-procedure TjvVersionControlActionEngine.Notification(AComponent: TComponent;
-    Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
 end;
 
 function TjvVersionControlActionEngine.SaveFile(aActionComponent: TComponent;

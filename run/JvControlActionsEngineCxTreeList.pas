@@ -45,7 +45,7 @@ type
   private
   protected
     function GetSupportedOperations: TJvControlActionOperations; override;
-    function GetTreeList(AActionComponent: TComponent): TcxCustomTreeListControl;
+    function GetTreeList(AActionComponent: TComponent): TcxCustomTreeList;
   public
     function ExecuteOperation(const aOperation: TJvControlActionOperation; const
         aActionControl: TControl): Boolean; override;
@@ -97,11 +97,11 @@ begin
 end;
 
 function TJvControlActioncxGridEngine.GetTreeList(AActionComponent:
-    TComponent): TcxCustomTreeListControl;
+    TComponent): TcxCustomTreeList;
 begin
   if Assigned(AActionComponent) then
-    if AActionComponent is TcxCustomTreeListControl then
-      Result := TcxCustomTreeListControl(AActionComponent)
+    if AActionComponent is TcxCustomTreeList then
+      Result := TcxCustomTreeList(AActionComponent)
     else
       Result := nil
   else

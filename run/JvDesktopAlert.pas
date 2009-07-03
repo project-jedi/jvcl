@@ -1727,12 +1727,9 @@ end;
 
 procedure TJvCustomDesktopAlert.SetAlertStack(const Value: TJvDesktopAlertStack);
 begin
-  if FStacker <> Value then
-  begin
-    ReplaceComponentReference (Self, Value, TComponent(FStacker));
+  if ReplaceComponentReference (Self, Value, TComponent(FStacker)) then
     if FStacker <> nil then
       Location.Position := FStacker.Position;
-  end;
 end;
 
 procedure TJvCustomDesktopAlert.SetAlertStyle(const Value: TJvAlertStyle);

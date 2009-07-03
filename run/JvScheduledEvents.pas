@@ -110,7 +110,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DoEndEvent(const Event: TJvEventCollectionItem);
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
-    function GetAppStorage: TJvCustomAppStorage;
     procedure SetAppStorage(Value: TJvCustomAppStorage);
     function GetEvents: TJvEventCollection;
     procedure InitEvents;
@@ -127,7 +126,7 @@ type
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property OnStartEvent: TNotifyEvent read FOnStartEvent write FOnStartEvent;
     property OnEndEvent: TNotifyEvent read FOnEndEvent write FOnEndEvent;
-    property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   public
     constructor Create(AOwner: TComponent); override;
@@ -512,11 +511,6 @@ begin
   end;
   FEvents.Free;
   inherited Destroy;
-end;
-
-function TJvCustomScheduledEvents.GetAppStorage: TJvCustomAppStorage;
-begin
-  Result := FAppStorage;
 end;
 
 procedure TJvCustomScheduledEvents.SetAppStorage(Value: TJvCustomAppStorage);
