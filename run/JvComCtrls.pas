@@ -1929,6 +1929,11 @@ begin
     begin
       FTabPainter.FreeNotification(Self);
       FTabPainter.RegisterChange(Self);
+      OwnerDraw := True;
+    end
+    else
+    begin
+      OwnerDraw := False;
     end;
     Invalidate;
   end;
@@ -2202,6 +2207,11 @@ begin
     begin
       FTabPainter.FreeNotification(Self);
       FTabPainter.RegisterChange(Self);
+      OwnerDraw := True;
+    end
+    else
+    begin
+      OwnerDraw := False;
     end;
     Invalidate;
   end;
