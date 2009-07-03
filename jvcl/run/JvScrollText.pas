@@ -16,6 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com]
                 Michael Freislich [mikef att korbi dott net]
+                Gianpiero Caretti [gpcaretti+delphi att gmail dott com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -56,6 +57,8 @@ type
     FFont: TFont;
     FStartY: Integer;
     FDown: Boolean;
+    FOldMouseMovePt: TPoint;
+    FOnScrollEnd: TNotifyEvent;
     function GetItems: TStrings;
     procedure SetItems(const Value: TStrings);
     procedure OnScroll(Sender: TObject);
@@ -73,8 +76,11 @@ type
     procedure TextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure TextMouseClick(Sender: TObject);
+    procedure TextMouseDblClick(Sender: TObject);
     function GetWordWrap: Boolean;
     procedure SetWordWrap(const Value: Boolean);
+    procedure DoScrollEnd;
   protected
     procedure BoundsChanged; override;
     procedure Loaded; override;
@@ -102,6 +108,16 @@ type
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnClick;
+    property OnDblClick;
+
+    // Triggered when the scroll has reached its end and is about to restart from its source
+    property OnScrollEnd: TNotifyEvent read FOnScrollEnd write FOnScrollEnd;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -145,6 +161,8 @@ begin
   FText.OnMouseDown := TextMouseDown;
   FText.OnMouseMove := TextMouseMove;
   FText.OnMouseUp := TextMouseUp;
+  FText.OnClick := TextMouseClick;
+  FText.OnDblClick := TextMouseDblClick;
 
   FFont := TFont.Create;
   FFont.Assign(FText.Font);
@@ -178,6 +196,12 @@ begin
   FFont.OnChange := nil;
   FFont.Free;
   inherited Destroy;
+end;
+
+procedure TJvScrollText.DoScrollEnd;
+begin
+  if Assigned(OnScrollEnd) then
+    OnScrollEnd(Self);
 end;
 
 procedure TJvScrollText.Loaded;
@@ -218,6 +242,11 @@ begin
   if not (csDesigning in ComponentState) then
     FScroll.OnDraw := nil;
   FDown := True;
+
+  if Assigned(OnMouseDown) then begin
+    P := Self.ScreenToClient(P);
+    OnMouseDown(Self, Button, Shift, P.X, P.Y);
+  end;
 end;
 
 procedure TJvScrollText.TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -225,19 +254,18 @@ var
   NewY: Integer;
   P: TPoint;
 begin
+  P.X := X;
+  P.Y := Y;
+  P := FText.ClientToScreen(P);
+
   if FDown then
   begin
     //if NewY>0, going up, NewY<0, going down
-    P.X := X;
-    P.Y := Y;
-    P := FText.ClientToScreen(P);
-    Y := P.Y;
-    X := P.X;
 
     if ScrollDirection in [drFromTop, drFromBottom] then
     begin
-      NewY := FStartY - Y;
-      FStartY := Y;
+      NewY := FStartY - P.Y;
+      FStartY := P.Y;
       FCurrPos := FCurrPos - NewY;
 
       if FCurrPos < -FText.Height then
@@ -250,8 +278,8 @@ begin
     end
     else
     begin
-      NewY := FStartY - X;
-      FStartY := X;
+      NewY := FStartY - P.X;
+      FStartY := P.X;
       FCurrPos := FCurrPos - NewY;
 
       if FCurrPos < -FText.Width then
@@ -263,19 +291,53 @@ begin
       FText.Left := FCurrPos;
     end;
   end;
+
+  if Assigned(OnMouseMove) then
+  begin
+    P := Self.ScreenToClient(P);
+    if (P.X <> FOldMouseMovePt.X) or (P.Y <> FOldMouseMovePt.Y) then
+    begin
+      FOldMouseMovePt := P;
+      OnMouseMove(Self, Shift, P.X, P.Y);
+    end;
+  end;
 end;
 
 procedure TJvScrollText.TextMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  P: TPoint;
 begin
   if not (csDesigning in ComponentState) then
     FScroll.OnDraw := OnScroll;
   FDown := False;
+
+  if Assigned(OnMouseUp) then begin
+    P.X := X;
+    P.Y := Y;
+    P := Self.ScreenToClient( FText.ClientToScreen(P) );
+    OnMouseUp(Self, Button, Shift, P.X, P.Y);
+  end;
+end;
+
+procedure TJvScrollText.TextMouseClick(Sender: TObject);
+begin
+  // forward the event of the inner FText to the same event of the scroller
+  if Assigned(OnClick) then
+    OnClick(Self);
+end;
+
+procedure TJvScrollText.TextMouseDblClick(Sender: TObject);
+begin
+  // forward the double click event of the inner FText to the same event of the scroller
+  if Assigned(OnDblClick) then
+    OnDblClick(Self);
 end;
 
 procedure TJvScrollText.OnScroll(Sender: TObject);
 var
   T: Integer;
+  ScrollEnd: Boolean;
 begin
   //tag=1 pause
   if FTimerTag = 1 then
@@ -312,27 +374,37 @@ begin
   //tag=2 unpause
   //FScrollDirection
 
+  ScrollEnd := False;
   case ScrollDirection of
     drFromTop:
       begin
         if FCurrPos > Height then
-          FCurrPos := -FText.Height
+        begin
+          FCurrPos := -FText.Height;
+          ScrollEnd := True;
+        end
         else
           FCurrPos := FCurrPos + T;
         FText.Top := FCurrPos;
       end;
-    drFromLeft:
+    drFromRight:
       begin
         if - FCurrPos > FText.Width then
-          FCurrPos := Width
+        begin
+          FCurrPos := Width;
+          ScrollEnd := True;
+        end
         else
           FCurrPos := FCurrPos - T;
         FText.Left := FCurrPos;
       end;
-    drFromRight:
+    drFromLeft:
       begin
         if FCurrPos > Width then
-          FCurrPos := -Width
+        begin
+          FCurrPos := -FText.Width;
+          ScrollEnd := True;
+        end
         else
           FCurrPos := FCurrPos + T;
         FText.Left := FCurrPos;
@@ -340,12 +412,20 @@ begin
     drFromBottom:
       begin
         if - FCurrPos > FText.Height then
-          FCurrPos := Height
+        begin
+          FCurrPos := Height;
+          ScrollEnd := True;
+        end
         else
           FCurrPos := FCurrPos - T;
         FText.Top := FCurrPos;
       end;
   end;
+
+  // As OnScroll is called from the draw thread's context, we
+  // must synchronize the event call
+  if ScrollEnd then
+    FScroll.Synchronize(DoScrollEnd);
 end;
 
 procedure TJvScrollText.Pause;
@@ -392,7 +472,7 @@ end;
 
 procedure TJvScrollText.CalculateText(Sender: TObject);
 var
-  I, J: Integer;
+  I, J, K: Integer;
   Ts: TStringList;
   Canvas: TCanvas;
 begin
@@ -403,10 +483,13 @@ begin
     Handle := GetDC(HWND_DESKTOP);
     Font.Assign(FText.Font);
     J := 0;
+    K := 0;
     Ts := TStringList.Create;
     Ts.Text := FText.Caption;
     for I := 0 to Ts.Count - 1 do
     try
+      if K < TextWidth(Ts[I]) then
+        K := TextWidth(Ts[I]);
       if Ts[I] <> '' then
         J := J + TextHeight(Ts[I]) * ((TextWidth(Ts[I]) div Width) + 1)
       else
@@ -416,6 +499,9 @@ begin
     if J <= 0 then
       J := Height;
     FText.Height := J;
+    if K <= 0 then
+      K := Width;
+    FText.Width := K;
     ReleaseDC(HWND_DESKTOP, Handle);
     Ts.Free;
     Free;
@@ -496,7 +582,6 @@ procedure TJvScrollText.BoundsChanged;
 begin
   if FText <> nil then
   begin
-    FText.Width := Width;
     if FText.Height < Height then
       FText.Height := Height;
   end;
@@ -532,3 +617,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
+
