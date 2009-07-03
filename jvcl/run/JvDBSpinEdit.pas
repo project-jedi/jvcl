@@ -265,6 +265,9 @@ begin
 end;
 
 procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  KeyState: TKeyboardState;
+  AnsiChars: AnsiString;
 begin
   if (Key = VK_ESCAPE) and (FDataLink.Editing) then
   begin
@@ -273,8 +276,18 @@ begin
     Key := 0;
   end;
   inherited KeyDown(Key, Shift);
+
+  // Must convert from virtual key code to character
+  GetKeyboardState(KeyState);
+  SetLength(AnsiChars, 2);
+  case ToAscii(Key, MapVirtualKey(Key, 0), KeyState, @AnsiChars[1], 0) of
+    1: SetLength(AnsiChars, 1);
+    2: ;
+    else AnsiChars := '';
+  end;
+
   if (Key = VK_DELETE) or (Key = VK_BACK) or
-    ((Key = VK_INSERT) and (ssShift in Shift)) or IsValidChar(Char(Key)) then
+    ((Key = VK_INSERT) and (ssShift in Shift)) or ((Length(AnsiChars) > 0) and IsValidChar(Char(AnsiChars[1]))) then
     FDataLink.Edit;
 end;
 
