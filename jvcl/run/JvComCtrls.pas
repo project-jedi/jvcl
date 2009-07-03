@@ -660,6 +660,7 @@ implementation
 
 uses
   SysUtils,
+  Math,
   JclStrings,
   JvThemes,
   JvConsts, JvJCLUtils;
@@ -1540,12 +1541,22 @@ begin
   Change;
 end;
 
+type
+  TCustomTabControlAccess = class(TCustomTabControl)
+  end;
+
 procedure TJvTabDefaultPainter.DrawTab(AControl: TCustomTabControl;
   Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer;
   const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
 var
   TextRect, ImageRect: TRect;
   SaveState: Integer;
+  Bmp: TBitmap;
+  DrawRect: TRect;
+  Points: array [0..2] of TPoint;
+  TextRectWidth: Integer;
+  TextRectHeight: Integer;
+
   procedure DrawDivider(X, Y, X1, Y1: Integer);
   begin
     Canvas.Pen.Color := clBtnShadow;
@@ -1615,9 +1626,76 @@ begin
   end;
   if Caption <> '' then
   begin
-//    InflateRect(TextRect, -2, -2);
-    SetBkMode(Canvas.Handle, TRANSPARENT);
-    DrawText(Canvas, Caption, Length(Caption), TextRect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    if TCustomTabControlAccess(AControl).TabPosition in [tpTop, tpBottom] then
+    begin
+      SetBkMode(Canvas.Handle, TRANSPARENT);
+      DrawText(Canvas, Caption, Length(Caption), TextRect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    end
+    else
+    begin
+      Bmp := TBitmap.Create;
+      try
+        TextRectWidth := TextRect.Right - TextRect.Left + 1;
+        TextRectHeight := TextRect.Bottom - TextRect.Top + 1;
+
+        Bmp.Transparent := True;
+        Bmp.Canvas.Font := Canvas.Font;
+        Bmp.Height := Max(TextRectWidth, TextRectHeight);
+        Bmp.Width := Bmp.Height;
+
+        DrawRect := Classes.Rect(0, 0, Bmp.Width, Bmp.Height);
+
+        DrawText(Bmp.Canvas, Caption, Length(Caption), DrawRect, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+
+        case TCustomTabControlAccess(AControl).TabPosition of
+          tpLeft:
+            begin
+              // Rotate left by 90°
+              Points[0].X := 0;
+              Points[0].Y := Bmp.Height - 1;
+              Points[1].X := 0;
+              Points[1].Y := 0;
+              Points[2].X := Bmp.Width - 1;
+              Points[2].Y := Bmp.Height - 1;
+            end;
+          tpRight:
+            begin
+              // Rotate right by 90°
+              Points[0].X := Bmp.Width - 1;
+              Points[0].Y := 0;
+              Points[1].X := Bmp.Width - 1;
+              Points[1].Y := Bmp.Height - 1;
+              Points[2].X := 0;
+              Points[2].Y := 0;
+            end;
+        end;
+
+        if TextRectWidth < TextRectHeight then
+        begin
+          Dec(Points[0].X, (Bmp.Width - TextRectWidth + 1) div 2);
+          Dec(Points[1].X, (Bmp.Width - TextRectWidth + 1) div 2);
+          Dec(Points[2].X, (Bmp.Width - TextRectWidth + 1) div 2);
+        end
+        else if TextRectWidth > TextRectHeight then
+        begin
+          Dec(Points[0].Y, (Bmp.Height - TextRectHeight + 1) div 2);
+          Dec(Points[1].Y, (Bmp.Height - TextRectHeight + 1) div 2);
+          Dec(Points[2].Y, (Bmp.Height - TextRectHeight + 1) div 2);
+        end;
+
+        // Rotate and translate to the right place
+        PlgBlt(Bmp.Canvas.Handle, Points, Bmp.Canvas.Handle, 0, 0, Bmp.Width, Bmp.Height, 0, 0, 0);
+
+        // Erase left overs
+        Bmp.Canvas.FillRect(Classes.Rect(TextRectWidth, 0, Bmp.Width + 1, Bmp.Height));
+        Bmp.Canvas.FillRect(Classes.Rect(0, TextRectHeight, Bmp.Width, Bmp.Height + 1));
+
+        // Copy to the final canvas
+        Canvas.Draw(TextRect.Left, TextRect.Top, Bmp);
+      finally
+        Bmp.Free;
+      end;
+    end;
   end;
   if Active and ShowFocus then
   begin
