@@ -165,6 +165,7 @@ type
     procedure CopyContents(iConnectionList: TJvBaseConnectionList; iClearBefore: Boolean);
     function CreateObject: TPersistent; override;
     function GetConnection(I: Longint): TJvBaseConnectionInfo;
+    procedure LoadData; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2242,6 +2243,15 @@ begin
   finally
     Connection.Free;
   end;
+end;
+
+procedure TJvBaseConnectionList.LoadData;
+var
+  i: Integer;
+begin
+  inherited LoadData;
+  for i := 0 to Items.Count - 1 do
+    Items[i] := Connection[i].UserDatabaseString;
 end;
 
 procedure TJvBaseConnectionList.SetLastConnect(const Value: TJvBaseConnectionInfo);
