@@ -96,6 +96,8 @@ type
     FException: Exception;
     FPaused: Boolean;
     FPauseSection: TCriticalSection;
+    FCurrentDuration: Cardinal;
+
     procedure HandleException;
     procedure SetPaused(const Value: Boolean);
     function GetPaused: Boolean;
@@ -159,7 +161,6 @@ procedure TJvTimerThread.Execute;
 const
   Step = 10;  // Time of a wait slot, in milliseconds
 var
-  CurrentDuration: Cardinal;
   EventTime: TJvTimerEventTime;
 
   function ThreadClosed: Boolean;
@@ -174,11 +175,11 @@ begin
     if EventTime = tetPost then
     begin
       { Wait first and then trigger the event }
-      CurrentDuration := 0;
-      while not ThreadClosed and (CurrentDuration < FInterval) do
+      FCurrentDuration := 0;
+      while not ThreadClosed and (FCurrentDuration < FInterval) do
       begin
         SleepEx(Step, False);
-        Inc(CurrentDuration, Step);
+        Inc(FCurrentDuration, Step);
       end;
     end;
 
@@ -205,11 +206,11 @@ begin
     if EventTime = tetPre then
     begin
       { Wait after the event was triggered }
-      CurrentDuration := 0;
-      while not ThreadClosed and (CurrentDuration < FInterval) do
+      FCurrentDuration := 0;
+      while not ThreadClosed and (FCurrentDuration < FInterval) do
       begin
         SleepEx(Step, False);
-        Inc(CurrentDuration, Step);
+        Inc(FCurrentDuration, Step);
       end;
     end;
 
@@ -265,6 +266,7 @@ begin
   begin
     FreeAndNil(FTimer);
     (FTimerThread as TJvTimerThread).Paused := True;
+    (FTimerThread as TJvTimerThread).FCurrentDuration := 0;
 {    if not FTimerThread.Suspended then
       FTimerThread.Suspend;}
     TJvTimerThread(FTimerThread).FInterval := FInterval;
