@@ -3347,11 +3347,11 @@ var
   n: Integer;
   CsvLine: AnsiString;
 begin
-  if FTableName = '' then
-    raise EJvCsvDataSetError.CreateRes(@RsETableNameNotSet);
-
-  if FFileDirty and FSavesChanges and (FTableName <> '') then
+  if FFileDirty and FSavesChanges then
   begin
+    if FTableName = '' then
+      raise EJvCsvDataSetError.CreateRes(@RsETableNameNotSet);
+
     // Make backup first, if enabled (>2)
     if FAutoBackupCount > 0 then
     begin
@@ -3679,11 +3679,19 @@ begin
     InternalClose; // close first!
 
   Counter := 0;
-  FOpenFileName := GetFileName; // Always use the same file name to save as you did to load!!! MARCH 2004.WP
 
   FFileDirty := False;
-  if (FTableName = '') and FLoadsFromFile then
-    JvCsvDatabaseError(RsENoTableName, RsETableNameRequired);
+  if FLoadsFromFile then
+  begin
+    if FTableName = '' then
+      JvCsvDatabaseError(RsENoTableName, RsETableNameRequired);
+
+    FOpenFileName := GetFileName; // Always use the same file name to save as you did to load!!! MARCH 2004.WP
+  end
+  else
+  begin
+    FOpenFileName := '';
+  end;
 
   InternalInitFieldDefs; // initialize FieldDef objects.
 
