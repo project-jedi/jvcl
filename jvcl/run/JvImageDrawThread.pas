@@ -48,6 +48,11 @@ type
     procedure Draw;
     procedure Execute; override;
   public
+    procedure Synchronize(AMethod: TThreadMethod); overload;
+    {$IFDEF RTL200_UP}
+    procedure Synchronize(AThreadProc: TThreadProcedure); overload;
+    {$ENDIF RTL200_UP}
+
     property Tag: Integer read FTag write FTag;
     property Delay: Cardinal read FDelay write FDelay;
     property OnDraw: TNotifyEvent read FOnDraw write FOnDraw;
@@ -85,6 +90,18 @@ begin
     // ignore exception
   end;
 end;
+
+procedure TJvImageDrawThread.Synchronize(AMethod: TThreadMethod);
+begin
+  inherited Synchronize(AMethod);
+end;
+
+{$IFDEF RTL200_UP}
+procedure TJvImageDrawThread.Synchronize(AThreadProc: TThreadProcedure);
+begin
+  inherited Synchronize(AThreadProc);
+end;
+{$ENDIF RTL200_UP}
 
 {$IFDEF UNITVERSIONING}
 initialization
