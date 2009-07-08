@@ -235,6 +235,10 @@ type
 
     function IsValid: Boolean; virtual; // fires OnIsValid if assigned
 
+    // When the DecimalSeparator variable has changed, one should call
+    // RecalcCheckChars to ensure that it contains the new value (Mantis 4682)
+    procedure RecalcCheckChars;
+
     procedure Assign(Source: TPersistent); override;
     property AsInteger: Int64 read GetAsInteger write SetAsInteger;
     property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
@@ -585,9 +589,6 @@ begin
 end;
 
 procedure TJvCustomValidateEdit.SetDisplayFormat(NewValue: TJvValidateEditDisplayFormat);
-const
-  Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  Numbers = '0123456789';
 var
   OldFormat: TJvValidateEditDisplayFormat;
 begin
@@ -595,83 +596,28 @@ begin
   begin
     OldFormat := FDisplayFormat;
     FDisplayFormat := NewValue;
+
+    RecalcCheckChars;
+
     case FDisplayFormat of
-      dfAlphabetic:
-        begin
-          FCheckChars := Alphabet;
-          if FAutoAlignment then
-            Alignment := taLeftJustify;
-        end;
-      dfAlphaNumeric:
-        begin
-          FCheckChars := Alphabet + Numbers;
-          if FAutoAlignment then
-            Alignment := taLeftJustify;
-        end;
-      dfIdentifier:
-        begin
-          FCheckChars := Alphabet + Numbers + '_';
-          if FAutoAlignment then
-            Alignment := taLeftJustify;
-        end;
-      dfBinary:
-        begin
-          FCheckChars := '01';
-          if FAutoAlignment then
-            Alignment := taRightJustify;
-        end;
-      dfCheckChars, dfNonCheckChars:
+      dfAlphabetic, dfAlphaNumeric, dfIdentifier,
+      dfCheckChars, dfNonCheckChars, dfCustom, dfNone:
         if FAutoAlignment then
           Alignment := taLeftJustify;
-      dfCustom, dfNone:
-        begin
-          if (FDisplayFormat = dfCustom) or not (csLoading in ComponentState) then
-            FCheckChars := '';
-          if FAutoAlignment then
-            Alignment := taLeftJustify;
-        end;
       dfCurrency:
         begin
-          FCheckChars := Numbers + DecimalSeparator;
           if FAutoAlignment then
             Alignment := taRightJustify;
           if not (csLoading in ComponentState) then
             if FDecimalPlaces = 0 then
               FDecimalPlaces := CurrencyDecimals;
         end;
-      dfFloat, dfFloatGeneral, dfPercent, dfDecimal:
-        begin
-          FCheckChars := Numbers + DecimalSeparator;
-          if FAutoAlignment then
-            Alignment := taRightJustify;
-        end;
-      dfHex:
-        begin
-          FCheckChars := Numbers + 'ABCDEFabcdef';
-          if FAutoAlignment then
-            Alignment := taRightJustify;
-        end;
-      dfInteger:
-        begin
-          FCheckChars := Numbers;
-          if FAutoAlignment then
-            Alignment := taRightJustify;
-        end;
-      dfOctal:
-        begin
-          FCheckChars := '01234567';
-          if FAutoAlignment then
-            Alignment := taRightJustify;
-        end;
-      dfScientific:
-        begin
-          FCheckChars := Numbers + 'Ee' + DecimalSeparator;
-          if FAutoAlignment then
-            Alignment := taRightJustify;
-        end;
+      dfBinary, dfFloat, dfFloatGeneral, dfPercent, dfDecimal, dfHex,
+      dfInteger, dfOctal, dfScientific:
+        if FAutoAlignment then
+          Alignment := taRightJustify;
       dfYear:
         begin
-          FCheckChars := Numbers;
           if FAutoAlignment then
             Alignment := taRightJustify;
           MaxLength := 4;
@@ -937,6 +883,37 @@ begin
     end;
   end;
   SetLength(Result, L);
+end;
+
+procedure TJvCustomValidateEdit.RecalcCheckChars;
+const
+  Alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  Numbers = '0123456789';
+begin
+  case FDisplayFormat of
+    dfAlphabetic:
+      FCheckChars := Alphabet;
+    dfAlphaNumeric:
+      FCheckChars := Alphabet + Numbers;
+    dfIdentifier:
+      FCheckChars := Alphabet + Numbers + '_';
+    dfBinary:
+      FCheckChars := '01';
+    dfCustom, dfNone:
+      if (FDisplayFormat = dfCustom) or not (csLoading in ComponentState) then
+        FCheckChars := '';
+    dfCurrency,
+    dfFloat, dfFloatGeneral, dfPercent, dfDecimal:
+      FCheckChars := Numbers + DecimalSeparator;
+    dfHex:
+      FCheckChars := Numbers + 'ABCDEFabcdef';
+    dfInteger, dfYear:
+      FCheckChars := Numbers;
+    dfOctal:
+      FCheckChars := '01234567';
+    dfScientific:
+      FCheckChars := Numbers + 'Ee' + DecimalSeparator;
+  end;
 end;
 
 function TJvCustomValidateEdit.IsValidChar(const S: string;
