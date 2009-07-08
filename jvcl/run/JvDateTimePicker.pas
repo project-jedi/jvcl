@@ -322,6 +322,9 @@ begin
             DateTimeToSystemTime(Dt, St);
           end;
         end;
+      DTN_CLOSEUP:
+        begin
+        end;
       NM_SETFOCUS:
         begin
           FKeepNullText := NullText;
