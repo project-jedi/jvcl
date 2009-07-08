@@ -350,6 +350,14 @@ type
     function DoReadString(const Path: string; const Default: string): string; virtual; abstract;
     { Stores an string value. }
     procedure DoWriteString(const Path: string; const Value: string); virtual; abstract;
+
+    { Retrieves the specified widestring value. If the value is not found, the Default will be
+      returned. If the value is not a string (or can't be converted to a string an EConvertError
+      exception will be raised. }
+    function DoReadWideString(const Path: string; const Default: Widestring): Widestring; virtual;
+    { Stores an widestring value. }
+    procedure DoWriteWideString(const Path: string; const Value: Widestring); virtual;
+
     { Retrieves the specified value into a buffer. The result holds the number of bytes actually
       retrieved. }
     function DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; virtual; abstract;
@@ -1744,9 +1752,25 @@ begin
   Result := DoReadFloat(Path, Default);
 end;
 
+function TJvCustomAppStorage.DoReadWideString(const Path: string;
+  const Default: Widestring): Widestring;
+begin
+  {$IFDEF COMPILER12_UP}
+  Result := UTF8ToWideString(RawByteString(ReadString(Path, string(UTF8Encode(Default)))));
+  {$ELSE}
+  Result := UTF8Decode(ReadString(Path, UTF8Encode(Default)));
+  {$ENDIF COMPILER12_UP}
+end;
+
 procedure TJvCustomAppStorage.DoWriteDateTime(const Path: string; Value: TDateTime);
 begin
   DoWriteFloat(Path, Value);
+end;
+
+procedure TJvCustomAppStorage.DoWriteWideString(const Path: string;
+  const Value: Widestring);
+begin
+  DoWriteString(Path,string(UTF8Encode(Value)));
 end;
 
 procedure TJvCustomAppStorage.DoError(const msg: string);
@@ -3223,17 +3247,13 @@ end;
 function TJvCustomAppStorage.ReadWideString(const Path: string;
   const Default: WideString = ''): WideString;
 begin
-  {$IFDEF COMPILER12_UP}
-  Result := UTF8ToWideString(RawByteString(ReadString(Path, string(UTF8Encode(Default)))));
-  {$ELSE}
-  Result := UTF8Decode(ReadString(Path, UTF8Encode(Default)));
-  {$ENDIF COMPILER12_UP}
+  Result := DoReadWideString(Path,Default);
 end;
 
 procedure TJvCustomAppStorage.WriteWideString(const Path: string;
   const Value: WideString);
 begin
-  WriteString(Path, string(UTF8Encode(Value)));
+  DoWriteWideString(Path,Value);
 end;
 {$ENDIF COMPILER6_UP}
 
