@@ -3055,8 +3055,9 @@ begin
   // Need to indicate ClearBeforeSelect if the item is about to change
   // or we would get rendering glitches because of an inconsistent
   // selection list. (Mantis 3250)
-  // Mantis 4699: Further limit this to when HideSelection is set to True. 
-  if HideSelection then
+  // Mantis 4699: Further limit this to when HideSelection is set to True.
+  // Mantis 4808: Well, it seems that fix for 4699 is doing more harm than good
+//  if HideSelection then
   begin
     case Msg.NMHdr.code of
       TVN_SELCHANGEDA, TVN_SELCHANGEDW:
