@@ -719,7 +719,10 @@ end;
 procedure TJvCustomCheckedComboBox.Change;
 begin
   if not FIgnoreChange then
+  begin
     DoChange;
+    FListBox.Refresh;
+  end;
 end;
 
 procedure TJvCustomCheckedComboBox.DoEnter;
