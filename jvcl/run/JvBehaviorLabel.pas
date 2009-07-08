@@ -311,9 +311,11 @@ type
     procedure SetOptions(const Value: TJvLabelBehavior);
     procedure SetUseEffectText(const Value: Boolean);
   protected
+    procedure Loaded; override;
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
+
     function GetLabelText: string; override;
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
@@ -323,6 +325,7 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
+
     // do not make these published
     property EffectText: TCaption read FEffectText write FEffectText;
     property UseEffectText: Boolean read FUseEffectText write SetUseEffectText;
@@ -590,6 +593,17 @@ begin
     UpdateDesigner;
   end;
   Result := FOptions;
+end;
+
+procedure TJvCustomBehaviorLabel.Loaded;
+begin
+  inherited Loaded;
+
+  // Start method usually exits immediately when the component is loading.
+  // As a result, when the component is loaded, we must start the behavior
+  // or the user won't see anything (Mantis 4809)
+  if BehaviorOptions.Active then
+    BehaviorOptions.Start;
 end;
 
 procedure TJvCustomBehaviorLabel.Resize;
