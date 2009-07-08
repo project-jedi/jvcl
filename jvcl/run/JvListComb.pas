@@ -176,6 +176,7 @@ type
     FDroppedWidth: Integer;
     FFullWidthItemDraw: Boolean;
     FCanvas: TControlCanvas;
+    FSorted: Boolean;
     function GetCanvas: TCanvas;
     function GetDroppedWidth: Integer;
     procedure SetDroppedWidth(Value: Integer);
@@ -190,6 +191,8 @@ type
     procedure SetFullWidthItemDraw(const Value: Boolean);
     { IJvResetItemHeight }
     procedure ResetItemHeight;
+    function GetSorted: Boolean;
+    procedure SetSorted(const Value: Boolean);
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -264,7 +267,7 @@ type
     property Provider;
     property ReadOnly;
     property ShowHint;
-    property Sorted;
+    property Sorted: Boolean read GetSorted write SetSorted default False;
     property Tag;
     property TabOrder;
     property TabStop;
@@ -882,7 +885,6 @@ begin
 end;
 
 
-
 procedure TJvImageComboBox.CreateWnd;
 begin
   inherited CreateWnd;
@@ -1191,6 +1193,22 @@ begin
   FItems.Update(nil);
 end;
 
+function NamesSorter(Item1, Item2: TCollectionItem): Integer;
+begin
+  Result := CompareStr(Item1.DisplayName, Item2.DisplayName);
+end;
+
+procedure TJvImageComboBox.SetSorted(const Value: Boolean);
+begin
+  if FSorted <> Value then
+  begin
+    FSorted := Value;
+
+    if FSorted then
+      FItems.Sort(NamesSorter);
+  end;
+end;
+
 procedure TJvImageComboBox.SetIndentSelected(const Value: Boolean);
 begin
   if FIndentSelected <> Value then
@@ -1209,6 +1227,11 @@ begin
     Result := FImageList.Width
   else
     Result := FImageWidth;
+end;
+
+function TJvImageComboBox.GetSorted: Boolean;
+begin
+  Result := FSorted;
 end;
 
 function TJvImageComboBox.GetImageHeight(Index: Integer): Integer;
