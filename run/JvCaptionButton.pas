@@ -147,6 +147,7 @@ type
     {tool tip specific}
     FToolTipHandle: THandle;
     {tool tip specific end}
+    FCurrentWindowState: TWindowState;
 
     {$IFDEF JVCLThemesEnabled}
     FCaptionActive: Boolean;
@@ -1217,6 +1218,8 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
   FParentShowHint := True;
 
+  FCurrentWindowState := TCustomForm(AOwner).WindowState;
+
   {$IFDEF JVCLThemesEnabled}
   GlobalXPData.AddClient;
   {$ENDIF JVCLThemesEnabled}
@@ -1368,6 +1371,7 @@ var
   Style: DWORD;
   ExStyle: DWORD;
   FrameSize: TSize;
+  Placement: WindowPlacement;
 begin
   if Wnd = 0 then
     Exit;
@@ -1379,13 +1383,17 @@ begin
   if not FHasCaption then
     Exit;
 
+  Placement.length := SizeOf(WindowPlacement);
+  GetWindowPlacement(Wnd, @Placement);
   ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
   FHasSmallCaption := ExStyle and WS_EX_TOOLWINDOW = WS_EX_TOOLWINDOW;
+  if (not IsThemed) and (Placement.showCmd = SW_SHOWMINIMIZED) then
+    FHasSmallCaption := False;
   {$IFDEF JVCLThemesEnabled}
   FCaptionActive := (GetActiveWindow = Wnd) and IsForegroundTask;
   {$ENDIF JVCLThemesEnabled}
 
-  if Style and WS_THICKFRAME = WS_THICKFRAME then
+  if (Style and WS_THICKFRAME = WS_THICKFRAME) and (Placement.showCmd <> SW_SHOWMINIMIZED) then
   begin
     FrameSize.cx := GetSystemMetrics(SM_CXSIZEFRAME);
     FrameSize.cy := GetSystemMetrics(SM_CYSIZEFRAME);
@@ -1412,10 +1420,17 @@ begin
   begin
     if IsVistaOrNewer then
     begin
-      // This is not exactly correct but WM_GETTITLEBARINFOEX returns the coordinates
-      // for the "Glass" style. But because we paint into the NC area, out window uses
-      // the "Basic" style.
-      FDefaultButtonWidth := GetSystemMetrics(SM_CXSIZE) - 4;
+      if FHasSmallCaption then
+      begin
+        FDefaultButtonWidth := GetSystemMetrics(SM_CXSMSIZE) - 4
+      end
+      else
+      begin
+        // This is not exactly correct but WM_GETTITLEBARINFOEX returns the coordinates
+        // for the "Glass" style. But because we paint into the NC area, out window uses
+        // the "Basic" style.
+        FDefaultButtonWidth := GetSystemMetrics(SM_CXSIZE) - 4;
+      end;
 
       // Adjust position
       FDefaultButtonTop := FDefaultButtonTop - 2;
@@ -2719,6 +2734,16 @@ begin
       end;
     WM_NOTIFY:
       Result := HandleNotify(TWMNotify(Msg));
+    WM_SIZE:
+      begin
+        if FCurrentWindowState <> ParentForm.WindowState then
+        begin
+          FNeedRecalculate := True;
+          FCurrentWindowState := ParentForm.WindowState;
+          RedrawWindow(ParentFormHandle, nil, 0, RDW_FRAME or RDW_INVALIDATE);
+        end;
+        Result := False;
+      end;
   else
     Result := False;
   end;
