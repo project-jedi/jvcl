@@ -241,7 +241,7 @@ begin
   FSyncEvent := True;
   FThreaded := True;
   FThreadPriority := tpNormal;
-  FTimerThread := TJvTimerThread.Create(Self, False);
+  FTimerThread := nil;
   FTimer := nil;
 end;
 
@@ -251,43 +251,54 @@ begin
   FEnabled := False;
   FOnTimer := nil;
   {TTimerThread(FTimerThread).FOwner := nil;}
-  FTimerThread.Terminate;
-  while FTimerThread.Suspended do
-    FTimerThread.Resume;
-  (FTimerThread as TJvTimerThread).Paused := False;
-  FTimerThread.Free;
+  if Assigned(FTimerThread) then
+  begin
+    FTimerThread.Terminate;
+    while FTimerThread.Suspended do
+      FTimerThread.Resume;
+    (FTimerThread as TJvTimerThread).Paused := False;
+    FTimerThread.Free;
+  end;
   FTimer.Free;
   inherited Destroy;
 end;
 
 procedure TJvTimer.UpdateTimer;
 begin
-  if FThreaded then
+  if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
   begin
-    FreeAndNil(FTimer);
-    (FTimerThread as TJvTimerThread).Paused := True;
-    (FTimerThread as TJvTimerThread).FCurrentDuration := 0;
-{    if not FTimerThread.Suspended then
-      FTimerThread.Suspend;}
-    TJvTimerThread(FTimerThread).FInterval := FInterval;
-    if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
+    if FThreaded then
     begin
+      FreeAndNil(FTimer);
+
+      if not Assigned(FTimerThread) then
+        FTimerThread := TJvTimerThread.Create(Self, False);
+
+      TJvTimerThread(FTimerThread).Paused := True;
+      TJvTimerThread(FTimerThread).FCurrentDuration := 0;
+      TJvTimerThread(FTimerThread).FInterval := FInterval;
+
       FTimerThread.Priority := FThreadPriority;
 
-      (FTimerThread as TJvTimerThread).Paused := False;
-(*      while FTimerThread.Suspended do
-        FTimerThread.Resume;*)
+      TJvTimerThread(FTimerThread).Paused := False;
+      while FTimerThread.Suspended do
+        FTimerThread.Resume;
+    end
+    else
+    begin
+      FreeAndNil(FTimerThread);
+
+      if not Assigned(FTimer) then
+        FTimer := TTimer.Create(Self);
+      FTimer.Interval := FInterval;
+      FTimer.OnTimer := FOnTimer;
+      FTimer.Enabled := True;
     end;
   end
   else
   begin
-    if not FTimerThread.Suspended then
-      FTimerThread.Suspend;
-    if not Assigned(FTimer) then
-      FTimer := TTimer.Create(Self);
-    FTimer.Interval := FInterval;
-    FTimer.OnTimer := FOnTimer;
-    FTimer.Enabled := (FInterval <> 0) and FEnabled and Assigned(FOnTimer);
+    FreeAndNil(FTimerThread);
+    FreeAndNil(FTimer);
   end;
 end;
 
