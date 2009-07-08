@@ -962,12 +962,14 @@ end;
 
 procedure TJvDBMaskEdit.UpdateData(Sender: TObject);
 var
+  OrgDefaultMask: Boolean;
   OrgMask: string;
 begin
   ValidateEdit;
   if IsMasked then
   begin
-    OrgMask := EditMask;
+    OrgDefaultMask := FDefaultMask;
+    OrgMask := inherited EditMask;
     try
       EditMask := '';
       if Text = '' then
@@ -976,6 +978,7 @@ begin
         Exit;
       end;
     finally
+      FDefaultMask := OrgDefaultMask;
       EditMask := OrgMask;
     end;
   end;
