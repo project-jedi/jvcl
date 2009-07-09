@@ -70,7 +70,6 @@ type
     procedure SetScrollLength(Value: TJvScrollAmount);
     procedure SetScrollDirection(Value: TJvContentScrollDirection);
     procedure SetLoopCount(Value: Integer);
-    // procedure SetScrollStart(const Value: Integer);
   protected
     procedure Paint; override;
     procedure DoBeforeScroll; dynamic;
@@ -86,7 +85,6 @@ type
     property ScrollIntervall: TJvScrollAmount read FScrollIntervall write SetScrollIntervall default 50;
     property ScrollLength: TJvScrollAmount read FScrollLength write SetScrollLength default 250;
     property ScrollDirection: TJvContentScrollDirection read FScrollDirection write SetScrollDirection default sdUp;
-    // property ScrollStart: Integer read FScrollStart write SetScrollStart;
     {$IFDEF MSWINDOWS}
     property MediaFile: TFileName read FMediaFile write SetMediaFile;
     property LoopMedia: Boolean read FLoopMedia write SetLoopMedia default True;
@@ -190,8 +188,8 @@ var
 begin
   if not Assigned(FTimer) then
     FTimer := TTimer.Create(nil);
-  // FPosition := -Abs(FScrollStart);
-  // ScrollBy(0,FScrollStart);
+
+  FPosition := 0;
   FTimer.Enabled := False;
   FTimer.OnTimer := DoTimer;
   FTimer.Interval := ScrollIntervall;
@@ -274,15 +272,15 @@ begin
     begin
       if FPosition >= FScrollLength then
       begin
-        I := FPosition + FScrollLength;
-        FPosition := -FScrollLength;
+        I := FScrollLength + Height;
+        FPosition := -Height;
         ScrollBy(0, I);
       end;
       I := -Amount;
     end
     else
     begin
-      if FPosition >= FScrollLength then
+      if FPosition >= Height then
       begin
         I := -FPosition - FScrollLength;
         FPosition := -FScrollLength;
@@ -340,8 +338,11 @@ end;
 
 procedure TJvContentScroller.SetScrollDirection(Value: TJvContentScrollDirection);
 begin
-  if (FScrollDirection <> Value) and not FActive then
+  if (FScrollDirection <> Value) then
+  begin
+    FPosition := -FPosition;
     FScrollDirection := Value;
+  end;
 end;
 
 procedure TJvContentScroller.SetLoopCount(Value: Integer);
@@ -360,15 +361,6 @@ begin
   inherited CreateWnd;
   Caption := '';
 end;
-
-
-{
-procedure TJvContentScroller.SetScrollStart(const Value: Integer);
-begin
-  if FScrollStart <> Value then
-    FScrollStart := Value;
-end;
-}
 
 procedure TJvContentScroller.Paint;
 begin
