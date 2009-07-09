@@ -297,8 +297,6 @@ const
   DefaultCaseSensitivity = True;
   {$ENDIF UNIX}
 
-{ GetTempDir returns Windows temporary folder name }
-function GetTempDir: string;
 { GenTempFileName returns temporary file name on
   drive, there FileName is placed }
 function GenTempFileName(FileName: string): string;
@@ -6791,7 +6789,7 @@ var
   STempDir: TFileName;
   Res: Integer;
 begin
-  TempDir := GetTempDir;
+  TempDir := PathGetTempPath;
   if FileName <> '' then
   begin
     if Length(FileName) < 4 then
@@ -6833,26 +6831,6 @@ function GenTempFileNameExt(FileName: string; const FileExt: string): string;
 begin
   Result := ChangeFileExt(GenTempFileName(FileName), FileExt);
 end;
-
-function GetTempDir: string;
-{$IFDEF CLR}
-begin
-  Result := Path.GetTempPath;
-end;
-{$ELSE}
-{$IFDEF MSWINDOWS}
-begin
-  Result := PathGetTempPath;
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF UNIX}
-begin
-  Result := ExtractFileDir(GetTempFileName(''));
-  if Result = '' then
-    Result := '/tmp'; // hard coded
-end;
-{$ENDIF UNIX}
-{$ENDIF CLR}
 
 function ClearDir(const Dir: string): Boolean;
 var

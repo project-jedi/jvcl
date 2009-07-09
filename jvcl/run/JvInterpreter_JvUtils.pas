@@ -619,13 +619,6 @@ begin
   Value := DefStr(Args.Values[0], Args.Values[1]);
 end;
 
-{ function GetTempDir: string; }
-
-procedure JvInterpreter_GetTempDir(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := GetTempDir;
-end;
-
 { function GenTempFileName(FileName: string): string; }
 
 procedure JvInterpreter_GenTempFileName(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1036,7 +1029,6 @@ begin
     AddFunction(cJvStrUtil, 'HasAnyChar', JvInterpreter_HasAnyChar, 2, [varString, varString], varEmpty);
     AddFunction(cJvStrUtil, 'CountOfChar', JvInterpreter_CountOfChar, 2, [varEmpty, varString], varEmpty);
     AddFunction(cJvStrUtil, 'DefStr', JvInterpreter_DefStr, 2, [varString, varString], varEmpty);
-    AddFunction(cJvUtils, 'GetTempDir', JvInterpreter_GetTempDir, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'GenTempFileName', JvInterpreter_GenTempFileName, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'GenTempFileNameExt', JvInterpreter_GenTempFileNameExt, 2, [varString, varString], varEmpty);
     AddFunction(cJvUtils, 'ClearDir', JvInterpreter_ClearDir, 1, [varString], varEmpty);
