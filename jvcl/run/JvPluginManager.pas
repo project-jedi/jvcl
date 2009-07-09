@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -151,7 +151,8 @@ type
     procedure GetLoadedPlugins(PlugInList: TStrings);
     property Plugins[Index: Integer]: TJvPlugIn read GetPlugin;
     property PluginCount: Integer read GetPluginCount;
-    procedure SendMessage(PluginMessage: Longint; PluginParams: string);
+    procedure SendMessage(PluginMessage: Longint; PluginParams: string); deprecated;
+    procedure BroadcastMessage(PluginMessage: Longint; PluginParams: string);
     function AddCustomPlugin(PlugIn: TJvPlugIn; const FileName: string = ''): Boolean;
   published
     property PluginFolder: string read FPluginFolder write FPluginFolder;
@@ -185,6 +186,15 @@ uses
 const
   C_REGISTER_PLUGIN = 'RegisterPlugin';
   C_Extensions: array [plgDLL..plgCustom] of PChar = ('dll', 'bpl','xxx');
+
+procedure TJvPluginManager.BroadcastMessage(PluginMessage: Integer;
+  PluginParams: string);
+var
+  I: Integer;
+begin
+  for I := 0 to FPluginInfos.Count - 1 do
+    Plugins[I].SendPluginMessage(PluginMessage, PluginParams);
+end;
 
 constructor TJvPluginManager.Create(AOwner: TComponent);
 begin
@@ -473,11 +483,8 @@ begin
 end;
 
 procedure TJvPluginManager.SendMessage(PluginMessage: Longint; PluginParams: string);
-var
-  I: Integer;
 begin
-  for I := 0 to FPluginInfos.Count - 1 do
-    Plugins[I].SendPluginMessage(PluginMessage, PluginParams);
+  BroadcastMessage(PluginMessage, PluginParams);
 end;
 
 procedure TJvPluginManager.UnloadLibrary(Kind: TPluginKind; LibHandle: Integer);
