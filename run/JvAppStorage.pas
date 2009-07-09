@@ -3710,7 +3710,7 @@ begin
       {$ENDIF MSWINDOWS}
       {$IFDEF UNIX}
       flTemp:
-        FFullFileName := PathAddSeparator(GetTempDir) + NameOnly;
+        FFullFileName := PathAddSeparator(PathGetTempPath) + NameOnly;
       flUserFolder:
         FFullFileName := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
       {$ENDIF UNIX}
