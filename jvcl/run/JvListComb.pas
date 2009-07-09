@@ -157,8 +157,7 @@ type
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
 
-  TJvImageComboBoxBase = TJvCustomComboBox;
-  TJvImageComboBox = class(TJvImageComboBoxBase, IUnknown, IJvResetItemHeight)
+  TJvImageComboBox = class(TJvCustomComboBox, IUnknown, IJvResetItemHeight)
   private
     FItems: TJvImageItems;
     FImageList: TCustomImageList;
