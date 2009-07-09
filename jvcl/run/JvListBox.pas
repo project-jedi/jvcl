@@ -55,10 +55,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  System.Reflection,
-  Types,
-  {$ENDIF CLR}
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
   JvItemsSearchs, JvDataProvider, JvDataProviderIntf, JvExStdCtrls;
 
@@ -162,10 +158,8 @@ type
     FBackground: TJvListBoxBackground;
     FLeftPosition: Integer;
 
-    {$IFNDEF CLR}
     FConsumerSvc: TJvDataConsumer;
     FConsumerStrings: TJvConsumerStrings;
-    {$ENDIF !CLR}
     FProviderIsActive: Boolean;
     FProviderToggle: Boolean;
     FMoving: Boolean;
@@ -206,21 +200,17 @@ type
     procedure BeginRedraw;
     procedure EndRedraw;
 
-    {$IFNDEF CLR}
     procedure SetConsumerService(Value: TJvDataConsumer);
     procedure ConsumerServiceChanging(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer;
       SubSvc: TJvDataConsumerAggregatedObject);
-    {$ENDIF !CLR}
     function IsProviderSelected: Boolean;
     function IsProviderToggle: Boolean;
     procedure DeselectProvider;
     procedure UpdateItemCount;
-    {$IFNDEF CLR}
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
     property ConsumerStrings: TJvConsumerStrings read FConsumerStrings;
-    {$ENDIF !CLR}
     procedure LBFindString(var Msg: TMessage); message LB_FINDSTRING;
     procedure LBFindStringExact(var Msg: TMessage); message LB_FINDSTRINGEXACT;
     procedure LBSelectString(var Msg: TMessage); message LB_SELECTSTRING;
@@ -242,10 +232,8 @@ type
     procedure DoBackgroundChange(Sender: TObject);
 
     procedure Loaded; override;
-    {$IFNDEF CLR}
     procedure DrawProviderItem(Canvas: TCanvas; Rect: TRect; Index: Integer;
       State: TOwnerDrawState);
-    {$ENDIF !CLR}
     procedure DoGetText(Index: Integer; var AText: string); virtual;
 
     property LimitToClientWidth: Boolean read GetLimitToClientWidth;
@@ -262,19 +250,6 @@ type
     property OnAddString: TJvListboxChange read FOnAddString write FOnAddString;
     property OnVerticalScroll: TJvScrollEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TJvScrollEvent read FOnHorizontalScroll write FOnHorizontalScroll;
-    {$IFDEF CLR}
-    // access protected members across assembly borders
-    function DoGetData(const Index: Integer): string;
-    function DoGetDataObject(const Index: Integer): TObject;
-    function GetItemData(Index: Integer): TObject; override;
-    function InternalGetItemData(Index: Integer): TObject; override;
-    procedure InternalSetItemData(Index: Integer; AData: TObject); override;
-    procedure SetItemData(Index: Integer; AData: TObject); override;
-    procedure ResetContent; override;
-    procedure DeleteString(Index: Integer); override;
-    function DoFindData(const Data: String): Integer;
-    property Style;
-    {$ENDIF CLR}
     property Moving: Boolean read FMoving write FMoving;
 
     property DragIndex: Integer read FDragIndex;
@@ -289,9 +264,7 @@ type
     function ItemRect(Index: Integer): TRect;
     function ItemsShowing: TStrings; virtual;
 
-    {$IFNDEF CLR}
     procedure MeasureProviderItem(Index, WidthAvail: Integer; var ASize: TSize);
-    {$ENDIF !CLR}
     procedure MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 
     procedure DefaultDrawItem(Index: Integer; ARect: TRect;
@@ -372,9 +345,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    {$IFNDEF CLR}
     property Provider;
-    {$ENDIF !CLR}
     property ScrollBars;
     property ShowHint;
     property Sorted;
@@ -480,12 +451,8 @@ begin
     SetLength(Result, Len);
     if Len <> 0 then
     begin
-      {$IFDEF CLR}
-      SendGetTextMessage(ListBox.Handle, LB_GETTEXT, Index, Result, Len);
-      {$ELSE}
       Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, Longint(PChar(Result)));
       SetLength(Result, Len);
-      {$ENDIF CLR}
     end;
   end;
 end;
@@ -523,11 +490,7 @@ end;
 procedure TJvListBoxStrings.Put(Index: Integer; const S: string);
 var
   I: Integer;
-  {$IFDEF CLR}
-  TempData: TObject;
-  {$ELSE}
   TempData: Longint;
-  {$ENDIF CLR}
 begin
   if UseInternal then
     InternalList[Index] := S
@@ -537,7 +500,7 @@ begin
     I := ListBox.ItemIndex;
     TempData := ListBox.InternalGetItemData(Index);
     // Set the Item to 0 in case it is an object that gets freed during Delete
-    ListBox.InternalSetItemData(Index, {$IFDEF CLR} nil {$ELSE} 0 {$ENDIF});
+    ListBox.InternalSetItemData(Index, 0);
     Delete(Index);
     InsertObject(Index, S, nil);
     ListBox.InternalSetItemData(Index, TempData);
@@ -554,11 +517,7 @@ begin
     if (Index <> -1) {$IFDEF COMPILER6_UP} and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]) {$ENDIF} then
     begin
       ListBox.DeselectProvider;
-      {$IFDEF CLR}
-      ListBox.SetItemData(Index, AObject);
-      {$ELSE}
       ListBox.SetItemData(Index, Longint(AObject));
-      {$ENDIF CLR}
     end;
   end;
 end;
@@ -610,15 +569,9 @@ begin
       Exit;
     {$ENDIF COMPILER6_UP}
     ListBox.DeselectProvider;
-    {$IFDEF CLR}
-    Result := SendTextMessage(ListBox.Handle, LB_ADDSTRING, 0, S);
-    if Result < 0 then
-      raise EOutOfResources.Create(SInsertLineError);
-    {$ELSE}
     Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
     if Result < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
-    {$ENDIF CLR}
   end;
 end;
 
@@ -656,11 +609,7 @@ begin
     Result := ListBox.DoFindData(S)
   else
   {$ENDIF COMPILER6_UP}
-    {$IFDEF CLR}
-    Result := SendTextMessage(ListBox.Handle, LB_FINDSTRINGEXACT, -1, S);
-    {$ELSE}
     Result := SendMessage(ListBox.Handle, LB_FINDSTRINGEXACT, -1, Longint(PChar(S)));
-    {$ENDIF CLR}
 end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
@@ -674,24 +623,15 @@ begin
     if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
       Exit;
     {$ENDIF COMPILER6_UP}
-    {$IFDEF CLR}
-    if SendTextMessage(ListBox.Handle, LB_INSERTSTRING, Index, S) < 0 then
-      raise EOutOfResources.Create(SInsertLineError);
-    {$ELSE}
     if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
-    {$ENDIF CLR}
   end;
 end;
 
 procedure TJvListBoxStrings.Move(CurIndex, NewIndex: Integer);
 var
   TempString: string;
-  {$IFDEF CLR}
-  TempData: TObject;
-  {$ELSE}
   TempData: Longint;
-  {$ENDIF CLR}
 begin
   if (csLoading in ListBox.ComponentState) and UseInternal then
     InternalList.Move(CurIndex, NewIndex)
@@ -708,7 +648,7 @@ begin
       begin
         TempString := Get(CurIndex);
         TempData := ListBox.InternalGetItemData(CurIndex);
-        ListBox.InternalSetItemData(CurIndex, {$IFDEF CLR} nil {$ELSE} 0 {$ENDIF});
+        ListBox.InternalSetItemData(CurIndex, 0);
         Delete(CurIndex);
         Insert(NewIndex, TempString);
         ListBox.InternalSetItemData(NewIndex, TempData);
@@ -725,10 +665,8 @@ end;
 procedure TJvListBoxStrings.MakeListInternal;
 var
   Cnt: Integer;
-  {$IFNDEF CLR}
   Text: array [0..4095] of Char;
   Len: Integer;
-  {$ENDIF !CLR}
   S: string;
   Obj: TObject;
 begin
@@ -742,14 +680,9 @@ begin
       Cnt := 0;
     while Cnt > 0 do
     begin
-      {$IFDEF CLR}
-      SendGetTextMessage(ListBox.Handle, LB_GETTEXT, 0, S, 4096);
-      Obj := ListBox.GetItemData(0);
-      {$ELSE}
       Len := SendMessage(ListBox.Handle, LB_GETTEXT, 0, Longint(@Text));
       SetString(S, Text, Len);
       Obj := TObject(SendMessage(ListBox.Handle, LB_GETITEMDATA, 0, 0));
-      {$ENDIF CLR}
       SendMessage(ListBox.Handle, LB_DELETESTRING, 0, 0);
       InternalList.AddObject(S, Obj);
       Dec(Cnt);
@@ -765,9 +698,7 @@ procedure TJvListBoxStrings.ActivateInternal;
 var
   S: string;
   Obj: TObject;
-  {$IFNDEF CLR}
   Index: Integer;
-  {$ENDIF !CLR}
 begin
   SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
   try
@@ -778,14 +709,10 @@ begin
       begin
         S := InternalList[0];
         Obj := InternalList.Objects[0];
-        {$IFDEF CLR}
-        ListBox.AddItem(S, Obj);
-        {$ELSE}
         Index := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
         if Index < 0 then
           raise EOutOfResources.CreateRes(@SInsertLineError);
         SendMessage(ListBox.Handle, LB_SETITEMDATA, Index, Longint(Obj));
-        {$ENDIF CLR}
         InternalList.Delete(0);
       end;
     finally
@@ -801,17 +728,14 @@ end;
 //=== { TJvCustomListBox } ===================================================
 
 constructor TJvCustomListBox.Create(AOwner: TComponent);
-{$IFNDEF CLR}
 var
   PI: PPropInfo;
   PStringsAddr: PStrings;
-{$ENDIF !CLR}
 begin
   inherited Create(AOwner);
   // JvBMPListBox:
   //  Style := lbOwnerDrawFixed;
 
-  {$IFNDEF CLR}
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
     DPA_ConsumerDisplaysList]);
   FConsumerSvc.OnChanging := ConsumerServiceChanging;
@@ -828,10 +752,6 @@ begin
   PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
   Items.Free;                                 // remove original item list (TListBoxStrings instance)
   PStringsAddr^ := GetItemsClass.Create;      // create our own implementation and put it in place.
-  {$ELSE} // CLR=True
-  Items.Free;                                 // remove original item list (TListBoxStrings instance)
-  SetNonPublicField(Self, 'FItems', GetItemsClass.Create); // create our own implementation and put it in place.
-  {$ENDIF !CLR}
   TJvListBoxStrings(Items).ListBox := Self;   // link it to the list box.
 
   FBackground := TJvListBoxBackground.Create;
@@ -853,10 +773,8 @@ end;
 destructor TJvCustomListBox.Destroy;
 begin
   FreeAndNil(FBackground);
-  {$IFNDEF CLR}
   FreeAndNil(FConsumerStrings);
   FreeAndNil(FConsumerSvc);
-  {$ENDIF !CLR}
   inherited Destroy;
 end;
 
@@ -864,53 +782,6 @@ function TJvCustomListBox.GetItemsClass: TJvListBoxStringsClass;
 begin
   Result := TJvListBoxStrings;
 end;
-
-{$IFDEF CLR}
-function TJvCustomListBox.DoGetData(const Index: Integer): string;
-begin
-  Result := inherited DoGetData(Index);
-end;
-
-function TJvCustomListBox.DoGetDataObject(const Index: Integer): TObject;
-begin
-  Result := inherited DoGetDataObject(Index);
-end;
-
-function TJvCustomListBox.GetItemData(Index: Integer): TObject;
-begin
-  Result := inherited GetItemData(Index);
-end;
-
-function TJvCustomListBox.InternalGetItemData(Index: Integer): TObject;
-begin
-  Result := inherited InternalGetItemData(Index);
-end;
-
-procedure TJvCustomListBox.InternalSetItemData(Index: Integer; AData: TObject);
-begin
-  inherited InternalSetItemData(Index, AData);
-end;
-
-procedure TJvCustomListBox.SetItemData(Index: Integer; AData: TObject);
-begin
-  inherited SetItemData(Index, AData);
-end;
-
-procedure TJvCustomListBox.ResetContent;
-begin
-  inherited ResetContent;
-end;
-
-procedure TJvCustomListBox.DeleteString(Index: Integer);
-begin
-  inherited DeleteString(Index);
-end;
-
-function TJvCustomListBox.DoFindData(const Data: String): Integer;
-begin
-  Result :=  inherited DoFindData(Data);
-end;
-{$ENDIF CLR}
 
 procedure TJvCustomListBox.BeginRedraw;
 begin
@@ -964,7 +835,7 @@ procedure TJvCustomListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF} do
+  with Msg.DrawItemStruct^ do
   begin
     State := TOwnerDrawState(Word(itemState and $FFFF));
     Canvas.Handle := hDC;
@@ -1033,18 +904,14 @@ begin
   if MultiLine then
   begin
     SizeRect := Rect(0, 0, MaxInt, 0);
-    DrawText(Canvas.Handle, {$IFDEF CLR} S {$ELSE} PChar(S) {$ENDIF}, -1, SizeRect, DT_CALCRECT or
+    DrawText(Canvas.Handle, PChar(S), -1, SizeRect, DT_CALCRECT or
       DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or AlignFlags[FAlignment]));
     Size.cx := SizeRect.Right;
     Size.cy := SizeRect.Bottom;
   end
   else
     Size := Canvas.TextExtent(S);
-  {$IFDEF CLR}
-  Inc(Size.Width, CLeftMargin);
-  {$ELSE}
   Inc(Size.cx, CLeftMargin);
-  {$ENDIF CLR}
 
   FDragImage.Width := Size.cx;
   FDragImage.Height := Size.cy;
@@ -1061,7 +928,7 @@ begin
       Inc(SizeRect.Right, CLeftMargin);
       Bmp.Canvas.FillRect(SizeRect);
       Inc(SizeRect.Left, CLeftMargin);
-      DrawText(Bmp.Canvas.Handle, {$IFDEF CLR} S {$ELSE} PChar(S) {$ENDIF}, -1, SizeRect,
+      DrawText(Bmp.Canvas.Handle, PChar(S), -1, SizeRect,
         DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or AlignFlags[FAlignment]));
     end
     else
@@ -1235,14 +1102,12 @@ begin
       Dec(ActualRect.Right, 2);
 
     if IsProviderSelected then
-      {$IFNDEF CLR}
       DrawProviderItem(Canvas, ActualRect, Index, State)
-      {$ENDIF !CLR}
     else
     begin
       AText := ItemsShowing[Index];
       DoGetText(Index, AText);
-      DrawText(Canvas.Handle, {$IFDEF CLR} AText {$ELSE} PChar(AText) {$ENDIF},
+      DrawText(Canvas.Handle, PChar(AText),
         Length(AText), ActualRect, Flags);
     end;
 
@@ -1421,10 +1286,9 @@ var
 begin
   SendMessage(Handle, WM_SETREDRAW, Ord(True), 0);
   R := Rect(0, 0, Width, Height);
-  Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R, True);
+  Windows.InvalidateRect(Handle, @R, True);
 end;
 
-{$IFNDEF CLR}
 procedure TJvCustomListBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
@@ -1498,7 +1362,6 @@ begin
     VL.RebuildView;
   end;
 end;
-{$ENDIF !CLR}
 
 function TJvCustomListBox.IsProviderSelected: Boolean;
 begin
@@ -1512,9 +1375,7 @@ end;
 
 procedure TJvCustomListBox.DeselectProvider;
 begin
-  {$IFNDEF CLR}
   Provider.Provider := nil;
-  {$ENDIF !CLR}
 end;
 
 procedure TJvCustomListBox.UpdateItemCount;
@@ -1523,18 +1384,14 @@ var
   Cnt: Integer;
   EmptyChr: Char;
 begin
-  if HandleAllocated and IsProviderSelected
-    {$IFNDEF CLR} and Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) {$ENDIF} then
+  if HandleAllocated and IsProviderSelected and
+     Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
   begin
     Cnt := VL.Count - SendMessage(Handle, LB_GETCOUNT, 0, 0);
     EmptyChr := #0;
     while Cnt > 0 do
     begin
-      {$IFDEF CLR}
-      SendTextMessage(Handle, LB_ADDSTRING, 0, EmptyChr);
-      {$ELSE}
       SendMessage(Handle, LB_ADDSTRING, 0, LParam(@EmptyChr));
-      {$ENDIF CLR}
       Dec(Cnt);
     end;
     while Cnt < 0 do
@@ -1548,11 +1405,7 @@ end;
 procedure TJvCustomListBox.LBFindString(var Msg: TMessage);
 begin
   if IsProviderSelected then
-    {$IFDEF CLR}
-    Msg.Result := SearchPrefix(TWMSetText.Create(Msg).Text, False, Msg.WParam)
-    {$ELSE}
     Msg.Result := SearchPrefix(PChar(Msg.LParam), False, Msg.WParam)
-    {$ENDIF CLR}
   else
     inherited;
 end;
@@ -1560,11 +1413,7 @@ end;
 procedure TJvCustomListBox.LBFindStringExact(var Msg: TMessage);
 begin
   if IsProviderSelected then
-    {$IFDEF CLR}
-    Msg.Result := SearchExactString(TWMSetText.Create(Msg).Text, False, Msg.WParam)
-    {$ELSE}
     Msg.Result := SearchExactString(PChar(Msg.LParam), False, Msg.WParam)
-    {$ENDIF CLR}
   else
     inherited;
 end;
@@ -1573,11 +1422,7 @@ procedure TJvCustomListBox.LBSelectString(var Msg: TMessage);
 begin
   if IsProviderSelected then
   begin
-    {$IFDEF CLR}
-    Msg.Result := SearchExactString(TWMSetText.Create(Msg).Text, False, Msg.WParam);
-    {$ELSE}
     Msg.Result := SearchExactString(PChar(Msg.LParam), False, Msg.WParam);
-    {$ENDIF CLR}
     if Msg.Result > 0 then
       Perform(LB_SETCURSEL, Msg.Result, 0);
   end
@@ -1587,7 +1432,6 @@ end;
 
 procedure TJvCustomListBox.LBGetText(var Msg: TMessage);
 begin
-  {$IFNDEF CLR}
   if IsProviderSelected then
   begin
     if (Msg.WParam >= 0) and (Msg.WParam < ConsumerStrings.Count) then
@@ -1599,13 +1443,11 @@ begin
       Msg.Result := LB_ERR;
   end
   else
-  {$ENDIF !CLR}
     inherited;
 end;
 
 procedure TJvCustomListBox.LBGetTextLen(var Msg: TMessage);
 begin
-  {$IFNDEF CLR}
   if IsProviderSelected then
   begin
     if (Msg.WParam >= 0) and (Msg.WParam < ConsumerStrings.Count) then
@@ -1614,7 +1456,6 @@ begin
       Msg.Result := LB_ERR;
   end
   else
-  {$ENDIF !CLR}
     inherited;
 end;
 
@@ -1663,21 +1504,13 @@ begin
   }
   if not LimitToClientWidth then
   begin
-    {$IFDEF CLR}
-    MeasureString(TWMSetText.Create(Msg).Text, 0, LSize);
-    {$ELSE}
     MeasureString(PChar(Msg.LParam), 0, LSize);
-    {$ENDIF CLR}
     if LSize.cx > FMaxWidth then
       SetMaxWidth(LSize.cx);
   end;
   inherited;
   if Assigned(FOnAddString) then
-    {$IFDEF CLR}
-    FOnAddString(Self, TWMSetText.Create(Msg).Text);
-    {$ELSE}
     FOnAddString(Self, StrPas(PChar(Msg.LParam)));
-    {$ENDIF CLR}
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
@@ -1715,11 +1548,7 @@ var
 begin
   if not LimitToClientWidth then
   begin
-    {$IFDEF CLR}
-    MeasureString(TWMSetText.Create(Msg).Text, 0, LSize);
-    {$ELSE}
     MeasureString(PChar(Msg.LParam), 0, LSize);
-    {$ENDIF CLR}
     if LSize.cx > FMaxWidth then
       SetMaxWidth(LSize.cx);
   end;
@@ -1732,7 +1561,6 @@ begin
   UpdateStyle;
 end;
 
-{$IFNDEF CLR}
 procedure TJvCustomListBox.DrawProviderItem(Canvas: TCanvas; Rect: TRect; Index: Integer;
   State: TOwnerDrawState);
 var
@@ -1779,7 +1607,6 @@ begin
     Provider.Leave;
   end;
 end;
-{$ENDIF !CLR}
 
 procedure TJvCustomListBox.DoGetText(Index: Integer; var AText: string);
 begin
@@ -1803,18 +1630,15 @@ begin
     else
       AvailWidth := MaxInt;
 
-    {$IFNDEF CLR}
     if IsProviderSelected then
       MeasureProviderItem(Index, AvailWidth, LSize)
     else
-    {$ENDIF !CLR}
       MeasureString(ItemsShowing[Index], AvailWidth, LSize);
 
     Height := LSize.cy;
   end;
 end;
 
-{$IFNDEF CLR}
 procedure TJvCustomListBox.MeasureProviderItem(Index, WidthAvail: Integer; var ASize: TSize);
 var
   VL: IJvDataConsumerViewList;
@@ -1858,7 +1682,6 @@ begin
   if ASize.cy < ItemHeight then
     ASize.cy := ItemHeight;
 end;
-{$ENDIF !CLR}
 
 procedure TJvCustomListBox.MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 var
@@ -1877,7 +1700,7 @@ begin
   else
     Dec(WidthAvail, 2);
   R := Rect(0, 0, WidthAvail, 1);
-  DrawText(Canvas.Handle, {$IFDEF CLR} S {$ELSE} PChar(S) {$ENDIF}, Length(S), R, Flags);
+  DrawText(Canvas.Handle, PChar(S), Length(S), R, Flags);
   ASize.cx := R.Right + 4;
   ASize.cy := R.Bottom;
 
@@ -2281,18 +2104,6 @@ var
   Count: Integer;
 begin
   Count := ItemsShowing.Count;
-  {$IFDEF CLR}
-  if (Index >= 0) and (Index < Count) then
-    Perform(LB_GETITEMRECT, Index, Result)
-  else
-  if Index = Count then
-  begin
-    Perform(LB_GETITEMRECT, Index - 1, Result);
-    OffsetRect(Result, 0, Result.Bottom - Result.Top);
-  end
-  else
-    Result := Rect(0, 0, 0, 0);
-  {$ELSE}
   if (Index >= 0) and (Index < Count) then
     Perform(LB_GETITEMRECT, Index, Longint(@Result))
   else
@@ -2303,16 +2114,13 @@ begin
   end
   else
     FillChar(Result, SizeOf(Result), 0);
-  {$ENDIF CLR}
 end;
 
 function TJvCustomListBox.ItemsShowing: TStrings;
 begin
-  {$IFNDEF CLR}
   if IsProviderSelected then
     Result := ConsumerStrings
   else
-  {$ENDIF !CLR}
     Result := Items;
 end;
 
@@ -2323,11 +2131,7 @@ begin
   case Msg.Msg of
     LB_ADDSTRING, LB_INSERTSTRING:
       begin
-        {$IFDEF CLR}
-        ItemWidth := Canvas.TextWidth(TWMSetText.Create(Msg).Text + ' ');
-        {$ELSE}
         ItemWidth := Canvas.TextWidth(StrPas(PChar(Msg.LParam)) + ' ');
-        {$ENDIF CLR}
         if FMaxWidth < ItemWidth then
           FMaxWidth := ItemWidth;
         SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxWidth, 0);

@@ -37,9 +37,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  System.Runtime.InteropServices,
-  {$ENDIF CLR}
   SysUtils, Classes, Consts,
   Windows, Messages, Controls, Forms, Graphics,
   {$IFDEF COMPILER5}
@@ -57,14 +54,9 @@ const
 {$HPPEMIT '#endif'}
 {$ENDIF !COMPILER12_UP}
 
-{$IFDEF CLR}
-type
-  TJvBytes = TBytes;
-{$ELSE}
 type
   TJvBytes = Pointer;
   IntPtr = Pointer;
-{$ENDIF CLR}
 
 type
   {$IFNDEF COMPILER9_UP}
@@ -97,9 +89,6 @@ type
   TInputKey = (ikAll, ikArrows, ikChars, ikButton, ikTabs, ikEdit, ikNative{, ikNav, ikEsc});
   TInputKeys = set of TInputKey;
 
-  {$IFDEF CLR}
-  [StructLayout(LayoutKind.Sequential)]
-  {$ENDIF CLR}
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
@@ -123,9 +112,6 @@ type
   end;
   {$M-}
   {$ENDIF COMPILER6_UP}
-  {$IFDEF CLR}
-  IUnknown = IInterface;
-  {$ENDIF CLR}
 
   {$IFNDEF COMPILER6_UP}
   TInterfacedPersistent = class(TPersistent, IInterface)
@@ -579,7 +565,6 @@ type
     Height: Integer;
   end;
 
-{$IFNDEF CLR}
   TJvMessage = packed record
     Msg: Integer;
     case Integer of
@@ -723,7 +708,6 @@ type
       Button: TControl;
      );
   end;
-{$ENDIF !CLR}
 
 {$IFDEF UNITVERSIONING}
 const

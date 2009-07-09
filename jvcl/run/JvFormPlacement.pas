@@ -478,17 +478,11 @@ end;
 
 procedure TJvFormPlacement.WndMessage(Sender: TObject; var Msg: TMessage;
   var Handled: Boolean);
-{$IFDEF CLR}
-var
-  MinMax: TMinMaxInfo;
-  InitMenuPopup: TWMInitMenuPopup;
-{$ELSE}
 type
   PWMInitMenuPopup = ^TWMInitMenuPopup;
 var
   MinMax: PMinMaxInfo;
   InitMenuPopup: PWMInitMenuPopup;
-{$ENDIF CLR}
 begin
   if FPreventResize and (Owner is TCustomForm) then
   begin
@@ -496,25 +490,14 @@ begin
       WM_GETMINMAXINFO:
         if Form.HandleAllocated and IsWindowVisible(Form.Handle) then
         begin
-          {$IFDEF CLR}
-          MinMax := TWMGetMinMaxInfo.Create(Msg).MinMaxInfo;
-          {$ELSE}
           MinMax := TWMGetMinMaxInfo(Msg).MinMaxInfo;
-          {$ENDIF CLR}
           MinMax.ptMinTrackSize := Point(Form.Width, Form.Height);
           MinMax.ptMaxTrackSize := Point(Form.Width, Form.Height);
-          {$IFDEF CLR}
-          TWMGetMinMaxInfo.Create(Msg).MinMaxInfo := MinMax;
-          {$ENDIF CLR}
           Msg.Result := 1;
         end;
       WM_INITMENUPOPUP:
         begin
-          {$IFDEF CLR}
-          InitMenuPopup := TWMInitMenuPopup.Create(Msg);
-          {$ELSE}
           InitMenuPopup := PWMInitMenuPopup(@Msg);
-          {$ENDIF CLR}
           if InitMenuPopup.SystemMenu then
           begin
             if Form.Menu <> nil then
@@ -535,14 +518,10 @@ begin
   else
   if Msg.Msg = WM_GETMINMAXINFO then
   begin
-    {$IFDEF CLR}
-    MinMax := TWMGetMinMaxInfo.Create(Msg).MinMaxInfo;
-    {$ELSE}
     MinMax := TWMGetMinMaxInfo(Msg).MinMaxInfo;
-    {$ENDIF CLR}
     if CheckMinMaxInfo then
     begin
-      with MinMax{$IFNDEF CLR}^{$ENDIF} do
+      with MinMax^ do
       begin
         if FWinMinMaxInfo.MinTrackWidth <> 0 then
           ptMinTrackSize.X := FWinMinMaxInfo.MinTrackWidth;
@@ -567,9 +546,6 @@ begin
       MinMax.ptMaxPosition.X := 0;
       MinMax.ptMaxPosition.Y := 0;
     end;
-    {$IFDEF CLR}
-    TWMGetMinMaxInfo.Create(Msg).MinMaxInfo := MinMax;
-    {$ENDIF CLR}
     Msg.Result := 1;
   end;
 end;
@@ -629,7 +605,7 @@ begin
     if not (FPreventResize or CheckMinMaxInfo) then
     begin
       Placement.Length := SizeOf(TWindowPlacement);
-      GetWindowPlacement(Form.Handle, {$IFNDEF CLR}@{$ENDIF} Placement);
+      GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
         Placement.ShowCmd := SW_HIDE;
       if Form.BorderStyle <> bsNone then
@@ -639,7 +615,7 @@ begin
       end
       else
         Placement.ptMaxPosition := Point(0, 0);
-      SetWindowPlacement(Form.Handle, {$IFNDEF CLR}@{$ENDIF} Placement);
+      SetWindowPlacement(Form.Handle, @Placement);
     end;
 end;
 
@@ -1157,11 +1133,7 @@ procedure TJvStoredValue.SetDisplayName(const AValue: string);
 begin
   if (AValue <> '') and (AnsiCompareText(AValue, FName) <> 0) and
     (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(AValue) >= 0) then
-    {$IFDEF CLR}
-    raise EJVCLException.Create(SDuplicateString);
-    {$ELSE}
     raise EJVCLException.CreateRes(@SDuplicateString);
-    {$ENDIF CLR}
   FName := AValue;
   inherited SetDisplayName(AValue);
 end;

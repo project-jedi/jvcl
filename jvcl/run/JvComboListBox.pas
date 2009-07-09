@@ -44,9 +44,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  Types,
-  {$ENDIF CLR}
   Windows, Messages,
   Classes, Graphics, Controls, Forms, StdCtrls, Buttons,
   JvListBox,
@@ -402,7 +399,7 @@ begin
       begin
         AText := Items[Index];
         DoGetText(Index, AText);
-        DrawText(Canvas.Handle, {$IFDEF CLR} AText {$ELSE} PChar(AText) {$ENDIF}, Length(AText),
+        DrawText(Canvas.Handle, PChar(AText), Length(AText),
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
       end;
     end;
@@ -494,7 +491,7 @@ begin
     R.Right := R.Right - ButtonWidth;
     // don't redraw content, just button
     ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, R.Bottom);
-    Windows.InvalidateRect(Handle, {$IFNDEF CLR}@{$ENDIF}R2, False);
+    Windows.InvalidateRect(Handle, @R2, False);
   end;
 end;
 

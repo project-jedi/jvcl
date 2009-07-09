@@ -42,9 +42,6 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF CLR}
-  System.Globalization, Borland.Vcl.WinUtils,
-  {$ENDIF CLR}
   Classes, Graphics, Controls, Grids,
   JvComponent, JvExControls, JvExGrids;
 
@@ -433,18 +430,6 @@ type
 procedure WideDrawText(Canvas: TCanvas; const Text: WideString; ARect: TRect;
   uFormat: Cardinal);
 begin
-  {$IFDEF CLR}
-  with Canvas do
-  begin
-    if Assigned(Canvas.OnChanging) then
-      Canvas.OnChanging(Canvas);
-    if CanvasOrientation = coRightToLeft then
-      Inc(uFormat, DT_RTLREADING);
-    DrawText(Handle, Text, Length(Text), ARect, uFormat);
-    if Assigned(Canvas.OnChange) then
-      Canvas.OnChange(Canvas);
-  end;
-  {$ELSE}
   // (p3) TCanvasAccessProtected bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
   with TCanvasAccessProtected(Canvas) do
   begin
@@ -455,7 +440,6 @@ begin
     DrawTextW(Handle, PWideChar(Text), Length(Text), ARect, uFormat);
     Changed;
   end;
-  {$ENDIF CLR}
 end;
 
 {$IFDEF MSWINDOWS}
@@ -464,7 +448,7 @@ end;
 
 type
   TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF;
-    bAlpha: Byte; dwFlags: DWORD): Boolean; {$IFNDEF CLR} stdcall; {$ENDIF}
+    bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
 
 constructor TShadowWindow.Create(AOwner: TComponent);
 begin
@@ -489,15 +473,6 @@ var
   {$ENDIF NeedSetLayer}
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
 
-  {$IFDEF CLR}
-  procedure InitProcs;
-  begin
-    if System.Environment.OSVersion.Platform = PlatformID.Win32NT then
-      DynamicSetLayeredWindowAttributes := SetLayeredWindowAttributes
-    else
-      DynamicSetLayeredWindowAttributes := nil;
-  end;
-  {$ELSE}
   procedure InitProcs;
   const
     sUser32 = 'User32.dll';
@@ -510,7 +485,6 @@ var
     else
       DynamicSetLayeredWindowAttributes := nil;
   end;
-  {$ENDIF CLR}
 
 begin
   inherited CreateHandle;
@@ -744,7 +718,7 @@ end;
 function TJvCustomCharMap.GetCharInfo(AChar: WideChar; InfoType: Cardinal): Cardinal;
 var
   LLoc: Cardinal;
-  LCharInfo: {$IFDEF CLR} array [0..1] of Word {$ELSE} Cardinal {$ENDIF};
+  LCharInfo: Cardinal;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     LLoc := 0
@@ -752,13 +726,9 @@ begin
     LLoc := Locale;
 
   // Locale is ignored on NT platforms
-  if GetStringTypeExW(LLoc, InfoType, {$IFNDEF CLR}@{$ENDIF}AChar, 1, LCharInfo) then
+  if GetStringTypeExW(LLoc, InfoType, @AChar, 1, LCharInfo) then
   begin
-    {$IFDEF CLR}
-    Result := Cardinal(LCharInfo[0] shl 16) or LCharInfo[1];
-    {$ELSE}
     Result := LCharInfo;
-    {$ENDIF CLR}
   end
   else
     Result := 0;

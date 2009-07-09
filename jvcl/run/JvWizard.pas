@@ -764,7 +764,7 @@ type
     FWizard: TJvWizard;
     function GetItems(Index: Integer): TJvWizardCustomPage;
   protected
-    procedure Notify(Ptr: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF}; Action: TListNotification); override;
+    procedure Notify(Ptr: Pointer; Action: TListNotification); override;
     property Wizard: TJvWizard read FWizard write FWizard;
   public
     destructor Destroy; override;
@@ -832,15 +832,10 @@ type
   {$IFDEF COMPILER12_UP}
   public
   {$ENDIF COMPILER12_UP}
-    {$IFNDEF CLR}
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    {$ENDIF !CLR}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF CLR}
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    {$ENDIF CLR}
     procedure SelectPriorPage;
     procedure SelectNextPage;
     procedure SelectFirstPage;
@@ -1500,11 +1495,7 @@ begin
   if Assigned(AParent) then
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
-      {$IFDEF CLR}
-      raise EJvWizardError.Create(RsEInvalidParentControl);
-      {$ELSE}
       raise EJvWizardError.CreateRes(@RsEInvalidParentControl);
-      {$ENDIF CLR}
     if AParent is TJvWizardCustomPage then
       AParent := TJvWizardCustomPage(AParent).Wizard;
   end;
@@ -1780,11 +1771,7 @@ begin
     with ACanvas do
     begin
       Brush.Style := bsClear;
-      {$IFDEF CLR}
-      DrawText(ACanvas.Handle, FText, -1, ATextRect, DT_WORDBREAK or Alignments[FAlignment]);
-      {$ELSE}
       DrawText(ACanvas.Handle, PChar(FText), -1, ATextRect, DT_WORDBREAK or Alignments[FAlignment]);
-      {$ENDIF CLR}
       { Draw outline at design time. }
       if csDesigning in FWizardPageHeader.WizardPage.ComponentState then
       begin
@@ -2434,13 +2421,8 @@ begin
     begin
       Canvas.Brush.Style := bsClear;
       Canvas.Font.Assign(Font);
-      {$IFNDEF CLR}
       DrawText(Canvas.Handle, PChar(Caption), -1, ARect,
         DT_SINGLELINE + DT_CENTER + DT_VCENTER);
-      {$ELSE}
-      DrawText(Canvas.Handle, Caption, -1, ARect,
-        DT_SINGLELINE + DT_CENTER + DT_VCENTER);
-      {$ENDIF CLR}
     end;
   finally
     FDrawing := False;
@@ -2591,7 +2573,7 @@ begin
   Result := TJvWizardCustomPage(inherited Items[Index]);
 end;
 
-procedure TJvWizardPageList.Notify(Ptr: {$IFDEF CLR} TObject {$ELSE} Pointer {$ENDIF}; Action: TListNotification);
+procedure TJvWizardPageList.Notify(Ptr: Pointer; Action: TListNotification);
 begin
   case Action of
     lnAdded:
@@ -3227,11 +3209,7 @@ function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boole
 begin
   if Assigned(FromPage) and Assigned(ToPage) and
     (FromPage.Wizard <> ToPage.Wizard) then
-    {$IFDEF CLR}
-    raise EJvWizardError.Create(RsEInvalidWizardPage);
-    {$ELSE}
     raise EJvWizardError.CreateRes(@RsEInvalidWizardPage);
-    {$ENDIF CLR}
   Result := not Assigned(FromPage) or (Assigned(ToPage) and
     (FromPage.PageIndex < ToPage.PageIndex));
 end;

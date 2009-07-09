@@ -320,9 +320,7 @@ type
     procedure SetTimestamp(ValueIndex: Integer; AValue: TDateTime);
   public
     constructor Create;
-    {$IFNDEF CLR}
     destructor Destroy; override;
-    {$ENDIF !CLR}
 
     procedure PreGrow(Pen, ValueIndex: Integer); // Advanced users. Allocate a large batch of memory in advance.
 
@@ -1250,7 +1248,6 @@ begin
   {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 end;
 
-{$IFNDEF CLR}
 destructor TJvChartData.Destroy;
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
 var
@@ -1264,7 +1261,6 @@ begin
   Finalize(FData); // Free array.
   inherited Destroy;
 end;
-{$ENDIF !CLR}
 
 function TJvChartData.GetValue(Pen, ValueIndex: Integer): Double;
 {$IFDEF TJVCHART_ARRAY_OF_ARRAY}
@@ -1286,11 +1282,7 @@ begin
     Idx := (ValueIndex * FPenCount) + Pen;
 
     if (Idx < 0) or (Idx > CHART_SANITY_LIMIT) then // Sanity check!
-      {$IFDEF CLR}
-      raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
-      {$ELSE}
       raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
-      {$ENDIF CLR}
 
     if Idx >= Length(FData) then
       Grow(Pen, ValueIndex);
@@ -1320,20 +1312,12 @@ begin
 
   // Grow base array
   if (Pen < 0) or (Pen >= FPenCount) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEPenIndexInvalid);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEPenIndexInvalid);
-    {$ENDIF CLR}
 
   Idx := (ValueIndex * FPenCount) + Pen;
 
   if (Idx < 0) or (Idx > CHART_SANITY_LIMIT) then // Sanity check!
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
-    {$ENDIF CLR}
 
   if Idx >= Length(FData) then
     Grow(Pen, ValueIndex);
@@ -1448,17 +1432,9 @@ var
   I, J, OldLength: Integer;
 begin
   if (Pen < 0) or (ValueIndex < 0) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEDataIndexCannotBeNegative);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexCannotBeNegative);
-    {$ENDIF CLR}
   if (Pen > CHART_SANITY_LIMIT) or (ValueIndex > CHART_SANITY_LIMIT) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEDataIndexTooLargeProbablyAnInternal);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEDataIndexTooLargeProbablyAnInternal);
-    {$ENDIF CLR}
 
   if ValueIndex >= FDataAlloc then
   begin
@@ -1931,11 +1907,7 @@ end;
 procedure TJvChartOptions.SetPenColor(Index: Integer; AColor: TColor);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
-    {$ENDIF CLR}
 
   if Index >= Length(FPenColors) then
     SetLength(FPenColors, Index + 1);
@@ -1945,11 +1917,7 @@ end;
 procedure TJvChartOptions.SetPenStyle(Index: Integer; APenStyle: TPenStyle);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
-    {$ENDIF CLR}
 
   if Index >= Length(FPenStyles) then
     SetLength(FPenStyles, Index + 1);
@@ -1967,11 +1935,7 @@ end;
 function TJvChartOptions.GetAverageValue(Index: Integer): Double;
 begin
   if Index < 0 then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEGetAverageValueIndexNegative);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEGetAverageValueIndexNegative);
-    {$ENDIF CLR}
   if Index >= Length(FAverageValue) then
     Result := 0.0
   else
@@ -1981,11 +1945,7 @@ end;
 procedure TJvChartOptions.SetAverageValue(Index: Integer; AValue: Double);
 begin
   if Index < 0 then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsESetAverageValueIndexNegative);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsESetAverageValueIndexNegative);
-    {$ENDIF CLR}
   if Index >= Length(FAverageValue) then
     SetLength(FAverageValue, Index + 1);
   FAverageValue[Index] := AValue;
@@ -2002,11 +1962,7 @@ end;
 procedure TJvChartOptions.SetPenSecondaryAxisFlag(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
-    {$ENDIF CLR}
   if Index >= Length(FPenSecondaryAxisFlag) then
     SetLength(FPenSecondaryAxisFlag, Index + 1);
   FPenSecondaryAxisFlag[Index] := NewValue;
@@ -2023,11 +1979,7 @@ end;
 procedure TJvChartOptions.SetPenValueLabels(Index: Integer; NewValue: Boolean);
 begin
   if (Index < 0) or (Index >= MAX_PEN) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
-    {$ENDIF CLR}
 
   if Index >= Length(FPenValueLabels) then
     SetLength(FPenValueLabels, Index + 1);
@@ -2037,11 +1989,7 @@ end;
 procedure TJvChartOptions.SetPenCount(Count: Integer);
 begin
   if (Count < 0) or (Count >= MAX_PEN) then
-    {$IFDEF CLR}
-    raise ERangeError.Create(RsEChartOptionsPenCountPenCountOutOf);
-    {$ELSE}
     raise ERangeError.CreateRes(@RsEChartOptionsPenCountPenCountOutOf);
-    {$ENDIF CLR}
   FPenCount := Count;
   SetLength(FPenSecondaryAxisFlag, FPenCount + 1);
   // notify data object:
@@ -3867,11 +3815,7 @@ begin
     Assert(Assigned(Result.Brush));
   end
   else
-    {$IFDEF CLR}
-    raise EInvalidOperation.Create(RsEUnableToGetCanvas);
-    {$ELSE}
     raise EInvalidOperation.CreateRes(@RsEUnableToGetCanvas);
-    {$ENDIF CLR}
 end;
 
 function TJvChart.GetChartCanvasWidth: Integer; // WP NEW 2007
@@ -4402,11 +4346,7 @@ begin
 
     FMouseDownHintStrs.Add(Str);
     {$IFDEF DEBUGINFO_ON}
-    {$IFDEF CLR}
-    OutputDebugString('TJvChart.AutoHint: ' + Str);
-    {$ELSE}
     OutputDebugString(PChar('TJvChart.AutoHint: ' + Str));
-    {$ENDIF CLR}
     {$ENDIF DEBUGINFO_ON}
   end;
 end;
@@ -4832,9 +4772,7 @@ begin
   if Ord(FYFontHandle) <> 0 then
     DeleteObject(FYFontHandle); // delete old object
   // Clear the contents of FLogFont
-  {$IFNDEF CLR}
   FillChar(FYLogFont, SizeOf(TLogFont), 0);
-  {$ENDIF !CLR}
   // Set the TLOGFONT's fields - Win32 Logical Font Details.
   with FYLogFont do
   begin
@@ -4856,11 +4794,7 @@ begin
     lfClipPrecision := CLIP_DEFAULT_PRECIS;
     lfQuality := DEFAULT_QUALITY;
     lfPitchAndFamily := DEFAULT_PITCH or FF_DONTCARE;
-    {$IFDEF CLR}
-    lfFaceName := Font.Name;
-    {$ELSE}
     StrPCopy(lfFaceName, Font.Name);
-    {$ENDIF CLR}
   end;
 
   // Retrieve the requested font

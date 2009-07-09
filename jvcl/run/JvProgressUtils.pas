@@ -63,25 +63,18 @@ uses
 type
   TProgressProp = (ppMax, ppMin, ppProgress);
 
-  {$IFNDEF CLR}
   PProgressData = ^TProgressData;
-  {$ENDIF !CLR}
   TProgressData = record
     ControlClass: TControlClass;
     MaxProperty: string{$IFNDEF RTL200_UP}[63]{$ENDIF ~RTL200_UP};
     MinProperty: string{$IFNDEF RTL200_UP}[63]{$ENDIF ~RTL200_UP};
     ProgressProperty: string{$IFNDEF RTL200_UP}[63]{$ENDIF ~RTL200_UP};
   end;
-  {$IFDEF CLR}
-  PProgressData = TProgressData;
-  {$ENDIF CLR}
 
   TJvProgressList = class(TList)
   public
     constructor Create;
-    {$IFNDEF CLR}
     destructor Destroy; override;
-    {$ENDIF !CLR}
     procedure Add(AClass: TControlClass;
       const MaxPropName, MinPropName, ProgressPropName: string);
     function FindClass(AClass: TControlClass): Integer;
@@ -96,7 +89,6 @@ begin
   Add(TProgressBar, 'Max', 'Min', 'Position');
 end;
 
-{$IFNDEF CLR}
 destructor TJvProgressList.Destroy;
 var
   I: Integer;
@@ -105,19 +97,14 @@ begin
     Dispose(PProgressData(Items[I]));
   inherited Destroy;
 end;
-{$ENDIF !CLR}
 
 procedure TJvProgressList.Add(AClass: TControlClass;
   const MaxPropName, MinPropName, ProgressPropName: string);
 var
   NewRec: PProgressData;
 begin
-  {$IFDEF CLR}
-  with NewRec do
-  {$ELSE}
   New(NewRec);
   with NewRec^ do
-  {$ENDIF CLR}
   begin
     ControlClass := AClass;
     MaxProperty := MaxPropName;
@@ -150,9 +137,7 @@ begin
     P := PProgressData(Items[I]);
     if P.ControlClass.InheritsFrom(AClass) then
     begin
-      {$IFNDEF CLR}
       Dispose(P);
-      {$ENDIF !CLR}
       Delete(I);
     end;
   end;
@@ -181,11 +166,7 @@ begin
       end;
       PropInfo := GetPropInfo(Control.ClassInfo, PropName);
       if (PropInfo <> nil) and
-        {$IFDEF CLR}
-        (PropInfo.TypeKind
-        {$ELSE}
         (PropInfo^.PropType^.Kind
-        {$ENDIF CLR}
           in [tkInteger, tkFloat, tkVariant]) then
       begin
         SetOrdProp(Control, PropInfo, Value);

@@ -209,24 +209,13 @@ end;
 procedure TJvDataEmbedded.ReadUnpublishedStream(Stream: TStream);
 var
   I: Integer;
-  {$IFDEF CLR}
-  A: TBytes;
-  {$ENDIF CLR}
 begin
   if DefinePropertyIs(cEmbeddedData) then
   begin
-    {$IFDEF CLR}
-    Stream.Read(I);
-    FStream.Clear;
-    SetLength(A, I);
-    Stream.Read(A, I);
-    FStream.Write(A, I);
-    {$ELSE}
     Stream.Read(I, SizeOf(I));
     FStream.Clear;
     FStream.Size := I;
     Stream.Read(FStream.Memory^, I);
-    {$ENDIF CLR}
   end;
 end;
 
@@ -237,13 +226,8 @@ begin
   if DefinePropertyIs(cEmbeddedData) then
   begin
     I := FStream.Size;
-    {$IFDEF CLR}
-    Stream.Write(I);
-    Stream.Write(FStream.Memory, I);
-    {$ELSE}
     Stream.Write(I, SizeOf(I));
     Stream.Write(FStream.Memory^, I);
-    {$ENDIF CLR}
   end;
 end;
 

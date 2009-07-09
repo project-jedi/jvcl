@@ -32,9 +32,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  System.Reflection,
-  {$ENDIF CLR}
   Controls, Forms, StdCtrls, ExtCtrls, ActnList,
   SysUtils, Classes;
 
@@ -145,11 +142,7 @@ type
     procedure PageLeave(Next: Boolean);
     procedure PageShow(Next: Boolean);
     procedure PageHide(Next: Boolean);
-  {$IFDEF CLR}
-  public
-  {$ELSE}
   protected
-  {$ENDIF CLR}
     procedure SetParentComponent(Value: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -804,13 +797,7 @@ begin
     begin
       for I := 0 to Pages.Count - 1 do
         if PageIndex <> I then
-          {$IFDEF CLR}
-          Pages.Objects[I].GetType.GetMethod('DestroyHandle',
-            BindingFlags.NonPublic or BindingFlags.InvokeMethod).Invoke(
-              Pages.Objects[I], []);
-          {$ELSE}
           TWinControlAccessProtected(Pages.Objects[I]).DestroyHandle;
-          {$ENDIF CLR}
     end;
 end;
 

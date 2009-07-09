@@ -38,9 +38,7 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   DBCtrls,
-  {$IFNDEF CLR}
   JclBase,
-  {$ENDIF !CLR}
   JvAppStorage, JvTypes;
 
 // DB table must contain 3 fields for the storage

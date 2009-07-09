@@ -37,9 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, IniFiles,
-  {$IFNDEF CLR}
   JclBase,
-  {$ENDIF !CLR}
   JvAppStorage, JvPropertyStore, JvTypes;
 
 type
@@ -404,21 +402,12 @@ var
   Section: string;
   Key: string;
   Value: string;
-  {$IFDEF CLR}
-  Buf: array [0..10 - 1] of Byte;
-  {$ENDIF CLR}
 begin
   SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
-    {$IFDEF CLR}
-    if BinStrToBuf(Value, Buf, Length(Buf)) = Length(Buf) then
-      Result := ExtendedAsBytesToDouble(Buf)
-    else
-    {$ELSE}
     if BinStrToBuf(Value, @Result, SizeOf(Result)) <> SizeOf(Result) then
-    {$ENDIF CLR}
       Result := Default;
   end
   else
@@ -431,11 +420,7 @@ var
   Key: string;
 begin
   SplitKeyPath(Path, Section, Key);
-  {$IFDEF CLR}
-  WriteValue(Section, Key, BufToBinStr(DoubleToExtendedAsBytes(Value), 10));
-  {$ELSE}
   WriteValue(Section, Key, BufToBinStr(@Value, SizeOf(Value)));
-  {$ENDIF CLR}
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
@@ -560,11 +545,7 @@ begin
   else
     Result := Section;
   if (Result = '') or (Result[1] = '.') then
-    {$IFDEF CLR}
-    raise EJVCLAppStorageError.Create(RsEReadValueFailed);
-    {$ELSE}
     raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    {$ENDIF CLR}
 end;
 
 function TJvCustomAppIniStorage.GetStorageOptions: TJvAppIniStorageOptions;

@@ -47,9 +47,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  System.Text,
-  {$ENDIF CLR}
   Windows, Classes,
   JvComponentBase, JvTypes;
 
@@ -238,11 +235,7 @@ begin
   begin
     if not (csDesigning in FParent.FOwner.ComponentState) and
       ((Length(Value) = 0) or not DirectoryExists(Value)) then
-      {$IFDEF CLR}
-      raise EJVCLException.CreateFmt(RsEFmtInvalidPath, [Value]);
-      {$ELSE}
       raise EJVCLException.CreateResFmt(@RsEFmtInvalidPath, [Value]);
-      {$ENDIF CLR}
     FDir := Value;
   end;
 end;
@@ -274,11 +267,7 @@ begin
   if Count < MAXIMUM_WAIT_OBJECTS then
     Result := TJvChangeItem(inherited Add)
   else
-    {$IFDEF CLR}
-    raise EJVCLException.CreateFmt(RsEFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
-    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEFmtMaxCountExceeded, [MAXIMUM_WAIT_OBJECTS]);
-    {$ENDIF CLR}
 end;
 
 function TJvChangeItems.GetItem(Index: Integer): TJvChangeItem;
@@ -335,11 +324,7 @@ procedure TJvChangeNotify.CheckActive(const Name: string);
 begin
   if Active and
      not ((csDesigning in ComponentState) or (csLoading in ComponentState)) then   //active is now published
-    {$IFDEF CLR}
-    raise EJVCLException.CreateFmt(RsEFmtCannotChangeName, [Name]);
-    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEFmtCannotChangeName, [Name]);
-    {$ENDIF CLR}
 end;
 
 procedure TJvChangeNotify.SetCollection(const Value: TJvChangeItems);
@@ -369,20 +354,10 @@ end;
 procedure TJvChangeNotify.NotifyError(const Msg: string);
 var
   ErrorMsg: string;
-{$IFDEF CLR}
-  sb: StringBuilder;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  sb := StringBuilder.Create(256);
-  sb.Length := FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
-    GetLastError, 0, sb, sb.Length, nil);
-  ErrorMsg := sb.ToString();
-  {$ELSE}
   SetLength(ErrorMsg, 256);
   SetLength(ErrorMsg, FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nil,
     GetLastError, 0, PChar(ErrorMsg), Length(ErrorMsg), nil));
-  {$ENDIF CLR}
   raise EJVCLChangeNotifyException.Create(ErrorMsg, Msg);
 end;
 
@@ -413,17 +388,8 @@ begin
     if FActive then
     begin
       if FCollection.Count > MAXIMUM_WAIT_OBJECTS then
-        {$IFDEF CLR}
-        raise EJVCLException.CreateFmt(RsEFmtMaxCountExceeded,[MAXIMUM_WAIT_OBJECTS]);
-        {$ELSE}
         raise EJVCLException.CreateResFmt(@RsEFmtMaxCountExceeded,[MAXIMUM_WAIT_OBJECTS]);
-        {$ENDIF CLR}
-      {$IFDEF CLR}
-      for I := 0 to High(FNotifyArray) do
-        FNotifyArray[I] := INVALID_HANDLE_VALUE;
-      {$ELSE}
       FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
-      {$ENDIF CLR}
       for I := 0 to FCollection.Count - 1 do
       begin
         Flags := 0;
@@ -433,13 +399,9 @@ begin
             Flags := Flags or (cActions[cA]);
         S := FCollection[I].Directory;
         if (S = '') or not DirectoryExists(S) then
-          {$IFDEF CLR}
-          raise EJVCLException.CreateFmt(RsEFmtInvalidPathAtIndex, [S, I]);
-          {$ELSE}
           raise EJVCLException.CreateResFmt(@RsEFmtInvalidPathAtIndex, [S, I]);
-          {$ENDIF CLR}
         FNotifyArray[I] := FindFirstChangeNotification(
-          {$IFDEF CLR} S {$ELSE} PChar(S) {$ENDIF},
+          PChar(S),
           BOOL(FCollection[I].IncludeSubTrees), Flags);
         if FNotifyArray[I] = INVALID_HANDLE_VALUE then
         begin
@@ -546,12 +508,7 @@ begin
   inherited Create(True);
   FCount := Count;
   FInterval := Interval;
-  {$IFDEF CLR}
-  for I := 0 to High(FNotifyArray) do
-    FNotifyArray[I] := INVALID_HANDLE_VALUE;
-  {$ELSE}
   FillChar(FNotifyArray, SizeOf(TJvNotifyArray), INVALID_HANDLE_VALUE);
-  {$ENDIF CLR}
   for I := 0 to FCount - 1 do
     FNotifyArray[I] := NotifyArray[I];
   FreeOnTerminate := AFreeOnTerminate;
@@ -566,11 +523,7 @@ begin
     while not Terminated do
     begin
       I := WaitForMultipleObjects(FCount,
-        {$IFDEF CLR}
-        FNotifyArray,
-        {$ELSE}
         @FNotifyArray[0],
-        {$ENDIF CLR}
         False, FInterval);
       if (I >= 0) and (I < FCount) and not Terminated then
       begin

@@ -230,13 +230,7 @@ begin
     Enabled :=  Intf.CanPaste
   else if Target is TCustomEdit then
   begin
-    {$IFDEF CLR}
-    Enabled := (IsClipboardFormatAvailable(CF_TEXT) or
-               IsClipboardFormatAvailable(CF_UNICODETEXT)) and
-               not GetEditControl(Target).ReadOnly;
-    {$ELSE}
     Enabled := Clipboard.HasFormat(CF_TEXT) and not TOpenCustomEdit(GetEditControl(Target)).ReadOnly;
-    {$ENDIF CLR}
   end;
 end;
 

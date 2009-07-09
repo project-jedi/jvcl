@@ -347,11 +347,7 @@ begin
   Flags := DT_CALCRECT or Alignments[FAlignment];
   if WordWrap then
     Flags := Flags or DT_WORDBREAK;
-  {$IFDEF CLR}
-  DrawText(Canvas, GetRealCaption, -1, RectText, Flags);
-  {$ELSE}
   DrawText(Canvas, PChar(GetRealCaption), -1, RectText, Flags);
-  {$ENDIF CLR}
 
   // Now offset the rectangles according to layout and spacings
   BlockWidth := RectImage.Right + InternalSpacing + RectText.Right;
@@ -472,32 +468,21 @@ begin
   try
     FCanvas.Font := Font;
     if FOwnerDraw and Assigned(FOnButtonDraw) then
-      FOnButtonDraw(Self, Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF})
+      FOnButtonDraw(Self, Msg.DrawItemStruct^)
     else
-      DrawItem(Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF});
+      DrawItem(Msg.DrawItemStruct^);
   finally
     FCanvas.Handle := 0;
   end;
 end;
 
 procedure TJvCustomImageButton.CNMeasureItem(var Msg: TWMMeasureItem);
-{$IFDEF CLR}
-var
-  MeasureItemStruct: TMeasureItemStruct;
-{$ENDIF CLR}
 begin
-  {$IFDEF CLR}
-  MeasureItemStruct := Msg.MeasureItemStruct;
-  MeasureItemStruct.itemWidth := Width;
-  MeasureItemStruct.itemHeight := Height;
-  Msg.MeasureItemStruct := MeasureItemStruct;
-  {$ELSE}
   with Msg.MeasureItemStruct^ do
   begin
     itemWidth := Width;
     itemHeight := Height;
   end;
-  {$ENDIF CLR}
 end;
 
 
@@ -552,7 +537,7 @@ begin
 
     Details := ThemeServices.GetElementDetails(Button);
     // Parent background.
-    ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, {$IFNDEF CLR}@{$ENDIF}Details, True);
+    ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, @Details, True);
     // Button shape.
     if FMustDrawButtonFrame then
       ThemeServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
@@ -1009,11 +994,7 @@ end;
 
 procedure TJvCustomImageButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
-  {$IFDEF CLR}
-  Perform(WM_LBUTTONDOWN, Msg.OriginalMessage.WParam, Msg.OriginalMessage.LParam);
-  {$ELSE}
   Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
-  {$ENDIF CLR}
 end;
 
 procedure TJvCustomImageButton.WMTimer(var Msg: TWMTimer);

@@ -398,9 +398,7 @@ type
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    {$IFNDEF CLR}
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    {$ENDIF ~CLR}
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
@@ -694,26 +692,6 @@ uses
 procedure CheckLookupFormat(const AFormat: string);
   { AFormat is passed to a Format function, but the only allowed
     format specifiers are %s, %S and %% }
-{$IFDEF CLR}
-var
-  I, Len: Integer;
-begin
-  Len := Length(AFormat);
-  if Len > 0 then
-  begin
-    I := PosEx(AFormat, '%', 1);
-    while I <> 0 do
-    begin
-      if I = Len then
-        raise EJVCLException.CreateRes(RsEInvalidFormatNotAllowed);
-      if not (AnsiChar(AFormat[I + 1]) in ['%', 'S', 's']) then
-        raise EJVCLException.CreateResFmt(RsEInvalidFormatsNotAllowed,
-          [QuotedStr('%' + AFormat[I + 1])]);
-      I := PosEx(AFormat, '%', I + 2);
-    end;
-  end;
-end;
-{$ELSE}
 var
   P: PChar;
 begin
@@ -730,30 +708,9 @@ begin
     P := StrScan(P + 2, '%');
   end;
 end;
-{$ENDIF CLR}
 
 function GetSpecifierCount(const AFormat: string): Integer;
   { GetSpecifierCount counts the nr of format specifiers in AFormat }
-{$IFDEF CLR}
-var
-  I, Len: Integer;
-begin
-  Result := 0;
-  Len := Length(AFormat);
-  if Len > 0 then
-  begin
-    I := PosEx(AFormat, '%', 1);
-    while I <> 0 do
-    begin
-      if I = Len then
-        raise EJVCLException.CreateRes(RsEInvalidFormatNotAllowed);
-      if AnsiChar(AFormat[I + 1]) in ['S', 's'] then
-        Inc(Result);
-      I := PosEx(AFormat, '%', I + 2);
-    end;
-  end;
-end;
-{$ELSE}
 var
   P: PChar;
 begin
@@ -770,7 +727,6 @@ begin
     P := StrScan(P + 2, '%');
   end;
 end;
-{$ENDIF CLR}
 
 //=== { TJvDataSourceLink } ==================================================
 
@@ -1501,10 +1457,8 @@ procedure TJvLookupControl.DrawPicture(Canvas: TCanvas; Rect: TRect;
   Image: TGraphic);
 var
   X, Y, SaveIndex: Integer;
-  {$IFNDEF CLR}
   Ico: HICON;
   W, H: Integer;
-  {$ENDIF ~CLR}
 begin
   if Image <> nil then
   begin
@@ -1517,7 +1471,6 @@ begin
       if Image is TBitmap then
         DrawBitmapTransparent(Canvas, X, Y, TBitmap(Image),
           TBitmap(Image).TransparentColor)
-      {$IFNDEF CLR}
       else
       if Image is TIcon then
       begin
@@ -1530,7 +1483,6 @@ begin
           DestroyIcon(Ico);
         end;
       end
-      {$ENDIF ~CLR}
       else
         Canvas.Draw(X, Y, Image);
     finally
@@ -1634,11 +1586,7 @@ var
   J, LastFieldIndex: Integer;
   Field: TField;
   LStringList: array of string;
-  {$IFDEF CLR}
-  LVarList: array of TObject;
-  {$ELSE}
   LVarList: array of TVarRec;
-  {$ENDIF CLR}
 begin
   Result := '';
   LastFieldIndex := FListFields.Count - 1;
@@ -1650,9 +1598,6 @@ begin
     for J := 0 to LastFieldIndex do
     begin
       LStringList[J] := TField(FListFields[J]).DisplayText;
-      {$IFDEF CLR}
-      LVarList[J] := TObject(LStringList[J]);
-      {$ELSE}
       {$IFDEF SUPPORTS_UNICODE}
       LVarList[J].VPWideChar := PWideChar(LStringList[J]);
       LVarList[J].VType := vtPWideChar;
@@ -1660,7 +1605,6 @@ begin
       LVarList[J].VPChar := PAnsiChar(LStringList[J]);
       LVarList[J].VType := vtPChar;
       {$ENDIF SUPPORTS_UNICODE}
-      {$ENDIF CLR}
     end;
     Result := Format(LookupFormat, LVarList);
   end
@@ -2742,7 +2686,7 @@ begin
     { Use slide-open effect for combo boxes if wanted. This is also possible
       for D5<, but D5< does not define AnimateWindowProc in Controls.pas. See
       TJvBalloonHint.pas to solve this }
-    SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, {$IFNDEF CLR}@{$ENDIF}Animate, 0);
+    SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, @Animate, 0);
     if Assigned(AnimateWindowProc) and Animate then
     begin
       { Can't use SWP_SHOWWINDOW here, because the window is then immediately shown }
@@ -3086,11 +3030,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        {$IFDEF CLR}
-        SendStructMessage(FDataList.Handle, WM_LBUTTONDOWN, 0, MousePos);
-        {$ELSE}
         SendMessage(FDataList.Handle, WM_LBUTTONDOWN, 0, Longint(MousePos));
-        {$ENDIF CLR}
         Exit;
       end;
     end;
@@ -3184,11 +3124,7 @@ begin
   IsClipped := False;
   SaveRgn := 0;
   if not DoubleBuffered and
-    {$IFDEF CLR}
-    (Message.OriginalMessage.WParam <> Message.OriginalMessage.LParam) and
-    {$ELSE}
     (TMessage(Message).WParam <> TMessage(Message).LParam) and
-    {$ENDIF CLR}
     { Do not exclude parts if we are painting into a memory device context or
       into a child's device context through DrawParentBackground(). }
     (WindowFromDC(Message.DC) = Handle) then
@@ -3506,12 +3442,10 @@ begin
   Invalidate;
 end;
 
-{$IFNDEF CLR}
 procedure TJvDBLookupCombo.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Integer(FDataLink);
 end;
-{$ENDIF ~CLR}
 
 function TJvDBLookupCombo.GetDataLink: TDataLink;
 begin

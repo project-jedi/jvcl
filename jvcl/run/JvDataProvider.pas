@@ -43,8 +43,6 @@ uses
   JclBase,
   JvComponentBase, JvDataProviderIntf;
 
-{$IFDEF CLR}
-{$ELSE}
 type
   // Forwards
   TExtensibleInterfacedPersistent = class;
@@ -1209,8 +1207,6 @@ function HexBytes(const Buf; Length: Integer): string;
 // Move to other unit? Render text in a disabled way (much like TLabel does)
 procedure DisabledTextRect(ACanvas: TCanvas; var ARect: TRect; Left, Top: Integer; Text: string);
 
-{$ENDIF CLR}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1234,8 +1230,6 @@ uses
   JclStrings,
   JvTypes, JvConsts, JvResources, JvJCLUtils;
 
-{$IFDEF CLR}
-{$ELSE}
 const
   vifHasChildren = Integer($80000000);
   vifCanHaveChildren = Integer($40000000);
@@ -5581,14 +5575,10 @@ begin
   // Do not allow the consumer view list to be modified this way.
 end;
 
-{$ENDIF CLR}
-
 //============================================================================
 
 procedure Init;
 begin
-{$IFDEF CLR}
-{$ELSE}
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TExtensibleInterfacedPersistent, TControl);
   GroupDescendentsWith(TAggregatedPersistent, TControl);
@@ -5606,7 +5596,6 @@ begin
     TJvDataContexts,
     // Context related
     TJvDataContext, TJvManagedDataContext, TJvFixedDataContext]);
-{$ENDIF CLR}
 end;
 
 initialization

@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -42,10 +42,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  System.Runtime.InteropServices, System.Security,
-  System.Text, Borland.Vcl.WinUtils, Types, JvJCLUtils,
-  {$ENDIF CLR}
   Windows, Messages,
   Classes, Controls, Dialogs, Graphics,
   JvCombobox;
@@ -345,11 +341,7 @@ const
 function LoadInternalBitmap(ResName: string): TBitmap;
 begin
   Result := TBitmap.Create;
-  {$IFDEF CLR}
-  Result.Handle := LoadBitmap(HInstance, ResName);
-  {$ELSE}
   Result.Handle := LoadBitmap(HInstance, PChar(ResName));
-  {$ENDIF CLR}
 end;
 
 function GetItemHeight(Font: TFont): Integer;
@@ -386,18 +378,9 @@ begin
     Result := Result and (FontType and RASTER_FONTTYPE = 0);
 end;
 
-{$IFDEF CLR}
-function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
-  FontType: DWORD; Param: TObject): Integer;
-var
-  FontCombo: TJvFontComboBox;
-begin
-  FontCombo := TJvFontComboBox(Param);
-{$ELSE}
 function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
   FontType: DWORD; FontCombo: TJvFontComboBox): Integer; stdcall;
 begin
-{$ENDIF CLR}
   Result := 0;
   if FontCombo = nil then
     Exit;
@@ -588,7 +571,7 @@ procedure TJvColorComboBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF} do
+  with Msg.DrawItemStruct^ do
   begin
     State := ItemStateToOwnerDrawState(itemState);
     Canvas.Handle := hDC;
@@ -659,11 +642,7 @@ begin
         Brush.Style := bsBDiagonal;
       FillRect(R);
       SetBkMode(Canvas.Handle, TRANSPARENT);
-      {$IFDEF CLR}
-      DrawText(Canvas.Handle, S, Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-      {$ELSE}
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-      {$ENDIF CLR}
     end
     else
     if (coText in FOptions) or (coHex in FOptions) or (coRGB in FOptions) then
@@ -689,11 +668,7 @@ begin
       FillRect(R);
       OffsetRect(R, 2, 0);
       SetBkMode(Canvas.Handle, TRANSPARENT);
-      {$IFDEF CLR}
-      DrawText(Canvas.Handle, S, Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-      {$ELSE}
       DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-      {$ENDIF CLR}
       OffsetRect(R, -2, 0);
     end
     else
@@ -965,11 +940,7 @@ begin
     begin
       AValue := FCustomColors.Values['Color' + Char(Ord('A') + I)];
       if (AValue <> '') and (AValue <> 'FFFFFF') then
-        {$IFDEF CLR}
-        AList.Add(TObject(StrToInt('$' + AValue)));
-        {$ELSE}
         AList.Add(Pointer(StrToInt('$' + AValue)));
-        {$ENDIF CLR}
     end;
     SetCustomColors(AList);
   finally
@@ -1061,16 +1032,6 @@ begin
       Clear;
       DC := GetDC(HWND_DESKTOP);
       try
-        {$IFDEF CLR}
-        if FDevice in [fdScreen, fdBoth] then
-          EnumFonts(DC, nil, EnumFontsProc, Self);
-        if FDevice in [fdPrinter, fdBoth] then
-        try
-          EnumFonts(Printer.Handle, nil, EnumFontsProc, Self);
-        except
-          // (p3) exception might be raised if no printer is installed, but ignore it here
-        end;
-        {$ELSE}
         if FDevice in [fdScreen, fdBoth] then
           EnumFonts(DC, nil, @EnumFontsProc, Pointer(Self));
         if FDevice in [fdPrinter, fdBoth] then
@@ -1079,7 +1040,6 @@ begin
         except
           // (p3) exception might be raised if no printer is installed, but ignore it here
         end;
-        {$ENDIF CLR}
       finally
         ReleaseDC(HWND_DESKTOP, DC);
       end;
@@ -1129,7 +1089,7 @@ procedure TJvFontComboBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
-  with Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF} do
+  with Msg.DrawItemStruct^ do
   begin
     State := ItemStateToOwnerDrawState(itemState);
     Canvas.Handle := hDC;
@@ -1205,11 +1165,7 @@ begin
       R.Right := R.Left + TextWidth(Items[Index]) + 6;
     FillRect(R);
     OffsetRect(R, 2, 0);
-    {$IFDEF CLR}
-    DrawText(Canvas.Handle, Items[Index], -1, R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-    {$ELSE}
     DrawText(Canvas.Handle, PChar(Items[Index]), -1, R, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-    {$ENDIF CLR}
     if (foPreviewFont in Options) then
     begin
       Inc(AWidth, TextWidth(Items[Index]) + 36);
@@ -1222,11 +1178,7 @@ begin
         TmpRect.Left := 0;
         TmpRect.Right := ClientWidth - (GetSystemMetrics(SM_CXVSCROLL) + 8);
         R.Right := ClientWidth;
-        {$IFDEF CLR}
-        DrawText(Canvas.Handle, S, -1, TmpRect, DT_SINGLELINE or DT_VCENTER or DT_RIGHT or DT_NOPREFIX);
-        {$ELSE}
         DrawText(Canvas.Handle, PChar(S), -1, TmpRect, DT_SINGLELINE or DT_VCENTER or DT_RIGHT or DT_NOPREFIX);
-        {$ENDIF CLR}
       end;
     end;
     Canvas.Font.Name := AName;
@@ -1373,12 +1325,7 @@ end;
 
 function TJvFontComboBox.FontSubstitute(const AFontName: string): string;
 var
-  {$IFDEF CLR}
-  sb: StringBuilder;
-  Size: Integer;
-  {$ELSE}
   Size: DWORD;
-  {$ENDIF CLR}
   AKey: HKey;
 begin
   Result := AFontName;
@@ -1387,17 +1334,6 @@ begin
   if RegOpenKeyEx(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes',
     0, KEY_QUERY_VALUE, AKey) = ERROR_SUCCESS then
   try
-    {$IFDEF CLR}
-    if (RegQueryValueEx(AKey, AFontName, nil, nil, nil, Size) = ERROR_SUCCESS) and
-       (Size > 0) then
-    begin
-      sb := StringBuilder.Create(Size);
-      if RegQueryValueEx(AKey, AFontName, nil, nil, sb, Size) = ERROR_SUCCESS then
-        Result := sb.ToString()
-      else
-        Result := AFontName;
-    end;
-    {$ELSE}
     if (RegQueryValueEx(AKey, PChar(AFontName), nil, nil, nil, @Size) = ERROR_SUCCESS) and
        (Size > 0) then
     begin
@@ -1407,7 +1343,6 @@ begin
       else
         Result := AFontName;
     end;
-    {$ENDIF CLR}
   finally
     RegCloseKey(AKey);
   end
@@ -1449,15 +1384,8 @@ end;
 var
   FPixelsPerInch: Integer = 96;
 
-{$IFDEF CLR}
-function GetFontSizesEnum(var lpelf: TEnumLogFont; var lpntm: TNewTextMetric;
-  FontType: DWORD; lParam: TObject): Integer;
-type
-  Pointer = TObject;
-{$ELSE}
 function GetFontSizesEnum(var lpelf: TEnumLogFont; var lpntm: TNewTextMetric;
   FontType: Integer; lParam: Integer): Integer; stdcall;
-{$ENDIF CLR}
 var
   aSize: Integer;
 begin
@@ -1467,17 +1395,10 @@ begin
   Result := 1;
 end;
 
-{$IFDEF CLR}
-function SizeSort(Item1, Item2: TObject): Integer;
-begin
-  Result := Integer(Item1) - Integer(Item2);
-end;
-{$ELSE}
 function SizeSort(Item1, Item2: Pointer): Integer;
 begin
   Result := Integer(Item1) - Integer(Item2);
 end;
-{$ENDIF CLR}
 
 function TJvFontComboBox.IsTrueType: Boolean;
 begin
@@ -1503,22 +1424,14 @@ begin
     // fill in constant sizes for true type fonts
     SizeList.Clear;
     for I := Low(cTTSizes) to High(cTTSizes) do
-      {$IFDEF CLR}
-      SizeList.Add(TObject(cTTSizes[I]));
-      {$ELSE}
       SizeList.Add(Pointer(cTTSizes[I]));
-      {$ENDIF CLR}
   end
   else
   begin
     DC := GetDC(HWND_DESKTOP);
     try
       FPixelsPerInch := GetDeviceCaps(DC, LOGPIXELSY);
-      {$IFDEF CLR}
-      EnumFontFamilies2(DC, FontName, GetFontSizesEnum, SizeList);
-      {$ELSE}
       EnumFontFamilies(DC, PChar(FontName), @GetFontSizesEnum, Integer(SizeList));
-      {$ENDIF CLR}
       SizeList.Sort(SizeSort);
     finally
       ReleaseDC(HWND_DESKTOP, DC);
@@ -1630,21 +1543,11 @@ begin
     FontName := Font.Name;
 end;
 
-{$IFDEF CLR}
-function EnumFontSizeProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
-  FontType: DWORD; Param: TObject): Integer;
-var
-  tmp: Integer;
-  FontCombo: TJvFontComboBox;
-begin
-  FontCombo := TJvFontComboBox(Param);
-{$ELSE}
 function EnumFontSizeProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
   FontType: Integer; FontCombo: TJvFontComboBox): Integer; stdcall;
 var
   tmp: Integer;
 begin
-{$ENDIF CLR}
   if FontType and TRUETYPE_FONTTYPE <> TRUETYPE_FONTTYPE then // TTF's don't have size info
   begin
     tmp := Round(((TextMetric.tmHeight - TextMetric.tmInternalLeading) * 72) / GetDeviceCaps(FontCombo.FEnumeratorDC, LOGPIXELSY));
@@ -1667,22 +1570,6 @@ begin
   FFontSizes.Clear;
   TStringList(FFontSizes).Sorted := True;
 
-  {$IFDEF CLR}
-  FEnumeratorDC := GetDC(HWND_DESKTOP);
-  try
-    if FDevice in [fdScreen, fdBoth] then
-      EnumFonts(FEnumeratorDC, FontName, EnumFontSizeProc, Self);
-  finally
-    ReleaseDC(HWND_DESKTOP, FEnumeratorDC);
-  end;
-  if FDevice in [fdPrinter, fdBoth] then
-  try
-    FEnumeratorDC := Printer.Handle;
-    EnumFonts(FEnumeratorDC, FontName, EnumFontSizeProc, Self);
-  except
-    // ignore exceptions (printer may not be installed)
-  end;
-  {$ELSE}
   FEnumeratorDC := GetDC(HWND_DESKTOP);
   try
     if FDevice in [fdScreen, fdBoth] then
@@ -1697,7 +1584,6 @@ begin
   except
     // ignore exceptions (printer may not be installed)
   end;
-  {$ENDIF CLR}
 
   TStringlist(FFontSizes).Sorted := False;
   if FFontSizes.Count > 1 then

@@ -79,21 +79,13 @@ procedure TJvAppStoragePropertyDBGridColumnsEngine.ReadProperty(AStorage: TJvCus
   const APath: string; AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean);
 begin
   if Assigned(AObject) and (AObject is TCustomDBGrid) then
-    {$IFDEF CLR}
-    InvokeNonPublicMethod(AObject, 'BeginLayout', []);
-    {$ELSE}
     TAccessCustomDBGrid(AObject).BeginLayout;
-    {$ENDIF CLR}
   try
     if Assigned(AProperty) and (AProperty is TDBGridColumns) then
       AStorage.ReadCollection(APath, TCollection(AProperty), ClearFirst);
   finally
     if Assigned(AObject) and (AObject is TCustomDBGrid) then
-      {$IFDEF CLR}
-      InvokeNonPublicMethod(AObject, 'EndLayout', []);
-      {$ELSE}
       TAccessCustomDBGrid(AObject).EndLayout;
-      {$ENDIF CLR}
   end;
 end;
 

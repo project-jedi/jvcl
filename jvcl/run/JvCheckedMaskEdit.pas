@@ -198,11 +198,7 @@ uses
 procedure TJvCustomCheckedMaskEdit.BeginInternalChange;
 begin
   if FInternalChange then
-    {$IFDEF CLR}
-    raise EJVCLException.Create(RsEBeginUnsupportedNestedCall);
-    {$ELSE}
     raise EJVCLException.CreateRes(@RsEBeginUnsupportedNestedCall);
-    {$ENDIF CLR}
   FInternalChange := True;
 end;
 
@@ -268,11 +264,7 @@ procedure TJvCustomCheckedMaskEdit.EndInternalChange;
 begin
   { TODO : if this assertion ever fails, it's time to switch to a counted locking scheme }
   if not FInternalChange then
-    {$IFDEF CLR}
-    raise EJVCLException.Create(RsEEndUnsupportedNestedCall);
-    {$ELSE}
     raise EJVCLException.CreateRes(@RsEEndUnsupportedNestedCall);
-    {$ENDIF CLR}
   FInternalChange := False;
 end;
 

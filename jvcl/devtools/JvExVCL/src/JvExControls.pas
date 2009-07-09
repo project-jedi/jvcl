@@ -37,9 +37,6 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF CLR}
-  System.Runtime.InteropServices,
-  {$ENDIF CLR}
   SysUtils, Classes, Graphics, Controls, Forms,
   {$IFDEF COMPILER5}
   JvConsts, JvVCL5Utils,
@@ -73,16 +70,9 @@ type
 
   TStructPtrMessage = class(TObject)
   private
-    {$IFDEF CLR}
-    FBuf: IntPtr;
-    FLParam: &Object;
-    {$ENDIF CLR}
   public
     Msg: TMessage;
     constructor Create(Msg: Integer; WParam: Integer; var LParam);
-    {$IFDEF CLR}
-    destructor Destroy; override;
-    {$ENDIF CLR}
   end;
 
 procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor: TColor);
@@ -214,58 +204,30 @@ end;
 
 function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: Longint): TMessage;
 begin
-  {$IFNDEF CLR}
   Result.Msg := Msg;
   Result.WParam := WParam;
   Result.LParam := LParam;
-  {$ELSE}
-  Result := TMessage.Create(Msg, WParam, LParam);
-  {$ENDIF CLR}
   Result.Result := 0;
 end;
 
 function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: TControl): TMessage;
 begin
-  {$IFNDEF CLR}
-  Result := CreateWMMessage(Msg, WParam, Integer(LParam));
-  {$ELSE}
   Result := CreateWMMessage(Msg, WParam, 0);
-  {$ENDIF !CLR}
 end;
 
 { TStructPtrMessage }
 constructor TStructPtrMessage.Create(Msg: Integer; WParam: Integer; var LParam);
 begin
   inherited Create;
-  {$IFNDEF CLR}
   Self.Msg.Msg := Msg;
   Self.Msg.WParam := WParam;
   Self.Msg.LParam := Longint(@LParam);
-  {$ELSE}
-  FBuf := Marshal.AllocHGlobal(Marshal.SizeOf(TObject(LParam)));
-  FLParam := &Object(LParam);
-  Marshal.StructureToPtr(FLParam, FBuf, False);
-  Self.Msg := TMessage.Create(Msg, WParam, Longint(FBuf));
-  {$ENDIF !CLR}
   Self.Msg.Result := 0;
 end;
 
-{$IFDEF CLR}
-destructor TStructPtrMessage.Destroy;
-begin
-  FLParam := Marshal.PtrToStructure(FBuf, TypeOf(FLParam));
-  Marshal.DestroyStructure(FBuf, TypeOf(FLParam));
-  inherited Destroy;
-end;
-{$ENDIF CLR}
-
 function SmallPointToLong(const Pt: TSmallPoint): Longint;
 begin
-  {$IFDEF CLR}
-  Result := Int32(Pt.X) shl 16 or Pt.Y;
-  {$ELSE}
   Result := Longint(Pt);
-  {$ENDIF CLR}
 end;
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
@@ -339,11 +301,7 @@ begin
         if Assigned(AControl) and Assigned(AControl.Parent) then
         begin
           AHintInfo := HintInfo;
-          {$IFNDEF CLR}
           AControl.Parent.Perform(CM_HINTSHOW, 0, Integer(@AHintInfo));
-          {$ELSE}
-          AControl.Parent.Perform(CM_HINTSHOW, 0, AHintInfo);
-          {$ENDIF !CLR}
           HintInfo.HintColor := AHintInfo.HintColor;
         end;
       end;

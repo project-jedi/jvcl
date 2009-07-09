@@ -35,9 +35,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  Types, System.Reflection, System.Security, System.Runtime.InteropServices,
-  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -94,11 +91,6 @@ type
     procedure KeyPress(var Key: Char); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     procedure BoundsChanged; override;
-    {$IFDEF CLR}
-    // this is required to allow "protected reference over assembly borders
-    property Options;
-    property ParentFont;
-    {$ENDIF CLR}
   public
     constructor Create(AOwner: TComponent); override;
     procedure NextMonth;
@@ -173,7 +165,7 @@ var
 
 begin
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
-  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, {$IFNDEF CLR}@{$ENDIF}NonClientMetrics, 0) then
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
     with AFont do

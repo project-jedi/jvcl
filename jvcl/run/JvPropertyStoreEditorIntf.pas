@@ -35,10 +35,6 @@ uses
   Classes;
 
 type
-  {$IFDEF CLR}
-  IUnknown = IInterface;
-  {$ENDIF CLR}
-
   IJvPropertyEditorHandler = interface
     ['{7DD4CC1F-335E-44F7-AE90-9DB630BF5B31}']
     function EditIntf_GetVisibleObjectName : string;

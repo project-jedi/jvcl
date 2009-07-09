@@ -55,7 +55,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Add(Icon: TIcon): Integer; virtual;
-    function AddResource(Instance: THandle; ResId: {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF}): Integer; virtual;
+    function AddResource(Instance: THandle; ResId: PChar): Integer; virtual;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -64,9 +64,8 @@ type
     procedure Exchange(Index1, Index2: Integer); virtual;
     function IndexOf(Icon: TIcon): Integer; virtual;
     procedure Insert(Index: Integer; Icon: TIcon); virtual;
-    procedure InsertResource(Index: Integer; Instance: THandle;
-      ResId: {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF}); virtual;
-    procedure LoadResource(Instance: THandle; const ResIds: array of {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF});
+    procedure InsertResource(Index: Integer; Instance: THandle; ResId: PChar); virtual;
+    procedure LoadResource(Instance: THandle; const ResIds: array of PChar);
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure Move(CurIndex, NewIndex: Integer); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
@@ -128,9 +127,6 @@ var
   I: Integer;
   Icon: TIcon;
   Mem: TMemoryStream;
-  {$IFDEF CLR}
-  Buf: TBytes;
-  {$ENDIF CLR}
 begin
   BeginUpdate;
   try
@@ -146,14 +142,7 @@ begin
           Icon := TIcon.Create;
           try
             Mem.SetSize(Len);
-            {$IFDEF CLR}
-            SetLength(Buf, Len);
-            Stream.Read(Buf, Len);
-            System.Array.Copy(Buf, 0, Mem.Memory, 0, Len);
-            Buf := nil;
-            {$ELSE}
             Stream.Read(Mem.Memory^, Len);
-            {$ENDIF CLR}
             Mem.Position := 0;
             Icon.LoadFromStream(Mem);
             AddIcon(Icon);
@@ -195,11 +184,7 @@ begin
         Len := 0;
       Stream.Write(Len, SizeOf(Longint));
       if Len > 0 then
-        {$IFDEF CLR}
-        Stream.Write(Mem.Memory, Mem.Size);
-        {$ELSE}
         Stream.Write(Mem.Memory^, Mem.Size);
-        {$ENDIF CLR}
     end;
   finally
     Mem.Free;
@@ -284,7 +269,7 @@ begin
   end;
 end;
 
-function TJvIconList.AddResource(Instance: THandle; ResId: {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF}): Integer;
+function TJvIconList.AddResource(Instance: THandle; ResId: PChar): Integer;
 var
   Ico: TIcon;
 begin
@@ -369,8 +354,7 @@ begin
   Result := FList.IndexOf(Icon);
 end;
 
-procedure TJvIconList.InsertResource(Index: Integer; Instance: THandle;
-  ResId: {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF});
+procedure TJvIconList.InsertResource(Index: Integer; Instance: THandle; ResId: PChar);
 var
   Ico: TIcon;
 begin
@@ -402,7 +386,7 @@ begin
   Changed;
 end;
 
-procedure TJvIconList.LoadResource(Instance: THandle; const ResIds: array of {$IFDEF CLR} Integer {$ELSE} PChar {$ENDIF});
+procedure TJvIconList.LoadResource(Instance: THandle; const ResIds: array of PChar);
 var
   I: Integer;
 begin
