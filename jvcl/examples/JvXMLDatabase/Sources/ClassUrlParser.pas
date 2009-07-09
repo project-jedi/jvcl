@@ -53,6 +53,9 @@ type
 
 implementation
 
+uses
+  JclFileUtils;
+
 { TUrlParser }
 
 {**********************************************************************}
@@ -87,11 +90,9 @@ var
 
   function GetTempFile: string;
   var
-    Buf: array[0..MAX_PATH] of char;
     Temp: array[0..MAX_PATH] of char;
   begin
-    GetTempPath(MAX_PATH, Buf);
-    GetTempFilename(Buf, 'tmp', 0, Temp);
+    GetTempFilename(PChar(PathGetTempPath), 'tmp', 0, Temp);
     Result := String(Temp);
   end;
 

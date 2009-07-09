@@ -939,7 +939,7 @@ uses
   {$IFNDEF CLR}
   jpeg,
   {$ENDIF CLR}
-  JclSysInfo,
+  JclSysInfo, JclFileUtils,
   JvConsts, JvProgressUtils, JvResources;
 
 {$R JvConsts.res}
@@ -2704,7 +2704,7 @@ function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
   file and LoadCursorFromFile function. }
 var
   S: TFileStream;
-  Path, FileName: array[0..MAX_PATH] of Char;
+  FileName: string;
   RSrc: HRSRC;
   Res: THandle;
   Data: Pointer;
@@ -2713,21 +2713,20 @@ begin
   RSrc := FindResource(Instance, ResID, RT_ANICURSOR);
   if RSrc <> 0 then
   begin
-    OSCheck(GetTempPath(MAX_PATH, Path) <> 0);
-    OSCheck(GetTempFileName(Path, 'ANI', 0, FileName) <> 0);
+    FileName := FileGetTempName('ANI');
     try
       Res := LoadResource(Instance, RSrc);
       try
         Data := LockResource(Res);
         if Data <> nil then
         try
-          S := TFileStream.Create(StrPas(FileName), fmCreate);
+          S := TFileStream.Create(FileName, fmCreate);
           try
             S.WriteBuffer(Data^, SizeOfResource(Instance, RSrc));
           finally
             S.Free;
           end;
-          Result := LoadCursorFromFile(FileName);
+          Result := LoadCursorFromFile(PChar(FileName));
         finally
           UnlockResource(Res);
         end;
@@ -2735,7 +2734,7 @@ begin
         FreeResource(Res);
       end;
     finally
-      Windows.DeleteFile(FileName);
+      Windows.DeleteFile(PChar(FileName));
     end;
   end;
 end;

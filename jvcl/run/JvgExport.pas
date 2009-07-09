@@ -65,6 +65,7 @@ implementation
 
 uses
   ComObj,
+  JclFileUtils,
   JvgUtils;
 
 const
@@ -82,7 +83,6 @@ var
   AExportFilter: TQRCommaSeparatedFilter;
   MemStream: TMemoryStream;
   TempFileName: string;
-  Buffer: array [0..MAX_PATH] of Char;
 
   function DeleteEOLs(const Str: string): string;
   var
@@ -101,8 +101,7 @@ begin
     XL := CreateOleObject(cExcelApplication);
   end;
 
-  GetTempPath(Length(Buffer), Buffer);
-  TempFileName := Buffer + 'JvgExportToExcelTemp.txt';
+  TempFileName := PathGetTempPath + 'JvgExportToExcelTemp.txt';
   AExportFilter := TQRCommaSeparatedFilter.Create(TempFileName);
   try
     QuickRep.ExportToFilter(AExportFilter);
