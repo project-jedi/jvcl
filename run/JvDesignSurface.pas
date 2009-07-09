@@ -865,37 +865,40 @@ begin
         Result := Controller.KeyUp(VirtKey);
       WM_WINDOWPOSCHANGED:
         begin
-          PosChangedHandle := PWindowPos(AMsg.lParam).hwnd;
-
-          // If the window that has changed is a control owned by our container
-          // then we must update the designer. This allows to programatically
-          // change the location of a control while making the designer handles
-          // follow it around (Mantis 4693).
-          // For this to work properly, we MUST udpate the bounds of the
-          // control before calling UpdateDesigner because the VCL has not yet
-          // processed the WM_WINDOWPOSCHANGED message when this code executes.
-          // If we did not, the designer would use the previous position of the
-          // control to display the handles.
-          for I := 0 to Container.ComponentCount - 1 do
+          if AMsg.lParam > 0 then
           begin
-            if Container.Components[I] is TWinControl then
-            begin
-              Control := TAccessWinControl(Container.Components[I]);
-              if PosChangedHandle = Control.Handle then
-              begin
-                if not (csDestroyingHandle in Control.ControlState) then
-                  {$IFDEF DELPHI10_UP}
-                  Control.UpdateBounds;
-                  {$ELSE}
-                  SendMessage(Control.Handle, AMsg.Msg, AMsg.wParam, AMsg.lParam);
-                  {$ENDIF DELPHI10_UP}
+            PosChangedHandle := PWindowPos(AMsg.lParam).hwnd;
 
-                UpdateDesigner;
+            // If the window that has changed is a control owned by our container
+            // then we must update the designer. This allows to programatically
+            // change the location of a control while making the designer handles
+            // follow it around (Mantis 4693).
+            // For this to work properly, we MUST udpate the bounds of the
+            // control before calling UpdateDesigner because the VCL has not yet
+            // processed the WM_WINDOWPOSCHANGED message when this code executes.
+            // If we did not, the designer would use the previous position of the
+            // control to display the handles.
+            for I := 0 to Container.ComponentCount - 1 do
+            begin
+              if Container.Components[I] is TWinControl then
+              begin
+                Control := TAccessWinControl(Container.Components[I]);
+                if PosChangedHandle = Control.Handle then
+                begin
+                  if not (csDestroyingHandle in Control.ControlState) then
+                    {$IFDEF DELPHI10_UP}
+                    Control.UpdateBounds;
+                    {$ELSE}
+                    SendMessage(Control.Handle, AMsg.Msg, AMsg.wParam, AMsg.lParam);
+                    {$ENDIF DELPHI10_UP}
+
+                  UpdateDesigner;
+                end;
               end;
             end;
           end;
 
-          // Must return False to let the VCL do its own work of placing the window 
+          // Must return False to let the VCL do its own work of placing the window
           Result := False;
         end;
       else
