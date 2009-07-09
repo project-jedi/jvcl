@@ -1387,10 +1387,13 @@ begin
   GetWindowPlacement(Wnd, @Placement);
   ExStyle := GetWindowLong(Wnd, GWL_EXSTYLE);
   FHasSmallCaption := ExStyle and WS_EX_TOOLWINDOW = WS_EX_TOOLWINDOW;
-  if (not IsThemed) and (Placement.showCmd = SW_SHOWMINIMIZED) then
-    FHasSmallCaption := False;
   {$IFDEF JVCLThemesEnabled}
+  if not IsThemed and (Placement.showCmd = SW_SHOWMINIMIZED) then
+    FHasSmallCaption := False;
   FCaptionActive := (GetActiveWindow = Wnd) and IsForegroundTask;
+  {$ELSE}
+  if Placement.showCmd = SW_SHOWMINIMIZED then
+    FHasSmallCaption := False;
   {$ENDIF JVCLThemesEnabled}
 
   if (Style and WS_THICKFRAME = WS_THICKFRAME) and (Placement.showCmd <> SW_SHOWMINIMIZED) then
