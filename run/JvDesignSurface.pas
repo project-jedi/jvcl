@@ -865,7 +865,7 @@ begin
         Result := Controller.KeyUp(VirtKey);
       WM_WINDOWPOSCHANGED:
         begin
-          if AMsg.lParam > 0 then
+          if AMsg.lParam <> 0 then
           begin
             PosChangedHandle := PWindowPos(AMsg.lParam).hwnd;
 
