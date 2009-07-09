@@ -83,7 +83,7 @@ end;
 
 procedure TForm1.SendMessagetoPlugins1Click(Sender: TObject);
 begin
-   uilPluginManager.SendMessage(1000, InputBox('Enter message to send to plugin', 'Message', 'Your message here'));
+   uilPluginManager.BroadcastMessage(1000, InputBox('Enter message to send to plugin', 'Message', 'Your message here'));
 end;
 
 procedure TForm1.uilPluginManagerNewCommand(Sender: TObject; ACaption,
