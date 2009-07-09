@@ -62,6 +62,7 @@ type
     FOperation: TJvSHFileOpType;
     FOptions: TJvSHFileOptions;
     FTitle: string;
+    FLastErrorMsg: string;
     FOnFileMapping: TJvShFileMappingEvent;
     function GetSourceFiles: TStrings;
     function GetDestFiles: TStrings;
@@ -76,6 +77,9 @@ type
     function Execute: Boolean; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    // Returns the last error message when Execute has failed
+    property LastErrorMsg: string read FLastErrorMsg;
   published
     // the files to perform the operation on (one file on each row).
     // Filenames can contain wildcards
@@ -182,7 +186,13 @@ begin
     wFunc := AOperation[FOperation];
     Wnd := GetWinHandle; // (Owner as TForm).Handle;
   end;
+  FLastErrorMsg := EmptyStr;
   Result := SHFileOperation(SFOS) = 0;
+
+  // If SHFileOperation fails save error message
+  if not Result then
+    FLastErrorMsg := SysErrorMessage(GetLastError);
+
   Result := Result and not SFOS.fAnyOperationsAborted;
 
   PNameMapping := Pointer(SFOS.hNameMappings);
