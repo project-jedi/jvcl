@@ -67,9 +67,6 @@ uses
   {$IFDEF HAS_UNIT_TYPES}
   Types,
   {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF CLR}
-  WinUtils,
-  {$ENDIF CLR}
   Windows, Messages, Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
   StdCtrls, Forms, Contnrs,
   JvTypes, {JvTypes contains Exception base class}
@@ -615,9 +612,6 @@ const
 implementation
 
 uses
-  {$IFDEF CLR}
-  System.Reflection,
-  {$ENDIF CLR}
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
@@ -636,9 +630,7 @@ uses
 {$R JvDBGrid.res}
 
 type
-  {$IFNDEF CLR}
   TBookmarks = class(TBookmarkList);
-  {$ENDIF ~CLR}
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
     gpNotEmpty, gpMarkDown, gpMarkUp, gpChecked, gpUnChecked, gpPopup);
   {$IFNDEF COMPILER7_UP}
@@ -646,7 +638,7 @@ type
   {$ENDIF ~COMPILER7_UP}
 
 const
-  GridBmpNames: array [TGridPicture] of {$IFDEF CLR}string{$ELSE}PChar{$ENDIF} =
+  GridBmpNames: array [TGridPicture] of PChar =
   ('JvDBGridBLOB', 'JvDBGridMEMO', 'JvDBGridPICT', 'JvDBGridOLE', 'JvDBGridOBJECT',
     'JvDBGridDATA', 'JvDBGridNOTEMPTY', 'JvDBGridSMDOWN', 'JvDBGridSMUP',
     'JvDBGridCHECKED', 'JvDBGridUNCHECKED', 'JvDBGridPOPUP');
@@ -880,11 +872,7 @@ procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 
   function Selection: TSelection;
   begin
-    {$IFDEF CLR}
-    SendGetIntMessage(Handle, EM_GETSEL, Result.StartPos, Result.EndPos);
-    {$ELSE}
     SendMessage(Handle, EM_GETSEL, WPARAM(@Result.StartPos), LPARAM(@Result.EndPos));
-    {$ENDIF CLR}
   end;
 
   function CaretPos: Integer;
@@ -1280,11 +1268,7 @@ procedure TJvDBGrid.GotoSelection(Index: Longint);
 begin
   if MultiSelect and DataLink.Active and (Index < SelectedRows.Count) and
     (Index >= 0) then
-    {$IFDEF CLR}
-    DataLink.DataSet.Bookmark := SelectedRows[Index];
-    {$ELSE}
     DataLink.DataSet.GotoBookmark(Pointer(SelectedRows[Index]));
-    {$ENDIF}
 end;
 
 procedure TJvDBGrid.LayoutChanged;
@@ -1471,30 +1455,19 @@ var
       begin
         if not FSelecting then
         begin
-          {$IFDEF CLR}
-          FSelectionAnchor := GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr;
-          {$ELSE}
           FSelectionAnchor := TBookmarks(SelectedRows).CurrentRow;
-          {$ENDIF CLR}
           SelectedRows.CurrentRowSelected := True;
           FSelecting := True;
           AddAfter := True;
         end
         else
         begin
-          {$IFDEF CLR}
-          AddAfter := DataSource.DataSet.CompareBookmarkStr(GetNonPublicProperty(SelectedRows, 'CurrentRow') as TBookmarkStr,
-            FSelectionAnchor) <> -Direction;
-          if AddAfter then
-            SelectedRows.CurrentRowSelected := False;
-          {$ELSE}
           with TBookmarks(SelectedRows) do
           begin
             AddAfter := Compare(CurrentRow, FSelectionAnchor) <> -Direction;
             if not AddAfter then
               CurrentRowSelected := False;
           end;
-          {$ENDIF CLR}
         end;
       end
       else
@@ -1759,9 +1732,6 @@ end;
 procedure TJvDBGrid.SetOptions(Value: TDBGridOptions);
 var
   NewOptions: TGridOptions;
-  {$IFDEF CLR}
-  OptionsProp: PropertyInfo;
-  {$ENDIF CLR}
 begin
   { The AlwaysShowEditor option is not compatible with the custom inplace edit
     controls. But if the EditorMode is set to True in ColEnter() it emulates the
@@ -1769,13 +1739,7 @@ begin
   inherited Options := Value - [dgMultiSelect, dgAlwaysShowEditor];
   FAlwaysShowEditor := dgAlwaysShowEditor in Value;
 
-  {$IFDEF CLR}
-  { TJvDBGrid - TDBGrid - TCustomGrid }
-  OptionsProp := Self.GetType.BaseType.BaseType.GetProperty('Options', BindingFlags.NonPublic or BindingFlags.Instance);
-  NewOptions := OptionsProp.GetValue(Self, []) as TGridOptions;
-  {$ELSE}
   NewOptions := TDrawGrid(Self).Options;
-  {$ENDIF CLR}
   {
   if FTitleButtons then
   begin
@@ -1792,11 +1756,7 @@ begin
       NewOptions := NewOptions - [goFixedVertLine];
     if not (dgRowLines in Value) then
       NewOptions := NewOptions - [goFixedHorzLine];
-    {$IFDEF CLR}
-    OptionsProp.SetValue(Self, TObject(NewOptions), []); 
-    {$ELSE}
     TDrawGrid(Self).Options := NewOptions;
-    {$ENDIF CLR}
   end;
   SetMultiSelect(dgMultiSelect in Value);
 end;
@@ -1820,13 +1780,6 @@ begin
 end;
 
 procedure TJvDBGrid.Paint;
-{$IFDEF CLR}
- {$IFDEF JVCLThemesEnabled}
-var
-  OptionsProp: PropertyInfo;
-  NewOptions: TGridOptions;
- {$ENDIF JVCLThemesEnabled}
-{$ENDIF CLR}
 begin
   if Assigned(FOnBeforePaint) then
     FOnBeforePaint(Self);
@@ -1835,15 +1788,7 @@ begin
   begin
     // reset the inherited options but remove the goFixedVertLine and goFixedHorzLine values
     // as that causes the titles and indicator panels to have a black border
-    {$IFDEF CLR}
-    { TJvDBGrid - TDBGrid - TCustomGrid }
-    OptionsProp := Self.GetType.BaseType.BaseType.GetProperty('Options', BindingFlags.NonPublic or BindingFlags.Instance);
-    NewOptions := OptionsProp.GetValue(Self, []) as TGridOptions;
-    NewOptions := NewOptions - [goFixedVertLine, goFixedHorzLine];
-    OptionsProp.SetValue(Self, TObject(NewOptions), []);
-    {$ELSE}
     TStringGrid(Self).Options := TStringGrid(Self).Options - [goFixedVertLine, goFixedHorzLine];
-    {$ENDIF CLR}
   end;
   {$ENDIF JVCLThemesEnabled}
   inherited Paint;
@@ -1975,7 +1920,7 @@ function TJvDBGrid.CanEditShow: Boolean;
       if not Assigned(EditControl) then
       begin
         Control.FieldName := '';
-        raise EJVCLDbGridException.CreateRes({$IFNDEF CLR}@{$ENDIF}RsEJvDBGridControlPropertyNotAssigned);
+        raise EJVCLDbGridException.CreateRes(@RsEJvDBGridControlPropertyNotAssigned);
       end;
       if IsPublishedProp(EditControl, 'ReadOnly') then
       begin
@@ -2187,11 +2132,7 @@ begin
   begin
     Dec(FDisableCount);
     if (FDisableCount = 0) and DataLink.Active then
-      {$IFDEF CLR}
-      InvokeNonPublicMethod(DataLink, 'DataSetScrolled', [0]);
-      {$ELSE}
       TGridDataLinkAccessProtected(DataLink).DataSetScrolled(0);
-      {$ENDIF CLR}
   end;
 end;
 
@@ -2483,18 +2424,10 @@ begin
                     DisableControls;
                     try
                       lNewSelected := Bookmark;
-                      {$IFDEF CLR}
-                      lCompare := CompareBookmarkStr(lNewSelected, lLastSelected);
-                      {$ELSE}
                       lCompare := CompareBookmarks(Pointer(lNewSelected), Pointer(lLastSelected));
-                      {$ENDIF CLR}
                       if lCompare > 0 then
                       begin
-                        {$IFDEF CLR}
-                        Bookmark := lLastSelected;
-                        {$ELSE}
                         GotoBookmark(Pointer(lLastSelected));
-                        {$ENDIF CLR}
                         Next;
                         while not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
@@ -2505,11 +2438,7 @@ begin
                       else
                       if lCompare < 0 then
                       begin
-                        {$IFDEF CLR}
-                        Bookmark := lLastSelected;
-                        {$ELSE}
                         GotoBookmark(Pointer(lLastSelected));
-                        {$ENDIF CLR}
                         Prior;
                         while not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
@@ -2676,11 +2605,7 @@ begin
   Result := True;
   Form := GetParentForm(Self);
   if Form <> nil then
-    {$IFDEF CLR}
-    if Form.KeyPreview and Boolean(InvokeNonPublicMethod(Form, 'DoKeyPress', [Msg])) then
-    {$ELSE}
     if Form.KeyPreview and TWinControlAccessProtected(Form).DoKeyPress(Msg) then
-    {$ENDIF CLR}
       Exit;
 
   with Msg do
@@ -2807,7 +2732,7 @@ begin
       begin
         if DataType in [db.ftFloat{$IFDEF COMPILER12_UP},db.ftExtended{$ENDIF COMPILER12_UP}] then
           if CharInSet(Key, ['.', ',']) then
-            Key := DecimalSeparator{$IFDEF CLR}[1]{$ENDIF};
+            Key := DecimalSeparator;
 
         if CharInSet(Key, CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
@@ -2921,11 +2846,7 @@ var
         FillRect(B);
       end;
       SetBkMode(Handle, TRANSPARENT);
-      {$IFDEF CLR}
-      Windows.DrawText(Handle, Text, Length(Text), R, DrawOptions);
-      {$ELSE}
       Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
-      {$ENDIF CLR}
     end;
   end;
 
@@ -3072,13 +2993,8 @@ begin
     begin
       CalcRect := TextRect;
       Dec(CalcRect.Right, MinOffs + 1);
-      {$IFDEF CLR}
-      Windows.DrawText(Canvas.Handle, Caption, -1, CalcRect,
-        DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
-      {$ELSE}
       Windows.DrawText(Canvas.Handle, PChar(Caption), -1, CalcRect,
         DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
-      {$ENDIF CLR}
       if CalcRect.Bottom > TextRect.Bottom then
       begin
         TitleOptions := DT_END_ELLIPSIS or DT_SINGLELINE;
@@ -4215,17 +4131,9 @@ var
   AtCursorPosition: Boolean;
   CalcOptions: Integer;
   HintRect: TRect;
-  {$IFDEF CLR}
-  HintInfo: THintInfo;
-  {$ENDIF CLR}
 begin
   AtCursorPosition := True;
-  {$IFDEF CLR}
-  HintInfo := Msg.HintInfo;
-  with HintInfo do
-  {$ELSE}
   with Msg.HintInfo^ do
-  {$ENDIF CLR}
   begin
     HintStr := GetShortHint(Hint);
     ATimeOut := HideTimeOut;
@@ -4313,11 +4221,7 @@ begin
         if HintStr <> '' then
         begin
           HintRect := Rect(0, 0, Columns[ACol].Width - 4, 0);
-          {$IFDEF CLR}
-          Windows.DrawText(Canvas.Handle, HintStr, -1, HintRect, CalcOptions);
-          {$ELSE}
           Windows.DrawText(Canvas.Handle, PChar(HintStr), -1, HintRect, CalcOptions);
-          {$ENDIF CLR}
           if ((HintRect.Bottom - HintRect.Top + 2) < RowHeights[ARow + 1]) and
             ((HintRect.Right - HintRect.Left) < Columns[ACol].Width - 2) then
             HintStr := '';
@@ -4338,9 +4242,6 @@ begin
       HintPos := ClientToScreen(CursorRect.TopLeft);
     end;
   end;
-  {$IFDEF CLR}
-  Msg.HintInfo := HintInfo;
-  {$ENDIF CLR}
   inherited;
 end;
 
@@ -4528,20 +4429,11 @@ procedure TJvDBGrid.ControlWndProc(var Message: TMessage);
 var
   EscapeKey: Boolean;
   CurrentEditor: TJvDBGridControl;
-  {$IFDEF CLR}
-  MsgKey: TWMKey;
-  {$ENDIF CLR}
 begin
   if Message.Msg = WM_CHAR then
   begin
-    {$IFDEF CLR}
-    MsgKey := TWMKey.Create(Message);
-    if not DoKeyPress(MsgKey) then
-      with MsgKey do
-    {$ELSE}
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
-    {$ENDIF CLR}
       begin
         CurrentEditor := FControls.ControlByName(FCurrentControl.Name);
         if (CharCode = VK_RETURN) and (PostOnEnterKey or CurrentEditor.LeaveOnEnterKey) then

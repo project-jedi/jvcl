@@ -195,7 +195,7 @@ end;
 procedure TJvBitBtn.CNDrawItem(var Msg: TWMDrawItem);
 begin
   inherited;
-  DrawItem(Msg.DrawItemStruct{$IFNDEF CLR}^{$ENDIF});
+  DrawItem(Msg.DrawItemStruct^);
 end;
 
 procedure TJvBitBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);

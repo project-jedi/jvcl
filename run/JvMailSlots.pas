@@ -136,7 +136,7 @@ begin
   // IMO Immediate return is better (no chance of hang up)
   FHandle := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), High(Word), 0 , nil);
   if FHandle = INVALID_HANDLE_VALUE then
-    raise Exception.CreateRes({$IFNDEF CLR}@{$ENDIF}RsJvMailSlotServerErrorCreatingChan);
+    raise Exception.CreateRes(@RsJvMailSlotServerErrorCreatingChan);
   FTimer.Enabled := True;
 end;
 
@@ -182,7 +182,7 @@ begin
     else
       // default error notification; not recommended:
       // if error is permanent it will produce endless exceptions in timer
-      raise Exception.CreateRes({$IFNDEF CLR}@{$ENDIF}RsJvMailSlotServerErrorGatheringInf);
+      raise Exception.CreateRes(@RsJvMailSlotServerErrorGatheringInf);
   end
   else
   begin
@@ -205,7 +205,7 @@ begin
         else
           // default error notification; not recommended:
           // if error is permanent it will produce endless exceptions in timer
-          raise Exception.CreateRes({$IFNDEF CLR}@{$ENDIF}RsJvMailSlotServerErrorReadingMessa);
+          raise Exception.CreateRes(@RsJvMailSlotServerErrorReadingMessa);
       end;
     end;
   end;

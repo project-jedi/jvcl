@@ -46,9 +46,7 @@ type
     function Get(Index: Integer): PPropInfo;
   public
     constructor Create(AObject: TObject; Filter: TTypeKinds);
-    {$IFNDEF CLR}
     destructor Destroy; override;
-    {$ENDIF !CLR}
     function Contains(P: PPropInfo): Boolean;
     function Find(const AName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP}): PPropInfo;
     procedure Delete(Index: Integer);
@@ -123,16 +121,10 @@ begin
   inherited Create;
   if AObject <> nil then
   begin
-    {$IFDEF CLR}
-    FList := GetPropList(AObject.ClassInfo, Filter);
-    FCount := Length(FList);
-    FSize := FCount * SizeOf(IntPtr);
-    {$ELSE}
     FCount := GetPropList(AObject.ClassInfo, Filter, nil);
     FSize := FCount * SizeOf(Pointer);
     GetMem(FList, FSize);
     GetPropList(AObject.ClassInfo, Filter, FList);
-    {$ENDIF CLR}
   end
   else
   begin
@@ -141,21 +133,19 @@ begin
   end;
 end;
 
-{$IFNDEF CLR}
 destructor TJvPropInfoList.Destroy;
 begin
   if FList <> nil then
     FreeMem(FList, FSize);
   inherited Destroy;
 end;
-{$ENDIF !CLR}
 
 function TJvPropInfoList.Contains(P: PPropInfo): Boolean;
 var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    with FList[I]{$IFNDEF CLR}^{$ENDIF} do
+    with FList[I]^ do
       if (PropType = P.PropType) and ({$IFDEF RTL200_UP}AnsiStrings.{$ENDIF RTL200_UP}CompareText(Name, P.Name) = 0) then
       begin
         Result := True;
@@ -169,7 +159,7 @@ var
   I: Integer;
 begin
   for I := 0 to FCount - 1 do
-    with FList[I]{$IFNDEF CLR}^{$ENDIF} do
+    with FList[I]^ do
       if {$IFDEF RTL200_UP}AnsiStrings.{$ENDIF RTL200_UP}CompareText(Name, AName) = 0 then
       begin
         Result := FList[I];
@@ -179,19 +169,10 @@ begin
 end;
 
 procedure TJvPropInfoList.Delete(Index: Integer);
-{$IFDEF CLR}
-var
-  I: Integer;
-{$ENDIF CLR}
 begin
   Dec(FCount);
   if Index < FCount then
-    {$IFDEF CLR}
-    for I := 0 to (FCount - Index) - 1 do
-      FList[Index + I] := FList[Index + 1 + I];
-    {$ELSE}
     Move(FList[Index + 1], FList[Index], (FCount - Index) * SizeOf(Pointer));
-    {$ENDIF CLR}
 end;
 
 function TJvPropInfoList.Get(Index: Integer): PPropInfo;

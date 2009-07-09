@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -189,16 +189,6 @@ begin
 end;
 
 function TJvTranslateString.GetVersionInfoAppName: string;
-{$IFDEF CLR} // todo: TJclFileVersionInfo for .NET
-begin
-  if not FAppNameHandled then
-  begin
-    FAppName := cDefaultAppName;
-    FAppNameHandled := True;
-  end;
-  Result := FAppName;
-end;
-{$ELSE}
 var
   VersionInfo: TJclFileVersionInfo;
 begin
@@ -226,19 +216,8 @@ begin
     raise;
   end;
 end;
-{$ENDIF CLR}
 
 function TJvTranslateString.GetVersionInfoFileVersion: string;
-{$IFDEF CLR} // todo: TJclFileVersionInfo for .NET
-begin
-  if not FFileVersionHandled then
-  begin
-    FFileVersion := cDefaultVersion;
-    FFileVersionHandled := True;
-  end;
-  Result := FFileVersion;
-end;
-{$ELSE}
 var
   VersionInfo: TJclFileVersionInfo;
 begin
@@ -266,19 +245,8 @@ begin
     raise;
   end;
 end;
-{$ENDIF CLR}
 
 function TJvTranslateString.GetVersionInfoProductVersion: string;
-{$IFDEF CLR} // todo: TJclFileVersionInfo for .NET
-begin
-  if not FProductVersionHandled then
-  begin
-    FProductVersion := cDefaultVersion;
-    FProductVersionHandled := True;
-  end;
-  Result := FProductVersion;
-end;
-{$ELSE}
 var
   VersionInfo: TJclFileVersionInfo;
 begin
@@ -306,19 +274,8 @@ begin
     raise;
   end;
 end;
-{$ENDIF CLR}
 
 function TJvTranslateString.GetVersionInfoCompanyName: string;
-{$IFDEF CLR} // todo: TJclFileVersionInfo for .NET
-begin
-  if not FCompanyNameHandled then
-  begin
-    FCompanyName := cDefaultCompanyName;
-    FCompanyNameHandled := True;
-  end;
-  Result := FCompanyName;
-end;
-{$ELSE}
 var
   VersionInfo: TJclFileVersionInfo;
 begin
@@ -346,7 +303,6 @@ begin
     raise;
   end;
 end;
-{$ENDIF CLR}
 
 function TJvTranslateString.ProcessCommand(const Command: string; var CommandResult: string): Boolean;
 var

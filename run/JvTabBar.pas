@@ -35,9 +35,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   ExtCtrls,
-  {$IFDEF CLR}
-  Types,
-  {$ENDIF CLR}
   SysUtils, Classes, Contnrs,
   JvVCL5Utils, JvThemes;
 

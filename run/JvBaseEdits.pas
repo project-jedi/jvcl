@@ -39,9 +39,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF CLR}
-  WinUtils, Variants,
-  {$ENDIF CLR}
   Windows, Messages, Classes, Controls, ImgList,
   JvToolEdit;
 
@@ -87,7 +84,7 @@ type
   protected
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure SetBeepOnError(Value: Boolean); override;
-    procedure SetText(const AValue: string); {$IFDEF CLR} reintroduce; {$ENDIF} virtual;
+    procedure SetText(const AValue: string); virtual;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -333,35 +330,15 @@ var
 type
   TJvPopupWindowAccessProtected = class(TJvPopupWindow);
 
-{$IFDEF CLR}
-function DecimalSeparator: AnsiChar;
-begin
-  Result := AnsiChar(SysUtils.DecimalSeparator[1]);
-end;
-
-function ThousandSeparator: Char;
-begin
-  Result := SysUtils.ThousandSeparator[1];
-end;
-{$ENDIF CLR}
-
 function IsValidFloat(const Value: string; var RetValue: Extended): Boolean;
 var
   I: Integer;
-  {$IFDEF CLR}
-  d: Double;
-  {$ENDIF CLR}
 begin
   Result := False;
   for I := 1 to Length(Value) do
     if not CharInSet(Value[I], [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
-  {$IFDEF CLR}
-  Result := TryStrToFloat(Value, d);
-  RetValue := d;
-  {$ELSE}
   Result := TextToFloat(PChar(Value), RetValue, fvExtended);
-  {$ENDIF CLR}
 end;
 
 function FormatFloatStr(const S: string; Thousands: Boolean): string;
@@ -379,11 +356,7 @@ begin
   I := Pos(DecimalSeparator, S);
   if I > 0 then
     MaxSym := I - 1;
-  {$IFDEF CLR}
-  I := Pos('E', UpperCase(S));
-  {$ELSE}
   I := Pos('E', AnsiUpperCase(S));
-  {$ENDIF CLR}
   if I > 0 then
     MaxSym := Min(I - 1, MaxSym);
   Result := Copy(S, MaxSym + 1, MaxInt);
@@ -736,11 +709,7 @@ begin
       end;
     end;
     if RaiseOnError and (Result <> NewValue) then
-      {$IFDEF CLR}
-      raise ERangeError.CreateFmt(RsEOutOfRangeXFloat,
-      {$ELSE}
       raise ERangeError.CreateResFmt(@RsEOutOfRangeXFloat,
-      {$ENDIF CLR}
         [DecimalPlaces, FMinValue, DecimalPlaces, FMaxValue]);
   end;
 end;

@@ -205,11 +205,7 @@ var
 begin
 
   if not Assigned(AGraphic) or (AGraphic.Width = 0) or (AGraphic.Height = 0) then
-    {$IFDEF CLR}
-    raise EJvWizardError.Create(RsETilingError);
-    {$ELSE}
     raise EJvWizardError.CreateRes(@RsETilingError);
-    {$ENDIF CLR}
   // Create a temporary bitmap to draw into. This is both to speed things up a bit
   // and also to clip the image to the ARect param (using Draw doesn't clip the image,
   // but it does support auto-detecting transparency)

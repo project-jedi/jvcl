@@ -109,11 +109,7 @@ constructor TJvCaret.Create(Owner: TWinControl);
 begin
   inherited Create;
   if not Assigned(Owner) then
-    {$IFDEF CLR}
-    raise EJVCLException.CreateFmt(RsEInvalidCaretOwner, [ClassName]);
-    {$ELSE}
     raise EJVCLException.CreateResFmt(@RsEInvalidCaretOwner, [ClassName]);
-    {$ENDIF CLR}
   FCaretOwner := Owner;
   FCaretBitmap := TBitmap.Create;
 end;

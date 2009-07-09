@@ -840,7 +840,7 @@ begin
   if (Parent <> nil) and Parent.HandleAllocated then
   begin
     R := BoundsRect;
-    InvalidateRect(Parent.Handle, {$IFNDEF CLR}@{$ENDIF}R, True);
+    InvalidateRect(Parent.Handle, @R, True);
   end;
   Repaint;
 end;

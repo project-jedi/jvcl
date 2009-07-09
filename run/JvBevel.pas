@@ -466,7 +466,7 @@ begin
   // set ourselves, replacing the fsd prefix by be before reading the value
   try
     if Reader.ReadValue <> vaSet then
-      raise EReadError.CreateRes({$IFNDEF CLR}@{$ENDIF}SInvalidPropertyValue);
+      raise EReadError.CreateRes(@SInvalidPropertyValue);
 
     EnumType := TypeInfo(TBevelEdge);
     Edges := [];
@@ -479,7 +479,7 @@ begin
       EnumName := StringReplace(EnumName, 'fsd', 'be', []);
       Value := GetEnumValue(EnumType, EnumName);
       if Value = -1 then
-        raise EReadError.CreateRes({$IFNDEF CLR}@{$ENDIF}SInvalidPropertyValue);
+        raise EReadError.CreateRes(@SInvalidPropertyValue);
 
       Include(FEdges, TBevelEdge(Value));
     end;

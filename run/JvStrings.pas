@@ -227,9 +227,6 @@ implementation
 
 uses
   JclBase,
-  {$IFDEF CLR}
-  WinUtils,
-  {$ENDIF CLR}
   {$IFDEF RTL200_UP}
   AnsiStrings,
   {$ENDIF RTL200_UP}
@@ -284,11 +281,7 @@ procedure SaveString(const AFile, AText: string);
 begin
   with TFileStream.Create(AFile, fmCreate) do
   try
-    {$IFDEF CLR}
-    WriteStringAnsiBuffer(AText);
-    {$ELSE}
     WriteBuffer(AText[1], Length(AText));
-    {$ENDIF CLR}
   finally
     Free;
   end;
@@ -300,12 +293,8 @@ var
 begin
   with TFileStream.Create(AFile, fmOpenRead) do
   try
-    {$IFDEF CLR}
-    ReadStringAnsiBuffer(S, Size);
-    {$ELSE}
     SetLength(S, Size);
     ReadBuffer(S[1], Size);
-    {$ENDIF CLR}
   finally
     Free;
   end;
@@ -1066,11 +1055,7 @@ begin
   if Ext = 'HTM' then
     Ext := 'HTML';
   AFile := SysUtils.ChangeFileExt(AFile, '');
-  {$IFDEF CLR}
-  ResStream := TResourceStream.Create(HInstance, AFile, Ext);
-  {$ELSE}
   ResStream := TResourceStream.Create(HInstance, PChar(AFile), PChar(Ext));
-  {$ENDIF CLR}
   try
     MemStream.CopyFrom(ResStream, ResStream.Size);
   finally
@@ -1142,15 +1127,6 @@ begin
 end;
 
 function PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
-{$IFDEF CLR}
-begin
-  if (FindString = nil) or (FindString <> '') or
-     (SourceString = nil) or (SourceString = '') then
-    Result := 0
-  else
-    Result := SourceString.IndexOf(FindString, StartPos - 1) + 1;
-end;
-{$ELSE}
 asm
         PUSH    ESI
         PUSH    EDI
@@ -1199,18 +1175,8 @@ asm
         POP     EDI
         POP     ESI
 end;
-{$ENDIF CLR}
 
 function PosText(const FindString, SourceString: string; StartPos: Integer): Integer;
-{$IFDEF CLR}
-begin
-  if (FindString = nil) or (FindString <> '') or
-     (SourceString = nil) or (SourceString = '') then
-    Result := 0
-  else
-    Result := SourceString.IndexOf(FindString, StartPos - 1, StringComparison.OrdinalIgnoreCase) + 1;
-end;
-{$ELSE}
 asm
         PUSH    ESI
         PUSH    EDI
@@ -1270,7 +1236,6 @@ asm
         POP     EDI
         POP     ESI
 end;
-{$ENDIF CLR}
 
 function GetBoolValue(const AText, AName: string): Boolean;
 begin
@@ -1407,20 +1372,6 @@ begin
     Names.Free;
   end;
 end;
-
-{$IFDEF CLR}
-
-function B64Encode(const S: AnsiString): AnsiString;
-begin
-  Result := System.Convert.ToBase64String(BytesOf(S));
-end;
-
-function B64Decode(const S: AnsiString): AnsiString;
-begin
-  Result := System.Convert.FromBase64String(S);
-end;
-
-{$ELSE}
 
 function B64Encode(const S: AnsiString): AnsiString;
 var
@@ -1664,8 +1615,6 @@ begin
   end;
   Result := RetValue;
 end;
-
-{$ENDIF CLR}
 
 {*******************************************************
  * Standard Encryption algorithm - Copied from Borland *

@@ -476,11 +476,6 @@ var
 begin
   Result := '';
   Data := GetTypeData(Instance.ClassInfo);
-{$IFDEF CLR}
-  PropList := GetPropInfos(Instance.ClassInfo);
-  PropInfo := PropList[Index];
-  Result := PropInfo.Name;
-{$ELSE}
   GetMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   try
     GetPropInfos(Instance.ClassInfo, PropList);
@@ -489,7 +484,6 @@ begin
   finally
     FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   end;
-{$ENDIF CLR}
 end;
 
 procedure TJvCustomPropertyStore.CloneClassProperties(Src, Dest: TPersistent);
@@ -500,11 +494,7 @@ var
 
   function GetPropKind(PropInfo: PPropInfo): TTypeKind;
   begin
-{$IFDEF CLR}
-    Result := PropInfo.TypeKind;
-{$ELSE}
     Result := PropInfo.PropType^.Kind;
-{$ENDIF CLR}
   end;
 
 begin
@@ -861,7 +851,7 @@ begin
         end
       else
         raise
-          Exception.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
+          Exception.CreateResFmt(@RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
     finally
       FreeAndNil(Mutex);
     end;
@@ -933,7 +923,7 @@ begin
         end
       else
         raise
-          Exception.CreateResFmt({$IFNDEF CLR}@{$ENDIF}RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
+          Exception.CreateResFmt(@RsJvPropertyStoreEnterMutexTimeout, [RsJvPropertyStoreMutexStorePropertiesProcedureName]);
     finally
       FreeAndNil(Mutex);
     end;

@@ -141,7 +141,7 @@ begin
 
       Result := TextWidth(Value) > Length;
       while (Value <> '') and (TextWidth(Value) > Length) do
-        Delete(Value, {$IFDEF CLR}Borland.Delphi.{$ENDIF}System.Length(Value), 1);
+        Delete(Value, System.Length(Value), 1);
     finally
       Free;
     end;

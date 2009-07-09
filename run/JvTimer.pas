@@ -106,9 +106,6 @@ type
   public
     constructor Create(Timer: TJvTimer; Enabled: Boolean);
     destructor Destroy; override;
-    {$IFDEF CLR}
-    procedure Synchronize(Method: TThreadMethod); // makes method public
-    {$ENDIF CLR}
     property Terminated;
 
     property Paused: Boolean read GetPaused write SetPaused;
@@ -141,13 +138,6 @@ begin
       Resume;
   end;
 end;
-
-{$IFDEF CLR}
-procedure TJvTimerThread.Synchronize(Method: TThreadMethod);
-begin
-  inherited Synchronize(Method);
-end;
-{$ENDIF CLR}
 
 destructor TJvTimerThread.Destroy;
 begin

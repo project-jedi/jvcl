@@ -105,9 +105,6 @@ implementation
 
 uses
   SysUtils,
-  {$IFDEF CLR}
-  Variants,
-  {$ENDIF CLR}
   JvConsts, JvResources, JvJVCLUtils;
 
 constructor TJvAppStorageSelectList.Create(AOwner: TComponent);
@@ -221,11 +218,7 @@ var
   ITmpDblClick: IJvDynControlDblClick;
 begin
   if not Assigned(DynControlEngine) then
-    {$IFDEF CLR}
-    raise EJVCLException.Create(RsEDynControlEngineNotDefined);
-    {$ELSE}
     raise EJVCLException.CreateRes(@RsEDynControlEngineNotDefined);
-    {$ENDIF CLR}
 
   Operation := AOperation;
   FreeAndNil(FSelectDialog);
@@ -320,11 +313,7 @@ function TJvAppStorageSelectList.GetSelectListPath(AOperation: TJvAppStorageSele
   ACaption: string = ''): string;
 begin
   if not Assigned(AppStorage) then
-    {$IFDEF CLR}
-    raise EJVCLException.Create(RsEDynAppStorageNotDefined);
-    {$ELSE}
     raise EJVCLException.CreateRes(@RsEDynAppStorageNotDefined);
-    {$ENDIF CLR}
   try
     LoadSelectList;
     CreateDlg(AOperation, ACaption);

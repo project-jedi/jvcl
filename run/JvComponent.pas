@@ -112,22 +112,14 @@ constructor TJvForm.Create(AOwner: TComponent);
 begin
 //  inherited Create(AOwner);
   CreateNew(AOwner, 0);
-  {$IFDEF CLR}
-  GlobalNameSpace.AcquireWriterLock(MaxInt);
-  {$ELSE}
   GlobalNameSpace.BeginWrite;
-  {$ENDIF CLR}
   try
     if (ClassType <> TJvForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
       try
         if not InitInheritedComponent(Self, TJvForm) then
-          {$IFDEF CLR}
-          raise EResNotFound.CreateFmt(SResNotFound, [ClassName]);
-          {$ELSE}
           raise EResNotFound.CreateResFmt(@SResNotFound, [ClassName]);
-         {$ENDIF CLR}
 
         {$IFDEF USE_DXGETTEXT}
         TranslateComponent(Self, cDomainName);
@@ -135,17 +127,11 @@ begin
       finally
         Exclude(FFormState, fsCreating);
       end;
-      {$IFNDEF CLR}
       if OldCreateOrder then
-      {$ENDIF !CLR}
         DoCreate;
     end;
   finally
-    {$IFDEF CLR}
-    GlobalNameSpace.ReleaseWriterLock;
-    {$ELSE}
     GlobalNameSpace.EndWrite;
-    {$ENDIF CLR}
   end;
 end;
 
@@ -264,11 +250,7 @@ begin
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
           FSearchText := FSearchText + Key;
-        {$IFNDEF CLR}
         SendMessage(Handle, LB_SELECTSTRING, WPARAM(-1), LPARAM(PChar(FSearchText)));
-        {$ELSE}
-        SendTextMessage(Handle, LB_SELECTSTRING, WPARAM(-1), FSearchText);
-        {$ENDIF !CLR}
         Key := #0;
       end;
   end;

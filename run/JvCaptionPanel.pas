@@ -46,9 +46,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF CLR}
-  Types,
-  {$ENDIF CLR}
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvComponent, JvExtComponent, JvExControls;
 
@@ -610,11 +607,7 @@ begin
       Tf := TFont.Create;
       try
         Tf.Assign(CaptionFont);
-        {$IFDEF CLR}
-        GetObject(Tf.Handle, SizeOf(Lf), Lf);
-        {$ELSE}
         GetObject(Tf.Handle, SizeOf(Lf), @Lf);
-        {$ENDIF CLR}
         Lf.lfEscapement := Rotation * 10;
         Lf.lfOrientation := Rotation * 10;
         Lf.lfOutPrecision := OUT_TT_PRECIS;

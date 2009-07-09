@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -33,17 +33,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   ActnList, Graphics, ComCtrls, ImgList,
-  {$IFDEF CLR}
-  Variants,
-  {$ENDIF CLR}
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Dialogs,
   FileCtrl, SysUtils;
 
 type
-  {$IFDEF CLR}
-  IUnknown = IInterface;
-  {$ENDIF CLR}
-
   IJvDynControl = interface
     ['{E5A52F18-A7B2-4BE8-BAB6-D4F70A0999B3}']
     procedure ControlSetDefaultProperties;

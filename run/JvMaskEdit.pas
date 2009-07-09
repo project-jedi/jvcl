@@ -67,7 +67,7 @@ type
     procedure SetPasswordChar(const Value: Char);
     function GetPasswordChar: Char;
     function GetText: TCaption;
-    procedure SetText(const Value: TCaption); {$IFDEF CLR}reintroduce;{$ENDIF}
+    procedure SetText(const Value: TCaption);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CaretChanged(Sender: TObject); dynamic;

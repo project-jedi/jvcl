@@ -93,16 +93,6 @@ type
 
   // to have access to the protected methods
   TJclHackSimpleXML = class(TJclSimpleXML)
-  {$IFDEF CLR} // .NET does not allow the cracker classes to access protected members over assembly boundaries
-  public
-    procedure DoLoadProgress(const APosition, ATotal: Integer);
-    procedure DoSaveProgress;
-    procedure DoTagParsed(const AName: string);
-    procedure DoValueParsed(const AName, AValue: string);
-
-    procedure DoEncodeValue(var Value: string); reintroduce;
-    procedure DoDecodeValue(var Value: string); reintroduce;
-  {$ENDIF CLR}
   end;
 
   TJvSimpleXML = class(TComponent)
@@ -168,21 +158,19 @@ type
     property OnDecodeStream: TJvSimpleXMLEncodeStreamEvent read GetOnDecodeStream write SetOnDecodeStream;
   end;
 
-{$IFNDEF CLR}
 {$IFDEF COMPILER6_UP}
 type
   TXMLVariant = JclSimpleXml.TXMLVariant {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.TXMLVariant' {$ENDIF} {$ENDIF COMPILER8_UP};
 
-  TXMLVarData = JclSimpleXML.TXMLVarData {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXML.TXMLVarData' {$ENDIF} {$ENDIF COMPILER8_UP}; 
+  TXMLVarData = JclSimpleXML.TXMLVarData {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXML.TXMLVarData' {$ENDIF} {$ENDIF COMPILER8_UP};
 
 procedure XMLCreateInto(var ADest: Variant; const AXML: TJvSimpleXMLElem); deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreateInto' {$ENDIF};
 function XMLCreate(const AXML: TJvSimpleXMLElem): Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
 function XMLCreate: Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
 
-function VarXML: TVarType; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.VarXML' {$ENDIF}; 
+function VarXML: TVarType; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.VarXML' {$ENDIF};
 
 {$ENDIF COMPILER6_UP}
-{$ENDIF !CLR}
 
 // Encodes a string into an internal format:
 // any character <= #127 is preserved
@@ -247,7 +235,6 @@ begin
   JclSimpleXml.SimpleXMLDecode(Result, False);
 end;
 
-{$IFNDEF CLR}
 {$IFDEF COMPILER6_UP}
 
 function VarXML: TVarType;
@@ -271,7 +258,6 @@ begin
 end;
 
 {$ENDIF COMPILER6_UP}
-{$ENDIF ~CLR}
 
 //=== { TJvSimpleXML } =======================================================
 
@@ -484,41 +470,6 @@ procedure TJvSimpleXML.SetRoot(const Value: TJclSimpleXMLElemClassic);
 begin
   FJclSimpleXML.Root := Value;
 end;
-
-{$IFDEF CLR}
-{ TJclHackSimpleXML }
-
-procedure TJclHackSimpleXML.DoDecodeValue(var Value: string);
-begin
-  inherited DoDecodeValue(Value);
-end;
-
-procedure TJclHackSimpleXML.DoEncodeValue(var Value: string);
-begin
-  inherited DoEncodeValue(Value);
-end;
-
-procedure TJclHackSimpleXML.DoLoadProgress(const APosition, ATotal: Integer);
-begin
-  inherited DoLoadProgress(APosition, ATotal);
-end;
-
-procedure TJclHackSimpleXML.DoSaveProgress;
-begin
-  inherited DoSaveProgress;
-end;
-
-procedure TJclHackSimpleXML.DoTagParsed(const AName: string);
-begin
-  inherited DoTagParsed(AName);
-end;
-
-procedure TJclHackSimpleXML.DoValueParsed(const AName, AValue: string);
-begin
-  inherited DoValueParsed(AName, AValue);
-end;
-
-{$ENDIF CLR}
 
 initialization
   {$IFDEF UNITVERSIONING}

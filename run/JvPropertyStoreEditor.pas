@@ -552,11 +552,6 @@ var
 begin
   Result := '';
   Data := GetTypeData(Instance.ClassInfo);
-  {$IFDEF CLR}
-  PropList := GetPropInfos(Instance.ClassInfo);
-  PropInfo := PropList[Index];
-  Result := PropInfo.Name;
-  {$ELSE}
   GetMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   try
     GetPropInfos(Instance.ClassInfo, PropList);
@@ -565,7 +560,6 @@ begin
   finally
     FreeMem(PropList, Data^.PropCount * SizeOf(PPropInfo));
   end;
-  {$ENDIF CLR}
 end;
 
 procedure TJvPropertyStoreEditorControl.GotoEditObject(EditObject: TPersistent);

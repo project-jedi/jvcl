@@ -191,9 +191,6 @@ const
 implementation
 
 uses
-  {$IFDEF CLR}
-  System.Threading,
-  {$ENDIF CLR}
   Forms,
   //JclSysUtils,
   JvConsts, JvJVCLUtils;
@@ -305,11 +302,7 @@ procedure TJvImageControl.DoPaintControl;
 var
   DC: HDC;
 begin
-  {$IFDEF CLR}
-  if System.Threading.Thread.CurrentThread = MainThread then
-  {$ELSE}
   if GetCurrentThreadID = MainThreadID then
-  {$ENDIF CLR}
   begin
     Repaint;
     Exit;
