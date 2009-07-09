@@ -1306,7 +1306,7 @@ uses
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   Consts,
-  JclStrings, JclSysInfo,
+  JclStrings, JclSysInfo, JclFileUtils,
   Math;
 
 {$IFDEF CLR}
@@ -6841,11 +6841,8 @@ begin
 end;
 {$ELSE}
 {$IFDEF MSWINDOWS}
-var
-  TempDir: array [0..MAX_PATH] of Char;
 begin
-  TempDir[GetTempPath(260, TempDir)] := #0;
-  Result := TempDir;
+  Result := PathGetTempPath;
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
