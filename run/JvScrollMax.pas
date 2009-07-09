@@ -847,7 +847,10 @@ end;
 
 function TJvScrollMaxBand.CollapsedHeight: Integer;
 begin
-  Result := FButton.BoundsRect.Bottom + FButton.Top;
+  if ButtonVisible then
+    Result := FButton.BoundsRect.Bottom + FButton.Top
+  else
+    Result := 0;
 end;
 
 procedure TJvScrollMaxBand.UpdateSize(ATop: Integer);
