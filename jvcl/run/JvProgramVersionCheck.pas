@@ -1789,7 +1789,7 @@ begin
     FIdHTTP.URL.URI := RemoteURL;
     if (FIdHTTP.URL.Port = '') and (Port <> 0) then
     begin
-      FIdHTTP.URL.Port := IntToStr(Port)
+      FIdHTTP.URL.Port := IntToStr(Port);
       RemoteURL := FIdHTTP.URL.URI;
     end;
     {$ELSE}
