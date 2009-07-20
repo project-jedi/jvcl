@@ -1218,6 +1218,7 @@ begin
     for I := 0 to xml.ContainCount-1 do
       if xml.Contains[I].IsIncluded(Target) then
     begin
+      containsSomething := True;
       UnitFileName := xml.Contains[I].Name;
       UnitFilePath := ExtractFilePath(UnitFileName);
       if (UnitFilePath <> '') and (UnitFilePath[Length(UnitFilePath)] = DirDelimiter) then
@@ -1372,7 +1373,6 @@ begin
               tmpLines.Assign(repeatLines);
               incFileName := xml.Contains[j].Name;
               ApplyFormName(xml.Contains[j], tmpLines, target);
-              containsSomething := True;
               EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
               outFile.AddStrings(tmpLines);
               Inc(AddedLines);
