@@ -539,11 +539,11 @@ function TJvRichEditToHtml.ParaToHtml(Value: TJvRichEditParaAttributesRec): stri
 begin
   case Value.Alignment of
     paLeftJustify:
-      Result := 'ALIGN="LEFT"';
+      Result := 'STYLE="text-align: left;"';
     paRightJustify:
-      Result := 'ALIGN="RIGHT"';
+      Result := 'STYLE="text-align: right;"';
     paCenter:
-      Result := 'ALIGN="CENTER"';
+      Result := 'STYLE="text-align: center;"';
   end;
   if Value.Numbering = nsBullet then
   begin
