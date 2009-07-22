@@ -1827,6 +1827,7 @@ begin
   ScrollBox.Parent := ParameterParent;
   ScrollBox.AutoScroll := False;
   ScrollBox.BorderStyle := bsNone;
+  ScrollBox.ParentBackground := True;
   {$IFDEF COMPILER6_UP}
   ScrollBox.BevelInner := bvNone;
   ScrollBox.BevelOuter := bvNone;

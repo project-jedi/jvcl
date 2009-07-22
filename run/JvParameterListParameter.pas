@@ -2527,6 +2527,7 @@ begin
     Scrollbox.Align := alClient;
     ScrollBox.AutoScroll := False;
     ScrollBox.BorderStyle := bsNone;
+    ScrollBox.ParentBackground := True;
     Panel := TJvPanel.Create(ParameterParent.Owner);
     Panel.Name := GenerateUniqueComponentName(ParameterParent.Owner, Panel, GetParameterName + '_' + Pages[i]);
     Panel.ArrangeSettings := ArrangeSettings;
