@@ -398,6 +398,7 @@ begin
     FScrollBox.Align := alClient;
     FScrollBox.BorderStyle := bsNone;
     FScrollBox.AutoScroll := True;
+    FScrollBox.ParentBackground := True;
     FForm.Constraints := ArrangeConstraints;
     ArrangePanel := TJvPanel.Create(FForm);
     ArrangePanel.Align := alTop;
