@@ -880,7 +880,7 @@ begin
   Name := TmpName;
 end;
 
-procedure ApplyFormName(ContainedFile: TContainedFile; Lines : TStrings;
+procedure ApplyFormName(ContainedFile: TContainedFile; index: Integer; Lines : TStrings;
   const target : string);
 var
   formName : string;
@@ -955,7 +955,7 @@ begin
     ['FILENAME%', incFileName,
      'UNITNAME%', unitname,
      'Unitname%', punitname,
-
+     'INDEX%', IntToStr(Index),
      'FORMNAME%', formName,
      'FORMTYPE%', formType,
      'FORMNAMEANDTYPE%', formNameAndType,
@@ -1189,7 +1189,7 @@ var
   bcbId : string;
   bcblibsList : TStrings;
   TimeStampLine : Integer;
-  Count: Integer;
+  Count, RequireCount, ContainCount, FormCount, LibCount, DefineCount: Integer;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
   AddedLines: Integer;
@@ -1215,9 +1215,15 @@ begin
     PathRC := '.;';
     PathASM := '.;';
     PATHLIB := '';
+    ContainCount := 0;
+    FormCount := 0;
     for I := 0 to xml.ContainCount-1 do
       if xml.Contains[I].IsIncluded(Target) then
     begin
+      Inc(ContainCount);
+      if xml.Contains[I].FormName <> '' then
+        Inc(FormCount);
+
       containsSomething := True;
       UnitFileName := xml.Contains[I].Name;
       UnitFilePath := ExtractFilePath(UnitFileName);
@@ -1256,9 +1262,11 @@ begin
       OneLetterType := 'r';
 
     NoLinkPackageList := '';
+    RequireCount := 0;
     for i := 0 to xml.RequireCount - 1 do
       if xml.Requires[i].IsIncluded(Target) then
     begin
+      Inc(RequireCount);
       reqPackName := BuildPackageName(xml.Requires[i], target);
       if NoLinkPackageList = '' then
         NoLinkPackageList := reqPackName
@@ -1288,6 +1296,20 @@ begin
 
     CompilerDefines.Assign(TargetList[GetNonPersoTarget(Target)].Defines);
     CompilerDefines.AddStrings(xml.CompilerDefines);
+    DefineCount := CompilerDefines.Count;
+
+    // read libs as a string of space separated value
+    bcbId := TargetList[GetNonPersoTarget(target)].Env+TargetList[GetNonPersoTarget(target)].Ver;
+    bcblibsList := nil;
+    if CompareText(bcbId, 'c6') = 0 then
+      bcblibsList := xml.C6Libs
+    else
+    if CompareText(bcbId, 'c5') = 0 then
+      bcblibsList := xml.C5Libs;
+    if bcblibsList <> nil then
+      LibCount := bcblibsList.Count
+    else
+      LibCount := 0;
 
     // The time stamp hasn't been found yet
     TimeStampLine := -1;
@@ -1323,6 +1345,7 @@ begin
               tmpLines.Assign(repeatLines);
               reqPackName := BuildPackageName(xml.Requires[j], target);
               StrReplaceLines(tmpLines, '%NAME%', reqPackName);
+              StrReplaceLines(tmpLines, '%INDEX%', IntToStr(j));
               // We do not say that the package contains something because
               // a package is only interesting if it contains files for
               // the given target
@@ -1372,7 +1395,7 @@ begin
             begin
               tmpLines.Assign(repeatLines);
               incFileName := xml.Contains[j].Name;
-              ApplyFormName(xml.Contains[j], tmpLines, target);
+              ApplyFormName(xml.Contains[j], j, tmpLines, target);
               EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
               outFile.AddStrings(tmpLines);
               Inc(AddedLines);
@@ -1388,7 +1411,7 @@ begin
 
           if (outFile.Count > 0) and (AddedLines = 0) then
           begin
-            // delete "requires" clause.
+            // delete "contains" clause.
             j := outFile.Count - 1;
             while (j > 0) and (Trim(outFile[j]) = '') do
               Dec(j);
@@ -1427,7 +1450,7 @@ begin
               if (xml.Contains[j].FormName <> '') then
               begin
                 tmpLines.Assign(repeatLines);
-                ApplyFormName(xml.Contains[j], tmpLines, target);
+                ApplyFormName(xml.Contains[j], j, tmpLines, target);
                 EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
                 outFile.AddStrings(tmpLines);
               end;
@@ -1453,14 +1476,6 @@ begin
             Inc(i);
           end;
 
-          // read libs as a string of space separated value
-          bcbId := TargetList[GetNonPersoTarget(target)].Env+TargetList[GetNonPersoTarget(target)].Ver;
-          bcblibsList := nil;
-          if CompareText(bcbId, 'c6') = 0 then
-            bcblibsList := xml.C6Libs
-          else
-          if CompareText(bcbId, 'c5') = 0 then
-            bcblibsList := xml.C5Libs;
           if bcblibsList <> nil then
           begin
             for j := 0 to bcbLibsList.Count - 1 do
@@ -1468,6 +1483,7 @@ begin
               tmpLines.Assign(repeatLines);
               MacroReplaceLines(tmpLines, '%',
                 ['FILENAME%', bcblibsList[j],
+                 'INDEX%', IntToStr(j),
                  'UNITNAME%', GetUnitName(bcblibsList[j])]);
               outFile.AddStrings(tmpLines);
             end;
@@ -1486,7 +1502,9 @@ begin
           for j := 0 to CompilerDefines.Count - 1 do
           begin
             tmpLines.Assign(repeatLines);
-            MacroReplaceLines(tmpLines, '%', ['COMPILERDEFINE%', CompilerDefines[j]]);
+            MacroReplaceLines(tmpLines, '%',
+              ['COMPILERDEFINE%', CompilerDefines[j],
+               'INDEX%', IntToStr(j)]);
             outFile.AddStrings(tmpLines);
           end;
         end
@@ -1539,7 +1557,12 @@ begin
              'SOURCEEXTENSION%', ProjectTypeToSourceExtension(xml.ProjectType),
              'NOLINKPACKAGELIST%', NoLinkPackageList,
              'DEFINES%', StringsToStr(CompilerDefines, ';', False),
-             'COMPILERDEFINES%', Iff(CompilerDefines.Count > 0, '-D' + StringsToStr(CompilerDefines, ';', False), '')]) then
+             'COMPILERDEFINES%', Iff(CompilerDefines.Count > 0, '-D' + StringsToStr(CompilerDefines, ';', False), ''),
+             'REQUIRECOUNT%', IntToStr(RequireCount),
+             'CONTAINCOUNT%', IntToStr(ContainCount),
+             'FORMCOUNT%', IntToStr(FormCount),
+             'LIBCOUNT%', IntToStr(LibCount),
+             'DEFINECOUNT%', IntToStr(DefineCount)]) then
            begin
              if Pos('%DATETIME%', tmpStr) > 0 then
                TimeStampLine := I;
