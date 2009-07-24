@@ -2092,6 +2092,7 @@ begin
   inherited Create(True);
   if Assigned(Node) then
     for i := 0 to Node.Items.Count - 1 do
+      if Node.Items[i].Name = 'alias' then
     begin
       Add(TAlias.Create(Node.Items[i]));
     end;
