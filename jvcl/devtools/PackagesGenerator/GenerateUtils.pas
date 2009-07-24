@@ -1641,7 +1641,10 @@ begin
         CopyFile(PChar(templateName), PChar(OutFileName), False);
         FileSetDate(OutFileName, DateTimeToFileDate(Now)); // adjust file time
       end;
-    end;
+    end
+    else
+    if FileExists(OutFileName) and not containsSomething then
+      SendMsg(SysUtils.Format(#9#9'File %s should be removed', [ExtractFileName(OutFileName)]));
   finally
     tmpLines.Free;
     repeatLines.Free;
