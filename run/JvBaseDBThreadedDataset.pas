@@ -855,9 +855,9 @@ end;
 
 procedure TJvBaseDatasetThreadHandler.AfterOpen;
 begin
+  ExecuteThreadSynchronize(IntSynchAfterOpen);
   if not ExecuteThreadIsActive and not OperationWasHandledInThread and (IntCurrentOperation <> tdoRefresh) then
     HandleAfterOpenRefresh;
-  ExecuteThreadSynchronize(IntSynchAfterOpen);
 end;
 
 procedure TJvBaseDatasetThreadHandler.AfterScroll;
@@ -1187,9 +1187,9 @@ begin
           end;
       end;
     end;
+    Dataset.Filtered := FIntDatasetWasFiltered;
     if Dataset.Active and (IntCurrentAction <> tdaCancel) then
       ExecuteThreadSynchronize(SynchAfterOpenFetch);
-    Dataset.Filtered := FIntDatasetWasFiltered;
   finally
     ExecuteThreadSynchronize(Dataset.EnableControls);
     IntCurrentAction := tdaNothing;
