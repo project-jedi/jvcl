@@ -19,7 +19,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id$
+// $Id: JvDynControlEngineDevExpCx.pas 12366 2009-07-02 20:12:43Z jfudickar $
 
 unit JvDynControlEngineDevExpCx;
 
@@ -986,9 +986,9 @@ function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL$';
-    Revision: '$Revision$';
-    Date: '$Date$';
+    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDynControlEngineDevExpCx.pas $';
+    Revision: '$Revision: 12366 $';
+    Date: '$Date: 2009-07-02 22:12:43 +0200 (Do, 02 Jul 2009) $';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
@@ -1694,7 +1694,10 @@ end;
 
 procedure TJvDynControlCxDateTimeEdit.ControlSetValue(Value: Variant);
 begin
-  Date := Value;
+  if VarIsStr(Value) then
+    Date := StrToDateTime(Value)
+  else
+    Date := Value;
 end;
 
 function TJvDynControlCxDateTimeEdit.ControlGetValue: Variant;
@@ -1777,7 +1780,10 @@ end;
 
 procedure TJvDynControlCxDateEdit.ControlSetValue(Value: Variant);
 begin
-  Date := Value;
+  if VarIsStr(Value) then
+    Date := StrToDateTime(Value)
+  else
+    Date := Value;
 end;
 
 function TJvDynControlCxDateEdit.ControlGetValue: Variant;
@@ -1859,7 +1865,10 @@ end;
 
 procedure TJvDynControlCxTimeEdit.ControlSetValue(Value: Variant);
 begin
-  Time := Value;
+  if VarIsStr(Value) then
+    Time := StrToTime(Value)
+  else
+    Time := Value;
 end;
 
 function TJvDynControlCxTimeEdit.ControlGetValue: Variant;
