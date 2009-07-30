@@ -49,7 +49,6 @@ type
   TJvOnValueParsed = TJclOnValueParsed;
   TJvOnSimpleProgress = TJclOnSimpleProgress;
 
-  TJvSimpleHashTable = TJclSimpleHashTable;
   TJvSimpleXMLElem = TJclSimpleXMLElem;
   TJvSimpleXMLElemCData = TJclSimpleXMLElemCData;
   TJvSimpleXMLElemClass = TJclSimpleXMLElemClass;
