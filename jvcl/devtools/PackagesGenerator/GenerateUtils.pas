@@ -1198,6 +1198,7 @@ var
   PathPAS, PathCPP, PathRC, PathASM, PathLIB: string;
   VersionMajorNumber, VersionMinorNumber, ReleaseNumber, BuildNumber: string;
   CompilerDefines: TStrings;
+  ItemIndex: Integer;
 begin
   Result := '';
 
@@ -1337,15 +1338,17 @@ begin
           end;
 
           AddedLines := 0;
+          ItemIndex := 0;
           for j := 0 to xml.RequireCount - 1 do
           begin
             // if this required package is to be included for this target
             if xml.Requires[j].IsIncluded(target) then
             begin
+              Inc(ItemIndex);
               tmpLines.Assign(repeatLines);
               reqPackName := BuildPackageName(xml.Requires[j], target);
               StrReplaceLines(tmpLines, '%NAME%', reqPackName);
-              StrReplaceLines(tmpLines, '%INDEX%', IntToStr(j));
+              StrReplaceLines(tmpLines, '%INDEX%', IntToStr(ItemIndex));
               // We do not say that the package contains something because
               // a package is only interesting if it contains files for
               // the given target
@@ -1388,14 +1391,16 @@ begin
           end;
 
           AddedLines := 0;
+          ItemIndex := 0;
           for j := 0 to xml.ContainCount - 1 do
           begin
             // if this included file is to be included for this target
             if xml.Contains[j].IsIncluded(target) then
             begin
+              Inc(ItemIndex);
               tmpLines.Assign(repeatLines);
               incFileName := xml.Contains[j].Name;
-              ApplyFormName(xml.Contains[j], j, tmpLines, target);
+              ApplyFormName(xml.Contains[j], ItemIndex, tmpLines, target);
               EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
               outFile.AddStrings(tmpLines);
               Inc(AddedLines);
@@ -1440,6 +1445,7 @@ begin
             Inc(i);
           end;
 
+          ItemIndex := 0;
           for j := 0 to xml.ContainCount - 1 do
           begin
             // if this included file is to be included for this target
@@ -1449,8 +1455,9 @@ begin
               containsSomething := True;
               if (xml.Contains[j].FormName <> '') then
               begin
+                Inc(ItemIndex);
                 tmpLines.Assign(repeatLines);
-                ApplyFormName(xml.Contains[j], j, tmpLines, target);
+                ApplyFormName(xml.Contains[j], ItemIndex, tmpLines, target);
                 EnsureCondition(tmpLines, xml.Contains[j].Condition, target);
                 outFile.AddStrings(tmpLines);
               end;
@@ -1478,12 +1485,14 @@ begin
 
           if bcblibsList <> nil then
           begin
+            ItemIndex := 0;
             for j := 0 to bcbLibsList.Count - 1 do
             begin
+              Inc(ItemIndex);
               tmpLines.Assign(repeatLines);
               MacroReplaceLines(tmpLines, '%',
                 ['FILENAME%', bcblibsList[j],
-                 'INDEX%', IntToStr(j),
+                 'INDEX%', IntToStr(ItemIndex),
                  'UNITNAME%', GetUnitName(bcblibsList[j])]);
               outFile.AddStrings(tmpLines);
             end;
@@ -1499,12 +1508,14 @@ begin
             repeatLines.Add(template[i]);
             Inc(i);
           end;
+          ItemIndex := 0;
           for j := 0 to CompilerDefines.Count - 1 do
           begin
+            Inc(ItemIndex);
             tmpLines.Assign(repeatLines);
             MacroReplaceLines(tmpLines, '%',
               ['COMPILERDEFINE%', CompilerDefines[j],
-               'INDEX%', IntToStr(j)]);
+               'INDEX%', IntToStr(ItemIndex)]);
             outFile.AddStrings(tmpLines);
           end;
         end
