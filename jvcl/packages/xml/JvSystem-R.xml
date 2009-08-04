@@ -24,6 +24,8 @@
   <Contains>
     <File Name="..\..\run\Ras32.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\Hid.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\HidToken.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\HidUsage.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\ModuleLoader.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\WinConvTypes.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\DBT.pas" Targets="VCL" Formname="" Condition=""/>
