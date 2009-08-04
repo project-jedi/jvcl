@@ -221,14 +221,6 @@ type
 
     property OnIsValid: TJvCustomIsValidEvent read FOnIsValid write FOnIsValid;
 
-    // If true and the user presses the VK_DECIMAL key, the key read in KeyPress
-    // will always be replaced by the value of DecimalSeparator. This is made
-    // to overcome the problem where some keyboard layouts send "." instead of
-    // the decimal separator when using the decimal key on the numerical keypad.
-    // The most commonly encountered layout is the French AZERTY one.
-    // Note that this property will be set automatically to True by the
-    // constructor when the conversion of VK_DECIMAL into a character does not
-    // return the DecimalSeparator value
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -243,6 +235,15 @@ type
     property AsInteger: Int64 read GetAsInteger write SetAsInteger;
     property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
     property AsFloat: Double read GetAsFloat write SetAsFloat;
+
+    // If true and the user presses the VK_DECIMAL key, the key read in KeyPress
+    // will always be replaced by the value of DecimalSeparator. This is made
+    // to overcome the problem where some keyboard layouts send "." instead of
+    // the decimal separator when using the decimal key on the numerical keypad.
+    // The most commonly encountered layout is the French AZERTY one.
+    // Note that this property will be set automatically to True by the
+    // constructor when the conversion of VK_DECIMAL into a character does not
+    // return the DecimalSeparator value
     property ForceDecimalSeparatorInput: Boolean read FForceDecimalSeparatorInput write FForceDecimalSeparatorInput;
   end;
 
