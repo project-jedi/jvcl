@@ -3135,11 +3135,16 @@ begin
      not SettingCursor and PopupVisible and
     (FPopup is TJvPopupWindow) and Assigned(TJvPopupWindow(FPopup).ActiveControl) then
   begin
-    with Msg do
-      Result := TJvPopupWindow(FPopup).ActiveControl.Perform(Msg, WParam, LParam);
+    // Mantis 4872: Avoid stack overflow.
+    if (Msg.Msg <> WM_CONTEXTMENU) or
+       (ControlAtPos(ScreenToClient(SmallPointToPoint(TWMContextMenu(Msg).Pos)), False) = TJvPopupWindow(FPopup).ActiveControl) then
+    begin
+      with Msg do
+        Result := TJvPopupWindow(FPopup).ActiveControl.Perform(Msg, WParam, LParam);
 
-    if Msg.Result = 0 then
-      Exit;
+      if Msg.Result = 0 then
+        Exit;
+    end;
   end;
 
   { The AutoComplete functionality sends a WM_SETTEXT. But only SetTextBuf()
