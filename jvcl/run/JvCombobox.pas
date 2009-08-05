@@ -285,10 +285,12 @@ type
   private
     FCapSelAll: string;
     FCapDeselAll: string;
+    FCapInvertAll: string;
     FItems: TStrings;
     FListBox: TJvCheckListBox;
     FSelectAll: TMenuItem;
     FDeselectAll: TMenuItem;
+    FInvertAll: TMenuItem;
     FNoFocusColor: TColor;
     FSorted: Boolean;
     FQuoteStyle: TJvCHBQuoteStyle; // added 2000/04/08
@@ -329,6 +331,7 @@ type
     procedure Clear; override;
     procedure SetUnCheckedAll(Sender: TObject = nil);
     procedure SetCheckedAll(Sender: TObject = nil);
+    procedure SetInvertAll(Sender: TObject = nil);
     function IsChecked(Index: Integer): Boolean;
     function GetText: string;
     property Checked[Index: Integer]: Boolean read GetChecked write SetChecked;
@@ -339,6 +342,7 @@ type
     property Items: TStrings read FItems write SetItems;
     property CapSelectAll: string read FCapSelAll write FCapSelAll stored IsStoredCapSelAll;
     property CapDeSelectAll: string read FCapDeselAll write FCapDeselAll stored IsStoredCapDeselAll;
+    property CapInvertAll: string read FCapInvertAll write FCapInvertAll;
     property NoFocusColor: TColor read FNoFocusColor write SetNoFocusColor;
     property Sorted: Boolean read FSorted write SetSorted default False;
     property QuoteStyle: TJvCHBQuoteStyle read FQuoteStyle write FQuoteStyle default qsNone; // added 2000/04/08
@@ -352,6 +356,7 @@ type
     property Items;
     property CapSelectAll;
     property CapDeSelectAll;
+    property CapInvertAll;
     property NoFocusColor default clWindow;
     property Sorted;
     property QuoteStyle;
@@ -562,6 +567,7 @@ begin
   Caption := '';
   FCapSelAll := RsCapSelAll;
   FCapDeselAll := RsCapDeselAll;
+  FCapInvertAll := RsCapInvertAll;
   Height := 24;
   Width := 121;
 
@@ -605,6 +611,11 @@ begin
   FDeselectAll.Caption := FCapDeselAll;
   FDeselectAll.OnClick := SetUnCheckedAll;
   FListBox.PopupMenu.Items.Insert(1, FDeselectAll);
+
+  FInvertAll := TMenuItem.Create(FListBox.PopupMenu);
+  FInvertAll.Caption := FCapInvertAll;
+  FInvertAll.OnClick := SetInvertAll;
+  FListBox.PopupMenu.Items.Insert(2, FInvertAll);
 end;
 
 destructor TJvCustomCheckedComboBox.Destroy;
@@ -688,22 +699,37 @@ begin
 end;
 
 procedure TJvCustomCheckedComboBox.CreatePopup;
+var
+  DisplayDropDownLines: Integer;
 begin
   //Click;
-  if FColumns > 1 then
-    FDropDownLines := FListBox.Items.Count div FColumns + 1;
-  if FDropDownLines < MinDropLines then
-    FDropDownLines := MinDropLines;
-  if FDropDownLines > MaxDropLines then
-    FDropDownLines := MaxDropLines;
+  if fColumns > 1 then
+    // determine the real lines needed if FColumns > 1
+    DisplayDropDownLines := FListBox.Items.Count div FColumns + 1
+  else
+    // determine the real lines needed if FColumns = 1
+    DisplayDropDownLines := FListBox.Items.Count + 1;
+
+  if DisplayDropDownLines > FDropDownLines then
+    // If the actual lines > value of property "DropDownLines", revert to property value
+    DisplayDropDownLines := FDropDownLines;
+
+  // adjust "DisplayDropDownLines" according to Min and Max values
+  if DisplayDropDownLines < MinDropLines then
+    DisplayDropDownLines := MinDropLines;
+  if DisplayDropDownLines > MaxDropLines then
+    DisplayDropDownLines := MaxDropLines;
 
   FSelectAll.Caption := FCapSelAll;
   FDeselectAll.Caption := FCapDeselAll;
+  FInvertAll.Caption := FCapInvertAll;
+
   with TJvPrivForm(FPopup) do
   begin
     Font := Self.Font;
     Width := Self.Width;
-    Height := (FDropDownLines * FListBox.itemHeight + 4 { FEdit.Height });
+    // use the current "DisplayDropDownLines" to determine height of window
+    Height := (DisplayDropDownLines * FListBox.itemHeight + 4 { FEdit.Height });
   end;
 end;
 
@@ -834,6 +860,29 @@ begin
       S := FListBox.Items[I]
     else
       S := S + Delimiter + FListBox.Items[I];
+  end;
+  ChangeText(S);
+  FCheckedCount := FListBox.Items.Count;
+  Repaint;
+  Change;
+end;
+
+procedure TJvCustomCheckedComboBox.SetInvertAll(Sender: TObject);
+var
+  I: Integer;
+  S: string;
+begin
+  S := '';
+  for I := 0 to FListBox.Items.Count - 1 do
+  begin
+    FListBox.Checked[I] := not FListBox.Checked[I];
+
+    if FListBox.Checked[I] then begin
+       if S = '' then         
+         S := FListBox.Items[I]
+       else
+         S := S + Delimiter + FListBox.Items[I];
+    end;
   end;
   ChangeText(S);
   FCheckedCount := FListBox.Items.Count;
