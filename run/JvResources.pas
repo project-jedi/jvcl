@@ -420,6 +420,7 @@ resourcestring
 resourcestring
   RsCapSelAll = '&Select all';
   RsCapDeselAll = '&Deselect all';
+  RsCapInvertAll = '&Invert all';
   RsENoMoreLength = 'Too many items selected';
 
 //=== JvComputerInfoEx.pas ===================================================
