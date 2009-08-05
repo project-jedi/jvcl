@@ -299,6 +299,7 @@ type
     FDropDownLines: Integer;
     FDelimiter: Char;
     FIgnoreChange: Boolean;
+    FOrderedText: Boolean;
     procedure SetItems(AItems: TStrings);
     procedure ToggleOnOff(Sender: TObject);
     procedure KeyListBox(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -319,6 +320,8 @@ type
     function IsStoredCapDeselAll: Boolean;
     function IsStoredCapSelAll: Boolean;
     procedure ChangeText(const NewText: string);
+    procedure SetOrderedText(const Value: Boolean);
+    function GetOrderedTextValue: string;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -349,6 +352,7 @@ type
     property Columns: Integer read FColumns write SetColumns default 0;
     property DropDownLines: Integer read FDropDownLines write SetDropDownLines default 6;
     property Delimiter: Char read FDelimiter write SetDelimiter default ',';
+    property OrderedText: Boolean read FOrderedText write SetOrderedText default False;
   end;
 
   TJvCheckedComboBox = class(TJvCustomCheckedComboBox)
@@ -780,6 +784,22 @@ begin
     Result := GetFormattedText(FQuoteStyle, Text, Delimiter);
 end;
 
+function TJvCustomCheckedComboBox.GetOrderedTextValue: string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to FListBox.Count - 1 do
+  begin
+    if FListBox.Checked[I] then
+    begin
+      if Result <> '' then
+        Result := Result + FDelimiter;
+      Result := Result + FListBox.Items[I];
+    end;
+  end;
+end;
+
 function TJvCustomCheckedComboBox.IsChecked(Index: Integer): Boolean;
 begin
   Result := FListBox.Checked[Index];
@@ -945,6 +965,17 @@ begin
   end;
 end;
 
+procedure TJvCustomCheckedComboBox.SetOrderedText(const Value: Boolean);
+begin
+  if FOrderedText <> Value then
+  begin
+    FOrderedText := Value;
+
+    if FOrderedText then
+      ChangeText(GetOrderedTextValue);
+  end;
+end;
+
 procedure TJvCustomCheckedComboBox.SetSorted(Value: Boolean);
 begin
   if FSorted <> Value then
@@ -980,12 +1011,21 @@ begin
   S := Text;
   if FListBox.Checked[FListBox.ItemIndex] then
   begin
-    if Add(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
+    if not PartExist(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
+    begin
+      if not OrderedText then
+        Add(FListBox.Items[FListBox.ItemIndex], S, Delimiter)
+      else
+        S := GetOrderedTextValue;
+
       FCheckedCount := FCheckedCount + 1;
+    end;
   end
   else
-  if Remove(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
-    FCheckedCount := FCheckedCount - 1;
+  begin
+    if Remove(FListBox.Items[FListBox.ItemIndex], S, Delimiter) then
+      FCheckedCount := FCheckedCount - 1;
+  end;
   ChangeText(S);
   Change;
 end;
