@@ -852,9 +852,24 @@ var
   end;
 
   procedure FocusSurface;
+  var
+    WasActive: Boolean;
   begin
     if not Surface.Container.Focused and Surface.Container.CanFocus then
+    begin
+      // Mantis 4732: deactivate the container otherwise SetFocus does not work
+      // This bug apparently only happens under certain rare conditions
+      // under windows but its fix does not seem to have any negative impact
+      // on systems where it does not happen.
+      WasActive := TJvDesignPanel(Surface.Container).Active;
+      if WasActive then
+        TJvDesignPanel(Surface.Container).Active := False;
+
       Surface.Container.SetFocus;
+
+      if WasActive then
+        TJvDesignPanel(Surface.Container).Active := True;
+    end;
   end;
 
   procedure SelectDragMode;
