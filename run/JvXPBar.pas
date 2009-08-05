@@ -1691,6 +1691,9 @@ begin
   if (FHoverIndex <> -1) and (FVisibleItems[FHoverIndex] <> nil) and
     (not FVisibleItems[FHoverIndex].Checked) then
     DoDrawItem(FHoverIndex, []);
+
+  // Mantis 4867: Must reset hover index when leaving the bar
+  FHoverIndex := -1;
 end;
 
 
