@@ -1,4 +1,4 @@
-﻿{-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -483,7 +483,7 @@ var
   var
     S: string;
   begin
-    if Field.DataType in [ftString{$IFDEF COMPILER12_UP}, ftWideString{$ENDIF}] then
+    if Field.DataType = ftString then
     begin
       if Value = Null then
         Result := Field.IsNull
@@ -598,7 +598,7 @@ begin
   Field := DataSet.FindField(FieldName);
   if Field = nil then
     Exit;
-  if Field.DataType in [ftString{$IFDEF COMPILER12_UP}, ftWideString{$ENDIF}] then
+  if Field.DataType = ftString then
   begin
     DataSet.DisableControls;
     BookMk := DataSet.GetBookmark;
@@ -856,7 +856,7 @@ begin
   FieldValue := '';
   DateValue := NullDate;
   Exact := Exact or not (FieldType in
-    [ftString, {$IFDEF COMPILER12_UP}ftWideString,{$ENDIF} ftDate, ftTime, ftDateTime]);
+    [ftString, ftDate, ftTime, ftDateTime]);
   if FieldType in [ftDate, ftTime, ftDateTime] then
   begin
     DateValue := StrToDateDef(Value, NullDate);
@@ -870,7 +870,7 @@ begin
     if not (Exact or EmptyValue) then
       FieldValue := ReplaceStr(ReplaceStr(StrMaskSQL(FieldValue),
         '*', '%'), '?', '_');
-    if FieldType in [ftString{$IFDEF COMPILER12_UP}, ftWideString{$ENDIF}] then
+    if FieldType = ftString then
       FieldValue := '''' + FieldValue + '''';
   end;
   LogicOperator := Operator;
@@ -880,7 +880,7 @@ begin
       LogicOperator := '='
     else
     begin
-      if FieldType in [ftString{$IFDEF COMPILER12_UP}, ftWideString{$ENDIF}] then
+      if FieldType = ftString then
         LogicOperator := 'LIKE'
       else
         LogicOperator := '>=';
@@ -905,7 +905,7 @@ var
   S, Esc: string;
 begin
   Esc := '';
-  if not Exact and (FieldType in [ftString{$IFDEF COMPILER12_UP}, ftWideString{$ENDIF}]) then
+  if not Exact and (FieldType = ftString) then
   begin
     S := ReplaceStr(ReplaceStr(ReplaceStr(Value, '/', '//'),
       '_', '/_'), '%', '/%');
