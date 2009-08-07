@@ -520,10 +520,7 @@ end;
 constructor TJvDBLookupControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if NewStyleControls then
-    ControlStyle := [csOpaque]
-  else
-    ControlStyle := [csOpaque, csFramed];
+  ControlStyle := [csOpaque];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 
   ParentColor := False;
@@ -885,7 +882,7 @@ procedure TJvDBLookupTreeViewCombo.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
-    if NewStyleControls and Ctl3D then
+    if Ctl3D then
       ExStyle := ExStyle or WS_EX_CLIENTEDGE
     else
       Style := Style or WS_BORDER;
@@ -918,7 +915,7 @@ begin
   end
   {added by zelen}
   else
-  if not Enabled and NewStyleControls then
+  if not Enabled then
     Canvas.Font.Color := clGrayText;
   {/added by zelen}
   if (csPaintCopy in ControlState) and (FDataField <> nil) then
@@ -1262,11 +1259,8 @@ end;
 
 procedure TJvDBLookupTreeViewCombo.CMCtl3DChanged(var Msg: TMessage);
 begin
-  if NewStyleControls then
-  begin
-    RecreateWnd;
-    Height := 0;
-  end;
+  RecreateWnd;
+  Height := 0;
   inherited;
 end;
 
@@ -1464,7 +1458,7 @@ begin
   inherited CreateParams(Params);
   with Params do
     if FBorderStyle = bsSingle then
-      if NewStyleControls and Ctl3D then
+      if Ctl3D then
         ExStyle := ExStyle or WS_EX_CLIENTEDGE
       else
         Style := Style or WS_BORDER;

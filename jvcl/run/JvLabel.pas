@@ -641,7 +641,7 @@ begin
   ColorShadow := FShadowColor;
   if not Enabled then
   begin
-    if (FShadowSize = 0) and NewStyleControls then
+    if FShadowSize = 0 then
     begin
       PosShadow := spRightBottom;
       SizeShadow := 1;

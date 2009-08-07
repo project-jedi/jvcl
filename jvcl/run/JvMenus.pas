@@ -885,21 +885,15 @@ procedure SetDefaultMenuFont(AFont: TFont);
 var
   NCMetrics: TNonCLientMetrics;
 begin
-  if NewStyleControls then
+  NCMetrics.cbSize := SizeOf(TNonCLientMetrics);
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
   begin
-    NCMetrics.cbSize := SizeOf(TNonCLientMetrics);
-    if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
-    begin
-      AFont.Handle := CreateFontIndirect(NCMetrics.lfMenuFont);
-      Exit;
-    end;
+    AFont.Handle := CreateFontIndirect(NCMetrics.lfMenuFont);
+    Exit;
   end;
   with AFont do
   begin
-    if NewStyleControls then
-      Name := 'MS Sans Serif'
-    else
-      Name := 'System';
+    Name := 'MS Sans Serif';
     Size := 8;
     Color := clMenuText;
     Style := [];
@@ -2017,9 +2011,9 @@ begin
     GrayColor := clGrayText
   else
     GrayColor := clBtnShadow;
-  IsHighlight := NewStyleControls and ((not (mdSelected in FState)) or
+  IsHighlight := (not (mdSelected in FState)) or
     (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) =
-    GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight))));
+    GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)));
   if Bitmap.Monochrome then
   begin
     SaveColor := Canvas.Brush.Color;
@@ -2591,10 +2585,8 @@ end;
 
 function TJvCustomMenuItemPainter.GetDrawHighlight: Boolean;
 begin
-  Result := NewStyleControls and
-    (not (mdSelected in FState) or
-    (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
-    );
+  Result := not (mdSelected in FState) or
+           (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)));
 end;
 
 function TJvCustomMenuItemPainter.GetGrayColor: TColor;
@@ -2768,17 +2760,9 @@ var
   LineTop: Integer;
 begin
   LineTop := (ARect.Top + ARect.Bottom) div 2 - 1;
-  if NewStyleControls then
-  begin
-    Canvas.Pen.Width := 1;
-    MenuLine(Canvas, clBtnShadow, ARect.Left - 1, LineTop, ARect.Right, LineTop);
-    MenuLine(Canvas, clBtnHighlight, ARect.Left, LineTop + 1, ARect.Right, LineTop + 1);
-  end
-  else
-  begin
-    Canvas.Pen.Width := 2;
-    MenuLine(Canvas, clMenuText, ARect.Left, LineTop + 1, ARect.Right, LineTop + 1);
-  end;
+  Canvas.Pen.Width := 1;
+  MenuLine(Canvas, clBtnShadow, ARect.Left - 1, LineTop, ARect.Right, LineTop);
+  MenuLine(Canvas, clBtnHighlight, ARect.Left, LineTop + 1, ARect.Right, LineTop + 1);
 end;
 
 procedure TJvCustomMenuItemPainter.DrawImageBackground(ARect: TRect);
@@ -3031,7 +3015,7 @@ end;
 
 function TJvBtnMenuItemPainter.GetDrawHighlight: Boolean;
 begin
-  Result := NewStyleControls;
+  Result := True;
 end;
 
 function TJvBtnMenuItemPainter.GetGrayColor: TColor;
@@ -3103,10 +3087,8 @@ end;
 
 function TJvOfficeMenuItemPainter.GetDrawHighlight: Boolean;
 begin
-  Result := NewStyleControls and
-    (not (mdSelected in FState) or (not IsPopup(FItem)) or
-    (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
-    );
+  Result := not (mdSelected in FState) or (not IsPopup(FItem)) or
+            (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)));
 end;
 
 procedure TJvOfficeMenuItemPainter.UpdateFieldsFromMenu;
@@ -3743,10 +3725,8 @@ end;
 
 function TJvXPMenuItemPainter.GetDrawHighlight: Boolean;
 begin
-  Result := NewStyleControls and
-    (not (mdSelected in FState) or (not IsPopup(FItem)) or
-    (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)))
-    );
+  Result := not (mdSelected in FState) or (not IsPopup(FItem)) or
+            (GetNearestColor(Canvas.Handle, ColorToRGB(clGrayText)) = GetNearestColor(Canvas.Handle, ColorToRGB(clHighlight)));
 end;
 
 function TJvXPMenuItemPainter.GetItemScreenRect(ParentItem: TMenuItem;

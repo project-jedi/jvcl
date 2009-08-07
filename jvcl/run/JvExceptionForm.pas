@@ -129,10 +129,7 @@ begin
     end
     else
     begin
-      if NewStyleControls then
-        Application.ShowException(E)
-      else
-        MessageDlg(E.Message + '.', mtError, [mbOk], 0);
+      Application.ShowException(E);
     end;
   except
     { ignore any exceptions }

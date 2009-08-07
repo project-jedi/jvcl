@@ -763,7 +763,7 @@ begin
       // the same constant for MCS_NOTODAY as IE4 does for MCS_NOTODAYCIRCLE ...
       Style := Style or BorderStyles[FBorderStyle] or MultiSelects[FMultiSelect] or
         NoCircles[FAppearance.ShowToday] or Weeks[FAppearance.WeekNumbers] or MCS_DAYSTATE;
-    if NewStyleControls and (FBorderStyle = bsSingle) then
+    if FBorderStyle = bsSingle then
     begin
       Style := Style and not WS_BORDER;
       ExStyle := Params.ExStyle or WS_EX_CLIENTEDGE;

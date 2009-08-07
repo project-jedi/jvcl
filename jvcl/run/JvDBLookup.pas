@@ -791,10 +791,7 @@ const
   LookupStyle = [csOpaque];
 begin
   inherited Create(AOwner);
-  if NewStyleControls then
-    ControlStyle := LookupStyle
-  else
-    ControlStyle := LookupStyle + [csFramed];
+  ControlStyle := LookupStyle;
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 
   ParentColor := False;
@@ -1637,7 +1634,7 @@ begin
   begin
     Style := Style or WS_VSCROLL;
     if FBorderStyle = bsSingle then
-      if NewStyleControls and Ctl3D then
+      if Ctl3D then
         ExStyle := ExStyle or WS_EX_CLIENTEDGE
       else
         Style := Style or WS_BORDER;
@@ -2228,7 +2225,7 @@ end;
 
 procedure TJvDBLookupList.CMCtl3DChanged(var Msg: TMessage);
 begin
-  if NewStyleControls and (FBorderStyle = bsSingle) then
+  if FBorderStyle = bsSingle then
   begin
     RecreateWnd;
     if not (csReading in ComponentState) then
@@ -2447,7 +2444,7 @@ procedure TJvDBLookupCombo.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
-    if NewStyleControls and Ctl3D then
+    if Ctl3D then
       ExStyle := ExStyle or WS_EX_CLIENTEDGE
     else
       Style := Style or WS_BORDER;
@@ -3175,7 +3172,7 @@ begin
     Canvas.Brush.Color := clHighlight;
   end
   else
-  if not Enabled and NewStyleControls then
+  if not Enabled then
     Canvas.Font.Color := clGrayText;
   AText := inherited Text;
   Alignment := FAlignment;
@@ -3377,12 +3374,9 @@ end;
 
 procedure TJvDBLookupCombo.CMCtl3DChanged(var Msg: TMessage);
 begin
-  if NewStyleControls then
-  begin
-    RecreateWnd;
-    if not (csReading in ComponentState) and (Height < GetMinHeight) then
-      Height := GetMinHeight;
-  end;
+  RecreateWnd;
+  if not (csReading in ComponentState) and (Height < GetMinHeight) then
+    Height := GetMinHeight;
   inherited;
 end;
 

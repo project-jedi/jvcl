@@ -1319,41 +1319,18 @@ var
   ed: TCustomEditAccessProtected;
 begin
   ed := TCustomEditAccessProtected(Editor);
-  if NewStyleControls then
-  begin
-    if ed.BorderStyle = bsNone then
-      I := 0
-    else
-    if ed.Ctl3D then
-      I := 1
-    else
-      I := 2;
-    if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
-      Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
-    else
-      Result.X := I;
-    Result.Y := I;
-  end
+  if ed.BorderStyle = bsNone then
+    I := 0
   else
-  begin
-    if ed.BorderStyle = bsNone then
-      I := 0
-    else
-    begin
-      DC := GetDC(HWND_DESKTOP);
-      GetTextMetrics(DC, SysMetrics);
-      SaveFont := SelectObject(DC, ed.Font.Handle);
-      GetTextMetrics(DC, Metrics);
-      SelectObject(DC, SaveFont);
-      ReleaseDC(HWND_DESKTOP, DC);
-      I := SysMetrics.tmHeight;
-      if I > Metrics.tmHeight then
-        I := Metrics.tmHeight;
-      I := I div 4;
-    end;
+  if ed.Ctl3D then
+    I := 1
+  else
+    I := 2;
+  if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
+    Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
+  else
     Result.X := I;
-    Result.Y := I;
-  end;
+  Result.Y := I;
 end;
 
 function IsInWordArray(Value: Word; const A: array of Word): Boolean;
@@ -1445,7 +1422,7 @@ begin
     with ACanvas do
     begin
       SendRectMessage(Editor.Handle, EM_GETRECT, 0, EditRect);
-      if not (NewStyleControls and TEd(Editor).Ctl3D) and (TEd(Editor).BorderStyle = bsSingle) then
+      if not TEd(Editor).Ctl3D and (TEd(Editor).BorderStyle = bsSingle) then
       begin
         Brush.Color := clWindowFrame;
         FrameRect(TEd(Editor).ClientRect);
@@ -1766,21 +1743,11 @@ begin
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
   ReleaseDC(HWND_DESKTOP, DC);
-  if NewStyleControls then
-  begin
-    if not Flat then
-      I := 8
-    else
-      I := 6;
-    I := GetSystemMetrics(SM_CYBORDER) * I;
-  end
+  if not Flat then
+    I := 8
   else
-  begin
-    I := SysMetrics.tmHeight;
-    if I > Metrics.tmHeight then
-      I := Metrics.tmHeight;
-    I := I div 4 + GetSystemMetrics(SM_CYBORDER) * 4;
-  end;
+    I := 6;
+  I := GetSystemMetrics(SM_CYBORDER) * I;
   if Height < Metrics.tmHeight + I then
     Height := Metrics.tmHeight + I;
 end;
@@ -1885,13 +1852,10 @@ var
   TextColor: Longint;
 begin
   inherited;
-  if NewStyleControls then
-  begin
-    TextColor := ColorToRGB(Font.Color);
-    if not Enabled and (ColorToRGB(Color) <> ColorToRGB(clGrayText)) then
-      TextColor := ColorToRGB(clGrayText);
-    SetTextColor(Msg.WParam, TextColor);
-  end;
+  TextColor := ColorToRGB(Font.Color);
+  if not Enabled and (ColorToRGB(Color) <> ColorToRGB(clGrayText)) then
+    TextColor := ColorToRGB(clGrayText);
+  SetTextColor(Msg.WParam, TextColor);
 end;
 
 procedure TJvCustomComboEdit.CreateAutoComplete;
@@ -2935,41 +2899,38 @@ procedure TJvCustomComboEdit.UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewH
 var
   BtnRect: TRect;
 begin
-  if NewStyleControls then
-    {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    if BorderStyle = bsSingle then
     begin
-      if BorderStyle = bsSingle then
-      begin
-        if Ctl3D then
-          BtnRect := Bounds(Width - FButton.Width - 2, 0,
-            FButton.Width, Height - 2)
-        else
-          BtnRect := Bounds(Width - FButton.Width - 1, 1,
-            FButton.Width, Height - 2);
-      end
+      if Ctl3D then
+        BtnRect := Bounds(Width - FButton.Width - 2, 0,
+          FButton.Width, Height - 2)
       else
-        BtnRect := Bounds(Width - FButton.Width, 0,
-          FButton.Width, Height);
+        BtnRect := Bounds(Width - FButton.Width - 1, 1,
+          FButton.Width, Height - 2);
     end
     else
-    {$ENDIF JVCLThemesEnabled}
-    begin
-      if BorderStyle = bsSingle then
-      begin
-        if not Flat then
-          BtnRect := Bounds(Width - FButton.Width - 4, 0,
-            FButton.Width, Height - 4)
-        else
-          BtnRect := Bounds(Width - FButton.Width - 2, 2,
-            FButton.Width, Height - 4)
-      end
-      else
-        BtnRect := Bounds(Width - FButton.Width, 0,
-          FButton.Width, Height);
-    end
+      BtnRect := Bounds(Width - FButton.Width, 0,
+        FButton.Width, Height);
+  end
   else
-    BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
+  {$ENDIF JVCLThemesEnabled}
+  begin
+    if BorderStyle = bsSingle then
+    begin
+      if not Flat then
+        BtnRect := Bounds(Width - FButton.Width - 4, 0,
+          FButton.Width, Height - 4)
+      else
+        BtnRect := Bounds(Width - FButton.Width - 2, 2,
+          FButton.Width, Height - 4)
+    end
+    else
+      BtnRect := Bounds(Width - FButton.Width, 0,
+        FButton.Width, Height);
+  end;
 
   NewLeft := BtnRect.Left;
   NewTop := BtnRect.Top;
@@ -4273,10 +4234,7 @@ begin
     if FState <> rbsDown then
       with Canvas do
       begin
-        if NewStyleControls then
-          Pen.Color := clBtnFace
-        else
-          Pen.Color := clBtnShadow;
+        Pen.Color := clBtnFace;
         MoveTo(0, 0);
         LineTo(0, Self.Height - 1);
         Pen.Color := clBtnHighlight;

@@ -1554,7 +1554,7 @@ end;
 
 procedure TJvSpeedBar.WriteDesignStyle(Writer: TWriter);
 begin
-  Writer.WriteBoolean(NewStyleControls);
+  Writer.WriteBoolean(True);
 end;
 
 procedure TJvSpeedBar.ReadSections(Reader: TReader);
@@ -3020,8 +3020,7 @@ begin
   begin
     Style := WS_POPUP or WS_DISABLED;
     WindowClass.Style := WindowClass.Style or CS_SAVEBITS;
-    if NewStyleControls then
-      ExStyle := WS_EX_TOOLWINDOW;
+    ExStyle := WS_EX_TOOLWINDOW;
   end;
 end;
 

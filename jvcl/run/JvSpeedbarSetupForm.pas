@@ -377,8 +377,7 @@ begin
   FSpeedbar := nil;
   FDrag := False;
   CloseBtn.Default := False;
-  if NewStyleControls then
-    Font.Style := [];
+  Font.Style := [];
   { Load string resources }
   CloseBtn.Caption := SOKButton;
   HelpBtn.Caption := SHelpButton;

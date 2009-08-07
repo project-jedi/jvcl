@@ -248,8 +248,7 @@ begin
   OkBtn.Caption := SOKButton;
   CancelBtn.Caption := SCancelButton;
   HelpBtn.Caption := SHelpButton;
-  if NewStyleControls then
-    Font.Style := [];
+  Font.Style := [];
 end;
 
 procedure TJvDualListForm.FormResize(Sender: TObject);
