@@ -15,7 +15,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -75,7 +75,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
       Width = 193
       Height = 21
       Style = csDropDownList
-      ItemHeight = 0
+      ItemHeight = 13
       TabOrder = 0
       OnChange = cbDisplayFormatChange
       OnKeyPress = cbDisplayFormatKeyPress
@@ -362,7 +362,7 @@ object frmValidateEditDemo: TfrmValidateEditDemo
         Width = 89
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 4
         OnChange = cbCPCheckPointsChange
       end
