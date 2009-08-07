@@ -2929,6 +2929,25 @@ begin
         FButton.Width, Height);
   end;
 
+  // Mantis 4754: Bevels must be taken into account
+  if BevelKind <> bkNone then
+  begin
+    if BevelInner <> bvNone then
+    begin
+      Dec(BtnRect.Left, 2);
+      Dec(BtnRect.Right, 2);
+      Dec(BtnRect.Bottom, 2);
+    end;
+
+    if BevelOuter <> bvNone then
+    begin
+      Dec(BtnRect.Left, 2);
+      Dec(BtnRect.Right, 2);
+      Dec(BtnRect.Bottom, 2);
+    end;
+  end;
+
+
   NewLeft := BtnRect.Left;
   NewTop := BtnRect.Top;
   NewWidth := BtnRect.Right - BtnRect.Left;
