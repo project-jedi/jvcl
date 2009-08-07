@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -47,7 +47,7 @@ type
   TJvValidateEditDisplayFormat = (dfAlphabetic, dfAlphaNumeric, dfBinary,
     dfCheckChars, dfCurrency, dfCustom, dfFloat, dfFloatGeneral, dfHex, dfInteger,
     dfNonCheckChars, dfNone, dfOctal, dfPercent, dfScientific, dfYear, dfDecimal,
-    dfIdentifier);
+    dfIdentifier, dfFloatFixed);
 
   TJvValidateEditCriticalPointsCheck = (cpNone, cpMinValue, cpMaxValue, cpBoth);
 
@@ -583,7 +583,7 @@ begin
   if ControlState = [csReadingState] then
     FDecimalPlaces := NewValue
   else
-  if FDisplayFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfScientific, dfPercent] then
+  if FDisplayFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfScientific, dfPercent, dfFloatFixed] then
     FDecimalPlaces := NewValue;
   if not (csLoading in ComponentState) then
     EditText := FEditText;
@@ -614,7 +614,7 @@ begin
               FDecimalPlaces := CurrencyDecimals;
         end;
       dfBinary, dfFloat, dfFloatGeneral, dfPercent, dfDecimal, dfHex,
-      dfInteger, dfOctal, dfScientific:
+      dfInteger, dfOctal, dfScientific, dfFloatFixed:
         if FAutoAlignment then
           Alignment := taRightJustify;
       dfYear:
@@ -630,15 +630,15 @@ begin
 
     // Convert non-base 10 numbers to base 10 and base-10 numbers to non-base 10
     if (OldFormat = dfBinary) and
-      (NewValue in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+      (NewValue in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) then
       SetAsInteger(BaseToInt(FEditText, 2))
     else
-    if (OldFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfPercent]) and
+    if (OldFormat in [dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfFloatFixed]) and
       (NewValue in [dfBinary, dfHex, dfOctal]) then
       SetAsFloat(JvSafeStrToFloatDef(FEditText, 0))
     else
     if (OldFormat = dfHex) and
-      (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+      (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) then
       SetAsInteger(BaseToInt(FEditText, 16))
     else
     if (OldFormat in [dfInteger, dfYear]) and
@@ -646,7 +646,7 @@ begin
       SetAsInteger(StrToIntDef(FEditText, 0))
     else
     if (OldFormat = dfOctal) and
-      (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfPercent, dfScientific, dfYear]) then
+      (NewValue in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfPercent, dfScientific, dfYear, dfFloatFixed]) then
       SetAsInteger(BaseToInt(FEditText, 8))
     else
     begin
@@ -693,7 +693,7 @@ begin
       EditText := IntToBase(NewValue, 16);
     dfOctal:
       EditText := IntToBase(NewValue, 8);
-    dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfPercent, dfScientific, dfYear:
+    dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfPercent, dfScientific, dfYear, dfFloatFixed:
       EditText := IntToStr(IntRangeValue(NewValue));
   end;
 end;
@@ -724,7 +724,7 @@ begin
       EditText := IntToBase(Trunc(NewValue), 16);
     dfOctal:
       EditText := IntToBase(Trunc(NewValue), 8);
-    dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfPercent, dfScientific, dfYear:
+    dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfPercent, dfScientific, dfYear, dfFloatFixed:
       EditText := CurrToStr(CurrRangeValue(NewValue));
   end;
 end;
@@ -775,6 +775,8 @@ begin
       EditText := Format('%.*n', [FDecimalPlaces, FloatRangeValue(NewValue)]);
     dfFloatGeneral:
       EditText := Format('%.*g', [FDecimalPlaces, FloatRangeValue(NewValue)]);
+    dfFloatFixed:
+      EditText := Format('%.*f', [FDecimalPlaces, FloatRangeValue(NewValue)]);
     dfDecimal:
       EditText := FloatToStr(FloatRangeValue(NewValue));
     dfScientific:
@@ -797,7 +799,7 @@ begin
         VarCyFromStr(FEditText, LOCALE_USER_DEFAULT, 0, Cur);
         Result := Cur;
       end;
-    dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfScientific:
+    dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfScientific, dfFloatFixed:
       Result := JvSafeStrToFloatDef(FEditText, 0);
     dfInteger, dfYear:
       Result := StrToIntDef(FEditText, 0);
@@ -826,7 +828,7 @@ begin
       {$ELSE}
       SetAsInteger(NewValue);
       {$ENDIF COMPILER5}
-    dfCurrency, dfFloat, dfDecimal, dfFloatGeneral, dfPercent, dfScientific:
+    dfCurrency, dfFloat, dfDecimal, dfFloatGeneral, dfPercent, dfScientific, dfFloatFixed:
       SetAsFloat(NewValue);
   end;
 end;
@@ -904,7 +906,7 @@ begin
       if (FDisplayFormat = dfCustom) or not (csLoading in ComponentState) then
         FCheckChars := '';
     dfCurrency,
-    dfFloat, dfFloatGeneral, dfPercent, dfDecimal:
+    dfFloat, dfFloatGeneral, dfPercent, dfDecimal, dfFloatFixed:
       FCheckChars := Numbers + DecimalSeparator;
     dfHex:
       FCheckChars := Numbers + 'ABCDEFabcdef';
@@ -940,7 +942,7 @@ begin
       Result := (Pos(Key, FCheckChars) > 0) or
         ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
         ((Key = '-') and (Posn = 1) and ((Pos('-', S) = 0) or (SelLength > 0)));
-    dfFloat, dfFloatGeneral, dfDecimal, dfPercent:
+    dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfFloatFixed:
       Result := ((Pos(Key, FCheckChars) > 0) and 
         (((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or (Key <> DecimalSeparator))) or
         ((Key = '+') and (Posn = 1) and ((Pos('+', S) = 0) or (SelLength > 0))) or
@@ -1094,7 +1096,7 @@ begin
     ((MaxLength = 0) or (MaxLength > 3)) then
     FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0), TwoDigitYearCenturyWindow));
   if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger,
-    dfOctal, dfPercent, dfScientific, dfYear]) then
+    dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) then
   begin
     EnforceMaxValue;
     EnforceMinValue;
@@ -1177,7 +1179,7 @@ begin
   if FAllowEmpty and (FEditText = '') then
     ChangeText('')
   else
-  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) and
     (AsFloat = 0) and FZeroEmpty then
     ChangeText('')
   else
@@ -1191,6 +1193,8 @@ begin
         ChangeText(Format('%.*n', [FDecimalPlaces, FormatedValue(AsFloat)]));
       dfFloatGeneral:
         ChangeText(Format('%.*g', [FDecimalPlaces, FormatedValue(AsFloat)]));
+      dfFloatFixed:
+        ChangeText(Format('%.*f', [FDecimalPlaces, FormatedValue(AsFloat)]));
       dfScientific:
         ChangeText(Format('%.*e', [FDecimalPlaces, FormatedValue(AsFloat)]));
       dfPercent:
@@ -1202,7 +1206,7 @@ begin
     // This needs to be done AFTER the text has been changed so that the color
     // is directly shown correctly. (Mantis 3493)
     if (FCriticalPoints.CheckPoints <> cpNone) and
-      (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+      (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral, dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) then
       SetFontColor;
   end;
 end;
@@ -1366,7 +1370,7 @@ procedure TJvCustomValidateEdit.EnforceMaxValue;
 begin
   { Check the Value is within this range }
   if FHasMaxValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral,
-    dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+    dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) and
     (AsFloat > FMaxValue) and not FEnforcingMinMaxValue then
   begin
     FEnforcingMinMaxValue := True;
@@ -1382,7 +1386,7 @@ procedure TJvCustomValidateEdit.EnforceMinValue;
 begin
   { Check the Value is within this range }
   if FHasMinValue and (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfFloatGeneral,
-    dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+    dfDecimal, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear, dfFloatFixed]) and
     (AsFloat < FMinValue) and not FEnforcingMinMaxValue then
   begin
     FEnforcingMinMaxValue := True;
