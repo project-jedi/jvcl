@@ -800,7 +800,7 @@ const
 begin
   inherited FontChanged;
   Canvas.Font := Font;
-  if Style <> lbStandard then
+  if [Style] * [lbStandard, lbOwnerDrawFixed] = [] then
     ItemHeight := CanvasMaxTextHeight(Canvas) + CShowFocusRect[ShowFocusRect];
   RemeasureAll;
 end;
