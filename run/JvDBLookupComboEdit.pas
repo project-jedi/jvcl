@@ -490,7 +490,7 @@ begin
     with FCanvas do
     begin
       R := ClientRect;
-      if not (NewStyleControls and Ctl3D) and (BorderStyle = bsSingle) then
+      if not Ctl3D and (BorderStyle = bsSingle) then
       begin
         Brush.Color := clWindowFrame;
         FrameRect(R);
@@ -545,38 +545,15 @@ var
   I: Integer;
   SysMetrics, Metrics: TTextMetric;
 begin
-  if NewStyleControls then
-  begin
-    if BorderStyle = bsNone then
-      I := 0
-    else
-    if Ctl3D then
-      I := 1
-    else
-      I := 2;
-    Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
-    Result.Y := I;
-  end
+  if BorderStyle = bsNone then
+    I := 0
   else
-  begin
-    if BorderStyle = bsNone then
-      I := 0
-    else
-    begin
-      DC := GetDC(HWND_DESKTOP);
-      GetTextMetrics(DC, SysMetrics);
-      SaveFont := SelectObject(DC, Font.Handle);
-      GetTextMetrics(DC, Metrics);
-      SelectObject(DC, SaveFont);
-      ReleaseDC(HWND_DESKTOP, DC);
-      I := SysMetrics.tmHeight;
-      if I > Metrics.tmHeight then
-        I := Metrics.tmHeight;
-      I := I div 4;
-    end;
-    Result.X := I;
-    Result.Y := I;
-  end;
+  if Ctl3D then
+    I := 1
+  else
+    I := 2;
+  Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
+  Result.Y := I;
 end;
 
 function TJvDBLookupComboEdit.ExecuteAction(Action: TBasicAction): Boolean;

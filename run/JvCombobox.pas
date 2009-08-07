@@ -643,21 +643,11 @@ begin
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
   ReleaseDC(HWND_DESKTOP, DC);
-  if NewStyleControls then
-  begin
-    if Ctl3D then
-      I := 8
-    else
-      I := 6;
-    I := GetSystemMetrics(SM_CYBORDER) * I;
-  end
+  if Ctl3D then
+    I := 8
   else
-  begin
-    I := SysMetrics.tmHeight;
-    if I > Metrics.tmHeight then
-      I := Metrics.tmHeight;
-    I := I div 4 + GetSystemMetrics(SM_CYBORDER) * 4;
-  end;
+    I := 6;
+  I := GetSystemMetrics(SM_CYBORDER) * I;
   Height := Metrics.tmHeight + I;
 end;
 

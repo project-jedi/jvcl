@@ -584,7 +584,7 @@ var
 
 begin
   Result := Client;
-  NewStyle := (Style = bsNew) or (NewStyleControls and (Style = bsAutoDetect));
+  NewStyle := (Style = bsNew) or (Style = bsAutoDetect);
   ShadowColor := GetShadowColor(AColor);     // Honeymic
   HighlightColor := GetHighlightColor(AColor);  // Honeymic
 

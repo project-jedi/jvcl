@@ -955,14 +955,7 @@ end;
 
 function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
 begin
-  if NewStyleControls then
-    Result := FButtonKind
-  else
-  begin
-    Result := bkDiagonal;
-    if Assigned(FButton) and (FButton.ButtonStyle = sbsClassic) then
-      Result := bkClassic;
-  end;
+  Result := FButtonKind;
 end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
@@ -1190,7 +1183,7 @@ begin
   else
   if FButton <> nil then
   begin { bkDiagonal }
-    if NewStyleControls and  Ctl3D and  (BorderStyle = bsSingle) then
+    if Ctl3D and (BorderStyle = bsSingle) then
       if FButtonKind = bkClassic then
         R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
       else
@@ -1202,7 +1195,7 @@ begin
       R := Bounds(Width - Height, 0, Height, Height);
     if BiDiMode = bdRightToLeft then
     begin
-      if NewStyleControls and  Ctl3D and  (BorderStyle = bsSingle) then
+      if Ctl3D and (BorderStyle = bsSingle) then
       begin
         R.Left := -1;
         R.Right := Height - 4;

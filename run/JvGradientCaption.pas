@@ -736,7 +736,7 @@ function TJvGradientCaption.GetActive: Boolean;
 begin
   Result := FActive;
   if not (csDesigning in ComponentState) then
-    Result := Result and NewStyleControls and (Owner is TCustomForm);
+    Result := Result and (Owner is TCustomForm);
 end;
 
 procedure TJvGradientCaption.SetActive(Value: Boolean);

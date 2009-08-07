@@ -431,10 +431,7 @@ const
   ListBoxStyle = [csSetCaption, csDoubleClicks];
 begin
   inherited Create(AOwner);
-  if NewStyleControls then
-    ControlStyle := ListBoxStyle
-  else
-    ControlStyle := ListBoxStyle + [csFramed];
+  ControlStyle := ListBoxStyle;
   Width := 121;
   Height := 97;
   TabStop := True;
@@ -836,7 +833,7 @@ begin
       Styles[FStyle] or Sorteds[FSorted] or Selects[FMultiSelect] or
       IntegralHeights[FIntegralHeight] or MultiColumns[FColumns <> 0] or
       BorderStyles[FBorderStyle] or TabStops[FTabWidth <> 0];
-    if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
+    if Ctl3D and (FBorderStyle = bsSingle) then
     begin
       Style := Style and not WS_BORDER;
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
@@ -1181,7 +1178,7 @@ end;
 
 procedure TJvxCustomListBox.CMCtl3DChanged(var Msg: TMessage);
 begin
-  if NewStyleControls and (FBorderStyle = bsSingle) then
+  if FBorderStyle = bsSingle then
     RecreateWnd;
   inherited;
 end;

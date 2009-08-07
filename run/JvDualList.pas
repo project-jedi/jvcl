@@ -201,8 +201,7 @@ begin
 
     Form.SrcList.ScrollBars := FScrollBars;
     Form.DstList.ScrollBars := FScrollBars;
-    if NewStyleControls then
-      Form.Font.Style := [];
+    Form.Font.Style := [];
     Form.ShowHelp := Self.ShowHelp;
     Form.SrcList.Sorted := Sorted;
     Form.DstList.Sorted := Sorted;

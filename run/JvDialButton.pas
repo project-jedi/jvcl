@@ -1146,7 +1146,7 @@ const
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BorderStyles[FBorderStyle];
-  if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
+  if Ctl3D and (FBorderStyle = bsSingle) then
   begin
     Params.Style := Params.Style and not WS_BORDER;
     Params.ExStyle := Params.ExStyle or WS_EX_STATICEDGE;

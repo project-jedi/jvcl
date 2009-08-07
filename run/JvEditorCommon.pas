@@ -3192,7 +3192,7 @@ begin
   with Params do
   begin
     Style := Style or BorderStyles[FBorderStyle] or ScrollStyles[FScrollBars];
-    if NewStyleControls and Ctl3D and (FBorderStyle = bsSingle) then
+    if Ctl3D and (FBorderStyle = bsSingle) then
     begin
       Style := Style and not WS_BORDER;
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
