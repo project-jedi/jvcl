@@ -2,9 +2,7 @@
 <Package Name="JvMM" Design="-1">
   <Description>JVCL Multimedia and Image Components</Description>
   <GUID>{C1AE6119-BCF7-466D-A392-739C2DF6A51F}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4D2F0000</ImageBase>
   <Requires>
@@ -15,12 +13,7 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JCLD50" Targets="Dv5" Condition=""/>
-    <Package Name="JCLC50" Targets="Cv5" Condition=""/>
     <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="dsnide50" Targets="allv5" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>

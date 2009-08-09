@@ -2,32 +2,20 @@
 <Package Name="JvCore" Design="0">
   <Description>JVCL Core Components Runtime Package</Description>
   <GUID>{CCA5391F-35F6-43D1-AB48-187085D1EF5B}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>490E0000</ImageBase>
   <Requires>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
-    <Package Name="ThemeManagerD5" Targets="Dv5" Condition="JVCLThemesEnabled"/>
-    <Package Name="ThemeManagerC5" Targets="Cv5" Condition="JVCLThemesEnabled"/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>

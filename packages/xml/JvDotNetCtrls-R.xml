@@ -2,29 +2,20 @@
 <Package Name="JvDotNetCtrls" Design="0">
   <Description>JVCL DotNet Controls Runtime Package</Description>
   <GUID>{FEA976CC-DA02-4817-AA17-5B1CD552B39C}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4D010000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="DB" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>

@@ -2,9 +2,7 @@
 <Package Name="JvGlobus" Design="-1">
   <Description>JVCL Globus Components</Description>
   <GUID>{177EF676-53B7-41C5-8B88-62DEC3EDD002}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A260000</ImageBase>
   <Requires>
@@ -12,18 +10,11 @@
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
     <Package Name="JvCtrls-R" Targets="VCL" Condition=""/>
     <Package Name="JvGlobus-R" Targets="VCL" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
-    <Package Name="qrpt50" Targets="DBv5" Condition="JVCL_UseQuickReport"/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>

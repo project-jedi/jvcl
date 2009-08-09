@@ -2,26 +2,17 @@
 <Package Name="JvXPCtrls" Design="-1">
   <Description>JVCL XP Controls</Description>
   <GUID>{F6D59ED0-9823-4814-B216-A8A78B517198}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A4C0000</ImageBase>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all" Formname="" Condition=""/>

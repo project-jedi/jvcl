@@ -2,20 +2,14 @@
 <Package Name="JvPageComps" Design="-1">
   <Description>JVCL Page Style Components</Description>
   <GUID>{7F6FA36F-0BB1-4D59-A762-5E1A87CC3443}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A340000</ImageBase>
   <Requires>
     <Package Name="JvPageComps-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="dclstd50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>

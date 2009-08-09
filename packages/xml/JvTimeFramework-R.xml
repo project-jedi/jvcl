@@ -2,21 +2,15 @@
 <Package Name="JvTimeFramework" Design="0">
   <Description>JVCL Time Framework Runtime Package</Description>
   <GUID>{32959537-3463-4102-A7B2-50543739F2AA}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4D470000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvTFSparseMatrix.pas" Targets="VCL" Formname="" Condition=""/>

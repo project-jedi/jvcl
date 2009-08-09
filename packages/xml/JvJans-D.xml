@@ -2,15 +2,12 @@
 <Package Name="JvJans" Design="-1">
   <Description>JVCL Jans Components</Description>
   <GUID>{E207A9DB-95B3-4B55-9811-1C417007E088}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4D2C0000</ImageBase>
   <Requires>
     <Package Name="JvJans-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>

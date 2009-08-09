@@ -2,20 +2,14 @@
 <Package Name="JvDlgs" Design="-1">
   <Description>JVCL Dialog Components</Description>
   <GUID>{E8C27CA0-25DE-4D94-B6DF-42592413F205}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A1C0000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="dsnide50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>

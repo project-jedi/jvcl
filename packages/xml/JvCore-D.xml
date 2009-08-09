@@ -2,25 +2,15 @@
 <Package Name="JvCore" Design="-1">
   <Description>JVCL Core Components</Description>
   <GUID>{F38F1718-D90B-4E0A-AACD-D34077DBBF15}</GUID>
-  <C5PFlags>-LUvcl50 -LUdsnide50 -LUdclstd50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUJcl -LUJclVcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A080000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
-    <Package Name="dclstd50" Targets="allv5" Condition=""/>
-    <Package Name="dsnide50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>

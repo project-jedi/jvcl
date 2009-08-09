@@ -2,16 +2,12 @@
 <Package Name="JvTimeFramework" Design="-1">
   <Description>JVCL Time Framework</Description>
   <GUID>{D6D9B4EE-4AC3-4971-8178-DC1EA29EC16F}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A450000</ImageBase>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvTimeFramework-R" Targets="all" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="dsnide50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>

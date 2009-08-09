@@ -2,15 +2,12 @@
 <Package Name="JvCrypt" Design="-1">
   <Description>JVCL Encryption and Compression</Description>
   <GUID>{4EED06C1-B111-4EA3-815B-8530F67D8659}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A0E0000</ImageBase>
   <Requires>
     <Package Name="JvCrypt-R" Targets="all" Condition=""/>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
   </Requires>

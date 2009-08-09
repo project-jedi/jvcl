@@ -2,22 +2,16 @@
 <Package Name="JvDotNetCtrls" Design="-1">
   <Description>JVCL DotNet Controls</Description>
   <GUID>{F7FFBA61-6088-4CE8-B542-EC81959A4DC5}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A220000</ImageBase>
   <Requires>
     <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvDotNetCtrls-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="VCL" Formname="" Condition=""/>

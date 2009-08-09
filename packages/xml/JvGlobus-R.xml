@@ -2,24 +2,13 @@
 <Package Name="JvGlobus" Design="0">
   <Description>JVCL Globus Components Runtime Package</Description>
   <GUID>{3C82E074-2C1F-4E95-8837-729014E7AB08}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>49660000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
     <Package Name="JvSystem-R" Targets="VCL" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
-    <Package Name="qrpt50" Targets="DBv5" Condition="JVCL_UseQuickReport"/>
-    <Package Name="vclie50" Targets="DBv5" Condition="INTERNET_COMPONENTS"/>
-    <Package Name="vclbde50" Targets="DBv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>

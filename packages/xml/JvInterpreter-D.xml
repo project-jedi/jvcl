@@ -2,9 +2,7 @@
 <Package Name="JvInterpreter" Design="-1">
   <Description>JVCL Interpreter Components</Description>
   <GUID>{9F0A300E-7B7A-4B5A-A5F9-B2A6D3D81A1C}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4D030000</ImageBase>
   <Requires>
@@ -13,14 +11,7 @@
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JCLD50" Targets="Dv5" Condition=""/>
-    <Package Name="JCLC50" Targets="Cv5" Condition=""/>
     <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="dclstd50" Targets="allv5" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
-    <Package Name="vclbde50" Targets="DBv5" Condition=""/>
-    <Package Name="qrpt50" Targets="DBv5" Condition="JVCL_UseQuickReport"/>
     <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 & JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 & JVCL_UseQuickReport"/>

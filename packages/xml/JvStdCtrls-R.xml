@@ -2,26 +2,16 @@
 <Package Name="JvStdCtrls" Design="0">
   <Description>JVCL Standard Controls Runtime Package</Description>
   <GUID>{1C1476C2-A01A-44DE-A7D5-34E47E811C5B}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl -LUJclVcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>49AC0000</ImageBase>
   <Requires>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
-    <Package Name="ThemeManagerD5" Targets="Dv5" Condition="JVCLThemesEnabled"/>
-    <Package Name="ThemeManagerC5" Targets="Cv5" Condition="JVCLThemesEnabled"/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
