@@ -1433,8 +1433,7 @@ begin
   if VarIsNull(Value) then
     ItemIndex := -1
   else if VariantAsItemIndex then
-    if VarType(Value) in [varSmallInt, varInteger, varByte
-      {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
+    if VarType(Value) in [varSmallInt, varInteger, varByte, varShortInt, varWord, varLongWord] then
       ItemIndex := Value
     else
       SetAsString(Value)
@@ -2527,7 +2526,9 @@ begin
     Scrollbox.Align := alClient;
     ScrollBox.AutoScroll := False;
     ScrollBox.BorderStyle := bsNone;
+    {$IFDEF COMPILER10_UP}
     ScrollBox.ParentBackground := True;
+    {$ENDIF COMPILER10_UP}
     Panel := TJvPanel.Create(ParameterParent.Owner);
     Panel.Name := GenerateUniqueComponentName(ParameterParent.Owner, Panel, GetParameterName + '_' + Pages[i]);
     Panel.ArrangeSettings := ArrangeSettings;
