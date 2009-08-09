@@ -1200,7 +1200,7 @@ uses
   JvVCL5Utils,
   JvJclUtils, // SameFileName() for Delphi 5
   JclBase, JclFileUtils, JclLogic, JclDateTime,
-  JclStringConversions,
+  JclStringConversions, JclWideStrings,
   JvConsts, JvResources;
 
 {$IFDEF COMPILER12_UP}
