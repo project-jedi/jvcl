@@ -2,20 +2,14 @@
 <Package Name="JvEDI" Design="0">
   <Description>JVCL EDI Components Runtime Package</Description>
   <GUID>{E6B694C0-1FE7-4FF5-A8BD-FA186B72076F}</GUID>
-  <C5PFlags>-LUvcl50 -LUvcldb50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>49640000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
   </Requires>
   <Contains>

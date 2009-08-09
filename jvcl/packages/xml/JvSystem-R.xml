@@ -2,19 +2,12 @@
 <Package Name="JvSystem" Design="0">
   <Description>JVCL System Components Runtime Package</Description>
   <GUID>{5AA7A634-CDB2-46E6-B265-F973C14FFB4B}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs>wininet.lib</C5Libs>
   <C6Libs>wininet.lib</C6Libs>
   <ImageBase>49D00000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
-    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>

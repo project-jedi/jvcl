@@ -2,9 +2,7 @@
 <Package Name="JvDB" Design="-1">
   <Description>JVCL Database Components</Description>
   <GUID>{08932657-9DD1-4AA2-9926-F32E388E39EA}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUJclC50 -LUdcldb50</C5PFlags>
   <C6PFlags>-LUdcldb -LUDesignIde -LUJcl -LUJclVcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4A180000</ImageBase>
   <Requires>
@@ -14,15 +12,8 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclVclC50" Targets="Cv5" Condition=""/>
     <Package Name="JclVcl" Targets="allv6up" Condition=""/>
-    <Package Name="dcldb50" Targets="DBv5" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="designide" Targets="allv6up" Condition=""/>
     <Package Name="dcldb" Targets="DBv6up" Condition=""/>
@@ -30,7 +21,6 @@
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
     <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="dclstd50" Targets="allv5" Condition=""/>
     <Package Name="dclstd" Targets="allv6up" Condition=""/>
   </Requires>
   <Contains>

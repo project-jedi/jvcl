@@ -2,9 +2,7 @@
 <Package Name="JvMM" Design="0">
   <Description>JVCL Multimedia and Image Components Runtime Package</Description>
   <GUID>{934525BD-4F63-48DA-AA9E-027E6E6BC560}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>49900000</ImageBase>
   <Requires>
@@ -12,14 +10,10 @@
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAVICapture.pas" Targets="VCL" Formname="" Condition=""/>

@@ -2,20 +2,13 @@
 <Package Name="JvRuntimeDesign" Design="0">
   <Description>JVCL Runtime Design Components Runtime Package</Description>
   <GUID>{019D8720-DBA1-49DD-A7AC-69BB6C65AF84}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>4B380000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="allv6up" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition="!DelphiPersonalEdition"/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition="!DelphiPersonalEdition"/>

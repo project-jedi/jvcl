@@ -2,19 +2,12 @@
 <Package Name="JvJans" Design="0">
   <Description>JVCL Jans Components Runtime Package</Description>
   <GUID>{EB0CF9B5-CDAB-44C6-857C-0447D6CAC391}</GUID>
-  <C5PFlags>-LUvcl50 -LUdclstd50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUdclstd -LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>49820000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JCLD50" Targets="Dv5" Condition=""/>
-    <Package Name="JCLC50" Targets="Cv5" Condition=""/>
     <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vcljpg50" Targets="allv5" Condition=""/>
-    <Package Name="vclx50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>

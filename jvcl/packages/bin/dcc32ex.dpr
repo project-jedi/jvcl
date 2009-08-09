@@ -346,8 +346,6 @@ begin
       DxgettextDir := ''
     else
     begin
-      if Version = 5 then
-        S := S + '\delphi5';
       if ExtraUnitDirs <> '' then
         ExtraUnitDirs := ExtraUnitDirs + ';' + S
       else
@@ -504,19 +502,35 @@ begin
     if Result.RootDir = '' then
       Exit;
     Result.Version := IDEVersion;
-    if Typ = ttBDS then
-    begin
-      if IDEVersion <= 2 then // C#Builder 1 and Delphi 8 can't build the installer
-      begin
-        Result.Typ := ttNone;
-        Result.Version := 0;
-        Result.IDEVersion := 0;
-        Result.RootDir := '';
-        Result.KeyName := '';
-        Result.Id := '';
-        Exit;
-      end;
-      Inc(Result.Version, 6); // 3.0 => 9
+    case Typ of 
+      ttBDS:
+        begin
+          if IDEVersion <= 2 then // C#Builder 1 and Delphi 8 can't build the installer
+          begin
+            Result.Typ := ttNone;
+            Result.Version := 0;
+            Result.IDEVersion := 0;
+            Result.RootDir := '';
+            Result.KeyName := '';
+            Result.Id := '';
+            Exit;
+          end;
+          Inc(Result.Version, 6); // 3.0 => 9
+        end;
+      ttDelphi,
+      ttBCB:
+        begin
+          if IDEVersion < 6 then   // Delphi 5 and under are not supported
+          begin
+            Result.Typ := ttNone;
+            Result.Version := 0;
+            Result.IDEVersion := 0;
+            Result.RootDir := '';
+            Result.KeyName := '';
+            Result.Id := '';
+            Exit;
+          end;
+        end;
     end;
     Result.Typ := Typ;
     Result.IDEVersion := IDEVersion;
@@ -1113,36 +1127,20 @@ begin
   WriteLn(f, '-I"' + Target.LibDirs + '"');
   WriteLn(f, '-R"' + Target.LibDirs + '"');
   WriteLn(f, '-O"' + Target.LibDirs + '"');
-  if (Target.Version = 5) then
-  begin
-    if RuntimePackageRtl or RuntimePackageVcl then
-      WriteLn(f, '-LUvcl50')
-  end
-  else
-  begin
-    if RuntimePackageRtl then
-      WriteLn(f, '-LUrtl');
-    if RuntimePackageVcl then
-      WriteLn(f, '-LUvcl');
-  end;
+  if RuntimePackageRtl then
+    WriteLn(f, '-LUrtl');
+  if RuntimePackageVcl then
+    WriteLn(f, '-LUvcl');
   CloseFile(f);
   {$I+}
   if IOResult <> 0 then
   begin
     //WriteLn(ErrOutput, 'Failed to write file ', Dcc32Cfg);
     ExtraOpts := ExtraOpts + '-U"' + Target.LibDirs + '" -I"' + Target.LibDirs + '" -R"' + Target.LibDirs + '" -O"' + Target.LibDirs + '" ';
-    if (Target.Version = 5) then
-    begin
-      if RuntimePackageRtl or RuntimePackageVcl then
-        ExtraOpts := ExtraOpts + '-LUvcl50 '
-    end
-    else
-    begin
-      if RuntimePackageRtl then
-        ExtraOpts := ExtraOpts + '-LUrtl ';
-      if RuntimePackageVcl then
-        ExtraOpts := ExtraOpts + '-LUvcl ';
-    end;
+    if RuntimePackageRtl then
+      ExtraOpts := ExtraOpts + '-LUrtl ';
+    if RuntimePackageVcl then
+      ExtraOpts := ExtraOpts + '-LUvcl ';
     DeleteFile(PChar(Dcc32Cfg));
     Dcc32Cfg := '';
   end;
@@ -1192,7 +1190,7 @@ begin
     WriteLn;
     WriteLn('Environment variables:');
     WriteLn('  DELPHIVERSION = d12    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d5, d6, d7, c5, c6, d9, d10, d11, d12, ...)');
+    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, ...)');
   end;
 
   ExitCode := Status;

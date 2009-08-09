@@ -2,9 +2,7 @@
 <Package Name="JvBDE" Design="0">
   <Description>JVCL BDE Components Runtime Package</Description>
   <GUID>{9189FAE4-7284-4821-8E3F-0F17EA23C445}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs/>
   <C6Libs/>
   <ImageBase>49060000</ImageBase>
   <Requires>
@@ -13,12 +11,7 @@
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="DB" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
-    <Package Name="vcldb50" Targets="DBv5" Condition=""/>
-    <Package Name="vclbde50" Targets="DBv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>

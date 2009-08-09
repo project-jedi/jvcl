@@ -2,9 +2,7 @@
 <Package Name="JvNet" Design="0">
   <Description>JVCL Network Components Runtime Package</Description>
   <GUID>{C70AFC0D-40D7-4F4D-A0F6-B1C17B608455}</GUID>
-  <C5PFlags>-LUvcl50 -LUJclC50</C5PFlags>
   <C6PFlags>-LUJcl</C6PFlags>
-  <C5Libs>wininet.lib</C5Libs>
   <C6Libs>wininet.lib</C6Libs>
   <ImageBase>4D3F0000</ImageBase>
   <Requires>
@@ -12,26 +10,18 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JclD50" Targets="Dv5" Condition=""/>
-    <Package Name="JclC50" Targets="Cv5" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl50" Targets="allv5" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="indy50" Targets="allv5" Condition="USE_3RDPARTY_INDY && !USE_3RDPARTY_INDY10"/>
     <Package Name="indy" Targets="allv6up" Condition="USE_3RDPARTY_INDY && !USE_3RDPARTY_INDY10"/>
-    <Package Name="IndySystem50" Targets="allv5" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndySystem60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndySystem70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndySystem" Targets="D9,D9p,D10,D10p,D11,D12" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
-    <Package Name="IndyProtocols50" Targets="allv5" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols" Targets="D9,D9p,D10,D10p,D11,D12" Condition="USE_3RDPARTY_INDY && USE_3RDPARTY_INDY10"/>
-    <Package Name="IcsBcb50" Targets="Cv5" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsBcb60" Targets="C6,C6p" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel50" Targets="Dv5" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel60" Targets="D6,D6p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel70" Targets="D7,D7p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel90" Targets="D9,D9p" Condition="USE_3RDPARTY_ICS"/>
