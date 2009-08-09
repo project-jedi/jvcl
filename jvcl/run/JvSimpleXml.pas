@@ -161,8 +161,6 @@ type
 type
   TXMLVariant = JclSimpleXml.TXMLVariant {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.TXMLVariant' {$ENDIF} {$ENDIF COMPILER8_UP};
 
-  TXMLVarData = JclSimpleXML.TXMLVarData {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXML.TXMLVarData' {$ENDIF} {$ENDIF COMPILER8_UP};
-
 procedure XMLCreateInto(var ADest: Variant; const AXML: TJvSimpleXMLElem); deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreateInto' {$ENDIF};
 function XMLCreate(const AXML: TJvSimpleXMLElem): Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
 function XMLCreate: Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
