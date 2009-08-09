@@ -149,7 +149,7 @@ implementation
 
 uses
   StdCtrls, SysUtils,
-  JvDBActions, JvDynControlEngineIntf, JvResources, JvVCL5Utils;
+  JvDBActions, JvDynControlEngineIntf, JvResources;
 
 procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value: TComponent);
 begin
@@ -398,7 +398,9 @@ begin
     FScrollBox.Align := alClient;
     FScrollBox.BorderStyle := bsNone;
     FScrollBox.AutoScroll := True;
+    {$IFDEF COMPILER10_UP}
     FScrollBox.ParentBackground := True;
+    {$ENDIF COMPILER10_UP}
     FForm.Constraints := ArrangeConstraints;
     ArrangePanel := TJvPanel.Create(FForm);
     ArrangePanel.Align := alTop;
