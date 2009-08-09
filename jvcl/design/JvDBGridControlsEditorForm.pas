@@ -31,11 +31,7 @@ interface
 
 uses
   Classes, Controls, Forms,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   StdCtrls, Buttons, Graphics,
   TypInfo,
   JvDBGrid;

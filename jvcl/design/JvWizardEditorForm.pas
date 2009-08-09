@@ -48,12 +48,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
-  {$IFDEF COMPILER6_UP}
-  DesignIntf, DesignEditors,
-  DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
+  DesignIntf, DesignEditors, DesignWindows,
   JvWizard;
 
 type
@@ -129,16 +124,9 @@ type
     property Wizard: TJvWizard read FWizard write SetWizard;
   public
     procedure Activated; override;
-    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$ELSE}
-    procedure ComponentDeleted(Component: IPersistent); override;
-    function UniqueName(Component: TComponent): string; override;
-    procedure FormClosed(AForm: TCustomForm); override;
-    procedure FormModified; override;
-    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
   end;
 
@@ -175,11 +163,7 @@ begin
   begin
     AWizardPageListEditor := TJvWizardPageListEditor.Create(Application);
     try
-      {$IFDEF COMPILER6_UP}
       AWizardPageListEditor.Designer := Designer;
-      {$ELSE}
-      AWizardPageListEditor.Designer := IFormDesigner(Designer);
-      {$ENDIF COMPILER6_UP}
       AWizardPageListEditor.Wizard := AWizard;
       AWizardPageListEditor.Show;
     except
@@ -388,8 +372,6 @@ begin
   SelectWizardPage(lbxWizardPages.ItemIndex);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 procedure TJvWizardPageListEditor.DesignerClosed(const Designer: IDesigner;
   AGoingDormant: Boolean);
 begin
@@ -412,36 +394,6 @@ begin
   if not (csDestroying in ComponentState) then
     UpdatePageList(lbxWizardPages.ItemIndex);
 end;
-
-{$ELSE}
-
-function TJvWizardPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
-procedure TJvWizardPageListEditor.ComponentDeleted(Component: IPersistent);
-begin
-  if ExtractPersistent(Component) = FWizard then
-  begin
-    FWizard := nil;
-    Close;
-  end;
-end;
-
-procedure TJvWizardPageListEditor.FormClosed(AForm: TCustomForm);
-begin
-  if AForm = Designer.Form then
-    Close;
-end;
-
-procedure TJvWizardPageListEditor.FormModified;
-begin
-  if not (csDestroying in ComponentState) then
-    UpdatePageList(lbxWizardPages.ItemIndex);
-end;
-
-{$ENDIF COMPILER6_UP}
 
 function TJvWizardPageListEditor.GetEditState: TEditState;
 begin

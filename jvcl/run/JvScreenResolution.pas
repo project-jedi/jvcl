@@ -68,11 +68,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ELSE}
-  Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvTypes;
 
 function TJvScreenResolution.GetCount: Integer;

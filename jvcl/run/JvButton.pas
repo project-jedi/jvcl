@@ -189,10 +189,7 @@ const
 implementation
 
 uses
-  SysUtils, Forms,
-  {$IFDEF COMPILER6_UP}
-  Types,
-  {$ENDIF COMPILER6_UP}
+  SysUtils, Forms, Types,
   JvJVCLUtils, JvThemes;
 
 const

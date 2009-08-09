@@ -33,11 +33,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, StdCtrls, Menus, ActnList, ImgList,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvValidators;
 
 type
@@ -84,16 +80,9 @@ type
     procedure AddValidatorClasses;
   public
     procedure Activated; override;
-    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$ELSE}
-    procedure ComponentDeleted(Component: IPersistent); override;
-    function UniqueName(Component: TComponent): string; override;
-    procedure FormClosed(AForm: TCustomForm); override;
-    procedure FormModified; override;
-    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
@@ -116,21 +105,6 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
-
-  {$IFDEF COMPILER5}
-
-  // since D5 doesn't support interface style published properties,
-  // these editors are supplied to make it easier to select a specific interface
-  // implementor at design-time
-  TJvValidationSummaryProperty = class(TComponentProperty)
-    procedure GetValues(Proc: TGetStrProc); override;
-  end;
-
-  TJvErrorIndicatorProperty = class(TComponentProperty)
-    procedure GetValues(Proc: TGetStrProc); override;
-  end;
-
-  {$ENDIF COMPILER5}
 
 implementation
 
@@ -171,11 +145,7 @@ begin
   begin
     AEditor := TfrmValidatorsEditor.Create(Application);
     try
-      {$IFDEF COMPILER6_UP}
       AEditor.Designer := Designer;
-      {$ELSE}
-      AEditor.Designer := Designer as IFormDesigner;
-      {$ENDIF COMPILER6_UP}
       AEditor.Validator := AValidator;
       AEditor.Show;
     except
@@ -252,8 +222,6 @@ begin
   Result := [];
 end;
 
-{$IFDEF COMPILER6_UP}
-
 procedure TfrmValidatorsEditor.DesignerClosed(const Designer: IDesigner;
   AGoingDormant: Boolean);
 begin
@@ -307,63 +275,6 @@ begin
     UpdateCaption;
   end;
 end;
-
-{$ELSE}
-
-procedure TfrmValidatorsEditor.ComponentDeleted(Component: IPersistent);
-var
-  Item: TPersistent;
-  I, J: Integer;
-begin
-  inherited ComponentDeleted(Component);
-  Item := ExtractPersistent(Component);
-  if not (csDestroying in ComponentState) then
-  begin
-    if Item = Validator then
-    begin
-      Validator := nil;
-      ClearValidators;
-      Close;
-    end
-    else
-      for I := 0 to lbValidators.Items.Count - 1 do
-        if Item = lbValidators.Items.Objects[I] then
-        begin
-          J := lbValidators.ItemIndex;
-          lbValidators.Items.Delete(I);
-          if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := J;
-          if lbValidators.ItemIndex < 0 then
-            lbValidators.ItemIndex := J - 1;
-          Exit;
-        end;
-    UpdateCaption;
-  end;
-end;
-
-procedure TfrmValidatorsEditor.FormClosed(AForm: TCustomForm);
-begin
-  inherited FormClosed(AForm);
-  if AForm = Designer.Form then
-    Close;
-end;
-
-procedure TfrmValidatorsEditor.FormModified;
-begin
-  inherited FormModified;
-  if not (csDestroying in ComponentState) then
-  begin
-    UpdateItem(lbValidators.ItemIndex);
-    UpdateCaption;
-  end;
-end;
-
-function TfrmValidatorsEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
-{$ENDIF COMPILER6_UP}
 
 procedure TfrmValidatorsEditor.UpdateItem(Index: Integer);
 var
@@ -586,36 +497,6 @@ begin
     end;
   end;
 end;
-
-{$IFDEF COMPILER5}
-
-//=== { TJvValidationSummaryProperty } =======================================
-
-procedure TJvValidationSummaryProperty.GetValues(Proc: TGetStrProc);
-var
-  I: Integer;
-  Obj: IJvValidationSummary;
-begin
-  for I := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[I], IJvValidationSummary, Obj) and
-      (Designer.Form.Components[I] <> GetComponent(0)) then
-      Proc(Designer.Form.Components[I].Name);
-end;
-
-//=== { TJvErrorIndicatorProperty } ==========================================
-
-procedure TJvErrorIndicatorProperty.GetValues(Proc: TGetStrProc);
-var
-  I: Integer;
-  Obj: IJvErrorIndicator;
-begin
-  for I := 0 to Designer.Form.ComponentCount - 1 do
-    if Supports(Designer.Form.Components[I], IJvErrorIndicator, Obj) and
-      (Designer.Form.Components[I] <> GetComponent(0)) then
-      Proc(Designer.Form.Components[I].Name);
-end;
-
-{$ENDIF COMPILER5}
 
 //=== { TJvPropertyToCompareProperty } =======================================
 

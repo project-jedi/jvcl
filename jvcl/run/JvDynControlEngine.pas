@@ -32,9 +32,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Controls, Forms, StdCtrls, Graphics, Buttons,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JvDynControlEngineIntf;
 
 type
@@ -237,7 +235,7 @@ implementation
 
 uses
   TypInfo,
-  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineVCL, JvComponent,
+  JvResources, JvTypes, JvDynControlEngineVCL, JvComponent,
   JvJVCLUtils;
 
 var
@@ -462,11 +460,7 @@ begin
         tkEnumeration, tkSet, tkChar, tkInteger:
           Result := GetOrdProp(APersistent, PropName);
         tkInt64:
-          {$IFDEF COMPILER6_UP}
           Result := GetInt64Prop(APersistent, PropName);
-          {$ELSE}
-          Result := Null;
-          {$ENDIF COMPILER6_UP}
         tkFloat:
           Result := GetFloatProp(APersistent, PropName);
         tkClass:

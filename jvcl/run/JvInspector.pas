@@ -2081,19 +2081,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Consts, Dialogs, Forms, Buttons,
+  RTLConsts, Types, StrUtils, Variants, Consts, Dialogs, Forms, Buttons,
   JclRTTI, JclLogic, JclStrings,
   JvJCLUtils, JvThemes, JvResources;
 
@@ -5430,9 +5418,6 @@ var
   TempList: TList;
   I: Integer;
   Item: TJvCustomInspectorItem;
-  {$IFDEF COMPILER5}
-  J: Integer;
-  {$ENDIF COMPILER5}
 begin
   TempList := TList.Create;
   try
@@ -5447,13 +5432,7 @@ begin
       else
       begin
         Item.BuildDisplayableList(TempList);
-        {$IFDEF COMPILER5}
-        for J := 0 to TempList.Count - 1 do
-          if ItemList.IndexOf(TempList[J]) = -1 then
-            ItemList.Add(TempList[J]);
-        {$ELSE}
         ItemList.Assign(TempList, laOr);
-        {$ENDIF COMPILER5}
         TempList.Clear;
       end;
       Inc(I);

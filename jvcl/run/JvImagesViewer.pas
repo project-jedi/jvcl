@@ -213,10 +213,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
   StrUtils,
-  {$ENDIF COMPILER6_UP}
-  JvVCL5Utils, JvJCLUtils;
+  JvJCLUtils;
 
 //=== { TJvImageViewerOptions } ==============================================
 

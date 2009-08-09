@@ -31,11 +31,7 @@ interface
 uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   ExtCtrls, Menus, CheckLst,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvComponent, JvExControls, JvxCheckListBox;
 
 type

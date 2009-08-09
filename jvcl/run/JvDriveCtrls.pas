@@ -392,7 +392,7 @@ implementation
 uses
   ShellAPI, SysUtils, Math, Forms, ImgList,
   DBT,
-  JvVCL5Utils, JvJCLUtils, JvJVCLUtils, JvConsts;
+  JvJCLUtils, JvJVCLUtils, JvConsts;
 
 const
   cDirPrefix = #32;

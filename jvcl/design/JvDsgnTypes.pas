@@ -30,20 +30,11 @@ unit JvDsgnTypes;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignIntf;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
-  {$IFDEF COMPILER6_UP}
   IJvDesigner = DesignIntf.IDesigner;
   IJvFormDesigner = DesignIntf.IDesigner;
-  {$ELSE}
-  IJvDesigner = IFormDesigner;
-  IJvFormDesigner = IFormDesigner;
-  {$ENDIF COMPILER6_UP}
 
 implementation
 

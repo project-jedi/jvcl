@@ -76,10 +76,7 @@ uses
   cxGridDBDataDefinitions, cxGridDBChartView,
   cxCustomData, cxGridExportLink,
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-{$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-{$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Dialogs;
+  Variants, SysUtils, Dialogs;
 
 //=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
 

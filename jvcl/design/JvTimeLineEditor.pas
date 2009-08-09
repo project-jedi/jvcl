@@ -33,21 +33,13 @@ unit JvTimeLineEditor;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TJvTimeLineEditor = class(TDefaultEditor)
   public
-    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-    {$ELSE}
-    procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-    {$ENDIF COMPILER6_UP}
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -59,7 +51,6 @@ uses
   SysUtils,
   JvTimeLine, JvDsgnConsts;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvTimeLineEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 var
   PropName: string;
@@ -71,19 +62,6 @@ begin
     Continue := False;
   end;
 end;
-{$ELSE}
-procedure TJvTimeLineEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
-var
-  PropName: string;
-begin
-  PropName := PropertyEditor.GetName;
-  if SameText(PropName, 'Items') then
-  begin
-    PropertyEditor.Edit;
-    Continue := False;
-  end;
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvTimeLineEditor.ExecuteVerb(Index: Integer);
 begin

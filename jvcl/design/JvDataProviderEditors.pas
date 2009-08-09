@@ -33,17 +33,11 @@ interface
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus,
-  {$ELSE}
-  DsgnIntf, Menus,
-  {$ENDIF COMPILER6_UP}
   JvDataProvider, JvDataProviderIntf;
 
 type
-  {$IFDEF COMPILER6_UP}
   TGetPropEditProc = TGetPropProc;
-  {$ENDIF COMPILER6_UP}
 
   TJvDataConsumerExtPropertyEditor = class(TPropertyEditor)
   protected
@@ -60,11 +54,7 @@ type
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
-    {$IFDEF COMPILER6_UP}
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
-    {$ELSE}
-    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
-    {$ENDIF COMPILER6_UP}
   end;
 
   TJvDataConsumerProperty = class(TEnumProperty)
@@ -124,12 +114,7 @@ type
 implementation
 
 uses
-  SysUtils, TypInfo,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ELSE}
-  Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  SysUtils, TypInfo, RTLConsts,
   JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm,
   JvDataProviderDesignerForm, JvDataContextManagerForm, JvDsgnConsts;
 
@@ -191,27 +176,11 @@ end;
 procedure TJvDataConsumerProperty.SetProviderIntfAt(Index: Integer; Value: IJvDataProvider);
 var
   Svc: TJvDataConsumer;
-  {$IFDEF COMPILER5}
-  CompRef: IInterfaceComponentReference;
-  ProvComp: TComponent;
-  {$ENDIF COMPILER5}
 begin
   Svc := GetConsumerServiceAt(Index);
   if Svc <> nil then
   begin
-    {$IFDEF COMPILER6_UP}
     Svc.Provider := Value;
-    {$ELSE}
-    if Value <> nil then
-    begin
-      if not Supports(Value, IInterfaceComponentReference, CompRef) then
-        raise EPropertyError.CreateRes(@RsESpecifiedProviderIsNotATComponentDe);
-      ProvComp := CompRef.GetComponent;
-    end
-    else
-      ProvComp := nil;
-    Svc.Provider := ProvComp;
-    {$ENDIF COMPILER6_UP}
     Modified;
   end;
 end;
@@ -244,13 +213,8 @@ var
   Components: IDesignerSelections;
 begin
   Components := CreateSelectionList;
-  {$IFDEF COMPILER6_UP}
   Components.Add(ConsumerSvcExt);
   GetComponentProperties(Components, tkAny, Designer, Proc);
-  {$ELSE}
-  Components.Add(MakeIPersistent(ConsumerSvcExt));
-  GetComponentProperties((Components as IComponentList).GetComponentList, tkAny, Designer, Proc);
-  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDataConsumerProperty.AllEqual: Boolean;
@@ -260,8 +224,7 @@ end;
 
 function TJvDataConsumerProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSubProperties, paSortList
-    {$IFDEF COMPILER6_UP}, paVolatileSubproperties {$ENDIF}];
+  Result := [paValueList, paSubProperties, paSortList, paVolatileSubproperties];
 end;
 
 procedure TJvDataConsumerProperty.GetProperties(Proc: TGetPropEditProc);
@@ -287,14 +250,7 @@ var
   Comp: TComponent;
   ProvIntf: IJvDataProvider;
   Ref: IUnknown;
-  {$IFDEF COMPILER5}
-  List: IDesignerSelections;
-  Dsgnr: IFormDesigner;
-  {$ENDIF COMPILER5}
 begin
-  {$IFDEF COMPILER5}
-  Dsgnr := Self.Designer;
-  {$ENDIF COMPILER5}
   if Value = '' then
     Comp := nil
   else
@@ -309,15 +265,6 @@ begin
   else
     ProvIntf := nil;
   SetProviderIntf(ProvIntf);
-  {$IFDEF COMPILER5}
-  { Force the object inspector to discard its property editors. Code copied from post from
-    Constantine Yannakopoulos in borland.public.delphi.vcl.components.writing }
-  List := CreateSelectionList;
-  Dsgnr.GetSelections(List);
-  Dsgnr.NoSelection; // Self will be gone here
-  Dsgnr.SetSelections(List);
-  Dsgnr.Modified;
-  {$ENDIF COMPILER5}
 end;
 
 procedure TJvDataConsumerProperty.GetValues(Proc: TGetStrProc);
@@ -526,11 +473,7 @@ begin
   Result := 2;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
-{$ELSE}
-procedure TJvProviderEditor.PrepareItem(Index: Integer; const AItem: TMenuItem);
-{$ENDIF COMPILER6_UP}
 begin
   case Index of
     0:

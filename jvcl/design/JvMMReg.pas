@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes, Graphics, ExtCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConfig,
   JvId3v1, JvId3v2, JvID3v2EditorForm, JvID3v2Base, JvWavePlayer,
   JvAVICaptureEditors, JvAVICapture,
@@ -99,14 +95,12 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TJvFullColor), nil, '', TJvFullColorProperty);
   RegisterPropertyEditor(TypeInfo(TJvFullColorList), nil, '', TJvFullColorListEditor);
-  {$IFDEF COMPILER6_UP}
   RegisterSelectionEditor(TJvFullColorPanel, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorTrackBar, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorCircle, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorLabel, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorSpaceCombo, TJvFullColorSelection);
   RegisterSelectionEditor(TJvFullColorAxisCombo, TJvFullColorSelection);
-  {$ENDIF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TJvFullColorSpaceID), nil, '', TJvColorIDEditor);
 end;
 

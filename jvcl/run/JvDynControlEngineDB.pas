@@ -162,11 +162,8 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, TypInfo,
-  JvResources, JvTypes, JvVCL5Utils, JvDynControlEngineIntf, JvDynControlEngineVCLDB;
+  Variants, SysUtils, TypInfo,
+  JvResources, JvTypes, JvDynControlEngineIntf, JvDynControlEngineVCLDB;
 
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;
@@ -298,8 +295,7 @@ begin
       Result := jctDBDateEdit;
     ftTime:
       Result := jctDBTimeEdit;
-    ftDateTime 
-      {$IFDEF COMPILER6_UP}, ftTimestamp{$ENDIF COMPILER6_UP} 
+    ftDateTime, ftTimestamp 
       {$IFDEF COMPILER10_UP}, ftOraTimestamp{$ENDIF COMPILER10_UP}:
       Result := jctDBDateTimeEdit;
     ftBoolean:

@@ -40,8 +40,7 @@ uses
   {$IFDEF MSWINDOWS}
   CommCtrl,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes, Graphics, Controls, ImgList,
-  JvVCL5Utils;
+  SysUtils, Classes, Graphics, Controls, ImgList;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -368,7 +367,7 @@ end;
 
 //=== { TJvImageListItem } ===================================================
 
-constructor TJvImageListItem.Create(Collection: Classes.TCollection); // TCollection redeclared in JvVCL5Utils
+constructor TJvImageListItem.Create(Collection: TCollection); 
 begin
   inherited Create(Collection);
 

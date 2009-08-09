@@ -33,10 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, Controls, Forms,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Classes, Graphics, Controls, Forms, Types,
   JvComponent, JvTypes;
 
 type
@@ -141,11 +138,9 @@ type
     {$ENDIF COMPILER9_UP}
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER6_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF COMPILER6_UP}
     property OnResize;
   end;
 

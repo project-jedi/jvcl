@@ -199,16 +199,9 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo,
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
+  SysUtils, Grids, TypInfo, StrUtils,
   JvResources, JvParameterList, JvParameterListParameter, JvDSADialogs,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  JvDBActions,
-  Dialogs;
+  Variants, JvDBActions, Dialogs;
 
 var
   IntRegisteredActionEngineList: TJvDatabaseActionEngineList;

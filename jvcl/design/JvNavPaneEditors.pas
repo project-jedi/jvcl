@@ -32,11 +32,7 @@ interface
 uses
   SysUtils, Classes,
   Windows, Controls, Forms, ToolWin, Menus, ActnList, ComCtrls, ImgList,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvDsgnEditors, JvNavigationPane;
 
 type

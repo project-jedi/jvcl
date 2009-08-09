@@ -31,11 +31,7 @@ interface
 uses
   Classes, Windows, Messages, Forms, Controls, Dialogs, Graphics,
   StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  LibIntf, DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvIconList, JvComponent;
 
 type

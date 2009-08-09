@@ -989,12 +989,8 @@ begin
   try
     Dispatch(Msg);
   except
-    {$IFDEF COMPILER6_UP}
     if Assigned(ApplicationHandleException) then
       ApplicationHandleException(Self);
-    {$ELSE}
-    Application.HandleException(Self);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

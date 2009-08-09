@@ -38,10 +38,7 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  Windows, Messages, Forms, Dialogs, FileCtrl,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  Windows, Messages, Forms, Dialogs, FileCtrl, Variants,
   JvXMLTree, JvComponentBase, JvStrings, JvTypes;
 
 const

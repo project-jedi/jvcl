@@ -31,30 +31,12 @@ unit JvTimeFrameworkReg;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   ColnEdit;
 
 {$R JvTimeFrameworkReg.dcr}
 
 type
-  {$IFDEF COMPILER5}
-
-  TJvTFGridLayoutCategory = class(TLayoutCategory)
-  public
-    class function Name: string; override;
-  end;
-
-  TJvTFCustomDrawCategory = class(TVisualCategory)
-  public
-    class function Name: string; override;
-  end;
-
-  {$ENDIF COMPILER5}
-
   TJvTFGlanceCellsProperty = class(TCollectionProperty)
   public
     function GetColOptions: TColOptions; override;
@@ -70,24 +52,6 @@ uses
   JvTFGlance, JvTFGlanceTextViewer, JvTFMonths, JvTFWeeks, JvTFDays,
   JvTFAlarm, JvTFManager;
   
-//=== { TJvTFGridLayoutCategory } ============================================
-
-{$IFDEF COMPILER5}
-class function TJvTFGridLayoutCategory.Name: string;
-begin
-  Result := RsGridLayout;
-end;
-{$ENDIF COMPILER5}
-
-//=== { TJvTFCustomDrawCategory } ============================================
-
-{$IFDEF COMPILER5}
-class function TJvTFCustomDrawCategory.Name: string;
-begin
-  Result := RsCustomDraw;
-end;
-{$ENDIF COMPILER5}
-
 //=== { TJvTFGlanceCellsProperty } ===========================================
 
 function TJvTFGlanceCellsProperty.GetColOptions: TColOptions;
@@ -110,45 +74,6 @@ begin
   // deleted, or moved at design time... BAD THINGS HAPPEN
   RegisterPropertyEditor(TypeInfo(TJvTFGlanceCells), TJvTFMonths, 'Cells', nil);
   RegisterComponents(RsPaletteTimeFramework, [TJvTFDays, TJvTFDaysPrinter]);
-  {$IFDEF COMPILER5}
-  RegisterPropertiesInCategory(TVisualCategory, ['StateImages', 'CustomImages',
-    'StateImageMap']);
-  RegisterPropertiesInCategory(TDatabaseCategory, ['OnNeedAppts', 'OnPostAppt',
-    'OnDeleteAppt', 'OnRefreshAppt', 'OnRefreshSched', 'OnRefreshAll',
-    'OnPostApptQuery']);
-  RegisterPropertiesInCategory(TJvTFCustomDrawCategory, ['OnDrawHeader',
-    'OnDrawBody', 'OnDrawFooter']);
-  RegisterPropertiesInCategory(TVisualCategory, ['ApptAttr', 'ApptBar',
-    'ApptBuffer', 'ColTitleStyle', 'DateFormat', 'FancyRowHdrAttr',
-    'GrabHandles', 'Granularity', 'HdrAttr', 'Options', 'RowHdrType',
-    'SelApptAttr', 'SelCellAttr', 'SelFancyRowHdrAttr', 'SelHdrAttr',
-    'Thresholds', 'TimeFormat', 'FormattedDesc', 'Grouping',
-    'utfHintProps', 'GroupHdrAttr', 'SelGroupHdrAttr']);
-  RegisterPropertiesInCategory(TJvTFGridLayoutCategory, ['AutoSizeCols',
-    'ColHdrHeight', 'Cols', 'DefColWidth', 'Granularity', 'LeftCol',
-    'MinColWidth', 'MinRowHeight', 'RowHdrWidth', 'RowHeight', 'Template',
-    'TopRow', 'Grouping', 'GroupHdrHeight']);
-  RegisterPropertiesInCategory(TLocaleCategory, ['DateFormat', 'TimeFormat']);
-  RegisterPropertiesInCategory(TInputCategory, ['FocusedCol', 'FocusedRow',
-    'Options']);
-  RegisterPropertiesInCategory(TDragNDropCategory, ['GrabHandles', 'Options']);
-  RegisterPropertiesInCategory(TJvTFGridLayoutCategory, ['OnDateChanged',
-    'OnDateChanging', 'OnDeleteAppt', 'OnDeleteSchedule',
-    'OnGranularityChanged', 'OnGranularityChanging', 'OnInsertAppt',
-    'OnInsertSchedule', 'OnMoveCol', 'OnSizeCol', 'OnSizeColHdr', 'OnSizeRow',
-    'OnSizeRowHdr', 'OnFocusedColChanged', 'OnFocusedRowChanged']);
-  RegisterPropertiesInCategory(TInputCategory, ['OnDeleteAppt',
-    'OnDeleteSchedule', 'OnFailEditor', 'OnInsertAppt', 'OnInsertSchedule',
-    'OnQuickEntry', 'OnFocusedColChanged', 'OnFocusedRowChanged',
-    'OnCreateQuickEntry']);
-  RegisterPropertiesInCategory(TJvTFCustomDrawCategory, ['OnDrawAppt',
-    'OnDrawColHdr', 'OnDrawCorner', 'OnDrawDataCell', 'OnDrawGrabHandle',
-    'OnDrawMajorRowHdr', 'OnDrawMinorRowHdr', 'OnDrawRow', 'OnDrawRowHdr',
-    'OnDrawApptBar', 'OnDrawGroupHdr', 'OnShadeCell']);
-  RegisterPropertiesInCategory(TDragNDropCategory, ['OnSizeAppt', 'OnDropAppt']);
-  RegisterPropertiesInCategory(TMiscellaneousCategory, ['OnSelectAppt',
-    'OnSelectedAppt', 'OnSelectingAppt', 'OnSizeAppt', 'OnUpdateColTitles']);
-  {$ENDIF COMPILER5}
 end;
 
 end.

@@ -33,10 +33,7 @@ WARNINGHEADER
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, Grids,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -44,16 +41,9 @@ uses
   JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
-  {$IFDEF COMPILER5}
-  // Compiler 5 and VisualCLX do not have TEditStyle
-  TEditStyle = (esSimple, esEllipsis, esPickList);
-  {$ENDIF COMPILER5}
-
   WINCONTROL_DECL_DEFAULT(InplaceEdit)
 
   WINCONTROL_DECL_DEFAULT(CustomGrid)
-
-  {$IFDEF COMPILER6_UP}
 
   WINCONTROL_DECL_DEFAULT(CustomDrawGrid)
 
@@ -62,22 +52,13 @@ type
   TJvExPubInplaceEditList = class(TJvExInplaceEditList)
   COMMON_PUBLISHED
   end;
-  {$ENDIF COMPILER6_UP}
 
   TJvExDrawGrid = class(TDrawGrid, IJvExControl)
   WINCONTROL_DECL
-  {$IFDEF COMPILER5}
-  protected
-    function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  {$ENDIF COMPILER5}
   end;
 
   TJvExStringGrid = class(TStringGrid, IJvExControl)
   WINCONTROL_DECL
-  {$IFDEF COMPILER5}
-  protected
-    function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  {$ENDIF COMPILER5}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -96,31 +77,13 @@ WINCONTROL_IMPL_DEFAULT(InplaceEdit)
 
 WINCONTROL_IMPL_DEFAULT(CustomGrid)
 
-{$IFDEF COMPILER6_UP}
-
 WINCONTROL_IMPL_DEFAULT(CustomDrawGrid)
 
 WINCONTROL_IMPL_DEFAULT(InplaceEditList)
 
-{$ENDIF COMPILER6_UP}
-
 WINCONTROL_IMPL_DEFAULT(DrawGrid)
 
-{$IFDEF COMPILER5}
-function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
-begin
-  Result := esSimple;
-end;
-{$ENDIF COMPILER5}
-
 WINCONTROL_IMPL_DEFAULT(StringGrid)
-
-{$IFDEF COMPILER5}
-function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
-begin
-  Result := esSimple;
-end;
-{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 initialization

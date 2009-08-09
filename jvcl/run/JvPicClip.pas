@@ -32,10 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Windows, Graphics, Controls,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  Classes, Windows, Graphics, Controls, RTLConsts,
   JvComponentBase;
 
 type

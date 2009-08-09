@@ -124,9 +124,7 @@ type
   published
     property Anchors;
     property AutoComplete default False;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind;
@@ -266,9 +264,7 @@ type
   published
     property Anchors;
     property AutoComplete default False;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind;

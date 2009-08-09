@@ -125,12 +125,10 @@ type
     property HideCaret;
     property HotTrack;
     property HintColor;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
 
     property OnMouseEnter;
     property OnMouseLeave;

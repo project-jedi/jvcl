@@ -265,16 +265,9 @@ begin
       W := TextWidth(Item.Msg);
     end;
 
-    {$IFDEF COMPILER6_UP}
     MaxW := 2 + ListBox.ClientWidth + 2;
     if (W > MaxW) and (W - MaxW > ListBox.ScrollWidth) then
       ListBox.ScrollWidth := W - MaxW;
-    {$ELSE}
-    // this code's purpose is to prevent the Delphi 5 compiler hint
-    MaxW := W;
-    if MaxW <> -1 then
-      ;
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

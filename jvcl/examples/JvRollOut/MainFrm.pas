@@ -196,18 +196,11 @@ end;
 procedure TForm1.JvRollOutAction2Execute(Sender: TObject);
 begin
   Caption := 'Action 2 executed!';
-  {$IFNDEF COMPILER6_UP}
-  // Delphi 5 doesn't have TAction.AutoCheck
-  with Sender as TAction do
-    Checked := not Checked;
-  {$ENDIF}
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  {$IFDEF COMPILER6_UP}
   JvRollOutAction2.AutoCheck := true;
-  {$ENDIF}
 end;
 
 end.

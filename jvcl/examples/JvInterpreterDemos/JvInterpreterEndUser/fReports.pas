@@ -57,7 +57,7 @@ procedure Show;
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP} Variants, {$ENDIF}
+  Variants,
   JvJVCLUtils, JvJCLUtils, JvInterpreter_all, JvInterpreter_Quickrpt;
 
 {$R *.DFM}

@@ -227,10 +227,8 @@ type
 
   TJvTMTimeline = class(TJvCustomTMTimeline)
   public
-    {$IFDEF COMPILER6_UP}
     property RightButton;
     property LeftButton;
-    {$ENDIF COMPILER6_UP}
   published
     // gets / sets the borderstyle of the control and the scroll-buttons
     property BorderStyle;
@@ -337,7 +335,7 @@ implementation
 
 uses
   Consts,
-  JvJCLUtils, JvJVCLUtils, JvVCL5Utils, JvThemes;
+  JvJCLUtils, JvJVCLUtils, JvThemes;
 
 {$R JvTMTimeLine.res}
 
@@ -469,10 +467,8 @@ begin
     OnMouseDown := DoRMouseDown;
     OnMouseUp := DoMouseUp;
   end;
-  {$IFDEF COMPILER6_UP}
   FLeftBtn.SetSubComponent(True);
   FRightBtn.SetSubComponent(True);
-  {$ENDIF COMPILER6_UP}
   Height := 56;
   BevelInner := bvNone;
   BevelOuter := bvNone;

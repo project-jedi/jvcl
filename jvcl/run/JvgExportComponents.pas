@@ -214,15 +214,6 @@ uses
   JvConsts, JvSimpleXML,
   JvgUtils;
 
-{$IFDEF COMPILER5}
-function BoolToStr(Value: Boolean; AsString: Boolean = False): string;
-const
-  BoolStr: array [Boolean, Boolean] of PChar = (('0', 'False'), ('-1', 'True'));
-begin
-  Result := BoolStr[Value, AsString];
-end;
-{$ENDIF COMPILER5}
-
 function DeleteFileEx(const FileName: string): Boolean;
 const
   cSuffix = '_del_';

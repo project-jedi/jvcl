@@ -38,10 +38,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Classes, SysUtils, Contnrs, DB,
+  Variants, Classes, SysUtils, Contnrs, DB,
   JvAppStorage;
 
 type

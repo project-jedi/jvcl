@@ -1158,7 +1158,6 @@ begin
   Result := inherited Execute;
   if Result then
   begin
-    {$IFDEF COMPILER6_UP}
     if ActionComponent is TJvCustomRollOut then
     begin
       if LinkCheckedToCollapsed then
@@ -1167,7 +1166,6 @@ begin
         TJvCustomRollOut(ActionComponent).Collapsed := not TJvCustomRollOut(ActionComponent).Collapsed;
     end
     else
-    {$ENDIF COMPILER6_UP}
     if RollOut <> nil then
     begin
       if LinkCheckedToCollapsed then
@@ -1222,10 +1220,8 @@ begin
       if RollOut <> nil then
         RollOut.Collapsed := not Checked
       else
-      {$IFDEF COMPILER6_UP}
       if ActionComponent is TJvCustomRollOut then
         TJvCustomRollOut(ActionComponent).Collapsed := not Checked;
-      {$ENDIF COMPILER6_UP}
     end;
   end;
 end;

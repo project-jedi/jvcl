@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvID3v2Base, JvID3v2Types, JvComponent;
 
 type

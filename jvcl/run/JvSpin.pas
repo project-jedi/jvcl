@@ -42,7 +42,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, CommCtrl, ComCtrls, Controls, ExtCtrls, Graphics, Forms,
-  JvEdit, JvExMask, JvMaskEdit, JvComponent, JvDataSourceIntf, JvVCL5Utils;
+  JvEdit, JvExMask, JvMaskEdit, JvComponent, JvDataSourceIntf;
 
 const
   DefaultInitRepeatPause = 400; { pause before repeat timer (ms) }
@@ -342,12 +342,10 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property HideSelection;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property ClipboardCommands;
   end;
 
@@ -460,12 +458,10 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property HideSelection;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property ClipboardCommands;
   end;
 

@@ -93,13 +93,8 @@ const
 
 implementation
 
-{$IFDEF COMPILER6_UP}
 uses
   RTLConsts;
-{$ELSE}
-uses
-  Consts;
-{$ENDIF COMPILER6_UP}
 
 {$IFDEF USE_DXGETTEXT}
 const

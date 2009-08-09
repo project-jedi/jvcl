@@ -35,10 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Windows, Messages,
+  Variants, Windows, Messages,
   Controls, Graphics, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
   SysUtils, Classes,
   JclBase,

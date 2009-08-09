@@ -173,7 +173,7 @@ implementation
 
 uses
   SysUtils,
-  JvVCL5Utils, JvJCLUtils, JvResources;
+  JvJCLUtils, JvResources;
   // JvJCLUtils for DirectoryExists
 
 function ActionsToString(Actions: TJvChangeActions): string;
@@ -195,7 +195,7 @@ end;
 
 //=== { TJvChangeItem } ======================================================
 
-constructor TJvChangeItem.Create(Collection: Classes.TCollection);  // TCollection redefined in JvVCL5Utils
+constructor TJvChangeItem.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
   FParent := TJvChangeItems(Collection);

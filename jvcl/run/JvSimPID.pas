@@ -119,11 +119,9 @@ type
     {$ENDIF COMPILER9_UP}
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER6_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF COMPILER6_UP}
     property OnResize;
     property OnStartDock;
     property OnStartDrag;

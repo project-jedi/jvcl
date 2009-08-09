@@ -134,9 +134,7 @@ var
       It.Caption := AControl.Hint
     else
       It.Caption := AControl.Name;
-    {$IFDEF COMPILER6_UP}
     It.AutoCheck := True;
-    {$ENDIF COMPILER6_UP}
     It.Tag := Index;
     It.OnClick := PopupMenuClick;
     It.Checked := AControl.Visible;
@@ -162,9 +160,6 @@ procedure TJvControlBar.PopupMenuClick(Sender: TObject);
 begin
   with Sender as TMenuItem do
   begin
-    {$IFDEF COMPILER5}
-    Checked := not Checked;
-    {$ENDIF COMPILER5}
     if (Tag >= 0) and (Tag < FList.Count) then
       TControl(FList[Tag]).Visible := Checked;
   end;

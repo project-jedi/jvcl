@@ -35,10 +35,7 @@ uses
   {$IFDEF MSWINDOWS}
   ActnList, Graphics, ComCtrls, ImgList,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Classes, Controls, StdCtrls, ExtCtrls, Mask, Forms,
+  Variants, Classes, Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl, ExtDlgs, CheckLst,
   JvDynControlEngine, JvDynControlEngineIntf;
 
@@ -1427,10 +1424,8 @@ end;
 
 procedure TJvDynControlVCLDateTimeEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   FDatePicker.Format := Value;
   FTimePicker.Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 //=== { TJvDynControlVCLDateEdit } ===========================================
@@ -1501,9 +1496,7 @@ end;
 
 procedure TJvDynControlVCLDateEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 //=== { TJvDynControlVCLTimeEdit } ===========================================
@@ -1561,9 +1554,7 @@ end;
 
 procedure TJvDynControlVCLTimeEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 
@@ -2103,18 +2094,12 @@ end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetHeader(Index: Integer; Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   Header[Index] := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := Header[Index];
-  {$ELSE}
-  Result := False;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);
@@ -2423,9 +2408,7 @@ end;
 
 procedure TJvDynControlVCLImage.ControlSetProportional(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   Proportional := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 

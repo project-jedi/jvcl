@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
-  JvConsts, JvTypes, JvVCL5Utils, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
+  JvConsts, JvTypes, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
 
 type
   TJvCustomNavigationPane = class;
@@ -621,7 +621,7 @@ type
     procedure DoBackgroundChange(Sender: TObject);
   protected
     procedure UpdatePageList;
-    function GetAction: TBasicAction; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    function GetAction: TBasicAction; override;
     procedure SetParent( AParent: TWinControl); override;
     procedure SetPageIndex(Value: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1367,10 +1367,8 @@ begin
     Parent := Self;
   end;
   FParentStyleManager := True;
-  {$IFDEF COMPILER6_UP}
   FIconPanel.SetSubComponent(True);
   FSplitter.SetSubComponent(True);
-  {$ENDIF COMPILER6_UP}
 end;
 
 destructor TJvCustomNavigationPane.Destroy;
@@ -3133,11 +3131,7 @@ end;
 
 function TJvNavPanelPage.GetAction: TBasicAction;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := inherited GetAction;
-  {$ELSE}
-  Result := inherited Action;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvNavPanelPage.SetAction(const Value: TBasicAction);

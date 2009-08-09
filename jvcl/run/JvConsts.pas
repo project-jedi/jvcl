@@ -32,9 +32,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  JvWin32,
-  {$ENDIF COMPILER5}
   SysUtils, Classes, Forms, Controls, Graphics, Windows, TypInfo;
 
 const
@@ -53,12 +50,6 @@ const
   IdentifierSymbols = IdentifierFirstSymbols + DigitSymbols;
   HexadecimalSymbols = DigitSymbols + HexadecimalUppercaseLetters + HexadecimalLowercaseLetters;
 
-  {$IFDEF DELPHI5}
-  SDelphiKey = 'Software\Borland\Delphi\5.0';
-  {$ENDIF DELPHI5}
-  {$IFDEF BCB5}
-  SDelphiKey = 'Software\Borland\C++Builder\5.0';
-  {$ENDIF BCB5}
   {$IFDEF DELPHI6}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
   {$ENDIF DELPHI6}
@@ -149,28 +140,6 @@ const
   DEFAULT_SYSCOLOR_MASK = $80000000;
   {$ENDIF COMPILER7_UP}
 
-  {$IFDEF COMPILER5}
-  // Delphi colors not defined in Delphi 5
-  clMoneyGreen = TColor($C0DCC0);
-  clSkyBlue = TColor($F0CAA6);
-  clCream = TColor($F0FBFF);
-  clMedGray = TColor($A4A0A0);
-  // (outchy) = TColor(COLOR_XXXXXXXXXXX or $80000000);
-  clGradientActiveCaption = TColor(COLOR_GRADIENTACTIVECAPTION or DEFAULT_SYSCOLOR_MASK);
-  clGradientInactiveCaption = TColor(COLOR_GRADIENTINACTIVECAPTION or DEFAULT_SYSCOLOR_MASK);
-  clHotLight = TColor(COLOR_HOTLIGHT or DEFAULT_SYSCOLOR_MASK);
-  clMenuHighlight = TColor(COLOR_MENUHILIGHT or DEFAULT_SYSCOLOR_MASK);
-  clMenuBar = TColor(COLOR_MENUBAR or DEFAULT_SYSCOLOR_MASK);
-  {$ENDIF COMPILER5}
-
-  {$IFDEF COMPILER5}
-  {$IFDEF MSWINDOWS}
-  sLineBreak = #13#10;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  sLineBreak = #10;
-  {$ENDIF UNIX}
-  {$ENDIF COMPILER5}
   sLineBreakStr = string(sLineBreak); // "native string" line break constant
   sLineBreakLen = Length(sLineBreak);
 

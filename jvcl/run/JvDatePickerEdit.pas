@@ -66,9 +66,6 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
   Windows, Messages, Classes, Controls, ImgList,
   JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvToolEdit;
 
@@ -261,12 +258,10 @@ type
     property DateSeparator;
     {property BiDiMode;}
     {property ParentBiDiMode;}
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property Flat;
     property ImeMode;
     property ImeName;
@@ -351,12 +346,8 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Menus,
+  Variants, SysUtils, Menus,
   JclStrings,
-  JvVcl5Utils, // StrToXxxDef
   JvConsts, JvTypes, JvResources;
 
 const

@@ -330,9 +330,7 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
   Controls, StdCtrls, ExtCtrls,
-  {$ENDIF COMPILER6_UP}
   JvResources, TypInfo, JvJCLUtils ,JvJVCLUtils,
   JclMath;
 

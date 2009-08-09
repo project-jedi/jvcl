@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvFormWallpaper;
 
 type

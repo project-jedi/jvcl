@@ -64,9 +64,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   Windows, Messages, Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
   StdCtrls, Forms, Contnrs,
   JvTypes, {JvTypes contains Exception base class}
@@ -236,9 +234,7 @@ type
     FOnGetCellProps: TGetCellPropsEvent;
     FOnGetCellParams: TGetCellParamsEvent;
     FOnGetBtnParams: TGetBtnParamsEvent;
-    {$IFDEF COMPILER6_UP}
     FOnEditChange: TNotifyEvent;
-    {$ENDIF COMPILER6_UP}
     FOnTitleBtnClick: TTitleClickEvent;
     FOnTitleBtnDblClick: TTitleClickEvent;
     FOnTopLeftChanged: TNotifyEvent;
@@ -400,9 +396,7 @@ type
     procedure ColumnMoved(FromIndex: Integer; ToIndex: Integer); override;
     function AllowTitleClick: Boolean; virtual;
 
-    {$IFDEF COMPILER6_UP}
     procedure EditChanged(Sender: TObject); dynamic;
-    {$ENDIF COMPILER6_UP}
     procedure GetCellProps(Field: TField; AFont: TFont; var Background: TColor;
       Highlight: Boolean); dynamic;
     function HighlightCell(DataCol, DataRow: Integer; const Value: string;
@@ -436,9 +430,6 @@ type
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       MousePos: TPoint): Boolean; override;
     procedure EditButtonClick; override;
-    {$IFDEF COMPILER5}
-    procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-    {$ENDIF COMPILER5}
     procedure CellClick(Column: TColumn); override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
@@ -519,13 +510,11 @@ type
     property OnGetCellProps: TGetCellPropsEvent read FOnGetCellProps write FOnGetCellProps; { obsolete }
     property OnGetCellParams: TGetCellParamsEvent read FOnGetCellParams write FOnGetCellParams;
     property OnGetBtnParams: TGetBtnParamsEvent read FOnGetBtnParams write FOnGetBtnParams;
-    {$IFDEF COMPILER6_UP}
     property OnEditChange: TNotifyEvent read FOnEditChange write FOnEditChange;
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property OnShowEditor: TJvDBEditShowEvent read FOnShowEditor write FOnShowEditor;
     property OnTitleBtnClick: TTitleClickEvent read FOnTitleBtnClick write FOnTitleBtnClick;
     property OnTitleBtnDblClick: TTitleClickEvent read FOnTitleBtnDblClick write FOnTitleBtnDblClick;
@@ -612,15 +601,9 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Math, TypInfo, Dialogs, DBConsts,
-  {$IFDEF COMPILER6_UP}
+  Variants, SysUtils, Math, TypInfo, Dialogs, DBConsts,
   StrUtils,
   JvDBLookup,
-  {$ENDIF COMPILER6_UP}
-  JvVCL5Utils,
   JvConsts, JvResources, JvThemes, JvJCLUtils, JvJVCLUtils,
   {$IFDEF COMPILER7_UP}
   GraphUtil, // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
@@ -711,8 +694,6 @@ end;
 {$ENDIF ~COMPILER7_UP}
 
 //=== { TInternalInplaceEdit } ===============================================
-
-{$IFDEF COMPILER6_UP}
 
 type
   TInternalInplaceEdit = class(TInplaceEditList)
@@ -925,8 +906,6 @@ begin
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
-{$ENDIF COMPILER6_UP}
-
 //=== { TJvDBGridLayoutChangeLink } ==========================================
 
 procedure TJvDBGridLayoutChangeLink.DoChange(Grid: TJvDBGrid;
@@ -1111,7 +1090,7 @@ begin
     Result := (Field.DataType = ftBoolean);
     if not Result and Assigned(FOnCheckIfBooleanField) and
       (Field.DataType in [ftSmallint, ftInteger, ftLargeint, ftWord, ftString, ftWideString,
-                          ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}
+                          ftBCD, ftFMTBCD
                           {$IFDEF COMPILER12_UP},ftLongWord, ftShortint{$ENDIF COMPILER12_UP}]) then
     begin
       FStringForTrue := '1';
@@ -1161,7 +1140,7 @@ begin
       {$IFDEF COMPILER12_UP}
       ftLongWord, ftShortint,
       {$ENDIF COMPILER12_UP}
-      ftSmallint, ftInteger, ftLargeint, ftWord, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
+      ftSmallint, ftInteger, ftLargeint, ftWord, ftBCD, ftFMTBCD:
         if EditWithBoolBox(Field) and not Field.IsNull then
           if Field.AsInteger = 0 then
             Result := Ord(gpUnChecked)
@@ -1362,14 +1341,10 @@ end;
 
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := TInternalInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TInternalInplaceEdit(Result).OnChange := EditChanged;
-  {$ELSE}
-  Result := inherited CreateEditor;
-  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -2198,13 +2173,11 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvDBGrid.EditChanged(Sender: TObject);
 begin
   if Assigned(FOnEditChange) then
     FOnEditChange(Self);
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvDBGrid.GridInvalidateRow(Row: Longint);
 var
@@ -3612,15 +3585,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
-procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-begin
-  MoveColRow(ACol, ARow, MoveAnchor, True);
-  InvalidateEditor;
-  Click;
-end;
-{$ENDIF COMPILER5}
-
 procedure TJvDBGrid.ChangeBoolean(const FieldValueChange: Shortint);
 // FieldValueChange = 9 -> invert, 0 -> check (true), -1 -> uncheck (false)
 begin
@@ -3635,7 +3599,7 @@ begin
           ftBoolean:
             FBooleanFieldToEdit.Value := (FieldValueChange = JvGridBool_CHECK);
           {$IFDEF COMPILER10_UP}ftFixedWideChar,{$ENDIF COMPILER10_UP}
-          ftString, ftWideString, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
+          ftString, ftWideString, ftBCD, ftFMTBCD:
             begin
               if FieldValueChange = JvGridBool_CHECK then
                 FBooleanFieldToEdit.Value := FStringForTrue
@@ -3655,7 +3619,7 @@ begin
           ftBoolean:
             FBooleanFieldToEdit.Value := not FBooleanFieldToEdit.AsBoolean;
           {$IFDEF COMPILER10_UP}ftFixedWideChar,{$ENDIF COMPILER10_UP}
-          ftString, ftWideString, ftBCD {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}:
+          ftString, ftWideString, ftBCD, ftFMTBCD:
             begin
               if AnsiSameText(FBooleanFieldToEdit.AsString, FStringForTrue) then
                 FBooleanFieldToEdit.Value := FStringForFalse
@@ -4533,11 +4497,7 @@ begin
       if not IsRectEmpty(R) then
       begin
         Pt := ClientToScreen(Point(R.Left, R.Bottom + 1));
-        {$IFDEF COMPILER5}
-        SystemParametersInfo(SPI_GETWORKAREA, 0, @WorkArea, 0);
-        {$ELSE}
         WorkArea := Screen.MonitorFromWindow(Handle).WorkareaRect;
-        {$ENDIF COMPILER5}
         { force the form the be in the working area }
         if Pt.X + Frm.Width > WorkArea.Right then
           Pt.X := WorkArea.Right - Frm.Width;

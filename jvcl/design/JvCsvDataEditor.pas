@@ -36,11 +36,7 @@ interface
 uses
   SysUtils, Classes, DB,
   Windows, Messages, Forms, Dialogs, Graphics,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvCsvData;
 
 type

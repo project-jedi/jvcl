@@ -39,10 +39,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  Classes, Graphics, Controls, Grids,
+  Types, Classes, Graphics, Controls, Grids,
   JvComponent, JvExControls, JvExGrids;
 
 type
@@ -177,11 +174,7 @@ type
   end;
 
 
-  {$IFDEF COMPILER6_UP}
   TJvCustomCharMap = class(TJvExCustomDrawGrid)
-  {$ELSE}
-  TJvCustomCharMap = class(TJvExCustomGrid)
-  {$ENDIF COMPILER6_UP}
   private
     FCharPanel: TCustomControl;
     FShowZoomPanel: Boolean;
@@ -329,9 +322,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF COMPILER6_UP}
     property OnTopLeftChanged;
-    {$ENDIF COMPILER6_UP}
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -459,18 +450,10 @@ begin
 end;
 
 
-{$IFDEF COMPILER5}
-{$DEFINE NeedSetLayer}
-{$ENDIF COMPILER5}
-
-
 procedure TShadowWindow.CreateHandle;
 
 
 var
-  {$IFDEF NeedSetLayer}
-  Wnd: Windows.HWND;
-  {$ENDIF NeedSetLayer}
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
 
   procedure InitProcs;
@@ -488,15 +471,6 @@ var
 
 begin
   inherited CreateHandle;
-  {$IFDEF NeedSetLayer}
-  InitProcs;
-  if HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
-  begin
-    Wnd := Handle;
-    SetWindowLong(Wnd, GWL_EXSTYLE, GetWindowLong(Wnd, GWL_EXSTYLE) or WS_EX_LAYERED);
-    DynamicSetLayeredWindowAttributes(Wnd, 0, cShadowAlpha, LWA_ALPHA);
-  end;
-  {$ENDIF NeedSetLayer}
 end;
 
 
@@ -648,9 +622,7 @@ begin
     Exit;
   FDrawing := True;
   try
-    {$IFDEF COMPILER6_UP}
     inherited DrawCell(ACol, ARow, ARect, AState);
-    {$ENDIF COMPILER6_UP}
     AChar := GetChar(ACol, ARow);
     Canvas.Brush.Color := Color;
     Canvas.Font := Font;
@@ -856,18 +828,6 @@ begin
     end;}
 end;
 
-{$IFDEF COMPILER5}
-procedure TJvCustomCharMap.MouseToCell(X, Y: Integer;
-  var ACol, ARow: Integer);
-var
-  Coord: TGridCoord;
-begin
-  Coord := MouseCoord(X, Y);
-  ACol := Coord.X;
-  ARow := Coord.Y;
-end;
-{$ENDIF COMPILER5}
-
 procedure TJvCustomCharMap.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -1053,12 +1013,7 @@ begin
   end;
   R := CellRect(ACol, ARow);
   Selection := TGridRect(Rect(ACol, ARow, ACol, ARow));
-  {$IFDEF COMPILER6_UP}
   FocusCell(ACol, ARow, False);
-  {$ELSE}
-  Col := ACol;
-  Row := ARow;
-  {$ENDIF COMPILER6_UP}
   TCharZoomPanel(FCharPanel).Character := GetChar(ACol, ARow);
   P.X := R.Left - (FCharPanel.Width - DefaultColWidth) div 2;
   P.Y := R.Top - (FCharPanel.Height - DefaultRowHeight) div 2;

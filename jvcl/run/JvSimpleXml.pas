@@ -34,11 +34,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // Delphi 2005 inline
   {$ENDIF MSWINDOWS}
-  SysUtils,
-  Classes,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils, Classes, Variants,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -157,7 +153,6 @@ type
     property OnDecodeStream: TJvSimpleXMLEncodeStreamEvent read GetOnDecodeStream write SetOnDecodeStream;
   end;
 
-{$IFDEF COMPILER6_UP}
 type
   TXMLVariant = JclSimpleXml.TXMLVariant {$IFDEF COMPILER8_UP} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.TXMLVariant' {$ENDIF} {$ENDIF COMPILER8_UP};
 
@@ -166,8 +161,6 @@ function XMLCreate(const AXML: TJvSimpleXMLElem): Variant; overload; deprecated 
 function XMLCreate: Variant; overload; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.XMLCreate' {$ENDIF};
 
 function VarXML: TVarType; deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.VarXML' {$ENDIF};
-
-{$ENDIF COMPILER6_UP}
 
 // Encodes a string into an internal format:
 // any character <= #127 is preserved
@@ -232,8 +225,6 @@ begin
   JclSimpleXml.SimpleXMLDecode(Result, False);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 function VarXML: TVarType;
 begin
   Result := JclSimpleXml.VarXML;
@@ -253,8 +244,6 @@ function XMLCreate: Variant;
 begin
   Result := JclSimpleXml.XMLCreate;
 end;
-
-{$ENDIF COMPILER6_UP}
 
 //=== { TJvSimpleXML } =======================================================
 

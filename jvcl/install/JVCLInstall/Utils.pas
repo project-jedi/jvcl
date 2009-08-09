@@ -31,7 +31,7 @@ unit Utils;
 interface
 
 uses
-  Windows, ShellAPI, SysUtils, Classes, JvConsts, JvVCL5Utils;
+  Windows, ShellAPI, SysUtils, Classes, JvConsts;
 
 function WordWrapString(const S: string; Width: Integer = 75): string;
 
@@ -72,16 +72,6 @@ procedure StrToPathList(Paths: string; List: TStrings);
 function ConcatPaths(List: TStrings; const Separator: string): string;
 
 function FixBackslashBackslash(const Dir: string): string;
-
-{$IFDEF COMPILER5}
-type
-  IInterface = IUnknown;
-
-function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
-
-function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
-function GetEnvironmentVariable(const Name: string): string;
-{$ENDIF COMPILER5}
 
 procedure ClearEnvironment;
 { ClearEnvironment deletes almost all environment variables }
@@ -562,36 +552,6 @@ begin
     Result := ShellExecute(0, 'open', PChar(Cmd), PChar(FileName + '#' + Anchor), nil,
       SW_SHOWNORMAL) > 32;
 end;
-
-{$IFDEF COMPILER5}
-function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
-var
-  TempIntf: IInterface;
-begin
-  Result := Supports(Intf, IID, TempIntf);
-end;
-
-function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
-var
-  Attr: Cardinal;
-begin
-  Result := False;
-  Attr := GetFileAttributes(PChar(FileName));
-  if Attr = $FFFFFFFF then
-    Exit;
-  if ReadOnly then
-    Attr := Attr or FILE_ATTRIBUTE_READONLY
-  else
-    Attr := Attr and not FILE_ATTRIBUTE_READONLY;
-  SetFileAttributes(PChar(FileName), Attr);
-end;
-
-function GetEnvironmentVariable(const Name: string): string;
-begin
-  SetLength(Result, 8 * 1024);
-  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
-end;
-{$ENDIF COMPILER5}
 
 function IsInArray(const Value: string; const Args: array of string): Integer;
 begin

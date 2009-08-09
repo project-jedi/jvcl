@@ -112,7 +112,6 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  JvVCL5Utils,
   Windows, Messages, Graphics, Contnrs, Controls, StdCtrls, Dialogs,
   JvJVCLUtils, JvExStdCtrls, JvDataSourceIntf;
 

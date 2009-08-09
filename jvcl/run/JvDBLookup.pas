@@ -40,13 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Classes, Graphics, Controls, Forms, DB, DBCtrls,
+  Types, Variants, Classes, Graphics, Controls, Forms, DB, DBCtrls,
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
 const
@@ -295,12 +289,10 @@ type
     property Font;
     property IgnoreCase;
     property Anchors;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property Constraints;
     property DragKind;
@@ -612,12 +604,10 @@ type
     property EditMask;
     property Enabled;
     property Font;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
     property HideSelection;
@@ -680,13 +670,7 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
-  VDBConsts,
-  {$ENDIF COMPILER6_UP}
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
-  DBConsts, SysUtils, Math, MultiMon,
+  VDBConsts, StrUtils, DBConsts, SysUtils, Math, MultiMon,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources;
 
 procedure CheckLookupFormat(const AFormat: string);
@@ -2597,10 +2581,8 @@ var
   I, Y: Integer;
   S: string;
   SelValue: string;
-  {$IFDEF COMPILER6_UP}
   Animate: BOOL;
   SlideStyle: Integer;
-  {$ENDIF COMPILER6_UP}
   RecordCount: Integer;
   Monitor: TMonitor;
   Rect: TRect;
@@ -2679,10 +2661,7 @@ begin
     if P.X + FDataList.Width > Rect.Right then
       P.X := Rect.Right - FDataList.Width;
 
-    {$IFDEF COMPILER6_UP}
-    { Use slide-open effect for combo boxes if wanted. This is also possible
-      for D5<, but D5< does not define AnimateWindowProc in Controls.pas. See
-      TJvBalloonHint.pas to solve this }
+    { Use slide-open effect for combo boxes if wanted.}
     SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, @Animate, 0);
     if Assigned(AnimateWindowProc) and Animate then
     begin
@@ -2700,7 +2679,6 @@ begin
       FDataList.Invalidate;
     end
     else
-    {$ENDIF COMPILER6_UP}
     SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
 

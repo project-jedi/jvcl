@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   ImgList,
   JvDsgnEditors, JvTransparentButton;
 

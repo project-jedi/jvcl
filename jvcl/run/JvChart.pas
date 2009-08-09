@@ -101,10 +101,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  Graphics, Controls, Contnrs,
+  Types, Graphics, Controls, Contnrs,
   JvComponent;
 
 const

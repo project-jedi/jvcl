@@ -637,7 +637,7 @@ const
 implementation
 
 uses
-  JvVCL5Utils, JvResources;
+  JvResources;
 
 const
   Shell32 = 'shell32.dll';

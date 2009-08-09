@@ -1383,10 +1383,7 @@ uses
   {$IFDEF SUPPORTS_INLINE}
   Types,
   {$ENDIF SUPPORTS_INLINE}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  Math, Clipbrd,
+  RTLConsts, Math, Clipbrd,
   JvJCLUtils, JvThemes, JvResources;
 
 type

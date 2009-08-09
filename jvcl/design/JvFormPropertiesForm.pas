@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvFormPlacement, JvPropertyStorage, JvComponent;
 
 { TODO -oJVCL -cREIMPLEMENT :

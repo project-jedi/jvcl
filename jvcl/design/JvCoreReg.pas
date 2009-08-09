@@ -39,11 +39,7 @@ uses
   Windows, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   ActnList, ImgList,
   ToolsAPI,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvTypes, JvDsgnConsts, JvDsgnConfig, JvJCLUtils, JVCLVer, JvComponentBase, JvActions,
   JvActnResForm, JvJVCLAboutForm, JvPoweredBy, JvIDEZoom, JvBaseDlg,
   JvDataProvider, JvDataProviderIntf, JvColorProvider, JvContextProvider,
@@ -187,14 +183,8 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
 
-  // The TJvPersistent class needs an editor for D5 and BCB5, but for
-  // all other compilers, it doesn't need anything as it is declared as
-  // a SubComponent. However, we want to hide the Name and Tag property
-  // in this case, thus the registration of 'nil' property editors
-  {$IFDEF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
   RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
-  {$ENDIF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TJvPersistent),nil, '', TJvPersistentPropertyEditor);
 
   if JvOptionRegisterGlobalDesignEditors then

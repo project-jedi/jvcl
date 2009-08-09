@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJVCLAboutDialogProperty = class(TPropertyEditor)

@@ -270,12 +270,10 @@ type
     property ImeMode;
     property ImeName;
     property Anchors;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property BorderWidth;
     property Constraints;
@@ -372,12 +370,10 @@ type
     destructor Destroy; override;
   published
     property Align;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Color;
     property DataField;
@@ -458,12 +454,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF COMPILER6_UP}
-  VDBConsts,
-  {$ENDIF COMPILER6_UP}
+  Variants, VDBConsts,
   {$IFDEF COMPILER10_UP}
   Types,  // to allow inline expansion
   {$ENDIF COMPILER10_UP}

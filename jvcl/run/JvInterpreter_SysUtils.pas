@@ -57,9 +57,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   {$IFDEF SUPPORTS_INLINE}
   Windows,
   {$ENDIF SUPPORTS_INLINE}
@@ -237,38 +235,6 @@ procedure JvInterpreter_AllocMem(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := P2V(AllocMem(Args.Values[0]));
 end;
-
-{$IFDEF COMPILER5}
-
-{ function NewStr(const S: string): PString; }
-
-procedure JvInterpreter_NewStr(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := P2V(NewStr(Args.Values[0]));
-end;
-
-{ procedure DisposeStr(P: PString); }
-
-procedure JvInterpreter_DisposeStr(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  DisposeStr(V2P(Args.Values[0]));
-end;
-
-{ procedure AssignStr(var P: PString; const S: string); }
-
-procedure JvInterpreter_AssignStr(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  AssignStr(PString(TVarData(Args.Values[0]).vPointer), Args.Values[1]);
-end;
-
-{ procedure AppendStr(var Dest: string; const S: string); }
-
-procedure JvInterpreter_AppendStr(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  AppendStr(string(TVarData(Args.Values[0]).vString), Args.Values[1]);
-end;
-
-{$ENDIF COMPILER5}
 
 { function UpperCase(const S: string): string; }
 
@@ -1475,11 +1441,7 @@ end;
 
 procedure JvInterpreter_RaiseLastWin32Error(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  {$IFDEF COMPILER6_UP}
   RaiseLastOSError;
-  {$ELSE}
-  RaiseLastWin32Error;
-  {$ENDIF COMPILER6_UP}
 end;
 
 { function Win32Check(RetVal: BOOL): BOOL; }
@@ -1826,10 +1788,6 @@ begin
     AddClass(cSysUtils, EAccessViolation, 'EAccessViolation');
     { EPrivilege }
     AddClass(cSysUtils, EPrivilege, 'EPrivilege');
-    {$IFDEF COMPILER5}
-    { EStackOverflow }
-    AddClass(cSysUtils, EStackOverflow, 'EStackOverflow');
-    {$ENDIF COMPILER5}
     { EControlC }
     AddClass(cSysUtils, EControlC, 'EControlC');
     { EVariantError }
@@ -1856,23 +1814,10 @@ begin
     { EPackageError }
     AddClass(cSysUtils, EPackageError, 'EPackageError');
     // (rom) changed to EOSError for Delphi 6
-    {$IFDEF COMPILER6_UP}
     { EOSError }
     AddClass(cSysUtils, EOSError, 'EOSError');
-    {$ELSE}
-    {$IFDEF MSWINDOWS}
-    { EWin32Error }
-    AddClass(cSysUtils, EWin32Error, 'EWin32Error');
-    {$ENDIF MSWINDOWS}
-    {$ENDIF COMPILER6_UP}
 
     AddFunction(cSysUtils, 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
-    {$IFDEF COMPILER5}
-    AddFunction(cSysUtils, 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'DisposeStr', JvInterpreter_DisposeStr, 1, [varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'AssignStr', JvInterpreter_AssignStr, 2, [varByRef, varEmpty], varEmpty);
-    AddFunction(cSysUtils, 'AppendStr', JvInterpreter_AppendStr, 2, [varByRef, varEmpty], varEmpty);
-    {$ENDIF COMPILER5}
     AddFunction(cSysUtils, 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);

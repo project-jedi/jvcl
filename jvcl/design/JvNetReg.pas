@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvRichEditToHTML, JvMail, JvMailEditor,
   JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,JvProgramVersionCheck,
   JvHtmlParser, JvHtmlParserEditor,

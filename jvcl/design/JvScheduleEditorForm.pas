@@ -595,7 +595,6 @@ const
   cDateFormat = 'dd-MM-yyyy';
 begin
   FTestSchedule := CreateSchedule;
-  {$IFDEF COMPILER6_UP}
   dtpStartDate.Format := cDateFormat;
   dtpStartTime.Format := cTimeFormat;
   dtpEndDate.Format := cDateFormat;
@@ -603,10 +602,6 @@ begin
   dtpDayFreqOneshot.Format := cTimeFormat;
   dtpFreqFrom.Format := cTimeFormat;
   dtpFreqTo.Format := cTimeFormat;
-  {$ELSE}
-  dtpStartDate.DateFormat := dfShort;
-  dtpEndDate.DateFormat := dfShort;
-  {$ENDIF COMPILER6_UP}
   dtpStartDate.DateTime := Now;
   dtpEndDate.DateTime := Now;
 

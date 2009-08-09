@@ -3,7 +3,7 @@ object frmAdvancedOptions: TfrmAdvancedOptions
   Top = 145
   BorderStyle = bsDialog
   Caption = 'Advanced options'
-  ClientHeight = 312
+  ClientHeight = 284
   ClientWidth = 404
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,6 +13,9 @@ object frmAdvancedOptions: TfrmAdvancedOptions
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  DesignSize = (
+    404
+    284)
   PixelsPerInch = 96
   TextHeight = 13
   object lblExpl: TLabel
@@ -27,16 +30,9 @@ object frmAdvancedOptions: TfrmAdvancedOptions
       'y each version of BCB as a comma separated list of names'
     WordWrap = True
   end
-  object lblBCB5: TLabel
-    Left = 16
-    Top = 220
-    Width = 27
-    Height = 13
-    Caption = 'BCB5'
-  end
   object lblBCB6: TLabel
     Left = 16
-    Top = 244
+    Top = 219
     Width = 27
     Height = 13
     Caption = 'BCB6'
@@ -78,7 +74,7 @@ object frmAdvancedOptions: TfrmAdvancedOptions
   end
   object bbtOk: TBitBtn
     Left = 156
-    Top = 276
+    Top = 248
     Width = 81
     Height = 29
     Anchors = [akLeft, akBottom]
@@ -139,54 +135,48 @@ object frmAdvancedOptions: TfrmAdvancedOptions
       DEDBC8C0B8B4B03BAE3835322B25D0DE000001DD01DE0CDF0004DEDDDDDE0CDF
       01DE01DD0001}
     NumGlyphs = 2
-  end
-  object edtBCB5: TEdit
-    Left = 56
-    Top = 216
-    Width = 333
-    Height = 21
-    TabOrder = 1
+    ExplicitTop = 276
   end
   object edtBCB6: TEdit
     Left = 56
-    Top = 240
+    Top = 215
     Width = 333
     Height = 21
-    TabOrder = 2
+    TabOrder = 1
   end
   object edtImageBase: TEdit
     Left = 152
     Top = 12
     Width = 241
     Height = 21
-    TabOrder = 3
+    TabOrder = 2
   end
   object edtVersionMajorNumber: TEdit
     Left = 152
     Top = 40
     Width = 241
     Height = 21
-    TabOrder = 4
+    TabOrder = 3
   end
   object edtVersionMinorNumber: TEdit
     Left = 152
     Top = 68
     Width = 241
     Height = 21
-    TabOrder = 5
+    TabOrder = 4
   end
   object edtReleaseNumber: TEdit
     Left = 152
     Top = 96
     Width = 241
     Height = 21
-    TabOrder = 6
+    TabOrder = 5
   end
   object edtBuildNumber: TEdit
     Left = 152
     Top = 124
     Width = 241
     Height = 21
-    TabOrder = 7
+    TabOrder = 6
   end
 end

@@ -778,11 +778,7 @@ begin
         TabControl.ActivePage := TabControl.FTempSheet;
         TabControl.Panel.SelectSheet := TabControl.FTempSheet;
 
-        {$IFDEF COMPILER6_UP}
         TabControl.Panel.FTempPages.Assign(TabControl.PageSheets);
-        {$ELSE}
-        AssignList(TabControl.PageSheets, TabControl.Panel.FTempPages);
-        {$ENDIF COMPILER6_UP}
 
         TabControl.ActivePage.Invalidate;
 
@@ -1382,21 +1378,12 @@ end;
 procedure TJvDockVIDVCTree.InsertControlFromConjoinHost(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 const
-  {$IFDEF COMPILER6_UP}
   OrientArray: array [TAlign] of TDockOrientation =
     (doNoOrient, doHorizontal, doHorizontal, doVertical, doVertical, doNoOrient, doNoOrient);
   MakeLast: array [TAlign] of Boolean =
     (False, False, True, False, True, False, False);
   ReverseAt: array [TAlign] of TAlign =
     (alClient, alBottom, alTop, alRight, alLeft, alNone, alCustom);
-  {$ELSE}
-  OrientArray: array [TAlign] of TDockOrientation =
-    (doNoOrient, doHorizontal, doHorizontal, doVertical, doVertical, doNoOrient);
-  MakeLast: array [TAlign] of Boolean =
-    (False, False, True, False, True, False);
-  ReverseAt: array [TAlign] of TAlign =
-    (alClient, alBottom, alTop, alRight, alLeft, alNone);
-  {$ENDIF COMPILER6_UP}
 var
   Stream: TMemoryStream;
   TopOrientation: TDockOrientation;
@@ -1616,13 +1603,8 @@ var
 
   procedure DrawExpendBotton(Left, Top: Integer);
   const
-    {$IFDEF COMPILER6_UP}
     ArrowOrient: array [TAlign] of DWORD =
       (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0, 0);
-    {$ELSE}
-    ArrowOrient: array [TAlign] of DWORD =
-      (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0);
-    {$ENDIF COMPILER6_UP}
     CurrArrow: array [Boolean, TDockOrientation] of TAlign =
       ((alNone, alLeft, alTop), (alNone, alRight, alBottom));
   var
@@ -3210,11 +3192,7 @@ begin
     if Button = mbLeft then
     begin
       FSelectSheet := TJvDockVIDVCTabSheet(Page.ActivePage);
-      {$IFDEF COMPILER6_UP}
       FTempPages.Assign(Page.PageSheets);
-      {$ELSE}
-      AssignList(Page.PageSheets, FTempPages);
-      {$ENDIF COMPILER6_UP}
     end;
 
     Ctrl := GetDockClientFromPageIndex(Index);

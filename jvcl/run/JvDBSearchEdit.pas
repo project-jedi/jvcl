@@ -83,12 +83,10 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property CharCase;
     property Color;
@@ -147,10 +145,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Forms,
+  Variants, Forms,
   JvConsts;
 
 //=== { TJvDBCustomSearchEdit } ==============================================

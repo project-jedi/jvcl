@@ -19,7 +19,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvDynControlEngineDevExpCx.pas 12366 2009-07-02 20:12:43Z jfudickar $
+// $Id$
 
 unit JvDynControlEngineDevExpCx;
 
@@ -986,9 +986,9 @@ function DynControlEngineDevExpCx: TJvDynControlEngineDevExpCx;
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net:443/svnroot/jvcl/trunk/jvcl/run/JvDynControlEngineDevExpCx.pas $';
-    Revision: '$Revision: 12366 $';
-    Date: '$Date: 2009-07-02 22:12:43 +0200 (Do, 02 Jul 2009) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
@@ -998,16 +998,13 @@ implementation
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 uses
-  SysUtils, ExtDlgs,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils, ExtDlgs, Variants,
   {$IFNDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
   JvDynControlEngineJVCL,
   {$ENDIF}
   cxTextEdit, cxControls,
   JvDynControlEngineVCL,
-  JvJclUtils, JvBrowseFolder, JvDynControlEngineTools, JvVCL5Utils,
+  JvJclUtils, JvBrowseFolder, JvDynControlEngineTools,
   cxLookAndFeelPainters, TypInfo;
 
 var

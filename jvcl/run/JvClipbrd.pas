@@ -112,19 +112,7 @@ type
 
     // overridden wndproc to handle WM_RENDERFORMAT and
     // WM_RENDERALLFORMATS messages
-    {$IFDEF COMPILER6_UP}
     procedure WndProc(var Message: TMessage); override;
-    {$ELSE}
-    procedure WndProc(var Message: TMessage); virtual;
-    procedure MainWndProc(var Message: TMessage);
-
-    // SetBuffer is not protected in the VCL shipped with D5 and BCB5.
-    // We need to access it anyway and this is done using direct memory
-    // access to the correct procedure. However this method cannot be
-    // called SetBuffer because under BCB the Buffer parameter will be
-    // output as a void* for both Pointer and Untyped types.
-    procedure SetBufferVCL5(Format: Word; var Buffer; Size: Integer);
-    {$ENDIF COMPILER6_UP}
 
     // This function calls the user event handler and does the
     // rendering the way windows expects it
@@ -161,7 +149,6 @@ type
     // to be destroyed before the clipboard itself.
     procedure DestroyHandle;
 
-    {$IFDEF COMPILER6_UP}
     // forced to override Open to be able to use our own
     // window handle
     procedure Open; override;
@@ -173,11 +160,6 @@ type
     // forced to override Clear to keep track of the delayed
     // formats in the delayedFormats list
     procedure Clear; override;
-    {$ELSE}
-    procedure Open; virtual;
-    procedure Close; virtual;
-    procedure Clear; virtual;
-    {$ENDIF COMPILER6_UP}
 
     // registers a format of that name with the system and returns
     // its identifier. You may as well call RegisterClipboardFormat
@@ -224,12 +206,6 @@ type
     // the handle to the underlying window handling the delayed
     // rendering messages
     property Handle: THandle read GetHandle;
-  {$IFDEF COMPILER5}
-  private
-    function GetOpenRefCount: Integer;
-  protected
-    property OpenRefCount: Integer read GetOpenRefCount;
-  {$ENDIF COMPILER5}
   published
     // the event fired when a format has been added with delayed
     // rendering and needs rendering because an application (or the
@@ -258,21 +234,6 @@ uses
   SysUtils, Consts,
   JvTypes, JvJVCLUtils, JvResources;
 
-{$IFDEF COMPILER5}
-
-// Delphi 5 implementation
-type
-  TPrivateClipboard = class(TPersistent)
-  private
-    FOpenRefCount: Integer;
-  end;
-
-var
-  Clipboard_SetBuffer: procedure(Instance: TClipboard; Format: Word; var Buffer;
-    Size: Integer);
-
-{$ENDIF COMPILER5}
-
 constructor TJvClipboard.Create;
 begin
   inherited Create;
@@ -297,34 +258,6 @@ begin
   // and let the rest be done
   inherited Destroy;
 end;
-
-{$IFDEF COMPILER5}
-
-procedure TJvClipboard.SetBufferVCL5(Format: Word; var Buffer; Size: Integer);
-var
-  P: PByte;
-begin
-  if not Assigned(Clipboard_SetBuffer) then
-  begin
-    P := @TClipboard.SetTextBuf;
-    while P^ <> $E8 do
-      Inc(P); // StrLen
-    Inc(P);
-    while P^ <> $E8 do
-      Inc(P); // SetBuffer
-    Inc(P);
-    Clipboard_SetBuffer := Pointer(Integer(P) + 4 + PInteger(P)^);
-  end;
-  if Assigned(Clipboard_SetBuffer) then
-    Clipboard_SetBuffer(Self, Format, Buffer, Size);
-end;
-
-function TJvClipboard.GetOpenRefCount: Integer;
-begin
-  Result := TPrivateClipboard(Self).FOpenRefCount;
-end;
-
-{$ENDIF COMPILER5}
 
 procedure TJvClipboard.Clear;
 begin
@@ -528,25 +461,9 @@ begin
       end;
   end;
 
-  {$IFDEF COMPILER6_UP}
   // in any case let the ancestor do its stuff
   inherited WndProc(Message);
-  {$ELSE}
-  with Message do
-    Result := DefWindowProc(Handle, Msg, WParam, LParam);
-  {$ENDIF COMPILER6_UP}
 end;
-
-{$IFDEF COMPILER5}
-procedure TJvClipboard.MainWndProc(var Message: TMessage);
-begin
-  try
-    WndProc(Message);
-  except
-    ShowException(ExceptObject, ExceptAddr);
-  end;
-end;
-{$ENDIF COMPILER5}
 
 procedure TJvClipboard.DestroyHandle;
 var
@@ -626,11 +543,7 @@ begin
   else
   begin
     // else call inherited method
-    {$IFDEF COMPILER6_UP}
     inherited SetBuffer(Format, Buffer^, Size);
-    {$ELSE}
-    SetBufferVCL5(Format, Buffer^, Size);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -667,11 +580,7 @@ begin
   Open;
   try
     AsText := Value; {Ensures ANSI compatiblity across platforms.}
-    {$IFDEF COMPILER6_UP}
     SetBuffer(CF_UNICODETEXT, PWideChar(Value)^, (Length(Value) + 1) * SizeOf(WideChar));
-    {$ELSE}
-    SetBufferVCL5(CF_UNICODETEXT, PWideChar(Value)^, (Length(Value) + 1) * SizeOf(WideChar));
-    {$ENDIF COMPILER6_UP}
   finally
     Close;
   end;

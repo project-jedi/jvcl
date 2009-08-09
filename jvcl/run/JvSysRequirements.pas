@@ -36,7 +36,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Forms,
-  JvVCL5Utils,
   JvComponentBase,
   JclSysInfo;
 

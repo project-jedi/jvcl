@@ -32,11 +32,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, VFW, 
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvAVICapture, JvDsgnTypes;
 
 type

@@ -31,23 +31,19 @@ interface
 
 uses
   Windows, Classes, Graphics,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvFullColorSpaces;
 
 type
   TJvDEFFamily = (pfConstant, pfSystem);
 
-  TJvFullColorProperty = class(TPropertyEditor {$IFDEF COMPILER6_UP}, ICustomPropertyDrawing {$ENDIF})
+  TJvFullColorProperty = class(TPropertyEditor, ICustomPropertyDrawing)
   private
     function GetIsColorProperty: Boolean;
     procedure DialogApply(Sender: TObject; AFullColor: TJvFullColor);
   public
     function GetAttributes: TPropertyAttributes; override;
-    procedure GetProperties(Proc: {$IFDEF COMPILER6_UP} TGetPropProc {$ELSE} TGetPropEditProc {$ENDIF}); override;
+    procedure GetProperties(Proc: TGetPropProc); override;
     procedure GetValues(Proc: TGetStrProc); override;
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
@@ -56,9 +52,7 @@ type
     procedure SetColor(AFullColor: TJvFullColor);
     // ICustomPropertyDrawing
     procedure PropDrawName(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-      {$IFDEF COMPILER5} override; {$ENDIF}
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-      {$IFDEF COMPILER5} override; {$ENDIF}
     property IsColorProperty: Boolean read GetIsColorProperty;
   end;
 
@@ -72,7 +66,7 @@ type
     function GetName: string; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
-    procedure GetProperties(Proc: {$IFDEF COMPILER6_UP} TGetPropProc {$ELSE} TGetPropEditProc {$ENDIF}); override;
+    procedure GetProperties(Proc: TGetPropProc); override;
     procedure Edit; override;
     property ColorSpace: TJvColorSpace read FColorSpace;
     property Parent: TJvFullColorProperty read FParent;
@@ -80,7 +74,7 @@ type
 
   TJvFullColorSpacePropertyClass = class of TJvFullColorSpaceProperty;
 
-  TJvFullColorAxisProperty = class(TNestedProperty {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing {$ENDIF})
+  TJvFullColorAxisProperty = class(TNestedProperty, ICustomPropertyListDrawing)
   private
     FAxisIndex: TJvAxisIndex;
     FParent:TJvFullColorSpaceProperty;
@@ -94,21 +88,21 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
+      var AHeight: Integer);
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
+      var AWidth: Integer); 
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER6_UP} virtual; {$ELSE} override; {$ENDIF}
+      const ARect: TRect; ASelected: Boolean); virtual;
     property Parent: TJvFullColorSpaceProperty read FParent;
     property AxisIndex: TJvAxisIndex read FAxisIndex;
   end;
 
   TJvDEFColorSpaceProperty = class(TJvFullColorSpaceProperty)
   public
-    procedure GetProperties(Proc: {$IFDEF COMPILER6_UP} TGetPropProc {$ELSE} TGetPropEditProc {$ENDIF}); override;
+    procedure GetProperties(Proc: TGetPropProc); override;
   end;
 
-  TJvDEFColorSpaceIndentProperty = class(TNestedProperty {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing {$ENDIF})
+  TJvDEFColorSpaceIndentProperty = class(TNestedProperty, ICustomPropertyListDrawing)
   private
     FPredefinedFamily: TJvDEFFamily;
     FParent: TJvDEFColorSpaceProperty;
@@ -122,18 +116,15 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
+      var AHeight: Integer);
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
+      var AWidth: Integer); 
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER5} override; {$ELSE} virtual; {$ENDIF}
+      const ARect: TRect; ASelected: Boolean); virtual;
     property Parent: TJvDEFColorSpaceProperty read FParent;
     property PredefinedFamily: TJvDEFFamily read FPredefinedFamily;
   end;
 
-  {$IFDEF COMPILER6_UP}
-  // obones: If anyone finds out a TSelectionEditor for C5/D5, please
-  // feel free to do the required changes
   TJvFullColorSelection = class(TSelectionEditor)
   protected
     procedure RequireClass(Proc: TGetStrProc; AClass: TClass);
@@ -144,7 +135,6 @@ type
     procedure RequiresUnits(Proc: TGetStrProc); override;
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
   end;
-  {$ENDIF COMPILER6_UP}
 
   TJvFullColorListEditor = class(TClassProperty)
   public
@@ -259,10 +249,7 @@ end;
 
 function TJvFullColorProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paSubProperties, paDialog, paMultiSelect,
-    {$IFDEF COMPILER6_UP}
-    paVolatileSubProperties, paVCL,
-    {$ENDIF COMPILER6_UP}
+  Result := [paSubProperties, paDialog, paMultiSelect, paVolatileSubProperties, paVCL,
     paRevertable];
   if IsColorProperty then
     Result := Result + [paReadOnly]
@@ -275,7 +262,7 @@ begin
   Result := (GetPropType = TypeInfo(TColor));
 end;
 
-procedure TJvFullColorProperty.GetProperties(Proc: {$IFDEF COMPILER6_UP} TGetPropProc {$ELSE} TGetPropEditProc {$ENDIF});
+procedure TJvFullColorProperty.GetProperties(Proc: TGetPropProc);
 var
   I: Integer;
   CS: TJvColorSpace;
@@ -313,11 +300,7 @@ end;
 procedure TJvFullColorProperty.PropDrawName(ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   DefaultPropertyDrawName(Self, ACanvas, ARect);
-  {$ELSE}
-  inherited PropDrawName(ACanvas, ARect, ASelected);
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvFullColorProperty.PropDrawValue(ACanvas: TCanvas;
@@ -345,11 +328,7 @@ begin
     Pen.Color := OldPenColor;
     Brush.Color := OldBrushColor;
   end;
-  {$IFDEF COMPILER6_UP}
   DefaultPropertyDrawValue(Self, ACanvas, Rect(Right, ARect.Top, ARect.Right, ARect.Bottom));
-  {$ELSE}
-  inherited PropDrawValue(ACanvas, ARect, ASelected);
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvFullColorProperty.SetColor(AFullColor: TJvFullColor);
@@ -398,10 +377,7 @@ end;
 
 function TJvFullColorSpaceProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paSubProperties, paDialog, paMultiSelect, paReadOnly,
-    {$IFDEF COMPILER6_UP}
-    paVolatileSubProperties, paVCL,
-    {$ENDIF COMPILER6_UP}
+  Result := [paSubProperties, paDialog, paMultiSelect, paReadOnly, paVolatileSubProperties, paVCL,
     paRevertable];
 end;
 
@@ -410,7 +386,7 @@ begin
   Result := ColorSpace.ShortName;
 end;
 
-procedure TJvFullColorSpaceProperty.GetProperties(Proc: {$IFDEF COMPILER6_UP} TGetPropProc {$ELSE} TGetPropEditProc {$ENDIF});
+procedure TJvFullColorSpaceProperty.GetProperties(Proc: TGetPropProc);
 var
   I: TJvAxisIndex;
 begin
@@ -501,7 +477,7 @@ end;
 
 //=== { TJvDEFColorSpaceProperty } ===========================================
 
-procedure TJvDEFColorSpaceProperty.GetProperties(Proc: {$IFDEF COMPILER6_UP} TGetPropProc {$ELSE} TGetPropEditProc {$ENDIF});
+procedure TJvDEFColorSpaceProperty.GetProperties(Proc: TGetPropProc);
 begin
   Proc(TJvDEFColorSpaceIndentProperty.Create(Self, pfConstant));
   Proc(TJvDEFColorSpaceIndentProperty.Create(Self, pfSystem));
@@ -602,8 +578,6 @@ end;
 
 //=== { TJvColorSelection } ==================================================
 
-{$IFDEF COMPILER6_UP}
-
 procedure TJvFullColorSelection.ExecuteVerb(Index: Integer; const List: IDesignerSelections);
 begin
   // No execution
@@ -649,8 +623,6 @@ begin
     for I := 0 to Count - 1 do
       RequireClass(Proc, ColorSpaceByIndex[I].ClassType);
 end;
-
-{$ENDIF COMPILER6_UP}
 
 //=== { TJvFullColorListEditor } =============================================
 
@@ -709,7 +681,7 @@ end;
 
 function TJvFullColorListEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog, {$IFDEF COMPILER6_UP} paVCL, {$ENDIF} paMultiSelect];
+  Result := [paDialog, paVCL, paMultiSelect];
 end;
 
 var

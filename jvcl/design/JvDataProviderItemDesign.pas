@@ -82,10 +82,8 @@ type
     procedure SetFloatProp(Index: Integer; Value: Extended);
     function GetInt64Prop(Index: Integer): Int64;
     procedure SetInt64Prop(Index: Integer; Value: Int64);
-    {$IFDEF COMPILER6_UP}
     function GetInterfaceProp(Index: Integer): IInterface;
     procedure SetInterfaceProp(Index: Integer; Value: IInterface);
-    {$ENDIF COMPILER6_UP}
     function GetMethodProp(Index: Integer): TMethod;
     procedure SetMethodProp(Index: Integer; Value: TMethod);
     function GetOrdProp(Index: Integer): Longint;
@@ -114,7 +112,7 @@ implementation
 uses
   Windows, ImgList,
   JclSysUtils,
-  JvDsgnConsts, JvJCLUtils, JvVCL5Utils;
+  JvDsgnConsts, JvJCLUtils;
 
 type
   PPropData = ^TPropData;
@@ -393,18 +391,6 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
-function GetPropList(TypeInfo: PTypeInfo; out PropList: PPropList): Integer;
-begin
-  Result := GetTypeData(TypeInfo)^.PropCount;
-  if Result > 0 then
-  begin
-    GetMem(PropList, Result * SizeOf(Pointer));
-    TypInfo.GetPropList(TypeInfo, tkAny, PropList);
-  end;
-end;
-{$ENDIF}
-
 //=== { TJvDataProviderItem } ================================================
 
 constructor TJvDataProviderItem.Create(AnItem: IJvDataItem);
@@ -607,7 +593,6 @@ begin
   Result := TypInfo.IsStoredProp(instance, info);
 end;
 
-{$IFDEF COMPILER6_UP}
 function TBaseItemDsgn.GetInterfaceProp(Index: Integer): IInterface;
 var
   instance: TObject;
@@ -616,8 +601,6 @@ begin
   GetPropDataFromIndex(Index, instance, info);
   Result := TypInfo.GetInterfaceProp(instance, info);
 end;
-
-{$ENDIF COMPILER6_UP}
 
 function TBaseItemDsgn.GetMethodProp(Index: Integer): TMethod;
 var
@@ -677,11 +660,7 @@ var
   info: PPropInfo;
 begin
   GetPropDataFromIndex(Index, instance, info);
-  {$IFDEF COMPILER6_UP}
   Result := TypInfo.GetWideStrProp(instance, info);
-  {$ELSE ~COMPILER6_UP}
-  Result := TypInfo.GetStrProp(instance, info);
-  {$ENDIF ~COMPILER6_UP}
 end;
 
 procedure TBaseItemDsgn.InjectImplementers;
@@ -804,13 +783,11 @@ var
           destProp.GetProc := @TBaseItemDsgn.GetVariantProp;
           destProp.SetProc := @TBaseItemDsgn.SetVariantProp;
         end;
-      {$IFDEF COMPILER6_UP}
       tkInterface:
         begin
           destProp.GetProc := @TBaseItemDsgn.GetInterfaceProp;
           destProp.SetProc := @TBaseItemDsgn.SetInterfaceProp;
         end;
-      {$ENDIF COMPILER6_UP}
       tkInt64:
         begin
           destProp.GetProc := @TBaseItemDsgn.GetInt64Prop;
@@ -907,7 +884,6 @@ begin
   TypInfo.SetInt64Prop(instance, info, Value);
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TBaseItemDsgn.SetInterfaceProp(Index: Integer; Value: IInterface);
 var
   instance: TObject;
@@ -917,7 +893,6 @@ begin
   TypInfo.SetInterfaceProp(instance, info, Value);
 end;
 
-{$ENDIF COMPILER6_UP}
 procedure TBaseItemDsgn.SetMethodProp(Index: Integer; Value: TMethod);
 var
   instance: TObject;
@@ -960,11 +935,7 @@ var
   info: PPropInfo;
 begin
   GetPropDataFromIndex(Index, instance, info);
-  {$IFDEF COMPILER6_UP}
   TypInfo.SetWideStrProp(instance, info, Value);
-  {$ELSE ~COMPILER6_UP}
-  TypInfo.SetStrProp(instance, info, Value);
-  {$ENDIF ~COMPILER6_UP}
 end;
 
 //=== Registration of default interface property views =======================

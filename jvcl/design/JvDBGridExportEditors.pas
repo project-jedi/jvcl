@@ -31,11 +31,7 @@ interface
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvDBGridExportWordFormatProperty = class(TIntegerProperty)

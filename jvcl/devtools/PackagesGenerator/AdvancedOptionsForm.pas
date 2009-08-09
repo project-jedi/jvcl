@@ -10,8 +10,6 @@ type
   TfrmAdvancedOptions = class(TForm)
     bbtOk: TBitBtn;
     lblExpl: TLabel;
-    edtBCB5: TEdit;
-    lblBCB5: TLabel;
     edtBCB6: TEdit;
     lblBCB6: TLabel;
     lblImageBase: TLabel;

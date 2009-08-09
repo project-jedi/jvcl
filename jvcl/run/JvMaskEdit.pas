@@ -112,12 +112,10 @@ type
 
   TJvMaskEdit = class(TJvCustomMaskEdit)
   published
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property Alignment;
     property Caret;
     property ClipboardCommands;

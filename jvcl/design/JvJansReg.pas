@@ -31,12 +31,8 @@ interface
 
 uses
   Classes, Controls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvShapedButton, JvSticker, JvJanTreeView, JvMarkupLabel, JvMarkupViewer,
   JvSAL, JvSALCore, JvSALMath, JvYearGrid, JvTracker, JvAirBrush, JvGridFilter,

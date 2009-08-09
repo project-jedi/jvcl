@@ -148,10 +148,8 @@ type
 
 
 implementation
+
 uses
-{$IFNDEF COMPILER6_UP}
-  FileCtrl,
-{$ENDIF }
   DepWalkUtils, Registry;
 
 {$R *.DFM}

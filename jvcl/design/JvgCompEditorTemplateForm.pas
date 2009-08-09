@@ -33,11 +33,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, StdCtrls, Buttons, ExtCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvgCompEditorTemplate = class(TForm)

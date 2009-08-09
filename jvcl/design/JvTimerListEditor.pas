@@ -34,21 +34,13 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvTimerListDefaultEditor = class(TDefaultEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
-    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Cont: Boolean); override;
-    {$ELSE}
-    procedure EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean); override;
-    {$ENDIF COMPILER6_UP}
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
@@ -58,7 +50,6 @@ implementation
 uses
   JvDsgnConsts;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvTimerListDefaultEditor.EditProperty(const Prop: IProperty; var Cont: Boolean);
 var
   PropName: string;
@@ -70,19 +61,6 @@ begin
     Cont := False;
   end;
 end;
-{$ELSE}
-procedure TJvTimerListDefaultEditor.EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean);
-var
-  PropName: string;
-begin
-  PropName := PropertyEditor.GetName;
-  if SameText(PropName, 'Events') then // do not localize
-  begin
-    PropertyEditor.Edit;
-    Cont := False;
-  end;
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvTimerListDefaultEditor.ExecuteVerb(Index: Integer);
 begin

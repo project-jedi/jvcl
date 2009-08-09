@@ -31,11 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Windows, Controls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvFormPlacement;
 
 type

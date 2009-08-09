@@ -31,11 +31,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, ImgList, Graphics,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, VCLEditors,
-  {$ELSE}
-  DsgnIntf, Menus,
-  {$ENDIF COMPILER6_UP}
   JvPageList, JvDsgnEditors;
 
 type
@@ -69,35 +65,6 @@ type
   protected
     function ImageList: TCustomImageList; override;
   end;
-
-  {$IFDEF COMPILER5}
-
-  // since D5 doesn't support interface style published properties,
-  // this editor is supplied to make it easier to select a specific interface
-  // implementor at design-time
-  // NOTE: you must derive a new editor from TJvInterfaceProperty and override
-  // GetInterfaceGUID and GetInterfaceName since these are declared as virtual abstract
-  TJvInterfaceProperty = class(TComponentProperty)
-  private
-    FOrgStrProc: TGetStrProc;
-  protected
-    function IntfSupported(AComponent: TComponent): Boolean; virtual;
-    function GetInterfaceGUID: TGUID; virtual; abstract;
-    function GetInterfaceName: string; virtual; abstract;
-    procedure ProcComps(const S: string);
-    property OrgStrProc: TGetStrProc read FOrgStrProc write FOrgStrProc;
-  public
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-  end;
-
-  TJvPageListProperty = class(TJvInterfaceProperty)
-  protected
-    function GetInterfaceGUID: TGUID; override;
-    function GetInterfaceName: string; override;
-  end;
-
-  {$ENDIF COMPILER5}
 
 implementation
 
@@ -176,7 +143,7 @@ var
   C: TJvCustomPageList;
 begin
   C := GetPageControl;
-  P := C.GetPageClass.Create(Designer.{$IFDEF COMPILER6_UP} Root {$ELSE} Form {$ENDIF});
+  P := C.GetPageClass.Create(Designer.Root);
   try
     P.Parent := C;
     P.Name := Designer.UniqueName(C.GetPageClass.ClassName);
@@ -258,60 +225,5 @@ begin
   // we don't want sorting for this property
   Result := [paMultiSelect, paValueList, paRevertable];
 end;
-
-{$IFDEF COMPILER5}
-
-//=== { TJvInterfaceProperty } ===============================================
-
-function TJvInterfaceProperty.IntfSupported(AComponent: TComponent): Boolean;
-var
-  Obj: IUnknown;
-begin
-  Result := Supports(AComponent, GetInterfaceGUID, Obj);
-end;
-
-procedure TJvInterfaceProperty.ProcComps(const S: string);
-var
-  Comp: TComponent;
-begin
-  Comp := Designer.GetComponent(S);
-  if (Comp <> nil) and IntfSupported(Comp) then
-    OrgStrProc(S);
-end;
-
-procedure TJvInterfaceProperty.GetValues(Proc: TGetStrProc);
-begin
-  OrgStrProc := Proc;
-  inherited GetValues(ProcComps);
-end;
-
-procedure TJvInterfaceProperty.SetValue(const Value: string);
-var
-  Comp: TComponent;
-begin
-  if Value = '' then
-    Comp := nil
-  else
-  begin
-    Comp := Designer.GetComponent(Value);
-    if not (Comp is GetTypeData(GetPropType)^.ClassType) and not IntfSupported(Comp) then
-      raise EPropertyError.CreateResFmt(@RsEFmtInterfaceNotSupported, [Comp.Name, GetInterfaceName]);
-  end;
-  SetOrdValue(Longint(Comp));
-end;
-
-//=== { TJvPageListProperty } ================================================
-
-function TJvPageListProperty.GetInterfaceGUID: TGUID;
-begin
-  Result := IPageList;
-end;
-
-function TJvPageListProperty.GetInterfaceName: string;
-begin
-  Result := 'IPageList';
-end;
-
-{$ENDIF COMPILER5}
 
 end.

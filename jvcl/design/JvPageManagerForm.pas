@@ -30,11 +30,7 @@ interface
 
 uses
   SysUtils, Classes, Windows, Graphics, Controls, Forms, Grids, StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors, DesignWindows,
-  {$ELSE}
-  LibIntf, DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvPageManager, JvJVCLUtils, JvComponent;
 
 type
@@ -66,19 +62,10 @@ type
     procedure Activated; override;
   public
     procedure NameProxy(Sender: TObject);
-    {$IFDEF COMPILER6_UP}
     procedure ItemsModified(const Designer: IDesigner); override;
     procedure DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean); override;
-    {$ELSE}
-    procedure FormModified; override;
-    procedure FormClosed(Form: TCustomForm); override;
-    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
-    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
-    {$ELSE}
-    procedure ComponentDeleted(Component: IPersistent); override;
-    {$ENDIF COMPILER6_UP}
     property PageManager: TJvPageManager read FPageManager write SetPageManager;
     property OwnerForm: TCustomForm read GetForm;
   end;
@@ -183,17 +170,9 @@ var
   I: Integer;
   Component: TComponent;
 begin
-  {$IFDEF COMPILER6_UP}
   for I := 0 to Designer.Root.ComponentCount - 1 do
-  {$ELSE}
-  for I := 0 to Designer.Form.ComponentCount - 1 do
-  {$ENDIF COMPILER6_UP}
   begin
-    {$IFDEF COMPILER6_UP}
     Component := Designer.Root.Components[I];
-    {$ELSE}
-    Component := Designer.Form.Components[I];
-    {$ENDIF COMPILER6_UP}
 
     if (Component.Name <> '') and (Component.InheritsFrom(TButtonControl) or
       Component.InheritsFrom(TSpeedButton) or
@@ -284,25 +263,13 @@ begin
     TJvPageProxy(Sender).Name := UniqueName(TJvPageProxy(Sender));
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 begin
   if ADesigner.Root = OwnerForm then
     Free;
 end;
-{$ELSE}
-procedure TJvProxyEditor.FormClosed(Form: TCustomForm);
-begin
-  if Form = OwnerForm then
-    Free;
-end;
-{$ENDIF COMPILER6_UP}
 
-{$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.ItemsModified(const Designer: IDesigner);
-{$ELSE}
-procedure TJvProxyEditor.FormModified;
-{$ENDIF COMPILER6_UP}
 begin
   if not (csDestroying in ComponentState) then
     UpdateData;
@@ -313,7 +280,6 @@ begin
   SelectProxy(ProxyByRow(ProxyGrid.Row - 1));
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.ItemDeleted(const ADesigner: IDesigner; Item: TPersistent);
 begin
   if Item = FPageManager then
@@ -322,16 +288,6 @@ begin
     Close;
   end;
 end;
-{$ELSE}
-procedure TJvProxyEditor.ComponentDeleted(Component: IPersistent);
-begin
-  if ExtractPersistent(Component) = FPageManager then
-  begin
-    FPageManager := nil;
-    Close;
-  end;
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvProxyEditor.UpdateData;
 var
@@ -356,11 +312,7 @@ end;
 
 function TJvProxyEditor.GetForm: TCustomForm;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := TCustomForm(Designer.Root); { GetParentForm(FBar) }
-  {$ELSE}
-  Result := Designer.Form; { GetParentForm(FBar) }
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvProxyEditor.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -379,17 +331,11 @@ end;
 function TJvProxyEditor.CheckPageManager: Boolean;
 begin
   Result := (FPageManager <> nil) and (FPageManager.Owner <> nil) and
-    {$IFDEF COMPILER6_UP}
     (Designer.Root <> nil);
-    {$ELSE}
-    (Designer.Form <> nil);
-    {$ENDIF COMPILER6_UP}
 end;
 
-{$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvProxyEditor.SelectProxy(Proxy: TJvPageProxy);
 var
@@ -397,11 +343,7 @@ var
 begin
   if CheckPageManager and Active then
   begin
-    {$IFDEF COMPILER6_UP}
     FComponents := TDesignerSelections.Create;
-    {$ELSE}
-    FComponents := TDesignerSelectionList.Create;
-    {$ENDIF COMPILER6_UP}
     if Proxy <> nil then
       FComponents.Add(Proxy)
     else
@@ -466,11 +408,7 @@ begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
   if Proxy <> nil then
   begin
-    {$IFDEF COMPILER6_UP}
     TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
-    {$ELSE}
-    Designer.ValidateRename(Proxy, Proxy.Name, '');
-    {$ENDIF COMPILER6_UP}
     FDeleting := True;
     try
       Proxy.Free;

@@ -34,8 +34,7 @@ interface
 uses
   Windows, SysUtils, Classes, CapExec, JVCLData, DelphiData,
   GenerateUtils, PackageUtils, Intf, PackageInformation, ConditionParser,
-  JclBase, JclSysInfo,
-  JvVCL5Utils, JVCLVer;
+  JclBase, JclSysInfo, JVCLVer;
 
 type
   TProgressKind = (
@@ -904,9 +903,6 @@ begin
     LibFiles.Add('cp32mti.lib');
 
     // add additional .lib files
-    if TargetConfig.Target.Version = 5 then
-      LibFiles.AddStrings(Project.Info.XmlInfo.C5Libs)
-    else
     if TargetConfig.Target.Version = 6 then
       LibFiles.AddStrings(Project.Info.XmlInfo.C6Libs)
     else

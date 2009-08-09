@@ -528,10 +528,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils,
+  Variants, SysUtils,
   JvDynControlEngineVCLDB,
   JvDynControlEngineTools, JvDynControlEngineJVCL, JvConsts, JvJCLUtils;
 
@@ -1397,9 +1394,7 @@ end;
 
 procedure TJvDynControlJVCLDBDateEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlJVCLDBDateEdit.ControlSetDataSource(Value: TDataSource);
@@ -1481,9 +1476,7 @@ end;
 
 procedure TJvDynControlJVCLDBTimeEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlJVCLDBTimeEdit.ControlSetDataSource(Value: TDataSource);
@@ -1862,9 +1855,7 @@ end;
 
 procedure TJvDynControlJVCLDBImage.ControlSetProportional(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
 //  Proportional := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 

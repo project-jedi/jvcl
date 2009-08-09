@@ -180,7 +180,6 @@ const
 implementation
 
 uses
-  JvVCL5Utils,
   JvResources;
 
 const

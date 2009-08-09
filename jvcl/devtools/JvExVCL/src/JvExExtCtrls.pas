@@ -33,10 +33,7 @@ WARNINGHEADER
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -80,8 +77,6 @@ type
 
   WINCONTROL_DECL_DEFAULT(Header)
 
-  {$IFDEF COMPILER6_UP}
-
   CONTROL_DECL_DEFAULT(BoundLabel)
 
   WINCONTROL_DECL_DEFAULT(CustomLabeledEdit)
@@ -91,8 +86,6 @@ type
   WINCONTROL_DECL_DEFAULT(CustomColorBox)
 
   WINCONTROL_DECL_DEFAULT(ColorBox)
-
-  {$ENDIF COMPILER6_UP}
 
 // SplitterMouseDownFix fixes a bug in the VCL that causes the splitter to no
 // more work with the control in the left/top of it when the control has a size
@@ -137,8 +130,6 @@ WINCONTROL_IMPL_DEFAULT(Notebook)
 
 WINCONTROL_IMPL_DEFAULT(Header)
 
-{$IFDEF COMPILER6_UP}
-
 CONTROL_IMPL_DEFAULT(BoundLabel)
 
 WINCONTROL_IMPL_DEFAULT(CustomLabeledEdit)
@@ -148,8 +139,6 @@ WINCONTROL_IMPL_DEFAULT(LabeledEdit)
 WINCONTROL_IMPL_DEFAULT(CustomColorBox)
 
 WINCONTROL_IMPL_DEFAULT(ColorBox)
-
-{$ENDIF COMPILER6_UP}
 
 CONTROL_IMPL_DEFAULT(Splitter)
 

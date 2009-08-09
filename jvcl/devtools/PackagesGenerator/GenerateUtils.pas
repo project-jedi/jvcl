@@ -1105,20 +1105,6 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
-function FileSetDate(const Filename: string; FileAge:Integer):Integer;
-var
-   Handle: Integer;
-begin
-   Handle := FileOpen(Filename, fmOpenReadWrite);
-   try
-     Result := SysUtils.FileSetDate(Handle, FileAge);
-   finally
-     FileClose(Handle);
-   end;
-end;
-{$ENDIF !COMPILER6_UP}
-
 procedure AdjustEndingSemicolon(Lines: TStrings);
 var
   S: string;
@@ -1305,8 +1291,6 @@ begin
     if CompareText(bcbId, 'c6') = 0 then
       bcblibsList := xml.C6Libs
     else
-    if CompareText(bcbId, 'c5') = 0 then
-      bcblibsList := xml.C5Libs;
     if bcblibsList <> nil then
       LibCount := bcblibsList.Count
     else
@@ -1542,9 +1526,7 @@ begin
             ['NAME%', PathExtractFileNameNoExt(OutFileName),
              'XMLNAME%', ExtractFileName(xmlName),
              'DESCRIPTION%', GetDescription(xml, target),
-             'C5PFLAGS%', EnsurePFlagsCondition(xml.C5PFlags, target),
              'C6PFLAGS%', EnsurePFlagsCondition(xml.C6PFlags, target),
-             'C5LIBS%', StringsToStr(xml.C5Libs, ' ', False),
              'C6LIBS%', StringsToStr(xml.C6Libs, ' ', False),
              'GUID%', xml.GUID,
              'IMAGE_BASE%', xml.ImageBase,

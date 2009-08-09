@@ -221,10 +221,7 @@ type
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
-    {$IFNDEF BCB5}
-    // Do not use this under BCB5, you will crash the linker.
     property Button;
-    {$ENDIF !BCB5}
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
@@ -235,12 +232,10 @@ type
     property AutoSelect;
     property AutoSize;
     property BeepOnError;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property ButtonFlat;
     property ButtonHint;
@@ -378,12 +373,10 @@ type
     property DialogTitle;
     property DirectInput;
     property DragCursor;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property DragKind;
     property Flat;
@@ -534,12 +527,10 @@ type
     property ButtonWidth;
     property HideSelection;
     property Anchors;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property Constraints;
     property DragKind;
@@ -719,13 +710,8 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
   FMTBcd,
-  {$ENDIF COMPILER6_UP}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Math, Forms,
+  Variants, SysUtils, Math, Forms,
   JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources;
 
 {$R JvDBControls.res}
@@ -1162,10 +1148,7 @@ end;
 
 function TJvDBMaskEdit.GetTextMargins: TPoint;
 var
-  DC: HDC;
-  SaveFont: HFont;
   I: Integer;
-  SysMetrics, Metrics: TTextMetric;
 begin
   if BorderStyle = bsNone then
     I := 0
@@ -2204,13 +2187,11 @@ begin
       begin
         FDataLink.Field.AsBoolean := Boolean(Self.AsInteger);
       end;
-    {$IFDEF COMPILER6_UP}
     ftFMTBcd,
     ftBCD:
       begin
         FDataLink.Field.AsBCD := DoubleToBCD(Self.Value)
       end;
-    {$ENDIF COMPILER6_UP}
     else
       begin
         FDataLink.Field.AsFloat := Self.Value;

@@ -7,10 +7,6 @@ interface
 uses
   Windows;
 
-{$IFNDEF COMPILER6_UP}
- {$DEFINE MSWINDOWS}
-{$ENDIF COMPILER6_UP}
-
 // returns the relative path between Origin and Destination
 // This is the string you would have to type after the 'cd'
 // command is you were located in Origin and willing to change
@@ -29,34 +25,13 @@ function GetRelativePath(const Origin, Destination: string): string;
 // is undefined (most likely an exception will be triggered)
 function PathNoInsideRelative(const Path: string): string;
 
-{$IFDEF COMPILER5}
-// Sets the date and time of the indicated file
-// This function with this signature doesn't exists in D5 so
-// we had to declare it here
-function FileSetDate(const FileName: string; Age: Integer): Integer;
-{$ENDIF COMPILER5}
-
 implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   StrUtils,
-  {$ENDIF COMPILER6_UP}
   JclStrings, JclFileUtils,
   SysUtils;
-
-{$IFDEF COMPILER5}
-function AnsiStartsStr(const SubStr, S: string): Boolean;
-begin
-  Result := StrLComp(PChar(S), PChar(SubStr), Length(SubStr)) = 0;
-end;
-
-function AnsiEndsStr(const SubStr, S: string): Boolean;
-begin
-  Result := StrLComp(PChar(S) + Length(S) - Length(SubStr), PChar(SubStr), Length(SubStr)) = 0;
-end;
-{$ENDIF COMPILER5}
 
 function StrEnsureNoPrefix(const prefix, str: string): string;
 begin
@@ -171,22 +146,5 @@ begin
     PathList.Free;
   end;
 end;
-
-{$IFDEF COMPILER5}
-function FileSetDate(const FileName: string; Age: Integer): Integer;
-var
-  f: THandle;
-begin
-  f := FileOpen(FileName, fmOpenWrite);
-  if f = THandle(-1) then
-    Result := GetLastError
-  else
-  begin
-    Result := SysUtils.FileSetDate(f, Age);
-    FileClose(f);
-  end;
-end;
-{$ENDIF COMPILER5}
-
 
 end.

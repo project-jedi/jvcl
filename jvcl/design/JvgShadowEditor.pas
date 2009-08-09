@@ -33,11 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, ComCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignWindows, DesignEditors;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvgShadowEditor = class(TComponentEditor)

@@ -30,11 +30,7 @@ unit JvDockPropertyEditors;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDockControlForm, JvDockVIDStyle;
 
 type
@@ -66,11 +62,7 @@ begin
   case Index of
     0:
       begin
-        {$IFDEF COMPILER6_UP}
         Sheet := TJvDockVIDTabSheet.Create(Designer.Root);
-        {$ELSE}
-        Sheet := TJvDockVIDTabSheet.Create(Designer.Form);
-        {$ENDIF COMPILER6_UP}
 
         Sheet.PageControl := Page;
         Sheet.Name := Designer.UniqueName(TJvDockVIDTabSheet.ClassName);

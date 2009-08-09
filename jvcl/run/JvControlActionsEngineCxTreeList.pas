@@ -69,10 +69,7 @@ implementation
 uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Grids;
+  Variants, SysUtils, Grids;
 
 //=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
 

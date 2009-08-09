@@ -91,9 +91,6 @@ var
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
-  FileCtrl,
-  {$ENDIF}
   ShellAPI, JclStrings;
 
 {$R *.dfm}

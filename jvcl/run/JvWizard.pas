@@ -338,10 +338,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList, Types,
   JvComponent, JvThemes,
   JvWizardCommon;
 
@@ -989,12 +986,10 @@ begin
   inherited Create(AOwner);
   if csDesigning in ComponentState then
   begin
-    {$IFDEF COMPILER6_UP}
       { !!! Add csClickEvents in order to fire the Click method
         at design time. It does NOT need at run time, otherwise it cause
         the OnClick event to be called twice. }
     ControlStyle := ControlStyle + [csClickEvents];
-    {$ENDIF COMPILER6_UP}
     ControlStyle := ControlStyle + [csNoDesignVisible];
   end;
   Kind := bkCustom;

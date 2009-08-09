@@ -71,10 +71,8 @@ var
   JvZLibMultipleMainForm: TJvZLibMultipleMainForm;
 
 implementation
+
 uses
-  {$IFNDEF COMPILER6_UP}
-  FileCtrl,
-  {$ENDIF}
   JvBrowseFolder;
 
 {$R *.dfm}

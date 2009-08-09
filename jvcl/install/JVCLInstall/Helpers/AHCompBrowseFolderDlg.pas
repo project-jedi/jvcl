@@ -29,10 +29,8 @@ unit AHCompBrowseFolderDlg;
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-{$IFDEF COMPILER6_UP}
- {$WARN UNIT_PLATFORM OFF}
- {$WARN SYMBOL_PLATFORM OFF}
-{$ENDIF}
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
 
 interface
 

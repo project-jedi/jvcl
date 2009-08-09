@@ -61,10 +61,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, Controls, Forms,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Classes, Graphics, Controls, Forms, Types,
   ActnList, ImgList,
   JvComponentBase, JvTypes, JvWin32;
 
@@ -1502,7 +1499,7 @@ begin
       FOnClick(Self)
     else
     if {not (csDesigning in ComponentState) and} Assigned(ActionLink) then
-      FActionLink.Execute{$IFDEF COMPILER6_UP}(Self){$ENDIF}
+      FActionLink.Execute(Self)
     else
     if Assigned(FOnClick) then
       FOnClick(Self);

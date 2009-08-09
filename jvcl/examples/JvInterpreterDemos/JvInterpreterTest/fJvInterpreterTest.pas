@@ -35,10 +35,8 @@ uses
   StdCtrls, ExtCtrls, ComCtrls,
   JvInterpreter, JvInterpreterFm, JvEditor, JvHLParser, JvHLEditor,
   Db, DBTables, Grids, DBGrids,
- {$IFDEF COMPILER6_UP}
-   Variants,
-   {$ENDIF}
- JvExControls, JvComponent, JvFormPlacement, JvComponentBase,
+  Variants,
+  JvExControls, JvComponent, JvFormPlacement, JvComponentBase,
   JvEditorCommon, JvAppStorage, JvAppIniStorage;
 
 
@@ -207,9 +205,6 @@ begin
   Parser.Free;
 end;
 
-{$IFNDEF COMPILER6_UP}
-type TVarType = Word;
-{$ENDIF}
 procedure TTest.Button1Click(Sender: TObject);
 const
   Bool : array [boolean] of string = ('False', 'True');

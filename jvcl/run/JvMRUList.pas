@@ -190,7 +190,7 @@ implementation
 
 uses
   Registry,
-  JvVCL5Utils, JvJCLUtils, JvResources;
+  JvJCLUtils, JvResources;
 
 var
   hComCtlDll: HMODULE = 0;

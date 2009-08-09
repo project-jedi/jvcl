@@ -37,9 +37,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, SysUtils,
-  {$IFNDEF COMPILER6_UP}
-  Forms,
-  {$ENDIF COMPILER6_UP}
   JvComponentBase,
   DBT, SetupApi, HID;
 

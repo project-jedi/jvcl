@@ -32,11 +32,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvPageList;
 
 type
@@ -80,16 +76,9 @@ type
   public
     property PageList:TJvCustomPageList read FPageList write SetPageList;
     procedure Activated; override;
-    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$ELSE}
-    procedure ComponentDeleted(Component: IPersistent); override;
-    function UniqueName(Component: TComponent): string; override;
-    procedure FormClosed(AForm: TCustomForm); override;
-    procedure FormModified; override;
-    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
   end;
 
@@ -126,11 +115,7 @@ begin
   begin
     APageListEditor := TfrmPageListEditor.Create(Application);
     try
-      {$IFDEF COMPILER6_UP}
       APageListEditor.Designer := Designer;
-      {$ELSE}
-      APageListEditor.Designer := IFormDesigner(Designer);
-      {$ENDIF COMPILER6_UP}
       APageListEditor.PageList := APageList;
       APageListEditor.Show;
     except
@@ -218,8 +203,6 @@ begin
   SelectPage(lbPages.ItemIndex);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 procedure TfrmPageListEditor.DesignerClosed(const Designer: IDesigner;
   AGoingDormant: Boolean);
 begin
@@ -242,36 +225,6 @@ begin
   if not (csDestroying in ComponentState) then
     UpdateList(lbPages.ItemIndex);
 end;
-
-{$ELSE}
-
-function TfrmPageListEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
-procedure TfrmPageListEditor.ComponentDeleted(Component: IPersistent);
-begin
-  if ExtractPersistent(Component) = FPageList then
-  begin
-    FPageList := nil;
-    Close;
-  end;
-end;
-
-procedure TfrmPageListEditor.FormClosed(AForm: TCustomForm);
-begin
-  if AForm = Designer.Form then
-    Close;
-end;
-
-procedure TfrmPageListEditor.FormModified;
-begin
-  if not (csDestroying in ComponentState) then
-    UpdateList(lbPages.ItemIndex);
-end;
-
-{$ENDIF COMPILER6_UP}
 
 function TfrmPageListEditor.GetEditState: TEditState;
 begin

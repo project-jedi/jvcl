@@ -150,9 +150,6 @@ implementation
 uses
   JvJVCLAboutForm, // JVCL About box stuff.
   Math, // Math:NaN handling, function isNan in D6 and higher.
-  {$IFDEF COMPILER5}
-  JclMath, // JclMath:function isNan for Delphi 5
-  {$ENDIF COMPILER5}
   ShellApi; // ShellApi:ShellExecute function
 
 {$R *.dfm}

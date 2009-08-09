@@ -52,10 +52,8 @@ type
     FClient: TJvCustomGraphicButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
-    {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-    {$ENDIF COMPILER6_UP}
     procedure SetChecked(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
   end;
@@ -404,7 +402,6 @@ begin
     Result := False;
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := False;
@@ -413,7 +410,6 @@ end;
 procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
 begin
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin

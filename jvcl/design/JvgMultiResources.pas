@@ -34,11 +34,7 @@ uses
   Windows, Controls, Classes, Forms, SysUtils,
   Dialogs, TypInfo,
   JvComponentBase,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvgResStringList = class(TStringList);

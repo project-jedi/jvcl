@@ -441,21 +441,13 @@ type
   private
     function GetColorProviderIntf: IJvColorProvider;
     procedure SetColorProviderIntf(Value: IJvColorProvider);
-    {$IFDEF COMPILER5}
-    function GetProviderComp: TComponent;
-    procedure SetProviderComp(Value: TComponent);
-    {$ENDIF COMPILER5}
   protected
     class function ItemsClass: TJvDataItemsClass; override;
     function ConsumerClasses: TClassArray; override;
   public
     property ProviderIntf: IJvColorProvider read GetColorProviderIntf write SetColorProviderIntf;
   published
-    {$IFDEF COMPILER6_UP}
     property Provider: IJvColorProvider read GetColorProviderIntf write SetColorProviderIntf;
-    {$ELSE}
-    property Provider: TComponent read GetProviderComp write SetProviderComp;
-    {$ENDIF COMPILER6_UP}
   end;
 
   TJvColorProviderServerNotify = class(TJvDataConsumerServerNotify)
@@ -515,13 +507,7 @@ const
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ELSE}
-  Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  Controls,
+  SysUtils, RTLConsts, Controls,
   JclStrings,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 
@@ -1187,36 +1173,6 @@ procedure TJvColorMappingProvider.SetColorProviderIntf(Value: IJvColorProvider);
 begin
   TJvColorMapItems(DataItemsImpl).ClientProvider := (Value as IJvDataProvider);
 end;
-
-{$IFDEF COMPILER5}
-
-function TJvColorMappingProvider.GetProviderComp: TComponent;
-var
-  ICR: IInterfaceComponentReference;
-begin
-  if Supports(GetColorProviderIntf, IInterfaceComponentReference, ICR) then
-    Result := ICR.GetComponent
-  else
-    Result := nil;
-end;
-
-procedure TJvColorMappingProvider.SetProviderComp(Value: TComponent);
-var
-  PI: IJvColorProvider;
-  ICR: IInterfaceComponentReference;
-begin
-  if (Value = nil) or Supports(Value, IJvColorProvider, PI) then
-  begin
-    if (Value = nil) or Supports(Value, IInterfaceComponentReference, ICR) then
-      SetColorProviderIntf(PI)
-    else
-      raise EJVCLException.CreateRes(@RsENoICR);
-  end
-  else
-    raise EJVCLException.CreateRes(@RsENoColProv);
-end;
-
-{$ENDIF COMPILER5}
 
 class function TJvColorMappingProvider.ItemsClass: TJvDataItemsClass;
 begin

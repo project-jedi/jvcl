@@ -33,10 +33,7 @@ WARNINGHEADER
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -58,9 +55,7 @@ type
 
   EDITCONTROL_DECL_DEFAULT(CustomMemo)
 
-  {$IFDEF COMPILER6_UP}
   WINCONTROL_DECL_DEFAULT(CustomCombo)
-  {$ENDIF COMPILER6_UP}
 
   WINCONTROL_DECL_DEFAULT(CustomComboBox)
 
@@ -110,9 +105,7 @@ EDITCONTROL_IMPL_DEFAULT(CustomEdit)
 
 EDITCONTROL_IMPL_DEFAULT(CustomMemo)
 
-{$IFDEF COMPILER6_UP}
 WINCONTROL_IMPL_DEFAULT(CustomCombo)
-{$ENDIF COMPILER6_UP}
 
 WINCONTROL_IMPL_DEFAULT(CustomComboBox)
 

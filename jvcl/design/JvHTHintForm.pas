@@ -33,11 +33,7 @@ interface
 
 uses
   SysUtils, Classes, Windows, Controls, Forms, StdCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvHint, JvComponent;
 
 type

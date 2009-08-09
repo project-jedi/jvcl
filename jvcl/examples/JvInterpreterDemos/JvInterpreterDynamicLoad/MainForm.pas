@@ -30,10 +30,6 @@ implementation
 {$R *.dfm}
 
 const
-{$IFDEF COMPILER5}
-  PackageFileName    = 'JvInterpreterD5R.bpl';
-  ALLPackageFileName = 'JvInterpreterD5R.bpl';
-{$ENDIF COMPILER5}
 {$IFDEF COMPILER6}
   PackageFileName    = 'JvInterpreterD6R.bpl';
   ALLPackageFileName = 'JvInterpreterD6R.bpl';

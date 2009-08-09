@@ -44,11 +44,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps,
   JvWizardRouteMapList, JvWizardEditorForm;

@@ -54,7 +54,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, JvVCL5Utils;
+  Windows, Messages, SysUtils, Classes;
 
 const
   DefaultInterval = 1000;
@@ -584,9 +584,7 @@ end;
 procedure TJvTimerEvents.Notify(Item: TCollectionItem;
   Action: TCollectionNotification);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited Notify(Item, Action);
-  {$ENDIF COMPILER6_UP}
   if Action = cnAdded then
     with TJvTimerEvent(Item) do
     begin

@@ -33,11 +33,7 @@ interface
 
 uses
   Classes, Windows, Messages, Forms, StdCtrls, ExtCtrls, Menus, Controls,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvID3v2Base, JvID3v2Types, JvDsgnTypes;
 
 type
@@ -88,17 +84,10 @@ type
   public
     function ForEachSelection(Proc: TSelectionProc): Boolean;
     function DoNewFrame: TJvID3Frame;
-    {$IFDEF COMPILER5}
-    procedure SelectionChanged(ASelection: TDesignerSelectionList); override;
-    procedure EditAction(Action: TEditAction); override;
-    procedure ComponentDeleted(Component: IPersistent); override;
-    procedure FormModified; override;
-    {$ELSE}
     function EditAction(Action: TEditAction): Boolean; override;
     procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent); override;
     procedure SelectionChanged(const ADesigner: IDesigner; const ASelection: IDesignerSelections); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$ENDIF COMPILER5}
     property Controller: TJvID3Controller read FController write SetController;
   end;
 
@@ -349,29 +338,13 @@ end;
 
 procedure TJvID3FramesEditor.Activated;
 begin
-  {$IFDEF COMPILER6_UP}
   Designer.Activate;
-  {$ENDIF COMPILER6_UP}
   try
     UpdateSelection;
   except
     FrameListBox.Items.Clear;
   end;
 end;
-
-{$IFDEF COMPILER5}
-procedure TJvID3FramesEditor.ComponentDeleted(Component: IPersistent);
-var
-  P: TPersistent;
-begin
-  P := ExtractPersistent(Component);
-  if P = Controller then
-    Controller := nil
-  else
-  if (P is TJvID3Frame) and (TJvID3Frame(P).Controller = Controller) then
-    UpdateDisplay;
-end;
-{$ENDIF COMPILER5}
 
 function TJvID3FramesEditor.DoNewFrame: TJvID3Frame;
 var
@@ -395,15 +368,9 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJvID3FramesEditor.EditAction(Action: TEditAction): Boolean;
-{$ELSE}
-procedure TJvID3FramesEditor.EditAction(Action: TEditAction);
-{$ENDIF COMPILER6_UP}
 begin
-  {$IFDEF COMPILER6_UP}
   Result := True;
-  {$ENDIF COMPILER6_UP}
   case Action of
     {eaCut: Cut;
     eaCopy: Copy;
@@ -415,10 +382,8 @@ begin
         SelectAll;
         UpdateSelection;
       end;
-  {$IFDEF COMPILER6_UP}
   else
     Result := False;
-  {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -439,7 +404,6 @@ begin
   Result := True;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent);
 begin
   if AItem = Controller then
@@ -448,13 +412,8 @@ begin
   if (AItem is TJvID3Frame) and (TJvID3Frame(AItem).Controller = Controller) then
     UpdateDisplay;
 end;
-{$ENDIF COMPILER6_UP}
 
-{$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.ItemsModified(const Designer: IDesigner);
-{$ELSE}
-procedure TJvID3FramesEditor.FormModified;
-{$ENDIF COMPILER6_UP}
 begin
   UpdateCaption;
 end;
@@ -576,12 +535,8 @@ begin
       Selected[I] := True;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvID3FramesEditor.SelectionChanged(const ADesigner: IDesigner;
   const ASelection: IDesignerSelections);
-{$ELSE}
-procedure TJvID3FramesEditor.SelectionChanged(ASelection: TDesignerSelectionList);
-{$ENDIF COMPILER6_UP}
 var
   I: Integer;
   S: Boolean;
@@ -703,42 +658,22 @@ procedure TJvID3FramesEditor.UpdateSelection;
 var
   I: Integer;
   Frame: TJvID3Frame;
-  {$IFDEF COMPILER6_UP}
   ComponentList: IDesignerSelections;
-  {$ELSE}
-  ComponentList: TDesignerSelectionList;
-  {$ENDIF COMPILER6_UP}
 begin
   if Active then
   begin
-    {$IFDEF COMPILER6_UP}
     ComponentList := TDesignerSelections.Create;
-    {$ELSE}
-    ComponentList := TDesignerSelectionList.Create;
-    {$ENDIF COMPILER6_UP}
-    try
-      with FrameListBox do
-        for I := 0 to Items.Count - 1 do
-          if Selected[I] then
-          begin
-            Frame := TJvID3Frame(Items.Objects[I]);
-            if Frame <> nil then
-              ComponentList.Add(Frame);
-          end;
-      if ComponentList.Count = 0 then
-        ComponentList.Add(Controller);
-    except
-      {$IFDEF COMPILER5}
-      // In D6 up it's an interface, so no need to free up
-      ComponentList.Free;
-      {$ENDIF COMPILER5}
-      raise;
-    end;
-    {$IFDEF COMPILER5}
-    SetSelection(ComponentList);
-    {$ELSE}
+    with FrameListBox do
+      for I := 0 to Items.Count - 1 do
+        if Selected[I] then
+        begin
+          Frame := TJvID3Frame(Items.Objects[I]);
+          if Frame <> nil then
+            ComponentList.Add(Frame);
+        end;
+    if ComponentList.Count = 0 then
+      ComponentList.Add(Controller);
     Designer.SetSelections(ComponentList);
-    {$ENDIF COMPILER5}
   end;
 end;
 

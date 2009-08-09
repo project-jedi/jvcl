@@ -134,11 +134,7 @@ type
     property OnChanging;
     property OnChange;
     property OnCompare;
-    //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
     property OnAddition;
-    {$ENDIF COMPILER6_UP}
-    // PRY END
     property OnDeletion;
     property OnGetImageIndex;
     property OnGetSelectedIndex;

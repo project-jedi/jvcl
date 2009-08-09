@@ -88,12 +88,10 @@ type
   published
     property AutoSize;
     property AutoDisplay: Boolean read FAutoDisplay write SetAutoDisplay default True;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property Proportional: Boolean read FProportional write SetProportional default False;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property OnGetGraphicClass: TJvGetGraphicClassEvent read FOnGetGraphicClass write FOnGetGraphicClass;
@@ -167,10 +165,6 @@ begin
 end;
 
 procedure TJvDBImage.AssignGraphicTo(Picture: TPicture);
-{$IFDEF COMPILER5}
-type
-  TBitmapClass = class of TBitmap;
-{$ENDIF COMPILER5}
 var
   Graphic: TGraphic;
   GraphicClass: TGraphicClass;
@@ -195,13 +189,6 @@ begin
     // If we got one, load it..
     if GraphicClass <> nil then
     begin
-      {$IFDEF COMPILER5}
-      // D5 workaround: somehow the overridden constructor is not called if
-      // GraphicClass is TGraphicClass
-      if GraphicClass.InheritsFrom(TBitmap) then
-        Graphic := TBitmapClass(GraphicClass).Create
-      else
-      {$ENDIF COMPILER5}
       Graphic := GraphicClass.Create;
       try
         Stream.Position := 0;

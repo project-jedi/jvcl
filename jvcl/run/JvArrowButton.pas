@@ -38,10 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Windows, Messages, Controls, Graphics, Buttons, Menus,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Classes, Windows, Messages, Controls, Graphics, Buttons, Menus, Types,
   CommCtrl,
   JvComponent, JvTypes;
 

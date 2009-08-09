@@ -67,14 +67,7 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo,
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Dialogs, StdCtrls, Clipbrd;
+  SysUtils, Grids, TypInfo, StrUtils, Variants, Dialogs, StdCtrls, Clipbrd;
 
 
 procedure InitActionEngineList;

@@ -109,10 +109,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ComCtrls, CommCtrl,
+  Variants, SysUtils, ComCtrls, CommCtrl,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
@@ -322,7 +319,7 @@ function TJvDBDateTimePicker.IsDateAndTimeField: Boolean;
 begin
   with FDataLink do
     Result := (Field <> nil) and
-      (Field.DataType in [ftDateTime {$IFDEF COMPILER6_UP}, ftTimeStamp {$ENDIF}]) and
+      (Field.DataType in [ftDateTime, ftTimeStamp]) and
       not TrimValue;
 end;
 

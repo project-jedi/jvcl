@@ -214,12 +214,10 @@ type
 
   TJvCalcEdit = class(TJvCustomCalcEdit)
   published
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property DragCursor;
     property DragKind;
@@ -317,7 +315,7 @@ implementation
 uses
   SysUtils, Math, Consts, Graphics,
 //  JclLogic,
-  JvVCL5Utils, JvJCLUtils, JvCalc, JvConsts, JvResources;
+  JvJCLUtils, JvCalc, JvConsts, JvResources;
 
 {$R JvBaseEdits.Res}
 

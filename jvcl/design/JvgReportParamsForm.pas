@@ -34,11 +34,7 @@ uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Grids,
   StdCtrls, Buttons, ExtCtrls, Mask,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvgStringGrid, JvgReport;
 
 type

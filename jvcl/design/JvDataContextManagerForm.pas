@@ -33,11 +33,7 @@ interface
 uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDataProviderDesignerForm, Menus, ActnList,
   JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
   JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDataProviderIntf,
@@ -93,12 +89,7 @@ begin
     end;
   end;
   Form.Show;
-  {$IFNDEF BCB5}
-  // If you leave this code under BCB5, you will get this error when
-  // you link the package:
-  // Fatal: Type index 2147479547 is bad in module ..\..\design\JvDataContextManagerForm.pas
   Form.BringToFront;
-  {$ENDIF !BCB5}
 end;
 
 //=== { TJvContextRootItem } =================================================
@@ -133,11 +124,7 @@ begin
   if Supports(InternalProvider, IInterfaceComponentReference, ICR) then
   begin
     CtxProv := TJvContextProvider(ICR.GetComponent);
-    {$IFDEF COMPILER6_UP}
     Result := CtxProv.Provider;
-    {$ELSE}
-    Supports(CtxProv.Provider, IJvDataProvider, Result);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -158,15 +145,7 @@ begin
       if Value <> nil then
         FRootItem := TJvContextRootItem.Create(InternalProvider as IJvDataItems);
       CtxProv := TJvContextProvider(ICR.GetComponent);
-      {$IFDEF COMPILER6_UP}
       CtxProv.Provider := Value;
-      {$ELSE}
-      if Value = nil then
-        CtxProv.Provider := nil
-      else
-      if Supports(Value, IInterfaceComponentReference, ICR) then
-        CtxProv.Provider := ICR.GetComponent;
-      {$ENDIF COMPILER6_UP}
     end;
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;

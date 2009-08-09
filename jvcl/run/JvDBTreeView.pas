@@ -193,12 +193,10 @@ type
 
   TJvDBTreeView = class(TJvCustomDBTreeView)
   published
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property DataSource;
     property MasterField;
     property DetailField;
@@ -292,10 +290,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Dialogs,
+  Variants, SysUtils, Dialogs,
   JvResources;
 
 // (rom) moved to implementation and removed type
@@ -303,20 +298,17 @@ uses
 const
   DnDScrollArea = 15;
   DnDInterval = 200;
-  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftFloat, ftString, ftWideString, ftBCD
-    {$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}];
+  DefaultValidMasterFields = [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftFloat, ftString, ftWideString, ftBCD, ftFMTBCD];
   DefaultValidDetailFields = DefaultValidMasterFields;
   DefaultValidItemFields = [ftString, ftWideString, ftMemo, ftFmtMemo, ftSmallInt, ftInteger, ftAutoInc,
-    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD
-	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}
+    ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftBCD, ftFMTBCD
   {$IFDEF COMPILER10_UP}
   , ftFixedWideChar, ftWideMemo, ftOraTimeStamp
   {$ENDIF COMPILER10_UP}
   {$IFDEF COMPILER12_UP}
   ,ftLongWord, ftShortint, ftByte, ftExtended
   {$ENDIF COMPILER12_UP}];
-  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD
-	{$IFDEF COMPILER6_UP}, ftFMTBCD{$ENDIF}
+  DefaultValidIconFields = [ftSmallInt, ftAutoInc, ftInteger, ftWord, ftBCD, ftFMTBCD
   {$IFDEF COMPILER12_UP}
   ,ftLongWord, ftShortint
   {$ENDIF COMPILER12_UP}];

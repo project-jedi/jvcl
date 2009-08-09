@@ -33,12 +33,6 @@ interface
 uses
   Windows, Messages, ShellAPI, SysUtils, Classes;
 
-{$IFDEF COMPILER5}
-const
-  sLineBreak = #13#10;
-  PathDelim = '\';
-{$ENDIF COMPILER5}
-
 function WordWrapString(const S: string; Width: Integer = 75): string;
   
 function CompareFileAge(const Filename1Fmt: string; const Args1: array of const;
@@ -75,17 +69,6 @@ procedure StrToPathList(Paths: string; List: TStrings);
 procedure ConvertPathList(const Paths: string; List: TStrings); overload;
 function ConvertPathList(List: TStrings): string; overload;
 
-{$IFDEF COMPILER5}
-type
-  IInterface = IUnknown;
-
-function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
-
-function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
-function GetEnvironmentVariable(const Name: string): string;
-function ExcludeTrailingPathDelimiter(const Path: string): string;
-{$ENDIF COMPIELR5}
-
 function AnsiStartsText(const SubStr, Text: string): Boolean;
 
 
@@ -94,10 +77,8 @@ procedure UnlockControl(AHandle: THandle);
 
 implementation
 
-{$IFDEF COMPILER6_UP}
 uses
   StrUtils;
-{$ENDIF COMPILER6_UP}
 
 procedure LockControl(AHandle: THandle);
 begin
@@ -112,36 +93,8 @@ end;
 
 function AnsiStartsText(const SubStr, Text: string): Boolean;
 begin
-  {$IFDEF COMPILER5}
-  Result := AnsiStrLIComp(PChar(SubStr), PChar(Text), Length(SubStr)) = 0;
-  {$ELSE}
   Result := StrUtils.AnsiStartsText(SubStr, Text);
-  {$ENDIF COMPILER5}
 end;
-
-{$IFDEF COMPILER5}
-function ExcludeTrailingPathDelimiter(const Path: string): string;
-begin
-  if (Path <> '') and (Path[Length(Path)] = '\') then // Delphi 5 only knows Windows
-    Result := Copy(Path, 1, Length(Path) - 1)
-  else
-    Result := Path;
-end;
-
-function GetEnvironmentVariable(const Name: string): string;
-var
-  Len: Integer;
-begin
-  SetLength(Result, 8 * 1024);
-  Len := Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result));
-  if Len > Length(Result) then
-  begin
-    SetLength(Result, Len);
-    Len := Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result));
-  end;
-  SetLength(Result, Len);
-end;
-{$ENDIF COMPIELR5}
 
 procedure ConvertPathList(const Paths: string; List: TStrings); overload;
 var
@@ -485,30 +438,6 @@ begin
     Result := ShellExecute(0, 'open', PChar(Cmd), PChar(FileName + '#' + Anchor), nil,
       SW_SHOWNORMAL) > 32;
 end;
-
-{$IFDEF COMPILER5}
-function Supports(const Intf: IInterface; const IID: TGUID): Boolean; overload;
-var
-  TempIntf: IInterface;
-begin
-  Result := Supports(Intf, IID, TempIntf);
-end;
-
-function FileSetReadOnly(const FileName: string; ReadOnly: Boolean): Boolean;
-var
-  Attr: Cardinal;
-begin
-  Result := False;
-  Attr := GetFileAttributes(PChar(FileName));
-  if Attr = $FFFFFFFF then
-    Exit;
-  if ReadOnly then
-    Attr := Attr or FILE_ATTRIBUTE_READONLY
-  else
-    Attr := Attr and not FILE_ATTRIBUTE_READONLY;
-  SetFileAttributes(PChar(FileName), Attr);
-end;
-{$ENDIF COMPILER5}
 
 function IsInArray(const Value: string; const Args: array of string): Integer;
 begin

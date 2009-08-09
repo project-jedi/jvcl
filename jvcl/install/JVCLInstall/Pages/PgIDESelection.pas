@@ -283,7 +283,7 @@ var
   Cmd, Dir: string;
   JCLExitCode: Cardinal;
 begin
-  Version := 5; // find the newest Delphi version
+  Version := 6; // find the newest Delphi version
   Tg := nil;
   // is there a Delphi?
   for i := 0 to Installer.Data.Targets.Count - 1 do

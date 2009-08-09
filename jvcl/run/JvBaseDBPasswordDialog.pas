@@ -114,11 +114,8 @@ const
 
 implementation
 
-uses Sysutils,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  ExtCtrls, ComCtrls, StdCtrls, JvResources, JvdsADialogs,
+uses 
+  Sysutils, Types, ExtCtrls, ComCtrls, StdCtrls, JvResources, JvdsADialogs,
   Dialogs;
 
 

@@ -226,24 +226,11 @@ type
       ReadData: TReaderProc; WriteData: TWriterProc;
       HasData: Boolean); override;
   protected
-    {$IFDEF COMPILER5}
-    procedure ReadWinControlDesignSize(Reader: TReader);
-    {$ENDIF COMPILER5}
     {$IFNDEF COMPILER10_UP}
     procedure ReadControlExplicitProp(Reader: TReader);
     {$ENDIF ~COMPILER10_UP}
     procedure DefineProperties(Filer: TFiler);
   end;
-
-{$IFDEF COMPILER5}
-procedure TMissingPropertyFix.ReadWinControlDesignSize(Reader: TReader);
-begin
-  Reader.ReadListBegin;
-  Reader.ReadInteger;
-  Reader.ReadInteger;
-  Reader.ReadListEnd;
-end;
-{$ENDIF COMPILER5}
 
 {$IFNDEF COMPILER10_UP}
 procedure TMissingPropertyFix.ReadControlExplicitProp(Reader: TReader);
@@ -254,10 +241,6 @@ end;
 
 procedure TMissingPropertyFix.DefineProperties(Filer: TFiler);
 begin
-  {$IFDEF COMPILER5}
-  if Root is TWinControl then
-    Filer.DefineProperty('DesignSize', ReadWinControlDesignSize, nil, False);
-  {$ENDIF COMPILER5}
   {$IFNDEF COMPILER10_UP}
   if Root is TControl then
   begin
@@ -312,13 +295,9 @@ end;
 
 procedure ReplaceDefineProperty;
 begin
-  {$IFDEF COMPILER6_UP}
   {$WARNINGS OFF}
-  {$ENDIF COMPILER6_UP}
   ReplaceVmtField(PVmt(TReader), vmtNewInstance, @NewInstanceHook);
-  {$IFDEF COMPILER6_UP}
   {$WARNINGS ON}
-  {$ENDIF COMPILER6_UP}
 end;
 
 {$ENDIF ~COMPILER10_UP}

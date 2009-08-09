@@ -91,7 +91,7 @@ const
 implementation
 
 uses
-  JvJVCLUtils, JvVCL5Utils;
+  JvJVCLUtils;
 
 type
   TRegisterShellHookWindowFunc = function(THandle: HWND): BOOL; stdcall;

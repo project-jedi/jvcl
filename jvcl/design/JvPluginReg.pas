@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   ToolsAPI,
   JvDsgnConsts,
   JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;

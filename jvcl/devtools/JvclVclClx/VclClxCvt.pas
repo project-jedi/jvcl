@@ -158,7 +158,7 @@ type
       { Directory where the generated file should be stored. }
 
     property ReduceConditions: Boolean read FReduceConditions write FReduceConditions default True;
-      { Removes VCL,COMPILER5,COMPILER6,BCB5,BCB6,BCB condition content and
+      { Removes VCL,COMPILER6,BCB6,BCB condition content and
         VisualCLX conditions. If False If False the ($I jvcl.inc) is replaced by
         ($I qjvcl.inc) }
     property KeepLines: Boolean read FKeepLines write FKeepLines default True;

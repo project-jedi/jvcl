@@ -37,15 +37,7 @@ uses
 
 { JclStrings emulation }
 const
-  {$IFDEF COMPILER6_UP}
   DirDelimiter = PathDelim;
-  {$ELSE}
-  DirDelimiter = '\';
-  {$ENDIF MSWINDOWS}
-
-{$IFDEF COMPILER5}
-function SameText(const S1, S2: string): Boolean;
-{$ENDIF COMPILER5}
 
 procedure StrToStrings(S: string; const Sep: AnsiString; const List: TStrings; const AllowEmptyString: Boolean = True);
 function StringsToStr(const List: TStrings; const Sep: AnsiString; const AllowEmptyString: Boolean = True): AnsiString;
@@ -56,10 +48,6 @@ function StrPrefixIndex(const S: AnsiString; const Prefixes: array of string): I
 function StrHasPrefix(const S: AnsiString; const Prefixes: array of string): Boolean;
 
 
-{$IFDEF COMPILER5}
-type
-  TReplaceFlags = set of (rfReplaceAll, rfIgnoreCase);
-{$ENDIF COMPIELR5}
 procedure StrReplace(var S: AnsiString; const Search, Replace: AnsiString; Flags: TReplaceFlags = []);
 
 
@@ -78,13 +66,6 @@ function FileTimeToDateTime(const FileTime: TFileTime): TDateTime;
 function Iff(const Condition: Boolean; const TruePart, FalsePart: string): string; overload;
 
 implementation
-
-{$IFDEF COMPILER5}
-function SameText(const S1, S2: string): Boolean;
-begin
-  Result := CompareText(S1, S2) = 0;
-end;
-{$ENDIF COMPILER5}
 
 { JclStrings emulation }
 

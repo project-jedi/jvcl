@@ -155,7 +155,6 @@ implementation
 
 uses
   ShlObj, SysUtils, Forms,
-  JvVCL5Utils,
   JvJCLUtils,
   JvWndProcHook, JvJVCLUtils;
 

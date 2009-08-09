@@ -31,11 +31,7 @@ interface
 
 uses
   Classes, SysUtils, DB, DBTables,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  LibIntf, DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDBEditors, JvBDESecurity;
 
 type

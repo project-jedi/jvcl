@@ -32,9 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, JvExComCtrls, JvComCtrls, ExtCtrls, JvExControls,
   JvInspector, StdCtrls, JvExStdCtrls, JvListBox, JvPropertyStore,
@@ -185,9 +183,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   JvResources,
   TypInfo, JvDynControlEngine, JvJVCLUtils;
 

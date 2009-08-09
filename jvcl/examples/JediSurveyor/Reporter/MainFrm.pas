@@ -32,7 +32,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, StdActns, ActnList, Menus, ExtCtrls, ComCtrls, JvStatusBar,
   JvComCtrls, JvSurveyIntf, JvDialogs, StdCtrls, JvListView, HTTPApp,
-  JvComponent, JvImageSquare {$IFDEF COMPILER6_UP}, HTTPProd, JvExComCtrls{$ENDIF};
+  JvComponent, JvImageSquare, HTTPProd, JvExComCtrls;
 
 type
   TfrmMain = class(TForm)

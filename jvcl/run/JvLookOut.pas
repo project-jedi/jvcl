@@ -588,10 +588,8 @@ type
     procedure SetChecked(Value: Boolean); override;
     function IsImageIndexLinked: Boolean; override;
     procedure SetImageIndex(Value: Integer); override;
-    {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-    {$ENDIF COMPILER6_UP}
   end;
 
   TJvLookOutButtonActionLinkClass = class of TJvLookOutButtonActionLink;
@@ -627,7 +625,6 @@ begin
 
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJvLookOutButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := inherited IsGroupIndexLinked and
@@ -639,7 +636,6 @@ begin
   if IsGroupIndexLinked then
     FClient.GroupIndex := Value;
 end;
-{$ENDIF COMPILER6_UP}
 
 //=== { TJvUpArrowBtn } ======================================================
 

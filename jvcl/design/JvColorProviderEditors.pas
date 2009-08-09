@@ -31,11 +31,7 @@ unit JvColorProviderEditors;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   Classes,
   JvColorProvider, JvDataProviderEditors;
 

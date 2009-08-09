@@ -104,10 +104,6 @@ implementation
 
 uses
   Messages,
-  {$IFDEF COMPILER5}
-  Forms, // Application.HandleException
-  {$ENDIF COMPILER5}
-  JvVCL5Utils,
   JvJCLUtils;
 
 type
@@ -242,12 +238,8 @@ begin
     if Assigned(FOnTimer) then
       FOnTimer(Self);
   except
-    {$IFDEF COMPILER6_UP}
     if Assigned(ApplicationHandleException) then
       ApplicationHandleException(Self);
-    {$ELSE}
-    Application.HandleException(Self);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

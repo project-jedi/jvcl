@@ -38,7 +38,7 @@ uses
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
   JclBase,
-  JvTypes, JvWndProcHook, JVCLVer, JvVCL5Utils;
+  JvTypes, JvWndProcHook, JVCLVer;
 
 const
   // custom painter constants
@@ -753,10 +753,7 @@ const
 implementation
 
 uses
-  CommCtrl, Consts, Math,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  CommCtrl, Consts, Math, Types,
   {$IFNDEF COMPILER7_UP}
   JvWin32,
   {$ENDIF ~COMPILER7_UP}

@@ -165,8 +165,7 @@ const
 implementation
 
 uses
-  JvVCL5Utils, JvResources,
-  JvgUtils;
+  JvResources, JvgUtils;
 
 const
   ORDINAL_TYPES = [tkInteger, tkChar, tkEnumeration, tkSet];

@@ -39,7 +39,6 @@ uses
   JVCLVer, JvExComCtrls;
 
 type
-  {$IFDEF COMPILER6_UP}
   TJvStatusPanel = class(TStatusPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -59,14 +58,6 @@ type
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 3;
     property MarginTop: Integer read FMarginTop write SetMarginTop default 3;
   end;
-  {$ELSE}
-  TJvStatusPanel = class(TStatusPanel)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-  end;
-  {$ENDIF COMPILER6_UP}
 
   TJvStatusBar = class(TJvExStatusBar)
   private
@@ -76,12 +67,10 @@ type
   protected
     procedure BoundsChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
-    {$IFDEF COMPILER6_UP}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MovePanelControls;
     function GetPanelClass: TStatusPanelClass;  override;
     procedure SBSetParts(var msg: TMessage); message SB_SETPARTS;
-    {$ENDIF COMPILER6_UP}
   public
     constructor Create(AOwner: TComponent); override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
@@ -123,9 +112,7 @@ procedure TJvStatusBar.BoundsChanged;
 begin
   inherited BoundsChanged;
   Realign;
-  {$IFDEF COMPILER6_UP}
   MovePanelControls;
-  {$ENDIF COMPILER6_UP}
 end;
 
 
@@ -217,8 +204,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
-
 procedure TJvStatusBar.Notification(AComponent: TComponent; Operation: TOperation);
 var
   I: Integer;
@@ -259,11 +244,7 @@ begin
   MovePanelControls;
 end;
 
-{$ENDIF COMPILER6_UP}
-
 //=== { TJvStatusPanel } =====================================================
-
-{$IFDEF COMPILER6_UP}
 
 type
   TStatusPanelsAccessProtected = class(TStatusPanels);
@@ -323,8 +304,6 @@ begin
     Changed(False);
   end;
 end;
-
-{$ENDIF COMPILER6_UP}
 
 {$IFDEF UNITVERSIONING}
 initialization

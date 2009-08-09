@@ -57,7 +57,7 @@ uses
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
 
-  JvJCLUtils, JvVCL5Utils, JvThemes, JvComponent, JvExButtons;
+  JvJCLUtils, JvThemes, JvComponent, JvExButtons;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -444,12 +444,8 @@ type
     property Font;
     property Height;
     property HelpContext;
-    //PRY 2002.06.04
-    {$IFDEF COMPILER6_UP}
     property HelpKeyword;
     property HelpType;
-    {$ENDIF COMPILER6_UP}
-    // PRY END
     property Hint;
     property ParentFont;
     property ParentShowHint;
@@ -905,7 +901,7 @@ begin
     FOnClick(Self)
   else
   if (GetOutlookBar <> nil) and (FActionLink <> nil) and not (csDesigning in GetOutlookBar.ComponentState) then
-    FActionLink.Execute{$IFDEF COMPILER6_UP}(GetOutlookBar){$ENDIF COMPILER6_UP}
+    FActionLink.Execute(GetOutlookBar)
   else
   if Assigned(FOnClick) then
     FOnClick(Self);

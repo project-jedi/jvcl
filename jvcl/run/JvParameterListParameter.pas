@@ -33,10 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
-  Controls, FileCtrl, Dialogs, ComCtrls, Buttons,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  Controls, FileCtrl, Dialogs, ComCtrls, Buttons, Variants,
   JvPanel, JvPropertyStore, JvParameterList, JvDynControlEngine, JvDSADialogs,
   JvDynControlEngineIntf;
 

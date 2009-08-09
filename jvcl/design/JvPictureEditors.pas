@@ -31,11 +31,7 @@ interface
 
 uses
   Windows, Messages, Classes, Graphics, Forms, Controls, Dialogs, Menus,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvPictureEditForm;
 
 type
@@ -59,11 +55,7 @@ type
 
   TJvGraphicsEditor = class(TDefaultEditor)
   public
-    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-    {$ELSE}
-    procedure EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-    {$ENDIF COMPILER6_UP}
   end;
 
   TJvPictEditor = class(TComponent)
@@ -214,11 +206,7 @@ end;
 
 //=== { TJvGraphicsEditor } ==================================================
 
-{$IFDEF COMPILER6_UP}
 procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
-{$ELSE}
-procedure TJvGraphicsEditor.EditProperty(Prop: TPropertyEditor; var Continue, FreeEditor: Boolean);
-{$ENDIF COMPILER6_UP}
 var
   PropName: string;
 begin

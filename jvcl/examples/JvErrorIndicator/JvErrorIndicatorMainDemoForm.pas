@@ -41,12 +41,6 @@ type
   private
     FErrorMessage: WideString;
     FErrorIndicator: IJvErrorIndicator;
-    {$IFNDEF COMPILER6_UP}
-    // D5 and below doesn't support interface properties, so we fake out with a TComponent property
-    // and instead check the supported interfaces in the setErrorIndicatorComp
-    FErrorIndicatorComp: TComponent;
-    procedure setErrorIndicatorComp(const Value: TComponent);
-    {$ENDIF}
     { IJvErrorIndicatorClient}
     procedure UpdateProvider;
     procedure ClearProvider;
@@ -60,11 +54,7 @@ type
   public
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   published
-    {$IFDEF COMPILER6_UP}
     property ErrorIndicator: IJvErrorIndicator read getErrorIndicator write setErrorIndicator;
-    {$ELSE}
-    property ErrorIndicator: TComponent read FErrorIndicatorComp write setErrorIndicatorComp;
-    {$ENDIF}
     property ErrorMessage: WideString read getErrorMessage write setErrorMessage;
   end;
 
@@ -244,13 +234,8 @@ begin
   inherited;
   if Operation = opRemove then
   begin
-    {$IFDEF COMPILER6_UP}
     if (Assigned(ErrorIndicator)) and (AComponent.IsImplementorOf(ErrorIndicator)) then
       ErrorIndicator := nil;
-    {$ELSE}
-    if AComponent = ErrorIndicator then
-      ErrorIndicator := nil;
-    {$ENDIF}
   end;
 end;
 
@@ -270,41 +255,11 @@ end;
 procedure TJvErrorClientEdit.setErrorIndicator(const Value: IJvErrorIndicator);
 begin
   ClearProvider;
-  {$IFDEF COMPILER6_UP}
   ReferenceInterface(FErrorIndicator, opRemove);
   FErrorIndicator := Value;
   ReferenceInterface(FErrorIndicator, opInsert);
-  {$ELSE}
-  FErrorIndicator := Value;
-  {$ENDIF}
   UpdateProvider;
 end;
-
-{$IFNDEF COMPILER6_UP}
-
-procedure TJvErrorClientEdit.setErrorIndicatorComp(const Value: TComponent);
-var
-  obj: IJvErrorIndicator;
-begin
-  if FErrorIndicatorComp <> Value then
-  begin
-    if FErrorIndicatorComp <> nil then
-      FErrorIndicatorComp.RemoveFreeNotification(Self);
-    if Value = nil then
-    begin
-      FErrorIndicatorComp := nil;
-      setErrorIndicator(nil);
-      Exit;
-    end;
-    if not Supports(Value, IJvErrorIndicator, obj) then
-      Exception.CreateFmt('%s does not support the IJvErrorIndicator interface', [Value.Name]);
-    FErrorIndicatorComp := Value;
-    setErrorIndicator(obj);
-    if FErrorIndicatorComp <> nil then
-      FErrorIndicatorComp.FreeNotification(Self);
-  end;
-end;
-{$ENDIF}
 
 procedure TJvErrorClientEdit.UpdateProvider;
 begin

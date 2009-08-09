@@ -36,10 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Classes, Graphics, Controls, StdCtrls, DB, DBCtrls,
+  Variants, Classes, Graphics, Controls, StdCtrls, DB, DBCtrls,
   JvExStdCtrls, JvDBUtils, JvCombobox;
 
 type
@@ -60,9 +57,7 @@ type
   TJvDBComboBoxListSettings = class(TPersistent)
   private
     FListDataLink: TJvDBComboBoxListDataLink;
-    {$IFDEF COMPILER6_UP}
     FFilter: string;
-    {$ENDIF COMPILER6_UP}
     FKeyField: string;
     FDisplayField: string;
     FOnFilter: TJvComboBoxFilterEvent;
@@ -70,9 +65,7 @@ type
     FOutfilteredValueFont: TFont;
     FComboBox: TJvCustomDBComboBox;
     procedure SetDataSource(const Value: TDataSource);
-    {$IFDEF COMPILER6_UP}
     procedure SetFilter(const Value: string);
-    {$ENDIF COMPILER6_UP}
     function GetDataSource: TDataSource;
     procedure SetDisplayField(const Value: string);
     procedure SetKeyField(const Value: string);
@@ -97,10 +90,8 @@ type
     { OutfilteredValueFont: The font that is used to paint the out-filtered value/item. }
     property OutfilteredValueFont: TFont read FOutfilteredValueFont write SetOutfilteredValueFont;
 
-    {$IFDEF COMPILER6_UP}
     { Filter: Is used to filter the dataset. It is compatible to the TClientDataSet.Filter }
     property Filter: string read FFilter write SetFilter;
-    {$ENDIF COMPILER6_UP}
     { KeyField: The field that is used for the ComboBox.Values list. }
     property KeyField: string read FKeyField write SetKeyField;
     { DisplayField: The field that is used for the ComboBox.Items list. }
@@ -136,9 +127,6 @@ type
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetEditReadOnly;
-    {$IFDEF COMPILER5}
-    procedure SetItems(const Value: TStrings);
-    {$ENDIF COMPILER5}
     procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     function GetComboText: string;
@@ -168,9 +156,7 @@ type
     procedure SetStyle(Value: TComboBoxStyle); override;
     function FilterAccepted: Boolean; virtual;
 
-    {$IFDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings); override;
-    {$ENDIF COMPILER6_UP}
     procedure WndProc(var Msg: TMessage); override;
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default False;
     property ComboText: string read GetComboText write SetComboText;
@@ -201,12 +187,10 @@ type
     property AutoSize;
     property Style default csDropDownList; { must be published before Items }
     property BeepOnError;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property Color;
     property DataField;
     property DataSource;
@@ -272,18 +256,12 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
   VDBConsts,
-  {$ELSE}
-  DBConsts,
-  {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
   SysUtils,
-  {$IFDEF COMPILER6_UP}
   JvDBFilterExpr,
-  {$ENDIF COMPILER6_UP}
   JvConsts;
 
 type
@@ -735,12 +713,7 @@ end;
 
 procedure TJvCustomDBComboBox.SetItems(const Value: TStrings);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited SetItems(Value);
-  {$ELSE}
-  { TODO : (rb) This was incorrectly // Can't test }
-  Items.Assign(Value);
-  {$ENDIF COMPILER6_UP}
   DataChange(Self);
 end;
 
@@ -815,9 +788,7 @@ end;
 procedure TJvCustomDBComboBox.UpdateDropDownItems;
 var
   Bookmark: TBookmark;
-  {$IFDEF COMPILER6_UP}
   FilterExpr: TJvDBFilterExpression;
-  {$ENDIF COMPILER6_UP}
   LKeyField, LDisplayField: TField;
   DataSet: TDataSet;
 begin
@@ -844,19 +815,15 @@ begin
         try
           Bookmark := DataSet.GetBookmark;
           try
-            {$IFDEF COMPILER6_UP}
             FilterExpr := nil;
             if ListSettings.Filter <> '' then
               FilterExpr := TJvDBFilterExpression.Create(DataSet, ListSettings.Filter, []);
-            {$ENDIF COMPILER6_UP}
             try
               DataSet.First;
               while not DataSet.Eof do
               begin
                 if FilterAccepted
-                   {$IFDEF COMPILER6_UP}
                    and ((FilterExpr = nil) or FilterExpr.Evaluate) 
-                   {$ENDIF COMPILER6_UP}
                    then
                 begin
                   Items.Add(LDisplayField.AsString);
@@ -865,9 +832,7 @@ begin
                 DataSet.Next;
               end;
             finally
-              {$IFDEF COMPILER6_UP}
               FilterExpr.Free;
-              {$ENDIF COMPILER6_UP}
             end;
           finally
             if Bookmark <> nil then
@@ -941,9 +906,7 @@ begin
     Src := TJvDBComboBoxListSettings(Source);
     FShowOutfilteredValue := Src.FShowOutfilteredValue;
     FOutfilteredValueFont.Assign(Src.FOutfilteredValueFont);
-    {$IFDEF COMPILER6_UP}
     FFilter := Src.FFilter;
-    {$ENDIF COMPILER6_UP}
     FKeyField := Src.FKeyField;
     FDisplayField := Src.FDisplayField;
     SetDataSource(Src.DataSource);
@@ -988,7 +951,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvDBComboBoxListSettings.SetFilter(const Value: string);
 begin
   if Value <> FFilter then
@@ -998,7 +960,6 @@ begin
     ComboBox.DataChange(Self);
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvDBComboBoxListSettings.SetKeyField(const Value: string);
 begin

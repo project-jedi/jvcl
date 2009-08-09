@@ -264,21 +264,10 @@ type
 procedure ConvertPathList(const Paths: string; List: TStrings); overload;
 function ConvertPathList(List: TStrings): string; overload;
 
-{$IFDEF COMPILER5}
-const
-  PathDelim = '\';
-
-function AnsiStartsText(const SubStr, Text: string): Boolean;
-function ExcludeTrailingPathDelimiter(const Path: string): string;
-function GetEnvironmentVariable(const Name: string): string;
-{$ENDIF COMPILER5}
-
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
   StrUtils,
-  {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
@@ -292,27 +281,6 @@ begin
   if (Length(Result) > 1) and (Result[1] = '"') and (Result[Length(Result)] = '"') then
     Result := Copy(Result, 2, Length(Result) - 2);
 end;
-
-{$IFDEF COMPILER5}
-function AnsiStartsText(const SubStr, Text: string): Boolean;
-begin
-  Result := AnsiStrLIComp(PChar(SubStr), PChar(Text), Length(SubStr)) = 0;
-end;
-
-function ExcludeTrailingPathDelimiter(const Path: string): string;
-begin
-  if (Path <> '') and (Path[Length(Path)] = '\') then // Delphi 5 only knows Windows
-    Result := Copy(Path, 1, Length(Path) - 1)
-  else
-    Result := Path;
-end;
-
-function GetEnvironmentVariable(const Name: string): string;
-begin
-  SetLength(Result, 8 * 1024);
-  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), Length(Result)));
-end;
-{$ENDIF COMPILER5}
 
 const
   KeyBorland = '\SOFTWARE\Borland\'; // do not localize
@@ -460,13 +428,17 @@ begin
           if (KeyName <> '') and CharInSet(KeyName[1], ['1'..'9']) then // only version numbers (not "BDS\DBExpress")
             if (SubKey <> 'BDS') or IsBDSSupported(KeyName) then // do not localize
             begin
-              if HKCUReg.KeyExists(RootKey + HKCUSubKey + '\' + KeyName) then
+              // Any Delphi under Delphi 6 is not supported
+              if not ((SubKey <> 'BDS') and (KeyName[1] <= '5')) then
               begin
-                Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey);
-                if Target.IsValid then // only valid targets are allowed
-                  Add(Target)
-                else
-                  Target.Free;
+                if HKCUReg.KeyExists(RootKey + HKCUSubKey + '\' + KeyName) then
+                begin
+                  Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey);
+                  if Target.IsValid then // only valid targets are allowed
+                    Add(Target)
+                  else
+                    Target.Free;
+                end;
               end;
             end;
         end;
@@ -996,10 +968,7 @@ begin
     FIsPersonal := False;}
   FIsPersonal := not FileExists(VersionedIDEBPL(RootDir + '\bin\dcldb.bpl'));
   if FIsPersonal then
-    if Version = 5 then
-      FEdition := 'Standard'
-    else
-      FEdition := 'Personal';
+    FEdition := 'Personal';
 
 
   if FProductVersion = '' then

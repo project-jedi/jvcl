@@ -32,11 +32,7 @@ interface
 
 uses
   Windows, Dlgs, SysUtils, Classes, Dialogs,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvPerfMon95;
 
 type

@@ -33,10 +33,7 @@ WARNINGHEADER
 interface
 
 uses
-  Windows, Messages, Graphics, Controls, Forms, ToolWin,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Graphics, Controls, Forms, ToolWin, Types,
   Classes, SysUtils,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,

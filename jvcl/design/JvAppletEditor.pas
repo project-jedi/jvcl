@@ -32,11 +32,7 @@ interface
 
 uses
   Windows, Classes, Controls, Forms, Dialogs,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvWinDialogs;
 
 type
@@ -60,9 +56,6 @@ implementation
 uses
   SysUtils,
   JclSysInfo,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
   JvJCLUtils, JvJVCLUtils;
 
 var

@@ -79,10 +79,9 @@ var
   frmMain: TfrmMain;
 
 implementation
-{$IFDEF COMPILER6_UP}
+
 uses
   Variants;
-{$ENDIF}
 
 {$R *.DFM}
 

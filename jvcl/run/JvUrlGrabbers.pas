@@ -329,7 +329,6 @@ implementation
 
 uses
   WinInet,
-  JvVCL5Utils,
   JvResources;
 
 const

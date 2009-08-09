@@ -19,9 +19,7 @@ uses
   {$IFDEF LINUX}
   Libc, QGraphics, QImgList, QActnList,
   {$ENDIF}
-  {$IFDEF COMPILER6_UP}
   Types,
-  {$ENDIF COMPILER6_UP}
   SysUtils, Classes, TypInfo;
 
 const
@@ -607,10 +605,8 @@ begin
     ntRequiresPackage:
       Package.FRequires.Add(Name);
 
-    {$IFDEF COMPILER6_UP}
     ntDcpBpiName:
       Package.FDcpBpiName := Name;
-    {$ENDIF COMPILER6_UP}
 
     ntContainsUnit:
       begin

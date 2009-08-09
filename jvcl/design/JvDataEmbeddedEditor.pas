@@ -31,11 +31,7 @@ interface
 
 uses
   SysUtils, Classes, Dialogs,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDataEmbedded;
 
 type
@@ -47,9 +43,7 @@ type
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
-    {$IFDEF COMPILER6_UP}
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
-    {$ENDIF COMPILER6_UP}
   end;
 
 implementation
@@ -114,7 +108,6 @@ begin
   Result := 3;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvDataEmbeddedEditor.PrepareItem(Index: Integer; const AItem: IMenuItem);
 begin
   inherited PrepareItem(Index, AItem);
@@ -123,7 +116,6 @@ begin
     AItem.Enabled := (Component as TJvDataEmbedded).Data.Size > 0;
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvDataEmbeddedEditor.ViewAsText;
 var

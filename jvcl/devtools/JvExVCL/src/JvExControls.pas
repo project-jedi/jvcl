@@ -33,14 +33,8 @@ WARNINGHEADER
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER5}
-  JvConsts, JvVCL5Utils,
-  {$ENDIF COMPILER5}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -90,10 +84,6 @@ function DlgcToDlgCodes(Value: Longint): TDlgCodes;
 function DlgCodesToDlgc(Value: TDlgCodes): Longint;
 procedure GetHintColor(var HintInfo: THintInfo; AControl: TControl; HintColor: TColor);
 function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage): Boolean;
-
-{$IFDEF COMPILER5}
-procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
-{$ENDIF COMPILER5}
 
 type
   CONTROL_DECL_DEFAULT(Control)
@@ -331,63 +321,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
-
-{ Delphi 5's SetAutoSize is private and not virtual. This code installs a
-  JUMP-Hook into SetAutoSize that jumps to our function. }
-var
-  AutoSizeOffset: Cardinal;
-  TControl_SetAutoSize: Pointer;
-
-type
-  PBoolean = ^Boolean;
-  TControlAccessProtected = class(TControl)
-  published
-    property AutoSize;
-  end;
-
-procedure OrgSetAutoSize(AControl: TControl; Value: Boolean);
-asm
-        DD    0, 0, 0, 0  // 16 Bytes
-end;
-
-procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
-begin
-  // same as OrgSetAutoSize(AControl, Value); but secure
-  with TControlAccessProtected(AControl) do
-    if AutoSize <> Value then
-    begin
-      PBoolean(Cardinal(AControl) + AutoSizeOffset)^ := Value;
-      if Value then
-        AdjustSize;
-    end;
-end;
-
-procedure SetAutoSizeHook(AControl: TControl; Value: Boolean);
-var
-  Msg: TMessage;
-begin
-  if AControl.GetInterfaceEntry(IJvExControl) <> nil then
-  begin
-    Msg.Msg := CM_SETAUTOSIZE;
-    Msg.WParam := Ord(Value);
-    AControl.Dispatch(Msg);
-  end
-  else
-    TOpenControl_SetAutoSize(AControl, Value);
-end;
-
-procedure InitHookVars;
-var
-  Info: PPropInfo;
-begin
-  Info := GetPropInfo(TControlAccessProtected, 'AutoSize');
-  AutoSizeOffset := Integer(Info.GetProc) and $00FFFFFF;
-  TControl_SetAutoSize := Info.SetProc;
-end;
-
-{$ENDIF COMPILER5}
-
 CONTROL_IMPL_DEFAULT(Control)
 
 WINCONTROL_IMPL_DEFAULT(WinControl)
@@ -402,15 +335,8 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  InitHookVars;
-  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
-  {$ENDIF COMPILER5}
 
 finalization
-  {$IFDEF COMPILER5}
-  UninstallProcHook(@OrgSetAutoSize);
-  {$ENDIF COMPILER5}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

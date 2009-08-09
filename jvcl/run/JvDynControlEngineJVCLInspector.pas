@@ -104,10 +104,7 @@ const
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils, Variants,
   JvDynControlEngineTools, JvDynControlEngineVCL, JvJCLUtils;
 
 

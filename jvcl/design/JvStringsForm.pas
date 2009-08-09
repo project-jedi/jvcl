@@ -34,11 +34,7 @@ interface
 
 uses
   Classes, Windows, Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvComponent;
 
 type

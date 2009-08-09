@@ -32,11 +32,7 @@ uses
   SysUtils, Classes,
   Windows,  Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, Mask, Consts,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, VCLEditors, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvFormPlacement, JvComponent;
 
 type

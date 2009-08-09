@@ -32,11 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, DB, StdCtrls,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnTypes;
 
 type
@@ -81,11 +77,7 @@ begin
         if DataSetList.ItemIndex >= 0 then
         begin
           with DataSetList do
-            {$IFDEF COMPILER6_UP}
             Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet;
-            {$ELSE}
-            Result := FDesigner.Form.FindComponent(Items[ItemIndex]) as TDataSet;
-            {$ENDIF COMPILER6_UP}
         end;
     finally
       Free;
@@ -101,11 +93,6 @@ begin
 end;
 
 procedure TJvSelectDataSetForm.FillDataSetList(ExcludeDataSet: TDataSet);
-{$IFDEF COMPILER5}
-var
-  I: Integer;
-  Component: TComponent;
-{$ENDIF COMPILER5}
 begin
   DataSetList.Items.BeginUpdate;
   try
@@ -113,16 +100,7 @@ begin
     FExclude := '';
     if ExcludeDataSet <> nil then
       FExclude := ExcludeDataSet.Name;
-    {$IFDEF COMPILER5}
-    for I := 0 to FDesigner.Form.ComponentCount - 1 do
-    begin
-      Component := FDesigner.Form.Components[I];
-      if (Component is TDataSet) and (Component <> ExcludeDataSet) then
-        AddDataSet(Component.Name);
-    end;
-    {$ELSE}
     FDesigner.GetComponentNames(GetTypeData(TypeInfo(TDataSet)), AddDataSet);
-    {$ENDIF COMPILER5}
     with DataSetList do
     begin
       if Items.Count > 0 then

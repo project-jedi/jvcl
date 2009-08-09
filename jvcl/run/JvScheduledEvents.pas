@@ -241,14 +241,6 @@ type
       const Hrs: Word = 0; const Days: Word = 0);
     procedure Start;
     procedure Stop;
-    // Persisting schedules: deprecated as of 2002/11/30
-    // (rom) deleted for JVCL 2.1
-    (*
-    procedure LoadFromStreamBin(const S: TStream);
-      {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-    procedure SaveToStreamBin(const S: TStream);
-      {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-    *)
     property Data: Pointer read FData write FData;
     property LastSnoozeInterval: TSystemTime read FLastSnoozeInterval;
     property NextFire: TTimeStamp read GetNextFire;
@@ -835,12 +827,8 @@ begin
       DoEndEvent(TJvEventCollectionItem(WParam));
       Result := 1;
     except
-      {$IFDEF COMPILER6_UP}
       if Assigned(ApplicationHandleException) then
         ApplicationHandleException(Self);
-      {$ELSE}
-      Application.HandleException(Self);
-      {$ENDIF COMPILER6_UP}
     end
 end;
 

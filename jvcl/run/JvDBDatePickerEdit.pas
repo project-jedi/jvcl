@@ -141,12 +141,10 @@ type
     // property MaxYear default 2900;
     // property MinYear default 1900;
     property AllowPopupBrowsing;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     {property BiDiMode;}
     property Flat;
     {property ParentBiDiMode;}
@@ -215,10 +213,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils;
+  Variants, SysUtils;
 
 //=== { TJvCustomDBDatePickerEdit } ==========================================
 

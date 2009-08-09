@@ -77,11 +77,7 @@ type
     property ProviderComp: TComponent read GetProviderComp write SetProviderComp;
     property ProviderIntf: IJvDataProvider read GetProviderIntf write SetProviderIntf;
   published
-    {$IFDEF COMPILER6_UP}
     property Provider: IJvDataProvider read GetProviderIntf write SetProviderIntf;
-    {$ELSE}
-    property Provider: TComponent read GetProviderComp write SetProviderComp;
-    {$ENDIF COMPILER6_UP}
   end;
 
   TJvContextProviderServerNotify = class(TJvDataConsumerServerNotify)

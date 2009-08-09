@@ -158,10 +158,7 @@ const
 implementation
 
 uses
-  Consts,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  Consts, RTLConsts,
   JvJCLUtils, JvJVCLUtils, JvResources;
 
 const

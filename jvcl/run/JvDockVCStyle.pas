@@ -962,7 +962,6 @@ var
 
   procedure DrawExpendBotton(Left, Top: Integer);
   const
-    {$IFDEF COMPILER6_UP}
     ArrowOrient: array [TAlign] of DWORD =
       (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0, 0);
     {$IFDEF JVCLThemesEnabled}
@@ -970,15 +969,6 @@ var
      (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
       tsArrowBtnRightNormal, tsScrollBarDontCare, tsScrollBarDontCare);
     {$ENDIF JVCLThemesEnabled}
-    {$ELSE}
-    ArrowOrient: array [TAlign] of DWORD =
-      (0, DFCS_SCROLLUP, DFCS_SCROLLDOWN, DFCS_SCROLLLEFT, DFCS_SCROLLRIGHT, 0);
-    {$IFDEF JVCLThemesEnabled}
-    ArrowOrientTheme: array [TAlign] of TThemedScrollBar =
-     (tsScrollBarDontCare, tsArrowBtnUpNormal, tsArrowBtnDownNormal, tsArrowBtnLeftNormal,
-      tsArrowBtnRightNormal, tsScrollBarDontCare);
-    {$ENDIF JVCLThemesEnabled}
-    {$ENDIF COMPILER6_UP}
     CurrArrow: array [Boolean, TDockOrientation] of TAlign =
       ((alNone, alLeft, alTop), (alNone, alRight, alBottom));
   var

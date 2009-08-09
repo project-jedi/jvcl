@@ -38,14 +38,8 @@ interface
 uses
   Classes, SysUtils, Windows, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls,
   ActnList, Menus,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvPageList, JvPageListTreeView, JvComponent;
 
 type
@@ -102,8 +96,7 @@ type
 
 procedure ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView);
 begin
-  if TfrmJvTreeViewLinksEditor.Edit(TreeView,
-    {$IFDEF COMPILER6_UP} TreeView.PageList {$ELSE} TreeView.PageListIntf {$ENDIF}) and
+  if TfrmJvTreeViewLinksEditor.Edit(TreeView, TreeView.PageList) and
     (THackTreeView(TreeView).Items.Count > 0) then
     THackTreeView(TreeView).Items.GetFirstNode.Expand(False);
 end;

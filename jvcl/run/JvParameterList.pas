@@ -33,9 +33,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, Windows, Messages,
   StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JvConsts, JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDSADialogs,
   JvComponentBase, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 
@@ -518,29 +516,6 @@ const
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_');
-
-  {$IFNDEF HAS_UNIT_VARIANTS}
-type
-  TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
-
-function VarCompareValue(const V1, V2: Variant): TVariantRelationship;
-begin
-  if VarIsNull(V1) and VarIsNull(V2) then
-    Result := vrEqual
-  else if VarIsNull(V1) or VarIsNull(V2) then
-    Result := vrNotEqual
-  else if VarIsEmpty(V1) and VarIsEmpty(V2) then
-    Result := vrEqual
-  else if VarIsEmpty(V1) or VarIsEmpty(V2) then
-    Result := vrNotEqual
-  else if V1 = V2 then
-    Result := vrEqual
-  else if V1 < V2 then
-    Result := vrLessThan
-  else
-    Result := vrGreaterThan;
-end;
-{$ENDIF !HAS_UNIT_VARIANTS}
 
 //=== { TJvParameterListMessages } ===========================================
 

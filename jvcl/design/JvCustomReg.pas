@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes, ImgList,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   FiltEdit,
   {$IFNDEF COMPILER7_UP}
   ExptIntf,

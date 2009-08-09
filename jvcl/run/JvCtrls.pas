@@ -34,10 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
+  Types, Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
   JvButton;
 
 

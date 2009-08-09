@@ -35,9 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JvInterpreter, SysUtils;
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -648,12 +646,10 @@ begin
     AddConst(cSystem, 'varTypeMask', Ord(varTypeMask));
     AddConst(cSystem, 'varArray', Ord(varArray));
     AddConst(cSystem, 'varByRef', Ord(varByRef));
-    {$IFDEF COMPILER6_UP}
     AddConst(cSystem, 'varShortInt', Ord(varShortInt));
     AddConst(cSystem, 'varWord', Ord(varWord));
     AddConst(cSystem, 'varLongWord', Ord(varLongWord));
     AddConst(cSystem, 'varInt64', Ord(varInt64));
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

@@ -481,12 +481,8 @@ begin
     try
       NotifyClients;
     except
-      {$IFDEF COMPILER6_UP}
       if Assigned(ApplicationHandleException) then
         ApplicationHandleException(Self);
-      {$ELSE}
-      Application.HandleException(Self);
-      {$ENDIF COMPILER6_UP}
     end
     else
       { !! Call DefWindowProc, so messages like WM_QUERYENDSESSION are
