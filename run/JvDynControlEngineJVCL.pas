@@ -799,10 +799,7 @@ const
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils, Variants,
   JvDynControlEngineTools, JvDynControlEngineVCL, JvJCLUtils;
 
 var
@@ -1426,10 +1423,8 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   FDatePicker.Format := Value;
   FTimePicker.Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 //=== { TJvDynControlJVCLDateEdit } ==========================================
@@ -1499,9 +1494,7 @@ end;
 
 procedure TJvDynControlJVCLDateEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 //=== { TJvDynControlJVCLTimeEdit } ==========================================
@@ -1559,9 +1552,7 @@ end;
 
 procedure TJvDynControlJVCLTimeEdit.ControlSetFormat(const Value: string);
 begin
-  {$IFDEF COMPILER6_UP}
   Format := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 //=== { TJvDynControlJVCLCheckBox } ===========================================
@@ -2103,9 +2094,7 @@ end;
 
 procedure TJvDynControlJVCLCheckListBox.ControlSetHeader(Index: Integer; Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   Header[Index] := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlJVCLCheckListBox.ControlSetState(Index: Integer; Value: TCheckBoxState);
@@ -2125,11 +2114,7 @@ end;
 
 function TJvDynControlJVCLCheckListBox.ControlGetHeader(Index: Integer): Boolean;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := Header[Index];
-  {$ELSE}
-  Result := False;
-  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvDynControlJVCLCheckListBox.ControlGetState(Index: Integer): TCheckBoxState;
@@ -2425,9 +2410,7 @@ end;
 
 procedure TJvDynControlJVCLImage.ControlSetProportional(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   Proportional := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvDynControlJVCLImage.ControlSetStretch(Value: Boolean);

@@ -493,7 +493,6 @@ begin
     JvCaptionPanel1.Caption := TheFormArray[ID].Caption;
 
     // check if the form has a MainMenu and plug it in
-    {$IFDEF COMPILER6_UP}
     if TheFormArray[ID].Menu <> nil then
     begin
       TheToolBar := TJvToolBar.Create(TheFormArray[ID]);
@@ -501,7 +500,6 @@ begin
       TheToolBar.Menu := TheFormArray[ID].Menu;
       TheToolBar.Flat := True;
     end;
-    {$ENDIF COMPILER6_UP}
   end;
   //save the last form ID
   FormID := ID;

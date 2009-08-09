@@ -691,11 +691,7 @@ procedure TJvErrorControl.Paint;
 begin
   //  inherited Paint;
   if (Images <> nil) and Visible then
-    {$IFDEF COMPILER6_UP}
     Images.Draw(Canvas, 0, 0, ImageIndex, dsTransparent, itImage);
-    {$ELSE}
-    Images.Draw(Canvas, 0, 0, ImageIndex);
-    {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvErrorControl.SetError(const Value: string);

@@ -30,9 +30,7 @@ unit JvBevel;
 interface
 
 uses
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -161,12 +159,7 @@ const
 implementation
 
 uses
-  SysUtils, TypInfo,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ELSE}
-  Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  SysUtils, TypInfo, RTLConsts,
   JvResources;
 
 type

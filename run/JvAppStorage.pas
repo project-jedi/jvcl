@@ -96,7 +96,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvVCL5Utils, JvComponentBase, JvTypes, JvTranslateString;
+  JvComponentBase, JvTypes, JvTranslateString;
 
 const
   // (rom) this name is shared in several units and should be made global
@@ -656,11 +656,9 @@ type
     function IsPropertyValueCryptEnabled: Boolean;
     function ItemNameIndexPath(const ItemName: string; const Index: Integer):
         string; virtual;
-    {$IFDEF COMPILER6_UP}
     function ReadWideString(const Path: string; const Default: WideString = ''):
         WideString;
     procedure WriteWideString(const Path: string; const Value: WideString);
-    {$ENDIF}
     { Root of any values to be read/written. This value is combined with the path given in one of
       the Read*/Write* methods to determine the actual key used. It's always relative to the value
       of Root (which is an absolute path) }
@@ -964,9 +962,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
   JclFileUtils, JclSysInfo, JclRTTI, JclMime,
   JvPropertyStore, JvConsts, JvResources, JvStrings, JclSynch, JvJVCLUtils;
 
@@ -2604,11 +2600,7 @@ begin
     tkLString, tkString:
       SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
     tkWString:
-      {$IFDEF COMPILER6_UP}
       SetWideStrProp(PersObj, PropName, ReadWideString(Path, GetWideStrProp(PersObj, PropName)));
-      {$ELSE}
-      SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
-      {$ENDIF COMPILER6_UP}
     tkEnumeration:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
@@ -2688,11 +2680,7 @@ var
   var
     Value: WideString;
   begin
-    {$IFDEF COMPILER6_UP}
     Value := GetWideStrProp(PersObj, PropInfo);
-    {$ELSE}
-    Value := GetStrProp(PersObj, PropInfo);
-    {$ENDIF COMPILER6_UP}
     Result := Value = '';
   end;
 
@@ -2735,11 +2723,7 @@ begin
         WriteString(Path, GetStrProp(PersObj, PropName));
     tkWString:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
-        {$IFDEF COMPILER6_UP}
         WriteWideString(Path, GetWideStrProp(PersObj, PropName));
-        {$ELSE}
-        WriteString(Path, GetStrProp(PersObj, PropName));
-        {$ENDIF COMPILER6_UP}
     tkVariant:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
         WriteString(Path, GetVariantProp(PersObj, PropName));
@@ -3156,7 +3140,6 @@ begin
   ReplaceComponentReference (Self, Value, TComponent(FTranslateStringEngine));
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJvCustomAppStorage.ReadWideString(const Path: string;
   const Default: WideString = ''): WideString;
 begin
@@ -3168,7 +3151,6 @@ procedure TJvCustomAppStorage.WriteWideString(const Path: string;
 begin
   DoWriteWideString(Path,Value);
 end;
-{$ENDIF COMPILER6_UP}
 
 //=== { TJvAppStorage } ======================================================
 

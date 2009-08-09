@@ -599,17 +599,14 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, TypInfo,
+  Variants, SysUtils, TypInfo,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
   cxEdit, cxTimeEdit, cxDBLookupComboBox, cxMemo, cxCheckbox,
   cxGridTableView, cxGridCustomView,
   cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-  JvDynControlEngineTools, JvConsts, JvJCLUtils, JvVCL5Utils;
+  JvDynControlEngineTools, JvConsts, JvJCLUtils;
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
@@ -1808,9 +1805,7 @@ end;
 
 procedure TJvDynControlCxDBImage.ControlSetProportional(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   //  Proportional := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 

@@ -71,10 +71,7 @@ uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
   cxExportPivotGridLink,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Dialogs;
+  Variants, SysUtils, Dialogs;
 
 //=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
 

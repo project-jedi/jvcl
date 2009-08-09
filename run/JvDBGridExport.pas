@@ -263,10 +263,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  ComObj, Graphics, Clipbrd,
+  Variants, ComObj, Graphics, Clipbrd,
   JclRegistry,
   JvConsts, JvResources;
 

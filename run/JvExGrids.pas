@@ -39,10 +39,7 @@ unit JvExGrids;
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, Grids,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -50,11 +47,6 @@ uses
   JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
-  {$IFDEF COMPILER5}
-  // Compiler 5 and VisualCLX do not have TEditStyle
-  TEditStyle = (esSimple, esEllipsis, esPickList);
-  {$ENDIF COMPILER5}
-
   TJvExInplaceEdit = class(TInplaceEdit, IJvExControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -83,12 +75,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -151,12 +137,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -191,8 +171,6 @@ type
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
 
-  {$IFDEF COMPILER6_UP}
-
   TJvExCustomDrawGrid = class(TCustomDrawGrid, IJvExControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -221,12 +199,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -289,12 +261,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -339,7 +305,6 @@ type
     property OnEndDock;
     property OnStartDock;
   end;
-  {$ENDIF COMPILER6_UP}
 
   TJvExDrawGrid = class(TDrawGrid, IJvExControl)
   private
@@ -369,12 +334,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -407,10 +366,6 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
-  {$IFDEF COMPILER5}
-  protected
-    function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  {$ENDIF COMPILER5}
   end;
 
   TJvExStringGrid = class(TStringGrid, IJvExControl)
@@ -441,12 +396,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -479,10 +428,6 @@ type
   {$ENDIF JVCLThemesEnabledD56}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
-  {$IFDEF COMPILER5}
-  protected
-    function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
-  {$ENDIF COMPILER5}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -614,22 +559,6 @@ procedure TJvExInplaceEdit.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExInplaceEdit.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExInplaceEdit.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExInplaceEdit.BoundsChanged;
 begin
@@ -932,22 +861,6 @@ begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
 
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExCustomGrid.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExCustomGrid.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
-
 procedure TJvExCustomGrid.BoundsChanged;
 begin
 end;
@@ -1131,8 +1044,6 @@ end;
 
 //============================================================================
 
-{$IFDEF COMPILER6_UP}
-
 constructor TJvExCustomDrawGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1250,22 +1161,6 @@ procedure TJvExCustomDrawGrid.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExCustomDrawGrid.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExCustomDrawGrid.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExCustomDrawGrid.BoundsChanged;
 begin
@@ -1568,22 +1463,6 @@ begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
 
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExInplaceEditList.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExInplaceEditList.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
-
 procedure TJvExInplaceEditList.BoundsChanged;
 begin
 end;
@@ -1767,8 +1646,6 @@ end;
 
 //============================================================================
 
-{$ENDIF COMPILER6_UP}
-
 constructor TJvExDrawGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1886,22 +1763,6 @@ procedure TJvExDrawGrid.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExDrawGrid.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExDrawGrid.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExDrawGrid.BoundsChanged;
 begin
@@ -2086,13 +1947,6 @@ end;
 
 //============================================================================
 
-{$IFDEF COMPILER5}
-function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
-begin
-  Result := esSimple;
-end;
-{$ENDIF COMPILER5}
-
 constructor TJvExStringGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2210,22 +2064,6 @@ procedure TJvExStringGrid.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExStringGrid.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExStringGrid.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExStringGrid.BoundsChanged;
 begin
@@ -2409,13 +2247,6 @@ begin
 end;
 
 //============================================================================
-
-{$IFDEF COMPILER5}
-function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
-begin
-  Result := esSimple;
-end;
-{$ENDIF COMPILER5}
 
 {$IFDEF UNITVERSIONING}
 initialization

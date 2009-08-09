@@ -36,54 +36,14 @@ uses
   Windows, Forms, Controls, Graphics, ExtCtrls, Dialogs,
   ExtDlgs, Menus, StdCtrls, ImgList, Tabs,
   ImgEdit, TypInfo, DsnConst,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   FiltEdit,
-  {$ELSE}
-  LibIntf, DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   Classes, SysUtils;
 
 type
-  // Special TJvPersistent property event editor, that show events along with all other properties
-  // This is only useful with version 5 and before  --created by dejoy
-  {$IFNDEF COMPILER6_UP}
-  TGetPropProc = TGetPropEditProc;
-
-  TJvPersistentNestedElementEventProperty = class(TNestedProperty)
-  private
-    FParent: TPropertyEditor;
-    FPropInfo: PPropInfo;
-    FInstance: TPersistent;
-    function GetPersistentPropertyName: string;
-    function GetInstance: TPersistent;
-  protected
-    constructor Create(Parent: TPropertyEditor; APropInfo: PPropInfo); reintroduce;
-
-    function AllNamed: Boolean; virtual;
-    function GetTrimmedEventName: string;
-    function GetFormMethodName: string; virtual;
-    property Instance: TPersistent read GetInstance;
-  public
-    function AllEqual: Boolean; override;
-    procedure Edit; override;
-    function GetAttributes: TPropertyAttributes; override;
-    function GetName: string; override;
-    function GetValue: string; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const AValue: string); override;
-  end;
-  {$ENDIF COMPILER6_UP}
-
-  {$IFDEF COMPILER6_UP}
   // Special TJvPersistent property editor, that allow show event properties
   // This is useful with version 5 and up --created by dejoy
   TJvPersistentPropertyEditor = class(TComponentProperty)
-  {$ELSE}
-  TJvPersistentPropertyEditor = class(TClassProperty)
-  // Special TJvPersistent property editor, that show events along with all other properties
-  // This is only useful with version 5 and before --created by dejoy
-  {$ENDIF COMPILER6_UP}
   private
     FInstance: TPersistent;
   protected
@@ -132,11 +92,7 @@ type
 
   TJvBasePropertyEditor = class(TDefaultEditor)
   protected
-    {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-    {$ELSE}
-    procedure EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean); override;
-    {$ENDIF COMPILER6_UP}
     function GetEditPropertyName: string; virtual; abstract;
   public
     procedure ExecuteVerb(Index: Integer); override;
@@ -180,8 +136,6 @@ type
     procedure SetValue(const Value: string); override;
   end;
 
-  {$IFDEF COMPILER6_UP}
-
   TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
   protected
     function ImageList: TCustomImageList; virtual;
@@ -201,28 +155,6 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       ASelected: Boolean);
   end;
-
-  {$ENDIF COMPILER6_UP}
-
-  {$IFDEF COMPILER5}
-  TJvDefaultImageIndexProperty = class(TIntegerProperty)
-  protected
-    function ImageList: TCustomImageList; virtual;
-  public
-    function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
-    function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); override;
-    procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); override;
-    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-      ASelected: Boolean); override;
-  end;
-  {$ENDIF COMPILER5}
 
   TJvNosortEnumProperty = class(TEnumProperty)
   public
@@ -320,199 +252,6 @@ begin
     Result := 0;
 end;
 
-{$IFNDEF COMPILER6_UP}
-
-procedure JvPersistentEventProperty_GetProperties(APropertyEditor: TPropertyEditor;
-  AInstance: TPersistent; Proc: TGetPropProc);
-var
-  APropList: TPropList;
-  I, ACount : Integer;
-begin
-  if AInstance = nil then
-    Exit;
-  ACount := GetPropList(AInstance.ClassInfo, [tkMethod], @APropList);
-  for I := 0 to ACount - 1 do
-    Proc(TJvPersistentNestedElementEventProperty.Create(APropertyEditor, APropList[I]));
-end;
-
-//=== { TJvPersistentNestedElementEventProperty } ================================================
-
-function TJvPersistentNestedElementEventProperty.AllEqual: Boolean;
-var
-  I: Integer;
-  V, T: TMethod;
-begin
-  Result := False;
-  if PropCount > 1 then
-  begin
-    V := GetMethodValue;
-    for I := 1 to PropCount - 1 do
-    begin
-      T := GetMethodValueAt(I);
-      if (T.Code <> V.Code) or (T.Data <> V.Data) then Exit;
-    end;
-  end;
-  Result := True;
-end;
-
-function TJvPersistentNestedElementEventProperty.AllNamed: Boolean;
-var
-  I: Integer;
-begin
-  Result := True;
-  for I := 0 to PropCount - 1 do
-    if GetComponent(I).GetNamePath = '' then
-    begin
-      Result := False;
-      Break;
-    end;
-end;
-
-function TJvPersistentNestedElementEventProperty.GetPersistentPropertyName: string;
-begin
-  Result := '';
-  if FParent <> nil then
-    Result := FParent.GetName + Result;
-end;
-
-function TJvPersistentNestedElementEventProperty.GetInstance: TPersistent;
-begin
-  if not Assigned(FInstance) then
-  begin
-    if FParent is TJvPersistentPropertyEditor then
-      FInstance := TJvPersistentPropertyEditor(FParent).Instance;
-  end;
-  Result := FInstance;
-end;
-
-constructor TJvPersistentNestedElementEventProperty.Create(Parent: TPropertyEditor;
-  APropInfo: PPropInfo);
-begin
-  inherited Create(Parent);
-  FPropInfo := APropInfo;
-  FParent := Parent;
-end;
-
-procedure TJvPersistentNestedElementEventProperty.Edit;
-var
-  FormMethodName: string;
-begin
-  FormMethodName := GetValue;
-  if (FormMethodName = '') or
-    Designer.MethodFromAncestor(GetMethodValue) then
-  begin
-    if FormMethodName = '' then
-      FormMethodName := GetFormMethodName;
-    if FormMethodName = '' then
-      raise EPropertyError.Create(SCannotCreateName);
-    SetValue(FormMethodName);
-  end;
-  Designer.ShowMethod(FormMethodName);
-end;
-
-function TJvPersistentNestedElementEventProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paMultiSelect, paValueList, paSortList, paRevertable];
-end;
-
-function TJvPersistentNestedElementEventProperty.GetFormMethodName: string;
-var
-  I: Integer;
-begin
-  if GetComponent(0) = Designer.GetRoot then
-  begin
-    Result := Designer.GetRootClassName;
-    if (Result <> '') and (Result[1] = 'T') then
-      Delete(Result, 1, 1);
-  end
-  else
-  begin
-    Result := Designer.GetObjectName(GetComponent(0));
-
-    for I := Length(Result) downto 1 do
-      if Result[I] in ['.','[',']','-','>'] then
-        Delete(Result, I, 1);
-  end;
-  if Result = '' then
-    raise EPropertyError.CreateRes(@SCannotCreateName);
-
-  Result := Result + GetPersistentPropertyName + GetTrimmedEventName;
-end;
-
-function TJvPersistentNestedElementEventProperty.GetName: string;
-begin
-  Result := FPropInfo.Name;
-end;
-
-function TJvPersistentNestedElementEventProperty.GetTrimmedEventName: string;
-begin
-  Result := GetName;
-  if (Length(Result) >= 2) and
-    (Result[1] in ['O', 'o']) and (Result[2] in ['N', 'n']) then
-    Delete(Result,1,2);
-end;
-
-function TJvPersistentNestedElementEventProperty.GetValue: string;
-begin
-  Result := Designer.GetMethodName(GetMethodProp(Instance, FPropInfo));
-end;
-
-procedure TJvPersistentNestedElementEventProperty.GetValues(Proc: TGetStrProc);
-begin
-  Designer.GetMethods(GetTypeData(FPropInfo.PropType^), Proc);
-end;
-
-procedure TJvPersistentNestedElementEventProperty.SetValue(const AValue: string);
-
-  procedure CheckChainCall(const MethodName: string; Method: TMethod);
-  var
-    Persistent: TPersistent;
-    Component: TComponent;
-    InstanceMethod: string;
-    Instance: TComponent;
-  begin
-    Persistent := GetComponent(0);
-    if Persistent is TComponent then
-    begin
-      Component := TComponent(Persistent);
-      if (Component.Name <> '') and (Method.Data <> Designer.GetRoot) and
-        (TObject(Method.Data) is TComponent) then
-      begin
-        Instance := TComponent(Method.Data);
-        InstanceMethod := Instance.MethodName(Method.Code);
-        if InstanceMethod <> '' then
-          Designer.ChainCall(MethodName, Instance.Name, InstanceMethod,
-            GetTypeData(GetPropType));
-      end;
-    end;
-  end;
-var
-  NewMethod: Boolean;
-  CurValue: string;
-  OldMethod: TMethod;
-begin
-  CurValue:= GetValue;
-  if (CurValue <> '') and (AValue <> '') and ((CompareText(CurValue, AValue) = 0) or
-    not Designer.MethodExists(AValue)) and not Designer.MethodFromAncestor(GetMethodValue) then
-    Designer.RenameMethod(CurValue, AValue)
-  else
-  begin
-    NewMethod := (AValue <> '') and not Designer.MethodExists(AValue);
-    OldMethod := GetMethodValue;
-    SetMethodProp(Instance, FPropInfo,
-      Designer.CreateMethod(AValue, GetTypeData(FPropInfo.PropType^)));
-    if NewMethod then
-    begin
-      if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil) then
-        CheckChainCall(AValue, OldMethod);
-      Designer.ShowMethod(AValue);
-    end;
-    Designer.Modified;
-  end;
-end;
-//=== { TJvPersistentNestedElementEventProperty } ================================================
-{$ENDIF COMPILER6_UP}
-
 //=== { TJvPersistentPropertyEditor } ================================================
 
 function TJvPersistentPropertyEditor.GetInstance: TPersistent;
@@ -526,39 +265,15 @@ begin
     LPersistentPropertyName := GetName;
     if IsPublishedProp(LInstance, LPersistentPropertyName) then
     begin
-      {$IFDEF COMPILER6_UP}
       FInstance := TPersistent(GetObjectProp(LInstance, LPersistentPropertyName));
-      {$ELSE}
-      FInstance := TPersistent(GetOrdProp(LInstance, LPersistentPropertyName));
-      {$ENDIF COMPILER6_UP}
     end;
   end;
   Result := FInstance;
 end;
 
 procedure TJvPersistentPropertyEditor.GetProperties(Proc: TGetPropProc);
-{$IFNDEF COMPILER6_UP}
-var
-  I: Integer;
-  Components: TDesignerSelectionList;
-{$ENDIF COMPILER6_UP}
 begin
-{$IFNDEF COMPILER6_UP}
-  //Process show all Properties with event
-  Components := TDesignerSelectionList.Create;
-  try
-    for I := 0 to PropCount - 1 do  
-      Components.Add(TComponent(GetOrdValueAt(I)));
-    GetComponentProperties(Components, tkProperties, Designer, Proc);
-  finally
-    Components.Free;
-  end;
-
-  //Process show event Properties
-  JvPersistentEventProperty_GetProperties(Self, Instance, Proc);
-{$ELSE}
   inherited;
-{$ENDIF COMPILER6_UP}
 end;
 
  //Set property name in property editor procedure "Initialize" dynamically,
@@ -740,7 +455,6 @@ end;
 
 //=== { TJvBasePropertyEditor } ==============================================
 
-{$IFDEF COMPILER6_UP}
 procedure TJvBasePropertyEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 var
   PropName: string;
@@ -752,19 +466,6 @@ begin
     Continue := False;
   end;
 end;
-{$ELSE}
-procedure TJvBasePropertyEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
-var
-  PropName: string;
-begin
-  PropName := PropertyEditor.GetName;
-  if SameText(PropName, GetEditPropertyName) then
-  begin
-    PropertyEditor.Edit;
-    Continue := False;
-  end;
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvBasePropertyEditor.ExecuteVerb(Index: Integer);
 begin
@@ -853,8 +554,6 @@ begin
 end;
 
 //=== { TJvDefaultImageIndexProperty } =======================================
-
-{$IFDEF COMPILER6_UP}
 
 function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
 const
@@ -956,106 +655,6 @@ begin
   else
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
-
-{$ENDIF COMPILER6_UP}
-
-{$IFDEF COMPILER5}
-
-function TJvDefaultImageIndexProperty.ImageList: TCustomImageList;
-const
-  cImageList = 'ImageList';
-  cImages = 'Images';
-begin
-  if TypInfo.GetPropInfo(GetComponent(0), cImageList) <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImageList))
-  else
-  if TypInfo.GetPropInfo(GetComponent(0), cImages) <> nil then
-    Result := TCustomImageList(TypInfo.GetObjectProp(GetComponent(0), cImages))
-  else
-    Result := nil;
-end;
-
-function TJvDefaultImageIndexProperty.GetAttributes: TPropertyAttributes;
-begin
-  Result := [paValueList, paMultiSelect, paRevertable];
-end;
-
-function TJvDefaultImageIndexProperty.GetValue: string;
-begin
-  Result := IntToStr(GetOrdValue);
-end;
-
-procedure TJvDefaultImageIndexProperty.SetValue(const Value: string);
-var
-  XValue: Integer;
-begin
-  try
-    XValue := StrToInt(Value);
-    SetOrdValue(XValue);
-  except
-    inherited SetValue(Value);
-  end;
-end;
-
-procedure TJvDefaultImageIndexProperty.GetValues(Proc: TGetStrProc);
-var
-  Tmp: TCustomImageList;
-  I: Integer;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    for I := 0 to Tmp.Count - 1 do
-      Proc(IntToStr(I));
-end;
-
-procedure TJvDefaultImageIndexProperty.ListDrawValue(const Value: string;
-  ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
-var
-  Tmp: TCustomImageList;
-  R: TRect;
-begin
-  inherited ListDrawValue(Value, ACanvas, ARect, ASelected);
-  Tmp := ImageList;
-  if Tmp <> nil then
-  begin
-    R := ARect;
-    ACanvas.FillRect(ARect);
-    Tmp.Draw(ACanvas, ARect.Left, ARect.Top, StrToInt(Value));
-    OffsetRect(R, Tmp.Width + 2, 0);
-    DrawText(ACanvas.Handle, PChar(Value), -1, R, 0);
-  end;
-end;
-
-procedure TJvDefaultImageIndexProperty.ListMeasureHeight(const Value: string;
-  ACanvas: TCanvas; var AHeight: Integer);
-var
-  Tmp: TCustomImageList;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    AHeight := Max(Tmp.Height + 2, ACanvas.TextHeight(Value) + 2);
-end;
-
-procedure TJvDefaultImageIndexProperty.ListMeasureWidth(const Value: string;
-  ACanvas: TCanvas; var AWidth: Integer);
-var
-  Tmp: TCustomImageList;
-begin
-  Tmp := ImageList;
-  if Assigned(Tmp) then
-    AWidth := Tmp.Width + ACanvas.TextHeight(Value) + 4;
-end;
-
-procedure TJvDefaultImageIndexProperty.PropDrawValue(ACanvas: TCanvas;
-  const ARect: TRect; ASelected: Boolean);
-begin
-//  if GetVisualValue <> '' then
-//    ListDrawValue(GetVisualValue, ACanvas, ARect, True)
-//  else
-  inherited PropDrawValue(ACanvas, ARect, ASelected);
-end;
-
-{$ENDIF COMPILER5}
 
 //=== { TJvShortCutProperty } ================================================
 
@@ -1289,7 +888,7 @@ var
   Form: TComponent;
 begin
   inherited GetValues(Proc);
-  Form := Designer.{$IFDEF COMPILER6_UP} Root {$ELSE} Form {$ENDIF};
+  Form := Designer.Root;
   if (Form is GetTypeData(GetPropType)^.ClassType) and (Form.Name <> '') then
     Proc(Form.Name);
 end;
@@ -1300,7 +899,7 @@ var
   Form: TComponent;
 begin
   Component := Designer.GetComponent(Value);
-  Form := Designer.{$IFDEF COMPILER6_UP} Root {$ELSE} Form {$ENDIF};
+  Form := Designer.Root;
   if ((Component = nil) or not (Component is GetTypeData(GetPropType)^.ClassType)) and
     (CompareText(Form.Name, Value) = 0) then
   begin

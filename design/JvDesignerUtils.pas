@@ -35,11 +35,7 @@ implementation
 
 uses
   Windows, SysUtils, Classes, Graphics,
-  {$IFDEF COMPILER6_UP}
   DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnIntf, JvDsgnTypes;
 
 procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);

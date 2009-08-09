@@ -31,11 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvSegmentedLEDDisplayMapperFrame, JvSegmentedLEDDisplay,
   JvBaseDsgnFrame, JvDsgnTypes;
 

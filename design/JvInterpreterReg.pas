@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts, JvDsgnConfig,
   JvInterpreterParser, JvInterpreter, JvInterpreter_all,
   JvInterpreter_Buttons, JvInterpreter_Classes,

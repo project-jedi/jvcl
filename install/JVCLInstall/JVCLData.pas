@@ -860,24 +860,7 @@ end;
 
 function TTargetConfig.VersionedJclDcp(const Name: string): string;
 begin
-  { TODO : Keep in sync with JCL naming schema }
-  if Target.Version = 5 then
-  begin
-    Result := ChangeFileExt(Name, '');
-
-    { We must handle both cases. The case where Name = 'Jcl' and the
-      case where Name = 'JclD50' / 'JclC50'. }
-    if EndsWith(Result, 'c50', True) or EndsWith(Result, 'd50', True) then
-      Result := Copy(Result, 1, Length(Result) - 3);
-      
-    if Target.IsBCB then
-      Result := Result + 'c50'
-    else
-      Result := Result  + 'd50';
-    Result := ChangeFileExt(Result, ExtractFileExt(Name));
-  end
-  else
-    Result := Name;
+  Result := Name;
 end;
 
 function TTargetConfig.VersionedJclBpl(const Name: string): string;
@@ -1230,9 +1213,6 @@ end;
 function TTargetConfig.GetDxgettextDir: string;
 begin
   Result := Owner.DxgettextDir;
-  if Result <> '' then
-    if Target.Version = 5 then
-      Result := Result + '\delphi5'; // do not localize
 end;
 
 procedure TTargetConfig.Save;

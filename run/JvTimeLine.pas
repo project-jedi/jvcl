@@ -50,8 +50,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ImgList,
-  JvConsts, JvVCL5Utils,
-  JvComponent;
+  JvConsts, JvComponent;
 
 type
   TJvTimeItems = class;
@@ -505,10 +504,7 @@ const
 implementation
 
 uses
-  Math,
-  {$IFDEF COMPILER6_UP}
-  DateUtils,
-  {$ENDIF COMPILER6_UP}
+  Math, DateUtils,
   JvJCLUtils, JvJVCLUtils, JvThemes;
 
 {$R JvTimeLine.res}
@@ -2271,39 +2267,39 @@ begin
     with Items[I] do
     begin
       S := Caption + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(ColorToRGB(Color)) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := DateTimeToStr(Date) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := Hint + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(ImageIndex) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(Level) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(Ord(Selected)) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(ColorToRGB(TextColor)) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       S := IntToStr(Width) + Cr;
-      UTF8Str := {$IFDEF COMPILER6_UP}UTF8Encode{$ENDIF COMPILER6_UP}(S);
+      UTF8Str := UTF8Encode(S);
       Stream.Write(UTF8Str[1], Length(UTF8Str));
 
       { let the user save his data stuff }

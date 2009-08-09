@@ -528,8 +528,7 @@ type
   end;
 
   // Generic data provider implementation
-  TJvCustomDataProvider = class(TJvComponent, IUnknown,
-    {$IFDEF COMPILER5} IInterfaceComponentReference, {$ENDIF} IJvDataProvider)
+  TJvCustomDataProvider = class(TJvComponent, IUnknown, IJvDataProvider)
   private
     FDataItems: IJvDataItems;
     FDataContextsImpl: TJvBaseDataContexts;
@@ -560,10 +559,6 @@ type
     procedure RemoveFromArray(var ClassArray: TClassArray; AClass: TClass);
     function IsTreeProvider: Boolean; dynamic;
     function GetDataItemsImpl: TJvBaseDataItems;
-    {$IFDEF COMPILER5}
-    { IInterfaceComponentReference }
-    function GetComponent: TComponent;
-    {$ENDIF COMPILER5}
     { IDataProvider }
     function GetItems: IJvDataItems; virtual;
     procedure RegisterChangeNotify(ANotify: IJvDataProviderNotify); dynamic;
@@ -770,10 +765,6 @@ type
     FOnProviderChanged: TProviderNotifyEvent;
     FServerList: TInterfaceList;
     procedure SetProvider(Value: IJvDataProvider);
-    {$IFDEF COMPILER5}
-    function GetProviderComp: TComponent;
-    procedure SetProviderComp(Value: TComponent);
-    {$ENDIF COMPILER5}
   protected
     function _AddRef: Integer; override; stdcall;
     function _Release: Integer; override; stdcall;
@@ -859,11 +850,7 @@ type
     property BeforeCreateSubSvc: TBeforeCreateSubSvcEvent read FBeforeCreateSubSvc
       write FBeforeCreateSubSvc;
   published
-    {$IFDEF COMPILER6_UP}
     property Provider: IJvDataProvider read ProviderIntf write SetProvider;
-    {$ELSE}
-    property Provider: TComponent read GetProviderComp write SetProviderComp;
-    {$ENDIF COMPILER6_UP}
     property Context: TJvDataContextID read GetContext write SetContext stored IsContextStored;
   end;
 
@@ -1223,10 +1210,7 @@ uses
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
-  SysUtils, Consts, TypInfo,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  SysUtils, Consts, TypInfo, RTLConsts,
   JclStrings,
   JvTypes, JvConsts, JvResources, JvJCLUtils;
 
@@ -3415,13 +3399,6 @@ begin
     Result := nil;
 end;
 
-{$IFDEF COMPILER5}
-function TJvCustomDataProvider.GetComponent: TComponent;
-begin
-  Result := Self;
-end;
-{$ENDIF COMPILER5}
-
 function TJvCustomDataProvider.GetItems: IJvDataItems;
 begin
   Result := FDataItems;
@@ -3857,46 +3834,6 @@ begin
     Changed(ccrProviderSelect);
   end;
 end;
-
-{$IFDEF COMPILER5}
-
-function TJvDataConsumer.GetProviderComp: TComponent;
-var
-  CompRef: IInterfaceComponentReference;
-begin
-  if ProviderIntf = nil then
-    Result := nil
-  else
-  begin
-    if Succeeded(ProviderIntf.QueryInterface(IInterfaceComponentReference, CompRef)) then
-      Result := CompRef.GetComponent as TComponent
-    else
-      Result := nil;
-  end;
-end;
-
-procedure TJvDataConsumer.SetProviderComp(Value: TComponent);
-var
-  CompRef: IInterfaceComponentReference;
-  ProviderRef: IJvDataProvider;
-begin
-  if Value = nil then
-    SetProviderIntf(nil)
-  else
-  begin
-    if Value.GetInterface(IInterfaceComponentReference, CompRef) then
-    begin
-      if Value.GetInterface(IJvDataProvider, ProviderRef) then
-        SetProviderIntf(ProviderRef)
-      else
-        raise EJVCLDataConsumer.CreateRes(@RsEComponentDoesNotSupportTheIJvDataPr);
-    end
-    else
-      raise EJVCLDataConsumer.CreateRes(@RsEComponentDoesNotSupportTheIInterfac);
-  end;
-end;
-
-{$ENDIF COMPILER5}
 
 function TJvDataConsumer._AddRef: Integer;
 begin

@@ -97,11 +97,7 @@ const
 implementation
 
 uses
-  SysUtils, Forms,
-  JvVCL5Utils,
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
+  SysUtils, Forms, StrUtils,
   JvJCLUtils, JvDsgnIntf, JvThemes;
 
 const

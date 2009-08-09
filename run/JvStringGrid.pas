@@ -30,8 +30,7 @@ unit JvStringGrid;
 //---------------------------------------------------------------
 // The inplace-edit-list feature is enabled dynamically when
 // compiling JVCL, if the underlying JVCL and VCL base classes
-// support it. Look for COMPILER6_UP below for places where this
-// requires us to conditionally define this feature in or out.
+// support it. 
 //---------------------------------------------------------------
 
 interface
@@ -66,9 +65,7 @@ type
   TJvSortType = (stNone, stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
   TProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
 
-  {$IFDEF COMPILER6_UP}
   TJvOnGetEditStyleEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer; PickListStrings: TStrings; var EditStyle: TEditStyle) of object;
-  {$ENDIF COMPILER6_UP}
 
   TJvStringGrid = class(TJvExStringGrid)
   private
@@ -85,13 +82,11 @@ type
     FOnVerticalScroll: TNotifyEvent;
     FOnShowEditor: TEditShowEvent;
 
-    {$IFDEF COMPILER6_UP}
     FCustomInplaceEditStyle: TEditStyle; // NEW
     FOnGetEditStyle: TJvOnGetEditStyleEvent;
     FPickListStrings: TStringList;
     FOnEditButtonClick: TNotifyEvent;
     FOnListBoxCloseUp: TNotifyEvent;
-    {$ENDIF COMPILER6_UP}
 
     FFixedFont: TFont;
     procedure SetAlignment(const Value: TAlignment);
@@ -100,10 +95,8 @@ type
     procedure SetFixedFont(const Value: TFont);
     procedure DoFixedFontChange(Sender: TObject);
 
-    {$IFDEF COMPILER6_UP}
     procedure EditButtonClick(Sender: TObject); dynamic; // NEW-WP
     procedure ListBoxCloseUp(Sender: TObject); dynamic;
-    {$ENDIF COMPILER6_UP}
   protected
     function CreateEditor: TInplaceEdit; override;
     function CanEditShow: Boolean; override;
@@ -118,11 +111,9 @@ type
     procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
 
-    {$IFDEF COMPILER6_UP}
     // NEW: Override to provide dropdown list editing as an
     // event-handler in TJvStringGrid.
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; override;
-    {$ENDIF COMPILER6_UP}
 
     procedure CaptionClick(AColumn, ARow: Longint); dynamic;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -242,11 +233,9 @@ type
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnShowEditor: TEditShowEvent read FOnShowEditor write FOnShowEditor;
 
-    {$IFDEF COMPILER6_UP}
     property OnGetEditStyle: TJvOnGetEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle; // NEW -WP (D6 UP)
     property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick; // NEW-WP  - User clicks on Ellipsis button, get event fired!
     property OnListBoxCloseUp: TNotifyEvent read FOnListBoxCloseUp write FOnListBoxCloseUp; // Listbox close up.
-    {$ENDIF COMPILER6_UP}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -264,18 +253,14 @@ implementation
 uses
   Math,
   JclBase, // TBytes for Pre-Delphi 2007
-  JvVCL5Utils, JvJVCLUtils;
+  JvJVCLUtils;
 
 //=== { TExInplaceEditList } =================================================
 
 // If the feature exists in the VCL base classes, we can enable the
 // feature here.
 type
-  {$IFDEF COMPILER6_UP}
   TExInplaceEditList = class(TJvExPubInplaceEditList) // was inheriting from TJvExInplaceEdit.-WAP
-  {$ELSE}
-  TExInplaceEditList = class(TJvExInplaceEdit)
-  {$ENDIF COMPILER6_UP}
   private
     // Important: Style of this inplace editor is set in TInplaceEditList
     // FEditStyle     - inherited - See VCL Source: ($delphi)\Source\vcl\Grids.pas
@@ -286,11 +271,9 @@ type
     FLastCol: Integer;
     FLastRow: Integer;
   protected
-    {$IFDEF COMPILER6_UP}
     procedure CloseUp(Accept: Boolean); override; // fire event on close up!
     procedure DoEditButtonClick; override;
     procedure UpdateContents; override; //WP-New! - Put items into listbox!
-    {$ENDIF COMPILER6_UP}
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
   public
@@ -306,7 +289,6 @@ begin
 end;
 
 //NEW!
-{$IFDEF COMPILER6_UP}
 procedure TExInplaceEditList.UpdateContents;
 var
  OwnerGrid: TJvStringGrid;
@@ -321,7 +303,6 @@ begin
     PickList.Items.Assign(OwnerGrid.FPickListStrings);
   end;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TExInplaceEditList.CreateParams(var Params: TCreateParams);
 const
@@ -344,8 +325,6 @@ begin
   inherited FocusSet(PrevWnd);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 procedure TExInplaceEditList.CloseUp(Accept: Boolean); //override; // fire event on close up!
 begin
   inherited CloseUp(Accept);
@@ -359,8 +338,6 @@ begin
     TJvStringGrid(Grid).EditButtonClick(Self);
 end;
 
-{$ENDIF COMPILER6_UP}
-
 //=== { TJvStringGrid } ======================================================
 
 constructor TJvStringGrid.Create(AOwner: TComponent);
@@ -370,17 +347,13 @@ begin
   FFixedFont.Assign(Font);
   FFixedFont.OnChange := DoFixedFontChange;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF COMPILER6_UP}
   FPickListStrings := TStringList.Create; //NEW -WP
-  {$ENDIF COMPILER6_UP}
 end;
 
 destructor TJvStringGrid.Destroy;
 begin
   FreeAndNil(FFixedFont);
-  {$IFDEF COMPILER6_UP}
   FreeAndNil(FPickListStrings); //NEW-WP
-  {$ENDIF COMPILER6_UP}
   inherited Destroy;
 end;
 
@@ -938,7 +911,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJvStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle; //override;
 begin
    FCustomInplaceEditStyle := esSimple;
@@ -949,7 +921,6 @@ begin
    end;
    Result := FCustomInplaceEditStyle;
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvStringGrid.DrawCell(AColumn, ARow: Integer; Rect: TRect; State: TGridDrawState);
 begin
@@ -1177,8 +1148,6 @@ begin
   Invalidate;
 end;
 
-{$IFDEF COMPILER6_UP}
-
 // NEW-WP - invoked dynamically from the TInplaceEditList
 procedure TJvStringGrid.ListBoxCloseUp(Sender: TObject);
 begin
@@ -1191,8 +1160,6 @@ begin
   if Assigned(FOnEditButtonClick) then
     FOnEditButtonClick(Self)
 end;
-
-{$ENDIF COMPILER6_UP}
 
 procedure TJvStringGrid.AutoSizeCol(Index, MinWidth: Integer);
 var

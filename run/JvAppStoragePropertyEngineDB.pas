@@ -53,7 +53,7 @@ implementation
 
 uses
   Classes, DBGrids,
-  JvVCL5Utils, JvJCLUtils, JvAppStorage;
+  JvJCLUtils, JvAppStorage;
 
 type
   TJvAppStoragePropertyDBGridColumnsEngine = class(TJvAppStoragePropertyBaseEngine)

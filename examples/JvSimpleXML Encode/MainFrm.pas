@@ -78,8 +78,7 @@ begin
   reSource.Lines.BeginUpdate;
   reResult.Lines.BeginUpdate;
   try
-  // assign to S to take the visual control out of the equation
-    {$IFDEF COMPILER6_UP}
+    // assign to S to take the visual control out of the equation
     if chkUseUTF8.Checked then
     begin
       if chkUseClipboard.Checked then
@@ -101,7 +100,6 @@ begin
         reResult.Lines.Text := S;
     end
     else
-   {$ENDIF}
     begin
       if chkUseClipboard.Checked then
       begin
@@ -138,7 +136,6 @@ begin
   reSource.Lines.BeginUpdate;
   reResult.Lines.BeginUpdate;
   try
-    {$IFDEF COMPILER6_UP}
     if chkUseUTF8.Checked then
     begin
       S := reSource.Lines.Text;
@@ -148,7 +145,6 @@ begin
       reResult.Lines.Text := S;
     end
     else
-    {$ENDIF}
     begin
       S := reSource.Lines.Text;
       FStartValue := GetTickCount;
@@ -171,9 +167,6 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   DragAcceptFiles(Handle, true);
-  {$IFNDEF COMPILER6_UP}
-  chkUseUTF8.Enabled := false;
-  {$ENDIF}
 end;
 
 procedure TForm1.WMDropFiles(var Message: TWMDropFiles);

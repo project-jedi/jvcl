@@ -126,10 +126,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Math, Graphics, Buttons, Clipbrd,
+  Variants, SysUtils, Math, Graphics, Buttons, Clipbrd,
   JvToolEdit, JvSpeedButton, JvExExtCtrls,
   JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
 

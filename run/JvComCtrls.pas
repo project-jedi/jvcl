@@ -45,12 +45,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Contnrs, Graphics, Controls, Forms,
-  Classes, // (ahuser) "Classes" after "Forms" (D5 warning)
-  Menus, ComCtrls, ImgList, Buttons,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  CommCtrl,
+  Classes, 
+  Menus, ComCtrls, ImgList, Buttons, Types, CommCtrl,
   JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32,
   JvToolEdit, JvDataSourceIntf;
 
@@ -217,12 +213,10 @@ type
     property AutoSize;
     property Color;
     property Constraints;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property DataConnector: TJvIPAddressDataConnector read FDataConnector write SetDataConnector;
     property DragCursor;
     property DragKind;
@@ -505,9 +499,6 @@ type
   private
     FAutoDragScroll: Boolean;
     FClearBeforeSelect: Boolean;
-    {$IFDEF COMPILER5}
-    FMultiSelect: Boolean;
-    {$ENDIF COMPILER5}
     FScrollDirection: Integer;
     FSelectedList: TObjectList;
     FSelectThisNode: Boolean;
@@ -530,9 +521,6 @@ type
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
     function GetSelectedCount: Integer;
     function GetSelectedItem(Index: Integer): TTreeNode;
-    {$IFDEF COMPILER5}
-    procedure SetMultiSelect(const Value: Boolean);
-    {$ENDIF COMPILER5}
     procedure SetScrollDirection(const Value: Integer);
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
@@ -625,9 +613,6 @@ type
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
     property PageControl: TPageControl read FPageControl write SetPageControl;
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
-    {$IFDEF COMPILER5}
-    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
-    {$ENDIF COMPILER5}
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
@@ -2846,18 +2831,6 @@ begin
   TJvTreeNode(Node).Checked := Value;
 end;
 
-{$IFDEF COMPILER5}
-procedure TJvTreeView.SetMultiSelect(const Value: Boolean);
-begin
-  if FMultiSelect <> Value then
-  begin
-    FMultiSelect := Value;
-    ResetPostOperationFlags;
-    ClearSelection;
-  end;
-end;
-{$ENDIF COMPILER5}
-
 procedure TJvTreeView.SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
 begin
   TJvTreeNode(Node).PopupMenu := Value;
@@ -2904,13 +2877,8 @@ begin
         begin
           FirstNodeIndex := 0;
 
-          {$IFDEF COMPILER6_UP}
           if SelectionCount > 0 then
             FirstNodeIndex := Selections[0].Index;
-          {ELSE}
-          if Assigned(Selected) then
-            FirstNodeIndex := Selected.Index;
-          {$ENDIF COMPILER6_UP}
 
           ClearSelection;
           if FirstNodeIndex < Node.Index then

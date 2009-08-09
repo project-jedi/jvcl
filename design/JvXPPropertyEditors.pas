@@ -32,34 +32,25 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  Contnrs, DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   Windows, Forms, ImgList, ActnList, Graphics,
   TypInfo;
 
 type
-  {$IFDEF COMPILER6_UP}
   TDesignerSelectionList = IDesignerSelections;
-  {$ELSE}
-  //TDesignerSelectionList = TComponentList;
-  {$ENDIF COMPILER6_UP}
 
-  TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty
-    {$IFDEF COMPILER6_UP}, ICustomPropertyListDrawing {$ENDIF})
+  TJvXPCustomImageIndexPropertyEditor = class(TIntegerProperty, ICustomPropertyListDrawing)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
     function GetImageListAt(Index: Integer): TCustomImageList; virtual;
     // ICustomPropertyListDrawing
     procedure ListMeasureHeight(const Value: string; ACanvas: TCanvas;
-      var AHeight: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
+      var AHeight: Integer);
     procedure ListMeasureWidth(const Value: string; ACanvas: TCanvas;
-      var AWidth: Integer); {$IFDEF COMPILER5} override; {$ENDIF}
+      var AWidth: Integer);
     procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-      const ARect: TRect; ASelected: Boolean); {$IFDEF COMPILER5} override; {$ENDIF}
+      const ARect: TRect; ASelected: Boolean);
   end;
 
   TJvXPItemImageIndexProperty = class(TJvXPCustomImageIndexPropertyEditor)
@@ -69,11 +60,7 @@ type
 
   TJvXPBarItemEditor = class(TDefaultEditor)
   protected
-    {$IFDEF COMPILER6_UP}
     procedure RunPropertyEditor(const Prop: IProperty);
-    {$ELSE}
-    procedure RunPropertyEditor(Prop: TPropertyEditor);
-    {$ENDIF COMPILER6_UP}
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -173,11 +160,7 @@ procedure TJvXPBarItemEditor.Edit;
 var
   Components: TDesignerSelectionList;
 begin
-  {$IFDEF COMPILER6_UP}
   Components := CreateSelectionList;
-  {$ELSE}
-  Components := TDesignerSelectionList.Create;
-  {$ENDIF COMPILER6_UP}
   Components.Add(Component);
   GetComponentProperties(Components, [tkClass], Designer, RunPropertyEditor);
 end;
@@ -226,11 +209,7 @@ begin
   Result := 3;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvXPBarItemEditor.RunPropertyEditor(const Prop: IProperty);
-{$ELSE}
-procedure TJvXPBarItemEditor.RunPropertyEditor(Prop: TPropertyEditor);
-{$ENDIF COMPILER6_UP}
 begin
   if UpperCase(Prop.GetName) = 'ITEMS' then
     Prop.Edit;

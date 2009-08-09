@@ -43,7 +43,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, CommCtrl, Menus, ImgList, Clipbrd,
-  JvJCLUtils, JvJVCLUtils, JvTypes, JvExComCtrls, JvAppStorage, JvVCL5Utils;
+  JvJCLUtils, JvJVCLUtils, JvTypes, JvExComCtrls, JvAppStorage;
 
 type
   TJvViewStyle = (vsIcon, vsSmallIcon, vsList, vsReport, vsTile);
@@ -359,10 +359,6 @@ type
     procedure UpdateHeaderImages(HeaderHandle: Integer);
     procedure WMAutoSelect(var Msg: TMessage); message WM_AUTOSELECT;
     procedure SetExtendedColumns(const Value: TJvListExtendedColumns);
-    {$IFDEF COMPILER5}
-    function GetItemIndex: Integer;
-    procedure SetItemIndex(const Value: Integer);
-    {$ENDIF COMPILER5}
     procedure SetViewStylesItemBrush(const Value: TJvViewStyles);
     function DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
     procedure TileViewPropertiesChange(Sender: TObject);
@@ -371,7 +367,7 @@ type
     procedure LoadGroupsProperties;
   protected
     function CreateListItem: TListItem; override;
-    function CreateListItems: TListItems; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    function CreateListItems: TListItems; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -382,9 +378,7 @@ type
     function GetItemPopup(Node: TListItem): TPopupMenu;
     procedure DoHeaderImagesChange(Sender: TObject);
     procedure Loaded; override;
-    {$IFDEF COMPILER6_UP}
     procedure SetViewStyle(Value: TViewStyle); override;
-    {$ENDIF COMPILER6_UP}
     procedure SetJvViewStyle(Value: TJvViewStyle); virtual;
 
     procedure CreateWnd; override;
@@ -397,7 +391,7 @@ type
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
 
     procedure InsertItem(Item: TListItem); override;
-    function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; override;
     function CustomDraw(const ARect: TRect; Stage: TCustomDrawStage): Boolean; override;
     function CustomDrawItem(Item: TListItem; State: TCustomDrawState;
       Stage: TCustomDrawStage): Boolean; override;
@@ -416,10 +410,6 @@ type
     procedure SaveToCSV(FileName: string; Separator: Char = ';');
     procedure LoadFromCSV(FileName: string; Separator: Char = ';');
     procedure SetSmallImages(const Value: TCustomImageList);
-    {$IFDEF COMPILER5}
-    procedure SelectAll;
-    procedure DeleteSelected;
-    {$ENDIF COMPILER5}
     procedure UnselectAll;
     procedure InvertSelection;
     function MoveUp(Index: Integer; Focus: Boolean = True): Integer;
@@ -435,9 +425,6 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure SetFocus; override;
-    {$IFDEF COMPILER5}
-    property ItemIndex: Integer read GetItemIndex write SetItemIndex;
-    {$ENDIF COMPILER5}
   published
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
@@ -497,11 +484,7 @@ uses
   Types,
   {$ENDIF COMPILER10_UP}
   Math, Contnrs,
-  {$IFDEF HAS_UNIT_VARIANTS}
   VarUtils, Variants,
-  {$ELSE}
-  ActiveX,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclWideStrings, 
   JvConsts, JvResources;
 
@@ -1649,18 +1632,6 @@ begin
   Items.EndUpdate;
 end;
 
-{$IFDEF COMPILER5}
-procedure TJvListView.SelectAll;
-var
-  I: Integer;
-begin
-  Items.BeginUpdate;
-  for I := 0 to Items.Count - 1 do
-    Items[I].Selected := True;
-  Items.EndUpdate;
-end;
-{$ENDIF COMPILER5}
-
 procedure TJvListView.UnselectAll;
 var
   I: Integer;
@@ -1695,29 +1666,6 @@ begin
       Clipboard.SetTextBuf(PChar(st));
     end;
 end;
-
-{$IFDEF COMPILER5}
-procedure TJvListView.DeleteSelected;
-var
-  I: Integer;
-begin
-  Items.BeginUpdate;
-  if SelCount = 1 then
-  begin
-    I := Selected.Index - 1;
-    Selected.Delete;
-    if I = -1 then
-      I := 0;
-    if Items.Count > 0 then
-      Selected := Items[I];
-  end
-  else
-    for I := Items.Count - 1 downto 0 do
-      if Items[I].Selected then
-        Items[I].Delete;
-  Items.EndUpdate;
-end;
-{$ENDIF COMPILER5}
 
 function TJvListView.GetColumnsOrder: string;
 var
@@ -2300,23 +2248,6 @@ begin
   FSavedExtendedColumns.Assign(FExtendedColumns);
   inherited DestroyWnd;
 end;
-{$IFDEF COMPILER5}
-
-function TJvListView.GetItemIndex: Integer;
-begin
-  if Selected <> nil then
-    Result := Selected.Index
-  else
-    Result := -1;
-end;
-
-procedure TJvListView.SetItemIndex(const Value: Integer);
-begin
-  if (Value >= 0) and (Value < Items.Count) then
-    Items[Value].Selected := True;
-end;
-
-{$ENDIF COMPILER5}
 
 procedure TJvListView.SetViewStylesItemBrush(const Value: TJvViewStyles);
 begin
@@ -2324,7 +2255,6 @@ begin
   Invalidate;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvListView.SetViewStyle(Value: TViewStyle);
 begin
   // If someone is setting the view style via an ancestor class reference,
@@ -2335,7 +2265,6 @@ begin
   else
     inherited SetViewStyle(Value);
 end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvListView.SetJvViewStyle(Value: TJvViewStyle);
 begin

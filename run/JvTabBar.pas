@@ -36,7 +36,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   ExtCtrls,
   SysUtils, Classes, Contnrs,
-  JvVCL5Utils, JvThemes;
+  JvThemes;
 
 type
   TJvCustomTabBar = class;

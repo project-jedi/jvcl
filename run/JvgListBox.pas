@@ -109,7 +109,7 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure WMMouseMove(var Msg: TMessage); message WM_MOUSEMOVE;
   protected
-    function GetSelCount: Integer; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    function GetSelCount: Integer; override;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DestroyWnd; override;

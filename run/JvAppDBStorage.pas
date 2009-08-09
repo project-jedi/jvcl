@@ -33,11 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, DB,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  DBCtrls,
+  SysUtils, Classes, DB, Variants, DBCtrls,
   JclBase,
   JvAppStorage, JvTypes;
 

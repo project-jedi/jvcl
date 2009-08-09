@@ -185,7 +185,6 @@ implementation
 uses
   JvResources,
   TypInfo,
-  JvVCL5Utils,
   JclMath,   // For EnsureRange
   JvJCLUtils;   // for TryStrToInt
 

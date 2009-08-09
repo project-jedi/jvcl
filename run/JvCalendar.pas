@@ -298,10 +298,7 @@ const
 implementation
 
 uses
-  SysUtils, ComCtrls,
-  {$IFDEF HAS_UNIT_TYPES} 
-  Types,  // for inlining in D2007 and upper
-  {$ENDIF HAS_UNIT_TYPES} 
+  SysUtils, ComCtrls, Types,  // for inlining in D2007 and upper
   JvResources;
 
 const
@@ -517,31 +514,17 @@ type
   TMonthCalStrings = class(TStringList)
   private
     FCalendar: TJvCustomMonthCalendar;
-    {$IFDEF COMPILER5}
-    FUpdateCount: Integer;
-    {$ENDIF COMPILER5}
   protected
     function GetDateIndex(Year, Month: Word): Integer; virtual;
     function GetBoldDays(Y, M: Word): string; virtual;
     procedure Changed; override;
-    {$IFDEF COMPILER5}
-    procedure SetUpdateState(Updating: Boolean); override;
-    {$ENDIF COMPILER5}
   public
     constructor Create;
-    {$IFDEF COMPILER5}
-    // Delphi 5's .AddObject calls .Add and then PutObject
-    function Add(const S: string): Integer; override;
-    {$ELSE}
     function AddObject(const S: string; AObject: TObject): Integer; override;
-    {$ENDIF COMPILER5}
     function IsBold(Year, Month, Day: Word): Boolean;
     procedure SetBold(Year, Month, Day: Word; Value: Boolean);
     function AddDays(Year, Month: Word; const Days: string): Integer; virtual;
     property Calendar: TJvCustomMonthCalendar read FCalendar;
-    {$IFDEF COMPILER5}
-    property UpdateCount: Integer read FUpdateCount;
-    {$ENDIF COMPILER5}
   end;
 
 constructor TMonthCalStrings.Create;
@@ -549,9 +532,6 @@ begin
   inherited Create;
   Sorted := True;
   Duplicates := dupIgnore;
-  {$IFDEF COMPILER5}
-  FUpdateCount := 0;
-  {$ENDIF COMPILER5}
 end;
 
 { Days is a comma separated list of days to set as bold. If Days is empty, the
@@ -604,29 +584,6 @@ end;
   This must be fully qualified, i.e. '199801=1,2,3,4,5' or '000012=25,31' etc
 }
 
-{$IFDEF COMPILER5}
-function TMonthCalStrings.Add(const S: string): Integer;
-begin
-  if AnsiPos('=', S) <> 7 then
-    raise EMonthCalError.CreateResFmt(@RsEInvalidDateStr, [S]);
-
-  BeginUpdate;
-  try
-    Result := IndexOfName(Copy(S, 1, 6));
-    if Result >= 0 then
-    begin
-      { We can only set items when Sorted = False }
-      Sorted := False;
-      Strings[Result] := S;
-      Sorted := True;
-    end
-    else
-      Result := inherited Add(S);
-  finally
-    EndUpdate;
-  end;
-end;
-{$ELSE}
 function TMonthCalStrings.AddObject(const S: string; AObject: TObject): Integer;
 begin
   if AnsiPos('=', S) <> 7 then
@@ -649,7 +606,6 @@ begin
     EndUpdate;
   end;
 end;
-{$ENDIF COMPILER5}
 
 function TMonthCalStrings.GetDateIndex(Year, Month: Word): Integer;
 var
@@ -683,17 +639,6 @@ begin
   if (UpdateCount = 0) and Assigned(Calendar) then
     Calendar.DoBoldDays;
 end;
-
-{$IFDEF COMPILER5}
-procedure TMonthCalStrings.SetUpdateState(Updating: Boolean);
-begin
-  if Updating then
-    FUpdateCount := 1
-  else
-    FUpdateCount := 0;
-  inherited SetUpdateState(Updating);
-end;
-{$ENDIF COMPILER5}
 
 //=== { TJvCustomMonthCalendar } =============================================
 

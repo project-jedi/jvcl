@@ -30,11 +30,7 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Mask,
-  {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  LibIntf, DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvFormPlacement, JvGradientCaption, JvListBox, JvCtrls,
   JvComponent, JvToolEdit, JvAppStorage, JvAppRegistryStorage, JvExMask;
 

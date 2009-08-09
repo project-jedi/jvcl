@@ -240,10 +240,7 @@ const
 implementation
 
 uses
-{$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-{$ENDIF HAS_UNIT_RTLCONSTS}
-  Consts, SysUtils, TypInfo,
+  RTLConsts, Consts, SysUtils, TypInfo,
   JclSynch,
   JvStrings, JvResources, JvJVCLUtils;
 

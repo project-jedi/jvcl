@@ -31,9 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils,
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ActnList, Buttons, ImgList,
   JvFullColorForm, JvFullColorSpaces, JvFullColorDialogs, JvFullColorCtrls;
@@ -125,27 +123,8 @@ begin
 end;
 
 procedure TJvFullColorListFrm.ActionDeleteExecute(Sender: TObject);
-{$IFDEF COMPILER5}
-var
-  I: Integer;
-{$ENDIF COMPILER5}
 begin
-  {$IFDEF COMPILER6_UP}
   ListBoxColors.DeleteSelected;
-  {$ELSE}
-  with ListBoxColors do
-  begin
-    if MultiSelect then
-    begin
-      for I := Items.Count - 1 downto 0 do
-        if Selected[I] then
-          Items.Delete(I);
-    end
-    else
-    if ItemIndex <> -1 then
-      Items.Delete(ItemIndex);
-  end;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvFullColorListFrm.ActionDeleteUpdate(Sender: TObject);

@@ -32,10 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Classes, Messages, Types,
   JvPageSetup;
 
 type

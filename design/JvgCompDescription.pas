@@ -34,11 +34,7 @@ interface
 uses
   Classes, TypInfo,
   JvComponentBase,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvgPropInfos = class;

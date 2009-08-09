@@ -39,10 +39,7 @@ unit JvExDBGrids;
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, DBGrids,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -78,12 +75,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -146,12 +137,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -315,22 +300,6 @@ procedure TJvExCustomDBGrid.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExCustomDBGrid.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExCustomDBGrid.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExCustomDBGrid.BoundsChanged;
 begin
@@ -632,22 +601,6 @@ procedure TJvExDBGrid.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExDBGrid.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExDBGrid.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExDBGrid.BoundsChanged;
 begin

@@ -95,7 +95,7 @@ const
 implementation
 
 uses
-  JvVCL5Utils, JvJCLUtils;
+  JvJCLUtils;
 
 constructor TJvgFileIterator.Create;
 begin

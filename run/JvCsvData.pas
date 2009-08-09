@@ -943,11 +943,8 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Controls, Forms,
-  JvVCL5Utils, JvJVCLUtils, JvCsvParse, JvConsts, JvResources, JvTypes;
+  Variants, Controls, Forms,
+  JvJVCLUtils, JvCsvParse, JvConsts, JvResources, JvTypes;
 
 const
   // These characters cannot be used for separator for various reasons:
@@ -1083,7 +1080,7 @@ begin
   IsAppend := (Mode and fmJVCSV_APPEND_FLAG) <> 0;
   IsRewrite := (Mode and fmJVCSV_REWRITE_FLAG) <> 0;
 
-  FStream := TFileStream.Create(Filename, {16 lower bits only}Word(Mode){$IFDEF COMPILER6_UP}, Rights{$ENDIF COMPILER6_UP});
+  FStream := TFileStream.Create(Filename, {16 lower bits only}Word(Mode), Rights);
 
   //Stream := FStream; { this makes everything in the base class actually work if we inherited from Easy Stream}
 

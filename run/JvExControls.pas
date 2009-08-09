@@ -39,14 +39,8 @@ unit JvExControls;
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER5}
-  JvConsts, JvVCL5Utils,
-  {$ENDIF COMPILER5}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -97,10 +91,6 @@ function DlgCodesToDlgc(Value: TDlgCodes): Longint;
 procedure GetHintColor(var HintInfo: THintInfo; AControl: TControl; HintColor: TColor);
 function DispatchIsDesignMsg(Control: TControl; var Msg: TMessage): Boolean;
 
-{$IFDEF COMPILER5}
-procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
-{$ENDIF COMPILER5}
-
 type
   TJvExControl = class(TControl, IJvExControl)
   private
@@ -130,12 +120,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -176,12 +160,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -244,12 +222,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -312,12 +284,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -358,12 +324,6 @@ type
     function HitTest(X, Y: Integer): Boolean; reintroduce; virtual;
     procedure MouseEnter(AControl: TControl); reintroduce; dynamic;
     procedure MouseLeave(AControl: TControl); reintroduce; dynamic;
-    {$IFDEF COMPILER5}
-    {$IFNDEF HASAUTOSIZE}
-    procedure CMSetAutoSize(var Msg: TMessage); message CM_SETAUTOSIZE;
-    procedure SetAutoSize(Value: Boolean); virtual;
-    {$ENDIF !HASAUTOSIZE}
-    {$ENDIF COMPILER5}
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -630,63 +590,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
-
-{ Delphi 5's SetAutoSize is private and not virtual. This code installs a
-  JUMP-Hook into SetAutoSize that jumps to our function. }
-var
-  AutoSizeOffset: Cardinal;
-  TControl_SetAutoSize: Pointer;
-
-type
-  PBoolean = ^Boolean;
-  TControlAccessProtected = class(TControl)
-  published
-    property AutoSize;
-  end;
-
-procedure OrgSetAutoSize(AControl: TControl; Value: Boolean);
-asm
-        DD    0, 0, 0, 0  // 16 Bytes
-end;
-
-procedure TOpenControl_SetAutoSize(AControl: TControl; Value: Boolean);
-begin
-  // same as OrgSetAutoSize(AControl, Value); but secure
-  with TControlAccessProtected(AControl) do
-    if AutoSize <> Value then
-    begin
-      PBoolean(Cardinal(AControl) + AutoSizeOffset)^ := Value;
-      if Value then
-        AdjustSize;
-    end;
-end;
-
-procedure SetAutoSizeHook(AControl: TControl; Value: Boolean);
-var
-  Msg: TMessage;
-begin
-  if AControl.GetInterfaceEntry(IJvExControl) <> nil then
-  begin
-    Msg.Msg := CM_SETAUTOSIZE;
-    Msg.WParam := Ord(Value);
-    AControl.Dispatch(Msg);
-  end
-  else
-    TOpenControl_SetAutoSize(AControl, Value);
-end;
-
-procedure InitHookVars;
-var
-  Info: PPropInfo;
-begin
-  Info := GetPropInfo(TControlAccessProtected, 'AutoSize');
-  AutoSizeOffset := Integer(Info.GetProc) and $00FFFFFF;
-  TControl_SetAutoSize := Info.SetProc;
-end;
-
-{$ENDIF COMPILER5}
-
 constructor TJvExControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -804,22 +707,6 @@ procedure TJvExControl.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExControl.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExControl.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExControl.WndProc(var Msg: TMessage);
 begin
@@ -982,22 +869,6 @@ procedure TJvExWinControl.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExWinControl.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExWinControl.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExWinControl.BoundsChanged;
 begin
@@ -1300,22 +1171,6 @@ begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
 
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExGraphicControl.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExGraphicControl.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
-
 procedure TJvExGraphicControl.WndProc(var Msg: TMessage);
 begin
   if not DispatchIsDesignMsg(Self, Msg) then
@@ -1477,22 +1332,6 @@ procedure TJvExCustomControl.FocusChanged(AControl: TWinControl);
 begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
-
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExCustomControl.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExCustomControl.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
 
 procedure TJvExCustomControl.BoundsChanged;
 begin
@@ -1795,22 +1634,6 @@ begin
   BaseWndProc(CM_FOCUSCHANGED, 0, AControl);
 end;
 
-{$IFDEF COMPILER5}
-{$IFNDEF HASAUTOSIZE}
-
-procedure TJvExHintWindow.CMSetAutoSize(var Msg: TMessage);
-begin
-  SetAutoSize(Msg.WParam <> 0);
-end;
-
-procedure TJvExHintWindow.SetAutoSize(Value: Boolean);
-begin
-  TOpenControl_SetAutoSize(Self, Value);
-end;
-
-{$ENDIF !HASAUTOSIZE}
-{$ENDIF COMPILER5}
-
 procedure TJvExHintWindow.BoundsChanged;
 begin
 end;
@@ -1998,15 +1821,8 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  InitHookVars;
-  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
-  {$ENDIF COMPILER5}
 
 finalization
-  {$IFDEF COMPILER5}
-  UninstallProcHook(@OrgSetAutoSize);
-  {$ENDIF COMPILER5}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

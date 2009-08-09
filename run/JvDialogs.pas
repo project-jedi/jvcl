@@ -59,9 +59,6 @@ type
     FOriginalRect: TRect;
     FParentWndInstance, FOldParentWndInstance: Pointer;
     FParentWnd: THandle;
-    {$IFDEF COMPILER5}
-    FShowPlacesBar: Boolean;
-    {$ENDIF COMPILER5}
     FOnShareViolation: TCloseQueryEvent;
     FHeight: Integer;
     FWidth: Integer;
@@ -99,9 +96,6 @@ type
     property DefBtnCaption: string read FDefBtnCaption write SetDefBtnCaption;
     property FilterLabelCaption: string read FFilterLabelCaption write SetFilterLabelCaption;
     property Height: Integer read FHeight write FHeight;
-    {$IFDEF COMPILER5}
-    property ShowPlacesBar: Boolean read FShowPlacesBar write FShowPlacesBar default True;
-    {$ENDIF COMPILER5}
     property UseUserSize: Boolean read FUseUserSize write FUseUserSize default False;
     property Width: Integer read FWidth write FWidth;
     property OnError: TDialogErrorEvent read FOnError write FOnError;
@@ -203,9 +197,6 @@ begin
   FActiveStyle := asSmallIcon;
   FMakeResizeable := GetWindowsVersion in [wvWin95, wvWin95OSR2, wvWinNT4];
   FParentWndInstance := JvMakeObjectInstance(ParentWndProc);
-  {$IFDEF COMPILER5}
-  FShowPlacesBar := True;
-  {$ENDIF COMPILER5}
   FParentWndInstance := JvMakeObjectInstance(ParentWndProc);
 end;
 
@@ -419,12 +410,6 @@ begin
 end;
 
 function TJvOpenDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
-{$IFDEF COMPILER5}
-const
-  PlacesBar: array [Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
-var
-  DialogData2000: TOpenFileName2000;
-{$ENDIF COMPILER5}
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;
@@ -432,16 +417,7 @@ begin
   begin
     if ActiveStyle = asReport then
       InstallW2kFix;
-    {$IFDEF COMPILER5}
-    FillChar(DialogData2000, SizeOf(DialogData2000), #0);
-    DialogData2000.OpenFileName := TOpenFileName(DialogData);
-    DialogData2000.OpenFileName.lStructSize := SizeOf(DialogData2000);
-    DialogData2000.FlagsEx := PlacesBar[FShowPlacesBar];
-    Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
-    TOpenFileName(DialogData).nFilterIndex := DialogData2000.OpenFileName.nFilterIndex;
-    {$ELSE}
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
-    {$ENDIF COMPILER5}
   end
   else
     Result := inherited TaskModalDialog(DialogFunc, DialogData);

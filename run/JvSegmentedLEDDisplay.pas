@@ -2262,9 +2262,7 @@ initialization
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 
 finalization
-  {$IFDEF COMPILER6_UP}
   UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
-  {$ENDIF COMPILER6_UP}
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);

@@ -33,7 +33,7 @@ unit fMain;
 interface
 
 uses
-  Windows, Messages, {$IFDEF COMPILER6_UP} Variants, {$ENDIF} SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, Variants, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, JvEditor, JvEditorCommon, JvHLEditor, Menus,
   ShellApi, JvInterpreter, ImgList, JvComponent, JvHLEditorPropertyForm, JvFormPlacement,
   JvExControls;

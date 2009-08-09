@@ -1,7 +1,6 @@
 program Installer;
 
 uses
-  Compiler5MissingPropertyFix in 'D5Workarounds\Compiler5MissingPropertyFix.pas',
   Forms,
   D5CheckLst in 'D5Workarounds\D5CheckLst.pas',
   CmdLineUtils in 'Common\CmdLineUtils.pas',

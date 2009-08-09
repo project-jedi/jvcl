@@ -118,11 +118,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Classes, Graphics, Controls, DB,
+  Windows, Variants, Classes, Graphics, Controls, DB,
   JvDBGrid, JvTypes; {JvTypes contains Exception base class}
 
 const

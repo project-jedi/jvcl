@@ -34,11 +34,7 @@ interface
 uses
   Windows, Mask, Menus, ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls,
   Dialogs, Forms, Classes, SysUtils, Graphics, ImgList, Printers,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvComponentBase, JvExControls, JvRuler,
   JvgReport, JvgReportParamEditorForm;
 

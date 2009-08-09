@@ -121,7 +121,6 @@ const
 implementation
 
 uses
-  JvVCL5Utils,
   JvJCLUtils,   // for TryStrToInt
   JvResources;
 

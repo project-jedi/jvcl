@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Windows, Messages, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvConsts, JvVCL5Utils, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
+  JvConsts, JvAppStorage, JvFormPlacement, JvComponent, JvExGrids;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -200,10 +200,7 @@ const
 implementation
 
 uses
-  SysUtils, Math,
-{$IFDEF HAS_UNIT_TYPES}
-  Types,
-{$ENDIF HAS_UNIT_TYPES}
+  SysUtils, Math, Types,
   JvJCLUtils, JvJVCLUtils;
 
 const

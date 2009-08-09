@@ -77,11 +77,9 @@ const
 
 implementation
 
-uses Sysutils,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  ExtCtrls, ComCtrls, StdCtrls, JvJVCLUtils;
+uses 
+  Sysutils, Types, ExtCtrls, ComCtrls, StdCtrls, 
+  JvJVCLUtils;
 
 function TJvBaseDBDialog.CreateForm: TForm;
 begin

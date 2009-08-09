@@ -50,10 +50,7 @@ function DynControlEngineVCLRed: TJvDynControlEngine;
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
-  Variants,
-  {$ENDIF COMPILER6_UP}
-  SysUtils, ExtDlgs;
+  Variants, SysUtils, ExtDlgs;
 
 type
   tHackControl = class (tControl);

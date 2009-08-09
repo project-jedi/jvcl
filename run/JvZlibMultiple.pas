@@ -169,7 +169,7 @@ const
 implementation
 
 uses
-  JvVCL5Utils, JvJCLUtils;
+  JvJCLUtils;
 
 {*******************************************************}
 {  Format of the File:                                  }

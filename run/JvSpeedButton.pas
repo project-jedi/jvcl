@@ -46,13 +46,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  CommCtrl,
-  {$IFDEF COMPILER6_UP}
-  Types,
-  {$ENDIF COMPILER6_UP}
-  SysUtils, Classes, Windows, Messages,
+  CommCtrl, Types, SysUtils, Classes, Windows, Messages,
   Controls, Graphics, Forms, ExtCtrls, Buttons, Menus, ImgList, ActnList,
-  JvVCL5Utils,
   JvExControls, JvComponent, JvButton, JvConsts, JvTypes, JvHotTrackPersistent,
   JvThemes;
 
@@ -210,10 +205,8 @@ type
     FClient: TJvImageSpeedButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
-    {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-    {$ENDIF COMPILER6_UP}
     function IsImageIndexLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
     procedure SetImageIndex(Value: Integer); override;
@@ -224,10 +217,8 @@ type
     FClient: TJvSpeedButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
-    {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-    {$ENDIF COMPILER6_UP}
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -946,13 +937,7 @@ begin
       {$ENDIF JVCLThemesEnabled}
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
-    NeedRepaint := NeedRepaint
-      {$IFDEF COMPILER6_UP}
-      and not Mouse.IsDragging
-      {$ELSE}
-      and not KeyPressed(VK_LBUTTON)
-      {$ENDIF COMPILER6_UP}
-      ;
+    NeedRepaint := NeedRepaint and not Mouse.IsDragging;
 
     inherited MouseEnter(Control); // set MouseOver
     { Windows XP introduced hot states also for non-flat buttons. }
@@ -974,13 +959,7 @@ begin
       {$ENDIF JVCLThemesEnabled}
       HotTrack or (FFlat and Enabled and not FDragging and (GetCapture = NullHandle));
 
-    NeedRepaint := NeedRepaint
-      {$IFDEF COMPILER6_UP}
-      and not Mouse.IsDragging
-      {$ELSE}
-      and not KeyPressed(VK_LBUTTON)
-      {$ENDIF COMPILER6_UP}
-      ;
+    NeedRepaint := NeedRepaint and not Mouse.IsDragging;
 
     inherited MouseLeave(Control); // set MouseOver
     if NeedRepaint then
@@ -1930,9 +1909,6 @@ begin
     FClient.AllowAllUp and (FClient.Down = (Action as TCustomAction).Checked);
 end;
 
-{$IFDEF COMPILER6_UP}
-
-
 function TJvImageSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   { (rb) This will fail in D7 due to a bug in TCustomAction.SetGroupIndex }
@@ -1945,8 +1921,6 @@ begin
   if IsGroupIndexLinked then
     FClient.GroupIndex := Value;
 end;
-
-{$ENDIF COMPILER6_UP}
 
 function TJvImageSpeedButtonActionLink.IsImageIndexLinked: Boolean;
 begin
@@ -2118,8 +2092,6 @@ begin
     FClient.AllowAllUp and (FClient.Down = (Action as TCustomAction).Checked);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 function TJvSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := (FClient is TJvSpeedButton) and
@@ -2131,8 +2103,6 @@ begin
   if IsGroupIndexLinked then
     TJvSpeedButton(FClient).GroupIndex := Value;
 end;
-
-{$ENDIF COMPILER6_UP}
 
 procedure TJvSpeedButtonActionLink.SetChecked(Value: Boolean);
 begin

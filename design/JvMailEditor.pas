@@ -32,11 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Dlgs, Dialogs,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvMail;
   
 type

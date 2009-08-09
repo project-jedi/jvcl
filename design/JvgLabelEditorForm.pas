@@ -32,11 +32,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, ExtDlgs, ExtCtrls, StdCtrls, Buttons, ComCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvgCompEditorTemplateForm, JvgTypes, JvgLabel;
 
 type

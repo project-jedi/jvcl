@@ -35,10 +35,7 @@ uses
   SysUtils, Classes, IniFiles,
   Windows, Messages, Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  JvVCL5Utils,
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvExtComponent, JvThemes, JvExControls;
 

@@ -39,11 +39,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
   {JvgBitBtn,  JvgRuler, }JvgReport, JvgCaption, JvgReportParamsEditor,

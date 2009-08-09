@@ -45,7 +45,7 @@ uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, ExtCtrls, StdCtrls, ImgList,
   JvJCLUtils, JvComboBox,
-  JvVCL5Utils, JvComponent, JvExControls, JvExStdCtrls;
+  JvComponent, JvExControls, JvExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);
@@ -220,9 +220,7 @@ type
     property Align;
     property Anchors;
     property AutoComplete default True;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
-    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
@@ -1019,11 +1017,7 @@ begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
-      {$IFDEF COMPILER6_UP}
       FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
-      {$ELSE}
-      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
-      {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
@@ -1144,8 +1138,7 @@ end;
 procedure TJvImageComboBox.CNCommand(var Msg: TWMCommand);
 begin
   inherited;
-  {$IFDEF COMPILER6_UP}
-  // Under D6 and upper, if OnSelect is Assigned, OnChange is not triggered
+  // If OnSelect is Assigned, OnChange is not triggered
   // so we do it ourselves. But to avoid triggering OnChange twice (Mantis 3175)
   // for the same change of Item, we only do it if OnSelect is Assigned.
   case Msg.NotifyCode of
@@ -1153,7 +1146,6 @@ begin
       if Assigned(OnSelect) then
         Change;
   end;
-  {$ENDIF COMPILER6_UP}
 end;
 
 
@@ -1471,11 +1463,7 @@ begin
       Tmp2 := Items[Index].ImageIndex;
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
-      {$IFDEF COMPILER6_UP}
       FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2, dsTransparent, itImage);
-      {$ELSE}
-      FImageList.Draw(Canvas, R.Left + Tmp, R.Top + 2, Tmp2);
-      {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
@@ -1557,11 +1545,7 @@ begin
       Tmp := Items[Index].ImageIndex;
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
-      {$IFDEF COMPILER6_UP}
       FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp, dsTransparent, itImage);
-      {$ELSE}
-      FImageList.Draw(Canvas, R.Left + 2, R.Top + Offset, Tmp);
-      {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin
@@ -1646,11 +1630,7 @@ begin
       Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Right - (FWidth + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
-      {$IFDEF COMPILER6_UP}
       FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
-      {$ELSE}
-      FImageList.Draw(Canvas, R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Tmp);
-      {$ENDIF COMPILER6_UP}
       // PRY END
       if FButtonFrame then
       begin

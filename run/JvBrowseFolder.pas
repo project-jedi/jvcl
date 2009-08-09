@@ -38,11 +38,6 @@ interface
 {$HPPEMIT '#include <shtypes.h>'}
 {$ENDIF BCB6}
 
-{$IFDEF BCB5}
-// BCB5 doesn't have the shtypes.h file, so we have to cope with it
-{$HPPEMIT '#define _ITEMIDLIST ::_ITEMIDLIST'}
-{$ENDIF BCB5}
-
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -173,11 +168,7 @@ type
   // (p3) shouldn't TOptionsDir be changed to T(Jv)OptionsDirectories?
   TOptionsDir = set of TOptionsDirectory;
 
-  {$IFDEF COMPILER6_UP}
   TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
-  {$ELSE}
-  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter, IUnknown)
-  {$ENDIF COMPILER6_UP}
   private
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }
     FOwnerWindow: THandle;

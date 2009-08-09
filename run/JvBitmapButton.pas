@@ -33,11 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  Classes, Graphics, Controls,
+  Windows, Messages, Types, Classes, Graphics, Controls,
   JvComponent, JvTypes;
 
 type

@@ -130,13 +130,11 @@ type
     property Anchors;
     property AutoComplete default True;
     property AutoSize;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property CharCase;
     property Constraints;
@@ -162,9 +160,7 @@ type
     property Visible;
     property OnChange;
     property OnClick;
-    {$IFDEF COMPILER6_UP}
     property OnCloseUp;
-    {$ENDIF COMPILER6_UP}
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
@@ -178,9 +174,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
-    {$IFDEF COMPILER6_UP}
     property OnSelect;
-    {$ENDIF COMPILER6_UP}
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -199,10 +193,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils;
+  Variants, SysUtils;
 
 {$IFDEF COMPILER_GENERICS_WORKAROUND}
 //=== { TBookmarkList } ======================================================

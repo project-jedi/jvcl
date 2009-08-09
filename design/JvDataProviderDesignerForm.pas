@@ -34,11 +34,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ActnList, Menus, ImgList, ToolWin, ComCtrls, StdCtrls, ExtCtrls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvDataProvider, JvDataProviderItemDesign, JvDataProviderIntf,
   JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
   JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDsgnTypes;
@@ -320,11 +316,7 @@ begin
   begin
     if FDesigner <> nil then
       ResetSelection;
-    {$IFDEF COMPILER6_UP}
     FOrgSelect := TDesignerSelections.Create;
-    {$ELSE}
-    FOrgSelect := TDesignerSelectionList.Create;
-    {$ENDIF COMPILER6_UP}
     FDesigner := Value;
     if Designer <> nil then
       Designer.GetSelections(FOrgSelect);

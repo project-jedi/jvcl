@@ -68,9 +68,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
-  {$IFNDEF COMPILER6_UP}
-  JvVCL5Utils,
-  {$ENDIF COMPILER6_UP}
   JvTypes, JvComponent, JvDataProvider, JvExControls, JvHotTrackPersistent;
 
 type
@@ -1134,12 +1131,7 @@ var
   OldValue, OtherDragging: Boolean;
 begin
   OldValue := MouseOver;
-  OtherDragging :=
-    KeyPressed(VK_LBUTTON)
-    {$IFDEF COMPILER6_UP}
-    or Mouse.IsDragging
-    {$ENDIF COMPILER6_UP}
-    ;
+  OtherDragging := KeyPressed(VK_LBUTTON) or Mouse.IsDragging;
 
   MouseOver := Enabled and not OtherDragging and
     (FindDragTarget(Mouse.CursorPos, True) = Self) and IsForegroundTask;
@@ -1204,12 +1196,7 @@ begin
 
   if not MouseOver and Enabled and IsForegroundTask then
   begin
-    OtherDragging :=
-      KeyPressed(VK_LBUTTON)
-      {$IFDEF COMPILER6_UP}
-      or Mouse.IsDragging
-      {$ENDIF COMPILER6_UP}
-      ;
+    OtherDragging := KeyPressed(VK_LBUTTON) or Mouse.IsDragging;
     NeedRepaint := not Transparent and
       (
       {$IFDEF JVCLThemesEnabled}
@@ -1235,12 +1222,7 @@ begin
     Exit;
   if  MouseOver and Enabled then
   begin
-    OtherDragging :=
-      KeyPressed(VK_LBUTTON)
-      {$IFDEF COMPILER6_UP}
-      or Mouse.IsDragging
-      {$ENDIF COMPILER6_UP}
-      ;
+    OtherDragging := KeyPressed(VK_LBUTTON) or Mouse.IsDragging;
 
     NeedRepaint := not Transparent and
       (

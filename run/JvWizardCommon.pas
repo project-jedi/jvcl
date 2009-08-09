@@ -44,11 +44,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Controls, Graphics,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  Classes, SysUtils;
+  Windows, Controls, Graphics, Types, Classes, SysUtils;
 
 const
   beAllEdges = [beLeft, beTop, beRight, beBottom];

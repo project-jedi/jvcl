@@ -35,11 +35,7 @@ implementation
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvBDEEditors, JvBdeUtils, JvBDEFilter, JvBDEIndex, JvBDELists, JvBDEMove,
   JvBDEProgress, JvBDEQBE, JvBDESecurity, JvBDEMemTable, JvBDEQuery,

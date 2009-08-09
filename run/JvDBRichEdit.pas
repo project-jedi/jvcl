@@ -99,12 +99,10 @@ type
     property AutoAdvancedTypography;
     property AutoURLDetect;
     property AutoVerbMenu;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property Color;
     property DragCursor;

@@ -112,10 +112,8 @@ begin
   ActiveControl := CheckListBox;
   if CheckListBox.Items.Count > 0 then
   begin
-    {$IFDEF COMPILER6_UP}
     CheckListBox.Selected[0] := True;
     CheckListBoxClick(CheckListBox);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

@@ -34,11 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysUtils, Classes, Graphics, Controls;
+  Windows, RTLConsts, SysUtils, Classes, Graphics, Controls;
 
 const
   RT_GIF = 'GIF'; { GIF Resource Type }

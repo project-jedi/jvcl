@@ -515,10 +515,8 @@ begin
             (Width - Images.Width) div 2 + Ord(bsMouseDown in MouseStates),
             (Height - Images.Height) div 2 + Ord(bsMouseDown in MouseStates),
             ImageIndex,
-            {$IFDEF COMPILER6_UP}
             dsTransparent,
             itImage,
-            {$ENDIF COMPILER6_UP}
             Enabled);
         end;
     end;

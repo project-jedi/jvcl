@@ -38,10 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Contnrs, Math,
-  {$IFDEF COMPILER6_UP}
-  DateUtils,
-  {$ENDIF COMPILER6_UP}
+  SysUtils, Classes, Contnrs, Math, DateUtils,
   JvTypes, JvComponentBase, JvSimpleXml;
 
 type
@@ -223,7 +220,7 @@ uses
   {$IFDEF SUPPORTS_INLINE}
   Windows,
   {$ENDIF SUPPORTS_INLINE}
-  JvVCL5Utils, JvJCLUtils, JvResources;
+  JvJCLUtils, JvResources;
 
 //=== { TJvXMLDatabase } =====================================================
 

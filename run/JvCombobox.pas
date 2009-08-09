@@ -35,18 +35,11 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  {$IFDEF COMPILER5}
-  JvAutoComplete,
-  {$ENDIF COMPILER5}
   JvJVCLUtils, JvCheckListBox, JvExStdCtrls, JvDataProvider, JvMaxPixel,
   JvToolEdit;
 
 type
   TJvCustomComboBox = class;
-
-  {$IFDEF COMPILER5}
-  TCustomComboBoxStrings = TStrings;
-  {$ENDIF COMPILER5}
 
   { This class will be used for the Items property of the combo box.
 
@@ -57,9 +50,6 @@ type
     handled by the combo box as usual. }
   TJvComboBoxStrings = class(TCustomComboBoxStrings)
   private
-    {$IFDEF COMPILER5}
-    FComboBox: TJvCustomComboBox;
-    {$ENDIF COMPILER5}
     FInternalList: TStringList;
     FUseInternal: Boolean;
     FUpdating: Boolean;
@@ -97,14 +87,6 @@ type
 
   TJvCustomComboBox = class(TJvExCustomComboBox)
   private
-    {$IFDEF COMPILER5}
-    FAutoComplete: Boolean;
-    FAutoCompleteCode: TJvComboBoxAutoComplete;
-    FAutoDropDown: Boolean;
-    FIsDropping: Boolean;
-    FOnSelect: TNotifyEvent;
-    FOnCloseUp: TNotifyEvent;
-    {$ENDIF COMPILER5}
     FMaxPixel: TJvMaxPixel;
     FReadOnly: Boolean;
     FConsumerSvc: TJvDataConsumer;
@@ -141,18 +123,9 @@ type
     procedure DoEmptyValueEnter; virtual;
     procedure DoEmptyValueExit; virtual;
     procedure CreateWnd; override;
-    {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
-    {$ENDIF COMPILER6_UP}
     procedure KeyPress(var Key: Char); override;
-    {$IFDEF COMPILER5}
-    procedure DoChange(Sender: TObject);
-    procedure DoDropDown(Sender: TObject);
-    procedure DoValueChange(Sender: TObject);
-    procedure CloseUp; dynamic;
-    procedure Select; dynamic;
-    {$ENDIF COMPILER5}
-    procedure SetItemHeight(Value: Integer); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetItemHeight(Value: Integer); override;
     function GetMeasureStyle: TJvComboBoxMeasureStyle;
     procedure SetMeasureStyle(Value: TJvComboBoxMeasureStyle);
     procedure PerformMeasure;
@@ -168,14 +141,6 @@ type
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
     procedure ConsumerSubServiceCreated(Sender: TJvDataConsumer; SubSvc: TJvDataConsumerAggregatedObject);
     property Provider: TJvDataConsumer read FConsumerSvc write SetConsumerService;
-    {$IFDEF COMPILER5}
-    property IsDropping: Boolean read FIsDropping write FIsDropping;
-    property ItemHeight write SetItemHeight;
-    property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
-    property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
-    property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
-    property AutoDropDown: Boolean read FAutoDropDown write FAutoDropDown default False;
-    {$ENDIF COMPILER5}
     property IsFixedHeight: Boolean read FIsFixedHeight;
     property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
       default cmsStandard;
@@ -191,7 +156,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
     procedure WndProc(var Msg: TMessage); override;
-    function GetItemCount: Integer; {$IFDEF COMPILER6_UP} override; {$ELSE} virtual; {$ENDIF}
+    function GetItemCount: Integer; override; 
     procedure DefineProperties(Filer: TFiler);override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -210,9 +175,7 @@ type
     property HintColor;
     property MaxPixel;
     property AutoComplete default True;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown default False;
-    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
@@ -434,13 +397,7 @@ const
 implementation
 
 uses
-  SysUtils, Consts, TypInfo, Buttons,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  SysUtils, Consts, TypInfo, Buttons, RTLConsts, Variants,
   JvDataProviderIntf, JvItemsSearchs, JvThemes, JvConsts, JvResources, JvTypes;
 
 const
@@ -1135,11 +1092,7 @@ end;
 
 function TJvComboBoxStrings.GetComboBox: TJvCustomComboBox;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := TJvCustomComboBox(inherited ComboBox);
-  {$ELSE}
-  Result := FComboBox;
-  {$ENDIF COMPILER6_UP}
 end;
 
 function TJvComboBoxStrings.GetCount: Integer;
@@ -1150,14 +1103,7 @@ begin
   begin
     if UseInternal then
     begin
-      {$IFDEF COMPILER5}
-      if not ComboBox.IsDropping then
-      {$ENDIF COMPILER5}
-        Result := InternalList.Count
-      {$IFDEF COMPILER5}
-      else
-        Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0)
-      {$ENDIF COMPILER5}
+      Result := InternalList.Count
     end
     else
       Result := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0);
@@ -1242,11 +1188,7 @@ end;
 
 procedure TJvComboBoxStrings.SetComboBox(Value: TJvCustomComboBox);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited ComboBox := Value;
-  {$ELSE}
-  FComboBox := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvComboBoxStrings.SetUpdateState(Updating: Boolean);
@@ -1271,30 +1213,10 @@ end;
 constructor TJvCustomComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF COMPILER5}
-  FAutoComplete := True;
-  {$ENDIF COMPILER5}
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RenderDisabledAsGrayed,
     DPA_ConsumerDisplaysList]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
   FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
-  {$IFDEF COMPILER5}
-  { The following hack assumes that TJvComboBox.Items reads directly from the private FItems field
-    of TCustomComboBox and that TJvComboBox.Items is actually published.
-
-    What we do here is remove the original string list used and place our own version in it's place.
-    This would give us the benefit of keeping the list of strings (and objects) even if a provider
-    is active and the combo box windows has no strings at all. }
-  Items.Free;                                                   // remove original item list (TComboBoxStrings instance)
-  TStrings(Pointer(@Self.Items)^) := TJvComboBoxStrings.Create; // create our own implementation and put it in place.
-  TJvComboBoxStrings(Items).ComboBox := Self;                   // link it to the combo box.
-  {$ENDIF COMPILER5}
-  {$IFDEF COMPILER5}
-  FAutoCompleteCode := TJvComboBoxAutoComplete.Create(Self);
-  FAutoCompleteCode.OnDropDown := DoDropDown;
-  FAutoCompleteCode.OnChange := DoChange;
-  FAutoCompleteCode.OnValueChange := DoValueChange;
-  {$ENDIF COMPILER5}
   FMaxPixel := TJvMaxPixel.Create(Self);
   FMaxPixel.OnChanged := MaxPixelChanged;
   FEmptyFontColor := clGrayText;
@@ -1304,19 +1226,8 @@ destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
   FreeAndNil(FConsumerSvc);
-  {$IFDEF COMPILER5}
-  FAutoCompleteCode.Free;
-  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
-
-{$IFDEF COMPILER5}
-procedure TJvCustomComboBox.CloseUp;
-begin
-  if Assigned(FOnCloseUp) then
-    FOnCloseUp(Self);
-end;
-{$ENDIF COMPILER5}
 
 procedure TJvCustomComboBox.CNCommand(var Msg: TWMCommand);
 var
@@ -1324,58 +1235,39 @@ var
   Item: IJvDataItem;
   ItemText: IJvDataItemText;
 begin
-  {$IFDEF COMPILER5}
-  if Msg.NotifyCode = CBN_DROPDOWN then
-    FIsDropping := True;
-  try
-  {$ENDIF COMPILER5}
-    case Msg.NotifyCode of
-      CBN_CLOSEUP:
+  case Msg.NotifyCode of
+    CBN_SELCHANGE:
+      begin
+        if IsProviderSelected then
         begin
-          {$IFDEF COMPILER5}
-          CloseUp;       // Delphi 5 does not have the CloseUp function, so we mimic it here
-          {$ELSE}
-          inherited;
-          {$ENDIF COMPILER5}
-        end;
-      CBN_SELCHANGE:
-        begin
-          if IsProviderSelected then
-          begin
-            Provider.Enter;
-            try
-              if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
-              begin
-                Item := VL.Item(ItemIndex);
-                if Supports(Item, IJvDataItemText, ItemText) then
-                  Text := ItemText.Text
-                else
-                  Text := '';
-              end
+          Provider.Enter;
+          try
+            if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+            begin
+              Item := VL.Item(ItemIndex);
+              if Supports(Item, IJvDataItemText, ItemText) then
+                Text := ItemText.Text
               else
-              begin
-                Item := nil;
                 Text := '';
-              end;
-              Click;
-              Select;
-              Provider.ItemSelected(Item);
-            finally
-              Provider.Leave;
+            end
+            else
+            begin
+              Item := nil;
+              Text := '';
             end;
-          end
-          else
-            inherited;
-        end;
-      else
-        inherited;
-    end;
-  {$IFDEF COMPILER5}
-  finally
-    if Msg.NotifyCode = CBN_DROPDOWN then
-      FIsDropping := False;
+            Click;
+            Select;
+            Provider.ItemSelected(Item);
+          finally
+            Provider.Leave;
+          end;
+        end
+        else
+          inherited;
+      end;
+    else
+      inherited;
   end;
-  {$ENDIF COMPILER5}
 end;
 
 procedure TJvCustomComboBox.CNMeasureItem(var Msg: TWMMeasureItem);
@@ -1628,19 +1520,13 @@ begin
     end;
   end
   else
-    {$IFDEF COMPILER6_UP}
     Result := inherited GetItemCount;
-    {$ELSE}
-    Result := Items.Count;
-    {$ENDIF COMPILER6_UP}
 end;
 
-{$IFDEF COMPILER6_UP}
 function TJvCustomComboBox.GetItemsClass: TCustomComboBoxStringsClass;
 begin
   Result := TJvComboBoxStrings;
 end;
-{$ENDIF COMPILER6_UP}
 
 function TJvCustomComboBox.GetItemText(Index: Integer): string;
 var
@@ -1748,40 +1634,7 @@ begin
   if (ReadOnly) and (Key = Chr(VK_BACK)) then
     Key := #0;
   inherited KeyPress(Key);
-  {$IFDEF COMPILER5}
-  if AutoComplete then
-    FAutoCompleteCode.AutoComplete(Key);
-  {$ENDIF COMPILER5}
 end;
-
-{$IFDEF COMPILER5}
-
-procedure TJvCustomComboBox.DoChange(Sender: TObject);
-begin
-  Change;
-end;
-
-procedure TJvCustomComboBox.DoDropDown(Sender: TObject);
-begin
-  if AutoDropDown and DroppedDown then
-    DroppedDown := False;
-end;
-
-procedure TJvCustomComboBox.DoValueChange(Sender: TObject);
-begin
-  Click;
-  Select;
-end;
-
-procedure TJvCustomComboBox.Select;
-begin
-  if Assigned(FOnSelect) then
-    FOnSelect(Self)
-  else
-    Change;
-end;
-
-{$ENDIF COMPILER5}
 
 procedure TJvCustomComboBox.Loaded;
 begin
@@ -1927,11 +1780,7 @@ end;
 procedure TJvCustomComboBox.SetItemHeight(Value: Integer);
 begin
   FLastSetItemHeight := Value;
-  {$IFDEF COMPILER6_UP}
   inherited SetItemHeight(Value);
-  {$ELSE}
-  inherited ItemHeight := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvCustomComboBox.SetMeasureStyle(Value: TJvComboBoxMeasureStyle);

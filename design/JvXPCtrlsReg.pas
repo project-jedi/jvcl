@@ -38,11 +38,7 @@ implementation
 
 uses
   Classes, ImgList,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  Contnrs, DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts, JvXPProgressBar,
   JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
   JvXPButtons, JvXPCheckCtrls;

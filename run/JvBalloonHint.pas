@@ -116,11 +116,7 @@ type
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CreateParams(var Params: TCreateParams); override;
-    {$IFDEF COMPILER6_UP}
     procedure NCPaint(DC: HDC); override;
-    {$ELSE}
-    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF COMPILER6_UP}
     procedure Paint; override;
 
     {$IFDEF JVCLThemesEnabled}
@@ -315,7 +311,7 @@ uses
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
   JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
-  JclStringConversions, JclUnicode, JvVCL5Utils;
+  JclStringConversions, JclUnicode;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);
@@ -390,28 +386,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
-
-type
-  TAnimateWindowProc = function(hWnd: HWND; dwTime: DWORD; dwFlags: DWORD): BOOL; stdcall;
-
-var
-  AnimateWindowProc: TAnimateWindowProc = nil;
-
-procedure InitD5Controls;
-var
-  UserHandle: HMODULE;
-begin
-  if not Assigned(AnimateWindowProc) then
-  begin
-    UserHandle := GetModuleHandle('USER32');
-    if UserHandle <> 0 then
-      @AnimateWindowProc := GetProcAddress(UserHandle, 'AnimateWindow');
-  end;
-end;
-
-{$ENDIF COMPILER5}
-
 function WorkAreaRect: TRect;
 begin
   SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0);
@@ -437,42 +411,11 @@ begin
   Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6);
 end;
 
-{$IFDEF COMPILER6_UP}
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
 begin
   Result := AControl.ClientToParent(Point, AParent);
 end;
-{$ELSE}
-function InternalClientToParent(AControl: TControl; const Point: TPoint;
-  AParent: TWinControl): TPoint;
-var
-  LParent: TWinControl;
-begin
-  if AParent = nil then
-    AParent := AControl.Parent;
-  if AParent = nil then
-    raise EInvalidOperation.CreateResFmt(@RsEParentRequired, [AControl.Name]);
-  Result := Point;
-  Inc(Result.X, AControl.Left);
-  Inc(Result.Y, AControl.Top);
-  LParent := AControl.Parent;
-  while LParent <> nil do
-  begin
-    if LParent.Parent <> nil then
-    begin
-      Inc(Result.X, LParent.Left);
-      Inc(Result.Y, LParent.Top);
-    end;
-    if LParent = AParent then
-      Break
-    else
-      LParent := LParent.Parent;
-  end;
-  if LParent = nil then
-    raise EInvalidOperation.CreateResFmt(@RsEParentGivenNotAParent, [AControl.Name]);
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure GetHintMessageFont(AFont: TFont);
 begin
@@ -596,9 +539,6 @@ end;
 
 constructor TJvBalloonWindow.Create(AOwner: TComponent);
 begin
-  {$IFDEF COMPILER5}
-  InitD5Controls;
-  {$ENDIF COMPILER5}
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
 end;
@@ -1226,17 +1166,10 @@ begin
     end;
 end;
 
-{$IFDEF COMPILER6_UP}
 procedure TJvBalloonWindow.NCPaint(DC: HDC);
 begin
   { Do nothing, thus prevent TJvHintWindow from drawing }
 end;
-{$ELSE}
-procedure TJvBalloonWindow.WMNCPaint(var Msg: TMessage);
-begin
-  { Do nothing, thus prevent TJvHintWindow from drawing }
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvBalloonWindow.Paint;
 begin
@@ -1773,12 +1706,8 @@ begin
     try
       CancelHint;
     except
-      {$IFDEF COMPILER6_UP}
       if Assigned(ApplicationHandleException) then
         ApplicationHandleException(Self);
-      {$ELSE}
-      Application.HandleException(Self);
-      {$ENDIF COMPILER6_UP}
     end
     else
       Result := DefWindowProc(Handle, Msg, WParam, LParam);

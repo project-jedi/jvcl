@@ -404,11 +404,7 @@ const
 implementation
 
 uses
-  Windows, SysUtils,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  ExtCtrls, ComCtrls, StdCtrls, Dialogs,
+  Windows, SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, Dialogs,
   JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources;
 
 

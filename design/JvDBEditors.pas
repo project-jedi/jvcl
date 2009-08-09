@@ -32,11 +32,7 @@ interface
 uses
   SysUtils,
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDataSourceIntf;
 
 type
@@ -106,9 +102,7 @@ var
   Instance: TComponent;
   PropInfo: PPropInfo;
   DataSource: TDataSource;
-  {$IFDEF COMPILER6_UP}
   DataSourceIntf: IJvDataSource;
-  {$ENDIF COMPILER6_UP}
 begin
   Instance := TComponent(GetComponent(0));
   PropInfo := TypInfo.GetPropInfo(Instance.ClassInfo, GetDataSourcePropName);
@@ -129,7 +123,6 @@ begin
   else
   if (PropInfo <> nil) and (PropInfo^.PropType^.Kind = tkInterface) then
   begin
-    {$IFDEF COMPILER6_UP}
     if Supports(GetInterfaceProp(Instance, PropInfo), IJvDataSource, DataSourceIntf) then
     begin
       if DataSourceIntf.DataSet <> nil then
@@ -143,7 +136,6 @@ begin
         {$ENDIF COMPILER10_UP}
       end;
     end;
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -166,9 +158,7 @@ var
   Instance: TComponent;
   PropInfo: PPropInfo;
   DataSource: TDataSource;
-  {$IFDEF COMPILER6_UP}
   DataSourceIntf: IJvDataSource;
-  {$ENDIF COMPILER6_UP}
 begin
   Instance := TComponent(GetComponent(0));
   PropInfo := TypInfo.GetPropInfo(Instance.ClassInfo, GetDataSourcePropName);
@@ -187,7 +177,6 @@ begin
   else
   if (PropInfo <> nil) and (PropInfo^.PropType^.Kind = tkInterface) then
   begin
-    {$IFDEF COMPILER6_UP}
     if Supports(GetInterfaceProp(Instance, PropInfo), IJvDataSource, DataSourceIntf) then
     begin
       if DataSourceIntf.DataSet <> nil then
@@ -201,7 +190,6 @@ begin
         {$ENDIF COMPILER10_UP}
       end;
     end;
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

@@ -127,7 +127,7 @@ type
 
   TJvDesignAction = (daSelectParent, daDelete, daCopy, daCut, daPaste,
     daNudgeLeft, daNudgeRight, daNudgeUp, daNudgeDown, daGrowWidth,
-    daShrinkWidth, daGrowHeight, daShrinkHeight, daLastAction {$IFDEF COMPILER6_UP} = MaxInt {$ENDIF});
+    daShrinkWidth, daGrowHeight, daShrinkHeight, daLastAction = MaxInt);
 
   TJvDesignController = class(TJvDesignCustomController)
   private
@@ -203,7 +203,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   end;
 
-  TJvDesignDesigner = class(TComponent, {$IFDEF COMPILER5} IDesigner {$ELSE} IDesignerHook {$ENDIF})
+  TJvDesignDesigner = class(TComponent, IDesignerHook)
   private
     FMessenger: TJvDesignCustomMessenger;
   public
@@ -969,9 +969,7 @@ function TJvDesignController.MouseUp(Button: TMouseButton; X, Y: Integer): Boole
     // AlignDisabled can become stuck.
     // This routine is to aid debugging only.
     if FClicked <> nil then
-      {$IFDEF COMPILER6_UP}
       while FClicked.Parent.AlignDisabled do
-      {$ENDIF COMPILER6_UP}
         FClicked.Parent.EnableAlign;
   end;
 

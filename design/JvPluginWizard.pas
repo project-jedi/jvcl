@@ -200,101 +200,9 @@ const
   '</PROJECT>';
     
 
-  BCB5_OPTIONS_TEMPLATE =
-  '<?xml version=''1.0'' encoding=''us-ascii'' ?>' + #13#10 + 
-  '<!-- C++Builder XML Project -->' + #13#10 + 
-  '<PROJECT>' + #13#10 + 
-  '  <MACROS>' + #13#10 + 
-  '    <VERSION value="BCB.05.03"/>' + #13#10 + 
-  '    <PROJECT value="%ModuleIdent.bpl"/>' + #13#10 + 
-  '    <OBJFILES value=""/>' + #13#10 + 
-  '    <RESFILES value="%ModuleIdent.res"/>' + #13#10 + 
-  '    <DEFFILE value=""/>' + #13#10 + 
-  '    <RESDEPEN value="$(RESFILES)"/>' + #13#10 + 
-  '    <LIBFILES value=""/>' + #13#10 + 
-  '    <LIBRARIES value=""/>' + #13#10 + 
-  '    <SPARELIBS value=""/>' + #13#10 + 
-  '    <PACKAGES value="vcl50.bpi"/>' + #13#10 + 
-  '    <PATHCPP value=".;"/>' + #13#10 + 
-  '    <PATHPAS value=".;"/>' + #13#10 + 
-  '    <PATHRC value=".;"/>' + #13#10 + 
-  '    <PATHASM value=".;"/>' + #13#10 + 
-  '    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>' + #13#10 + 
-  '    <RELEASELIBPATH value="$(BCB)\lib\release"/>' + #13#10 + 
-  '    <LINKER value="tlink32"/>' + #13#10 + 
-  '    <USERDEFINES value="_DEBUG"/>' + #13#10 + 
-  '    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>' + #13#10 + 
-  '    <MAINSOURCE value="%ModuleIdent.cpp"/>' + #13#10 + 
-  '    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl"/>' + #13#10 + 
-  '    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>' + #13#10 + 
-  '    <WARNINGS value="-w-par"/>' + #13#10 + 
-  '  </MACROS>' + #13#10 + 
-  '  <OPTIONS>' + #13#10 + 
-  '    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c ' + #13#10 + 
-  '      -tWM"/>' + #13#10 + 
-  '    <PFLAGS value="-$YD -$W -$O- -v -JPHNE -M"/>' + #13#10 + 
-  '    <RFLAGS value=""/>' + #13#10 + 
-  '    <AFLAGS value="/mx /w2 /zd"/>' + #13#10 + 
-  '    <LFLAGS value="-D&quot;&quot; -aa -Tpp -x -Gn -Gl -Gi -v"/>' + #13#10 + 
-  '  </OPTIONS>' + #13#10 + 
-  '  <LINKER>' + #13#10 + 
-  '    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>' + #13#10 + 
-  '    <ALLRES value="$(RESFILES)"/>' + #13#10 + 
-  '    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>' + #13#10 + 
-  '  </LINKER>' + #13#10 + 
-  '  <IDEOPTIONS>' + #13#10 + 
-  '[Version Info]' + #13#10 + 
-  'IncludeVerInfo=1' + #13#10 + 
-  'AutoIncBuild=0' + #13#10 + 
-  'MajorVer=1' + #13#10 + 
-  'MinorVer=0' + #13#10 + 
-  'Release=0' + #13#10 + 
-  'Build=0' + #13#10 + 
-  'Debug=0' + #13#10 + 
-  'PreRelease=0' + #13#10 + 
-  'Special=0' + #13#10 + 
-  'Private=0' + #13#10 + 
-  'DLL=0' + #13#10 + 
-  'Locale=3081' + #13#10 + 
-  'CodePage=1252' + #13#10 + 
-  '' + #13#10 + 
-  '[Version Info Keys]' + #13#10 + 
-  'CompanyName=' + #13#10 + 
-  'FileDescription=' + #13#10 + 
-  'FileVersion=1.0.0.0' + #13#10 + 
-  'InternalName=' + #13#10 + 
-  'LegalCopyright=' + #13#10 + 
-  'LegalTrademarks=' + #13#10 + 
-  'OriginalFilename=' + #13#10 + 
-  'ProductName=' + #13#10 + 
-  'ProductVersion=1.0.0.0' + #13#10 + 
-  'Comments=' + #13#10 + 
-  '' + #13#10 + 
-  '[Debugging]' + #13#10 + 
-  'DebugSourceDirs=$(BCB)\source\vcl' + #13#10 + 
-  '' + #13#10 + 
-  '[Parameters]' + #13#10 + 
-  'RunParams=' + #13#10 + 
-  'HostApplication=' + #13#10 + 
-  'RemoteHost=' + #13#10 + 
-  'RemotePath=' + #13#10 + 
-  'RemoteDebug=0' + #13#10 + 
-  '' + #13#10 + 
-  '[Compiler]' + #13#10 + 
-  'ShowInfoMsgs=0' + #13#10 + 
-  'LinkDebugVcl=0' + #13#10 + 
-  'LinkCGLIB=0' + #13#10 + 
-  '' + #13#10 + 
-  '[Language]' + #13#10 + 
-  'ActiveLang=' + #13#10 + 
-  'ProjectLang=' + #13#10 + 
-  'RootDir=' + #13#10 + 
-  '  </IDEOPTIONS>' + #13#10 + 
-  '</PROJECT>';
-
 type
   TJvPluginWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
-    {$IFDEF COMPILER6_UP} IOTARepositoryWizard60, {$ENDIF COMPILER6_UP}
+    IOTARepositoryWizard60,
     {$IFDEF COMPILER8_UP} IOTARepositoryWizard80, {$ENDIF COMPILER8_UP}
     {$IFDEF COMPILER10_UP} IOTAProjectWizard100, {$ENDIF COMPILER10_UP}
     IOTAMenuWizard, IOTAProjectWizard)
@@ -319,15 +227,13 @@ type
     function GetAuthor: string; virtual;
     function GetComment: string; virtual;
     function GetPage: string; virtual;
-    function GetGlyph: {$IFDEF COMPILER6_UP} Cardinal; {$ELSE} HICON; {$ENDIF} virtual;
+    function GetGlyph: Cardinal; virtual;
 
     { IOTAMenuWizard methods }
     function GetMenuText: string; virtual;
 
-    {$IFDEF COMPILER6_UP}
     { IOTARepositoryWizard60 }
     function GetDesigner: string;
-    {$ENDIF COMPILER6_UP}
 
     {$IFDEF COMPILER8_UP}
     { IOTARepositoryWizard80 }
@@ -351,7 +257,7 @@ type
 
   
   TJvPluginWizardDelphi = class(TJvPluginWizard, IOTAWizard, IOTARepositoryWizard,
-    {$IFDEF COMPILER6_UP} IOTARepositoryWizard60, {$ENDIF COMPILER6_UP}
+    IOTARepositoryWizard60,
     {$IFDEF COMPILER8_UP} IOTARepositoryWizard80, {$ENDIF COMPILER8_UP}
     {$IFDEF COMPILER10_UP} IOTAProjectWizard100, {$ENDIF COMPILER10_UP}
     IOTAMenuWizard, IOTAProjectWizard)  
@@ -363,7 +269,7 @@ type
   end;
   
   TJvPluginWizardBuilder = class(TJvPluginWizard, IOTAWizard, IOTARepositoryWizard,
-    {$IFDEF COMPILER6_UP} IOTARepositoryWizard60, {$ENDIF COMPILER6_UP}
+    IOTARepositoryWizard60,
     {$IFDEF COMPILER8_UP} IOTARepositoryWizard80, {$ENDIF COMPILER8_UP}
     {$IFDEF COMPILER10_UP} IOTAProjectWizard100, {$ENDIF COMPILER10_UP}
     IOTAMenuWizard, IOTAProjectWizard)  
@@ -378,7 +284,7 @@ type
   TJvPlugType = ( ptPackage, ptDLL );
 
   TJvPluginProjectCreator = class(TInterfacedObject, IOTACreator,
-    {$IFDEF COMPILER5_UP} IOTAProjectCreator50, {$ENDIF COMPILER5_UP}
+    IOTAProjectCreator50,
     {$IFDEF COMPILER8_UP} IOTAProjectCreator80, {$ENDIF COMPILER8_UP}
     IOTAProjectCreator)
   public
@@ -485,11 +391,7 @@ implementation
 
 uses
   Controls, SysUtils, Dialogs, Classes, ActnList, Menus,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JclFileUtils, JclBorlandTools,
   JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
@@ -585,7 +487,6 @@ begin
     {$IFDEF BCB}
     Repository := Installations.BCBInstallationFromVersion[
       {$IFDEF BCB6} 6 {$ENDIF}
-      {$IFDEF BCB5} 5 {$ENDIF}
       ].Repository;
     {$ENDIF BCB}
     {$IFDEF DELPHI}
@@ -596,7 +497,6 @@ begin
       {$IFDEF DELPHI9}   9 {$ENDIF}
       {$IFDEF DELPHI7}   7 {$ENDIF}
       {$IFDEF DELPHI6}   6 {$ENDIF}
-      {$IFDEF DELPHI5}   5 {$ENDIF}
       ].Repository;
     {$ENDIF DELPHI}
     
@@ -616,7 +516,7 @@ begin
   Result := RsNewPlugin;
 end;
 
-function TJvPluginWizard.GetGlyph: {$IFDEF COMPILER6_UP} Cardinal; {$ELSE} HICON; {$ENDIF}
+function TJvPluginWizard.GetGlyph: Cardinal; 
 begin
   Result := LoadIcon(HInstance, 'XJVPLUGINWIZ');
 end;
@@ -677,12 +577,10 @@ begin
 end;
 {$ENDIF COMPILER8_UP}
 
-{$IFDEF COMPILER6_UP}
 function TJvPluginWizard.GetDesigner: string;
 begin
   Result := dVCL;
 end;
-{$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER8_UP}
 function TJvPluginWizard.GetGalleryCategory: IOTAGalleryCategory;
@@ -766,14 +664,8 @@ begin
       sTmp := StringReplace(sTmp, '%ModuleIdent', ProjectName, [rfIgnoreCase, rfReplaceAll]);
       Result := TJvOTAFile.Create(sTmp, -1);
     {$ELSE ~BCB6}
-      {$IFDEF BCB5}
-      sTmp := BCB5_OPTIONS_TEMPLATE;
-      sTmp := StringReplace(sTmp, '%ModuleIdent', ProjectName, [rfIgnoreCase, rfReplaceAll]);
-      Result := TJvOTAFile.Create(sTmp, -1);
-      {$ELSE ~BCB5}
       // Anything else is not supported
       Result := nil;
-      {$ENDIF BCB5}
     {$ENDIF BCB6}
     end
   {$ENDIF COMPILER10_UP}
@@ -896,9 +788,6 @@ begin
       {$IFDEF COMPILER8_UP}
       Project.AddFile('rtl.bpi', False);
       {$ENDIF COMPILER8_UP}
-      {$IFDEF COMPILER5}
-      Project.AddFile('JvCoreC5R.bpi', False)
-      {$ENDIF COMPILER5}
       {$IFDEF COMPILER6}
       Project.AddFile('JvCoreC6R.bpi', False)
       {$ENDIF COMPILER6}
@@ -915,14 +804,6 @@ begin
     // add requires
     if PlugType = ptPackage then
     begin
-      {$IFDEF COMPILER5}
-      // added by default
-      //Project.AddFile('vcl50.dcp', False);
-      Project.AddFile('JvCoreD5R.dcp', False);
-      //{$ELSE ~COMPILER5}
-      // added by default
-      //Project.AddFile('vcl.dcp', False);
-      {$ENDIF COMPILER5}
       {$IFDEF COMPILER6}
       Project.AddFile('JvCoreD6R.dcp', False);
       {$ENDIF COMPILER6}
@@ -958,7 +839,7 @@ begin
     if PlugType = ptDLL then
     begin
       // I have no idea why we have to do this for the newer Borland/CodeGear IDEs, but it is not required
-      // for older versions (such as BCB5/6), since they create their own project source file for DLLs
+      // for older versions (such as BCB6), since they create their own project source file for DLLs
       {$IFDEF COMPILER10_UP}
       DllModuleCreator := TJvPluginDLLModuleCreator.Create;
       DllModuleCreator.Wizard := Wizard;

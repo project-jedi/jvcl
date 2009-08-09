@@ -85,7 +85,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts, JvResources, JvVCL5Utils, JvJVCLUtils;
+  JvConsts, JvResources, JvJVCLUtils;
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);
@@ -151,11 +151,7 @@ begin
 
   if Screen.MonitorCount > 0 then
   begin
-    {$IFDEF COMPILER6_UP}
     LScreenRect := Monitor.WorkareaRect;
-    {$ELSE}
-    LScreenRect := GetMonitorWorkareaRect(Monitor);
-    {$ENDIF COMPILER6_UP}
     if (Left + Width > LScreenRect.Right) then
       Left := LScreenRect.Right - Width;
     if (Top + Height > LScreenRect.Bottom) then

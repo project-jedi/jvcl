@@ -31,11 +31,7 @@ interface
 
 uses
   Windows, Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   ComCtrls,
   JvFullColorCtrls;
 
@@ -58,8 +54,7 @@ uses
 
 function TJvColorIDEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList, paSortList, paRevertable, paRevertable,
-    {$IFDEF COMPILER6_UP} paNotNestable, {$ENDIF} paMultiSelect];
+  Result := [paValueList, paSortList, paRevertable, paRevertable, paNotNestable, paMultiSelect];
 end;
 
 function TJvColorIDEditor.GetValue: string;

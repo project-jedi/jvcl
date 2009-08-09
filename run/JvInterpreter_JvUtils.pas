@@ -53,13 +53,7 @@ implementation
 
 uses
   SysUtils, Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
-  Dialogs, Menus, Math, ImgList,
-  {$IFDEF COMPILER5}
-  FileCtrl,
-  {$ENDIF COMPILER5}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
+  Dialogs, Menus, Math, ImgList, Variants,
   {$IFDEF SUPPORTS_INLINE}
   Windows,
   {$ENDIF SUPPORTS_INLINE}

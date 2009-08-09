@@ -126,12 +126,7 @@ const
 implementation
 
 uses
-{$IFDEF COMPILER6_UP}
-  DateUtils
-{$ELSE}
-  JvJCLUtils
-{$ENDIF COMPILER6_UP}
-  ;
+  DateUtils;
 
 constructor TJvTFMonths.Create(AOwner: TComponent);
 begin

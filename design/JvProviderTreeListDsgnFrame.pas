@@ -34,11 +34,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ImgList, Menus, ActnList,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDataProviderIntf, JvProviderTreeListFrame, JvDsgnTypes;
 
 type

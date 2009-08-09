@@ -50,9 +50,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes,
-  {$IFDEF COMPILER5}
-  JvVCL5Utils,
-  {$ENDIF COMPILER5}
   Graphics, Controls, Forms, ExtCtrls;
 
 const
@@ -224,11 +221,9 @@ type
     {$ENDIF COMPILER10_UP}
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER6_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF COMPILER6_UP}
     property OnResize;
     property OnStartDock;
     property OnStartDrag;

@@ -50,7 +50,7 @@ uses
   Windows, Messages, SysUtils, ShlObj, ShellAPI,
   Classes, Graphics, Controls,
   JclWin32, JclSysInfo,
-  JvVCL5Utils, JvJVCLUtils, JvComponentBase, JvTypes;
+  JvJVCLUtils, JvComponentBase, JvTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas

@@ -30,11 +30,7 @@ unit JvScrollMaxEditor;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvScrollMaxEditor = class(TComponentEditor)

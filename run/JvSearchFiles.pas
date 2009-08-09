@@ -300,8 +300,7 @@ const
 implementation
 
 uses
-  JclStrings, JclDateTime,
-  JvVCL5Utils;
+  JclStrings, JclDateTime;
 
 { Maybe TJvSearchFiles should be implemented with FindFirst, FindNext.
   There isn't a good reason to use FindFirstFile, FindNextFile instead of

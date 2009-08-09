@@ -287,11 +287,7 @@ const
 implementation
 
 uses
-  Consts,
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysUtils, Math, Graphics, Clipbrd,
+  Consts, RTLConsts, SysUtils, Math, Graphics, Clipbrd,
   JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
 
 type

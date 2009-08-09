@@ -285,12 +285,12 @@ type
       CaseSensitive: Boolean = True): Integer;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     function GetDragImages: TDragImageList; override;
-    procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SelectAll; override;
     procedure UnselectAll;
     procedure InvertSelection;
     procedure MoveSelectedUp; virtual;
     procedure MoveSelectedDown; virtual;
-    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ELSE} virtual; {$ENDIF}
+    procedure DeleteSelected; override;
     procedure DeleteAllButSelected;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
@@ -307,9 +307,7 @@ type
 
   TJvListBox = class(TJvCustomListBox)
   public
-    {$IFDEF COMPILER6_UP}
     property Count;
-    {$ENDIF COMPILER6_UP}
   published
     property Align;
     property Anchors;
@@ -406,9 +404,7 @@ uses
   {$IFDEF COMPILER10_UP}
   Types,
   {$ENDIF COMPILER10_UP}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   JclBase,
   JvJCLUtils, JvJVCLUtils, JvConsts, JvCtrls, JvResources;
 
@@ -439,11 +435,9 @@ begin
   if UseInternal then
     Result := InternalList[Index]
   else
-  {$IFDEF COMPILER6_UP}
   if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
     Result := ListBox.DoGetData(Index)
   else
-  {$ENDIF COMPILER6_UP}
   begin
     Len := SendMessage(ListBox.Handle, LB_GETTEXTLEN, Index, 0);
     if Len = LB_ERR then
@@ -475,11 +469,9 @@ begin
   if UseInternal then
     Result := InternalList.Objects[Index]
   else
-  {$IFDEF COMPILER6_UP}
   if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
     Result := ListBox.DoGetDataObject(Index)
   else
-  {$ENDIF COMPILER6_UP}
   begin
     Result := TObject(ListBox.GetItemData(Index));
     if Longint(Result) = LB_ERR then
@@ -514,7 +506,7 @@ begin
     InternalList.Objects[Index] := AObject
   else
   begin
-    if (Index <> -1) {$IFDEF COMPILER6_UP} and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]) {$ENDIF} then
+    if (Index <> -1) and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]) then
     begin
       ListBox.DeselectProvider;
       ListBox.SetItemData(Index, Longint(AObject));
@@ -563,11 +555,9 @@ begin
     Result := InternalList.Add(S)
   else
   begin
-    {$IFDEF COMPILER6_UP}
     Result := -1;
     if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
       Exit;
-    {$ENDIF COMPILER6_UP}
     ListBox.DeselectProvider;
     Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
     if Result < 0 then
@@ -604,11 +594,9 @@ begin
   if UseInternal then
     Result := InternalList.IndexOf(S)
   else
-  {$IFDEF COMPILER6_UP}
   if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
     Result := ListBox.DoFindData(S)
   else
-  {$ENDIF COMPILER6_UP}
     Result := SendMessage(ListBox.Handle, LB_FINDSTRINGEXACT, -1, Longint(PChar(S)));
 end;
 
@@ -619,10 +607,8 @@ begin
   else
   begin
     ListBox.DeselectProvider;
-    {$IFDEF COMPILER6_UP}
     if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
       Exit;
-    {$ENDIF COMPILER6_UP}
     if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
@@ -637,10 +623,8 @@ begin
     InternalList.Move(CurIndex, NewIndex)
   else
   begin
-    {$IFDEF COMPILER6_UP}
     if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
       Exit;
-    {$ENDIF COMPILER6_UP}
     BeginUpdate;
     ListBox.Moving := True;
     try

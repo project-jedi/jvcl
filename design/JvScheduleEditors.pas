@@ -27,11 +27,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvScheduleEditorForm, JvScheduledEvents;
 
 type

@@ -49,10 +49,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  Menus, ShellAPI, ImgList,
-  {$IFDEF COMPILER6_UP}
-  DateUtils,
-  {$ENDIF COMPILER6_UP}
+  Menus, ShellAPI, ImgList, DateUtils,
   JvConsts, JvTypes, JvComponentBase;
 
 type

@@ -30,11 +30,7 @@ unit JvProgressComponentEditor;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   {$IFNDEF COMPILER7_UP}
   EditIntf, ToolIntf, ExptIntf,
   {$ENDIF !COMPILER7_UP}

@@ -608,11 +608,8 @@ begin
   while OneThreadIsRunning do
   begin
     Sleep(1);
-    {$IFDEF COMPILER6_UP}
-    // Delphi 5 uses SendMessage -> no need for this code
     // Delphi 6+ uses an event and CheckSynchronize
     CheckSynchronize; // TThread.OnTerminate is synchronized
-    {$ENDIF COMPILER6_UP}
   end;
   FThreads.Free;
   FListLocker.Free;

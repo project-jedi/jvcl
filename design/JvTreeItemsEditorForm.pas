@@ -36,11 +36,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ActnList, ComCtrls, Menus, StdActns;
 

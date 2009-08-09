@@ -42,9 +42,7 @@ uses
   JvJVCLUtils, JvTypes,
   SysUtils, StdCtrls, Classes;
 
-{$IFDEF COMPILER6_UP}
 {$DEFINE USECUSTOMGRID}
-{$ENDIF COMPILER6_UP}
 
 const
   JvDefaultBorderColor = TColor($EEF5FF);

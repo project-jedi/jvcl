@@ -87,10 +87,7 @@ var
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Masks;
+  Variants, Masks;
 
 {$IFDEF COMPILER12_UP}
   // Our charsets do not contain any char > 127 what makes it safe because the
@@ -161,7 +158,7 @@ type
     // Delphi 5 compiler shows hints about a not exported or used symbol
     // TNode.Eval. This is a compiler bug that is caused by the "abstract" keyword.
 	
-    function Eval(): Variant; virtual; {$IFNDEF COMPILER5} abstract; {$ENDIF}
+    function Eval(): Variant; virtual; abstract;
   end;
 
   EParserError = class(EExprParserError)
@@ -654,13 +651,6 @@ begin
   inherited Create;
   FParser := Parser;
 end;
-
-{$IFDEF COMPILER5}
-function TNode.Eval(): Variant;
-begin
-  Result := Null;
-end;
-{$ENDIF COMPILER5}
 
 { TNodeBin }
 

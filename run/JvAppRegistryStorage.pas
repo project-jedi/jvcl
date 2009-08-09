@@ -207,11 +207,7 @@ begin
     if GetRoot = cNoRootMask then
       SetRoot('')
     else
-      {$IFDEF BCB5}
-      s := ActiveTranslateStringEngine.TranslateStringWithChanged(GetRoot, Changed);
-      {$ELSE}
       s := ActiveTranslateStringEngine.TranslateString(GetRoot, Changed);
-      {$ENDIF BCB5}
       if changed then
         SetRoot (s);
   end;

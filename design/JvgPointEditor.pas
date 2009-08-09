@@ -32,11 +32,7 @@ interface
 
 uses
   Windows, SysUtils, Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   TypInfo;
 
 type

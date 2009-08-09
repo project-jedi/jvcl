@@ -32,11 +32,7 @@ interface
 uses
   SysUtils, Classes,
   Windows, Forms, Graphics, ImgList, Dialogs, Controls,
-  {$IFDEF COMPILER6_UP}
   VCLEditors, DesignIntf, DesignEditors, DesignMenus;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvFooterEditor = class(TComponentEditor)

@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus, HTTPApp,
-  {$IFDEF COMPILER6_UP}HTTPProd,{$ENDIF}
+  HTTPProd,
   JvExExtCtrls, JvNetscapeSplitter, JvExComCtrls, JvListView, JvExStdCtrls,
   JvRichEdit, JvRadioGroup, JvDotNetControls;
 

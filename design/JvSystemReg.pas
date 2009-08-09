@@ -36,11 +36,7 @@ implementation
 uses
   Classes,
   Controls,
-  {$IFDEF COMPILER6_UP}
   FiltEdit, DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvClipboardMonitor, JvClipboardViewer, JvHidControllerClass,
   JvDragDrop, JvDdeCmd, JvAppCommand, JvScreenSaveSuppress, JvWndProcHook, JvSysRequirements,

@@ -5,7 +5,7 @@ unit MainForm;
 interface    
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, JvMenus, ComCtrls, JvToolBar, ToolWin, JvCoolBar,
   JvStatusBar, ExtCtrls, JvSplitter, StdCtrls, JvListBox, JvCtrls,
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
@@ -55,7 +55,6 @@ type
     jsgFiles: TJvStringGrid;
     lblFiles: TLabel;
     odlAddFiles: TOpenDialog;
-    ledC5PFlags: TEdit;
     ledC6PFlags: TEdit;
     actSaveAll: TAction;
     actAddFiles: TAction;
@@ -73,7 +72,6 @@ type
     sptDepAndFiles: TSplitter;
     lblName: TLabel;
     lblDescription: TLabel;
-    lblC5PFlags: TLabel;
     lblC6PFlags: TLabel;
     jfsStore: TJvFormStorage;
     mnuHelp: TMenuItem;
@@ -120,7 +118,6 @@ type
     procedure actAddFilesExecute(Sender: TObject);
     procedure actSaveUpdate(Sender: TObject);
     procedure ledC6PFlagsChange(Sender: TObject);
-    procedure ledC5PFlagsChange(Sender: TObject);
     procedure jsgDependenciesSetEditText(Sender: TObject; ACol,
       ARow: Integer; const Value: String);
     procedure ledDescriptionChange(Sender: TObject);
@@ -194,9 +191,6 @@ uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
   GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedOptionsForm,
   GenerationMessagesForm, ActiveX, PackageInformation,
-  {$IFNDEF COMPILER6_UP}
-  ComObj,  // For GUID related functions under D5
-  {$ENDIF COMPILER6_UP}
   ModelsForm;
 {$R *.dfm}
 
@@ -383,11 +377,6 @@ begin
   Changed := True;
 end;
 
-procedure TfrmMain.ledC5PFlagsChange(Sender: TObject);
-begin
-  Changed := True;
-end;
-
 procedure TfrmMain.jsgDependenciesSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: String);
 begin
@@ -483,9 +472,7 @@ begin
       if FClxDescription <> '' then
         rootNode.Items.Add('ClxDescription', FClxDescription);
       rootNode.Items.Add('GUID', edtGUID.Text);
-      rootNode.Items.Add('C5PFlags', ledC5PFlags.Text);
       rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
-      rootNode.Items.Add('C5Libs', frmAdvancedOptions.edtBCB5.Text);
       rootNode.Items.Add('C6Libs', frmAdvancedOptions.edtBCB6.Text);
       rootNode.Items.Add('CompilerDefines', edtCompilerDefines.Text);
       if frmAdvancedOptions.edtImageBase.Text <> '' then
@@ -605,11 +592,9 @@ begin
 
       // read description, PFLAGS, GUID, and libs
       ledDescription.Text := rootNode.Items.ItemNamed['Description'].Value;
-      ledC5PFlags.Text    := rootNode.Items.ItemNamed['C5PFlags'].Value;
       ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
       if Assigned(rootNode.Items.ItemNamed['GUID']) then
         edtGUID.Text := rootNode.Items.ItemNamed['GUID'].Value;
-      frmAdvancedOptions.edtBCB5.Text := rootNode.Items.ItemNamed['C5Libs'].Value;
       frmAdvancedOptions.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
       if Assigned(rootNode.Items.ItemNamed['CompilerDefines']) then
         edtCompilerDefines.Text := rootNode.Items.ItemNamed['CompilerDefines'].Value;
@@ -939,7 +924,6 @@ begin
   ledDescription.Text := '';
   ComboBoxType.ItemIndex := Integer(ptPackageRun);
   edtGUID.Text := '';
-  ledC5PFlags.Text := '';
   ledC6PFlags.Text := '';
   edtCompilerDefines.Text := '';
   jsgDependencies.Rows[1].Text := '';

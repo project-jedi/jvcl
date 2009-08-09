@@ -40,7 +40,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms,
   JvTypes, JvConsts, JvJVCLUtils,
-  JvWizard, JvVCL5Utils;
+  JvWizard;
 
 type
   TJvWizardDrawRouteMapListItem = procedure(Sender: TObject; ACanvas: TCanvas;

@@ -861,7 +861,7 @@ implementation
 uses
   SysUtils,
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
-  JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvVCL5Utils, JvJVCLUtils;
+  JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvJVCLUtils;
 
 {$R JvDockableForm.dfm}
 {$R JvDockConjoinHost.dfm}

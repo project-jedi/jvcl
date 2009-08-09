@@ -105,11 +105,7 @@ function CreateGoal(Text: PChar): TCustomGoal;
 implementation
 
 uses
-{$IFDEF COMPILER6_UP}
   RtlConsts;
-{$ELSE}
-  Consts;
-{$ENDIF}
 
 const
   Blanks: TSysCharSet = [#9, #10, #13, ' '];

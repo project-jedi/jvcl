@@ -3,7 +3,7 @@ object frmKnownTags: TfrmKnownTags
   Top = 107
   BorderStyle = bsDialog
   Caption = 'Known replacement tags'
-  ClientHeight = 411
+  ClientHeight = 389
   ClientWidth = 580
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,11 +13,14 @@ object frmKnownTags: TfrmKnownTags
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  DesignSize = (
+    580
+    389)
   PixelsPerInch = 96
   TextHeight = 13
   object bbtOk: TBitBtn
     Left = 253
-    Top = 374
+    Top = 352
     Width = 85
     Height = 29
     Anchors = [akLeft, akBottom]
@@ -78,17 +81,20 @@ object frmKnownTags: TfrmKnownTags
       DEDBC8C0B8B4B03BAE3835322B25D0DE000001DD01DE0CDF0004DEDDDDDE0CDF
       01DE01DD0001}
     NumGlyphs = 2
+    ExplicitTop = 374
   end
   object pctSections: TPageControl
     Left = 8
     Top = 8
     Width = 563
-    Height = 356
+    Height = 334
     ActivePage = tshOutside
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
+    ExplicitHeight = 356
     object tshOutside: TTabSheet
       Caption = 'Outside any repeating section'
+      ExplicitHeight = 328
       object lblStartForms: TLabel
         Left = 8
         Top = 92
@@ -96,44 +102,30 @@ object frmKnownTags: TfrmKnownTags
         Height = 13
         Caption = '<%%% START FORMS %%%>'
       end
-      object lblC5PFlags: TLabel
-        Left = 8
-        Top = 132
-        Width = 70
-        Height = 13
-        Caption = '%C5PFLAGS%'
-      end
-      object lblC5PFlagsUsage: TLabel
-        Left = 208
-        Top = 132
-        Width = 116
-        Height = 13
-        Caption = 'The BCB5 PFlags value.'
-      end
       object lblC6PFlags: TLabel
         Left = 8
-        Top = 156
+        Top = 132
         Width = 70
         Height = 13
         Caption = '%C6PFLAGS%'
       end
       object lblC6PFlagsUsage: TLabel
         Left = 208
-        Top = 156
+        Top = 132
         Width = 116
         Height = 13
         Caption = 'The BCB6 PFlags value.'
       end
       object lblDescription: TLabel
         Left = 8
-        Top = 252
+        Top = 228
         Width = 89
         Height = 13
         Caption = '%DESCRIPTION%'
       end
       object lblDescriptionUsage: TLabel
         Left = 208
-        Top = 252
+        Top = 228
         Width = 148
         Height = 13
         Caption = 'The description of the package'
@@ -184,14 +176,14 @@ object frmKnownTags: TfrmKnownTags
       end
       object lblName: TLabel
         Left = 8
-        Top = 228
+        Top = 204
         Width = 47
         Height = 13
         Caption = '%NAME%'
       end
       object lblNameUsage: TLabel
         Left = 208
-        Top = 228
+        Top = 204
         Width = 309
         Height = 13
         Caption = 
@@ -211,14 +203,14 @@ object frmKnownTags: TfrmKnownTags
       end
       object lblSmallType: TLabel
         Left = 8
-        Top = 204
+        Top = 180
         Width = 36
         Height = 13
         Caption = '%type%'
       end
       object lblSmallTypeUsage: TLabel
         Left = 208
-        Top = 204
+        Top = 180
         Width = 276
         Height = 13
         Caption = 'Replaced by '#39'r'#39' or '#39'd'#39' depending of the type of the package'
@@ -239,14 +231,14 @@ object frmKnownTags: TfrmKnownTags
       end
       object lblType: TLabel
         Left = 8
-        Top = 180
+        Top = 156
         Width = 44
         Height = 13
         Caption = '%TYPE%'
       end
       object lblTypeUsage: TLabel
         Left = 208
-        Top = 180
+        Top = 156
         Width = 332
         Height = 13
         Caption = 
@@ -255,14 +247,14 @@ object frmKnownTags: TfrmKnownTags
       end
       object lblDateTime: TLabel
         Left = 8
-        Top = 276
+        Top = 252
         Width = 71
         Height = 13
         Caption = '%DATETIME%'
       end
       object lblDateTimeUsage: TLabel
         Left = 208
-        Top = 276
+        Top = 252
         Width = 332
         Height = 13
         Caption = 
@@ -271,14 +263,14 @@ object frmKnownTags: TfrmKnownTags
       end
       object lblXmlName: TLabel
         Left = 8
-        Top = 300
+        Top = 276
         Width = 69
         Height = 13
         Caption = '%XMLNAME%'
       end
       object lblXmlNameUsage: TLabel
         Left = 208
-        Top = 300
+        Top = 276
         Width = 148
         Height = 13
         Caption = 'The description of the package'
@@ -287,6 +279,7 @@ object frmKnownTags: TfrmKnownTags
     object tshPackages: TTabSheet
       Caption = 'Inside Packages section'
       ImageIndex = 1
+      ExplicitHeight = 328
       object lblPackName: TLabel
         Left = 8
         Top = 12
@@ -307,6 +300,7 @@ object frmKnownTags: TfrmKnownTags
     object tshFilesAndForms: TTabSheet
       Caption = 'Inside Files section and Forms section'
       ImageIndex = 2
+      ExplicitHeight = 328
       object lblFilename: TLabel
         Left = 8
         Top = 12

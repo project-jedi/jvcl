@@ -243,11 +243,7 @@ end;
 
 procedure TJvCustomLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  {$IFDEF COMPILER6_UP}
   if AutoSize and (Align in [alNone, alCustom]) then
-  {$ELSE}
-  if AutoSize and (Align = alNone) then
-  {$ENDIF COMPILER6_UP}
     inherited SetBounds(ALeft, ATop, FImgPict.Width, FImgPict.Height)
   else
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);

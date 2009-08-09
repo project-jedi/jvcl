@@ -35,15 +35,9 @@ implementation
 
 uses
   Classes, Dialogs, ActnList,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
-  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   JvDialogActns,
-  {$ENDIF !BCB5}
   JvDsgnConfig,
   JvDialogActnResForm, JvDialogs, JvPageSetupTitled, JvPageSetup,
   JvAppletEditor,
@@ -95,14 +89,12 @@ begin
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
-  {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
   RegisterActions(RsJVCLActionsCategory, [TJvBrowseForFolderAction,
     TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction,
     TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],
     // TJvDialogActions is a datamodule with default settings for our dialog actions
     TJvDialogActions);
-  {$ENDIF !BCB5}
 end;
 
 end.

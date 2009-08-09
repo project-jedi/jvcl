@@ -35,9 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
-  {$IFDEF COMPILER6_UP}
   HTTPApp, HTTPProd;
-  {$ELSE}
   HTTPApp;
   {$ENDIF COMPILER6_UP}
 

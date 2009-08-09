@@ -89,12 +89,10 @@ type
     property Constraints;
     property DragCursor;
     property Enabled;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property Flat;
     property ParentFlat;
     property Font;

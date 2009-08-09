@@ -29,13 +29,6 @@ unit JvSurveyIntf;
 interface
 
 type
-  {$IFNDEF COMPILER6_UP}
-  {$M+}
-  IInvokable = interface(IUnknown)
-  end;
-  {$M-}
-  {$ENDIF COMPILER6_UP}
-
   TJvSurveyType = (
     stExclusive, // single choice
     stMultiple, // multiple choice

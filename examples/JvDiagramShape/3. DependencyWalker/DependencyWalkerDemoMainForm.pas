@@ -268,9 +268,6 @@ uses
   ShellAPI,
   PrintFrm,
   Registry,
-{$IFNDEF COMPILER6_UP}
-  JvJCLUTils, JvJVCLUtils,
-{$ENDIF}
   OptionsFrm;
 
 {$R *.dfm}

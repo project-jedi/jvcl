@@ -38,11 +38,7 @@ implementation
 
 uses
   Classes, ImgList, ComCtrls,
-  {$IFDEF COMPILER6_UP}
   VCLEditors, DesignEditors, DesignIntf, DesignMenus,
-  {$ELSE}
-  DsgnIntf, Menus,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvNavigationPane, JvPageList, JvPageListTreeView, JvPageListEditors,
   JvNavPaneEditors, JvTreeItemsEditorForm, JvPageLinkEditorForm, JvPageListEditorForm;
@@ -65,9 +61,6 @@ begin
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
-  {$IFDEF COMPILER5}
-  RegisterPropertyEditor(TypeInfo(TComponent), TJvCustomPageListTreeView, cPageList, TJvPageListProperty);
-  {$ENDIF COMPILER5}
   RegisterComponentEditor(TCustomTreeView, TJvTreeViewEditor);
   RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewEditor);
   // register for the standard TTreeView as well

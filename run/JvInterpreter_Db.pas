@@ -52,11 +52,7 @@ const
 implementation
 
 uses
-  Classes,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Db;
+  Classes, Variants, Db;
 
 { EDatabaseError }
 
@@ -2574,10 +2570,8 @@ begin
     AddConst(cDb, 'ftDBaseOle', Ord(ftDBaseOle));
     AddConst(cDb, 'ftTypedBinary', Ord(ftTypedBinary));
     AddConst(cDb, 'ftCursor', Ord(ftCursor));
-    {$IFDEF COMPILER6_UP}
     AddConst(cDb, 'ftFMTBCD', Ord(ftFMTBCD));
     AddConst(cDb, 'ftTimestamp', Ord(ftTimestamp));
-    {$ENDIF COMPILER6_UP}
     {$IFDEF COMPILER10_UP}
     AddConst(cDb, 'ftFixedWideChar', Ord(ftFixedWideChar));
     AddConst(cDb, 'ftWideMemo', Ord(ftWideMemo));

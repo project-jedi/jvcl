@@ -1774,13 +1774,11 @@ begin
     AddConst(cGraphics, 'cl3DLight', cl3DLight);
     AddConst(cGraphics, 'clInfoText', clInfoText);
     AddConst(cGraphics, 'clInfoBk', clInfoBk);
-    {$IFDEF COMPILER6_UP}
     AddConst(cGraphics, 'clHotLight', clHotLight);
     AddConst(cGraphics, 'clGradientActiveCaption', clGradientActiveCaption);
     AddConst(cGraphics, 'clGradientInactiveCaption', clGradientInactiveCaption);
     AddConst(cGraphics, 'clMenuHighlight', clMenuHighlight);
     AddConst(cGraphics, 'clMenuBar', clMenuBar);
-    {$ENDIF COMPILER6_UP}
 
     AddConst(cGraphics, 'clBlack', clBlack);
     AddConst(cGraphics, 'clMaroon', clMaroon);
@@ -1801,12 +1799,10 @@ begin
     AddConst(cGraphics, 'clDkGray', clDkGray);
     AddConst(cGraphics, 'clWhite', clWhite);
 
-    {$IFDEF COMPILER6_UP}
     AddConst(cGraphics, 'clMoneyGreen', clMoneyGreen);
     AddConst(cGraphics, 'clSkyBlue', clSkyBlue);
     AddConst(cGraphics, 'clCream', clCream);
     AddConst(cGraphics, 'clMedGray', clMedGray);
-    {$ENDIF COMPILER6_UP}
 
     AddConst(cGraphics, 'clNone', clNone);
     AddConst(cGraphics, 'clDefault', clDefault);

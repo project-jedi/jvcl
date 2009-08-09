@@ -52,10 +52,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Classes;
+  Variants, Classes;
 
 { TList }
 { constructor }

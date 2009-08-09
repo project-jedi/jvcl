@@ -33,8 +33,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows,
   Messages,
-  SysUtils, Classes, Controls, StdCtrls,
-  JvVCL5Utils;
+  SysUtils, Classes, Controls, StdCtrls;
 
 type
   TJvGetSearchItemPrefixEvent = procedure(Sender: TObject; var Prefix: string) of object;
@@ -245,9 +244,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_STRUTILS}
   StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}

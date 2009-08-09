@@ -500,10 +500,6 @@ const
 type
   TControlAccessProtected = class(TControl);
 
-  {$IFDEF COMPILER5}
-  PBoolean = ^Boolean;
-  {$ENDIF COMPILER5}
-
 { TJvOfficePanelDividerLine }
 
 constructor TJvOfficePanelDividerLine.Create(AOwner: TComponent);

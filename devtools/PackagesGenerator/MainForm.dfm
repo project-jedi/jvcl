@@ -1,9 +1,9 @@
 object frmMain: TfrmMain
   Left = 163
   Top = 126
-  ClientWidth = 807
-  ClientHeight = 600
   Caption = 'JVCL Package editor and generator'
+  ClientHeight = 582
+  ClientWidth = 807
   Color = clBtnFace
   Constraints.MinHeight = 400
   Constraints.MinWidth = 600
@@ -24,31 +24,37 @@ object frmMain: TfrmMain
     Left = 137
     Top = 52
     Width = 2
-    Height = 502
+    Height = 511
+    ExplicitHeight = 502
   end
   object jsbStatus: TJvStatusBar
     Left = 0
-    Top = 554
-    Width = 799
+    Top = 563
+    Width = 807
     Height = 19
     Panels = <
       item
         Width = 50
       end>
+    ExplicitTop = 581
   end
   object pnlList: TPanel
     Left = 0
     Top = 52
     Width = 137
-    Height = 502
+    Height = 511
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
+    ExplicitHeight = 529
+    DesignSize = (
+      137
+      511)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
       Width = 121
-      Height = 486
+      Height = 468
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
       Background.FillMode = bfmTile
@@ -60,12 +66,13 @@ object frmMain: TfrmMain
       OnClick = jlbListClick
       OnKeyDown = jlbListKeyDown
       OnMouseDown = jlbListMouseDown
+      ExplicitHeight = 486
     end
   end
   object jcbMain: TJvControlBar
     Left = 0
     Top = 0
-    Width = 799
+    Width = 807
     Height = 52
     Align = alTop
     AutoSize = True
@@ -79,10 +86,8 @@ object frmMain: TfrmMain
       Height = 22
       Align = alNone
       ButtonHeight = 21
-      ButtonWidth = 64
+      ButtonWidth = 58
       Caption = 'Menus'
-      EdgeBorders = []
-      Flat = True
       Menu = jmmMain
       ShowCaptions = True
       TabOrder = 0
@@ -97,8 +102,6 @@ object frmMain: TfrmMain
       DisabledImages = imlDisabled
       DragKind = dkDock
       DragMode = dmAutomatic
-      EdgeBorders = []
-      Flat = True
       Images = imlActive
       TabOrder = 1
       object tbtOpen: TToolButton
@@ -209,11 +212,16 @@ object frmMain: TfrmMain
   object pnlEdit: TPanel
     Left = 139
     Top = 52
-    Width = 660
-    Height = 502
+    Width = 668
+    Height = 511
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
+    ExplicitLeft = 135
+    ExplicitTop = 51
+    DesignSize = (
+      668
+      511)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -250,19 +258,9 @@ object frmMain: TfrmMain
       AutoSize = False
       Caption = 'Description'
     end
-    object lblC5PFlags: TLabel
-      Left = 12
-      Top = 452
-      Width = 72
-      Height = 13
-      Alignment = taRightJustify
-      Anchors = [akLeft, akBottom]
-      AutoSize = False
-      Caption = 'BCB5 PFlags'
-    end
     object lblC6PFlags: TLabel
       Left = 12
-      Top = 476
+      Top = 457
       Width = 72
       Height = 13
       Alignment = taRightJustify
@@ -272,7 +270,7 @@ object frmMain: TfrmMain
     end
     object lblGUID: TLabel
       Left = 8
-      Top = 428
+      Top = 431
       Width = 76
       Height = 13
       Alignment = taRightJustify
@@ -282,7 +280,7 @@ object frmMain: TfrmMain
     end
     object lblCompilerDefines: TLabel
       Left = 12
-      Top = 501
+      Top = 485
       Width = 72
       Height = 13
       Alignment = taRightJustify
@@ -308,22 +306,13 @@ object frmMain: TfrmMain
       TabOrder = 1
       OnChange = ledDescriptionChange
     end
-    object ledC5PFlags: TEdit
+    object ledC6PFlags: TEdit
       Left = 92
-      Top = 448
+      Top = 454
       Width = 460
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
       TabOrder = 2
-      OnChange = ledC5PFlagsChange
-    end
-    object ledC6PFlags: TEdit
-      Left = 92
-      Top = 472
-      Width = 460
-      Height = 21
-      Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 3
       OnChange = ledC6PFlagsChange
     end
     object pnlDepAndFiles: TPanel
@@ -333,7 +322,7 @@ object frmMain: TfrmMain
       Height = 365
       Anchors = [akLeft, akTop, akRight, akBottom]
       BevelOuter = bvNone
-      TabOrder = 4
+      TabOrder = 3
       object sptDepAndFiles: TSplitter
         Left = 0
         Top = 165
@@ -395,12 +384,12 @@ object frmMain: TfrmMain
     end
     object btnAdvancedBCB: TButton
       Left = 555
-      Top = 448
+      Top = 454
       Width = 89
-      Height = 45
+      Height = 21
       Anchors = [akRight, akBottom]
       Caption = 'Advanced'
-      TabOrder = 5
+      TabOrder = 4
       OnClick = btnAdvancedBCBClick
     end
     object btnCLXDescription: TButton
@@ -410,26 +399,26 @@ object frmMain: TfrmMain
       Height = 21
       Anchors = [akTop, akRight]
       Caption = 'CLX Description'
-      TabOrder = 6
+      TabOrder = 5
       OnClick = btnCLXDescriptionClick
     end
     object edtGUID: TEdit
       Left = 92
-      Top = 424
+      Top = 427
       Width = 460
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 7
+      TabOrder = 6
       OnChange = edtGUIDChange
     end
     object btnGenerateGUID: TButton
       Left = 555
-      Top = 424
+      Top = 427
       Width = 89
       Height = 21
       Anchors = [akRight, akBottom]
       Caption = 'Generate'
-      TabOrder = 8
+      TabOrder = 7
       OnClick = btnGenerateGUIDClick
     end
     object ComboBoxType: TComboBox
@@ -440,7 +429,7 @@ object frmMain: TfrmMain
       Style = csDropDownList
       Anchors = [akTop, akRight]
       ItemHeight = 13
-      TabOrder = 9
+      TabOrder = 8
       OnClick = ComboBoxTypeSelect
       Items.Strings = (
         'Package Run-only'
@@ -451,11 +440,11 @@ object frmMain: TfrmMain
     end
     object edtCompilerDefines: TEdit
       Left = 92
-      Top = 497
+      Top = 481
       Width = 460
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 10
+      TabOrder = 9
       OnChange = edtCompilerDefinesChange
     end
   end
@@ -637,7 +626,7 @@ object frmMain: TfrmMain
     Left = 704
     Top = 116
     Bitmap = {
-      494C010108000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108000A00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1044,7 +1033,7 @@ object frmMain: TfrmMain
     Left = 676
     Top = 116
     Bitmap = {
-      494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104000600040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1410,7 +1399,6 @@ object frmMain: TfrmMain
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     StorageOptions.AutoEncodeValue = False
     StorageOptions.AutoEncodeEntity = False
-    StorageOptions.AutoIndent = True
     StorageOptions.InvalidCharReplacement = '_'
     RootNodeName = 'Configuration'
     SubStorages = <>

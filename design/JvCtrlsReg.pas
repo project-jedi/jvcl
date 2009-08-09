@@ -36,11 +36,7 @@ implementation
 uses
   Classes,
   Controls, ImgList, ActnList,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts, JvDsgnIntf,
   JvCaptionButton, JvDriveCtrls, JvRegistryTreeView, JvPlaylist,
   JvPageScroller, JvUninstallControls, JvCharMap,

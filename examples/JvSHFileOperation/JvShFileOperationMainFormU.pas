@@ -32,7 +32,7 @@ interface
 
 uses       
   Windows, Messages, SysUtils,
-  {$IFDEF COMPILER6_UP} Variants, {$ENDIF COMPILER6_UP}
+  Variants,
   Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvComponent, JvBaseDlg, ExtCtrls, JvSHFileOperation;
 

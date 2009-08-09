@@ -38,9 +38,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF COMPILER6_UP}
   Types,
-  {$ENDIF COMPILER6_UP}
   Graphics, Controls,
   Classes,
   JvTimer, JvComponent;

@@ -1,4 +1,4 @@
-﻿{-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -267,12 +267,10 @@ type
     property ParentFlat;
     property OnEndDock;
     property OnStartDock;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property Caret;
     property CheckChars;
@@ -349,11 +347,7 @@ implementation
 
 uses
   Math,
-  {$IFDEF HAS_UNIT_VARIANTS}
   VarUtils, Variants,
-  {$ELSE}
-  ActiveX,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JclStrings, JvJCLUtils, JvResources;
 
 function IsGreater(Value, MaxValue: Double; MaxValueIncluded: Boolean): Boolean;
@@ -392,11 +386,7 @@ end;
 
 function TJvValidateEditDataConnector.IsNullValueStored: Boolean;
 begin
-  {$IFDEF COMPILER6_UP}
   Result := not VarIsClear(NullValue);
-  {$ELSE}
-  Result := not VarIsEmpty(NullValue);
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvValidateEditDataConnector.RecordChanged;
@@ -823,11 +813,7 @@ begin
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfIdentifier, dfNone, dfCustom:
       EditText := NewValue;
     dfBinary, dfHex, dfInteger, dfOctal, dfYear:
-      {$IFDEF COMPILER5}
-      SetAsInteger(Integer(NewValue));
-      {$ELSE}
       SetAsInteger(NewValue);
-      {$ENDIF COMPILER5}
     dfCurrency, dfFloat, dfDecimal, dfFloatGeneral, dfPercent, dfScientific, dfFloatFixed:
       SetAsFloat(NewValue);
   end;

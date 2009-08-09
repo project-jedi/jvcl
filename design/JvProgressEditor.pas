@@ -32,11 +32,7 @@ interface
 uses
   Classes, SysUtils,
   Windows, Controls, Forms,
-  {$IFDEF COMPILER6_UP}
   VCLEditors, RTLConsts, DesignIntf, DesignEditors;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvProgressControlProperty = class(TComponentProperty)

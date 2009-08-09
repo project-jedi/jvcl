@@ -32,12 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  Variants, RTLConsts,
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
@@ -46,7 +41,7 @@ uses
   Dialogs, ComCtrls, ImgList, Grids, IniFiles, MultiMon,
   Classes, // must be after "Forms"
   JclBase,
-  JvVCL5Utils, JvJCLUtils, JvAppStorage, JvTypes;
+  JvJCLUtils, JvAppStorage, JvTypes;
 
 // Transform an icon to a bitmap
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -7605,7 +7600,7 @@ begin
           LParent := LParent.Parent;
       end;
     end else
-      raise EInvalidOperation.CreateFmt({$IFDEF COMPILER5}SParentRequired{$ELSE}SParentGivenNotAParent{$ENDIF}, [Name]);
+      raise EInvalidOperation.CreateFmt(SParentGivenNotAParent, [Name]);
   end;
 end;
 

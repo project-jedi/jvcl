@@ -112,9 +112,6 @@ implementation
 uses
   JvConsts, // for clMoneyGreen
   CommCtrl, Consts,
-  {$IFNDEF COMPILER6_UP}
-  FileCtrl,
-  {$ENDIF}
   JclRegistry,
   ViewerFrm;
 

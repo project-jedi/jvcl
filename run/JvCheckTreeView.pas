@@ -165,10 +165,7 @@ const
 implementation
 
 uses
-  CommCtrl, SysUtils,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  CommCtrl, SysUtils, Types,
   JvConsts;
 
 procedure ToggleTreeViewCheckBoxes(Node: TTreeNode;

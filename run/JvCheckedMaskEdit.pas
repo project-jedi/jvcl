@@ -38,10 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Controls, StdCtrls,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Classes, Controls, StdCtrls, Types,
   JvMaskEdit;
 
 type
@@ -87,12 +84,10 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property ButtonFlat;
     property ButtonHint;

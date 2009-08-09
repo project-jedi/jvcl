@@ -117,7 +117,7 @@ end;
 procedure ShowError(const S:string;const Args:array of const);
 begin
   if IsConsole then
-    writeln({$IFDEF COMPILER6_UP}ErrOutput,{$ENDIF}Format(S,Args))
+    writeln(ErrOutput, Format(S,Args))
   else
     raise Exception.CreateFmt(S,Args);
 end;

@@ -32,22 +32,14 @@ interface
 uses
   Windows, Forms, Graphics, ImgList,
   SysUtils, Classes, Dialogs, Controls,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvAnimatedImage;
 
 type
   TJvAnimatedEditor = class(TComponentEditor)
   private
     FContinue: Boolean;
-    {$IFDEF COMPILER6_UP}
     procedure CheckEdit(const PropertyEditor: IProperty);
-    {$ELSE}
-    procedure CheckEdit(PropertyEditor: TPropertyEditor);
-    {$ENDIF COMPILER6_UP}
     procedure EditImage(Image: TJvAnimatedImage);
     procedure LoadAniFile(Image: TJvAnimatedImage);
   public
@@ -67,51 +59,26 @@ const
 
 //=== { TJvAnimatedEditor } ==================================================
   
-{$IFDEF COMPILER5}
-procedure TJvAnimatedEditor.CheckEdit(PropertyEditor: TPropertyEditor);
-begin
-  try
-{$ELSE}
 procedure TJvAnimatedEditor.CheckEdit(const PropertyEditor: IProperty);
 begin
-{$ENDIF COMPILER5}
-    if FContinue and (CompareText(PropertyEditor.GetName, cGlyphName) = 0) then
-    begin
-      PropertyEditor.Edit;
-      FContinue := False;
-    end;
-  {$IFDEF COMPILER5}
-  finally
-    PropertyEditor.Free;
+  if FContinue and (CompareText(PropertyEditor.GetName, cGlyphName) = 0) then
+  begin
+    PropertyEditor.Edit;
+    FContinue := False;
   end;
-  {$ENDIF COMPILER5}
 end;
 
-{$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
-{$ENDIF COMPILER6_UP}
 
 procedure TJvAnimatedEditor.EditImage(Image: TJvAnimatedImage);
 var
   Components: TDesignerSelectionList;
 begin
-  {$IFDEF COMPILER5}
-  Components := TDesignerSelectionList.Create;
-  {$ELSE}
   Components := TDesignerSelections.Create;
-  {$ENDIF COMPILER5}
-  {$IFDEF COMPILER5}
-  try
-  {$ENDIF COMPILER5}
-    FContinue := True;
-    Components.Add(Component);
-    GetComponentProperties(Components, tkAny, Designer, CheckEdit);
-  {$IFDEF COMPILER5}
-  finally
-    Components.Free;
-  end;
-  {$ENDIF COMPILER5}
+  FContinue := True;
+  Components.Add(Component);
+  GetComponentProperties(Components, tkAny, Designer, CheckEdit);
 end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);

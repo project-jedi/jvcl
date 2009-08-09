@@ -605,7 +605,7 @@ uses
   {$ENDIF JVCLThemesEnabled}
   Consts, SysUtils, Math,
   JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle,
-  JvDockAdvTree, JvVCL5Utils;
+  JvDockAdvTree;
 
 type
   TWinControlAccessProtected = class(TWinControl);
@@ -1909,17 +1909,10 @@ end;
 procedure TJvDockTree.InsertControl(Control: TControl; InsertAt: TAlign;
   DropCtl: TControl);
 const
-  {$IFDEF COMPILER6_UP}
   Orients: array [TAlign] of TDockOrientation =
     (doNoOrient, doHorizontal, doHorizontal, doVertical, doVertical, doNoOrient, doNoOrient);
   MakeLast: array [TAlign] of Boolean =
     (False, False, True, False, True, False, False);
-  {$ELSE}
-  Orients: array [TAlign] of TDockOrientation =
-    (doNoOrient, doHorizontal, doHorizontal, doVertical, doVertical, doNoOrient);
-  MakeLast: array [TAlign] of Boolean =
-    (False, False, True, False, True, False);
-  {$ENDIF COMPILER6_UP}
 var
   Sibling: TJvDockZone;
   Me: TJvDockZone;

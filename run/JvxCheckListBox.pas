@@ -48,12 +48,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, StdCtrls, Forms,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  Types, RTLConsts,
   JvAppStorage, JvFormPlacement, JvComponent;
 
 type
@@ -811,8 +806,7 @@ type
 const
   BorderStyles: array [TBorderStyle] of Longword = (0, WS_BORDER);
   Styles: array [TListBoxStyle] of Longword =
-    (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE
-    {$IFDEF COMPILER6_UP}, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED {$ENDIF});
+    (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED);
   Sorteds: TSelects = (0, LBS_SORT);
   MultiSelects: TSelects = (0, LBS_MULTIPLESEL);
   ExtendSelects: TSelects = (0, LBS_EXTENDEDSEL);

@@ -32,11 +32,7 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, ToolWin, Menus, ActnList,
   ComCtrls, ImgList,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
-  {$ELSE}
-  DsgnIntf, DsgnWnds,
-  {$ENDIF COMPILER6_UP}
   JvOutlookBar;
 
 type
@@ -107,16 +103,9 @@ type
     property OutlookBar: TJvCustomOutlookBar read FOutlookBar write SetOutlookBar;
     procedure Activated; override;
     function GetEditState: TEditState; override;
-    {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    {$ELSE}
-    procedure ComponentDeleted(Component: IPersistent); override;
-    function UniqueName(Component: TComponent): string; override;
-    procedure FormClosed(AForm: TCustomForm); override;
-    procedure FormModified; override;
-    {$ENDIF COMPILER6_UP}
   end;
 
 implementation
@@ -163,8 +152,6 @@ begin
   Result := [];
 end;
 
-{$IFDEF COMPILER6_UP}
-
 procedure TFrmOLBEditor.DesignerClosed(const Designer: IDesigner;
   AGoingDormant: Boolean);
 begin
@@ -190,43 +177,6 @@ begin
   if not (csDestroying in ComponentState) then
     UpdateItems;
 end;
-
-{$ELSE}
-
-function TFrmOLBEditor.UniqueName(Component: TComponent): string;
-begin
-  Result := Designer.UniqueName(Component.ClassName);
-end;
-
-procedure TFrmOLBEditor.ComponentDeleted(Component: IPersistent);
-var
-  P: TPersistent;
-begin
-  P := ExtractPersistent(Component);
-  if P = OutlookBar then
-  begin
-    OutlookBar := nil;
-    Close;
-  end;
-end;
-
-procedure TFrmOLBEditor.FormClosed(AForm: TCustomForm);
-begin
-  Assert(Designer <> nil, RsDesignerIsNilInFormClosed);
-  if AForm = Designer.Form then
-  begin
-    Designer := nil;
-    Close;
-  end;
-end;
-
-procedure TFrmOLBEditor.FormModified;
-begin
-  if not (csDestroying in ComponentState) then
-    UpdateItems;
-end;
-
-{$ENDIF COMPILER6_UP}
 
 procedure TFrmOLBEditor.SelectItem(Node: TTreeNode);
 begin
@@ -593,12 +543,7 @@ function TFrmOLBEditor.GetRegPath: string;
 const
   cRegKey = '\JVCL\OutlookBar Editor';
 begin
-  {$IFDEF COMPILER6_UP}
   Result := Designer.GetBaseRegKey + cRegKey;
-  {$ELSE}
-  // (rom) simplified and bugfixed
-  Result := SDelphiKey + RsPropertyEditors + cRegKey;
-  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TFrmOLBEditor.SwitchItems(Node1, Node2: TTreeNode);

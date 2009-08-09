@@ -43,9 +43,7 @@ unit JvInterpreter_Math;
 interface
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
   JvInterpreter, SysUtils;
 
 

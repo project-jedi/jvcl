@@ -31,11 +31,7 @@ unit JvPreviewReg;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors;
-  {$ELSE}
-  DsgnIntf;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvPreviewerEditor = class(TComponentEditor)

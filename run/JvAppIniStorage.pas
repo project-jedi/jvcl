@@ -166,7 +166,7 @@ implementation
 uses
   SysUtils,
   JvJCLUtils, // BinStrToBuf & BufToBinStr
-  JvVCL5Utils, JvConsts, JvResources,
+  JvConsts, JvResources,
   JclStrings; // JvConsts or PathDelim under D5 and BCB5
 
 const

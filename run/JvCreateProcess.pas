@@ -38,9 +38,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes,
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
   ShellAPI, SyncObjs,
   JvComponentBase, JvTypes;
 
@@ -243,7 +240,7 @@ implementation
 uses
   Math,
   JclStrings,
-  JvVCL5Utils, JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const
   CM_READ = WM_USER + 1;
@@ -1408,12 +1405,8 @@ begin
         Result := DefWindowProc(Handle, Msg, WParam, LParam);
       end;
   except
-    {$IFDEF COMPILER6_UP}
     if Assigned(ApplicationHandleException) then
       ApplicationHandleException(Self);
-    {$ELSE}
-    Application.HandleException(Self);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 

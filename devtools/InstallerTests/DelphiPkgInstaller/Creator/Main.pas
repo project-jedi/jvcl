@@ -46,14 +46,6 @@ implementation
 
 {$R *.dfm}
 
-{$IFDEF COMPILER5}
-function GetEnvironmentVariable(const Variable: string): string;
-begin
-  SetLength(Result, 4096 - 16);
-  SetLength(Result, Windows.GetEnvironmentVariable(PChar(Variable), PChar(Result), Length(Result)));
-end;
-{$ENDIF COMPILER5}
-
 procedure TFormMain.SaveToXml(xml: TJvSimpleXMLElem);
 begin
   SavePackagesToXml(xml.Items.Add('Packages'));
@@ -203,9 +195,6 @@ end;
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
   SetEnvironmentVariable('PATH', 
-    {$IFDEF DELPHI5}
-    PChar('C:\Borland\Delphi5\Bin;' + 
-    {$ENDIF DELPHI5}
     {$IFDEF DELPHI6}
     PChar('C:\Borland\Delphi6\Bin;' + 
     {$ENDIF DELPHI6}

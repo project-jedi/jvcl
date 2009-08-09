@@ -531,10 +531,7 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo,
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
+  SysUtils, Grids, TypInfo, StrUtils,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxGrid, cxGridDBDataDefinitions,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
@@ -549,10 +546,7 @@ uses
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvResources, JvParameterList, JvParameterListParameter,
   JvDSADialogs,
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Dialogs, StdCtrls, Clipbrd, JvJVCLUtils;
+  Variants, Dialogs, StdCtrls, Clipbrd, JvJVCLUtils;
 
 //=== { TJvDatabaseActionList } ==============================================
 

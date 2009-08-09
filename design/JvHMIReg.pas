@@ -37,11 +37,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   ToolsAPI,
   JvDsgnConsts,
   JvSegmentedLEDDisplay, JvLED, JvDialButton,

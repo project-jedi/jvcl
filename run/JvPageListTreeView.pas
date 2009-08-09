@@ -90,10 +90,6 @@ type
     FPageDefault: Integer;
     FLinks: TJvPageLinks;
     FMemStream: TMemoryStream;
-    {$IFDEF COMPILER5}
-    FPageListComponent: TComponent;
-    procedure SetPageListComponent(const Value: TComponent);
-    {$ENDIF COMPILER5}
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
@@ -104,7 +100,7 @@ type
     procedure DestroyWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CreateNode: TTreeNode;  override;
-    function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    function CreateNodes: TTreeNodes; override; 
     function CanChange(Node: TTreeNode): Boolean;  override;
     procedure Change(Node: TTreeNode); override;
   public
@@ -112,12 +108,7 @@ type
     destructor Destroy; override;
     property PageDefault: Integer read FPageDefault write SetPageDefault;
     property PageLinks: TJvPageLinks read FLinks write SetLinks;
-    {$IFDEF COMPILER6_UP}
     property PageList: IPageList read FPageList write SetPageList;
-    {$ELSE}
-    property PageListIntf: IPageList read FPageList write SetPageList;
-    property PageList: TComponent read FPageListComponent write SetPageListComponent;
-    {$ENDIF COMPILER6_UP}
   protected
     property AutoExpand default True;
     property ShowButtons default False;
@@ -233,10 +224,8 @@ type
     property ChangeDelay;
     property HideSelection;
     property HotTrack;
-    {$IFDEF COMPILER6_UP}
     property MultiSelect;
     property MultiSelectStyle;
-    {$ENDIF COMPILER6_UP}
     property StateImages;
     property ToolTips;
     property OnAdvancedCustomDraw;
@@ -268,10 +257,8 @@ type
     property OnCollapsing;
     property OnContextPopup;
     property OnCompare;
-    {$IFDEF COMPILER6_UP}
     property OnAddition;
     property OnCreateNodeClass;
-    {$ENDIF COMPILER6_UP}
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -327,10 +314,8 @@ type
     property HideSelection;
     property HotTrack;
     property ParentBiDiMode;
-    {$IFDEF COMPILER6_UP}
     property OnAddition;
     property OnCreateNodeClass;
-    {$ENDIF COMPILER6_UP}
     property OnCustomDraw;
     property OnEndDock;
     property OnStartDock;
@@ -506,10 +491,6 @@ destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
   FMemStream.Free;
-  {$IFDEF COMPILER5}
-  // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
-  FreeAndNil(FItems);
-  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
 
@@ -569,9 +550,7 @@ end;
 
 procedure TJvCustomPageListTreeView.DestroyWnd;
 begin
-  if {$IFDEF COMPILER6_UP}
-     CreateWndRestores and
-     {$ENDIF COMPILER6_UP}
+  if CreateWndRestores and
      {$IFDEF COMPILER10_UP}
      (csRecreating in ControlState) and
      {$ENDIF COMPILER10_UP}
@@ -591,13 +570,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) then
   begin
-    {$IFDEF COMPILER6_UP}
     if AComponent.IsImplementorOf(PageList) then
       PageList := nil;
-    {$ELSE}
-    if (AComponent = FPageListComponent) then
-      PageList := nil;
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -627,39 +601,11 @@ procedure TJvCustomPageListTreeView.SetPageList(const Value: IPageList);
 begin
   if FPageList <> Value then
   begin
-    {$IFDEF COMPILER6_UP}
     ReferenceInterface(FPageList, opRemove);
-    {$ENDIF COMPILER6_UP}
     FPageList := Value;
-    {$IFDEF COMPILER6_UP}
     ReferenceInterface(FPageList, opInsert);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
-
-{$IFDEF COMPILER5}
-procedure TJvCustomPageListTreeView.SetPageListComponent(const Value: TComponent);
-var
-  Obj: IPageList;
-begin
-  if Value <> FPageListComponent then
-  begin
-    if FPageListComponent <> nil then
-      FPageListComponent.RemoveFreeNotification(Self);
-    if Value = nil then
-    begin
-      FPageListComponent := nil;
-      SetPageList(nil);
-      Exit;
-    end;
-    if not Supports(Value, IPageList, Obj) then
-      raise EPageListError.CreateResFmt(@RsEInterfaceNotSupported, [Value.Name, 'IPageList']);
-    SetPageList(Obj);
-    FPageListComponent := Value;
-    FPageListComponent.FreeNotification(Self);
-  end;
-end;
-{$ENDIF COMPILER5}
 
 function TJvCustomPageListTreeView.GetItems: TJvPageIndexNodes;
 begin

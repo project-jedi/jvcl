@@ -33,11 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  Windows,
-  {$ELSE}
   Types,
-  {$ENDIF COMPILER5}
   Classes, Graphics,
   JvComponentBase, JvComponent, JvExControls, JvExForms, JvExExtCtrls,
   JvExComCtrls;

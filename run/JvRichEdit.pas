@@ -798,12 +798,10 @@ type
     property AllowObjects;
     property AllowInPlace;
     property Anchors;
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property BorderWidth;
     property DragKind;
@@ -4594,42 +4592,11 @@ end;
 
 constructor TJvMSTextConversion.Create(const AConverterFileName, AExtensions,
   ADescription: string; const AKind: TJvConversionKind);
-
-  {$IFDEF COMPILER5}
-  procedure StrTokenize(const S: string; Delimiter: Char; Strings: TStrings);
-  var
-    BufStart, BufEnd: PChar;
-    Store: Char;
-  begin
-    BufStart := PChar(S);
-    BufEnd := BufStart;
-    while (BufEnd <> nil) and (BufEnd^ <> #0) do
-    begin
-      if BufEnd^ = Delimiter then
-      begin
-        Store := BufEnd^;
-        BufEnd^ := #0;
-        Strings.Add(BufStart);
-        BufEnd^ := Store;
-        BufStart := BufEnd;
-        Inc(BufStart);
-      end;
-      Inc(BufEnd);
-    end;
-    if (BufStart <> nil) and (BufStart^ <> #0) then
-      Strings.Add(BufStart);
-  end;
-  {$ENDIF COMPILER5}
-
 begin
   inherited Create;
   FExtensions := TStringList.Create;
-  {$IFDEF COMPILER5}
-  StrTokenize(AExtensions, ' ', FExtensions);
-  {$ELSE}
   FExtensions.Delimiter := ' ';
   FExtensions.DelimitedText := AExtensions;
-  {$ENDIF COMPILER5}
   FConverterFileName := AConverterFileName;
   FDescription := ADescription;
   FConverterKind := AKind;
@@ -7652,19 +7619,6 @@ end;
 var
   GLibHandle: THandle = 0;
 
-{$IFDEF COMPILER5}
-{ copied from JclFileUtils.pas }
-function GetModulePath(const Module: HMODULE): string;
-var
-  L: Integer;
-begin
-  L := MAX_PATH + 1;
-  SetLength(Result, L);
-  L := Windows.GetModuleFileName(Module, Pointer(Result), L);
-  SetLength(Result, L);
-end;
-{$ENDIF COMPILER5}
-
 procedure InitRichEditDll;
 var
   FileName: string;
@@ -7687,11 +7641,7 @@ begin
   begin
     RichEditVersion := 2;
 
-    {$IFDEF COMPILER5}
-    FileName := GetModulePath(GLibHandle);
-    {$ELSE}
     FileName := GetModuleName(GLibHandle);
-    {$ENDIF COMPILER5}
     InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
     if InfoSize <> 0 then
     begin

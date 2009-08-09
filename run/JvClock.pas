@@ -203,9 +203,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF COMPILER7_UP}
   SysConst,
   {$ENDIF COMPILER7_UP}
@@ -603,9 +601,7 @@ end;
 
 procedure TJvClock.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-  {$ENDIF COMPILER6_UP}
   FAutoSize := Value;
   if FAutoSize then
   begin

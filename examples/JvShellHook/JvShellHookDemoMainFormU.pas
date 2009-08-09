@@ -31,7 +31,7 @@ unit JvShellHookDemoMainFormU;
 interface
 
 uses
-  Windows, Messages, SysUtils, {$IFDEF COMPILER6_UP}Variants, {$ENDIF}Classes,
+  Windows, Messages, SysUtils, Variants, Classes,
   Graphics, Controls, Forms, Dialogs, JvShellHook, StdCtrls, ComCtrls;
 
 type
@@ -77,13 +77,9 @@ begin
   SH := TJvShellHook.Create(Self);
   SH.OnShellMessage := DoShellMessage;
   chkActive.Enabled := InitJvShellHooks;
-  {$IFDEF COMPILER6_UP}
-    lvMessages.BorderStyle := bsNone;
-    lvMessages.BevelKind := bkFlat;
-    lvMessages.BevelInner := bvNone;
-  {$ELSE}
-    lvMessages.BorderStyle := bsSingle;
-  {$ENDIF}
+  lvMessages.BorderStyle := bsNone;
+  lvMessages.BevelKind := bkFlat;
+  lvMessages.BevelInner := bvNone;
 end;
 
 procedure TJvShellHookDemoMainForm.FormDestroy(Sender: TObject);

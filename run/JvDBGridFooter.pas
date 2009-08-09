@@ -47,10 +47,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // inline
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  Sysutils, Classes, ComCtrls,
+  Variants, Sysutils, Classes, ComCtrls,
   DB, DBGrids, Grids, JvDBGrid;
 
 type

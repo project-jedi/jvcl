@@ -84,11 +84,7 @@ type
     procedure SetDateTimeFormat(const Value: string);
   public
     constructor Create(AOwner: TComponent); override;
-    {$IFDEF BCB5}
-    function TranslateStringWithChanged(InString: string; var Changed: Boolean): string; 
-    {$ELSE}
     function TranslateString(InString: string; var Changed: Boolean): string; overload;
-    {$ENDIF BCB5}
     function TranslateString(InString: string): string; overload;
   published
     property DateFormat: string read FDateFormat write FDateFormat;
@@ -112,11 +108,7 @@ const
 implementation
 
 uses
-  SysUtils,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  ExtCtrls, ComCtrls, StdCtrls, Forms, Dialogs,
+  SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, Forms, Dialogs,
   JclFileUtils,
   JvJVCLUtils;
 
@@ -413,11 +405,7 @@ begin
   end;
 end;
 
-{$IFDEF BCB5}
-function TJvTranslateString.TranslateStringWithChanged(InString: string; var Changed: Boolean): string;
-{$ELSE}
 function TJvTranslateString.TranslateString(InString: string; var Changed: Boolean): string;
-{$ENDIF BCB5}
 var
   I, J: Integer;
   Command: string;

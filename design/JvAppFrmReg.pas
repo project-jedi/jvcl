@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes, Graphics,
-  {$IFDEF COMPILER6_UP}
   DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvFormMagnet, JvFormTransparent, JvAppHotKey, JvGradientCaptionForm,
   JvGradientCaption, JvAppAnimatedIcon, JvAppEvent,

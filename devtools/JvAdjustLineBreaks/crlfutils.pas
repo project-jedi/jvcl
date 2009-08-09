@@ -7,7 +7,7 @@ interface
 procedure Run;
 implementation
 uses
-  Windows, SysUtils, {$IFNDEF COMPILER6_UP} JvFunctions, {$ENDIF} Classes;
+  Windows, SysUtils, Classes;
 
 function IsTextStream(Stream:TStream):Boolean;
 const
@@ -128,10 +128,8 @@ begin
 end;
 
 function ConvertFile(const Filename:string;ToWindows,CompareBeforeWrite,Quiet:boolean):boolean;
-{$IFDEF COMPILER6_UP}
 const
   cStyle:array[boolean] of TTextLineBreakStyle = (tlbsLF,tlbsCRLF);
-{$ENDIF COMPILER6_UP}
 var
   F:TFileStream;
   tmp,tmp2:string;
@@ -147,7 +145,7 @@ begin
       F.Read(tmp[1],F.Size);
       if CompareBeforeWrite then
         tmp2 := tmp;
-      tmp := AdjustLineBreaks(tmp{$IFDEF COMPILER6_UP},cStyle[ToWindows]{$ENDIF});
+      tmp := AdjustLineBreaks(tmp, cStyle[ToWindows]);
       if CompareBeforeWrite and (tmp = tmp2) then
       begin
         if not Quiet then

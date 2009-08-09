@@ -45,16 +45,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Classes, Contnrs, Graphics, Clipbrd, Controls,
-  {$IFDEF HAS_UNIT_STRUTILS}
-  StrUtils,
-  {$ENDIF HAS_UNIT_STRUTILS}
-  TypInfo,
+  Variants, SysUtils, Classes, Contnrs, Graphics, Clipbrd, Controls,
+  StrUtils, TypInfo,
   JclBase,
-  JvVCL5Utils, JvTypes;
+  JvTypes;
 
 const
   {$IFDEF MSWINDOWS}
@@ -998,10 +992,8 @@ function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRec
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; lpchText: PChar; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; const Text: string; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
-{$IFDEF COMPILER6_UP}
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
-{$ENDIF COMPILER6_UP}
 
 function DrawTextW(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 function DrawTextW(Canvas: TCanvas; Text: PWideChar; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
@@ -1009,7 +1001,6 @@ function DrawTextExW(Canvas: TCanvas; lpchText: PWideChar; cchText: Integer; var
 function DrawTextExW(Canvas: TCanvas; const Text: WideString; cchText: Integer; var p4: TRect; dwDTFormat: UINT; DTParams: PDrawTextParams): Integer; overload;
 
 type
-  {$IFDEF COMPILER6_UP}
   RasterOp = (
     RasterOp_CopyROP,
     RasterOp_OrROP,
@@ -1030,30 +1021,6 @@ type
     RasterOp_NandROP,
     RasterOp_NorROP,
     RasterOp_LastROP = 15);
-  {$ELSE}
-  // Delphi 5 and below doesn't support values in enums
-  RasterOp = Integer;
-const
-  RasterOp_CopyROP = 0;
-  RasterOp_OrROP = 1;
-  RasterOp_XorROP = 2;
-  RasterOp_NotAndROP = 3;
-  RasterOp_EraseROP = 3;
-  RasterOp_NotCopyROP = 4;
-  RasterOp_NotOrROP = 5;
-  RasterOp_NotXorROP = 6;
-  RasterOp_AndROP = 7;
-  RasterOp_NotEraseROP = 7;
-  RasterOp_NotROP = 8;
-  RasterOp_ClearROP = 9;
-  RasterOp_SetROP = 10;
-  RasterOp_NopROP = 11;
-  RasterOp_AndNotROP = 12;
-  RasterOp_OrNotROP = 13;
-  RasterOp_NandROP = 14;
-  RasterOp_NorROP = 15;
-  RasterOp_LastROP = 15;
-  {$ENDIF COMPILER6_UP}
 
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
   XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = True): LongBool;overload;
@@ -1070,46 +1037,6 @@ function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 {$EXTERNALSYM IsEqualGUID}
 
 
-{$IFNDEF BCB}
-{$IFDEF COMPILER5}
-{ These functions simply call their JvVCL5Utils equivalents }
-
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
-function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
-// function StrToFloatDef(const Str: string; Default: Extended): Extended;
-procedure RaiseLastOSError;
-function IncludeTrailingPathDelimiter(const APath: string): string;
-function ExcludeTrailingPathDelimiter(const APath: string): string;
-function DirectoryExists(const Name: string): Boolean;
-function ForceDirectories(Dir: string): Boolean;
-function SameFileName(const FN1, FN2: string): Boolean;
-
-function WideCompareText(const S1, S2: WideString): Integer;
-function WideUpperCase(const S: WideString): WideString;
-function WideLowerCase(const S: WideString): WideString;
-function CompareDateTime(const A, B: TDateTime): Integer;
-
-// StrUtils
-function AnsiStartsText(const SubText, Text: string): Boolean;
-function AnsiEndsText(const SubText, Text: string): Boolean;
-function AnsiStartsStr(const SubStr, Str: string): Boolean;
-function AnsiEndsStr(const SubStr, Str: string): Boolean;
-
-// Math
-type
-  TValueSign = JvVCL5Utils.TValueSign;
-
-const
-  NegativeValue = Low(TValueSign);
-  ZeroValue = 0;
-  PositiveValue = High(TValueSign);
-
-// Variants
-function VarIsStr(const V: Variant): Boolean;
-{$ENDIF COMPILER5}
-{$ENDIF !BCB}
-
 // Containers
 type
   TIntegerListChange = procedure(Sender: TObject; Item: Integer; Action: TListNotification) of object;
@@ -1125,10 +1052,6 @@ type
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
     procedure DoChange(Item: Integer; Action: TListNotification);
   public
-    {$IFDEF COMPILER5}
-    procedure Assign(Source: TList);
-    {$ENDIF COMPILER5}
-
     // To be used with DefineProperties in client classes.
     procedure ReadData(Reader: TReader);
     procedure WriteData(Writer: TWriter);
@@ -1152,10 +1075,6 @@ type
 
 procedure CollectionSort(Collection: Classes.TCollection; SortProc: TCollectionSortProc);
 
-{$IFDEF COMPILER5}
-function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
-{$ENDIF COMPILER5}
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -1169,10 +1088,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysConst,
+  RTLConsts, SysConst,
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
@@ -1271,9 +1187,7 @@ end;
 function VarIsInt(Value: Variant): Boolean;
 begin
   Result := VarType(Value) in [varByte,
-    {$IFDEF COMPILER6_UP}
     varShortInt, varWord, varLongWord, {varInt64,}
-    {$ENDIF COMPILER6_UP}
     varSmallint, varInteger];
 end;
 
@@ -2672,11 +2586,7 @@ var
 begin
   SetString(P1, S1, Min(MaxLen, StrLenW(S1)));
   SetString(P2, S2, Min(MaxLen, StrLenW(S2)));
-  {$IFDEF COMPILER6_UP}
   Result := SysUtils.WideCompareText(P1, P2);
-  {$ELSE}
-  Result := WideCompareText(P1, P2);
-  {$ENDIF COMPILER6_UP}
 end;
 
 function StrPosW(S, SubStr: PWideChar): PWideChar;
@@ -2720,72 +2630,24 @@ begin
 end;
 
 function TrimW(const S: WideString): WideString;
-{$IFDEF COMPILER6_UP}
 begin
   Result := Trim(S);
 end;
-{$ELSE}
-var
-  I, L: Integer;
-begin
-  L := Length(S);
-  I := 1;
-  while (I <= L) and (S[I] <= ' ') do
-    Inc(I);
-  if I > L then
-    Result := ''
-  else
-  begin
-    while S[L] <= ' ' do
-      Dec(L);
-    Result := Copy(S, I, L - I + 1);
-  end;
-end;
-{$ENDIF COMPILER6_UP}
 
 function TrimLeftW(const S: WideString): WideString;
-{$IFDEF COMPILER6_UP}
 begin
   Result := TrimLeft(S);
 end;
-{$ELSE}
-var
-  I, L: Integer;
-begin
-  L := Length(S);
-  I := 1;
-  while (I <= L) and (S[I] <= ' ') do
-    Inc(I);
-  Result := Copy(S, I, MaxInt);
-end;
-{$ENDIF COMPILER6_UP}
 
 function TrimRightW(const S: WideString): WideString;
-{$IFDEF COMPILER6_UP}
 begin
   Result := TrimRight(S);
 end;
-{$ELSE}
-var
-  I: Integer;
-begin
-  I := Length(S);
-  while (I > 0) and (S[I] <= ' ') do
-    Dec(I);
-  Result := Copy(S, 1, I);
-end;
-{$ENDIF COMPILER6_UP}
 
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 var
-  {$IFDEF COMPILER6_UP}
   Ch: Char;
-  {$ELSE}
-  S: string;
-  F, P: PChar;
-  {$ENDIF COMPILER6_UP}
 begin
-  {$IFDEF COMPILER6_UP}
   Ch := List.Delimiter;
   try
     List.Delimiter := Delimiter;
@@ -2793,47 +2655,6 @@ begin
   finally
     List.Delimiter := Ch;
   end;
-  {$ELSE}
-  List.BeginUpdate;
-  try
-    List.Clear;
-    P := PChar(Text);
-    while P^ in [#1..#32] do
-      Inc(P);
-    while P^ <> #0 do
-    begin
-      if P^ = '"' then
-      begin
-        F := P;
-        while (P[0] <> #0) and (P[0] <> '"') do
-          Inc(P);
-        SetString(S, F, P - F);
-      end
-      else
-      begin
-        F := P;
-        while not (P[0] < #32) and (P[0] <> Delimiter) do
-          Inc(P);
-        SetString(S, F, P - F);
-      end;
-      List.Add(S);
-      while P[0] in [#1..#32] do
-        Inc(P);
-      if P[0] = Delimiter then
-      begin
-        F := P;
-        Inc(F);
-        if F[0] = #0 then
-          List.Add('');
-        repeat
-          Inc(P);
-        until not (P[0] in [#1..#32]);
-      end;
-    end;
-  finally
-    List.EndUpdate;
-  end;
-  {$ENDIF COMPILER6_UP}
 end;
 
 function StrToBool(const S: string): Boolean;
@@ -6725,11 +6546,10 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
-    St := SysUtils.Format({$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
-      [LastError, SysErrorMessage(LastError)]);
+    St := SysUtils.Format(SOSError, [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
-    raise {$IFDEF COMPILER6_UP} EOSError{$ELSE} EWin32Error{$ENDIF}.Create(St);
+    raise EOSError.Create(St);
   end;
 end;
 
@@ -7808,11 +7628,7 @@ begin
   pRightBottom.Y := pTopLeft.Y + AMaxSize;
   pRightBottom.X := pTopLeft.X + AMaxSize;
 
-  {$IFDEF COMPILER5}
-  ARect := Rect(pTopLeft.X, pTopLeft.Y, pRightBottom.X, pRightBottom.Y);
-  {$ELSE}
   ARect := Rect(pTopLeft, pRightBottom);
-  {$ENDIF COMPILER5}
   Result := True;
 end;
 
@@ -8631,8 +8447,6 @@ begin
   Result := Windows.DrawTextEx(Canvas.Handle, lpchText, cchText, p4, dwDTFormat, DTParams);
 end;
 
-{$IFDEF COMPILER6_UP}
-
 function DrawText(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
   Result := DrawTextW(Canvas, Text, Len, R, WinFlags and not DT_MODIFYSTRING);
@@ -8642,8 +8456,6 @@ function DrawTextEx(Canvas: TCanvas; const Text: WideString; cchText: Integer; v
 begin
   Result := DrawTextExW(Canvas, Text, cchText, p4, dwDTFormat and not DT_MODIFYSTRING, DTParams);
 end;
-
-{$ENDIF COMPILER6_UP}
 
 function DrawTextW(Canvas: TCanvas; const Text: WideString; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin
@@ -8755,11 +8567,7 @@ end;
 
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 begin
-  {$IFDEF COMPILER5}
-  Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
-  {$ELSE}
   Result := SysUtils.IsEqualGUID(IID1, IID2);
-  {$ENDIF COMPILER5}
 end;
 
 {Color functions}
@@ -8904,106 +8712,6 @@ begin
   Result := AnsiExtractQuotedStr(P, AQuote);
 end;
 
-{$IFNDEF BCB}
-{$IFDEF COMPILER5}
-{ These functions simply call their JvVCL5Utils equivalents }
-
-function TryStrToInt(const S: string; out Value: Integer): Boolean;
-begin
-  Result := JvVCL5Utils.TryStrToInt(S, Value);
-end;
-
-function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
-begin
-  Result := JvVCL5Utils.TryStrToDateTime(S, Date);
-end;
-
-function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
-begin
-  Result := JvVCL5Utils.StrToDateTimeDef(S, Default);
-end;
-
-// function StrToFloatDef(const Str: string; Default: Extended): Extended;
-procedure RaiseLastOSError;
-begin
-  JvVCL5Utils.RaiseLastOSError;
-end;
-
-function IncludeTrailingPathDelimiter(const APath: string): string;
-begin
-  Result := JvVCL5Utils.IncludeTrailingPathDelimiter(APath);
-end;
-
-function ExcludeTrailingPathDelimiter(const APath: string): string;
-begin
-  Result := JvVCL5Utils.ExcludeTrailingPathDelimiter(APath);
-end;
-
-function DirectoryExists(const Name: string): Boolean;
-begin
-  Result := JvVCL5Utils.DirectoryExists(Name);
-end;
-
-function ForceDirectories(Dir: string): Boolean;
-begin
-  Result := JvVCL5Utils.ForceDirectories(Dir);
-end;
-
-function SameFileName(const FN1, FN2: string): Boolean;
-begin
-  Result := JvVCL5Utils.SameFileName(FN1, FN2);
-end;
-
-function WideCompareText(const S1, S2: WideString): Integer;
-begin
-  Result := JvVCL5Utils.WideCompareText(S1, S2);
-end;
-
-function WideUpperCase(const S: WideString): WideString;
-begin
-  Result := JvVCL5Utils.WideUpperCase(S);
-end;
-
-function WideLowerCase(const S: WideString): WideString;
-begin
-  Result := JvVCL5Utils.WideLowerCase(S);
-end;
-
-function CompareDateTime(const A, B: TDateTime): Integer;
-begin
-  Result := JvVCL5Utils.CompareDateTime(A, B);
-end;
-
-// StrUtils
-function AnsiStartsText(const SubText, Text: string): Boolean;
-begin
-  Result := JvVCL5Utils.AnsiStartsText(SubText, Text);
-end;
-
-function AnsiEndsText(const SubText, Text: string): Boolean;
-begin
-  Result := JvVCL5Utils.AnsiEndsText(SubText, Text);
-end;
-
-function AnsiStartsStr(const SubStr, Str: string): Boolean;
-begin
-  Result := JvVCL5Utils.AnsiStartsStr(SubStr, Str);
-end;
-
-function AnsiEndsStr(const SubStr, Str: string): Boolean;
-begin
-  Result := JvVCL5Utils.AnsiEndsStr(SubStr, Str);
-end;
-
-// Variants
-function VarIsStr(const V: Variant): Boolean;
-begin
-  Result := JvVCL5Utils.VarIsStr(V);
-end;
-
-{$ENDIF COMPILER5}
-{$ENDIF !BCB}
-
 procedure CollectionQuickSort(List: Classes.TCollection; L, R: Integer; SortProc: TCollectionSortProc);
 var
  I, J, pix: Integer;
@@ -9055,31 +8763,12 @@ begin
     CollectionQuickSort(Collection, 0, Collection.Count - 1, SortProc);
 end;
 
-{$IFDEF COMPILER5}
-function SecondsBetween(const Now: TDateTime; const FTime: TDateTime): Integer;
-begin
-  Result := Trunc(86400 * (FTime - Now));
-end;
-{$ENDIF COMPILER5}
-
 { TIntegerList }
 
 function TIntegerList.Add(Value: Integer): Integer;
 begin
   Result := inherited Add(TObject(Value));
 end;
-
-{$IFDEF COMPILER5}
-procedure TIntegerList.Assign(Source: TList);
-var
-  I: Integer;
-begin
-  Clear;
-  Capacity := Source.Count;
-  for I := 0 to Source.Count - 1 do
-    Add(Integer(Source[I]));
-end;
-{$ENDIF COMPILER5}
 
 procedure TIntegerList.DoChange(Item: Integer; Action: TListNotification);
 begin

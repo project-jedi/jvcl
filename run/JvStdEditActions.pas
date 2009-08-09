@@ -111,9 +111,6 @@ type
 implementation
 
 uses
-{$IFDEF COMPILER5}
-  JvVCL5Utils, 
-{$ENDIF COMPILER5}
   JvJVCLUtils;
 
 //=== { TJvEditAction } ==========================================================

@@ -103,9 +103,6 @@ uses
   TypInfo, SysUtils,
   Clipbrd, Consts,
   ShellAPI, LibHelp,
-  {$IFDEF BCB5}
-  JvVCL5Utils,
-  {$ENDIF BCB5}
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
 

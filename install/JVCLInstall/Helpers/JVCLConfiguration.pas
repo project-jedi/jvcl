@@ -31,14 +31,8 @@ unit JVCLConfiguration;
 interface
 
 uses
-  SysUtils, Classes, Contnrs, dpp_PascalParser,
-  {$IFDEF COMPILER6_UP}
-  StrUtils,
-  {$ELSE}
-  JvVCL5Utils,
-  {$ENDIF COMPILER6_UP}
-  JclBase,
-  Utils;
+  SysUtils, Classes, Contnrs, dpp_PascalParser, StrUtils,
+  JclBase, Utils;
 
 type
   TJVCLConfig = class;

@@ -38,7 +38,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, Menus, ImgList,
-  JvTypes, JvVCL5Utils, JvButton, JvComputerInfoEx;
+  JvTypes, JvButton, JvComputerInfoEx;
 
 type
   TJvControlPanelButton = class(TJvCustomButton)

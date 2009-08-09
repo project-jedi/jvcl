@@ -35,11 +35,7 @@ uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls, ToolWin, ImgList, RichEdit, Tabs,
-  {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvgLogics, JvgGroupBox;
 
 type

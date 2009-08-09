@@ -183,12 +183,10 @@ type
 
   TJvEdit = class(TJvCustomEdit)
   published
-    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF COMPILER6_UP}
     property BiDiMode;
     property DragCursor;
     property DragKind;

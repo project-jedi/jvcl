@@ -210,7 +210,7 @@ implementation
 uses
   SysUtils, TypInfo,
   JclStrings,
-  JvVCL5Utils, JvJCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvConsts, JvResources;
 
 const
   cNullDigit = '0';

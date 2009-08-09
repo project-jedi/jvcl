@@ -110,10 +110,8 @@ type
     FRequiresDB: Boolean;
     FProjectType: TProjectType;
     FIsXPlatform: Boolean;
-    FC5PFlags: string;
     FC6PFlags: string;
     FC10PFlags: string;
-    FC5Libs: TStrings;
     FC6Libs: TStrings;
     FC10Libs: TStrings;
     FGUID: string;
@@ -152,10 +150,8 @@ type
     property ReleaseNumber: string read FReleaseNumber;
     property BuildNumber: string read FBuildNumber;
 
-    property C5PFlags: string read FC5PFlags;
     property C6PFlags: string read FC6PFlags;
     property C10PFlags: string read FC10PFlags;
-    property C5Libs: TStrings read FC5Libs;
     property C6Libs: TStrings read FC6Libs;
     property C10Libs: TStrings read FC10Libs;
 
@@ -360,11 +356,6 @@ function ProjectTypeToProjectName(ProjectType: TProjectType): string;
 
 implementation
 
-{$IFDEF COMPILER5}
-const
-  PathDelim = '\';
-{$ENDIF COMPILER5}
-
 var
   XmlFileCache: TStringList; // cache for .xml files ( TPackageXmlInfo )
 
@@ -509,11 +500,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER5}
-type
-  UTF8String = type string;
-{$ENDIF COMPILER5}
-
 function LoadUtf8File(const Filename: string): string;
 var
   Content: UTF8String;
@@ -532,14 +518,7 @@ begin
   if (Content[1] = #$EF) and (Content[2] = #$BB) and (Content[3] = #$BF) then
     Delete(Content, 1, 3);
     
-  {$IFDEF COMPILER6_UP}
   Result := Utf8ToAnsi(Content);
-  {$ELSE}
-    { Delphi 5 (should) never reachs this because the Installer uses the newest
-      installed Delphi version and only reads the project groups of installed
-      Delphi/BCB/BDN versions. }
-  Result := Content;
-  {$ENDIF COMPILIER6_UP}
 end;
 
 // (rom) copied from JclStrings.pas
@@ -745,7 +724,6 @@ begin
     FProjectType := ptPackageRun;
   end;
 
-  FC5Libs := TStringList.Create;
   FC6Libs := TStringList.Create;
   FC10Libs := TStringList.Create;
   FCompilerDefines := TStringList.Create;
@@ -755,7 +733,6 @@ end;
 
 destructor TPackageXmlInfo.Destroy;
 begin
-  FC5Libs.Free;
   FC6Libs.Free;
   FC10Libs.Free;
   FRequires.Free;
@@ -809,13 +786,11 @@ begin
     if Assigned(RootNode.Items.ItemNamed['CompilerDefines']) then
       StrToStrings(RootNode.Items.Value('CompilerDefines'), ' ', CompilerDefines, False);
 
-    FC5PFlags := RootNode.Items.Value('C5PFlags');
     FC6PFlags := RootNode.Items.Value('C6PFlags');
     FC10PFlags := FC6PFlags;
     if Assigned(RootNode.Items.ItemNamed['C10PFlags']) then
       FC10PFlags := RootNode.Items.Value('C10PFlags');
 
-    StrToStrings(RootNode.Items.Value('C5Libs'), ' ', C5Libs, False);
     StrToStrings(RootNode.Items.Value('C6Libs'), ' ', C6Libs, False);
     FC10Libs.Assign(FC6Libs);
     if Assigned(RootNode.Items.ItemNamed['C10Libs']) then

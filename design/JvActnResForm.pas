@@ -32,9 +32,6 @@ interface
 
 uses
   ActnList, ImgList, Controls,
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
   SysUtils, Classes, StdActns,
   JvActions;
 

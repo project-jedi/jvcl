@@ -193,10 +193,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  Forms, Consts, BDEConst,
+  RTLConsts, Forms, Consts, BDEConst,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}

@@ -167,9 +167,7 @@ type
     //property OnUnDock;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER6_UP}
     property OnContextPopup;
-    {$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -265,9 +263,7 @@ type
     //property OnUnDock;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER6_UP}
     property OnContextPopup;
-    {$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -839,12 +835,7 @@ begin
       Images.Draw(Canvas,
         (Width - Images.Width) div 2 + Integer(Shifted),
         (Height - Images.Height) div 2 + Integer(Shifted),
-        ImageIndex,
-        {$IFDEF COMPILER6_UP}
-        dsTransparent,
-        itImage,
-        {$ENDIF COMPILER6_UP}
-        Enabled);
+        ImageIndex, dsTransparent, itImage, Enabled);
     end
     else
     begin

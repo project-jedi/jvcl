@@ -73,10 +73,7 @@ implementation
 uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils;
+  Variants, SysUtils;
 
 //=== { TJvDatabaseActionDevExpCxPivotGridControlEngine } =========================
 

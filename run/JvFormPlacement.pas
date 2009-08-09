@@ -33,15 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
+  Variants, Types, RTLConsts,
   SysUtils, Classes, Windows, Messages, Controls, Forms,
   JvWndProcHook,
   JvAppStorage, JvComponentBase, JvJVCLUtils, JvTypes, JvConsts;

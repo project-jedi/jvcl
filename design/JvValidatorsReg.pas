@@ -35,11 +35,7 @@ implementation
 
 uses
   Classes,
-  {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
   JvErrorIndicator, JvValidators, JvValidatorsEditorForm, JvDsgnEditors;
 
@@ -60,12 +56,6 @@ begin
     'PropertyToValidate', TJvPropertyValidateProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
     'CompareToProperty', TJvPropertyToCompareProperty);
-  {$IFDEF COMPILER5}
-  RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
-    'ValidationSummary', TJvValidationSummaryProperty);
-  RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
-    'ErrorIndicator', TJvErrorIndicatorProperty);
-  {$ENDIF COMPILER5}
 end;
 
 end.

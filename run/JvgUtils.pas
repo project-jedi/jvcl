@@ -153,8 +153,7 @@ implementation
 uses
   JvJCLUtils,
   ShlObj, Math,
-  JvResources, JvConsts,
-  JvVCL5Utils;
+  JvResources, JvConsts;
 
 { debug func }
 {$IFDEF glDEBUG}

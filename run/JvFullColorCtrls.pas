@@ -34,10 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
-  ComCtrls, StdCtrls, ExtCtrls,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  ComCtrls, StdCtrls, ExtCtrls, Types,
   JvJCLUtils, JvTypes, JvComboBox, JvFullColorSpaces, JvFullColorRotate;
 
 type
@@ -362,8 +359,7 @@ type
   protected
     procedure Paint; override;
     procedure CalcSize;
-    procedure SetAutoSize(Value: Boolean);
-      {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     procedure GraphicChange(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
   public
@@ -411,11 +407,9 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF COMPILER6_UP}
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF COMPILER6_UP}
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
@@ -448,9 +442,7 @@ type
     property ColorSpaceID: TJvFullColorSpaceID read GetColorSpaceID write SetColorSpaceID default csRGB;
     property ItemFormat: TJvFullColorSpaceFormat read FItemFormat write SetItemFormat default cfBoth;
     property OnFormatItem: TJvFullColorSpaceFormatEvent read FOnFormatItem write FOnFormatItem;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
@@ -482,9 +474,7 @@ type
     property Visible;
     property OnChange;
     property OnClick;
-    {$IFDEF COMPILER6_UP}
     property OnCloseUp;
-    {$ENDIF COMPILER6_UP}
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
@@ -499,9 +489,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
-    {$IFDEF COMPILER6_UP}
     property OnSelect;
-    {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
   end;
@@ -531,9 +519,7 @@ type
     property Selected: TJvFullColorAxisConfig read GetSelected write SetSelected;
     property ColorID: TJvFullColorSpaceID read FColorID write SetColorID default csRGB;
     property OnFormatItem: TJvFullColorAxisFormatEvent read FOnFormatItem write SetOnFormatItem;
-    {$IFDEF COMPILER6_UP}
     property AutoDropDown;
-    {$ENDIF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
@@ -565,9 +551,7 @@ type
     property Visible;
     property OnChange;
     property OnClick;
-    {$IFDEF COMPILER6_UP}
     property OnCloseUp;
-    {$ENDIF COMPILER6_UP}
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
@@ -582,9 +566,7 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMeasureItem;
-    {$IFDEF COMPILER6_UP}
     property OnSelect;
-    {$ENDIF COMPILER6_UP}
     property OnStartDock;
     property OnStartDrag;
   end;
@@ -737,12 +719,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_RTLCONSTS}
-  RTLConsts,
-  {$ELSE}
-  Consts,
-  {$ENDIF HAS_UNIT_RTLCONSTS}
-  TypInfo, Forms,
+  RTLConsts, TypInfo, Forms,
   JclMath, JclLogic, // For EnsureRange and Min/Max
   JvResources, JvConsts, JvJVCLUtils;
 
@@ -2873,9 +2850,7 @@ end;
 
 procedure TJvFullColorLabel.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-  {$ENDIF COMPILER6_UP}
   CalcSize;
 end;
 

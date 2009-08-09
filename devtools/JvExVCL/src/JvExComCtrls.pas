@@ -33,10 +33,7 @@ WARNINGHEADER
 interface
 
 uses
-  Windows, Messages,
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
+  Windows, Messages, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -44,9 +41,7 @@ uses
   JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
-  {$IFDEF COMPILER6_UP}
   WINCONTROL_DECL_DEFAULT(CustomHeaderControl)
-  {$ENDIF COMPILER6_UP}
 
   WINCONTROL_DECL_DEFAULT(HeaderControl)
 
@@ -68,15 +63,11 @@ type
 
   WINCONTROL_DECL_DEFAULT(Animate)
 
-  {$IFDEF COMPILER6_UP}
-
   WINCONTROL_DECL_DEFAULT(CustomComboBoxEx)
 
   WINCONTROL_DECL_DEFAULT(CustomStatusBar)
 
   WINCONTROL_DECL_DEFAULT(ComboBoxEx)
-
-  {$ENDIF COMPILER6_UP}
 
   WINCONTROL_DECL_DEFAULT(CoolBar)
 
@@ -118,8 +109,6 @@ const
 
 implementation
 
-{$IFDEF COMPILER6_UP}
-
 WINCONTROL_IMPL_DEFAULT(CustomComboBoxEx)
 
 WINCONTROL_IMPL_DEFAULT(CustomStatusBar)
@@ -127,8 +116,6 @@ WINCONTROL_IMPL_DEFAULT(CustomStatusBar)
 WINCONTROL_IMPL_DEFAULT(ComboBoxEx)
 
 WINCONTROL_IMPL_DEFAULT(CustomHeaderControl)
-
-{$ENDIF COMPILER6_UP}
 
 WINCONTROL_IMPL_DEFAULT(HeaderControl)
 

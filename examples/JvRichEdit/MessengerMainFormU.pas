@@ -124,10 +124,7 @@ var
 implementation
 
 uses
-  RichEdit
-  {$IFDEF COMPILER6_UP}
-  , DateUtils
-  {$ENDIF};
+  RichEdit, DateUtils;
 
 {$R *.dfm}
 

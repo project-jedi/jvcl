@@ -475,10 +475,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_VARIANTS}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils,
+  Variants, SysUtils,
   JvDynControlEngineTools, JvDynControlEngineVCL, JvConsts, JvJCLUtils;
 
 var
@@ -1629,9 +1626,7 @@ end;
 
 procedure TJvDynControlVCLDBImage.ControlSetProportional(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
 //  Proportional := Value;
-  {$ENDIF COMPILER6_UP}
 end;
 
 

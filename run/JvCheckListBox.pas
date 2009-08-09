@@ -39,7 +39,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Contnrs, Controls, Graphics, StdCtrls,
-  JvExCheckLst, JvVCL5Utils, JvDataSourceIntf;
+  JvExCheckLst, JvDataSourceIntf;
 
 const
   DefaultValueChecked = '1';
@@ -96,21 +96,6 @@ type
     procedure WndProc(var Msg: TMessage); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-  {$IFDEF COMPILER5}
-  private
-    FHeaders: TList;
-    FHeaderColor: TColor;
-    FHeaderBackgroundColor: TColor;
-    function GetHeader(Index: Integer): Boolean;
-    procedure SetHeader(Index: Integer; const Value: Boolean);
-    procedure SetHeaderColor(Value: TColor);
-    procedure SetHeaderBackgroundColor(Value: TColor);
-  public
-    property Header[Index: Integer]: Boolean read GetHeader write SetHeader;
-  published
-    property HeaderColor: TColor read FHeaderColor write SetHeaderColor default clInfoText;
-    property HeaderBackgroundColor: TColor read FHeaderBackgroundColor write SetHeaderBackgroundColor default clInfoBk;
-  {$ENDIF COMPILER5}
   private
     FDataConnector: TJvCheckListBoxDataConnector;
     FOnItemDrawing: TDrawItemEvent;
@@ -129,7 +114,7 @@ type
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
-    procedure SelectAll; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SelectAll; override;
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
@@ -137,7 +122,7 @@ type
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
-    procedure DeleteSelected; {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure DeleteSelected; override;
     procedure SaveToFile(FileName: TFileName);
     procedure LoadFromFile(FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);
@@ -408,11 +393,6 @@ constructor TJvCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataConnector := CreateDataConnector;
-  {$IFDEF COMPILER5}
-  FHeaders := TList.Create;
-  FHeaderColor := clInfoText;
-  FHeaderBackgroundColor := clInfoBk;
-  {$ENDIF COMPILER5}
   FHotTrack := False;
   FMaxWidth := 0;
   FScroll := True;
@@ -421,53 +401,9 @@ end;
 
 destructor TJvCheckListBox.Destroy;
 begin
-  {$IFDEF COMPILER5}
-  FHeaders.Free;
-  {$ENDIF COMPILER5}
   FDataConnector.Free;
   inherited Destroy;
 end;
-
-{$IFDEF COMPILER5}
-procedure TJvCheckListBox.SetHeaderColor(Value: TColor);
-begin
-  if Value <> FHeaderColor then
-  begin
-    FHeaderColor := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvCheckListBox.SetHeaderBackgroundColor(Value: TColor);
-begin
-  if Value <> FHeaderBackgroundColor then
-  begin
-    FHeaderBackgroundColor := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvCheckListBox.SetHeader(Index: Integer; const Value: Boolean);
-var
-  Idx: Integer;
-begin
-  Idx := FHeaders.IndexOf(Pointer(Index));
-  if Idx < 0 then
-  begin
-    if Value then
-      FHeaders.Add(TObject(Index));
-  end
-  else
-    if not Value then
-      FHeaders.Delete(Idx);
-end;
-
-function TJvCheckListBox.GetHeader(Index: Integer): Boolean;
-begin
-  Result := FHeaders.IndexOf(Pointer(Index)) >= 0;
-end;
-
-{$ENDIF COMPILER5}
 
 function TJvCheckListBox.CreateDataConnector: TJvCheckListBoxDataConnector;
 begin
@@ -505,13 +441,6 @@ end;
 procedure TJvCheckListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
   DoItemDrawing(Index, Rect, State);
-  {$IFDEF COMPILER5}
-  if Header[Index] then
-  begin
-    Canvas.Font.Color := HeaderColor;
-    Canvas.Brush.Color := HeaderBackgroundColor;
-  end;
-  {$ENDIF COMPILER5}
   inherited DrawItem(Index, Rect, State);
 end;
 
@@ -608,14 +537,6 @@ procedure TJvCheckListBox.CNDrawItem(var Msg: TWMDrawItem);
 begin
   if (Items.Count = 0) or (Msg.DrawItemStruct.itemID >= UINT(Items.Count)) then
     Exit;
-  {$IFDEF COMPILER5}
-  with Msg.DrawItemStruct^ do
-    if Header[itemID] then
-      if not UseRightToLeftAlignment then
-        rcItem.Left := rcItem.Left - GetCheckWidth
-      else
-        rcItem.Right := rcItem.Right + GetCheckWidth;
-  {$ENDIF COMPILER5}
   inherited;
 end;
 

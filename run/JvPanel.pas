@@ -347,9 +347,7 @@ const
 implementation
 
 uses
-  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF HAS_UNIT_TYPES}
   JvJCLUtils, JvJVCLUtils, JvResources;
 
 const
@@ -891,12 +889,7 @@ begin
 
   if not MouseOver and Enabled and (Control = nil) then
   begin
-    OtherDragging :=
-       {$IFDEF COMPILER6_UP}
-      Mouse.IsDragging;
-       {$ELSE}
-      KeyPressed(VK_LBUTTON);
-      {$ENDIF COMPILER6_UP}
+    OtherDragging := Mouse.IsDragging;
     NeedRepaint := not Transparent and
      ({IsThemed or} (FHotTrack and Enabled and not FDragging and not OtherDragging));
     inherited MouseEnter(Control); // set MouseOver
@@ -914,12 +907,7 @@ var
 begin
   if csDesigning in ComponentState then
     Exit;
-  OtherDragging :=
-     {$IFDEF COMPILER6_UP}
-    Mouse.IsDragging;
-     {$ELSE}
-    KeyPressed(VK_LBUTTON);
-     {$ENDIF COMPILER6_UP}
+  OtherDragging := Mouse.IsDragging;
   if MouseOver and Enabled and (Control = nil) then
   begin
     NeedRepaint := not Transparent and

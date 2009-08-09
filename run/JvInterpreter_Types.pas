@@ -35,16 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER5}
-  Windows, Classes,
-  {$ELSE}
-  {$IFDEF HAS_UNIT_TYPES}
-  Types,
-  {$ENDIF HAS_UNIT_TYPES}
-  {$IFDEF HAS_UNIT_VARIANT}
-  Variants,
-  {$ENDIF HAS_UNIT_VARIANT}
-  {$ENDIF COMPILER5}
+  Types, Variants,
   JvInterpreter;
 
 function Point2Var(const Point: TPoint): Variant;

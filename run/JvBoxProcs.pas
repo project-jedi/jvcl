@@ -32,9 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF COMPILER6_UP}
   Types, Variants,
-  {$ENDIF COMPILE6_UP}
   Windows, Classes, Controls;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);

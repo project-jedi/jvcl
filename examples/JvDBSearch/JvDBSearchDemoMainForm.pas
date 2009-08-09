@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  {$IFDEF COMPILER6_UP} Variants, {$ENDIF} Dialogs, Grids, StdCtrls, JvExStdCtrls,
+  Variants, Dialogs, Grids, StdCtrls, JvExStdCtrls,
   JvEdit, JvCombobox, ExtCtrls, DB, DBGrids, JvExDBGrids, JvDBGrid, DBTables,
   JvDBSearchEdit, JvDBSearchComboBox;
 
