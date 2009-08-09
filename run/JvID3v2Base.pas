@@ -1191,14 +1191,10 @@ implementation
 
 uses
   Graphics,
-  {$IFDEF COMPILER5}
-  Forms,
-  {$ENDIF COMPILER5}
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  JvVCL5Utils,
-  JvJclUtils, // SameFileName() for Delphi 5
+  JvJclUtils,
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JclStringConversions, JclWideStrings,
   JvConsts, JvResources;
@@ -1531,7 +1527,7 @@ begin
 end;
 
 function CheckIsLanguageList(Frame: TJvID3Frame;
-  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}JclUnicode.TWideStrings{$ENDIF COMPILER12_UP};
   const HandleError: TJvID3HandleError): Boolean;
 var
   I: Integer;
@@ -1553,7 +1549,7 @@ begin
 end;
 
 function CheckList(Frame: TJvID3Frame;
-  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP};
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}JclUnicode.TWideStrings{$ENDIF COMPILER12_UP};
   const ASeparator: WideChar;
   const HandleError: TJvID3HandleError): Boolean;
 var
@@ -1764,7 +1760,7 @@ begin
 end;
 
 procedure ExtractFixedStrings(const Content: WideString; const ALength: Integer;
-  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}JclUnicode.TWideStrings{$ENDIF COMPILER12_UP});
 var
   P, ContentPtr: PWideChar;
   S: WideString;
@@ -1802,7 +1798,7 @@ begin
 end;
 
 procedure ExtractStrings(Separator: WideChar; const Content: WideString;
-  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
+  Strings: {$IFDEF COMPILER12_UP}TStrings{$ELSE}JclUnicode.TWideStrings{$ENDIF COMPILER12_UP});
 var
   Tail: PWideChar;
   S: WideString;
@@ -3165,7 +3161,6 @@ begin
     SaveToFile(FFileName);
     SetModified(False);
   except
-    {$IFDEF COMPILER6_UP}
     if csDesigning in ComponentState then
       if Assigned(Classes.ApplicationHandleException) then
         Classes.ApplicationHandleException(ExceptObject)
@@ -3173,9 +3168,6 @@ begin
         ShowException(ExceptObject, ExceptAddr)
     else
       raise;
-    {$ELSE}
-    Application.HandleException(ExceptObject);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -3632,7 +3624,6 @@ begin
     if FStreamedActive then
       SetActive(True);
   except
-    {$IFDEF COMPILER6_UP}
     if csDesigning in ComponentState then
       if Assigned(Classes.ApplicationHandleException) then
         Classes.ApplicationHandleException(ExceptObject)
@@ -3640,9 +3631,6 @@ begin
         ShowException(ExceptObject, ExceptAddr)
     else
       raise;
-    {$ELSE}
-    Application.HandleException(ExceptObject);
-    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -4145,7 +4133,7 @@ begin
   FList := TStringList.Create;
   TStringList(FList).OnChange := ListChanged;
   {$ELSE}
-  FList := TWideStringList.Create;
+  FList := JclUnicode.TWideStringList.Create;
   TWideStringList(FList).OnChange := ListChanged;
   {$ENDIF COMPILER12_UP}
 end;
@@ -4317,7 +4305,7 @@ begin
   Result := (Assigned(Frame) and (Frame.FrameID = FrameID)) or inherited SameUniqueIDAs(Frame);
 end;
 
-procedure TJvID3DoubleListFrame.SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
+procedure TJvID3DoubleListFrame.SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}JclUnicode.TWideStrings{$ENDIF COMPILER12_UP});
 begin
   FList.Assign(Value);
   Changed;
@@ -6654,7 +6642,7 @@ begin
     begin
       { !! We can't use FileGetTempName; it /creates/ a file with extension TMP but
            we need to have a specific extension }
-      TmpFileName := {$IFDEF COMPILER6_UP}SysUtils.{$ENDIF COMPILER6_UP}IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
+      TmpFileName := SysUtils.IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
       TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(string(MIMEType)), '');
 
       SaveToFile(TmpFileName);
@@ -7169,7 +7157,7 @@ begin
   FList := TJvID3StringList.Create;
   TStringList(FList).OnChange := ListChanged;
   {$ELSE}
-  FList := TWideStringList.Create;
+  FList := JclUnicode.TWideStringList.Create;
   TWideStringList(FList).OnChange := ListChanged;
   {$ENDIF COMPILER12_UP}
 end;
@@ -7317,13 +7305,13 @@ begin
     {$IFDEF COMPILER12_UP}
     Result := (FList as TJvID3StringList).GetSeparatedText(Separator)
     {$ELSE}
-    Result := (FList as TWideStringList).GetSeparatedText(Separator)
+    Result := (FList as JclUnicode.TWideStringList).GetSeparatedText(Separator)
     {$ENDIF COMPILER12_UP}
   else
     {$IFDEF COMPILER12_UP}
     Result := (FList as TJvID3StringList).GetSeparatedText('');
     {$ELSE}
-    Result := (FList as TWideStringList).GetSeparatedText('');
+    Result := (FList as JclUnicode.TWideStringList).GetSeparatedText('');
     {$ENDIF COMPILER12_UP}
 end;
 
@@ -7363,7 +7351,7 @@ begin
     inherited ReadFrame;
 end;
 
-procedure TJvID3SimpleListFrame.SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
+procedure TJvID3SimpleListFrame.SetList(Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}JclUnicode.TWideStrings{$ENDIF COMPILER12_UP});
 begin
   FList.Assign(Value);
 end;
