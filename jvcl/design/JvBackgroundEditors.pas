@@ -31,11 +31,7 @@ interface
 
 uses
   Classes,
-  {$IFDEF RTL140_UP}
   DesignEditors, DesignIntf,
-  {$ELSE}
-  DsgnIntf,
-  {$ENDIF RTL140_UP}
   JvBackgrounds, JvBackgroundEditForm;
 
 type
@@ -82,11 +78,7 @@ begin
   Editor := TJvBackgroundClientsEditor.Create(nil);
   try
     Clients := TJvBackgroundClients(GetOrdValue);
-    {$IFDEF RTL140_UP}
     EditorAddControl(Designer.Root.Name);
-    {$ELSE}
-    EditorAddControl(Designer.GetRoot.Name);
-    {$ENDIF RTL140_UP}
     Proc := EditorAddControl;
     Designer.GetComponentNames(GetTypeData(TWinControl.ClassInfo), Proc);
     Editor.SetButtons;
