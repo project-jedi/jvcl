@@ -70,7 +70,6 @@
     <File Name="..\..\run\JvClipbrd.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBackgrounds.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvVCL5Utils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataSourceIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeDragBarForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHotTrackPersistent.pas" Targets="all" Formname="" Condition=""/>
