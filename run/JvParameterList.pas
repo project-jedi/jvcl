@@ -969,13 +969,8 @@ begin
     except
       on E: EConvertError do
         ;
-      {$IFDEF COMPILER6_UP}
       on E: EVariantTypeCastError do
         ;
-      {$ELSE}
-      on E: EVariantError do
-        ;
-      {$ENDIF COMPILER6_UP}
     end;
 end;
 
@@ -1829,11 +1824,11 @@ begin
   ScrollBox.Parent := ParameterParent;
   ScrollBox.AutoScroll := False;
   ScrollBox.BorderStyle := bsNone;
+  {$IFDEF COMPILER10_UP}
   ScrollBox.ParentBackground := True;
-  {$IFDEF COMPILER6_UP}
+  {$ENDIF COMPILER10_UP}
   ScrollBox.BevelInner := bvNone;
   ScrollBox.BevelOuter := bvNone;
-  {$ENDIF COMPILER6_UP}
   ScrollBox.Align := alClient;
   ScrollBox.Width := ParameterParent.Width;
   RightPanel := TJvPanel.Create(Self);
