@@ -20,7 +20,6 @@
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportD5" Targets="d5" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD6" Targets="d6" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD7" Targets="d7" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2005" Targets="d9" Condition="USE_3RDPARTY_SMEXPORT"/>
@@ -28,7 +27,6 @@
     <Package Name="SMExportD2007" Targets="d11" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2009" Targets="d12" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportD5" Targets="d5" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -47,17 +45,6 @@
     <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC120" Targets="d12" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
-
-    <Package Name="cxEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
-    <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxLibraryD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxPageControlD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxExtEditorsD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
-    <Package Name="cxGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxVerticalGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
-    <Package Name="cxPivotGridD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
-    <Package Name="cxTreeListD5" Targets="d5" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
 
     <Package Name="cxEditorsVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR || USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID"/>
     <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
