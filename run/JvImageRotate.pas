@@ -115,15 +115,17 @@ begin
   FRotating := Value;
   if not (csDesigning in ComponentState) then
   begin
-    if FRotating then
-      FTimer.Resume
-    else
-      FTimer.Suspend;
+    FTimer.Paused := not FRotating;
   end;
 end;
 
 procedure TJvImageRotate.Rotate(Sender: TObject);
 begin
+  // Must exit because we are "Synchronized" and our parent is already
+  // partly destroyed. If we did not exit, we would get an AV.
+  if csDestroying in ComponentState then
+    Exit;
+
   if FTimer.Tag = 0 then //0 from Left to Right
   begin
     if FPosition = 181 then

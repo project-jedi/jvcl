@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 
  Project JEDI Visible Component Library (J-VCL)
 
@@ -382,7 +382,7 @@ begin
     begin
       FEventComponents.Add(AComp);
       if Suspended then
-        Resume;
+        Suspended := False;
     end;
   finally
     FCritSect.Leave;
@@ -422,7 +422,7 @@ begin
   begin
     if GScheduleThread.Suspended then
     begin
-      GScheduleThread.Resume;
+      GScheduleThread.Suspended := False;
       // In order for the thread to actually start (and respond to Terminate)
       // we must indicate to the system that we want to be paused. This way
       // the thread can start and will start working.

@@ -186,8 +186,6 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     FScroll.OnDraw := nil;
-    if FScroll.Suspended then
-      FScroll.Resume;
     FScroll.Free;
   end;
   Application.HintPause := FDeja;
@@ -339,6 +337,11 @@ var
   T: Integer;
   ScrollEnd: Boolean;
 begin
+  // Must exit because we are "Synchronized" and our parent is already
+  // partly destroyed. If we did not exit, we would get an AV.
+  if csDestroying in ComponentState then
+    Exit;
+
   //tag=1 pause
   if FTimerTag = 1 then
   begin
@@ -442,10 +445,7 @@ begin
   SetItems(FItems);
   FActive := Value;
   if not (csDesigning in ComponentState) then
-    if Value then
-      FScroll.Resume
-    else
-      FScroll.Suspend;
+    FScroll.Paused := not Value;
 end;
 
 procedure TJvScrollText.SetDelay(const Value: Cardinal);

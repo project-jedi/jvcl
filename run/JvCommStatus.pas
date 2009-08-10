@@ -35,12 +35,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes,
-  JvComponentBase;
+  JvComponentBase, JvThread;
 
 type
   TJvCommPort = 0..8;
 
-  TJvCommWatcher = class(TThread)
+  TJvCommWatcher = class(TJvPausableThread)
   private
     FHandle: THandle;
     FStat: Cardinal;
@@ -174,10 +174,7 @@ begin
   begin
     FWatcher.FHandle := FHandle;
     FWatcher.FStat := 0;
-    if FHandle <> 0 then
-      FWatcher.Resume
-    else
-      FWatcher.Suspend;
+    FWatcher.Paused := FHandle = 0;
   end;
   OnChange(Self);
 end;
@@ -197,14 +194,22 @@ begin
   try
     while not Terminated do
     begin
-      if FHandle <> 0 then
-      begin
-        GetCommModemStatus(FHandle, Mask);
-        if Mask <> FStat then
+      EnterUnpauseableSection;
+      try
+        if Terminated then
+          Exit;
+
+        if FHandle <> 0 then
         begin
-          FStat := Mask;
-          Synchronize(Changed);
+          GetCommModemStatus(FHandle, Mask);
+          if Mask <> FStat then
+          begin
+            FStat := Mask;
+            Synchronize(Changed);
+          end;
         end;
+      finally
+        LeaveUnpauseableSection;
       end;
       Sleep(50);
     end;

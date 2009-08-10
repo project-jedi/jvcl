@@ -35,11 +35,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JvThread,
   Windows,
   Classes;
 
 type
-  TJvImageDrawThread = class(TThread)
+  TJvImageDrawThread = class(TJvPausableThread)
   private
     FTag: Integer;
     FDelay: Cardinal;
@@ -84,7 +85,15 @@ begin
     while not Terminated do
     begin
       Sleep(FDelay);
-      Synchronize(Draw);
+      EnterUnpauseableSection;
+      try
+        if Terminated then
+          Exit;
+
+        Synchronize(Draw);
+      finally
+        LeaveUnpauseableSection;
+      end;
     end;
   except
     // ignore exception
