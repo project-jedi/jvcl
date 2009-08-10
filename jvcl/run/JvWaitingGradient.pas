@@ -171,7 +171,7 @@ begin
   inherited Loaded;
   UpdateBitmap;
   if Active then
-    FScroll.Resume;
+    FScroll.Paused := False;
 end;
 
 procedure TJvWaitingGradient.UpdateBitmap;
@@ -230,6 +230,11 @@ end;
 
 procedure TJvWaitingGradient.Deplace(Sender: TObject);
 begin
+  // Must exit because we are "Synchronized" and our parent is already
+  // partly destroyed. If we did not exit, we would get an AV.
+  if csDestroying in ComponentState then
+    Exit;
+
   if FFromLeftToRight then
   begin
     if FLeftOffset + FGradientWidth >= Width then
@@ -288,15 +293,15 @@ begin
 //    Exit;
   if FScroll = nil then
     Exit;
-  if Value and FScroll.Suspended then
+  if Value then
   begin
-    FScroll.Resume;
+    FScroll.Paused := False;
     if AlwaysRestart then
       Restart;
   end
   else
-  if not Value and not FScroll.Suspended then
-    FScroll.Suspend;
+  if not Value then
+    FScroll.Paused := True;
 end;
 
 procedure TJvWaitingGradient.SetEndColor(const Value: TColor);

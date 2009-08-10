@@ -34,10 +34,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, StdCtrls,
-  JvExStdCtrls;
+  JvExStdCtrls, JvThread;
 
 type
-  TJvWinampThread = class(TThread)
+  TJvWinampThread = class(TJvPausableThread)
   protected
     procedure Draw;
     procedure Execute; override;
@@ -161,8 +161,15 @@ begin
   try
     while not Terminated do
     begin
-      // (rom) all other threads of this kind draw first then sleep
-      Synchronize(Draw);
+      EnterUnpauseableSection;
+      try
+        if Terminated then
+          Exit;
+
+        Synchronize(Draw);
+      finally
+        LeaveUnpauseableSection;
+      end;
       Sleep(FDelay);
     end;
   except
@@ -206,16 +213,9 @@ end;
 
 destructor TJvWinampLabel.Destroy;
 begin
-  Deactivate;
+  FTimer.Free;
   FBitmap.Free;
   FPicture.Free;
-  FTimer.Free;
-  {  //-----------------
-    FTimer.Terminate;
-    while (not FTimer.Terminated) do
-      Application.ProcessMessages;
-    FTimer.Free;
-    //-------------------}
   inherited Destroy;
 end;
 
@@ -279,7 +279,7 @@ procedure TJvWinampLabel.Activate;
 begin
   FActive := True;
   if not (csDesigning in ComponentState) then
-    FTimer.Resume;
+    FTimer.Paused := False;
   FTimer.FDelay := FScrollInterval;
   FWaiting := False;
 
@@ -291,13 +291,18 @@ end;
 procedure TJvWinampLabel.Deactivate;
 begin
   if not (csDesigning in ComponentState) then
-    FTimer.Suspend;
+    FTimer.Paused := True;
   FActive := False;
   Invalidate;
 end;
 
 procedure TJvWinampLabel.DoOnTimer(Sender: TObject);
 begin
+  // Must exit because we are "Synchronized" and our parent is already
+  // partly destroyed. If we did not exit, we would get an AV.
+  if csDestroying in ComponentState then
+    Exit;
+
   if FWaiting then
   begin
     FTimer.FDelay := FScrollInterval;

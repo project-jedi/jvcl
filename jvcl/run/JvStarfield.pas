@@ -129,7 +129,6 @@ begin
   SetLength(FStarfield, 0);
   FThread.OnDraw := nil;
   FThread.Terminate;
-  //FThread.WaitFor;
   FreeAndNil(FThread);
   FBmp.Free;
   inherited Destroy;
@@ -166,10 +165,7 @@ begin
     FOnActiveChanged(Self);
   FActive := Value;
   if not (csDesigning in ComponentState)  then
-    if FActive then
-      FThread.Resume
-    else
-      FThread.Suspend;
+    FThread.Paused := not FActive;
 end;
 
 procedure TJvStarfield.SetDelay(const Value: Cardinal);
@@ -187,6 +183,11 @@ procedure TJvStarfield.Paint;
 var
   I, J: Integer;
 begin
+  // Must exit because we are "Synchronized" and our parent is already
+  // partly destroyed. If we did not exit, we would get an AV.
+  if csDestroying in ComponentState then
+    Exit;
+
   if csDesigning in ComponentState then
   begin
     Canvas.Brush.Style := bsClear;

@@ -149,6 +149,11 @@ end;
 
 procedure TJvWaitingProgress.OnScroll(Sender: TObject);
 begin
+  // Must exit because we are "Synchronized" and our parent is already
+  // partly destroyed. If we did not exit, we would get an AV.
+  if csDestroying in ComponentState then
+    Exit;
+
   //Step
   if Integer(FProgress.Position) + Integer(FRefreshInterval) > Integer(FLength) then
   begin
@@ -167,10 +172,10 @@ begin
   if FActive then
   begin
     FProgress.Position := 0;
-    FWait.Resume;
+    FWait.Paused := False;
   end
   else
-    FWait.Suspend;
+    FWait.Paused := True;
 end;
 
 procedure TJvWaitingProgress.SetActive(const Value: Boolean);

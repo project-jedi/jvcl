@@ -244,8 +244,6 @@ begin
   if Assigned(FTimerThread) then
   begin
     FTimerThread.Terminate;
-    while FTimerThread.Suspended do
-      FTimerThread.Resume;
     (FTimerThread as TJvTimerThread).Paused := False;
     FTimerThread.Free;
   end;
@@ -271,8 +269,6 @@ begin
       FTimerThread.Priority := FThreadPriority;
 
       TJvTimerThread(FTimerThread).Paused := False;
-      while FTimerThread.Suspended do
-        FTimerThread.Resume;
     end
     else
     begin

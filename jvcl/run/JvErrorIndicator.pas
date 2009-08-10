@@ -552,7 +552,7 @@ begin
   begin
     FBlinkThread := TJvBlinkThread.Create(BlinkRate);
     TJvBlinkThread(FBlinkThread).OnBlink := DoBlink;
-    TJvBlinkThread(FBlinkThread).Resume;
+    FBlinkThread.Resume;
   end;
 end;
 

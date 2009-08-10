@@ -147,7 +147,40 @@ type
   TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
       AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult : Word) of object;
 
-  TJvBaseThread = class(TThread)
+  // This thread is a descendent of TThread but proposes a different
+  // behaviour with regard to being suspended or resumed.
+  // Indeed, the MSDN recommends not to use them and it was even noticed
+  // that using Suspend and Resume under Windows NT, 2K and XP led to weird
+  // errors such as being refused access to the thread, despite being its
+  // creator.
+  // So another mechanism has been implemented : the thread must be
+  // paused instead of suspended.
+  // Pausing the thread actually acquires a critical section which the Execute
+  // function must try to get before it calls InternalExecute.
+  // Hence, if the critical section was acquired before this try, the Execute
+  // function is stopped and the thread paused until another thread (the main
+  // thread in most cases) releases the critical section when setting
+  // Paused to false.
+  // Obviously, the Execute method in derived classes has to be cooperative
+  // and actually acquire and release the FPauseSection critical section via
+  // the appropriate protected methods
+  TJvPausableThread = class(TThread)
+  private
+    FPauseSection: TCriticalSection;
+    FPaused: boolean;
+
+    procedure SetPaused(const Value: Boolean);
+  protected
+    procedure EnterUnpauseableSection;
+    procedure LeaveUnpauseableSection;
+  public
+    constructor Create (CreateSuspended : Boolean);
+    destructor Destroy; override;
+
+    property Paused : Boolean read FPaused write SetPaused;
+  end;
+
+  TJvBaseThread = class(TJvPausableThread)
   private
     FException: Exception;
     FExceptionAddr: Pointer;
@@ -1264,6 +1297,55 @@ begin
     FSynchHelpCtx := HelpCtx;
     Self.Synchronize(InternalMessageDlg);
     Result := FSynchMessageDlgResult;
+end;
+
+{ TJvPausableThread }
+
+constructor TJvPausableThread.Create(CreateSuspended: Boolean);
+begin
+  FPauseSection := TCriticalSection.Create;
+  inherited Create(CreateSuspended);
+end;
+
+destructor TJvPausableThread.Destroy;
+begin
+  if Paused then
+  begin
+    Terminate;
+    Paused := False;
+  end;
+
+  inherited Destroy;
+
+  FPauseSection.Free;
+end;
+
+procedure TJvPausableThread.EnterUnpauseableSection;
+begin
+  FPauseSection.Acquire;
+end;
+
+procedure TJvPausableThread.LeaveUnpauseableSection;
+begin
+  FPauseSection.Release;
+end;
+
+procedure TJvPausableThread.SetPaused(const Value: Boolean);
+begin
+  if FPaused <> Value then
+  begin
+    // store the Value
+    FPaused := Value;
+
+    if FPaused then
+      FPauseSection.Acquire
+    else
+      FPauseSection.Release;
+  end;
+
+  // If the thread was created "Suspended", then we must start it
+  if Suspended and not Paused then
+    Resume;
 end;
 
 initialization
