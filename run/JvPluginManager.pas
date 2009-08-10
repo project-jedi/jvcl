@@ -481,10 +481,12 @@ begin
   FPluginInfos.Delete(Index);
 end;
 
+{$WARN SYMBOL_DEPRECATED OFF}
 procedure TJvPluginManager.SendMessage(PluginMessage: Longint; PluginParams: string);
 begin
   BroadcastMessage(PluginMessage, PluginParams);
 end;
+{$WARN SYMBOL_DEPRECATED ON}
 
 procedure TJvPluginManager.UnloadLibrary(Kind: TPluginKind; LibHandle: Integer);
 begin
