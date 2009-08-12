@@ -55,6 +55,6 @@
     <File Name="..\..\run\JvImagelistViewer.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\run\JvTabBar.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTabBarXPPainter.pas" Targets="allv7up" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTabBarXPPainter.pas" Targets="all" Formname="" Condition="JVCLThemesEnabled"/>
   </Contains>
 </Package>
