@@ -2,11 +2,11 @@
 # Copyright (C) 2009 The JEDI Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2008.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2009-08-13 09:59\n"
+"POT-Creation-Date: 2009-08-13 10:26\n"
 "PO-Revision-Date: 2009-05-25 17:20-0000\n"
 "Last-Translator: Franklin Haut <franklin.haut@gmail.com>\n"
 "Language-Team: \n"
@@ -1618,11 +1618,6 @@ msgstr "Referência circular de armazenamento"
 #: JvResources.pas:149 JvResources.pas:1740 
 msgid "%s: Mutex Timeout"
 msgstr "%s: Mutex Timeout"
-
-#. Programmer's name for it: RsJvAppStorageSynchronizeProcedureName
-#: JvResources.pas:150 
-msgid "TJvCustomAppStorage.Synchronize:"
-msgstr "TJvCustomAppStorage.Synchronize:"
 
 #. === JvAppStorageSelectList.pas =============================================
 #. Programmer's name for it: RsLoadSettings
@@ -6342,20 +6337,6 @@ msgstr "Plugin função %0:s não foi encontrado em %1:s"
 msgid "Calling %0:s in %1:s failed"
 msgstr "Chamando %0:s em %1:s falhou"
 
-#. RsURLPoweredByJCL = 'http://homepages.codegear.com/jedi/jcl/PoweredByJCL.htm';
-#. Programmer's name for it: RsURLPoweredByJCL
-#: JvResources.pas:1665 
-#, fuzzy
-msgid "http://homepages.codegear.com/jedi/jcl/"
-msgstr "http://homepages.borland.com/jedi/jcl/"
-
-#. RsURLPoweredByJVCL = 'http://homepages.codegear.com/jedi/jvcl/PoweredByJVCL.htm';
-#. Programmer's name for it: RsURLPoweredByJVCL
-#: JvResources.pas:1667 
-#, fuzzy
-msgid "http://homepages.codegear.com/jedi/jvcl/"
-msgstr "http://homepages.borland.com/jedi/jcl/"
-
 #. === JvProfilerForm.pas =====================================================
 #. Programmer's name for it: RsTotalElapsedTimedms
 #: JvResources.pas:1671 
@@ -6407,11 +6388,6 @@ msgstr "Falha: %s"
 #: JvResources.pas:1684 
 msgid "versioninfo.ini"
 msgstr "versioninfo.ini"
-
-#. Programmer's name for it: RsPVTempFileNameExtension
-#: JvResources.pas:1685 
-msgid ".temp"
-msgstr ".temp"
 
 #. Programmer's name for it: RsPVSiceB
 #: JvResources.pas:1686 
@@ -6630,23 +6606,6 @@ msgstr ""
 #: JvResources.pas:1733 
 msgid "Program Version History"
 msgstr "Histórico de versão do programa"
-
-#. === JvPropertyStore.pas ====================================================
-#. Programmer's name for it: RsJvPropertyStoreMutexStorePropertiesProcedureName
-#: JvResources.pas:1737 
-msgid "TJvCustomPropertyStore.StoreProperties:"
-msgstr "TJvCustomPropertyStore.StoreProperties:"
-
-#. Programmer's name for it: RsJvPropertyStoreMutexLoadPropertiesProcedureName
-#: JvResources.pas:1738 
-msgid "TJvCustomPropertyStore.LoadProperties:"
-msgstr "TJvCustomPropertyStore.LoadProperties:"
-
-#. Programmer's name for it: RsJvPropertyStoreMutexLoadStorePropertiesProcedureName
-#: JvResources.pas:1739 
-#, fuzzy
-msgid "TJvCustomPropertyStore.LoadStoreProperties:"
-msgstr "TJvCustomPropertyStore.StoreProperties:"
 
 #. === JvPropertyStoreEditor.pas ====================================================
 #. Programmer's name for it: RSPropertyStoreEditorDialogButtonOk
@@ -8201,11 +8160,6 @@ msgstr ""
 msgid "The grabber is not stopped, you cannot change its URL."
 msgstr "The grabber is not stopped, you cannot change its URL."
 
-#. Programmer's name for it: RsDefaultOutputFileName
-#: JvResources.pas:2219 
-msgid "output.txt"
-msgstr "saída.txt"
-
 #. === JvValidateEdit.pas =====================================================
 #. Programmer's name for it: RsEBaseTooBig
 #: JvResources.pas:2223 
@@ -8490,6 +8444,33 @@ msgid ""
 "\n"
 "or by using the Controls[] array property if possible."
 msgstr ""
+
+#~ msgid "TJvCustomAppStorage.Synchronize:"
+#~ msgstr "TJvCustomAppStorage.Synchronize:"
+
+#, fuzzy
+#~ msgid "http://homepages.codegear.com/jedi/jcl/"
+#~ msgstr "http://homepages.borland.com/jedi/jcl/"
+
+#, fuzzy
+#~ msgid "http://homepages.codegear.com/jedi/jvcl/"
+#~ msgstr "http://homepages.borland.com/jedi/jcl/"
+
+#~ msgid "TJvCustomPropertyStore.StoreProperties:"
+#~ msgstr "TJvCustomPropertyStore.StoreProperties:"
+
+#~ msgid "TJvCustomPropertyStore.LoadProperties:"
+#~ msgstr "TJvCustomPropertyStore.LoadProperties:"
+
+#, fuzzy
+#~ msgid "TJvCustomPropertyStore.LoadStoreProperties:"
+#~ msgstr "TJvCustomPropertyStore.StoreProperties:"
+
+#~ msgid "output.txt"
+#~ msgstr "saída.txt"
+
+#~ msgid ".temp"
+#~ msgstr ".temp"
 
 #~ msgid "Similar to Delphi's %s"
 #~ msgstr "Similar ao Delphi's %s"

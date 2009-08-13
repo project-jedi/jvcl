@@ -1012,3 +1012,34 @@ msgstr ""
 
 msgid "CommCtrlAsInvoker.manifest"
 msgstr ""
+
+msgid ".temp"
+msgstr ""
+
+msgid "TJvCustomAppStorage.Synchronize:"
+msgstr ""
+
+msgid "http://homepages.codegear.com/jedi/jcl/"
+msgstr ""
+
+msgid "http://homepages.codegear.com/jedi/jvcl/"
+msgstr ""
+
+msgid "http://jcl.delphi-jedi.org"
+msgstr ""
+
+msgid "http://jvcl.delphi-jedi.org"
+msgstr ""
+
+msgid "TJvCustomPropertyStore.StoreProperties:"
+msgstr ""
+
+msgid "TJvCustomPropertyStore.LoadProperties:"
+msgstr ""
+
+msgid "TJvCustomPropertyStore.LoadStoreProperties:"
+msgstr ""
+
+msgid "output.txt"
+msgstr ""
+

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2009-08-13 09:59\n"
+"POT-Creation-Date: 2009-08-13 10:26\n"
 "PO-Revision-Date: 2004-12-18 17:03+0100\n"
 "Last-Translator: Peter Thörnqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL 3 <jvcl@delphi-jedi.org>\n"
@@ -1667,11 +1667,6 @@ msgstr ""
 #. Programmer's name for it: RsJvPropertyStoreEnterMutexTimeout
 #: JvResources.pas:149 JvResources.pas:1740 
 msgid "%s: Mutex Timeout"
-msgstr ""
-
-#. Programmer's name for it: RsJvAppStorageSynchronizeProcedureName
-#: JvResources.pas:150 
-msgid "TJvCustomAppStorage.Synchronize:"
 msgstr ""
 
 #. === JvAppStorageSelectList.pas =============================================
@@ -6494,18 +6489,6 @@ msgstr ""
 msgid "Calling %0:s in %1:s failed"
 msgstr ""
 
-#. RsURLPoweredByJCL = 'http://homepages.codegear.com/jedi/jcl/PoweredByJCL.htm';
-#. Programmer's name for it: RsURLPoweredByJCL
-#: JvResources.pas:1665 
-msgid "http://homepages.codegear.com/jedi/jcl/"
-msgstr ""
-
-#. RsURLPoweredByJVCL = 'http://homepages.codegear.com/jedi/jvcl/PoweredByJVCL.htm';
-#. Programmer's name for it: RsURLPoweredByJVCL
-#: JvResources.pas:1667 
-msgid "http://homepages.codegear.com/jedi/jvcl/"
-msgstr ""
-
 #. === JvProfilerForm.pas =====================================================
 #. Programmer's name for it: RsTotalElapsedTimedms
 #: JvResources.pas:1671 
@@ -6560,12 +6543,6 @@ msgstr ""
 #: JvResources.pas:1684 
 msgid "versioninfo.ini"
 msgstr ""
-
-#. Programmer's name for it: RsPVTempFileNameExtension
-#: JvResources.pas:1685 
-#, fuzzy
-msgid ".temp"
-msgstr "Steg "
 
 #. Programmer's name for it: RsPVSiceB
 #: JvResources.pas:1686 
@@ -6778,22 +6755,6 @@ msgstr ""
 #. Programmer's name for it: RSProgramVersionHistory
 #: JvResources.pas:1733 
 msgid "Program Version History"
-msgstr ""
-
-#. === JvPropertyStore.pas ====================================================
-#. Programmer's name for it: RsJvPropertyStoreMutexStorePropertiesProcedureName
-#: JvResources.pas:1737 
-msgid "TJvCustomPropertyStore.StoreProperties:"
-msgstr ""
-
-#. Programmer's name for it: RsJvPropertyStoreMutexLoadPropertiesProcedureName
-#: JvResources.pas:1738 
-msgid "TJvCustomPropertyStore.LoadProperties:"
-msgstr ""
-
-#. Programmer's name for it: RsJvPropertyStoreMutexLoadStorePropertiesProcedureName
-#: JvResources.pas:1739 
-msgid "TJvCustomPropertyStore.LoadStoreProperties:"
 msgstr ""
 
 #. === JvPropertyStoreEditor.pas ====================================================
@@ -8358,11 +8319,6 @@ msgstr ""
 msgid "The grabber is not stopped, you cannot change its URL."
 msgstr ""
 
-#. Programmer's name for it: RsDefaultOutputFileName
-#: JvResources.pas:2219 
-msgid "output.txt"
-msgstr ""
-
 #. === JvValidateEdit.pas =====================================================
 #. Programmer's name for it: RsEBaseTooBig
 #: JvResources.pas:2223 
@@ -8656,6 +8612,10 @@ msgid ""
 "\n"
 "or by using the Controls[] array property if possible."
 msgstr ""
+
+#, fuzzy
+#~ msgid ".temp"
+#~ msgstr "Steg "
 
 #~ msgid "Similar to Delphi's %s"
 #~ msgstr "Liknande Delphis %s"
