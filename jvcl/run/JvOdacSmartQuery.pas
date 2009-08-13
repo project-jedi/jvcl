@@ -84,6 +84,7 @@ type
 
   TJvOdacSmartQuery = class(TSmartQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
     procedure DoInheritedAfterScroll;
@@ -119,6 +120,7 @@ type
     procedure DoAfterScroll; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetNextRecord: Boolean; override;
     function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
@@ -152,6 +154,7 @@ type
 
   TJvOdacOraQuery = class(TOraQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
     procedure DoInheritedAfterScroll;
@@ -190,6 +193,7 @@ type
     procedure DoAfterScroll; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetNextRecord: Boolean; override;
     function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
@@ -224,6 +228,7 @@ type
 type
   TJvOdacOraTable = class(TOraTable, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
     procedure DoInheritedAfterScroll;
@@ -259,6 +264,7 @@ type
     procedure DoAfterScroll; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetNextRecord: Boolean; override;
     function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
@@ -363,6 +369,11 @@ end;
 procedure TJvOdacSmartQuery.DoBeforeRefresh;
 begin
   ThreadHandler.BeforeRefresh;
+end;
+
+function TJvOdacSmartQuery.DoGetInheritedNextRecord: Boolean;
+begin
+  Result := Inherited GetNextRecord;
 end;
 
 procedure TJvOdacSmartQuery.DoInheritedAfterOpen;
@@ -481,6 +492,14 @@ begin
     Result := nil;
 end;
 
+function TJvOdacSmartQuery.GetNextRecord: Boolean;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.GetNextRecord
+  else
+    Result := inherited GetNextRecord;
+end;
+
 function TJvOdacSmartQuery.GetOnThreadException:
     TJvThreadedDatasetThreadExceptionEvent;
 begin
@@ -522,7 +541,7 @@ procedure TJvOdacSmartQuery.ReplaceBeforeFetch(Dataset: TCustomDADataSet; var Ca
 begin
   if Assigned(ThreadHandler) then
     Cancel := ThreadHandler.CheckContinueRecordFetch <> tdccrContinue;
-  if Assigned(BeforeFetch) then
+  if Assigned(BeforeFetch) and not Cancel then
     BeforeFetch(Dataset, Cancel);
 end;
 
@@ -760,6 +779,11 @@ begin
   ThreadHandler.BeforeRefresh;
 end;
 
+function TJvOdacOraQuery.DoGetInheritedNextRecord: Boolean;
+begin
+  Result := Inherited GetNextRecord;
+end;
+
 procedure TJvOdacOraQuery.DoInheritedAfterOpen;
 begin
   inherited DoAfterOpen;
@@ -885,6 +909,14 @@ begin
     Result := nil;
 end;
 
+function TJvOdacOraQuery.GetNextRecord: Boolean;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.GetNextRecord
+  else
+    Result := inherited GetNextRecord;
+end;
+
 function TJvOdacOraQuery.GetOnThreadException:
     TJvThreadedDatasetThreadExceptionEvent;
 begin
@@ -927,7 +959,7 @@ procedure TJvOdacOraQuery.ReplaceBeforeFetch(Dataset: TCustomDADataSet; var
 begin
   if Assigned(ThreadHandler) then
     Cancel := ThreadHandler.CheckContinueRecordFetch <> tdccrContinue;
-  if Assigned(BeforeFetch) then
+  if Assigned(BeforeFetch) and not Cancel then
     BeforeFetch(Dataset, Cancel);
 end;
 
@@ -1065,6 +1097,11 @@ begin
   ThreadHandler.BeforeRefresh;
 end;
 
+function TJvOdacOraTable.DoGetInheritedNextRecord: Boolean;
+begin
+  Result := Inherited GetNextRecord;
+end;
+
 procedure TJvOdacOraTable.DoInheritedAfterOpen;
 begin
   inherited DoAfterOpen;
@@ -1182,6 +1219,14 @@ begin
     Result := nil;
 end;
 
+function TJvOdacOraTable.GetNextRecord: Boolean;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.GetNextRecord
+  else
+    Result := inherited GetNextRecord;
+end;
+
 function TJvOdacOraTable.GetOnThreadException:
     TJvThreadedDatasetThreadExceptionEvent;
 begin
@@ -1224,7 +1269,7 @@ procedure TJvOdacOraTable.ReplaceBeforeFetch(Dataset: TCustomDADataSet; var
 begin
   if Assigned(ThreadHandler) then
     Cancel := ThreadHandler.CheckContinueRecordFetch <> tdccrContinue;
-  if Assigned(BeforeFetch) then
+  if Assigned(BeforeFetch) and not Cancel then
     BeforeFetch(Dataset, Cancel);
 end;
 
