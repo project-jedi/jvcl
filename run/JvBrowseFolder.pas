@@ -168,6 +168,10 @@ type
   // (p3) shouldn't TOptionsDir be changed to T(Jv)OptionsDirectories?
   TOptionsDir = set of TOptionsDirectory;
 
+const
+  DefaultJvBrowseFolderDialogOptions = [odStatusAvailable, odNewDialogStyle];
+
+type
   TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
   private
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }
@@ -254,7 +258,7 @@ type
     property DisplayName: string read FDisplayName write FDisplayName stored False;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Options: TOptionsDir read FOptions write SetOptions default
-      [odStatusAvailable, odNewDialogStyle];
+      DefaultJvBrowseFolderDialogOptions;
     property Position: TJvFolderPos read FPosition write FPosition default fpScreenCenter;
     property RootDirectory: TFromDirectory read FRootDirectory write SetRootDirectory default fdNoSpecialFolder;
     property RootDirectoryPath: string read GetRootDirectoryPath write SetRootDirectoryPath
@@ -881,7 +885,7 @@ end;
 constructor TJvBrowseForFolderDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FOptions := [odStatusAvailable, odNewDialogStyle];
+  FOptions := DefaultJvBrowseFolderDialogOptions;
   FPosition := fpScreenCenter; // ahuser: changed from fpDefault - I think no one wants the dialog in the right bottom corner
   FRootDirectory := fdNoSpecialFolder;
   FObjectInstance := JvMakeObjectInstance(MainWndProc);
