@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -2741,7 +2741,10 @@ procedure TJvDBLookupCombo.InvalidateText;
 var
   R: TRect;
 begin
-  SetRect(R, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
+  if BiDiMode = bdRightToLeft then
+    SetRect(R, FButtonWidth + 1, 1, ClientWidth - 1, ClientHeight - 1)
+  else
+    SetRect(R, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
   Windows.InvalidateRect(Self.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, False);
   UpdateWindow(Self.Handle);
 end;
@@ -3205,7 +3208,7 @@ begin
     SetRect(R, 1, 1, W - 1, ClientHeight - 1);
     if TextMargin > 0 then
       Inc(TextMargin);
-    X := 0 {2} + TextMargin;
+    X := 4 + TextMargin;
     if not (FListVisible and (FDataList.FSearchText <> '')) and not DrawList then
       case Alignment of
         taRightJustify:
@@ -3223,7 +3226,7 @@ begin
       end;
       if BiDiMode = bdRightToLeft then
       begin
-        Inc(X, FButtonWidth);
+        Dec(X, TextMargin);
         Inc(R.Left, FButtonWidth);
         R.Right := ClientWidth;
       end;
@@ -3254,7 +3257,10 @@ begin
       end;
       if Image <> nil then
       begin
-        ImageRect.Right := ImageRect.Left + TextMargin + 2;
+        if BidiMode = bdRightToLeft then
+          ImageRect.Left := ImageRect.Right - (TextMargin + 2)
+        else
+          ImageRect.Right := ImageRect.Left + TextMargin + 2;
         DrawPicture(Bmp.Canvas, ImageRect, Image);
       end;
       Canvas.Draw(R.Left, R.Top, Bmp);
