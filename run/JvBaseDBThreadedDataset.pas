@@ -77,6 +77,7 @@ type
     procedure DoInheritedBeforeRefresh;
     procedure DoInheritedAfterRefresh;
     procedure DoInheritedAfterScroll;
+    function DoGetInheritedNextRecord : Boolean;
     function EofReached: Boolean;
     function ErrorException: Exception;
     function ErrorMessage: string;
@@ -299,6 +300,7 @@ type
     FIntRowCheckEnabled: Boolean;
     FIThreadedDatasetInterface: IJvThreadedDatasetInterface;
     FLastRowChecked: Integer;
+    FMaxRowChecked: Integer;
     FAfterOpenRecordPosition: Longint;
     FEofReached: Boolean;
     FOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
@@ -352,6 +354,7 @@ type
     property OperationWasHandledInThread: Boolean read FOperationWasHandledInThread
       write FOperationWasHandledInThread;
   protected
+    function MaxRowCheckExceeded: Boolean;
     procedure BreakExecution;
     function CreateEnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions; virtual;
     procedure DoThreadLast;
@@ -381,8 +384,7 @@ type
     property IThreadedDatasetInterface: IJvThreadedDatasetInterface read FIThreadedDatasetInterface;
     property ThreadDialog: TJvDatasetThreadDialog read FThreadDialog;
   public
-    constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce;
-        virtual;
+    constructor Create(AOwner: TComponent; ADataset: TDataSet); reintroduce; virtual;
     destructor Destroy; override;
     procedure AfterOpen; virtual;
     procedure AfterScroll; virtual;
@@ -391,6 +393,7 @@ type
     procedure BeforeRefresh; virtual;
     procedure CapitalizeDatasetLabels;
     function CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
+    function GetNextRecord: Boolean;
     procedure InternalLast; virtual;
     procedure InternalRefresh; virtual;
     procedure MoveTo(Position: Integer);
@@ -825,8 +828,7 @@ end;
 
 //=== { TJvBaseDatasetThreadHandler } ========================================
 
-constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset:
-    TDataSet);
+constructor TJvBaseDatasetThreadHandler.Create(AOwner: TComponent; ADataset: TDataSet);
 begin
   inherited Create (AOwner);
   FDataset := ADataset;
@@ -945,10 +947,15 @@ begin
 end;
 
 function TJvBaseDatasetThreadHandler.CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
-var cr : Integer;
 begin
   Result := tdccrContinue;
   FCurrentRow := Dataset.RecordCount;
+  if MaxRowCheckExceeded or ((CurrentRow > fMaxRowChecked) and (fMaxRowChecked >0))then
+  begin
+    Result := tdccrPause;
+    FetchMode := tdfmFetch;
+    Exit;
+  end;
   case FetchMode of
     tdfmBreak:
       begin
@@ -968,11 +975,9 @@ begin
        (CurrentRow >= EnhancedOptions.FetchRowsFirst) and
        (CurrentRow < FLastRowChecked + EnhancedOptions.FetchRowsCheck)then
       begin
-        cr := CurrentRow;
         Result := tdccrContinue;
-        if cr > 0  then
-        
-        Exit;
+        if CurrentRow > 0  then
+          Exit;
       end;
     if (EnhancedOptions.FetchRowsCheck > 0) and
       (CurrentRow >= FLastRowChecked + EnhancedOptions.FetchRowsCheck) then
@@ -1001,6 +1006,9 @@ begin
         end;
         IntCurrentAction := tdaFetch;
         FetchMode := tdfmFetch;
+        if Result = tdccrStop then
+          fMaxRowChecked := CurrentRow;
+
         IntCurrentOperationStart := Now;
       end;
   end;
@@ -1160,13 +1168,21 @@ begin
   Result := FFetchMode;
 end;
 
+function TJvBaseDatasetThreadHandler.GetNextRecord: Boolean;
+begin
+  if MaxRowCheckExceeded then
+    Result := False
+  else
+    Result := IThreadedDatasetInterface.DoGetInheritedNextRecord;
+end;
+
 procedure TJvBaseDatasetThreadHandler.HandleAfterOpenRefresh;
 begin
   try
     IntCurrentOpenDuration := Now - IntCurrentOperationStart;
     IntCurrentOperationStart := Now;
     DatasetFetchAllRecords := FIntDatasetFetchAllRecords;
-    if IntCurrentAction <> tdaCancel then
+    if (IntCurrentAction <> tdaCancel) and not (FetchMode in [tdfmBreak, tdfmStop]) then
     begin
       IntCurrentAction := tdaFetch;
       FetchMode := tdfmFetch;
@@ -1217,6 +1233,7 @@ begin
   FetchMode := tdfmNothing;
   FIntDatasetFetchAllRecords := DatasetFetchAllRecords;
   FLastRowChecked := 0;
+  FMaxRowChecked := 0;
   FIntDatasetWasFiltered := Dataset.Filtered;
   Dataset.Filtered := False;
   DatasetFetchAllRecords := False;
@@ -1329,6 +1346,11 @@ end;
 procedure TJvBaseDatasetThreadHandler.IntSynchBeforeRefresh;
 begin
   IThreadedDatasetInterface.DoInheritedBeforeRefresh;
+end;
+
+function TJvBaseDatasetThreadHandler.MaxRowCheckExceeded: Boolean;
+begin
+  Result :=(fMaxRowChecked > 0) and ((Dataset.RecNo >= fMaxRowChecked));
 end;
 
 procedure TJvBaseDatasetThreadHandler.MoveTo(Position: Integer);

@@ -73,6 +73,7 @@ type
 
   TJvOracleDataset = class(TOracleDataset, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
     procedure DoInheritedAfterScroll;
@@ -107,6 +108,7 @@ type
     procedure DoAfterRefresh; override;
     procedure DoBeforeOpen; override;
     procedure DoBeforeRefresh; override;
+    function GetNextRecord: Boolean; override;
     function GetOnThreadException: TJvThreadedDatasetThreadExceptionEvent;
     procedure InternalLast; override;
     procedure InternalRefresh; override;
@@ -230,6 +232,11 @@ begin
   ThreadHandler.BeforeRefresh;
 end;
 
+function TJvOracleDataset.DoGetInheritedNextRecord: Boolean;
+begin
+  Result := Inherited GetNextRecord;
+end;
+
 procedure TJvOracleDataset.DoInheritedAfterOpen;
 begin
   inherited DoAfterOpen;
@@ -342,6 +349,14 @@ begin
     Result := ThreadHandler.AfterOpenFetch
   else
     Result := nil;
+end;
+
+function TJvOracleDataset.GetNextRecord: Boolean;
+begin
+  if Assigned(ThreadHandler) then
+    Result := ThreadHandler.GetNextRecord
+  else
+    Result := inherited GetNextRecord;
 end;
 
 function TJvOracleDataset.GetOnThreadException:
