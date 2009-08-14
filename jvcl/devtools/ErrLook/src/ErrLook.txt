@@ -12,4 +12,4 @@ The Initial Developers of the Original Code is: Peter Thörnqvist <peter3@peter3.
 
 Last Modified: 2002-12-12
 
-You may retrieve the latest version of this program and files at the Project JEDI's JVCL home page,located at http://jvcl.sourceforge.net
+You may retrieve the latest version of this program and files at the Project JEDI's JVCL home page,located at http://jvcl.delphi-jedi.org

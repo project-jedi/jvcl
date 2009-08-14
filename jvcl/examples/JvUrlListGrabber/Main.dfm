@@ -95,7 +95,7 @@ object frmMain: TfrmMain
     Height = 142
     Anchors = [akLeft, akTop, akRight, akBottom]
     Lines.Strings = (
-      'http://jvcl.sf.net'
+      'http://jvcl.delphi-jedi.org'
       'ftp://homepages.borland.com/home/jedi/jvcl/Licensing.html'
       'file://C:/log2.txt'
       'C:\log2.txt')

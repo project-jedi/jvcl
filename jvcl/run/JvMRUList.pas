@@ -19,7 +19,7 @@ Michael Beck [mbeck att bigfoot dott com].
 Arioch [the_Arioch att nm dott ru]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
    This unit is an interface to the MRU List (comctl32)
@@ -823,4 +823,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

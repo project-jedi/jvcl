@@ -13,7 +13,7 @@ The Original Code is: JVCL.INC, released on 2004-12-22.
 Last Modified: 2004-12-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -141,4 +141,3 @@ For further informations have a look at http://www.allroundautomations.com }
 { Activates the CoreLabs VCL Oracle Data Access Components 
 For further informations have a look at http://www.crlab.com }
 {.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
-

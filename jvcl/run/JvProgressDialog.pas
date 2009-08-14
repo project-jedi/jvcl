@@ -18,7 +18,7 @@ Contributor(s):
   Ralf Kaiser - ScreenPosition property
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 - OnCancel is executed before the progress dialog is closed.
@@ -448,4 +448,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

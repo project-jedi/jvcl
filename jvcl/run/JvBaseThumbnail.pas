@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may Thumb the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   This file contains (most likely) greek comments.
@@ -682,4 +682,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

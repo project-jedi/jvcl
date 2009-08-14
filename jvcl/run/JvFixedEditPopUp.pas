@@ -19,7 +19,7 @@ Steve Magruder
 Remko Bonte
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   A unit that can be used to replace the default system popup menu for edit controls. The problem with
@@ -530,4 +530,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

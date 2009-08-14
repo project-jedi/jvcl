@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   unit to centralize all resourcestrings of the JVCL for easier translation
@@ -1661,10 +1661,8 @@ resourcestring
 
 //=== JvPoweredBy.pas ========================================================
 resourcestring
-  //RsURLPoweredByJCL = 'http://homepages.codegear.com/jedi/jcl/PoweredByJCL.htm';
-  RsURLPoweredByJCL = 'http://homepages.codegear.com/jedi/jcl/';
-  //RsURLPoweredByJVCL = 'http://homepages.codegear.com/jedi/jvcl/PoweredByJVCL.htm';
-  RsURLPoweredByJVCL = 'http://homepages.codegear.com/jedi/jvcl/';
+  RsURLPoweredByJCL = 'http://jcl.delphi-jedi.org/';
+  RsURLPoweredByJVCL = 'http://jvcl.delphi-jedi.org/';
 
 //=== JvProfilerForm.pas =====================================================
 resourcestring

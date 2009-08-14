@@ -180,7 +180,7 @@ const
   //  cSubString = '{\ul editlink}{\v id_';
   cSubString = '{\uldb editlink}{\v id_';
   cShellExecuteStr =
-    '{\ul Edit topic}{\v !ShellExecute("http://homepages.borland.com/jedi/jedihelp/item.php?Name=%s", "" , NORMAL, "open", "", 900)}';
+    '{\ul Edit topic}{\v !ShellExecute("http://help.delphi-jedi.org/item.php?Name=%s", "" , NORMAL, "open", "", 900)}';
 var
   S: string;
   I: Integer;
@@ -190,7 +190,7 @@ begin
   // Change
   //    {\ul EditLink}{\v id_192}
   // to
-  //    {\v !ShellExecute("http://homepages.borland.com/jedi/jedihelp/item.php?Name=TJvDockableForm.DockableControl", "" , NORMAL, "open", "", 900)}
+  //    {\v !ShellExecute("http://help.delphi-jedi.org/item.php?Name=TJvDockableForm.DockableControl", "" , NORMAL, "open", "", 900)}
 
   I := LocateSubString(SS, 0, cSubString);
   while I >= 0 do
@@ -291,12 +291,12 @@ var
   S: string;
   CompleteLink, TopicID: string;
 begin
-  // \{bmc C:\\Comp\\dev\\help\\images\\comp\\TJvXPStyleManager.bmp\} TJvXPStyleManager \pard\plain \keepn\ql\fi0\li0\ri0\sb30\sa0\f0\fs16\cf1 \par \tx0\tx1440\tx2880\tx4320\tx5760\tx7200\tx8640\tx10080\tx11520\tx12960{\ul Class Hierarchy}{\v id_453}\tab {\uldb Properties}{\v id_454>NAV}\tab {\uldb Methods}{\v id_455>NAV}\tab {\uldb Events}{\v id_456>NAV}\tab {\ul Package}{\v id_457}\tab {\uldb JEDI-VCL}{\v id_1>MAIN}\tab {\ul Edit topic}{\v !ShellExecute("http://homepages.borland.com/jedi/jedihelp/item.php?Name=TJvXPStyleManager", "" , NORMAL, "open", "", 900)}
+  // \{bmc C:\\Comp\\dev\\help\\images\\comp\\TJvXPStyleManager.bmp\} TJvXPStyleManager \pard\plain \keepn\ql\fi0\li0\ri0\sb30\sa0\f0\fs16\cf1 \par \tx0\tx1440\tx2880\tx4320\tx5760\tx7200\tx8640\tx10080\tx11520\tx12960{\ul Class Hierarchy}{\v id_453}\tab {\uldb Properties}{\v id_454>NAV}\tab {\uldb Methods}{\v id_455>NAV}\tab {\uldb Events}{\v id_456>NAV}\tab {\ul Package}{\v id_457}\tab {\uldb JEDI-VCL}{\v id_1>MAIN}\tab {\ul Edit topic}{\v !ShellExecute("http://help.delphi-jedi.org/item.php?Name=TJvXPStyleManager", "" , NORMAL, "open", "", 900)}
   //
   // to
   //
   // {\pard\plain \ql\fi0\li0\ri0\sb30\sa0\f0\fs16\cf1\b {\uldb JEDI-VCL Reference}{\v id_1>MAIN}}
-  // \par \pard\{bmc C:\\Comp\\dev\\help\\images\\comp\\TJvXPCheckbox.bmp\} TJvXPCheckbox \pard\plain \keepn\ql\fi0\li0\ri0\sb30\sa0\f0\fs16\cf1 \par \tx0\tx1440\tx2880\tx4320\tx5760\tx7200\tx8640\tx10080\tx11520{\ul Class Hierarchy}{\v id_213}\tab {\uldb Properties}{\v id_214>NAV}\tab {\uldb Events}{\v id_215>NAV}\tab {\ul Package}{\v id_216}\tab {\ul Edit topic}{\v !ShellExecute("http://homepages.borland.com/jedi/jedihelp/item.php?Name=TJvXPCheckbox", "" , NORMAL, "open", "", 900)}
+  // \par \pard\{bmc C:\\Comp\\dev\\help\\images\\comp\\TJvXPCheckbox.bmp\} TJvXPCheckbox \pard\plain \keepn\ql\fi0\li0\ri0\sb30\sa0\f0\fs16\cf1 \par \tx0\tx1440\tx2880\tx4320\tx5760\tx7200\tx8640\tx10080\tx11520{\ul Class Hierarchy}{\v id_213}\tab {\uldb Properties}{\v id_214>NAV}\tab {\uldb Events}{\v id_215>NAV}\tab {\ul Package}{\v id_216}\tab {\ul Edit topic}{\v !ShellExecute("http://help.delphi-jedi.org/item.php?Name=TJvXPCheckbox", "" , NORMAL, "open", "", 900)}
 
   // : \tab {\uldb JEDI-VCL}{\v id_1>MAIN}
 
@@ -517,7 +517,7 @@ const
   //  cSubString = '{\ul editlink}{\v id_';
   cSubString = '{\uldb editlink}{\v id_';
   cShellExecuteStr =
-    '{\ul Edit topic}{\v !ShellExecute("http://homepages.borland.com/jedi/jedihelp/item.php?Name=%s", "" , NORMAL, "open", "", 900)}';
+    '{\ul Edit topic}{\v !ShellExecute("http://help.delphi-jedi.org/item.php?Name=%s", "" , NORMAL, "open", "", 900)}';
 var
   SS: TStringList;
 begin
@@ -696,8 +696,8 @@ function TWinHelpPostProcessor.RemoveTopicID(Strings: TStrings;
   end;
 const
   cShellExecuteStr =
-    '{\ul Edit topic}{\v !ShellExecute("http://homepages.borland.com/jedi/jedihelp/item.php?Name=%s", "" , NORMAL, "open", "", 900)}';
-  cSearchStr = '!shellexecute("http://homepages.borland.com/jedi/jedihelp/item.php?name=';
+    '{\ul Edit topic}{\v !ShellExecute("http://help.delphi-jedi.org/item.php?Name=%s", "" , NORMAL, "open", "", 900)}';
+  cSearchStr = '!shellexecute("http://help.delphi-jedi.org/item.php?name=';
 var
   EndIndex: Integer;
   ShellExecuteIndex: Integer;
@@ -757,4 +757,3 @@ begin
 end;
 
 end.
-

@@ -18,7 +18,7 @@ Contributor(s): Robert Love [rlove att slcdug dott org].
                 Martin Cetkovsky [martin att alikuvkoutek dott cz]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}

@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s): -
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
-home page, located at http://jvcl.sourceforge.net
+home page, located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -163,8 +163,8 @@ resourcestring
   RsNoPackageInstaller = 'Application error. No PackageInstaller created.';
   RsCancelInstallation = 'Do you really want to cancel the installation?';
 
-  RsJediHomepage = 'http://projectjedi.sourceforge.net';
-  RsJVCLHomepage = 'http://jvcl.sourceforge.net';
+  RsJediHomepage = 'http://www.delphi-jedi.org';
+  RsJVCLHomepage = 'http://jvcl.delphi-jedi.org';
 *)
 
 procedure TFormMain.DoPagesChanged(Sender: TObject);

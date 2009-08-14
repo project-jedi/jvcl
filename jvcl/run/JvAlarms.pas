@@ -19,7 +19,7 @@ Michael Beck [mbeck att bigfoot dott com].
 Peter Thörnqvist [peter3 at sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -332,4 +332,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

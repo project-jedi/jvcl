@@ -17,7 +17,7 @@ All Rights Reserved.
 Portions of code based on an idea of Mozilla browser mouse gesture addon
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   This unit implements mouse gestures. For this purpose
@@ -933,4 +933,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -19,7 +19,7 @@ Sébastien Buysse [sbuysse att buypin dott com] - original author of the merged c
 Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
 * TJvBehaviorLabel is a merging of several label components in JVCL: JvSpecialLabel,
@@ -1312,4 +1312,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

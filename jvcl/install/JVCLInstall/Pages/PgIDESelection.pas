@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s): -
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
-home page, located at http://jvcl.sourceforge.net
+home page, located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -320,11 +320,11 @@ begin
     GetExitCodeProcess(ProcessInfo.hProcess, JCLExitCode);
     CloseHandle(ProcessInfo.hProcess);
     if JCLExitCode <> 0 then
-      ShellExecute(0, 'open', 'http://jcl.sf.net', nil, nil, SW_NORMAL);
+      ShellExecute(0, 'open', 'http://jcl.delphi-jedi.org', nil, nil, SW_NORMAL);
   end
   else
   begin
-    if ShellExecute(0, 'open', 'http://jcl.sf.net', nil, nil, SW_NORMAL) < 32 then
+    if ShellExecute(0, 'open', 'http://jcl.delphi-jedi.org', nil, nil, SW_NORMAL) < 32 then
       raise Exception.Create(RsErrorInstallingJCL);
   end;
 

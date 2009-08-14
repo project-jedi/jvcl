@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: WINDOWSONLY.INC, released on 2002-07-04.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}

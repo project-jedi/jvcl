@@ -22,7 +22,7 @@ Michael Beck [mbeck att bigfoot dott com].
 Peter Below <100113 dott 1101 att compuserve dott com>
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}

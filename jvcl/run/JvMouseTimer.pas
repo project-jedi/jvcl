@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): ______________________________________.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   Returns interface to mousetimer singleton. This interface can be used
@@ -192,4 +192,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

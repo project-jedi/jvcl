@@ -18,7 +18,7 @@ Contributor(s):
 Mike Kolter (original code)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
   .CDK.REGLINK=JvTFGanttComponentsReg.pas
   Created 10/6/2001 6:14:06 PM
@@ -564,4 +564,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

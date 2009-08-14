@@ -20,7 +20,7 @@ Last Modified: 2005-02-08
 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 
 Description:

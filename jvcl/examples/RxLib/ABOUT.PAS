@@ -9,7 +9,7 @@
  Contributor(s):
 
  You may retrieve the latest version of this file at the JEDI-JVCL
- home page, located at http://jvcl.sourceforge.net
+ home page, located at http://jvcl.delphi-jedi.org
 
  The contents of this file are used with permission, subject to
  the Mozilla Public License Version 1.1 (the "License"); you may
@@ -66,7 +66,7 @@ uses JvConsts, ShellAPI;
 
 procedure RxWebSite; 
 begin
-  ShellExecute(Application.Handle, nil, 'http://jvcl.sf.net', nil,
+  ShellExecute(Application.Handle, nil, 'http://jvcl.delphi-jedi.org', nil,
     nil, SW_SHOWNOACTIVATE);
 end;
 

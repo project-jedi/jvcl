@@ -19,7 +19,7 @@ Contributor(s): Bianconi, Cetkovsky
 Current Version: 2.00
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   Please see the accompanying documentation.
@@ -736,4 +736,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

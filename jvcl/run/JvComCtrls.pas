@@ -25,7 +25,7 @@ Kai Gossens - TJvIPAddress: changing Color, drawing bug on XP (fat frame on edit
 dejoy - TJvTreeView.MoveUp/MoveDown
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   TJvTreeView:
@@ -1584,7 +1584,7 @@ begin
         case TCustomTabControlAccess(AControl).TabPosition of
           tpLeft:
             begin
-              // Rotate left by 90°
+              // Rotate left by 90
               Points[0].X := 0;
               Points[0].Y := Bmp.Height - 1;
               Points[1].X := 0;
@@ -1594,7 +1594,7 @@ begin
             end;
           tpRight:
             begin
-              // Rotate right by 90°
+              // Rotate right by 90
               Points[0].X := Bmp.Width - 1;
               Points[0].Y := 0;
               Points[1].X := Bmp.Width - 1;
@@ -3350,4 +3350,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

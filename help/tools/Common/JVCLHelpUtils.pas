@@ -18,8 +18,8 @@ const
   cSummaryDefaultText = 'Write here a summary (1 line)';
   cSummaryDefaultTextForBuild = 'Not documented';
   cDescriptionDefaultText = 'Write here a description';
-  cEditLink = '<EXTLINK http://homepages.borland.com/jedi/jedihelp/item.php?Name=%s>%s</EXTLINK>';
-  //  cDescriptionDefaultTextForBuild = 'This topic is undocumented. Click <EXTLINK http://homepages.borland.com/jedi/jedihelp/item.php?Name=%s>here</EXTLINK> to document it.';
+  cEditLink = '<EXTLINK http://help.delphi-jedi.org/item.php?Name=%s>%s</EXTLINK>';
+  //  cDescriptionDefaultTextForBuild = 'This topic is undocumented. Click <EXTLINK http://help.delphi-jedi.org/item.php?Name=%s>here</EXTLINK> to document it.';
   cDescriptionDefaultTextForBuild = 'This topic is undocumented. Click on "Edit topic" to document it.';
   cDescriptionOverrideDefaultText =
     'This is an overridden method, you don''t have to describe these if it does ' +
@@ -2253,7 +2253,6 @@ begin
 end;
 
 end.
-
 
 
 

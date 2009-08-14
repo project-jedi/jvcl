@@ -18,7 +18,7 @@ Contributor(s):
   marcelb - renaming TJvDialButton, adding on/off state and on/off color for pointer.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   TJvDialButton component, a button like the dial on a radio.
@@ -1288,4 +1288,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

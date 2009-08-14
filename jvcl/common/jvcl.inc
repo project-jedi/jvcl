@@ -13,7 +13,7 @@ The Original Code is: JVCL.INC, released on 2002-07-04.
 Last Modified: 2008-11-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -144,4 +144,3 @@ ALERT_jedi_inc_incompatible
  {$UNDEF JVCLThemesEnabled}
  {$UNDEF JVCLThemesEnabledD56}
 {$ENDIF !VCL}
-

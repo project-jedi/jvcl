@@ -18,7 +18,7 @@ Contributor(s):
 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   This unit defines a frame that you can use to select a key code.

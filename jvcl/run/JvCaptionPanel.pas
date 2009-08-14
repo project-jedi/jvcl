@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck att bigfoot dott com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   TJvCaptionPanel is a panel that looks like a form, with a Caption area,
@@ -893,4 +893,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

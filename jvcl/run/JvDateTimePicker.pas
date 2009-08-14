@@ -27,7 +27,7 @@ Marc Geldon [marcgeldon att web dott de]
 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 * (p3) To make NullDate and NullText maximally useful, set ParseInput to True and handle the
@@ -331,4 +331,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

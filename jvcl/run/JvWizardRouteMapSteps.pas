@@ -16,7 +16,7 @@ Portions created by Max Evans are Copyright (C) 2002 Max Evans
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Purpose:
   Step style route map for TJvWizardRouteMap
@@ -397,4 +397,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

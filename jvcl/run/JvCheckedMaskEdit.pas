@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): ______________________________________.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   A simple TCustomMaskEdit descendant with an optional checkbox control in front

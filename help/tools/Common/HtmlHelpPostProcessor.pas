@@ -142,7 +142,7 @@ end;
 function THtmlHelpPostProcessor.DetermineTopicName(const AFileName: string;
   out TopicName: string): Boolean;
 const
-  cStr = '<a href="http://homepages.borland.com/jedi/jedihelp/item.php?name=';
+  cStr = '<a href="http://help.delphi-jedi.org/item.php?name=';
 var
   SS: TStringList;
   S: string;
@@ -414,7 +414,7 @@ end;
 function THtmlHelpPostProcessor.ProcessEditLinks(SS: TStrings): Boolean;
 const
   cSubString = 'editlink.html">editlink</a>';
-  cLinkStr = '<a href="http://homepages.borland.com/jedi/jedihelp/item.php?Name=%s">Edit topic</a>';
+  cLinkStr = '<a href="http://help.delphi-jedi.org/item.php?Name=%s">Edit topic</a>';
 
   function DetermineCompleteLink(S: string; out CompleteLink, EditLinkFileName: string): Boolean;
   var
@@ -719,4 +719,3 @@ begin
 end;
 
 end.
-

@@ -9,7 +9,7 @@
  Contributor(s):
 
  You may retrieve the latest version of this file at the JEDI-JVCL
- home page, located at http://jvcl.sourceforge.net
+ home page, located at http://jvcl.delphi-jedi.org
 
  The contents of this file are used with permission, subject to
  the Mozilla Public License Version 1.1 (the "License"); you may
@@ -171,7 +171,7 @@ end;
 
 procedure TJvComputerInfoExDemoFrm.acAboutExecute(Sender: TObject);
 begin
-  MsgAbout(Handle, 'JvComputerInfoEx Demo. Part of JVCL (http://jvcl.sf.net)', 'About...', 'MAINICON', 0);
+  MsgAbout(Handle, 'JvComputerInfoEx Demo. Part of JVCL (http://jvcl.delphi-jedi.org)', 'About...', 'MAINICON', 0);
 end;
 
 procedure TJvComputerInfoExDemoFrm.AddItem(const Category, Name, Value: string; Indent: integer);
@@ -408,4 +408,3 @@ begin
 end;
 
 end.
-

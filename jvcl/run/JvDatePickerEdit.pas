@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Peter Thörnqvist.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   A replacement for TDateTimePicker which is better suited for keyboard-input by
@@ -1446,4 +1446,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

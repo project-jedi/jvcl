@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Oliver Giesen [ogware att gmx dott net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   A wrapper component for the MS MonthCal control available in
@@ -1409,4 +1409,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -13,7 +13,7 @@ The Original Code is: LINUXONLY.INC, released on 2004-01-04
 Last Modified: 2004-05-07
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}

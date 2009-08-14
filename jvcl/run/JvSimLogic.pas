@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Robert Love [rlove att slcdug dott org].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   This unit includes several visual logic blocks that can be used without any programming.
@@ -2814,4 +2814,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -21,7 +21,7 @@ Contributor(s): ______________________________________.
 Current Version: 1.00
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   (rom) comments should be ripped by the help writer
@@ -588,4 +588,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

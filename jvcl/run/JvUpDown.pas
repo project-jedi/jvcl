@@ -19,7 +19,7 @@ Sebastien Buysse [sbuysse att buypin dott com].
 Peter Thörnqvist [peter3 at sourceforge dot net] - TJvDomainUpDown
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   TJvDomainUpDown works just like a TJvUpDown but instead of scrolling
@@ -574,4 +574,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

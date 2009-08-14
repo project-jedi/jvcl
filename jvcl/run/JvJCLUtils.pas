@@ -21,7 +21,7 @@ Contributor(s):
   Dejoy den
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 
@@ -794,8 +794,8 @@ function CharIsMoney(const Ch: Char): Boolean;
 // Note: before using JvSafeStrToFloatDef, please be aware that it will ignore
 // any character that is not a valid character for a float, which is different
 // from what StrToFloatDef in Delphi 6 up is doing. This has been documented in Mantis
-// issue# 2935: http://homepages.codegear.com/jedi/issuetracker/view.php?id=2935
-// and in Mantis 4466: http://homepages.codegear.com/jedi/issuetracker/view.php?id=4466
+// issue# 2935: http://issuetracker.delphi-jedi.org/view.php?id=2935
+// and in Mantis 4466: http://issuetracker.delphi-jedi.org/view.php?id=4466
 
 function JvSafeStrToFloatDef(const Str: string; Def: Extended; aDecimalSeparator: Char = ' '): Extended; {NOTE: default value of Space is a magic wildcard}
 
@@ -8854,5 +8854,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
 

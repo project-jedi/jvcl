@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):  Peter Fischer-Haase <pfischer att ise-online dott de> commented as "pfh"
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description : JVCL Interpreter version 2
 
@@ -662,4 +662,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

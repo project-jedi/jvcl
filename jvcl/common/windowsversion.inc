@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: windowsversion.inc, released on 2004-10-28.
 
 You may retrieve the latest version of this file at the JCL home page,
-located at http://homepages.borland.com/jedi/jcl/
+located at http://jcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -123,4 +123,3 @@ Known Issues:
 //
 
 {$ENDIF ~WINDOWSVERSION_INC}
-

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   Works like TDBRadioGroup except haves the look of a TPanel. Major code come
@@ -643,4 +643,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

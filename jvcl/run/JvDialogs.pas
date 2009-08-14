@@ -21,7 +21,7 @@ Contributor(s): Debbie Gregory <Debbie.Gregory att cmsis dott com>
 Current Version: 0.50
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
