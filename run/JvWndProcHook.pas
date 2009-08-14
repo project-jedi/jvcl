@@ -18,7 +18,7 @@ Contributor(s):
 Remko Bonte <remkobonte att myrealbox dott com>
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   * (rb) object naming could be improved, for example
@@ -1011,4 +1011,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

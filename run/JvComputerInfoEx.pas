@@ -18,7 +18,7 @@ Contributor(s):
 Andr?nepvangers - better TimeRunning
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description
   A read-only computer info component. Subproperties are created as needed so loading
@@ -6216,4 +6216,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

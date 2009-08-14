@@ -85,7 +85,7 @@ Last Modified:
                        - Added CopyFloatingMarkers (thought I did that yesterday but missed it)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 -----------------------------------------------------------------------------}
 // $Id$
@@ -5505,4 +5505,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

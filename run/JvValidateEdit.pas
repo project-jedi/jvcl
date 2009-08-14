@@ -17,7 +17,7 @@ Contributor(s): Peter Thornqvist
                 Peter Schraut (http://www.console-dev.de)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
-home page, located at http://jvcl.sourceforge.net
+home page, located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 TJvValidateFormat uses the SysUtils.Format function to format numeric values.
@@ -1497,4 +1497,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

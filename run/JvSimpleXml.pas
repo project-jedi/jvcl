@@ -18,7 +18,7 @@ Contributor(s): Christophe Paris.
                 Florent Ouchet (move from the JVCL to the JCL).
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 -----------------------------------------------------------------------------}
@@ -468,4 +468,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

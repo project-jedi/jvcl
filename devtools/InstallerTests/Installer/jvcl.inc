@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JVCL.INC, released on 2004-04-14.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -35,4 +35,3 @@ Known Issues:
  {$WARN UNSAFE_CODE OFF}
  {$WARN UNSAFE_CAST OFF}
 {$ENDIF}
-

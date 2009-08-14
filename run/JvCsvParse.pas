@@ -20,7 +20,7 @@ Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
                Changed StrSplit Function (has one new parameter).
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   Internal pchar-manipulation functions required by TJvCsvDataSet data access component.
@@ -954,4 +954,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

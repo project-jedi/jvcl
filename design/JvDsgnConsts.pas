@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): -
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -171,7 +171,7 @@ resourcestring
   RsAboutDialogTitle = 'JEDI Visual Component Library';
   RsAboutCopyright = 'Copyright the JVCL development team';
   RsAboutTitle = 'JEDI Visual Component Library';
-  RsAboutDescription = 'JEDI Visual Component Library http://jvcl.sf.net' + sLineBreak +
+  RsAboutDescription = 'JEDI Visual Component Library http://jvcl.delphi-jedi.org' + sLineBreak +
                        'The JVCL is a member of the JEDI Project http://www.delphi-jedi.org' + sLineBreak +
                        'Covered under the Mozilla Public License v1.1 (MPL 1.1)' + sLineBreak +
                        'License available at http://www.mozilla.org/MPL/MPL-1.1.html';
@@ -716,4 +716,3 @@ resourcestring
 implementation
 
 end.
-

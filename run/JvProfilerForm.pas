@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Peter Thörnqvist [peter3 at sourceforge dot net]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
  Use QueryPerformanceCounter / Frequency instead of GetTickCount (the high resolution timer)
@@ -495,4 +495,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -19,7 +19,7 @@ Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 S Steed. - added AllowClickableNodes property
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   Nodes style route map for TJvWizardRouteMap
@@ -414,4 +414,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

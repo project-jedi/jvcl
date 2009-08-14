@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s): Eswar Prakash R [eswar dott prakash att gmail.com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 component   : TJvWideHLEditor
 description : JvEditor with built-in highlighting for:
@@ -1855,4 +1855,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

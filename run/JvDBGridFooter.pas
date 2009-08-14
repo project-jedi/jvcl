@@ -15,7 +15,7 @@ Copyright (c) 2004 Frédéric Leneuf-Magaud
 All Rights Reserved.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 -----------------------------------------------------------------------------
 HOW TO USE THIS COMPONENT:

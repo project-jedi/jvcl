@@ -17,7 +17,7 @@ Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
 2003-07-29 Warren Postma - New features (Sorting, Indexing, UserData)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 ii
 
 Description:
@@ -5692,4 +5692,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -18,7 +18,7 @@ Contributor(s):
 Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   Enhanced ListBox component that can display its items in three
@@ -1049,4 +1049,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

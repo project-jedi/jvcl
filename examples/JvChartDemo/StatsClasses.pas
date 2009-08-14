@@ -20,7 +20,7 @@ Last Modified: 2004-01-07
   Modified 2003 Warren Postma
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   TStatArray - Statistics, Rolling average helper class.

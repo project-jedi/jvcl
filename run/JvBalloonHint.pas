@@ -19,7 +19,7 @@ Contributor(s):
   2006-01-17 - J. Vignoles - Added support for Unicode hint and header
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   * Only dropdown shadow for windows xp systems.
@@ -2323,4 +2323,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

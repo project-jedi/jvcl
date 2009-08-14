@@ -30,7 +30,7 @@ MERGE NOTES:
   * TJvPlaylist now inherits from JvListBox
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 Known Issues:
 
 Merge notes (2002-03-21):
@@ -2216,4 +2216,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

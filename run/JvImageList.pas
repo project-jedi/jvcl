@@ -19,7 +19,7 @@ Contributor(s):
 Uwe Schuster [jedivcs att bitcommander dott de]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   ImageKind ikMappedResourceBitmap is not support so far
@@ -1203,4 +1203,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

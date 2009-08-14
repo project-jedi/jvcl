@@ -15,7 +15,7 @@ Portions created by Marcel van Brakel are Copyright (C) 2002 Marcel van Brakel.
 All Rights Reserved.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
    TODO OWNER
@@ -770,4 +770,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

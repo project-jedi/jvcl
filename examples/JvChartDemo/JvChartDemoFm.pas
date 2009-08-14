@@ -22,7 +22,7 @@ Last Modified: 2005-01-14
 
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   BAR/LINE Charting Component for JEDI [Updated March 2007]
@@ -558,7 +558,7 @@ end;
 
 procedure TJvChartDemoForm.Panel2DblClick(Sender: TObject);
 begin
-  ShellExecute(HWND(nil), 'show', 'http://homepages.borland.com/jedi/jvcl/', nil, nil, SW_SHOW);
+  ShellExecute(HWND(nil), 'show', 'http://jvcl.delphi-jedi.org/', nil, nil, SW_SHOW);
 end;
 
 procedure TJvChartDemoForm.ShowgapinLineChart1Click(Sender: TObject);
@@ -807,4 +807,3 @@ begin
 end;
 
 end.
-

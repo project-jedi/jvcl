@@ -56,7 +56,7 @@ object WebMapperDemoMainFrm: TWebMapperDemoMainFrm
       Width = 305
       Height = 21
       TabOrder = 0
-      Text = 'http://homepages.borland.com/jedi/jvcl/'
+      Text = 'http://jvcl.delphi-jedi.org/'
     end
     object CancelBtn: TButton
       Left = 492

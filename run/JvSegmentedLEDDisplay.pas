@@ -19,7 +19,7 @@ Contributor(s):
   Jay Dubal
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   * Automatic unlit color calculation is not working properly. Maybe a function in JclGraphUtil
@@ -2271,4 +2271,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

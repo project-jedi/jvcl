@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   A color selection button that mimicks the one on the 'Display Properties' page in Win95/NT4
@@ -375,4 +375,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

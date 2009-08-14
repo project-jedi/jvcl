@@ -613,13 +613,13 @@ object Mainform: TMainform
           end
           item
             Caption = 'visit JCL website'
-            Hint = 'http://homepages.borland.com/jedi/jcl/'
+            Hint = 'http://jcl.delphi-jedi.org/'
             ImageIndex = 4
             OnClick = ShellExecHint
           end
           item
             Caption = 'visit JVCL website'
-            Hint = 'http://homepages.borland.com/jedi/jvcl/'
+            Hint = 'http://jvcl.delphi-jedi.org/'
             ImageIndex = 4
             OnClick = ShellExecHint
           end
@@ -636,12 +636,7 @@ object Mainform: TMainform
           end
           item
             Caption = 'Login to report a bug (preferred)'
-            Hint = 'http://homepages.borland.com/jedi/issuetracker'
-            OnClick = ShellExecHint
-          end
-          item
-            Caption = 'Report a bug anonymously (anonymous user)'
-            Hint = 'http://homepages.borland.com/jedi/issuetracker/login_anon.php'
+            Hint = 'http://issuetracker.delphi-jedi.org'
             OnClick = ShellExecHint
           end>
         Font.Charset = DEFAULT_CHARSET

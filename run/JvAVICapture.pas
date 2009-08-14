@@ -19,7 +19,7 @@ Contributor(s): none to date
 Current Version: 0.4
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description: This unit defines a component that you can drop on any form or
              frame and that will display the video stream captured by a video
@@ -1802,4 +1802,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

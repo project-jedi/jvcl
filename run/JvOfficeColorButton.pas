@@ -16,7 +16,7 @@ All Rights Reserved.
 Contributor(s):dejoy.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   A office color selection button look like Microsoft office Color picker, make to customable Highly.
@@ -1406,5 +1406,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
 

@@ -19,7 +19,7 @@ Michael Beck [mbeck att bigfoot dott com].
 Peter Thörnqvist <peter3 at sourceforge dot net>
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Changes 2002-10-22:
   Totally reimplemented (though a lot of code was taken from original TStaticText) to add new properties:
@@ -518,4 +518,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

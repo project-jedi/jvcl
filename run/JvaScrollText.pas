@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   Some russian comments were translated to english; these comments are marked
@@ -448,4 +448,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 * CharRange.Filter only works with contiguous ranges, so ufPrivateUse and ufSpecials
@@ -1586,4 +1586,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

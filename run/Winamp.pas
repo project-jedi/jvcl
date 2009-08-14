@@ -19,7 +19,7 @@ Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 Last Modified: 2000-02-28
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -459,4 +459,3 @@ const
 implementation
 
 end.
-

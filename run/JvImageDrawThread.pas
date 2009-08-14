@@ -19,7 +19,7 @@ Michael Beck [mbeck att bigfoot dott com].
 Extracted from JvImageThread and saved to a new unit by Peter Thörnqvist
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}

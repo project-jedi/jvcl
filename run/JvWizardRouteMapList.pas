@@ -16,7 +16,7 @@ Portions created by Peter Thornqvist are Copyright (C) 2004 Peter Thornqvist
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Purpose:
   Route map that displays pages as a list
@@ -578,4 +578,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

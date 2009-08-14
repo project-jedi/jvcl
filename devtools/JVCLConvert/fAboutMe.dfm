@@ -433,7 +433,7 @@ object frmAboutMe: TfrmAboutMe
       Width = 184
       Height = 32
       Cursor = crHandPoint
-      Hint = 'Go to JVCL Webpage: http://jvcl.sourceforge.net'
+      Hint = 'Go to JVCL Webpage: http://jvcl.delphi-jedi.org'
       AutoSize = False
       Caption = 'JVCL Convert '
       Font.Charset = ANSI_CHARSET
@@ -451,7 +451,7 @@ object frmAboutMe: TfrmAboutMe
       HotTrackFont.Height = -27
       HotTrackFont.Name = 'Arial'
       HotTrackFont.Style = [fsBold, fsItalic, fsUnderline]
-      URL = 'http://jvcl.sourceforge.net'
+      URL = 'http://jvcl.delphi-jedi.org'
     end
     object Memo1: TMemo
       Left = 8

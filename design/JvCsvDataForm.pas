@@ -19,7 +19,7 @@ All Rights Reserved.
 Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 description : TJvCsvDataSet data access component. Design time unit - editor form.
 
@@ -507,4 +507,3 @@ begin
 end;
 
 end.
-

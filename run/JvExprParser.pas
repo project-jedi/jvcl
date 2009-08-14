@@ -20,7 +20,7 @@ Copyright (c) 2008 Christian Schiffler
 All Rights Reserved.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
   Equality Check is case insensitive due to usage of TMask class in unit Masks.
@@ -964,4 +964,3 @@ begin
 end;
 
 end.
-

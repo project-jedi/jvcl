@@ -24,7 +24,7 @@ Contributor(s):
   Olivier Sannier [obones att altern dott org], caption hints.
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Modified 2003-06-13 (p3):
 - Fixed MouseUp X,Y inconsistentcy (did not report the same values as MouseDown)
@@ -2840,4 +2840,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

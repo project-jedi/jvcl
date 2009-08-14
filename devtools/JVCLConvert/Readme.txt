@@ -39,5 +39,5 @@ Please note: for best results, you should leave all the Options as they are, i.e
 
 To report bugs, please use the JVCL Issue Tracker (follow the "Bugs/Wishes" link from the JVCL Webpage: 
 
-http://jvcl.sourceforge.net
+http://jvcl.delphi-jedi.org
  

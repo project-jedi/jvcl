@@ -20,7 +20,7 @@ Olivier Sannier (animation styles logic)
 Miha Vrhovnik (custom form display logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
@@ -1827,4 +1827,3 @@ finalization
   {$ENDIF UNITVERSIONING}
 
 end.
-

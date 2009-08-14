@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+located at http://jvcl.delphi-jedi.org
 
 Description:
   Components to replace the TDriveComboBox from Borland that also adds a TDriveListBox.
@@ -1716,4 +1716,3 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-

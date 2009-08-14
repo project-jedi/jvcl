@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 
 You may retrieve the latest version of this file at the Project JEDI's
-JVCL home page, located at http://jvcl.sourceforge.net
+JVCL home page, located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 - To display data from a datasource, use the <FIELD="fieldname"> tag in Mask.
@@ -286,5 +286,4 @@ finalization
 {$ENDIF UNITVERSIONING}
 
 end.
-
 
