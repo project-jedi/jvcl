@@ -109,6 +109,7 @@ end;
 
 destructor TPackageGenerator.Destroy;
 begin
+  PackageInformation.ExpandPackageTargetsObj := nil;
   FTargetList.Free;
   FAliasList.Free;
   FClxReplacementList.Free;
@@ -1203,9 +1204,6 @@ begin
     FPrefix := Prefix;
   if format <> '' then
     FFormat := Format;
-
-  // clean the package cache first, files might have changed on disk
-  ClearXmlFileCache;
 
   // for all targets
   for i := 0 to targets.Count - 1 do

@@ -699,6 +699,9 @@ begin
         end;
 
         frmGenMessages.Show;
+        // clean the package cache first, files might have changed on disk
+        ClearXmlFileCache;
+
         FPackageGenerator.Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg);
       finally
         targets.Free;

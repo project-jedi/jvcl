@@ -430,7 +430,6 @@ var
 begin
   inherited Create;
   FPackageGenerator := TPackageGenerator.Create;
-  ExpandPackageTargetsObj := FPackageGenerator.ExpandTargets;
   FDeleteFilesOnUninstall := True;
   FVerbose := False;
 

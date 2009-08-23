@@ -84,6 +84,7 @@ type
       RequiredPackage: TRequiredPackage): Boolean;
     function IsFileUsed(ProjectGroup: TProjectGroup;
       ContainedFile: TContainedFile): Boolean;
+    procedure SortProject(Group: TProjectGroup; List: TList; Project: TPackageTarget; var ProjectIndex: Integer);
     procedure SortProjectGroup(Group: TProjectGroup; List: TList);
   protected
     function Dcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
@@ -1502,48 +1503,47 @@ begin
   end;
 end;
 
-procedure TCompiler.SortProjectGroup(Group: TProjectGroup; List: TList);
-
-  procedure SortProject(Project: TPackageTarget; var ProjectIndex: Integer);
-  var
-    ReqProjectIndex: Integer;
-    ReqPackage: TRequiredPackage;
-    ReqProject: TPackageTarget;
-    ListIndex: Integer;
+procedure TCompiler.SortProject(Group: TProjectGroup; List: TList; Project: TPackageTarget; var ProjectIndex: Integer);
+var
+  ReqProjectIndex: Integer;
+  ReqPackage: TRequiredPackage;
+  ReqProject: TPackageTarget;
+  ListIndex: Integer;
+begin
+  for ReqProjectIndex := 0 to Project.RequireCount - 1 do
   begin
-    for ReqProjectIndex := 0 to Project.RequireCount - 1 do
+    ReqPackage := Project.Requires[ReqProjectIndex];
+    if IsPackageUsed(Group, ReqPackage) then
     begin
-      ReqPackage := Project.Requires[ReqProjectIndex];
-      if IsPackageUsed(Group, ReqPackage) then
+      // Two cases: the required project is not in the list so we need to add,
+      // or it's already there and not in front so we need to move it.
+      // In both cases, we need to sort the moved/added package recursively
+      // and increment the ProjectIndex only after the recursive sort is done
+      // so that packages required by the current required package are put
+      // in front of it as well.
+      ReqProject := Group.FindPackageByXmlName(ReqPackage.Name);
+      if Assigned(ReqProject) then
       begin
-        // Two cases: the required project is not in the list so we need to add,
-        // or it's already there and not in front so we need to move it.
-        // In both cases, we need to sort the moved/added package recursively 
-        // and increment the ProjectIndex only after the recursive sort is done
-        // so that packages required by the current required package are put
-        // in front of it as well.
-        ReqProject := Group.FindPackageByXmlName(ReqPackage.Name);
-        if Assigned(ReqProject) then
+        ListIndex := List.IndexOf(ReqProject);
+        if ListIndex = -1 then
         begin
-          ListIndex := List.IndexOf(ReqProject);
-          if ListIndex = -1 then
-          begin
-            List.Insert(ProjectIndex, ReqProject);
-            SortProject(ReqProject, ProjectIndex);
-            Inc(ProjectIndex);
-          end
-          else
-          if ListIndex > ProjectIndex then
-          begin
-            List.Move(ListIndex, ProjectIndex);
-            SortProject(ReqProject, ProjectIndex);
-            Inc(ProjectIndex);
-          end;
+          List.Insert(ProjectIndex, ReqProject);
+          SortProject(Group, List, ReqProject, ProjectIndex);
+          Inc(ProjectIndex);
+        end
+        else
+        if ListIndex > ProjectIndex then
+        begin
+          List.Move(ListIndex, ProjectIndex);
+          SortProject(Group, List, ReqProject, ProjectIndex);
+          Inc(ProjectIndex);
         end;
       end;
     end;
   end;
+end;
 
+procedure TCompiler.SortProjectGroup(Group: TProjectGroup; List: TList);
 var
   CurProject: TPackageTarget;
   CurProjectIndex: Integer;
@@ -1561,7 +1561,7 @@ begin
   begin
     CurProject := List[CurProjectIndex];
 
-    SortProject(CurProject, CurProjectIndex);
+    SortProject(Group, List, CurProject, CurProjectIndex);
 
     Inc(CurProjectIndex);
   end;
