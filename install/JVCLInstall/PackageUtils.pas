@@ -222,7 +222,7 @@ end;
 
 function TProjectGroup.GetBplNameOf(Package: TRequiredPackage): string;
 begin
-  if StartsWith(Package.Name, 'Jv', True) then
+  if StartsWith(Package.Name, 'Jv') then
     Result := inherited GetBplNameOf(Package)
   else
     Result := Package.Name;
@@ -305,7 +305,7 @@ begin
   for i := 0 to Info.RequireCount - 1 do
   begin
     // JVCL dependencies
-    if StartsWith(Info.Requires[i].Name, 'Jv', True) then // do not localize
+    if StartsWith(Info.Requires[i].Name, 'Jv') then // do not localize
     begin
       if FileExists(Info.XmlDir + '\' + Info.Requires[i].Name + '.xml') and // do not localize
          (Owner.FindPackagebyXmlName(Info.Requires[i].Name) <> nil) and
@@ -316,9 +316,9 @@ begin
     end
     else
     // is it a JCL dependency
-    if StartsWith(Info.Requires[i].Name, 'Jcl', True) or // do not localize
-       StartsWith(Info.Requires[i].Name, 'JclD', True) or // do not localize
-       StartsWith(Info.Requires[i].Name, 'JclC', True) then // do not localize
+    if StartsWith(Info.Requires[i].Name, 'Jcl') or // do not localize
+       StartsWith(Info.Requires[i].Name, 'JclD') or // do not localize
+       StartsWith(Info.Requires[i].Name, 'JclC') then // do not localize
     begin
       if Info.Requires[i].IsRequiredByTarget(Owner.TargetSymbol) then
         FJclDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
@@ -397,6 +397,5 @@ end;
 
 initialization
   BplNameToGenericNameHook := BplNameToGenericName;
-  ExpandPackageTargets := ExpandTargets;
 
 end.

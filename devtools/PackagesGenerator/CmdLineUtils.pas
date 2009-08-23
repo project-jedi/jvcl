@@ -8,7 +8,7 @@ procedure Help;
 implementation
 
 uses
-  Windows, Classes, SysUtils, GenerateUtils,
+  Windows, Classes, SysUtils, GenerateUtils, PackageGenerator, PackageInformation,
   JclStrings, JclFileUtils,
   FileUtils;
 
@@ -63,6 +63,7 @@ var
   targets : TStringList;
   packages : TStringList;
   ErrMsg : string;
+  PackageGenerator: TPackageGenerator;
 begin
   targets := TStringList.Create;
   try
@@ -119,45 +120,53 @@ begin
     if modelName = '' then
       modelName := 'JVCL';
 
-    if not LoadConfig(xmlconfig, modelName, ErrMsg) then
-    begin
-      WriteLn(ErrMsg);
-      Exit;
-    end;
+    PackageGenerator := TPackageGenerator.Create;
 
-   // EnumeratePackages() needs this 
-    if packagesPath = '' then
-      packagesPath := PackagesLocation;
-      
-    if PathIsAbsolute(packagesPath) then
-      packagesPath := packagesPath
-    else
-      packagesPath := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + packagesPath);
-
-
-    StrToStrings(targetList, ',', targets, False);
-    ExpandTargetsNoPerso(targets);
-
-    packages := TStringList.Create;
     try
-      EnumeratePackages(packagesPath, packages);
-      if not Generate(packages,
-                      targets,
-                      WriteMsg,
-                      XmlConfig,
-                      ModelName,
-                      ErrMsg,
-                      packagesPath,
-                      prefix,
-                      Format,
-                      incfile
-                     ) then
+      ExpandPackageTargetsObj := PackageGenerator.ExpandTargets;
+
+      if not PackageGenerator.LoadConfig(xmlconfig, modelName, ErrMsg) then
       begin
         WriteLn(ErrMsg);
         Exit;
       end;
+
+      // EnumeratePackages() needs this
+      if packagesPath = '' then
+        packagesPath := PackageGenerator.PackagesLocation;
+
+      if PathIsAbsolute(packagesPath) then
+        packagesPath := packagesPath
+      else
+        packagesPath := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, PackageGenerator.StartupDir) + packagesPath);
+
+
+      StrToStrings(targetList, ',', targets, False);
+      PackageGenerator.ExpandTargetsNoPerso(targets);
+
+      packages := TStringList.Create;
+      try
+        EnumeratePackages(packagesPath, packages);
+        if not PackageGenerator.Generate(packages,
+                                         targets,
+                                         WriteMsg,
+                                         XmlConfig,
+                                         ModelName,
+                                         ErrMsg,
+                                         packagesPath,
+                                         prefix,
+                                         Format,
+                                         incfile
+                                        ) then
+        begin
+          WriteLn(ErrMsg);
+          Exit;
+        end;
+      finally
+        packages.Free;
+      end;
     finally
-      packages.Free;
+      PackageGenerator.Free;
     end;
   finally
     targets.Free;
