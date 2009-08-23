@@ -60,6 +60,10 @@ implementation
 
 uses
   SysUtils,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils,
+  {$ENDIF ~COMPILER12_UP}
+  JclBase,
   JclStrings;
 
 { TTarget }
