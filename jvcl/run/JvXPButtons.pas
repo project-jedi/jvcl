@@ -69,9 +69,11 @@ type
     FSmoothEdges: Boolean;
     FSpacing: Byte;
     FWordWrap: Boolean;
+    FDown: Boolean;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
     procedure ImageListChange(Sender: TObject);
     procedure GlyphChange(Sender: TObject);
+    procedure SetDown(const Value: Boolean);
   protected
     function GetActionLinkClass: TControlActionLinkClass; override;
     function IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
@@ -93,6 +95,7 @@ type
     property AutoGray: Boolean read FAutoGray write SetAutoGray default True;
     property Cancel: Boolean read FCancel write FCancel default False;
     property Default: Boolean read FDefault write SetDefault default False;
+    property Down: Boolean read FDown write SetDown default False;
     property Glyph: TJvPicture read FGlyph write SetGlyph;
     property Layout: TJvXPLayout read FLayout write SetLayout default blGlyphLeft;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
@@ -122,6 +125,7 @@ type
     property AutoGray;
     property Cancel;
     property Default;
+    property Down;
     property Glyph;
     property Layout;
     property ModalResult;
@@ -377,7 +381,6 @@ begin
   Result := TJvXPCustomButtonActionLink;
 end;
 
-
 procedure TJvXPCustomButton.CMDialogKey(var Msg: TCMDialogKey);
 begin
   inherited;
@@ -413,9 +416,18 @@ begin
   end;
 end;
 
+procedure TJvXPCustomButton.SetDown(const Value: Boolean);
+begin
+  if Value <> FDown then
+  begin
+    FDown := Value;
+    LockedInvalidate;
+  end;
+end;
+
 procedure TJvXPCustomButton.SetGlyph(Value: TJvPicture);
 begin
-  if FGlyph <> Value then
+  if Value <> FGlyph then
   begin
     FGlyph.Assign(Value);
     LockedInvalidate;
@@ -525,8 +537,8 @@ end;
 
 function TJvXPCustomButton.IsSpecialDrawState(IgnoreDefault: Boolean = False): Boolean;
 begin
-  if dsClicked in DrawState then
-    Result := not (dsHighlight in DrawState)
+  if (dsClicked in DrawState) or Down then
+    Result := not ((dsHighlight in DrawState) or Down)
   else
     Result := (dsHighlight in DrawState) or (dsFocused in DrawState);
   if not IgnoreDefault then
@@ -604,7 +616,7 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        if dsHighlight in DrawState then
+        if (dsHighlight in DrawState) then
           Bitmap.Assign(FHlGradient)
         else
           Bitmap.Assign(FFcGradient);
@@ -615,7 +627,7 @@ begin
     end;
 
     // draw background gradient...
-    if not ((dsHighlight in DrawState) and (dsClicked in DrawState)) then
+    if not (Down or ((dsHighlight in DrawState) and (dsClicked in DrawState))) then
     begin
       Offset := 2 * Integer(IsSpecialDrawState);
       BitBlt(Handle, 1 + Offset, 1 + Offset, Width - 3 * Offset, Height - 3 * Offset,
@@ -623,9 +635,8 @@ begin
     end
     // ...or click gradient.
     else
-    begin
       BitBlt(Handle, 1, 1, Width, Height, FCkGradient.Canvas.Handle, 0, 0, SRCCOPY);
-    end;
+
     // draw border lines.
     if Enabled then
       Pen.Color := dxColor_Btn_Enb_Border_WXP
@@ -709,7 +720,7 @@ begin
       end;
 
       // should we draw the pressed state?
-      DrawPressed := (dsHighlight in DrawState) and (dsClicked in DrawState);
+      DrawPressed := Down or ((dsHighlight in DrawState) and (dsClicked in DrawState));
       if DrawPressed then
         OffsetRect(Rect, 1, 1);
 
@@ -892,7 +903,6 @@ begin
       {nothing};
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-
   end;
 end;
 

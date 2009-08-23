@@ -1252,9 +1252,7 @@ end;
 procedure TJvWizardNavigateButton.SetCaption(const Value: string);
 begin
   if Assigned(FControl) then
-  begin
     FControl.Caption := Value;
-  end;
 end;
 
 procedure TJvWizardNavigateButton.SetGlyph(const Value: TBitmap);
@@ -1440,7 +1438,6 @@ begin
   end;
 end;
 
-
 procedure TJvWizardRouteMapControl.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   if PageAtPos(Point(Msg.XPos, Msg.YPos)) <> nil then
@@ -1448,7 +1445,6 @@ begin
   else
     inherited;
 end;
-
 
 function TJvWizardRouteMapControl.PageAtPos(Pt: TPoint): TJvWizardCustomPage;
 begin
@@ -1479,8 +1475,6 @@ begin
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
-
-
 
 procedure TJvWizardRouteMapControl.SetParent(AParent: TWinControl);
 var
@@ -2255,14 +2249,12 @@ begin
   inherited Destroy;
 end;
 
-
 procedure TJvWizardCustomPage.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params.WindowClass do
     Style := Style and not (CS_HREDRAW or CS_VREDRAW);
 end;
-
 
 procedure TJvWizardCustomPage.AdjustClientRect(var Rect: TRect);
 begin
@@ -2271,26 +2263,23 @@ begin
     Rect.Top := Rect.Top + FHeader.Height;
 end;
 
-procedure TJvWizardCustomPage.EnableButton(AButton: TJvWizardButtonKind; AEnabled: Boolean); // Arioch
+procedure TJvWizardCustomPage.EnableButton(AButton: TJvWizardButtonKind; AEnabled: Boolean);
 var
   IsEnabled: Boolean;
-  tmpSet: TJvWizardButtonSet;
+  ButtonSet: TJvWizardButtonSet;
 begin
-  tmpSet := [AButton];
-  IsEnabled := (tmpSet * EnabledButtons) <> [];
+  ButtonSet := [AButton];
+  IsEnabled := (ButtonSet * EnabledButtons) <> [];
   if AEnabled <> IsEnabled then
   begin
     if AEnabled then
-      EnabledButtons := EnabledButtons + tmpSet
+      EnabledButtons := EnabledButtons + ButtonSet
     else
-      EnabledButtons := EnabledButtons - tmpSet;
+      EnabledButtons := EnabledButtons - ButtonSet;
   end;
 end;
 
-
-
 procedure TJvWizardCustomPage.CMEnabledChanged(var Msg: TMessage);
-
 var
   NextPage: TJvWizardCustomPage;
 begin
@@ -2311,24 +2300,18 @@ begin
   end;
 end;
 
-
-
 procedure TJvWizardCustomPage.CMTextChanged(var Msg: TMessage);
-
 begin
   Invalidate;
   if Assigned(FWizard) and Assigned(FWizard.FRouteMap) then
     FWizard.FRouteMap.DoUpdatePage(Self);
 end;
 
-
-
 procedure TJvWizardCustomPage.CMFontChanged(var Msg: TMessage);
 begin
   FHeader.AdjustTitleFont;
   inherited;
 end;
-
 
 procedure TJvWizardCustomPage.SetWizard(AWizard: TJvWizard);
 begin
@@ -2370,7 +2353,6 @@ begin
   end;
 end;
 
-
 procedure TJvWizardCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   {$IFDEF JVCLThemesEnabledD56}
@@ -2384,7 +2366,6 @@ begin
   Msg.Result := 1;
   {$ENDIF COMPILER9_UP}
 end;
-
 
 procedure TJvWizardCustomPage.Paint;
 var
@@ -2439,20 +2420,14 @@ end;
 
 procedure TJvWizardCustomPage.Enter(const FromPage: TJvWizardCustomPage);
 begin
-  if Assigned(FOnEnterPage) and Enabled and
-    not (csDesigning in ComponentState) then
-  begin
+  if Assigned(FOnEnterPage) and Enabled and not (csDesigning in ComponentState) then
     FOnEnterPage(Self, FromPage);
-  end;
 end;
 
 procedure TJvWizardCustomPage.ExitPage(const ToPage: TJvWizardCustomPage);
 begin
-  if Assigned(FOnExitPage) and Enabled and
-    not (csDesigning in ComponentState) then
-  begin
+  if Assigned(FOnExitPage) and Enabled and not (csDesigning in ComponentState) then
     FOnExitPage(Self, ToPage);
-  end;
 end;
 
 procedure TJvWizardCustomPage.ImageChanged(Sender: TObject);
@@ -2698,7 +2673,6 @@ begin
     Result := TJvWizardCustomPage(FPages[PageIndex]);
 end;
 
-// Nonn ...
 function TJvWizard.FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
   CheckDisable: Boolean = True): TJvWizardCustomPage;
 var
@@ -2709,14 +2683,12 @@ begin
     APage := FindNextPage(APage.PageIndex, Step, CheckDisable);
   Result := APage;
 end;
-// ...Nonn
 
 procedure TJvWizard.SelectFirstPage;
 var
   AFirstPage: TJvWizardCustomPage;
 begin
-  // Nonn AFirstPage := FindNextPage(-1, 1, not (csDesigning in ComponentState));
-  AFirstPage := FindNextEnabledPage(-1, 1, not (csDesigning in ComponentState));  // Nonn
+  AFirstPage := FindNextEnabledPage(-1, 1, not (csDesigning in ComponentState));
   if Assigned(AFirstPage) then
   begin
     if not (csDesigning in ComponentState) and Assigned(FOnSelectFirstPage) then
@@ -2730,8 +2702,7 @@ procedure TJvWizard.SelectLastPage;
 var
   ALastPage: TJvWizardCustomPage;
 begin
-// Nonn ALastPage := FindNextPage(FPages.Count, -1,
-  ALastPage := FindNextEnabledPage(FPages.Count, -1,    // Nonn
+  ALastPage := FindNextEnabledPage(FPages.Count, -1,
     not (csDesigning in ComponentState));
   if Assigned(ALastPage) then
   begin
@@ -2746,8 +2717,7 @@ procedure TJvWizard.SelectNextPage;
 var
   ANextPage: TJvWizardCustomPage;
 begin
-// Nonn  ANextPage := FindNextPage(GetActivePageIndex, 1,
-  ANextPage := FindNextEnabledPage(GetActivePageIndex, 1,  // Nonn
+  ANextPage := FindNextEnabledPage(GetActivePageIndex, 1,
     not (csDesigning in ComponentState));
   if Assigned(ANextPage) then
   begin
@@ -2762,8 +2732,7 @@ procedure TJvWizard.SelectPriorPage;
 var
   APriorPage: TJvWizardCustomPage;
 begin
-// Nonn  APriorPage := FindNextPage(GetActivePageIndex, -1,
-  APriorPage := FindNextEnabledPage(GetActivePageIndex, -1,  // Nonn
+  APriorPage := FindNextEnabledPage(GetActivePageIndex, -1,
     not (csDesigning in ComponentState));
   if Assigned(APriorPage) then
   begin
@@ -2918,7 +2887,6 @@ begin
     ActivePage := nil;
 end;
 
-
 procedure TJvWizard.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   {$IFDEF JVCLThemesEnabledD56}
@@ -2927,7 +2895,6 @@ begin
   {$ENDIF JVCLThemesEnabledD56}
   Msg.Result := 1;
 end;
-
 
 procedure TJvWizard.Paint;
 var
@@ -3019,7 +2986,6 @@ begin
     Msg.Result := 1;
 end;
 
-
 procedure TJvWizard.AdjustClientRect(var Rect: TRect);
 begin
   { All wizard's child controls (Pages, RouteMap, etc) whose align
@@ -3032,12 +2998,10 @@ begin
     Rect.Bottom := Rect.Bottom - FButtonBarHeight;
 end;
 
-
 procedure TJvWizard.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
   Msg.Result := DLGC_WANTALLKEYS or DLGC_WANTARROWS;
 end;
-
 
 procedure TJvWizard.UpdateButtonsStatus;
 var

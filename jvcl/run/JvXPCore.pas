@@ -135,7 +135,7 @@ type
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
-    FIsLocked: Boolean;
+    FIsLocked: Integer;
     FIsSibling: Boolean;
     FModalResult: TModalResult;
     FOnMouseLeave: TNotifyEvent;
@@ -152,25 +152,26 @@ type
     procedure WMMouseMove(var Msg: TWMMouse); message WM_MOUSEMOVE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMWindowPosChanged(var Msg: TWMWindowPosChanged); message WM_WINDOWPOSCHANGED;
+    function GetIsLocked: Boolean;
   protected
     ExControlStyle: TJvXPControlStyle;
-    procedure InternalRedraw; dynamic;
-    procedure HookBorderChanged; dynamic;
-    procedure HookEnabledChanged; dynamic;
-    procedure HookFocusedChanged; dynamic;
-    procedure HookMouseDown; dynamic;
-    procedure HookMouseEnter; dynamic;
-    procedure HookMouseLeave; dynamic;
-    procedure HookMouseMove(X: Integer = 0; Y: Integer = 0); dynamic;
-    procedure HookMouseUp; dynamic;
-    procedure HookParentColorChanged; dynamic;
-    procedure HookParentFontChanged; dynamic;
-    procedure HookPosChanged; dynamic;
-    procedure HookResized; dynamic;
-    procedure HookTextChanged; dynamic;
-    procedure BeginUpdate; dynamic;
-    procedure EndUpdate; dynamic;
-    procedure LockedInvalidate; dynamic;
+    procedure InternalRedraw; virtual;
+    procedure HookBorderChanged; virtual;
+    procedure HookEnabledChanged; virtual;
+    procedure HookFocusedChanged; virtual;
+    procedure HookMouseDown; virtual;
+    procedure HookMouseEnter; virtual;
+    procedure HookMouseLeave; virtual;
+    procedure HookMouseMove(X: Integer = 0; Y: Integer = 0); virtual;
+    procedure HookMouseUp; virtual;
+    procedure HookParentColorChanged; virtual;
+    procedure HookParentFontChanged; virtual;
+    procedure HookPosChanged; virtual;
+    procedure HookResized; virtual;
+    procedure HookTextChanged; virtual;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+    procedure LockedInvalidate; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
@@ -181,7 +182,7 @@ type
     constructor Create(AOwner: TComponent); override;
     property Canvas;
     property DrawState: TJvXPDrawState read FDrawState write FDrawState;
-    property IsLocked: Boolean read FIsLocked write FIsLocked;
+    property IsLocked: Boolean read GetIsLocked {write FIsLocked}; // AHUser: Use BeginUpdate/EndUpdate
     property IsSibling: Boolean read FIsSibling write FIsSibling;
   end;
 
@@ -348,22 +349,25 @@ begin
   ExControlStyle := [csRedrawEnabledChanged, csRedrawFocusedChanged,
     csRedrawMouseDown, csRedrawMouseEnter, csRedrawMouseLeave, csRedrawMouseUp,
     csRedrawParentColorChanged, csRedrawCaptionChanged];
-  FClicking := False;
   FDrawState := [dsDefault];
-  FIsLocked := False;
-  FIsSibling := False;
   FModalResult := 0;
 end;
 
 procedure TJvXPCustomControl.BeginUpdate;
 begin
-  FIsLocked := True;
+  Inc(FIsLocked);
 end;
 
 procedure TJvXPCustomControl.EndUpdate;
 begin
-  FIsLocked := False;
+  Assert(FIsLocked > 0, 'Unpaired call to TJvXPCustomControl.EndUpdate'); // do not localize
+  Dec(FIsLocked);
   InternalRedraw;
+end;
+
+function TJvXPCustomControl.GetIsLocked: Boolean;
+begin
+  Result := FIsLocked > 0;
 end;
 
 procedure TJvXPCustomControl.LockedInvalidate;
@@ -374,7 +378,7 @@ end;
 
 procedure TJvXPCustomControl.InternalRedraw;
 begin
-  if not FIsLocked then
+  if not IsLocked then
     Invalidate;
 end;
 
