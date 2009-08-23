@@ -36,7 +36,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Graphics, Forms, ComCtrls, TypInfo,
+  SysUtils, Classes, Graphics, Forms, ComCtrls,
   JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponentBase, JclStrings;
 
 type
@@ -218,9 +218,6 @@ procedure TFontInfo.SetSize(const Value: Integer);
 begin
   FFontData.Height := -MulDiv(Value, FPixelsPerInch, 72);
 end;
-
-type
-  TWriterAccess = class(TWriter);
 
 //=== { TJvRichEditToHtml } ==================================================
 
