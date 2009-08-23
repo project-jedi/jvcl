@@ -2686,7 +2686,12 @@ begin
         TJvGlyphList(FGlyphList).Delete(FIndexs[I]);
     FIndexs[I] := -1;
   end;
-  GlyphCache.ReturnList(TJvGlyphList(FGlyphList));
+
+  { Fix for Mantis #4864: JvSpeedButton AV }
+  if GlyphCache <> nil then
+    GlyphCache.ReturnList(TJvGlyphList(FGlyphList))
+  else
+    FGlyphList.Free;
   FGlyphList := nil;
 end;
 
