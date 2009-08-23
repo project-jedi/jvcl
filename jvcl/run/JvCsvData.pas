@@ -1172,21 +1172,17 @@ begin
     if LStreamIndex >= LStreamSize then
       Break;
 
-    Buf[n] := LStreamBuffer[LStreamIndex]; // p^;
+    Buf[n] := LStreamBuffer[LStreamIndex];
     Inc(LStreamIndex);
 
     case Buf[n] of
       JvCsvQuote: {34} // quote
         QuoteFlag := not QuoteFlag;
       JvCsvLf: {10} // linefeed
-        begin
-          Inc(n);
-          if not QuoteFlag then
-            Break;
-        end;
+        if not QuoteFlag then
+          Break;
       JvCsvCR: {13} // carriage return
         begin
-          Inc(n);
           if not QuoteFlag then
           begin
             { If it is a CRLF we must skip the LF. Otherwise the next call to ReadLine
@@ -1199,13 +1195,11 @@ begin
             Break;
           end;
         end
-    else
-      Inc(n);
     end;
+    Inc(n);
   end;
   FStreamIndex := LStreamIndex;
 
-  //Inc(n); { ahuser: This cause the string to include CR or LF. Is this by intention? }
   SetString(Result, PAnsiChar(@Buf[0]), n);
 end;
 
