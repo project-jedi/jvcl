@@ -13,7 +13,13 @@ uses
   GenerationMessagesForm in 'GenerationMessagesForm.pas' {frmGenMessages},
   ModelsForm in 'ModelsForm.pas' {frmModels},
   ConditionParser in 'ConditionParser.pas',
-  PackageInformation in '..\Common\PackageInformation.pas';
+  PackageInformation in '..\Common\PackageInformation.pas',
+  DefinesConditionParser in 'DefinesConditionParser.pas',
+  GenerateTargets in 'GenerateTargets.pas',
+  GenerateAlias in 'GenerateAlias.pas',
+  GenerateReplacements in 'GenerateReplacements.pas',
+  GenerateDefines in 'GenerateDefines.pas',
+  PackageGenerator in 'PackageGenerator.pas';
 
 {$R *.res}
 

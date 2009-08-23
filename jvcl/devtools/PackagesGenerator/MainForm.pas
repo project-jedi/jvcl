@@ -11,7 +11,8 @@ uses
   JvControlBar, ImgList, ActnList, JvComponent, JvBaseDlg, JvBrowseFolder,
   Mask, JvToolEdit, AppEvnts, Grids, JvGrids, JvFormPlacement, JvAppStorage,
   JvStringGrid, JvAppXMLStorage, JvExGrids, JvExComCtrls, JvExExtCtrls,
-  JvExStdCtrls, JvComponentBase;
+  JvExStdCtrls, JvComponentBase,
+  PackageGenerator;
 
 type
   TfrmMain = class(TForm)
@@ -161,6 +162,7 @@ type
     procedure edtCompilerDefinesChange(Sender: TObject);
   private
     { Private declarations }
+    FPackageGenerator: TPackageGenerator;
     Changed : Boolean; // true if current file has changed
 
     ConfigLoadedOk : Boolean; // true if the config loaded ok
@@ -180,6 +182,7 @@ type
   public
     { Public declarations }
     constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
   end;
 
 var
@@ -218,13 +221,14 @@ constructor TfrmMain.Create(AOwner: TComponent);
 var
   ErrMsg : string;
 begin
-  inherited;
+  inherited Create(AOwner);
+  FPackageGenerator := TPackageGenerator.Create;
 
   jaxStore.FileName := StrEnsureSuffix(DirDelimiter, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
 //  if cmbModel.ItemIndex >-1 then
 //    ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
 //  else
-    ConfigLoadedOk := LoadConfig(jaxStore.FileName, '', ErrMsg);
+    ConfigLoadedOk := FPackageGenerator.LoadConfig(jaxStore.FileName, '', ErrMsg);
 
   if not ConfigLoadedOk then
   begin
@@ -259,6 +263,12 @@ begin
     ColWidths[3] := 70;
   end;
   jtbMenus.AutoSize := true;
+end;
+
+destructor TfrmMain.Destroy;
+begin
+  FPackageGenerator.Free;
+  inherited Destroy;
 end;
 
 procedure TfrmMain.jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
@@ -311,10 +321,10 @@ var
 begin
   if odlAddFiles.Execute then
   begin
-    if PathIsAbsolute(PackagesLocation) then
-      PackagesDir := PackagesLocation
+    if PathIsAbsolute(FPackageGenerator.PackagesLocation) then
+      PackagesDir := FPackageGenerator.PackagesLocation
     else
-      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir)+PackagesLocation);
+      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, FPackageGenerator.StartupDir) + FPackageGenerator.PackagesLocation);
     for i := 0 to odlAddFiles.Files.Count-1 do
     begin
       row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
@@ -407,10 +417,10 @@ procedure TfrmMain.LoadPackagesList;
 var
   path : string;
 begin
-  if PathIsAbsolute(PackagesLocation) then
-    path := PackagesLocation
+  if PathIsAbsolute(FPackageGenerator.PackagesLocation) then
+    path := FPackageGenerator.PackagesLocation
   else
-    path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
+    path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, FPackageGenerator.StartupDir) + FPackageGenerator.PackagesLocation);
 
   EnumeratePackages(path, jlbList.Items);
   path := StrEnsureSuffix(DirDelimiter, path);
@@ -437,10 +447,10 @@ var
   fileNode : TJvSimpleXmlElem;
   ProjectType: TProjectType;
 begin
-  if PathIsAbsolute(PackagesLocation) then
-    FileName := PackagesLocation
+  if PathIsAbsolute(FPackageGenerator.PackagesLocation) then
+    FileName := FPackageGenerator.PackagesLocation
   else
-    FileName := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
+    FileName := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, FPackageGenerator.StartupDir) + FPackageGenerator.PackagesLocation);
 
   ProjectType := TProjectType(ComboBoxType.ItemIndex);
   FileName := Format('%s%sxml%s%s-%s.xml',[FileName, DirDelimiter,
@@ -558,10 +568,10 @@ begin
   if jlbList.ItemIndex < 0 then
     Exit;
 
-  if PathIsAbsolute(PackagesLocation) then
-    xmlFileName := PackagesLocation
+  if PathIsAbsolute(FPackageGenerator.PackagesLocation) then
+    xmlFileName := FPackageGenerator.PackagesLocation
   else
-    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
+    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, FPackageGenerator.StartupDir) + FPackageGenerator.PackagesLocation);
 
   xmlFileName := Format('%s%sxml%s%s.xml', [xmlFileName, DirDelimiter,
     DirDelimiter, jlbList.Items[jlbList.ItemIndex]]);
@@ -663,12 +673,18 @@ var
 begin
   if IsOkToChange then
   begin
-    if PathIsAbsolute(PackagesLocation) then
-      path := PackagesLocation
+    if PathIsAbsolute(FPackageGenerator.PackagesLocation) then
+      path := FPackageGenerator.PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
+      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, FPackageGenerator.StartupDir) + FPackageGenerator.PackagesLocation);
 
-    frmTargets.Path := path;
+    targets := TStringList.Create;
+    try
+      FPackageGenerator.TargetList.EnumerateTargets(targets);
+      frmTargets.Targets := targets;
+    finally
+      targets.Free;
+    end;
     if frmTargets.ShowModal = mrOk then
     begin
       targets := TStringList.Create;
@@ -683,7 +699,7 @@ begin
         end;
 
         frmGenMessages.Show;
-        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg);
+        FPackageGenerator.Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg);
       finally
         targets.Free;
       end;
@@ -830,9 +846,9 @@ begin
     jfsStore.RestoreFormPlacement;
 
     if cmbModel.ItemIndex >-1 then
-      ConfigLoadedOk := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
+      ConfigLoadedOk := FPackageGenerator.LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
     else
-      ConfigLoadedOk := LoadConfig(jaxStore.FileName, '', ErrMsg);
+      ConfigLoadedOk := FPackageGenerator.LoadConfig(jaxStore.FileName, '', ErrMsg);
       
     if not ConfigLoadedOk then
     begin
@@ -952,10 +968,10 @@ begin
         'Deleting a package',
         MB_ICONQUESTION or MB_YESNO) = MRYES) then
   begin
-    if PathIsAbsolute(PackagesLocation) then
-      path := PackagesLocation
+    if PathIsAbsolute(FPackageGenerator.PackagesLocation) then
+      path := FPackageGenerator.PackagesLocation
     else
-      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, StartupDir) + PackagesLocation);
+      path := PathNoInsideRelative(StrEnsureSuffix(DirDelimiter, FPackageGenerator.StartupDir) + FPackageGenerator.PackagesLocation);
 
     path := StrEnsureSuffix(DirDelimiter, path) + 'xml' + DirDelimiter + jlbList.Items[jlbList.ItemIndex] + '.xml';
     if not DeleteFile(path) then
@@ -991,7 +1007,7 @@ procedure TfrmMain.cmbModelClick(Sender: TObject);
 var
   ErrMsg : string;
 begin
-  if not LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg) then
+  if not FPackageGenerator.LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg) then
     Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR)
   else
     LoadPackagesList;

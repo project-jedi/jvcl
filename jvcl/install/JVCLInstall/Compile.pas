@@ -1161,7 +1161,7 @@ begin
   end;
 
   try
-    if not LoadConfig(Data.JVCLDir + '\' + sPackageGeneratorFile, Group, ErrMsg) then
+    if not Data.PackageGenerator.LoadConfig(Data.JVCLDir + '\' + sPackageGeneratorFile, Group, ErrMsg) then
     begin
       CaptureLine(ErrMsg, FAborted);
       AbortReason := RsErrorLoadingPackageGeneratorConfigFile;
@@ -1179,10 +1179,10 @@ begin
   TargetList := TStringList.Create;
   try
     TargetList.CommaText := Targets;
-    ExpandTargetsNoPerso(TargetList);
+    Data.PackageGenerator.ExpandTargetsNoPerso(TargetList);
     EnumeratePackages(PackagesPath, List);
-    if not Generate(List, TargetList, WriteMsg, Data.JVCLDir + '\' + sPackageGeneratorFile,
-                    Group, ErrMsg, PackagesPath, '', '', Data.JVCLDir + '\common\jvcl%t.inc') then
+    if not Data.PackageGenerator.Generate(List, TargetList, WriteMsg, Data.JVCLDir + '\' + sPackageGeneratorFile,
+                                          Group, ErrMsg, PackagesPath, '', '', Data.JVCLDir + '\common\jvcl%t.inc') then
     begin
       CaptureLine(ErrMsg, FAborted);
       AbortReason := Format(RsErrorGeneratingPackages, [TargetList.CommaText]);

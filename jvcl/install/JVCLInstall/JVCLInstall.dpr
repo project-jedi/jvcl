@@ -70,7 +70,13 @@ uses
   FrmCompileMessages in 'FrmCompileMessages.pas' {FormCompileMessages},
   JediRegInfo in 'JediRegInfo.pas',
   RegConfig in 'RegConfig.pas',
-  Dcc32FileAgePatch in 'Dcc32FileAgePatch.pas';
+  Dcc32FileAgePatch in 'Dcc32FileAgePatch.pas',
+  GenerateTargets in '..\..\devtools\PackagesGenerator\GenerateTargets.pas',
+  GenerateAlias in '..\..\devtools\PackagesGenerator\GenerateAlias.pas',
+  GenerateReplacements in '..\..\devtools\PackagesGenerator\GenerateReplacements.pas',
+  DefinesConditionParser in '..\..\devtools\PackagesGenerator\DefinesConditionParser.pas',
+  GenerateDefines in '..\..\devtools\PackagesGenerator\GenerateDefines.pas',
+  PackageGenerator in '..\..\devtools\PackagesGenerator\PackageGenerator.pas';
 
 {$R *.res}
 {$R CommCtrlAsInvoker.res}

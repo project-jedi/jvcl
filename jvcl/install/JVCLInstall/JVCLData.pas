@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Registry, SysUtils, Classes, Contnrs,
-  JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils,
+  JVCLConfiguration, DelphiData, PackageUtils, Intf, GenerateUtils, PackageGenerator,
   IniFiles, JCLData, JVCLVer, RegConfig,
   JclDebug;
 
@@ -336,6 +336,7 @@ type
     FIgnoreMakeErrors: Boolean;
     FJclLibrary: HModule;
     FJclLinkMapFile: TJclLinkMapFile;
+    FPackageGenerator: TPackageGenerator;
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
@@ -382,6 +383,8 @@ type
 
     property TargetConfig[Index: Integer]: TTargetConfig read GetTargetConfig;
     property Targets: TCompileTargetList read FTargets;
+
+    property PackageGenerator: TPackageGenerator read FPackageGenerator;
   end;
 
 implementation
@@ -426,11 +429,13 @@ var
   ErrMsg: string;
 begin
   inherited Create;
+  FPackageGenerator := TPackageGenerator.Create;
+  ExpandPackageTargetsObj := FPackageGenerator.ExpandTargets;
   FDeleteFilesOnUninstall := True;
   FVerbose := False;
 
   ErrMsg := '';
-  LoadConfig(JVCLDir + '\' + sPackageGeneratorFile, 'JVCL', ErrMsg);
+  FPackageGenerator.LoadConfig(JVCLDir + '\' + sPackageGeneratorFile, 'JVCL', ErrMsg);
 
   FTargets := TCompileTargetList.Create;
   SetLength(FConfigs, Targets.Count);
@@ -455,6 +460,7 @@ begin
   for i := 0 to High(FConfigs) do
     FConfigs[I].Free;
   FTargets.Free;
+  FPackageGenerator.Free;
   inherited Destroy;
 end;
 

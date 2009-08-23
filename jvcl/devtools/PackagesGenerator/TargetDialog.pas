@@ -18,9 +18,13 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+    FTargets: TStrings;
+    procedure SetTargets(const Value: TStrings);
   public
     { Public declarations }
-    Path : string;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Targets: TStrings read FTargets write SetTargets;
   end;
 
 var
@@ -30,28 +34,39 @@ implementation
 
 {$R *.dfm}
 
-uses JclStrings, GenerateUtils;
+uses
+  JclStrings,
+  GenerateUtils;
 
 { TfrmTargets }
 
+constructor TfrmTargets.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTargets := TStringList.Create;
+end;
+
+destructor TfrmTargets.Destroy;
+begin
+  FTargets.Free;
+  inherited Destroy;
+end;
+
 procedure TfrmTargets.FormShow(Sender: TObject);
 var
-  i : Integer;
-  targets : TStringList;
+  i: Integer;
 begin
-  targets := TStringList.Create;
-  try
-    EnumerateTargets(targets);
-
-    if targets.Text <> clbBuilds.Items.Text then
-    begin
-      clbBuilds.Items.Assign(targets);
-      for i := 0 to clbBuilds.Items.Count - 1 do
-        clbBuilds.Checked[i] := True;
-    end;
-  finally
-    targets.Free;
+  if Targets.Text <> clbBuilds.Items.Text then
+  begin
+    clbBuilds.Items.Assign(Targets);
+    for i := 0 to clbBuilds.Items.Count - 1 do
+      clbBuilds.Checked[i] := True;
   end;
+end;
+
+procedure TfrmTargets.SetTargets(const Value: TStrings);
+begin
+  FTargets.Assign(Value);
 end;
 
 end.
