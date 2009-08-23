@@ -265,7 +265,6 @@ type
   TPackageInfo = class(TObject)
   private
     FOwner: TBpgPackageTarget;
-    FXmlInfo: TPackageXmlInfo;
     FXmlDir: string;
 
     function GetRequireCount: Integer;
@@ -278,6 +277,7 @@ type
     function GetProjectType: TProjectType;
     function GetName: string;
     function GetRequiresDB: Boolean;
+    function GetXmlInfo: TPackageXmlInfo;
   public
     constructor Create(AOwner: TBpgPackageTarget; const AXmlDir: string);
 
@@ -292,7 +292,7 @@ type
     property Contains[Index: Integer]: TContainedFile read GetContains;
     property ProjectType: TProjectType read GetProjectType;
 
-    property XmlInfo: TPackageXmlInfo read FXmlInfo;
+    property XmlInfo: TPackageXmlInfo read GetXmlInfo;
 
     property Owner: TBpgPackageTarget read FOwner;
     property XmlDir: string read FXmlDir;
@@ -354,10 +354,24 @@ function ProjectTypeIsPackage(AProjectType: TProjectType): Boolean;
   /// </summary>
 function ProjectTypeToProjectName(ProjectType: TProjectType): string;
 
+  // <summary>
+  // Clear the cache of XML package files
+  // </summary>
+procedure ClearXmlFileCache;
+
 implementation
 
 var
   XmlFileCache: TStringList; // cache for .xml files ( TPackageXmlInfo )
+
+procedure ClearXmlFileCache;
+var
+  i: Integer;
+begin
+  for i := 0 to XmlFileCache.Count - 1 do
+    XmlFileCache.Objects[i].Free;
+  XmlFileCache.Clear;
+end;
 
 function BplNameToGenericName(const BplName: string): string;
 begin
@@ -1224,7 +1238,6 @@ begin
   inherited Create;
   FOwner := AOwner;
   FXmlDir := AXmlDir;
-  FXmlInfo := GetPackageXmlInfo(Owner.TargetName, AXmlDir);
 end;
 
 function TPackageInfo.GetBplName: string;
@@ -1234,56 +1247,52 @@ end;
 
 function TPackageInfo.GetContainCount: Integer;
 begin
-  Result := FXmlInfo.ContainCount;
+  Result := XmlInfo.ContainCount;
 end;
 
 function TPackageInfo.GetContains(Index: Integer): TContainedFile;
 begin
-  Result := FXmlInfo.Contains[Index];
+  Result := XmlInfo.Contains[Index];
 end;
 
 function TPackageInfo.GetRequireCount: Integer;
 begin
-  Result := FXmlInfo.RequireCount;
+  Result := XmlInfo.RequireCount;
 end;
 
 function TPackageInfo.GetRequires(Index: Integer): TRequiredPackage;
 begin
-  Result := FXmlInfo.Requires[Index];
+  Result := XmlInfo.Requires[Index];
 end;
 
 function TPackageInfo.GetDescription: string;
 begin
-  Result := FXmlInfo.Description;
+  Result := XmlInfo.Description;
 end;
 
 function TPackageInfo.GetDisplayName: string;
 begin
-  Result := FXmlInfo.DisplayName;
+  Result := XmlInfo.DisplayName;
 end;
 
 function TPackageInfo.GetProjectType: TProjectType;
 begin
-  Result := FXmlInfo.ProjectType;
+  Result := XmlInfo.ProjectType;
 end;
 
 function TPackageInfo.GetName: string;
 begin
-  Result := FXmlInfo.Name;
+  Result := XmlInfo.Name;
 end;
 
 function TPackageInfo.GetRequiresDB: Boolean;
 begin
-  Result := FXmlInfo.RequiresDB;
+  Result := XmlInfo.RequiresDB;
 end;
 
-procedure FinalizeXmlFileCache;
-var
-  i: Integer;
+function TPackageInfo.GetXmlInfo: TPackageXmlInfo;
 begin
-  for i := 0 to XmlFileCache.Count - 1 do
-    XmlFileCache.Objects[i].Free;
-  XmlFileCache.Free;
+  Result := GetPackageXmlInfo(Owner.TargetName, XmlDir);
 end;
 
 initialization
@@ -1291,6 +1300,7 @@ initialization
   XmlFileCache.Sorted := True;
 
 finalization
-  FinalizeXmlFileCache;
+  ClearXmlFileCache;
+  XmlFileCache.Free;
 
 end.
