@@ -188,6 +188,8 @@ begin
 end;
 
 function StringToHtml(const Value: string): string;
+const
+  Nbsp = '&nbsp;';
 var
   I, J: Integer;
   Len, AddLen, HtmlLen: Integer;
@@ -198,12 +200,21 @@ begin
   // number of chars to add
   AddLen := 0;
   for I := 1 to Len do
-    for J := Low(Conversions) to High(Conversions) do
-      if Value[I] = Conversions[J].Ch then
-      begin
-        Inc(AddLen, StrLen(Conversions[J].Html) - 1);
-        Break;
-      end;
+  begin
+    Ch := Value[I];
+    if Ch = ' ' then
+    begin
+      if (I > 1) and (Value[I - 1] = ' ') then
+        Inc(AddLen, 6 {Length(Nbsp)});
+    end
+    else
+      for J := Low(Conversions) to High(Conversions) do
+        if Ch = Conversions[J].Ch then
+        begin
+          Inc(AddLen, StrLen(Conversions[J].Html) - 1);
+          Break;
+        end;
+  end;
 
   if AddLen = 0 then
     Result := Value
@@ -214,15 +225,26 @@ begin
     for I := 1 to Len do
     begin
       Ch := Value[I];
-      for J := Low(Conversions) to High(Conversions) do
-        if Ch = Conversions[J].Ch then
+      if Ch = ' ' then
+      begin
+        if (I > 1) and (Value[I - 1] = ' ') then
         begin
-          HtmlLen := StrLen(Conversions[J].Html);
-          Move(Conversions[J].Html[0], P[0], HtmlLen * SizeOf(Char)); // Conversions[].Html is a PChar
+          HtmlLen := 6 {Length(Nbsp)};
+          Move(Nbsp[1], P[0], HtmlLen * SizeOf(Char));
           Inc(P, HtmlLen);
           Ch := #0;
-          Break;
         end;
+      end
+      else
+        for J := Low(Conversions) to High(Conversions) do
+          if Ch = Conversions[J].Ch then
+          begin
+            HtmlLen := StrLen(Conversions[J].Html);
+            Move(Conversions[J].Html[0], P[0], HtmlLen * SizeOf(Char)); // Conversions[].Html is a PChar
+            Inc(P, HtmlLen);
+            Ch := #0;
+            Break;
+          end;
       if Ch <> #0 then
       begin
         P[0] := Ch;
@@ -259,20 +281,21 @@ begin
       begin
         Ch := #0;
         ReplStr := LowerCase(Copy(Value, Start, I - Start + 1));
-        for J := Low(Conversions) to High(Conversions) do
-          if Conversions[J].Html = ReplStr then
-          begin
-            Ch := Conversions[J].Ch;
-            Break;
-          end;
+        if ReplStr = '&nbsp;' then // special treatment for &nbsp
+          Ch := ' '
+        else
+          for J := Low(Conversions) to High(Conversions) do
+            if Conversions[J].Html = ReplStr then
+            begin
+              Ch := Conversions[J].Ch;
+              Break;
+            end;
 
         // if no conversion was found, it may actually be a number
         if Ch = #0 then
         begin
           if StrToIntDef(ReplStr, -1) <> -1 then
-          begin
-            Ch := Chr(StrToInt(ReplStr));
-          end
+            Ch := Chr(StrToInt(ReplStr))
           else
           begin
             I := Start;
