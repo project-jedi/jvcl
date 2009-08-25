@@ -109,7 +109,7 @@ begin
     FWatcher.FStat := 0;
     FWatcher.FOnChange := OnChange;
 
-    FWatcher.Resume;
+    FWatcher.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
   end
   else
     FWatcher := nil;

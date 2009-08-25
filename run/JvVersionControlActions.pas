@@ -533,7 +533,7 @@ begin
     AFileName := CurrentVersionControlFilename;
     if VersionControlActionInfo(ActionType).SaveFile and Assigned (VersionControlActionEngine) and
        VersionControlActionEngine.SupportsSaveFile(VersionControlComponent) then
-      if not VersionControlActionEngine.SupportsNeedsSaveFile(VersionControlComponent) or  
+      if not VersionControlActionEngine.SupportsNeedsSaveFile(VersionControlComponent) or
          VersionControlActionEngine.NeedsSaveFile(VersionControlComponent) then
         VersionControlActionEngine.SaveFile(VersionControlComponent, CurrentVersionControlFilename);
 

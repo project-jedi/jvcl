@@ -1,0 +1,562 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{f398f145-41ba-4b0b-a9a1-dff93054d01c}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="JvCoreD14R">
+    <MSBuild Projects="D14\JvCoreD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCoreD14R:Clean">
+    <MSBuild Projects="D14\JvCoreD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCoreD14R:Make">
+    <MSBuild Projects="D14\JvCoreD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCoreD14D">
+    <MSBuild Projects="D14\JvCoreD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCoreD14D:Clean">
+    <MSBuild Projects="D14\JvCoreD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCoreD14D:Make">
+    <MSBuild Projects="D14\JvCoreD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvSystemD14R">
+    <MSBuild Projects="D14\JvSystemD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvSystemD14R:Clean">
+    <MSBuild Projects="D14\JvSystemD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvSystemD14R:Make">
+    <MSBuild Projects="D14\JvSystemD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvSystemD14D">
+    <MSBuild Projects="D14\JvSystemD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvSystemD14D:Clean">
+    <MSBuild Projects="D14\JvSystemD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvSystemD14D:Make">
+    <MSBuild Projects="D14\JvSystemD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvStdCtrlsD14R">
+    <MSBuild Projects="D14\JvStdCtrlsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvStdCtrlsD14R:Clean">
+    <MSBuild Projects="D14\JvStdCtrlsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvStdCtrlsD14R:Make">
+    <MSBuild Projects="D14\JvStdCtrlsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvStdCtrlsD14D">
+    <MSBuild Projects="D14\JvStdCtrlsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvStdCtrlsD14D:Clean">
+    <MSBuild Projects="D14\JvStdCtrlsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvStdCtrlsD14D:Make">
+    <MSBuild Projects="D14\JvStdCtrlsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCtrlsD14R">
+    <MSBuild Projects="D14\JvCtrlsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCtrlsD14R:Clean">
+    <MSBuild Projects="D14\JvCtrlsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCtrlsD14R:Make">
+    <MSBuild Projects="D14\JvCtrlsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCtrlsD14D">
+    <MSBuild Projects="D14\JvCtrlsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCtrlsD14D:Clean">
+    <MSBuild Projects="D14\JvCtrlsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCtrlsD14D:Make">
+    <MSBuild Projects="D14\JvCtrlsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCmpD14R">
+    <MSBuild Projects="D14\JvCmpD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCmpD14R:Clean">
+    <MSBuild Projects="D14\JvCmpD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCmpD14R:Make">
+    <MSBuild Projects="D14\JvCmpD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCmpD14D">
+    <MSBuild Projects="D14\JvCmpD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCmpD14D:Clean">
+    <MSBuild Projects="D14\JvCmpD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCmpD14D:Make">
+    <MSBuild Projects="D14\JvCmpD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCustomD14R">
+    <MSBuild Projects="D14\JvCustomD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCustomD14R:Clean">
+    <MSBuild Projects="D14\JvCustomD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCustomD14R:Make">
+    <MSBuild Projects="D14\JvCustomD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCustomD14D">
+    <MSBuild Projects="D14\JvCustomD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCustomD14D:Clean">
+    <MSBuild Projects="D14\JvCustomD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCustomD14D:Make">
+    <MSBuild Projects="D14\JvCustomD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDlgsD14R">
+    <MSBuild Projects="D14\JvDlgsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDlgsD14R:Clean">
+    <MSBuild Projects="D14\JvDlgsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDlgsD14R:Make">
+    <MSBuild Projects="D14\JvDlgsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDlgsD14D">
+    <MSBuild Projects="D14\JvDlgsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDlgsD14D:Clean">
+    <MSBuild Projects="D14\JvDlgsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDlgsD14D:Make">
+    <MSBuild Projects="D14\JvDlgsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCryptD14R">
+    <MSBuild Projects="D14\JvCryptD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCryptD14R:Clean">
+    <MSBuild Projects="D14\JvCryptD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCryptD14R:Make">
+    <MSBuild Projects="D14\JvCryptD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvCryptD14D">
+    <MSBuild Projects="D14\JvCryptD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvCryptD14D:Clean">
+    <MSBuild Projects="D14\JvCryptD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvCryptD14D:Make">
+    <MSBuild Projects="D14\JvCryptD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvMMD14R">
+    <MSBuild Projects="D14\JvMMD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvMMD14R:Clean">
+    <MSBuild Projects="D14\JvMMD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvMMD14R:Make">
+    <MSBuild Projects="D14\JvMMD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvMMD14D">
+    <MSBuild Projects="D14\JvMMD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvMMD14D:Clean">
+    <MSBuild Projects="D14\JvMMD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvMMD14D:Make">
+    <MSBuild Projects="D14\JvMMD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvNetD14R">
+    <MSBuild Projects="D14\JvNetD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvNetD14R:Clean">
+    <MSBuild Projects="D14\JvNetD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvNetD14R:Make">
+    <MSBuild Projects="D14\JvNetD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvNetD14D">
+    <MSBuild Projects="D14\JvNetD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvNetD14D:Clean">
+    <MSBuild Projects="D14\JvNetD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvNetD14D:Make">
+    <MSBuild Projects="D14\JvNetD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvAppFrmD14R">
+    <MSBuild Projects="D14\JvAppFrmD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvAppFrmD14R:Clean">
+    <MSBuild Projects="D14\JvAppFrmD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvAppFrmD14R:Make">
+    <MSBuild Projects="D14\JvAppFrmD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvAppFrmD14D">
+    <MSBuild Projects="D14\JvAppFrmD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvAppFrmD14D:Clean">
+    <MSBuild Projects="D14\JvAppFrmD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvAppFrmD14D:Make">
+    <MSBuild Projects="D14\JvAppFrmD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDBD14R">
+    <MSBuild Projects="D14\JvDBD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDBD14R:Clean">
+    <MSBuild Projects="D14\JvDBD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDBD14R:Make">
+    <MSBuild Projects="D14\JvDBD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDBD14D">
+    <MSBuild Projects="D14\JvDBD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDBD14D:Clean">
+    <MSBuild Projects="D14\JvDBD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDBD14D:Make">
+    <MSBuild Projects="D14\JvDBD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvBDED14R">
+    <MSBuild Projects="D14\JvBDED14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvBDED14R:Clean">
+    <MSBuild Projects="D14\JvBDED14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvBDED14R:Make">
+    <MSBuild Projects="D14\JvBDED14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvBDED14D">
+    <MSBuild Projects="D14\JvBDED14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvBDED14D:Clean">
+    <MSBuild Projects="D14\JvBDED14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvBDED14D:Make">
+    <MSBuild Projects="D14\JvBDED14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvInterpreterD14R">
+    <MSBuild Projects="D14\JvInterpreterD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvInterpreterD14R:Clean">
+    <MSBuild Projects="D14\JvInterpreterD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvInterpreterD14R:Make">
+    <MSBuild Projects="D14\JvInterpreterD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvInterpreterD14D">
+    <MSBuild Projects="D14\JvInterpreterD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvInterpreterD14D:Clean">
+    <MSBuild Projects="D14\JvInterpreterD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvInterpreterD14D:Make">
+    <MSBuild Projects="D14\JvInterpreterD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvBandsD14R">
+    <MSBuild Projects="D14\JvBandsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvBandsD14R:Clean">
+    <MSBuild Projects="D14\JvBandsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvBandsD14R:Make">
+    <MSBuild Projects="D14\JvBandsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvBandsD14D">
+    <MSBuild Projects="D14\JvBandsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvBandsD14D:Clean">
+    <MSBuild Projects="D14\JvBandsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvBandsD14D:Make">
+    <MSBuild Projects="D14\JvBandsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvPluginD14R">
+    <MSBuild Projects="D14\JvPluginD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvPluginD14R:Clean">
+    <MSBuild Projects="D14\JvPluginD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvPluginD14R:Make">
+    <MSBuild Projects="D14\JvPluginD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvPluginD14D">
+    <MSBuild Projects="D14\JvPluginD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvPluginD14D:Clean">
+    <MSBuild Projects="D14\JvPluginD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvPluginD14D:Make">
+    <MSBuild Projects="D14\JvPluginD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvJansD14R">
+    <MSBuild Projects="D14\JvJansD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvJansD14R:Clean">
+    <MSBuild Projects="D14\JvJansD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvJansD14R:Make">
+    <MSBuild Projects="D14\JvJansD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvJansD14D">
+    <MSBuild Projects="D14\JvJansD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvJansD14D:Clean">
+    <MSBuild Projects="D14\JvJansD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvJansD14D:Make">
+    <MSBuild Projects="D14\JvJansD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvGlobusD14R">
+    <MSBuild Projects="D14\JvGlobusD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvGlobusD14R:Clean">
+    <MSBuild Projects="D14\JvGlobusD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvGlobusD14R:Make">
+    <MSBuild Projects="D14\JvGlobusD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvGlobusD14D">
+    <MSBuild Projects="D14\JvGlobusD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvGlobusD14D:Clean">
+    <MSBuild Projects="D14\JvGlobusD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvGlobusD14D:Make">
+    <MSBuild Projects="D14\JvGlobusD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvPrintPreviewD14R">
+    <MSBuild Projects="D14\JvPrintPreviewD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvPrintPreviewD14R:Clean">
+    <MSBuild Projects="D14\JvPrintPreviewD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvPrintPreviewD14R:Make">
+    <MSBuild Projects="D14\JvPrintPreviewD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvPrintPreviewD14D">
+    <MSBuild Projects="D14\JvPrintPreviewD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvPrintPreviewD14D:Clean">
+    <MSBuild Projects="D14\JvPrintPreviewD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvPrintPreviewD14D:Make">
+    <MSBuild Projects="D14\JvPrintPreviewD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvPageCompsD14R">
+    <MSBuild Projects="D14\JvPageCompsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvPageCompsD14R:Clean">
+    <MSBuild Projects="D14\JvPageCompsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvPageCompsD14R:Make">
+    <MSBuild Projects="D14\JvPageCompsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvPageCompsD14D">
+    <MSBuild Projects="D14\JvPageCompsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvPageCompsD14D:Clean">
+    <MSBuild Projects="D14\JvPageCompsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvPageCompsD14D:Make">
+    <MSBuild Projects="D14\JvPageCompsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvValidatorsD14R">
+    <MSBuild Projects="D14\JvValidatorsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvValidatorsD14R:Clean">
+    <MSBuild Projects="D14\JvValidatorsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvValidatorsD14R:Make">
+    <MSBuild Projects="D14\JvValidatorsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvValidatorsD14D">
+    <MSBuild Projects="D14\JvValidatorsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvValidatorsD14D:Clean">
+    <MSBuild Projects="D14\JvValidatorsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvValidatorsD14D:Make">
+    <MSBuild Projects="D14\JvValidatorsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvWizardD14R">
+    <MSBuild Projects="D14\JvWizardD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvWizardD14R:Clean">
+    <MSBuild Projects="D14\JvWizardD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvWizardD14R:Make">
+    <MSBuild Projects="D14\JvWizardD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvWizardD14D">
+    <MSBuild Projects="D14\JvWizardD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvWizardD14D:Clean">
+    <MSBuild Projects="D14\JvWizardD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvWizardD14D:Make">
+    <MSBuild Projects="D14\JvWizardD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvTimeFrameworkD14R">
+    <MSBuild Projects="D14\JvTimeFrameworkD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvTimeFrameworkD14R:Clean">
+    <MSBuild Projects="D14\JvTimeFrameworkD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvTimeFrameworkD14R:Make">
+    <MSBuild Projects="D14\JvTimeFrameworkD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvTimeFrameworkD14D">
+    <MSBuild Projects="D14\JvTimeFrameworkD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvTimeFrameworkD14D:Clean">
+    <MSBuild Projects="D14\JvTimeFrameworkD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvTimeFrameworkD14D:Make">
+    <MSBuild Projects="D14\JvTimeFrameworkD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvHMID14R">
+    <MSBuild Projects="D14\JvHMID14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvHMID14R:Clean">
+    <MSBuild Projects="D14\JvHMID14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvHMID14R:Make">
+    <MSBuild Projects="D14\JvHMID14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvHMID14D">
+    <MSBuild Projects="D14\JvHMID14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvHMID14D:Clean">
+    <MSBuild Projects="D14\JvHMID14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvHMID14D:Make">
+    <MSBuild Projects="D14\JvHMID14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvManagedThreadsD14R">
+    <MSBuild Projects="D14\JvManagedThreadsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvManagedThreadsD14R:Clean">
+    <MSBuild Projects="D14\JvManagedThreadsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvManagedThreadsD14R:Make">
+    <MSBuild Projects="D14\JvManagedThreadsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvManagedThreadsD14D">
+    <MSBuild Projects="D14\JvManagedThreadsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvManagedThreadsD14D:Clean">
+    <MSBuild Projects="D14\JvManagedThreadsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvManagedThreadsD14D:Make">
+    <MSBuild Projects="D14\JvManagedThreadsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvXPCtrlsD14R">
+    <MSBuild Projects="D14\JvXPCtrlsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvXPCtrlsD14R:Clean">
+    <MSBuild Projects="D14\JvXPCtrlsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvXPCtrlsD14R:Make">
+    <MSBuild Projects="D14\JvXPCtrlsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvXPCtrlsD14D">
+    <MSBuild Projects="D14\JvXPCtrlsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvXPCtrlsD14D:Clean">
+    <MSBuild Projects="D14\JvXPCtrlsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvXPCtrlsD14D:Make">
+    <MSBuild Projects="D14\JvXPCtrlsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDockingD14R">
+    <MSBuild Projects="D14\JvDockingD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDockingD14R:Clean">
+    <MSBuild Projects="D14\JvDockingD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDockingD14R:Make">
+    <MSBuild Projects="D14\JvDockingD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDockingD14D">
+    <MSBuild Projects="D14\JvDockingD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDockingD14D:Clean">
+    <MSBuild Projects="D14\JvDockingD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDockingD14D:Make">
+    <MSBuild Projects="D14\JvDockingD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDotNetCtrlsD14R">
+    <MSBuild Projects="D14\JvDotNetCtrlsD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDotNetCtrlsD14R:Clean">
+    <MSBuild Projects="D14\JvDotNetCtrlsD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDotNetCtrlsD14R:Make">
+    <MSBuild Projects="D14\JvDotNetCtrlsD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvDotNetCtrlsD14D">
+    <MSBuild Projects="D14\JvDotNetCtrlsD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvDotNetCtrlsD14D:Clean">
+    <MSBuild Projects="D14\JvDotNetCtrlsD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvDotNetCtrlsD14D:Make">
+    <MSBuild Projects="D14\JvDotNetCtrlsD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvEDID14R">
+    <MSBuild Projects="D14\JvEDID14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvEDID14R:Clean">
+    <MSBuild Projects="D14\JvEDID14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvEDID14R:Make">
+    <MSBuild Projects="D14\JvEDID14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvEDID14D">
+    <MSBuild Projects="D14\JvEDID14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvEDID14D:Clean">
+    <MSBuild Projects="D14\JvEDID14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvEDID14D:Make">
+    <MSBuild Projects="D14\JvEDID14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvRuntimeDesignD14R">
+    <MSBuild Projects="D14\JvRuntimeDesignD14R.dproj" Targets="" />
+  </Target>
+  <Target Name="JvRuntimeDesignD14R:Clean">
+    <MSBuild Projects="D14\JvRuntimeDesignD14R.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvRuntimeDesignD14R:Make">
+    <MSBuild Projects="D14\JvRuntimeDesignD14R.dproj" Targets="Make" />
+  </Target>
+  <Target Name="JvRuntimeDesignD14D">
+    <MSBuild Projects="D14\JvRuntimeDesignD14D.dproj" Targets="" />
+  </Target>
+  <Target Name="JvRuntimeDesignD14D:Clean">
+    <MSBuild Projects="D14\JvRuntimeDesignD14D.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="JvRuntimeDesignD14D:Make">
+    <MSBuild Projects="D14\JvRuntimeDesignD14D.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="JvCoreD14R;JvCoreD14D;JvSystemD14R;JvSystemD14D;JvStdCtrlsD14R;JvStdCtrlsD14D;JvCtrlsD14R;JvCtrlsD14D;JvCmpD14R;JvCmpD14D;JvCustomD14R;JvCustomD14D;JvDlgsD14R;JvDlgsD14D;JvCryptD14R;JvCryptD14D;JvMMD14R;JvMMD14D;JvNetD14R;JvNetD14D;JvAppFrmD14R;JvAppFrmD14D;JvDBD14R;JvDBD14D;JvBDED14R;JvBDED14D;JvInterpreterD14R;JvInterpreterD14D;JvBandsD14R;JvBandsD14D;JvPluginD14R;JvPluginD14D;JvJansD14R;JvJansD14D;JvGlobusD14R;JvGlobusD14D;JvPrintPreviewD14R;JvPrintPreviewD14D;JvPageCompsD14R;JvPageCompsD14D;JvValidatorsD14R;JvValidatorsD14D;JvWizardD14R;JvWizardD14D;JvTimeFrameworkD14R;JvTimeFrameworkD14D;JvHMID14R;JvHMID14D;JvManagedThreadsD14R;JvManagedThreadsD14D;JvXPCtrlsD14R;JvXPCtrlsD14D;JvDockingD14R;JvDockingD14D;JvDotNetCtrlsD14R;JvDotNetCtrlsD14D;JvEDID14R;JvEDID14D;JvRuntimeDesignD14R;JvRuntimeDesignD14D" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="JvCoreD14R:Clean;JvCoreD14D:Clean;JvSystemD14R:Clean;JvSystemD14D:Clean;JvStdCtrlsD14R:Clean;JvStdCtrlsD14D:Clean;JvCtrlsD14R:Clean;JvCtrlsD14D:Clean;JvCmpD14R:Clean;JvCmpD14D:Clean;JvCustomD14R:Clean;JvCustomD14D:Clean;JvDlgsD14R:Clean;JvDlgsD14D:Clean;JvCryptD14R:Clean;JvCryptD14D:Clean;JvMMD14R:Clean;JvMMD14D:Clean;JvNetD14R:Clean;JvNetD14D:Clean;JvAppFrmD14R:Clean;JvAppFrmD14D:Clean;JvDBD14R:Clean;JvDBD14D:Clean;JvBDED14R:Clean;JvBDED14D:Clean;JvInterpreterD14R:Clean;JvInterpreterD14D:Clean;JvBandsD14R:Clean;JvBandsD14D:Clean;JvPluginD14R:Clean;JvPluginD14D:Clean;JvJansD14R:Clean;JvJansD14D:Clean;JvGlobusD14R:Clean;JvGlobusD14D:Clean;JvPrintPreviewD14R:Clean;JvPrintPreviewD14D:Clean;JvPageCompsD14R:Clean;JvPageCompsD14D:Clean;JvValidatorsD14R:Clean;JvValidatorsD14D:Clean;JvWizardD14R:Clean;JvWizardD14D:Clean;JvTimeFrameworkD14R:Clean;JvTimeFrameworkD14D:Clean;JvHMID14R:Clean;JvHMID14D:Clean;JvManagedThreadsD14R:Clean;JvManagedThreadsD14D:Clean;JvXPCtrlsD14R:Clean;JvXPCtrlsD14D:Clean;JvDockingD14R:Clean;JvDockingD14D:Clean;JvDotNetCtrlsD14R:Clean;JvDotNetCtrlsD14D:Clean;JvEDID14R:Clean;JvEDID14D:Clean;JvRuntimeDesignD14R:Clean;JvRuntimeDesignD14D:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="JvCoreD14R:Make;JvCoreD14D:Make;JvSystemD14R:Make;JvSystemD14D:Make;JvStdCtrlsD14R:Make;JvStdCtrlsD14D:Make;JvCtrlsD14R:Make;JvCtrlsD14D:Make;JvCmpD14R:Make;JvCmpD14D:Make;JvCustomD14R:Make;JvCustomD14D:Make;JvDlgsD14R:Make;JvDlgsD14D:Make;JvCryptD14R:Make;JvCryptD14D:Make;JvMMD14R:Make;JvMMD14D:Make;JvNetD14R:Make;JvNetD14D:Make;JvAppFrmD14R:Make;JvAppFrmD14D:Make;JvDBD14R:Make;JvDBD14D:Make;JvBDED14R:Make;JvBDED14D:Make;JvInterpreterD14R:Make;JvInterpreterD14D:Make;JvBandsD14R:Make;JvBandsD14D:Make;JvPluginD14R:Make;JvPluginD14D:Make;JvJansD14R:Make;JvJansD14D:Make;JvGlobusD14R:Make;JvGlobusD14D:Make;JvPrintPreviewD14R:Make;JvPrintPreviewD14D:Make;JvPageCompsD14R:Make;JvPageCompsD14D:Make;JvValidatorsD14R:Make;JvValidatorsD14D:Make;JvWizardD14R:Make;JvWizardD14D:Make;JvTimeFrameworkD14R:Make;JvTimeFrameworkD14D:Make;JvHMID14R:Make;JvHMID14D:Make;JvManagedThreadsD14R:Make;JvManagedThreadsD14D:Make;JvXPCtrlsD14R:Make;JvXPCtrlsD14D:Make;JvDockingD14R:Make;JvDockingD14D:Make;JvDotNetCtrlsD14R:Make;JvDotNetCtrlsD14D:Make;JvEDID14R:Make;JvEDID14D:Make;JvRuntimeDesignD14R:Make;JvRuntimeDesignD14D:Make" />
+  </Target>
+</Project>

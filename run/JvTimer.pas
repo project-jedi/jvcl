@@ -135,7 +135,7 @@ begin
     FPauseSection.Release;
 
     if not FPaused and Suspended then
-      Resume;
+      Suspended := False;
   end;
 end;
 

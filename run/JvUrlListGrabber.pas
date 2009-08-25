@@ -1018,7 +1018,7 @@ begin
 
   // Create a new thread
   FUrlGrabberThread := GetGrabberThreadClass.Create(Self);
-  FUrlGrabberThread.Resume;
+  FUrlGrabberThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 procedure TJvCustomUrlGrabber.Stop;
