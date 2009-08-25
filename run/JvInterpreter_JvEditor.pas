@@ -68,15 +68,15 @@ end;
 
 procedure TKeyboard_Add(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TJvKeyboard(Args.Obj).Add(Args.Values[0], Args.Values[1], TShiftState(Byte(V2S(Args.Values[2]))));
+  TJvKeyboard(Args.Obj).Add(Args.Values[0], Args.Values[1], TShiftState(TJvInterpreterShiftStateCastType(V2S(Args.Values[2]))));
 end;
 
 { procedure Add2(const ACommand: TEditCommand; const AKey1: word; const AShift1: TShiftState; const AKey2: word; const AShift2: TShiftState); }
 
 procedure TKeyboard_Add2(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TJvKeyboard(Args.Obj).Add2(Args.Values[0], Args.Values[1], TShiftState(Byte(V2S(Args.Values[2]))), Args.Values[3],
-    TShiftState(Byte(V2S(Args.Values[4]))));
+  TJvKeyboard(Args.Obj).Add2(Args.Values[0], Args.Values[1], TShiftState(TJvInterpreterShiftStateCastType(V2S(Args.Values[2]))), Args.Values[3],
+    TShiftState(TJvInterpreterShiftStateCastType(V2S(Args.Values[4]))));
 end;
 
 { procedure Clear; }

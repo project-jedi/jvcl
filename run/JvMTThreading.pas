@@ -219,7 +219,7 @@ begin
     FIntThread.OnTerminate := OnIntThreadTerminate;
     FIntThread.FreeOnTerminate := True;
     FIntThread.Name := FName;
-    FIntThread.Resume;
+    FIntThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
   finally
     FStatusChange.Release;
   end;
@@ -334,7 +334,7 @@ begin
       CreateAndRun
     else
     if Status = tsWaiting then
-      FIntThread.Resume
+      FIntThread.Suspended := False
     else
       raise EMTThreadError.CreateRes(@RsEThreadNotInitializedOrWaiting);
   finally

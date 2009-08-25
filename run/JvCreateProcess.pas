@@ -1256,7 +1256,7 @@ begin
 
       FWaitThread := TJvConsoleThread.Create(FProcessInfo.hProcess, LocalHandles.ExtractWrite);
       FWaitThread.OnTerminate := WaitThreadTerminated;
-      FWaitThread.Resume;
+      FWaitThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 
       TJvReader(FInputReader).CreateThread(LocalHandles.ExtractRead);
 
@@ -1270,7 +1270,7 @@ begin
 
       FWaitThread := TJvWaitForProcessThread.Create(FProcessInfo.hProcess);
       FWaitThread.OnTerminate := WaitThreadTerminated;
-      FWaitThread.Resume;
+      FWaitThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
     end
     else
     begin
@@ -1438,7 +1438,7 @@ begin
 
   FThread := TJvReadThread.Create(Self, AReadHandle, FCreateProcess.Handle);
   FThread.OnTerminate := ThreadTerminated;
-  FThread.Resume;
+  FThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 procedure TJvReader.DoRawReadEvent(Data: PAnsiChar; const ASize: Cardinal);

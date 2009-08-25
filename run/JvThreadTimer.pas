@@ -147,7 +147,7 @@ begin
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
   Priority := ATimer.Priority;
-  Resume;
+  {$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 destructor TJvTimerThread.Destroy;
@@ -161,7 +161,7 @@ end;
 procedure TJvTimerThread.DoSuspend;
 begin
   FHasBeenSuspended := True;
-  Suspend;
+  Suspended := True;
 end;
 
 procedure TJvTimerThread.Execute;
@@ -205,7 +205,7 @@ begin
   Terminate;
   SetEvent(FEvent);
   if Suspended then
-    Resume;
+    Suspended := False;
   Sleep(0);
 end;
 
@@ -331,7 +331,7 @@ begin
       FThread := TJvTimerThread.Create(Self);
 
     if FThread.Suspended then
-      FThread.Resume;
+      FThread.Suspended := False;
   end
   else
   if FThread is TJvTimerThread then

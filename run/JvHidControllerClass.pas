@@ -1146,7 +1146,7 @@ begin
   begin
     FDataThread := TJvHidDeviceReadThread.CtlCreate(Self);
     FDataThread.FreeOnTerminate := False;
-    FDataThread.Resume;
+    FDataThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
   end;
 end;
 

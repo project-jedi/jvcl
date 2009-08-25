@@ -1283,6 +1283,7 @@ var
   Ini: TMemIniFile;
   Mode: TInstallMode;
   Filename: string;
+  Version: Integer;
 begin
   for Kind := pkFirst to pkLast do
   begin
@@ -1318,8 +1319,14 @@ begin
 
     // Load jvcl%t.inc. Or the jvclbase.inc when no jvcl%t.inc exists
     if Target.IsBDS then
+    begin
+      if Target.IDEVersion < 7 then
+        Version := Target.IDEVersion + 6  // BDS 3 is Delphi 9
+      else
+        Version := Target.IDEVersion + 7; // BDS 7 is Delphi 14
       Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
-          [LowerCase(Target.TargetType), Target.IDEVersion + 6]) // BDS 3 is Delphi 9
+          [LowerCase(Target.TargetType), Version]);
+    end
     else
       Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
           [LowerCase(Target.TargetType), Target.Version]);

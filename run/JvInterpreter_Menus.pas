@@ -489,7 +489,7 @@ end;
 
 procedure JvInterpreter_ShortCut(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := ShortCut(Args.Values[0], TShiftState(Byte(V2S(Args.Values[1]))));
+  Value := ShortCut(Args.Values[0], TShiftState(TJvInterpreterShiftStateCastType(V2S(Args.Values[1]))));
 end;
 
 { procedure ShortCutToKey(ShortCut: TShortCut; var Key: Word; var Shift: TShiftState); }
@@ -498,9 +498,9 @@ procedure JvInterpreter_ShortCutToKey(var Value: Variant; Args: TJvInterpreterAr
 var
   Shift: TShiftState;
 begin
-  Shift := TShiftState(Byte(V2S(Args.Values[2])));
+  Shift := TShiftState(TJvInterpreterShiftStateCastType(V2S(Args.Values[2])));
   ShortCutToKey(Args.Values[0], Word(TVarData(Args.Values[1]).vSmallint), Shift);
-  Args.Values[2] := S2V(Byte(Shift));
+  Args.Values[2] := S2V(TJvInterpreterShiftStateCastType(Shift));
 end;
 
 { function ShortCutToText(ShortCut: TShortCut): string; }

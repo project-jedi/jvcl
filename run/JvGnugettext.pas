@@ -90,8 +90,13 @@ interface
 {$ifdef VER160}
   // Delphi 8
 {$endif}
+{ TODO : rework DELPHI2009OROLDER to avoid changing it every year... }
 {$ifdef VER200}
   // Delphi 2009
+  {$DEFINE DELPHI2009OROLDER}
+{$endif}
+{$ifdef VER210}
+  // Delphi 2010
   {$DEFINE DELPHI2009OROLDER}
 {$endif}
 {$IFDEF CONDITIONALEXPRESSION}

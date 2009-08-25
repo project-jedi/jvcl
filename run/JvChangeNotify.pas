@@ -421,7 +421,7 @@ begin
         FThread.OnChangeNotify := nil;
         FThread.Terminate;
         if FThread.Suspended then
-          FThread.Resume;
+          FThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
         if FreeOnTerminate then
           FThread := nil
         else
@@ -432,7 +432,7 @@ begin
       end;
       FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval, FFreeOnTerminate);
       FThread.OnChangeNotify := DoThreadChangeNotify;
-      FThread.Resume;
+      FThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
     end
     else
     if FThread <> nil then
@@ -440,7 +440,7 @@ begin
       FThread.OnChangeNotify := nil;
       FThread.Terminate;
       if FThread.Suspended then
-        FThread.Resume;
+        FThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
       if FreeOnTerminate then
         FThread := nil
       else

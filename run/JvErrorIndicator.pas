@@ -552,7 +552,7 @@ begin
   begin
     FBlinkThread := TJvBlinkThread.Create(BlinkRate);
     TJvBlinkThread(FBlinkThread).OnBlink := DoBlink;
-    FBlinkThread.Resume;
+    FBlinkThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
   end;
 end;
 

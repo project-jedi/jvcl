@@ -1909,7 +1909,7 @@ begin
   FDelay := Delay;
   if FDelay = 0 then
     FDelay := Application.HintHidePause;
-  Resume;
+  {$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 procedure TDeactiveHintThread.Execute;

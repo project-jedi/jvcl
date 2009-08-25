@@ -778,7 +778,7 @@ var
 begin
   Thread := GetCurrentThread;
   if Assigned(Thread) then
-    Thread.Suspend // suspend itself
+    Thread.Suspended := True // suspend itself
   else
   begin
     List := FThreads.LockList;  // suspend all
@@ -787,7 +787,7 @@ begin
         try  // against "Access denied" for already finished threads
           Thread := TJvBaseThread(List[I]);
           if not Thread.Finished then // it's faster (prevents raising exceptions in most cases)
-            Thread.Suspend;
+            Thread.Suspended := True
         except
         end;
     finally
@@ -1254,7 +1254,9 @@ begin
       end;
     FExecuteIsActive := True;
   end;
+  {$WARNINGS OFF}
   inherited Resume;     // after suspend too
+  {$WARNINGS ON}
 end;
 
 procedure TJvBaseThread.Execute;
@@ -1345,7 +1347,7 @@ begin
 
   // If the thread was created "Suspended", then we must start it
   if Suspended and not Paused then
-    Resume;
+    Suspended := False;
 end;
 
 initialization
