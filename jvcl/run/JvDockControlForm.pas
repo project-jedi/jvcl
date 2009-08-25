@@ -2532,7 +2532,7 @@ procedure TJvDockBasicStyle.FormPositionDockRect(DockClient: TJvDockClient;
 var
   NewWidth, NewHeight: Integer;
   TempX, TempY: Double;
-  R: TRect;
+  R, TempDockRect: TRect;
 begin
   with Source do
   begin
@@ -2543,13 +2543,15 @@ begin
 
       TempX := DragPos.X - ((NewWidth) * MouseDeltaX);
       TempY := DragPos.Y - ((NewHeight) * MouseDeltaY);
-      with DockRect do
+      TempDockRect := DockRect;
+      with TempDockRect do
       begin
         Left := Round(TempX);
         Top := Round(TempY);
         Right := Left + NewWidth;
         Bottom := Top + NewHeight;
       end;
+      DockRect := TempDockRect;
 
       AdjustDockRect(DockRect);
     end

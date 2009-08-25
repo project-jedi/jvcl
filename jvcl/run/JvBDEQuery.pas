@@ -667,7 +667,7 @@ begin
   FreeOnTerminate := True;
   FData.DisableControls;
   if not CreateSuspended then
-    Resume;
+    {$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 procedure TJvQueryThread.DoTerminate;

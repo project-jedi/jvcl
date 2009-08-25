@@ -68,22 +68,23 @@
         <target name="d10" pname="d10p" pdir="d10per"/>
         <target name="d11"/>
         <target name="d12"/>
+        <target name="d14"/>
       </targets>
       <aliases>
-        <alias name="VCL" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
-        <alias name="VCLv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
-        <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
-        <alias name="Dv6up" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
-        <alias name="C" value="c6,c6p,d10,d10p,d11,d12"/>
-        <alias name="Cv6up" value="c6,c6p,d10,d10p,d11,d12"/>
-        <alias name="DB" value="c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="DBv6up" value="c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="DBVCL" value="c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="DBVCLv6up" value="c6,d6,d7,d9,d10,d11,d12"/>
-        <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
-        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
-        <alias name="allv12up" value="d12"/>
-        <alias name="windows" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12"/>
+        <alias name="VCL" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="VCLv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="Dv6up" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="C" value="c6,c6p,d10,d10p,d11,d12,d14"/>
+        <alias name="Cv6up" value="c6,c6p,d10,d10p,d11,d12,d14"/>
+        <alias name="DB" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
+        <alias name="DBv6up" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
+        <alias name="DBVCL" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
+        <alias name="DBVCLv6up" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
+        <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="allv12up" value="d12,d14"/>
+        <alias name="windows" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="3"/>

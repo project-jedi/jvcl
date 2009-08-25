@@ -1097,6 +1097,9 @@ function varPointer: TVarType;
 function varSet: TVarType;
 function varArray: TVarType;
 
+type
+  TJvInterpreterShiftStateCastType = {$IFDEF COMPILER14_UP}Word{$ELSE}Byte{$ENDIF};
+
 { V2O - converts variant to object }
 function V2O(const V: Variant): TObject;
 

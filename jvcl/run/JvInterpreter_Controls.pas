@@ -1576,17 +1576,17 @@ type
 procedure TJvInterpreterControlsEvent.MouseEvent(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  CallFunction(nil, [O2V(Sender), Button, S2V(Byte(Shift)), X, Y]);
+  CallFunction(nil, [O2V(Sender), Button, S2V(TJvInterpreterShiftStateCastType(Shift)), X, Y]);
 end;
 
 procedure TJvInterpreterControlsEvent.MouseMoveEvent(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  CallFunction(nil, [O2V(Sender), S2V(Byte(Shift)), X, Y]);
+  CallFunction(nil, [O2V(Sender), S2V(TJvInterpreterShiftStateCastType(Shift)), X, Y]);
 end;
 
 procedure TJvInterpreterControlsEvent.KeyEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  CallFunction(nil, [O2V(Sender), Key, S2V(Byte(Shift))]);
+  CallFunction(nil, [O2V(Sender), Key, S2V(TJvInterpreterShiftStateCastType(Shift))]);
   Key := Args.Values[1];
 end;
 

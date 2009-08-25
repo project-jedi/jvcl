@@ -84,6 +84,11 @@ ALERT_jedi_inc_incompatible
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF DELPHI12}
 {-----------------------------------------------------------------------------}
+{$IFDEF DELPHI14}
+ {$I jvcld14.inc}
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF DELPHI14}
+{-----------------------------------------------------------------------------}
 { C++Builder                                                                  }
 {-----------------------------------------------------------------------------}
 {$IFDEF BCB6}
@@ -105,6 +110,11 @@ ALERT_jedi_inc_incompatible
  {$I jvcld12.inc}   // same include file for BDS based C++
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF BCB12}
+{-----------------------------------------------------------------------------}
+{$IFDEF BCB14}
+ {$I jvcld14.inc}   // same include file for BDS based C++
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF BCB14}
 
 {$ENDIF DEFAULT_JVCL_INC}
 {-----------------------------------------------------------------------------}

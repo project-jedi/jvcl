@@ -1180,14 +1180,14 @@ end;
 
 procedure JvInterpreter_KeysToShiftState(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := S2V(Byte(KeysToShiftState(Args.Values[0])));
+  Value := S2V(TJvInterpreterShiftStateCastType(KeysToShiftState(Args.Values[0])));
 end;
 
 { function KeyDataToShiftState(KeyData: Longint): TShiftState; }
 
 procedure JvInterpreter_KeyDataToShiftState(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := S2V(Byte(KeyDataToShiftState(Args.Values[0])));
+  Value := S2V(TJvInterpreterShiftStateCastType(KeyDataToShiftState(Args.Values[0])));
 end;
 
 { function ForegroundTask: Boolean; }
