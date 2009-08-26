@@ -141,3 +141,4 @@ For further informations have a look at http://www.allroundautomations.com }
 { Activates Support for the CoreLabs VCL Oracle Data Access Components
 For further informations have a look at http://www.crlab.com }
 {.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
+

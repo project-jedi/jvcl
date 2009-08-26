@@ -49,7 +49,7 @@ const
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True)
+    (Name: 'CodeGear RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True)
   );
 
 type
