@@ -3,9 +3,9 @@
 <project name="JVCL" default="help">
   <property name="version.major"    value="3"/>
   <property name="version.minor"    value="3"/>
-  <property name="version.release"  value="7"/>
+  <property name="version.release"  value="8"/>
   <property name="version.build"    value=" "/>
-  <property name="jclversion"       value="1105-Build3400" />
+  <property name="jclversion"       value="201-Build3449" />
   <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
   <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
   <!-- JVCL releases -->
@@ -288,7 +288,7 @@
       <arg value="-s:ftpupload.txt" />
     </exec>
   </target>
-  <property name="archiver" value="izarc.exe"/>
+  <property name="archiver" value="C:\Program Files (x86)\IZArc\izarc.exe"/>
   <target name="convert" description="Convert large zips to 7z">
     <exec executable="${archiver}">
       <arg value="-cv ${fulljclzip}" />

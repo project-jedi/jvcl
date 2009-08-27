@@ -5,15 +5,13 @@ Developpez.com (delphi@redaction-developpez.com)
 
 
 Sujet: 
-ANN: JVCL 3.37 est disponible
+ANN: JVCL 3.38 est disponible
 Corps:
-L'équipe JVCL est fière d'annoncer la sortie de la version stable de la bibliothèque de composants JVCL version 3.37.
+L'équipe JVCL est fière d'annoncer la sortie de la version stable de la bibliothèque de composants JVCL version 3.38.
 
-La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 5, 6, 7, 2005, 2006, 2007 et 2009; C++Builder 5, 6, 2006, 2007 et 2009. La JVCL est distribué sous licence Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
+La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 6, 7, 2006, 2007, 2009 et 2010; C++Builder 6, 2006, 2007, 2009 et 2010. La JVCL est distribué sous licence Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
 
-Cette version apporte de nombreuses améliorations pour toutes les cibles et améliore le support de l'unicode pour Delphi 2009 et C++Builder 2009.
-
-ATTENTION: Cette version est la dernière à supporter Delphi 5 et C++Builder 5
+Cette version apporte le support de Delphi 2010 et C++Builder 2010.
 
 Cette version est disponible en quatre distributions :
 - Installation complète + dernière JCL
@@ -21,7 +19,7 @@ Cette version est disponible en quatre distributions :
 - Source et exemples
 - Source uniquement
 
-La version actuelle est JVCL 3.37.
+La version actuelle est JVCL 3.38.
 
 
 
