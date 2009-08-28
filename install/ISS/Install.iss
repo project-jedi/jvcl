@@ -7,8 +7,8 @@
 ;    Include_DelphiX     Include the binaries for Delphi X (X in 5..12)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
-#define JvclVersionStr "3.36.0.0"
-#define JclVersionStr "1.105."
+#define JvclVersionStr "3.38.0.0"
+#define JclVersionStr "2.0.1.3449"
 #define MyAppName "Jedi Visual Component Library"
 #define MyAppVerName "Jedi Visual Component Library " + JvclVersionStr
 #define MyAppPublisher "JVCL Team"
@@ -19,19 +19,17 @@
 #define Include_Examples
 ;#define DEBUGGING
 
-;#define Include_SingleIDE
-;#define Include_Delphi12
+#define Include_SingleIDE
+#define Include_Delphi14
 
 #ifdef DEBUGGING
  #define Include_SingleIDE
- #define Include_Delphi12
+ #define Include_Delphi14
  #undef Include_Examples
 #endif
 
 #ifdef Include_Binaries
  #ifndef Include_SingleIDE
-;  #define Include_BCB5
-  #define Include_Delphi5
 ;  #define Include_BCB6
   #define Include_Delphi6
   #define Include_Delphi7
@@ -66,8 +64,13 @@
 #define   Delphi10Bpl BorlandSudioProjects + "\Bpl"
 #define Delphi11Root CodeGearRoot + "\RAD Studio\5.0"
 #define   Delphi11Bpl CommonDocs + "\RAD Studio\5.0\Bpl"
+#define   Delphi11HPP CommonDocs + "\RAD Studio\5.0\HPP"
 #define Delphi12Root CodeGearRoot + "\RAD Studio\6.0"
 #define   Delphi12Bpl CommonDocs + "\RAD Studio\6.0\Bpl"
+#define   Delphi12HPP CommonDocs + "\RAD Studio\6.0\HPP"
+#define Delphi14Root EmbtRoot + "\RAD Studio\7.0"
+#define   Delphi14Bpl CommonDocs + "\RAD Studio\7.0\Bpl"
+#define   Delphi14HPP CommonDocs + "\RAD Studio\7.0\HPP"
 
 [Setup]
 AppName={#MyAppName}
@@ -91,7 +94,7 @@ Compression=lzma/ultra64
 SolidCompression=yes
 ShowLanguageDialog=auto
 OptimizedChecks=yes
-WebSetupUpdateURL={#downloadurl}
+;WebSetupUpdateURL={#downloadurl}
 
 // for skin
 #define MyWizardBottomImageFile "Skin\images\wizardbottom.bmp"
@@ -125,8 +128,6 @@ Name: "Examples"; Description: "Example projects"; Types: full;
 [Packages]
 Name: examples; Description: "JVCL Examples"; Source: "{#downloadurl}/jvclexamples.isz"; Flags: localcopy;
 
-Name: delphi5; Description: "Delphi 5 binary files"; Source: "{#downloadurl}/jvcldelphi5.isz"; Flags: localcopy;
-Name: bcb5; Description: "C++Builder 5 binary files"; Source: "{#downloadurl}/jvclbcb5.isz"; Flags: localcopy;
 Name: delphi6; Description: "Delphi 6 binary files"; Source: "{#downloadurl}/jvcldelphi6.isz"; Flags: localcopy;
 Name: bcb6; Description: "C++Builder 6 binary files"; Source: "{#downloadurl}/jvclbcb6.isz"; Flags: localcopy;
 Name: delphi7; Description: "Delphi 7 binary files"; Source: "{#downloadurl}/jvcldelphi7.isz"; Flags: localcopy;
@@ -134,6 +135,7 @@ Name: delphi9; Description: "Delphi 2005 binary files"; Source: "{#downloadurl}/
 Name: delphi10; Description: "Delphi/C++Builder 2006 binary files"; Source: "{#downloadurl}/jvcldelphi10.isz"; Flags: localcopy;
 Name: delphi11; Description: "Delphi/C++Builder 2007 binary files"; Source: "{#downloadurl}/jvcldelphi11.isz"; Flags: localcopy;
 Name: delphi12; Description: "Delphi/C++Builder 2009 binary files"; Source: "{#downloadurl}/jvcldelphi12.isz"; Flags: localcopy;
+Name: delphi14; Description: "Delphi/C++Builder 2010 binary files"; Source: "{#downloadurl}/jvcldelphi14.isz"; Flags: localcopy;
 
 #include "IdeComponents.iss"
 
@@ -157,13 +159,12 @@ Name: "Packages\DB"; Description: "Database Packages"
 Name: "Packages\DB\JvDB"; Description: "DB-Aware Controls (Grids, Lookups, ComboBox, TreeViews, Edits)"; Types: full prefered
 Name: "Packages\DB\JvBDE"; Description: "BDE Component"; Types: full
 Name: "Packages\DB\JvEDI"; Description: "EDI Components"; Types: full
-Name: "Packages\DB\JvUIB"; Description: "UIB Components"; Types: full
 
 Name: "Packages\JvAppFrm"; Description: "Application/Form Components (HotKey, FormMagnet, EmbeddedForms, Wallpaper)"; Types: full
 Name: "Packages\JvMM"; Description: "Multimedia and Images (Animated Images, ID3v1, WavePlayer, WaitingProgress)"; Types: full
 Name: "Packages\JvTimeframework"; Description: "Time Framework Controls"; Types: full
 Name: "Packages\JvCrypt"; Description: "Encryption and Compression Components"; Types: full
-Name: "Packages\JvHIM"; Description: "HIM Controls"; Types: full
+Name: "Packages\JvHMI"; Description: "HMI Controls"; Types: full
 Name: "Packages\JvInterpreter"; Description: "Pascal Interpreter Components"; Types: full
 Name: "Packages\JvManagedThreads"; Description: "Managed Threads Components"; Types: full
 Name: "Packages\JvPrintPreview"; Description: "Print Preview Components"; Types: full
@@ -187,10 +188,6 @@ Name: "Options\RegisterGlobalDesignEditors"; Description: "Register global desig
 Name: "{app}\bin"
 Name: "{app}\dcu"
 ; DCU/OBJ output directories
-Name: "{app}\lib\c5"
-Name: "{app}\lib\c6"
-Name: "{app}\lib\d5"
-Name: "{app}\lib\d5\debug"
 Name: "{app}\lib\d6"
 Name: "{app}\lib\d6\debug"
 Name: "{app}\lib\d7"
@@ -203,6 +200,8 @@ Name: "{app}\lib\d11"
 Name: "{app}\lib\d11\debug"
 Name: "{app}\lib\d12"
 Name: "{app}\lib\d12\debug"
+Name: "{app}\lib\d14"
+Name: "{app}\lib\d14\debug"
 
 
 [Files]
@@ -234,19 +233,6 @@ Source: {#JvclRoot}\examples\*; DestDir: "{app}\examples"; Excludes: ".svn,__his
 #endif
 
 #ifdef Include_Binaries
-#ifdef Include_Delphi5
-; SolidBreak; lib\Delphi 5
-#ifndef DEBUGGING
-Source: {#JvclRoot}\lib\d5\*; DestDir: "{app}\lib\d5"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi5"; Package: delphi5; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
-#endif
-Source: {#Delphi5Bpl}\Jv*.bpl; DestDir: "{code:GetDelphiBplDir|5}"; Components: "IDE\Delphi5"; Package: delphi5; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-#endif
-#ifdef Include_BCB5
-; SolidBreak; lib\C++Builder 5
-Source: {#JvclRoot}\lib\c5\*; DestDir: "{app}\lib\c5"; Excludes: ".svn,__history,*.txt"; Components: "IDE\BCB5"; Package: bcb5; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
-Source: {#BCB5Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetBCBDir|5}\Include\Vcl"; Components: "IDE\BCB5"; Package: bcb5; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-Source: {#BCB5Bpl}\Jv*.bpl; DestDir: "{code:GetBCBBplDir|5}"; Components: "IDE\BCB5"; Package: bcb5; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-#endif
 #ifdef Include_Delphi6
 ; SolidBreak; lib\Delphi 6
 Source: {#JvclRoot}\lib\d6\*; DestDir: "{app}\lib\d6"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi6"; Package: delphi6; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
@@ -278,13 +264,22 @@ Source: {#Delphi10Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|10}\In
 ; SolidBreak; lib\Delphi 2007
 Source: {#JvclRoot}\lib\d11\*; DestDir: "{app}\lib\d11"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#Delphi11Bpl}\Jv*11?.bpl; DestDir: "{code:GetDelphiBplDir|11}"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-Source: {#Delphi11Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|11}\Include\Vcl"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+;Source: {#Delphi11Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|11}\Include\Vcl"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#Delphi11HPP}\Jv*.hpp; DestDir: "{code:GetHPPDir|11}"; Components: "IDE\Delphi11"; Package: delphi11; Flags: ignoreversion sortfilesbyextension
 #endif
 #ifdef Include_Delphi12
 ; SolidBreak; lib\Delphi 2009
 Source: {#JvclRoot}\lib\d12\*; DestDir: "{app}\lib\d12"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#Delphi12Bpl}\Jv*12?.bpl; DestDir: "{code:GetDelphiBplDir|12}"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
-Source: {#Delphi12Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|12}\Include\Vcl"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+;Source: {#Delphi12Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|12}\Include\Vcl"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#Delphi12HPP}\Jv*.hpp; DestDir: "{code:GetHPPDir|12}"; Components: "IDE\Delphi12"; Package: delphi12; Flags: ignoreversion sortfilesbyextension
+#endif
+#ifdef Include_Delphi14
+; SolidBreak; lib\Delphi 2010
+Source: {#JvclRoot}\lib\d14\*; DestDir: "{app}\lib\d14"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#Delphi14Bpl}\Jv*14?.bpl; DestDir: "{code:GetDelphiBplDir|14}"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+;Source: {#Delphi14Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|14}\Include\Vcl"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#Delphi14HPP}\Jv*.hpp; DestDir: "{code:GetHPPDir|14}"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion sortfilesbyextension
 #endif
 #endif
 
@@ -368,6 +363,15 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JVCL"; ValueType: string; Va
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(12)
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|12}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi12"; Check: IsDelphiInstalled(12)
 #endif
+#ifdef Include_Delphi14
+; Delphi 2010
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|14}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|14}; Components: "IDE\Delphi14"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(14)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|14}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d14; Components: "IDE\Delphi14"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(14)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|14}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi14"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(14)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|14}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi14"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(14)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|14}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue; Check: IsDelphiInstalled(14)
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|14}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi14"; Check: IsDelphiInstalled(14)
+#endif
 #endif
 
 
@@ -376,18 +380,10 @@ Type: files; Name: "{app}\dcu\*"
 Type: files; Name: "{app}\bin\JVCLInstall.*"
 Type: files; Name: "{app}\run\*.hpp"
 Type: files; Name: "{app}\common\*.hpp"
-; lib\C++Builder 5
-Type: files; Name: "{app}\lib\c5\*"
-Type: files; Name: "{code:GetBCBBplDir|5}\Jv*.*"
-Type: files; Name: "{code:GetBCBDir|5}\Include\Vcl\Jv*.hpp"
 ; lib\C++Builder 6
 Type: files; Name: "{app}\lib\c6\*"
 Type: files; Name: "{code:GetBCBBplDir|6}\Jv*.*"
 Type: files; Name: "{code:GetBCBDir|6}\Include\Vcl\Jv*.hpp"
-; lib\Delphi 5
-Type: files; Name: "{app}\lib\d5\*"
-Type: files; Name: "{app}\lib\d5\debug\*"
-Type: files; Name: "{code:GetDelphiBplDir|5}\Jv*.*"
 ; lib\Delphi 6
 Type: files; Name: "{app}\lib\d6\*"
 Type: files; Name: "{app}\lib\d6\debug\*"
@@ -415,7 +411,11 @@ Type: files; Name: "{app}\lib\d12\*"
 Type: files; Name: "{app}\lib\d12\debug\*"
 Type: files; Name: "{code:GetDelphiBplDir|12}\Jv*.*"
 Type: files; Name: "{code:GetDelphiDir|12}\Include\Vcl\Jv*.hpp"
-
+; lib\Delphi/C++Builder 2010
+Type: files; Name: "{app}\lib\d14\*"
+Type: files; Name: "{app}\lib\d14\debug\*"
+Type: files; Name: "{code:GetDelphiBplDir|14}\Jv*.*"
+Type: files; Name: "{code:GetDelphiDir|14}\Include\Vcl\Jv*.hpp"
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
@@ -441,9 +441,9 @@ var
   Version: Integer;
 begin
 {  // Uninstall from all IDEs ?
-  for Version := 5 to 12 do
+  for Version := 6 to 14 do
     UninstallDesignPackagesPrefixed(ikDelphi, Version, 'Jv');
-  for Version := 5 to 6 do
+  for Version := 6 to 6 do
     UninstallDesignPackagesPrefixed(ikBCB, Version, 'Jv');}
 
   IdeList := TStringList.Create;
@@ -479,7 +479,7 @@ begin
   end;
 end;
 
-procedure GetSearchPaths(IdeKind: TIdeKind; Version: Integer; var SearchPaths, DebugPaths, BrowsePaths: string);
+procedure GetSearchPaths(IdeKind: TIdeKind; Version: Integer; var SearchPaths, DebugPaths, BrowsePaths, IncludePaths: string);
 var
   LibDir, AppDir, ResDir: string;
 begin
@@ -487,6 +487,7 @@ begin
   SearchPaths := '';
   DebugPaths := '';
   BrowsePaths := '';
+  IncludePaths := '';
   case IdeKind of
     ikDelphi:
       LibDir := AppDir + '\lib\d' + IntToStr(Version);
@@ -500,6 +501,8 @@ begin
   SearchPaths := LibDir + ';' + ResDir + ';' + AppDir + '\common';
   DebugPaths := LibDir + '\debug';
   BrowsePaths := AppDir + '\common;' + AppDir + '\run';
+  if Version >= 10 then
+    IncludePaths := GetHPPDir(IntToStr(Version));
 end;
 
 function IsDelphiJclInstalled(Version: Integer): Boolean;
@@ -528,7 +531,7 @@ begin
   if Result then
   begin
     Result := False;
-    for Version := 5 to 12 do
+    for Version := 6 to 14 do
     begin
       if IsDelphiJclInstalled(Version) then
       begin
@@ -563,7 +566,7 @@ end;
 
 procedure CurPageChanged(CurPageID: Integer);
 begin
-// update calls for skin
+  // update calls for skin
   UpdateButton(WizardForm.BackButton, bidBack);
   UpdateButton(WizardForm.NextButton, bidNext);
   UpdateButton(WizardForm.CancelButton, bidCancel);
@@ -571,6 +574,6 @@ end;
 
 procedure InitializeWizard();
 begin
-// initialize call for skin
+  // initialize call for skin
   InitializeSkin;
 end;
