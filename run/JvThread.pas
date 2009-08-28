@@ -198,7 +198,10 @@ type
   public
     constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
       Params: Pointer); virtual;
-    procedure Resume;
+    {$IFNDEF COMPILER14_UP}
+    procedure Resume; // There is no way to silence the compiler ("Resume" is deprecated)
+    {$ENDIF ~COMPILER14_UP}
+    procedure ResumeThread;
     procedure Execute; override;
     procedure Synchronize(Method: TThreadMethod);
     function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
@@ -729,7 +732,7 @@ begin
   begin
     CreateThreadDialogForm;
     B := BaseThread.FOnResumeDone;
-    BaseThread.Resume;
+    BaseThread.ResumeThread;
     if (not B) and
        (not BaseThread.FInternalTerminate) and
        (not BaseThread.Finished) then
@@ -1223,7 +1226,7 @@ begin
   ShowException(FException, FExceptionAddr);
 end;
 
-procedure TJvBaseThread.Resume;
+procedure TJvBaseThread.ResumeThread;
 begin
   if not FOnResumeDone then
   begin
@@ -1243,6 +1246,13 @@ begin
   inherited Resume;     // after suspend too
   {$WARNINGS ON}
 end;
+
+{$IFNDEF COMPILER14_UP}
+procedure TJvBaseThread.Resume;
+begin
+  ResumeThread;
+end;
+{$ENDIF ~COMPILER14_UP}
 
 procedure TJvBaseThread.Execute;
 begin
