@@ -51,7 +51,9 @@ type
     FTimer: TTimer;
     FCountdown: IJvDynControlCaption;
     FMsg: string;
+    FDefaultButton : {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF};
   protected
+    property DefaultButton : {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} read FDefaultButton write FDefaultButton ;
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure CustomShow(Sender: TObject);
@@ -66,6 +68,7 @@ type
     function IsDSAChecked: Boolean;
     property Msg: string read FMsg write FMsg;
     property Timeout: Integer read FTimeout write FTimeout;
+
   end;
 
 //----------------------------------------------------------------------------
@@ -562,6 +565,11 @@ begin
   begin
     WriteToClipboard(GetFormText);
   end;
+  if Key = VK_RETURN then
+    if ActiveControl is {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} then
+      {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF}(ActiveControl).Click
+    else if Assigned(DefaultButton) then
+      DefaultButton.Click;
 end;
 
 procedure TDSAMessageForm.CustomMouseDown(Sender: TObject; Button: TMouseButton;
@@ -968,15 +976,18 @@ begin
 
     MessageLabel.BiDiMode := ResultForm.BiDiMode;
 
+    ResultForm.DefaultButton := nil;
     X := (ResultForm.ClientWidth - ButtonGroupWidth) div 2;
     for I := Low(Buttons) to High(Buttons) do
     begin
       Button := DynControlEngine.CreateButton(ResultForm, BottomPanel, 'Button' + IntToStr(I), Buttons[I], '', nil, False, False);
       Button.ModalResult := Results[I];
       if I = DefaultButton then
-        Button.Default := True;
+        ResultForm.DefaultButton := Button;
+//        Button.Default := True;
       if I = CancelButton then
         Button.Cancel := True;
+      Button.TabStop := True;
       Button.SetBounds(X, VertSpacing, ButtonWidth, ButtonHeight);
       Inc(X, ButtonWidth + ButtonSpacing);
       if I = HelpButton then
