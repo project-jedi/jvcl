@@ -1288,7 +1288,7 @@ var
 {$ENDIF COMPILER11_UP}
 begin
   {$IFDEF COMPILER11_UP}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
   begin
     FillChar(Options, SizeOf(Options), 0);
     Options.dwSize := SizeOf(Options);
@@ -1328,7 +1328,7 @@ var
 {$ENDIF COMPILER11_UP}
 begin
   {$IFDEF COMPILER11_UP}
-  if PaintOnGlass then
+  if PaintOnGlass and CheckWin32Version(6, 0) then
   begin
     { TODO : Not working correctly on a JvSpeedButton. But it works if used direcly on
              a sheet of glass. Some optimizations could be done. }
