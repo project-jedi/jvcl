@@ -7,10 +7,11 @@
 ;    Include_DelphiX     Include the binaries for Delphi X (X in 5..12)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
-#define JvclVersionStr "3.38.0.0"
+#define JvclVersionStr "3.38.0.1"
 #define JclVersionStr "2.0.1.3449"
-#define MyAppName "Jedi Visual Component Library"
-#define MyAppVerName "Jedi Visual Component Library " + JvclVersionStr
+#define MyAppId "Jedi Visual Component Library"
+#define MyAppName "JEDI Visual Component Library"
+#define MyAppVerName "JEDI Visual Component Library " + JvclVersionStr
 #define MyAppPublisher "JVCL Team"
 #define MyAppURL "http://jvcl.sourceforge.net"
 #define downloadurl "http://jvcl.sourceforge.net/websetup/jvcl"
@@ -73,6 +74,7 @@
 #define   Delphi14HPP CommonDocs + "\RAD Studio\7.0\HPP"
 
 [Setup]
+AppId={#MyAppId}
 AppName={#MyAppName}
 AppVerName={#MyAppVerName}
 AppVersion={#JvclVersionStr}
