@@ -443,7 +443,7 @@ var
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       FRecipArray[RecipIndex].ulRecipClass := RecipList.RecipientClass;
       FRecipArray[RecipIndex].lpszAddress := StrNew(PAnsiChar(AnsiString(RecipList[I].Address)));
-      if Name = '' then // some clients requires Name item always filled
+      if RecipList[I].Name = '' then // some clients requires Name item always filled
         FRecipArray[RecipIndex].lpszName := FRecipArray[RecipIndex].lpszAddress
       else
         FRecipArray[RecipIndex].lpszName := StrNew(PAnsiChar(AnsiString(RecipList[I].Name)));
