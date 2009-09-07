@@ -20,14 +20,14 @@ Developer Studio 2006. Apart from that it is in all points equal to the
 <p>&nbsp;</p>
 <p>The following compilers are supported by the JVCL:</p>
 <ul>
-  <li>Delphi 5</li>
   <li>Delphi 6</li>
   <li>Delphi 7</li>
   <li>Delphi 2005 (Win32 only)</li>
-  <li>C++ Builder 5</li>
   <li>C++ Builder 6</li>
   <li>Borland Developer Studio 2006 (Delphi Win 32 and C++ Builder)</li>
   <li>CodeGear RAD Studio 2007 (Delphi Win 32 and C++ Builder)</li>
+  <li>CodeGear RAD Studio 2009 (Delphi Win 32 and C++ Builder)</li>
+  <li>Embarcadero RAD Studio 2010 (Delphi Win 32 and C++ Builder)</li>
 </ul>
 <p>&nbsp;</p>
 <h2>Uninstalling previous versions of JVCL</h2>
@@ -150,7 +150,7 @@ components are located on their default palette after installation.
 Recommended. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>Compile only (error check)</b> -
+    <p dir="ltr" align="left"><b>Compile only (error check)</b> -
 builds everything as specified but does not install anything into
 Delphi/BCB. Good for checking for errors before doing a real install. </p>
   </li>
@@ -183,12 +183,12 @@ file (in the \common folder) and displayed in the list, so they might
 differ from what is shown below if options have been added or removed
 since this dcument was written. Select an item to see it's explanation.
 Check an item to enable it, uncheck to disable it. </p>
-<p align="left" dir="ltr">&nbsp;</p>
-<p align="left" dir="ltr">
+<p dir="ltr" align="left">&nbsp;</p>
+<p dir="ltr" align="left">
 <img src="images/installer_config_editor.jpg" border="0" height="429"
  width="750"></p>
-<p align="left" dir="ltr">&nbsp;</p>
-<p align="left" dir="ltr">These are the currently available options:</p>
+<p dir="ltr" align="left">&nbsp;</p>
+<p dir="ltr" align="left">These are the currently available options:</p>
 <ul>
   <li>
     <p align="left"><b>JVCL_REGISTER_GLOBAL_DESIGNEDITORS </b>- if
@@ -196,7 +196,7 @@ enabled, registers property editors for common types so the property
 editor can be used with any component, not only those in JVCL. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>USEJVCL </b>- some packages
+    <p dir="ltr" align="left"><b>USEJVCL </b>- some packages
 (JvGlobus, JvUIB, JvTimeFramework, JvDocking, JvDotNet, JvXPCtrls,
 JvWizard) can be installed as "stand-alone" as well as a part of JVCL.
 If you only need a single package from the JVCL (like JvWizard),
@@ -210,14 +210,14 @@ and want to use it with JVCL, you should enable this define. A PO file
 with the JVCL strings is located in the \locale directory. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>DelphiPersonalEdition </b>- enable
+    <p dir="ltr" align="left"><b>DelphiPersonalEdition </b>- enable
 this define if you are using Delphi 5 Standard or one of the Delphi/BCB
 Personal Editions. The Standard and Personal Editions do not support
 all components included in JVCL (mostly database related) and enabling
 this define will remove these components from the JVCL palettes. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>JVCLThemesEnabled </b>- enable this
+    <p dir="ltr" align="left"><b>JVCLThemesEnabled </b>- enable this
 define if you have Delphi 7 or want to use Mike Lischke's ThemeManager (<a
  href="http://www.lischke-online.de">http://www.lischke-online.de</a>).
 Note that even if you enable theme support, you still need a manifest
@@ -225,33 +225,33 @@ for your application and you will only see the effects of theming when
 running on Windows XP. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>USE_JV_GIF </b>- enable this define
+    <p dir="ltr" align="left"><b>USE_JV_GIF </b>- enable this define
 if you want to enable JVCL's GIF support. Disable if want to use
 another GIF library or don't want GIF support. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>USE_PROGESSBAR </b>- enable to use a
+    <p dir="ltr" align="left"><b>USE_PROGESSBAR </b>- enable to use a
 standard TProgressbar instead of a TGauge (from the Sample palette) in
 some components. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>USE_FOUR_DIGIT_YEAR </b>- controls
+    <p dir="ltr" align="left"><b>USE_FOUR_DIGIT_YEAR </b>- controls
 whether TDateEdit and descendants are forced to use four digit years in
 their display. When disabled, the ShortDateFormat is used to determine
 the number of year digits. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>DEFAULT_POPUP_CALENDAR </b>- enable
+    <p dir="ltr" align="left"><b>DEFAULT_POPUP_CALENDAR </b>- enable
 to use a popup calendar in TDateEdit and descendants. If disabled, uses
 a modal dialog instead. </p>
   </li>
   <li dir="ltr">
-    <p align="left" dir="ltr"><b>TIMEBLOCKS </b>- used by the
+    <p dir="ltr" align="left"><b>TIMEBLOCKS </b>- used by the
 JvTimeFramework components and should be enabled unless you have very
 specific reason not to (see JvTFDays.pas for more info). </p>
   </li>
 </ul>
-<p align="left" dir="ltr">&nbsp;</p>
+<p dir="ltr" align="left">&nbsp;</p>
 <p align="left">Fillling up most of the installer window is a list of
 all available design packages. To see the run-time packages as well,
 check the "<b>Show runtime packages</b>" at the top right. Note that
