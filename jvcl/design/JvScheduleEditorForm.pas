@@ -481,7 +481,7 @@ begin
                   edMonthlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.CreateRes(@RsEInvalidScheduleSettingsFound);
+              raise EJclScheduleError.CreateRes(@RsEInvalidScheduleSettingsFound);
             end;
           end;
         end;
@@ -516,7 +516,7 @@ begin
                   edYearlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.CreateRes(@RsEInvalidScheduleSettingsFound);
+              raise EJclScheduleError.CreateRes(@RsEInvalidScheduleSettingsFound);
             end;
           end;
         end;
