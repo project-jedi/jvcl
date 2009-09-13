@@ -638,7 +638,7 @@ procedure TJvVersionControlBaseAction.SetActionType(const Value:
 begin
   FActionType := Value;
   if Caption = '' then
-    Caption := VersionControlActionInfo(Value).Caption;
+    Caption := LoadResString(VersionControlActionInfo(Value).Caption);
   if Name = '' then
     Name := VersionControlActionInfo(Value).ActionName;
 end;
