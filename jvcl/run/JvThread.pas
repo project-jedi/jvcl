@@ -49,7 +49,7 @@ type
   TJvThread = class;
 
   TJvCustomThreadDialogFormEvent = procedure(DialogForm: TJvCustomThreadDialogForm) of object;
-  TJvThreadCancelEvent = procedure(CurrentThread : TJvThread) of object;
+  TJvThreadCancelEvent = procedure(CurrentThread: TJvThread) of object;
 
   TJvCustomThreadDialogOptions = class(TPersistent)
   private
@@ -140,7 +140,7 @@ type
   end;
 
   TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
-      AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult : Word) of object;
+      AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult: Word) of object;
 
   // This thread is a descendent of TThread but proposes a different
   // behaviour with regard to being suspended or resumed.
@@ -148,7 +148,7 @@ type
   // that using Suspend and Resume under Windows NT, 2K and XP led to weird
   // errors such as being refused access to the thread, despite being its
   // creator.
-  // So another mechanism has been implemented : the thread must be
+  // So another mechanism has been implemented: the thread must be
   // paused instead of suspended.
   // Pausing the thread actually acquires a critical section which the Execute
   // function must try to get before it calls InternalExecute.
@@ -162,17 +162,17 @@ type
   TJvPausableThread = class(TThread)
   private
     FPauseSection: TCriticalSection;
-    FPaused: boolean;
+    FPaused: Boolean;
 
     procedure SetPaused(const Value: Boolean);
   protected
     procedure EnterUnpauseableSection;
     procedure LeaveUnpauseableSection;
   public
-    constructor Create (CreateSuspended : Boolean);
+    constructor Create(CreateSuspended: Boolean);
     destructor Destroy; override;
 
-    property Paused : Boolean read FPaused write SetPaused;
+    property Paused: Boolean read FPaused write SetPaused;
   end;
 
   TJvBaseThread = class(TJvPausableThread)
@@ -196,8 +196,7 @@ type
   protected
     procedure InternalMessageDlg;
   public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-      Params: Pointer); virtual;
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
     {$IFNDEF COMPILER14_UP}
     procedure Resume; // There is no way to silence the compiler ("Resume" is deprecated)
     {$ENDIF ~COMPILER14_UP}
@@ -1212,8 +1211,7 @@ end;
 
 //=== { TJvBaseThread } ======================================================
 
-constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-  Params: Pointer);
+constructor TJvBaseThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
 begin
   inherited Create(True);
   FSender := Sender;
