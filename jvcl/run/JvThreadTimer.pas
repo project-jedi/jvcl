@@ -113,6 +113,7 @@ type
     FHasBeenSuspended: Boolean;
     FInterval: Cardinal;
     FTimer: TJvThreadTimer;
+    FPriority: TThreadPriority;
   protected
     procedure DoSuspend;
     procedure Execute; override;
@@ -136,8 +137,7 @@ end;
 
 constructor TJvTimerThread.Create(ATimer: TJvThreadTimer);
 begin
-  { Create suspended because of priority setting }
-  inherited Create(True);
+  inherited Create(False);
 
   FreeOnTerminate := True;
   { Manually reset = false; Initial State = false }
@@ -146,8 +146,7 @@ begin
     RaiseLastOSError;
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
-  Priority := ATimer.Priority;
-  {$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
+  FPriority := ATimer.Priority; // setting the priority is deferred to Execute()
 end;
 
 destructor TJvTimerThread.Destroy;
@@ -168,6 +167,7 @@ procedure TJvTimerThread.Execute;
 var
   Offset, TickCount: Cardinal;
 begin
+  Priority := FPriority;
   if WaitForSingleObject(FEvent, Interval) <> WAIT_TIMEOUT then
     Exit;
 
