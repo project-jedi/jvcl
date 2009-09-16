@@ -287,6 +287,7 @@ begin
         while CompressionPaused do
           Sleep(1);
       until (Count = 0) or FTerminateCompress;
+      ZStream.Flush; // Warren added.
     finally
       ZStream.Free;
     end;
