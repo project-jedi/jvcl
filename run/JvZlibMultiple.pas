@@ -83,6 +83,8 @@ type
   TFileBeforeWriteEvent = procedure(Sender: TObject; const FileName: string; var WriteFile: Boolean) of object;
   TFileAfterWriteEvent = procedure(Sender: TObject; const FileName: string; const FileSize: Longword) of object;
 
+  TFileSkipEvent = procedure (Sender:Tobject;const Filename,errortype,errormessage:String);
+
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
 
@@ -95,6 +97,8 @@ type
     FOnCompressingFile: TFileEvent;
     FOnCompressedFile: TFileEvent;
     FOnCompletedAction: TNotifyEvent;
+    FOnFileSkip : TFileSkipEvent;
+     
     // July 26, 2004: New improved event types for decompression: Allow user to
     // skip writing of files they want skipped on extraction, and if they
     // extract nothing, they can use this "nil extraction" to scan the contents
@@ -140,6 +144,9 @@ type
     procedure StopDecompression; // Note #1
     property CompressionPaused: Boolean read FCompressionPause write FCompressionPause; // Note #1
     property DecompressionPaused: Boolean read FDecompressionPause write FDecompressionPause;  // Note #1
+
+    property  OnFileSkip :TFileSkipEvent read FOnFileSkip write FOnFileSkip;
+
   published
     property StorePaths: Boolean read FStorePaths  write FStorePaths default True;
     // NOTE : This property allows you to override already opened files - USE WITH CAUTION!!! opened files may still be writing data
@@ -199,6 +206,7 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
   var
     SearchRec: TSearchRec;
     Res: Integer;
+    fn:String;
   begin
     // (rom) this may not work for network drives and compressed files
     // (rom) because of faAnyFile
@@ -209,10 +217,20 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
         if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
         begin
           if (SearchRec.Attr and faDirectory) = 0 then begin
+            try
+              fn := Directory + SDirectory + SearchRec.Name;
+              AddFile(SearchRec.Name, SDirectory, fn, Result)
+            except
+                on E:EFOpenError do begin
+                    if Assigned(FOnFileSkip) then begin
+                        FOnFileSkip(Self, fn, String(E.ClassName) ,E.Message );
+                    end;
+                end;
 
-              AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
 
-          end else
+            end;
+          end
+          else
           if Recursive then
             SearchDirectory(SDirectory + SearchRec.Name + PathDelim);
         end;
@@ -233,7 +251,8 @@ begin
   Result.Position := 0;
 end;
 
-procedure TJvZlibMultiple.AddFile(const FileName, Directory, FilePath: string; DestStream: TStream);
+procedure TJvZlibMultiple.AddFile(const FileName, Directory, FilePath: string;
+  DestStream: TStream);
 var
   Stream: TStream;
   FileStream: TFileStream;
