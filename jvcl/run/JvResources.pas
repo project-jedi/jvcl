@@ -2049,6 +2049,10 @@ resourcestring
 resourcestring
   RsUnknown = 'Unknown';
 
+//=== JvTimer.pas ============================================================
+resourcestring
+  RsCannotChangeInTimerEvent = 'Cannot change %s in the timer event';
+
 //=== JvTimeLimit.pas ========================================================
 resourcestring
   RsExpired = 'The test period has expired, please register this application';

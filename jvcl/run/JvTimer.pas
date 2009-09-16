@@ -48,6 +48,7 @@ type
     FTimer: TTimer;
     FEventTime: TJvTimerEventTime;
     FThreadPriority: TThreadPriority;
+    FInTimerEvent: Boolean;
     procedure SetThreadPriority(Value: TThreadPriority);
     procedure SetThreaded(Value: Boolean);
     procedure SetEnabled(Value: Boolean);
@@ -55,7 +56,8 @@ type
     procedure SetOnTimer(Value: TNotifyEvent);
     procedure UpdateTimer;
   protected
-    procedure Timer; dynamic;
+    procedure DoTimer(Sender: TObject);
+    procedure Timer; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -84,7 +86,7 @@ implementation
 
 uses
   Forms, Consts, SyncObjs,
-  JvJVCLUtils;
+  JvJVCLUtils, JvResources;
 
 //=== { TJvTimerThread } =====================================================
 
@@ -251,6 +253,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvTimer.DoTimer(Sender: TObject);
+begin
+  Timer;
+end;
+
 procedure TJvTimer.UpdateTimer;
 begin
   if (FInterval <> 0) and FEnabled and Assigned(FOnTimer) then
@@ -258,7 +265,6 @@ begin
     if FThreaded then
     begin
       FreeAndNil(FTimer);
-
       if not Assigned(FTimerThread) then
         FTimerThread := TJvTimerThread.Create(Self, False);
 
@@ -277,12 +283,22 @@ begin
       if not Assigned(FTimer) then
         FTimer := TTimer.Create(Self);
       FTimer.Interval := FInterval;
-      FTimer.OnTimer := FOnTimer;
+      FTimer.OnTimer := DoTimer;
       FTimer.Enabled := True;
     end;
   end
   else
   begin
+    { Don't destroy the thread or the timer if we are currently in the event }
+    if FInTimerEvent then
+    begin
+      if FTimerThread <> nil then
+        TJvTimerThread(FTimerThread).Paused := True;
+      if FTimer <> nil then
+        FTimer.Enabled := False;
+      Exit;
+    end;
+
     FreeAndNil(FTimerThread);
     FreeAndNil(FTimer);
   end;
@@ -310,6 +326,8 @@ procedure TJvTimer.SetThreaded(Value: Boolean);
 begin
   if Value <> FThreaded then
   begin
+    if FInTimerEvent then
+      raise Exception.CreateResFmt(@RsCannotChangeInTimerEvent, ['TJvTimer.Threaded']); // do not localize
     FThreaded := Value;
     UpdateTimer;
   end;
@@ -355,7 +373,14 @@ end;
 procedure TJvTimer.Timer;
 begin
   if FEnabled and not (csDestroying in ComponentState) and Assigned(FOnTimer) then
-    FOnTimer(Self);
+  begin
+    FInTimerEvent := True;
+    try
+      FOnTimer(Self);
+    finally
+      FInTimerEvent := False;
+    end;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
