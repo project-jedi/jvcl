@@ -208,9 +208,11 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
       begin
         if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
         begin
-          if (SearchRec.Attr and faDirectory) = 0 then
-            AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
-          else
+          if (SearchRec.Attr and faDirectory) = 0 then begin
+
+              AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
+
+          end else
           if Recursive then
             SearchDirectory(SDirectory + SearchRec.Name + PathDelim);
         end;
@@ -269,6 +271,14 @@ begin
     FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyWrite)
   else
     FileStream := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
+
+
+  if FileStream.Size=0 then begin
+      Stream.Free;
+      FileStream.Free;
+      exit;
+  end;
+
   try
     ZStream := TJclZLibCompressStream.Create(Stream, CompressionLevel);
     try
