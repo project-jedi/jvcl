@@ -980,7 +980,16 @@ type
   end;
 
 var
-  RegisteredAppStoragePropertyEngineList: TJvAppStoragePropertyEngineList;
+  GlobalRegisteredAppStoragePropertyEngineList: TJvAppStoragePropertyEngineList;
+  GlobalRegisteredAppStoragePropertyEngineListDestroyed: Boolean;
+
+function RegisteredAppStoragePropertyEngineList: TJvAppStoragePropertyEngineList;
+begin
+  if (GlobalRegisteredAppStoragePropertyEngineList = nil) and
+     not GlobalRegisteredAppStoragePropertyEngineListDestroyed then
+    GlobalRegisteredAppStoragePropertyEngineList := TJvAppStoragePropertyEngineList.Create;
+  Result := GlobalRegisteredAppStoragePropertyEngineList;
+end;
 
 const
   // (rom) this name is shared in several units and should be made global
@@ -2635,7 +2644,7 @@ begin
     tkClass:
       begin
         SubObj := GetObjectProp(PersObj, PropName);
-        if Assigned(RegisteredAppStoragePropertyEngineList) and
+        if (RegisteredAppStoragePropertyEngineList <> nil) and
           Recursive and
           RegisteredAppStoragePropertyEngineList.ReadProperty(Self, Path, PersObj, SubObj, Recursive, ClearFirst) then
           // Do nothing else, the handling is done in the ReadProperty procedure
@@ -2774,7 +2783,7 @@ begin
     tkClass:
       begin
         SubObj := GetObjectProp(PersObj, PropName);
-        if Assigned(RegisteredAppStoragePropertyEngineList) and
+        if (RegisteredAppStoragePropertyEngineList <> nil) and
           Recursive and
           RegisteredAppStoragePropertyEngineList.WriteProperty(Self, Path, PersObj, SubObj, Recursive) then
         begin
@@ -3685,32 +3694,27 @@ end;
 
 procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
 begin
-  if Assigned(RegisteredAppStoragePropertyEngineList) then
+  if RegisteredAppStoragePropertyEngineList <> nil then
     RegisteredAppStoragePropertyEngineList.RegisterEngine(AEngineClass);
 end;
 
 procedure UnregisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
 begin
-  if Assigned(RegisteredAppStoragePropertyEngineList) then
+  if RegisteredAppStoragePropertyEngineList <> nil then
     RegisteredAppStoragePropertyEngineList.UnregisterEngine(AEngineClass);
-end;
-
-procedure CreateAppStoragePropertyEngineList;
-begin
-  RegisteredAppStoragePropertyEngineList := TJvAppStoragePropertyEngineList.Create;
 end;
 
 procedure DestroyAppStoragePropertyEngineList;
 begin
-  RegisteredAppStoragePropertyEngineList.Free;
-  RegisteredAppStoragePropertyEngineList := nil;
+  GlobalRegisteredAppStoragePropertyEngineListDestroyed := True;
+  GlobalRegisteredAppStoragePropertyEngineList.Free;
+  GlobalRegisteredAppStoragePropertyEngineList := nil;
 end;
 
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  CreateAppStoragePropertyEngineList;
 
 finalization
   DestroyAppStoragePropertyEngineList;
