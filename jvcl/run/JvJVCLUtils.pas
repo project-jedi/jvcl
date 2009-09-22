@@ -125,6 +125,8 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 
+//1 This function validates if the control or any of it subcontrols has the focus.
+function IsSubControlFocused(iControl : TWinControl): Boolean;
 
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
@@ -7942,6 +7944,33 @@ begin
         VarReference.FreeNotification(This);
       end;
     end;
+end;
+
+function IsSubControlFocused(iControl : TWinControl): Boolean;
+var Form : TCustomForm;
+  Ctrl: TWinControl;
+begin
+  Result := False;
+  if not Assigned(iControl) then
+    Exit;
+  if iControl.Focused then
+  begin
+    Result := True;
+    Exit;
+  end;
+  Form := GetParentForm(iControl);
+  if not Assigned (Form) then
+    Exit;
+  Ctrl := Form.ActiveControl;
+  while Assigned(Ctrl) do
+  begin
+    if Ctrl = iControl then
+    begin
+      Result:= true;
+      exit;
+    end;
+    Ctrl := Ctrl.Parent;
+  end;
 end;
 
 initialization
