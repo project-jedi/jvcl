@@ -730,7 +730,6 @@ begin
     begin
       I := SelStart;
       J := SelLength;
-      Flat := False;
       SelStart := I;
       SelLength := J;
     end;
@@ -749,7 +748,6 @@ begin
     begin
       I := SelStart;
       J := SelLength;
-      Flat := True;
       SelStart := I;
       SelLength := J;
     end;
