@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -836,8 +836,16 @@ begin
 end;
 
 procedure TJvCustomValidateEdit.KeyPress(var Key: Char);
+var
+  StrippedText: string;
 begin
-  if not IsValidChar(Text, Key, SelStart + 1) and (Key >= #32) then
+  // Mantis 4952:
+  // - Must not take the prefix/suffix into account when checking a character's validity
+  // - Must not take into account the CurrencyString into account when checking a character's validity
+  StrippedText := StrEnsureNoPrefix(DisplayPrefix, StrEnsureNoSuffix(DisplaySuffix, Text));  
+  StrippedText := StrEnsureNoPrefix(CurrencyString, StrEnsureNoSuffix(CurrencyString, StrippedText));  
+
+  if not IsValidChar(StrippedText, Key, SelStart + 1) and (Key >= #32) then
     Key := #0;
   inherited KeyPress(Key);
 end;
@@ -1107,6 +1115,8 @@ begin
     DisplayedText := inherited Text;
     DisplayedText := StrEnsureNoPrefix(DisplayPrefix, DisplayedText);
     DisplayedText := StrEnsureNoSuffix(DisplaySuffix, DisplayedText);
+    DisplayedText := StrEnsureNoPrefix(CurrencyString, DisplayedText);
+    DisplayedText := StrEnsureNoSuffix(CurrencyString, DisplayedText);
     EditText := DisplayedText;
   end;
   inherited FocusKilled(NextWnd);
