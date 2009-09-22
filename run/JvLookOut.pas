@@ -2194,6 +2194,10 @@ begin
 
         if not Controls[I].Visible and not (csDesigning in ComponentState) then
           Continue;
+          
+        if Controls[I].Align = alClient then
+          Continue;
+
         AList.Insert(AList.Count, Controls[I]);
       end;
 
