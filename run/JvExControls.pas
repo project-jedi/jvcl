@@ -471,7 +471,7 @@ end;
 
 function CreateWMMessage(Msg: Integer; WParam: Integer; LParam: TControl): TMessage;
 begin
-  Result := CreateWMMessage(Msg, WParam, 0);
+  Result := CreateWMMessage(Msg, WParam, Integer(LParam));
 end;
 
 { TStructPtrMessage }
