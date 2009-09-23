@@ -63,7 +63,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils,
   Graphics, Controls, Forms, ExtCtrls, ImgList, ActnList, Messages,
-  JvConsts, JvXPCore, JvXPCoreUtils;
+  JvConsts, JvXPCore, JvXPCoreUtils, JvJVCLUtils;
 
 type
   TJvXPBarRollDirection = (rdExpand, rdCollapse);
@@ -110,7 +110,7 @@ type
     Collapsing: Boolean) of object;
 
   TJvXPBarOnDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
-    Rect: TRect; State: TJvXPDrawState; Item: TJvXPBarItem; Bitmap: TBitmap) of object;
+    Rect: TRect; State: TJvXPDrawState; Item: TJvXPBarItem; Bitmap: TJvBitmap) of object;
   TJvXPBarOwnerDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; var ARect: TRect) of object;
 
   TJvXPBarOnItemClickEvent = procedure(Sender: TObject; Item: TJvXPBarItem) of object;
@@ -568,7 +568,7 @@ uses
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
   JvJCLUtils, JvResources,
-  Menus, JvJVCLUtils;
+  Menus;
 
 {$R JvXPBar.res}
 
@@ -1982,11 +1982,11 @@ end;
 
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
 var
-  Bitmap: TBitmap;
+  Bitmap: TJvBitmap;
   ItemRect: TRect;
   HasImages: Boolean;
 begin
-  Bitmap := TBitmap.Create;
+  Bitmap := TJvBitmap.Create;
   with Canvas do
   try
     Bitmap.Assign(nil);

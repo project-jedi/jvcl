@@ -84,14 +84,14 @@ uses
   {$ENDIF MSWINDOWS}
   Graphics, Forms,
   SysUtils, Classes,
-  JvComponentBase, JvPlugin;
+  JvComponentBase, JvPlugin, JvJVCLUtils;
 
 {const
   C_VersionString = '5.10';}
 
 type
   TNewCommandEvent = procedure(Sender: TObject; ACaption, AHint, AData: string;
-    AShortCut: TShortCut; ABitmap: TBitmap;
+    AShortCut: TShortCut; ABitmap: TJvBitmap;
     AEvent: TNotifyEvent) of object;
 
   TJvBeforeLoadEvent = procedure(Sender: TObject; FileName: string; var AllowLoad: Boolean) of object;
@@ -326,7 +326,7 @@ begin
       if Assigned(FOnNewCommand) then
         for Counter := 0 to PlugIn.Commands.Count - 1 do
           with TJvPluginCommand(PlugIn.Commands.Items[Counter]) do
-            FOnNewCommand(Self, Caption, Hint, Data, ShortCut, Bitmap, OnExecute);
+            FOnNewCommand(Self, Caption, Hint, Data, ShortCut, TJvBitmap(Bitmap), OnExecute);
     finally
       if Assigned(FOnAfterNewCommand) then
         FOnAfterNewCommand(Self, PlugIn);
