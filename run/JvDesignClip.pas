@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -38,10 +38,13 @@ type
   TJvDesignComponentClipboard = class(TObject)
   protected
     Stream: TMemoryStream;
+    FParentComponent: TComponent;
     procedure Close;
     procedure Open;
     procedure ReadError(Reader: TReader; const Msg: string; var Handled: Boolean);
   public
+    constructor Create(ParentComponent: TComponent);
+
     function GetComponent: TComponent;
     procedure CloseRead;
     procedure CloseWrite;
@@ -105,8 +108,9 @@ begin
     MS.Position := 0;
     with TReader.Create(MS, 4096) do
     try
+      Parent := InComponent;
       OnError := InOnError;
-      Result := ReadRootComponent(InComponent);
+      Result := ReadRootComponent(nil);
     finally
       Free;
     end;
@@ -183,10 +187,17 @@ begin
   Close;
 end;
 
+constructor TJvDesignComponentClipboard.Create(ParentComponent: TComponent);
+begin
+  inherited Create;
+
+  FParentComponent := ParentComponent;
+end;
+
 function TJvDesignComponentClipboard.GetComponent: TComponent;
 begin
   if Stream.Position < Stream.Size then
-    Result := DesignLoadComponentFromBinaryStream(Stream, nil, ReadError)
+    Result := DesignLoadComponentFromBinaryStream(Stream, FParentComponent, ReadError)
   else
     Result := nil;
 end;
