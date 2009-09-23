@@ -22,7 +22,7 @@ object JvShellHookDemoMainForm: TJvShellHookDemoMainForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   ShowHint = True
   OnCreate = FormCreate

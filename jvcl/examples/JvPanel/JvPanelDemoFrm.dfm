@@ -14,7 +14,7 @@ object JvPanelDemoMainFrm: TJvPanelDemoMainFrm
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13

@@ -14,7 +14,7 @@ object AnimatorForm: TAnimatorForm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery

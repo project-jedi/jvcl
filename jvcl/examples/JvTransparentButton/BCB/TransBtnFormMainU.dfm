@@ -14,7 +14,7 @@ object TransBtnFormMain: TTransBtnFormMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress

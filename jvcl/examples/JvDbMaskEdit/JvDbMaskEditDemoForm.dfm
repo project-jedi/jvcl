@@ -14,7 +14,7 @@ object JvDbMaskEditDemoFrm: TJvDbMaskEditDemoFrm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13

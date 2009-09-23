@@ -14,7 +14,7 @@ object JvDialogsDemoFrm: TJvDialogsDemoFrm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
   PixelsPerInch = 96

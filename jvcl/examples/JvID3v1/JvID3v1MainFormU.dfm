@@ -15,7 +15,7 @@ object JvID3v1MainForm: TJvID3v1MainForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   ShowHint = True
   OnCreate = FormCreate

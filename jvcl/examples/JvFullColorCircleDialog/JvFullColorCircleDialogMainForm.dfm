@@ -13,7 +13,7 @@ object JvFullColorCircleDlgMainFrm: TJvFullColorCircleDlgMainFrm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13

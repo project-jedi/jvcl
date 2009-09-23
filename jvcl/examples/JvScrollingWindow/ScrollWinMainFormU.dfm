@@ -17,7 +17,7 @@ object JvScrollingWindowMainForm: TJvScrollingWindowMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnResize = FormResize
   PixelsPerInch = 96

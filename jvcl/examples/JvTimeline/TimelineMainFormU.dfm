@@ -16,7 +16,7 @@ object TimelineMainForm: TTimelineMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy

@@ -14,7 +14,7 @@ object PhotoOpMain: TPhotoOpMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   OnShow = FormShow

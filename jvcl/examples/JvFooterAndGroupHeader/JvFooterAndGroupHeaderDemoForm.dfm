@@ -14,7 +14,7 @@ object JvFooterAndGroupHeaderDemoFrm: TJvFooterAndGroupHeaderDemoFrm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
