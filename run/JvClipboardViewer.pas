@@ -34,12 +34,12 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics,
-  JvExForms;
+  JvExForms, JvJVCLUtils;
 
 type
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
     cvMetafile, cvPalette, cvOemText, cvPicture, cvComponent, cvIcon);
-  TJvOnImageEvent = procedure(Sender: TObject; Image: TBitmap) of object;
+  TJvOnImageEvent = procedure(Sender: TObject; Image: TJvBitmap) of object;
   TJvOnTextEvent = procedure(Sender: TObject; AText: string) of object;
 
   TJvCustomClipboardViewer = class(TJvExScrollBox)
@@ -64,7 +64,7 @@ type
     procedure Resize; override;
     procedure CreateWnd; override;
     procedure DestroyWindowHandle; override;
-    procedure DoImage(Image: TBitmap); dynamic;
+    procedure DoImage(Image: TJvBitmap); dynamic;
     procedure DoText(const AText: string); dynamic;
     procedure Change; dynamic;
     procedure CreatePaintControl; virtual;
@@ -116,7 +116,7 @@ implementation
 
 uses
   Math, Controls, Forms, StdCtrls, ExtCtrls, Grids, Clipbrd,
-  JvExGrids, JvJVCLUtils, JvJCLUtils, JvResources;
+  JvExGrids, JvJCLUtils, JvResources;
 
 { Utility routines }
 
@@ -669,7 +669,7 @@ end;
 procedure TJvCustomClipboardViewer.WMDrawClipboard(var Msg: TMessage);
 var
   Format: Word;
-  B: TBitmap;
+  B: TJvBitmap;
 begin
   ForwardMessage(Msg);
   Format := ViewToClipboardFormat(ViewFormat);
@@ -680,7 +680,7 @@ begin
     FViewFormat := cvDefault;
   if Clipboard.HasFormat(CF_BITMAP) then
   begin
-    B := TBitmap.Create;
+    B := TJvBitmap.Create;
     try
       B.Assign(Clipboard);
       DoImage(B);
@@ -785,7 +785,7 @@ begin
       Result := True;
 end;
 
-procedure TJvCustomClipboardViewer.DoImage(Image: TBitmap);
+procedure TJvCustomClipboardViewer.DoImage(Image: TJvBitmap);
 begin
   if Assigned(FOnImage) then
     FOnImage(Self, Image);

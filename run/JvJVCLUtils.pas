@@ -734,6 +734,16 @@ type
     procedure DefineProperties(Filer: TFiler); override;
   end;
 
+// This class is here because of issue 4859. Basically, using TBitmap as a
+// parameter for an event handler is the source of an ambiguity under
+// C++ Builder because of Windows::TBitmap. The only solution is to replace
+// TBitmap by TJvBitmap in the event handler declarations. This, however,
+// forces the Delphi users to change their event handlers so that the IDE
+// will not complain when opening the forms.
+type
+  TJvBitmap = class(TBitmap)
+  end;
+
 {
 Documentation:
 *************

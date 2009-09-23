@@ -43,7 +43,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, ImgList,
-  JVCLVer,
+  JVCLVer, JvJVCLUtils,
   JvgTypes, JvgCommClasses, Jvg3DColors;
 
 const
@@ -54,7 +54,7 @@ type
   TglLBChangeEvent = procedure(Sender: TObject;
     FOldSelItemIndex, FSelItemIndex: Integer) of object;
   TglLBOnDrawEvent = procedure(Sender: TObject; Msg: TWMDrawItem) of object;
-  TglOnGetDragImageEvent = procedure(Sender: TObject; Bitmap: TBitmap;
+  TglOnGetDragImageEvent = procedure(Sender: TObject; Bitmap: TJvBitmap;
     var TransparentColor: TColor; var HotSpotX, HotSpotY: Integer) of object;
 
   TJvgListBox = class(TCustomListBox)
@@ -216,7 +216,7 @@ implementation
 
 uses
   Math,
-  JvgUtils, JvJVCLUtils;
+  JvgUtils;
 
 //=== { TJvgListBox } ========================================================
 
@@ -716,7 +716,7 @@ procedure TJvgListBox.CreateDragImage;
 var
   HotSpotX, HotSpotY: Integer;
   TranspColor: TColor;
-  Bmp: TBitmap;
+  Bmp: TJvBitmap;
   Pt: TPoint;
   R: TRect;
 begin
@@ -725,7 +725,7 @@ begin
     Exit;
   R := ItemRect(ItemIndex);
 
-  Bmp := TBitmap.Create;
+  Bmp := TJvBitmap.Create;
   with Bmp do
   try
     GetCursorPos(Pt);
