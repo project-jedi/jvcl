@@ -15,7 +15,7 @@ object TMTimeLineMainForm: TTMTimeLineMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   ShowHint = True
   OnCloseQuery = FormCloseQuery

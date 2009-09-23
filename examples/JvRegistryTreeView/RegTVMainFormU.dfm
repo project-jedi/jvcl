@@ -15,7 +15,7 @@ object RegTVMainForm: TRegTVMainForm
   Font.Style = []
   Menu = mmMain
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13

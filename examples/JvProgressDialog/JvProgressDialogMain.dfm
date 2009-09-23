@@ -15,7 +15,7 @@ object frmProgressDialogDemo: TfrmProgressDialogDemo
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   ShowHint = True
   PixelsPerInch = 96

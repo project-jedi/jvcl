@@ -16,7 +16,7 @@ object Form1: TForm1
   FormStyle = fsMDIForm
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   WindowMenu = Window1
   OnShow = FormShow

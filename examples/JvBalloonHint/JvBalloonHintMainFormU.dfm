@@ -11,7 +11,7 @@ object JvBalloonHintMainForm: TJvBalloonHintMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   ShowHint = True
   OnCreate = FormCreate
   OnShow = FormShow

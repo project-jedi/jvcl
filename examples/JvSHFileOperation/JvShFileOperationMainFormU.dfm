@@ -16,7 +16,7 @@ object JvShFileOperationMainForm: TJvShFileOperationMainForm
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   ShowHint = True
   OnCreate = FormCreate

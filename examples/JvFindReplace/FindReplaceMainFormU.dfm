@@ -15,7 +15,7 @@ object FindReplaceMainForm: TFindReplaceMainForm
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96

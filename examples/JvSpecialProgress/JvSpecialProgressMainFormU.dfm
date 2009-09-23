@@ -14,7 +14,7 @@ object JvSpecialProgressMainForm: TJvSpecialProgressMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96

@@ -14,7 +14,7 @@ object FileListBoxMainForm: TFileListBoxMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13

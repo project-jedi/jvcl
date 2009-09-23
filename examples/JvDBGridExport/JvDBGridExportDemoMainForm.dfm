@@ -14,7 +14,7 @@ object JvDBGridExportDemoMainFrm: TJvDBGridExportDemoMainFrm
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -239,7 +239,7 @@ object JvDBGridExportDemoMainFrm: TJvDBGridExportDemoMainFrm
       FFF8CFFF700009C00000020C1E00040802F7080000030C00000031C00000020C
       2C0000030C00000031C00000300C0100000031C000000001}
     ShowCancel = False
-    ScreenPosition = poDesktopCenter
+    ScreenPosition = poScreenCenter
     Left = 128
     Top = 184
   end

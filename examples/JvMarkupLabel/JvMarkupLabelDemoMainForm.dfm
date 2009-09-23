@@ -14,7 +14,7 @@ object JvMarkupLabelDemoMainFrm: TJvMarkupLabelDemoMainFrm
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   OnResize = FormResize

@@ -15,7 +15,7 @@ object Profiler32MainForm: TProfiler32MainForm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate

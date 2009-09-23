@@ -17,7 +17,7 @@ object EditorMainForm: TEditorMainForm
   FormStyle = fsMDIForm
   Menu = MainMenu
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
   OnCloseQuery = FormCloseQuery

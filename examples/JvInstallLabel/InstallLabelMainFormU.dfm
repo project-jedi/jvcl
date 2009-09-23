@@ -15,7 +15,7 @@ object InstallLabelMainForm: TInstallLabelMainForm
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96

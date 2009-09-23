@@ -15,7 +15,7 @@ object JvLinkLabelMainForm: TJvLinkLabelMainForm
   Font.Name = 'Arial'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
