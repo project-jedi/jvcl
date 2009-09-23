@@ -746,6 +746,10 @@ type
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
     function GetTextRange(StartPos, EndPos: Longint): string;
+    // GetTextLenEx is to be used when printing the RichEdit using EM_FORMATRANGE
+    // because GetTextLen is unreliable in this case.
+    // See Mantis 4782 and http://edn.embarcadero.com/article/26772 for details
+    function GetTextLenEx: Integer;
     function LineFromChar(CharIndex: Integer): Integer;
     function GetLineIndex(LineNo: Integer): Integer;
     function GetLineLength(CharIndex: Integer): Integer;
@@ -3322,6 +3326,23 @@ begin
   Result := TJvRichEditStrings(Lines).Mode;
 end;
 
+function TJvCustomRichEdit.GetTextLenEx: Integer;
+var
+  TextLenEx: TGetTextLengthEx;
+begin
+  if RichEditVersion >= 2 then
+  begin
+    with TextLenEx do
+    begin
+      Flags := GTL_DEFAULT;
+      codepage := CP_ACP;
+    end;
+    Result := Perform(EM_GETTEXTLENGTHEX, WParam(@TextLenEx), 0);
+  end
+  else
+    Result := GetTextLen;
+end;
+
 function TJvCustomRichEdit.GetTextRange(StartPos, EndPos: Longint): string;
 var
   TextRange: TTextRange;
@@ -3860,7 +3881,6 @@ var
   Range: TFormatRange;
   LastChar, MaxLen, LogX, LogY, OldMap: Integer;
   SaveRect: TRect;
-  TextLenEx: TGetTextLengthEx;
 begin
   FillChar(Range, SizeOf(TFormatRange), 0);
   with Printer, Range do
@@ -3886,17 +3906,7 @@ begin
     rcPage := rc;
     SaveRect := rc;
     LastChar := 0;
-    if RichEditVersion >= 2 then
-    begin
-      with TextLenEx do
-      begin
-        Flags := GTL_DEFAULT;
-        codepage := CP_ACP;
-      end;
-      MaxLen := Perform(EM_GETTEXTLENGTHEX, WParam(@TextLenEx), 0);
-    end
-    else
-      MaxLen := GetTextLen;
+    MaxLen := GetTextLenEx;
     chrg.cpMax := -1;
     { ensure printer DC is in text map mode }
     OldMap := SetMapMode(HDC, MM_TEXT);
