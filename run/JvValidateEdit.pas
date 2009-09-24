@@ -179,6 +179,7 @@ type
     procedure EnforceMaxValue;
     procedure EnforceMinValue;
     procedure SetTrimDecimals(const Value: Boolean);
+    function GetUnprefixedUnsuffixedText(const Value: string): string;
   protected
     function IsValidChar(const S: string; var Key: Char; Posn: Integer): Boolean; virtual;
     function MakeValid(const ParseString: string): string;virtual;
@@ -842,8 +843,7 @@ begin
   // Mantis 4952:
   // - Must not take the prefix/suffix into account when checking a character's validity
   // - Must not take into account the CurrencyString into account when checking a character's validity
-  StrippedText := StrEnsureNoPrefix(DisplayPrefix, StrEnsureNoSuffix(DisplaySuffix, Text));  
-  StrippedText := StrEnsureNoPrefix(CurrencyString, StrEnsureNoSuffix(CurrencyString, StrippedText));  
+  StrippedText := GetUnprefixedUnsuffixedText(Text);
 
   if not IsValidChar(StrippedText, Key, SelStart + 1) and (Key >= #32) then
     Key := #0;
@@ -859,7 +859,7 @@ end;
 procedure TJvCustomValidateEdit.WMPaste(var Msg: TMessage);
 begin
   inherited;
-  EditText := MakeValid(inherited Text);
+  EditText := MakeValid(GetUnprefixedUnsuffixedText(inherited Text));
 end;
 
 function TJvCustomValidateEdit.MakeValid(const ParseString: string): string;
@@ -1082,9 +1082,16 @@ begin
   Result := FEditText;
 end;
 
+function TJvCustomValidateEdit.GetUnprefixedUnsuffixedText(
+  const Value: string): string;
+begin
+  Result := StrEnsureNoPrefix(DisplayPrefix, StrEnsureNoSuffix(DisplaySuffix, Value));
+  Result := StrEnsureNoPrefix(CurrencyString, StrEnsureNoSuffix(CurrencyString, Result));
+end;
+
 procedure TJvCustomValidateEdit.SetEditText(const NewValue: string);
 begin
-  FEditText := MakeValid(NewValue);
+  FEditText := MakeValid(GetUnprefixedUnsuffixedText(NewValue));
   if (FDisplayFormat = dfYear) and ((not FHasMaxValue) or
     (FHasMaxValue and (FMaxValue > 2000 + TwoDigitYearCenturyWindow))) and
     ((MaxLength = 0) or (MaxLength > 3)) then
@@ -1113,11 +1120,7 @@ begin
   if not (csDestroying in ComponentState) then
   begin
     DisplayedText := inherited Text;
-    DisplayedText := StrEnsureNoPrefix(DisplayPrefix, DisplayedText);
-    DisplayedText := StrEnsureNoSuffix(DisplaySuffix, DisplayedText);
-    DisplayedText := StrEnsureNoPrefix(CurrencyString, DisplayedText);
-    DisplayedText := StrEnsureNoSuffix(CurrencyString, DisplayedText);
-    EditText := DisplayedText;
+    EditText := GetUnprefixedUnsuffixedText(DisplayedText);
   end;
   inherited FocusKilled(NextWnd);
 end;
@@ -1270,9 +1273,7 @@ begin
   if not FSelfChange then
   begin
     DisplayedText := inherited Text;
-    DisplayedText := StrEnsureNoPrefix(DisplayPrefix, DisplayedText);
-    DisplayedText := StrEnsureNoSuffix(DisplaySuffix, DisplayedText);
-    FEditText := DisplayedText;
+    FEditText := GetUnprefixedUnsuffixedText(DisplayedText);
   end;
   inherited Change;
 end;
