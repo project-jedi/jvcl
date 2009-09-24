@@ -889,7 +889,7 @@ begin
                     {$IFDEF DELPHI10_UP}
                     Control.UpdateBounds;
                     {$ELSE}
-                    SendMessage(Control.Handle, AMsg.Msg, AMsg.wParam, AMsg.lParam);
+                    Control.Dispatch(AMsg);
                     {$ENDIF DELPHI10_UP}
 
                   UpdateDesigner;
