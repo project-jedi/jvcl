@@ -6061,7 +6061,7 @@ function TJvRichEditStrings.Get(Index: Integer): string;
 var
   L: Integer;
 begin
-  L := FRichEdit.GetLineLength(Index);
+  L := FRichEdit.GetLineLength(FRichEdit.GetLineIndex(Index));
   SetLength(Result, L);
   if L > 0 then
   begin
