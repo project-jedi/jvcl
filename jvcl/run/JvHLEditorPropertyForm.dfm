@@ -26,10 +26,6 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object lblEditorSpeedSettings: TLabel
         Left = 30
         Top = 11
