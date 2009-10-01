@@ -37,6 +37,9 @@ uses
   Messages, Graphics, Controls, Forms,
   JvSpecialProgress, JvImageDrawThread, JvComponent;
 
+const
+  WM_DELAYED_INTERNAL_ACTIVATE = WM_APP + 245;
+
 type
   TJvWaitingProgress = class(TJvWinControl)
   private
@@ -46,6 +49,8 @@ type
     FOnEnded: TNotifyEvent;
     FWait: TJvImageDrawThread;
     FProgress: TJvSpecialProgress;
+    FInOnScroll: Boolean;
+
     function GetProgressColor: TColor;
     procedure InternalActivate;
     procedure SetActive(const Value: Boolean);
@@ -59,6 +64,8 @@ type
     procedure BoundsChanged; override;
     procedure ColorChanged; override;
     procedure Loaded; override;
+
+    procedure WmDelayedInternalActivate(var Msg: TMessage); message WM_DELAYED_INTERNAL_ACTIVATE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -88,6 +95,8 @@ const
 
 implementation
 
+uses
+  Windows;
 
 constructor TJvWaitingProgress.Create(AOwner: TComponent);
 begin
@@ -155,16 +164,20 @@ begin
     Exit;
 
   //Step
-  if Integer(FProgress.Position) + Integer(FRefreshInterval) > Integer(FLength) then
-  begin
-    FProgress.Position := FLength;
-    SetActive(False);
-    if Assigned(FOnEnded) then
-      FOnEnded(Self);
-  end
-  else
-    FProgress.Position := FProgress.Position + Integer(FRefreshInterval);
-  Application.ProcessMessages;
+  FInOnScroll := True;
+  try
+    if Integer(FProgress.Position) + Integer(FRefreshInterval) > Integer(FLength) then
+    begin
+      FProgress.Position := FLength;
+      SetActive(False);
+      if Assigned(FOnEnded) then
+        FOnEnded(Self);
+    end
+    else
+      FProgress.Position := FProgress.Position + Integer(FRefreshInterval);
+  finally
+    FInOnScroll := False;
+  end;
 end;
 
 procedure TJvWaitingProgress.InternalActivate;
@@ -184,7 +197,10 @@ begin
   begin
     FActive := Value;
     if not (csLoading in ComponentState) then
-      InternalActivate;
+      if FInOnScroll then // OnScroll is "Synchronized", we must thus finish it before locking the thread
+        PostMessage(Handle, WM_DELAYED_INTERNAL_ACTIVATE, 0, 0)
+      else
+        InternalActivate;
   end;
 end;
 
@@ -214,6 +230,11 @@ procedure TJvWaitingProgress.SetRefreshInterval(const Value: Cardinal);
 begin
   FRefreshInterval := Value;
   FWait.Delay := FRefreshInterval;
+end;
+
+procedure TJvWaitingProgress.WmDelayedInternalActivate(var Msg: TMessage);
+begin
+  InternalActivate;
 end;
 
 procedure TJvWaitingProgress.BoundsChanged;
