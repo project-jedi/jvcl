@@ -276,24 +276,37 @@ begin
   end;
 end;
 
+type
+  TAccessComponent = class(TComponent);
+
 function DesignLoadComponentFromStream(AComp: TComponent; AStream: TStream;
   AOnError: TReaderError): TComponent;
 var
-  MS: TMemoryStream;
+  MemStream: TMemoryStream;
+  CompDesigning: Boolean;
 begin
-  MS := TMemoryStream.Create;
+  MemStream := TMemoryStream.Create;
   try
-    ObjectTextToBinary(AStream, MS);
-    MS.Position := 0;
-    with TReader.Create(MS, 4096) do
+    ObjectTextToBinary(AStream, MemStream);
+    MemStream.Position := 0;
+    with TReader.Create(MemStream, 4096) do
     try
       OnError := AOnError;
-      Result := ReadRootComponent(AComp);
+      { We have to set the container into design mode so all loaded components
+        are in design mode. }
+      CompDesigning := csDesigning in AComp.ComponentState;
+      TAccessComponent(AComp).SetDesigning(True, False);
+      try
+        Result := ReadRootComponent(AComp);
+      finally
+        if not CompDesigning then
+          TAccessComponent(AComp).SetDesigning(CompDesigning, False);
+      end;
     finally
       Free;
     end;
   finally
-    MS.Free;
+    MemStream.Free;
   end;
 end;
 
