@@ -453,6 +453,7 @@ type
     FTimeZoneCorrection: Integer; // defaults to 0 (none)
     FFileDirty: Boolean; // file needs to be written back to disk?
 
+    FDefaultCsvFieldDefs: Boolean; // True if the CsvFieldDefs come from the file
     FCsvFieldDef: string; // Our own "Csv Field Definition String"
     FCsvKeyDef: string; // CSV Key Definition string. Required if FCsvUniqueKeys is True
     FCsvKeyCount: Integer; // Set by parsing FCsvKeyDef
@@ -1847,6 +1848,7 @@ begin
   begin
     CheckInactive;
     FCsvFieldDef := Value;
+    FDefaultCsvFieldDefs := False;
     FHeaderRow := '';
     FieldDefs.Clear; // Clear VCL Database field definitions
     FCsvColumns.Clear; // Clear our own CSV related field Data
@@ -3114,12 +3116,13 @@ begin
     FieldDefs.Clear; // Clear VCL Database field definitions
     FCsvColumns.Clear; // Clear our own CSV related field Data
 
+    FDefaultCsvFieldDefs := False;
     aCsvFieldDef := CsvFieldDef;
     if aCsvFieldDef = '' then
     begin
       if FHasHeaderRow and ReadCsvFileStream then
       begin
-        aCsvFieldDef := FCsvFileTopLine; {formerly FCsvFileAsStrings[0];}
+        aCsvFieldDef := FCsvFileTopLine;
         {$IFDEF DEBUGINFO_ON}
         if aCsvFieldDef = '' then
           OutputDebugString('Top line of file empty. CsvFieldDef not provided either.');
@@ -3128,6 +3131,7 @@ begin
 
       if ExtendedHeaderInfo then
         CsvFieldDef := aCsvFieldDef;
+      FDefaultCsvFieldDefs := True;
     end;
 
     if aCsvFieldDef <> '' then
@@ -3391,6 +3395,13 @@ begin
   FOpenFileName := '';
   FCsvFileLoaded := False;
   FData.FRecordsValid := False;
+  if FDefaultCsvFieldDefs then
+  begin
+    FCsvFieldDef := '';
+    FHeaderRow := '';
+    FieldDefs.Clear;
+    Fields.Clear;
+  end;
 end;
 
 procedure TJvCustomCsvDataSet.InternalHandleException;
@@ -4496,13 +4507,13 @@ begin
     if not ValidateHeaderRow then
     begin
       for I := 0 to FCsvColumns.Count - 1 do
-        PCsvColumn(FCsvColumns.Get(I))^.FPhysical := I;
+        PCsvColumn(FCsvColumns[I])^.FPhysical := I;
       Exit;
     end;
     FAppendedFieldCount := 0;
     //  Columns Not Yet Found:
     for I := 0 to FCsvColumns.Count - 1 do
-      PCsvColumn(FCsvColumns.Get(I))^.FPhysical := -1;
+      PCsvColumn(FCsvColumns[I])^.FPhysical := -1;
 
     // Do initial parse.
     JvStringToCsvRow(FHeaderRow, Separator, CsvFieldRec, False, False);
@@ -4514,14 +4525,14 @@ begin
 
       // Mantis 3192: Remove the options from the field name or FindByName will
       // never find the column which will lead to a Database error being triggered
-      ColonPos := Pos(':', string(CsvFieldName));
+      ColonPos := Pos(':', CsvFieldName);
       if (ColonPos > 0) then
         CsvFieldName := Copy(CsvFieldName, 1, ColonPos - 1);
 
       if CsvFieldName = '' then
         JvCsvDatabaseError(FTableName, RsEErrorProcessingFirstLine);
 
-      PtrCsvColumn := FCsvColumns.FindByName( string(CsvFieldName));
+      PtrCsvColumn := FCsvColumns.FindByName(CsvFieldName);
 
       if PtrCsvColumn = nil then
       begin // raise database exception:
