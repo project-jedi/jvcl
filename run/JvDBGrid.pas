@@ -72,7 +72,10 @@ uses
 
 const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
-    dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit];
+    dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit
+    {$IFDEF COMPILER14_UP}
+    , dgTitleClick, dgTitleHotTrack
+    {$ENDIF COMPILER14_UP}];
 
   {$IFDEF BCB}
   {$NODEFINE DefJvGridOptions}
