@@ -1064,7 +1064,7 @@ var
   I: Integer;
 begin
   for I := 0 to Surface.Count - 1 do
-    DesignPaintRubberbandRect(FDragRects[I], psDot);
+    DesignPaintRubberbandRect(Surface.Container, FDragRects[I], psDot);
 end;
 
 procedure TJvDesignMover.ApplyDragRects;
@@ -1130,7 +1130,7 @@ end;
 
 procedure TJvDesignBander.PaintDragRect;
 begin
-  DesignPaintRubberbandRect(GetPaintRect, psDot);
+  DesignPaintRubberbandRect(Surface.Container, GetPaintRect, psDot);
 end;
 
 procedure TJvDesignBander.MouseDown(Button: TMouseButton; Shift: TShiftState;

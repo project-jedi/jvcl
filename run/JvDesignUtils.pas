@@ -47,7 +47,7 @@ function DesignValidateRect(const ARect: TRect): TRect;
 function DesignNameIsUnique(AOwner: TComponent; const AName: string): Boolean;
 function DesignUniqueName(AOwner: TComponent; const AClassName: string): string;
 
-procedure DesignPaintRubberbandRect(const ARect: TRect; APenStyle: TPenStyle);
+procedure DesignPaintRubberbandRect(AContainer: TWinControl; ARect: TRect; APenStyle: TPenStyle);
 procedure DesignPaintGrid(ACanvas: TCanvas; const ARect: TRect;
   ABackColor: TColor = clBtnFace; AGridColor: TColor = clBlack;
   ADivPixels: Integer = 8);
@@ -161,13 +161,20 @@ begin
   until DesignNameIsUnique(AOwner, Result);
 end;
 
-procedure DesignPaintRubberbandRect(const ARect: TRect; APenStyle: TPenStyle);
+procedure DesignPaintRubberbandRect(AContainer: TWinControl; ARect: TRect; APenStyle: TPenStyle);
 var
   DesktopWindow: HWND;
   DC: HDC;
   C: TCanvas;
 begin
-  DesktopWindow := GetDesktopWindow;
+  if AContainer = nil then
+    DesktopWindow := GetDesktopWindow
+  else
+  begin
+    DesktopWindow := AContainer.Handle;
+    ARect.TopLeft := AContainer.ScreenToClient(ARect.TopLeft);
+    ARect.BottomRight := AContainer.ScreenToClient(ARect.BottomRight);
+  end;
   DC := GetDCEx(DesktopWindow, 0, DCX_CACHE or DCX_LOCKWINDOWUPDATE);
   try
     C := TCanvas.Create;
