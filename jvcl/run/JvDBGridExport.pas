@@ -87,7 +87,6 @@ type
     FSilent: Boolean;
     FOnException: TNotifyEvent;
     FUseFieldGetText: Boolean;
-    procedure SetUseFieldGetText(const Value: Boolean);
     procedure CheckVisibleColumn;
   protected
     procedure HandleException;
@@ -97,14 +96,14 @@ type
     procedure DoSave; virtual;
     procedure DoClose; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function GetFieldValue(const Field: TField): Variant;
+    function GetFieldValue(const Field: TField): Variant; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function ExportGrid: Boolean;
   published
     // (p3) these should be published: all exporters must support them
     property Caption: string read FCaption write FCaption;
-    property UseFieldGetText: Boolean read FUseFieldGetText write SetUseFieldGetText default False;
+    property UseFieldGetText: Boolean read FUseFieldGetText write FUseFieldGetText default False;
     property Grid: TDBGrid read FGrid write FGrid;
     property FileName: TFileName read FFileName write FFileName;
     property Silent: Boolean read FSilent write FSilent default True;
@@ -115,7 +114,14 @@ type
 
   TJvCustomDBGridExportClass = class of TJvCustomDBGridExport;
 
-  TJvDBGridWordExport = class(TJvCustomDBGridExport)
+  { TJvCustomDBGridOleExport converts any string-variant that isn't supported
+    by OLE to an OleStr variant. }
+  TJvCustomDBGridOleExport = class(TJvCustomDBGridExport)
+  protected
+    function GetFieldValue(const Field: TField): Variant; override;
+  end;
+
+  TJvDBGridWordExport = class(TJvCustomDBGridOleExport)
   private
     FWord: OleVariant;
     FVisible: Boolean;
@@ -141,7 +147,7 @@ type
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
   end;
 
-  TJvDBGridExcelExport = class(TJvCustomDBGridExport)
+  TJvDBGridExcelExport = class(TJvCustomDBGridOleExport)
   private
     FExcel: OleVariant;
     FVisible: Boolean;
@@ -336,11 +342,7 @@ var
   Str: String;
 begin
   if Assigned(Field.OnGetText) and FUseFieldGetText then
-  begin
-    Result := '';
-    Field.OnGetText(Field, Str, True);
-    Result := Str;
-  end
+    Field.OnGetText(Field, Str, True)
   else
     Result := Field.Value;
 end;
@@ -367,9 +369,13 @@ begin
     Grid := nil;
 end;
 
-procedure TJvCustomDBGridExport.SetUseFieldGetText(const Value: Boolean);
+//=== { TJvCustomDBGridOleExport } ============?==============================
+
+function TJvCustomDBGridOleExport.GetFieldValue(const Field: TField): Variant;
 begin
-  FUseFieldGetText := Value;
+  Result := inherited GetFieldValue(Field);
+  if VarType(Result) >= varString then // OleStr ist the only string type that is supported
+    Result := WideString(Result);
 end;
 
 //=== { TJvDBGridWordExport } ================================================
