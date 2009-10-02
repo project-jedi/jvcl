@@ -342,7 +342,10 @@ var
   Str: String;
 begin
   if Assigned(Field.OnGetText) and FUseFieldGetText then
-    Field.OnGetText(Field, Str, True)
+  begin
+    Field.OnGetText(Field, Str, True);
+    Result := Str;
+  end
   else
     Result := Field.Value;
 end;
