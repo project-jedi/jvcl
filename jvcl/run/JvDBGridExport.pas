@@ -480,12 +480,14 @@ begin
           for I := 0 to FColumnCount - 1 do
           begin
             if FRecordColumns[I].Exportable and not FRecordColumns[I].Field.IsNull then
-            try
-              lTable.Cell(J, K).Range.InsertAfter(GetFieldValue(FRecordColumns[I].Field));
-            except
-              Result := False;
-              HandleException;
-              // Remember problem but continue
+            begin
+              try
+                lTable.Cell(J, K).Range.InsertAfter(GetFieldValue(FRecordColumns[I].Field));
+              except
+                Result := False;
+                HandleException;
+                // Remember problem but continue
+              end;
             end;
             if FRecordColumns[I].Visible then
               Inc(K);
@@ -1052,21 +1054,26 @@ begin
         begin
           lString := '';
           for I := 0 to FColumnCount - 1 do
+          begin
             if FRecordColumns[I].Exportable then
-            try
-              if not FRecordColumns[I].Field.IsNull then
-              begin
-                lField := GetFieldValue(FRecordColumns[I].Field);
-                if (Pos(Separator, lField) <> 0) or (FQuoteEveryTime) then
-                  lString := lString + AnsiQuotedStr(lField, '"')
-                else
-                  lString := lString + lField;
+            begin
+              try
+                if not FRecordColumns[I].Field.IsNull then
+                begin
+                  lField := GetFieldValue(FRecordColumns[I].Field);
+                  if (Pos(Separator, lField) <> 0) or (FQuoteEveryTime) then
+                    lString := lString + AnsiQuotedStr(lField, '"')
+                  else
+                    lString := lString + lField;
+                end;
+              except
+                Result := False;
+                HandleException;
               end;
-              lString := lString + Separator;
-            except
-              Result := False;
-              HandleException;
             end;
+            if FRecordColumns[I].Visible then
+              lString := lString + Separator;
+          end;
           FDocument.Add(lString);
           Next;
           Inc(ARecNo);
@@ -1186,11 +1193,13 @@ begin
           begin
             for I := 0 to FColumnCount - 1 do
               if FRecordColumns[I].Exportable then
-              try
-                Properties.Add(FRecordColumns[I].ColumnName, VarToStr(GetFieldValue(FRecordColumns[I].Field)));
-              except
-                Result := False;
-                HandleException;
+              begin
+                try
+                  Properties.Add(FRecordColumns[I].ColumnName, VarToStr(GetFieldValue(FRecordColumns[I].Field)));
+                except
+                  Result := False;
+                  HandleException;
+                end
               end;
           end;
           Next;
