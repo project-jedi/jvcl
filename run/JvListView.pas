@@ -402,7 +402,7 @@ type
     destructor Destroy; override;
     procedure ColClick(Column: TListColumn); override;
     procedure SaveToStrings(Strings: TStrings; Separator: Char);
-    procedure LoadFromStrings(Strings: TStrings; Separator: Char);
+    procedure LoadFromStrings(Strings: TStrings; Separator: Char; ClearItems: Boolean = False);
     procedure SaveToFile(FileName: string; ForceOldStyle: Boolean = False);
     procedure LoadFromFile(FileName: string);
     procedure SaveToStream(Stream: TStream; ForceOldStyle: Boolean = False);
@@ -422,8 +422,7 @@ type
     function GetInsertMarkPosition(const X, Y: Integer; var ItemIndex: Integer; var Position: TJvInsertMarkPosition): Boolean;
 
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure SetFocus; override;
   published
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
@@ -1268,17 +1267,16 @@ var
   var
     I, J, K: Integer;
     Buf: array [0..100] of Byte;
-    st: AnsiString;
-    ch1, checks: Boolean;
-    t: TListItem;
+    S: AnsiString;
+    ch1, Checks: Boolean;
+    ListItem: TListItem;
   begin
     I := Stream.Position;
-    t := nil;
-    st := '';
-    Items.Clear;
+    ListItem := nil;
+    S := '';
     if Assigned(FOnLoadProgress) then
       FOnLoadProgress(Self, 0, Stream.Size - Start);
-    checks := False;
+    Checks := False;
     ch1 := CheckBoxes;
     while I < Stream.Size do
     begin
@@ -1291,30 +1289,30 @@ var
       begin
         while (K < J) and (Buf[K] <> 0) and (Buf[K] <> 1) do
         begin
-          st := st + AnsiChar(Buf[K]);
+          S := S + AnsiChar(Buf[K]);
           Inc(K);
         end;
 
         if K < J then
         begin
-          if t <> nil then
-            t.SubItems.Add(string(st))
+          if ListItem <> nil then
+            ListItem.SubItems.Add(string(S))
           else
           begin
-            t := Items.Add;
-            checks := checks or (st[1] = 'T');
-            t.Checked := st[1] = 'T';
-            st := Copy(st, 2, Length(st));
-            t.Caption := string(st);
+            ListItem := Items.Add;
+            Checks := Checks or (S[1] = 'T');
+            ListItem.Checked := S[1] = 'T';
+            S := Copy(S, 2, Length(S));
+            ListItem.Caption := string(S);
           end;
           if Buf[K] = 1 then
-            t := nil;
-          st := '';
+            ListItem := nil;
+          S := '';
         end;
         Inc(K);
       end;
     end;
-    if (not ch1) and (not checks) then
+    if not ch1 and not Checks then
       CheckBoxes := False;
   end;
 
@@ -1322,62 +1320,56 @@ var
   const
     LV_HASCHECKBOXES = $80;
   var
-    Count, I, J: SmallInt;
+    Count: SmallInt;
+    I, J: Integer;
     Options: Byte;
     UTF8St: UTF8String;
-    st: string;
-    t: TListItem;
+    S: string;
+    ListItem: TListItem;
     Buf: array of AnsiChar;
   begin
-    try
-      Self.Items.BeginUpdate;
-      Self.Items.Clear;
-      Self.Items.EndUpdate;
+    Stream.Read(Options, SizeOf(Options));
+    CheckBoxes := (Options and LV_HASCHECKBOXES) = LV_HASCHECKBOXES;
 
-      Stream.Read(Options, SizeOf(Options));
-      CheckBoxes := (Options and LV_HASCHECKBOXES) = LV_HASCHECKBOXES;
+    //Read all lines
+    while Stream.Position < Stream.Size do
+    begin
+      Stream.Read(Count, SizeOf(Count));
 
-      //Read all lines
-      while Stream.Position < Stream.Size do
+      //statistics
+      if Assigned(FOnLoadProgress) then
+        FOnLoadProgress(Self, Stream.Position, Stream.Size - Start);
+
+      //Read all columns
+      ListItem := Self.Items.Add;
+      for I := 1 to Count do
       begin
-        Stream.Read(Count, SizeOf(Count));
-
-        //statistics
-        if Assigned(FOnLoadProgress) then
-          FOnLoadProgress(Self, Stream.Position, Stream.Size - Start);
-
-        //Read all columns
-        t := Self.Items.Add;
-        for I := 1 to Count do
+        if I = 1 then
         begin
-          if I = 1 then
-          begin
-            Stream.Read(Options, SizeOf(Options));
-            if CheckBoxes then
-              t.Checked := Boolean(Options and Ord(True));
-          end;
-
-          Stream.Read(J, SizeOf(J));
-
-          //Read the string
-          if Length(Buf) < J then
-            SetLength(Buf, J);
-          if J > 0 then
-          begin
-            Stream.Read(Buf, J);
-            SetString(UTF8St, PAnsiChar(Buf[0]), J);
-            st := UTF8ToString(UTF8St);
-          end
-          else
-            st := '';
-
-          if I = 1 then
-            t.Caption := st
-          else
-            t.SubItems.Add(st);
+          Stream.Read(Options, SizeOf(Options));
+          if CheckBoxes then
+            ListItem.Checked := Boolean(Options and Ord(True));
         end;
+
+        Stream.Read(J, SizeOf(J));
+
+        //Read the string
+        if Length(Buf) < J then
+          SetLength(Buf, J);
+        if J > 0 then
+        begin
+          Stream.Read(Buf, J);
+          SetString(UTF8St, PAnsiChar(Buf[0]), J);
+          S := UTF8ToString(UTF8St);
+        end
+        else
+          S := '';
+
+        if I = 1 then
+          ListItem.Caption := S
+        else
+          ListItem.SubItems.Add(S);
       end;
-    except
     end;
   end;
 
@@ -1387,13 +1379,20 @@ begin
   Start := Stream.Position;
   Stream.Read(Buf, 10);
   Buf[10] := #0;
-  if Buf <> cLISTVIEW01 then
-  begin
-    Stream.Position := Start;
-    LoadOldStyle(Stream);
-  end
-  else
-    LoadNewStyle(Stream);
+
+  Items.BeginUpdate;
+  try
+    Items.Clear;
+    if Buf <> cLISTVIEW01 then
+    begin
+      Stream.Position := Start;
+      LoadOldStyle(Stream);
+    end
+    else
+      LoadNewStyle(Stream);
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 procedure TJvListView.SaveToFile(FileName: string; ForceOldStyle: Boolean);
@@ -1414,7 +1413,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
   var
     I, J, K: Integer;
     b, c, d, e: Byte;
-    st: AnsiString;
+    S: AnsiString;
     Buf: array [0..1000] of Byte;
   begin
     b := 0;
@@ -1427,10 +1426,10 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     begin
       if Assigned(FOnSaveProgress) then
         FOnSaveProgress(Self, I + 1, Self.Items.Count);
-      st := AnsiString(Self.Items[I].Caption);
-      for K := 1 to Length(st) do
-        Buf[K - 1] := Byte(st[K]);
-      K := Length(st);
+      S := AnsiString(Self.Items[I].Caption);
+      for K := 1 to Length(S) do
+        Buf[K - 1] := Byte(S[K]);
+      K := Length(S);
       //write checked,not
       if Self.Items[I].Checked then
         Stream.Write(d, 1)
@@ -1444,18 +1443,18 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
         Stream.Write(b, 1);
         for J := 0 to Self.Items[I].SubItems.Count - 2 do
         begin
-          st := AnsiString(Self.Items[I].SubItems[J]);
-          for K := 1 to Length(st) do
-            Buf[K - 1] := Byte(st[K]);
-          K := Length(st);
+          S := AnsiString(Self.Items[I].SubItems[J]);
+          for K := 1 to Length(S) do
+            Buf[K - 1] := Byte(S[K]);
+          K := Length(S);
           Stream.Write(Buf, K);
           Stream.Write(b, 1);
         end;
         J := Self.Items[I].SubItems.Count - 1;
-        st := AnsiString(Self.Items[I].SubItems[J]);
-        for K := 1 to Length(st) do
-          Buf[K - 1] := Byte(st[K]);
-        K := Length(st);
+        S := AnsiString(Self.Items[I].SubItems[J]);
+        for K := 1 to Length(S) do
+          Buf[K - 1] := Byte(S[K]);
+        K := Length(S);
         Stream.Write(Buf, K);
         Stream.Write(c, 1);
       end;
@@ -1486,10 +1485,9 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
   begin
     Buf := cLISTVIEW01;
     Stream.Write(Buf, 10);
+    Options := 0;
     if CheckBoxes then
-      Options := LV_HASCHECKBOXES
-    else
-      Options := 0;
+      Options := LV_HASCHECKBOXES;
     Stream.Write(Options, SizeOf(Options));
     for I := 0 to Items.Count - 1 do
       with Items[I] do
@@ -1529,50 +1527,30 @@ begin
   end;
 end;
 
-procedure TJvListView.LoadFromStrings(Strings: TStrings; Separator: Char);
+procedure TJvListView.LoadFromStrings(Strings: TStrings; Separator: Char; ClearItems: Boolean);
 var
   I: Integer;
   Start, Stop, TmpStart: PChar;
   TmpStr: string;
-  Li: TListItem;
+  ListItem: TListItem;
 begin
-  for I := 0 to Strings.Count - 1 do
-  begin
-    Li := nil;
-    Start := PChar(Strings[I]);
-    Stop := Start + Length(Strings[I]);
-    if (Start <> Stop) and (Start <> nil) and (Start^ <> #0) then
+  Items.BeginUpdate;
+  try
+    if ClearItems then
+      Items.Clear;
+
+    for I := 0 to Strings.Count - 1 do
     begin
-      if Start^ = '"' then
+      ListItem := nil;
+      Start := PChar(Strings[I]);
+      Stop := Start + Length(Strings[I]);
+      if (Start <> Stop) and (Start <> nil) and (Start^ <> #0) then
       begin
-        Li := Items.Add;
-        TmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
-        Li.Caption := TmpStr;
-      end
-      else
-      begin
-        TmpStart := Start;
-        while Start^ <> Separator do
-        begin
-          if Start = Stop then
-            Break;
-          Inc(Start);
-        end;
-        SetString(TmpStr, TmpStart, Start - TmpStart);
-        Li := Items.Add;
-        Li.Caption := TmpStr;
-      end;
-    end;
-    if Li <> nil then
-    begin
-      while (Start <> Stop) and (Start <> nil) and (Start^ <> #0) do
-      begin
-        while Start^ = Separator do
-          Inc(Start);
         if Start^ = '"' then
         begin
+          ListItem := Items.Add;
           TmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
-          Li.SubItems.Add(TmpStr);
+          ListItem.Caption := TmpStr;
         end
         else
         begin
@@ -1584,10 +1562,38 @@ begin
             Inc(Start);
           end;
           SetString(TmpStr, TmpStart, Start - TmpStart);
-          Li.SubItems.Add(TmpStr);
+          ListItem := Items.Add;
+          ListItem.Caption := TmpStr;
+        end;
+      end;
+      if ListItem <> nil then
+      begin
+        while (Start <> Stop) and (Start <> nil) and (Start^ <> #0) do
+        begin
+          while Start^ = Separator do
+            Inc(Start);
+          if Start^ = '"' then
+          begin
+            TmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
+            ListItem.SubItems.Add(TmpStr);
+          end
+          else
+          begin
+            TmpStart := Start;
+            while Start^ <> Separator do
+            begin
+              if Start = Stop then
+                Break;
+              Inc(Start);
+            end;
+            SetString(TmpStr, TmpStart, Start - TmpStart);
+            ListItem.SubItems.Add(TmpStr);
+          end;
         end;
       end;
     end;
+  finally
+    Items.EndUpdate;
   end;
 end;
 
@@ -1596,13 +1602,10 @@ var
   S: TStringList;
 begin
   S := TStringList.Create;
-  Items.BeginUpdate;
   try
-    Items.Clear;
     S.LoadFromFile(FileName);
-    LoadFromStrings(S, Separator);
+    LoadFromStrings(S, Separator, True);
   finally
-    Items.EndUpdate;
     S.Free;
   end;
 end;
@@ -1612,12 +1615,10 @@ var
   S: TStringList;
 begin
   S := TStringList.Create;
-  Items.BeginUpdate;
   try
     SaveToStrings(S, Separator);
     S.SaveToFile(FileName);
   finally
-    Items.EndUpdate;
     S.Free;
   end;
 end;
@@ -1627,9 +1628,12 @@ var
   I: Integer;
 begin
   Items.BeginUpdate;
-  for I := 0 to Items.Count - 1 do
-    Items[I].Selected := not Items[I].Selected;
-  Items.EndUpdate;
+  try
+    for I := 0 to Items.Count - 1 do
+      Items[I].Selected := not Items[I].Selected;
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 procedure TJvListView.UnselectAll;
@@ -1637,9 +1641,12 @@ var
   I: Integer;
 begin
   Items.BeginUpdate;
-  for I := 0 to Items.Count - 1 do
-    Items[I].Selected := False;
-  Items.EndUpdate;
+  try
+    for I := 0 to Items.Count - 1 do
+      Items[I].Selected := False;
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 procedure TJvListView.KeyUp(var Key: Word; Shift: TShiftState);
