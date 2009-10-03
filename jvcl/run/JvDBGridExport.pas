@@ -174,15 +174,24 @@ type
     property AutoFit: Boolean read FAutoFit write FAutoFit;
   end;
 
-  TJvDBGridHTMLExport = class(TJvCustomDBGridExport)
+  TJvCustomDBGridTextExport = class(TJvCustomDBGridExport)
   private
-    FDocument: TStringList;
+    {$IFDEF UNICODE}
+    FEncoding: TEncoding;
+    {$ENDIF UNICODE}
+  public
+    {$IFDEF UNICODE}
+    property Encoding: TEncoding read FEncoding write FEncoding;
+    {$ENDIF UNICODE}
+  end;
+
+  TJvDBGridHTMLExport = class(TJvCustomDBGridTextExport)
+  private
+    FDocument: TStrings;
     FDocTitle: string;
-    FHeader: TStringList;
-    FFooter: TStringList;
+    FHeader: TStrings;
+    FFooter: TStrings;
     FIncludeColumnHeader: Boolean;
-    function GetHeader: TStrings;
-    function GetFooter: TStrings;
     procedure SetHeader(const Value: TStrings);
     procedure SetFooter(const Value: TStrings);
   protected
@@ -193,24 +202,27 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function GenerateHTMLText: string;
   published
     property FileName;
     property Caption;
     property Grid;
     property OnProgress;
     property IncludeColumnHeader: Boolean read FIncludeColumnHeader write FIncludeColumnHeader default True;
-    property Header: TStrings read GetHeader write SetHeader;
-    property Footer: TStrings read GetFooter write SetFooter;
+    property Header: TStrings read FHeader write SetHeader;
+    property Footer: TStrings read FFooter write SetFooter;
     property DocTitle: string read FDocTitle write FDocTitle;
   end;
 
-  TJvDBGridCSVExport = class(TJvCustomDBGridExport)
+  TJvDBGridCSVExport = class(TJvCustomDBGridTextExport)
   private
-    FDocument: TStringList;
+    FDocument: TStrings;
     FDestination: TExportDestination;
     FExportSeparator: TExportSeparator;
     FShowColumnName: Boolean;
     FQuoteEveryTime: Boolean;
+    FSeparator: string;
     procedure SetExportSeparator(const Value: TExportSeparator);
     function SeparatorToString(ASeparator: TExportSeparator): string;
     procedure SetDestination(const Value: TExportDestination);
@@ -219,9 +231,10 @@ type
     procedure DoSave; override;
     procedure DoClose; override;
   public
-    Separator: string;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    property Separator: string read FSeparator write FSeparator;
   published
     property FileName;
     property Caption;
@@ -234,7 +247,7 @@ type
     property QuoteEveryTime: Boolean read FQuoteEveryTime write FQuoteEveryTime default True;
   end;
 
-  TJvDBGridXMLExport = class(TJvCustomDBGridExport)
+  TJvDBGridXMLExport = class(TJvCustomDBGridTextExport)
   private
     FXML: TJvSimpleXML;
     function ClassNameNoT(AField: TField): string;
@@ -271,7 +284,7 @@ implementation
 uses
   Variants, ComObj, Graphics, Clipbrd,
   JclRegistry,
-  JvConsts, JvResources;
+  JvConsts, JvResources, JclStreams;
 
 //=== { TJvCustomDBGridExport } ==============================================
 
@@ -758,24 +771,27 @@ begin
   Footer.Add('</body></html>');   
 end;
 
-function TJvDBGridHTMLExport.GetFooter: TStrings;
-begin
-  Result := FFooter;
-end;
-
 procedure TJvDBGridHTMLExport.SetFooter(const Value: TStrings);
 begin
   FFooter.Assign(Value);
 end;
 
-function TJvDBGridHTMLExport.GetHeader: TStrings;
-begin
-  Result := FHeader;
-end;
-
 procedure TJvDBGridHTMLExport.SetHeader(const Value: TStrings);
 begin
   FHeader.Assign(Value);
+end;
+
+function TJvDBGridHTMLExport.GenerateHTMLText: string;
+begin
+  if not Assigned(Grid) then
+    raise EJvExportDBGridException.CreateRes(@RsEGridIsUnassigned);
+  if not Assigned(Grid.DataSource) or not Assigned(Grid.DataSource.DataSet) then
+    raise EJvExportDBGridException.CreateRes(@RsEDataSetDataSourceIsUnassigned);
+  CheckVisibleColumn;
+  if DoExport then
+    Result := FDocument.Text
+  else
+    Result := '';
 end;
 
 procedure TJvDBGridHTMLExport.DoClose;
@@ -966,7 +982,7 @@ end;
 procedure TJvDBGridHTMLExport.DoSave;
 begin
   inherited DoSave;
-  FDocument.SaveToFile(FileName);
+  FDocument.SaveToFile(FileName {$IFDEF UNICODE}, Encoding{$ENDIF});
 end;
 
 //=== { TJvDBGridCSVExport } =================================================
@@ -1103,7 +1119,7 @@ procedure TJvDBGridCSVExport.DoSave;
 begin
   inherited DoSave;
   if Destination = edFile then
-    FDocument.SaveToFile(FileName)
+    FDocument.SaveToFile(FileName {$IFDEF UNICODE}, Encoding{$ENDIF})
   else
     Clipboard.AsText := FDocument.Text;
 end;
@@ -1227,9 +1243,25 @@ begin
 end;
 
 procedure TJvDBGridXMLExport.DoSave;
+var
+  XmlEncoding: TJclStringEncoding;
 begin
   inherited DoSave;
-  FXML.SaveToFile(FileName);
+  XmlEncoding := seAuto;
+  {$IFDEF UNICODE}
+  if Encoding <> nil then
+  begin
+    if Encoding is TMBCSEncoding then
+      XmlEncoding := seAnsi
+    else
+    if Encoding is TUTF8Encoding then
+      XmlEncoding := seUTF8
+    else
+    if Encoding is TUnicodeEncoding then
+      XmlEncoding := seUTF16;
+  end;
+  {$ENDIF UNICODE}
+  FXML.SaveToFile(FileName, XmlEncoding);
 end;
 
 procedure TJvDBGridXMLExport.DoClose;
