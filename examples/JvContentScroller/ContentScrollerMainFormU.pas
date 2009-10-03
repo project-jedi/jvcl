@@ -38,10 +38,11 @@ type
     JvContentScroller1: TJvContentScroller;
     Label1: TLabel;
     Image11: TImage;
-    chkGoDown: TCheckBox;
     Button1: TButton;
+    rgDirection: TRadioGroup;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure rgDirectionClick(Sender: TObject);
   end;
 
 var
@@ -61,11 +62,15 @@ end;
 
 procedure TContentScrollerMainForm.Button1Click(Sender: TObject);
 begin
-  if chkGoDown.Checked then
-    JvContentScroller1.ScrollDirection := sdDown
-  else
-    JvContentScroller1.ScrollDirection := sdUp;
-  JvContentScroller1.Active := not JvContentScroller1.Active;
+   JvContentScroller1.ScrollDirection := TJvContentScrollDirection(rgDirection.ItemIndex);
+   JvContentScroller1.Active := not JvContentScroller1.Active;
+end;
+
+procedure TContentScrollerMainForm.rgDirectionClick(Sender: TObject);
+begin
+   JvContentScroller1.Active := False;
+   JvContentScroller1.ScrollDirection := TJvContentScrollDirection(rgDirection.ItemIndex);
+   JvContentScroller1.Active := True;
 end;
 
 end.
