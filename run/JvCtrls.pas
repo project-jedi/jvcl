@@ -979,6 +979,9 @@ begin
     KillTimer(Handle, 1);
     FCurrentAnimateFrame := 0;
     DoubleBuffered := False;
+    {$IFDEF COMPILER12_UP}
+    ParentDoubleBuffered := False;
+    {$ENDIF COMPILER12_UP}
     FAnimating := False;
   end;
 end;
