@@ -67,6 +67,7 @@ type
     FLarge: Integer;
     FDisplayName: string;
     FDirList: TJvDirectoryListBox;
+    FOnDriveChange: TNotifyEvent;
     procedure RecreateImageList;
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
@@ -99,6 +100,7 @@ type
     property Offset: Integer read FOffset write SetOffset;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isSmall;
     property DisplayName: string read FDisplayName;
+    property OnDriveChange: TNotifyEvent read FOnDriveChange write FOnDriveChange;
     property Color;
     property DragMode;
     property DragCursor;
@@ -151,6 +153,8 @@ type
     FLarge: Integer;
     FImageAlign: TJvImageAlign;
     FOnChange: TNotifyEvent;
+    FOnDrawItem: TDrawItemEvent;
+    FOnDriveChange: TNotifyEvent;
     procedure SetImageAlign(Value: TJvImageAlign);
     procedure ResetItemHeight;
     procedure SetImageSize(Value: TJvImageSize);
@@ -169,7 +173,6 @@ type
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
     procedure BuildList; virtual;
     procedure Change; dynamic;
-    property Items stored False;
     property Offset: Integer read FOffset write SetOffset;
   public
     constructor Create(AOwner: TComponent); override;
@@ -178,6 +181,8 @@ type
     procedure Refresh;
     property Drives[Index: Integer]: string read GetDrives;
     property DriveCount: Integer read GetDriveCount;
+    property Items stored False;
+    property Images: TImageList read FImages;
   published
     property MultiSelect;
     property ScrollBars default ssNone;
@@ -185,6 +190,7 @@ type
     property Drive: Char read FDrive write SetDrive stored False;
     property DriveTypes: TJvDriveTypes read FDriveTypes write SetDriveTypes;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize;
+    property OnDriveChange: TNotifyEvent read FOnDriveChange write FOnDriveChange;
     property Align;
     property BorderStyle;
     property Color;
@@ -205,6 +211,7 @@ type
     property TabStop;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -235,8 +242,7 @@ type
     FSearchFiles: TJvSearchFiles;
     procedure SetForceFileExtensions(const Value: Boolean);
   protected
-    procedure DrawItem(Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure ReadFileNames; override;
   public
@@ -300,8 +306,7 @@ type
     procedure ReadBitmaps; virtual;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
-    function ReadDirectoryNames(const ParentDirectory: string;
-      DirectoryList: TStrings): Integer;
+    function ReadDirectoryNames(const ParentDirectory: string; DirectoryList: TStrings): Integer;
     procedure BuildList; virtual;
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -320,7 +325,7 @@ type
   published
     property Align;
     property AutoExpand: Boolean read FAutoExpand write FAutoExpand default True;
-	property MultiSelect default False;
+    property MultiSelect default False;
     property BorderStyle;
     property BevelInner;
     property BevelOuter;
@@ -464,7 +469,11 @@ begin
     if ((TWMDeviceChange(Msg).Event = DBT_DEVICEARRIVAL) or
       (TWMDeviceChange(Msg).Event = DBT_DEVICEREMOVECOMPLETE)) and
       (PDevBroadcastVolume(TWMDeviceChange(Msg).dwData)^.dbcv_devicetype = DBT_DEVTYP_VOLUME) then
+    begin
       Refresh;
+      if Assigned(FOnDriveChange) then
+        FOnDriveChange(Self);
+    end;
 end;
 
 procedure TJvDriveCombo.RecreateImageList;
@@ -769,7 +778,11 @@ begin
     if ((TWMDeviceChange(Msg).Event = DBT_DEVICEARRIVAL) or
       (TWMDeviceChange(Msg).Event = DBT_DEVICEREMOVECOMPLETE)) and
       (PDevBroadcastVolume(TWMDeviceChange(Msg).dwData)^.dbcv_devicetype = DBT_DEVTYP_VOLUME) then
+    begin
       Refresh;
+      if Assigned(FOnDriveChange) then
+        FOnDriveChange(Self);
+    end;
 end;
 
 procedure TJvDriveList.BuildList;
@@ -867,7 +880,12 @@ begin
       Canvas.Font.Color := clHighlightText;
     end;
     if Integer(itemID) >= 0 then
-      DrawItem(itemID, rcItem, State)
+    begin
+      if Assigned(FOnDrawItem) then
+        OnDrawItem(Self, itemID, rcItem, State)
+      else
+        DrawItem(itemID, rcItem, State);
+    end
     else
       Canvas.FillRect(rcItem);
 
