@@ -83,10 +83,8 @@ class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(const LinkLabel: TJvLin
       ntActionNode:
         Result := Result + ' (' +
           GetEnumName(TypeInfo(TActionType), Integer((Node as TActionNode).Action)) + ')';
-      // Bianconi
       ntColorNode:
         Result := Result + ' ( ' + ColorToString(TColorNode(Node).Color) + ' )';
-      // End of Bianconi
       ntUnknownNode:
         Result := Result + ' ("' + (Node as TUnknownNode).Tag + '")';
     end;
