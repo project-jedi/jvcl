@@ -652,8 +652,6 @@ var
   URLHandle: THandle = 0;
   SHDocvwHandle: THandle = 0;
 
-
-
 procedure LoadJvDialogs;
 begin
   ShellHandle := SafeLoadLibrary(Shell32);
@@ -1590,9 +1588,6 @@ begin
   Result := GetDriveType(PChar(DriveChar + ':\')) = 3;
   if Result then
     SHHandleDiskFull(GetForegroundWindow, GetDrive);
-  // (rom) disabled to make Result work
-  //else
-  //  raise EWinDialogError.CreateResFmt(@RsEUnSupportedDisk, [DriveChar]);
 end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
@@ -1607,6 +1602,8 @@ end;
 
 function TJvExitWindowsDialog.Execute: Boolean;
 begin
+  if not Assigned(SHShutDownDialog) then
+    raise EWinDialogError.CreateRes(@RsENotSupported);
   SHShutDownDialog(GetForegroundWindow);
   Result := True;
 end;
@@ -1678,8 +1675,6 @@ begin
   else
     Result := inherited Execute;
 end;
-
-
 
 //=== { TJvURLAssociationDialog } ============================================
 

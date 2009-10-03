@@ -296,15 +296,15 @@ begin
 
   case Msg.NMHdr.code of
     TVN_SELCHANGINGA:
-    begin
-      pnmtvA := PNMTREEVIEWA(Msg.NMHdr);
-      TreeView_GetItemRect(Handle, pnmtvA.itemNew.hItem, FNextItemRect, False);
-    end;
+      begin
+        pnmtvA := PNMTREEVIEWA(Msg.NMHdr);
+        TreeView_GetItemRect(Handle, pnmtvA.itemNew.hItem, FNextItemRect, False);
+      end;
     TVN_SELCHANGINGW:
-    begin
-      pnmtvW := PNMTREEVIEWW(Msg.NMHdr);
-      TreeView_GetItemRect(Handle, pnmtvW.itemNew.hItem, FNextItemRect, False);
-    end;
+      begin
+        pnmtvW := PNMTREEVIEWW(Msg.NMHdr);
+        TreeView_GetItemRect(Handle, pnmtvW.itemNew.hItem, FNextItemRect, False);
+      end;
   end;
 end;
 
@@ -438,9 +438,7 @@ begin
     end;
   end
   else
-  begin
     CheckBoxOptions.Style := cbsNone;
-  end;
 end;
 
 procedure TJvCheckTreeView.SetCheckBoxOptions(const Value: TJvTreeViewCheckBoxOptions);
