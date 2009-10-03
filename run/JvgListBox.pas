@@ -414,7 +414,7 @@ var
     begin
       FGlyphs.GetBitmap(I, FTmpBitmap);
       if LSelected and (fboChangeGlyphColor in Options) then
-        ChangeBitmapColor(FTmpBitmap, FChangeGlyphColor.FromColor,
+        JvgUtils.ChangeBitmapColor(FTmpBitmap, FChangeGlyphColor.FromColor,
           FChangeGlyphColor.ToColor);
 
       if FAutoTransparentColor = ftcUser then
@@ -427,7 +427,7 @@ var
         fwoNone, fdsDefault, True, FTranspColor, clBlack);
         //      else
         //      begin
- //        ChangeBitmapColor( FTmpBitmap, FTranspColor, ItemStyle.Color );
+ //        JvgUtils.ChangeBitmapColor( FTmpBitmap, FTranspColor, ItemStyle.Color );
  //        BitBlt( DC, R.Left, R.Top, FTmpBitmap.Width, FTmpBitmap.Height, FTmpBitmap.Canvas.Handle,
  //                0, 0, SRCCOPY );
  //      end;

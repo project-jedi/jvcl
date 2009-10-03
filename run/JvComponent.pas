@@ -53,7 +53,6 @@ type
     FIsFocusable: Boolean;
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;

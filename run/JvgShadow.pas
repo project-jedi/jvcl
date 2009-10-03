@@ -322,7 +322,7 @@ begin
     Rect(0, 0, FShadowImageBuff.Width, FShadowImageBuff.Height), 0, 0,
     fwoTile, fdsDefault, FTransparentShadow, FTransparentColor, 0);
   if FMaskedShadow then
-    ChangeBitmapColor(FShadowImageBuff, FMaskedFromColor, FMaskedToColor);
+    JvgUtils.ChangeBitmapColor(FShadowImageBuff, FMaskedFromColor, FMaskedToColor);
 end;
 
 procedure TJvgShadow.CreateDefaultShadowImage;

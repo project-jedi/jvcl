@@ -307,7 +307,7 @@ begin
     FTransparent, FTransparentColor, FDisabledMaskColor);
 
   if FMasked then
-    ChangeBitmapColor(FResBitmap, FMaskedColor, FMaskedToColor);
+    JvgUtils.ChangeBitmapColor(FResBitmap, FMaskedColor, FMaskedToColor);
 
   {  GetObject( FResBitmap.Handle, SizeOf(Windows.TBitmap), @BmpInfo );
     if BmpInfo.bmBitsPixel >= 8 then

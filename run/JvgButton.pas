@@ -590,19 +590,19 @@ begin
       if FBlinked then
         if State = fbsPushed then
           with FChangeColorOnPush do
-            ChangeBitmapColor(TmpBMP, FromColor, ToColor)
+            JvgUtils.ChangeBitmapColor(TmpBMP, FromColor, ToColor)
         else
           with FChangeColorOnActivate do
-            ChangeBitmapColor(TmpBMP, FromColor, ToColor);
+            JvgUtils.ChangeBitmapColor(TmpBMP, FromColor, ToColor);
     end
     else
     if fChangeColor and (FDrawMode <> dmUseImageList) then
       if State = fbsActive then
         with FChangeColorOnActivate do
-          ChangeBitmapColor(TmpBMP, FromColor, ToColor)
+          JvgUtils.ChangeBitmapColor(TmpBMP, FromColor, ToColor)
       else
         with FChangeColorOnPush do
-          ChangeBitmapColor(TmpBMP, FromColor, ToColor);
+          JvgUtils.ChangeBitmapColor(TmpBMP, FromColor, ToColor);
     FNeedBlink := False;
     if (DrawMode = dmAutoShadow) and (State = fbsPushed) or
       (FDrawMode = dmUseImageList) then
@@ -833,7 +833,7 @@ begin
           SRCCOPY);
 
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
           FShadowDepth, FShadowDepth, fwoNone, fdsDefault, True,
@@ -875,7 +875,7 @@ begin
       begin
         RemakeTmpBMP;
         if clBlack <> FColorDarkShadow then
-          ChangeBitmapColor(TmpBMP, clBlack, FColorDarkShadow);
+          JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorDarkShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
@@ -893,7 +893,7 @@ begin
           FDisabledMaskColor);
 
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
         CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
           0, 0, fwoNone, fdsDefault, True, FTransparentColor,
@@ -910,7 +910,7 @@ begin
             FDisabledMaskColor);
         end;
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphInactive.Canvas.Handle, TmpBMP, Rect(0, 0,
@@ -929,7 +929,7 @@ begin
         if boDrawPushedAsFlat in FOptions then
           Exit;
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
@@ -948,7 +948,7 @@ begin
 
         RemakeTmpBMP;
         if clBlack <> FColorDarkShadow then
-          ChangeBitmapColor(TmpBMP, clBlack, FColorDarkShadow);
+          JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorDarkShadow);
 
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
@@ -966,7 +966,7 @@ begin
             FDisabledMaskColor);
         end;
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
@@ -993,7 +993,7 @@ begin
           0, 0, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
         if boShadowSurround in FOptions then
         begin
           CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
@@ -1010,7 +1010,7 @@ begin
           2, 2, fwoNone, fdsDefault, True, FTransparentColor,
           FDisabledMaskColor);
         RemakeTmpBMP;
-        ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
         CreateBitmapExt(FGlyphActive.Canvas.Handle, TmpBMP, Rect(0, 0,
           TmpBMP.Width, TmpBMP.Height),
           0, 0, fwoNone, fdsDefault, True, FTransparentColor,
@@ -1031,7 +1031,7 @@ begin
       if boDrawPushedAsFlat in FOptions then
         Exit;
       RemakeTmpBMP;
-      ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
+      JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorHighlight);
       if boShadowSurround in FOptions then
       begin
         CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
@@ -1049,7 +1049,7 @@ begin
         FDisabledMaskColor);
       RemakeTmpBMP;
       if clBlack <> FColorShadow then
-        ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
+        JvgUtils.ChangeBitmapColor(TmpBMP, clBlack, FColorShadow);
 
       CreateBitmapExt(FGlyphPushed.Canvas.Handle, TmpBMP, Rect(0, 0,
         TmpBMP.Width, TmpBMP.Height),

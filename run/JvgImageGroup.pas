@@ -191,7 +191,7 @@ begin
     FImageList.GetBitmap(I, Bitmap);
 
     if FMasked then
-      ChangeBitmapColor(FImage, FMaskedColor, clBtnFace);
+      JvgUtils.ChangeBitmapColor(FImage, FMaskedColor, clBtnFace);
 
     CreateBitmapExt(FImage.Canvas.Handle, Bitmap, ClientRect,
       I * FImageList.Width, 0,
