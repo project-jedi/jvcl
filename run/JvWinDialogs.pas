@@ -364,11 +364,20 @@ type
     property DriveChar: Char read FDriveChar write SetDriveChar default 'C';
   end;
 
+  TJvExitWindowsKind = (
+    ekXPDialog = 0,        // Show XP style shutdown dialog
+    ekVistaLogoff = 1,     // Vista Logoff without dialog
+    ekVistaShutdown = 2    // Vista Shutdown without dialog
+  );
+
   TJvExitWindowsDialog = class(TJvCommonDialogP)
+  private
+    FKind: TJvExitWindowsKind;
   public
     function Execute: Boolean; override;
+  published
+    property Kind: TJvExitWindowsKind read FKind write FKind default ekXPDialog;
   end;
-
 
   // (p3) this extension (PlacesBar) is already in TJvOpenDialog
   TJvOpenDialog2000 = class(TOpenDialog)
@@ -564,6 +573,7 @@ type
   SHFormatDriveProc = function(Wnd: THandle; Drive: UINT; fmtID: UINT;
     Options: UINT): DWORD; stdcall;
   SHShutDownDialogProc = procedure(Wnd: THandle); stdcall;
+  SHShutDownDialog6Proc = procedure(Wnd: THandle; Kind: Integer); stdcall; // Vista or newer
   SHRunDialogProc = function(Wnd: THandle; Unknown1: Integer; Unknown2: Pointer;
     szTitle: PChar; szPrompt: PChar; uiFlages: Integer): DWORD; stdcall;
   SHFindFilesProc = function(Root: PItemIDList; SavedSearchFile: PItemIDList): LongBool; stdcall;
@@ -608,6 +618,7 @@ var
   GetSaveFileNameEx: GetSaveFileNameExProc = nil;
   SHFormatDrive: SHFormatDriveProc = nil;
   SHShutDownDialog: SHShutDownDialogProc = nil;
+  SHShutDownDialog6: SHShutDownDialog6Proc = nil;
   SHRunDialog: SHRunDialogProc = nil;
   SHFindFiles: SHFindFilesProc = nil;
   SHFindComputer: SHFindComputerProc = nil;
@@ -663,7 +674,10 @@ begin
       @SHChangeIcon := GetProcAddress(ShellHandle, PAnsiChar(62));
     @SHFormatDrive := GetProcAddress(ShellHandle, PAnsiChar('SHFormatDrive'));
     @FreePIDL := GetProcAddress(ShellHandle, PAnsiChar(155));
-    @SHShutDownDialog := GetProcAddress(ShellHandle, PAnsiChar(60));
+    if CheckWin32Version(6, 0) then
+      @SHShutDownDialog6 := GetProcAddress(ShellHandle, PAnsiChar(60))
+    else
+      @SHShutDownDialog := GetProcAddress(ShellHandle, PAnsiChar(60));
     @SHRunDialog := GetProcAddress(ShellHandle, PAnsiChar(61));
     @SHFindFiles := GetProcAddress(ShellHandle, PAnsiChar(90));
     @SHFindComputer := GetProcAddress(ShellHandle, PAnsiChar(91));
@@ -1602,9 +1616,12 @@ end;
 
 function TJvExitWindowsDialog.Execute: Boolean;
 begin
-  if not Assigned(SHShutDownDialog) then
+  if not Assigned(SHShutDownDialog) and not Assigned(SHShutDownDialog6) then
     raise EWinDialogError.CreateRes(@RsENotSupported);
-  SHShutDownDialog(GetForegroundWindow);
+  if Assigned(SHShutDownDialog6) then
+    SHShutDownDialog6(GetForegroundWindow, Integer(Kind)) // Vista or newer
+  else
+    SHShutDownDialog(GetForegroundWindow);
   Result := True;
 end;
 
