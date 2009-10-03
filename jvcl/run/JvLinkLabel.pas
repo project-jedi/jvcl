@@ -63,8 +63,7 @@ type
     FRenderer: IRenderer;
     FActiveLinkNode: TLinkNode;
     FHotLinks: Boolean;
-    FLinkCursor: TCursor;  // Bianconi
-    // FRect: TRect;
+    FLinkCursor: TCursor;
     FAutoHeight: Boolean;
     FMarginWidth: Integer;
     FMarginHeight: Integer;
@@ -73,7 +72,7 @@ type
     FOnLinkClick: TLinkClickEvent;
     FOnDynamicTagInit: TDynamicTagInitEvent;
     FParser: IParser;
-    FLayout: TTextLayout;  // Bianconi
+    FLayout: TTextLayout;
     FCaption: TCaption;
     procedure SetText(const Value: TCaption);
     procedure SetTransparent(const Value: Boolean);
@@ -81,8 +80,6 @@ type
     function GetLinkStyle: TFontStyles;
     procedure SetLinkColor(const Value: TColor);
     procedure SetLinkStyle(const Value: TFontStyles);
-    function GetLinkCursor: TCursor;                    // Bianconi
-    procedure SetLinkCursor(AValue: TCursor);           // Bianconi
     procedure SynchronizeRootAndFont;
     function GetLinkColorClicked: TColor;
     procedure SetLinkColorClicked(const Value: TColor);
@@ -98,21 +95,19 @@ type
     procedure SetMarginWidth(const Value: Integer);
     function GetStrings: TStrings;
     procedure SetStrings(const Value: TStrings);
-    procedure SetLayout(AValue: TTextLayout);     // Bianconi
+    procedure SetLayout(AValue: TTextLayout);
   protected
     FNodeTree: TNodeTree;
     procedure TextChanged; override;
     procedure FontChanged; override;
     procedure Paint; override;
+    procedure DrawBackground(NodeAtPoint: TLinkNode);
     function CreateParser: IParser; virtual;
     function CreateRenderer: IRenderer; virtual;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseLeave(Control: TControl); override;
-    procedure Resize; override;
     procedure DoCaptionChanged; virtual;
     procedure DoLinkClicked(LinkNumber: Integer; LinkText, LinkParam: string); virtual;  // added LinkParam by Cetkovsky
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
@@ -121,11 +116,11 @@ type
     property Caption: TCaption read FCaption write SetText;
     property Text: TStrings read GetStrings write SetStrings;
     property Transparent: Boolean read GetTransparent write SetTransparent default False;
-    property Layout: TTextLayout read FLayout write SetLayout default tlTop;                // Bianconi
+    property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property LinkColor: TColor read GetLinkColor write SetLinkColor default clBlue;
     property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked default clRed;
     property LinkColorHot: TColor read GetLinkColorHot write SetLinkColorHot default clPurple;
-    property LinkCursor: TCursor read GetLinkCursor write SetLinkCursor default crHandPoint;
+    property LinkCursor: TCursor read FLinkCursor write FLinkCursor default crHandPoint;
     property LinkStyle: TFontStyles read GetLinkStyle write SetLinkStyle default [fsUnderline];
     property HotLinks: Boolean read FHotLinks write FHotLinks default False;
     property AutoHeight: Boolean read FAutoHeight write SetAutoHeight default True;
@@ -148,11 +143,11 @@ type
     property Text;
     property Anchors;
     property Transparent;
-    property Layout;                   // Bianconi
+    property Layout;
     property LinkColor;
     property LinkColorClicked;
     property LinkColorHot;
-    property LinkCursor;               // Bianconi
+    property LinkCursor;
     property LinkStyle;
     property HotLinks;
     property AutoHeight;
@@ -203,10 +198,7 @@ const
 implementation
 
 uses
-  JvThemes, JvResources;
-
-// Bianconi - Use property LinkCursor
-//{.$R ../resources/JvLinkLabel.res}
+  JvThemes, JvResources, JvJVCLUtils;
 
 const
   crNewLinkHand = 1;
@@ -228,14 +220,12 @@ begin
   FParser.SetDynamicNodeHandler(Self);
   FRenderer := CreateRenderer;
 
-  FLayout := tlTop;              // Bianconi
+  FLayout := tlTop;
 
   SetLinkColor(clBlue);
   SetLinkColorClicked(clRed);
   SetLinkColorHot(clPurple);
   SetLinkStyle([fsUnderline]);
-
-  //  Screen.Cursors[crNewLinkHand] := LoadCursor(HInstance, 'LINKHAND');  // Bianconi
 end;
 
 destructor TJvCustomLinkLabel.Destroy;
@@ -248,7 +238,7 @@ end;
 procedure TJvCustomLinkLabel.ActivateLinkNodeAtPos(const P: TPoint; State: TLinkState);
 var
   NodeAtPoint: TLinkNode;
-  Pt: TPoint;  // Bianconi #2
+  Pt: TPoint;
   TmpRect: TRect;
 
   function IsNewNode: Boolean;
@@ -262,7 +252,6 @@ var
   end;
 
 begin
-  // Bianconi #2
   // Changes Control's canvas point to relative coordinates
   Pt := Point(P.X - FNodeTree.Root.StartingPoint.X,P.Y - FNodeTree.Root.StartingPoint.Y);
 
@@ -275,8 +264,14 @@ begin
       NodeAtPoint.State := State;
       FActiveLinkNode := NodeAtPoint;
       TmpRect := ClientRect;
-      InflateRect(TmpRect,-FMarginWidth,-FMarginHeight);
-      FRenderer.RenderNode(Canvas, TmpRect, NodeAtPoint);
+      InflateRect(TmpRect, -FMarginWidth, -FMarginHeight);
+      Canvas.Lock;
+      try
+        DrawBackground(NodeAtPoint);
+        FRenderer.RenderNode(Canvas, TmpRect, NodeAtPoint);
+      finally
+        Canvas.Unlock;
+      end;
     end;
   end;
 end;
@@ -289,8 +284,14 @@ begin
   try
     FActiveLinkNode.State := lsNormal;
     TmpRect := ClientRect;
-    InflateRect(TmpRect,-FMarginWidth,-FMarginHeight);
-    FRenderer.RenderNode(Canvas, TmpRect, FActiveLinkNode);
+    InflateRect(TmpRect, -FMarginWidth, -FMarginHeight);
+    Canvas.Lock;
+    try
+      DrawBackground(FActiveLinkNode);
+      FRenderer.RenderNode(Canvas, TmpRect, FActiveLinkNode);
+    finally
+      Canvas.Unlock;
+    end;
   finally
     FActiveLinkNode := nil;
   end;
@@ -367,6 +368,34 @@ begin
     FOnLinkClick(Self, LinkNumber, LinkText, LinkParam);
 end;
 
+procedure TJvCustomLinkLabel.DrawBackground(NodeAtPoint: TLinkNode);
+var
+  TmpR: TRect;
+  Enum: IRectEnumerator;
+begin
+  if (NodeAtPoint <> nil) and (Parent <> nil) and Parent.HandleAllocated then
+  begin
+    Enum := NodeAtPoint.GetRectEnumerator;
+    if Enum.HasNext then
+    begin
+      TmpR := Enum.GetNext;
+      while Enum.HasNext do
+        UnionRect(TmpR, TmpR, Enum.GetNext);
+    end;
+
+    if Transparent then
+    begin
+      OffsetRect(TmpR, Left, Top);
+      PerformEraseBackground(Self, Canvas.Handle, Point(0, 0), TmpR);
+    end
+    else
+    begin
+      Canvas.Brush.Color := Color;
+      Canvas.FillRect(TmpR);
+    end;
+  end;
+end;
+
 function TJvCustomLinkLabel.GetDynamicTagContents(Number: Integer): string;
 var
   Node: TAreaNode;
@@ -434,13 +463,11 @@ end;
 
 procedure TJvCustomLinkLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
-  Pt: TPoint;  // Bianconi #2
+  Pt: TPoint;
 begin
   inherited MouseMove(Shift, X, Y);
 
-  // Bianconi #2
   Pt := Point(X - FNodeTree.Root.StartingPoint.X,Y - FNodeTree.Root.StartingPoint.Y);
-
   if FNodeTree.IsPointInNodeClass(Pt, TLinkNode) then
   begin
     Cursor := LinkCursor;
@@ -459,13 +486,11 @@ procedure TJvCustomLinkLabel.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   NodeAtPoint: TLinkNode;
-  Pt: TPoint;  // Bianconi #2
+  Pt: TPoint;
 begin
   inherited MouseUp(Button, Shift, X, Y);
 
-  // Bianconi #2
   Pt := Point(X - FNodeTree.Root.StartingPoint.X,Y - FNodeTree.Root.StartingPoint.Y);
-
   if FNodeTree.IsPointInNodeClass(Pt, TLinkNode) then
   begin
     NodeAtPoint := FNodeTree.GetNodeAtPointOfClass(Pt, TLinkNode) as TLinkNode;
@@ -476,7 +501,6 @@ begin
   DeactivateActiveLinkNode;
 end;
 
-// Bianconi
 procedure TJvCustomLinkLabel.Paint;
 var
   TmpBmp: TBitmap;
@@ -484,32 +508,34 @@ var
 begin
   TmpBmp := nil;
   if Assigned(FNodeTree) then
+  begin
+    if not Transparent then
+    begin
+      // repaint canvas
+      DrawThemedBackground(Self, Canvas, ClientRect);
+    end;
+
     try
       Canvas.Font := Font;
-      if not Transparent then
-      begin
-        // repaint canvas
-        Canvas.Brush.Color := Color;
-        Canvas.Brush.Style := bsSolid;
-        DrawThemedBackground(Self, Canvas, ClientRect);
-      end;
-      Canvas.Brush.Style := bsClear;
-
       TmpBmp := TBitmap.Create;
       TmpRect := ClientRect;
+      TmpBmp.Canvas.Brush.Color := Color;
+      TmpBmp.Canvas.Brush.Style := bsSolid;
       TmpBmp.Height := TmpRect.Bottom - (FMarginHeight shl 1) + 1;  // TmpRect.Top = 0, ignore it
       TmpBmp.Width  := TmpRect.Right - (FMarginWidth shl 1) + 1;    // TmpRect.left = 0, ignore it
       TmpBmp.Canvas.Font.Assign(Canvas.Font);
       TmpBmp.Canvas.Pen.Assign(Canvas.Pen);
-      // Initialize background of canvas
-      // You should choose a color diferent from your links colors to made it visible
-      TmpBmp.Canvas.Brush.Color := Color;
-      TmpBmp.Canvas.Brush.Style := bsSolid;
-      TmpBmp.Canvas.FillRect(Rect(0,0,TmpBmp.Width - 1,TmpBmp.Height - 1));
+
+      if Transparent then
+      begin
+        TmpBmp.Canvas.CopyRect(ClientRect, Canvas, ClientRect);
+        TmpBmp.Canvas.Brush.Style := bsClear;
+      end;
+      Canvas.Brush.Style := bsClear;
 
       // Set new start point
       // The new start point is relative to temporary canvas, Left & Top Corner
-      FNodeTree.Root.StartingPoint := Point(0,0);  // Bianconi #2
+      FNodeTree.Root.StartingPoint := Point(0,0);
       FRenderer.RenderTree(TmpBmp.Canvas, Rect(0,0,TmpBmp.Width - 1,TmpBmp.Height - 1), FNodeTree);
 
       //  Set new height e don't draw in this pass.
@@ -522,7 +548,7 @@ begin
       else
       begin
         TmpRect := ClientRect;
-        InflateRect(TmpRect,-FMarginWidth,-FMarginHeight);
+        InflateRect(TmpRect, -FMarginWidth, -FMarginHeight);
 
         case FLayout of
           tlTop:
@@ -544,28 +570,13 @@ begin
             end;
         end;
         // Adjust Root start point relative to control's canvas.
-        FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);  // Bianconi #2
-        // VisualCLX: most be done after the bitmap is drawn.
-        TmpBmp.Transparent := True;
-        TmpBmp.TransparentMode := tmFixed;
-        TmpBmp.TransparentColor := Color;
-
-        Canvas.Draw(TmpRect.Left,TmpRect.Top,TmpBmp);
+        FNodeTree.Root.StartingPoint := Point(TmpRect.Left, TmpRect.Top);
+        Canvas.Draw(TmpRect.Left, TmpRect.Top, TmpBmp);
       end;
     finally
       TmpBmp.Free;
     end;
-end;
-// End of Bianconi
-
-procedure TJvCustomLinkLabel.Resize;
-begin
-  inherited Resize;
-// Bianconi -> ClientRect.Bottom - FMarginHeight
-// MarginHeight is applied on Top and Bottom values, exactly as MargimWidth
-//  FRect := Rect(ClientRect.Left + FMarginWidth, ClientRect.Top + FMarginHeight,
-//    ClientRect.Right - FMarginWidth, ClientRect.Bottom - FMarginHeight);
-// end of Bianconi
+  end;
 end;
 
 procedure TJvCustomLinkLabel.SetAutoHeight(const Value: Boolean);
@@ -623,18 +634,6 @@ begin
   end;
 end;
 
-// Bianconi
-function TJvCustomLinkLabel.GetLinkCursor: TCursor;
-begin
-  Result := FLinkCursor;
-end;
-
-// Bianconi
-procedure TJvCustomLinkLabel.SetLinkCursor(AValue: TCursor);
-begin
-  FLinkCursor := AValue;
-end;
-
 procedure TJvCustomLinkLabel.SetMarginHeight(const Value: Integer);
 begin
   if FMarginHeight <> Value then
@@ -665,7 +664,6 @@ begin
   FText.Assign(Value);  SetText(FText.Text);
 end;
 
-// Bianconi
 procedure TJvCustomLinkLabel.SetLayout(AValue: TTextLayout);
 begin
   if FLayout <> AValue then
@@ -674,7 +672,6 @@ begin
     Invalidate;
   end;
 end;
-// end of Bianconi
 
 procedure TJvCustomLinkLabel.SetTransparent(const Value: Boolean);
 begin

@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is David Polberger <dpol att swipnet 
 Portions created by David Polberger are Copyright (C) 2002 David Polberger.
 All Rights Reserved.
 
-Contributor(s): Cetkvosky
+Contributor(s): Cetkvosky, Bianconi
 
 Current Version: 2.00
 
@@ -29,8 +29,6 @@ Description:
   interface is supposed to render the output of the supplied TNodeTree to the
   screen.
 
-  Note: Documentation for this unit can be found in Doc\Source.txt and
-        Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -61,8 +59,7 @@ type
     procedure SetLinkStyle(const Value: TFontStyles);
 
     procedure RenderTree(const Canvas: TCanvas; Rect: TRect; const Tree: TNodeTree);
-    procedure RenderNode(const Canvas: TCanvas; Rect: TRect;
-      const Node: TAreaNode);
+    procedure RenderNode(const Canvas: TCanvas; Rect: TRect; const Node: TAreaNode);
     function GetTextHeight: Integer;
     property LinkColor: TColor read GetLinkColor write SetLinkColor;
     property LinkColorClicked: TColor read GetLinkColorClicked write SetLinkColorClicked;
@@ -149,10 +146,8 @@ begin
         end;
       ntStyleNode:
         NewStyles := Styles + [(ChildNode as TStyleNode).Style];
-      // Bianconi
       ntColorNode:
         NewColor := (ChildNode as TColorNode).Color;
-      // End of Bianconi
       ntLinkNode:
         begin
           NewStyles := Styles + LinkStyle;
@@ -185,7 +180,6 @@ procedure TDefaultRenderer.RenderNode(const Canvas: TCanvas; Rect: TRect;
 begin
   FTextHandler := TTextHandler.Create(Rect,
     Node.StartingPoint.X, Node.StartingPoint.Y, Canvas);
-  // End of Bianconi #2
   try
     DoRenderNode(Node, Node.Styles, Node.Color);
     FTextHandler.EmptyBuffer;
