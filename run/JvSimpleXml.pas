@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JclSimpleXml;
+  JclSimpleXml, JclStreams;
 
 type
   TJvOnSimpleXMLParsed = TJclOnSimpleXMLParsed;
@@ -133,8 +133,8 @@ type
     procedure LoadFromFile(const FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromResourceName(Instance: THandle; const ResName: string);
-    procedure SaveToFile(FileName: TFileName);
-    procedure SaveToStream(Stream: TStream);
+    procedure SaveToFile(FileName: TFileName; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
+    procedure SaveToStream(Stream: TStream; Encoding: TJclStringEncoding = seAuto; CodePage: Word = CP_ACP);
     function SaveToString: string;
     property Prolog: TJvSimpleXMLElemsProlog read GetProlog write SetProlog;
     property Root: TJvSimpleXMLElemClassic read GetRoot write SetRoot;
@@ -375,14 +375,14 @@ begin
   FJclSimpleXML.LoadFromString(Value);
 end;
 
-procedure TJvSimpleXML.SaveToFile(FileName: TFileName);
+procedure TJvSimpleXML.SaveToFile(FileName: TFileName; Encoding: TJclStringEncoding; CodePage: Word);
 begin
-  FJclSimpleXML.SaveToFile(FileName);
+  FJclSimpleXML.SaveToFile(FileName, Encoding, CodePage);
 end;
 
-procedure TJvSimpleXML.SaveToStream(Stream: TStream);
+procedure TJvSimpleXML.SaveToStream(Stream: TStream; Encoding: TJclStringEncoding; CodePage: Word);
 begin
-  FJclSimpleXML.SaveToStream(Stream);
+  FJclSimpleXML.SaveToStream(Stream, Encoding, CodePage);
 end;
 
 function TJvSimpleXML.SaveToString: string;
