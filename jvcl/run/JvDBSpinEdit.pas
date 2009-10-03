@@ -161,7 +161,7 @@ begin
       end
       else
       begin
-        FIsNull := (FDataLink.Field.DisplayText = '');
+        FIsNull := FDataLink.Field.DisplayText = '';
         // Mantis 2131, see above
         if (FDataLink.Field is TNumericField) and
           (Length((FDataLink.Field as TNumericField).DisplayFormat) <> 0) then
@@ -344,7 +344,7 @@ begin
     if not FDataChanging and (FDataLink.Field <> nil) then
     begin
       if (IsNull and not FDataLink.Field.IsNull) or
-         (not IsNull and FDataLink.Field.Value <> NewValue) then
+         (not IsNull and not VarSameValue(FDataLink.Field.Value, NewValue)) then
         FDataLink.Edit;
     end;
   end;
@@ -386,7 +386,7 @@ begin
   { Never masked? }
   {ValidateEdit;}
   if FDataLink.Editing then
-    FDataLink.Field.Text := Text;
+    FDataLink.Field.AsFloat := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
