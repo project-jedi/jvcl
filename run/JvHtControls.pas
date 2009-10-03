@@ -16,6 +16,8 @@ All Rights Reserved.
 
 Contributor(s):
   Maciej Kaczkowski
+  Timo Tegtmeier
+  Andreas Hausladen
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.delphi-jedi.org
@@ -133,24 +135,23 @@ type
     procedure GotoCurrent;
   end;
 
-  THyperLinkClick = procedure(Sender: TObject; LinkName: string) of object;
+  TJvHyperLinkClickEvent = procedure(Sender: TObject; LinkName: string) of object;
 
   TJvCustomHTListBox = class(TJvExCustomListBox)
   private
-    FHyperLinkClick: THyperLinkClick;
+    FOnHyperLinkClick: TJvHyperLinkClickEvent;
     FHideSel: Boolean;
-    FColorHighlight: TColor;         // <-+-- Kaczkowski: from JvMultiLineListBox
-    FColorHighlightText: TColor;     // <-+
+    FColorHighlight: TColor;
+    FColorHighlightText: TColor;
     FColorDisabledText: TColor;
-    FDataConnector: TJvCustomListBoxDataConnector;     // <-+
+    FDataConnector: TJvCustomListBoxDataConnector;
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDataConnector(const Value: TJvCustomListBoxDataConnector);
   protected
     function CreateDataConnector: TJvCustomListBoxDataConnector; virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure FontChanged; override;
     procedure Loaded; override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
@@ -163,12 +164,10 @@ type
     procedure CMChanged(var Message: TCMChanged); message CM_CHANGED;
     property HideSel: Boolean read FHideSel write SetHideSel;
 
-    // Kaczkowski - moved from JvMultiLineListBox
     property ColorHighlight: TColor read FColorHighlight write FColorHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write FColorHighlightText;
     property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
-    // Kaczkowski - end
-    property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
+    property OnHyperLinkClick: TJvHyperLinkClickEvent read FOnHyperLinkClick write FOnHyperLinkClick;
 
     property DataConnector: TJvCustomListBoxDataConnector read FDataConnector write SetDataConnector;
   end;
@@ -181,11 +180,9 @@ type
     property Align;
     property BorderStyle;
     property Color;
-    // Kaczkowski - moved from JvMultilineListBox
     property ColorHighlight;
     property ColorHighlightText;
     property ColorDisabledText;
-    // Kaczkowski - end
     property Columns;
     property DragCursor;
     property TabWidth;
@@ -241,9 +238,9 @@ type
   private
     FHideSel: Boolean;
     FDropWidth: Integer;
-    FColorHighlight: TColor;         // <-+-- Kaczkowski: from JvMultilineListBox
-    FColorHighlightText: TColor;     // <-+
-    FColorDisabledText: TColor;     // <-+
+    FColorHighlight: TColor;
+    FColorHighlightText: TColor;
+    FColorDisabledText: TColor;
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
@@ -253,16 +250,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
-    procedure SetHeight(Value: Integer); // Kaczkowski
-    function GetHeight: Integer; // Kaczkowski
+    procedure SetHeight(Value: Integer);
+    function GetHeight: Integer;
   protected
     property HideSel: Boolean read FHideSel write SetHideSel;
     property DropWidth: Integer read FDropWidth write SetDropWidth;
-    // Kaczkowski - based on JvMultilineListBox
     property ColorHighlight: TColor read FColorHighlight write FColorHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write FColorHighlightText;
     property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
-    // Kaczkowski - end
   end;
 
   TJvHTComboBox = class(TJvCustomHTComboBox)
@@ -270,7 +265,6 @@ type
     property Anchors;
     property HideSel;
     property DropWidth;
-    // Kaczkowski - based on JvMultilineListBox
     property ColorHighlight;
     property ColorHighlightText;
     property ColorDisabledText;
@@ -322,18 +316,21 @@ type
 
   TJvCustomHTLabel = class(TJvExCustomLabel)
   private
-    FHyperLinkClick: THyperLinkClick;
+    FHyperlinkHovered: Boolean;
+    FOnHyperLinkClick: TJvHyperLinkClickEvent;
+    FMouseX, FMouseY: Integer;
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure FontChanged; override;
     procedure AdjustBounds;  override;
+    procedure PrepareCanvas;
+    function ComputeLayoutRect: TRect;
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
     procedure Loaded; override;
-    property OnHyperLinkClick: THyperLinkClick read FHyperLinkClick write FHyperLinkClick;
+    property OnHyperLinkClick: TJvHyperLinkClickEvent read FOnHyperLinkClick write FOnHyperLinkClick;
   end;
 
   TJvHTLabel = class(TJvCustomHTLabel)
@@ -343,7 +340,6 @@ type
     procedure DefineProperties(Filer: TFiler); override; // ignore former published WordWrap
   published
     property Align;
-    // property Alignment;  // Kaczkowski
     property Anchors;
     property AutoSize;
     property Caption;
@@ -388,11 +384,13 @@ procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <br><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue </i>' }
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
+function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; Scale: Integer = 100): string;
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
 function ItemHTPlain(const Text: string): string;
 function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
-function PrepareText(const A: string): string;
+function PrepareText(const A: string): string; deprecated;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -408,11 +406,20 @@ implementation
 
 uses
   Math,
-  JvConsts;
+  JvConsts, JvThemes;
 
 const
   cMAILTO = 'MAILTO:';
   cURLTYPE = '://';
+
+procedure ExecuteHyperlink(Sender: TObject; HyperLinkClick: TJvHyperLinkClickEvent; const LinkName: string);
+begin
+  if (Pos(cURLTYPE, LinkName) > 0) or // ftp:// http://
+     (Pos(cMAILTO, UpperCase(LinkName)) > 0) then // mailto:name@server.com
+    ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
+  if Assigned(HyperLinkClick) then
+    HyperLinkClick(Sender, LinkName);
+end;
 
 function PrepareText(const A: string): string;
 begin
@@ -426,7 +433,6 @@ procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
 begin
   HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LinkName, Scale);
 end;
-// Kaczkowski - end
 
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
   const Text: string; Scale: Integer = 100): string;
@@ -434,7 +440,13 @@ begin
   HTMLDrawText(Canvas, Rect, State, Text, Scale);
 end;
 
-function ItemHTPlain(const Text: string): string; // Kaczkowski: optimised
+function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
+  const Text: string; MouseX, MouseY: Integer; Scale: Integer = 100): string;
+begin
+  HTMLDrawTextHL(Canvas, Rect, State, Text, MouseX, MouseY, Scale);
+end;
+
+function ItemHTPlain(const Text: string): string;
 begin
   Result := HTMLPlainText(Text);
 end;
@@ -445,14 +457,13 @@ begin
   Result := HTMLTextWidth(Canvas, Rect, State, Text, Scale);
 end;
 
-// Kaczkowski - begin
 function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 begin
   Result := HTMLTextHeight(Canvas, Text, Scale);
 end;
 
-function IsHyperLink(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
+function IsHyperLinkPaint(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
+  const Text: string; MouseX, MouseY: Integer; var HyperLink: string): Boolean;
 var
   W: Integer;
 begin
@@ -460,14 +471,12 @@ begin
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const Text: string;
-  MouseX, MouseY: Integer; var HyperLink: string): Boolean; overload;
+  MouseX, MouseY: Integer; var HyperLink: string): Boolean;
 var
   W: Integer;
 begin
-  ItemHTDrawEx(Canvas, Rect, [], Text, W, htmlShow, MouseX, MouseY, Result, HyperLink);
+  ItemHTDrawEx(Canvas, Rect, [], Text, W, htmlHyperLink, MouseX, MouseY, Result, HyperLink);
 end;
-
-// Kaczkowski - end
 
 //=== { TJvCustomListBoxDataConnector } ======================================
 
@@ -553,12 +562,10 @@ constructor TJvCustomHTListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataConnector := CreateDataConnector;
-  // Kaczkowski
   Style := lbOwnerDrawVariable;
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
   FColorDisabledText := clGrayText;
-  // Kaczkowski
 end;
 
 destructor TJvCustomHTListBox.Destroy;
@@ -579,11 +586,8 @@ begin
   DataConnector.GotoCurrent;
 end;
 
-
 procedure TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-
-
 begin
   if odSelected in State then
   begin
@@ -598,12 +602,10 @@ begin
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
 end;
 
-
 procedure TJvCustomHTListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
   Height := ItemHTHeight(Canvas, Items[Index]);
 end;
-
 
 function TJvCustomHTListBox.CreateDataConnector: TJvCustomListBoxDataConnector;
 begin
@@ -661,7 +663,7 @@ begin
     Canvas.Brush.Color := Color;
   end;
   Inc(R.Left, 2);
-  if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
+  if IsHyperLinkPaint(Canvas, R, State, Items[I], X, Y, LinkName) then
     Cursor := crHandPoint
   else
     Cursor := crDefault;
@@ -689,14 +691,8 @@ begin
     else
       Canvas.Font.Color := Font.Color;
     Inc(R.Left, 2);
-    if IsHyperLink(Canvas, R, State, Items[I], X, Y, LinkName) then
-    begin
-      if (Pos(cURLTYPE, LinkName) > 0) or // ftp:// http:// e2k://
-         (Pos(cMAILTO, UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
-        ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
-      if Assigned(FHyperLinkClick) then
-        FHyperLinkClick(Self, LinkName);
-    end;
+    if IsHyperLinkPaint(Canvas, R, State, Items[I], X, Y, LinkName) then
+      ExecuteHyperlink(Self, FOnHyperLinkClick, LinkName);
   end;
 end;
 
@@ -705,19 +701,14 @@ end;
 constructor TJvCustomHTComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  // Kaczkowski
   Style := csOwnerDrawVariable;
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
   FColorDisabledText := clGrayText;
-  // Kaczkowski
 end;
-
 
 procedure TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-
-
 begin
   if odSelected in State then
   begin
@@ -730,12 +721,8 @@ begin
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
-//  SendMessage(Self.Handle, CB_SETITEMHEIGHT, Index, ItemHTHeight(Canvas, Items[Index])); // Kaczkowski
 end;
 
-
-
-// Kaczkowski - begin
 function TJvCustomHTComboBox.GetHeight: Integer;
 begin
   Result := SendMessage(Self.Handle, CB_GETITEMHEIGHT, -1, 0);
@@ -745,9 +732,6 @@ procedure TJvCustomHTComboBox.SetHeight(Value: Integer);
 begin
   SendMessage(Self.Handle, CB_SETITEMHEIGHT, -1, Value);
 end;
-// Kaczkowski - end
-
-
 
 procedure TJvCustomHTComboBox.SetHideSel(Value: Boolean);
 begin
@@ -785,8 +769,6 @@ begin
 end;
 
 //=== { TJvCustomHTLabel } ===================================================
-
-
 
 procedure TJvCustomHTLabel.FontChanged;
 begin
@@ -828,6 +810,30 @@ begin
   end;
 end;
 
+procedure TJvCustomHTLabel.PrepareCanvas;
+begin
+  Canvas.Lock;
+  try
+    Canvas.Font := Font;
+    Canvas.Brush.Color := Color;
+  finally
+    Canvas.Unlock;
+  end;
+end;
+
+function TJvCustomHTLabel.ComputeLayoutRect: TRect;
+begin
+  Result := ClientRect;
+  case Layout of
+    tlTop:
+      ;
+    tlBottom:
+      Result.Top := Result.Bottom - ItemHTHeight(Canvas, Caption);
+    tlCenter:
+      Result.Top := (Result.Bottom - Result.Top - ItemHTHeight(Canvas, Caption)) div 2;
+  end;
+end;
+
 procedure TJvCustomHTLabel.SetAutoSize(Value: Boolean);
 begin
   if AutoSize <> Value then
@@ -843,64 +849,71 @@ var
   PaintText: String;
 begin
   PaintText := GetLabelText;
-  Canvas.Font := Font;
-  Canvas.Brush.Color := Color;
+  PrepareCanvas;
   if Transparent then
     Canvas.Brush.Style := bsClear
   else
+  begin
     Canvas.Brush.Style := bsSolid;
-  Canvas.FillRect(ClientRect);
-  Rect := ClientRect;
-  case Layout of
-    tlTop:
-      ;
-    tlBottom:
-      Rect.Top := Rect.Bottom - ItemHTHeight(Canvas, PaintText);
-    tlCenter:
-      Rect.Top := (Rect.Bottom - Rect.Top - ItemHTHeight(Canvas, PaintText)) div 2;
+    Canvas.FillRect(ClientRect);
   end;
+  Rect := ComputeLayoutRect;
   Canvas.Font.Style := []; // only font name and font size is important
   if not Enabled then
   begin
     OffsetRect(Rect, 1, 1);
     Canvas.Font.Color := clBtnHighlight;
-    ItemHTDraw(Canvas, Rect, [odDisabled], PaintText);
+    ItemHTDrawHL(Canvas, Rect, [odDisabled], PaintText, FMouseX, FMouseY);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
-    ItemHTDraw(Canvas, Rect, [odDisabled], PaintText);
+    ItemHTDrawHL(Canvas, Rect, [odDisabled], PaintText, FMouseX, FMouseY);
   end
   else
-    ItemHTDraw(Canvas, Rect, [], PaintText);
+    ItemHTDrawHL(Canvas, Rect, [], PaintText, FMouseX, FMouseY);
 end;
 
 procedure TJvCustomHTLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
   LinkName: string;
+  LastHovered: Boolean;
 begin
-  inherited MouseMove(Shift,X,Y);
-  R := ClientRect;
-  case Layout of
-    tlTop:
-      ;
-    tlBottom:
-      R.Top := R.Bottom - ItemHTHeight(Canvas, Caption);
-    tlCenter:
-      R.Top := (R.Bottom - R.Top - ItemHTHeight(Canvas, Caption)) div 2;
+  FMouseX := X;
+  FMouseY := Y;
+  inherited MouseMove(Shift, X, Y);
+
+  LastHovered := FHyperlinkHovered;
+  Canvas.Lock;
+  try
+    PrepareCanvas;
+    R := ComputeLayoutRect;
+    FHyperlinkHovered := IsHyperLink(Canvas, R, Caption, X, Y, LinkName);
+  finally
+    Canvas.Unlock;
   end;
-  if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
+
+  if FHyperlinkHovered then
     Cursor := crHandPoint
   else
     Cursor := crDefault;
+
+  if FHyperlinkHovered <> LastHovered then
+  begin
+    if Transparent then
+      Invalidate
+    else
+      Paint;
+  end;
 end;
 
-procedure TJvCustomHTLabel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvCustomHTLabel.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
   LinkName: string;
 begin
-  inherited MouseUp(Button,Shift,X,Y);
+  FMouseX := X;
+  FMouseY := Y;
+  inherited MouseUp(Button, Shift, X, Y);
   R := ClientRect;
   case Layout of
     tlTop:
@@ -911,19 +924,22 @@ begin
       R.Top := (R.Bottom - R.Top - ItemHTHeight(Canvas, Caption)) div 2;
   end;
   if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
-  begin
-    if (Pos(cURLTYPE, LinkName) > 0) or // ftp:// http:// e2k://
-       (Pos(cMAILTO, UpperCase(LinkName)) > 0) then // ex: mailto:name@server.com
-      ShellExecute(0, 'open', PChar(LinkName), nil, nil, SW_NORMAL);
-    if Assigned(FHyperLinkClick) then
-      FHyperLinkClick(Self, LinkName);
-  end;
+    ExecuteHyperlink(Self, FOnHyperLinkClick, LinkName);
 end;
 
 procedure TJvCustomHTLabel.MouseLeave(AControl: TControl);
 begin
+  FMouseX := 0;
+  FMouseY := 0;
   inherited MouseLeave(AControl);
-  Invalidate;
+  if FHyperlinkHovered then
+  begin
+    FHyperlinkHovered := False;
+    if Transparent then
+      Invalidate
+    else
+      Paint;
+  end;
 end;
 
 { TJvHTLabel }
