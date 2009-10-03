@@ -707,7 +707,7 @@ function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
 
 // (peter3) implementation moved from JvHTControls.
 type
-  TJvHTMLCalcType = (htmlShow, htmlCalcWidth, htmlCalcHeight);
+  TJvHTMLCalcType = (htmlShow, htmlCalcWidth, htmlCalcHeight, htmlHyperLink);
 
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
@@ -715,6 +715,9 @@ procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   var LinkName: string; Scale: Integer = 100);
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
+function HTMLDrawTextHL(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer;
+  Scale: Integer = 100): string;
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
 function HTMLPlainText(const Text: string): string;
@@ -6918,7 +6921,7 @@ const
     (Html: '&quot;'; Text: '"'),
     (Html: '&reg;'; Text: #$C2#$AE),
     (Html: '&copy;'; Text: #$C2#$A9),
-    (Html: '&trade;'; Text:#$E2#$84#$A2),
+    (Html: '&trade;'; Text: #$E2#$84#$A2),
     (Html: '&euro;'; Text: #$E2#$82#$AC),
     (Html: '&nbsp;'; Text: ' ')
   );
@@ -6938,9 +6941,9 @@ function HTMLBeforeTag(var Str: string; DeleteToTag: Boolean = False): string;
 begin
   if Pos(cTagBegin, Str) > 0 then
   begin
-    Result := Copy(Str, 1, Pos(cTagBegin, Str)-1);
+    Result := Copy(Str, 1, Pos(cTagBegin, Str) - 1);
     if DeleteToTag then
-      Delete(Str, 1, Pos(cTagBegin, Str)-1);
+      Delete(Str, 1, Pos(cTagBegin, Str) - 1);
   end
   else
   begin
@@ -6970,7 +6973,7 @@ end;
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer = 100);
+  var LinkName: string; Scale: Integer);
 const
   DefaultLeft = 0; // (ahuser) was 2
 var
@@ -7188,7 +7191,7 @@ begin
                     else
                       Alignment := taLeftJustify;
                     CurLeft := DefaultLeft;
-                    if CalcType = htmlShow then
+                    if CalcType in [htmlShow, htmlHyperLink] then
                       CurLeft := CalcPos(vText);
                   end
                   else
@@ -7240,7 +7243,7 @@ begin
                   NewLine(HTMLDeleteTag(vText) <> '');
                 end;
               'F':
-                if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) {and (CalcType = htmlShow)} then // F from FONT
+                if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) {and (CalcType in [htmlShow, htmlHyperLink])} then // F from FONT
                 begin
                   TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
                   RemFontColor  := Canvas.Font.Color;
@@ -7303,13 +7306,24 @@ begin
 end;
 
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer): string;
 var
   W: Integer;
   S: Boolean;
   St: string;
 begin
   HTMLDrawTextEx(Canvas, Rect, State, Text, W, htmlShow, 0, 0, S, St, Scale);
+end;
+
+function HTMLDrawTextHL(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer;
+  Scale: Integer): string;
+var
+  W: Integer;
+  S: Boolean;
+  St: string;
+begin
+  HTMLDrawTextEx(Canvas, Rect, State, Text, W, htmlShow, MouseX, MouseY, S, St, Scale);
 end;
 
 function HTMLPlainText(const Text: string): string;
