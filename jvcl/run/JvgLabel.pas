@@ -819,9 +819,9 @@ begin
         BitBlt(Canvas.Handle, TX, TY, Width, Height, FTargetCanvas.Handle, 0,
           0, SRCAND);
         if FActiveNow then
-          ChangeBitmapColor(FTextureMask, clBlack, Colors.BackgroundActive)
+          JvgUtils.ChangeBitmapColor(FTextureMask, clBlack, Colors.BackgroundActive)
         else
-          ChangeBitmapColor(FTextureMask, clBlack, Colors.Background);
+          JvgUtils.ChangeBitmapColor(FTextureMask, clBlack, Colors.Background);
         BitBlt(Self.Canvas.Handle, 0, 0, Width, Height, Canvas.Handle, 0, 0,
           SRCCOPY);
         Exit;
