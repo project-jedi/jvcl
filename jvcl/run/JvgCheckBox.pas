@@ -183,6 +183,7 @@ begin
   FGlyphOn := TBitmap.Create;
   FGlyphOff := TBitmap.Create;
   FGlyphDisabled := TBitmap.Create;
+  FGlyph := TBitmap.Create;
   FImg := TBitmap.Create;
 
   TextStyles := TJvgLabelTextStyles.Create;
