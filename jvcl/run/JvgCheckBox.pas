@@ -72,6 +72,7 @@ type
     FOnlyTextStyleChanged: Boolean;
     FAlignment: TLeftRight;
     FNeedRebuildBackground: Boolean;
+    FInitialPainted: Boolean; // set to True after the first call to Paint(), this is only a workaround
     function IsCustomGlyph: Boolean;
     procedure SetChecked(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
@@ -96,7 +97,6 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
     procedure TextChanged; override;
-    procedure Resize; override;
     procedure Paint; override;
     procedure HookFocusControlWndProc;
     procedure UnhookFocusControlWndProc;
@@ -130,7 +130,7 @@ type
     property Font;
 
     property Alignment: TLeftRight read FAlignment write SetAlignment default taRightJustify;
-    property GlyphKind: TglGlyphKind read FGlyphKind write SetGlyphKind default fgkDefault;
+    property GlyphKind: TglGlyphKind read FGlyphKind write SetGlyphKind default fgkDefault; // must be above "GlyphOn/Off/Disabled"
     property Checked: Boolean read FChecked write SetChecked default False;
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property GlyphOn: TBitmap read FGlyphOn write SetGlyphOn stored IsCustomGlyph;
@@ -246,10 +246,9 @@ end;
 
 procedure TJvgCheckBox.MouseEnter(Control: TControl);
 begin
-  if csDesigning in ComponentState then
+  if (csDesigning in ComponentState) or not FInitialPainted then
     Exit;
-  if not Enabled or (fcoIgnoreMouse in Options) or
-    FShowAsActiveWhileControlFocused then
+  if not Enabled or (fcoIgnoreMouse in Options) or FShowAsActiveWhileControlFocused then
     Exit;
   if Assigned(FocusControl) and (FocusControlMethod = fcmOnMouseEnter) then
     FocusControl.SetFocus;
@@ -262,8 +261,7 @@ begin
     if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
       Repaint
     else
-    if (not Transparent) and (Colors.Background <>
-      Colors.BackgroundActive) then
+    if (not Transparent) and (Colors.Background <> Colors.BackgroundActive) then
       Repaint
     else
     if (TextActive <> Text) or (fcoUnderlinedActive in Options) then
@@ -276,10 +274,9 @@ end;
 
 procedure TJvgCheckBox.MouseLeave(Control: TControl);
 begin
-  if csDesigning in ComponentState then
+  if (csDesigning in ComponentState) or not FInitialPainted then
     Exit;
-  if not Enabled or (fcoIgnoreMouse in Options) or
-    FShowAsActiveWhileControlFocused then
+  if not Enabled or (fcoIgnoreMouse in Options) or FShowAsActiveWhileControlFocused then
     Exit;
   FNeedRebuildBackground := True;
   FActiveNow := False;
@@ -290,8 +287,7 @@ begin
     if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
       Repaint
     else
-    if (not Transparent) and (Colors.Background <>
-      Colors.BackgroundActive) then
+    if (not Transparent) and (Colors.Background <> Colors.BackgroundActive) then
       Repaint
     else
     if TextActive <> Text then
@@ -337,12 +333,6 @@ begin
     FocusControl.SetFocus;
 end;
 
-procedure TJvgCheckBox.Resize;
-begin
-  inherited Resize;
-  //  Img.Width := Width; Img.Height := Height;
-end;
-
 procedure TJvgCheckBox.Paint;
 var
   X, Y: Integer;
@@ -356,6 +346,8 @@ var
   R: TRect;
   BackBrush: HBRUSH;
 begin
+  FInitialPainted := True;
+
   //FNeedUpdateOnlyMainText := False;
   //FNeedRebuildBackground := False;
   FSuppressCMFontChanged := True;
@@ -364,6 +356,7 @@ begin
       Font.Style := Font.Style + [fsBold]
     else
       Font.Style := Font.Style - [fsBold];
+
   if Enabled then
   begin
     if Checked then
@@ -419,8 +412,7 @@ begin
       else
         Font.Style := Font.Style - [fsUnderline];
   end;
-  GetTextExtentPoint32(FImg.Canvas.Handle, PChar(Caption),
-    length(Caption), Size);
+  GetTextExtentPoint32(FImg.Canvas.Handle, PChar(Caption), Length(Caption), Size);
   Y := Max(0, (Height - Size.cy) div 2);
   X := 0;
   if Assigned(FGlyphOn) then
@@ -435,7 +427,7 @@ begin
   FImg.Width := Width;
   FImg.Height := Height;
 
-  if (not FNeedUpdateOnlyMainText) {and (not Transparent)} then
+  if not FNeedUpdateOnlyMainText {and not Transparent} then
   begin
     R := GetClientRect;
     if FActiveNow then
@@ -446,11 +438,10 @@ begin
     DeleteObject(BackBrush);
   end;
 
-  if FTransparent and (not FNeedUpdateOnlyMainText) then
-    if (not (fcoFastDraw in Options)) or FNeedRebuildBackground or (csDesigning
-      in ComponentState) then
-      GetParentImageRect(Self, Bounds(Left, Top, Width, Height),
-        FImg.Canvas.Handle);
+  if FTransparent and not FNeedUpdateOnlyMainText then
+    if not (fcoFastDraw in Options) or FNeedRebuildBackground or
+       (csDesigning in ComponentState) then
+      GetParentImageRect(Self, Bounds(Left, Top, Width, Height), FImg.Canvas.Handle);
 
   if Alignment = taLeftJustify then
   begin
@@ -482,8 +473,8 @@ begin
       if FGlyph <> nil then //...TransparentColor -> Left Bottom Pixel
       begin
         if not Transparent then
-          JvgUtils.ChangeBitmapColor(FGlyph, GetPixel(FGlyph.Canvas.Handle, 0,
-            FGlyph.Height - 1), clBtnFace);
+          JvgUtils.ChangeBitmapColor(FGlyph, GetPixel(FGlyph.Canvas.Handle, 0, FGlyph.Height - 1),
+            clBtnFace);
 
         // glyph always left
         CreateBitmapExt(FImg.Canvas.Handle, FGlyph, ClientRect, 0,
@@ -497,11 +488,11 @@ begin
     end;
     if not Transparent then
       if FActiveNow then
-        JvgUtils.ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0,
-          Bitmap.Height - 1), Colors.BackgroundActive)
+        JvgUtils.ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0, Bitmap.Height - 1),
+          Colors.BackgroundActive)
       else
-        JvgUtils.ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0,
-          Bitmap.Height - 1), Colors.Background);
+        JvgUtils.ChangeBitmapColor(Bitmap, GetPixel(Bitmap.Canvas.Handle, 0, Bitmap.Height - 1),
+          Colors.Background);
 
     if Alignment = taRightJustify then
       X := GlyphShift.X
