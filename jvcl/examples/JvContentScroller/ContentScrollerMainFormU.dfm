@@ -23,6 +23,7 @@ object ContentScrollerMainForm: TContentScrollerMainForm
     ScrollAmount = 2
     ScrollIntervall = 10
     ScrollLength = 350
+    ScrollDirection = sdLeft
     LoopMedia = False
     LoopCount = 2
     UseDockManager = True
@@ -159,23 +160,29 @@ object ContentScrollerMainForm: TContentScrollerMainForm
         0BFF1010003B}
     end
   end
-  object chkGoDown: TCheckBox
-    Left = 32
-    Top = 392
-    Width = 97
-    Height = 17
-    Anchors = [akLeft, akBottom]
-    Caption = 'Go down'
-    TabOrder = 1
-  end
   object Button1: TButton
-    Left = 144
+    Left = 168
     Top = 392
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Run'
-    TabOrder = 2
+    TabOrder = 1
     OnClick = Button1Click
+  end
+  object rgDirection: TRadioGroup
+    Left = 16
+    Top = 384
+    Width = 121
+    Height = 49
+    Caption = 'Direction'
+    Columns = 2
+    Items.Strings = (
+      'Up'
+      'Down'
+      'Left'
+      'Right')
+    TabOrder = 2
+    OnClick = rgDirectionClick
   end
 end
