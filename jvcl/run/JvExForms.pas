@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -424,7 +424,7 @@ type
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
   end;
 
-  TJvExForm = class(TForm, IJvExControl)
+  TJvExForm = class(TJvForm, IJvExControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;

@@ -62,7 +62,7 @@ type
   {:Base class for band forms.
   @cat JvBandFormComponents
   }
-  TJvBandForm = class(TForm)
+  TJvBandForm = class(TJvForm)
   private
     FBandObject: TComObject;
     FBandModeFlags: TJvBandModeFlags;

@@ -39,7 +39,7 @@ uses
   JvDockTree;
 
 type
-  TJvAlphaBlendedForm = class(TForm)
+  TJvAlphaBlendedForm = class(TJvForm)
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   end;
