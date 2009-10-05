@@ -39,6 +39,7 @@ uses
 
 const
   WM_DELAYED_INTERNAL_ACTIVATE = WM_APP + 245;
+  WM_DELAYED_DO_ENDED = WM_APP + 246;
 
 type
   TJvWaitingProgress = class(TJvWinControl)
@@ -58,6 +59,7 @@ type
     procedure SetRefreshInterval(const Value: Cardinal);
     procedure SetProgressColor(const Value: TColor);
     procedure OnScroll(Sender: TObject);
+    procedure DoEnded;
     //function GetBColor: TColor;
     //procedure SetBColor(const Value: TColor);
   protected
@@ -66,6 +68,7 @@ type
     procedure Loaded; override;
 
     procedure WmDelayedInternalActivate(var Msg: TMessage); message WM_DELAYED_INTERNAL_ACTIVATE;
+    procedure WmDelayedDoEnded(var Msg: TMessage); message WM_DELAYED_DO_ENDED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -139,6 +142,12 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvWaitingProgress.DoEnded;
+begin
+  if Assigned(FOnEnded) then
+    FOnEnded(Self);
+end;
+
 procedure TJvWaitingProgress.Loaded;
 begin
   inherited Loaded;
@@ -170,8 +179,7 @@ begin
     begin
       FProgress.Position := FLength;
       SetActive(False);
-      if Assigned(FOnEnded) then
-        FOnEnded(Self);
+      PostMessage(Handle, WM_DELAYED_DO_ENDED, 0, 0);
     end
     else
       FProgress.Position := FProgress.Position + Integer(FRefreshInterval);
@@ -230,6 +238,11 @@ procedure TJvWaitingProgress.SetRefreshInterval(const Value: Cardinal);
 begin
   FRefreshInterval := Value;
   FWait.Delay := FRefreshInterval;
+end;
+
+procedure TJvWaitingProgress.WmDelayedDoEnded(var Msg: TMessage);
+begin
+  DoEnded;
 end;
 
 procedure TJvWaitingProgress.WmDelayedInternalActivate(var Msg: TMessage);
