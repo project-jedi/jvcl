@@ -1204,14 +1204,15 @@ begin
       end;
     end;
     Dataset.Filtered := FIntDatasetWasFiltered;
-    if Dataset.Active and (IntCurrentAction <> tdaCancel) then
-      ExecuteThreadSynchronize(SynchAfterOpenFetch);
   finally
     ExecuteThreadSynchronize(Dataset.EnableControls);
     IntCurrentAction := tdaNothing;
   end;
   if Dataset.Active and (IntCurrentAction <> tdaCancel) then
+  begin
     ExecuteThreadSynchronize(MoveToRecordPositionAfterOpen);
+    ExecuteThreadSynchronize(SynchAfterOpenFetch);
+  end;
 end;
 
 procedure TJvBaseDatasetThreadHandler.HandleAfterOpenRefreshThread;
