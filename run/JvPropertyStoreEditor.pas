@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -34,7 +34,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Variants,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, JvExComCtrls, JvComCtrls, ExtCtrls, JvExControls,
+  Dialogs, ComCtrls,
+  JvComponent, JvExComCtrls, JvComCtrls, ExtCtrls, JvExControls,
   JvInspector, StdCtrls, JvExStdCtrls, JvListBox, JvPropertyStore,
   JvPropertyStoreEditorIntf, JvDynControlEngineIntf;
 
@@ -151,7 +152,7 @@ type
   end;
 
 type
-  TJvPropertyStoreEditorForm = class(TForm)
+  TJvPropertyStoreEditorForm = class(TJvForm)
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
