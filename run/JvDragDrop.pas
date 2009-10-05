@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -228,7 +228,7 @@ begin
 
   { Note: Do not use fixed stack buffers of size MAX_PATH,
           to prevent buffer overrun attacks, be paranoid <g> }
-  GetMem(Buffer, BufferLength);
+  GetMem(Buffer, BufferLength * SizeOf(Char));
   try
     { Return value is a count of the dropped files }
     Count := DragQueryFile(Handle, $FFFFFFFF, nil, 0);
@@ -241,7 +241,7 @@ begin
       if NeededLength > BufferLength then
       begin
         BufferLength := NeededLength;
-        ReallocMem(Buffer, BufferLength);
+        ReallocMem(Buffer, BufferLength * SizeOf(Char));
       end;
       DragQueryFile(Handle, I, Buffer, BufferLength);
       FFiles.Add(Buffer);
