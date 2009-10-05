@@ -34,7 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, ComObj, Classes, Forms, Controls, Menus;
+  Windows, Messages, ComObj, Classes, Forms, Controls, Menus, JvComponent;
 
 type
   {:Band object mode flag.
