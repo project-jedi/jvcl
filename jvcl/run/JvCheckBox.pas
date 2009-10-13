@@ -82,6 +82,7 @@ type
     FReadOnly:Boolean;
     FLinkedControls: TJvLinkedControls;
     FDataConnector: TJvCheckBoxDataConnector;
+    FCheckingLinkedControls: Boolean;
     function GetCanvas: TCanvas;
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
@@ -89,7 +90,6 @@ type
     procedure SetAlignment(const Value: TAlignment);
     procedure SetLayout(const Value: TTextLayout);
     procedure SetLeftText(const Value: Boolean);
-    function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure ReadAssociated(Reader: TReader);
     procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
@@ -123,7 +123,7 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     // link the enabled state of other controls to the checked and/or enabled state of this control
-    property LinkedControls: TJvLinkedControls read GetLinkedControls write SetLinkedControls;
+    property LinkedControls: TJvLinkedControls read FLinkedControls write SetLinkedControls;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
@@ -467,11 +467,6 @@ begin
   end;
 end;
 
-function TJvCheckBox.GetLinkedControls: TJvLinkedControls;
-begin
-  Result := FLinkedControls;
-end;
-
 procedure TJvCheckBox.SetLinkedControls(const Value: TJvLinkedControls);
 begin
   FLinkedControls.Assign(Value);
@@ -481,11 +476,19 @@ procedure TJvCheckBox.CheckLinkedControls;
 var
   I: Integer;
 begin
-  if LinkedControls <> nil then
-    for I := 0 to LinkedControls.Count - 1 do
-      with LinkedControls[I] do
-        if Control <> nil then
-          Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self.Checked, Options);
+  if not FCheckingLinkedControls then // prevent an infinite recursion
+  begin
+    FCheckingLinkedControls := True;
+    try
+      if LinkedControls <> nil then
+        for I := 0 to LinkedControls.Count - 1 do
+          with LinkedControls[I] do
+            if Control <> nil then
+              Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self.Checked, Options);
+    finally
+      FCheckingLinkedControls := False;
+    end;
+  end;
 end;
 
 procedure TJvCheckBox.LinkedControlsChange(Sender: TObject);

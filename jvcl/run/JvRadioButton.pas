@@ -54,6 +54,7 @@ type
     FLayout: TTextLayout;
     FLeftText: Boolean;
     FLinkedControls: TJvLinkedControls;
+    FCheckingLinkedControls: Boolean;
     function GetCanvas: TCanvas;
     function GetReadOnly: Boolean;
     procedure SetHotTrackFont(const Value: TFont);
@@ -63,7 +64,6 @@ type
     procedure SetLayout(const Value: TTextLayout);
     procedure SetReadOnly(const Value: Boolean);
     procedure SetLeftText(const Value: Boolean);
-    function GetLinkedControls: TJvLinkedControls;
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure BMSetCheck(var Msg: TMessage); message BM_SETCHECK;
   protected
@@ -99,7 +99,7 @@ type
     // show text to the left of the radio bullet
     property LeftText: Boolean read FLeftText write SetLeftText default False;
     // link the enabled state of other controls to the checked and/or enabled state of this control
-    property LinkedControls: TJvLinkedControls read GetLinkedControls write SetLinkedControls;
+    property LinkedControls: TJvLinkedControls read FLinkedControls write SetLinkedControls;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
     property OnMouseEnter;
@@ -121,6 +121,8 @@ implementation
 
 uses
   JvJVCLUtils;
+
+//=== { TJvRadioButton } =====================================================
 
 constructor TJvRadioButton.Create(AOwner: TComponent);
 begin
@@ -157,7 +159,6 @@ begin
   CalcAutoSize;
 end;
 
-
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
 const
   cAlign: array [TAlignment] of Word = (BS_LEFT, BS_RIGHT, BS_CENTER);
@@ -170,7 +171,6 @@ begin
     Style := Style or cAlign[Alignment] or cLayout[Layout] or
       cLeftText[LeftText] or cWordWrap[WordWrap];
 end;
-
 
 procedure TJvRadioButton.MouseEnter(AControl: TControl);
 begin
@@ -350,16 +350,19 @@ procedure TJvRadioButton.CheckLinkedControls;
 var
   I: Integer;
 begin
-  if LinkedControls <> nil then
-    for I := 0 to LinkedControls.Count - 1 do
-      with LinkedControls[I] do
-        if Control <> nil then
-          Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self. Checked, Options);
-end;
-
-function TJvRadioButton.GetLinkedControls: TJvLinkedControls;
-begin
-  Result := FLinkedControls;
+  if not FCheckingLinkedControls then // prevent an infinite recursion
+  begin
+    FCheckingLinkedControls := True;
+    try
+      if LinkedControls <> nil then
+        for I := 0 to LinkedControls.Count - 1 do
+          with LinkedControls[I] do
+            if Control <> nil then
+              Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self. Checked, Options);
+    finally
+      FCheckingLinkedControls := False;
+    end;
+  end;
 end;
 
 procedure TJvRadioButton.LinkedControlsChange(Sender: TObject);
@@ -372,15 +375,11 @@ begin
   FLinkedControls.Assign(Value);
 end;
 
-
-
-
 procedure TJvRadioButton.BMSetCheck(var Msg: TMessage);
 begin
   inherited;
   CheckLinkedControls;
 end;
-
 
 procedure TJvRadioButton.EnabledChanged;
 begin
@@ -388,16 +387,12 @@ begin
   CheckLinkedControls;
 end;
 
-procedure TJvRadioButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvRadioButton.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Assigned(FLinkedControls) then
     LinkedControls.Notification(AComponent, Operation);
 end;
-
-
-
 
 {$IFDEF UNITVERSIONING}
 initialization
