@@ -262,8 +262,7 @@ begin
   end;
 end;
 
-procedure TJvLinkedControls.SetItems(Index: Integer;
-  const Value: TJvLinkedControl);
+procedure TJvLinkedControls.SetItems(Index: Integer; const Value: TJvLinkedControl);
 begin
   inherited Items[Index] := Value;
 end;
