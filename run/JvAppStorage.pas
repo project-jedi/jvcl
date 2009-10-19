@@ -2617,7 +2617,7 @@ begin
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
     tkVariant:
-      SetStrProp(PersObj, PropName, ReadString(Path, GetVariantProp(PersObj, PropName)));
+      SetVariantProp(PersObj, PropName, ReadString(Path, GetVariantProp(PersObj, PropName)));
     tkSet:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
