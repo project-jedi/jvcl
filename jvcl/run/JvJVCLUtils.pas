@@ -4020,14 +4020,14 @@ begin
   if (Form.FormStyle = fsMDIChild) and (Form.WindowState = wsMinimized) then
     Placement.Flags := Placement.Flags or WPF_SETMINPOSITION;
   if fpState in Options then
-    AppStorage.WriteInteger(StorePath + '\' + siShowCmd, Placement.ShowCmd);
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siShowCmd]), Placement.ShowCmd);
   if [fpSize, fpLocation] * Options <> [] then
   begin
-    AppStorage.WriteInteger(StorePath + '\' + siFlags, Placement.Flags);
-    AppStorage.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
-    WritePosStr(AppStorage, StorePath + '\' + siMinMaxPos, Format('%d,%d,%d,%d',
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siFlags]), Placement.Flags);
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siPixels]), Screen.PixelsPerInch);
+    WritePosStr(AppStorage, AppStorage.ConcatPaths([StorePath, siMinMaxPos]), Format('%d,%d,%d,%d',
       [Placement.ptMinPosition.X, Placement.ptMinPosition.Y, Placement.ptMaxPosition.X, Placement.ptMaxPosition.Y]));
-    WritePosStr(AppStorage, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
+    WritePosStr(AppStorage, AppStorage.ConcatPaths([StorePath, siNormPos]), Format('%d,%d,%d,%d',
       [Placement.rcNormalPosition.Left, Placement.rcNormalPosition.Top, Placement.rcNormalPosition.Right,
        Placement.rcNormalPosition.Bottom]));
   end;
@@ -4063,8 +4063,8 @@ begin
   if [fpSize, fpLocation] * Options <> [] then
   begin
     DataFound := False;
-    AppStorage.ReadInteger(StorePath + '\' + siFlags, Placement.Flags);
-    PosStr := ReadPosStr(AppStorage, StorePath + '\' + siMinMaxPos);
+    Placement.Flags := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siFlags]), Placement.Flags);
+    PosStr := ReadPosStr(AppStorage, AppStorage.ConcatPaths([StorePath, siMinMaxPos]));
     if PosStr <> '' then
     begin
       DataFound := True;
@@ -4079,7 +4079,7 @@ begin
         Placement.ptMaxPosition.Y := StrToIntDef(ExtractWord(4, PosStr, Delims), 0);
       end;
     end;
-    PosStr := ReadPosStr(AppStorage, StorePath + '\' + siNormPos);
+    PosStr := ReadPosStr(AppStorage, AppStorage.ConcatPaths([StorePath, siNormPos]));
     if PosStr <> '' then
     begin
       DataFound := True;
@@ -4110,7 +4110,7 @@ begin
         end;
     end;
     DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
-      StorePath + '\' + siPixels, Screen.PixelsPerInch));
+      AppStorage.ConcatPaths([StorePath, siPixels]), Screen.PixelsPerInch));
     if DataFound then
     begin
       if not (Form.BorderStyle in [bsSizeable, bsSizeToolWin]) then
@@ -4152,7 +4152,7 @@ begin
       (Application.MainForm = nil)) and ((Form.FormStyle = fsMDIForm) or
       ((Form.FormStyle = fsNormal) and (Form.Position = poDefault))) then
       WinState := wsMaximized;
-    Placement.ShowCmd := AppStorage.ReadInteger(StorePath + '\' + siShowCmd, SW_HIDE);
+    Placement.ShowCmd := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siShowCmd]), SW_HIDE);
     case Placement.ShowCmd of
       SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
         WinState := wsNormal;
