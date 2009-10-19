@@ -269,6 +269,10 @@ type
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
     procedure ControlSetAnchors(Value : TAnchors);
+
+    //IJvDynControlFont
+    function ControlGetFont: TFont;
+    procedure ControlSetFont(Value: TFont);
   end;
 
   TJvDynControlVCLDBRadioGroup = class(TDBRadioGroup, IUnknown,
@@ -1270,9 +1274,19 @@ begin
   Result := DataField;
 end;
 
+function TJvDynControlVCLDBMemo.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 procedure TJvDynControlVCLDBMemo.ControlSetAnchors(Value : TAnchors);
 begin
   Anchors := Value;
+end;
+
+procedure TJvDynControlVCLDBMemo.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
 end;
 
 //=== { TJvDynControlVCLDBRadioGroup } =======================================

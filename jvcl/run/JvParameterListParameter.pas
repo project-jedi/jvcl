@@ -2393,8 +2393,12 @@ end;
 procedure TJvMemoParameter.SetWinControlProperties;
 var
   ITmpMemo: IJvDynControlMemo;
+  ITmpFont: IJvDynControlFont;
 begin
   inherited SetWinControlProperties;
+  if FontName <> '' then
+    if Supports(WinControl, IJvDynControlFont, ITmpFont) then
+      ITmpFont.ControlFont.Name := FontName;
   if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
   begin
     ITmpMemo.ControlSetWantTabs(WantTabs);
@@ -2428,8 +2432,12 @@ end;
 procedure TJvRichEditParameter.SetWinControlProperties;
 var
   ITmpMemo: IJvDynControlMemo;
+  ITmpFont: IJvDynControlFont;
 begin
   inherited SetWinControlProperties;
+  if FontName <> '' then
+    if Supports(WinControl, IJvDynControlFont, ITmpFont) then
+      ITmpFont.ControlFont.Name := FontName;
   if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
   begin
     ITmpMemo.ControlSetWantTabs(WantTabs);
