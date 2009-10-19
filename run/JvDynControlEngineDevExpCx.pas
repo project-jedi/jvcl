@@ -360,8 +360,9 @@ type
 
   TJvDynControlCxMemo = class(TcxMemo, IUnknown, IJvDynControl, IJvDynControlData,
     IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
+    //IJvDynControlFont
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetTabOrder(Value: Integer);
@@ -388,10 +389,13 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+    //IJvDynControlFont
+    function ControlGetFont: TFont;
+    procedure ControlSetFont(Value: TFont);
   end;
 
   TJvDynControlCxRichEdit = class(TcxRichEdit, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlItems, IJvDynControlMemo, IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -417,6 +421,10 @@ type
     procedure ControlSetScrollBars(Value: TScrollStyle);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlFont
+    function ControlGetFont: TFont;
+    procedure ControlSetFont(Value: TFont);
   end;
 
   TJvDynControlCxRadioGroup = class(TcxRadioGroup, IUnknown, IJvDynControl,
@@ -2014,6 +2022,11 @@ begin
   Result := Font;
 end;
 
+function TJvDynControlCxMemo.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 //=== { TJvDynControlCxMemo } ================================================
 
 procedure TJvDynControlCxMemo.ControlSetDefaultProperties;
@@ -2115,6 +2128,16 @@ begin
   Properties.Alignment := Value;
 end;
 
+procedure TJvDynControlCxMemo.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+
+function TJvDynControlCxRichEdit.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
 
 //=== { TJvDynControlCxRichEdit } ============================================
 
@@ -2210,6 +2233,11 @@ procedure TJvDynControlCxRichEdit.ControlSetCxProperties(Value: TCxDynControlWra
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
   Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxRichEdit.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
 end;
 
 //=== { TJvDynControlCxRadioGroup } ===========================================

@@ -305,8 +305,10 @@ type
   TJvDynControlJVCLMemo = class(TJvMemo, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo,
     IJvDynControlReadOnly,
-    IJvDynControlAlignment)
+    IJvDynControlAlignment, IJvDynControlFont)
   public
+    //IJvDynControlFont
+    function ControlGetFont: TFont;
     procedure ControlSetDefaultProperties;
     procedure ControlSetTabOrder(Value: Integer);
     procedure ControlSetReadOnly(Value: Boolean);
@@ -331,11 +333,12 @@ type
     procedure ControlSetScrollBars(Value: TScrollStyle);
     //IJvDynControlAlignment
     procedure ControlSetAlignment(Value: TAlignment);
+    procedure ControlSetFont(Value: TFont);
   end;
 
   TJvDynControlJVCLRichEdit = class(TJvRichEdit, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo,
-    IJvDynControlReadOnly)
+    IJvDynControlReadOnly, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetTabOrder(Value: Integer);
@@ -359,6 +362,9 @@ type
     procedure ControlSetWantReturns(Value: Boolean);
     procedure ControlSetWordWrap(Value: Boolean);
     procedure ControlSetScrollBars(Value: TScrollStyle);
+    //IJvDynControlFont
+    function ControlGetFont: TFont;
+    procedure ControlSetFont(Value: TFont);
   end;
 
   TJvDynControlJVCLRadioGroup = class(TJvRadioGroup, IUnknown,
@@ -1649,6 +1655,11 @@ begin
 end;
 
 
+function TJvDynControlJVCLMemo.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 //=== { TJvDynControlJVCLMemo } ==============================================
 
 procedure TJvDynControlJVCLMemo.ControlSetDefaultProperties;
@@ -1744,6 +1755,16 @@ begin
   Alignment := Value;
 end;
 
+procedure TJvDynControlJVCLMemo.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
+end;
+
+function TJvDynControlJVCLRichEdit.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 //=== { TJvDynControlJVCLRichEdit } ==========================================
 
 procedure TJvDynControlJVCLRichEdit.ControlSetDefaultProperties;
@@ -1812,6 +1833,11 @@ end;
 procedure TJvDynControlJVCLRichEdit.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLRichEdit.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
 end;
 
 procedure TJvDynControlJVCLRichEdit.ControlSetWantTabs(Value: Boolean);

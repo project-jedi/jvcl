@@ -31,7 +31,7 @@ interface
 
 {$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning;
+  JclUnitVersioning, JvDynControlEngineDevExpcx, JvDynControlEngineIntf;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}
@@ -261,9 +261,8 @@ type
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
 
-  TJvDynControlCxDBMemo = class(TcxDBMemo, IUnknown,
-      IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
-      IJvDynControlMemo, IJvDynControlReadOnly, IJvDynControlDatabase)
+  TJvDynControlCxDBMemo = class(TcxDBMemo, IUnknown, IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData,
+      IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly, IJvDynControlDatabase, IJvDynControlFont)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -297,6 +296,11 @@ type
 
     //IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    //IJvDynControlFont
+    procedure ControlSetFont(Value: TFont);
+    function ControlGetFont: TFont;
+
   end;
 
   TJvDynControlCxDBRadioGroup = class(TcxDBRadioGroup, IUnknown,
@@ -1397,6 +1401,11 @@ begin
   Result := Databinding.DataField;
 end;
 
+function TJvDynControlCxDBMemo.ControlGetFont: TFont;
+begin
+  Result := Font;
+end;
+
 procedure TJvDynControlCxDBMemo.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
@@ -1406,6 +1415,11 @@ procedure TJvDynControlCxDBMemo.ControlSetCxProperties(Value: TCxDynControlWrapp
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
   Style.StyleController := Value.StyleController;
+end;
+
+procedure TJvDynControlCxDBMemo.ControlSetFont(Value: TFont);
+begin
+  Font.Assign(Value);
 end;
 
 //=== { TJvDynControlCxDBRadioGroup } ========================================
