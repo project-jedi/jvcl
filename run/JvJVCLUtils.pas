@@ -4110,9 +4110,6 @@ begin
       AppStorage.ConcatPaths([StorePath, siPixels]), Screen.PixelsPerInch));
     if DataFound then
     begin
-//      if not (Form.BorderStyle in [bsSizeable, bsSizeToolWin]) then
-//          Placement.rcNormalPosition := Rect(Placement.rcNormalPosition.Left, Placement.rcNormalPosition.Top,
-//            Placement.rcNormalPosition.Left + Form.Width, Placement.rcNormalPosition.Top + Form.Height);
       if Placement.rcNormalPosition.Right > Placement.rcNormalPosition.Left then
       begin
         if not (csDesigning in Form.ComponentState) then
