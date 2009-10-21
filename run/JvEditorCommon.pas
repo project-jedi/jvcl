@@ -265,8 +265,12 @@ type
   TJvLineChangeEvent = procedure(Sender: TObject; Line: Integer) of object;
   TJvCaretChangedEvent = procedure(Sender: TObject; LastCaretX, LastCaretY: Integer) of object;
 
-  TEditCommand = Word;
-  TMacro = AnsiString; { used as buffer (array of char) }
+  {$IFDEF UNICODE}
+  TEditCommand = type LongWord;
+  {$ELSE}
+  TEditCommand = type Word;
+  {$ENDIF UNICODE}
+  TMacro = string; { used as buffer (array of char) }
 
   TJvEditKey = class(TObject)
   public
@@ -275,15 +279,15 @@ type
     Shift1: TShiftState;
     Shift2: TShiftState;
     Command: TEditCommand;
-    constructor Create(const ACommand: TEditCommand; const AKey1: Word;
-      const AShift1: TShiftState);
-    constructor Create2(const ACommand: TEditCommand; const AKey1: Word;
-      const AShift1: TShiftState; const AKey2: Word;
-      const AShift2: TShiftState);
+    constructor Create(const ACommand: TEditCommand;
+      const AKey1: Word; const AShift1: TShiftState);
+    constructor Create2(const ACommand: TEditCommand;
+      const AKey1: Word; const AShift1: TShiftState;
+      const AKey2: Word; const AShift2: TShiftState);
   end;
 
   TCommand2Event = procedure(Sender: TObject; const Key1: Word; const Shift1: TShiftState;
-      const Key2: Word; const Shift2: TShiftState; var Command: TEditCommand) of object;
+    const Key2: Word; const Shift2: TShiftState; var Command: TEditCommand) of object;
 
   TJvKeyboard = class(TPersistent)
   private
@@ -293,13 +297,13 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure Add(const ACommand: TEditCommand; const AKey1: Word;
-      const AShift1: TShiftState);
-    procedure Add2(const ACommand: TEditCommand; const AKey1: Word;
-      const AShift1: TShiftState; const AKey2: Word;
-      const AShift2: TShiftState);
-    procedure Add2Ctrl(const ACommand: TEditCommand; const AKey1: Word;
-      const AShift1: TShiftState; const AKey2: Word);
+    procedure Add(const ACommand: TEditCommand;
+      const AKey1: Word; const AShift1: TShiftState);
+    procedure Add2(const ACommand: TEditCommand;
+      const AKey1: Word; const AShift1: TShiftState;
+      const AKey2: Word; const AShift2: TShiftState);
+    procedure Add2Ctrl(const ACommand: TEditCommand;
+      const AKey1: Word; const AShift1: TShiftState; const AKey2: Word);
     procedure Remove(const AKey1: Word; const AShift1: TShiftState);
     procedure Remove2(const AKey1: Word; const AShift1: TShiftState;
       const AKey2: Word; const AShift2: TShiftState);
@@ -1250,10 +1254,17 @@ const
   { Editor commands }
   { When add new commands, please add them into JvInterpreter_JvEditor.pas unit also ! }
   ecCharFirst = $00;
+  {$IFDEF UNICODE}
+  ecCharLast = $FFFF;
+  ecCommandFirst = $10000;
+  ecIntern = $400000; { use on internal updates }
+  ecUser = $800000; { use this for descendants }
+  {$ELSE}
   ecCharLast = $FF;
   ecCommandFirst = $100;
   ecIntern = $1000; { use on internal updates }
   ecUser = $8000; { use this for descendants }
+  {$ENDIF UNICODE}
 
   {Cursor}
   ecLeft = ecCommandFirst + 1;
@@ -1362,7 +1373,7 @@ const
   ecBeginRecord = ecRecordMacro + 2;
   ecEndRecord = ecRecordMacro + 3;
 
-  twoKeyCommand = High(Word);
+  twoKeyCommand = High(TEditCommand);
 
 function KeyPressed(VK: Integer): Boolean;
 
@@ -3317,7 +3328,7 @@ end;
 
 procedure TJvCustomEditorBase.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  Com: Word;
+  Com: TEditCommand;
 begin
   PaintCaret(False);
   try
@@ -5017,7 +5028,11 @@ begin
     I := 1;
     while I < Length(AMacro) do
     begin
+      {$IFDEF UNICODE}
+      Command(Word(AMacro[I]) + Word(AMacro[I + 1]) shl 16);
+      {$ELSE}
       Command(Byte(AMacro[I]) + Byte(AMacro[I + 1]) shl 8);
+      {$ENDIF UNICODE}
       Inc(I, 2);
     end;
   finally
@@ -5336,7 +5351,13 @@ begin
   // LockUpdate;
   { macro recording }
   if Recording and not Com([ecRecordMacro, ecBeginCompound]) and (Compound = 0) then
+  begin
+    {$IFDEF UNICODE}
+    FMacro := FMacro + Char(LoWord(ACommand)) + Char(HiWord(ACommand));
+    {$ELSE}
     FMacro := FMacro + AnsiChar(Lo(ACommand)) + AnsiChar(Hi(ACommand));
+    {$ENDIF UNICODE}
+  end;
 
   PaintCaret(False);
   try
