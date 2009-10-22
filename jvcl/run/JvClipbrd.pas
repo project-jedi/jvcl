@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -370,19 +370,8 @@ begin
 end;
 
 function TJvClipboard.RegisterFormat(const Name: string): Word;
-var
-  Tmp: PChar;
 begin
-  GetMem(Tmp, Length(Name) + 1); // don't forget +1 for trailing #0
-  try
-    StrPCopy(Tmp, Name);
-    Result := RegisterClipboardFormat(Tmp);
-  finally
-    FreeMem(Tmp);
-  end;
-  // Note : Yes, we could have used PChar(name) as an argument to
-  // RegisterClipboardFormat, but this only works under Delphi 6
-  // and this code have to work under older versions
+  Result := RegisterClipboardFormat(PChar(Name));
 end;
 
 procedure TJvClipboard.RenderFormat(Format: Word);
