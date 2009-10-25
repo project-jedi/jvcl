@@ -104,7 +104,6 @@ type
     {**** Drag'n'Drop ****}
     procedure TimerDnDTimer(Sender: TObject);
   protected
-    //FSavedActive: Boolean;
     FMastersStream: TStream;
 
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
@@ -1355,12 +1354,19 @@ var
   HT: THitTests;
 begin
   inherited DragOver(Source, X, Y, State, Accept);
+
   if ValidDataSet and (DragMode = dmAutomatic) and not FDataLink.ReadOnly and
-     not ReadOnly and not Accept then
+     not ReadOnly then
   begin
     HT := GetHitTestInfoAt(X, Y);
     Node := GetNodeAt(X, Y);
-    Accept := (Source = Self) and Assigned(Selected) and
+
+    { Mantis #4815: Do not allow drag over if the user callback said no; see TControl.DragOver impl. }
+    if not Assigned(OnDragOver) then
+      Accept := True;
+
+    Accept := Accept and
+      (Source = Self) and Assigned(Selected) and
       (Node <> Selected) and Assigned(Node) and
       not Node.HasAsParent(Selected) and
       (HT - [htOnLabel, htOnItem, htOnIcon, htNowhere, htOnIndent, htOnButton] <> HT);
