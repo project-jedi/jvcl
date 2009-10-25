@@ -946,7 +946,7 @@ end;
 //=== { TJvListView } ========================================================
 
 const
-  cLISTVIEW01 = 'LISTVIEW01'; // 10 chars
+  cLISTVIEW01: PAnsiChar = 'LISTVIEW01'; // 10 chars
 
 constructor TJvListView.Create(AOwner: TComponent);
 begin
@@ -1320,8 +1320,8 @@ var
   const
     LV_HASCHECKBOXES = $80;
   var
-    Count: SmallInt;
-    I, J: Integer;
+    Count, J: SmallInt;
+    I: Integer;
     Options: Byte;
     UTF8St: UTF8String;
     S: string;
@@ -1358,8 +1358,8 @@ var
           SetLength(Buf, J);
         if J > 0 then
         begin
-          Stream.Read(Buf, J);
-          SetString(UTF8St, PAnsiChar(Buf[0]), J);
+          Stream.Read(Buf[0], J);
+          SetString(UTF8St, PAnsiChar(@Buf[0]), J);
           S := UTF8ToString(UTF8St);
         end
         else
@@ -1383,7 +1383,7 @@ begin
   Items.BeginUpdate;
   try
     Items.Clear;
-    if Buf <> cLISTVIEW01 then
+    if StrComp(Buf, cLISTVIEW01) <> 0 then
     begin
       Stream.Position := Start;
       LoadOldStyle(Stream);
@@ -1411,7 +1411,7 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
 
   procedure SaveOldStyle(Stream: TStream);
   var
-    I, J, K: Integer;
+    I, SubItemIndex, K: Integer;
     b, c, d, e: Byte;
     S: AnsiString;
     Buf: array [0..1000] of Byte;
@@ -1441,17 +1441,17 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
       else
       begin
         Stream.Write(b, 1);
-        for J := 0 to Self.Items[I].SubItems.Count - 2 do
+        for SubItemIndex := 0 to Self.Items[I].SubItems.Count - 2 do
         begin
-          S := AnsiString(Self.Items[I].SubItems[J]);
+          S := AnsiString(Self.Items[I].SubItems[SubItemIndex]);
           for K := 1 to Length(S) do
             Buf[K - 1] := Byte(S[K]);
           K := Length(S);
           Stream.Write(Buf, K);
           Stream.Write(b, 1);
         end;
-        J := Self.Items[I].SubItems.Count - 1;
-        S := AnsiString(Self.Items[I].SubItems[J]);
+        SubItemIndex := Self.Items[I].SubItems.Count - 1;
+        S := AnsiString(Self.Items[I].SubItems[SubItemIndex]);
         for K := 1 to Length(S) do
           Buf[K - 1] := Byte(S[K]);
         K := Length(S);
@@ -1478,13 +1478,11 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     end;
 
   var
-    Buf: array [0..100] of AnsiChar;
     I: Integer;
     J: SmallInt;
     Options, IsChecked: Byte;
   begin
-    Buf := cLISTVIEW01;
-    Stream.Write(Buf, 10);
+    Stream.Write(cLISTVIEW01[0], 10);
     Options := 0;
     if CheckBoxes then
       Options := LV_HASCHECKBOXES;
