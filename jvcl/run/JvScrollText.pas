@@ -52,7 +52,7 @@ type
     FScrollDirection: TJvScrollTextDirection;
     FScrollSaved: Integer;
     FItems: TStringList;
-    FDeja: Cardinal;
+    FDefaultAppHintPause: Cardinal;
     FScroll: TJvImageDrawThread;
     FFont: TFont;
     FStartY: Integer;
@@ -82,7 +82,6 @@ type
     procedure SetWordWrap(const Value: Boolean);
     procedure DoScrollEnd;
   protected
-    procedure BoundsChanged; override;
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -151,7 +150,6 @@ begin
 
   FText := TJvStaticText.Create(Self);
   FText.Parent := Self;
-  // FText.SetBounds(2, 2, Width-4, Height-4);
   FText.Width := Width;
   FText.Height := Height;
   FText.BorderStyle := sbsNone;
@@ -170,7 +168,7 @@ begin
 
   FTimerTag := 0;
   FDown := False;
-  FDeja := Application.HintPause;
+  FDefaultAppHintPause := Application.HintPause;
 
   if not (csDesigning in ComponentState) then
   begin
@@ -188,7 +186,7 @@ begin
     FScroll.OnDraw := nil;
     FScroll.Free;
   end;
-  Application.HintPause := FDeja;
+  Application.HintPause := FDefaultAppHintPause;
   FItems.Free;
   FText.Free;
   FFont.OnChange := nil;
@@ -241,8 +239,9 @@ begin
     FScroll.OnDraw := nil;
   FDown := True;
 
-  if Assigned(OnMouseDown) then begin
-    P := Self.ScreenToClient(P);
+  if Assigned(OnMouseDown) then
+  begin
+    P := ScreenToClient(P);
     OnMouseDown(Self, Button, Shift, P.X, P.Y);
   end;
 end;
@@ -292,7 +291,7 @@ begin
 
   if Assigned(OnMouseMove) then
   begin
-    P := Self.ScreenToClient(P);
+    P := ScreenToClient(P);
     if (P.X <> FOldMouseMovePt.X) or (P.Y <> FOldMouseMovePt.Y) then
     begin
       FOldMouseMovePt := P;
@@ -310,7 +309,8 @@ begin
     FScroll.OnDraw := OnScroll;
   FDown := False;
 
-  if Assigned(OnMouseUp) then begin
+  if Assigned(OnMouseUp) then
+  begin
     P.X := X;
     P.Y := Y;
     P := Self.ScreenToClient( FText.ClientToScreen(P) );
@@ -334,7 +334,7 @@ end;
 
 procedure TJvScrollText.OnScroll(Sender: TObject);
 var
-  T: Integer;
+  Offset: Integer;
   ScrollEnd: Boolean;
 begin
   // Must exit because we are "Synchronized" and our parent is already
@@ -353,7 +353,7 @@ begin
     end
     else
     begin
-      T := FScrollSaved;
+      Offset := FScrollSaved;
       Dec(FScrollSaved);
     end;
   end
@@ -363,16 +363,16 @@ begin
     if FScrollSaved >= FPixel then
     begin
       FTimerTag := 0;
-      T := FPixel;
+      Offset := FPixel;
     end
     else
     begin
-      T := FScrollSaved;
+      Offset := FScrollSaved;
       Inc(FScrollSaved);
     end;
   end
   else
-    T := FPixel;
+    Offset := FPixel;
 
   //tag=2 unpause
   //FScrollDirection
@@ -387,7 +387,7 @@ begin
           ScrollEnd := True;
         end
         else
-          FCurrPos := FCurrPos + T;
+          FCurrPos := FCurrPos + Offset;
         FText.Top := FCurrPos;
       end;
     drFromRight:
@@ -398,7 +398,7 @@ begin
           ScrollEnd := True;
         end
         else
-          FCurrPos := FCurrPos - T;
+          FCurrPos := FCurrPos - Offset;
         FText.Left := FCurrPos;
       end;
     drFromLeft:
@@ -409,7 +409,7 @@ begin
           ScrollEnd := True;
         end
         else
-          FCurrPos := FCurrPos + T;
+          FCurrPos := FCurrPos + Offset;
         FText.Left := FCurrPos;
       end;
     drFromBottom:
@@ -420,7 +420,7 @@ begin
           ScrollEnd := True;
         end
         else
-          FCurrPos := FCurrPos - T;
+          FCurrPos := FCurrPos - Offset;
         FText.Top := FCurrPos;
       end;
   end;
@@ -450,8 +450,8 @@ end;
 
 procedure TJvScrollText.SetDelay(const Value: Cardinal);
 begin
-  if Value > FDeja then
-    Application.HintPause := FDeja
+  if Value > FDefaultAppHintPause then
+    Application.HintPause := FDefaultAppHintPause
   else
   if Value > 10 then
     Application.HintPause := Value - 10
@@ -472,42 +472,45 @@ end;
 
 procedure TJvScrollText.CalculateText(Sender: TObject);
 var
-  I, J, K: Integer;
+  I, J, K, W: Integer;
   Ts: TStringList;
-  Canvas: TCanvas;
+  DesktopCanvas: TCanvas;
 begin
   // calculate the Size of the memo (vertically)
-  Canvas := TCanvas.Create;
-  with Canvas do
-  begin
-    Handle := GetDC(HWND_DESKTOP);
-    Font.Assign(FText.Font);
+  DesktopCanvas := TCanvas.Create;
+  try
+    DesktopCanvas.Handle := GetDC(HWND_DESKTOP);
+    DesktopCanvas.Font.Assign(FText.Font);
     J := 0;
     K := 0;
     Ts := TStringList.Create;
-    Ts.Text := FText.Caption;
-    for I := 0 to Ts.Count - 1 do
     try
-      if K < TextWidth(Ts[I]) then
-        K := TextWidth(Ts[I]);
-      if Ts[I] <> '' then
-        J := J + TextHeight(Ts[I]) * ((TextWidth(Ts[I]) div Width) + 1)
-      else
-        J := J + CanvasMaxTextHeight(Canvas);
-    except
+      Ts.Text := FText.Caption;
+      for I := 0 to Ts.Count - 1 do
+      try
+        W := DesktopCanvas.TextWidth(Ts[I]);
+        if K < W then
+          K := W;
+        if Ts[I] <> '' then
+          J := J + DesktopCanvas.TextHeight(Ts[I]) * ((W div Width) + 1)
+        else
+          J := J + CanvasMaxTextHeight(DesktopCanvas);
+      except
+      end;
+      if J <= 0 then
+        J := Height;
+      FText.Height := J;
+      if K <= 0 then
+        K := Width;
+      FText.Width := K;
+      DesktopCanvas.Handle := 0;
+      ReleaseDC(HWND_DESKTOP, Handle);
+    finally
+      Ts.Free;
     end;
-    if J <= 0 then
-      J := Height;
-    FText.Height := J;
-    if K <= 0 then
-      K := Width;
-    FText.Width := K;
-    ReleaseDC(HWND_DESKTOP, Handle);
-    Ts.Free;
-    Free;
+  finally
+    DesktopCanvas.Free;
   end;
-  if FText.Height < Height then
-    FText.Height := Height;
   Reset;
 end;
 
@@ -558,13 +561,13 @@ procedure TJvScrollText.Reset;
 begin
   case ScrollDirection of
     drFromTop:
-      FCurrPos := Height;
+      FCurrPos := -FText.Height;
     drFromLeft:
-      FCurrPos := -Width;
+      FCurrPos := -FText.Width;
     drFromRight:
       FCurrPos := Width;
     drFromBottom:
-      FCurrPos := -FText.Height;
+      FCurrPos := Height;
   end;
 end;
 
@@ -576,16 +579,6 @@ begin
     FTimerTag := 2;
     SetActive(True);
   end;
-end;
-
-procedure TJvScrollText.BoundsChanged;
-begin
-  if FText <> nil then
-  begin
-    if FText.Height < Height then
-      FText.Height := Height;
-  end;
-  inherited BoundsChanged;
 end;
 
 function TJvScrollText.GetAlignment: TAlignment;
