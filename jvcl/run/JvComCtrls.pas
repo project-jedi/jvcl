@@ -53,7 +53,9 @@ uses
 const
   JvDefPageControlBorder = 4;
   JvDefaultInactiveColorFrom = TColor($D7D7D7);
-  JvDefaultInactiveColorTo= TColor($ADADAD);
+  JvDefaultInactiveColorTo = TColor($ADADAD);
+
+  WM_CHECKSTATECHANGED = WM_USER + 1;
 
 type
   TJvIPAddress = class;
@@ -516,6 +518,7 @@ type
     FMenuDblClick: Boolean;
     FReinitializeTreeNode: Boolean;
     FOnNodeCheckedChange: TJvTreeViewNodeCheckedChange;
+    FCheckEventsDisabled: Boolean;
 
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -526,6 +529,7 @@ type
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure WMCheckStateChanged(var Msg: TMessage); message WM_CHECKSTATECHANGED;
     function GetItemHeight: Integer;
     procedure SetItemHeight(Value: Integer);
     function GetInsertMarkColor: TColor;
@@ -541,6 +545,7 @@ type
     procedure SetPageControl(const Value: TPageControl);
     function GetItemIndex: Integer;
     procedure SetItemIndex(const Value: Integer);
+    procedure PostCheckStateChanged(Node: TTreeNode);
   protected
     procedure DoNodeCheckedChange(Node: TJvTreeNode);
     procedure TreeNodeCheckedChange(Sender: TObject); virtual;
@@ -613,6 +618,7 @@ type
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
     property PageControl: TPageControl read FPageControl write SetPageControl;
     property AutoDragScroll: Boolean read FAutoDragScroll write FAutoDragScroll default False;
+    property CheckEventsDisabled: Boolean read FCheckEventsDisabled write FCheckEventsDisabled default False;
     property OnVerticalScroll: TNotifyEvent read FOnVScroll write FOnVScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHScroll write FOnHScroll;
     property OnPageChanged: TPageChangedEvent read FOnPage write FOnPage;
@@ -2746,6 +2752,9 @@ begin
     FClearBeforeSelect := True;
     FSelectThisNode := True;
   end;
+  if Checkboxes and (GetComCtlVersion < ComCtlVersionIE6) and (Key = VK_SPACE) then // emulate missing notify message
+    PostCheckStateChanged(Selected);
+
   inherited KeyDown(Key, Shift);
   if ((Key = VK_SPACE) or (Key = VK_RETURN)) and MenuDblClick and IsMenuItemClick(Selected) then
     TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
@@ -2798,7 +2807,8 @@ end;
 
 procedure TJvTreeView.TreeNodeCheckedChange(Sender: TObject);
 begin
-  DoNodeCheckedChange(Sender as TJvTreeNode);
+  if not FCheckEventsDisabled then
+    DoNodeCheckedChange(Sender as TJvTreeNode);
 end;
 
 procedure TJvTreeView.SetCheckBoxes(const Value: Boolean);
@@ -2918,6 +2928,20 @@ begin
 end;
 
 procedure TJvTreeView.CNNotify(var Msg: TWMNotify);
+{$IF not declared(NM_TVSTATEIMAGECHANGING)}
+const
+  NM_TVSTATEIMAGECHANGING = NM_FIRST - 24;
+type
+  { For IE >= 0x0600 }
+  tagNMTVSTATEIMAGECHANGING = packed record
+    hdr: NMHDR;
+    hti: HTREEITEM;
+    iOldStateImageIndex: Integer;
+    iNewStateImageIndex: Integer;
+  end;
+  PNMTVStateImageChanging = ^TNMTVStateImageChanging;
+  TNMTVStateImageChanging = tagNMTVSTATEIMAGECHANGING;
+{$IFEND}
 var
   Node: TTreeNode;
   Point: TPoint;
@@ -2941,47 +2965,60 @@ begin
   if Windows.GetCursorPos(Point) then // prevent AV after "computer locked" dialog
   begin
     Point := ScreenToClient(Point);
-    with Msg, Point do
-      case NMHdr.code of
-        NM_CLICK, NM_RCLICK:
+    case Msg.NMHdr.code of
+      NM_TVSTATEIMAGECHANGING: // ComCtrls 6+
+        begin
+          if CheckBoxes and (GetComCtlVersion >= ComCtlVersionIE6) then
           begin
-            Node := GetNodeAt(X, Y);
-            if Assigned(Node) then
-              Selected := Node
-            else
+            Node := Items.GetNode(PNMTVStateImageChanging(Msg.NMHdr).hti);
+            PostCheckStateChanged(Node);
+          end;
+        end;
+      NM_CLICK, NM_RCLICK:
+        begin
+          Node := GetNodeAt(Point.X, Point.Y);
+          if Assigned(Node) then
+            Selected := Node;
+
+          if (Selected <> nil) and (Msg.NMHdr.code = NM_RCLICK) then
+            if Assigned(TJvTreeNode(Selected).PopupMenu) then  // Popup menu may not be assigned
+              TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+
+          if Checkboxes and (GetComCtlVersion < ComCtlVersionIE6) and (Node <> nil) and  // emulate missing notify message
+             (htOnStateIcon in GetHitTestInfoAt(Point.X, Point.Y)) then
+            PostCheckStateChanged(Node);
+        end;
+      TVN_SELCHANGEDA, TVN_SELCHANGEDW:
+        begin
+          DoSelectionChange;  // mantis 4393
+          if Assigned(FPageControl) then
+            if Selected <> nil then
             begin
-              if FCheckBoxes then
+              //Search for the correct page
+              J := -1;
+              for I := 0 to FPageControl.PageCount - 1 do
+                if DoComparePage(FPageControl.Pages[I], Selected) then
+                  J := I;
+              if J <> -1 then
               begin
-                Node := GetNodeAt(X + 16, Y);
-                if Assigned(Node) then
-                  Selected := Node
+                FPageControl.ActivePage := FPageControl.Pages[J];
+                if Assigned(FOnPage) then
+                  FOnPage(Self, Selected, FPageControl.Pages[J]);
               end;
             end;
-            if (Selected <> nil) and (NMHdr.code = NM_RCLICK) then
-              if Assigned(TJvTreeNode(Selected).PopupMenu) then  // Popup menu may not be assigned
-                TJvTreeNode(Selected).PopupMenu.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
-          end;
-        TVN_SELCHANGEDA, TVN_SELCHANGEDW:
-          begin
-            DoSelectionChange;  // mantis 4393
-            if Assigned(FPageControl) then
-              if Selected <> nil then
-              begin
-                //Search for the correct page
-                J := -1;
-                for I := 0 to FPageControl.PageCount - 1 do
-                  if DoComparePage(FPageControl.Pages[I], Selected) then
-                    J := I;
-                if J <> -1 then
-                begin
-                  FPageControl.ActivePage := FPageControl.Pages[J];
-                  if Assigned(FOnPage) then
-                    FOnPage(Self, Selected, FPageControl.Pages[J]);
-                end;
-              end;
-          end;
-      end;
+        end;
+    end;
   end;
+end;
+
+procedure TJvTreeView.WMCheckStateChanged(var Msg: TMessage);
+var
+  Node: TTreeNode;
+begin
+  Node := Items.GetNode(HTREEITEM(Msg.LParam));
+  if Node <> nil then
+    if Ord(TJvTreeNode(Node).Checked) <> Msg.WParam then // do not trigger if nothing was changed
+      TJvTreeNode(Node).DoCheckedChange;
 end;
 
 function TJvTreeView.DoComparePage(Page: TTabSheet; Node: TTreeNode): Boolean;
@@ -3248,6 +3285,12 @@ begin
     if AComponent = FPageControl then
       PageControl := nil;
   end;
+end;
+
+procedure TJvTreeView.PostCheckStateChanged(Node: TTreeNode);
+begin
+  if Node <> nil then
+    PostMessage(Handle, WM_CHECKSTATECHANGED, Ord(TJvTreeNode(Node).Checked), LPARAM(Node.ItemId));
 end;
 
 procedure TJvTreeView.DblClick;
