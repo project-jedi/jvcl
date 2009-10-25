@@ -1461,7 +1461,7 @@ var
     with DataLink.DataSet do
     begin
       DoSelection(Select, 1);
-      if AutoAppend and Eof and CanModify and (not ReadOnly) and (dgEditing in Options) then
+      if AutoAppend and Eof and CanModify and not ReadOnly and (dgEditing in Options) then
         Append;
     end;
   end;
@@ -1477,7 +1477,8 @@ var
   begin
     ACol := Col;
     Original := ACol;
-    if MultiSelect and DataLink.Active then
+    BeginUpdate;
+    try
       while True do
       begin
         if GoForward then
@@ -1486,20 +1487,30 @@ var
           Dec(ACol);
         if ACol >= ColCount then
         begin
-          ClearSelections;
+          if MultiSelect then
+            ClearSelections;
+          NextRow(False);
           ACol := IndicatorOffset;
         end
-        else
-        if ACol < IndicatorOffset then
+        else if ACol < IndicatorOffset then
         begin
-          ClearSelections;
-          ACol := ColCount;
+          if MultiSelect then
+            ClearSelections;
+          PriorRow(False);
+          ACol := ColCount - IndicatorOffset;
         end;
         if ACol = Original then
           Exit;
         if TabStops[ACol] then
+        begin
+          //MoveCol(ACol, 0);
+          SelectedIndex := ACol - IndicatorOffset;
           Exit;
+        end;
       end;
+    finally
+      EndUpdate;
+    end;
   end;
 
   function DeletePrompt: Boolean;
@@ -1588,7 +1599,10 @@ begin
         ClearSelections
       else
       if (Key = VK_TAB) and not (ssAlt in Shift) then
+      begin
         CheckTab(not (ssShift in Shift));
+        Exit;
+      end;
     end;
 
   OnKeyDown := nil;
