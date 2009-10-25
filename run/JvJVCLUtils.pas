@@ -126,7 +126,7 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 
 //1 This function validates if the control or any of it subcontrols has the focus.
-function IsSubControlFocused(iControl : TWinControl): Boolean;
+function IsSubControlFocused(AControl: TWinControl): Boolean;
 
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
@@ -879,9 +879,8 @@ function IsChildWindow(const AChild, AParent: THandle): Boolean;
 function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
     AComponentName: string = ''): string;
 
-function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList; var VarReference:
-        TCustomImageList; ChangeLink: TChangeLink): Boolean;
-
+function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList;
+  var VarReference: TCustomImageList; ChangeLink: TChangeLink): Boolean;
 function ReplaceComponentReference(This, NewReference: TComponent; var VarReference: TComponent): Boolean;
 
 
@@ -6087,8 +6086,6 @@ begin
   end;
 end;
 
-
-
 function JvListViewGetOrderedColumnIndex(Column: TListColumn): Integer;
 var
   ColumnOrder: array of Integer;
@@ -6122,7 +6119,6 @@ begin
     SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
   SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_NORMAL, ImageListHandle);
 end;
-
 
 //== MessageBox ==============================================================
 
@@ -6312,8 +6308,6 @@ begin
   if Pos('S', UpperCase(Styles)) > 0 then
     Include(Result, fsStrikeOut);
 end;
-
-
 
 function FontToString(Font: TFont): string;
 begin
@@ -7859,59 +7853,62 @@ function ReplaceComponentReference(This, NewReference: TComponent; var VarRefere
 begin
   Result := (VarReference <> NewReference) and Assigned(This);
   if Result then
-    begin
-      if Assigned(VarReference) then
-        VarReference.RemoveFreeNotification(This);
-      VarReference := NewReference;
-      if Assigned(VarReference) then
-        VarReference.FreeNotification(This);
-    end;
+  begin
+    if Assigned(VarReference) then
+      VarReference.RemoveFreeNotification(This);
+    VarReference := NewReference;
+    if Assigned(VarReference) then
+      VarReference.FreeNotification(This);
+  end;
 end;
 
-function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList; var VarReference:
-        TCustomImageList; ChangeLink: TChangeLink): Boolean;
+function ReplaceImageListReference(This: TComponent; NewReference: TCustomImageList;
+  var VarReference: TCustomImageList; ChangeLink: TChangeLink): Boolean;
 begin
   Result := (VarReference <> NewReference) and Assigned(This);
   if Result then
+  begin
+    if Assigned(VarReference) then
     begin
-      if Assigned(VarReference) then
-      begin
-        VarReference.RemoveFreeNotification(This);
-        VarReference.UnRegisterChanges(ChangeLink);
-      end;
-      VarReference := NewReference;
-      if Assigned(VarReference) then
-      begin
-        VarReference.RegisterChanges(ChangeLink);
-        VarReference.FreeNotification(This);
-      end;
+      VarReference.RemoveFreeNotification(This);
+      VarReference.UnRegisterChanges(ChangeLink);
     end;
+    VarReference := NewReference;
+    if Assigned(VarReference) then
+    begin
+      VarReference.RegisterChanges(ChangeLink);
+      VarReference.FreeNotification(This);
+    end;
+  end;
 end;
 
-function IsSubControlFocused(iControl : TWinControl): Boolean;
-var Form : TCustomForm;
+function IsSubControlFocused(AControl: TWinControl): Boolean;
+var
+  Form: TCustomForm;
   Ctrl: TWinControl;
 begin
   Result := False;
-  if not Assigned(iControl) then
+  if AControl = nil then
     Exit;
-  if iControl.Focused then
+
+  if AControl.Focused then
+    Result := True
+  else
   begin
-    Result := True;
-    Exit;
-  end;
-  Form := GetParentForm(iControl);
-  if not Assigned (Form) then
-    Exit;
-  Ctrl := Form.ActiveControl;
-  while Assigned(Ctrl) do
-  begin
-    if Ctrl = iControl then
+    Form := GetParentForm(AControl);
+    if Form <> nil then
     begin
-      Result:= true;
-      exit;
+      Ctrl := Form.ActiveControl;
+      while Ctrl <> nil do
+      begin
+        if Ctrl = AControl then
+        begin
+          Result := True;
+          Exit;
+        end;
+        Ctrl := Ctrl.Parent;
+      end;
     end;
-    Ctrl := Ctrl.Parent;
   end;
 end;
 

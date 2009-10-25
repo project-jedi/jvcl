@@ -381,7 +381,7 @@ begin
     FKeyLink.DataSource := Value;
     FValueLink.DataSource := Value;
   end;
-  ReplaceComponentReference (Self, Value, TComponent(fDatasource));
+  ReplaceComponentReference(Self, Value, TComponent(FDataSource));
 end;
 
 procedure TJvCustomAppDBStorage.SetKeyField(const Value: string);
