@@ -3223,9 +3223,33 @@ begin
 end;
 
 function TJvMiscInfo.GetNetBIOS: Boolean;
+type
+  _NCB64 = record
+    ncb_command: UCHAR;  // command code
+    ncb_retcode: UCHAR;  // return code
+    ncb_lsn: UCHAR;      // local session number
+    ncb_num: UCHAR;      // number of our network name
+    ncb_buffer: PUCHAR;  // address of message buffer
+    ncb_length: Word;    // size of message buffer
+    ncb_callname: array [0..NCBNAMSZ - 1] of UCHAR; // blank-padded name of remote
+    ncb_name: array [0..NCBNAMSZ - 1] of UCHAR;     // our blank-padded netname
+    ncb_rto: UCHAR;      // rcv timeout/retry count
+    ncb_sto: UCHAR;      // send timeout/sys timeout
+    ncb_post: TNcbPost;  // POST routine address
+    ncb_lana_num: UCHAR; // lana (adapter) number
+    ncb_cmd_cplt: UCHAR; // 0xff => commmand pending
+    ncb_reserve: array [0..17] of UCHAR; // reserved, used by BIOS
+    ncb_event: THandle;   // HANDLE to Win32 event which
+                         // will be set to the signalled
+                         // state when an ASYNCH command
+                         // completes
+  end;
+
 var
-  P: _NCB;
+  P: _NCB64; // 64bit structure is larger than the 32bit structure
 begin
+  FillChar(P, SizeOf(P), 0);
+  P.ncb_command := NCBASTAT;
   Result := RtdlNetBios(@P) <> NRC_OPENERR;
 end;
 

@@ -173,7 +173,7 @@ procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 
 function GetTickCount64: Int64;
-procedure Delay(MSecs: Int64);
+procedure Delay(MSecs: Int64); // WARNING: This function calls ProcessMessages
 procedure CenterControl(Control: TControl);
 
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
