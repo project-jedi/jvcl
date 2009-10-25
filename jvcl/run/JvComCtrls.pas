@@ -506,7 +506,6 @@ type
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnEditCancelled: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
-    FTreeSelectionChange: Boolean;
     FCheckBoxes: Boolean;
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
@@ -2785,11 +2784,6 @@ var
   Point: TPoint;
   I, J: Integer;
 begin
-  FTreeSelectionChange := False;
-  case Msg.NMHdr.code of
-    TVN_SELCHANGEDA, TVN_SELCHANGEDW:
-      FTreeSelectionChange := True;
-  end;
   inherited;
   if Windows.GetCursorPos(Point) then // prevent AV after "computer locked" dialog
   begin
