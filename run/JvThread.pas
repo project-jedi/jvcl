@@ -519,7 +519,7 @@ begin
             end;
           end
           else
-            if ConnectedThread.ThreadDialogAllowed then
+            if ConnectedThread.ThreadDialogAllowed and FormIsShown then
               UpdateFormContents;
       end;   // not terminated
   end;   // if not (csDestroying in ComponentState) then

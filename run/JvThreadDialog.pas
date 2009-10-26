@@ -429,6 +429,8 @@ procedure TJvThreadSimpleDialogForm.SetFormHeightWidth;
 var
   H, W: Integer;
 begin
+  if (csDestroying in ComponentState) then
+    Exit;
   if FInfoTextPanel.Visible then
     W := FOrgInfoTextWidth + 20
   else
@@ -467,6 +469,8 @@ var
   ITmpControl: IJvDynControlCaption;
   ITmpAutoSize: IJvDynControlAutoSize;
 begin
+  if (csDestroying in ComponentState) then
+    Exit;
   if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
     if ITmpControl.ControlGetCaption<>DialogOptions.FInfoText then
     begin
@@ -487,6 +491,8 @@ var
   ITmpControl: IJvDynControlCaption;
   ITmpProgressbar : IJvDynControlProgressbar;
 begin
+  if (csDestroying in ComponentState) then
+    Exit;
   inherited UpdateFormContents;
   FCounter := FCounter + 1;
   if Assigned(DialogOptions) then
@@ -592,6 +598,8 @@ procedure TJvThreadAnimateDialogForm.SetFormHeightWidth;
 var
   H, W: Integer;
 begin
+  if (csDestroying in ComponentState) then
+    Exit;
   H := 0;
   W := 200;
 
@@ -635,28 +643,11 @@ begin
     ClientHeight := H;
 end;
 
-{procedure TJvThreadAnimateDialogForm.SetFormInfoText;
-var
-  ITmpControl: IJvDynControlCaption;
-  ITmpAutoSize: IJvDynControlAutoSize;
-begin
-  if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
-    if ITmpControl.ControlGetCaption<>DialogOptions.FInfoText then
-    begin
-      ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
-      if Supports(FInfoText, IJvDynControlAutoSize, ITmpAutoSize) then
-      begin
-        ITmpAutoSize.ControlSetAutoSize(True);
-        ITmpAutoSize.ControlSetAutoSize(False);
-      end;
-      FInfoText.Left := FDefaultBorderWidth; // Some Components change the left position when activating autosize (TcxStaticText)
-      FOrgInfoTextWidth := FInfoText.Width;
-    end;
-end;}
-
 procedure TJvThreadAnimateDialogForm.UpdateFormContents;
 var ITmpControl : IJvDynControlCaption;
 begin
+  if (csDestroying in ComponentState) then
+    Exit;
   inherited UpdateFormContents;
   if Assigned(DialogOptions) then
   begin
