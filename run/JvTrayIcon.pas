@@ -1478,11 +1478,14 @@ begin
                 end;
             end;
           end;
+        {$IFNDEF DELPHI2009_UP}
         // Add by Winston Feng 2003-9-28
         // Handle the QueryEndSession and TaskbarCreated message, so trayicon
         // will be deleted and restored correctly.
+        // For D2009 and upper, we must let the inherited WndProc handle it.
         WM_QUERYENDSESSION:
           Result := 1;
+        {$ENDIF ~DELPHI2009_UP}
         WM_ENDSESSION:
           // (rb) Is it really necessairy to respond to WM_ENDSESSION?
           if TWMEndSession(Mesg).EndSession then
