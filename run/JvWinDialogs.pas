@@ -205,7 +205,7 @@ type
   end;
 
   // the signature of procedures in CPL's that implements Control Panel functionality
-  TCplApplet = function(hwndCPl: THandle; uMsg: DWORD; lParam1, lParam2: Longint): Longint; stdcall;
+  TCplApplet = function(hwndCPl: THandle; uMsg: UINT; lParam1, lParam2: LPARAM): Longint; stdcall;
 
   // (rom) largely reimplemented
   TJvAppletDialog = class(TJvCommonDialogF)
@@ -914,7 +914,7 @@ begin
         SetLength(FAppletInfo, FCount);
         for I := 0 to Count - 1 do
         begin
-          FAppletFunc(GetForegroundWindow, CPL_INQUIRE, I, Longint(@AplInfo));
+          FAppletFunc(GetForegroundWindow, CPL_INQUIRE, I, LPARAM(@AplInfo));
           with FAppletInfo[I] do
           begin
             Icon := TIcon.Create;

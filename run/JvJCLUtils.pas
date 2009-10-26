@@ -1116,12 +1116,12 @@ const
 
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 begin
-  Result := SendMessage(Handle, Msg, wParam, Longint(@R));
+  Result := SendMessage(Handle, Msg, wParam, LPARAM(@R));
 end;
 
 function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
 begin
-  Result := SendMessage(Handle, Msg, wParam, Longint(@Data));
+  Result := SendMessage(Handle, Msg, wParam, LPARAM(@Data));
 end;
 
 
@@ -3836,7 +3836,7 @@ begin
   if DC = NullHandle then
     OutOfResources;
   try
-    Bits := Pointer(Longint(@BI) + SizeOf(BI) + NumColors * SizeOf(TRGBQuad));
+    Bits := Pointer(PAnsiChar(@BI) + SizeOf(BI) + NumColors * SizeOf(TRGBQuad));
     Temp := CreateDIBitmap(DC, BI, CBM_INIT, Bits, PBitmapInfo(@BI)^, DIB_RGB_COLORS);
     if Temp = NullHandle then
       OutOfResources;
@@ -3856,7 +3856,7 @@ begin
       biClrUsed := 2;
       biClrImportant := 2;
     end;
-    Colors := Pointer(Longint(@BI) + SizeOf(BI));
+    Colors := Pointer(PAnsiChar(@BI) + SizeOf(BI));
     Colors^[0] := 0;
     Colors^[1] := $FFFFFF;
     Temp := CreateDIBitmap(DC, BI, CBM_INIT, Bits, PBitmapInfo(@BI)^, DIB_RGB_COLORS);
@@ -6703,35 +6703,33 @@ end;
 
 procedure SendShift(H: THandle; Down: Boolean);
 var
-  VKey, ScanCode: Word;
-  LParam: Cardinal;
+  VKey: Word;
+  ScanCode: DWORD;
 begin
   VKey := VK_SHIFT;
-  ScanCode := MapVirtualKey(VKey, 0);
-  LParam := Longint(ScanCode) shl 16 or 1;
+  ScanCode := Longint(MapVirtualKey(VKey, 0)) shl 16 or 1;
   if not Down then
-    LParam := LParam or $C0000000;
-  SendMessage(H, WM_KEYDOWN, VKey, LParam);
+    ScanCode := ScanCode or $C0000000;
+  SendMessage(H, WM_KEYDOWN, VKey, LPARAM(ScanCode));
 end;
 
 procedure SendCtrl(H: THandle; Down: Boolean);
 var
-  VKey, ScanCode: Word;
-  LParam: Cardinal;
+  VKey: Word;
+  ScanCode: DWORD;
 begin
   VKey := VK_CONTROL;
-  ScanCode := MapVirtualKey(VKey, 0);
-  LParam := Longint(ScanCode) shl 16 or 1;
+  ScanCode := Longint(MapVirtualKey(VKey, 0)) shl 16 or 1;
   if not Down then
-    LParam := LParam or $C0000000;
-  SendMessage(H, WM_KEYDOWN, VKey, LParam);
+    ScanCode := ScanCode or $C0000000;
+  SendMessage(H, WM_KEYDOWN, VKey, LPARAM(ScanCode));
 end;
 
 function SendKey(const AppName: string; Key: Char): Boolean;
 var
-  VKey, ScanCode: Word;
+  VKey: Word;
   ConvKey: Longint;
-  LParam: Cardinal;
+  ScanCode: DWORD;
   Shift, Ctrl: Boolean;
   H: Windows.HWND;
 begin
@@ -6743,15 +6741,15 @@ begin
     Ctrl := (ConvKey and $00040000) <> 0;
     ScanCode := ConvKey and $000000FF or $FF00;
     VKey := Ord(Key);
-    LParam := Longint(ScanCode) shl 16 or 1;
+    ScanCode := (ScanCode shl 16) or 1;
     if Shift then
       SendShift(H, True);
     if Ctrl then
       SendCtrl(H, True);
-    SendMessage(H, WM_KEYDOWN, VKey, LParam);
-    SendMessage(H, WM_CHAR, VKey, LParam);
-    LParam := LParam or $C0000000;
-    SendMessage(H, WM_KEYUP, VKey, LParam);
+    SendMessage(H, WM_KEYDOWN, VKey, LPARAM(ScanCode));
+    SendMessage(H, WM_CHAR, VKey, LPARAM(ScanCode));
+    ScanCode := ScanCode or $C0000000;
+    SendMessage(H, WM_KEYUP, VKey, LPARAM(ScanCode));
     if Shift then
       SendShift(H, False);
     if Ctrl then
@@ -6771,7 +6769,7 @@ var
   Dummy: DWORD;
 begin
   SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS,
-    Longint(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
+    LPARAM(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
 end;
 
 procedure AssociateFileExtension(const IconPath, ProgramName, Path, Extension: string);

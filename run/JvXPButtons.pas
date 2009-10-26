@@ -412,7 +412,7 @@ begin
     FDefault := Value;
     if GetParentForm(Self) <> nil then
       with GetParentForm(Self) do
-        Perform(CM_FOCUSCHANGED, 0, Longint(ActiveControl));
+        Perform(CM_FOCUSCHANGED, 0, LPARAM(ActiveControl));
   end;
 end;
 

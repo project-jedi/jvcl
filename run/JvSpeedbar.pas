@@ -36,6 +36,7 @@ uses
   Windows, Messages, Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
   RTLConsts,
+  JclBase,
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvExtComponent, JvThemes, JvExControls;
 
@@ -56,7 +57,7 @@ type
   TBoundLine = (blTop, blBottom, blLeft, blRight);
   TBoundLines = set of TBoundLine;
   TSbScaleFlags = set of (sfOffsetX, sfOffsetY, sfBtnSizeX, sfBtnSizeY);
-  TForEachItem = procedure(Item: TJvSpeedItem; Data: Longint) of object;
+  TForEachItem = procedure(Item: TJvSpeedItem; Data: SizeInt) of object;
   TApplyAlignEvent = procedure(Sender: TObject; Align: TAlign;
     var Apply: Boolean) of object;
 
@@ -165,7 +166,7 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetChildOrder(Component: TComponent; Order: Integer); override;
-    procedure ForEachItem(Proc: TForEachItem; Data: Longint); virtual;
+    procedure ForEachItem(Proc: TForEachItem; Data: SizeInt); virtual;
     procedure PosChanged; dynamic;
     procedure AfterCustomize; dynamic;
     property ScaleFlags: TSbScaleFlags read FScaleFlags write FScaleFlags;
@@ -827,12 +828,12 @@ begin
         if not FItem.SpeedBar.AcceptDropItem(FItem, P.X, P.Y) then
         begin
           SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
-            Longint(FItem.SpeedBar));
+            LPARAM(FItem.SpeedBar));
         end
         else
         begin
           SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSELECT,
-            Longint(FItem));
+            LPARAM(FItem));
           Invalidate;
         end;
       end
@@ -841,7 +842,7 @@ begin
         SendToBack;
         FItem.Visible := False;
         SendMessage(FItem.SpeedBar.FEditWin, CM_SPEEDBARCHANGED, SBR_CHANGED,
-          Longint(FItem.SpeedBar));
+          LPARAM(FItem.SpeedBar));
       end;
     end;
   end
@@ -1505,7 +1506,7 @@ begin
   FWallpaper := nil;
   if FEditWin <> NullHandle then
   begin
-    SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_DESTROYED, Longint(Self));
+    SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_DESTROYED, LPARAM(Self));
     FEditWin := NullHandle;
   end;
   ClearSections;
@@ -1604,7 +1605,7 @@ begin
   Result := FSections.Count;
 end;
 
-procedure TJvSpeedBar.ForEachItem(Proc: TForEachItem; Data: Longint);
+procedure TJvSpeedBar.ForEachItem(Proc: TForEachItem; Data: SizeInt);
 var
   I, Idx: Integer;
   Sect: TJvSpeedBarSection;
@@ -2108,7 +2109,7 @@ begin
       Invalidate;
     end;
     if FEditWin <> NullHandle then
-      SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSIZECHANGED, Longint(Self));
+      SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSIZECHANGED, LPARAM(Self));
   end;
 end;
 
@@ -2239,7 +2240,7 @@ begin
   else
     P.Y := 0;
   if not (csLoading in ComponentState) and ((P.X <> 0) or (P.Y <> 0)) then
-    ForEachItem(OffsetItem, Longint(@P));
+    ForEachItem(OffsetItem, SizeInt(@P));
 end;
 
 procedure TJvSpeedBar.FlatItem(Item: TJvSpeedItem; Data: Longint);
@@ -2275,9 +2276,9 @@ begin
   begin
     FlatChanged := (sbFlatBtns in FOptions) <> (sbFlatBtns in Value);
     FOptions := Value;
-    ForEachItem(FlatItem, Longint(sbFlatBtns in Options));
-    ForEachItem(TransparentItem, Longint(sbTransparentBtns in Options));
-    ForEachItem(GrayedItem, Longint(sbGrayedBtns in Options));
+    ForEachItem(FlatItem, SizeInt(sbFlatBtns in Options));
+    ForEachItem(TransparentItem, SizeInt(sbTransparentBtns in Options));
+    ForEachItem(GrayedItem, SizeInt(sbGrayedBtns in Options));
     UpdateGridSize;
     if FlatChanged then
       Realign;
@@ -2327,7 +2328,7 @@ begin
     Include(FScaleFlags, sfOffsetY);
   end;
   if (P.X <> 0) or (P.Y <> 0) then
-    ForEachItem(OffsetItem, Longint(@P));
+    ForEachItem(OffsetItem, SizeInt(@P));
 end;
 
 procedure TJvSpeedBar.UpdateGridSize;
@@ -2380,7 +2381,7 @@ procedure TJvSpeedBar.ApplyButtonSize;
 begin
   ForEachItem(ApplyItemSize, 0);
   if FEditWin <> NullHandle then { update SpeedBar editor }
-    SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSIZECHANGED, Longint(Self));
+    SendMessage(FEditWin, CM_SPEEDBARCHANGED, SBR_BTNSIZECHANGED, LPARAM(Self));
 end;
 
 function TJvSpeedBar.GetButtonSize(Index: Integer): Integer;
@@ -2976,7 +2977,7 @@ begin
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sPixelsPerInch]), Screen.PixelsPerInch);
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sBtnWidth]), FButtonSize.X);
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sBtnHeight]), FButtonSize.Y);
-  ForEachItem(WriteItemLayout, Longint(@Data));
+  ForEachItem(WriteItemLayout, SizeInt(@Data));
   AppStorage.WriteInteger(AppStorage.ConcatPaths([Path, sCount]), Data.I);
 end;
 

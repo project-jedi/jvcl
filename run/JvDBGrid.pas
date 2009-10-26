@@ -662,6 +662,18 @@ begin
   Result := GridBitmaps[BmpType];
 end;
 
+function DrawBiDiText(DC: HDC; const Text: string; var R: TRect; Flags: UINT;
+  Alignment: TAlignment; RightToLeft: Boolean; CanvasOrientation: TCanvasOrientation): Integer;
+const
+  AlignFlags: array [TAlignment] of UINT = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  RTL: array [Boolean] of UINT = (0, DT_RTLREADING);
+begin
+  if CanvasOrientation = coRightToLeft then
+    ChangeBiDiModeAlignment(Alignment);
+  Result := Windows.DrawText(DC, PChar(Text), Length(Text), R,
+    AlignFlags[Alignment] or RTL[RightToLeft] or Flags);
+end;
+
 {$IFNDEF COMPILER7_UP}
  {$IFDEF JVCLThemesEnabled}
 procedure DrawArrow(ACanvas: TCanvas; Direction: TScrollDirection;
@@ -2820,9 +2832,7 @@ var
   begin
     with CellCanvas do
     begin
-      if Canvas.CanvasOrientation = coRightToLeft then
-        ChangeBiDiModeAlignment(Alignment);
-      DrawOptions := AlignFlags[Alignment] or RTL[ARightToLeft];
+      DrawOptions := DT_EXPANDTABS or DT_NOPREFIX;
       if Options <> 0 then
         DrawOptions := DrawOptions or Options;
       if WordWrap then
@@ -2836,7 +2846,7 @@ var
         FillRect(B);
       end;
       SetBkMode(Handle, TRANSPARENT);
-      Windows.DrawText(Handle, PChar(Text), Length(Text), R, DrawOptions);
+      DrawBiDiText(Handle, Text, R, DrawOptions, Alignment, ARightToLeft, Canvas.CanvasOrientation);
     end;
   end;
 
@@ -2880,8 +2890,12 @@ begin
   else
   begin
     // No offscreen bitmap - The display is faster but flickers
-    with ARect do
-      R := Rect(Left + DX, Top + DY, Right - 1, Bottom - 1);
+    if IsRightToLeft then
+      with ARect do
+        R := Rect(Left, Top, Right - 1 - DX, Bottom - DY - 1)
+    else
+      with ARect do
+        R := Rect(Left + DX, Top + DY, Right - 1, Bottom - 1);
     B := ARect;
     DrawAText(Canvas);
   end;
@@ -2970,6 +2984,12 @@ end;
 
 procedure TJvDBGrid.DrawTitleCaption(Canvas: TCanvas; const TextRect: TRect; DrawColumn: TColumn);
 const
+  AlignFlags: array [TAlignment] of Integer =
+    (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
+     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
+     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
+  RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
+const
   MinOffs = 1;
 var
   CalcRect: TRect;
@@ -2983,8 +3003,9 @@ begin
     begin
       CalcRect := TextRect;
       Dec(CalcRect.Right, MinOffs + 1);
-      Windows.DrawText(Canvas.Handle, PChar(Caption), -1, CalcRect,
-        DT_CALCRECT or DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX or DT_WORDBREAK);
+      DrawBiDiText(Canvas.Handle, Caption, CalcRect,
+        DT_EXPANDTABS or DT_NOPREFIX or DT_CALCRECT or DT_WORDBREAK,
+        Alignment, IsRightToLeft, Canvas.CanvasOrientation);
       if CalcRect.Bottom > TextRect.Bottom then
       begin
         TitleOptions := DT_END_ELLIPSIS or DT_SINGLELINE;

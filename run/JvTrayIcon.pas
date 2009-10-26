@@ -484,7 +484,7 @@ begin
   if TrayHandle = 0 then
     Exit;
 
-  EnumChildWindows(TrayHandle, @FindToolbar, Longint(@Result));
+  EnumChildWindows(TrayHandle, @FindToolbar, LPARAM(@Result));
 end;
 
 function GetIconRect(const AWnd: THandle; const AID: UINT; var IconRect: TRect): Boolean;
@@ -501,7 +501,7 @@ begin
           Exit;
 
         // Retrieve the button rectangle..
-        SendMessage(ToolbarHandle, TB_GETITEMRECT, Index, Longint(Data));
+        SendMessage(ToolbarHandle, TB_GETITEMRECT, Index, LPARAM(Data));
         // ..and copy it to the current process. If it fails no need to continue
         if not ReadProcessMemory(FData, SizeOf(IconRect), IconRect) then
           Exit;
@@ -1601,7 +1601,7 @@ begin
 
   while FIndex >= 0 do
   begin
-    SendMessage(FToolbarHandle, TB_GETBUTTON, FIndex, Longint(FData));
+    SendMessage(FToolbarHandle, TB_GETBUTTON, FIndex, LPARAM(FData));
 
     // Read the data from the tray process into the current process.
     if ReadProcessMemory(FData, SizeOf(FButton), FButton) then

@@ -526,9 +526,9 @@ var
 //  Pic: TPicture;
 begin
   FSelected := -1;
-  //  If Not FPainted then
+  //  if not FPainted then
   //  begin
-  //    postMessage(Self.Handle,WM_LoadWhenReady,0,0);
+  //    postMessage(Self.Handle, WM_LOADWHENREADY, 0, 0);
   //    Exit;
   //  end;
   FDiskSize := 0;

@@ -1016,10 +1016,10 @@ begin
       begin
         S := InternalList[0];
         Obj := InternalList.Objects[0];
-        Index := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
+        Index := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
         if Index < 0 then
           raise EOutOfResources.CreateRes(@SInsertLineError);
-        SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(Obj));
+        SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, LPARAM(Obj));
         InternalList.Delete(0);
       end;
     finally
@@ -1039,7 +1039,7 @@ begin
   else
   begin
     ComboBox.DeselectProvider;
-    Result := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, Longint(PChar(S)));
+    Result := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
     if Result < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
@@ -1083,7 +1083,7 @@ begin
     Result := InternalList[Index]
   else
   begin
-    Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, Index, Longint(@Text));
+    Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, Index, LPARAM(@Text));
     if Len = CB_ERR then //Len := 0;
       Error(SListIndexError, Index);
     SetString(Result, Text, Len);
@@ -1132,7 +1132,7 @@ begin
   if UseInternal then
     Result := InternalList.IndexOf(S)
   else
-    Result := SendMessage(ComboBox.Handle, CB_FINDSTRINGEXACT, -1, Longint(PChar(S)));
+    Result := SendMessage(ComboBox.Handle, CB_FINDSTRINGEXACT, -1, LPARAM(PChar(S)));
 end;
 
 procedure TJvComboBoxStrings.Insert(Index: Integer; const S: string);
@@ -1142,7 +1142,7 @@ begin
   else
   begin
     ComboBox.DeselectProvider;
-    if SendMessage(ComboBox.Handle, CB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
+    if SendMessage(ComboBox.Handle, CB_INSERTSTRING, Index, LPARAM(PChar(S))) < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
 end;
@@ -1164,7 +1164,7 @@ begin
     Cnt := SendMessage(ComboBox.Handle, CB_GETCOUNT, 0, 0);
     while Cnt > 0 do
     begin
-      Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, 0, Longint(@Text));
+      Len := SendMessage(ComboBox.Handle, CB_GETLBTEXT, 0, LPARAM(@Text));
       SetString(S, Text, Len);
       Obj := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, 0, 0));
       SendMessage(ComboBox.Handle, CB_DELETESTRING, 0, 0);
@@ -1183,7 +1183,7 @@ begin
   if UseInternal then
     InternalList.Objects[Index] := AObject
   else
-    SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, Longint(AObject));
+    SendMessage(ComboBox.Handle, CB_SETITEMDATA, Index, LPARAM(AObject));
 end;
 
 procedure TJvComboBoxStrings.SetComboBox(Value: TJvCustomComboBox);
@@ -1839,7 +1839,7 @@ begin
     EmptyChr := #0;
     while Cnt > 0 do
     begin
-      SendMessage(Handle, CB_ADDSTRING, 0, LParam(@EmptyChr));
+      SendMessage(Handle, CB_ADDSTRING, 0, LPARAM(@EmptyChr));
       Dec(Cnt);
     end;
     while Cnt < 0 do

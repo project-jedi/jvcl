@@ -641,7 +641,7 @@ begin
   Result := FItemHeight;
   if HandleAllocated and (FStyle = lbStandard) then
   begin
-    Perform(LB_GETITEMRECT, 0, Longint(@R));
+    Perform(LB_GETITEMRECT, 0, LPARAM(@R));
     Result := R.Bottom - R.Top;
   end;
 end;
@@ -771,7 +771,7 @@ begin
     Count := Items.Count;
     while Result < Count do
     begin
-      Perform(LB_GETITEMRECT, Result, Longint(@ItemRect));
+      Perform(LB_GETITEMRECT, Result, LPARAM(@ItemRect));
       if PtInRect(ItemRect, Pos) then
         Exit;
       Inc(Result);
@@ -788,11 +788,11 @@ var
 begin
   Count := Items.Count;
   if (Index = 0) or (Index < Count) then
-    Perform(LB_GETITEMRECT, Index, Longint(@Result))
+    Perform(LB_GETITEMRECT, Index, LPARAM(@Result))
   else
   if Index = Count then
   begin
-    Perform(LB_GETITEMRECT, Index - 1, Longint(@Result));
+    Perform(LB_GETITEMRECT, Index - 1, LPARAM(@Result));
     OffsetRect(Result, 0, Result.Bottom - Result.Top);
   end
   else
@@ -1566,7 +1566,7 @@ begin
   if HandleAllocated and ((FStyle = lbStandard) or
     ((FStyle = lbOwnerDrawFixed) and not Assigned(FOnDrawItem))) then
   begin
-    Perform(LB_GETITEMRECT, 0, Longint(@R));
+    Perform(LB_GETITEMRECT, 0, LPARAM(@R));
     Result := R.Bottom - R.Top;
   end;
 end;

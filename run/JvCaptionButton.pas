@@ -1535,7 +1535,7 @@ begin
   ToolInfo.lpszText := LPSTR_TEXTCALLBACK;
 
   // register button with tooltip
-  SendMessage(FToolTipHandle, TTM_ADDTOOL, 0, Integer(@ToolInfo));
+  SendMessage(FToolTipHandle, TTM_ADDTOOL, 0, LPARAM(@ToolInfo));
 end;
 
 procedure TJvCaptionButton.DestroyToolTip;
@@ -1834,7 +1834,7 @@ begin
   ForwardMsg.wParam := Msg.WParam;
   ForwardMsg.message := Msg.Msg;
   ForwardMsg.hwnd := ParentFormHandle;
-  SendMessage(FToolTipHandle, TTM_RELAYEVENT, 0, Integer(@ForwardMsg));
+  SendMessage(FToolTipHandle, TTM_RELAYEVENT, 0, LPARAM(@ForwardMsg));
 end;
 
 function TJvCaptionButton.GetAction: TBasicAction;

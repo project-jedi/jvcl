@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvDateTimePicker.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is S?stien Buysse [sbuysse att buypin dott com]
-Portions created by S?stien Buysse are Copyright (C) 2001 S?stien Buysse.
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
@@ -171,9 +171,9 @@ begin
       ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));
 
   if Result then
-    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar('''' + ANullText + '''')))
+    SendMessage(Handle, DTM_SETFORMAT, 0, LPARAM(PChar('''' + ANullText + '''')))
   else
-    SendMessage(Handle, DTM_SETFORMAT, 0, Integer(PChar(AFormat)));
+    SendMessage(Handle, DTM_SETFORMAT, 0, LPARAM(PChar(AFormat)));
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);

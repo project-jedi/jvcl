@@ -170,6 +170,8 @@ begin
 end;
 
 function CExtract(Context: Pointer; Notification: UINT; Param1, Param2: UINT_PTR): UINT; stdcall;
+type
+  PUINT_PTR = ^UINT_PTR;
 var
   CAB: PFileInCabinetInfo;
   Sender: TJvCABFile;
@@ -255,7 +257,7 @@ begin
       begin
         Sender.FOnNeed(Sender, Cont, CABInfo, Path);
         Sender.FTmpString := Path;
-        PDWORD(Param2)^ := DWORD(PChar(Sender.FTmpString));
+        PUINT_PTR(Param2)^ := UINT_PTR(PChar(Sender.FTmpString));
       end
       else
         Result := ERROR_BAD_COMMAND;

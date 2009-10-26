@@ -822,7 +822,7 @@ procedure TJvgAskListBox.SetSelectedItem(Value: Word);
 begin
   if Value >= Items.Count then
     Exit;
-  SendMessage(Handle, LB_SETCURSEL, Value, Longint(0));
+  SendMessage(Handle, LB_SETCURSEL, Value, 0);
 end;
 
 function TJvgAskListBox.GetButtons: TStrings;
@@ -858,12 +858,12 @@ begin
     if FPushedButton[Index] = Value then
       Exit;
     FPushedButton[Index] := Value;
-    SendMessage(Handle, LB_GETITEMRECT, Index, Longint(@R));
+    SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@R));
     R.Left := FSegment1Width;
     Windows.InvalidateRect(Handle, @R, True);
     //ButtonClicked;
     if (aloAutoScroll in Options) and (Value <> 0) then
-      SendMessage(Handle, LB_SETCURSEL, Index, Longint(0));
+      SendMessage(Handle, LB_SETCURSEL, Index, 0);
   end
   else
     Result := False;
@@ -885,7 +885,8 @@ begin
     SendMessage(Handle, LB_GETITEMRECT, ItemN, LPARAM(@R));
     Inc(R.Left, FSegment1Width);
     Windows.InvalidateRect(Handle, @R, False);
-    //if (aloAutoScroll in Options)then SendMessage( Handle, LB_SETCURSEL, FSelectedItem+1, Longint(0));
+    //if aloAutoScroll in Options then
+    //  SendMessage( Handle, LB_SETCURSEL, FSelectedItem + 1, 0);
   end;
 end;
 
@@ -910,8 +911,7 @@ begin
     Exit;
 
   SendMessage(Handle, LB_GETITEMRECT, Items.Count - 1, LPARAM(@R));
-  FSegment1Width := Word((R.Right - R.Left) - (FButtonWidth + 1) *
-    (Buttons.Count) - 1);
+  FSegment1Width := Word((R.Right - R.Left) - (FButtonWidth + 1) * (Buttons.Count) - 1);
 
   Items.BeginUpdate;
   for I := 0 to Items.Count - 1 do

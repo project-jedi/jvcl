@@ -229,7 +229,7 @@ end;
 
 procedure TJvProgressComponent.FormOnShow(Sender: TObject);
 begin
-  PostMessage(FForm.Handle, CM_SHOWEVENT, 0, Integer(Self));
+  PostMessage(FForm.Handle, CM_SHOWEVENT, 0, LPARAM(Self));
 end;
 
 procedure TJvProgressComponent.FormOnClose(Sender: TObject; var CloseAction: TCloseAction);

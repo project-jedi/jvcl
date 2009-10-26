@@ -1305,7 +1305,7 @@ begin
     SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
     SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN, MakeLong(0, GetButtonWidth));
   end;
-  SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
+  SendMessage(Handle, EM_SETRECTNP, 0, LPARAM(@Loc));
 end;
 
 procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);

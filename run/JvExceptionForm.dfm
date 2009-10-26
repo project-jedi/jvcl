@@ -32,8 +32,8 @@ object JvErrorDialog: TJvErrorDialog
     object ErrorText: TLabel
       Left = 53
       Top = 10
-      Width = 227
-      Height = 88
+      Width = 3
+      Height = 13
       Align = alClient
       WordWrap = True
     end
@@ -97,6 +97,7 @@ object JvErrorDialog: TJvErrorDialog
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Error address: '
+      Transparent = True
       AutoOpenURL = False
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText
@@ -112,6 +113,7 @@ object JvErrorDialog: TJvErrorDialog
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Error Type: '
+      Transparent = True
       AutoOpenURL = False
       HotTrackFont.Charset = DEFAULT_CHARSET
       HotTrackFont.Color = clWindowText

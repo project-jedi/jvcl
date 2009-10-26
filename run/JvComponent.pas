@@ -244,7 +244,7 @@ begin
         FSearchTickCount := TickCount;
         if Length(FSearchText) < 32 then
           FSearchText := FSearchText + Key;
-        SendMessage(Handle, LB_SELECTSTRING, WPARAM(-1), LPARAM(PChar(FSearchText)));
+        SendMessage(Handle, LB_SELECTSTRING, -1, LPARAM(PChar(FSearchText)));
         Key := #0;
       end;
   end;

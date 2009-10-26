@@ -1414,7 +1414,7 @@ begin
           begin
             UnhookClient;
             if not (csDestroying in FClient.ComponentState) then
-              PostMessage(FBackground.FHandle, CM_RECREATEWINDOW, 0, Longint(Self));
+              PostMessage(FBackground.FHandle, CM_RECREATEWINDOW, 0, Windows.LPARAM(Self));
           end;
         WM_SIZE:
           if not (FMode in [bmTile, bmTopLeft]) then
@@ -1548,7 +1548,7 @@ end;
 procedure TJvBackgroundClientLink.Release;
 begin
   UnhookClient;
-  PostMessage(FBackground.FHandle, CM_RELEASECLIENTLINK, 0, Longint(Self));
+  PostMessage(FBackground.FHandle, CM_RELEASECLIENTLINK, 0, LPARAM(Self));
 end;
 
 //=== { TJvBackgroundClients } ===============================================

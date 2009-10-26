@@ -328,11 +328,11 @@ begin
       MoveWindowOrg(Canvas.Handle, -Left, -Top);
       Canvas.Lock;
       try
-        Parent.Perform(WM_ERASEBKGND, Canvas.Handle, Canvas.Handle);
+        Parent.Perform(WM_ERASEBKGND, WPARAM(Canvas.Handle), LPARAM(Canvas.Handle));
         {$IFDEF COMPILER7_UP}
-        Parent.Perform(WM_PRINTCLIENT, Canvas.Handle, PRF_CLIENT);
+        Parent.Perform(WM_PRINTCLIENT, WPARAM(Canvas.Handle), PRF_CLIENT);
         {$ELSE}
-        Parent.Perform(WM_PAINT, Canvas.Handle, 0);
+        Parent.Perform(WM_PAINT, WPARAM(Canvas.Handle), 0);
         {$ENDIF COMPILER7_UP}
       finally
         Canvas.Unlock;
