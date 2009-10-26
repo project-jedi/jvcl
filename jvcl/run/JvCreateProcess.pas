@@ -388,7 +388,7 @@ begin
   EnumWinRec.ProcessID := ProcessID;
   EnumWinRec.PostQuit := UseQuit;
   EnumWinRec.FoundWin := False;
-  EnumWindows(@EnumWinProc, Integer(@EnumWinRec));
+  EnumWindows(@EnumWinProc, LPARAM(@EnumWinRec));
   Result := EnumWinRec.FoundWin;
 end;
 
@@ -817,7 +817,7 @@ begin
   end;
 
   // Notify TJvCreateProcess that data has been read from the pipe
-  PostMessage(FDestHandle, CM_READ, Integer(FOwner), 0);
+  PostMessage(FDestHandle, CM_READ, WPARAM(FOwner), 0);
 end;
 
 procedure TJvReadThread.Execute;

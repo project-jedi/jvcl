@@ -3008,7 +3008,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        SendMessage(FDataList.Handle, WM_LBUTTONDOWN, 0, Longint(MousePos));
+        SendMessage(FDataList.Handle, WM_LBUTTONDOWN, 0, LPARAM(MousePos));
         Exit;
       end;
     end;

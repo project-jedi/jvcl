@@ -1120,7 +1120,7 @@ begin
     case NotifyCode of
       EN_CHANGE:
         begin
-          Perform(IPM_GETADDRESS, 0, Integer(@FAddress));
+          Perform(IPM_GETADDRESS, 0, LPARAM(@FAddress));
           if not FChanging then
             DoChange;
         end;
@@ -1129,7 +1129,7 @@ begin
           FChanging := True;
           try
             if not IsBlank then
-              Perform(IPM_SETADDRESS, 0, FAddress);
+              Perform(IPM_SETADDRESS, 0, LPARAM(FAddress));
           finally
             FChanging := False;
           end;
@@ -2010,7 +2010,7 @@ begin
   hi.pt.X := Msg.XPos;
   hi.pt.Y := Msg.YPos;
   hi.flags := 0;
-  TabIndex := Perform(TCM_HITTEST, 0, Longint(@hi));
+  TabIndex := Perform(TCM_HITTEST, 0, LPARAM(@hi));
   I := 0;
   RealIndex := 0;
   while I <= TabIndex + RealIndex do
@@ -2923,7 +2923,7 @@ begin
     if Node = nil then
       RemoveMark
     else
-      SendMessage(Handle, TVM_SETINSERTMARK, Integer(MarkAfter), Integer(Node.ItemId));
+      SendMessage(Handle, TVM_SETINSERTMARK, WPARAM(MarkAfter), LPARAM(Node.ItemId));
 end;
 
 procedure TJvTreeView.RemoveMark;
@@ -3061,7 +3061,7 @@ begin
   // only try to change value if not running on NT platform
   // (see MSDN: CCM_SETUNICODEFORMAT explanation for details)
   if HandleAllocated and (Win32Platform <> VER_PLATFORM_WIN32_NT) then
-    SendMessage(Handle, TVM_SETUNICODEFORMAT, Integer(Value), 0);
+    SendMessage(Handle, TVM_SETUNICODEFORMAT, WPARAM(Value), 0);
 end;
 
 type

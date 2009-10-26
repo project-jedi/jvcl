@@ -880,7 +880,7 @@ begin
     end;
   end;
 
-  SendMessage(Handle, MCM_SETDAYSTATE, VisibleMonths, Longint(@DayArray));
+  SendMessage(Handle, MCM_SETDAYSTATE, VisibleMonths, LPARAM(@DayArray));
   //  MonthCal_SetDayState(Handle,VisibleMonths,aNMDayState);
 end;
 
@@ -1137,7 +1137,7 @@ begin
   Index := High(DayStates) - Low(DayStates);
   if (Index < MonthCount) or (Index < VisibleMonths) then
     raise EMonthCalError.CreateRes(@RsEInvalidArgumentToSetDayStates);
-  SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, Longint(@DayStates));
+  SendMessage(Handle, MCM_SETDAYSTATE, MonthCount, LPARAM(@DayStates));
 end;
 
 // first default width  = 166
@@ -1153,7 +1153,7 @@ function TJvCustomMonthCalendar.GetMinSize: TRect;
 begin
   if HandleAllocated then
   begin
-    SendMessage(Handle, MCM_GETMINREQRECT, 0, Longint(@Result));
+    SendMessage(Handle, MCM_GETMINREQRECT, 0, LPARAM(@Result));
     OffSetRect(Result, -Result.Left, -Result.Top);
   end
   else

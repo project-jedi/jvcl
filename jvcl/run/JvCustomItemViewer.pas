@@ -775,7 +775,7 @@ begin
   if FOwner <> nil then
   begin
     FDeleting := True;
-    PostMessage(FOwner.Handle, CM_DELETEITEM, Integer(Self), 0);
+    PostMessage(FOwner.Handle, CM_DELETEITEM, WPARAM(Self), 0);
   end;
 end;
 
@@ -1553,7 +1553,7 @@ begin
     Item := Items[ExcludeIndex]
   else
     Item := nil;
-  PostMessage(Handle, CM_UNSELECTITEMS, Integer(Self), Integer(Item));
+  PostMessage(Handle, CM_UNSELECTITEMS, WPARAM(Self), LPARAM(Item));
 end;
 
 procedure TJvCustomItemViewer.UpdateAll;

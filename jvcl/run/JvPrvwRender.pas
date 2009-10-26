@@ -433,7 +433,7 @@ begin
     try
       SendMessage(RichEdit.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
       Range.chrg.cpMin := FLastChar;
-      FLastChar := SendMessage(RichEdit.Handle, EM_FORMATRANGE, 1, Longint(@Range));
+      FLastChar := SendMessage(RichEdit.Handle, EM_FORMATRANGE, 1, LPARAM(@Range));
       FFinished := (FLastChar >= MaxLen) or (FLastChar = -1);
       NeedMorePages := not FFinished;
       SendMessage(RichEdit.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
@@ -510,7 +510,7 @@ begin
         Flags := GTL_DEFAULT;
         codepage := CP_ACP;
       end;
-      MaxLen := RichEdit.Perform(EM_GETTEXTLENGTHEX, WParam(@TextLenEx), 0);
+      MaxLen := RichEdit.Perform(EM_GETTEXTLENGTHEX, WPARAM(@TextLenEx), 0);
     end
     else
       MaxLen := RichEdit.GetTextLen;
@@ -522,7 +522,7 @@ begin
     try
       SendMessage(RichEdit.Handle, EM_FORMATRANGE, 0, 0); // flush buffer
       Range.chrg.cpMin := FLastChar;
-      ALastChar := SendMessage(RichEdit.Handle, EM_FORMATRANGE, 1, Longint(@Range));
+      ALastChar := SendMessage(RichEdit.Handle, EM_FORMATRANGE, 1, LPARAM(@Range));
       FFinished := (ALastChar >= MaxLen) or (ALastChar = -1) or (ALastChar <= FLastChar);
       FLastChar := ALastChar;
       NeedMorePages := not FFinished;

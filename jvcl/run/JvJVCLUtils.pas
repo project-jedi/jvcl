@@ -427,7 +427,7 @@ procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
 }
 
 
-procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
+procedure AppBroadcast(Msg: UINT; wParam: WPARAM; lParam: LPARAM);
 
 procedure AppTaskbarIcons(AppOnly: Boolean);
 
@@ -1320,8 +1320,8 @@ const
   {$EXTERNALSYM CPL_NEWINQUIRE}
 
 type
-  TCPLApplet = function(hwndCPl: THandle; uMsg: DWORD;
-    lParam1, lParam2: Longint): Longint; stdcall;
+  TCPLApplet = function(hwndCPl: THandle; uMsg: UINT;
+    lParam1, lParam2: LPARAM): Longint; stdcall;
 
   TCPLInfo = packed record
     idIcon: Integer;
@@ -1386,7 +1386,7 @@ begin
         FillChar(InfoA, SizeOf(InfoA), 0);
         FillChar(CPLInfo, SizeOf(CPLInfo), 0);
         S := '';
-        CplCall(HWND, CPL_NEWINQUIRE, I, Longint(@InfoW));
+        CplCall(HWND, CPL_NEWINQUIRE, I, LPARAM(@InfoW));
         if InfoW.dwSize = SizeOf(InfoW) then
         begin
           hIco := InfoW.HICON;
@@ -1402,7 +1402,7 @@ begin
           end
           else
           begin
-            CplCall(HWND, CPL_INQUIRE, I, Longint(@CPLInfo));
+            CplCall(HWND, CPL_INQUIRE, I, LPARAM(@CPLInfo));
             LoadStringA(hLib, CPLInfo.idName, InfoA.szName,
               SizeOf(InfoA.szName));
             hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16,
@@ -1584,7 +1584,7 @@ begin
       SetViewPortOrgEx(DC, ViewPortOrg.X, ViewPortOrg.Y, nil);
       IntersectClipRect(DC, 0, 0, Control.Parent.ClientWidth,
         Control.Parent.ClientHeight);
-      TAccessWinControl(Control.Parent).Perform(WM_ERASEBKGND, DC, 0);
+      TAccessWinControl(Control.Parent).Perform(WM_ERASEBKGND, WPARAM(DC), 0);
       TAccessWinControl(Control.Parent).PaintWindow(DC);
     finally
       RestoreDC(DC, SaveIndex);
@@ -3005,7 +3005,7 @@ begin
   Info.FocusWnd := Windows.GetActiveWindow;
   Info.Found := False;
 
-  EnumThreadWindows(GetCurrentThreadId, @CheckTaskWindow, Longint(@Info));
+  EnumThreadWindows(GetCurrentThreadId, @CheckTaskWindow, LPARAM(@Info));
   Result := Info.Found;
 end;
 
@@ -4218,8 +4218,7 @@ begin
 end;
 
 
-
-procedure AppBroadcast(Msg, wParam: Longint; lParam: Longint);
+procedure AppBroadcast(Msg: UINT; wParam: WPARAM; lParam: LPARAM);
 var
   I: Integer;
 begin
@@ -4240,8 +4239,6 @@ begin
   if AppOnly then
     SwitchToWindow(Application.Handle, False);
 end;
-
-
 
 { end JvAppUtils }
 { begin JvGraph }
@@ -6112,12 +6109,12 @@ begin
   FillChar(FileInfo, SizeOf(FileInfo), 0);
   ImageListHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo),
     SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
-  SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_SMALL, ImageListHandle);
+  SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_SMALL, LPARAM(ImageListHandle));
 
   FillChar(FileInfo, SizeOf(FileInfo), 0);
   ImageListHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo),
     SHGFI_SYSICONINDEX or SHGFI_LARGEICON);
-  SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_NORMAL, ImageListHandle);
+  SendMessage(ListView.Handle, LVM_SETIMAGELIST, LVSIL_NORMAL, LPARAM(ImageListHandle));
 end;
 
 //== MessageBox ==============================================================

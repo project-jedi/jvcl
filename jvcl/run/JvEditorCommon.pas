@@ -3378,7 +3378,7 @@ begin
       begin
         { Setting the capture control to the editor prevents the VM_MENU key to
           activate the mainmenu. }
-        PostMessage(Handle, CM_RESETCAPTURECONTROL, 0, Integer(GetCaptureControl));
+        PostMessage(Handle, CM_RESETCAPTURECONTROL, 0, LPARAM(GetCaptureControl));
         SetCaptureControl(Self);
       end;
       Key := 0;

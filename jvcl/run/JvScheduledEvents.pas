@@ -341,7 +341,7 @@ begin
               begin
                 TskColl[I].Triggered;
                 PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle,
-                  CM_EXECEVENT, Integer(TskColl[I]), 0);
+                  CM_EXECEVENT, LPARAM(TskColl[I]), 0);
               end;
               Inc(I);
             end;

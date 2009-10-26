@@ -492,7 +492,7 @@ begin
   begin
     StartPos := 0;
     EndPos := 0;
-    MsgResult := SendMessage(EditHandle, EM_GETSEL, Longint(@StartPos), Longint(@EndPos));
+    MsgResult := SendMessage(EditHandle, EM_GETSEL, WPARAM(@StartPos), LPARAM(@EndPos));
     Result := EndPos - StartPos;
     if (Result <= 0) and (MsgResult > 0) then
       Result := LongRec(MsgResult).Hi - LongRec(MsgResult).Lo;

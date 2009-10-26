@@ -342,7 +342,7 @@ begin
       dwContextId := HelpContext;
       GetCursorPos(MousePos);
     end;
-    Perform(WM_HELP, 0, Longint(@Info));
+    Perform(WM_HELP, 0, LPARAM(@Info));
   end;
 
 end;

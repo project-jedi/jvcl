@@ -1829,7 +1829,7 @@ procedure TJvListView.InsertItem(Item: TListItem);
 begin
   inherited InsertItem(Item);
   if AutoSelect and (Selected = nil) and (Items.Count < 2) then
-    PostMessage(Handle, WM_AUTOSELECT, Integer(Item), 1);
+    PostMessage(Handle, WM_AUTOSELECT, WPARAM(Item), 1);
 end;
 
 procedure TJvListView.WMAutoSelect(var Msg: TMessage);
@@ -1952,7 +1952,7 @@ begin
     Index := ItemIndex;
 
   if AutoSelect and (Selected = nil) and (Items.Count > 0) then
-    PostMessage(Handle, WM_AUTOSELECT, Integer(Items[Index]), 1);
+    PostMessage(Handle, WM_AUTOSELECT, WPARAM(Items[Index]), 1);
 end;
 
 function TJvListView.ShowInsertMark(ItemIndex: Integer; Position: TJvInsertMarkPosition): Boolean;
@@ -2156,8 +2156,7 @@ begin
   if FGroupView <> Value then
   begin
     FGroupView := Value;
-
-    SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(FGroupView), 0);
+    SendMessage(Handle, LVM_ENABLEGROUPVIEW, WPARAM(FGroupView), 0);
   end;
 end;
 

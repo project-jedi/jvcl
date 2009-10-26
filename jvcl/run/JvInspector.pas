@@ -4133,7 +4133,7 @@ begin
   if (Selected <> nil) and Selected.DroppedDown then
   begin
     LbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));
-    Selected.ListBox.Perform(WM_MOUSEWHEEL, WheelDelta shl 16, LbPos.X + (LbPos.Y shl 16));
+    Selected.ListBox.Perform(WM_MOUSEWHEEL, WheelDelta shl 16, MakeLong(LbPos.X, LbPos.Y));
   end
   else
   begin
@@ -6289,7 +6289,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
+        SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, LPARAM(MousePos));
         Exit;
       end;
     end;

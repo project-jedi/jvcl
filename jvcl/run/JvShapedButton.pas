@@ -269,7 +269,7 @@ end;
 
 procedure TJvShapedButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
-  Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
+  Perform(WM_LBUTTONDOWN, Msg.Keys, LPARAM(Msg.Pos));
 end;
 
 procedure TJvShapedButton.SetButtonStyle(ADefault: Boolean);

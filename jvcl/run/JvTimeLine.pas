@@ -2490,7 +2490,7 @@ begin
             // Really finish it (See TBaseVirtualTree.DragFinished;)
             GetCursorPos(P);
             P := ScreenToClient(P);
-            Perform(WM_LBUTTONUP, 0, Longint(PointToSmallPoint(P)));
+            Perform(WM_LBUTTONUP, 0, LPARAM(PointToSmallPoint(P)));
           end;
 
           if Msg.DragMessage = dmDragMove then

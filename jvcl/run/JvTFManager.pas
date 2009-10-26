@@ -2860,7 +2860,7 @@ begin
   NotifyApptCtrl(ApptCtrl, Self, sncRefresh);
   {
     If Assigned(ApptCtrl) Then
-      Windows.PostMessage(ApptCtrl.Handle, CN_REQUESTREFRESH, Integer(Schedule), 0)
+      Windows.PostMessage(ApptCtrl.Handle, CN_REQUESTREFRESH, WPARAM(Schedule), 0)
     Else
       Raise EJvTFScheduleManagerError.Create('Could not send refresh request.  ' +
                                         'ApptCtrl not assigned');

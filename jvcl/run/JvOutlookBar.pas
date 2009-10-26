@@ -540,13 +540,13 @@ end;
 
 procedure TJvOutlookBarEdit.EditAccept;
 begin
-  Parent.Perform(CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
+  Parent.Perform(CM_CAPTION_EDIT_ACCEPT, WPARAM(Self), Tag);
   Hide;
 end;
 
 procedure TJvOutlookBarEdit.EditCancel;
 begin
-  Parent.Perform(CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
+  Parent.Perform(CM_CAPTION_EDIT_CANCEL, WPARAM(Self), Tag);
   Hide;
 end;
 
@@ -838,7 +838,7 @@ end;
 procedure TJvOutlookBarButton.EditCaption;
 begin
   SendMessage(TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookBarButtons(Collection).Owner).Collection).Owner).Handle,
-    CM_CAPTION_EDITING, Integer(Self), 0);
+    CM_CAPTION_EDITING, WPARAM(Self), 0);
 end;
 
 function TJvOutlookBarButton.GetDisplayName: string;
@@ -1202,7 +1202,7 @@ end;
 
 procedure TJvOutlookBarPage.EditCaption;
 begin
-  SendMessage(TCustomControl(TJvOutlookBarPages(Collection).Owner).Handle, CM_CAPTION_EDITING, Integer(Self), 1);
+  SendMessage(TCustomControl(TJvOutlookBarPages(Collection).Owner).Handle, CM_CAPTION_EDITING, WPARAM(Self), 1);
 end;
 
 function TJvOutlookBarPage.GetDisplayName: string;

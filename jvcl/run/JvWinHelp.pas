@@ -139,7 +139,7 @@ begin
   HelpInfo.dx := Width;
   HelpInfo.dy := Height;
   HelpInfo.wMax := Visibility;
-  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_SETWINPOS, Longint(@HelpInfo));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_SETWINPOS, LPARAM(@HelpInfo));
 end;
 
 function TJvWinHelp.ShowContents: Boolean;

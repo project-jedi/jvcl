@@ -980,7 +980,7 @@ begin
   if FReleasing.IndexOf(AObject) < 0 then
   begin
     FReleasing.Add(AObject);
-    PostMessage(Handle, CM_RELEASE, Integer(AObject), 0);
+    PostMessage(Handle, CM_RELEASE, WPARAM(AObject), 0);
   end;
 end;
 

@@ -1268,7 +1268,7 @@ begin
           begin
             SaveIndex := SaveDC(DC);
             SetViewportOrgEx(DC, Left + X, Top + Y, nil);
-            Perform(WM_PAINT, Longint(DC), 0);
+            Perform(WM_PAINT, WPARAM(DC), 0);
             RestoreDC(DC, SaveIndex);
           end;
     end;
@@ -1320,7 +1320,7 @@ begin
           SaveIndex := SaveDC(DC);
           SetViewportOrgEx(DC, Left + X, Top + Y, nil);
           IntersectClipRect(DC, 0, 0, Width, Height);
-          Perform(WM_PAINT, Longint(DC), 0);
+          Perform(WM_PAINT, WPARAM(DC), 0);
           RestoreDC(DC, SaveIndex);
         end;
       end;

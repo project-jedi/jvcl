@@ -716,7 +716,7 @@ end;
 function TJvDockCustomControl.CustomUnDock(Source: TJvDockDragDockObject;
   NewTarget: TWinControl; Client: TControl): Boolean;
 begin
-  Result := (Perform(CM_UNDOCKCLIENT, Integer(NewTarget), Integer(Client)) = 0);
+  Result := (Perform(CM_UNDOCKCLIENT, WPARAM(NewTarget), LPARAM(Client)) = 0);
 end;
 
 function TJvDockCustomControl.GetJvDockManager: IJvDockManager;
@@ -1329,7 +1329,7 @@ procedure TJvDockCustomTabControl.CreateWnd;
 begin
   inherited CreateWnd;
   if (Images <> nil) and Images.HandleAllocated then
-    Perform(TCM_SETIMAGELIST, 0, Images.Handle);
+    Perform(TCM_SETIMAGELIST, 0, LPARAM(Images.Handle));
   if Integer(FTabSize) <> 0 then
     UpdateTabSize;
   if FSaveTabs <> nil then
@@ -1353,7 +1353,7 @@ end;
 function TJvDockCustomTabControl.GetDisplayRect: TRect;
 begin
   Result := ClientRect;
-  SendMessage(Handle, TCM_ADJUSTRECT, 0, Integer(@Result));
+  SendMessage(Handle, TCM_ADJUSTRECT, 0, LPARAM(@Result));
   if TabPosition = tpTop then
     Inc(Result.Top, 2);
 end;
@@ -1408,7 +1408,7 @@ end;
 
 procedure TJvDockCustomTabControl.ImageListChange(Sender: TObject);
 begin
-  Perform(TCM_SETIMAGELIST, 0, TCustomImageList(Sender).Handle);
+  Perform(TCM_SETIMAGELIST, 0, LPARAM(TCustomImageList(Sender).Handle));
 end;
 
 function TJvDockCustomTabControl.IndexOfTabAt(X, Y: Integer): Integer;
@@ -1510,7 +1510,7 @@ procedure TJvDockCustomTabControl.SetImages(Value: TCustomImageList);
 begin
   ReplaceImageListReference(Self, Value, FImages, FImageChangeLink);
   if Images <> nil then
-    Perform(TCM_SETIMAGELIST, 0, Images.Handle)
+    Perform(TCM_SETIMAGELIST, 0, LPARAM(Images.Handle))
   else
     Perform(TCM_SETIMAGELIST, 0, 0);
 end;
@@ -1631,8 +1631,7 @@ begin
   if not FUpdating then
   begin
     if HandleAllocated then
-      SendMessage(Handle, WM_SIZE, SIZE_RESTORED,
-        Word(Width) or Word(Height) shl 16);
+      SendMessage(Handle, WM_SIZE, SIZE_RESTORED, MakeLong(Word(Width), Word(Height)));
     Realign;
   end;
 end;
@@ -1657,8 +1656,7 @@ begin
   for I := 0 to FTabs.Count - 1 do
   begin
     TCItem.iImage := GetImageIndex(I);
-    if SendMessage(Handle, TCM_SETITEM, I,
-      Longint(@TCItem)) = 0 then
+    if SendMessage(Handle, TCM_SETITEM, I, LPARAM(@TCItem)) = 0 then
       TabControlError(Format(sTabFailSet, [FTabs[I], I]));
   end;
   TabsChanged;
@@ -1666,7 +1664,7 @@ end;
 
 procedure TJvDockCustomTabControl.UpdateTabSize;
 begin
-  SendMessage(Handle, TCM_SETITEMSIZE, 0, Integer(FTabSize));
+  SendMessage(Handle, TCM_SETITEMSIZE, 0, LPARAM(FTabSize));
   TabsChanged;
 end;
 
@@ -2149,7 +2147,7 @@ begin
     begin
       GetCursorPos(P);
       P := Control.ScreenToClient(P);
-      Control.Perform(WM_LBUTTONUP, 0, Longint(PointToSmallPoint(P)));
+      Control.Perform(WM_LBUTTONUP, 0, LPARAM(PointToSmallPoint(P)));
     end;
 
     if Threshold < 0 then
@@ -2665,7 +2663,7 @@ var
 
     Info.Found := False;
     Info.MousePos := MousePos;
-    EnumThreadWindows(GetCurrentThreadID, @IsBeforeTargetWindow, Longint(@Info));
+    EnumThreadWindows(GetCurrentThreadID, @IsBeforeTargetWindow, LPARAM(@Info));
 
     if Info.Found then
     begin
@@ -2880,7 +2878,7 @@ var
   HitTestInfo: TTCHitTestInfo;
 begin
   HitTestInfo.pt := SmallPointToPoint(Msg.Pos);
-  HitIndex := SendMessage(Handle, TCM_HITTEST, 0, Longint(@HitTestInfo));
+  HitIndex := SendMessage(Handle, TCM_HITTEST, 0, LPARAM(@HitTestInfo));
   if (HitIndex >= 0) and (HitIndex <> TabIndex) then
     Msg.Result := 1;
 end;
@@ -3087,7 +3085,7 @@ begin
   if DockSite then
   begin
     HitTestInfo.pt := MousePos;
-    HitIndex := SendMessage(Handle, TCM_HITTEST, 0, Longint(@HitTestInfo));
+    HitIndex := SendMessage(Handle, TCM_HITTEST, 0, LPARAM(@HitTestInfo));
     if HitIndex >= 0 then
     begin
       Page := nil;
@@ -3427,8 +3425,7 @@ end;
 procedure TJvDockTabSheet.SetHighlighted(Value: Boolean);
 begin
   if not (csReading in ComponentState) then
-    SendMessage(PageControl.Handle, TCM_HIGHLIGHTITEM, TabIndex,
-      MakeLong(Word(Value), 0));
+    SendMessage(PageControl.Handle, TCM_HIGHLIGHTITEM, TabIndex, MakeLong(Word(Value), 0));
   FHighlighted := Value;
 end;
 
@@ -3528,8 +3525,7 @@ begin
   TCItem.mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading];
   TCItem.pszText := Buffer;
   TCItem.cchTextMax := SizeOf(Buffer);
-  if SendMessage(FTabControl.Handle, TCM_GETITEM, Index,
-    Longint(@TCItem)) = 0 then
+  if SendMessage(FTabControl.Handle, TCM_GETITEM, Index, LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailRetrieve, [Index]));
   Result := Buffer;
 end;
@@ -3544,8 +3540,7 @@ var
   TCItem: TTCItem;
 begin
   TCItem.mask := TCIF_PARAM;
-  if SendMessage(FTabControl.Handle, TCM_GETITEM, Index,
-    Longint(@TCItem)) = 0 then
+  if SendMessage(FTabControl.Handle, TCM_GETITEM, Index, LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailGetObject, [Index]));
   Result := TObject(TCItem.lParam);
 end;
@@ -3560,8 +3555,7 @@ begin
     TCIF_IMAGE;
   TCItem.pszText := PChar(S);
   TCItem.iImage := FTabControl.GetImageIndex(Index);
-  if SendMessage(FTabControl.Handle, TCM_INSERTITEM, Index,
-    Longint(@TCItem)) < 0 then
+  if SendMessage(FTabControl.Handle, TCM_INSERTITEM, Index, LPARAM(@TCItem)) < 0 then
     TabControlError(Format(sTabFailSet, [S, Index]));
   FTabControl.TabsChanged;
 end;
@@ -3576,8 +3570,7 @@ begin
     TCIF_IMAGE;
   TCItem.pszText := PChar(S);
   TCItem.iImage := FTabControl.GetImageIndex(Index);
-  if SendMessage(FTabControl.Handle, TCM_SETITEM, Index,
-    Longint(@TCItem)) = 0 then
+  if SendMessage(FTabControl.Handle, TCM_SETITEM, Index, LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailSet, [S, Index]));
   FTabControl.TabsChanged;
 end;
@@ -3588,8 +3581,7 @@ var
 begin
   TCItem.mask := TCIF_PARAM;
   TCItem.lParam := Longint(AObject);
-  if SendMessage(FTabControl.Handle, TCM_SETITEM, Index,
-    Longint(@TCItem)) = 0 then
+  if SendMessage(FTabControl.Handle, TCM_SETITEM, Index, LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailSetObject, [Index]));
 end;
 

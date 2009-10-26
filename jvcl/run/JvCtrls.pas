@@ -994,7 +994,7 @@ end;
 
 procedure TJvCustomImageButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
-  Perform(WM_LBUTTONDOWN, Msg.Keys, Longint(Msg.Pos));
+  Perform(WM_LBUTTONDOWN, Msg.Keys, LPARAM(Msg.Pos));
 end;
 
 procedure TJvCustomImageButton.WMTimer(var Msg: TWMTimer);

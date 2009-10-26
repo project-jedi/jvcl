@@ -1967,7 +1967,7 @@ begin
     if GetCursorPos(Pt) then
     begin
       Pt := ScreenToClient(Pt);
-      PostMessage(Handle, CM_FIXCARETPOSITION, 0, LPARAM((Pt.Y shl 16) or (Pt.X and $FFFF)));
+      PostMessage(Handle, CM_FIXCARETPOSITION, 0, MakeLong(Word(Pt.X), Word(Pt.Y)));
     end;
   end;
   inherited DoEnter;

@@ -480,7 +480,7 @@ begin
   inherited Create;
   Self.Msg.Msg := Msg;
   Self.Msg.WParam := WParam;
-  Self.Msg.LParam := Longint(@LParam);
+  Self.Msg.LParam := Windows.LPARAM(@LParam);
   Self.Msg.Result := 0;
 end;
 
@@ -560,7 +560,7 @@ begin
         if Assigned(AControl) and Assigned(AControl.Parent) then
         begin
           AHintInfo := HintInfo;
-          AControl.Parent.Perform(CM_HINTSHOW, 0, Integer(@AHintInfo));
+          AControl.Parent.Perform(CM_HINTSHOW, 0, LPARAM(@AHintInfo));
           HintInfo.HintColor := AHintInfo.HintColor;
         end;
       end;

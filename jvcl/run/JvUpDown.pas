@@ -363,9 +363,9 @@ begin
   end;
   SendMessage(Handle, UDM_SETRANGE32, FMin, FMax);
   SendMessage(Handle, UDM_SETBASE, cBase[Format], 0);
-  SendMessage(Handle, UDM_GETACCEL, 1, Longint(@AccelArray));
+  SendMessage(Handle, UDM_GETACCEL, 1, LPARAM(@AccelArray));
   AccelArray[0].nInc := FIncrement;
-  SendMessage(Handle, UDM_SETACCEL, 1, Longint(@AccelArray));
+  SendMessage(Handle, UDM_SETACCEL, 1, LPARAM(@AccelArray));
   SetPosition(Position);
   SetAssociate(FAssociate);
 end;
