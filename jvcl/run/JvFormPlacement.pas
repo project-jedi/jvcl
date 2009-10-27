@@ -147,16 +147,16 @@ type
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
     property VersionCheck: TJvFormPlacementVersionCheck read FVersionCheck write FVersionCheck default fpvcCheckGreaterEqual;
-    property BeforeSavePlacement: TNotifyEvent read FBeforeSavePlacement write
-        FBeforeSavePlacement;
+    property BeforeSavePlacement: TNotifyEvent read FBeforeSavePlacement
+      write FBeforeSavePlacement;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement write FOnSavePlacement;
-    property AfterSavePlacement: TNotifyEvent read FAfterSavePlacement write
-        FAfterSavePlacement;
+    property AfterSavePlacement: TNotifyEvent read FAfterSavePlacement
+      write FAfterSavePlacement;
     property BeforeRestorePlacement: TNotifyEvent read FBeforeRestorePlacement
-        write FBeforeRestorePlacement;
+      write FBeforeRestorePlacement;
     property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement write FOnRestorePlacement;
-    property AfterRestorePlacement: TNotifyEvent read FAfterRestorePlacement write
-        FAfterRestorePlacement;
+    property AfterRestorePlacement: TNotifyEvent read FAfterRestorePlacement
+      write FAfterRestorePlacement;
   end;
 
   TJvStoredValues = class;
@@ -191,7 +191,7 @@ type
     procedure SetNotification;
     property StoredValue[const Name: string]: Variant read GetStoredValue write SetStoredValue;
     property DefaultValue[const Name: string; DefValue: Variant]: Variant
-        read GetDefaultStoredValue write SetDefaultStoredValue;
+      read GetDefaultStoredValue write SetDefaultStoredValue;
   published
     property StoredProps: TStrings read GetStoredProps write SetStoredProps;
     property StoredValues: TJvStoredValues read FStoredValues write SetStoredValues;
@@ -1336,27 +1336,25 @@ procedure TJvFormPlacement.ResolveAppStoragePath;
     if AOwner = nil then
       Result := ''
     else
-      begin
-        Own := GetFullFrameName(AOwner.Owner);
-        if Own <> '' then
-          Own := Own + '.';
-        Result := Own + AOwner.Name;
-      end;
+    begin
+      Own := GetFullFrameName(AOwner.Owner);
+      if Own <> '' then
+        Own := Own + '.';
+      Result := Own + AOwner.Name;
+    end;
   end;
 
 begin
-  if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and
-    Assigned(Owner) then
+  if (StrFind(cFormNameMask, FAppStoragePath) <> 0) and Assigned(Owner) then
     if (Owner is TCustomForm) then
       StrReplace(FAppStoragePath, cFormNameMask, Owner.Name, [rfIgnoreCase])
     else if (Owner is TCustomFrame) then
-      StrReplace(FAppStoragePath, cFormNameMask,
-        GetFullFrameName(Owner), [rfIgnoreCase])
+      StrReplace(FAppStoragePath, cFormNameMask, GetFullFrameName(Owner), [rfIgnoreCase])
 end;
 
 procedure TJvFormPlacement.SetAppStorage(const Value: TJvCustomAppStorage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FAppStorage));
+  ReplaceComponentReference(Self, Value, TComponent(FAppStorage));
 end;
 
 { TJvFormStorageStringList }
