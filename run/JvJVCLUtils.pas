@@ -3903,25 +3903,6 @@ end;
 
 {$HINTS OFF}
 type
-  {*******************************************************}
-  { !! ATTENTION Nasty implementation                     }
-  {*******************************************************}
-  {                                                       }
-  { This class definition was copied from FORMS.PAS.      }
-  { It is needed to access some private fields of TForm.  }
-  {                                                       }
-  { Any changes in the underlying classes may cause       }
-  { errors in this implementation!                        }
-  {                                                       }
-  {*******************************************************}
-
-  {$IFNDEF DELPHI2010_UP}
-  TJvHackForm = class(TScrollingWinControl)
-  private
-    FWindowState: TWindowState; { !! }
-  end;
-  {$ENDIF}
-
   TComponentAccessProtected = class(TComponent);
 {$HINTS ON}
 
@@ -4158,7 +4139,7 @@ begin
       (Application.MainForm = nil)) then
     begin
       {$IFNDEF DELPHI2010_UP}
-      TJvHackForm(Form).FWindowState := wsNormal;
+      TWindowState(Pointer(@Form.WindowState)^) := wsNormal;
       {$ELSE}
       Form.WindowState := wsNormal;
       {$ENDIF}
@@ -4167,7 +4148,7 @@ begin
     end;
     {$IFNDEF DELPHI2010_UP} // Using this Hack didn't work with D2010
     if Form.FormStyle in [fsMDIChild, fsMDIForm] then
-      TJvHackForm(Form).FWindowState := WinState
+      TWindowState(Pointer(@Form.WindowState)^) := WinState
     else
     {$ELSE}
       Form.WindowState := WinState;
