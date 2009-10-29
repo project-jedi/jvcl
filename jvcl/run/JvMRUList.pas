@@ -700,7 +700,7 @@ function TJvMruList.ItemDataSize: Integer;
 //  check the list instead of hunting for misty bug;
 begin
   if ItemDataAsPointer <> nil then
-    Result := Integer(Pointer(Integer(ItemDataAsPointer) - SizeOf(Integer))^)
+    Result := Integer(Pointer(PAnsiChar(ItemDataAsPointer) - SizeOf(Integer))^)
   else
     Result := 0;
 end;

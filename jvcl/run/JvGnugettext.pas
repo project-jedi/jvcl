@@ -3323,7 +3323,7 @@ begin
     Inc(Integer(PatchPosition), 2); // skip the jump
     PatchPosition := PAnsiChar(Pointer(Pointer(PatchPosition)^)^);
   end;
-  Offset := Integer(NewProc) - Integer(Pointer(PatchPosition)) - 5;
+  Offset := PAnsiChar(NewProc) - PatchPosition - 5;
 
   Patch[0] := AnsiChar($E9);
   Patch[1] := AnsiChar(Offset and 255);

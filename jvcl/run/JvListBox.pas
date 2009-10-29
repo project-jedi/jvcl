@@ -292,8 +292,7 @@ type
     procedure MoveSelectedDown; virtual;
     procedure DeleteSelected; override;
     procedure DeleteAllButSelected;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   protected
     property MultiLine: Boolean read FMultiline write SetMultiline default False;
     property SelectedColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
@@ -400,7 +399,7 @@ const
 implementation
 
 uses
-  Consts, TypInfo,
+  Consts,
   {$IFDEF COMPILER10_UP}
   Types,
   {$ENDIF COMPILER10_UP}
@@ -713,7 +712,6 @@ end;
 
 constructor TJvCustomListBox.Create(AOwner: TComponent);
 var
-  PI: PPropInfo;
   PStringsAddr: PStrings;
 begin
   inherited Create(AOwner);
@@ -727,13 +725,12 @@ begin
   FConsumerSvc.AfterCreateSubSvc := ConsumerSubServiceCreated;
   FConsumerStrings := TJvConsumerStrings.Create(FConsumerSvc);
   { The following hack assumes that TJvListBox.Items reads directly from the private FItems field
-    of TCustomListBox and that TJvListBox.Items is actually published.
+    of TCustomListBox.
 
     What we do here is remove the original string list used and place our own version in it's place.
     This would give us the benefit of keeping the list of strings (and objects) even if a provider
     is active and the list box windows has no strings at all. }
-  PI := GetPropInfo(TJvListBox, 'Items');
-  PStringsAddr := Pointer(Integer(PI.GetProc) and $00FFFFFF + Integer(Self));
+  PStringsAddr := @Self.Items;
   Items.Free;                                 // remove original item list (TListBoxStrings instance)
   PStringsAddr^ := GetItemsClass.Create;      // create our own implementation and put it in place.
   TJvListBoxStrings(Items).ListBox := Self;   // link it to the list box.

@@ -7928,8 +7928,8 @@ begin
         Capacity := Pos;
       Size := Pos;
     end;
-    FillChar(Pointer(Longint(Memory) + Position)^, Count, 0);
-    //System.Move(Buffer, Pointer(Longint(FMemory) + FPosition)^, Count);
+    FillChar(Pointer(PAnsiChar(Memory) + Position)^, Count, 0);
+    //System.Move(Buffer, Pointer(PAnsiChar(FMemory) + FPosition)^, Count);
     Position := Pos;
     Result := Count;
     Exit;
