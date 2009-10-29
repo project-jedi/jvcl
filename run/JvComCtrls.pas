@@ -58,6 +58,10 @@ const
   WM_CHECKSTATECHANGED = WM_USER + 1;
 
   JvDefaultTreeViewMultiSelectStyle = [msControlSelect, msShiftSelect, msVisibleOnly];
+  
+  {$IFNDEF COMPILER7_UP}
+  ComCtlVersionIE6 = $00060000;
+  {$ENDIF ~COMPILER7_UP}
 
 type
   TJvIPAddress = class;
@@ -804,7 +808,8 @@ begin
       end;
     // mouse messages are sent through TJvIPAddress.WMParentNotify
   end;
-  Dispatch(Msg);
+  with Msg do
+    Result := DefWindowProc(Handle, Msg, WParam, LParam);
 end;
 
 //=== { TJvIPAddressDataConnector } ==========================================
