@@ -195,6 +195,14 @@ uses
   AppEvnts;
 
 type
+  {$IFDEF COMPILER7} // In Delphi 7 they forgot to publish those events
+  TApplicationEvents = class(AppEvnts.TApplicationEvents)
+  published
+    property OnModalBegin;
+    property OnModalEnd;
+  end;
+  {$ENDIF COMPILER7}
+
   TJvAppEventList = class(TComponent)
   private
     FApplicationEvents: TApplicationEvents;
