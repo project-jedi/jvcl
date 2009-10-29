@@ -5463,7 +5463,7 @@ begin
       bfOffBits := SizeOf(FileHeader^) + HeaderSize;
     end;
     BI := PBitmapInfoHeader(Longint(FileHeader) + SizeOf(FileHeader^));
-    Bits := Pointer(Longint(BI) + HeaderSize);
+    Bits := Pointer(PAnsiChar(BI) + HeaderSize);
     InternalGetDIB(Src, Pal, BI^, Bits^, PixelFormat);
   except
     FreeMemo(Result);
@@ -5528,7 +5528,7 @@ begin
           BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
           if BI^.biBitCount <> 24 then
             raise EJVCLException.CreateRes(@RsEBitCountNotImplemented);
-          Bits := Pointer(Longint(BI) + SizeOf(TBitmapInfoHeader));
+          Bits := Pointer(PAnsiChar(BI) + SizeOf(TBitmapInfoHeader));
           InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
           Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;
           P := AllocMemo(Length);

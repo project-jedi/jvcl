@@ -3957,7 +3957,7 @@ begin
         try
           AndMem := ResData;
           with AndInfo do
-            XorMem := Pointer(Longint(ResData) + AndLen);
+            XorMem := Pointer(PAnsiChar(ResData) + AndLen);
           GetBitmapBits(AndBits, AndLen, AndMem);
           GetBitmapBits(XorBits, XorLen, XorMem);
           DeleteObject(XorBits);
