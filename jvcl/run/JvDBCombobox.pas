@@ -147,7 +147,6 @@ type
     procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND; ComboProc: Pointer); override;
 
     procedure CreateWnd; override;
-    procedure DropDown; override;
     function GetPaintText: string; virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -409,22 +408,19 @@ end;
 procedure TJvCustomDBComboBox.Change;
 begin
   FDataLink.Edit;
-  inherited Change;
-  FDataLink.Modified;
   if UpdateFieldImmediatelly then
     FDataLink.UpdateRecord;
+  inherited Change;
+  FDataLink.Modified;
 end;
 
 procedure TJvCustomDBComboBox.Click;
 begin
   FDataLink.Edit;
+  if UpdateFieldImmediatelly then
+    FDataLink.UpdateRecord;
   inherited Click;
   FDataLink.Modified;
-end;
-
-procedure TJvCustomDBComboBox.DropDown;
-begin
-  inherited DropDown;
 end;
 
 function TJvCustomDBComboBox.GetDataSource: TDataSource;
