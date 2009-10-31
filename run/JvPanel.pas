@@ -298,6 +298,9 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
+    {$IFDEF DELPHI2006_UP}
+    property BevelEdges;
+    {$ENDIF DELPHI2006_UP}
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
@@ -306,9 +309,15 @@ type
     property Caption;
     property Color;
     property Constraints;
+    {$IFDEF DELPHI2009_UP}
+    property DoubleBuffered;
+    {$ENDIF DELPHI2009_UP}
     property DragMode;
     property Enabled;
     property Font;
+    {$IFDEF DELPHI2006_UP}
+    property Padding;
+    {$ENDIF DELPHI2006_UP}
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
@@ -319,6 +328,9 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    {$IFDEF DELPHI2010_UP}
+    property Touch;
+    {$ENDIF DELPHI2010_UP}
     property Visible;
     property OnClick;
     property OnConstrainedResize;

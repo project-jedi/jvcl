@@ -134,6 +134,16 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property Enabled;
+    {$IFDEF DELPHI2006_UP}
+    property BevelEdges;
+    property Padding;
+    {$ENDIF DELPHI2006_UP}
+    {$IFDEF DELPHI2009_UP}
+    property DoubleBuffered;
+    {$ENDIF DELPHI2009_UP}
+    {$IFDEF DELPHI2010_UP}
+    property Touch;
+    {$ENDIF DELPHI2010_UP}
     property Border: TJvgBevelOptions read FBorder write FBorder;
     property CaptionAlignment: TCaptionAlignment
       read FCaptionAlignment write SetCaptionAlignment default fcaNone;
