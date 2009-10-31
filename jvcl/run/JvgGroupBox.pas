@@ -134,8 +134,8 @@ type
     property OnMouseUp;
     property OnStartDrag;
     property Enabled;
-    {$IFDEF DELPHI2006_UP}
     property BevelEdges;
+    {$IFDEF DELPHI2006_UP}
     property Padding;
     {$ENDIF DELPHI2006_UP}
     {$IFDEF DELPHI2009_UP}

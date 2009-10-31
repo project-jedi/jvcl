@@ -298,9 +298,7 @@ type
     property OnGetSiteInfo;
     property OnStartDock;
     property OnUnDock;
-    {$IFDEF DELPHI2006_UP}
     property BevelEdges;
-    {$ENDIF DELPHI2006_UP}
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
