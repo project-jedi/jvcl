@@ -1334,7 +1334,9 @@ begin
             Invalidate;
             Changed;
           end;
-        end;
+        end
+        else
+          DoCommand(ecDelete, X, Y, CaretUndo);
     ecDelete:
       if not ReadOnly then
       begin

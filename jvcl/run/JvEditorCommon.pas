@@ -1041,7 +1041,7 @@ type
     property LineInformations: TJvLineInformationList read FLineInformations;
   public
     { published in descendants }
-    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default False;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Cursor default crIBeam;
@@ -2571,7 +2571,7 @@ begin
   FCursorBeyondEOF := False;
   FBlockOverwrite := True;
   FPersistentBlocks := False;
-  FBeepOnError := True;
+  FBeepOnError := False;
 
   FScrollBars := ssBoth;
   FScrollBarHorz := TJvControlScrollBar95.Create;
