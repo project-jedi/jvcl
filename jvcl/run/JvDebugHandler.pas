@@ -127,12 +127,14 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Forms,
-  JclDebug, JclHookExcept;
+  JclDebug, JclHookExcept,
+  AppEvnts;
 
 type
   TJvDebugHandler = class(TComponent)
   private
     FExceptionLogging: Boolean;
+    FAppEvents: TApplicationEvents;
     FStackTrackingEnable: Boolean;
     FUnhandledExceptionsOnly: Boolean;
     FLogToFile: Boolean;
@@ -141,7 +143,6 @@ type
     FIsLoaded: Boolean;
 
     FOnOtherDestination: TNotifyEvent;
-    FOldExceptionHandler: TExceptionEvent;
     procedure SetUnhandled(Value: Boolean);
     procedure HandleUnKnownException(Sender: TObject; E: Exception);
     procedure SetStackTracking(Value: Boolean);
@@ -190,14 +191,13 @@ begin
   JclStopExceptionTracking;
   JclRemoveExceptNotifier(ExceptionNotifier);
   JclUnhookExceptions;
+  FreeAndNil(FAppEvents);
   inherited Destroy;
 end;
 
 procedure TJvDebugHandler.HandleUnKnownException(Sender: TObject; E: Exception);
 begin
   ExceptionNotifier(E, ExceptAddr, False);
-  if Assigned(FOldExceptionHandler) then
-    FOldExceptionHandler(Sender, E);
 end;
 
 procedure TJvDebugHandler.SetUnhandled(Value: Boolean);
@@ -208,15 +208,15 @@ begin
     if FUnhandledExceptionsOnly then
     begin
       JclRemoveExceptNotifier(ExceptionNotifier);
-      FOldExceptionHandler := Application.OnException;
-      Application.OnException := HandleUnKnownException
+      if FAppEvents = nil then
+        FAppEvents := TApplicationEvents.Create(nil);
+      FAppEvents.OnException := HandleUnknownException;
     end
     else
     begin
-      if Assigned(FOldExceptionHandler) then
+      if FAppEvents <> nil then
       begin
-        Application.OnException := FOldExceptionHandler;
-        FOldExceptionHandler := nil;
+        FreeAndNil(FAppEvents);
         JclAddExceptNotifier(ExceptionNotifier);
       end;
     end;
