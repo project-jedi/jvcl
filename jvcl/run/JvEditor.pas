@@ -181,6 +181,7 @@ type
     property AutoIndent;
     property KeepTrailingBlanks;
     property CursorBeyondEOF;
+    property CursorBeyondEOL;
     property BracketHighlighting;
     property SelForeColor;
     property SelBackColor;
@@ -238,7 +239,7 @@ type
     property AutoSize;
     property BiDiMode;
     property Constraints;
-    property UseDockManager default True;
+    property UseDockManager;
     property DockSite;
     property ParentBiDiMode;
     property OnCanResize;
@@ -278,7 +279,7 @@ type
   published
     property Identifiers: TStrings index 0 read GetStrings write SetStrings;
     property Templates: TStrings index 1 read GetStrings write SetStrings;
-    property CaretChar: Char read FCaretChar write FCaretChar;
+    property CaretChar: Char read FCaretChar write FCaretChar default '|';
     property CRLF: string read FCRLF write FCRLF;
     property Separator: string read FSeparator write FSeparator;
   end;

@@ -1124,6 +1124,7 @@ resourcestring
   RsHLEdPropDlg_cbBackspaceUnindents = 'Backspace &unindents';
   RsHLEdPropDlg_cbGroupUndo = '&Group undo';
   RsHLEdPropDlg_cbCursorBeyondEOF = 'Cursor beyond &EOF';
+  RsHLEdPropDlg_cbCursorBeyondEOL = 'Cursor beyond end of &line';
   RsHLEdPropDlg_cbUndoAfterSave = '&Undo after sa&ve';
   RsHLEdPropDlg_cbKeepTrailingBlanks = '&Keep trailing blanks';
   RsHLEdPropDlg_cbDoubleClickLine = '&Double click line';
