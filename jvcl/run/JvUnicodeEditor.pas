@@ -1336,6 +1336,7 @@ begin
           end;
         end
         else
+        if not PersistentBlocks and FSelection.IsSelected then
           DoCommand(ecDelete, X, Y, CaretUndo);
     ecDelete:
       if not ReadOnly then
