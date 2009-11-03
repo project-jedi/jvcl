@@ -731,6 +731,7 @@ type
     FAutoIndent: Boolean;
     FKeepTrailingBlanks: Boolean;
     FCursorBeyondEOF: Boolean;
+    FCursorBeyondEOL: Boolean;
     FBlockOverwrite: Boolean;
     FPersistentBlocks: Boolean;
     FHideCaret: Boolean;
@@ -762,6 +763,8 @@ type
     FOnLineInserted: TJvLineChangeEvent;
     FOnLineDeleted: TJvLineChangeEvent;
     FOnCaretChanged: TJvCaretChangedEvent;
+
+    function GetKeepTrailingBlanks: Boolean;
 
     { internal message processing }
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
@@ -935,6 +938,7 @@ type
 
     procedure DrawRightMargin;
     procedure SetCaretInternal(X, Y: Integer);
+    procedure CheckBeyondEOL(var CX: Integer; CY: Integer);
 
     procedure NotUndoable;
     procedure NotRedoable;
@@ -1046,12 +1050,15 @@ type
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property Cursor default crIBeam;
     property Color default clWindow;
+    property TabStop default True;
+    property ParentFont default False;
+    property ParentColor default False;
 
-    property GutterWidth: Integer read FGutterWidth write SetGutterWidth;
+    property GutterWidth: Integer read FGutterWidth write SetGutterWidth default 0;
     property GutterColor: TColor read FGutterColor write SetGutterColor default clBtnFace;
     property RightMarginVisible: Boolean read FRightMarginVisible write SetRightMarginVisible default True;
     property RightMargin: Integer read FRightMargin write SetRightMargin default 80;
-    property RightMarginColor: TColor read FRightMarginColor write SetRightMarginColor default clBtnFace;
+    property RightMarginColor: TColor read FRightMarginColor write SetRightMarginColor default clSilver;
     property InsertMode: Boolean index 0 read FInsertMode write SetMode default True;
     property ReadOnly: Boolean index 1 read FReadOnly write SetMode default False;
     property DoubleClickLine: Boolean read FDoubleClickLine write FDoubleClickLine default False;
@@ -1059,13 +1066,14 @@ type
     property SmartTab: Boolean read FSmartTab write FSmartTab default True;
     property BackSpaceUnindents: Boolean read FBackSpaceUnindents write FBackSpaceUnindents default True;
     property AutoIndent: Boolean read FAutoIndent write FAutoIndent default True;
-    property KeepTrailingBlanks: Boolean read FKeepTrailingBlanks write FKeepTrailingBlanks default False;
+    property KeepTrailingBlanks: Boolean read GetKeepTrailingBlanks write FKeepTrailingBlanks default False;
     property CursorBeyondEOF: Boolean read FCursorBeyondEOF write FCursorBeyondEOF default False;
+    property CursorBeyondEOL: Boolean read FCursorBeyondEOL write FCursorBeyondEOL default True;
     property BlockOverwrite: Boolean read FBlockOverwrite write FBlockOverwrite default True;
     property PersistentBlocks: Boolean read FPersistentBlocks write FPersistentBlocks default False;
     property BracketHighlighting: TJvBracketHighlighting read FBracketHighlighting write SetBracketHighlighting;
-    property SelForeColor: TColor read FSelForeColor write SetSelForeColor;
-    property SelBackColor: TColor read FSelBackColor write SetSelBackColor;
+    property SelForeColor: TColor read FSelForeColor write SetSelForeColor default clHighlightText;
+    property SelBackColor: TColor read FSelBackColor write SetSelBackColor default clHighlight;
     property HideCaret: Boolean read FHideCaret write FHideCaret default False;
     property CurrentLineHighlight: TColor read FCurrentLineHighlight write SetCurrentLineHighlight default clNone;
     property ErrorHighlighting: TJvErrorHighlighting read FErrorHighlighting;
@@ -1151,8 +1159,8 @@ type
     property DropDownWidth: Integer read FDropDownWidth write FDropDownWidth default 300;
     property Enabled: Boolean read FEnabled write FEnabled default False;
     property ItemHeight: Integer read FItemHeight write FItemHeight;
-    property Interval: Cardinal read GetInterval write SetInterval;
-    property ListBoxStyle: TListBoxStyle read FListBoxStyle write FListBoxStyle;
+    property Interval: Cardinal read GetInterval write SetInterval default 800;
+    property ListBoxStyle: TListBoxStyle read FListBoxStyle write FListBoxStyle default lbStandard;
   end;
 
 //=== Highligther Editor =====================================================
@@ -2569,6 +2577,7 @@ begin
   FAutoIndent := True;
   FKeepTrailingBlanks := False;
   FCursorBeyondEOF := False;
+  FCursorBeyondEOL := True;
   FBlockOverwrite := True;
   FPersistentBlocks := False;
   FBeepOnError := False;
@@ -2658,6 +2667,7 @@ begin
       FAutoIndent := Src.AutoIndent;
       FKeepTrailingBlanks := Src.KeepTrailingBlanks;
       FCursorBeyondEOF := Src.CursorBeyondEOF;
+      FCursorBeyondEOL := Src.CursorBeyondEOL;
       FBlockOverwrite := Src.BlockOverwrite;
       FPersistentBlocks := Src.PersistentBlocks;}
     finally
@@ -3671,6 +3681,11 @@ begin
     FBorderStyle := Value;
     RecreateWnd;
   end;
+end;
+
+function TJvCustomEditorBase.GetKeepTrailingBlanks: Boolean;
+begin
+  Result := FKeepTrailingBlanks or not FCursorBeyondEOL;
 end;
 
 function TJvCustomEditorBase.GetSelStart: Integer;
@@ -4835,6 +4850,20 @@ begin
     end;
 end;
 
+procedure TJvCustomEditorBase.CheckBeyondEOL(var CX: Integer; CY: Integer);
+begin
+  if not CursorBeyondEOL then
+  begin
+    if (CY >= 0) and (CY < LineCount) then
+    begin
+      if CX >= GetLineLength(CY) then
+        CX := GetLineLength(CY);
+    end
+    else
+      CX := 0;
+  end;
+end;
+
 procedure TJvCustomEditorBase.Mouse2Cell(X, Y: Integer; var CX, CY: Integer);
 begin
   CX := Round((X - FEditorClient.Left) / CellRect.Width);
@@ -4854,6 +4883,7 @@ begin
     CX := FLastVisibleCol;
   if (CY > LineCount - 1) and not CursorBeyondEOF then
     CY := LineCount - 1;
+  CheckBeyondEOL(CX, CY);
 end;
 
 procedure TJvCustomEditorBase.MousePosToCell(X, Y: Integer; var CX, CY: Integer);
@@ -4908,12 +4938,14 @@ var
 begin
   if (X = FCaretX) and (Y = FCaretY) then
     Exit;
-  // To scroll the image [translated]
+  // To scroll the image
   if not FCursorBeyondEOF then
     Y := Min(Y, LineCount - 1);
   Y := Max(Y, 0);
   X := Min(X, Max_X);
   X := Max(X, 0);
+  CheckBeyondEOL(X, Y);
+
   if Y < FTopRow then
     SetLeftTop(FLeftCol, Y)
   else
@@ -5344,6 +5376,30 @@ type
     CaretUndo := False;
   end;
 
+  procedure IncCaretX(var X, Y: Integer; XOffset: Integer);
+  begin
+    Inc(X, XOffset);
+    if not CursorBeyondEOL then
+    begin
+      if X < 0 then
+      begin
+        if (Y > 0) and (Y <= LineCount) then
+        begin
+          Dec(Y);
+          X := LineLength[Y];
+        end;
+      end
+      else if (Y >= 0) and (Y < LineCount) and (X > LineLength[Y]) then
+      begin
+        if not CursorBeyondEOF and (Y < LineCount - 1) then
+        begin
+          Inc(Y);
+          X := 0;
+        end;
+      end;
+    end;
+  end;
+
 begin
   X := CaretX;
   Y := CaretY;
@@ -5368,9 +5424,9 @@ begin
           if Com([ecSelLeft, ecSelRight]) and IsNewSelection then
             SetSel1(X, Y);
           if Com([ecLeft, ecSelLeft]) then
-            Dec(X)
+            IncCaretX(X, Y, -1)
           else
-            Inc(X);
+            IncCaretX(X, Y, +1);
           if Com([ecSelLeft, ecSelRight]) then
             SetSel1(X, Y)
           else

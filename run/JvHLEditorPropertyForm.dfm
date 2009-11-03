@@ -35,8 +35,8 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Caption = 'Editor SpeedSettings'
       end
       object lblTabStops: TLabel
-        Left = 66
-        Top = 230
+        Left = 8
+        Top = 194
         Width = 50
         Height = 13
         Alignment = taRightJustify
@@ -148,10 +148,20 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           Caption = 'Cursor beyond &EOF'
           TabOrder = 8
         end
+        object cbCursorBeyondEOL: TCheckBox
+          Left = 8
+          Top = 116
+          Width = 169
+          Height = 17
+          Caption = 'Cursor beyond end of &line'
+          Checked = True
+          State = cbChecked
+          TabOrder = 9
+        end
       end
       object eTabStops: TEdit
-        Left = 128
-        Top = 224
+        Left = 64
+        Top = 191
         Width = 273
         Height = 21
         TabOrder = 2
