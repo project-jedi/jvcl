@@ -1584,12 +1584,12 @@ function RegNativeReadStringDef(const RootKey: DelphiHKEY; const Key, Name: stri
 var
   LastAccess: TJclRegWOW64Access;
 begin
-  LastAccess := JclRegWOW64Access;
+  LastAccess := RegGetWOW64AccessMode;
   try
-    JclRegWOW64Access := raNative;
+    RegSetWOW64AccessMode(raNative);
     Result := RegReadStringDef(RootKey, Key, Name, Def);
   finally
-    JclRegWOW64Access := LastAccess;
+    RegSetWOW64AccessMode(LastAccess);
   end;
 end;
 
@@ -1597,12 +1597,12 @@ procedure RegNativeWriteString(const RootKey: DelphiHKEY; const Key, Name, Value
 var
   LastAccess: TJclRegWOW64Access;
 begin
-  LastAccess := JclRegWOW64Access;
+  LastAccess := RegGetWOW64AccessMode;
   try
-    JclRegWOW64Access := raNative;
+    RegSetWOW64AccessMode(raNative);
     RegWriteString(RootKey, Key, Name, Value);
   finally
-    JclRegWOW64Access := LastAccess;
+    RegSetWOW64AccessMode(LastAccess);
   end;
 end;
 
@@ -1610,12 +1610,12 @@ function RegNativeReadIntegerDef(const RootKey: DelphiHKEY; const Key, Name: str
 var
   LastAccess: TJclRegWOW64Access;
 begin
-  LastAccess := JclRegWOW64Access;
+  LastAccess := RegGetWOW64AccessMode;
   try
-    JclRegWOW64Access := raNative;
+    RegSetWOW64AccessMode(raNative);
     Result := RegReadIntegerDef(RootKey, Key, Name, Def);
   finally
-    JclRegWOW64Access := LastAccess;
+    RegSetWOW64AccessMode(LastAccess);
   end;
 end;
 
