@@ -795,6 +795,7 @@ begin
     FCloseBtnRect := Rect(0, 0, ASize.cx, ASize.cy);
 
     Inc(FHeaderRect.Right, ASize.cx);
+    Inc(FMsgRect.Right, ASize.cx);
   end;
 
   if IsWinVista_UP and (GetComCtlVersion >= ComCtlVersionIE6) then
