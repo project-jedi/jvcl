@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{33656D5A-B67F-4E6D-B879-6EA71C3C79F4}</ProjectGuid>
 			<MainSource>JvManagedThreadsD14D.dpk</MainSource>
@@ -83,7 +83,7 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">3</VersionInfo>
-						<VersionInfo Name="MinorVer">38</VersionInfo>
+						<VersionInfo Name="MinorVer">40</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
 						<VersionInfo Name="Build">0</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
@@ -97,14 +97,14 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JVCL Managed Threads</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">3.38.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">3.40.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvManagedThreadsD14D</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999-2009 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvManagedThreadsD14D.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">3.38.0.0</VersionInfoKeys>
-						<VersionInfoKeys Name="Comments">3.38 Build 0</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">3.40.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments">3.40 Build 0</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JvManagedThreadsD14D.dpk</Source>
