@@ -88,7 +88,7 @@
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="3"/>
-        <ProjectProperty name="VersionMinorNumber" value="38"/>
+        <ProjectProperty name="VersionMinorNumber" value="40"/>
         <ProjectProperty name="ReleaseNumber" value="0"/>
         <ProjectProperty name="BuildNumber" value="0"/>
       </ProjectProperties>
