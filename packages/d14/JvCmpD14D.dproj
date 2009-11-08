@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{B2603E49-5F7D-4817-8484-71DD7B1EA69C}</ProjectGuid>
 			<MainSource>JvCmpD14D.dpk</MainSource>
@@ -87,7 +87,7 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">3</VersionInfo>
-						<VersionInfo Name="MinorVer">38</VersionInfo>
+						<VersionInfo Name="MinorVer">40</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
 						<VersionInfo Name="Build">0</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
@@ -101,14 +101,14 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="FileDescription">JVCL Non-Visual Components</VersionInfoKeys>
-						<VersionInfoKeys Name="FileVersion">3.38.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">3.40.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvCmpD14D</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999-2009 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvCmpD14D.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">3.38.0.0</VersionInfoKeys>
-						<VersionInfoKeys Name="Comments">3.38 Build 0</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">3.40.0.0</VersionInfoKeys>
+						<VersionInfoKeys Name="Comments">3.40 Build 0</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">JvCmpD14D.dpk</Source>
