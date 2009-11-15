@@ -1,6 +1,6 @@
 To:
-borland.public.delphi.third-party
-borland.public.cppbuilder.thirdpartytools
+embarcadero.public.delphi.third-party
+embarcadero.public.cppbuilder.thirdpartytools
 jedi.vcl
 jedi.general
 Delphi Magazine (info@TheDelphiMagazine.com)
