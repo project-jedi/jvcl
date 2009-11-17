@@ -122,6 +122,7 @@ type
     function GetNonBiDiKeyboard: string;
     procedure SetBiDiKeyboard(const Value: string);
     procedure SetNonBiDiKeyboard(const Value: string);
+    procedure SetOnException(const Value: TExceptionEvent);
   protected
     procedure Loaded; override;
     procedure PaintIcon; virtual;
@@ -136,32 +137,23 @@ type
     property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
     property ShowHint: Boolean read GetShowHint write SetShowHint default True;
-    property UpdateFormatSettings: Boolean read GetUpdateFormatSettings
-      write SetUpdateFormatSettings default True;
-    property HintShortPause: Integer read GetHintShortPause write SetHintShortPause
-      default DefHintShortPause;
-    property HintHidePause: Integer read GetHintHidePause write SetHintHidePause
-      default DefHintHidePause;
-    property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm
-      default True;
-    property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts
-      default True;
-    property UpdateMetricSettings: Boolean read GetUpdateMetricSettings
-      write SetUpdateMetricSettings default True;
-    property BiDiMode: TBiDiMode read GetBiDiMode write SetBiDiMode
-      default bdLeftToRight;
+    property UpdateFormatSettings: Boolean read GetUpdateFormatSettings write SetUpdateFormatSettings default True;
+    property HintShortPause: Integer read GetHintShortPause write SetHintShortPause default DefHintShortPause;
+    property HintHidePause: Integer read GetHintHidePause write SetHintHidePause default DefHintHidePause;
+    property ShowMainForm: Boolean read GetShowMainForm write SetShowMainForm default True;
+    property HintShortCuts: Boolean read GetHintShortCuts write SetHintShortCuts default True;
+    property UpdateMetricSettings: Boolean read GetUpdateMetricSettings write SetUpdateMetricSettings default True;
+    property BiDiMode: TBiDiMode read GetBiDiMode write SetBiDiMode default bdLeftToRight;
     property BiDiKeyboard: string read GetBiDiKeyboard write SetBiDiKeyboard;
     property NonBiDiKeyboard: string read GetNonBiDiKeyboard write SetNonBiDiKeyboard;
-    property MouseDragImmediate: Boolean read GetMouseDragImmediate
-      write SetMouseDragImmediate default True;
-    property MouseDragThreshold: Integer read GetMouseDragThreshold
-      write SetMouseDragThreshold default 5;
+    property MouseDragImmediate: Boolean read GetMouseDragImmediate write SetMouseDragImmediate default True;
+    property MouseDragThreshold: Integer read GetMouseDragThreshold write SetMouseDragThreshold default 5;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;
     property OnShortCut: TShortCutEvent read FOnShortCut write FOnShortCut;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
-    property OnException: TExceptionEvent read FOnException write FOnException;
+    property OnException: TExceptionEvent read FOnException write SetOnException;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
@@ -208,6 +200,7 @@ type
     FApplicationEvents: TApplicationEvents;
     FAppEvents: TList;
     FHooked: Boolean;
+    FExceptionHandlerCount: Integer;
     FOnActiveControlChange: TNotifyEvent;
     FOnActiveFormChange: TNotifyEvent;
     procedure AddEvents(App: TJvAppEvents);
@@ -227,8 +220,7 @@ type
     function DoHelp(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean;
     procedure DoMessage(var Msg: TMsg; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
-    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean;
-      var HintInfo: THintInfo);
+    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean; var HintInfo: THintInfo);
     procedure DoActiveControlChange(Sender: TObject);
     procedure DoActiveFormChange(Sender: TObject);
     procedure DoActionExecute(Action: TBasicAction; var Handled: Boolean);
@@ -240,6 +232,11 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
+
+    { OnException needs special treatment. Otherwise the first TJvAppEvents instance
+      will steal the OnException handler. }
+    procedure RegisterExceptionHandler;
+    procedure UnregisterExceptionHandler;
 
     property Items[Index: Integer]: TJvAppEvents read GetItem;
   end;
@@ -290,7 +287,8 @@ begin
       FApplicationEvents.OnShortCut := DoShortCut;
       FApplicationEvents.OnActivate := DoActivate;
       FApplicationEvents.OnDeactivate := DoDeactivate;
-      FApplicationEvents.OnException := DoException;
+      if FExceptionHandlerCount > 0 then
+        FApplicationEvents.OnException := DoException;
       FApplicationEvents.OnIdle := DoIdle;
       FApplicationEvents.OnHelp := DoHelp;
       FApplicationEvents.OnHint := DoHint;
@@ -321,6 +319,20 @@ begin
     FAppEvents.Remove(App);
   if not (csDesigning in App.ComponentState) and (FAppEvents.Count = 0) then
     ClearEvents;
+end;
+
+procedure TJvAppEventList.RegisterExceptionHandler;
+begin
+  Inc(FExceptionHandlerCount);
+  if (FExceptionHandlerCount = 1) and (FApplicationEvents <> nil) then
+    FApplicationEvents.OnException := DoException
+end;
+
+procedure TJvAppEventList.UnregisterExceptionHandler;
+begin
+  Dec(FExceptionHandlerCount);
+  if (FExceptionHandlerCount = 0) and (FApplicationEvents <> nil) then
+    FApplicationEvents.OnException := nil;
 end;
 
 procedure TJvAppEventList.DoActivate(Sender: TObject);
@@ -354,24 +366,14 @@ end;
 procedure TJvAppEventList.DoException(Sender: TObject; E: Exception);
 var
   I: Integer;
-  Handled: Boolean;
 begin
-  Handled := False;
-  try
-    for I := FAppEvents.Count - 1 downto 0 do
-    begin
-      Items[I].FCancelDispatch := False;
-      if Assigned(Items[I].FOnException) then
-      begin
-        Items[I].FOnException(Sender, E);
-        Handled := True;
-      end;
-      if not Items[I].Chained or Items[I].FCancelDispatch then
-        Exit;
-    end;
-  finally
-    if not Handled and not (E is EAbort) then
-      Application.ShowException(E);
+  for I := FAppEvents.Count - 1 downto 0 do
+  begin
+    Items[I].FCancelDispatch := False;
+    if Assigned(Items[I].FOnException) then
+      Items[I].FOnException(Sender, E);
+    if not Items[I].Chained or Items[I].FCancelDispatch then
+      Exit;
   end;
 end;
 
@@ -628,7 +630,10 @@ begin
   if not (csDesigning in ComponentState) then
     Application.UnhookMainWindow(MessageHook);
   if (Self <> nil) and (AppList <> nil) then
+  begin
+    SetOnException(nil);
     AppList.RemoveEvents(Self);
+  end;
   inherited Destroy;
 end;
 
@@ -893,6 +898,15 @@ begin
   FNonBiDiKeyboard := Value;
   if not (csDesigning in ComponentState) then
     Application.NonBiDiKeyboard := Value;
+end;
+
+procedure TJvAppEvents.SetOnException(const Value: TExceptionEvent);
+begin
+  if Assigned(FOnException) then
+    AppList.UnregisterExceptionHandler;
+  FOnException := Value;
+  if Assigned(FOnException) then
+    AppList.RegisterExceptionHandler;
 end;
 
 procedure TJvAppEvents.UpdateAppProps;
