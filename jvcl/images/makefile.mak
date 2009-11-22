@@ -43,7 +43,6 @@ JvCtrls.res \
 JvDBControls.res \
 JvDBGrid.res \
 JvDice.res \
-JvEnterTab.res \
 JvErrorIndicator.res \
 JvGammaPanel.res \
 JvgButton.res \
@@ -119,7 +118,6 @@ JvCtrls.res: JvCtrls.rc
 JvDBControls.res: JvDBControls.rc
 JvDBGrid.res: JvDBGrid.rc
 JvDice.res: JvDice.rc
-JvEnterTab.res: JvEnterTab.rc
 JvErrorIndicator.res: JvErrorIndicator.rc
 JvGammaPanel.res: JvGammaPanel.rc
 JvgButton.res: JvgButton.rc
