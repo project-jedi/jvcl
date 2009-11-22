@@ -36,25 +36,22 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls,
-  JvComponent;
+  JvComponentBase;
 
 type
-  TJvEnterAsTabEvent = procedure (Sender:TObject; AControl:TWinControl; var Handled:Boolean) of object;
-  TJvEnterAsTab = class(TJvGraphicControl)
+  TJvEnterAsTabEvent = procedure (Sender: TObject; AControl: TWinControl; var Handled: Boolean) of object;
+
+  TJvEnterAsTab = class(TJvComponent)
   private
     FEnterAsTab: Boolean;
     FAllowDefault: Boolean;
-    FBmp: TBitmap;
     FOnHandleEnter: TJvEnterAsTabEvent;
+    procedure IgnoreValue(Reader: TReader);
   protected
-    function EnterHandled(AControl: TWinControl): Boolean;virtual;
-    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
-    procedure Paint; override;
+    function EnterHandled(AControl: TWinControl): Boolean; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
-      AHeight: Integer); override;
   published
     property EnterAsTab: Boolean read FEnterAsTab write FEnterAsTab default True;
     property AllowDefault: Boolean read FAllowDefault write FAllowDefault default True;
@@ -62,7 +59,7 @@ type
     // Tab key. Only triggered if AllowDefault is true. If no event handler is assigned,
     // Enter keys will not be converted into Tab if the currently active control is a
     // TbuttonControl descendant
-    property OnHandleEnter:TJvEnterAsTabEvent read FOnHandleEnter write FOnHandleEnter;
+    property OnHandleEnter: TJvEnterAsTabEvent read FOnHandleEnter write FOnHandleEnter;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -80,43 +77,22 @@ implementation
 uses
   Forms, StdCtrls;
 
-{$R JvEnterTab.res}
+type
+  TJvEnterAsTabControl = class(TGraphicControl)
+  protected
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+  end;
 
-constructor TJvEnterAsTab.Create(AOwner: TComponent);
+{ TJvEnterAsTabControl }
+
+procedure TJvEnterAsTabControl.CMDialogKey(var Msg: TCMDialogKey);
+var
+  Comp: TJvEnterAsTab;
 begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csNoStdEvents, csFixedHeight, csFixedWidth];
-  FEnterAsTab := True;
-  FAllowDefault := True;
-  if csDesigning in ComponentState then
+  Comp := (Owner as TJvEnterAsTab);
+  if (Msg.CharCode = VK_RETURN) and Comp.EnterAsTab then
   begin
-    FBmp := TBitmap.Create;
-    FBmp.LoadFromResourceName(HInstance, 'DESIGNENTERASTAB');
-  end
-  else
-    Visible := False;
-end;
-
-destructor TJvEnterAsTab.Destroy;
-begin
-  FBmp.Free;
-  inherited Destroy;
-end;
-
-
-
-function TJvEnterAsTab.EnterHandled(AControl:TWinControl):Boolean;
-begin
-  Result := AControl is TButtonControl;
-  if Assigned(FOnHandleEnter) then
-    FOnHandleEnter(Self, AControl, Result);
-end;
-
-procedure TJvEnterAsTab.CMDialogKey(var Msg: TCMDialogKey);
-begin
-  if (Msg.CharCode = VK_RETURN) and EnterAsTab then
-  begin
-    if AllowDefault and EnterHandled(GetParentForm(Self).ActiveControl) then
+    if Comp.AllowDefault and Comp.EnterHandled(GetParentForm(Self).ActiveControl) then
       inherited
     else
     begin
@@ -128,23 +104,42 @@ begin
     inherited;
 end;
 
+{ TJvEnterAsTab }
 
-
-
-procedure TJvEnterAsTab.Paint;
+constructor TJvEnterAsTab.Create(AOwner: TComponent);
+var
+  Ctrl: TJvEnterAsTabControl;
 begin
+  inherited Create(AOwner);
+  FEnterAsTab := True;
+  FAllowDefault := True;
   if not (csDesigning in ComponentState) then
-    Exit;
-  with Canvas do
   begin
-    Brush.Color := clBtnFace;
-    BrushCopy( ClientRect, FBmp, ClientRect, clFuchsia);
+    Ctrl := TJvEnterAsTabControl.Create(Self);
+    Ctrl.Visible := False;
+    Ctrl.Parent := GetParentForm(AOwner as TControl);
   end;
 end;
 
-procedure TJvEnterAsTab.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+procedure TJvEnterAsTab.DefineProperties(Filer: TFiler);
 begin
-  inherited SetBounds(ALeft, ATop, 28, 28);
+  inherited DefineProperties(Filer);
+  { TJvEnterAsTab was a TJvGraphicControl and now we have to ignore all the
+    wrong properties. }
+  Filer.DefineProperty('Width', IgnoreValue, nil, False);
+  Filer.DefineProperty('Height', IgnoreValue, nil, False);
+end;
+
+function TJvEnterAsTab.EnterHandled(AControl: TWinControl): Boolean;
+begin
+  Result := AControl is TButtonControl;
+  if Assigned(FOnHandleEnter) then
+    FOnHandleEnter(Self, AControl, Result);
+end;
+
+procedure TJvEnterAsTab.IgnoreValue(Reader: TReader);
+begin
+  Reader.SkipValue;
 end;
 
 {$IFDEF UNITVERSIONING}
