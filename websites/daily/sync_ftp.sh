@@ -51,6 +51,12 @@ export USER=$4
 # The password
 export PASS=$5
 
+# The download limit
+export DOWN_LIMIT=$6
+
+# The upload limit
+export UP_LIMIT=$7
+
 # Locations of various required binaries
 # Note: Those paths are valid on obones' server, please update to reflect those
 #       you are using on your own machine.
@@ -75,8 +81,10 @@ function Help()
   $ECHOBIN ""
   $ECHOBIN "Typical command line:"
   $ECHOBIN ""
-  $ECHOBIN "  $0 Host LocalDir RemoteDir User Password"
+  $ECHOBIN "  $0 Host LocalDir RemoteDir User Password DownLimit UpLimit" 
   $ECHOBIN ""
+  $ECHOBIN "  Up and Down limit are expressed in bytes per second and"
+  $ECHOBIN "  their default value is 0 for unlimited transfer rate"
 }
 
 # Check configuration
@@ -106,9 +114,19 @@ if [ -z $PASS ]; then
   exit
 fi
 
+if [ -z $DOWN_LIMIT ]; then
+  export $DOWN_LIMIT=0
+fi
+
+if [ -z $UP_LIMIT ]; then
+  export $UP_LIMIT=0
+fi
+
 # Create lftp command file
 $ECHOBIN `CurrentTimeTag` "Creating lFTP command file..."
 $ECHOBIN " " > $LFTP_COMMANDS_FILE
+$ECHOBIN "set net:limit-total-rate $DOWN_LIMIT:$UP_LIMIT" >> $LFTP_COMMANDS_FILE
+$ECHOBIN "set net:limit-total-max $UP_LIMIT" >> $LFTP_COMMANDS_FILE
 $ECHOBIN "open $HOST" >> $LFTP_COMMANDS_FILE
 $ECHOBIN "user $USER $PASS" >> $LFTP_COMMANDS_FILE
 $ECHOBIN "mirror -vvv -e -R $LOCAL_DIR $REMOTE_DIR" >> $LFTP_COMMANDS_FILE
