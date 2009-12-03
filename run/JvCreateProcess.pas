@@ -211,7 +211,7 @@ type
   published
     property ApplicationName: string read FApplicationName write FApplicationName;
     property CommandLine: string read FCommandLine write SetCommandLine;
-    property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags default [];
+    property CreationFlags: TJvCPSFlags read FCreationFlags write FCreationFlags default [{$IFDEF UNICODE}cfUnicode{$ENDIF UNICODE}];
     property CurrentDirectory: string read FCurrentDirectory write FCurrentDirectory;
     property Environment: TStrings read GetEnvironment write SetEnvironment;
     property Priority: TJvProcessPriority read FPriority write FPriority default ppNormal;
@@ -1041,7 +1041,7 @@ end;
 constructor TJvCreateProcess.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FCreationFlags := [];
+  FCreationFlags := [{$IFDEF UNICODE}cfUnicode{$ENDIF UNICODE}];
   FEnvironment := TStringList.Create;
   FPriority := ppNormal;
   FState := psReady;
