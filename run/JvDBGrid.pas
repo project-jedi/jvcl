@@ -2364,41 +2364,44 @@ begin
             Exit;
         end;
       end;
-      if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
+      if Cell.Y >= 0 then
       begin
-        if dgIndicator in Options then
-          inherited MouseDown(Button, Shift, 1, Y)
-        else
-        if Cell.Y >= TitleOffset then
-          if Cell.Y - Row <> 0 then
-            DataLink.DataSet.MoveBy(Cell.Y - Row);
-      end
-      else
-      begin
-        { Do not show the editor if the user right clicks on the cell. Otherwise
-          the grid's popup menu will never show. }
-        WasAlwaysShowEditor := dgAlwaysShowEditor in Options;
-        if WasAlwaysShowEditor and (Button = mbRight) {and (PopupMenu <> nil)} then
-          Options := Options - [dgAlwaysShowEditor];
-        try
-          //-------------------------------------------------------------------------------
-          // Prevents the grid from going back to the first column when dgRowSelect is True
-          // Does not work if there's no indicator column
-          //-------------------------------------------------------------------------------
-          if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
+        if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
+        begin
+          if dgIndicator in Options then
             inherited MouseDown(Button, Shift, 1, Y)
           else
-            inherited MouseDown(Button, Shift, X, Y);
-          if (Col = LastCell.X) and (Row <> LastCell.Y) then
-          begin
-            { ColEnter is not invoked when switching between rows staying in the
-              same column. }
-            if FAlwaysShowEditor and not EditorMode then
-              ShowEditor;
-          end;
-        finally
+          if Cell.Y >= TitleOffset then
+            if Cell.Y - Row <> 0 then
+              DataLink.DataSet.MoveBy(Cell.Y - Row);
+        end
+        else
+        begin
+          { Do not show the editor if the user right clicks on the cell. Otherwise
+            the grid's popup menu will never show. }
+          WasAlwaysShowEditor := dgAlwaysShowEditor in Options;
           if WasAlwaysShowEditor and (Button = mbRight) {and (PopupMenu <> nil)} then
-            Options := Options + [dgAlwaysShowEditor];
+            Options := Options - [dgAlwaysShowEditor];
+          try
+            //-------------------------------------------------------------------------------
+            // Prevents the grid from going back to the first column when dgRowSelect is True
+            // Does not work if there's no indicator column
+            //-------------------------------------------------------------------------------
+            if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
+              inherited MouseDown(Button, Shift, 1, Y)
+            else
+              inherited MouseDown(Button, Shift, X, Y);
+            if (Col = LastCell.X) and (Row <> LastCell.Y) then
+            begin
+              { ColEnter is not invoked when switching between rows staying in the
+                same column. }
+              if FAlwaysShowEditor and not EditorMode then
+                ShowEditor;
+            end;
+          finally
+            if WasAlwaysShowEditor and (Button = mbRight) {and (PopupMenu <> nil)} then
+              Options := Options + [dgAlwaysShowEditor];
+          end;
         end;
       end;
       MouseDownEvent := OnMouseDown;
