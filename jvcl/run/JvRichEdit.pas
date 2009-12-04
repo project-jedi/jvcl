@@ -3728,7 +3728,6 @@ begin
   ReObject.cbStruct := SizeOf(ReObject);
   if Succeeded(IRichEditOle(FRichEditOle).GetObject(Longint(REO_IOB_SELECTION),
     ReObject, REO_GETOBJ_POLEOBJ or REO_GETOBJ_POLESITE)) then
-  try
     if ReObject.dwFlags and REO_INPLACEACTIVE = 0 then
     begin
       ObjectProps.cbStruct := SizeOf(ObjectProps);
@@ -3755,8 +3754,6 @@ begin
       LinkProps.dwFlags := ELF_DISABLECANCELLINK;
       Result := OleUIObjectProperties(ObjectProps) = OLEUI_OK;
     end;
-  finally
-  end;
 end;
 
 procedure TJvCustomRichEdit.ObjectPropsClick(Sender: TObject);
