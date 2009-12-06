@@ -4150,8 +4150,9 @@ begin
     if Form.FormStyle in [fsMDIChild, fsMDIForm] then
       TWindowState(Pointer(@Form.WindowState)^) := WinState
     else
-    {$ELSE}
       Form.WindowState := WinState;
+    {$ELSE}
+    Form.WindowState := WinState;
     {$ENDIF}
   end;
   Form.Update;
