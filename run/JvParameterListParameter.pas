@@ -1622,9 +1622,10 @@ end;
 
 procedure TJvComboBoxParameter.GetData;
 begin
-  Value := Null;
   if Assigned(WinControl) then
-    Value := WinControlData;
+    Value := WinControlData
+  else
+    Value := Null;
 end;
 
 procedure TJvComboBoxParameter.SetData;
