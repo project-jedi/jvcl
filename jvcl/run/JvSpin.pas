@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -238,6 +238,9 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure UpClick(Sender: TObject); virtual;
     property ButtonWidth: Integer read GetButtonWidth;
+
+    procedure DoTopClick;
+    procedure DoBottomClick;
   public
     procedure Loaded; override;
     constructor Create(AOwner: TComponent); override;
@@ -834,6 +837,12 @@ begin
     inherited;
 end;
 
+procedure TJvCustomSpinEdit.DoBottomClick;
+begin
+  if Assigned(FOnBottomClick) then
+    FOnBottomClick(Self);
+end;
+
 procedure TJvCustomSpinEdit.DoEnter;
 begin
   SetFocused(True);
@@ -877,6 +886,12 @@ begin
   Result := True;
 end;
 
+procedure TJvCustomSpinEdit.DoTopClick;
+begin
+  if Assigned(FOnTopClick) then
+    FOnTopClick(Self);
+end;
+
 procedure TJvCustomSpinEdit.DownClick(Sender: TObject);
 var
   OldText: string;
@@ -897,8 +912,7 @@ begin
       Modified := True;
       Change;
     end;
-    if Assigned(FOnBottomClick) then
-      FOnBottomClick(Self);
+    DoBottomClick;
   end;
 end;
 
@@ -1411,8 +1425,7 @@ begin
       Modified := True;
       Change;
     end;
-    if Assigned(FOnTopClick) then
-      FOnTopClick(Self);
+    DoTopClick;
   end;
 end;
 
@@ -2912,7 +2925,13 @@ end;
 
 procedure TJvCustomTimeEdit.UpClick(Sender: TObject);
 begin
-  UpdateTimeDigits(True);
+  if ReadOnly then
+    DoBeepOnError
+  else
+  begin
+    UpdateTimeDigits(True);
+    DoTopClick;
+  end;
 end;
 
 destructor TJvCustomTimeEdit.Destroy;
@@ -2935,7 +2954,13 @@ end;
 
 procedure TJvCustomTimeEdit.DownClick(Sender: TObject);
 begin
-  UpdateTimeDigits(False);
+  if ReadOnly then
+    DoBeepOnError
+  else
+  begin
+    UpdateTimeDigits(False);
+    DoBottomClick;
+  end;
 end;
 
 procedure TJvCustomTimeEdit.KeyDown(var Key: Word; Shift: TShiftState);
