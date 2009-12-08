@@ -2986,11 +2986,12 @@ end;
 
 function TJvCustomTimeEdit.GetValue: Extended;
 begin
-  Result := 0.0;
+  Result := Time;
 end;
 
 procedure TJvCustomTimeEdit.SetValue(NewValue: Extended);
 begin
+  Time := NewValue;
 end;
 
 //=== { TJvCustomTimeEditDataConnector } ====================================
