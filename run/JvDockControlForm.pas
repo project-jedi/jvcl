@@ -1512,25 +1512,24 @@ end;
 function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
 var
   TabHost: TJvDockTabHostForm;
-// wasVisible1,wasVisible2:Boolean;
   DockClient1, DockCLient2: TJvDockClient;
   ScreenPos: TRect;
+  otherForm:TForm;
+  n:Integer;
 begin
-  //Form1.Show;
-  //Form2.Show;
-
   DockClient1 := FindDockClient(Form1);
-  //wasVisible1 := Form1.Visible;
   Form1.Hide;
+
   Assert(Assigned(DockClient1));
+
   if DockClient1.DockState = JvDockState_Docking then
   begin
     ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
-    Form1.ManualFloat(ScreenPos);
+    Form1.ManualFloat(ScreenPos); // This screws up on Delphi 2010.
   end;
   DockClient2 := FindDockClient(Form2);
-  //wasVisible2 := Form2.Visible;
-  Form2.Hide;
+
+    Form2.Hide;
 
   Assert(Assigned(DockClient2));
   if DockClient2.DockState = JvDockState_Docking then
@@ -1540,19 +1539,26 @@ begin
   end;
 
   TabHost := DockClient1.CreateTabHostAndDockControl(Form1, Form2);
-    {DockClient1.ParentForm, DockClient2.ParentForm}
-  TabHost.Hide;
 
-  TabHost.ManualDock(DockSite);
+
+
+  {Mantis # 5023 workaround}
+  TabHost.Show; { I have NO Idea why we need to call show here sometimes, and hide works here other times.}
+
+
+
+  TabHost.ManualDock(DockSite,nil,alClient);
   if not Form1.Visible then
     Form1.Show;
   if not Form2.Visible then
     Form2.Show;
 
-  TabHost.Show;
+//  TabHost.Show; { problems if done here!}
+
   ShowDockForm(Form2);
   Result := TabHost;
 end;
+
 
 { Must create the initial tab dock with two pages, using ManualTabDock,
   then you can add more pages with this:}
