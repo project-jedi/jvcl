@@ -263,6 +263,7 @@ begin
   try
     Bmp.Width := ClientWidth;
     Bmp.Height := ClientHeight;
+    Bmp.Canvas.Lock;
     DC := Canvas.Handle;
     try
       Canvas.Handle := Bmp.Canvas.Handle;
@@ -275,6 +276,7 @@ begin
     finally
       Canvas.Handle := DC;
       Canvas.Draw(0, 0, Bmp);
+      Bmp.Canvas.Unlock;
     end;
   finally
     Bmp.Free;
