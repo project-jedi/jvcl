@@ -697,7 +697,7 @@ type
      and TJvDockTabHostForm which are the base classes for the two kinds of
      docked-views possible for handling multiple controls docked to the same
      dock site. }
-  TJvDockableForm = class(TJvForm)
+  TJvDockableForm = class(TForm) { DO NOT MAKE THIS TJvForm! Mantis # 5023 }
   private
     FDockClient: TJvDockClient;
     FDockableControl: TWinControl;
@@ -1514,8 +1514,8 @@ var
   TabHost: TJvDockTabHostForm;
   DockClient1, DockCLient2: TJvDockClient;
   ScreenPos: TRect;
-  otherForm:TForm;
-  n:Integer;
+//  otherForm:TForm;
+//  n:Integer;
 begin
   DockClient1 := FindDockClient(Form1);
   Form1.Hide;
