@@ -36,7 +36,1564 @@ procedure UsageAndUsagePageText(UsagePage, Usage: TUsage; var UsagePageText, Usa
 implementation
 
 uses
- SysUtils;
+  SysUtils;
+
+resourcestring
+  Rs0 = '0';
+  Rs1 = '1';
+  Rs14SegmentDirectMap = '14 Segment Direct Map';
+  Rs2 = '2';
+  Rs2DControlReport = '2D Control Report';
+  Rs2DModeAdjust = '2D Mode Adjust';
+  Rs2DModeSelect = '2D Mode Select';
+  Rs3 = '3';
+  Rs3DDigitizer = '3D Digitizer';
+  Rs3DGameController = '3D Game Controller';
+  Rs4 = '4';
+  Rs5 = '5';
+  Rs6 = '6';
+  Rs7 = '7';
+  Rs7SegmentDirectMap = '7 Segment Direct Map';
+  Rs8 = '8';
+  Rs9 = '9';
+  RsA = 'A';
+  RsabsoluteStateofcharge = 'absolute State of charge';
+  RsAccelerator = 'Accelerator';
+  RsACPresent = 'AC Present';
+  RsActivePower = 'Active Power';
+  RsActiveTime = 'Active Time';
+  RsActuatorOverrideSwitch = 'Actuator Override Switch';
+  RsActuatorPower = 'Actuator Power';
+  RsActuatorsEnabled = 'Actuators Enabled';
+  RsAddEAN2_3LabelDefinition = 'Add EAN 2/3 Label Definition';
+  RsAgain = 'Again';
+  RsAileron = 'Aileron';
+  RsAileronTrim = 'Aileron Trim';
+  RsAimDuration = 'Aim Duration';
+  RsAiming_PointerMode = 'Aiming/Pointer Mode';
+  RsAimingLaserPattern = 'Aiming Laser Pattern';
+  RsAirplane = 'Airplane';
+  RsAlarmInhibited = 'Alarm Inhibited';
+  RsAlphanumeric = 'Alphanumeric';
+  RsAlphanumericDisplay = 'Alphanumeric Display';
+  RsAlternateAudioDecrement = 'Alternate Audio Decrement';
+  RsAlternateAudioIncrement = 'Alternate Audio Increment';
+  RsAlternateErase = 'Alternate Erase';
+  RsAlternateFunction = 'Alternate Function';
+  RsAltitude = 'Altitude';
+  RsAM_PM = 'AM/PM';
+  RsAmber = 'Amber';
+  RsAnimatronicDevice = 'Animatronic Device';
+  RsAnsweringMachine = 'Answering Machine';
+  RsAnswerOn_Off = 'Answer On/Off';
+  RsAnti_TorqueControl = 'Anti-Torque Control';
+  RsApostroph = '''';
+  RsApparentPower = 'Apparent Power';
+  RsApplication = 'Application';
+  RsApplicationControlAddToCart = 'Application Control Add To Cart';
+  RsApplicationControlAllCaps = 'Application Control All Caps';
+  RsApplicationControlAttachComment = 'Application Control Attach Comment';
+  RsApplicationControlAttachFile = 'Application Control Attach File';
+  RsApplicationControlBack = 'Application Control Back';
+  RsApplicationControlBold = 'Application Control Bold';
+  RsApplicationControlBookmarks = 'Application Control Bookmarks';
+  RsApplicationControlBulletedList = 'Application Control Bulleted List';
+  RsApplicationControlBuyCheckout = 'Application Control Buy Checkout';
+  RsApplicationControlCancel = 'Application Control Cancel';
+  RsApplicationControlCatalog = 'Application Control Catalog';
+  RsApplicationControlClearAlarm = 'Application Control Clear Alarm';
+  RsApplicationControlCollapse = 'Application Control Collapse';
+  RsApplicationControlCollapseAll = 'Application Control Collapse All';
+  RsApplicationControlCopy = 'Application Control Copy';
+  RsApplicationControlCose = 'Application Control Cose';
+  RsApplicationControlCut = 'Application Control Cut';
+  RsApplicationControlDelete = 'Application Control Delete';
+  RsApplicationControlDeleteComment = 'Application Control Delete Comment';
+  RsApplicationControlDemote = 'Application Control Demote';
+  RsApplicationControlDistributeHorizontally = 'Application Control Distribute Horizontally';
+  RsApplicationControlDistributeVertically = 'Application Control Distribute Vertically';
+  RsApplicationControlDownload = 'Application Control Download';
+  RsApplicationControlEdit = 'Application Control Edit';
+  RsApplicationControlEditTimeZones = 'Application Control Edit Time Zones';
+  RsApplicationControlExit = 'Application Control Exit';
+  RsApplicationControlExpand = 'Application Control Expand';
+  RsApplicationControlExpandAll = 'Application Control Expand All';
+  RsApplicationControlFilter = 'Application Control Filter';
+  RsApplicationControlFind = 'Application Control Find';
+  RsApplicationControlFindandReplace = 'Application Control Find and Replace';
+  RsApplicationControlFlipHorizontal = 'Application Control Flip Horizontal';
+  RsApplicationControlFlipVertical = 'Application Control Flip Vertical';
+  RsApplicationControlFontColor = 'Application Control Font Color';
+  RsApplicationControlFontSelect = 'Application Control Font Select';
+  RsApplicationControlFontSize = 'Application Control Font Size';
+  RsApplicationControlFormat = 'Application Control Format';
+  RsApplicationControlForward = 'Application Control Forward';
+  RsApplicationControlForwardMessage = 'Application Control Forward Message';
+  RsApplicationControlFullScreenView = 'Application Control Full Screen View';
+  RsApplicationControlGoTo = 'Application Control Go To';
+  RsApplicationControlHistory = 'Application Control History';
+  RsApplicationControlHome = 'Application Control Home';
+  RsApplicationControlIndentDecrease = 'Application Control Indent Decrease';
+  RsApplicationControlIndentIncrease = 'Application Control Indent Increase';
+  RsApplicationControlInsertColumn = 'Application Control Insert Column';
+  RsApplicationControlInsertFile = 'Application Control Insert File';
+  RsApplicationControlInsertMode = 'Application Control Insert Mode';
+  RsApplicationControlInsertObject = 'Application Control Insert Object';
+  RsApplicationControlInsertPicture = 'Application Control Insert Picture';
+  RsApplicationControlInsertRow = 'Application Control Insert Row';
+  RsApplicationControlInsertSymbol = 'Application Control Insert Symbol';
+  RsApplicationControlItalics = 'Application Control Italics';
+  RsApplicationControlJustifyBlockHorizontally = 'Application Control Justify Block Horizontally';
+  RsApplicationControlJustifyBlockVertically = 'Application Control Justify Block Vertically';
+  RsApplicationControlJustifyBottom = 'Application Control Justify Bottom';
+  RsApplicationControlJustifyCenterHorizontally = 'Application Control Justify Center Horizontally';
+  RsApplicationControlJustifyCenterVertically = 'Application Control Justify Center Vertically';
+  RsApplicationControlJustifyLeft = 'Application Control Justify Left';
+  RsApplicationControlJustifyRight = 'Application Control Justify Right';
+  RsApplicationControlJustifyTop = 'Application Control Justify Top';
+  RsApplicationControlLock = 'Application Control Lock';
+  RsApplicationControlMaximize = 'Application Control Maximize';
+  RsApplicationControlMerge = 'Application Control Merge';
+  RsApplicationControlMinimize = 'Application Control Minimize';
+  RsApplicationControlMirrorHorizontal = 'Application Control Mirror Horizontal';
+  RsApplicationControlMirrorVertical = 'Application Control Mirror Vertical';
+  RsApplicationControlNew = 'Application Control New';
+  RsApplicationControlNewWindow = 'Application Control New Window';
+  RsApplicationControlNextLink = 'Application Control Next Link';
+  RsApplicationControlNo = 'Application Control No';
+  RsApplicationControlNormalView = 'Application Control Normal View';
+  RsApplicationControlNumberedList = 'Application Control Numbered List';
+  RsApplicationControlOpen = 'Application Control Open';
+  RsApplicationControlPan = 'Application Control Pan';
+  RsApplicationControlPanLeft = 'Application Control Pan Left';
+  RsApplicationControlPanRight = 'Application Control Pan Right';
+  RsApplicationControlPaste = 'Application Control Paste';
+  RsApplicationControlPasteSpecial = 'Application Control Paste Special';
+  RsApplicationControlPreviousLink = 'Application Control Previous Link';
+  RsApplicationControlPrint = 'Application Control Print';
+  RsApplicationControlPrintPreview = 'Application Control Print Preview';
+  RsApplicationControlPromote = 'Application Control Promote';
+  RsApplicationControlProperties = 'Application Control Properties';
+  RsApplicationControlProtect = 'Application Control Protect';
+  RsApplicationControlRedo_Repeat = 'Application Control Redo/Repeat';
+  RsApplicationControlRefresh = 'Application Control Refresh';
+  RsApplicationControlRename = 'Application Control Rename';
+  RsApplicationControlReply = 'Application Control Reply';
+  RsApplicationControlReplyAll = 'Application Control Reply All';
+  RsApplicationControlResetAlarm = 'Application Control Reset Alarm';
+  RsApplicationControlResize = 'Application Control Resize';
+  RsApplicationControlRestartNumbering = 'Application Control Restart Numbering';
+  RsApplicationControlRotate = 'Application Control Rotate';
+  RsApplicationControlSave = 'Application Control Save';
+  RsApplicationControlSaveandClose = 'Application Control Save and Close';
+  RsApplicationControlScroll = 'Application Control Scroll';
+  RsApplicationControlScrollDown = 'Application Control Scroll Down';
+  RsApplicationControlScrollUp = 'Application Control Scroll Up';
+  RsApplicationControlSearch = 'Application Control Search';
+  RsApplicationControlSelectAll = 'Application Control Select All';
+  RsApplicationControlSelectColumn = 'Application Control Select Column';
+  RsApplicationControlSelectObject = 'Application Control Select Object';
+  RsApplicationControlSelectParagraph = 'Application Control Select Paragraph';
+  RsApplicationControlSelectRow = 'Application Control Select Row';
+  RsApplicationControlSelectSentence = 'Application Control Select Sentence';
+  RsApplicationControlSelectTable = 'Application Control Select Table';
+  RsApplicationControlSelectTimeZone = 'Application Control Select Time Zone';
+  RsApplicationControlSelectWord = 'Application Control Select Word';
+  RsApplicationControlSend = 'Application Control Send';
+  RsApplicationControlSend_Receive = 'Application Control Send/Receive';
+  RsApplicationControlSendTo = 'Application Control Send To';
+  RsApplicationControlSetAlarm = 'Application Control Set Alarm';
+  RsApplicationControlSetBorders = 'Application Control Set Borders';
+  RsApplicationControlSetClock = 'Application Control Set Clock';
+  RsApplicationControlSnoozeAlarm = 'Application Control Snooze Alarm';
+  RsApplicationControlSort = 'Application Control Sort';
+  RsApplicationControlSortAscending = 'Application Control Sort Ascending';
+  RsApplicationControlSortDescending = 'Application Control Sort Descending';
+  RsApplicationControlSplit = 'Application Control Split';
+  RsApplicationControlStop = 'Application Control Stop';
+  RsApplicationControlStrikethrough = 'Application Control Strikethrough';
+  RsApplicationControlSubscript = 'Application Control Subscript';
+  RsApplicationControlSubscriptions = 'Application Control Subscriptions';
+  RsApplicationControlSuperscript = 'Application Control Superscript';
+  RsApplicationControlSynchronize = 'Application Control Synchronize';
+  RsApplicationControlTileHorizontally = 'Application Control Tile Horizontally';
+  RsApplicationControlTileVertically = 'Application Control Tile Vertically';
+  RsApplicationControlUnderline = 'Application Control Underline';
+  RsApplicationControlUndo = 'Application Control Undo';
+  RsApplicationControlUnlock = 'Application Control Unlock';
+  RsApplicationControlUnprotect = 'Application Control Unprotect';
+  RsApplicationControlUpload = 'Application Control Upload';
+  RsApplicationControlViewClock = 'Application Control View Clock';
+  RsApplicationControlViewComment = 'Application Control View Comment';
+  RsApplicationControlViewToggle = 'Application Control View Toggle';
+  RsApplicationControlYes = 'Application Control Yes';
+  RsApplicationControlZoom = 'Application Control Zoom';
+  RsApplicationControlZoomIn = 'Application Control Zoom In';
+  RsApplicationControlZoomOut = 'Application Control Zoom Out';
+  RsApplicationLaunchA_VCapture_Playback = 'Application Launch A/V Capture/Playback';
+  RsApplicationLaunchAlarms = 'Application Launch Alarms';
+  RsApplicationLaunchButtonConfigurationTool = 'Application Launch Button Configuration Tool';
+  RsApplicationLaunchButtons = 'Application Launch Buttons';
+  RsApplicationLaunchCalculator = 'Application Launch Calculator';
+  RsApplicationLaunchCalendar_Schedule = 'Application Launch Calendar/Schedule';
+  RsApplicationLaunchCheckbook_Finance = 'Application Launch Checkbook/Finance';
+  RsApplicationLaunchClock = 'Application Launch Clock';
+  RsApplicationLaunchCommandLineProcessor_Run = 'Application Launch Command Line Processor/Run';
+  RsApplicationLaunchConsumerControlConfiguration = 'Application Launch Consumer Control Configuration';
+  RsApplicationLaunchContacts_Addressbook = 'Application Launch Contacts/Addressbook';
+  RsApplicationLaunchControlPanel = 'Application Launch Control Panel';
+  RsApplicationLaunchDatabaseApplication = 'Application Launch Database Application';
+  RsApplicationLaunchDesktop = 'Application Launch Desktop';
+  RsApplicationLaunchDictionary = 'Application Launch Dictionary';
+  RsApplicationLaunchDocuments = 'Application Launch Documents';
+  RsApplicationLaunchEmailReader = 'Application Launch Email Reader';
+  RsApplicationLaunchEncryption = 'Application Launch Encryption';
+  RsApplicationLaunchFileBrowser = 'Application Launch File Browser';
+  RsApplicationLaunchGrammarCheck = 'Application Launch Grammar Check';
+  RsApplicationLaunchGraphicsEditor = 'Application Launch Graphics Editor';
+  RsApplicationLaunchIntegratedHelpCenter = 'Application Launch Integrated Help Center';
+  RsApplicationLaunchInternetBrowser = 'Application Launch Internet Browser';
+  RsApplicationLaunchKeyboardLayout = 'Application Launch Keyboard Layout';
+  RsApplicationLaunchLAN_WANBrowser = 'Application Launch LAN/WAN Browser';
+  RsApplicationLaunchLocalMachineBrowser = 'Application Launch Local Machine Browser';
+  RsApplicationLaunchLog_Journal_Timecard = 'Application Launch Log/Journal/Timecard';
+  RsApplicationLaunchLogoff = 'Application Launch Logoff';
+  RsApplicationLaunchLogon = 'Application Launch Logon';
+  RsApplicationLaunchLogon_Logoff = 'Application Launch Logon/Logoff';
+  RsApplicationLaunchNetworkChat = 'Application Launch Network Chat';
+  RsApplicationLaunchNetworkConference = 'Application Launch Network Conference';
+  RsApplicationLaunchNewsreader = 'Application Launch Newsreader';
+  RsApplicationLaunchNextTask_Application = 'Application Launch Next Task/Application';
+  RsApplicationLaunchPowerStatus = 'Application Launch Power Status';
+  RsApplicationLaunchPreemptiveHaltTask_Application = 'Application Launch Preemptive Halt Task/Application';
+  RsApplicationLaunchPresentationApplication = 'Application Launch Presentation Application';
+  RsApplicationLaunchPreviousTask_Application = 'Application Launch Previous Task/Application';
+  RsApplicationLaunchProcess_TaskManager = 'Application Launch Process/Task Manager';
+  RsApplicationLaunchProgrammableButtonConfiguration = 'Application Launch Programmable Button Configuration';
+  RsApplicationLaunchRemoteNetworking_ISPConnect = 'Application Launch Remote Networking/ISP Connect';
+  RsApplicationLaunchScreensaver = 'Application Launch Screensaver';
+  RsApplicationLaunchSelectTask_Application = 'Application Launch Select Task/Application';
+  RsApplicationLaunchSpellCheck = 'Application Launch Spell Check';
+  RsApplicationLaunchSpreadsheet = 'Application Launch Spreadsheet';
+  RsApplicationLaunchTask_ProjectManager = 'Application Launch Task/Project Manager';
+  RsApplicationLaunchTelephony_Dialer = 'Application Launch Telephony/Dialer';
+  RsApplicationLaunchTerminalLock_Screensaver = 'Application Launch Terminal Lock/Screensaver';
+  RsApplicationLaunchTextEditor = 'Application Launch Text Editor';
+  RsApplicationLaunchThesaurus = 'Application Launch Thesaurus';
+  RsApplicationLaunchVirusProtection = 'Application Launch Virus Protection';
+  RsApplicationLaunchVoicemail = 'Application Launch Voicemail';
+  RsApplicationLaunchWirelessStatus = 'Application Launch Wireless Status';
+  RsApplicationLaunchWordProcessor = 'Application Launch Word Processor';
+  RsArmature = 'Armature';
+  RsArmWeapons = 'Arm Weapons';
+  RsArticulatedArm = 'Articulated Arm';
+  RsASCIICharacterSet = 'ASCII Character Set';
+  RsAssignSelection = 'Assign Selection';
+  RsAtRate = 'At Rate';
+  RsAtRateOK = 'At Rate OK';
+  RsAtRateTimetoEmpty = 'At Rate Time to Empty';
+  RsAtRateTimetoFull = 'At Rate Time to Full';
+  RsAttackLevel = 'Attack Level';
+  RsAttackTime = 'Attack Time';
+  RsAttributeData = 'Attribute Data';
+  RsAttributeReadBack = 'Attribute Read Back';
+  RsAttributeReport = 'Attribute Report';
+  RsAudibleAlarmControl = 'Audible Alarm Control';
+  RsAutomobile = 'Automobile';
+  RsAverageCurrent = 'Average Current';
+  RsAverageTimetoEmpty = 'Average Time to Empty';
+  RsAverageTimetoFull = 'Average Time to Full';
+  RsAwaitingPower = 'Awaiting Power';
+  RsAxesEnable = 'Axes Enable';
+  RsAzimuth = 'Azimuth';
+  RsAztecCode = 'Aztec Code';
+  RsB = 'B';
+  RsBackslash = '\';
+  RsBackslash2 = '\ 2';
+  RsBackspace = 'Backspace';
+  RsBadCount = 'Bad Count';
+  RsBalance = 'Balance';
+  RsBalanceLeft = 'Balance Left';
+  RsBalanceRight = 'Balance Right';
+  RsBallast = 'Ballast';
+  RsBarCodeBadgeReader = 'Bar Code Badge Reader';
+  RsBarCodePresent = 'Bar Code Present';
+  RsBarCodePresentSensor = 'Bar Code Present Sensor';
+  RsBarCodeScanner = 'Bar Code Scanner';
+  RsBarCodeScannerCradle = 'Bar Code Scanner Cradle';
+  RsBarrelElevation = 'Barrel Elevation';
+  RsBarrelPressure = 'Barrel Pressure';
+  RsBarrelSwitch = 'Barrel Switch';
+  RsBarSpaceData = 'Bar Space Data';
+  RsBaseballBat = 'Baseball Bat';
+  RsBass = 'Bass';
+  RsBassBoost = 'Bass Boost';
+  RsBassDecrement = 'Bass Decrement';
+  RsBassIncrement = 'Bass Increment';
+  RsBattery = 'Battery';
+  RsBatteryID = 'Battery ID';
+  RsBatteryInsertion = 'Battery Insertion';
+  RsBatteryLow = 'Battery Low';
+  RsBatteryOk = 'Battery Ok';
+  RsBatteryOperation = 'Battery Operation';
+  RsBatteryPackModelLevel = 'Battery Pack Model Level';
+  RsBatteryPresent = 'Battery Present';
+  RsBatteryStrength = 'Battery Strength';
+  RsBatterySupported = 'Battery Supported';
+  RsBatterySystem = 'Battery System';
+  RsBatterySystemID = 'Battery System ID';
+  RsBC412 = 'BC412';
+  RsBeeperState = 'Beeper State';
+  RsBelowRemainingCapacity = 'Below Remaining Capacity';
+  RsBelt = 'Belt';
+  RsBicycle = 'Bicycle';
+  RsBicycleCrank = 'Bicycle Crank';
+  RsBlockHandle = 'Block Handle';
+  RsBlockLoadStatus = 'Block Load Status';
+  RsBlockType = 'Block Type';
+  RsBodySuit = 'Body Suit';
+  RsBooklandEAN = 'Bookland EAN';
+  RsBoost = 'Boost';
+  RsBrake = 'Brake';
+  RsBroadcastMode = 'Broadcast Mode';
+  RsBroadcasttoCharger = 'Broadcast to Charger';
+  RsBuck = 'Buck';
+  RsBump = 'Bump';
+  RsBusy = 'Busy';
+  RsButton = 'Button';
+  RsByteCount = 'Byte Count';
+  RsC = 'C';
+  RsCalibrationCount = 'Calibration Count';
+  RsCallerID = 'Caller ID';
+  RsCallWaitingTone = 'Call Waiting Tone';
+  RsCancel = 'Cancel';
+  RsCapacityGranularity1 = 'Capacity Granularity 1';
+  RsCapacityGranularity2 = 'Capacity Granularity 2';
+  RsCapacityMode = 'Capacity Mode';
+  RsCapsLock = 'Caps Lock';
+  RsChaffRelease = 'Chaff Release';
+  RsChangedStatus = 'Changed Status';
+  RsChannel = 'Channel';
+  RsChannelCenter = 'Channel Center';
+  RsChannelCenterFront = 'Channel Center Front';
+  RsChannelCode = 'Channel Code';
+  RsChannelDecrement = 'Channel Decrement';
+  RsChannelFront = 'Channel Front';
+  RsChannelIncrement = 'Channel Increment';
+  RsChannelLeft = 'Channel Left';
+  RsChannelLowFrequencyEnhancement = 'Channel Low Frequency Enhancement';
+  RsChannelRight = 'Channel Right';
+  RsChannelSide = 'Channel Side';
+  RsChannelSurround = 'Channel Surround';
+  RsChannelTop = 'Channel Top';
+  RsChannelUnknown = 'Channel Unknown';
+  RsCharacterAttribute = 'Character Attribute';
+  RsCharacterAttributeBlink = 'Character Attribute Blink';
+  RsCharacterAttributeEnhance = 'Character Attribute Enhance';
+  RsCharacterAttributeUnderline = 'Character Attribute Underline';
+  RsCharacterHeight = 'Character Height';
+  RsCharacterReport = 'Character Report';
+  RsCharacterSpacingHorizontal = 'Character Spacing Horizontal';
+  RsCharacterSpacingVertical = 'Character Spacing Vertical';
+  RsCharacterWidth = 'Character Width';
+  RsChargeController = 'Charge Controller';
+  RsCharger = 'Charger';
+  RsChargerConnection = 'Charger Connection';
+  RsChargerID = 'Charger ID';
+  RsChargerSelectorSupport = 'Charger Selector Support';
+  RsChargerSpec = 'Charger Spec';
+  RsCharging = 'Charging';
+  RsChargingIndicator = 'Charging Indicator';
+  RsCheck = 'Check';
+  RsCheckDigit = 'Check Digit';
+  RsCheckDigitCodabarEnable = 'Check Digit Codabar Enable';
+  RsCheckDigitCode39Enable = 'Check Digit Code 39 Enable';
+  RsCheckDigitDisable = 'Check Digit Disable';
+  RsCheckDigitEnableInterleaved2of5OPCC = 'Check Digit Enable Interleaved 2 of 5 OPCC';
+  RsCheckDigitEnableInterleaved2of5USS = 'Check Digit Enable Interleaved 2 of 5 USS';
+  RsCheckDigitEnableOneMSI_Plessey = 'Check Digit Enable One MSI/Plessey';
+  RsCheckDigitEnableStandard2of5OPCC = 'Check Digit Enable Standard 2 of 5 OPCC';
+  RsCheckDigitEnableStandard2of5USS = 'Check Digit Enable Standard 2 of 5 USS';
+  RsCheckDigitEnableTwoMSI_Plessey = 'Check Digit Enable Two MSI/Plessey';
+  RsCheckDisablePrice = 'Check Disable Price';
+  RsCheckEnable4DigitPrice = 'Check Enable 4 Digit Price';
+  RsCheckEnable5DigitPrice = 'Check Enable 5 Digit Price';
+  RsCheckEnableEuropean4DigitPrice = 'Check Enable European 4 Digit Price';
+  RsCheckEnableEuropean5DigitPrice = 'Check Enable European 5 Digit Price';
+  RsCine = 'Cine';
+  RsClass1ALaser = 'Class 1A Laser';
+  RsClass2Laser = 'Class 2 Laser';
+  RsClear = 'Clear';
+  RsClear_Again = 'Clear/Again';
+  RsClearAllEAN2_3LabelDefinitions = 'Clear All EAN 2/3 Label Definitions';
+  RsClearDisplay = 'Clear Display';
+  RsClearMark = 'Clear Mark';
+  RsClimateControlEnable = 'Climate Control Enable';
+  RsClipStore = 'Clip Store';
+  RsClosedCaption = 'Closed Caption';
+  RsClosedCaptionSelect = 'Closed Caption Select';
+  RsClutch = 'Clutch';
+  RsCodabar = 'Codabar';
+  RsCodabarControlReport = 'Codabar Control Report';
+  RsCode128 = 'Code 128';
+  RsCode128ControlReport = 'Code 128 Control Report';
+  RsCode16 = 'Code 16';
+  RsCode32 = 'Code 32';
+  RsCode39 = 'Code 39';
+  RsCode39ControlReport = 'Code 39 Control Report';
+  RsCode49 = 'Code 49';
+  RsCode93 = 'Code 93';
+  RsCodeOne = 'Code One';
+  RsCollectiveControl = 'Collective Control';
+  RsColorcode = 'Colorcode';
+  RsColorDopplerAdjust = 'Color Doppler Adjust';
+  RsColorDopplerModeSelect = 'Color Doppler Mode Select';
+  RsColumn = 'Column';
+  RsColumns = 'Columns';
+  RsComma = ',';
+  RsCommitParameterstoNVM = 'Commit Parameters to NVM';
+  RsCommunicationLost = 'Communication Lost';
+  RsConditioningFlag = 'Conditioning Flag';
+  RsConference = 'Conference';
+  RsConfigActivePower = 'Config Active Power';
+  RsConfigApparentPower = 'Config Apparent Power';
+  RsConfigCurrent = 'Config Current';
+  RsConfigFrequency = 'Config Frequency';
+  RsConfigHumidity = 'Config Humidity';
+  RsConfigPercentLoad = 'Config Percent Load';
+  RsConfigTemperature = 'Config Temperature';
+  RsConfigVoltage = 'Config Voltage';
+  RsConfirmationTone1 = 'Confirmation Tone 1';
+  RsConfirmationTone2 = 'Confirmation Tone 2';
+  RsConnectiontoSMBus = 'Connection to SMBus';
+  RsConstantArticleSurveillanceNotification = 'Constant Article Surveillance Notification';
+  RsConsumer = 'Consumer';
+  RsConsumerControl = 'Consumer Control';
+  RsConsumerIndicatorCameraOff = 'Consumer Indicator Camera Off';
+  RsConsumerIndicatorCameraOn = 'Consumer Indicator Camera On';
+  RsConsumerIndicatorCAV = 'Consumer Indicator CAV';
+  RsConsumerIndicatorCLV = 'Consumer Indicator CLV';
+  RsConsumerIndicatorEqualizerEnable = 'Consumer Indicator Equalizer Enable';
+  RsConsumerIndicatorHighCutFilter = 'Consumer Indicator High Cut Filter';
+  RsConsumerIndicatorLowCutFilter = 'Consumer Indicator Low Cut Filter';
+  RsConsumerIndicatorMute = 'Consumer Indicator Mute';
+  RsConsumerIndicatorRepeat = 'Consumer Indicator Repeat';
+  RsConsumerIndicatorSamplingRateDetect = 'Consumer Indicator Sampling Rate Detect';
+  RsConsumerIndicatorSoundFieldOn = 'Consumer Indicator Sound Field On';
+  RsConsumerIndicatorStereo = 'Consumer Indicator Stereo';
+  RsConsumerIndicatorSurroundFieldOn = 'Consumer Indicator Surround Field On';
+  RsConsumerIndicatorToneEnable = 'Consumer Indicator Tone Enable';
+  RsContactScanner = 'Contact Scanner';
+  RsConvertEAN8to13Type = 'Convert EAN 8 to 13 Type';
+  RsConvertUPC_EtoA = 'Convert UPC-E to A';
+  RsConvertUPCAtoEAN_13 = 'Convert UPC A to EAN-13';
+  RsCoordinateMeasuringMachine = 'Coordinate Measuring Machine';
+  RsCopy = 'Copy';
+  RsCordlessScannerBase = 'Cordless Scanner Base';
+  RsCountedBuffer = 'Counted Buffer';
+  RsCounterReset = 'Counter Reset';
+  RsCPOffset = 'CP Offset';
+  RsCreateNewEffectReport = 'Create New Effect Report';
+  RsCrSel_Props = 'CrSel/Props';
+  RsCurrent = 'Current';
+  RsCurrentNotRegulated = 'Current Not Regulated';
+  RsCurrentOutofRange = 'Current Out of Range';
+  RsCursorBlink = 'Cursor Blink';
+  RsCursorEnable = 'Cursor Enable';
+  RsCursorMode = 'Cursor Mode';
+  RsCursorPixelPositioning = 'Cursor Pixel Positioning';
+  RsCursorPositionReport = 'Cursor Position Report';
+  RsCustomForceData = 'Custom Force Data';
+  RsCustomForceDataReport = 'Custom Force Data Report';
+  RsCustomForceVendorDefinedData = 'Custom Force Vendor Defined Data';
+  RsCut = 'Cut';
+  RsCycleCount = 'Cycle Count';
+  RsCyclicControl = 'Cyclic Control';
+  RsCyclicTrim = 'Cyclic Trim';
+  RsD = 'D';
+  RsDaily = 'Daily';
+  RsDataLengthMethod = 'Data Length Method';
+  RsDataLengthMethodCheckforDiscrete = 'Data Length Method Check for Discrete';
+  RsDataLengthMethodCheckinRange = 'Data Length Method Check in Range';
+  RsDataLengthMethodReadAny = 'Data Length Method Read Any';
+  RsDataMatrix = 'Data Matrix';
+  RsDataOnScreen = 'Data On Screen';
+  RsDataPrefix = 'Data Prefix';
+  RsDataReadBack = 'Data Read Back';
+  RsDataScaling = 'Data Scaling';
+  RsDataValid = 'Data Valid';
+  RsDataWeight = 'Data Weight';
+  RsDeadBand = 'Dead Band';
+  RsDecodeData = 'Decode Data';
+  RsDecodedDataContinued = 'Decoded Data Continued';
+  RsDel = 'Del';
+  RsDelayBeforeReboot = 'Delay Before Reboot';
+  RsDelayBeforeShutdown = 'Delay Before Shutdown';
+  RsDelayBeforeStartup = 'Delay Before Startup';
+  RsDepth = 'Depth';
+  RsDepthGainCompensation = 'Depth Gain Compensation';
+  RsDesigncapacity = 'Design capacity';
+  RsDeviceControlDeviceContinue = 'Device Control Device Continue';
+  RsDeviceControlDevicePause = 'Device Control Device Pause';
+  RsDeviceControlDeviceReset = 'Device Control Device Reset';
+  RsDeviceControlDisableActuators = 'Device Control Disable Actuators';
+  RsDeviceControlEnableActuators = 'Device Control Enable Actuators';
+  RsDeviceControlStopAllEffects = 'Device Control Stop All Effects';
+  RsDeviceGain = 'Device Gain';
+  RsDeviceGainReport = 'Device Gain Report';
+  RsDeviceManagedPool = 'Device Managed Pool';
+  RsDevicePaused = 'Device Paused';
+  RsDial = 'Dial';
+  RsDigitizer = 'Digitizer';
+  RsDirection = 'Direction';
+  RsDirectionEnable = 'Direction Enable';
+  RsDisableCheckDigitTransmit = 'Disable Check Digit Transmit';
+  RsDischarging = 'Discharging';
+  RsDisplayAttributesReport = 'Display Attributes Report';
+  RsDisplayBrightness = 'Display Brightness';
+  RsDisplayContrast = 'Display Contrast';
+  RsDisplayControlReport = 'Display Control Report';
+  RsDisplayData = 'Display Data';
+  RsDisplayEnable = 'Display Enable';
+  RsDisplayStatus = 'Display Status';
+  RsDiveBreak = 'Dive Break';
+  RsDivePlane = 'Dive Plane';
+  RsDoNotDisturb = 'Do Not Disturb';
+  RsDot = '.';
+  RsDownArrow = 'Down Arrow';
+  RsDownloadForceSample = 'Download Force Sample';
+  RsDrop = 'Drop';
+  RsDumbBarCodeScanner = 'Dumb Bar Code Scanner';
+  RsDuration = 'Duration';
+  RsDuressAlarm = 'Duress Alarm';
+  RsE = 'E';
+  RsEAN_13 = 'EAN-13';
+  RsEAN_8 = 'EAN-8';
+  RsEAN_99128Mandatory = 'EAN-99 128 Mandatory';
+  RsEAN_99P5_128Optional = 'EAN-99 P5/128 Optional';
+  RsEAN13FlagDigit1 = 'EAN 13 Flag Digit 1';
+  RsEAN13FlagDigit2 = 'EAN 13 Flag Digit 2';
+  RsEAN13FlagDigit3 = 'EAN 13 Flag Digit 3';
+  RsEAN2_3LabelControlReport = 'EAN 2/3 Label Control Report';
+  RsEAN8FlagDigit1 = 'EAN 8 Flag Digit 1';
+  RsEAN8FlagDigit2 = 'EAN 8 Flag Digit 2';
+  RsEAN8FlagDigit3 = 'EAN 8 Flag Digit 3';
+  RsEANThreeLabel = 'EAN Three Label';
+  RsEANTwoLabel = 'EAN Two Label';
+  RsEDIDInformation = 'EDID Information';
+  RsEffectBlockCount = 'Effect Block Count';
+  RsEffectBlockIndex = 'Effect Block Index';
+  RsEffectOperation = 'Effect Operation';
+  RsEffectOperationReport = 'Effect Operation Report';
+  RsEffectPlaying = 'Effect Playing';
+  RsEffectType = 'Effect Type';
+  RsEffectTypeConstantForce = 'Effect Type Constant Force';
+  RsEffectTypeCustomForceData = 'Effect Type Custom Force Data';
+  RsEffectTypeDamper = 'Effect Type Damper';
+  RsEffectTypeFriction = 'Effect Type Friction';
+  RsEffectTypeInertia = 'Effect Type Inertia';
+  RsEffectTypeRamp = 'Effect Type Ramp';
+  RsEffectTypeSawtoothDown = 'Effect Type Sawtooth Down';
+  RsEffectTypeSawtoothUp = 'Effect Type Sawtooth Up';
+  RsEffectTypeSine = 'Effect Type Sine';
+  RsEffectTypeSpring = 'Effect Type Spring';
+  RsEffectTypeSquare = 'Effect Type Square';
+  RsEffectTypeTriangle = 'Effect Type Triangle';
+  RsEject = 'Eject';
+  RsElectronicArticleSurveillanceNotification = 'Electronic Article Surveillance Notification';
+  RsElectronicCountermeasures = 'Electronic Countermeasures';
+  RsElevator = 'Elevator';
+  RsElevatorTrim = 'Elevator Trim';
+  RsEmpty = 'Empty';
+  RsEnableAutopilot = 'Enable Autopilot';
+  RsEnableCheckDigitTransmit = 'Enable Check Digit Transmit';
+  RsEnablePolling = 'Enable Polling';
+  RsEnd = 'End';
+  RsEnterChannel = 'Enter Channel';
+  RsEnterDisc = 'Enter Disc';
+  RsEnterNotReturn = 'Enter (not Return)';
+  RsEqual = '=';
+  RsEraser = 'Eraser';
+  RsError = 'Error';
+  RsErrorFontDataCannotBeRead = 'Error Font Data Cannot Be Read';
+  RsErrorIndication = 'Error Indication';
+  RsErrorNotaLoadableChar = 'Error Not a Loadable Char';
+  RsEsc = 'Esc';
+  RsExecute = 'Execute';
+  RsExSel = 'ExSel';
+  RsExtendedPlay = 'Extended Play';
+  RsExternalPowerConnected = 'External Power Connected';
+  RsF = 'F';
+  RsF1 = 'F1';
+  RsF10 = 'F10';
+  RsF11 = 'F11';
+  RsF12 = 'F12';
+  RsF13 = 'F13';
+  RsF14 = 'F14';
+  RsF15 = 'F15';
+  RsF16 = 'F16';
+  RsF17 = 'F17';
+  RsF18 = 'F18';
+  RsF19 = 'F19';
+  RsF2 = 'F2';
+  RsF20 = 'F20';
+  RsF21 = 'F21';
+  RsF22 = 'F22';
+  RsF23 = 'F23';
+  RsF24 = 'F24';
+  RsF3 = 'F3';
+  RsF4 = 'F4';
+  RsF5 = 'F5';
+  RsF6 = 'F6';
+  RsF7 = 'F7';
+  RsF8 = 'F8';
+  RsF9 = 'F9';
+  RsFadeLevel = 'Fade Level';
+  RsFadeTime = 'Fade Time';
+  RsFanEnable = 'Fan Enable';
+  RsFanSpeed = 'Fan Speed';
+  RsFastBlinkOff_Time = 'Fast Blink Off-Time';
+  RsFastBlinkOn_Time = 'Fast Blink On-Time';
+  RsFastForward = 'Fast Forward';
+  RsFeature = 'Feature';
+  RsFeatureNotification = 'Feature Notification';
+  RsFind = 'Find';
+  RsFinger = 'Finger';
+  RsFireAlarm = 'Fire Alarm';
+  RsFirstDiscreteLengthtoDecode = 'First Discrete Length to Decode';
+  RsFixedBeeper = 'Fixed Beeper';
+  RsFlareRelease = 'Flare Release';
+  RsFlash = 'Flash';
+  RsFlashOn_Time = 'Flash On-Time';
+  RsFlexor = 'Flexor';
+  RsFlight = 'Flight';
+  RsFlightCommunications = 'Flight Communications';
+  RsFlightControlStick = 'Flight Control Stick';
+  RsFlightStick = 'Flight Stick';
+  RsFlightYoke = 'Flight Yoke';
+  RsFlipper = 'Flipper';
+  RsFlow = 'Flow';
+  RsFlowID = 'Flow ID';
+  RsFocus = 'Focus';
+  RsFont14Segment = 'Font 14 Segment';
+  RsFont7Segment = 'Font 7 Segment';
+  RsFontData = 'Font Data';
+  RsFontReadBack = 'Font Read Back';
+  RsFontReport = 'Font Report';
+  RsForwardCalls = 'Forward Calls';
+  RsFragmentDecoding = 'Fragment Decoding';
+  RsFrameBack = 'Frame Back';
+  RsFrameForward = 'Frame Forward';
+  RsFreeSpaceWand = 'Free Space Wand';
+  RsFreeze_Thaw = 'Freeze/Thaw';
+  RsFrequency = 'Frequency';
+  RsFrequencyOutofRange = 'Frequency Out of Range';
+  RsFrontBrake = 'Front Brake';
+  RsFullASCIIConversion = 'Full ASCII Conversion';
+  RsFullChargeCapacity = 'Full Charge Capacity';
+  RsFullyCharged = 'Fully Charged';
+  RsFullyDischarged = 'Fully Discharged';
+  RsFunctionButtons = 'Function Buttons';
+  RsG = 'G';
+  RsGain = 'Gain';
+  RsGame = 'Game';
+  RsGamepad = 'Gamepad';
+  RsGamepadFire_Jump = 'Gamepad Fire/Jump';
+  RsGamepadTrigger = 'Gamepad Trigger';
+  RsGang = 'Gang';
+  RsGangID = 'Gang ID';
+  RsGeneric = 'Generic';
+  RsGenericDesktop = 'Generic Desktop';
+  RsGenericGUIApplicationControls = 'Generic GUI Application Controls';
+  RsGenericIndicator = 'Generic Indicator';
+  RsGlove = 'Glove';
+  RsGolfClub = 'Golf Club';
+  RsGood = 'Good';
+  RsGoodDecodeIndication = 'Good Decode Indication';
+  RsGoodReadLampDuration = 'Good Read Lamp Duration';
+  RsGoodReadLampIntensity = 'Good Read Lamp Intensity';
+  RsGoodReadLED = 'Good Read LED';
+  RsGoodReadToneFrequency = 'Good Read Tone Frequency';
+  RsGoodReadToneLength = 'Good Read Tone Length';
+  RsGoodReadToneVolume = 'Good Read Tone Volume';
+  RsGoodReadWhentoWrite = 'Good Read When to Write';
+  RsGraphicEqualizer = 'Graphic Equalizer';
+  RsGraveAccent = '`';
+  RsGreen = 'Green';
+  RsGRWTIAfterDecode = 'GRWTI After Decode';
+  RsGRWTIBeep_LampAfterTransmit = 'GRWTI Beep/Lamp After Transmit';
+  RsGRWTINoBeep_LampUseatAll = 'GRWTI No Beep/Lamp Use at All';
+  RsGunAutomatic = 'Gun Automatic';
+  RsGunBolt = 'Gun Bolt';
+  RsGunBurst = 'Gun Burst';
+  RsGunClip = 'Gun Clip';
+  RsGunDevice = 'Gun Device';
+  RsGunSafety = 'Gun Safety';
+  RsGunSelector = 'Gun Selector';
+  RsGunSingleShot = 'Gun Single Shot';
+  RsH = 'H';
+  RsHandleBars = 'Handle Bars';
+  RsHandset = 'Handset';
+  RsHandsFreeScanning = 'Hands Free Scanning';
+  RsHandTracker = 'Hand Tracker';
+  RsHashMark2 = '# 2';
+  RsHatSwitch = 'Hat Switch';
+  RsHeadMountedDisplay = 'Head Mounted Display';
+  RsHeadphone = 'Headphone';
+  RsHeadset = 'Headset';
+  RsHeadTracker = 'Head Tracker';
+  RsHeaterPresent = 'Heater Present';
+  RsHeightofPOV = 'Height of POV';
+  RsHelicopter = 'Helicopter';
+  RsHelp = 'Help';
+  RsHighVoltageTransfer = 'High Voltage Transfer';
+  RsHold = 'Hold';
+  RsHoldupAlarm = 'Holdup Alarm';
+  RsHome = 'Home';
+  RsHookSwitch = 'Hook Switch';
+  RsHorizontalScroll = 'Horizontal Scroll';
+  RsHumidity = 'Humidity';
+  RsI = 'I';
+  RsiDeviceChemistery = 'iDeviceChemistery';
+  RsiDeviceName = 'iDeviceName';
+  RsIllumination = 'Illumination';
+  RsiManufacturer = 'iManufacturer';
+  RsiManufacturerName = 'iManufacturerName';
+  RsiName = 'iName';
+  RsIndicatorColor = 'Indicator Color';
+  RsIndicatorFastBlink = 'Indicator Fast Blink';
+  RsIndicatorFlash = 'Indicator Flash';
+  RsIndicatorOff = 'Indicator Off';
+  RsIndicatorOn = 'Indicator On';
+  RsIndicatorSlowBlink = 'Indicator Slow Blink';
+  RsInhibitCharge = 'Inhibit Charge';
+  RsInitialized = 'Initialized';
+  RsInitiateBarcodeRead = 'Initiate Barcode Read';
+  RsInput = 'Input';
+  RsInputID = 'Input ID';
+  RsInRange = 'In Range';
+  RsIns = 'Ins';
+  RsInsideDialTone = 'Inside Dial Tone';
+  RsInsideRingback = 'Inside Ringback';
+  RsInsideRingTone = 'Inside Ring Tone';
+  RsInterleaved2of5 = 'Interleaved 2 of 5';
+  RsInterleaved2of5ControlReport = 'Interleaved 2 of 5 Control Report';
+  RsInternalChargeController = 'Internal Charge Controller';
+  RsInternalFailure = 'Internal Failure';
+  RsInternational1 = 'International 1';
+  RsInternational2 = 'International 2';
+  RsInternational3 = 'International 3';
+  RsInternational4 = 'International 4';
+  RsInternational5 = 'International 5';
+  RsInternational6 = 'International 6';
+  RsInternational7 = 'International 7';
+  RsInternational8 = 'International 8';
+  RsInternational9 = 'International 9';
+  RsIntrinsicallySafe = 'Intrinsically Safe';
+  RsInUseIndicator = 'In Use Indicator';
+  RsInvert = 'Invert';
+  RsiOEMInformation = 'iOEMInformation';
+  RsiProduct = 'iProduct';
+  RsIron1 = 'Iron 1';
+  RsIron10 = 'Iron 10';
+  RsIron11 = 'Iron 11';
+  RsIron2 = 'Iron 2';
+  RsIron3 = 'Iron 3';
+  RsIron4 = 'Iron 4';
+  RsIron5 = 'Iron 5';
+  RsIron6 = 'Iron 6';
+  RsIron7 = 'Iron 7';
+  RsIron8 = 'Iron 8';
+  RsIron9 = 'Iron 9';
+  RsiSerialNumber = 'iSerialNumber';
+  RsIsochCustomForceEnable = 'Isoch Custom Force Enable';
+  RsItalianPharmacyCode = 'Italian Pharmacy Code';
+  RsJ = 'J';
+  RsJoystick = 'Joystick';
+  RsK = 'K';
+  RsKey0 = 'Key 0';
+  RsKey1 = 'Key 1';
+  RsKey2 = 'Key 2';
+  RsKey3 = 'Key 3';
+  RsKey4 = 'Key 4';
+  RsKey5 = 'Key 5';
+  RsKey6 = 'Key 6';
+  RsKey7 = 'Key 7';
+  RsKey8 = 'Key 8';
+  RsKey9 = 'Key 9';
+  RsKeyA = 'Key A';
+  RsKeyB = 'Key B';
+  RsKeyboard = 'Keyboard';
+  RsKeyboardCapsLock = 'Keyboard Caps Lock';
+  RsKeyboardCompose = 'Keyboard Compose';
+  RsKeyboardKana = 'Keyboard Kana';
+  RsKeyboardNumLock = 'Keyboard Num Lock';
+  RsKeyboardPower = 'Keyboard Power';
+  RsKeyboardScrollLock = 'Keyboard Scroll Lock';
+  RsKeyboardShift = 'Keyboard Shift';
+  RsKeyC = 'Key C';
+  RsKeyD = 'Key D';
+  RsKeypad = 'Keypad';
+  RsKeypad0 = 'Keypad 0';
+  RsKeypad00 = 'Keypad 00';
+  RsKeypad000 = 'Keypad 000';
+  RsKeypad1 = 'Keypad 1';
+  RsKeypad2 = 'Keypad 2';
+  RsKeypad3 = 'Keypad 3';
+  RsKeypad4 = 'Keypad 4';
+  RsKeypad5 = 'Keypad 5';
+  RsKeypad6 = 'Keypad 6';
+  RsKeypad7 = 'Keypad 7';
+  RsKeypad8 = 'Keypad 8';
+  RsKeypad9 = 'Keypad 9';
+  RsKeypadA = 'Keypad A';
+  RsKeypadAt = 'Keypad @';
+  RsKeypadB = 'Keypad B';
+  RsKeypadBackspace = 'Keypad Backspace';
+  RsKeypadBiggerThan = 'Keypad <';
+  RsKeypadBinary = 'Keypad Binary';
+  RsKeypadBinaryAnd = 'Keypad &';
+  RsKeypadBinaryOr = 'Keypad |';
+  RsKeypadC = 'Keypad C';
+  RsKeypadCircumflex = 'Keypad ^';
+  RsKeypadClear = 'Keypad Clear';
+  RsKeypadClearEntry = 'Keypad Clear Entry';
+  RsKeypadColon = 'Keypad :';
+  RsKeypadComma = 'Keypad ,';
+  RsKeypadCurrencySubunit = 'Keypad Currency Subunit';
+  RsKeypadCurrencyUnit = 'Keypad Currency Unit';
+  RsKeypadD = 'Keypad D';
+  RsKeypadDecimal = 'Keypad Decimal';
+  RsKeypadDecimalSeparator = 'Keypad Decimal Separator';
+  RsKeypadDot = 'Keypad .';
+  RsKeypadE = 'Keypad E';
+  RsKeypadEnter = 'Keypad Enter';
+  RsKeypadEqual = 'Keypad =';
+  RsKeypadEqual2 = 'Keypad = 2';
+  RsKeypadExclamation = 'Keypad !';
+  RsKeypadF = 'Keypad F';
+  RsKeypadHashmark = 'Keypad #';
+  RsKeypadHexadecimal = 'Keypad Hexadecimal';
+  RsKeypadLCurlyBracket = 'Keypad {';
+  RsKeypadLessThan = 'Keypad >';
+  RsKeypadLogicalAnd = 'Keypad &&';
+  RsKeypadLogicalOr = 'Keypad ||';
+  RsKeypadLRoundBracket = 'Keypad (';
+  RsKeypadMemoryAdd = 'Keypad Memory Add';
+  RsKeypadMemoryClear = 'Keypad Memory Clear';
+  RsKeypadMemoryDivide = 'Keypad Memory Divide';
+  RsKeypadMemoryMinus = 'Keypad Memory Minus';
+  RsKeypadMemoryMultiply = 'Keypad Memory Multiply';
+  RsKeypadMemoryRecall = 'Keypad Memory Recall';
+  RsKeypadMemoryStore = 'Keypad Memory Store';
+  RsKeypadMemorySubtract = 'Keypad Memory Subtract';
+  RsKeypadMinus = 'Keypad -';
+  RsKeypadNumLock = 'Keypad Num Lock';
+  RsKeypadOctal = 'Keypad Octal';
+  RsKeypadPercent = 'Keypad %';
+  RsKeypadPlus = 'Keypad +';
+  RsKeypadRCurlyBracket = 'Keypad }';
+  RsKeypadReserved1 = 'Keypad Reserved1';
+  RsKeypadReserved2 = 'Keypad Reserved2';
+  RsKeypadRRoundBracket = 'Keypad )';
+  RsKeypadSlash = 'Keypad /';
+  RsKeypadSpace = 'Keypad Space';
+  RsKeypadStar = 'Keypad *';
+  RsKeypadTabulator = 'Keypad Tabulator';
+  RsKeypadThousandsSeparator = 'Keypad Thousands Separator';
+  RsKeypadXOR = 'Keypad XOR';
+  RsKeyPound = 'Key #';
+  RsKeyStar = 'Key *';
+  RsKlasseEinsLaserClass1Laser = 'Klasse Eins Laser (Class 1 Laser)';
+  RsL = 'L';
+  RsLandingGear = 'Landing Gear';
+  RsLanguage1 = 'Language 1';
+  RsLanguage2 = 'Language 2';
+  RsLanguage3 = 'Language 3';
+  RsLanguage4 = 'Language 4';
+  RsLanguage5 = 'Language 5';
+  RsLanguage6 = 'Language 6';
+  RsLanguage7 = 'Language 7';
+  RsLanguage8 = 'Language 8';
+  RsLanguage9 = 'Language 9';
+  RsLaserOnTime = 'Laser On Time';
+  RsLaserState = 'Laser State';
+  RsLeanForward_Backward = 'Lean Forward/Backward';
+  RsLeanRight_Left = 'Lean Right/Left';
+  RsLED = 'LED';
+  RsLeftAlt = 'Left Alt';
+  RsLeftArrow = 'Left Arrow';
+  RsLeftCtrl = 'Left Ctrl';
+  RsLeftGUI = 'Left GUI';
+  RsLeftShift = 'Left Shift';
+  RsLevel2 = 'Level 2';
+  RsLevel3 = 'Level 3';
+  RsLightEnable = 'Light Enable';
+  RsLightIlluminationLevel = 'Light Illumination Level';
+  RsLightPen = 'Light Pen';
+  RsLine = 'Line';
+  RsLineBusyTone = 'Line Busy Tone';
+  RsLoadError = 'Load Error';
+  RsLoadFull = 'Load Full';
+  RsLoadSuccess = 'Load Success';
+  RsLockoutTime = 'Lockout Time';
+  RsLoftWedge = 'Loft Wedge';
+  RsLongPlay = 'Long Play';
+  RsLongRangeScanner = 'Long Range Scanner';
+  RsLoopCount = 'Loop Count';
+  RsLoudness = 'Loudness';
+  RsLowVoltageTransfer = 'Low Voltage Transfer';
+  RsLSqBracket = '[';
+  RsM = 'M';
+  RsMagicCarpet = 'Magic Carpet';
+  RsMagneticStripeReader = 'Magnetic Stripe Reader';
+  RsMagnitude = 'Magnitude';
+  RsManufacturerAccess = 'Manufacturer Access';
+  RsManufacturerData = 'Manufacturer Data';
+  RsManufacturerDate = 'Manufacturer Date';
+  RsMark = 'Mark';
+  RsMasterMode = 'Master Mode';
+  RsMaxError = 'Max Error';
+  RsMaxiCode = 'MaxiCode';
+  RsMaximumLengthtoDecode = 'Maximum Length to Decode';
+  RsMediaSelectCable = 'Media Select Cable';
+  RsMediaSelectCall = 'Media Select Call';
+  RsMediaSelectCD = 'Media Select CD';
+  RsMediaSelectComputer = 'Media Select Computer';
+  RsMediaSelectDVD = 'Media Select DVD';
+  RsMediaSelectGames = 'Media Select Games';
+  RsMediaSelectHome = 'Media Select Home';
+  RsMediaSelection = 'Media Selection';
+  RsMediaSelectMessages = 'Media Select Messages';
+  RsMediaSelectProgramGuide = 'Media Select Program Guide';
+  RsMediaSelectSAP = 'Media Select SAP';
+  RsMediaSelectSatellite = 'Media Select Satellite';
+  RsMediaSelectSecurity = 'Media Select Security';
+  RsMediaSelectTape = 'Media Select Tape';
+  RsMediaSelectTelephone = 'Media Select Telephone';
+  RsMediaSelectTuner = 'Media Select Tuner';
+  RsMediaSelectTV = 'Media Select TV';
+  RsMediaSelectVCR = 'Media Select VCR';
+  RsMediaSelectVideoPhone = 'Media Select Video Phone';
+  RsMediaSelectWWW = 'Media Select WWW';
+  RsMediaTransportFastForward = 'Media Transport Fast Forward';
+  RsMediaTransportForward = 'Media Transport Forward';
+  RsMediaTransportIndicatorRecordingFormatDetect = 'Media Transport Indicator Recording Format Detect';
+  RsMediaTransportIndicatorSpinning = 'Media Transport Indicator Spinning';
+  RsMediaTransportPause = 'Media Transport Pause';
+  RsMediaTransportPlay = 'Media Transport Play';
+  RsMediaTransportRecord = 'Media Transport Record';
+  RsMediaTransportReverse = 'Media Transport Reverse';
+  RsMediaTransportRewind = 'Media Transport Rewind';
+  RsMediaTransportStop = 'Media Transport Stop';
+  RsMedicalAlarm = 'Medical Alarm';
+  RsMedicalInstrument = 'Medical Instrument';
+  RsMedicalUltrasound = 'Medical Ultrasound';
+  RsMenu = 'Menu';
+  RsMenuDown = 'Menu Down';
+  RsMenuEscape = 'Menu Escape';
+  RsMenuLeft = 'Menu Left';
+  RsMenuPick = 'Menu Pick';
+  RsMenuRight = 'Menu Right';
+  RsMenuUp = 'Menu Up';
+  RsMenuValueDecrease = 'Menu Value Decrease';
+  RsMenuValueIncrease = 'Menu Value Increase';
+  RsMessage = 'Message';
+  RsMessageControls = 'Message Controls';
+  RsMicroPDF = 'MicroPDF';
+  RsMicrophone = 'Microphone';
+  RsMicrophoneEnable = 'Microphone Enable';
+  RsMinimumLengthtoDecode = 'Minimum Length to Decode';
+  RsMinus = '-';
+  RsMirrorSpeedControl = 'Mirror Speed Control';
+  RsMisc1DControlReport = 'Misc 1D Control Report';
+  RsModeStep = 'Mode Step';
+  RsModuleReset = 'Module Reset';
+  RsMonitorControl = 'Monitor Control';
+  RsMonthly = 'Monthly';
+  RsMotion = 'Motion';
+  RsMotionModeAdjust = 'Motion Mode Adjust';
+  RsMotionModeSelect = 'Motion Mode Select';
+  RsMotionWakeup = 'Motion Wakeup';
+  RsMotorcycle = 'Motorcycle';
+  RsMotorState = 'Motor State';
+  RsMotorTimeout = 'Motor Timeout';
+  RsMouse = 'Mouse';
+  RsMoveDestination = 'Move Destination';
+  RsMoveForward_Backward = 'Move Forward/Backward';
+  RsMoveLength = 'Move Length';
+  RsMoveRight_Left = 'Move Right/Left';
+  RsMoveSource = 'Move Source';
+  RsMoveUp_Down = 'Move Up/Down';
+  RsMPX = 'MPX';
+  RsMSI_Plessey = 'MSI/Plessey';
+  RsMSIPlesseyControlReport = 'MSI Plessey Control Report';
+  RsMSRDeviceReadOnly = 'MSR Device Read Only';
+  RsMulti_Axis = 'Multi-Axis';
+  RsMulti_RangeScanner = 'Multi-Range Scanner';
+  RsMultiModeIndicator = 'Multi Mode Indicator';
+  RsMultiplePointDigitizer = 'Multiple Point Digitizer';
+  RsMute = 'Mute';
+  RsN = 'N';
+  RsNeedReplacement = 'Need Replacement';
+  RsNegativeCoefficient = 'Negative Coefficient';
+  RsNegativeSaturation = 'Negative Saturation';
+  RsNewGame = 'New Game';
+  RsNext = 'Next';
+  RsNoButtonPressed = 'No Button Pressed';
+  RsNoEnumeratedValueSelected = 'No Enumerated Value Selected';
+  RsNoReadMessage = 'No Read Message';
+  RsNormal = 'Normal';
+  RsNotOnFileIndication = 'Not On File Indication';
+  RsNotOnFileVolume = 'Not On File Volume';
+  RsNumericKeypad = 'Numeric Keypad';
+  RsNumLock = 'Num Lock';
+  RsO = 'O';
+  RsOar = 'Oar';
+  RsOculometer = 'Oculometer';
+  RsOffLine = 'Off Line';
+  RsOffset = 'Offset';
+  RsOKtoUse = 'OK to Use';
+  RsOnce = 'Once';
+  RsOnLine = 'On Line';
+  RsOPEffectStart = 'OP Effect Start';
+  RsOPEffectStartSolo = 'OP Effect Start Solo';
+  RsOPEffectStop = 'OP Effect Stop';
+  RsOper = 'Oper';
+  RsOptionalManufacturerFunction1 = 'Optional Manufacturer Function 1';
+  RsOptionalManufacturerFunction2 = 'Optional Manufacturer Function 2';
+  RsOptionalManufacturerFunction3 = 'Optional Manufacturer Function 3';
+  RsOptionalManufacturerFunction4 = 'Optional Manufacturer Function 4';
+  RsOptionalManufacturerFunction5 = 'Optional Manufacturer Function 5';
+  RsOrderMovie = 'Order Movie';
+  RsOrdinal = 'Ordinal';
+  RsOut = 'Out';
+  RsOutlet = 'Outlet';
+  RsOutletID = 'Outlet ID';
+  RsOutletSystem = 'Outlet System';
+  RsOutletSystemID = 'Outlet System ID';
+  RsOutput = 'Output';
+  RsOutputConnection = 'Output Connection';
+  RsOutputID = 'Output ID';
+  RsOutsideDialTone = 'Outside Dial Tone';
+  RsOutsideRingback = 'Outside Ringback';
+  RsOutsideRingTone = 'Outside Ring Tone';
+  RsOvercharged = 'Overcharged';
+  RsOverload = 'Overload';
+  RsOvertemperature = 'Overtemperature';
+  RsP = 'P';
+  RsParameterBlockOffset = 'Parameter Block Offset';
+  RsParameterBlockSize = 'Parameter Block Size';
+  RsParameterScanning = 'Parameter Scanning';
+  RsParametersChanged = 'Parameters Changed';
+  RsPark = 'Park';
+  RsPaste = 'Paste';
+  RsPause = 'Pause';
+  RsPDF_417 = 'PDF-417';
+  RsPen = 'Pen';
+  RsPercentLoad = 'Percent Load';
+  RsPeriod = 'Period';
+  RsPeriodical = 'Periodical';
+  RsPeriodicalAuto_DiscriminatePlus2 = 'Periodical Auto-Discriminate +2';
+  RsPeriodicalAuto_DiscriminatePlus5 = 'Periodical Auto-Discriminate +5';
+  RsPeriodicalIgnorePlus2 = 'Periodical Ignore +2';
+  RsPeriodicalIgnorePlus5 = 'Periodical Ignore +5';
+  RsPeriodicalOnlyDecodewithPlus2 = 'Periodical Only Decode with +2';
+  RsPeriodicalOnlyDecodewithPlus5 = 'Periodical Only Decode with +5';
+  RsPgDn = 'PgDn';
+  RsPgUp = 'PgUp';
+  RsPhase = 'Phase';
+  RsPhone = 'Phone';
+  RsPhoneDirectory = 'Phone Directory';
+  RsPhoneMute = 'Phone Mute';
+  RsPhysicalInputDeviceForceFeedback = 'Physical Input Device (Force Feedback)';
+  RsPhysicalInterfaceDevice = 'Physical Interface Device';
+  RsPIDBlockFreeReport = 'PID Block Free Report';
+  RsPIDBlockLoadReport = 'PID Block Load Report';
+  RsPIDDeviceControl = 'PID Device Control';
+  RsPIDDeviceControlReport = 'PID Device Control Report';
+  RsPIDStateReport = 'PID State Report';
+  RsPinballDevice = 'Pinball Device';
+  RsPitchForward_Backward = 'Pitch Forward/Backward';
+  RsPlay = 'Play';
+  RsPlay_Pause = 'Play/Pause';
+  RsPlay_Skip = 'Play/Skip';
+  RsPlaybackSpeed = 'Playback Speed';
+  RsPlayer = 'Player';
+  RsPlus10 = '+10';
+  RsPlus100 = '+100';
+  RsPointingDevice = 'Pointing Device';
+  RsPointofView = 'Point of View';
+  RsPolarityInvertedBarCode = 'Polarity Inverted Bar Code';
+  RsPolarityNormalBarCode = 'Polarity Normal Bar Code';
+  RsPoliceAlarm = 'Police Alarm';
+  RsPoolAlignment = 'Pool Alignment';
+  RsPoolMoveReport = 'Pool Move Report';
+  RsPoolReport = 'Pool Report';
+  RsPosiCode = 'PosiCode';
+  RsPositiveCoefficient = 'Positive Coefficient';
+  RsPositiveSaturation = 'Positive Saturation';
+  RsPostfail = 'Postfail';
+  RsPower = 'Power';
+  RsPowerConverter = 'Power Converter';
+  RsPowerConverterID = 'Power Converter ID';
+  RsPowerDevice = 'Power Device';
+  RsPowerFail = 'Power Fail';
+  RsPowerOnResetScanner = 'Power On Reset Scanner';
+  RsPowerSummary = 'Power Summary';
+  RsPowerSummaryID = 'Power Summary ID';
+  RsPowerSupply = 'Power Supply';
+  RsPowerupBeep = 'Powerup Beep';
+  RsPowerWedge = 'Power Wedge';
+  RsPrefixAIMI = 'Prefix AIMI';
+  RsPrefixNode = 'Prefix Node';
+  RsPrefixProprietary = 'Prefix Proprietary';
+  RsPresent = 'Present';
+  RsPresentStatus = 'Present Status';
+  RsPreventReadofBarcodes = 'Prevent Read of Barcodes';
+  RsPrimaryBattery = 'Primary Battery';
+  RsPrimaryBatterySupport = 'Primary Battery Support';
+  RsPrint = 'Print';
+  RsPrinterIndicatorPaperJam = 'Printer Indicator Paper Jam';
+  RsPrinterIndicatorPaperOut = 'Printer Indicator Paper Out';
+  RsPrintScreen = 'Print Screen';
+  RsPrior = 'Prior';
+  RsPriorityRingback = 'Priority Ringback';
+  RsPriorityRingTone = 'Priority Ring Tone';
+  RsProgramChangeKeys = 'Program Change Keys';
+  RsProgrammableBeeper = 'Programmable Beeper';
+  RsProgrammableButton = 'Programmable Button';
+  RsProgrammableButtons = 'Programmable Buttons';
+  RsProximity = 'Proximity';
+  RsProximitySensor = 'Proximity Sensor';
+  RsPuck = 'Puck';
+  RsPutter = 'Putter';
+  RsQ = 'Q';
+  RsQRCode = 'QR Code';
+  RsQuality = 'Quality';
+  RsQuit = 'Quit';
+  RsR = 'R';
+  RsRAMPoolAvailable = 'RAM Pool Available';
+  RsRAMPoolSize = 'RAM Pool Size';
+  RsRampStart = 'Ramp Start';
+  RsRampStop = 'Ramp Stop';
+  RsRandomPlay = 'Random Play';
+  RsRate = 'Rate';
+  RsRawDataPolarity = 'Raw Data Polarity';
+  RsRawScannedDataReport = 'Raw Scanned Data Report';
+  RsRe_ZeroCount = 'Re-Zero Count';
+  RsReady = 'Ready';
+  RsRearBrake = 'Rear Brake';
+  RsRecallLast = 'Recall Last';
+  RsRecallNumber = 'Recall Number';
+  RsRechargable = 'Rechargable';
+  RsRecord = 'Record';
+  RsRed = 'Red';
+  RsRedial = 'Redial';
+  RsRelativeStateofCharge = 'Relative State of Charge';
+  RsRemainingCapacity = 'Remaining Capacity';
+  RsRemainingCapacityLimit = 'Remaining Capacity Limit';
+  RsRemainingTimeLimit = 'Remaining Time Limit';
+  RsRemainingTimeLimitExpired = 'Remaining Time Limit Expired';
+  RsRemote = 'Remote';
+  RsReorderTone = 'Reorder Tone';
+  RsRepeat = 'Repeat';
+  RsRepeatfromMark = 'Repeat from Mark';
+  RsReserved = 'Reserved';
+  RsReset = 'Reset';
+  RsResettozero = 'Reset to zero';
+  RsReturnNotEnter = 'Return (not Enter)';
+  RsReturntoMark = 'Return to Mark';
+  RsRewind = 'Rewind';
+  RsRightAlt = 'Right Alt';
+  RsRightArrow = 'Right Arrow';
+  RsRightCtrl = 'Right Ctrl';
+  RsRightGUI = 'Right GUI';
+  RsRightShift = 'Right Shift';
+  RsRingEnable = 'Ring Enable';
+  RsRinger = 'Ringer';
+  RsRingSelect = 'Ring Select';
+  RsRollover = 'Rollover';
+  RsRollRight_Left = 'Roll Right/Left';
+  RsROMFlag = 'ROM Flag';
+  RsROMPoolSize = 'ROM Pool Size';
+  RsRoomTemperature = 'Room Temperature';
+  RsRotationalXAxis = 'Rotational X Axis';
+  RsRotationalYAxis = 'Rotational Y Axis';
+  RsRotationalZAxis = 'Rotational Z Axis';
+  RsRow = ' Row';
+  RsRowingMachine = 'Rowing Machine';
+  RsRows = 'Rows';
+  RsRSqBracket = ']';
+  RsRudder = 'Rudder';
+  RsRunTimetoEmpty = 'Run Time to Empty';
+  RsS = 'S';
+  RsSafetySwitch = 'Safety Switch';
+  RsSailing = 'Sailing';
+  RsSampleCount = 'Sample Count';
+  RsSamplePeriod = 'Sample Period';
+  RsSandWedge = 'Sand Wedge';
+  RsSave = 'Save';
+  RsScaleAttributeReport = 'Scale Attribute Report';
+  RsScaleClassGeneric = 'Scale Class Generic';
+  RsScaleClassIIIEnglish = 'Scale Class III English';
+  RsScaleClassIIILEnglish = 'Scale Class IIIL English';
+  RsScaleClassIIILMetric = 'Scale Class IIIL Metric';
+  RsScaleClassIIIMetric = 'Scale Class III Metric';
+  RsScaleClassIIMetric = 'Scale Class II Metric';
+  RsScaleClassIMetric = 'Scale Class I Metric';
+  RsScaleClassIMetricClass = 'Scale Class I Metric Class';
+  RsScaleClassIVEnglish = 'Scale Class IV English';
+  RsScaleClassIVMetric = 'Scale Class IV Metric';
+  RsScaleControlReport = 'Scale Control Report';
+  RsScaleDataReport = 'Scale Data Report';
+  RsScaleDeviceClass = 'Scale Device Class';
+  RsScaleStatisticsReport = 'Scale Statistics Report';
+  RsScaleStatusClass = 'Scale Status Class';
+  RsScaleStatusEnforcedZeroReturn = 'Scale Status Enforced Zero Return';
+  RsScaleStatusFault = 'Scale Status Fault';
+  RsScaleStatusInMotion = 'Scale Status In Motion';
+  RsScaleStatusOverWeightLimit = 'Scale Status Over Weight Limit';
+  RsScaleStatusReport = 'Scale Status Report';
+  RsScaleStatusRequiresCalibration = 'Scale Status Requires Calibration';
+  RsScaleStatusRequiresRezeroing = 'Scale Status Requires Rezeroing';
+  RsScaleStatusStableatCenterofZero = 'Scale Status Stable at Center of Zero';
+  RsScaleStatusUnderZero = 'Scale Status Under Zero';
+  RsScaleStatusWeightStable = 'Scale Status Weight Stable';
+  RsScaleStatusZeroScale = 'Scale Status Zero Scale';
+  RsScaleWeightLimitReport = 'Scale Weight Limit Report';
+  RsScannedDataReport = 'Scanned Data Report';
+  RsScannerDataAccuracy = 'Scanner Data Accuracy';
+  RsScannerinCradle = 'Scanner in Cradle';
+  RsScannerinRange = 'Scanner in Range';
+  RsScannerReadConfidence = 'Scanner Read Confidence';
+  RsScanNextTrack = 'Scan Next Track';
+  RsScanPreviousTrack = 'Scan Previous Track';
+  RsScreenCalls = 'Screen Calls';
+  RsScreenSaverDelay = 'Screen Saver Delay';
+  RsScreenSaverEnable = 'Screen Saver Enable';
+  RsScrollLock = 'Scroll Lock';
+  RsSearchMarkBackwards = 'Search Mark Backwards';
+  RsSearchMarkForward = 'Search Mark Forward';
+  RsSecondaryFlipper = 'Secondary Flipper';
+  RsSecondaryTipSwitch = 'Secondary Tip Switch';
+  RsSecondDiscreteLengthtoDecode = 'Second Discrete Length to Decode';
+  RsSecurityEnable = 'Security Enable';
+  RsSelect = 'Select';
+  RsSelectDisc = 'Select Disc';
+  RsSelectedIndicator = 'Selected Indicator';
+  RsSelection = 'Selection';
+  RsSelectorRevision = 'Selector Revision';
+  RsSelectWeapons = 'Select Weapons';
+  RsSemicolon = ';';
+  RsSend = 'Send';
+  RsSeparator = 'Separator';
+  RsSerialNumber = 'Serial Number';
+  RsSetConditionReport = 'Set Condition Report';
+  RsSetConstantForceReport = 'Set Constant Force Report';
+  RsSetCustomForceReport = 'Set Custom Force Report';
+  RsSetEffectReport = 'Set Effect Report';
+  RsSetEnvelopeReport = 'Set Envelope Report';
+  RsSetParameterDefaultValues = 'Set Parameter Default Values';
+  RsSetPeriodicReport = 'Set Periodic Report';
+  RsSetRampForceReport = 'Set Ramp Force Report';
+  RsSettingsReport = 'Settings Report';
+  RsSharedParameterBlocks = 'Shared Parameter Blocks';
+  RsShifter = 'Shifter';
+  RsShootBall = 'Shoot Ball';
+  RsShowCounter = 'Show Counter';
+  RsShutdownImminent = 'Shutdown Imminent';
+  RsShutdownRequested = 'Shutdown Requested';
+  RsSimulation = 'Simulation';
+  RsSimultaneousEffectsMax = 'Simultaneous Effects Max';
+  RsSlash = '/';
+  RsSleep = 'Sleep';
+  RsSleepAfter = 'Sleep After';
+  RsSleepMode = 'Sleep Mode';
+  RsSlider = 'Slider';
+  RsSlope = 'Slope';
+  RsSlow = 'Slow';
+  RsSlowBlinkOff_Time = 'Slow Blink Off-Time';
+  RsSlowBlinkOn_Time = 'Slow Blink On-Time';
+  RsSlowTracking = 'Slow Tracking';
+  RsSMBAlarmWarning = 'SMB Alarm Warning';
+  RsSMBBatteryMode = 'SMB Battery Mode';
+  RsSMBBatteryStatus = 'SMB Battery Status';
+  RsSMBChargerMode = 'SMB Charger Mode';
+  RsSMBChargerSpecInfo = 'SMB Charger Spec Info';
+  RsSMBChargerStatus = 'SMB Charger Status';
+  RsSMBErrorCode = 'SMB Error Code';
+  RsSMBSelectorInfo = 'SMB Selector Info';
+  RsSMBSelectorPresets = 'SMB Selector Presets';
+  RsSMBSelectorstate = 'SMB Selector state';
+  RsSnapshot = 'Snapshot';
+  RsSoftControlAdjust = 'Soft Control Adjust';
+  RsSoftControlSelect = 'Soft Control Select';
+  RsSoftStepPrimary = 'Soft Step Primary';
+  RsSoftStepSecondary = 'Soft Step Secondary';
+  RsSoundErrorBeep = 'Sound Error Beep';
+  RsSoundGoodReadBeep = 'Sound Good Read Beep';
+  RsSoundNotOnFileBeep = 'Sound Not On File Beep';
+  RsSpace = 'Space';
+  RsSpaceship = 'Spaceship';
+  RsSpeakerPhone = 'Speaker Phone';
+  RsSpeakerSystem = 'Speaker System';
+  RsSpecificationInfo = 'Specification Info';
+  RsSpectralDopplerAdjust = 'Spectral Doppler Adjust';
+  RsSpectralDopplerModeSelect = 'Spectral Doppler Mode Select';
+  RsSpeedDial = 'Speed Dial';
+  RsSpeedSelect = 'Speed Select';
+  RsSport = 'Sport';
+  RsSports = 'Sports';
+  RsStand_by = 'Stand-by';
+  RsStandard2of5 = 'Standard 2 of 5';
+  RsStandard2of5ControlReport = 'Standard 2 of 5 Control Report';
+  RsStandard2of5IATA = 'Standard 2 of 5 IATA';
+  RsStandardPlay = 'Standard Play';
+  RsStart = 'Start';
+  RsStartDelay = 'Start Delay';
+  RsStatNotReady = 'Stat Not Ready';
+  RsStatReady = 'Stat Ready';
+  RsStatusReport = 'Status Report';
+  RsSteering = 'Steering';
+  RsStereoEnable = 'Stereo Enable';
+  RsStereoPlotter = 'Stereo Plotter';
+  RsStickFaceAngle = 'Stick Face Angle';
+  RsStickFollowThrough = 'Stick Follow Through';
+  RsStickHeel_Toe = 'Stick Heel/Toe';
+  RsStickHeight = 'Stick Height';
+  RsStickSpeed = 'Stick Speed';
+  RsStickTempo = 'Stick Tempo';
+  RsStickType = 'Stick Type';
+  RsStill = 'Still';
+  RsStop = 'Stop';
+  RsStop_Eject = 'Stop/Eject';
+  RsStoreNumber = 'Store Number';
+  RsStylus = 'Stylus';
+  RsSub_channel = 'Sub-channel';
+  RsSub_channelDecrement = 'Sub-channel Decrement';
+  RsSub_channelIncrement = 'Sub-channel Increment';
+  RsSubmarine = 'Submarine';
+  RsSuperCode = 'SuperCode';
+  RsSurroundMode = 'Surround Mode';
+  RsSwitchable = 'Switchable';
+  RsSwitchOffControl = 'Switch Off Control';
+  RsSwitchOn_Off = 'Switch On/Off';
+  RsSwitchOnControl = 'Switch On Control';
+  RsSymbologyIdentifier1 = 'Symbology Identifier 1';
+  RsSymbologyIdentifier2 = 'Symbology Identifier 2';
+  RsSymbologyIdentifier3 = 'Symbology Identifier 3';
+  RsSysRequest = 'Sys Request';
+  RsSystemControl = 'System Control';
+  RsSystemControlApplicationBreak = 'System Control Application Break';
+  RsSystemControlApplicationDebuggerBreak = 'System Control Application Debugger Break';
+  RsSystemControlAppMenu = 'System Control App Menu';
+  RsSystemControlBothDisplays = 'System Control Both Displays';
+  RsSystemControlBreak = 'System Control Break';
+  RsSystemControlColdRestart = 'System Control Cold Restart';
+  RsSystemControlContextMenu = 'System Control Context Menu';
+  RsSystemControlDebuggerBreak = 'System Control Debugger Break';
+  RsSystemControlDock = 'System Control Dock';
+  RsSystemControlDPadDown = 'System Control DPad Down';
+  RsSystemControlDPadLeft = 'System Control DPad Left';
+  RsSystemControlDPadRight = 'System Control DPad Right';
+  RsSystemControlDPadUp = 'System Control DPad Up';
+  RsSystemControlDualDisplays = 'System Control Dual Displays';
+  RsSystemControlExternalDisplay = 'System Control External Display';
+  RsSystemControlHelpMenu = 'System Control Help Menu';
+  RsSystemControlHibernate = 'System Control Hibernate';
+  RsSystemControlInternalDisplay = 'System Control Internal Display';
+  RsSystemControlInvertDisplay = 'System Control Invert Display';
+  RsSystemControlLCDAutoscaleDisplay = 'System Control LCD Autoscale Display';
+  RsSystemControlMainMenu = 'System Control Main Menu';
+  RsSystemControlMenuDown = 'System Control Menu Down';
+  RsSystemControlMenuExit = 'System Control Menu Exit';
+  RsSystemControlMenuLeft = 'System Control Menu Left';
+  RsSystemControlMenuRight = 'System Control Menu Right';
+  RsSystemControlMenuSelect = 'System Control Menu Select';
+  RsSystemControlMenuUp = 'System Control Menu Up';
+  RsSystemControlPowerDown = 'System Control Power Down';
+  RsSystemControlSetup = 'System Control Setup';
+  RsSystemControlSleep = 'System Control Sleep';
+  RsSystemControlSpeakerMute = 'System Control Speaker Mute';
+  RsSystemControlSwapPrimary_SecondaryDisplays = 'System Control Swap Primary/Secondary Displays';
+  RsSystemControlToggleInternal_ExternalDisplay = 'System Control Toggle Internal/External Display';
+  RsSystemControlUndock = 'System Control Undock';
+  RsSystemControlWakeUp = 'System Control Wake Up';
+  RsSystemControlWarmRestart = 'System Control Warm Restart';
+  RsSystemSuspend = 'System Suspend';
+  RsT = 'T';
+  RsTabletFunctionKeys = 'Tablet Function Keys';
+  RsTabletPick = 'Tablet Pick';
+  RsTabulator = 'Tabulator';
+  RsTank = 'Tank';
+  RsTap = 'Tap';
+  RsTelephony = 'Telephony';
+  RsTelephonyCallPickup = 'Telephony Call Pickup';
+  RsTelephonyConference = 'Telephony Conference';
+  RsTelephonyCoverage = 'Telephony Coverage';
+  RsTelephonyDataMode = 'Telephony Data Mode';
+  RsTelephonyDoNotDisturb = 'Telephony Do Not Disturb';
+  RsTelephonyHeadSet = 'Telephony Head Set';
+  RsTelephonyHold = 'Telephony Hold';
+  RsTelephonyMessageWaiting = 'Telephony Message Waiting';
+  RsTelephonyMicrophone = 'Telephony Microphone';
+  RsTelephonyNightMode = 'Telephony Night Mode';
+  RsTelephonyOffHook = 'Telephony Off Hook';
+  RsTelephonyRing = 'Telephony Ring';
+  RsTelephonySendCalls = 'Telephony Send Calls';
+  RsTelephonySpeaker = 'Telephony Speaker';
+  RsTemperature = 'Temperature';
+  RsTerminateCharge = 'Terminate Charge';
+  RsTerminateDischarge = 'Terminate Discharge';
+  RsTest = 'Test';
+  RsTested = 'Tested';
+  RsThermistorCold = 'Thermistor Cold';
+  RsThermistorHot = 'Thermistor Hot';
+  RsThermistorOverRange = 'Thermistor Over Range';
+  RsThermistorUnderrange = 'Thermistor Under range';
+  RsThrottle = 'Throttle';
+  RsTipPressure = 'Tip Pressure';
+  RsTipSwitch = 'Tip Switch';
+  RsToeBrake = 'Toe Brake';
+  RsToggleControl = 'Toggle Control';
+  RsTonesOff = 'Tones Off';
+  RsTouch = 'Touch';
+  RsTouchPad = 'Touch Pad';
+  RsTouchScreen = 'Touch Screen';
+  RsTrack1Data = 'Track 1 Data';
+  RsTrack1Length = 'Track 1 Length';
+  RsTrack2Data = 'Track 2 Data';
+  RsTrack2Length = 'Track 2 Length';
+  RsTrack3Data = 'Track 3 Data';
+  RsTrack3Length = 'Track 3 Length';
+  RsTrackControl = 'Track Control';
+  RsTrackData = 'Track Data';
+  RsTracking = 'Tracking';
+  RsTrackingDecrement = 'Tracking Decrement';
+  RsTrackingIncrement = 'Tracking Increment';
+  RsTrackJISData = 'Track JIS Data';
+  RsTrackJISLength = 'Track JIS Length';
+  RsTrackNormal = 'Track Normal';
+  RsTransducerIndex = 'Transducer Index';
+  RsTransfer = 'Transfer';
+  RsTransmitCheckDigit = 'Transmit Check Digit';
+  RsTransmitPower = 'Transmit Power';
+  RsTransmitStart_Stop = 'Transmit Start/Stop';
+  RsTreadmill = 'Treadmill';
+  RsTreble = 'Treble';
+  RsTrebleDecrement = 'Treble Decrement';
+  RsTrebleIncrement = 'Treble Increment';
+  RsTri_Optic = 'Tri-Optic';
+  RsTrigger = 'Trigger';
+  RsTriggerButton = 'Trigger Button';
+  RsTriggerless = 'Triggerless';
+  RsTriggerMode = 'Trigger Mode';
+  RsTriggerModeBlinkingLaserOn = 'Trigger Mode Blinking Laser On';
+  RsTriggerModeContinuousLaserOn = 'Trigger Mode Continuous Laser On';
+  RsTriggerModeLaserOnWhilePulled = 'Trigger Mode Laser On While Pulled';
+  RsTriggerModeLaserStaysOnAfterTriggerRelease = 'Trigger Mode Laser Stays On After Trigger Release';
+  RsTriggerRepeatInterval = 'Trigger Repeat Interval';
+  RsTriggerReport = 'Trigger Report';
+  RsTriggerState = 'Trigger State';
+  RsTurnRight_Left = 'Turn Right/Left';
+  RsTurretDirection = 'Turret Direction';
+  RsTwist = 'Twist';
+  RsTypeSpecificBlockHandle = 'Type Specific Block Handle';
+  RsTypeSpecificBlockOffset = 'Type Specific Block Offset';
+  RsU = 'U';
+  RsUCC_EAN_128 = 'UCC/EAN-128';
+  RsUltraCode = 'UltraCode';
+  RsUndefined = 'Undefined';
+  RsUndefinedError = 'Undefined Error';
+  RsUndo = 'Undo';
+  RsUnicode = 'Unicode';
+  RsUnicodeCharacterSet = 'Unicode Character Set';
+  RsUntouch = 'Untouch';
+  RsUpArrow = 'Up Arrow';
+  RsUPC_A = 'UPC-A';
+  RsUPC_Awith128Mandatory = 'UPC-A with 128 Mandatory';
+  RsUPC_Awith128Optional = 'UPC-A with 128 Optional';
+  RsUPC_AwithP5Optional = 'UPC-A with P5 Optional';
+  RsUPC_E = 'UPC-E';
+  RsUPC_E1 = 'UPC-E1';
+  RsUPC_EAN = 'UPC/EAN';
+  RsUPC_EANControlReport = 'UPC/EAN Control Report';
+  RsUPC_EANCouponCode = 'UPC/EAN Coupon Code';
+  RsUPC_EANPeriodicals = 'UPC/EAN Periodicals';
+  RsUpdate = 'Update';
+  RsUPS = 'UPS';
+  RsUSBEnumeratedValues = 'USB Enumerated Values';
+  RsUSBMonitor = 'USB Monitor';
+  RsUSD_5SlugCode = 'USD-5 (Slug Code)';
+  RsUsed = 'Used';
+  RsUseNext = 'Use Next';
+  RsV = 'V';
+  RsVCR_TV = 'VCR/TV';
+  RsVCRAquisition = 'VCR Aquisition';
+  RsVCRPlus = 'VCR Plus';
+  RsVDIFInformation = 'VDIF Information';
+  RsVelocityBrakeX = 'Velocity Brake X';
+  RsVelocityBrakeY = 'Velocity Brake Y';
+  RsVelocityBrakeZ = 'Velocity Brake Z';
+  RsVelocityX = 'Velocity X';
+  RsVelocityY = 'Velocity Y';
+  RsVelocityZ = 'Velocity Z';
+  RsVeriCode = 'VeriCode';
+  RsVerticalScroll = 'Vertical Scroll';
+  RsVESAVersion = 'VESA Version';
+  RsVESAVirtualControls = 'VESA Virtual Controls';
+  RsVest = 'Vest';
+  RsVirtualReality = 'Virtual Reality';
+  RsVno = 'Vno';
+  RsVoiceMail = 'Voice Mail';
+  RsVoltage = 'Voltage';
+  RsVoltageNotRegulated = 'Voltage Not Regulated';
+  RsVoltageoutofRange = 'Voltage out of Range';
+  RsVolume = 'Volume';
+  RsVolumeDecrement = 'Volume Decrement';
+  RsVolumeDown = 'Volume Down';
+  RsVolumeIncrement = 'Volume Increment';
+  RsVolumeUp = 'Volume Up';
+  RsW = 'W';
+  RsWand = 'Wand';
+  RsWarningCapacityLimit = 'Warning Capacity Limit';
+  RsWaterResistant = 'Water Resistant';
+  RsWeekly = 'Weekly';
+  RsWeighingDevice = 'Weighing Device';
+  RsWeightUnitAvoirTon = 'Weight Unit Avoir Ton';
+  RsWeightUnitCarats = 'Weight Unit Carats';
+  RsWeightUnitClass = 'Weight Unit Class';
+  RsWeightUnitGrains = 'Weight Unit Grains';
+  RsWeightUnitGram = 'Weight Unit Gram';
+  RsWeightUnitKilogram = 'Weight Unit Kilogram';
+  RsWeightUnitMetricTon = 'Weight Unit Metric Ton';
+  RsWeightUnitMilligram = 'Weight Unit Milligram';
+  RsWeightUnitOunce = 'Weight Unit Ounce';
+  RsWeightUnitPennyweights = 'Weight Unit Pennyweights';
+  RsWeightUnitPound = 'Weight Unit Pound';
+  RsWeightUnitTaels = 'Weight Unit Taels';
+  RsWeightUnitTroyOunce = 'Weight Unit Troy Ounce';
+  RsWheel = 'Wheel';
+  RsWhiteBoard = 'White Board';
+  RsWingFlaps = 'Wing Flaps';
+  RsWirelessChannel = 'Wireless Channel';
+  RsWirelessID = 'Wireless ID';
+  RsWood1 = 'Wood 1';
+  RsWood3 = 'Wood 3';
+  RsWood5 = 'Wood 5';
+  RsWood7 = 'Wood 7';
+  RsWood9 = 'Wood 9';
+  RsX = 'X';
+  RsXAxis = 'X Axis';
+  RsXTilt = 'X Tilt';
+  RsY = 'Y';
+  RsYAxis = 'Y Axis';
+  RsYTilt = 'Y Tilt';
+  RsZ = 'Z';
+  RsZAxis = 'Z Axis';
+  RsZoomAdjust = 'Zoom Adjust';
+  RsZoomSelect = 'Zoom Select';
 
 procedure UsageAndUsagePageText(UsagePage, Usage: TUsage; var UsagePageText, UsageText: string);
 begin
@@ -44,3293 +1601,3293 @@ begin
   UsageText := '';
   case UsagePage of
     HID_USAGE_PAGE_UNDEFINED:
-      UsagePageText := 'Undefined';
+      UsagePageText := RsUndefined;
     HID_USAGE_PAGE_GENERIC:
       begin
-        UsagePageText := 'Generic Desktop';
+        UsagePageText := RsGenericDesktop;
         case Usage of
           HID_USAGE_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_GENERIC_POINTER:
-            UsageText := 'Pointing Device';
+            UsageText := RsPointingDevice;
           HID_USAGE_GENERIC_MOUSE:
-            UsageText := 'Mouse';
+            UsageText := RsMouse;
           HID_USAGE_GENERIC_RESERVED1:
-            UsageText := 'Reserved';
+            UsageText := RsReserved;
           HID_USAGE_GENERIC_JOYSTICK:
-            UsageText := 'Joystick';
+            UsageText := RsJoystick;
           HID_USAGE_GENERIC_GAMEPAD:
-            UsageText := 'Gamepad';
+            UsageText := RsGamepad;
           HID_USAGE_GENERIC_KEYBOARD:
-            UsageText := 'Keyboard';
+            UsageText := RsKeyboard;
           HID_USAGE_GENERIC_KEYPAD:
-            UsageText := 'Keypad';
+            UsageText := RsKeypad;
           HID_USAGE_GENERIC_MULTIAXIS:
-            UsageText := 'Multi-Axis';
+            UsageText := RsMulti_Axis;
           HID_USAGE_GENERIC_X:
-            UsageText := 'X Axis';
+            UsageText := RsXAxis;
           HID_USAGE_GENERIC_Y:
-            UsageText := 'Y Axis';
+            UsageText := RsYAxis;
           HID_USAGE_GENERIC_Z:
-            UsageText := 'Z Axis';
+            UsageText := RsZAxis;
           HID_USAGE_GENERIC_RX:
-            UsageText := 'Rotational X Axis';
+            UsageText := RsRotationalXAxis;
           HID_USAGE_GENERIC_RY:
-            UsageText := 'Rotational Y Axis';
+            UsageText := RsRotationalYAxis;
           HID_USAGE_GENERIC_RZ:
-            UsageText := 'Rotational Z Axis';
+            UsageText := RsRotationalZAxis;
           HID_USAGE_GENERIC_SLIDER:
-            UsageText := 'Slider';
+            UsageText := RsSlider;
           HID_USAGE_GENERIC_DIAL:
-            UsageText := 'Dial';
+            UsageText := RsDial;
           HID_USAGE_GENERIC_WHEEL:
-            UsageText := 'Wheel';
+            UsageText := RsWheel;
           HID_USAGE_GENERIC_HATSWITCH:
-            UsageText := 'Hat Switch';
+            UsageText := RsHatSwitch;
           HID_USAGE_GENERIC_COUNTED_BUFFER:
-            UsageText := 'Counted Buffer';
+            UsageText := RsCountedBuffer;
           HID_USAGE_GENERIC_BYTE_COUNT:
-            UsageText := 'Byte Count';
+            UsageText := RsByteCount;
           HID_USAGE_GENERIC_MOTION_WAKEUP:
-            UsageText := 'Motion Wakeup';
+            UsageText := RsMotionWakeup;
           HID_USAGE_GENERIC_START:
-            UsageText := 'Start';
+            UsageText := RsStart;
           HID_USAGE_GENERIC_SELECT:
-            UsageText := 'Select';
+            UsageText := RsSelect;
           HID_USAGE_GENERIC_RESERVED2:
-            UsageText := 'Reserved';
+            UsageText := RsReserved;
           HID_USAGE_GENERIC_VX:
-            UsageText := 'Velocity X';
+            UsageText := RsVelocityX;
           HID_USAGE_GENERIC_VY:
-            UsageText := 'Velocity Y';
+            UsageText := RsVelocityY;
           HID_USAGE_GENERIC_VZ:
-            UsageText := 'Velocity Z';
+            UsageText := RsVelocityZ;
           HID_USAGE_GENERIC_VBRX:
-            UsageText := 'Velocity Brake X';
+            UsageText := RsVelocityBrakeX;
           HID_USAGE_GENERIC_VBRY:
-            UsageText := 'Velocity Brake Y';
+            UsageText := RsVelocityBrakeY;
           HID_USAGE_GENERIC_VBRZ:
-            UsageText := 'Velocity Brake Z';
+            UsageText := RsVelocityBrakeZ;
           HID_USAGE_GENERIC_VNO:
-            UsageText := 'Vno';
+            UsageText := RsVno;
           HID_USAGE_FEATURE_NOTIFICATION:
-            UsageText := 'Feature Notification';
+            UsageText := RsFeatureNotification;
           HID_USAGE_GENERIC_SYSTEM_CTL:
-            UsageText := 'System Control';
+            UsageText := RsSystemControl;
           HID_USAGE_GENERIC_SYSCTL_POWER:
-            UsageText := 'System Control Power Down';
+            UsageText := RsSystemControlPowerDown;
           HID_USAGE_GENERIC_SYSCTL_SLEEP:
-            UsageText := 'System Control Sleep';
+            UsageText := RsSystemControlSleep;
           HID_USAGE_GENERIC_SYSCTL_WAKE:
-            UsageText := 'System Control Wake Up';
+            UsageText := RsSystemControlWakeUp;
           HID_USAGE_GENERIC_SYSCTL_CONTEXT_MENU:
-            UsageText := 'System Control Context Menu';
+            UsageText := RsSystemControlContextMenu;
           HID_USAGE_GENERIC_SYSCTL_MAIN_MENU:
-            UsageText := 'System Control Main Menu';
+            UsageText := RsSystemControlMainMenu;
           HID_USAGE_GENERIC_SYSCTL_APP_MENU:
-            UsageText := 'System Control App Menu';
+            UsageText := RsSystemControlAppMenu;
           HID_USAGE_GENERIC_SYSCTL_HELP_MENU:
-            UsageText := 'System Control Help Menu';
+            UsageText := RsSystemControlHelpMenu;
           HID_USAGE_GENERIC_SYSCTL_MENU_EXIT:
-            UsageText := 'System Control Menu Exit';
+            UsageText := RsSystemControlMenuExit;
           HID_USAGE_GENERIC_SYSCTL_MENU_SELECT:
-            UsageText := 'System Control Menu Select';
+            UsageText := RsSystemControlMenuSelect;
           HID_USAGE_GENERIC_SYSCTL_MENU_RIGHT:
-            UsageText := 'System Control Menu Right';
+            UsageText := RsSystemControlMenuRight;
           HID_USAGE_GENERIC_SYSCTL_MENU_LEFT:
-            UsageText := 'System Control Menu Left';
+            UsageText := RsSystemControlMenuLeft;
           HID_USAGE_GENERIC_SYSCTL_MENU_UP:
-            UsageText := 'System Control Menu Up';
+            UsageText := RsSystemControlMenuUp;
           HID_USAGE_GENERIC_SYSCTL_MENU_DOWN:
-            UsageText := 'System Control Menu Down';
+            UsageText := RsSystemControlMenuDown;
           HID_USAGE_GENERIC_SYSCTL_COLD_RESTART:
-            UsageText := 'System Control Cold Restart';
+            UsageText := RsSystemControlColdRestart;
           HID_USAGE_GENERIC_SYSCTL_WARM_RESTART:
-            UsageText := 'System Control Warm Restart';
+            UsageText := RsSystemControlWarmRestart;
           HID_USAGE_GENERIC_SYSCTL_DPAD_UP:
-            UsageText := 'System Control DPad Up';
+            UsageText := RsSystemControlDPadUp;
           HID_USAGE_GENERIC_SYSCTL_DPAD_DOWN:
-            UsageText := 'System Control DPad Down';
+            UsageText := RsSystemControlDPadDown;
           HID_USAGE_GENERIC_SYSCTL_DPAD_RIGHT:
-            UsageText := 'System Control DPad Right';
+            UsageText := RsSystemControlDPadRight;
           HID_USAGE_GENERIC_SYSCTL_DPAD_LEFT:
-            UsageText := 'System Control DPad Left';
+            UsageText := RsSystemControlDPadLeft;
           HID_USAGE_GENERIC_SYSCTL_DOCK:
-            UsageText := 'System Control Dock';
+            UsageText := RsSystemControlDock;
           HID_USAGE_GENERIC_SYSCTL_UNDOCK:
-            UsageText := 'System Control Undock';
+            UsageText := RsSystemControlUndock;
           HID_USAGE_GENERIC_SYSCTL_SETUP:
-            UsageText := 'System Control Setup';
+            UsageText := RsSystemControlSetup;
           HID_USAGE_GENERIC_SYSCTL_BREAK:
-            UsageText := 'System Control Break';
+            UsageText := RsSystemControlBreak;
           HID_USAGE_GENERIC_SYSCTL_DEBUGGER_BREAK:
-            UsageText := 'System Control Debugger Break';
+            UsageText := RsSystemControlDebuggerBreak;
           HID_USAGE_GENERIC_SYSCTL_APP_BREAK:
-            UsageText := 'System Control Application Break';
+            UsageText := RsSystemControlApplicationBreak;
           HID_USAGE_GENERIC_SYSCTL_APP_DEBUGGER_BREAK:
-            UsageText := 'System Control Application Debugger Break';
+            UsageText := RsSystemControlApplicationDebuggerBreak;
           HID_USAGE_GENERIC_SYSCTL_SYSTEM_SPEAKER_MUTE:
-            UsageText := 'System Control Speaker Mute';
+            UsageText := RsSystemControlSpeakerMute;
           HID_USAGE_GENERIC_SYSCTL_SYSTEM_HIBERNATE:
-            UsageText := 'System Control Hibernate';
+            UsageText := RsSystemControlHibernate;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_INVERT:
-            UsageText := 'System Control Invert Display';
+            UsageText := RsSystemControlInvertDisplay;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_INTERNAL:
-            UsageText := 'System Control Internal Display';
+            UsageText := RsSystemControlInternalDisplay;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_EXTERNAL:
-            UsageText := 'System Control External Display';
+            UsageText := RsSystemControlExternalDisplay;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_BOTH:
-            UsageText := 'System Control Both Displays';
+            UsageText := RsSystemControlBothDisplays;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_DUAL:
-            UsageText := 'System Control Dual Displays';
+            UsageText := RsSystemControlDualDisplays;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_TOGGLE_INT_EXT:
-            UsageText := 'System Control Toggle Internal/External Display';
+            UsageText := RsSystemControlToggleInternal_ExternalDisplay;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_SWAP:
-            UsageText := 'System Control Swap Primary/Secondary Displays';
+            UsageText := RsSystemControlSwapPrimary_SecondaryDisplays;
           HID_USAGE_GENERIC_SYSCTL_DISPLAY_LCD_AUTOSCALE:
-            UsageText := 'System Control LCD Autoscale Display';
+            UsageText := RsSystemControlLCDAutoscaleDisplay;
         end;
       end;
     HID_USAGE_PAGE_SIMULATION:
       begin
-        UsagePageText := 'Simulation';
+        UsagePageText := RsSimulation;
         case Usage of
           HID_USAGE_SIMULATION_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_SIMULATION_FLIGHT:
-            UsageText := 'Flight';
+            UsageText := RsFlight;
           HID_USAGE_SIMULATION_AUTOMOBILE:
-            UsageText := 'Automobile';
+            UsageText := RsAutomobile;
           HID_USAGE_SIMULATION_TANK:
-            UsageText := 'Tank';
+            UsageText := RsTank;
           HID_USAGE_SIMULATION_SPACESHIP:
-            UsageText := 'Spaceship';
+            UsageText := RsSpaceship;
           HID_USAGE_SIMULATION_SUBMARINE:
-            UsageText := 'Submarine';
+            UsageText := RsSubmarine;
           HID_USAGE_SIMULATION_SAILING:
-            UsageText := 'Sailing';
+            UsageText := RsSailing;
           HID_USAGE_SIMULATION_MOTORCYCLE:
-            UsageText := 'Motorcycle';
+            UsageText := RsMotorcycle;
           HID_USAGE_SIMULATION_SPORTS:
-            UsageText := 'Sports';
+            UsageText := RsSports;
           HID_USAGE_SIMULATION_AIRPLANE:
-            UsageText := 'Airplane';
+            UsageText := RsAirplane;
           HID_USAGE_SIMULATION_HELICOPTER:
-            UsageText := 'Helicopter';
+            UsageText := RsHelicopter;
           HID_USAGE_SIMULATION_MAGIC_CARPET:
-            UsageText := 'Magic Carpet';
+            UsageText := RsMagicCarpet;
           HID_USAGE_SIMULATION_BICYCLE:
-            UsageText := 'Bicycle';
+            UsageText := RsBicycle;
           HID_USAGE_SIMULATION_FLIGHT_CONTROL_STICK:
-            UsageText := 'Flight Control Stick';
+            UsageText := RsFlightControlStick;
           HID_USAGE_SIMULATION_FLIGHT_STICK:
-            UsageText := 'Flight Stick';
+            UsageText := RsFlightStick;
           HID_USAGE_SIMULATION_CYCLIC_CONTROL:
-            UsageText := 'Cyclic Control';
+            UsageText := RsCyclicControl;
           HID_USAGE_SIMULATION_CYCLIC_TRIM:
-            UsageText := 'Cyclic Trim';
+            UsageText := RsCyclicTrim;
           HID_USAGE_SIMULATION_FLIGHT_YOKE:
-            UsageText := 'Flight Yoke';
+            UsageText := RsFlightYoke;
           HID_USAGE_SIMULATION_TRACK_CONTROL:
-            UsageText := 'Track Control';
+            UsageText := RsTrackControl;
           HID_USAGE_SIMULATION_AILERON:
-            UsageText := 'Aileron';
+            UsageText := RsAileron;
           HID_USAGE_SIMULATION_AILERON_TRIM:
-            UsageText := 'Aileron Trim';
+            UsageText := RsAileronTrim;
           HID_USAGE_SIMULATION_ANTITORQUE_CONTROL:
-            UsageText := 'Anti-Torque Control';
+            UsageText := RsAnti_TorqueControl;
           HID_USAGE_SIMULATION_AUTOPILOT_ENABLE:
-            UsageText := 'Enable Autopilot';
+            UsageText := RsEnableAutopilot;
           HID_USAGE_SIMULATION_CHAFF_RELEASE:
-            UsageText := 'Chaff Release';
+            UsageText := RsChaffRelease;
           HID_USAGE_SIMULATION_COLLECTIVE_CONTROL:
-            UsageText := 'Collective Control';
+            UsageText := RsCollectiveControl;
           HID_USAGE_SIMULATION_DIVE_BREAK:
-            UsageText := 'Dive Break';
+            UsageText := RsDiveBreak;
           HID_USAGE_SIMULATION_ELECTRONIC_COUNTERMEASURES:
-            UsageText := 'Electronic Countermeasures';
+            UsageText := RsElectronicCountermeasures;
           HID_USAGE_SIMULATION_ELEVATOR:
-            UsageText := 'Elevator';
+            UsageText := RsElevator;
           HID_USAGE_SIMULATION_ELEVATOR_TRIM:
-            UsageText := 'Elevator Trim';
+            UsageText := RsElevatorTrim;
           HID_USAGE_SIMULATION_RUDDER:
-            UsageText := 'Rudder';
+            UsageText := RsRudder;
           HID_USAGE_SIMULATION_THROTTLE:
-            UsageText := 'Throttle';
+            UsageText := RsThrottle;
           HID_USAGE_SIMULATION_FLIGHT_COMMUNICATIONS:
-            UsageText := 'Flight Communications';
+            UsageText := RsFlightCommunications;
           HID_USAGE_SIMULATION_FLARE_RELEASE:
-            UsageText := 'Flare Release';
+            UsageText := RsFlareRelease;
           HID_USAGE_SIMULATION_LANDING_GEAR:
-            UsageText := 'Landing Gear';
+            UsageText := RsLandingGear;
           HID_USAGE_SIMULATION_TOE_BRAKE:
-            UsageText := 'Toe Brake';
+            UsageText := RsToeBrake;
           HID_USAGE_SIMULATION_TRIGGER:
-            UsageText := 'Trigger';
+            UsageText := RsTrigger;
           HID_USAGE_SIMULATION_WEAPONS_ARM:
-            UsageText := 'Arm Weapons';
+            UsageText := RsArmWeapons;
           HID_USAGE_SIMULATION_WEAPONS_SELECT:
-            UsageText := 'Select Weapons';
+            UsageText := RsSelectWeapons;
           HID_USAGE_SIMULATION_WING_FLAPS:
-            UsageText := 'Wing Flaps';
+            UsageText := RsWingFlaps;
           HID_USAGE_SIMULATION_ACCELERATOR:
-            UsageText := 'Accelerator';
+            UsageText := RsAccelerator;
           HID_USAGE_SIMULATION_BRAKE:
-            UsageText := 'Brake';
+            UsageText := RsBrake;
           HID_USAGE_SIMULATION_CLUTCH:
-            UsageText := 'Clutch';
+            UsageText := RsClutch;
           HID_USAGE_SIMULATION_SHIFTER:
-            UsageText := 'Shifter';
+            UsageText := RsShifter;
           HID_USAGE_SIMULATION_STEERING:
-            UsageText := 'Steering';
+            UsageText := RsSteering;
           HID_USAGE_SIMULATION_TURRET_DIRECTION:
-            UsageText := 'Turret Direction';
+            UsageText := RsTurretDirection;
           HID_USAGE_SIMULATION_BARREL_ELEVATION:
-            UsageText := 'Barrel Elevation';
+            UsageText := RsBarrelElevation;
           HID_USAGE_SIMULATION_DIVE_PLANE:
-            UsageText := 'Dive Plane';
+            UsageText := RsDivePlane;
           HID_USAGE_SIMULATION_BALLAST:
-            UsageText := 'Ballast';
+            UsageText := RsBallast;
           HID_USAGE_SIMULATION_BICYCLE_CRANK:
-            UsageText := 'Bicycle Crank';
+            UsageText := RsBicycleCrank;
           HID_USAGE_SIMULATION_HANDLE_BARS:
-            UsageText := 'Handle Bars';
+            UsageText := RsHandleBaRs;
           HID_USAGE_SIMULATION_FRONT_BRAKE:
-            UsageText := 'Front Brake';
+            UsageText := RsFrontBrake;
           HID_USAGE_SIMULATION_REAR_BRAKE:
-            UsageText := 'Rear Brake';
+            UsageText := RsRearBrake;
         end;
       end;
     HID_USAGE_PAGE_VR:
       begin
-        UsagePageText := 'Virtual Reality';
+        UsagePageText := RsVirtualReality;
         case Usage of
           HID_USAGE_VR_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_VR_BELT:
-            UsageText := 'Belt';
+            UsageText := RsBelt;
           HID_USAGE_VR_BODY_SUIT:
-            UsageText := 'Body Suit';
+            UsageText := RsBodySuit;
           HID_USAGE_VR_FLEXOR:
-            UsageText := 'Flexor';
+            UsageText := RsFlexor;
           HID_USAGE_VR_GLOVE:
-            UsageText := 'Glove';
+            UsageText := RsGlove;
           HID_USAGE_VR_HEAD_TRACKER:
-            UsageText := 'Head Tracker';
+            UsageText := RsHeadTracker;
           HID_USAGE_VR_HEAD_MOUNTED_DISPLAY:
-            UsageText := 'Head Mounted Display';
+            UsageText := RsHeadMountedDisplay;
           HID_USAGE_VR_HAND_TRACKER:
-            UsageText := 'Hand Tracker';
+            UsageText := RsHandTracker;
           HID_USAGE_VR_OCULOMETER:
-            UsageText := 'Oculometer';
+            UsageText := RsOculometer;
           HID_USAGE_VR_VEST:
-            UsageText := 'Vest';
+            UsageText := RsVest;
           HID_USAGE_VR_ANIMATRONIC_DEVICE:
-            UsageText := 'Animatronic Device';
+            UsageText := RsAnimatronicDevice;
           HID_USAGE_VR_STEREO_ENABLE:
-            UsageText := 'Stereo Enable';
+            UsageText := RsStereoEnable;
           HID_USAGE_VR_DISPLAY_ENABLE:
-            UsageText := 'Display Enable';
+            UsageText := RsDisplayEnable;
         end;
       end;
     HID_USAGE_PAGE_SPORT:
       begin
-        UsagePageText := 'Sport';
+        UsagePageText := RsSport;
         case Usage of
           HID_USAGE_SPORT_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_SPORT_BASEBALL_BAT:
-            UsageText := 'Baseball Bat';
+            UsageText := RsBaseballBat;
           HID_USAGE_SPORT_GOLF_CLUB:
-            UsageText := 'Golf Club';
+            UsageText := RsGolfClub;
           HID_USAGE_SPORT_ROWING_MACHINE:
-            UsageText := 'Rowing Machine';
+            UsageText := RsRowingMachine;
           HID_USAGE_SPORT_TREADMILL:
-            UsageText := 'Treadmill';
+            UsageText := RsTreadmill;
           HID_USAGE_SPORT_OAR:
-            UsageText := 'Oar';
+            UsageText := RsOar;
           HID_USAGE_SPORT_SLOPE:
-            UsageText := 'Slope';
+            UsageText := RsSlope;
           HID_USAGE_SPORT_RATE:
-            UsageText := 'Rate';
+            UsageText := RsRate;
           HID_USAGE_SPORT_STICK_SPEED:
-            UsageText := 'Stick Speed';
+            UsageText := RsStickSpeed;
           HID_USAGE_SPORT_STICK_FACE_ANGLE:
-            UsageText := 'Stick Face Angle';
+            UsageText := RsStickFaceAngle;
           HID_USAGE_SPORT_STICK_HEEL_TOE:
-            UsageText := 'Stick Heel/Toe';
+            UsageText := RsStickHeel_Toe;
           HID_USAGE_SPORT_STICK_FOLLOW_THROUGH:
-            UsageText := 'Stick Follow Through';
+            UsageText := RsStickFollowThrough;
           HID_USAGE_SPORT_STICK_TEMPO:
-            UsageText := 'Stick Tempo';
+            UsageText := RsStickTempo;
           HID_USAGE_SPORT_STICK_TYPE:
-            UsageText := 'Stick Type';
+            UsageText := RsStickType;
           HID_USAGE_SPORT_STICK_HEIGHT:
-            UsageText := 'Stick Height';
+            UsageText := RsStickHeight;
           HID_USAGE_SPORT_PUTTER:
-            UsageText := 'Putter';
+            UsageText := RsPutter;
           HID_USAGE_SPORT_IRON_1:
-            UsageText := 'Iron 1';
+            UsageText := RsIron1;
           HID_USAGE_SPORT_IRON_2:
-            UsageText := 'Iron 2';
+            UsageText := RsIron2;
           HID_USAGE_SPORT_IRON_3:
-            UsageText := 'Iron 3';
+            UsageText := RsIron3;
           HID_USAGE_SPORT_IRON_4:
-            UsageText := 'Iron 4';
+            UsageText := RsIron4;
           HID_USAGE_SPORT_IRON_5:
-            UsageText := 'Iron 5';
+            UsageText := RsIron5;
           HID_USAGE_SPORT_IRON_6:
-            UsageText := 'Iron 6';
+            UsageText := RsIron6;
           HID_USAGE_SPORT_IRON_7:
-            UsageText := 'Iron 7';
+            UsageText := RsIron7;
           HID_USAGE_SPORT_IRON_8:
-            UsageText := 'Iron 8';
+            UsageText := RsIron8;
           HID_USAGE_SPORT_IRON_9:
-            UsageText := 'Iron 9';
+            UsageText := RsIron9;
           HID_USAGE_SPORT_IRON_10:
-            UsageText := 'Iron 10';
+            UsageText := RsIron10;
           HID_USAGE_SPORT_IRON_11:
-            UsageText := 'Iron 11';
+            UsageText := RsIron11;
           HID_USAGE_SPORT_SAND_WEDGE:
-            UsageText := 'Sand Wedge';
+            UsageText := RsSandWedge;
           HID_USAGE_SPORT_LOFT_WEDGE:
-            UsageText := 'Loft Wedge';
+            UsageText := RsLoftWedge;
           HID_USAGE_SPORT_POWER_WEDGE:
-            UsageText := 'Power Wedge';
+            UsageText := RsPowerWedge;
           HID_USAGE_SPORT_WOOD_1:
-            UsageText := 'Wood 1';
+            UsageText := RsWood1;
           HID_USAGE_SPORT_WOOD_3:
-            UsageText := 'Wood 3';
+            UsageText := RsWood3;
           HID_USAGE_SPORT_WOOD_5:
-            UsageText := 'Wood 5';
+            UsageText := RsWood5;
           HID_USAGE_SPORT_WOOD_7:
-            UsageText := 'Wood 7';
+            UsageText := RsWood7;
           HID_USAGE_SPORT_WOOD_9:
-            UsageText := 'Wood 9';
+            UsageText := RsWood9;
         end;
       end;
     HID_USAGE_PAGE_GAME:
       begin
-        UsagePageText := 'Game';
+        UsagePageText := RsGame;
         case Usage of
           HID_USAGE_GAME_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_GAME_3D_GAME_CONTROLLER:
-            UsageText := '3D Game Controller';
+            UsageText := Rs3DGameController;
           HID_USAGE_GAME_PINBALL_DEVICE:
-            UsageText := 'Pinball Device';
+            UsageText := RsPinballDevice;
           HID_USAGE_GAME_GUN_DEVICE:
-            UsageText := 'Gun Device';
+            UsageText := RsGunDevice;
           HID_USAGE_GAME_POINT_OF_VIEW:
-            UsageText := 'Point of View';
+            UsageText := RsPointofView;
           HID_USAGE_GAME_TURN_RIGHT_LEFT:
-            UsageText := 'Turn Right/Left';
+            UsageText := RsTurnRight_Left;
           HID_USAGE_GAME_PITCH_FORWARD_BACKWARD:
-            UsageText := 'Pitch Forward/Backward';
+            UsageText := RsPitchForward_Backward;
           HID_USAGE_GAME_ROLL_RIGHT_LEFT:
-            UsageText := 'Roll Right/Left';
+            UsageText := RsRollRight_Left;
           HID_USAGE_GAME_MOVE_RIGHT_LEFT:
-            UsageText := 'Move Right/Left';
+            UsageText := RsMoveRight_Left;
           HID_USAGE_GAME_MOVE_FORWARD_BACKWARD:
-            UsageText := 'Move Forward/Backward';
+            UsageText := RsMoveForward_Backward;
           HID_USAGE_GAME_MOVE_UP_DOWN:
-            UsageText := 'Move Up/Down';
+            UsageText := RsMoveUp_Down;
           HID_USAGE_GAME_LEAN_RIGHT_LEFT:
-            UsageText := 'Lean Right/Left';
+            UsageText := RsLeanRight_Left;
           HID_USAGE_GAME_LEAN_FORWARD_BACKWARD:
-            UsageText := 'Lean Forward/Backward';
+            UsageText := RsLeanForward_Backward;
           HID_USAGE_GAME_HEIGHT_OF_POV:
-            UsageText := 'Height of POV';
+            UsageText := RsHeightofPOV;
           HID_USAGE_GAME_FLIPPER:
-            UsageText := 'Flipper';
+            UsageText := RsFlipper;
           HID_USAGE_GAME_SECONDARY_FLIPPER:
-            UsageText := 'Secondary Flipper';
+            UsageText := RsSecondaryFlipper;
           HID_USAGE_GAME_BUMP:
-            UsageText := 'Bump';
+            UsageText := RsBump;
           HID_USAGE_GAME_NEW_GAME:
-            UsageText := 'New Game';
+            UsageText := RsNewGame;
           HID_USAGE_GAME_SHOOT_BALL:
-            UsageText := 'Shoot Ball';
+            UsageText := RsShootBall;
           HID_USAGE_GAME_PLAYER:
-            UsageText := 'Player';
+            UsageText := RsPlayer;
           HID_USAGE_GAME_GUN_BOLT:
-            UsageText := 'Gun Bolt';
+            UsageText := RsGunBolt;
           HID_USAGE_GAME_GUN_CLIP:
-            UsageText := 'Gun Clip';
+            UsageText := RsGunClip;
           HID_USAGE_GAME_GUN_SELECTOR:
-            UsageText := 'Gun Selector';
+            UsageText := RsGunSelector;
           HID_USAGE_GAME_GUN_SINGLE_SHOT:
-            UsageText := 'Gun Single Shot';
+            UsageText := RsGunSingleShot;
           HID_USAGE_GAME_GUN_BURST:
-            UsageText := 'Gun Burst';
+            UsageText := RsGunBurst;
           HID_USAGE_GAME_GUN_AUTOMATIC:
-            UsageText := 'Gun Automatic';
+            UsageText := RsGunAutomatic;
           HID_USAGE_GAME_GUN_SAFETY:
-            UsageText := 'Gun Safety';
+            UsageText := RsGunSafety;
           HID_USAGE_GAME_GAMEPAD_FIRE_JUMP:
-            UsageText := 'Gamepad Fire/Jump';
+            UsageText := RsGamepadFire_Jump;
           HID_USAGE_GAME_GAMEPAD_TRIGGER:
-            UsageText := 'Gamepad Trigger';
+            UsageText := RsGamepadTrigger;
         end;
       end;
     HID_USAGE_PAGE_GENERIC_GAME_CONTROLS:
       begin
-        UsagePageText := 'Generic';
+        UsagePageText := RsGeneric;
         case Usage of
           HID_USAGE_GENERIC_GAME_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_GENERIC_GAME_BATTERY_STRENGTH:
-            UsageText := 'Battery Strength';
+            UsageText := RsBatteryStrength;
           HID_USAGE_GENERIC_GAME_WIRELESS_CHANNEL:
-            UsageText := 'Wireless Channel';
+            UsageText := RsWirelessChannel;
           HID_USAGE_GENERIC_GAME_WIRELESS_ID:
-            UsageText := 'Wireless ID';
+            UsageText := RsWirelessID;
         end;
       end;
     HID_USAGE_PAGE_KEYBOARD:
       begin
-        UsagePageText := 'Keyboard';
+        UsagePageText := RsKeyboard;
         case Usage of
           HID_USAGE_KEYBOARD_NOEVENT:
-            UsageText := 'Empty';
+            UsageText := RsEmpty;
           HID_USAGE_KEYBOARD_ROLLOVER:
-            UsageText := 'Rollover';
+            UsageText := RsRollover;
           HID_USAGE_KEYBOARD_POSTFAIL:
-            UsageText := 'Postfail';
+            UsageText := RsPostfail;
           HID_USAGE_KEYBOARD_UNDEFINED:
-            UsageText := 'Undefined Error';
+            UsageText := RsUndefinedError;
           HID_USAGE_KEYBOARD_aA:
-            UsageText := 'A';
+            UsageText := RsA;
           HID_USAGE_KEYBOARD_bB:
-            UsageText := 'B';
+            UsageText := RsB;
           HID_USAGE_KEYBOARD_cC:
-            UsageText := 'C';
+            UsageText := RsC;
           HID_USAGE_KEYBOARD_dD:
-            UsageText := 'D';
+            UsageText := RsD;
           HID_USAGE_KEYBOARD_eE:
-            UsageText := 'E';
+            UsageText := RsE;
           HID_USAGE_KEYBOARD_fF:
-            UsageText := 'F';
+            UsageText := RsF;
           HID_USAGE_KEYBOARD_gG:
-            UsageText := 'G';
+            UsageText := RsG;
           HID_USAGE_KEYBOARD_hH:
-            UsageText := 'H';
+            UsageText := RsH;
           HID_USAGE_KEYBOARD_iI:
-            UsageText := 'I';
+            UsageText := RsI;
           HID_USAGE_KEYBOARD_jJ:
-            UsageText := 'J';
+            UsageText := RsJ;
           HID_USAGE_KEYBOARD_kK:
-            UsageText := 'K';
+            UsageText := RsK;
           HID_USAGE_KEYBOARD_lL:
-            UsageText := 'L';
+            UsageText := RsL;
           HID_USAGE_KEYBOARD_mM:
-            UsageText := 'M';
+            UsageText := RsM;
           HID_USAGE_KEYBOARD_nN:
-            UsageText := 'N';
+            UsageText := RsN;
           HID_USAGE_KEYBOARD_oO:
-            UsageText := 'O';
+            UsageText := RsO;
           HID_USAGE_KEYBOARD_pP:
-            UsageText := 'P';
+            UsageText := RsP;
           HID_USAGE_KEYBOARD_qQ:
-            UsageText := 'Q';
+            UsageText := RsQ;
           HID_USAGE_KEYBOARD_rR:
-            UsageText := 'R';
+            UsageText := RsR;
           HID_USAGE_KEYBOARD_sS:
-            UsageText := 'S';
+            UsageText := RsS;
           HID_USAGE_KEYBOARD_tT:
-            UsageText := 'T';
+            UsageText := RsT;
           HID_USAGE_KEYBOARD_uU:
-            UsageText := 'U';
+            UsageText := RsU;
           HID_USAGE_KEYBOARD_vV:
-            UsageText := 'V';
+            UsageText := RsV;
           HID_USAGE_KEYBOARD_wW:
-            UsageText := 'W';
+            UsageText := RsW;
           HID_USAGE_KEYBOARD_xX:
-            UsageText := 'X';
+            UsageText := RsX;
           HID_USAGE_KEYBOARD_yY:
-            UsageText := 'Y';
+            UsageText := RsY;
           HID_USAGE_KEYBOARD_zZ:
-            UsageText := 'Z';
+            UsageText := RsZ;
           HID_USAGE_KEYBOARD_ONE:
-            UsageText := '1';
+            UsageText := Rs1;
           HID_USAGE_KEYBOARD_TWO:
-            UsageText := '2';
+            UsageText := Rs2;
           HID_USAGE_KEYBOARD_THREE:
-            UsageText := '3';
+            UsageText := Rs3;
           HID_USAGE_KEYBOARD_FOUR:
-            UsageText := '4';
+            UsageText := Rs4;
           HID_USAGE_KEYBOARD_FIVE:
-            UsageText := '5';
+            UsageText := Rs5;
           HID_USAGE_KEYBOARD_SIX:
-            UsageText := '6';
+            UsageText := Rs6;
           HID_USAGE_KEYBOARD_SEVEN:
-            UsageText := '7';
+            UsageText := Rs7;
           HID_USAGE_KEYBOARD_EIGHT:
-            UsageText := '8';
+            UsageText := Rs8;
           HID_USAGE_KEYBOARD_NINE:
-            UsageText := '9';
+            UsageText := Rs9;
           HID_USAGE_KEYBOARD_ZERO:
-            UsageText := '0';
+            UsageText := Rs0;
           HID_USAGE_KEYBOARD_ENTER:
-            UsageText := 'Enter (not Return)';
+            UsageText := RsEnterNotReturn;
           HID_USAGE_KEYBOARD_ESCAPE:
-            UsageText := 'Esc';
+            UsageText := RsEsc;
           HID_USAGE_KEYBOARD_BACKSPACE:
-            UsageText := 'Backspace';
+            UsageText := RsBackspace;
           HID_USAGE_KEYBOARD_TAB:
-            UsageText := 'Tabulator';
+            UsageText := RsTabulator;
           HID_USAGE_KEYBOARD_SPACE:
-            UsageText := 'Space';
+            UsageText := RsSpace;
           HID_USAGE_KEYBOARD_MINUS:
-            UsageText := '-';
+            UsageText := RsMinus;
           HID_USAGE_KEYBOARD_EQUAL:
-            UsageText := '=';
+            UsageText := RsEqual;
           HID_USAGE_KEYBOARD_LSQBRACKET:
-            UsageText := '[';
+            UsageText := RsLSqBracket;
           HID_USAGE_KEYBOARD_RSQBRACKET:
-            UsageText := ']';
+            UsageText := RsRSqBracket;
           HID_USAGE_KEYBOARD_BACKSLASH:
-            UsageText := '\';
+            UsageText := RsBackslash;
           HID_USAGE_KEYBOARD_HASHMARK2:
-            UsageText := '# 2';
+            UsageText := RsHashMark2;
           HID_USAGE_KEYBOARD_SEMICOLON:
-            UsageText := ';';
+            UsageText := RsSemicolon;
           HID_USAGE_KEYBOARD_APOSTROPH:
-            UsageText := '''';
+            UsageText := RsApostroph;
           HID_USAGE_KEYBOARD_GRAVEACCENT:
-            UsageText := '`';
+            UsageText := RsGraveAccent;
           HID_USAGE_KEYBOARD_COMMA:
-            UsageText := ',';
+            UsageText := RsComma;
           HID_USAGE_KEYBOARD_DOT:
-            UsageText := '.';
+            UsageText := RsDot;
           HID_USAGE_KEYBOARD_SLASH:
-            UsageText := '/';
+            UsageText := RsSlash;
           HID_USAGE_KEYBOARD_CAPS_LOCK:
-            UsageText := 'Caps Lock';
+            UsageText := RsCapsLock;
           HID_USAGE_KEYBOARD_F1:
-            UsageText := 'F1';
+            UsageText := RsF1;
           HID_USAGE_KEYBOARD_F2:
-            UsageText := 'F2';
+            UsageText := RsF2;
           HID_USAGE_KEYBOARD_F3:
-            UsageText := 'F3';
+            UsageText := RsF3;
           HID_USAGE_KEYBOARD_F4:
-            UsageText := 'F4';
+            UsageText := RsF4;
           HID_USAGE_KEYBOARD_F5:
-            UsageText := 'F5';
+            UsageText := RsF5;
           HID_USAGE_KEYBOARD_F6:
-            UsageText := 'F6';
+            UsageText := RsF6;
           HID_USAGE_KEYBOARD_F7:
-            UsageText := 'F7';
+            UsageText := RsF7;
           HID_USAGE_KEYBOARD_F8:
-            UsageText := 'F8';
+            UsageText := RsF8;
           HID_USAGE_KEYBOARD_F9:
-            UsageText := 'F9';
+            UsageText := RsF9;
           HID_USAGE_KEYBOARD_F10:
-            UsageText := 'F10';
+            UsageText := RsF10;
           HID_USAGE_KEYBOARD_F11:
-            UsageText := 'F11';
+            UsageText := RsF11;
           HID_USAGE_KEYBOARD_F12:
-            UsageText := 'F12';
+            UsageText := RsF12;
           HID_USAGE_KEYBOARD_PRINT_SCREEN:
-            UsageText := 'Print Screen';
+            UsageText := RsPrintScreen;
           HID_USAGE_KEYBOARD_SCROLL_LOCK:
-            UsageText := 'Scroll Lock';
+            UsageText := RsScrollLock;
           HID_USAGE_KEYBOARD_PAUSE:
-            UsageText := 'Pause';
+            UsageText := RsPause;
           HID_USAGE_KEYBOARD_INSERT:
-            UsageText := 'Ins';
+            UsageText := RsIns;
           HID_USAGE_KEYBOARD_HOME:
-            UsageText := 'Home';
+            UsageText := RsHome;
           HID_USAGE_KEYBOARD_PAGEUP:
-            UsageText := 'PgUp';
+            UsageText := RsPgUp;
           HID_USAGE_KEYBOARD_DELETE:
-            UsageText := 'Del';
+            UsageText := RsDel;
           HID_USAGE_KEYBOARD_END:
-            UsageText := 'End';
+            UsageText := RsEnd;
           HID_USAGE_KEYBOARD_PAGEDOWN:
-            UsageText := 'PgDn';
+            UsageText := RsPgDn;
           HID_USAGE_KEYBOARD_RIGHT:
-            UsageText := 'Right Arrow';
+            UsageText := RsRightArrow;
           HID_USAGE_KEYBOARD_LEFT:
-            UsageText := 'Left Arrow';
+            UsageText := RsLeftArrow;
           HID_USAGE_KEYBOARD_DOWN:
-            UsageText := 'Down Arrow';
+            UsageText := RsDownArrow;
           HID_USAGE_KEYBOARD_UP:
-            UsageText := 'Up Arrow';
+            UsageText := RsUpArrow;
           HID_USAGE_KEYPAD_NUM_LOCK:
-            UsageText := 'Keypad Num Lock';
+            UsageText := RsKeypadNumLock;
           HID_USAGE_KEYPAD_SLASH:
-            UsageText := 'Keypad /';
+            UsageText := RsKeypadSlash;
           HID_USAGE_KEYPAD_STAR:
-            UsageText := 'Keypad *';
+            UsageText := RsKeypadStar;
           HID_USAGE_KEYPAD_MINUS:
-            UsageText := 'Keypad -';
+            UsageText := RsKeypadMinus;
           HID_USAGE_KEYPAD_PLUS:
-            UsageText := 'Keypad +';
+            UsageText := RsKeypadPlus;
           HID_USAGE_KEYPAD_ENTER:
-            UsageText := 'Keypad Enter';
+            UsageText := RsKeypadEnter;
           HID_USAGE_KEYPAD_ONE:
-            UsageText := 'Keypad 1';
+            UsageText := RsKeypad1;
           HID_USAGE_KEYPAD_TWO:
-            UsageText := 'Keypad 2';
+            UsageText := RsKeypad2;
           HID_USAGE_KEYPAD_THREE:
-            UsageText := 'Keypad 3';
+            UsageText := RsKeypad3;
           HID_USAGE_KEYPAD_FOUR:
-            UsageText := 'Keypad 4';
+            UsageText := RsKeypad4;
           HID_USAGE_KEYPAD_FIVE:
-            UsageText := 'Keypad 5';
+            UsageText := RsKeypad5;
           HID_USAGE_KEYPAD_SIX:
-            UsageText := 'Keypad 6';
+            UsageText := RsKeypad6;
           HID_USAGE_KEYPAD_SEVEN:
-            UsageText := 'Keypad 7';
+            UsageText := RsKeypad7;
           HID_USAGE_KEYPAD_EIGHT:
-            UsageText := 'Keypad 8';
+            UsageText := RsKeypad8;
           HID_USAGE_KEYPAD_NINE:
-            UsageText := 'Keypad 9';
+            UsageText := RsKeypad9;
           HID_USAGE_KEYPAD_ZERO:
-            UsageText := 'Keypad 0';
+            UsageText := RsKeypad0;
           HID_USAGE_KEYPAD_DOT:
-            UsageText := 'Keypad .';
+            UsageText := RsKeypadDot;
           HID_USAGE_KEYBOARD_BACKSLASH2:
-            UsageText := '\ 2';
+            UsageText := RsBackslash2;
           HID_USAGE_KEYBOARD_APPLICATION:
-            UsageText := 'Application';
+            UsageText := RsApplication;
           HID_USAGE_KEYBOARD_POWER:
-            UsageText := 'Power';
+            UsageText := RsPower;
           HID_USAGE_KEYPAD_EQUAL2:
-            UsageText := 'Keypad = 2';
+            UsageText := RsKeypadEqual2;
           HID_USAGE_KEYBOARD_F13:
-            UsageText := 'F13';
+            UsageText := RsF13;
           HID_USAGE_KEYBOARD_F14:
-            UsageText := 'F14';
+            UsageText := RsF14;
           HID_USAGE_KEYBOARD_F15:
-            UsageText := 'F15';
+            UsageText := RsF15;
           HID_USAGE_KEYBOARD_F16:
-            UsageText := 'F16';
+            UsageText := RsF16;
           HID_USAGE_KEYBOARD_F17:
-            UsageText := 'F17';
+            UsageText := RsF17;
           HID_USAGE_KEYBOARD_F18:
-            UsageText := 'F18';
+            UsageText := RsF18;
           HID_USAGE_KEYBOARD_F19:
-            UsageText := 'F19';
+            UsageText := RsF19;
           HID_USAGE_KEYBOARD_F20:
-            UsageText := 'F20';
+            UsageText := RsF20;
           HID_USAGE_KEYBOARD_F21:
-            UsageText := 'F21';
+            UsageText := RsF21;
           HID_USAGE_KEYBOARD_F22:
-            UsageText := 'F22';
+            UsageText := RsF22;
           HID_USAGE_KEYBOARD_F23:
-            UsageText := 'F23';
+            UsageText := RsF23;
           HID_USAGE_KEYBOARD_F24:
-            UsageText := 'F24';
+            UsageText := RsF24;
           HID_USAGE_KEYBOARD_EXECUTE:
-            UsageText := 'Execute';
+            UsageText := RsExecute;
           HID_USAGE_KEYBOARD_HELP:
-            UsageText := 'Help';
+            UsageText := RsHelp;
           HID_USAGE_KEYBOARD_MENU:
-            UsageText := 'Menu';
+            UsageText := RsMenu;
           HID_USAGE_KEYBOARD_SELECT:
-            UsageText := 'Select';
+            UsageText := RsSelect;
           HID_USAGE_KEYBOARD_STOP:
-            UsageText := 'Stop';
+            UsageText := RsStop;
           HID_USAGE_KEYBOARD_AGAIN:
-            UsageText := 'Again';
+            UsageText := RsAgain;
           HID_USAGE_KEYBOARD_UNDO:
-            UsageText := 'Undo';
+            UsageText := RsUndo;
           HID_USAGE_KEYBOARD_CUT:
-            UsageText := 'Cut';
+            UsageText := RsCut;
           HID_USAGE_KEYBOARD_COPY:
-            UsageText := 'Copy';
+            UsageText := RsCopy;
           HID_USAGE_KEYBOARD_PASTE:
-            UsageText := 'Paste';
+            UsageText := RsPaste;
           HID_USAGE_KEYBOARD_FIND:
-            UsageText := 'Find';
+            UsageText := RsFind;
           HID_USAGE_KEYBOARD_MUTE:
-            UsageText := 'Mute';
+            UsageText := RsMute;
           HID_USAGE_KEYBOARD_VOLUME_UP:
-            UsageText := 'Volume Up';
+            UsageText := RsVolumeUp;
           HID_USAGE_KEYBOARD_VOLUME_DOWN:
-            UsageText := 'Volume Down';
+            UsageText := RsVolumeDown;
           HID_USAGE_KEYBOARD_LOCKCAPS:
-            UsageText := 'Caps Lock';
+            UsageText := RsCapsLock;
           HID_USAGE_KEYBOARD_LOCKNUM:
-            UsageText := 'Num Lock';
+            UsageText := RsNumLock;
           HID_USAGE_KEYBOARD_LOCKSCROLL:
-            UsageText := 'Scroll Lock';
+            UsageText := RsScrollLock;
           HID_USAGE_KEYPAD_COMMA:
-            UsageText := 'Keypad ,';
+            UsageText := RsKeypadComma;
           HID_USAGE_KEYPAD_EQUALSIGN:
-            UsageText := 'Keypad =';
+            UsageText := RsKeypadEqual;
           HID_USAGE_KEYBOARD_INATL1:
-            UsageText := 'International 1';
+            UsageText := RsInternational1;
           HID_USAGE_KEYBOARD_INATL2:
-            UsageText := 'International 2';
+            UsageText := RsInternational2;
           HID_USAGE_KEYBOARD_INATL3:
-            UsageText := 'International 3';
+            UsageText := RsInternational3;
           HID_USAGE_KEYBOARD_INATL4:
-            UsageText := 'International 4';
+            UsageText := RsInternational4;
           HID_USAGE_KEYBOARD_INATL5:
-            UsageText := 'International 5';
+            UsageText := RsInternational5;
           HID_USAGE_KEYBOARD_INATL6:
-            UsageText := 'International 6';
+            UsageText := RsInternational6;
           HID_USAGE_KEYBOARD_INATL7:
-            UsageText := 'International 7';
+            UsageText := RsInternational7;
           HID_USAGE_KEYBOARD_INATL8:
-            UsageText := 'International 8';
+            UsageText := RsInternational8;
           HID_USAGE_KEYBOARD_INATL9:
-            UsageText := 'International 9';
+            UsageText := RsInternational9;
           HID_USAGE_KEYBOARD_LANG1:
-            UsageText := 'Language 1';
+            UsageText := RsLanguage1;
           HID_USAGE_KEYBOARD_LANG2:
-            UsageText := 'Language 2';
+            UsageText := RsLanguage2;
           HID_USAGE_KEYBOARD_LANG3:
-            UsageText := 'Language 3';
+            UsageText := RsLanguage3;
           HID_USAGE_KEYBOARD_LANG4:
-            UsageText := 'Language 4';
+            UsageText := RsLanguage4;
           HID_USAGE_KEYBOARD_LANG5:
-            UsageText := 'Language 5';
+            UsageText := RsLanguage5;
           HID_USAGE_KEYBOARD_LANG6:
-            UsageText := 'Language 6';
+            UsageText := RsLanguage6;
           HID_USAGE_KEYBOARD_LANG7:
-            UsageText := 'Language 7';
+            UsageText := RsLanguage7;
           HID_USAGE_KEYBOARD_LANG8:
-            UsageText := 'Language 8';
+            UsageText := RsLanguage8;
           HID_USAGE_KEYBOARD_LANG9:
-            UsageText := 'Language 9';
+            UsageText := RsLanguage9;
           HID_USAGE_KEYBOARD_ALTERASE:
-            UsageText := 'Alternate Erase';
+            UsageText := RsAlternateErase;
           HID_USAGE_KEYBOARD_SYSREQ:
-            UsageText := 'Sys Request';
+            UsageText := RsSysRequest;
           HID_USAGE_KEYBOARD_CANCEL:
-            UsageText := 'Cancel';
+            UsageText := RsCancel;
           HID_USAGE_KEYBOARD_CLEAR:
-            UsageText := 'Clear';
+            UsageText := RsClear;
           HID_USAGE_KEYBOARD_PRIOR:
-            UsageText := 'Prior';
+            UsageText := RsPrior;
           HID_USAGE_KEYBOARD_RETURN:
-            UsageText := 'Return (not Enter)';
+            UsageText := RsReturnNotEnter;
           HID_USAGE_KEYBOARD_SEPARATOR:
-            UsageText := 'Separator';
+            UsageText := RsSeparator;
           HID_USAGE_KEYBOARD_OUT:
-            UsageText := 'Out';
+            UsageText := RsOut;
           HID_USAGE_KEYBOARD_OPER:
-            UsageText := 'Oper';
+            UsageText := RsOper;
           HID_USAGE_KEYBOARD_CLEAR_AGAIN:
-            UsageText := 'Clear/Again';
+            UsageText := RsClear_Again;
           HID_USAGE_KEYBOARD_CRSEL:
-            UsageText := 'CrSel/Props';
+            UsageText := RsCrSel_Props;
           HID_USAGE_KEYBOARD_EXSEL:
-            UsageText := 'ExSel';
+            UsageText := RsExSel;
           HID_USAGE_KEYPAD_HUNDREDS:
-            UsageText := 'Keypad 00';
+            UsageText := RsKeypad00;
           HID_USAGE_KEYPAD_THOUSANDS:
-            UsageText := 'Keypad 000';
+            UsageText := RsKeypad000;
           HID_USAGE_KEYPAD_THOUSANDS_SEP:
-            UsageText := 'Keypad Thousands Separator';
+            UsageText := RsKeypadThousandsSeparator;
           HID_USAGE_KEYPAD_DECIMAL_SEP:
-            UsageText := 'Keypad Decimal Separator';
+            UsageText := RsKeypadDecimalSeparator;
           HID_USAGE_KEYPAD_CURR_UNIT:
-            UsageText := 'Keypad Currency Unit';
+            UsageText := RsKeypadCurrencyUnit;
           HID_USAGE_KEYPAD_CURR_SUBUNIT:
-            UsageText := 'Keypad Currency Subunit';
+            UsageText := RsKeypadCurrencySubunit;
           HID_USAGE_KEYPAD_LROUNDBRACKET:
-            UsageText := 'Keypad (';
+            UsageText := RsKeypadLRoundBracket;
           HID_USAGE_KEYPAD_RROUNDBRACKET:
-            UsageText := 'Keypad )';
+            UsageText := RsKeypadRRoundBracket;
           HID_USAGE_KEYPAD_LCURLYBRACKET:
-            UsageText := 'Keypad {';
+            UsageText := RsKeypadLCurlyBracket;
           HID_USAGE_KEYPAD_RCURLYBRACKET:
-            UsageText := 'Keypad }';
+            UsageText := RsKeypadRCurlyBracket;
           HID_USAGE_KEYPAD_TABULATOR:
-            UsageText := 'Keypad Tabulator';
+            UsageText := RsKeypadTabulator;
           HID_USAGE_KEYPAD_BACKSPACE:
-            UsageText := 'Keypad Backspace';
+            UsageText := RsKeypadBackspace;
           HID_USAGE_KEYPAD_A:
-            UsageText := 'Keypad A';
+            UsageText := RsKeypadA;
           HID_USAGE_KEYPAD_B:
-            UsageText := 'Keypad B';
+            UsageText := RsKeypadB;
           HID_USAGE_KEYPAD_C:
-            UsageText := 'Keypad C';
+            UsageText := RsKeypadC;
           HID_USAGE_KEYPAD_D:
-            UsageText := 'Keypad D';
+            UsageText := RsKeypadD;
           HID_USAGE_KEYPAD_E:
-            UsageText := 'Keypad E';
+            UsageText := RsKeypadE;
           HID_USAGE_KEYPAD_F:
-            UsageText := 'Keypad F';
+            UsageText := RsKeypadF;
           HID_USAGE_KEYPAD_XOR:
-            UsageText := 'Keypad XOR';
+            UsageText := RsKeypadXOR;
           HID_USAGE_KEYPAD_CIRCUMFLEX:
-            UsageText := 'Keypad ^';
+            UsageText := RsKeypadCircumflex;
           HID_USAGE_KEYPAD_PERCENT:
-            UsageText := 'Keypad %';
+            UsageText := RsKeypadPercent;
           HID_USAGE_KEYPAD_BIGGER_THAN:
-            UsageText := 'Keypad <';
+            UsageText := RsKeypadBiggerThan;
           HID_USAGE_KEYPAD_LESS_THAN:
-            UsageText := 'Keypad >';
+            UsageText := RsKeypadLessThan;
           HID_USAGE_KEYPAD_BINARY_AND:
-            UsageText := 'Keypad &';
+            UsageText := RsKeypadBinaryAnd;
           HID_USAGE_KEYPAD_LOGICAL_AND:
-            UsageText := 'Keypad &&';
+            UsageText := RsKeypadLogicalAnd;
           HID_USAGE_KEYPAD_BINARY_OR:
-            UsageText := 'Keypad |';
+            UsageText := RsKeypadBinaryOr;
           HID_USAGE_KEYPAD_LOGICAL_OR:
-            UsageText := 'Keypad ||';
+            UsageText := RsKeypadLogicalOr;
           HID_USAGE_KEYPAD_COLON:
-            UsageText := 'Keypad :';
+            UsageText := RsKeypadColon;
           HID_USAGE_KEYPAD_HASHMARK:
-            UsageText := 'Keypad #';
+            UsageText := RsKeypadHashmark;
           HID_USAGE_KEYPAD_SPACE:
-            UsageText := 'Keypad Space';
+            UsageText := RsKeypadSpace;
           HID_USAGE_KEYPAD_AT:
-            UsageText := 'Keypad @';
+            UsageText := RsKeypadAt;
           HID_USAGE_KEYPAD_EXCLAMATION:
-            UsageText := 'Keypad !';
+            UsageText := RsKeypadExclamation;
           HID_USAGE_KEYPAD_MEM_STORE:
-            UsageText := 'Keypad Memory Store';
+            UsageText := RsKeypadMemoryStore;
           HID_USAGE_KEYPAD_MEM_RECALL:
-            UsageText := 'Keypad Memory Recall';
+            UsageText := RsKeypadMemoryRecall;
           HID_USAGE_KEYPAD_MEM_CLEAR:
-            UsageText := 'Keypad Memory Clear';
+            UsageText := RsKeypadMemoryClear;
           HID_USAGE_KEYPAD_MEM_ADD:
-            UsageText := 'Keypad Memory Add';
+            UsageText := RsKeypadMemoryAdd;
           HID_USAGE_KEYPAD_MEM_SUBTRACT:
-            UsageText := 'Keypad Memory Subtract';
+            UsageText := RsKeypadMemorySubtract;
           HID_USAGE_KEYPAD_MEM_MULTIPLY:
-            UsageText := 'Keypad Memory Multiply';
+            UsageText := RsKeypadMemoryMultiply;
           HID_USAGE_KEYPAD_MEM_DIVIDE:
-            UsageText := 'Keypad Memory Divide';
+            UsageText := RsKeypadMemoryDivide;
           HID_USAGE_KEYPAD_PLUS_MINUS:
-            UsageText := 'Keypad Memory Minus';
+            UsageText := RsKeypadMemoryMinus;
           HID_USAGE_KEYPAD_CLEAR:
-            UsageText := 'Keypad Clear';
+            UsageText := RsKeypadClear;
           HID_USAGE_KEYPAD_CLEAR_ENTRY:
-            UsageText := 'Keypad Clear Entry';
+            UsageText := RsKeypadClearEntry;
           HID_USAGE_KEYPAD_BINARY:
-            UsageText := 'Keypad Binary';
+            UsageText := RsKeypadBinary;
           HID_USAGE_KEYPAD_OCTAL:
-            UsageText := 'Keypad Octal';
+            UsageText := RsKeypadOctal;
           HID_USAGE_KEYPAD_DECIMAL:
-            UsageText := 'Keypad Decimal';
+            UsageText := RsKeypadDecimal;
           HID_USAGE_KEYPAD_HEXADECIMAL:
-            UsageText := 'Keypad Hexadecimal';
+            UsageText := RsKeypadHexadecimal;
           HID_USAGE_KEYPAD_RESERVED1:
-            UsageText := 'Keypad Reserved1';
+            UsageText := RsKeypadReserved1;
           HID_USAGE_KEYPAD_RESERVED2:
-            UsageText := 'Keypad Reserved2';
+            UsageText := RsKeypadReserved2;
           HID_USAGE_KEYBOARD_LCTRL:
-            UsageText := 'Left Ctrl';
+            UsageText := RsLeftCtrl;
           HID_USAGE_KEYBOARD_LSHFT:
-            UsageText := 'Left Shift';
+            UsageText := RsLeftShift;
           HID_USAGE_KEYBOARD_LALT:
-            UsageText := 'Left Alt';
+            UsageText := RsLeftAlt;
           HID_USAGE_KEYBOARD_LGUI:
-            UsageText := 'Left GUI';
+            UsageText := RsLeftGUI;
           HID_USAGE_KEYBOARD_RCTRL:
-            UsageText := 'Right Ctrl';
+            UsageText := RsRightCtrl;
           HID_USAGE_KEYBOARD_RSHFT:
-            UsageText := 'Right Shift';
+            UsageText := RsRightShift;
           HID_USAGE_KEYBOARD_RALT:
-            UsageText := 'Right Alt';
+            UsageText := RsRightAlt;
           HID_USAGE_KEYBOARD_RGUI:
-            UsageText := 'Right GUI';
+            UsageText := RsRightGUI;
         end;
       end;
     HID_USAGE_PAGE_LED:
       begin
-        UsagePageText := 'LED';
+        UsagePageText := RsLED;
         case Usage of
           HID_USAGE_LED_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_LED_NUM_LOCK:
-            UsageText := 'Keyboard Num Lock';
+            UsageText := RsKeyboardNumLock;
           HID_USAGE_LED_CAPS_LOCK:
-            UsageText := 'Keyboard Caps Lock';
+            UsageText := RsKeyboardCapsLock;
           HID_USAGE_LED_SCROLL_LOCK:
-            UsageText := 'Keyboard Scroll Lock';
+            UsageText := RsKeyboardScrollLock;
           HID_USAGE_LED_COMPOSE:
-            UsageText := 'Keyboard Compose';
+            UsageText := RsKeyboardCompose;
           HID_USAGE_LED_KANA:
-            UsageText := 'Keyboard Kana';
+            UsageText := RsKeyboardKana;
           HID_USAGE_LED_POWER:
-            UsageText := 'Keyboard Power';
+            UsageText := RsKeyboardPower;
           HID_USAGE_LED_SHIFT:
-            UsageText := 'Keyboard Shift';
+            UsageText := RsKeyboardShift;
           HID_USAGE_LED_DO_NOT_DISTURB:
-            UsageText := 'Telephony Do Not Disturb';
+            UsageText := RsTelephonyDoNotDisturb;
           HID_USAGE_LED_MUTE:
-            UsageText := 'Consumer Indicator Mute';
+            UsageText := RsConsumerIndicatorMute;
           HID_USAGE_LED_TONE_ENABLE:
-            UsageText := 'Consumer Indicator Tone Enable';
+            UsageText := RsConsumerIndicatorToneEnable;
           HID_USAGE_LED_HIGH_CUT_FILTER:
-            UsageText := 'Consumer Indicator High Cut Filter';
+            UsageText := RsConsumerIndicatorHighCutFilter;
           HID_USAGE_LED_LOW_CUT_FILTER:
-            UsageText := 'Consumer Indicator Low Cut Filter';
+            UsageText := RsConsumerIndicatorLowCutFilter;
           HID_USAGE_LED_EQUALIZER_ENABLE:
-            UsageText := 'Consumer Indicator Equalizer Enable';
+            UsageText := RsConsumerIndicatorEqualizerEnable;
           HID_USAGE_LED_SOUND_FIELD_ON:
-            UsageText := 'Consumer Indicator Sound Field On';
+            UsageText := RsConsumerIndicatorSoundFieldOn;
           HID_USAGE_LED_SURROUND_FIELD_ON:
-            UsageText := 'Consumer Indicator Surround Field On';
+            UsageText := RsConsumerIndicatorSurroundFieldOn;
           HID_USAGE_LED_REPEAT:
-            UsageText := 'Consumer Indicator Repeat';
+            UsageText := RsConsumerIndicatorRepeat;
           HID_USAGE_LED_STEREO:
-            UsageText := 'Consumer Indicator Stereo';
+            UsageText := RsConsumerIndicatorStereo;
           HID_USAGE_LED_SAMPLING_RATE_DETECT:
-            UsageText := 'Consumer Indicator Sampling Rate Detect';
+            UsageText := RsConsumerIndicatorSamplingRateDetect;
           HID_USAGE_LED_SPINNING:
-            UsageText := 'Media Transport Indicator Spinning';
+            UsageText := RsMediaTransportIndicatorSpinning;
           HID_USAGE_LED_CAV:
-            UsageText := 'Consumer Indicator CAV';
+            UsageText := RsConsumerIndicatorCAV;
           HID_USAGE_LED_CLV:
-            UsageText := 'Consumer Indicator CLV';
+            UsageText := RsConsumerIndicatorCLV;
           HID_USAGE_LED_RECORDING_FORMAT_DET:
-            UsageText := 'Media Transport Indicator Recording Format Detect';
+            UsageText := RsMediaTransportIndicatorRecordingFormatDetect;
           HID_USAGE_LED_OFF_HOOK:
-            UsageText := 'Telephony Off Hook';
+            UsageText := RsTelephonyOffHook;
           HID_USAGE_LED_RING:
-            UsageText := 'Telephony Ring';
+            UsageText := RsTelephonyRing;
           HID_USAGE_LED_MESSAGE_WAITING:
-            UsageText := 'Telephony Message Waiting';
+            UsageText := RsTelephonyMessageWaiting;
           HID_USAGE_LED_DATA_MODE:
-            UsageText := 'Telephony Data Mode';
+            UsageText := RsTelephonyDataMode;
           HID_USAGE_LED_BATTERY_OPERATION:
-            UsageText := 'Battery Operation';
+            UsageText := RsBatteryOperation;
           HID_USAGE_LED_BATTERY_OK:
-            UsageText := 'Battery Ok';
+            UsageText := RsBatteryOk;
           HID_USAGE_LED_BATTERY_LOW:
-            UsageText := 'Battery Low';
+            UsageText := RsBatteryLow;
           HID_USAGE_LED_SPEAKER:
-            UsageText := 'Telephony Speaker';
+            UsageText := RsTelephonySpeaker;
           HID_USAGE_LED_HEAD_SET:
-            UsageText := 'Telephony Head Set';
+            UsageText := RsTelephonyHeadSet;
           HID_USAGE_LED_HOLD:
-            UsageText := 'Telephony Hold';
+            UsageText := RsTelephonyHold;
           HID_USAGE_LED_MICROPHONE:
-            UsageText := 'Telephony Microphone';
+            UsageText := RsTelephonyMicrophone;
           HID_USAGE_LED_COVERAGE:
-            UsageText := 'Telephony Coverage';
+            UsageText := RsTelephonyCoverage;
           HID_USAGE_LED_NIGHT_MODE:
-            UsageText := 'Telephony Night Mode';
+            UsageText := RsTelephonyNightMode;
           HID_USAGE_LED_SEND_CALLS:
-            UsageText := 'Telephony Send Calls';
+            UsageText := RsTelephonySendCalls;
           HID_USAGE_LED_CALL_PICKUP:
-            UsageText := 'Telephony Call Pickup';
+            UsageText := RsTelephonyCallPickup;
           HID_USAGE_LED_CONFERENCE:
-            UsageText := 'Telephony Conference';
+            UsageText := RsTelephonyConference;
           HID_USAGE_LED_STAND_BY:
-            UsageText := 'Stand-by';
+            UsageText := RsStand_by;
           HID_USAGE_LED_CAMERA_ON:
-            UsageText := 'Consumer Indicator Camera On';
+            UsageText := RsConsumerIndicatorCameraOn;
           HID_USAGE_LED_CAMERA_OFF:
-            UsageText := 'Consumer Indicator Camera Off';
+            UsageText := RsConsumerIndicatorCameraOff;
           HID_USAGE_LED_ON_LINE:
-            UsageText := 'On Line';
+            UsageText := RsOnLine;
           HID_USAGE_LED_OFF_LINE:
-            UsageText := 'Off Line';
+            UsageText := RsOffLine;
           HID_USAGE_LED_BUSY:
-            UsageText := 'Busy';
+            UsageText := RsBusy;
           HID_USAGE_LED_READY:
-            UsageText := 'Ready';
+            UsageText := RsReady;
           HID_USAGE_LED_PAPER_OUT:
-            UsageText := 'Printer Indicator Paper Out';
+            UsageText := RsPrinterIndicatorPaperOut;
           HID_USAGE_LED_PAPER_JAM:
-            UsageText := 'Printer Indicator Paper Jam';
+            UsageText := RsPrinterIndicatorPaperJam;
           HID_USAGE_LED_REMOTE:
-            UsageText := 'Remote';
+            UsageText := RsRemote;
           HID_USAGE_LED_FORWARD:
-            UsageText := 'Media Transport Forward';
+            UsageText := RsMediaTransportForward;
           HID_USAGE_LED_REVERSE:
-            UsageText := 'Media Transport Reverse';
+            UsageText := RsMediaTransportReverse;
           HID_USAGE_LED_STOP:
-            UsageText := 'Media Transport Stop';
+            UsageText := RsMediaTransportStop;
           HID_USAGE_LED_REWIND:
-            UsageText := 'Media Transport Rewind';
+            UsageText := RsMediaTransportRewind;
           HID_USAGE_LED_FAST_FORWARD:
-            UsageText := 'Media Transport Fast Forward';
+            UsageText := RsMediaTransportFastForward;
           HID_USAGE_LED_PLAY:
-            UsageText := 'Media Transport Play';
+            UsageText := RsMediaTransportPlay;
           HID_USAGE_LED_PAUSE:
-            UsageText := 'Media Transport Pause';
+            UsageText := RsMediaTransportPause;
           HID_USAGE_LED_RECORD:
-            UsageText := 'Media Transport Record';
+            UsageText := RsMediaTransportRecord;
           HID_USAGE_LED_ERROR:
-            UsageText := 'Error';
+            UsageText := RsError;
           HID_USAGE_LED_SELECTED_INDICATOR:
-            UsageText := 'Selected Indicator';
+            UsageText := RsSelectedIndicator;
           HID_USAGE_LED_IN_USE_INDICATOR:
-            UsageText := 'In Use Indicator';
+            UsageText := RsInUseIndicator;
           HID_USAGE_LED_MULTI_MODE_INDICATOR:
-            UsageText := 'Multi Mode Indicator';
+            UsageText := RsMultiModeIndicator;
           HID_USAGE_LED_INDICATOR_ON:
-            UsageText := 'Indicator On';
+            UsageText := RsIndicatorOn;
           HID_USAGE_LED_INDICATOR_FLASH:
-            UsageText := 'Indicator Flash';
+            UsageText := RsIndicatorFlash;
           HID_USAGE_LED_INDICATOR_SLOW_BLINK:
-            UsageText := 'Indicator Slow Blink';
+            UsageText := RsIndicatorSlowBlink;
           HID_USAGE_LED_INDICATOR_FAST_BLINK:
-            UsageText := 'Indicator Fast Blink';
+            UsageText := RsIndicatorFastBlink;
           HID_USAGE_LED_INDICATOR_OFF:
-            UsageText := 'Indicator Off';
+            UsageText := RsIndicatorOff;
           HID_USAGE_LED_FLASH_ON_TIME:
-            UsageText := 'Flash On-Time';
+            UsageText := RsFlashOn_Time;
           HID_USAGE_LED_SLOW_BLINK_ON_TIME:
-            UsageText := 'Slow Blink On-Time';
+            UsageText := RsSlowBlinkOn_Time;
           HID_USAGE_LED_SLOW_BLINK_OFF_TIME:
-            UsageText := 'Slow Blink Off-Time';
+            UsageText := RsSlowBlinkOff_Time;
           HID_USAGE_LED_FAST_BLINK_ON_TIME:
-            UsageText := 'Fast Blink On-Time';
+            UsageText := RsFastBlinkOn_Time;
           HID_USAGE_LED_FAST_BLINK_OFF_TIME:
-            UsageText := 'Fast Blink Off-Time';
+            UsageText := RsFastBlinkOff_Time;
           HID_USAGE_LED_INDICATOR_COLOR:
-            UsageText := 'Indicator Color';
+            UsageText := RsIndicatorColor;
           HID_USAGE_LED_RED:
-            UsageText := 'Red';
+            UsageText := RsRed;
           HID_USAGE_LED_GREEN:
-            UsageText := 'Green';
+            UsageText := RsGreen;
           HID_USAGE_LED_AMBER:
-            UsageText := 'Amber';
+            UsageText := RsAmber;
           HID_USAGE_LED_GENERIC_INDICATOR:
-            UsageText := 'Generic Indicator';
+            UsageText := RsGenericIndicator;
           HID_USAGE_LED_SYSTEM_SUSPEND:
-            UsageText := 'System Suspend';
+            UsageText := RsSystemSuspend;
           HID_USAGE_LED_EXTERNAL_POWER:
-            UsageText := 'External Power Connected';
+            UsageText := RsExternalPowerConnected;
         end;
       end;
     HID_USAGE_PAGE_BUTTON:
       begin
-        UsagePageText := 'Button';
+        UsagePageText := RsButton;
         case Usage of
           HID_USAGE_BUTTON_NO_BUTTON:
-            UsageText := 'No Button Pressed';
+            UsageText := RsNoButtonPressed;
             // Usage 1..65535 is the button number
         end;
       end;
     HID_USAGE_PAGE_ORDINAL:
       begin
-        UsagePageText := 'Ordinal';
+        UsagePageText := RsOrdinal;
         case Usage of
           HID_USAGE_ORDINAL_RESERVED:
-            UsageText := 'Reserved';
+            UsageText := RsReserved;
             // Usage 1..65535 is the ordinal number
         end;
       end;
     HID_USAGE_PAGE_TELEPHONY:
       begin
-        UsagePageText := 'Telephony';
+        UsagePageText := RsTelephony;
         case Usage of
           HID_USAGE_TELEPHONY_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_TELEPHONY_PHONE:
-            UsageText := 'Phone';
+            UsageText := RsPhone;
           HID_USAGE_TELEPHONY_ANSWERING_MACHINE:
-            UsageText := 'Answering Machine';
+            UsageText := RsAnsweringMachine;
           HID_USAGE_TELEPHONY_MESSAGE_CONTROLS:
-            UsageText := 'Message Controls';
+            UsageText := RsMessageControls;
           HID_USAGE_TELEPHONY_HANDSET:
-            UsageText := 'Handset';
+            UsageText := RsHandset;
           HID_USAGE_TELEPHONY_HEADSET:
-            UsageText := 'Headset';
+            UsageText := RsHeadset;
           HID_USAGE_TELEPHONY_KEYPAD:
-            UsageText := 'Keypad';
+            UsageText := RsKeypad;
           HID_USAGE_TELEPHONY_PROGRAMMABLE_BUTTON:
-            UsageText := 'Programmable Button';
+            UsageText := RsProgrammableButton;
           HID_USAGE_TELEPHONY_HOOK_SWITCH:
-            UsageText := 'Hook Switch';
+            UsageText := RsHookSwitch;
           HID_USAGE_TELEPHONY_FLASH:
-            UsageText := 'Flash';
+            UsageText := RsFlash;
           HID_USAGE_TELEPHONY_FEATURE:
-            UsageText := 'Feature';
+            UsageText := RsFeature;
           HID_USAGE_TELEPHONY_HOLD:
-            UsageText := 'Hold';
+            UsageText := RsHold;
           HID_USAGE_TELEPHONY_REDIAL:
-            UsageText := 'Redial';
+            UsageText := RsRedial;
           HID_USAGE_TELEPHONY_TRANSFER:
-            UsageText := 'Transfer';
+            UsageText := RsTransfer;
           HID_USAGE_TELEPHONY_DROP:
-            UsageText := 'Drop';
+            UsageText := RsDrop;
           HID_USAGE_TELEPHONY_PARK:
-            UsageText := 'Park';
+            UsageText := RsPark;
           HID_USAGE_TELEPHONY_FORWARD_CALLS:
-            UsageText := 'Forward Calls';
+            UsageText := RsForwardCalls;
           HID_USAGE_TELEPHONY_ALTERNATE_FUNCTION:
-            UsageText := 'Alternate Function';
+            UsageText := RsAlternateFunction;
           HID_USAGE_TELEPHONY_LINE:
-            UsageText := 'Line';
+            UsageText := RsLine;
           HID_USAGE_TELEPHONY_SPEAKER_PHONE:
-            UsageText := 'Speaker Phone';
+            UsageText := RsSpeakerPhone;
           HID_USAGE_TELEPHONY_CONFERENCE:
-            UsageText := 'Conference';
+            UsageText := RsConference;
           HID_USAGE_TELEPHONY_RING_ENABLE:
-            UsageText := 'Ring Enable';
+            UsageText := RsRingEnable;
           HID_USAGE_TELEPHONY_RING_SELECT:
-            UsageText := 'Ring Select';
+            UsageText := RsRingSelect;
           HID_USAGE_TELEPHONY_PHONE_MUTE:
-            UsageText := 'Phone Mute';
+            UsageText := RsPhoneMute;
           HID_USAGE_TELEPHONY_CALLER_ID:
-            UsageText := 'Caller ID';
+            UsageText := RsCallerID;
           HID_USAGE_TELEPHONY_SEND:
-            UsageText := 'Send';
+            UsageText := RsSend;
           HID_USAGE_TELEPHONY_SPEED_DIAL:
-            UsageText := 'Speed Dial';
+            UsageText := RsSpeedDial;
           HID_USAGE_TELEPHONY_STORE_NUMBER:
-            UsageText := 'Store Number';
+            UsageText := RsStoreNumber;
           HID_USAGE_TELEPHONY_RECALL_NUMBER:
-            UsageText := 'Recall Number';
+            UsageText := RsRecallNumber;
           HID_USAGE_TELEPHONY_PHONE_DIRECTORY:
-            UsageText := 'Phone Directory';
+            UsageText := RsPhoneDirectory;
           HID_USAGE_TELEPHONY_VOICE_MAIL:
-            UsageText := 'Voice Mail';
+            UsageText := RsVoiceMail;
           HID_USAGE_TELEPHONY_SCREEN_CALLS:
-            UsageText := 'Screen Calls';
+            UsageText := RsScreenCalls;
           HID_USAGE_TELEPHONY_DO_NOT_DISTURB:
-            UsageText := 'Do Not Disturb';
+            UsageText := RsDoNotDisturb;
           HID_USAGE_TELEPHONY_MESSAGE:
-            UsageText := 'Message';
+            UsageText := RsMessage;
           HID_USAGE_TELEPHONY_ANSWER_ON_OFF:
-            UsageText := 'Answer On/Off';
+            UsageText := RsAnswerOn_Off;
           HID_USAGE_TELEPHONY_INSIDE_DIAL_TONE:
-            UsageText := 'Inside Dial Tone';
+            UsageText := RsInsideDialTone;
           HID_USAGE_TELEPHONY_OUTSIDE_DIAL_TONE:
-            UsageText := 'Outside Dial Tone';
+            UsageText := RsOutsideDialTone;
           HID_USAGE_TELEPHONY_INSIDE_RING_TONE:
-            UsageText := 'Inside Ring Tone';
+            UsageText := RsInsideRingTone;
           HID_USAGE_TELEPHONY_OUTSIDE_RING_TONE:
-            UsageText := 'Outside Ring Tone';
+            UsageText := RsOutsideRingTone;
           HID_USAGE_TELEPHONY_PRIORITY_RING_TONE:
-            UsageText := 'Priority Ring Tone';
+            UsageText := RsPriorityRingTone;
           HID_USAGE_TELEPHONY_INSIDE_RINGBACK:
-            UsageText := 'Inside Ringback';
+            UsageText := RsInsideRingback;
           HID_USAGE_TELEPHONY_PRIORITY_RINGBACK:
-            UsageText := 'Priority Ringback';
+            UsageText := RsPriorityRingback;
           HID_USAGE_TELEPHONY_LINE_BUSY_TONE:
-            UsageText := 'Line Busy Tone';
+            UsageText := RsLineBusyTone;
           HID_USAGE_TELEPHONY_REORDER_TONE:
-            UsageText := 'Reorder Tone';
+            UsageText := RsReorderTone;
           HID_USAGE_TELEPHONY_CALL_WAITING_TONE:
-            UsageText := 'Call Waiting Tone';
+            UsageText := RsCallWaitingTone;
           HID_USAGE_TELEPHONY_CONFIRMATION_TONE_1:
-            UsageText := 'Confirmation Tone 1';
+            UsageText := RsConfirmationTone1;
           HID_USAGE_TELEPHONY_CONFIRMATION_TONE_2:
-            UsageText := 'Confirmation Tone 2';
+            UsageText := RsConfirmationTone2;
           HID_USAGE_TELEPHONY_TONES_OFF:
-            UsageText := 'Tones Off';
+            UsageText := RsTonesOff;
           HID_USAGE_TELEPHONY_OUTSIDE_RINGBACK:
-            UsageText := 'Outside Ringback';
+            UsageText := RsOutsideRingback;
           HID_USAGE_TELEPHONY_RINGER:
-            UsageText := 'Ringer';
+            UsageText := RsRinger;
           HID_USAGE_TELEPHONY_KEY_0:
-            UsageText := 'Key 0';
+            UsageText := RsKey0;
           HID_USAGE_TELEPHONY_KEY_1:
-            UsageText := 'Key 1';
+            UsageText := RsKey1;
           HID_USAGE_TELEPHONY_KEY_2:
-            UsageText := 'Key 2';
+            UsageText := RsKey2;
           HID_USAGE_TELEPHONY_KEY_3:
-            UsageText := 'Key 3';
+            UsageText := RsKey3;
           HID_USAGE_TELEPHONY_KEY_4:
-            UsageText := 'Key 4';
+            UsageText := RsKey4;
           HID_USAGE_TELEPHONY_KEY_5:
-            UsageText := 'Key 5';
+            UsageText := RsKey5;
           HID_USAGE_TELEPHONY_KEY_6:
-            UsageText := 'Key 6';
+            UsageText := RsKey6;
           HID_USAGE_TELEPHONY_KEY_7:
-            UsageText := 'Key 7';
+            UsageText := RsKey7;
           HID_USAGE_TELEPHONY_KEY_8:
-            UsageText := 'Key 8';
+            UsageText := RsKey8;
           HID_USAGE_TELEPHONY_KEY_9:
-            UsageText := 'Key 9';
+            UsageText := RsKey9;
           HID_USAGE_TELEPHONY_KEY_STAR:
-            UsageText := 'Key *';
+            UsageText := RsKeyStar;
           HID_USAGE_TELEPHONY_KEY_POUND:
-            UsageText := 'Key #';
+            UsageText := RsKeyPound;
           HID_USAGE_TELEPHONY_KEY_A:
-            UsageText := 'Key A';
+            UsageText := RsKeyA;
           HID_USAGE_TELEPHONY_KEY_B:
-            UsageText := 'Key B';
+            UsageText := RsKeyB;
           HID_USAGE_TELEPHONY_KEY_C:
-            UsageText := 'Key C';
+            UsageText := RsKeyC;
           HID_USAGE_TELEPHONY_KEY_D:
-            UsageText := 'Key D';
+            UsageText := RsKeyD;
         end;
       end;
     HID_USAGE_PAGE_CONSUMER:
       begin
-        UsagePageText := 'Consumer';
+        UsagePageText := RsConsumer;
         case Usage of
           HID_USAGE_CONSUMER_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_CONSUMER_CONSUMER_CONTROL:
-            UsageText := 'Consumer Control';
+            UsageText := RsConsumerControl;
           HID_USAGE_CONSUMER_NUMERIC_KEY_PAD:
-            UsageText := 'Numeric Keypad';
+            UsageText := RsNumericKeypad;
           HID_USAGE_CONSUMER_PROGRAMMABLE_BUTTONS:
-            UsageText := 'Programmable Buttons';
+            UsageText := RsProgrammableButtons;
           HID_USAGE_CONSUMER_MICROPHONE:
-            UsageText := 'Microphone';
+            UsageText := RsMicrophone;
           HID_USAGE_CONSUMER_HEADPHONE:
-            UsageText := 'Headphone';
+            UsageText := RsHeadphone;
           HID_USAGE_CONSUMER_GRAPHIC_EQUALIZER:
-            UsageText := 'Graphic Equalizer';
+            UsageText := RsGraphicEqualizer;
           HID_USAGE_CONSUMER_PLUS_10:
-            UsageText := '+10';
+            UsageText := RsPlus10;
           HID_USAGE_CONSUMER_PLUS_100:
-            UsageText := '+100';
+            UsageText := RsPlus100;
           HID_USAGE_CONSUMER_AM_PM:
-            UsageText := 'AM/PM';
+            UsageText := RsAM_PM;
           HID_USAGE_CONSUMER_POWER:
-            UsageText := 'Power';
+            UsageText := RsPower;
           HID_USAGE_CONSUMER_RESET:
-            UsageText := 'Reset';
+            UsageText := RsReset;
           HID_USAGE_CONSUMER_SLEEP:
-            UsageText := 'Sleep';
+            UsageText := RsSleep;
           HID_USAGE_CONSUMER_SLEEP_AFTER:
-            UsageText := 'Sleep After';
+            UsageText := RsSleepAfter;
           HID_USAGE_CONSUMER_SLEEP_MODE:
-            UsageText := 'Sleep Mode';
+            UsageText := RsSleepMode;
           HID_USAGE_CONSUMER_ILLUMINATION:
-            UsageText := 'Illumination';
+            UsageText := RsIllumination;
           HID_USAGE_CONSUMER_FUNCTION_BUTTONS:
-            UsageText := 'Function Buttons';
+            UsageText := RsFunctionButtons;
           HID_USAGE_CONSUMER_MENU:
-            UsageText := 'Menu';
+            UsageText := RsMenu;
           HID_USAGE_CONSUMER_MENU_PICK:
-            UsageText := 'Menu Pick';
+            UsageText := RsMenuPick;
           HID_USAGE_CONSUMER_MENU_UP:
-            UsageText := 'Menu Up';
+            UsageText := RsMenuUp;
           HID_USAGE_CONSUMER_MENU_DOWN:
-            UsageText := 'Menu Down';
+            UsageText := RsMenuDown;
           HID_USAGE_CONSUMER_MENU_LEFT:
-            UsageText := 'Menu Left';
+            UsageText := RsMenuLeft;
           HID_USAGE_CONSUMER_MENU_RIGHT:
-            UsageText := 'Menu Right';
+            UsageText := RsMenuRight;
           HID_USAGE_CONSUMER_MENU_ESCAPE:
-            UsageText := 'Menu Escape';
+            UsageText := RsMenuEscape;
           HID_USAGE_CONSUMER_MENU_VALUE_INCREASE:
-            UsageText := 'Menu Value Increase';
+            UsageText := RsMenuValueIncrease;
           HID_USAGE_CONSUMER_MENU_VALUE_DECREASE:
-            UsageText := 'Menu Value Decrease';
+            UsageText := RsMenuValueDecrease;
           HID_USAGE_CONSUMER_DATA_ON_SCREEN:
-            UsageText := 'Data On Screen';
+            UsageText := RsDataOnScreen;
           HID_USAGE_CONSUMER_CLOSED_CAPTION:
-            UsageText := 'Closed Caption';
+            UsageText := RsClosedCaption;
           HID_USAGE_CONSUMER_CLOSED_CAPTION_SELECT:
-            UsageText := 'Closed Caption Select';
+            UsageText := RsClosedCaptionSelect;
           HID_USAGE_CONSUMER_VCR_TV:
-            UsageText := 'VCR/TV';
+            UsageText := RsVCR_TV;
           HID_USAGE_CONSUMER_BROADCAST_MODE:
-            UsageText := 'Broadcast Mode';
+            UsageText := RsBroadcastMode;
           HID_USAGE_CONSUMER_SNAPSHOT:
-            UsageText := 'Snapshot';
+            UsageText := RsSnapshot;
           HID_USAGE_CONSUMER_STILL:
-            UsageText := 'Still';
+            UsageText := RsStill;
           HID_USAGE_CONSUMER_SELECTION:
-            UsageText := 'Selection';
+            UsageText := RsSelection;
           HID_USAGE_CONSUMER_ASSIGN_SELECTION:
-            UsageText := 'Assign Selection';
+            UsageText := RsAssignSelection;
           HID_USAGE_CONSUMER_MODE_STEP:
-            UsageText := 'Mode Step';
+            UsageText := RsModeStep;
           HID_USAGE_CONSUMER_RECALL_LAST:
-            UsageText := 'Recall Last';
+            UsageText := RsRecallLast;
           HID_USAGE_CONSUMER_ENTER_CHANNEL:
-            UsageText := 'Enter Channel';
+            UsageText := RsEnterChannel;
           HID_USAGE_CONSUMER_ORDER_MOVIE:
-            UsageText := 'Order Movie';
+            UsageText := RsOrderMovie;
           HID_USAGE_CONSUMER_CHANNEL:
-            UsageText := 'Channel';
+            UsageText := RsChannel;
           HID_USAGE_CONSUMER_MEDIA_SELECTION:
-            UsageText := 'Media Selection';
+            UsageText := RsMediaSelection;
           HID_USAGE_CONSUMER_MEDIA_SELECT_COMPUTER:
-            UsageText := 'Media Select Computer';
+            UsageText := RsMediaSelectComputer;
           HID_USAGE_CONSUMER_MEDIA_SELECT_TV:
-            UsageText := 'Media Select TV';
+            UsageText := RsMediaSelectTV;
           HID_USAGE_CONSUMER_MEDIA_SELECT_WWW:
-            UsageText := 'Media Select WWW';
+            UsageText := RsMediaSelectWWW;
           HID_USAGE_CONSUMER_MEDIA_SELECT_DVD:
-            UsageText := 'Media Select DVD';
+            UsageText := RsMediaSelectDVD;
           HID_USAGE_CONSUMER_MEDIA_SELECT_TELEPHONE:
-            UsageText := 'Media Select Telephone';
+            UsageText := RsMediaSelectTelephone;
           HID_USAGE_CONSUMER_MEDIA_SELECT_PROGRAM_GUIDE:
-            UsageText := 'Media Select Program Guide';
+            UsageText := RsMediaSelectProgramGuide;
           HID_USAGE_CONSUMER_MEDIA_SELECT_VIDEO_PHONE:
-            UsageText := 'Media Select Video Phone';
+            UsageText := RsMediaSelectVideoPhone;
           HID_USAGE_CONSUMER_MEDIA_SELECT_GAMES:
-            UsageText := 'Media Select Games';
+            UsageText := RsMediaSelectGames;
           HID_USAGE_CONSUMER_MEDIA_SELECT_MESSAGES:
-            UsageText := 'Media Select Messages';
+            UsageText := RsMediaSelectMessages;
           HID_USAGE_CONSUMER_MEDIA_SELECT_CD:
-            UsageText := 'Media Select CD';
+            UsageText := RsMediaSelectCD;
           HID_USAGE_CONSUMER_MEDIA_SELECT_VCR:
-            UsageText := 'Media Select VCR';
+            UsageText := RsMediaSelectVCR;
           HID_USAGE_CONSUMER_MEDIA_SELECT_TUNER:
-            UsageText := 'Media Select Tuner';
+            UsageText := RsMediaSelectTuner;
           HID_USAGE_CONSUMER_QUIT:
-            UsageText := 'Quit';
+            UsageText := RsQuit;
           HID_USAGE_CONSUMER_HELP:
-            UsageText := 'Help';
+            UsageText := RsHelp;
           HID_USAGE_CONSUMER_MEDIA_SELECT_TAPE:
-            UsageText := 'Media Select Tape';
+            UsageText := RsMediaSelectTape;
           HID_USAGE_CONSUMER_MEDIA_SELECT_CABLE:
-            UsageText := 'Media Select Cable';
+            UsageText := RsMediaSelectCable;
           HID_USAGE_CONSUMER_MEDIA_SELECT_SATELLITE:
-            UsageText := 'Media Select Satellite';
+            UsageText := RsMediaSelectSatellite;
           HID_USAGE_CONSUMER_MEDIA_SELECT_SECURITY:
-            UsageText := 'Media Select Security';
+            UsageText := RsMediaSelectSecurity;
           HID_USAGE_CONSUMER_MEDIA_SELECT_HOME:
-            UsageText := 'Media Select Home';
+            UsageText := RsMediaSelectHome;
           HID_USAGE_CONSUMER_MEDIA_SELECT_CALL:
-            UsageText := 'Media Select Call';
+            UsageText := RsMediaSelectCall;
           HID_USAGE_CONSUMER_CHANNEL_INCREMENT:
-            UsageText := 'Channel Increment';
+            UsageText := RsChannelIncrement;
           HID_USAGE_CONSUMER_CHANNEL_DECREMENT:
-            UsageText := 'Channel Decrement';
+            UsageText := RsChannelDecrement;
           HID_USAGE_CONSUMER_MEDIA_SELECT_SAP:
-            UsageText := 'Media Select SAP';
+            UsageText := RsMediaSelectSAP;
           HID_USAGE_CONSUMER_RESERVED:
-            UsageText := 'Reserved';
+            UsageText := RsReserved;
           HID_USAGE_CONSUMER_VCR_PLUS:
-            UsageText := 'VCR Plus';
+            UsageText := RsVCRPlus;
           HID_USAGE_CONSUMER_ONCE:
-            UsageText := 'Once';
+            UsageText := RsOnce;
           HID_USAGE_CONSUMER_DAILY:
-            UsageText := 'Daily';
+            UsageText := RsDaily;
           HID_USAGE_CONSUMER_WEEKLY:
-            UsageText := 'Weekly';
+            UsageText := RsWeekly;
           HID_USAGE_CONSUMER_MONTHLY:
-            UsageText := 'Monthly';
+            UsageText := RsMonthly;
           HID_USAGE_CONSUMER_PLAY:
-            UsageText := 'Play';
+            UsageText := RsPlay;
           HID_USAGE_CONSUMER_PAUSE:
-            UsageText := 'Pause';
+            UsageText := RsPause;
           HID_USAGE_CONSUMER_RECORD:
-            UsageText := 'Record';
+            UsageText := RsRecord;
           HID_USAGE_CONSUMER_FAST_FORWARD:
-            UsageText := 'Fast Forward';
+            UsageText := RsFastForward;
           HID_USAGE_CONSUMER_REWIND:
-            UsageText := 'Rewind';
+            UsageText := RsRewind;
           HID_USAGE_CONSUMER_SCAN_NEXT_TRACK:
-            UsageText := 'Scan Next Track';
+            UsageText := RsScanNextTrack;
           HID_USAGE_CONSUMER_SCAN_PREV_TRACK:
-            UsageText := 'Scan Previous Track';
+            UsageText := RsScanPreviousTrack;
           HID_USAGE_CONSUMER_STOP:
-            UsageText := 'Stop';
+            UsageText := RsStop;
           HID_USAGE_CONSUMER_EJECT:
-            UsageText := 'Eject';
+            UsageText := RsEject;
           HID_USAGE_CONSUMER_RANDOM_PLAY:
-            UsageText := 'Random Play';
+            UsageText := RsRandomPlay;
           HID_USAGE_CONSUMER_SELECT_DISC:
-            UsageText := 'Select Disc';
+            UsageText := RsSelectDisc;
           HID_USAGE_CONSUMER_ENTER_DISC:
-            UsageText := 'Enter Disc';
+            UsageText := RsEnterDisc;
           HID_USAGE_CONSUMER_REPEAT:
-            UsageText := 'Repeat';
+            UsageText := RsRepeat;
           HID_USAGE_CONSUMER_TRACKING:
-            UsageText := 'Tracking';
+            UsageText := RsTracking;
           HID_USAGE_CONSUMER_TRACK_NORMAL:
-            UsageText := 'Track Normal';
+            UsageText := RsTrackNormal;
           HID_USAGE_CONSUMER_SLOW_TRACKING:
-            UsageText := 'Slow Tracking';
+            UsageText := RsSlowTracking;
           HID_USAGE_CONSUMER_FRAME_FORWARD:
-            UsageText := 'Frame Forward';
+            UsageText := RsFrameForward;
           HID_USAGE_CONSUMER_FRAME_BACK:
-            UsageText := 'Frame Back';
+            UsageText := RsFrameBack;
           HID_USAGE_CONSUMER_MARK:
-            UsageText := 'Mark';
+            UsageText := RsMark;
           HID_USAGE_CONSUMER_CLEAR_MARK:
-            UsageText := 'Clear Mark';
+            UsageText := RsClearMark;
           HID_USAGE_CONSUMER_REPEAT_FROM_MARK:
-            UsageText := 'Repeat from Mark';
+            UsageText := RsRepeatfromMark;
           HID_USAGE_CONSUMER_RETURN_TO_MARK:
-            UsageText := 'Return to Mark';
+            UsageText := RsReturntoMark;
           HID_USAGE_CONSUMER_SEARCH_MARK_FORWARD:
-            UsageText := 'Search Mark Forward';
+            UsageText := RsSearchMarkForward;
           HID_USAGE_CONSUMER_SEARCK_MARK_BACKWARDS:
-            UsageText := 'Search Mark Backwards';
+            UsageText := RsSearchMarkBackwards;
           HID_USAGE_CONSUMER_COUNTER_RESET:
-            UsageText := 'Counter Reset';
+            UsageText := RsCounterReset;
           HID_USAGE_CONSUMER_SHOW_COUNTER:
-            UsageText := 'Show Counter';
+            UsageText := RsShowCounter;
           HID_USAGE_CONSUMER_TRACKING_INCREMENT:
-            UsageText := 'Tracking Increment';
+            UsageText := RsTrackingIncrement;
           HID_USAGE_CONSUMER_TRACKING_DECREMENT:
-            UsageText := 'Tracking Decrement';
+            UsageText := RsTrackingDecrement;
           HID_USAGE_CONSUMER_STOP_EJECT:
-            UsageText := 'Stop/Eject';
+            UsageText := RsStop_Eject;
           HID_USAGE_CONSUMER_PLAY_PAUSE:
-            UsageText := 'Play/Pause';
+            UsageText := RsPlay_Pause;
           HID_USAGE_CONSUMER_PLAY_SKIP:
-            UsageText := 'Play/Skip';
+            UsageText := RsPlay_Skip;
           HID_USAGE_CONSUMER_VOLUME:
-            UsageText := 'Volume';
+            UsageText := RsVolume;
           HID_USAGE_CONSUMER_BALANCE:
-            UsageText := 'Balance';
+            UsageText := RsBalance;
           HID_USAGE_CONSUMER_MUTE:
-            UsageText := 'Mute';
+            UsageText := RsMute;
           HID_USAGE_CONSUMER_BASS:
-            UsageText := 'Bass';
+            UsageText := RsBass;
           HID_USAGE_CONSUMER_TREBLE:
-            UsageText := 'Treble';
+            UsageText := RsTreble;
           HID_USAGE_CONSUMER_BASS_BOOST:
-            UsageText := 'Bass Boost';
+            UsageText := RsBassBoost;
           HID_USAGE_CONSUMER_SURROUND_MODE:
-            UsageText := 'Surround Mode';
+            UsageText := RsSurroundMode;
           HID_USAGE_CONSUMER_LOUDNESS:
-            UsageText := 'Loudness';
+            UsageText := RsLoudness;
           HID_USAGE_CONSUMER_MPX:
-            UsageText := 'MPX';
+            UsageText := RsMPX;
           HID_USAGE_CONSUMER_VOLUME_INCREMENT:
-            UsageText := 'Volume Increment';
+            UsageText := RsVolumeIncrement;
           HID_USAGE_CONSUMER_VOLUME_DECREMENT:
-            UsageText := 'Volume Decrement';
+            UsageText := RsVolumeDecrement;
           HID_USAGE_CONSUMER_SPEED_SELECT:
-            UsageText := 'Speed Select';
+            UsageText := RsSpeedSelect;
           HID_USAGE_CONSUMER_PLAYBACK_SPEED:
-            UsageText := 'Playback Speed';
+            UsageText := RsPlaybackSpeed;
           HID_USAGE_CONSUMER_STANDARD_PLAY:
-            UsageText := 'Standard Play';
+            UsageText := RsStandardPlay;
           HID_USAGE_CONSUMER_LONG_PLAY:
-            UsageText := 'Long Play';
+            UsageText := RsLongPlay;
           HID_USAGE_CONSUMER_EXTENDED_PLAY:
-            UsageText := 'Extended Play';
+            UsageText := RsExtendedPlay;
           HID_USAGE_CONSUMER_SLOW:
-            UsageText := 'Slow';
+            UsageText := RsSlow;
           HID_USAGE_CONSUMER_FAN_ENABLE:
-            UsageText := 'Fan Enable';
+            UsageText := RsFanEnable;
           HID_USAGE_CONSUMER_FAN_SPEED:
-            UsageText := 'Fan Speed';
+            UsageText := RsFanSpeed;
           HID_USAGE_CONSUMER_LIGHT_ENABLE:
-            UsageText := 'Light Enable';
+            UsageText := RsLightEnable;
           HID_USAGE_CONSUMER_LIGHT_ILLUMINATION_LEVEL:
-            UsageText := 'Light Illumination Level';
+            UsageText := RsLightIlluminationLevel;
           HID_USAGE_CONSUMER_CLIMATE_CONTROL_ENABLE:
-            UsageText := 'Climate Control Enable';
+            UsageText := RsClimateControlEnable;
           HID_USAGE_CONSUMER_ROOM_TEMPERATURE:
-            UsageText := 'Room Temperature';
+            UsageText := RsRoomTemperature;
           HID_USAGE_CONSUMER_SECURITY_ENABLE:
-            UsageText := 'Security Enable';
+            UsageText := RsSecurityEnable;
           HID_USAGE_CONSUMER_FIRE_ALARM:
-            UsageText := 'Fire Alarm';
+            UsageText := RsFireAlarm;
           HID_USAGE_CONSUMER_POLICE_ALARM:
-            UsageText := 'Police Alarm';
+            UsageText := RsPoliceAlarm;
           HID_USAGE_CONSUMER_PROXIMITY:
-            UsageText := 'Proximity';
+            UsageText := RsProximity;
           HID_USAGE_CONSUMER_MOTION:
-            UsageText := 'Motion';
+            UsageText := RsMotion;
           HID_USAGE_CONSUMER_DURESS_ALARM:
-            UsageText := 'Duress Alarm';
+            UsageText := RsDuressAlarm;
           HID_USAGE_CONSUMER_HOLDUP_ALARM:
-            UsageText := 'Holdup Alarm';
+            UsageText := RsHoldupAlarm;
           HID_USAGE_CONSUMER_MEDICAL_ALARM:
-            UsageText := 'Medical Alarm';
+            UsageText := RsMedicalAlarm;
           HID_USAGE_CONSUMER_BALANCE_RIGHT:
-            UsageText := 'Balance Right';
+            UsageText := RsBalanceRight;
           HID_USAGE_CONSUMER_BALANCE_LEFT:
-            UsageText := 'Balance Left';
+            UsageText := RsBalanceLeft;
           HID_USAGE_CONSUMER_BASS_INCREMENT:
-            UsageText := 'Bass Increment';
+            UsageText := RsBassIncrement;
           HID_USAGE_CONSUMER_BASS_DECREMENT:
-            UsageText := 'Bass Decrement';
+            UsageText := RsBassDecrement;
           HID_USAGE_CONSUMER_TREBLE_INCREMENT:
-            UsageText := 'Treble Increment';
+            UsageText := RsTrebleIncrement;
           HID_USAGE_CONSUMER_TREBLE_DECREMENT:
-            UsageText := 'Treble Decrement';
+            UsageText := RsTrebleDecrement;
           HID_USAGE_CONSUMER_SPEAKER_SYSTEM:
-            UsageText := 'Speaker System';
+            UsageText := RsSpeakerSystem;
           HID_USAGE_CONSUMER_CHANNEL_LEFT:
-            UsageText := 'Channel Left';
+            UsageText := RsChannelLeft;
           HID_USAGE_CONSUMER_CHANNEL_RIGHT:
-            UsageText := 'Channel Right';
+            UsageText := RsChannelRight;
           HID_USAGE_CONSUMER_CHANNEL_CENTER:
-            UsageText := 'Channel Center';
+            UsageText := RsChannelCenter;
           HID_USAGE_CONSUMER_CHANNEL_FRONT:
-            UsageText := 'Channel Front';
+            UsageText := RsChannelFront;
           HID_USAGE_CONSUMER_CHANNEL_CENTER_FRONT:
-            UsageText := 'Channel Center Front';
+            UsageText := RsChannelCenterFront;
           HID_USAGE_CONSUMER_CHANNEL_SIDE:
-            UsageText := 'Channel Side';
+            UsageText := RsChannelSide;
           HID_USAGE_CONSUMER_CHANNEL_SURROUND:
-            UsageText := 'Channel Surround';
+            UsageText := RsChannelSurround;
           HID_USAGE_CONSUMER_CHANNEL_LOW_FREQ_ENH:
-            UsageText := 'Channel Low Frequency Enhancement';
+            UsageText := RsChannelLowFrequencyEnhancement;
           HID_USAGE_CONSUMER_CHANNEL_TOP:
-            UsageText := 'Channel Top';
+            UsageText := RsChannelTop;
           HID_USAGE_CONSUMER_CHANNEL_UNKNOWN:
-            UsageText := 'Channel Unknown';
+            UsageText := RsChannelUnknown;
           HID_USAGE_CONSUMER_SUB_CHANNEL:
-            UsageText := 'Sub-channel';
+            UsageText := RsSub_channel;
           HID_USAGE_CONSUMER_SUB_CHANNEL_INCREMENT:
-            UsageText := 'Sub-channel Increment';
+            UsageText := RsSub_channelIncrement;
           HID_USAGE_CONSUMER_SUB_CHANNEL_DECREMENT:
-            UsageText := 'Sub-channel Decrement';
+            UsageText := RsSub_channelDecrement;
           HID_USAGE_CONSUMER_ALTERNATE_AUDIO_INCREMENT:
-            UsageText := 'Alternate Audio Increment';
+            UsageText := RsAlternateAudioIncrement;
           HID_USAGE_CONSUMER_ALTERNATE_AUDIO_DECREMENT:
-            UsageText := 'Alternate Audio Decrement';
+            UsageText := RsAlternateAudioDecrement;
           HID_USAGE_CONSUMER_APP_LAUNCH_BUTTONS:
-            UsageText := 'Application Launch Buttons';
+            UsageText := RsApplicationLaunchButtons;
           HID_USAGE_CONSUMER_AL_LAUNCH_BUTTON_CONFIG_TOOL:
-            UsageText := 'Application Launch Button Configuration Tool';
+            UsageText := RsApplicationLaunchButtonConfigurationTool;
           HID_USAGE_CONSUMER_AL_PROG_BUTTON_CONFIG:
-            UsageText := 'Application Launch Programmable Button Configuration';
+            UsageText := RsApplicationLaunchProgrammableButtonConfiguration;
           HID_USAGE_CONSUMER_AL_CONSUMER_CONTROL_CONFIG:
-            UsageText := 'Application Launch Consumer Control Configuration';
+            UsageText := RsApplicationLaunchConsumerControlConfiguration;
           HID_USAGE_CONSUMER_AL_WORD_PROCESSOR:
-            UsageText := 'Application Launch Word Processor';
+            UsageText := RsApplicationLaunchWordProcessor;
           HID_USAGE_CONSUMER_AL_TEXT_EDITOR:
-            UsageText := 'Application Launch Text Editor';
+            UsageText := RsApplicationLaunchTextEditor;
           HID_USAGE_CONSUMER_AL_SPREADSHEET:
-            UsageText := 'Application Launch Spreadsheet';
+            UsageText := RsApplicationLaunchSpreadsheet;
           HID_USAGE_CONSUMER_AL_GRAPHICS_EDITOR:
-            UsageText := 'Application Launch Graphics Editor';
+            UsageText := RsApplicationLaunchGraphicsEditor;
           HID_USAGE_CONSUMER_AL_PRESENTATION_APP:
-            UsageText := 'Application Launch Presentation Application';
+            UsageText := RsApplicationLaunchPresentationApplication;
           HID_USAGE_CONSUMER_AL_DATABASE_APP:
-            UsageText := 'Application Launch Database Application';
+            UsageText := RsApplicationLaunchDatabaseApplication;
           HID_USAGE_CONSUMER_AL_EMAIL_READER:
-            UsageText := 'Application Launch Email Reader';
+            UsageText := RsApplicationLaunchEmailReader;
           HID_USAGE_CONSUMER_AL_NEWSREADER:
-            UsageText := 'Application Launch Newsreader';
+            UsageText := RsApplicationLaunchNewsreader;
           HID_USAGE_CONSUMER_AL_VOICEMAIL:
-            UsageText := 'Application Launch Voicemail';
+            UsageText := RsApplicationLaunchVoicemail;
           HID_USAGE_CONSUMER_AL_CONTACTS_ADDESSBOOK:
-            UsageText := 'Application Launch Contacts/Addressbook';
+            UsageText := RsApplicationLaunchContacts_Addressbook;
           HID_USAGE_CONSUMER_AL_CALENDAR_SCHEDULE:
-            UsageText := 'Application Launch Calendar/Schedule';
+            UsageText := RsApplicationLaunchCalendar_Schedule;
           HID_USAGE_CONSUMER_AL_TASK_PROJECT_MANAGER:
-            UsageText := 'Application Launch Task/Project Manager';
+            UsageText := RsApplicationLaunchTask_ProjectManager;
           HID_USAGE_CONSUMER_AL_LOG_JOURNAL_TIMECARD:
-            UsageText := 'Application Launch Log/Journal/Timecard';
+            UsageText := RsApplicationLaunchLog_Journal_Timecard;
           HID_USAGE_CONSUMER_AL_CHECKBOOK_FINANCE:
-            UsageText := 'Application Launch Checkbook/Finance';
+            UsageText := RsApplicationLaunchCheckbook_Finance;
           HID_USAGE_CONSUMER_AL_CALCULATOR:
-            UsageText := 'Application Launch Calculator';
+            UsageText := RsApplicationLaunchCalculator;
           HID_USAGE_CONSUMER_AL_AV_CAPTURE_PLAYBACK:
-            UsageText := 'Application Launch A/V Capture/Playback';
+            UsageText := RsApplicationLaunchA_VCapture_Playback;
           HID_USAGE_CONSUMER_AL_LOCAL_MACHINE_BROWSER:
-            UsageText := 'Application Launch Local Machine Browser';
+            UsageText := RsApplicationLaunchLocalMachineBrowser;
           HID_USAGE_CONSUMER_AL_LAN_WAN_BROWSER:
-            UsageText := 'Application Launch LAN/WAN Browser';
+            UsageText := RsApplicationLaunchLAN_WANBrowser;
           HID_USAGE_CONSUMER_AL_INTERNET_BROWSER:
-            UsageText := 'Application Launch Internet Browser';
+            UsageText := RsApplicationLaunchInternetBrowser;
           HID_USAGE_CONSUMER_AL_REMOTE_NETWORKING_ISP_CONNECT:
-            UsageText := 'Application Launch Remote Networking/ISP Connect';
+            UsageText := RsApplicationLaunchRemoteNetworking_ISPConnect;
           HID_USAGE_CONSUMER_AL_NETWORK_CONFERENCE:
-            UsageText := 'Application Launch Network Conference';
+            UsageText := RsApplicationLaunchNetworkConference;
           HID_USAGE_CONSUMER_AL_NETWORK_CHAT:
-            UsageText := 'Application Launch Network Chat';
+            UsageText := RsApplicationLaunchNetworkChat;
           HID_USAGE_CONSUMER_AL_TELEPHONY_DIALER:
-            UsageText := 'Application Launch Telephony/Dialer';
+            UsageText := RsApplicationLaunchTelephony_Dialer;
           HID_USAGE_CONSUMER_AL_LOGON:
-            UsageText := 'Application Launch Logon';
+            UsageText := RsApplicationLaunchLogon;
           HID_USAGE_CONSUMER_AL_LOGOFF:
-            UsageText := 'Application Launch Logoff';
+            UsageText := RsApplicationLaunchLogoff;
           HID_USAGE_CONSUMER_AL_LOGON_LOGOFF:
-            UsageText := 'Application Launch Logon/Logoff';
+            UsageText := RsApplicationLaunchLogon_Logoff;
           HID_USAGE_CONSUMER_AL_TERMINAL_LOCK_SCREENSAVER:
-            UsageText := 'Application Launch Terminal Lock/Screensaver';
+            UsageText := RsApplicationLaunchTerminalLock_Screensaver;
           HID_USAGE_CONSUMER_AL_CONTROL_PANEL:
-            UsageText := 'Application Launch Control Panel';
+            UsageText := RsApplicationLaunchControlPanel;
           HID_USAGE_CONSUMER_AL_COMMAND_LINE_PROCESSOR_RUN:
-            UsageText := 'Application Launch Command Line Processor/Run';
+            UsageText := RsApplicationLaunchCommandLineProcessor_Run;
           HID_USAGE_CONSUMER_AL_PROCESS_TASK_MANAGER:
-            UsageText := 'Application Launch Process/Task Manager';
+            UsageText := RsApplicationLaunchProcess_TaskManager;
           HID_USAGE_CONSUMER_AL_SELECT_TASK_APP:
-            UsageText := 'Application Launch Select Task/Application';
+            UsageText := RsApplicationLaunchSelectTask_Application;
           HID_USAGE_CONSUMER_AL_NEXT_TASK_APP:
-            UsageText := 'Application Launch Next Task/Application';
+            UsageText := RsApplicationLaunchNextTask_Application;
           HID_USAGE_CONSUMER_AL_PREV_TASK_APP:
-            UsageText := 'Application Launch Previous Task/Application';
+            UsageText := RsApplicationLaunchPreviousTask_Application;
           HID_USAGE_CONSUMER_AL_PREEMPTIVE_HALT_TASK_APP:
-            UsageText := 'Application Launch Preemptive Halt Task/Application';
+            UsageText := RsApplicationLaunchPreemptiveHaltTask_Application;
           HID_USAGE_CONSUMER_AL_INTEGRATED_HELP_CENTER:
-            UsageText := 'Application Launch Integrated Help Center';
+            UsageText := RsApplicationLaunchIntegratedHelpCenter;
           HID_USAGE_CONSUMER_AL_DOCUMENTS:
-            UsageText := 'Application Launch Documents';
+            UsageText := RsApplicationLaunchDocuments;
           HID_USAGE_CONSUMER_AL_THESAURUS:
-            UsageText := 'Application Launch Thesaurus';
+            UsageText := RsApplicationLaunchThesaurus;
           HID_USAGE_CONSUMER_AL_DICTIONARY:
-            UsageText := 'Application Launch Dictionary';
+            UsageText := RsApplicationLaunchDictionary;
           HID_USAGE_CONSUMER_AL_DESKTOP:
-            UsageText := 'Application Launch Desktop';
+            UsageText := RsApplicationLaunchDesktop;
           HID_USAGE_CONSUMER_AL_SPELL_CHECK:
-            UsageText := 'Application Launch Spell Check';
+            UsageText := RsApplicationLaunchSpellCheck;
           HID_USAGE_CONSUMER_AL_GRAMMAR_CHECK:
-            UsageText := 'Application Launch Grammar Check';
+            UsageText := RsApplicationLaunchGrammarCheck;
           HID_USAGE_CONSUMER_AL_WIRELESS_STATUS:
-            UsageText := 'Application Launch Wireless Status';
+            UsageText := RsApplicationLaunchWirelessStatus;
           HID_USAGE_CONSUMER_AL_KEYBOARD_LAYOUT:
-            UsageText := 'Application Launch Keyboard Layout';
+            UsageText := RsApplicationLaunchKeyboardLayout;
           HID_USAGE_CONSUMER_AL_VIRUS_PROTECTION:
-            UsageText := 'Application Launch Virus Protection';
+            UsageText := RsApplicationLaunchVirusProtection;
           HID_USAGE_CONSUMER_AL_ENCRYPTION:
-            UsageText := 'Application Launch Encryption';
+            UsageText := RsApplicationLaunchEncryption;
           HID_USAGE_CONSUMER_AL_SCREENSAVER:
-            UsageText := 'Application Launch Screensaver';
+            UsageText := RsApplicationLaunchScreensaver;
           HID_USAGE_CONSUMER_AL_ALARMS:
-            UsageText := 'Application Launch Alarms';
+            UsageText := RsApplicationLaunchAlarms;
           HID_USAGE_CONSUMER_AL_CLOCK:
-            UsageText := 'Application Launch Clock';
+            UsageText := RsApplicationLaunchClock;
           HID_USAGE_CONSUMER_AL_FILE_BROWSER:
-            UsageText := 'Application Launch File Browser';
+            UsageText := RsApplicationLaunchFileBrowser;
           HID_USAGE_CONSUMER_AL_POWER_STATUS:
-            UsageText := 'Application Launch Power Status';
+            UsageText := RsApplicationLaunchPowerStatus;
           HID_USAGE_CONSUMER_GENERIC_GUI_APP_CONTROLS:
-            UsageText := 'Generic GUI Application Controls';
+            UsageText := RsGenericGUIApplicationControls;
           HID_USAGE_CONSUMER_AC_NEW:
-            UsageText := 'Application Control New';
+            UsageText := RsApplicationControlNew;
           HID_USAGE_CONSUMER_AC_OPEN:
-            UsageText := 'Application Control Open';
+            UsageText := RsApplicationControlOpen;
           HID_USAGE_CONSUMER_AC_CLOSE:
-            UsageText := 'Application Control Cose';
+            UsageText := RsApplicationControlCose;
           HID_USAGE_CONSUMER_AC_EXIT:
-            UsageText := 'Application Control Exit';
+            UsageText := RsApplicationControlExit;
           HID_USAGE_CONSUMER_AC_MAXIMIZE:
-            UsageText := 'Application Control Maximize';
+            UsageText := RsApplicationControlMaximize;
           HID_USAGE_CONSUMER_AC_MINIMIZE:
-            UsageText := 'Application Control Minimize';
+            UsageText := RsApplicationControlMinimize;
           HID_USAGE_CONSUMER_AC_SAVE:
-            UsageText := 'Application Control Save';
+            UsageText := RsApplicationControlSave;
           HID_USAGE_CONSUMER_AC_PRINT:
-            UsageText := 'Application Control Print';
+            UsageText := RsApplicationControlPrint;
           HID_USAGE_CONSUMER_AC_PROPERTIES:
-            UsageText := 'Application Control Properties';
+            UsageText := RsApplicationControlProperties;
           HID_USAGE_CONSUMER_AC_UNDO:
-            UsageText := 'Application Control Undo';
+            UsageText := RsApplicationControlUndo;
           HID_USAGE_CONSUMER_AC_COPY:
-            UsageText := 'Application Control Copy';
+            UsageText := RsApplicationControlCopy;
           HID_USAGE_CONSUMER_AC_CUT:
-            UsageText := 'Application Control Cut';
+            UsageText := RsApplicationControlCut;
           HID_USAGE_CONSUMER_AC_PASTE:
-            UsageText := 'Application Control Paste';
+            UsageText := RsApplicationControlPaste;
           HID_USAGE_CONSUMER_AC_SELECT_ALL:
-            UsageText := 'Application Control Select All';
+            UsageText := RsApplicationControlSelectAll;
           HID_USAGE_CONSUMER_AC_FIND:
-            UsageText := 'Application Control Find';
+            UsageText := RsApplicationControlFind;
           HID_USAGE_CONSUMER_AC_FIND_AND_REPLACE:
-            UsageText := 'Application Control Find and Replace';
+            UsageText := RsApplicationControlFindandReplace;
           HID_USAGE_CONSUMER_AC_SEARCH:
-            UsageText := 'Application Control Search';
+            UsageText := RsApplicationControlSearch;
           HID_USAGE_CONSUMER_AC_GO_TO:
-            UsageText := 'Application Control Go To';
+            UsageText := RsApplicationControlGoTo;
           HID_USAGE_CONSUMER_AC_HOME:
-            UsageText := 'Application Control Home';
+            UsageText := RsApplicationControlHome;
           HID_USAGE_CONSUMER_AC_BACK:
-            UsageText := 'Application Control Back';
+            UsageText := RsApplicationControlBack;
           HID_USAGE_CONSUMER_AC_FORWARD:
-            UsageText := 'Application Control Forward';
+            UsageText := RsApplicationControlForward;
           HID_USAGE_CONSUMER_AC_STOP:
-            UsageText := 'Application Control Stop';
+            UsageText := RsApplicationControlStop;
           HID_USAGE_CONSUMER_AC_REFRESH:
-            UsageText := 'Application Control Refresh';
+            UsageText := RsApplicationControlRefresh;
           HID_USAGE_CONSUMER_AC_PREV_LINK:
-            UsageText := 'Application Control Previous Link';
+            UsageText := RsApplicationControlPreviousLink;
           HID_USAGE_CONSUMER_AC_NEXT_LINK:
-            UsageText := 'Application Control Next Link';
+            UsageText := RsApplicationControlNextLink;
           HID_USAGE_CONSUMER_AC_BOOKMARKS:
-            UsageText := 'Application Control Bookmarks';
+            UsageText := RsApplicationControlBookmarks;
           HID_USAGE_CONSUMER_AC_HISTORY:
-            UsageText := 'Application Control History';
+            UsageText := RsApplicationControlHistory;
           HID_USAGE_CONSUMER_AC_SUBSCRIPTIONS:
-            UsageText := 'Application Control Subscriptions';
+            UsageText := RsApplicationControlSubscriptions;
           HID_USAGE_CONSUMER_AC_ZOOM_IN:
-            UsageText := 'Application Control Zoom In';
+            UsageText := RsApplicationControlZoomIn;
           HID_USAGE_CONSUMER_AC_ZOOM_OUT:
-            UsageText := 'Application Control Zoom Out';
+            UsageText := RsApplicationControlZoomOut;
           HID_USAGE_CONSUMER_AC_ZOOM:
-            UsageText := 'Application Control Zoom';
+            UsageText := RsApplicationControlZoom;
           HID_USAGE_CONSUMER_AC_FULL_SCREEN_VIEW:
-            UsageText := 'Application Control Full Screen View';
+            UsageText := RsApplicationControlFullScreenView;
           HID_USAGE_CONSUMER_AC_NORMAL_VIEW:
-            UsageText := 'Application Control Normal View';
+            UsageText := RsApplicationControlNormalView;
           HID_USAGE_CONSUMER_AC_VIEW_TOGGLE:
-            UsageText := 'Application Control View Toggle';
+            UsageText := RsApplicationControlViewToggle;
           HID_USAGE_CONSUMER_AC_SCROLL_UP:
-            UsageText := 'Application Control Scroll Up';
+            UsageText := RsApplicationControlScrollUp;
           HID_USAGE_CONSUMER_AC_SCROLL_DOWN:
-            UsageText := 'Application Control Scroll Down';
+            UsageText := RsApplicationControlScrollDown;
           HID_USAGE_CONSUMER_AC_SCROLL:
-            UsageText := 'Application Control Scroll';
+            UsageText := RsApplicationControlScroll;
           HID_USAGE_CONSUMER_AC_PAN_LEFT:
-            UsageText := 'Application Control Pan Left';
+            UsageText := RsApplicationControlPanLeft;
           HID_USAGE_CONSUMER_AC_PAN_RIGHT:
-            UsageText := 'Application Control Pan Right';
+            UsageText := RsApplicationControlPanRight;
           HID_USAGE_CONSUMER_AC_PAN:
-            UsageText := 'Application Control Pan';
+            UsageText := RsApplicationControlPan;
           HID_USAGE_CONSUMER_AC_NEW_WINDOW:
-            UsageText := 'Application Control New Window';
+            UsageText := RsApplicationControlNewWindow;
           HID_USAGE_CONSUMER_AC_TILE_HORIZONTALLY:
-            UsageText := 'Application Control Tile Horizontally';
+            UsageText := RsApplicationControlTileHorizontally;
           HID_USAGE_CONSUMER_AC_TILE_VERTICALLY:
-            UsageText := 'Application Control Tile Vertically';
+            UsageText := RsApplicationControlTileVertically;
           HID_USAGE_CONSUMER_AC_FORMAT:
-            UsageText := 'Application Control Format';
+            UsageText := RsApplicationControlFormat;
           HID_USAGE_CONSUMER_AC_EDIT:
-            UsageText := 'Application Control Edit';
+            UsageText := RsApplicationControlEdit;
           HID_USAGE_CONSUMER_AC_BOLD:
-            UsageText := 'Application Control Bold';
+            UsageText := RsApplicationControlBold;
           HID_USAGE_CONSUMER_AC_ITALICS:
-            UsageText := 'Application Control Italics';
+            UsageText := RsApplicationControlItalics;
           HID_USAGE_CONSUMER_AC_UNDERLINE:
-            UsageText := 'Application Control Underline';
+            UsageText := RsApplicationControlUnderline;
           HID_USAGE_CONSUMER_AC_STRIKETHROUGH:
-            UsageText := 'Application Control Strikethrough';
+            UsageText := RsApplicationControlStrikethrough;
           HID_USAGE_CONSUMER_AC_SUBSCRIPT:
-            UsageText := 'Application Control Subscript';
+            UsageText := RsApplicationControlSubscript;
           HID_USAGE_CONSUMER_AC_SUPERSCRIPT:
-            UsageText := 'Application Control Superscript';
+            UsageText := RsApplicationControlSuperscript;
           HID_USAGE_CONSUMER_AC_ALL_CAPS:
-            UsageText := 'Application Control All Caps';
+            UsageText := RsApplicationControlAllCaps;
           HID_USAGE_CONSUMER_AC_ROTATE:
-            UsageText := 'Application Control Rotate';
+            UsageText := RsApplicationControlRotate;
           HID_USAGE_CONSUMER_AC_RESIZE:
-            UsageText := 'Application Control Resize';
+            UsageText := RsApplicationControlResize;
           HID_USAGE_CONSUMER_AC_FLIP_HORIZONTAL:
-            UsageText := 'Application Control Flip Horizontal';
+            UsageText := RsApplicationControlFlipHorizontal;
           HID_USAGE_CONSUMER_AC_FLIP_VERTICAL:
-            UsageText := 'Application Control Flip Vertical';
+            UsageText := RsApplicationControlFlipVertical;
           HID_USAGE_CONSUMER_AC_MIRROR_HORIZONTAL:
-            UsageText := 'Application Control Mirror Horizontal';
+            UsageText := RsApplicationControlMirrorHorizontal;
           HID_USAGE_CONSUMER_AC_MIRROR_VERTICAL:
-            UsageText := 'Application Control Mirror Vertical';
+            UsageText := RsApplicationControlMirrorVertical;
           HID_USAGE_CONSUMER_AC_FONT_SELECT:
-            UsageText := 'Application Control Font Select';
+            UsageText := RsApplicationControlFontSelect;
           HID_USAGE_CONSUMER_AC_FONT_COLOR:
-            UsageText := 'Application Control Font Color';
+            UsageText := RsApplicationControlFontColor;
           HID_USAGE_CONSUMER_AC_FONT_SIZE:
-            UsageText := 'Application Control Font Size';
+            UsageText := RsApplicationControlFontSize;
           HID_USAGE_CONSUMER_AC_JUSTIFY_LEFT:
-            UsageText := 'Application Control Justify Left';
+            UsageText := RsApplicationControlJustifyLeft;
           HID_USAGE_CONSUMER_AC_JUSTIFY_CENTER_H:
-            UsageText := 'Application Control Justify Center Horizontally';
+            UsageText := RsApplicationControlJustifyCenterHorizontally;
           HID_USAGE_CONSUMER_AC_JUSTIFY_RIGHT:
-            UsageText := 'Application Control Justify Right';
+            UsageText := RsApplicationControlJustifyRight;
           HID_USAGE_CONSUMER_AC_JUSTIFY_BLOCK_H:
-            UsageText := 'Application Control Justify Block Horizontally';
+            UsageText := RsApplicationControlJustifyBlockHorizontally;
           HID_USAGE_CONSUMER_AC_JUSTIFY_TOP:
-            UsageText := 'Application Control Justify Top';
+            UsageText := RsApplicationControlJustifyTop;
           HID_USAGE_CONSUMER_AC_JUSTIFY_CENTER_V:
-            UsageText := 'Application Control Justify Center Vertically';
+            UsageText := RsApplicationControlJustifyCenterVertically;
           HID_USAGE_CONSUMER_AC_JUSTIFY_BOTTOM:
-            UsageText := 'Application Control Justify Bottom';
+            UsageText := RsApplicationControlJustifyBottom;
           HID_USAGE_CONSUMER_AC_JUSTIFY_BLOCK_V:
-            UsageText := 'Application Control Justify Block Vertically';
+            UsageText := RsApplicationControlJustifyBlockVertically;
           HID_USAGE_CONSUMER_AC_INDENT_DECREASE:
-            UsageText := 'Application Control Indent Decrease';
+            UsageText := RsApplicationControlIndentDecrease;
           HID_USAGE_CONSUMER_AC_INDENT_INCREASE:
-            UsageText := 'Application Control Indent Increase';
+            UsageText := RsApplicationControlIndentIncrease;
           HID_USAGE_CONSUMER_AC_NUMBERED_LIST:
-            UsageText := 'Application Control Numbered List';
+            UsageText := RsApplicationControlNumberedList;
           HID_USAGE_CONSUMER_AC_RESTART_NUMBERING:
-            UsageText := 'Application Control Restart Numbering';
+            UsageText := RsApplicationControlRestartNumbering;
           HID_USAGE_CONSUMER_AC_BULLETED_LIST:
-            UsageText := 'Application Control Bulleted List';
+            UsageText := RsApplicationControlBulletedList;
           HID_USAGE_CONSUMER_AC_PROMOTE:
-            UsageText := 'Application Control Promote';
+            UsageText := RsApplicationControlPromote;
           HID_USAGE_CONSUMER_AC_DEMOTE:
-            UsageText := 'Application Control Demote';
+            UsageText := RsApplicationControlDemote;
           HID_USAGE_CONSUMER_AC_YES:
-            UsageText := 'Application Control Yes';
+            UsageText := RsApplicationControlYes;
           HID_USAGE_CONSUMER_AC_NO:
-            UsageText := 'Application Control No';
+            UsageText := RsApplicationControlNo;
           HID_USAGE_CONSUMER_AC_CANCEL:
-            UsageText := 'Application Control Cancel';
+            UsageText := RsApplicationControlCancel;
           HID_USAGE_CONSUMER_AC_CATALOG:
-            UsageText := 'Application Control Catalog';
+            UsageText := RsApplicationControlCatalog;
           HID_USAGE_CONSUMER_AC_BUY_CHECKOUT:
-            UsageText := 'Application Control Buy Checkout';
+            UsageText := RsApplicationControlBuyCheckout;
           HID_USAGE_CONSUMER_AC_ADD_TO_CART:
-            UsageText := 'Application Control Add To Cart';
+            UsageText := RsApplicationControlAddToCart;
           HID_USAGE_CONSUMER_AC_EXPAND:
-            UsageText := 'Application Control Expand';
+            UsageText := RsApplicationControlExpand;
           HID_USAGE_CONSUMER_AC_EXPAND_ALL:
-            UsageText := 'Application Control Expand All';
+            UsageText := RsApplicationControlExpandAll;
           HID_USAGE_CONSUMER_AC_COLLAPSE:
-            UsageText := 'Application Control Collapse';
+            UsageText := RsApplicationControlCollapse;
           HID_USAGE_CONSUMER_AC_COLLAPSE_ALL:
-            UsageText := 'Application Control Collapse All';
+            UsageText := RsApplicationControlCollapseAll;
           HID_USAGE_CONSUMER_AC_PRINT_PREVIEW:
-            UsageText := 'Application Control Print Preview';
+            UsageText := RsApplicationControlPrintPreview;
           HID_USAGE_CONSUMER_AC_PASTE_SPECIAL:
-            UsageText := 'Application Control Paste Special';
+            UsageText := RsApplicationControlPasteSpecial;
           HID_USAGE_CONSUMER_AC_INSERT_MODE:
-            UsageText := 'Application Control Insert Mode';
+            UsageText := RsApplicationControlInsertMode;
           HID_USAGE_CONSUMER_AC_DELETE:
-            UsageText := 'Application Control Delete';
+            UsageText := RsApplicationControlDelete;
           HID_USAGE_CONSUMER_AC_LOCK:
-            UsageText := 'Application Control Lock';
+            UsageText := RsApplicationControlLock;
           HID_USAGE_CONSUMER_AC_UNLOCK:
-            UsageText := 'Application Control Unlock';
+            UsageText := RsApplicationControlUnlock;
           HID_USAGE_CONSUMER_AC_PROTECT:
-            UsageText := 'Application Control Protect';
+            UsageText := RsApplicationControlProtect;
           HID_USAGE_CONSUMER_AC_UNPROTECT:
-            UsageText := 'Application Control Unprotect';
+            UsageText := RsApplicationControlUnprotect;
           HID_USAGE_CONSUMER_AC_ATTACH_COMMENT:
-            UsageText := 'Application Control Attach Comment';
+            UsageText := RsApplicationControlAttachComment;
           HID_USAGE_CONSUMER_AC_DELETE_COMMENT:
-            UsageText := 'Application Control Delete Comment';
+            UsageText := RsApplicationControlDeleteComment;
           HID_USAGE_CONSUMER_AC_VIEW_COMMENT:
-            UsageText := 'Application Control View Comment';
+            UsageText := RsApplicationControlViewComment;
           HID_USAGE_CONSUMER_AC_SELECT_WORD:
-            UsageText := 'Application Control Select Word';
+            UsageText := RsApplicationControlSelectWord;
           HID_USAGE_CONSUMER_AC_SELECT_SENTENCE:
-            UsageText := 'Application Control Select Sentence';
+            UsageText := RsApplicationControlSelectSentence;
           HID_USAGE_CONSUMER_AC_SELECT_PARAGRAPH:
-            UsageText := 'Application Control Select Paragraph';
+            UsageText := RsApplicationControlSelectParagraph;
           HID_USAGE_CONSUMER_AC_SELECT_COLUMN:
-            UsageText := 'Application Control Select Column';
+            UsageText := RsApplicationControlSelectColumn;
           HID_USAGE_CONSUMER_AC_SELECT_ROW:
-            UsageText := 'Application Control Select Row';
+            UsageText := RsApplicationControlSelectRow;
           HID_USAGE_CONSUMER_AC_SELECT_TABLE:
-            UsageText := 'Application Control Select Table';
+            UsageText := RsApplicationControlSelectTable;
           HID_USAGE_CONSUMER_AC_SELECT_OBJECT:
-            UsageText := 'Application Control Select Object';
+            UsageText := RsApplicationControlSelectObject;
           HID_USAGE_CONSUMER_AC_REDO_REPEAT:
-            UsageText := 'Application Control Redo/Repeat';
+            UsageText := RsApplicationControlRedo_Repeat;
           HID_USAGE_CONSUMER_AC_SORT:
-            UsageText := 'Application Control Sort';
+            UsageText := RsApplicationControlSort;
           HID_USAGE_CONSUMER_AC_SORT_ASCENDING:
-            UsageText := 'Application Control Sort Ascending';
+            UsageText := RsApplicationControlSortAscending;
           HID_USAGE_CONSUMER_AC_SORT_DESCENDING:
-            UsageText := 'Application Control Sort Descending';
+            UsageText := RsApplicationControlSortDescending;
           HID_USAGE_CONSUMER_AC_FILTER:
-            UsageText := 'Application Control Filter';
+            UsageText := RsApplicationControlFilter;
           HID_USAGE_CONSUMER_AC_SET_CLOCK:
-            UsageText := 'Application Control Set Clock';
+            UsageText := RsApplicationControlSetClock;
           HID_USAGE_CONSUMER_AC_VIEW_CLOCK:
-            UsageText := 'Application Control View Clock';
+            UsageText := RsApplicationControlViewClock;
           HID_USAGE_CONSUMER_AC_SELECT_TIME_ZONE:
-            UsageText := 'Application Control Select Time Zone';
+            UsageText := RsApplicationControlSelectTimeZone;
           HID_USAGE_CONSUMER_AC_EDIT_TIME_ZONES:
-            UsageText := 'Application Control Edit Time Zones';
+            UsageText := RsApplicationControlEditTimeZones;
           HID_USAGE_CONSUMER_AC_SET_ALARM:
-            UsageText := 'Application Control Set Alarm';
+            UsageText := RsApplicationControlSetAlarm;
           HID_USAGE_CONSUMER_AC_CLEAR_ALARM:
-            UsageText := 'Application Control Clear Alarm';
+            UsageText := RsApplicationControlClearAlarm;
           HID_USAGE_CONSUMER_AC_SNOOZE_ALARM:
-            UsageText := 'Application Control Snooze Alarm';
+            UsageText := RsApplicationControlSnoozeAlarm;
           HID_USAGE_CONSUMER_AC_RESET_ALARM:
-            UsageText := 'Application Control Reset Alarm';
+            UsageText := RsApplicationControlResetAlarm;
           HID_USAGE_CONSUMER_AC_SYNCHRONIZE:
-            UsageText := 'Application Control Synchronize';
+            UsageText := RsApplicationControlSynchronize;
           HID_USAGE_CONSUMER_AC_SEND_RECEIVE:
-            UsageText := 'Application Control Send/Receive';
+            UsageText := RsApplicationControlSend_Receive;
           HID_USAGE_CONSUMER_AC_SEND_TO:
-            UsageText := 'Application Control Send To';
+            UsageText := RsApplicationControlSendTo;
           HID_USAGE_CONSUMER_AC_REPLY:
-            UsageText := 'Application Control Reply';
+            UsageText := RsApplicationControlReply;
           HID_USAGE_CONSUMER_AC_REPLY_ALL:
-            UsageText := 'Application Control Reply All';
+            UsageText := RsApplicationControlReplyAll;
           HID_USAGE_CONSUMER_AC_FORWARD_MSG:
-            UsageText := 'Application Control Forward Message';
+            UsageText := RsApplicationControlForwardMessage;
           HID_USAGE_CONSUMER_AC_SEND:
-            UsageText := 'Application Control Send';
+            UsageText := RsApplicationControlSend;
           HID_USAGE_CONSUMER_AC_ATTACH_FILE:
-            UsageText := 'Application Control Attach File';
+            UsageText := RsApplicationControlAttachFile;
           HID_USAGE_CONSUMER_AC_UPLOAD:
-            UsageText := 'Application Control Upload';
+            UsageText := RsApplicationControlUpload;
           HID_USAGE_CONSUMER_AC_DOWNLOAD:
-            UsageText := 'Application Control Download';
+            UsageText := RsApplicationControlDownload;
           HID_USAGE_CONSUMER_AC_SET_BORDERS:
-            UsageText := 'Application Control Set Borders';
+            UsageText := RsApplicationControlSetBordeRs;
           HID_USAGE_CONSUMER_AC_INSERT_ROW:
-            UsageText := 'Application Control Insert Row';
+            UsageText := RsApplicationControlInsertRow;
           HID_USAGE_CONSUMER_AC_INSERT_COLUMN:
-            UsageText := 'Application Control Insert Column';
+            UsageText := RsApplicationControlInsertColumn;
           HID_USAGE_CONSUMER_AC_INSERT_FILE:
-            UsageText := 'Application Control Insert File';
+            UsageText := RsApplicationControlInsertFile;
           HID_USAGE_CONSUMER_AC_INSERT_PICTURE:
-            UsageText := 'Application Control Insert Picture';
+            UsageText := RsApplicationControlInsertPicture;
           HID_USAGE_CONSUMER_AC_INSERT_OBJECT:
-            UsageText := 'Application Control Insert Object';
+            UsageText := RsApplicationControlInsertObject;
           HID_USAGE_CONSUMER_AC_INSERT_SYMBOL:
-            UsageText := 'Application Control Insert Symbol';
+            UsageText := RsApplicationControlInsertSymbol;
           HID_USAGE_CONSUMER_AC_SAVE_AND_CLOSE:
-            UsageText := 'Application Control Save and Close';
+            UsageText := RsApplicationControlSaveandClose;
           HID_USAGE_CONSUMER_AC_RENAME:
-            UsageText := 'Application Control Rename';
+            UsageText := RsApplicationControlRename;
           HID_USAGE_CONSUMER_AC_MERGE:
-            UsageText := 'Application Control Merge';
+            UsageText := RsApplicationControlMerge;
           HID_USAGE_CONSUMER_AC_SPLIT:
-            UsageText := 'Application Control Split';
+            UsageText := RsApplicationControlSplit;
           HID_USAGE_CONSUMER_AC_DISTRIBUTE_HORIZONTALLY:
-            UsageText := 'Application Control Distribute Horizontally';
+            UsageText := RsApplicationControlDistributeHorizontally;
           HID_USAGE_CONSUMER_AC_DISTRIBUTE_VERTICALLY:
-            UsageText := 'Application Control Distribute Vertically';
+            UsageText := RsApplicationControlDistributeVertically;
         end;
       end;
     HID_USAGE_PAGE_DIGITIZER:
       begin
-        UsagePageText := 'Digitizer';
+        UsagePageText := RsDigitizer;
         case Usage of
           HID_USAGE_DIGITIZER_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_DIGITIZER_DIGITIZER:
-            UsageText := 'Digitizer';
+            UsageText := RsDigitizer;
           HID_USAGE_DIGITIZER_PEN:
-            UsageText := 'Pen';
+            UsageText := RsPen;
           HID_USAGE_DIGITIZER_LIGHT_PEN:
-            UsageText := 'Light Pen';
+            UsageText := RsLightPen;
           HID_USAGE_DIGITIZER_TOUCH_SCREEN:
-            UsageText := 'Touch Screen';
+            UsageText := RsTouchScreen;
           HID_USAGE_DIGITIZER_TOUCH_PAD:
-            UsageText := 'Touch Pad';
+            UsageText := RsTouchPad;
           HID_USAGE_DIGITIZER_WHITE_BOARD:
-            UsageText := 'White Board';
+            UsageText := RsWhiteBoard;
           HID_USAGE_DIGITIZER_COORDINATE_MEASURING_MACHINE:
-            UsageText := 'Coordinate Measuring Machine';
+            UsageText := RsCoordinateMeasuringMachine;
           HID_USAGE_DIGITIZER_3D_DIGITIZER:
-            UsageText := '3D Digitizer';
+            UsageText := Rs3DDigitizer;
           HID_USAGE_DIGITIZER_STEREO_PLOTTER:
-            UsageText := 'Stereo Plotter';
+            UsageText := RsStereoPlotter;
           HID_USAGE_DIGITIZER_ARTICULATED_ARM:
-            UsageText := 'Articulated Arm';
+            UsageText := RsArticulatedArm;
           HID_USAGE_DIGITIZER_ARMATURE:
-            UsageText := 'Armature';
+            UsageText := RsArmature;
           HID_USAGE_DIGITIZER_MULTIPLE_POINT_DIGITIZER:
-            UsageText := 'Multiple Point Digitizer';
+            UsageText := RsMultiplePointDigitizer;
           HID_USAGE_DIGITIZER_FREE_SPACE_WAND:
-            UsageText := 'Free Space Wand';
+            UsageText := RsFreeSpaceWand;
           HID_USAGE_DIGITIZER_STYLUS:
-            UsageText := 'Stylus';
+            UsageText := RsStylus;
           HID_USAGE_DIGITIZER_PUCK:
-            UsageText := 'Puck';
+            UsageText := RsPuck;
           HID_USAGE_DIGITIZER_FINGER:
-            UsageText := 'Finger';
+            UsageText := RsFinger;
           HID_USAGE_DIGITIZER_TIP_PRESSURE:
-            UsageText := 'Tip Pressure';
+            UsageText := RsTipPressure;
           HID_USAGE_DIGITIZER_BARREL_PRESSURE:
-            UsageText := 'Barrel Pressure';
+            UsageText := RsBarrelPressure;
           HID_USAGE_DIGITIZER_IN_RANGE:
-            UsageText := 'In Range';
+            UsageText := RsInRange;
           HID_USAGE_DIGITIZER_TOUCH:
-            UsageText := 'Touch';
+            UsageText := RsTouch;
           HID_USAGE_DIGITIZER_UNTOUCH:
-            UsageText := 'Untouch';
+            UsageText := RsUntouch;
           HID_USAGE_DIGITIZER_TAP:
-            UsageText := 'Tap';
+            UsageText := RsTap;
           HID_USAGE_DIGITIZER_QUALITY:
-            UsageText := 'Quality';
+            UsageText := RsQuality;
           HID_USAGE_DIGITIZER_DATA_VALID:
-            UsageText := 'Data Valid';
+            UsageText := RsDataValid;
           HID_USAGE_DIGITIZER_TRANSDUCER_INDEX:
-            UsageText := 'Transducer Index';
+            UsageText := RsTransducerIndex;
           HID_USAGE_DIGITIZER_TABLET_FUNCTION_KEYS:
-            UsageText := 'Tablet Function Keys';
+            UsageText := RsTabletFunctionKeys;
           HID_USAGE_DIGITIZER_PROGRAM_CHANGE_KEYS:
-            UsageText := 'Program Change Keys';
+            UsageText := RsProgramChangeKeys;
           HID_USAGE_DIGITIZER_BATTERY_STRENGTH:
-            UsageText := 'Battery Strength';
+            UsageText := RsBatteryStrength;
           HID_USAGE_DIGITIZER_INVERT:
-            UsageText := 'Invert';
+            UsageText := RsInvert;
           HID_USAGE_DIGITIZER_X_TILT:
-            UsageText := 'X Tilt';
+            UsageText := RsXTilt;
           HID_USAGE_DIGITIZER_Y_TILT:
-            UsageText := 'Y Tilt';
+            UsageText := RsYTilt;
           HID_USAGE_DIGITIZER_AZIMUTH:
-            UsageText := 'Azimuth';
+            UsageText := RsAzimuth;
           HID_USAGE_DIGITIZER_ALTITUDE:
-            UsageText := 'Altitude';
+            UsageText := RsAltitude;
           HID_USAGE_DIGITIZER_TWIST:
-            UsageText := 'Twist';
+            UsageText := RsTwist;
           HID_USAGE_DIGITIZER_TIP_SWITCH:
-            UsageText := 'Tip Switch';
+            UsageText := RsTipSwitch;
           HID_USAGE_DIGITIZER_SECONDARY_TIP_SWITCH:
-            UsageText := 'Secondary Tip Switch';
+            UsageText := RsSecondaryTipSwitch;
           HID_USAGE_DIGITIZER_BARREL_SWITCH:
-            UsageText := 'Barrel Switch';
+            UsageText := RsBarrelSwitch;
           HID_USAGE_DIGITIZER_ERASER:
-            UsageText := 'Eraser';
+            UsageText := RsEraser;
           HID_USAGE_DIGITIZER_TABLET_PICK:
-            UsageText := 'Tablet Pick';
+            UsageText := RsTabletPick;
         end;
       end;
     HID_USAGE_PAGE_PHYSICAL_INPUT_DEVICE:
       begin
-        UsagePageText := 'Physical Input Device (Force Feedback)';
+        UsagePageText := RsPhysicalInputDeviceForceFeedback;
         case Usage of
           HID_USAGE_PID_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_PID_PHYSICAL_INTERFACE_DEVICE:
-            UsageText := 'Physical Interface Device';
+            UsageText := RsPhysicalInterfaceDevice;
           HID_USAGE_PID_NORMAL:
-            UsageText := 'Normal';
+            UsageText := RsNormal;
           HID_USAGE_PID_SET_EFFECT_REPORT:
-            UsageText := 'Set Effect Report';
+            UsageText := RsSetEffectReport;
           HID_USAGE_PID_EFFECT_BLOCK_INDEX:
-            UsageText := 'Effect Block Index';
+            UsageText := RsEffectBlockIndex;
           HID_USAGE_PID_PARAMETER_BLOCK_OFFSET:
-            UsageText := 'Parameter Block Offset';
+            UsageText := RsParameterBlockOffset;
           HID_USAGE_PID_ROM_FLAG:
-            UsageText := 'ROM Flag';
+            UsageText := RsROMFlag;
           HID_USAGE_PID_EFFECT_TYPE:
-            UsageText := 'Effect Type';
+            UsageText := RsEffectType;
           HID_USAGE_PID_ET_CONSTANT_FORCE:
-            UsageText := 'Effect Type Constant Force';
+            UsageText := RsEffectTypeConstantForce;
           HID_USAGE_PID_ET_RAMP:
-            UsageText := 'Effect Type Ramp';
+            UsageText := RsEffectTypeRamp;
           HID_USAGE_PID_ET_CUSTOM_FORCE_DATA:
-            UsageText := 'Effect Type Custom Force Data';
+            UsageText := RsEffectTypeCustomForceData;
           HID_USAGE_PID_ET_SQUARE:
-            UsageText := 'Effect Type Square';
+            UsageText := RsEffectTypeSquare;
           HID_USAGE_PID_ET_SINE:
-            UsageText := 'Effect Type Sine';
+            UsageText := RsEffectTypeSine;
           HID_USAGE_PID_ET_TRIANGLE:
-            UsageText := 'Effect Type Triangle';
+            UsageText := RsEffectTypeTriangle;
           HID_USAGE_PID_ET_SAWTOOTH_UP:
-            UsageText := 'Effect Type Sawtooth Up';
+            UsageText := RsEffectTypeSawtoothUp;
           HID_USAGE_PID_ET_SAWTOOTH_DOWN:
-            UsageText := 'Effect Type Sawtooth Down';
+            UsageText := RsEffectTypeSawtoothDown;
           HID_USAGE_PID_ET_SPRING:
-            UsageText := 'Effect Type Spring';
+            UsageText := RsEffectTypeSpring;
           HID_USAGE_PID_ET_DAMPER:
-            UsageText := 'Effect Type Damper';
+            UsageText := RsEffectTypeDamper;
           HID_USAGE_PID_ET_INERTIA:
-            UsageText := 'Effect Type Inertia';
+            UsageText := RsEffectTypeInertia;
           HID_USAGE_PID_ET_FRICTION:
-            UsageText := 'Effect Type Friction';
+            UsageText := RsEffectTypeFriction;
           HID_USAGE_PID_DURATION:
-            UsageText := 'Duration';
+            UsageText := RsDuration;
           HID_USAGE_PID_SAMPLE_PERIOD:
-            UsageText := 'Sample Period';
+            UsageText := RsSamplePeriod;
           HID_USAGE_PID_GAIN:
-            UsageText := 'Gain';
+            UsageText := RsGain;
           HID_USAGE_PID_TRIGGER_BUTTON:
-            UsageText := 'Trigger Button';
+            UsageText := RsTriggerButton;
           HID_USAGE_PID_TRIGGER_REPEAT_INTERVAL:
-            UsageText := 'Trigger Repeat Interval';
+            UsageText := RsTriggerRepeatInterval;
           HID_USAGE_PID_AXES_ENABLE:
-            UsageText := 'Axes Enable';
+            UsageText := RsAxesEnable;
           HID_USAGE_PID_DIRECTION_ENABLE:
-            UsageText := 'Direction Enable';
+            UsageText := RsDirectionEnable;
           HID_USAGE_PID_DIRECTION:
-            UsageText := 'Direction';
+            UsageText := RsDirection;
           HID_USAGE_PID_TYPE_SPECIFIC_BLOCK_OFFSET:
-            UsageText := 'Type Specific Block Offset';
+            UsageText := RsTypeSpecificBlockOffset;
           HID_USAGE_PID_BLOCK_TYPE:
-            UsageText := 'Block Type';
+            UsageText := RsBlockType;
           HID_USAGE_PID_SET_ENVELOPE_REPORT:
-            UsageText := 'Set Envelope Report';
+            UsageText := RsSetEnvelopeReport;
           HID_USAGE_PID_ATTACK_LEVEL:
-            UsageText := 'Attack Level';
+            UsageText := RsAttackLevel;
           HID_USAGE_PID_ATTACK_TIME:
-            UsageText := 'Attack Time';
+            UsageText := RsAttackTime;
           HID_USAGE_PID_FADE_LEVEL:
-            UsageText := 'Fade Level';
+            UsageText := RsFadeLevel;
           HID_USAGE_PID_FADE_TIME:
-            UsageText := 'Fade Time';
+            UsageText := RsFadeTime;
           HID_USAGE_PID_SET_CONDITION_REPORT:
-            UsageText := 'Set Condition Report';
+            UsageText := RsSetConditionReport;
           HID_USAGE_PID_CP_OFFSET:
-            UsageText := 'CP Offset';
+            UsageText := RsCPOffset;
           HID_USAGE_PID_POSITIVE_COEFFICIENT:
-            UsageText := 'Positive Coefficient';
+            UsageText := RsPositiveCoefficient;
           HID_USAGE_PID_NEGATIVE_COEFFICIENT:
-            UsageText := 'Negative Coefficient';
+            UsageText := RsNegativeCoefficient;
           HID_USAGE_PID_POSITIVE_SATURATION:
-            UsageText := 'Positive Saturation';
+            UsageText := RsPositiveSaturation;
           HID_USAGE_PID_NEGATIVE_SATURATION:
-            UsageText := 'Negative Saturation';
+            UsageText := RsNegativeSaturation;
           HID_USAGE_PID_DEAD_BAND:
-             UsageText := 'Dead Band';
-         HID_USAGE_PID_DOWNLOAD_FORCE_SAMPLE:
-            UsageText := 'Download Force Sample';
+            UsageText := RsDeadBand;
+          HID_USAGE_PID_DOWNLOAD_FORCE_SAMPLE:
+            UsageText := RsDownloadForceSample;
           HID_USAGE_PID_ISOCH_CUSTOM_FORCE_ENABLE:
-            UsageText := 'Isoch Custom Force Enable';
+            UsageText := RsIsochCustomForceEnable;
           HID_USAGE_PID_CUSTOM_FORCE_DATA_REPORT:
-            UsageText := 'Custom Force Data Report';
+            UsageText := RsCustomForceDataReport;
           HID_USAGE_PID_CUSTOM_FORCE_DATA:
-            UsageText := 'Custom Force Data';
+            UsageText := RsCustomForceData;
           HID_USAGE_PID_CUSTOM_FORCE_VENDOR_DEFINED_DATA:
-            UsageText := 'Custom Force Vendor Defined Data';
+            UsageText := RsCustomForceVendorDefinedData;
           HID_USAGE_PID_SET_CUSTOM_FORCE_REPORT:
-            UsageText := 'Set Custom Force Report';
+            UsageText := RsSetCustomForceReport;
           HID_USAGE_PID_CUSTOM_FORCE_DATA_OFFSET:
-            UsageText := 'Custom Force Data Report';
+            UsageText := RsCustomForceDataReport;
           HID_USAGE_PID_SAMPLE_COUNT:
-            UsageText := 'Sample Count';
+            UsageText := RsSampleCount;
           HID_USAGE_PID_SET_PERIODIC_REPORT:
-            UsageText := 'Set Periodic Report';
+            UsageText := RsSetPeriodicReport;
           HID_USAGE_PID_OFFSET:
-            UsageText := 'Offset';
+            UsageText := RsOffset;
           HID_USAGE_PID_MAGNITUDE:
-            UsageText := 'Magnitude';
+            UsageText := RsMagnitude;
           HID_USAGE_PID_PHASE:
-            UsageText := 'Phase';
+            UsageText := RsPhase;
           HID_USAGE_PID_PERIOD:
-            UsageText := 'Period';
+            UsageText := RsPeriod;
           HID_USAGE_PID_SET_CONSTANT_FORCE_REPORT:
-            UsageText := 'Set Constant Force Report';
+            UsageText := RsSetConstantForceReport;
           HID_USAGE_PID_SET_RAMP_FORCE_REPORT:
-            UsageText := 'Set Ramp Force Report';
+            UsageText := RsSetRampForceReport;
           HID_USAGE_PID_RAMP_START:
-            UsageText := 'Ramp Start';
+            UsageText := RsRampStart;
           HID_USAGE_PID_RAMP_END:
-            UsageText := 'Ramp Stop';
+            UsageText := RsRampStop;
           HID_USAGE_PID_EFFECT_OPERATION_REPORT:
-            UsageText := 'Effect Operation Report';
+            UsageText := RsEffectOperationReport;
           HID_USAGE_PID_EFFECT_OPERATION:
-            UsageText := 'Effect Operation';
+            UsageText := RsEffectOperation;
           HID_USAGE_PID_OP_EFFECT_START:
-            UsageText := 'OP Effect Start';
+            UsageText := RsOPEffectStart;
           HID_USAGE_PID_OP_EFFECT_START_SOLO:
-            UsageText := 'OP Effect Start Solo';
+            UsageText := RsOPEffectStartSolo;
           HID_USAGE_PID_OP_EFFECT_STOP:
-            UsageText := 'OP Effect Stop';
+            UsageText := RsOPEffectStop;
           HID_USAGE_PID_LOOP_COUNT:
-            UsageText := 'Loop Count';
+            UsageText := RsLoopCount;
           HID_USAGE_PID_DEVICE_GAIN_REPORT:
-            UsageText := 'Device Gain Report';
+            UsageText := RsDeviceGainReport;
           HID_USAGE_PID_DEVICE_GAIN:
-            UsageText := 'Device Gain';
+            UsageText := RsDeviceGain;
           HID_USAGE_PID_PID_POOL_REPORT:
-            UsageText := 'Pool Report';
+            UsageText := RsPoolReport;
           HID_USAGE_PID_RAM_POOL_SIZE:
-            UsageText := 'RAM Pool Size';
+            UsageText := RsRAMPoolSize;
           HID_USAGE_PID_ROM_POOL_SIZE:
-            UsageText := 'ROM Pool Size';
+            UsageText := RsROMPoolSize;
           HID_USAGE_PID_ROM_EFFECT_BLOCK_COUNT:
-            UsageText := 'Effect Block Count';
+            UsageText := RsEffectBlockCount;
           HID_USAGE_PID_SIMULTANEOUS_EFFECTS_MAX:
-            UsageText := 'Simultaneous Effects Max';
+            UsageText := RsSimultaneousEffectsMax;
           HID_USAGE_PID_POOL_ALIGNMENT:
-            UsageText := 'Pool Alignment';
+            UsageText := RsPoolAlignment;
           HID_USAGE_PID_PID_POOL_MOVE_REPORT:
-            UsageText := 'Pool Move Report';
+            UsageText := RsPoolMoveReport;
           HID_USAGE_PID_MOVE_SOURCE:
-            UsageText := 'Move Source';
+            UsageText := RsMoveSource;
           HID_USAGE_PID_MOVE_DESTINATION:
-            UsageText := 'Move Destination';
+            UsageText := RsMoveDestination;
           HID_USAGE_PID_MOVE_LENGTH:
-            UsageText := 'Move Length';
+            UsageText := RsMoveLength;
           HID_USAGE_PID_PID_BLOCK_LOAD_REPORT:
-            UsageText := 'PID Block Load Report';
+            UsageText := RsPIDBlockLoadReport;
           HID_USAGE_PID_BLOCK_LOAD_STATUS:
-            UsageText := 'Block Load Status';
+            UsageText := RsBlockLoadStatus;
           HID_USAGE_PID_BLOCK_LOAD_SUCCESS:
-            UsageText := 'Load Success';
+            UsageText := RsLoadSuccess;
           HID_USAGE_PID_BLOCK_LOAD_FULL:
-            UsageText := 'Load Full';
+            UsageText := RsLoadFull;
           HID_USAGE_PID_BLOCK_LOAD_ERROR:
-            UsageText := 'Load Error';
+            UsageText := RsLoadError;
           HID_USAGE_PID_BLOCK_HANDLE:
-            UsageText := 'Block Handle';
+            UsageText := RsBlockHandle;
           HID_USAGE_PID_PID_BLOCK_FREE_REPORT:
-            UsageText := 'PID Block Free Report';
+            UsageText := RsPIDBlockFreeReport;
           HID_USAGE_PID_TYPE_SPECIFIC_BLOCK_HANDLE:
-            UsageText := 'Type Specific Block Handle';
+            UsageText := RsTypeSpecificBlockHandle;
           HID_USAGE_PID_PID_STATE_REPORT:
-            UsageText := 'PID State Report';
+            UsageText := RsPIDStateReport;
           HID_USAGE_PID_EFFECT_PLAYING:
-            UsageText := 'Effect Playing';
+            UsageText := RsEffectPlaying;
           HID_USAGE_PID_PID_DEVICE_CONTROL_REPORT:
-            UsageText := 'PID Device Control Report';
+            UsageText := RsPIDDeviceControlReport;
           HID_USAGE_PID_PID_DEVICE_CONTROL:
-            UsageText := 'PID Device Control';
+            UsageText := RsPIDDeviceControl;
           HID_USAGE_PID_DC_ENABLE_ACTUATORS:
-            UsageText := 'Device Control Enable Actuators';
+            UsageText := RsDeviceControlEnableActuators;
           HID_USAGE_PID_DC_DISABLE_ACTUATORS:
-            UsageText := 'Device Control Disable Actuators';
+            UsageText := RsDeviceControlDisableActuators;
           HID_USAGE_PID_DC_STOP_ALL_EFFECTS:
-            UsageText := 'Device Control Stop All Effects';
+            UsageText := RsDeviceControlStopAllEffects;
           HID_USAGE_PID_DC_DEVICE_RESET:
-            UsageText := 'Device Control Device Reset';
+            UsageText := RsDeviceControlDeviceReset;
           HID_USAGE_PID_DC_DEVICE_PAUSE:
-            UsageText := 'Device Control Device Pause';
+            UsageText := RsDeviceControlDevicePause;
           HID_USAGE_PID_DC_DEVICE_CONTINUE:
-            UsageText := 'Device Control Device Continue';
+            UsageText := RsDeviceControlDeviceContinue;
           HID_USAGE_PID_DEVICE_PAUSED:
-            UsageText := 'Device Paused';
+            UsageText := RsDevicePaused;
           HID_USAGE_PID_ACTUATORS_ENABLED:
-            UsageText := 'Actuators Enabled';
+            UsageText := RsActuatorsEnabled;
           HID_USAGE_PID_SAFETY_SWITCH:
-            UsageText := 'Safety Switch';
+            UsageText := RsSafetySwitch;
           HID_USAGE_PID_ACTUATOR_OVERRIDE_SWITCH:
-            UsageText := 'Actuator Override Switch';
+            UsageText := RsActuatorOverrideSwitch;
           HID_USAGE_PID_ACTUATOR_POWER:
-            UsageText := 'Actuator Power';
+            UsageText := RsActuatorPower;
           HID_USAGE_PID_START_DELAY:
-            UsageText := 'Start Delay';
+            UsageText := RsStartDelay;
           HID_USAGE_PID_PARAMETER_BLOCK_SIZE:
-            UsageText := 'Parameter Block Size';
+            UsageText := RsParameterBlockSize;
           HID_USAGE_PID_DEVICE_MANAGED_POOL:
-            UsageText := 'Device Managed Pool';
+            UsageText := RsDeviceManagedPool;
           HID_USAGE_PID_SHARED_PARAMETER_BLOCKS:
-            UsageText := 'Shared Parameter Blocks';
+            UsageText := RsSharedParameterBlocks;
           HID_USAGE_PID_CREATE_NEW_EFFECT_REPORT:
-            UsageText := 'Create New Effect Report';
+            UsageText := RsCreateNewEffectReport;
           HID_USAGE_PID_RAM_POOL_AVAILABLE:
-            UsageText := 'RAM Pool Available';
+            UsageText := RsRAMPoolAvailable;
         end;
       end;
     HID_USAGE_PAGE_UNICODE:
-      UsagePageText := 'Unicode';
+      UsagePageText := RsUnicode;
     HID_USAGE_PAGE_ALPHANUMERIC:
       begin
-        UsagePageText := 'Alphanumeric';
+        UsagePageText := RsAlphanumeric;
         case Usage of
           HID_USAGE_ALNUM_DISPLAY_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_ALNUM_DISPLAY_ALPHANUMERIC_DISPLAY:
-            UsageText := 'Alphanumeric Display';
+            UsageText := RsAlphanumericDisplay;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_ATTRIBUTES_REPORT:
-            UsageText := 'Display Attributes Report';
+            UsageText := RsDisplayAttributesReport;
           HID_USAGE_ALNUM_DISPLAY_ASCII_CHARSET:
-            UsageText := 'ASCII Character Set';
+            UsageText := RsASCIICharacterSet;
           HID_USAGE_ALNUM_DISPLAY_DATA_READ_BACK:
-            UsageText := 'Data Read Back';
+            UsageText := RsDataReadBack;
           HID_USAGE_ALNUM_DISPLAY_FONT_READ_BACK:
-            UsageText := 'Font Read Back';
+            UsageText := RsFontReadBack;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_CONTROL_REPORT:
-            UsageText := 'Display Control Report';
+            UsageText := RsDisplayControlReport;
           HID_USAGE_ALNUM_DISPLAY_CLEAR_DISPLAY:
-            UsageText := 'Clear Display';
+            UsageText := RsClearDisplay;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_ENABLE:
-            UsageText := 'Display Enable';
+            UsageText := RsDisplayEnable;
           HID_USAGE_ALNUM_DISPLAY_SCREEN_SAVER_DELAY:
-            UsageText := 'Screen Saver Delay';
+            UsageText := RsScreenSaverDelay;
           HID_USAGE_ALNUM_DISPLAY_SCREEN_SAVER_ENABLE:
-            UsageText := 'Screen Saver Enable';
+            UsageText := RsScreenSaverEnable;
           HID_USAGE_ALNUM_DISPLAY_VERTICAL_SCROLL:
-            UsageText := 'Vertical Scroll';
+            UsageText := RsVerticalScroll;
           HID_USAGE_ALNUM_DISPLAY_HORIZONTAL_SCROLL:
-            UsageText := 'Horizontal Scroll';
+            UsageText := RsHorizontalScroll;
           HID_USAGE_ALNUM_DISPLAY_CHARACTER_REPORT:
-            UsageText := 'Character Report';
+            UsageText := RsCharacterReport;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_DATA:
-            UsageText := 'Display Data';
+            UsageText := RsDisplayData;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_STATUS:
-            UsageText := 'Display Status';
+            UsageText := RsDisplayStatus;
           HID_USAGE_ALNUM_DISPLAY_STAT_NOT_READY:
-            UsageText := 'Stat Not Ready';
+            UsageText := RsStatNotReady;
           HID_USAGE_ALNUM_DISPLAY_STAT_READY:
-            UsageText := 'Stat Ready';
+            UsageText := RsStatReady;
           HID_USAGE_ALNUM_DISPLAY_ERR_NOT_A_LOADABLE_CHAR:
-            UsageText := 'Error Not a Loadable Char';
+            UsageText := RsErrorNotaLoadableChar;
           HID_USAGE_ALNUM_DISPLAY_ERR_FONT_DATA_CANNOT_BE_READ:
-            UsageText := 'Error Font Data Cannot Be Read';
+            UsageText := RsErrorFontDataCannotBeRead;
           HID_USAGE_ALNUM_DISPLAY_CURSOR_POSITION_REPORT:
-            UsageText := 'Cursor Position Report';
+            UsageText := RsCursorPositionReport;
           HID_USAGE_ALNUM_DISPLAY_ROW:
-            UsageText := ' Row';
+            UsageText := RsRow;
           HID_USAGE_ALNUM_DISPLAY_COLUMN:
-            UsageText := 'Column';
+            UsageText := RsColumn;
           HID_USAGE_ALNUM_DISPLAY_ROWS:
-            UsageText := 'Rows';
+            UsageText := RsRows;
           HID_USAGE_ALNUM_DISPLAY_COLUMNS:
-            UsageText := 'Columns';
+            UsageText := RsColumns;
           HID_USAGE_ALNUM_DISPLAY_CURSOR_PIXEL_POSITIONING:
-            UsageText := 'Cursor Pixel Positioning';
+            UsageText := RsCursorPixelPositioning;
           HID_USAGE_ALNUM_DISPLAY_CURSOR_MODE:
-            UsageText := 'Cursor Mode';
+            UsageText := RsCursorMode;
           HID_USAGE_ALNUM_DISPLAY_CURSOR_ENABLE:
-            UsageText := 'Cursor Enable';
+            UsageText := RsCursorEnable;
           HID_USAGE_ALNUM_DISPLAY_CURSOR_BLINK:
-            UsageText := 'Cursor Blink';
+            UsageText := RsCursorBlink;
           HID_USAGE_ALNUM_DISPLAY_FONT_REPORT:
-            UsageText := 'Font Report';
+            UsageText := RsFontReport;
           HID_USAGE_ALNUM_DISPLAY_FONT_DATA:
-            UsageText := 'Font Data';
+            UsageText := RsFontData;
           HID_USAGE_ALNUM_DISPLAY_CHAR_WIDTH:
-            UsageText := 'Character Width';
+            UsageText := RsCharacterWidth;
           HID_USAGE_ALNUM_DISPLAY_CHAR_HEIGHT:
-            UsageText := 'Character Height';
+            UsageText := RsCharacterHeight;
           HID_USAGE_ALNUM_DISPLAY_CHAR_SPACING_HORIZONTAL:
-            UsageText := 'Character Spacing Horizontal';
+            UsageText := RsCharacterSpacingHorizontal;
           HID_USAGE_ALNUM_DISPLAY_CHAR_SPACING_VERTICAL:
-            UsageText := 'Character Spacing Vertical';
+            UsageText := RsCharacterSpacingVertical;
           HID_USAGE_ALNUM_DISPLAY_UNICODE_CHARSET:
-            UsageText := 'Unicode Character Set';
+            UsageText := RsUnicodeCharacterSet;
           HID_USAGE_ALNUM_DISPLAY_FONT_7_SEGMENT:
-            UsageText := 'Font 7 Segment';
+            UsageText := RsFont7Segment;
           HID_USAGE_ALNUM_DISPLAY_7_SEGMENT_DIRECT_MAP:
-            UsageText := '7 Segment Direct Map';
+            UsageText := Rs7SegmentDirectMap;
           HID_USAGE_ALNUM_DISPLAY_FONT_14_SEGMENT:
-            UsageText := 'Font 14 Segment';
+            UsageText := RsFont14Segment;
           HID_USAGE_ALNUM_DISPLAY_14_SEGMENT_DIRECT_MAP:
-            UsageText := '14 Segment Direct Map';
+            UsageText := Rs14SegmentDirectMap;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_BRIGHTNESS:
-            UsageText := 'Display Brightness';
+            UsageText := RsDisplayBrightness;
           HID_USAGE_ALNUM_DISPLAY_DISPLAY_CONTRAST:
-            UsageText := 'Display Contrast';
+            UsageText := RsDisplayContrast;
           HID_USAGE_ALNUM_DISPLAY_CHAR_ATTRIBUTE:
-            UsageText := 'Character Attribute';
+            UsageText := RsCharacterAttribute;
           HID_USAGE_ALNUM_DISPLAY_ATTRIBUTE_READBACK:
-            UsageText := 'Attribute Read Back';
+            UsageText := RsAttributeReadBack;
           HID_USAGE_ALNUM_DISPLAY_ATTRIBUTE_DATA:
-            UsageText := 'Attribute Data';
+            UsageText := RsAttributeData;
           HID_USAGE_ALNUM_DISPLAY_CHAR_ATTR_ENHANCE:
-            UsageText := 'Character Attribute Enhance';
+            UsageText := RsCharacterAttributeEnhance;
           HID_USAGE_ALNUM_DISPLAY_CHAR_ATTR_UNDERLINE:
-            UsageText := 'Character Attribute Underline';
+            UsageText := RsCharacterAttributeUnderline;
           HID_USAGE_ALNUM_DISPLAY_CHAR_ATTR_BLINK:
-            UsageText := 'Character Attribute Blink';
+            UsageText := RsCharacterAttributeBlink;
         end;
       end;
     HID_USAGE_PAGE_MEDICAL_INSTRUMENT:
       begin
-        UsagePageText := 'Medical Instrument';
+        UsagePageText := RsMedicalInstrument;
         case Usage of
           HID_USAGE_MEDICAL_INSTRUMENT_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_MEDICAL_INSTRUMENT_MEDICAL_ULTRASOUND:
-            UsageText := 'Medical Ultrasound';
+            UsageText := RsMedicalUltrasound;
           HID_USAGE_MEDICAL_INSTRUMENT_VCR_AQUISITION:
-            UsageText := 'VCR Aquisition';
+            UsageText := RsVCRAquisition;
           HID_USAGE_MEDICAL_INSTRUMENT_FREEZE_THAW:
-            UsageText := 'Freeze/Thaw';
+            UsageText := RsFreeze_Thaw;
           HID_USAGE_MEDICAL_INSTRUMENT_CLIP_STORE:
-            UsageText := 'Clip Store';
+            UsageText := RsClipStore;
           HID_USAGE_MEDICAL_INSTRUMENT_UPDATE:
-            UsageText := 'Update';
+            UsageText := RsUpdate;
           HID_USAGE_MEDICAL_INSTRUMENT_NEXT:
-            UsageText := 'Next';
+            UsageText := RsNext;
           HID_USAGE_MEDICAL_INSTRUMENT_SAVE:
-            UsageText := 'Save';
+            UsageText := RsSave;
           HID_USAGE_MEDICAL_INSTRUMENT_PRINT:
-            UsageText := 'Print';
+            UsageText := RsPrint;
           HID_USAGE_MEDICAL_INSTRUMENT_MICROPHONE_ENABLE:
-            UsageText := 'Microphone Enable';
+            UsageText := RsMicrophoneEnable;
           HID_USAGE_MEDICAL_INSTRUMENT_CINE:
-            UsageText := 'Cine';
+            UsageText := RsCine;
           HID_USAGE_MEDICAL_INSTRUMENT_TRANSMIT_POWER:
-            UsageText := 'Transmit Power';
+            UsageText := RsTransmitPower;
           HID_USAGE_MEDICAL_INSTRUMENT_VOLUME:
-            UsageText := 'Volume';
+            UsageText := RsVolume;
           HID_USAGE_MEDICAL_INSTRUMENT_FOCUS:
-            UsageText := 'Focus';
+            UsageText := RsFocus;
           HID_USAGE_MEDICAL_INSTRUMENT_DEPTH:
-            UsageText := 'Depth';
+            UsageText := RsDepth;
           HID_USAGE_MEDICAL_INSTRUMENT_SOFT_STEP_PRIMARY:
-            UsageText := 'Soft Step Primary';
+            UsageText := RsSoftStepPrimary;
           HID_USAGE_MEDICAL_INSTRUMENT_SOFT_STEP_SECONDARY:
-            UsageText := 'Soft Step Secondary';
+            UsageText := RsSoftStepSecondary;
           HID_USAGE_MEDICAL_INSTRUMENT_DEPTH_GAIN_COMPENSATION:
-            UsageText := 'Depth Gain Compensation';
+            UsageText := RsDepthGainCompensation;
           HID_USAGE_MEDICAL_INSTRUMENT_ZOOM_SELECT:
-            UsageText := 'Zoom Select';
+            UsageText := RsZoomSelect;
           HID_USAGE_MEDICAL_INSTRUMENT_ZOOM_ADJUST:
-            UsageText := 'Zoom Adjust';
+            UsageText := RsZoomAdjust;
           HID_USAGE_MEDICAL_INSTRUMENT_SPECTRAL_DOPPLER_MODE_SELECT:
-            UsageText := 'Spectral Doppler Mode Select';
+            UsageText := RsSpectralDopplerModeSelect;
           HID_USAGE_MEDICAL_INSTRUMENT_SPECTRAL_DOPPLER_ADJUST:
-            UsageText := 'Spectral Doppler Adjust';
+            UsageText := RsSpectralDopplerAdjust;
           HID_USAGE_MEDICAL_INSTRUMENT_COLOR_DOPPLER_MODE_SELECT:
-            UsageText := 'Color Doppler Mode Select';
+            UsageText := RsColorDopplerModeSelect;
           HID_USAGE_MEDICAL_INSTRUMENT_COLOR_DOPPLER_ADJUST:
-            UsageText := 'Color Doppler Adjust';
+            UsageText := RsColorDopplerAdjust;
           HID_USAGE_MEDICAL_INSTRUMENT_MOTION_MODE_SELECT:
-            UsageText := 'Motion Mode Select';
+            UsageText := RsMotionModeSelect;
           HID_USAGE_MEDICAL_INSTRUMENT_MOTION_MODE_ADJUST:
-            UsageText := 'Motion Mode Adjust';
+            UsageText := RsMotionModeAdjust;
           HID_USAGE_MEDICAL_INSTRUMENT_2D_MODE_SELECT:
-            UsageText := '2D Mode Select';
+            UsageText := Rs2DModeSelect;
           HID_USAGE_MEDICAL_INSTRUMENT_2D_MODE_ADJUST:
-            UsageText := '2D Mode Adjust';
+            UsageText := Rs2DModeAdjust;
           HID_USAGE_MEDICAL_INSTRUMENT_SOFT_CONTROL_SELECT:
-            UsageText := 'Soft Control Select';
+            UsageText := RsSoftControlSelect;
           HID_USAGE_MEDICAL_INSTRUMENT_SOFT_CONTROL_ADJUST:
-            UsageText := 'Soft Control Adjust';
+            UsageText := RsSoftControlAdjust;
         end;
       end;
     HID_USAGE_PAGE_USB_MONITOR:
       begin
-        UsagePageText := 'USB Monitor';
+        UsagePageText := RsUSBMonitor;
         case Usage of
           HID_USAGE_MONITOR_RESERVED:
-            UsageText := 'Reserved';
+            UsageText := RsReserved;
           HID_USAGE_MONITOR_MONITOR_CONTROL:
-            UsageText := 'Monitor Control';
+            UsageText := RsMonitorControl;
           HID_USAGE_MONITOR_EDID_INFORMATION:
-            UsageText := 'EDID Information';
+            UsageText := RsEDIDInformation;
           HID_USAGE_MONITOR_VDIF_INFORMATION:
-            UsageText := 'VDIF Information';
+            UsageText := RsVDIFInformation;
           HID_USAGE_MONITOR_VESA_VERSION:
-            UsageText := 'VESA Version';
+            UsageText := RsVESAVersion;
         end;
       end;
     HID_USAGE_PAGE_MONITOR_ENUMERATED_VALUES:
       begin
-        UsagePageText := 'USB Enumerated Values';
+        UsagePageText := RsUSBEnumeratedValues;
         case Usage of
           HID_USAGE_MONITOR_ENUM_VALUE_NO_VALUE:
-            UsageText := 'No Enumerated Value Selected';
+            UsageText := RsNoEnumeratedValueSelected;
         end;
       end;
     HID_USAGE_PAGE_VESA_VIRTUAL_CONTROLS:
-      UsagePageText := 'VESA Virtual Controls';
+      UsagePageText := RsVESAVirtualControls;
     HID_USAGE_PAGE_RESERVED:
-      UsagePageText := 'Reserved';
+      UsagePageText := RsReserved;
     HID_USAGE_PAGE_POWER_DEVICE:
       begin
-        UsagePageText := 'Power Device';
+        UsagePageText := RsPowerDevice;
         case Usage of
           HID_USAGE_POWER_DEVICE_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_POWER_DEVICE_INAME:
-            UsageText := 'iName';
+            UsageText := RsiName;
           HID_USAGE_POWER_DEVICE_PRESENT_STATUS:
-            UsageText := 'Present Status';
+            UsageText := RsPresentStatus;
           HID_USAGE_POWER_DEVICE_CHANGED_STATUS:
-            UsageText := 'Changed Status';
+            UsageText := RsChangedStatus;
           HID_USAGE_POWER_DEVICE_UPS:
-            UsageText := 'UPS';
+            UsageText := RsUPS;
           HID_USAGE_POWER_DEVICE_POWER_SUPPLY:
-            UsageText := 'Power Supply';
+            UsageText := RsPowerSupply;
           HID_USAGE_POWER_DEVICE_BATTERY_SYSTEM:
-            UsageText := 'Battery System';
+            UsageText := RsBatterySystem;
           HID_USAGE_POWER_DEVICE_BATTERY_SYSTEM_ID:
-            UsageText := 'Battery System ID';
+            UsageText := RsBatterySystemID;
           HID_USAGE_POWER_DEVICE_BATTERY:
-            UsageText := 'Battery';
+            UsageText := RsBattery;
           HID_USAGE_POWER_DEVICE_BATTERY_ID:
-            UsageText := 'Battery ID';
+            UsageText := RsBatteryID;
           HID_USAGE_POWER_DEVICE_CHARGER:
-            UsageText := 'Charger';
+            UsageText := RsCharger;
           HID_USAGE_POWER_DEVICE_CHARGER_ID:
-            UsageText := 'Charger ID';
+            UsageText := RsChargerID;
           HID_USAGE_POWER_DEVICE_POWER_CONVERTER:
-            UsageText := 'Power Converter';
+            UsageText := RsPowerConverter;
           HID_USAGE_POWER_DEVICE_POWER_CONVERTER_ID:
-            UsageText := 'Power Converter ID';
+            UsageText := RsPowerConverterID;
           HID_USAGE_POWER_DEVICE_OUTLET_SYSTEM:
-            UsageText := 'Outlet System';
+            UsageText := RsOutletSystem;
           HID_USAGE_POWER_DEVICE_OUTLET_SYSTEM_ID:
-            UsageText := 'Outlet System ID';
+            UsageText := RsOutletSystemID;
           HID_USAGE_POWER_DEVICE_INPUT:
-            UsageText := 'Input';
+            UsageText := RsInput;
           HID_USAGE_POWER_DEVICE_INPUT_ID:
-            UsageText := 'Input ID';
+            UsageText := RsInputID;
           HID_USAGE_POWER_DEVICE_OUTPUT:
-            UsageText := 'Output';
+            UsageText := RsOutput;
           HID_USAGE_POWER_DEVICE_OUTPUT_ID:
-            UsageText := 'Output ID';
+            UsageText := RsOutputID;
           HID_USAGE_POWER_DEVICE_FLOW:
-            UsageText := 'Flow';
+            UsageText := RsFlow;
           HID_USAGE_POWER_DEVICE_FLOW_ID:
-            UsageText := 'Flow ID';
+            UsageText := RsFlowID;
           HID_USAGE_POWER_DEVICE_OUTLET:
-            UsageText := 'Outlet';
+            UsageText := RsOutlet;
           HID_USAGE_POWER_DEVICE_OUTLET_ID:
-            UsageText := 'Outlet ID';
+            UsageText := RsOutletID;
           HID_USAGE_POWER_DEVICE_GANG:
-            UsageText := 'Gang';
+            UsageText := RsGang;
           HID_USAGE_POWER_DEVICE_GANG_ID:
-            UsageText := 'Gang ID';
+            UsageText := RsGangID;
           HID_USAGE_POWER_DEVICE_POWER_SUMMARY:
-            UsageText := 'Power Summary';
+            UsageText := RsPowerSummary;
           HID_USAGE_POWER_DEVICE_POWER_SUMMARY_ID:
-            UsageText := 'Power Summary ID';
+            UsageText := RsPowerSummaryID;
           HID_USAGE_POWER_DEVICE_VOLTAGE:
-            UsageText := 'Voltage';
+            UsageText := RsVoltage;
           HID_USAGE_POWER_DEVICE_CURRENT:
-            UsageText := 'Current';
+            UsageText := RsCurrent;
           HID_USAGE_POWER_DEVICE_FREQUENCY:
-            UsageText := 'Frequency';
+            UsageText := RsFrequency;
           HID_USAGE_POWER_DEVICE_APPARENT_POWER:
-            UsageText := 'Apparent Power';
+            UsageText := RsApparentPower;
           HID_USAGE_POWER_DEVICE_ACTIVE_POWER:
-            UsageText := 'Active Power';
+            UsageText := RsActivePower;
           HID_USAGE_POWER_DEVICE_PERCENT_LOAD:
-            UsageText := 'Percent Load';
+            UsageText := RsPercentLoad;
           HID_USAGE_POWER_DEVICE_TEMPERATURE:
-            UsageText := 'Temperature';
+            UsageText := RsTemperature;
           HID_USAGE_POWER_DEVICE_HUMIDITY:
-            UsageText := 'Humidity';
+            UsageText := RsHumidity;
           HID_USAGE_POWER_DEVICE_BAD_COUNT:
-            UsageText := 'Bad Count';
+            UsageText := RsBadCount;
           HID_USAGE_POWER_DEVICE_CONFIG_VOLTAGE:
-            UsageText := 'Config Voltage';
+            UsageText := RsConfigVoltage;
           HID_USAGE_POWER_DEVICE_CONFIG_CURRENT:
-            UsageText := 'Config Current';
+            UsageText := RsConfigCurrent;
           HID_USAGE_POWER_DEVICE_CONFIG_FREQUENCY:
-            UsageText := 'Config Frequency';
+            UsageText := RsConfigFrequency;
           HID_USAGE_POWER_DEVICE_CONFIG_APPARENT_POWER:
-            UsageText := 'Config Apparent Power';
+            UsageText := RsConfigApparentPower;
           HID_USAGE_POWER_DEVICE_CONFIG_ACTIVE_POWER:
-            UsageText := 'Config Active Power';
+            UsageText := RsConfigActivePower;
           HID_USAGE_POWER_DEVICE_CONFIG_PERCENT_LOAD:
-            UsageText := 'Config Percent Load';
+            UsageText := RsConfigPercentLoad;
           HID_USAGE_POWER_DEVICE_CONFIG_TEMPERATURE:
-            UsageText := 'Config Temperature';
+            UsageText := RsConfigTemperature;
           HID_USAGE_POWER_DEVICE_CONFIG_HUMIDITY:
-            UsageText := 'Config Humidity';
+            UsageText := RsConfigHumidity;
           HID_USAGE_POWER_DEVICE_SWITCH_ON_CONTROL:
-            UsageText := 'Switch On Control';
+            UsageText := RsSwitchOnControl;
           HID_USAGE_POWER_DEVICE_SWITCH_OFF_CONTROL:
-            UsageText := 'Switch Off Control';
+            UsageText := RsSwitchOffControl;
           HID_USAGE_POWER_DEVICE_TOGGLE_CONTROL:
-            UsageText := 'Toggle Control';
+            UsageText := RsToggleControl;
           HID_USAGE_POWER_DEVICE_LOW_VOLTAGE_TRANSFER:
-            UsageText := 'Low Voltage Transfer';
+            UsageText := RsLowVoltageTransfer;
           HID_USAGE_POWER_DEVICE_HIGH_VOLTAGE_TRANSFER:
-            UsageText := 'High Voltage Transfer';
+            UsageText := RsHighVoltageTransfer;
           HID_USAGE_POWER_DEVICE_DELAY_BEFORE_REBOOT:
-            UsageText := 'Delay Before Reboot';
+            UsageText := RsDelayBeforeReboot;
           HID_USAGE_POWER_DEVICE_DELAY_BEFORE_STARTUP:
-            UsageText := 'Delay Before Startup';
+            UsageText := RsDelayBeforeStartup;
           HID_USAGE_POWER_DEVICE_DELAY_BEFORE_SHUTDOWN:
-            UsageText := 'Delay Before Shutdown';
+            UsageText := RsDelayBeforeShutdown;
           HID_USAGE_POWER_DEVICE_TEST:
-            UsageText := 'Test';
+            UsageText := RsTest;
           HID_USAGE_POWER_DEVICE_MODULE_RESET:
-            UsageText := 'Module Reset';
+            UsageText := RsModuleReset;
           HID_USAGE_POWER_DEVICE_AUDIBLE_ALARM_CONTROL:
-            UsageText := 'Audible Alarm Control';
+            UsageText := RsAudibleAlarmControl;
           HID_USAGE_POWER_DEVICE_PRESENT:
-            UsageText := 'Present';
+            UsageText := RsPresent;
           HID_USAGE_POWER_DEVICE_GOOD:
-            UsageText := 'Good';
+            UsageText := RsGood;
           HID_USAGE_POWER_DEVICE_INTERNAL_FAILURE:
-            UsageText := 'Internal Failure';
+            UsageText := RsInternalFailure;
           HID_USAGE_POWER_DEVICE_VOLTAGE_OUT_OF_RANGE:
-            UsageText := 'Voltage Out of Range';
+            UsageText := RsVoltageOutofRange;
           HID_USAGE_POWER_DEVICE_FREQUENCY_OUT_OF_RANGE:
-            UsageText := 'Frequency Out of Range';
+            UsageText := RsFrequencyOutofRange;
           HID_USAGE_POWER_DEVICE_OVERLOAD:
-            UsageText := 'Overload';
+            UsageText := RsOverload;
           HID_USAGE_POWER_DEVICE_OVERCHARGED:
-            UsageText := 'Overcharged';
+            UsageText := RsOvercharged;
           HID_USAGE_POWER_DEVICE_OVERTEMPERATURE:
-            UsageText := 'Overtemperature';
+            UsageText := RsOvertemperature;
           HID_USAGE_POWER_DEVICE_SHUTDOWN_REQUESTED:
-            UsageText := 'Shutdown Requested';
+            UsageText := RsShutdownRequested;
           HID_USAGE_POWER_DEVICE_SHUTDOWN_IMMINENT:
-            UsageText := 'Shutdown Imminent';
+            UsageText := RsShutdownImminent;
           HID_USAGE_POWER_DEVICE_SWITCH_ON_OFF:
-            UsageText := 'Switch On/Off';
+            UsageText := RsSwitchOn_Off;
           HID_USAGE_POWER_DEVICE_SWITCHABLE:
-            UsageText := 'Switchable';
+            UsageText := RsSwitchable;
           HID_USAGE_POWER_DEVICE_USED:
-            UsageText := 'Used';
+            UsageText := RsUsed;
           HID_USAGE_POWER_DEVICE_BOOST:
-            UsageText := 'Boost';
+            UsageText := RsBoost;
           HID_USAGE_POWER_DEVICE_BUCK:
-            UsageText := 'Buck';
+            UsageText := RsBuck;
           HID_USAGE_POWER_DEVICE_INITIALIZED:
-            UsageText := 'Initialized';
+            UsageText := RsInitialized;
           HID_USAGE_POWER_DEVICE_TESTED:
-            UsageText := 'Tested';
+            UsageText := RsTested;
           HID_USAGE_POWER_DEVICE_AWAITING_POWER:
-            UsageText := 'Awaiting Power';
+            UsageText := RsAwaitingPower;
           HID_USAGE_POWER_DEVICE_COMMUNICATION_LOST:
-            UsageText := 'Communication Lost';
+            UsageText := RsCommunicationLost;
           HID_USAGE_POWER_DEVICE_IMANUFACTURER:
-            UsageText := 'iManufacturer';
+            UsageText := RsiManufacturer;
           HID_USAGE_POWER_DEVICE_IPRODUCT:
-            UsageText := 'iProduct';
+            UsageText := RsiProduct;
           HID_USAGE_POWER_DEVICE_ISERIALNUMBER:
-            UsageText := 'iSerialNumber';
+            UsageText := RsiSerialNumber;
         end;
       end;
     HID_USAGE_PAGE_BATTERY_SYSTEM:
       begin
-        UsagePageText := 'Battery System';
+        UsagePageText := RsBatterySystem;
         case Usage of
           HID_USAGE_BATTERY_SYSTEM_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_BATTERY_SYSTEM_SMB_BATTERY_MODE:
-            UsageText := 'SMB Battery Mode';
+            UsageText := RsSMBBatteryMode;
           HID_USAGE_BATTERY_SYSTEM_SMB_BATTERY_STATUS:
-            UsageText := 'SMB Battery Status';
+            UsageText := RsSMBBatteryStatus;
           HID_USAGE_BATTERY_SYSTEM_SMB_ALARM_WARNING:
-            UsageText := 'SMB Alarm Warning';
+            UsageText := RsSMBAlarmWarning;
           HID_USAGE_BATTERY_SYSTEM_SMB_CHARGER_MODE:
-            UsageText := 'SMB Charger Mode';
+            UsageText := RsSMBChargerMode;
           HID_USAGE_BATTERY_SYSTEM_SMB_CHARGER_STATUS:
-            UsageText := 'SMB Charger Status';
+            UsageText := RsSMBChargerStatus;
           HID_USAGE_BATTERY_SYSTEM_SMB_CHARGER_SPEC_INFO:
-            UsageText := 'SMB Charger Spec Info';
+            UsageText := RsSMBChargerSpecInfo;
           HID_USAGE_BATTERY_SYSTEM_SMB_SELECTOR_STATE:
-            UsageText := 'SMB Selector state';
+            UsageText := RsSMBSelectorstate;
           HID_USAGE_BATTERY_SYSTEM_SMB_SELECTOR_PRESETS:
-            UsageText := 'SMB Selector Presets';
+            UsageText := RsSMBSelectorPresets;
           HID_USAGE_BATTERY_SYSTEM_SMB_SELECTOR_INFO:
-            UsageText := 'SMB Selector Info';
+            UsageText := RsSMBSelectorInfo;
           HID_USAGE_BATTERY_SYSTEM_OPTIONAL_MFG_FUNCTION_1:
-            UsageText := 'Optional Manufacturer Function 1';
+            UsageText := RsOptionalManufacturerFunction1;
           HID_USAGE_BATTERY_SYSTEM_OPTIONAL_MFG_FUNCTION_2:
-            UsageText := 'Optional Manufacturer Function 2';
+            UsageText := RsOptionalManufacturerFunction2;
           HID_USAGE_BATTERY_SYSTEM_OPTIONAL_MFG_FUNCTION_3:
-            UsageText := 'Optional Manufacturer Function 3';
+            UsageText := RsOptionalManufacturerFunction3;
           HID_USAGE_BATTERY_SYSTEM_OPTIONAL_MFG_FUNCTION_4:
-            UsageText := 'Optional Manufacturer Function 4';
+            UsageText := RsOptionalManufacturerFunction4;
           HID_USAGE_BATTERY_SYSTEM_OPTIONAL_MFG_FUNCTION_5:
-            UsageText := 'Optional Manufacturer Function 5';
+            UsageText := RsOptionalManufacturerFunction5;
           HID_USAGE_BATTERY_SYSTEM_CONNECTION_TO_SMBUS:
-            UsageText := 'Connection to SMBus';
+            UsageText := RsConnectiontoSMBus;
           HID_USAGE_BATTERY_SYSTEM_OUTPUT_CONNECTION:
-            UsageText := 'Output Connection';
+            UsageText := RsOutputConnection;
           HID_USAGE_BATTERY_SYSTEM_CHARGER_CONNECTION:
-            UsageText := 'Charger Connection';
+            UsageText := RsChargerConnection;
           HID_USAGE_BATTERY_SYSTEM_BATTERY_INSERTION:
-            UsageText := 'Battery Insertion';
+            UsageText := RsBatteryInsertion;
           HID_USAGE_BATTERY_SYSTEM_USE_NEXT:
-            UsageText := 'Use Next';
+            UsageText := RsUseNext;
           HID_USAGE_BATTERY_SYSTEM_OK_TO_USE:
-            UsageText := 'OK to Use';
+            UsageText := RsOKtoUse;
           HID_USAGE_BATTERY_SYSTEM_BATTERY_SUPPORTED:
-            UsageText := 'Battery Supported';
+            UsageText := RsBatterySupported;
           HID_USAGE_BATTERY_SYSTEM_SELECTOR_REVISION:
-            UsageText := 'Selector Revision';
+            UsageText := RsSelectorRevision;
           HID_USAGE_BATTERY_SYSTEM_CHARGING_INDICATOR:
-            UsageText := 'Charging Indicator';
+            UsageText := RsChargingIndicator;
           HID_USAGE_BATTERY_SYSTEM_MANUFACTURER_ACCESS:
-            UsageText := 'Manufacturer Access';
+            UsageText := RsManufacturerAccess;
           HID_USAGE_BATTERY_SYSTEM_REMAINING_CAPACITY_LIMIT:
-            UsageText := 'Remaining Capacity Limit';
+            UsageText := RsRemainingCapacityLimit;
           HID_USAGE_BATTERY_SYSTEM_REMAINING_TIME_LIMIT:
-            UsageText := 'Remaining Time Limit';
+            UsageText := RsRemainingTimeLimit;
           HID_USAGE_BATTERY_SYSTEM_AT_RATE:
-            UsageText := 'At Rate';
+            UsageText := RsAtRate;
           HID_USAGE_BATTERY_SYSTEM_CAPACITY_MODE:
-            UsageText := 'Capacity Mode';
+            UsageText := RsCapacityMode;
           HID_USAGE_BATTERY_SYSTEM_BROADCAST_TO_CHARGER:
-            UsageText := 'Broadcast to Charger';
+            UsageText := RsBroadcasttoCharger;
           HID_USAGE_BATTERY_SYSTEM_PRIMARY_BATTERY:
-            UsageText := 'Primary Battery';
+            UsageText := RsPrimaryBattery;
           HID_USAGE_BATTERY_SYSTEM_CHARGE_CONTROLLER:
-            UsageText := 'Charge Controller';
+            UsageText := RsChargeController;
           HID_USAGE_BATTERY_SYSTEM_TERMINATE_CHARGE:
-            UsageText := 'Terminate Charge';
+            UsageText := RsTerminateCharge;
           HID_USAGE_BATTERY_SYSTEM_TERMINATE_DISCHARGE:
-            UsageText := 'Terminate Discharge';
+            UsageText := RsTerminateDischarge;
           HID_USAGE_BATTERY_SYSTEM_BELOW_REMAINING_CAPACITY_LIMIT:
-            UsageText := 'Below Remaining Capacity';
+            UsageText := RsBelowRemainingCapacity;
           HID_USAGE_BATTERY_SYSTEM_REMAINING_TIME_LIMIT_EXPIRED:
-            UsageText := 'Remaining Time Limit Expired';
+            UsageText := RsRemainingTimeLimitExpired;
           HID_USAGE_BATTERY_SYSTEM_CHARGING:
-            UsageText := 'Charging';
+            UsageText := RsCharging;
           HID_USAGE_BATTERY_SYSTEM_DISCHARGING:
-            UsageText := 'Discharging';
+            UsageText := RsDischarging;
           HID_USAGE_BATTERY_SYSTEM_FULLY_CHARGED:
-            UsageText := 'Fully Charged';
+            UsageText := RsFullyCharged;
           HID_USAGE_BATTERY_SYSTEM_FULLY_DISCHARGED:
-            UsageText := 'Fully Discharged';
+            UsageText := RsFullyDischarged;
           HID_USAGE_BATTERY_SYSTEM_CONDITIONING_FLAG:
-            UsageText := 'Conditioning Flag';
+            UsageText := RsConditioningFlag;
           HID_USAGE_BATTERY_SYSTEM_AT_RATE_OK:
-            UsageText := 'At Rate OK';
+            UsageText := RsAtRateOK;
           HID_USAGE_BATTERY_SYSTEM_SMB_ERROR_CODE:
-            UsageText := 'SMB Error Code';
+            UsageText := RsSMBErrorCode;
           HID_USAGE_BATTERY_SYSTEM_NEED_REPLACEMENT:
-            UsageText := 'Need Replacement';
+            UsageText := RsNeedReplacement;
           HID_USAGE_BATTERY_SYSTEM_AT_RATE_TIME_TO_FULL:
-            UsageText := 'At Rate Time to Full';
+            UsageText := RsAtRateTimetoFull;
           HID_USAGE_BATTERY_SYSTEM_AT_RATE_TIME_TO_EMPTY:
-            UsageText := 'At Rate Time to Empty';
+            UsageText := RsAtRateTimetoEmpty;
           HID_USAGE_BATTERY_SYSTEM_AVERAGE_CURRENT:
-            UsageText := 'Average Current';
+            UsageText := RsAverageCurrent;
           HID_USAGE_BATTERY_SYSTEM_MAX_ERROR:
-            UsageText := 'Max Error';
+            UsageText := RsMaxError;
           HID_USAGE_BATTERY_SYSTEM_RELATIVE_STATE_OF_CHARGE:
-            UsageText := 'Relative State of Charge';
+            UsageText := RsRelativeStateofCharge;
           HID_USAGE_BATTERY_SYSTEM_ABSOLUTE_STATE_OF_CHARGE:
-            UsageText := 'absolute State of charge';
+            UsageText := RsabsoluteStateofcharge;
           HID_USAGE_BATTERY_SYSTEM_REMAINING_CAPACITY:
-            UsageText := 'Remaining Capacity';
+            UsageText := RsRemainingCapacity;
           HID_USAGE_BATTERY_SYSTEM_FULL_CHARGE_CAPACITY:
-            UsageText := 'Full Charge Capacity';
+            UsageText := RsFullChargeCapacity;
           HID_USAGE_BATTERY_SYSTEM_RUN_TIME_TO_EMPTY:
-            UsageText := 'Run Time to Empty';
+            UsageText := RsRunTimetoEmpty;
           HID_USAGE_BATTERY_SYSTEM_AVERAGE_TIME_TO_EMPTY:
-            UsageText := 'Average Time to Empty';
+            UsageText := RsAverageTimetoEmpty;
           HID_USAGE_BATTERY_SYSTEM_AVERAGE_TIME_TO_FULL:
-            UsageText := 'Average Time to Full';
+            UsageText := RsAverageTimetoFull;
           HID_USAGE_BATTERY_SYSTEM_CYCLE_COUNT:
-            UsageText := 'Cycle Count';
+            UsageText := RsCycleCount;
           HID_USAGE_BATTERY_SYSTEM_BATT_PACK_MODEL_LEVEL:
-            UsageText := 'Battery Pack Model Level';
+            UsageText := RsBatteryPackModelLevel;
           HID_USAGE_BATTERY_SYSTEM_INTERNAL_CHARGE_CONTROLLER:
-            UsageText := 'Internal Charge Controller';
+            UsageText := RsInternalChargeController;
           HID_USAGE_BATTERY_SYSTEM_PRIMARY_BATTERY_SUPPORT:
-            UsageText := 'Primary Battery Support';
+            UsageText := RsPrimaryBatterySupport;
           HID_USAGE_BATTERY_SYSTEM_DESIGN_CAPACITY:
-            UsageText := 'Design capacity';
+            UsageText := RsDesigncapacity;
           HID_USAGE_BATTERY_SYSTEM_SPECIFICATION_INFO:
-            UsageText := 'Specification Info';
+            UsageText := RsSpecificationInfo;
           HID_USAGE_BATTERY_SYSTEM_MANUFACTURER_DATE:
-            UsageText := 'Manufacturer Date';
+            UsageText := RsManufacturerDate;
           HID_USAGE_BATTERY_SYSTEM_SERIAL_NUMBER:
-            UsageText := 'Serial Number';
+            UsageText := RsSerialNumber;
           HID_USAGE_BATTERY_SYSTEM_I_MANUFACTURER_NAME:
-            UsageText := 'iManufacturerName';
+            UsageText := RsiManufacturerName;
           HID_USAGE_BATTERY_SYSTEM_I_DEVICE_NAME:
-            UsageText := 'iDeviceName';
+            UsageText := RsiDeviceName;
           HID_USAGE_BATTERY_SYSTEM_I_DEVICE_CHEMISTERY:
-            UsageText := 'iDeviceChemistery';
+            UsageText := RsiDeviceChemistery;
           HID_USAGE_BATTERY_SYSTEM_MANUFACTURER_DATA:
-            UsageText := 'Manufacturer Data';
+            UsageText := RsManufacturerData;
           HID_USAGE_BATTERY_SYSTEM_RECHARGABLE:
-            UsageText := 'Rechargable';
+            UsageText := RsRechargable;
           HID_USAGE_BATTERY_SYSTEM_WARNING_CAPACITY_LIMIT:
-            UsageText := 'Warning Capacity Limit';
+            UsageText := RsWarningCapacityLimit;
           HID_USAGE_BATTERY_SYSTEM_CAPACITY_GRANULARITY_1:
-            UsageText := 'Capacity Granularity 1';
+            UsageText := RsCapacityGranularity1;
           HID_USAGE_BATTERY_SYSTEM_CAPACITY_GRANULARITY_2:
-            UsageText := 'Capacity Granularity 2';
+            UsageText := RsCapacityGranularity2;
           HID_USAGE_BATTERY_SYSTEM_I_OEM_INFORMATION:
-            UsageText := 'iOEMInformation';
+            UsageText := RsiOEMInformation;
           HID_USAGE_BATTERY_SYSTEM_INHIBIT_CHARGE:
-            UsageText := 'Inhibit Charge';
+            UsageText := RsInhibitCharge;
           HID_USAGE_BATTERY_SYSTEM_ENABLE_POLLING:
-            UsageText := 'Enable Polling';
+            UsageText := RsEnablePolling;
           HID_USAGE_BATTERY_SYSTEM_RESET_TO_ZERO:
-            UsageText := 'Reset to zero';
+            UsageText := RsResettozero;
           HID_USAGE_BATTERY_SYSTEM_AC_PRESENT:
-            UsageText := 'AC Present';
+            UsageText := RsACPresent;
           HID_USAGE_BATTERY_SYSTEM_BATTERY_PRESENT:
-            UsageText := 'Battery Present';
+            UsageText := RsBatteryPresent;
           HID_USAGE_BATTERY_SYSTEM_POWER_FAIL:
-            UsageText := 'Power Fail';
+            UsageText := RsPowerFail;
           HID_USAGE_BATTERY_SYSTEM_ALARM_INHIBITED:
-            UsageText := 'Alarm Inhibited';
+            UsageText := RsAlarmInhibited;
           HID_USAGE_BATTERY_SYSTEM_THERMISTOR_UNDER_RANGE:
-            UsageText := 'Thermistor Under range';
+            UsageText := RsThermistorUnderrange;
           HID_USAGE_BATTERY_SYSTEM_THERMISTOR_HOT:
-            UsageText := 'Thermistor Hot';
+            UsageText := RsThermistorHot;
           HID_USAGE_BATTERY_SYSTEM_THERMISTOR_COLD:
-            UsageText := 'Thermistor Cold';
+            UsageText := RsThermistorCold;
           HID_USAGE_BATTERY_SYSTEM_THERMISTOR_OVER_RANGE:
-            UsageText := 'Thermistor Over Range';
+            UsageText := RsThermistorOverRange;
           HID_USAGE_BATTERY_SYSTEM_VOLTAGE_OUT_OF_RANGE:
-            UsageText := 'Voltage out of Range';
+            UsageText := RsVoltageoutofRange;
           HID_USAGE_BATTERY_SYSTEM_CURRENT_OUT_OF_RANGE:
-            UsageText := 'Current Out of Range';
+            UsageText := RsCurrentOutofRange;
           HID_USAGE_BATTERY_SYSTEM_CURRENT_NOT_REGULATED:
-            UsageText := 'Current Not Regulated';
+            UsageText := RsCurrentNotRegulated;
           HID_USAGE_BATTERY_SYSTEM_VOLTAGE_NOT_REGULATED:
-            UsageText := 'Voltage Not Regulated';
+            UsageText := RsVoltageNotRegulated;
           HID_USAGE_BATTERY_SYSTEM_MASTER_MODE:
-            UsageText := 'Master Mode';
+            UsageText := RsMasterMode;
           HID_USAGE_BATTERY_SYSTEM_CHARGER_SELECTOR_SUPPORT:
-            UsageText := 'Charger Selector Support';
+            UsageText := RsChargerSelectorSupport;
           HID_USAGE_BATTERY_SYSTEM_CHARGER_SPEC:
-            UsageText := 'Charger Spec';
+            UsageText := RsChargerSpec;
           HID_USAGE_BATTERY_SYSTEM_LEVEL_2:
-            UsageText := 'Level 2';
+            UsageText := RsLevel2;
           HID_USAGE_BATTERY_SYSTEM_LEVEL_3:
-            UsageText := 'Level 3';
+            UsageText := RsLevel3;
         end;
       end;
     HID_USAGE_PAGE_BARCODE_SCANNER:
       begin
-        UsagePageText := 'Barcode Scanner';
+        UsagePageText := RsBarcodeScanner;
         case Usage of
           HID_USAGE_BARCODE_SCANNER_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_BARCODE_SCANNER_BAR_CODE_BADGE_READER:
-            UsageText := 'Bar Code Badge Reader';
+            UsageText := RsBarCodeBadgeReader;
           HID_USAGE_BARCODE_SCANNER_BAR_CODE_SCANNER:
-            UsageText := 'Bar Code Scanner';
+            UsageText := RsBarCodeScanner;
           HID_USAGE_BARCODE_SCANNER_DUMB_BAR_CODE_SCANNER:
-            UsageText := 'Dumb Bar Code Scanner';
+            UsageText := RsDumbBarCodeScanner;
           HID_USAGE_BARCODE_SCANNER_CORDLESS_SCANNER_BASE:
-            UsageText := 'Cordless Scanner Base';
+            UsageText := RsCordlessScannerBase;
           HID_USAGE_BARCODE_SCANNER_BAR_CODE_SCANNER_CRADLE:
-            UsageText := 'Bar Code Scanner Cradle';
+            UsageText := RsBarCodeScannerCradle;
           HID_USAGE_BARCODE_SCANNER_ATTRIBUTE_REPORT:
-            UsageText := 'Attribute Report';
+            UsageText := RsAttributeReport;
           HID_USAGE_BARCODE_SCANNER_SETTINGS_REPORT:
-            UsageText := 'Settings Report';
+            UsageText := RsSettingsReport;
           HID_USAGE_BARCODE_SCANNER_SCANNED_DATA_REPORT:
-            UsageText := 'Scanned Data Report';
+            UsageText := RsScannedDataReport;
           HID_USAGE_BARCODE_SCANNER_RAW_SCANNED_DATA_REPORT:
-            UsageText := 'Raw Scanned Data Report';
+            UsageText := RsRawScannedDataReport;
           HID_USAGE_BARCODE_SCANNER_TRIGGER_REPORT:
-            UsageText := 'Trigger Report';
+            UsageText := RsTriggerReport;
           HID_USAGE_BARCODE_SCANNER_STATUS_REPORT:
-            UsageText := 'Status Report';
+            UsageText := RsStatusReport;
           HID_USAGE_BARCODE_SCANNER_UPC_EAN_CONTROL_REPORT:
-            UsageText := 'UPC/EAN Control Report';
+            UsageText := RsUPC_EANControlReport;
           HID_USAGE_BARCODE_SCANNER_EAN_2_3_LABEL_CONTROL_REPORT:
-            UsageText := 'EAN 2/3 Label Control Report';
+            UsageText := RsEAN2_3LabelControlReport;
           HID_USAGE_BARCODE_SCANNER_CODE_39_CONTROL_REPORT:
-            UsageText := 'Code 39 Control Report';
+            UsageText := RsCode39ControlReport;
           HID_USAGE_BARCODE_SCANNER_INTERLEAVED_2_OF_5_CONTROL_REPORT:
-            UsageText := 'Interleaved 2 of 5 Control Report';
+            UsageText := RsInterleaved2of5ControlReport;
           HID_USAGE_BARCODE_SCANNER_STANDARD_2_OF_5_CONTROL_REPORT:
-            UsageText := 'Standard 2 of 5 Control Report';
+            UsageText := RsStandard2of5ControlReport;
           HID_USAGE_BARCODE_SCANNER_MSI_PLESSEY_CONTROL_REPORT:
-            UsageText := 'MSI Plessey Control Report';
+            UsageText := RsMSIPlesseyControlReport;
           HID_USAGE_BARCODE_SCANNER_CODABAR_CONTROL_REPORT:
-            UsageText := 'Codabar Control Report';
+            UsageText := RsCodabarControlReport;
           HID_USAGE_BARCODE_SCANNER_CODE_128_CONTROL_REPORT:
-            UsageText := 'Code 128 Control Report';
+            UsageText := RsCode128ControlReport;
           HID_USAGE_BARCODE_SCANNER_MISC_1D_CONTROL_REPORT:
-            UsageText := 'Misc 1D Control Report';
+            UsageText := RsMisc1DControlReport;
           HID_USAGE_BARCODE_SCANNER_2D_CONTROL_REPORT:
-            UsageText := '2D Control Report';
+            UsageText := Rs2DControlReport;
           HID_USAGE_BARCODE_SCANNER_AIMING_POINTER_MODE:
-            UsageText := 'Aiming/Pointer Mode';
+            UsageText := RsAiming_PointerMode;
           HID_USAGE_BARCODE_SCANNER_BAR_CODE_PRESENT_SENSOR:
-            UsageText := 'Bar Code Present Sensor';
+            UsageText := RsBarCodePresentSensor;
           HID_USAGE_BARCODE_SCANNER_CLASS_1A_LASER:
-            UsageText := 'Class 1A Laser';
+            UsageText := RsClass1ALaser;
           HID_USAGE_BARCODE_SCANNER_CLASS_2_LASER:
-            UsageText := 'Class 2 Laser';
+            UsageText := RsClass2Laser;
           HID_USAGE_BARCODE_SCANNER_HEATER_PRESENT:
-            UsageText := 'Heater Present';
+            UsageText := RsHeaterPresent;
           HID_USAGE_BARCODE_SCANNER_CONTACT_SCANNER:
-            UsageText := 'Contact Scanner';
+            UsageText := RsContactScanner;
           HID_USAGE_BARCODE_SCANNER_ELECTRONIC_ARTICLE_SURVEILLANCE_NOTIFICATION:
-            UsageText := 'Electronic Article Surveillance Notification';
+            UsageText := RsElectronicArticleSurveillanceNotification;
           HID_USAGE_BARCODE_SCANNER_CONSTANT_ARTICLE_SURVEILLANCE_NOTIFICATION:
-            UsageText := 'Constant Article Surveillance Notification';
+            UsageText := RsConstantArticleSurveillanceNotification;
           HID_USAGE_BARCODE_SCANNER_ERROR_INDICATION:
-            UsageText := 'Error Indication';
+            UsageText := RsErrorIndication;
           HID_USAGE_BARCODE_SCANNER_FIXED_BEEPER:
-            UsageText := 'Fixed Beeper';
+            UsageText := RsFixedBeeper;
           HID_USAGE_BARCODE_SCANNER_GOOD_DECODE_INDICATION:
-            UsageText := 'Good Decode Indication';
+            UsageText := RsGoodDecodeIndication;
           HID_USAGE_BARCODE_SCANNER_HANDS_FREE_SCANNING:
-            UsageText := 'Hands Free Scanning';
+            UsageText := RsHandsFreeScanning;
           HID_USAGE_BARCODE_SCANNER_INTRINSICALLY_SAFE:
-            UsageText := 'Intrinsically Safe';
+            UsageText := RsIntrinsicallySafe;
           HID_USAGE_BARCODE_SCANNER_KLASSE_EINS_LASER:
-            UsageText := 'Klasse Eins Laser (Class 1 Laser)';
+            UsageText := RsKlasseEinsLaserClass1Laser;
           HID_USAGE_BARCODE_SCANNER_LONG_RANGE_SCANNER:
-            UsageText := 'Long Range Scanner';
+            UsageText := RsLongRangeScanner;
           HID_USAGE_BARCODE_SCANNER_MIRROR_SPEED_CONTROL:
-            UsageText := 'Mirror Speed Control';
+            UsageText := RsMirrorSpeedControl;
           HID_USAGE_BARCODE_SCANNER_NOT_ON_FILE_INDICATION:
-            UsageText := 'Not On File Indication';
+            UsageText := RsNotOnFileIndication;
           HID_USAGE_BARCODE_SCANNER_PROGRAMMABLE_BEEPER:
-            UsageText := 'Programmable Beeper';
+            UsageText := RsProgrammableBeeper;
           HID_USAGE_BARCODE_SCANNER_TRIGGERLESS:
-            UsageText := 'Triggerless';
+            UsageText := RsTriggerless;
           HID_USAGE_BARCODE_SCANNER_WAND:
-            UsageText := 'Wand';
+            UsageText := RsWand;
           HID_USAGE_BARCODE_SCANNER_WATER_RESISTANT:
-            UsageText := 'Water Resistant';
+            UsageText := RsWaterResistant;
           HID_USAGE_BARCODE_SCANNER_MULTI_RANGE_SCANNER:
-            UsageText := 'Multi-Range Scanner';
+            UsageText := RsMulti_RangeScanner;
           HID_USAGE_BARCODE_SCANNER_PROXIMITIY_SENSOR:
-            UsageText := 'Proximity Sensor';
+            UsageText := RsProximitySensor;
           HID_USAGE_BARCODE_SCANNER_FRAGMENT_DECODING:
-            UsageText := 'Fragment Decoding';
+            UsageText := RsFragmentDecoding;
           HID_USAGE_BARCODE_SCANNER_SCANNER_READ_CONFIDENCE:
-            UsageText := 'Scanner Read Confidence';
+            UsageText := RsScannerReadConfidence;
           HID_USAGE_BARCODE_SCANNER_DATA_PREFIX:
-            UsageText := 'Data Prefix';
+            UsageText := RsDataPrefix;
           HID_USAGE_BARCODE_SCANNER_PREFIX_AIMI:
-            UsageText := 'Prefix AIMI';
+            UsageText := RsPrefixAIMI;
           HID_USAGE_BARCODE_SCANNER_PREFIX_NODE:
-            UsageText := 'Prefix Node';
+            UsageText := RsPrefixNode;
           HID_USAGE_BARCODE_SCANNER_PREFIX_PROPRIETARY:
-            UsageText := 'Prefix Proprietary';
+            UsageText := RsPrefixProprietary;
           HID_USAGE_BARCODE_SCANNER_ACTIVE_TIME:
-            UsageText := 'Active Time';
+            UsageText := RsActiveTime;
           HID_USAGE_BARCODE_SCANNER_AIMING_LASER_PATTERN:
-            UsageText := 'Aiming Laser Pattern';
+            UsageText := RsAimingLaserPattern;
           HID_USAGE_BARCODE_SCANNER_BAR_CODE_PRESENT:
-            UsageText := 'Bar Code Present';
+            UsageText := RsBarCodePresent;
           HID_USAGE_BARCODE_SCANNER_BEEPER_STATE:
-            UsageText := 'Beeper State';
+            UsageText := RsBeeperState;
           HID_USAGE_BARCODE_SCANNER_LASER_ON_TIME:
-            UsageText := 'Laser On Time';
+            UsageText := RsLaserOnTime;
           HID_USAGE_BARCODE_SCANNER_LASER_STATE:
-            UsageText := 'Laser State';
+            UsageText := RsLaserState;
           HID_USAGE_BARCODE_SCANNER_LOCKOUT_TIME:
-            UsageText := 'Lockout Time';
+            UsageText := RsLockoutTime;
           HID_USAGE_BARCODE_SCANNER_MOTOR_STATE:
-            UsageText := 'Motor State';
+            UsageText := RsMotorState;
           HID_USAGE_BARCODE_SCANNER_MOTOR_TIMEOUT:
-            UsageText := 'Motor Timeout';
+            UsageText := RsMotorTimeout;
           HID_USAGE_BARCODE_SCANNER_POWER_ON_RESET_SCANNER:
-            UsageText := 'Power On Reset Scanner';
+            UsageText := RsPowerOnResetScanner;
           HID_USAGE_BARCODE_SCANNER_PREVENT_READ_OF_BARCODES:
-            UsageText := 'Prevent Read of Barcodes';
+            UsageText := RsPreventReadofBarcodes;
           HID_USAGE_BARCODE_SCANNER_INITIATE_BARCODE_READ:
-            UsageText := 'Initiate Barcode Read';
+            UsageText := RsInitiateBarcodeRead;
           HID_USAGE_BARCODE_SCANNER_TRIGGER_STATE:
-            UsageText := 'Trigger State';
+            UsageText := RsTriggerState;
           HID_USAGE_BARCODE_SCANNER_TRIGGER_MODE:
-            UsageText := 'Trigger Mode';
+            UsageText := RsTriggerMode;
           HID_USAGE_BARCODE_SCANNER_TM_BLINKING_LASER_ON:
-            UsageText := 'Trigger Mode Blinking Laser On';
+            UsageText := RsTriggerModeBlinkingLaserOn;
           HID_USAGE_BARCODE_SCANNER_TM_CONTINUOUS_LASER_ON:
-            UsageText := 'Trigger Mode Continuous Laser On';
+            UsageText := RsTriggerModeContinuousLaserOn;
           HID_USAGE_BARCODE_SCANNER_TM_LASER_ON_WHILE_PULLED:
-            UsageText := 'Trigger Mode Laser On While Pulled';
+            UsageText := RsTriggerModeLaserOnWhilePulled;
           HID_USAGE_BARCODE_SCANNER_TM_LASER_STAYS_ON_AFTER_TRIGGER_RELEASE:
-            UsageText := 'Trigger Mode Laser Stays On After Trigger Release';
+            UsageText := RsTriggerModeLaserStaysOnAfterTriggerRelease;
           HID_USAGE_BARCODE_SCANNER_COMMIT_PARAMETERS_TO_NVM:
-            UsageText := 'Commit Parameters to NVM';
+            UsageText := RsCommitParameterstoNVM;
           HID_USAGE_BARCODE_SCANNER_PARAMETER_SCANNING:
-            UsageText := 'Parameter Scanning';
+            UsageText := RsParameterScanning;
           HID_USAGE_BARCODE_SCANNER_PARAMETERS_CHANGED:
-            UsageText := 'Parameters Changed';
+            UsageText := RsParametersChanged;
           HID_USAGE_BARCODE_SCANNER_SET_PARAMETER_DEFAULT_VALUES:
-            UsageText := 'Set Parameter Default Values';
+            UsageText := RsSetParameterDefaultValues;
           HID_USAGE_BARCODE_SCANNER_SCANNER_IN_CRADLE:
-            UsageText := 'Scanner in Cradle';
+            UsageText := RsScannerinCradle;
           HID_USAGE_BARCODE_SCANNER_SCANNER_IN_RANGE:
-            UsageText := 'Scanner in Range';
+            UsageText := RsScannerinRange;
           HID_USAGE_BARCODE_SCANNER_AIM_DURATION:
-            UsageText := 'Aim Duration';
+            UsageText := RsAimDuration;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_LAMP_DURATION:
-            UsageText := 'Good Read Lamp Duration';
+            UsageText := RsGoodReadLampDuration;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_LAMP_INTENSITY:
-            UsageText := 'Good Read Lamp Intensity';
+            UsageText := RsGoodReadLampIntensity;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_LED:
-            UsageText := 'Good Read LED';
+            UsageText := RsGoodReadLED;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_TONE_FREQUENCY:
-            UsageText := 'Good Read Tone Frequency';
+            UsageText := RsGoodReadToneFrequency;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_TONE_LENGTH:
-            UsageText := 'Good Read Tone Length';
+            UsageText := RsGoodReadToneLength;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_TONE_VOLUME:
-            UsageText := 'Good Read Tone Volume';
+            UsageText := RsGoodReadToneVolume;
           HID_USAGE_BARCODE_SCANNER_NO_READ_MESSAGE:
-            UsageText := 'No Read Message';
+            UsageText := RsNoReadMessage;
           HID_USAGE_BARCODE_SCANNER_NOT_ON_FILE_VOLUME:
-            UsageText := 'Not On File Volume';
+            UsageText := RsNotOnFileVolume;
           HID_USAGE_BARCODE_SCANNER_POWERUP_BEEP:
-            UsageText := 'Powerup Beep';
+            UsageText := RsPowerupBeep;
           HID_USAGE_BARCODE_SCANNER_SOUND_ERROR_BEEP:
-            UsageText := 'Sound Error Beep';
+            UsageText := RsSoundErrorBeep;
           HID_USAGE_BARCODE_SCANNER_SOUND_GOOD_READ_BEEP:
-            UsageText := 'Sound Good Read Beep';
+            UsageText := RsSoundGoodReadBeep;
           HID_USAGE_BARCODE_SCANNER_SOUND_NOT_ON_FILE_BEEP:
-            UsageText := 'Sound Not On File Beep';
+            UsageText := RsSoundNotOnFileBeep;
           HID_USAGE_BARCODE_SCANNER_GOOD_READ_WHEN_TO_WRITE:
-            UsageText := 'Good Read When to Write';
+            UsageText := RsGoodReadWhentoWrite;
           HID_USAGE_BARCODE_SCANNER_GRWTI_AFTER_DECODE:
-            UsageText := 'GRWTI After Decode';
+            UsageText := RsGRWTIAfterDecode;
           HID_USAGE_BARCODE_SCANNER_GRWTI_BEEP_LAMP_AFTER_TRANSMIT:
-            UsageText := 'GRWTI Beep/Lamp After Transmit';
+            UsageText := RsGRWTIBeep_LampAfterTransmit;
           HID_USAGE_BARCODE_SCANNER_GRWTI_NO_BEEP_LAMP_USE_AT_ALL:
-            UsageText := 'GRWTI No Beep/Lamp Use at All';
+            UsageText := RsGRWTINoBeep_LampUseatAll;
           HID_USAGE_BARCODE_SCANNER_BOOKLAND_EAN:
-            UsageText := 'Bookland EAN';
+            UsageText := RsBooklandEAN;
           HID_USAGE_BARCODE_SCANNER_CONVERT_EAN_8_TO_13_TYPE:
-            UsageText := 'Convert EAN 8 to 13 Type';
+            UsageText := RsConvertEAN8to13Type;
           HID_USAGE_BARCODE_SCANNER_CONVERT_UPC_A_TO_EAN_13:
-            UsageText := 'Convert UPC A to EAN-13';
+            UsageText := RsConvertUPCAtoEAN_13;
           HID_USAGE_BARCODE_SCANNER_CONVERT_UPC_E_TO_A:
-            UsageText := 'Convert UPC-E to A';
+            UsageText := RsConvertUPC_EtoA;
           HID_USAGE_BARCODE_SCANNER_EAN_13:
-            UsageText := 'EAN-13';
+            UsageText := RsEAN_13;
           HID_USAGE_BARCODE_SCANNER_EAN_8:
-            UsageText := 'EAN-8';
+            UsageText := RsEAN_8;
           HID_USAGE_BARCODE_SCANNER_EAN_99_128_MANDATORY:
-            UsageText := 'EAN-99 128 Mandatory';
+            UsageText := RsEAN_99128Mandatory;
           HID_USAGE_BARCODE_SCANNER_EAN_99_P5_128_OPTIONAL:
-            UsageText := 'EAN-99 P5/128 Optional';
+            UsageText := RsEAN_99P5_128Optional;
           HID_USAGE_BARCODE_SCANNER_UPC_EAN:
-            UsageText := 'UPC/EAN';
+            UsageText := RsUPC_EAN;
           HID_USAGE_BARCODE_SCANNER_UPC_EAN_COUPON_CODE:
-            UsageText := 'UPC/EAN Coupon Code';
+            UsageText := RsUPC_EANCouponCode;
           HID_USAGE_BARCODE_SCANNER_UPC_EAN_PERIODICALS:
-            UsageText := 'UPC/EAN Periodicals';
+            UsageText := RsUPC_EANPeriodicals;
           HID_USAGE_BARCODE_SCANNER_UPC_A:
-            UsageText := 'UPC-A';
+            UsageText := RsUPC_A;
           HID_USAGE_BARCODE_SCANNER_UPC_A_WITH_128_MANDATORY:
-            UsageText := 'UPC-A with 128 Mandatory';
+            UsageText := RsUPC_Awith128Mandatory;
           HID_USAGE_BARCODE_SCANNER_UPC_A_WITH_128_OPTIONAL:
-            UsageText := 'UPC-A with 128 Optional';
+            UsageText := RsUPC_Awith128Optional;
           HID_USAGE_BARCODE_SCANNER_UPC_A_WITH_P5_OPTIONAL:
-            UsageText := 'UPC-A with P5 Optional';
+            UsageText := RsUPC_AwithP5Optional;
           HID_USAGE_BARCODE_SCANNER_UPC_E:
-            UsageText := 'UPC-E';
+            UsageText := RsUPC_E;
           HID_USAGE_BARCODE_SCANNER_UPC_E1:
-            UsageText := 'UPC-E1';
+            UsageText := RsUPC_E1;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL:
-            UsageText := 'Periodical';
+            UsageText := RsPeriodical;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL_AUTODISCRIMINATE_2:
-            UsageText := 'Periodical Auto-Discriminate +2';
+            UsageText := RsPeriodicalAuto_DiscriminatePlus2;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL_ONLY_DECODE_WITH_2:
-            UsageText := 'Periodical Only Decode with +2';
+            UsageText := RsPeriodicalOnlyDecodewithPlus2;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL_IGNORE_2:
-            UsageText := 'Periodical Ignore +2';
+            UsageText := RsPeriodicalIgnorePlus2;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL_AUTODISCRIMINATE_5:
-            UsageText := 'Periodical Auto-Discriminate +5';
+            UsageText := RsPeriodicalAuto_DiscriminatePlus5;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL_ONLY_DECODE_WITH_5:
-            UsageText := 'Periodical Only Decode with +5';
+            UsageText := RsPeriodicalOnlyDecodewithPlus5;
           HID_USAGE_BARCODE_SCANNER_PERIODICAL_IGNORE_5:
-            UsageText := 'Periodical Ignore +5';
+            UsageText := RsPeriodicalIgnorePlus5;
           HID_USAGE_BARCODE_SCANNER_CHECK:
-            UsageText := 'Check';
+            UsageText := RsCheck;
           HID_USAGE_BARCODE_SCANNER_CHECK_DISABLE_PRICE:
-            UsageText := 'Check Disable Price';
+            UsageText := RsCheckDisablePrice;
           HID_USAGE_BARCODE_SCANNER_CHECK_ENABLE_4_DIGIT_PRICE:
-            UsageText := 'Check Enable 4 Digit Price';
+            UsageText := RsCheckEnable4DigitPrice;
           HID_USAGE_BARCODE_SCANNER_CHECK_ENABLE_5_DIGIT_PRICE:
-            UsageText := 'Check Enable 5 Digit Price';
+            UsageText := RsCheckEnable5DigitPrice;
           HID_USAGE_BARCODE_SCANNER_CHECK_ENABLE_EUROPEAN_4_DIGIT_PRICE:
-            UsageText := 'Check Enable European 4 Digit Price';
+            UsageText := RsCheckEnableEuropean4DigitPrice;
           HID_USAGE_BARCODE_SCANNER_CHECK_ENABLE_EUROPEAN_5_DIGIT_PRICE:
-            UsageText := 'Check Enable European 5 Digit Price';
+            UsageText := RsCheckEnableEuropean5DigitPrice;
           HID_USAGE_BARCODE_SCANNER_EAN_TWO_LABEL:
-            UsageText := 'EAN Two Label';
+            UsageText := RsEANTwoLabel;
           HID_USAGE_BARCODE_SCANNER_EAN_THREE_LABEL:
-            UsageText := 'EAN Three Label';
+            UsageText := RsEANThreeLabel;
           HID_USAGE_BARCODE_SCANNER_EAN_8_FLAG_DIGIT_1:
-            UsageText := 'EAN 8 Flag Digit 1';
+            UsageText := RsEAN8FlagDigit1;
           HID_USAGE_BARCODE_SCANNER_EAN_8_FLAG_DIGIT_2:
-            UsageText := 'EAN 8 Flag Digit 2';
+            UsageText := RsEAN8FlagDigit2;
           HID_USAGE_BARCODE_SCANNER_EAN_8_FLAG_DIGIT_3:
-            UsageText := 'EAN 8 Flag Digit 3';
+            UsageText := RsEAN8FlagDigit3;
           HID_USAGE_BARCODE_SCANNER_EAN_13_FLAG_DIGIT_1:
-            UsageText := 'EAN 13 Flag Digit 1';
+            UsageText := RsEAN13FlagDigit1;
           HID_USAGE_BARCODE_SCANNER_EAN_13_FLAG_DIGIT_2:
-            UsageText := 'EAN 13 Flag Digit 2';
+            UsageText := RsEAN13FlagDigit2;
           HID_USAGE_BARCODE_SCANNER_EAN_13_FLAG_DIGIT_3:
-            UsageText := 'EAN 13 Flag Digit 3';
+            UsageText := RsEAN13FlagDigit3;
           HID_USAGE_BARCODE_SCANNER_ADD_EAN_2_3_LABEL_DEFINITION:
-            UsageText := 'Add EAN 2/3 Label Definition';
+            UsageText := RsAddEAN2_3LabelDefinition;
           HID_USAGE_BARCODE_SCANNER_CLEAR_ALL_EAN_2_3_LABEL_DEFINITIONS:
-            UsageText := 'Clear All EAN 2/3 Label Definitions';
+            UsageText := RsClearAllEAN2_3LabelDefinitions;
           HID_USAGE_BARCODE_SCANNER_CODABAR:
-            UsageText := 'Codabar';
+            UsageText := RsCodabar;
           HID_USAGE_BARCODE_SCANNER_CODE_128:
-            UsageText := 'Code 128';
+            UsageText := RsCode128;
           HID_USAGE_BARCODE_SCANNER_CODE_39:
-            UsageText := 'Code 39';
+            UsageText := RsCode39;
           HID_USAGE_BARCODE_SCANNER_CODE_93:
-            UsageText := 'Code 93';
+            UsageText := RsCode93;
           HID_USAGE_BARCODE_SCANNER_FULL_ASCII_CONVERSION:
-            UsageText := 'Full ASCII Conversion';
+            UsageText := RsFullASCIIConversion;
           HID_USAGE_BARCODE_SCANNER_INTERLEAVED_2_OF_5:
-            UsageText := 'Interleaved 2 of 5';
+            UsageText := RsInterleaved2of5;
           HID_USAGE_BARCODE_SCANNER_ITALIAN_PHARMACY_CODE:
-            UsageText := 'Italian Pharmacy Code';
+            UsageText := RsItalianPharmacyCode;
           HID_USAGE_BARCODE_SCANNER_MSI_PLESSEY:
-            UsageText := 'MSI/Plessey';
+            UsageText := RsMSI_Plessey;
           HID_USAGE_BARCODE_SCANNER_STANDARD_2_OF_5_IATA:
-            UsageText := 'Standard 2 of 5 IATA';
+            UsageText := RsStandard2of5IATA;
           HID_USAGE_BARCODE_SCANNER_STANDARD_2_OF_5:
-            UsageText := 'Standard 2 of 5';
+            UsageText := RsStandard2of5;
           HID_USAGE_BARCODE_SCANNER_TRANSMIT_START_STOP:
-            UsageText := 'Transmit Start/Stop';
+            UsageText := RsTransmitStart_Stop;
           HID_USAGE_BARCODE_SCANNER_TRI_OPTIC:
-            UsageText := 'Tri-Optic';
+            UsageText := RsTri_Optic;
           HID_USAGE_BARCODE_SCANNER_UCC_EAN_128:
-            UsageText := 'UCC/EAN-128';
+            UsageText := RsUCC_EAN_128;
           HID_USAGE_BARCODE_SCANNER_CHECK_DIGIT:
-            UsageText := 'Check Digit';
+            UsageText := RsCheckDigit;
           HID_USAGE_BARCODE_SCANNER_CD_DISABLE:
-            UsageText := 'Check Digit Disable';
+            UsageText := RsCheckDigitDisable;
           HID_USAGE_BARCODE_SCANNER_CD_ENABLE_INTERLEAVED_2_OF_5_OPCC:
-            UsageText := 'Check Digit Enable Interleaved 2 of 5 OPCC';
+            UsageText := RsCheckDigitEnableInterleaved2of5OPCC;
           HID_USAGE_BARCODE_SCANNER_CD_ENABLE_INTERLEAVED_2_OF_5_USS:
-            UsageText := 'Check Digit Enable Interleaved 2 of 5 USS';
+            UsageText := RsCheckDigitEnableInterleaved2of5USS;
           HID_USAGE_BARCODE_SCANNER_CD_ENABLE_STANDARD_2_OF_5_OPCC:
-            UsageText := 'Check Digit Enable Standard 2 of 5 OPCC';
+            UsageText := RsCheckDigitEnableStandard2of5OPCC;
           HID_USAGE_BARCODE_SCANNER_CD_ENABLE_STANDARD_2_OF_5_USS:
-            UsageText := 'Check Digit Enable Standard 2 of 5 USS';
+            UsageText := RsCheckDigitEnableStandard2of5USS;
           HID_USAGE_BARCODE_SCANNER_CD_ENABLE_ONE_MSI_PLESSEY:
-            UsageText := 'Check Digit Enable One MSI/Plessey';
+            UsageText := RsCheckDigitEnableOneMSI_Plessey;
           HID_USAGE_BARCODE_SCANNER_CD_ENABLE_TWO_MSI_PLESSEY:
-            UsageText := 'Check Digit Enable Two MSI/Plessey';
+            UsageText := RsCheckDigitEnableTwoMSI_Plessey;
           HID_USAGE_BARCODE_SCANNER_CD_CODABAR_ENABLE:
-            UsageText := 'Check Digit Codabar Enable';
+            UsageText := RsCheckDigitCodabarEnable;
           HID_USAGE_BARCODE_SCANNER_CD_CODE_39_ENABLE:
-            UsageText := 'Check Digit Code 39 Enable';
+            UsageText := RsCheckDigitCode39Enable;
           HID_USAGE_BARCODE_SCANNER_TRANSMIT_CHECK_DIGIT:
-            UsageText := 'Transmit Check Digit';
+            UsageText := RsTransmitCheckDigit;
           HID_USAGE_BARCODE_SCANNER_DISABLE_CHECK_DIGIT_TRANSMIT:
-            UsageText := 'Disable Check Digit Transmit';
+            UsageText := RsDisableCheckDigitTransmit;
           HID_USAGE_BARCODE_SCANNER_ENABLE_CHECK_DIGIT_TRANSMIT:
-            UsageText := 'Enable Check Digit Transmit';
+            UsageText := RsEnableCheckDigitTransmit;
           HID_USAGE_BARCODE_SCANNER_SYMBOLOGY_IDENTIFIER_1:
-            UsageText := 'Symbology Identifier 1';
+            UsageText := RsSymbologyIdentifier1;
           HID_USAGE_BARCODE_SCANNER_SYMBOLOGY_IDENTIFIER_2:
-            UsageText := 'Symbology Identifier 2';
+            UsageText := RsSymbologyIdentifier2;
           HID_USAGE_BARCODE_SCANNER_SYMBOLOGY_IDENTIFIER_3:
-            UsageText := 'Symbology Identifier 3';
+            UsageText := RsSymbologyIdentifier3;
           HID_USAGE_BARCODE_SCANNER_DECODED_DATA:
-            UsageText := 'Decode Data';
+            UsageText := RsDecodeData;
           HID_USAGE_BARCODE_SCANNER_DECODED_DATA_CONTINUED:
-            UsageText := 'Decoded Data Continued';
+            UsageText := RsDecodedDataContinued;
           HID_USAGE_BARCODE_SCANNER_BAR_SPACE_DATA:
-            UsageText := 'Bar Space Data';
+            UsageText := RsBarSpaceData;
           HID_USAGE_BARCODE_SCANNER_SCANNER_DATA_ACCURACY:
-            UsageText := 'Scanner Data Accuracy';
+            UsageText := RsScannerDataAccuracy;
           HID_USAGE_BARCODE_SCANNER_RAW_DATA_POLARITY:
-            UsageText := 'Raw Data Polarity';
+            UsageText := RsRawDataPolarity;
           HID_USAGE_BARCODE_SCANNER_POLARITY_INVERTED_BAR_CODE:
-            UsageText := 'Polarity Inverted Bar Code';
+            UsageText := RsPolarityInvertedBarCode;
           HID_USAGE_BARCODE_SCANNER_POLARITY_NORMAL_BAR_CODE:
-            UsageText := 'Polarity Normal Bar Code';
+            UsageText := RsPolarityNormalBarCode;
           HID_USAGE_BARCODE_SCANNER_MINIMUM_LENGTH_TO_DECODE:
-            UsageText := 'Minimum Length to Decode';
+            UsageText := RsMinimumLengthtoDecode;
           HID_USAGE_BARCODE_SCANNER_MAXIMUM_LENGTH_TO_DECODE:
-            UsageText := 'Maximum Length to Decode';
+            UsageText := RsMaximumLengthtoDecode;
           HID_USAGE_BARCODE_SCANNER_FIRST_DISCRETE_LENGTH_TO_DECODE:
-            UsageText := 'First Discrete Length to Decode';
+            UsageText := RsFirstDiscreteLengthtoDecode;
           HID_USAGE_BARCODE_SCANNER_SECOND_DISCRETE_LENGTH_TO_DECODE:
-            UsageText := 'Second Discrete Length to Decode';
+            UsageText := RsSecondDiscreteLengthtoDecode;
           HID_USAGE_BARCODE_SCANNER_DATA_LENGTH_METHOD:
-            UsageText := 'Data Length Method';
+            UsageText := RsDataLengthMethod;
           HID_USAGE_BARCODE_SCANNER_DLM_READ_ANY:
-            UsageText := 'Data Length Method Read Any';
+            UsageText := RsDataLengthMethodReadAny;
           HID_USAGE_BARCODE_SCANNER_DLM_CHECK_IN_RANGE:
-            UsageText := 'Data Length Method Check in Range';
+            UsageText := RsDataLengthMethodCheckinRange;
           HID_USAGE_BARCODE_SCANNER_DLM_CHECK_FOR_DISCRETE:
-            UsageText := 'Data Length Method Check for Discrete';
+            UsageText := RsDataLengthMethodCheckforDiscrete;
           HID_USAGE_BARCODE_SCANNER_AZTEC_CODE:
-            UsageText := 'Aztec Code';
+            UsageText := RsAztecCode;
           HID_USAGE_BARCODE_SCANNER_BC412:
-            UsageText := 'BC412';
+            UsageText := RsBC412;
           HID_USAGE_BARCODE_SCANNER_CHANNEL_CODE:
-            UsageText := 'Channel Code';
+            UsageText := RsChannelCode;
           HID_USAGE_BARCODE_SCANNER_CODE_16:
-            UsageText := 'Code 16';
+            UsageText := RsCode16;
           HID_USAGE_BARCODE_SCANNER_CODE_32:
-            UsageText := 'Code 32';
+            UsageText := RsCode32;
           HID_USAGE_BARCODE_SCANNER_CODE_49:
-            UsageText := 'Code 49';
+            UsageText := RsCode49;
           HID_USAGE_BARCODE_SCANNER_CODE_ONE:
-            UsageText := 'Code One';
+            UsageText := RsCodeOne;
           HID_USAGE_BARCODE_SCANNER_COLORCODE:
-            UsageText := 'Colorcode';
+            UsageText := RsColorcode;
           HID_USAGE_BARCODE_SCANNER_DATA_MATRIX:
-            UsageText := 'Data Matrix';
+            UsageText := RsDataMatrix;
           HID_USAGE_BARCODE_SCANNER_MAXICODE:
-            UsageText := 'MaxiCode';
+            UsageText := RsMaxiCode;
           HID_USAGE_BARCODE_SCANNER_MICROPDF:
-            UsageText := 'MicroPDF';
+            UsageText := RsMicroPDF;
           HID_USAGE_BARCODE_SCANNER_PDF_417:
-            UsageText := 'PDF-417';
+            UsageText := RsPDF_417;
           HID_USAGE_BARCODE_SCANNER_POSICODE:
-            UsageText := 'PosiCode';
+            UsageText := RsPosiCode;
           HID_USAGE_BARCODE_SCANNER_QR_CODE:
-            UsageText := 'QR Code';
+            UsageText := RsQRCode;
           HID_USAGE_BARCODE_SCANNER_SUPERCODE:
-            UsageText := 'SuperCode';
+            UsageText := RsSuperCode;
           HID_USAGE_BARCODE_SCANNER_ULTRACODE:
-            UsageText := 'UltraCode';
+            UsageText := RsUltraCode;
           HID_USAGE_BARCODE_SCANNER_USD_5:
-            UsageText := 'USD-5 (Slug Code)';
+            UsageText := RsUSD_5SlugCode;
           HID_USAGE_BARCODE_SCANNER_VERICODE:
-            UsageText := 'VeriCode';
+            UsageText := RsVeriCode;
         end;
       end;
     HID_USAGE_PAGE_WEIGHING_DEVICE:
       begin
-        UsagePageText := 'Weighing Device';
+        UsagePageText := RsWeighingDevice;
         case Usage of
           HID_USAGE_SCALE_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_SCALE_WEIGHING_DEVICE:
-            UsageText := 'Weighing Device';
+            UsageText := RsWeighingDevice;
           HID_USAGE_SCALE_SCALE_DEVICE_CLASS:
-            UsageText := 'Scale Device Class';
+            UsageText := RsScaleDeviceClass;
           HID_USAGE_SCALE_SCALE_CLASS_I_METRIC_CLASS:
-            UsageText := 'Scale Class I Metric Class';
+            UsageText := RsScaleClassIMetricClass;
           HID_USAGE_SCALE_SCALE_CLASS_I_METRIC:
-            UsageText := 'Scale Class I Metric';
+            UsageText := RsScaleClassIMetric;
           HID_USAGE_SCALE_SCALE_CLASS_II_METRIC:
-            UsageText := 'Scale Class II Metric';
+            UsageText := RsScaleClassIIMetric;
           HID_USAGE_SCALE_SCALE_CLASS_III_METRIC:
-            UsageText := 'Scale Class III Metric';
+            UsageText := RsScaleClassIIIMetric;
           HID_USAGE_SCALE_SCALE_CLASS_IIIL_METRIC:
-            UsageText := 'Scale Class IIIL Metric';
+            UsageText := RsScaleClassIIILMetric;
           HID_USAGE_SCALE_SCALE_CLASS_IV_METRIC:
-            UsageText := 'Scale Class IV Metric';
+            UsageText := RsScaleClassIVMetric;
           HID_USAGE_SCALE_SCALE_CLASS_III_ENGLISH:
-            UsageText := 'Scale Class III English';
+            UsageText := RsScaleClassIIIEnglish;
           HID_USAGE_SCALE_SCALE_CLASS_IIIL_ENGLISH:
-            UsageText := 'Scale Class IIIL English';
+            UsageText := RsScaleClassIIILEnglish;
           HID_USAGE_SCALE_SCALE_CLASS_IV_ENGLISH:
-            UsageText := 'Scale Class IV English';
+            UsageText := RsScaleClassIVEnglish;
           HID_USAGE_SCALE_SCALE_CLASS_GENERIC:
-            UsageText := 'Scale Class Generic';
+            UsageText := RsScaleClassGeneric;
           HID_USAGE_SCALE_SCALE_ATTRIBUTE_REPORT:
-            UsageText := 'Scale Attribute Report';
+            UsageText := RsScaleAttributeReport;
           HID_USAGE_SCALE_SCALE_CONTROL_REPORT:
-            UsageText := 'Scale Control Report';
+            UsageText := RsScaleControlReport;
           HID_USAGE_SCALE_SCALE_DATA_REPORT:
-            UsageText := 'Scale Data Report';
+            UsageText := RsScaleDataReport;
           HID_USAGE_SCALE_SCALE_STATUS_REPORT:
-            UsageText := 'Scale Status Report';
+            UsageText := RsScaleStatusReport;
           HID_USAGE_SCALE_SCALE_WEIGHT_LIMIT_REPORT:
-            UsageText := 'Scale Weight Limit Report';
+            UsageText := RsScaleWeightLimitReport;
           HID_USAGE_SCALE_SCALE_STATISTICS_REPORT:
-            UsageText := 'Scale Statistics Report';
+            UsageText := RsScaleStatisticsReport;
           HID_USAGE_SCALE_DATA_WEIGHT:
-            UsageText := 'Data Weight';
+            UsageText := RsDataWeight;
           HID_USAGE_SCALE_DATA_SCALING:
-            UsageText := 'Data Scaling';
+            UsageText := RsDataScaling;
           HID_USAGE_SCALE_WEIGHT_UNIT_CLASS:
-            UsageText := 'Weight Unit Class';
+            UsageText := RsWeightUnitClass;
           HID_USAGE_SCALE_WEIGHT_UNIT_MILLIGRAM:
-            UsageText := 'Weight Unit Milligram';
+            UsageText := RsWeightUnitMilligram;
           HID_USAGE_SCALE_WEIGHT_UNIT_GRAM:
-            UsageText := 'Weight Unit Gram';
+            UsageText := RsWeightUnitGram;
           HID_USAGE_SCALE_WEIGHT_UNIT_KILOGRAM:
-            UsageText := 'Weight Unit Kilogram';
+            UsageText := RsWeightUnitKilogram;
           HID_USAGE_SCALE_WEIGHT_UNIT_CARATS:
-            UsageText := 'Weight Unit Carats';
+            UsageText := RsWeightUnitCarats;
           HID_USAGE_SCALE_WEIGHT_UNIT_TAELS:
-            UsageText := 'Weight Unit Taels';
+            UsageText := RsWeightUnitTaels;
           HID_USAGE_SCALE_WEIGHT_UNIT_GRAINS:
-            UsageText := 'Weight Unit Grains';
+            UsageText := RsWeightUnitGrains;
           HID_USAGE_SCALE_WEIGHT_UNIT_PENNYWEIGHTS:
-            UsageText := 'Weight Unit Pennyweights';
+            UsageText := RsWeightUnitPennyweights;
           HID_USAGE_SCALE_WEIGHT_UNIT_METRIC_TON:
-            UsageText := 'Weight Unit Metric Ton';
+            UsageText := RsWeightUnitMetricTon;
           HID_USAGE_SCALE_WEIGHT_UNIT_AVOIR_TON:
-            UsageText := 'Weight Unit Avoir Ton';
+            UsageText := RsWeightUnitAvoirTon;
           HID_USAGE_SCALE_WEIGHT_UNIT_TROY_OUNCE:
-            UsageText := 'Weight Unit Troy Ounce';
+            UsageText := RsWeightUnitTroyOunce;
           HID_USAGE_SCALE_WEIGHT_UNIT_OUNCE:
-            UsageText := 'Weight Unit Ounce';
+            UsageText := RsWeightUnitOunce;
           HID_USAGE_SCALE_WEIGHT_UNIT_POUND:
-            UsageText := 'Weight Unit Pound';
+            UsageText := RsWeightUnitPound;
           HID_USAGE_SCALE_CALIBRATION_COUNT:
-            UsageText := 'Calibration Count';
+            UsageText := RsCalibrationCount;
           HID_USAGE_SCALE_RE_ZERO_COUNT:
-            UsageText := 'Re-Zero Count';
+            UsageText := RsRe_ZeroCount;
           HID_USAGE_SCALE_SCALE_STATUS_CLASS:
-            UsageText := 'Scale Status Class';
+            UsageText := RsScaleStatusClass;
           HID_USAGE_SCALE_SCS_FAULT:
-            UsageText := 'Scale Status Fault';
+            UsageText := RsScaleStatusFault;
           HID_USAGE_SCALE_SCS_STABLE_AT_CENTER_OF_ZERO:
-            UsageText := 'Scale Status Stable at Center of Zero';
+            UsageText := RsScaleStatusStableatCenterofZero;
           HID_USAGE_SCALE_SCS_IN_MOTION:
-            UsageText := 'Scale Status In Motion';
+            UsageText := RsScaleStatusInMotion;
           HID_USAGE_SCALE_SCS_WEIGHT_STABLE:
-            UsageText := 'Scale Status Weight Stable';
+            UsageText := RsScaleStatusWeightStable;
           HID_USAGE_SCALE_SCS_UNDER_ZERO:
-            UsageText := 'Scale Status Under Zero';
+            UsageText := RsScaleStatusUnderZero;
           HID_USAGE_SCALE_SCS_OVER_WEIGHT_LIMIT:
-            UsageText := 'Scale Status Over Weight Limit';
+            UsageText := RsScaleStatusOverWeightLimit;
           HID_USAGE_SCALE_SCS_REQUIRES_CALIBRATION:
-            UsageText := 'Scale Status Requires Calibration';
+            UsageText := RsScaleStatusRequiresCalibration;
           HID_USAGE_SCALE_SCS_REQUIRES_REZEROING:
-            UsageText := 'Scale Status Requires Rezeroing';
+            UsageText := RsScaleStatusRequiresRezeroing;
           HID_USAGE_SCALE_ZERO_SCALE:
-            UsageText := 'Scale Status Zero Scale';
+            UsageText := RsScaleStatusZeroScale;
           HID_USAGE_SCALE_ENFORCED_ZERO_RETURN:
-            UsageText := 'Scale Status Enforced Zero Return';
+            UsageText := RsScaleStatusEnforcedZeroReturn;
         end;
       end;
     HID_USAGE_PAGE_MAGNETIC_STRIPE_READER:
       begin
-        UsagePageText := 'Magnetic Stripe Reader';
+        UsagePageText := RsMagneticStripeReader;
         case Usage of
           HID_USAGE_MSR_UNDEFINED:
-            UsageText := 'Undefined';
+            UsageText := RsUndefined;
           HID_USAGE_MSR_MSR_DEVICE_READ_ONLY:
-            UsageText := 'MSR Device Read Only';
+            UsageText := RsMSRDeviceReadOnly;
           HID_USAGE_MSR_TRACK_1_LENGTH:
-            UsageText := 'Track 1 Length';
+            UsageText := RsTrack1Length;
           HID_USAGE_MSR_TRACK_2_LENGTH:
-            UsageText := 'Track 2 Length';
+            UsageText := RsTrack2Length;
           HID_USAGE_MSR_TRACK_3_LENGTH:
-            UsageText := 'Track 3 Length';
+            UsageText := RsTrack3Length;
           HID_USAGE_MSR_TRACK_JIS_LENGTH:
-            UsageText := 'Track JIS Length';
+            UsageText := RsTrackJISLength;
           HID_USAGE_MSR_TRACK_DATA:
-            UsageText := 'Track Data';
+            UsageText := RsTrackData;
           HID_USAGE_MSR_TRACK_1_DATA:
-            UsageText := 'Track 1 Data';
+            UsageText := RsTrack1Data;
           HID_USAGE_MSR_TRACK_2_DATA:
-            UsageText := 'Track 2 Data';
+            UsageText := RsTrack2Data;
           HID_USAGE_MSR_TRACK_3_DATA:
-            UsageText := 'Track 3 Data';
+            UsageText := RsTrack3Data;
           HID_USAGE_MSR_TRACK_JIS_DATA:
-            UsageText := 'Track JIS Data';
+            UsageText := RsTrackJISData;
         end;
       end;
   end;
