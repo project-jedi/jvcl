@@ -98,7 +98,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
-    function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
+    function GetTextDisplayInfo(ADC: HDC; const AText: string; var ARect: TRect): Cardinal;
     procedure CreateParams(var Params: TCreateParams); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
@@ -289,7 +289,7 @@ begin
       DrawThemedBackground(Self, hDC, R, B);
       if BorderStyle <> sbsNone then
         DrawEdge(hDC, R, BDR_SUNKENOUTER, BF_ADJUST or BF_RECT or cBorders[BorderStyle]);
-      DrawStyle := GetTextDisplayInfo(hDC, R);
+      DrawStyle := GetTextDisplayInfo(hDC, Self.Caption, R);
       case Layout of
         tlTop:
           OffsetRect(R, 0, FTextMargins.Y);
@@ -347,7 +347,7 @@ begin
     else
     begin
       R := ClientRect;
-      GetTextDisplayInfo(DC, R);
+      GetTextDisplayInfo(DC, Self.Caption, R);
       SetBounds(Left, Top, R.Right, R.Bottom);
     end;
     ReleaseDC(HWND_DESKTOP, DC);
@@ -452,7 +452,7 @@ begin
   end;
 end;
 
-function TJvCustomStaticText.GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
+function TJvCustomStaticText.GetTextDisplayInfo(ADC: HDC; const AText: string; var ARect: TRect): Cardinal;
 const
   cAlignment: array [Boolean, TAlignment] of DWORD =
     ((DT_LEFT, DT_RIGHT, DT_CENTER), (DT_RIGHT, DT_LEFT, DT_CENTER));
@@ -462,7 +462,7 @@ const
 begin
   Result := DT_EXPANDTABS or cAlignment[UseRightToLeftAlignment, Alignment] or
     cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];
-  DrawText(ADC, Caption, Length(Caption), ARect, Result or DT_CALCRECT);
+  DrawText(ADC, AText, Length(AText), ARect, Result or DT_CALCRECT);
 end;
 
 procedure TJvCustomStaticText.Resize;

@@ -59,20 +59,21 @@ type
     FDown: Boolean;
     FOldMouseMovePt: TPoint;
     FOnScrollEnd: TNotifyEvent;
+    FStreamedActive: Boolean;
     function GetItems: TStrings;
-    procedure SetItems(const Value: TStrings);
+    procedure SetItems(Value: TStrings);
     procedure OnScroll(Sender: TObject);
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure SetPixel(const Value: Integer);
     procedure SetScrollDirection(const Value: TJvScrollTextDirection);
-    procedure CalculateText(Sender: TObject);
     function GetAlignment: TAlignment;
     procedure SetAlignment(const Value: TAlignment);
     function GetColor: TColor;
     procedure SetColor(const Value: TColor);
     procedure FontChange(Sender: TObject);
-    procedure SetFont(const Value: TFont);
+    procedure ItemsChange(Sender: TObject);
+    procedure SetFont(Value: TFont);
     procedure TextMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure TextMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -81,6 +82,8 @@ type
     function GetWordWrap: Boolean;
     procedure SetWordWrap(const Value: Boolean);
     procedure DoScrollEnd;
+    procedure CalcLineSize(ACanvas: TCanvas; const ALine: string; var ALineWidth, ALineHeight: Integer);
+    procedure CalcTextSize;
   protected
     procedure Loaded; override;
   public
@@ -147,6 +150,7 @@ begin
   FSelectable := True;
   FScrollDirection := drFromBottom;
   FItems := TStringList.Create;
+  FItems.OnChange := ItemsChange;
 
   FText := TJvStaticText.Create(Self);
   FText.Parent := Self;
@@ -203,23 +207,13 @@ end;
 procedure TJvScrollText.Loaded;
 begin
   inherited Loaded;
-  if csDesigning in ComponentState then
-    SetItems(FItems);
+  CalcTextSize;
+  if FStreamedActive then SetActive(True);
 end;
 
-procedure TJvScrollText.SetFont(const Value: TFont);
-var
-  Al: TAlignment;
+procedure TJvScrollText.SetFont(Value: TFont);
 begin
   FFont.Assign(Value);
-  FText.Font.Assign(FFont);
-  CalculateText(Self);
-  Al := FText.Alignment;
-  if FText.Alignment = taCenter then
-    FText.Alignment := taLeftJustify
-  else
-    FText.Alignment := taCenter;
-  FText.Alignment := Al;
 end;
 
 procedure TJvScrollText.TextMouseDown(Sender: TObject; Button: TMouseButton;
@@ -442,10 +436,16 @@ end;
 
 procedure TJvScrollText.SetActive(const Value: Boolean);
 begin
-  SetItems(FItems);
-  FActive := Value;
-  if not (csDesigning in ComponentState) then
-    FScroll.Paused := not Value;
+  if (csReading in ComponentState) then
+  begin
+    if Value then FStreamedActive := True;
+  end
+  else
+  begin
+    FActive := Value;
+    if not (csDesigning in ComponentState) then
+      FScroll.Paused := not Value;
+  end;
 end;
 
 procedure TJvScrollText.SetDelay(const Value: Cardinal);
@@ -470,39 +470,62 @@ begin
   Reset;
 end;
 
-procedure TJvScrollText.CalculateText(Sender: TObject);
+type
+  TJvStaticTextAccess = class(TJvStaticText);
+
+procedure TJvScrollText.CalcLineSize(ACanvas: TCanvas; const ALine: string; var ALineWidth,
+  ALineHeight: Integer);
 var
-  I, J, K, W: Integer;
+  LineRect: TRect;
+begin
+  if ALine > '' then
+  begin
+    LineRect := ClientRect;
+    TJvStaticTextAccess(FText).GetTextDisplayInfo(ACanvas.Handle, ALine, LineRect);
+    ALineWidth := LineRect.Right - LineRect.Left;
+    ALineHeight := LineRect.Bottom - LineRect.Top;
+  end
+  else
+  begin
+    ALineWidth := 0;
+    ALineHeight := CanvasMaxTextHeight(ACanvas);
+  end;
+end;
+
+procedure TJvScrollText.CalcTextSize;
+var
+  I: Integer;
+  MaxLineWidth, TotalLineHeight: Integer;
+  LineWidth, LineHeight: Integer;
   Ts: TStringList;
   DesktopCanvas: TCanvas;
 begin
-  // calculate the Size of the memo (vertically)
+  if csLoading in ComponentState then Exit;
+
+  // calculate the Size of the memo
   DesktopCanvas := TCanvas.Create;
   try
     DesktopCanvas.Handle := GetDC(HWND_DESKTOP);
     DesktopCanvas.Font.Assign(FText.Font);
-    J := 0;
-    K := 0;
+    MaxLineWidth := 0;
+    TotalLineHeight := 0;
     Ts := TStringList.Create;
     try
       Ts.Text := FText.Caption;
       for I := 0 to Ts.Count - 1 do
       try
-        W := DesktopCanvas.TextWidth(Ts[I]);
-        if K < W then
-          K := W;
-        if Ts[I] <> '' then
-          J := J + DesktopCanvas.TextHeight(Ts[I]) * ((W div Width) + 1)
-        else
-          J := J + CanvasMaxTextHeight(DesktopCanvas);
+        CalcLineSize(DesktopCanvas, Ts[i], LineWidth, LineHeight);
+        if MaxLineWidth < LineWidth then
+          MaxLineWidth := LineWidth;
+        TotalLineHeight := TotalLineHeight + LineHeight;
       except
       end;
-      if J <= 0 then
-        J := Height;
-      FText.Height := J;
-      if K <= 0 then
-        K := Width;
-      FText.Width := K;
+      if TotalLineHeight <= 0 then
+        TotalLineHeight := Height;
+      FText.Height := TotalLineHeight;
+      if MaxLineWidth <= 0 then
+        MaxLineWidth := Width;
+      FText.Width := MaxLineWidth;
       DesktopCanvas.Handle := 0;
       ReleaseDC(HWND_DESKTOP, Handle);
     finally
@@ -519,11 +542,9 @@ begin
   Result := FItems;
 end;
 
-procedure TJvScrollText.SetItems(const Value: TStrings);
+procedure TJvScrollText.SetItems(Value: TStrings);
 begin
-  FItems.Text := Value.Text;
-  FText.Caption := Value.Text;
-  CalculateText(Self);
+  FItems.Assign(Value);
 end;
 
 function TJvScrollText.GetColor: TColor;
@@ -533,9 +554,12 @@ end;
 
 procedure TJvScrollText.SetColor(const Value: TColor);
 begin
-  FText.Color := Value;
-  Color := Value;
-  Invalidate;
+  if (FText.Color <> Value) or (Color <> Value) then
+  begin
+    FText.Color := Value;
+    Color := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvScrollText.FontChange(Sender: TObject);
@@ -543,7 +567,7 @@ var
   Al: TAlignment;
 begin
   FText.Font.Assign(FFont);
-  CalculateText(Self);
+  CalcTextSize;
   Al := FText.Alignment;
   if FText.Alignment = taCenter then
     FText.Alignment := taLeftJustify
@@ -588,7 +612,11 @@ end;
 
 procedure TJvScrollText.SetAlignment(const Value: TAlignment);
 begin
-  FText.Alignment := Value;
+  if FText.Alignment <> Value then
+  begin
+    FText.Alignment := Value;
+    CalcTextSize;
+  end;
 end;
 
 function TJvScrollText.GetWordWrap: Boolean;
@@ -596,9 +624,19 @@ begin
   Result := FText.WordWrap;
 end;
 
+procedure TJvScrollText.ItemsChange(Sender: TObject);
+begin
+  FText.Caption := Items.Text;
+  CalcTextSize;
+end;
+
 procedure TJvScrollText.SetWordWrap(const Value: Boolean);
 begin
-  FText.WordWrap := Value;
+  if FText.WordWrap <> Value then
+  begin
+    FText.WordWrap := Value;
+    CalcTextSize;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
