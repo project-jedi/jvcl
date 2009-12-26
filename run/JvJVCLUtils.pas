@@ -4138,22 +4138,14 @@ begin
     if (WinState = wsMinimized) and ((Form = Application.MainForm) or
       (Application.MainForm = nil)) then
     begin
-      {$IFNDEF DELPHI2010_UP}
       TWindowState(Pointer(@Form.WindowState)^) := wsNormal;
-      {$ELSE}
-      Form.WindowState := wsNormal;
-      {$ENDIF}
       PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
       Exit;
     end;
-    {$IFNDEF DELPHI2010_UP} // Using this Hack didn't work with D2010
     if Form.FormStyle in [fsMDIChild, fsMDIForm] then
       TWindowState(Pointer(@Form.WindowState)^) := WinState
     else
       Form.WindowState := WinState;
-    {$ELSE}
-    Form.WindowState := WinState;
-    {$ENDIF}
   end;
   Form.Update;
 end;
