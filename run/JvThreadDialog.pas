@@ -103,10 +103,14 @@ type
 
   TJvThreadSimpleDialogOptions = class(TJvThreadBaseDialogOptions)
   private
+    FProgressBarPosition: Integer;
     FShowProgressBar: Boolean;
+    procedure SetProgressBarPosition(const Value: Integer);
     procedure SetShowProgressBar(const Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
+    property ProgressBarPosition: Integer read FProgressBarPosition write
+        SetProgressBarPosition;
   published
     property ShowProgressBar: Boolean read FShowProgressBar write SetShowProgressBar default False;
   end;
@@ -348,6 +352,13 @@ constructor TJvThreadSimpleDialogOptions.Create(AOwner: TJvCustomThreadDialog);
 begin
   inherited Create(AOwner);
   FShowProgressBar := False;
+  FProgressBarPosition := -1;
+end;
+
+procedure TJvThreadSimpleDialogOptions.SetProgressBarPosition(const Value:
+    Integer);
+begin
+  FProgressBarPosition := Value;
 end;
 
 procedure TJvThreadSimpleDialogOptions.SetShowProgressBar(const Value: Boolean);
@@ -510,7 +521,10 @@ begin
       ITmpControl.ControlSetCaption (FormatDateTime('hh:nn:ss', Now - FStartTime));
 
     if Supports(FProgressbar, IJvDynControlProgressbar, ITmpProgressbar) then
-      ITmpProgressbar.ControlSetPosition(((FCounter*10) mod 110));
+      if (DialogOptions.ProgressBarPosition >= 0) and (DialogOptions.ProgressBarPosition <= 100)  then
+        ITmpProgressbar.ControlSetPosition(DialogOptions.ProgressBarPosition)
+      else
+        ITmpProgressbar.ControlSetPosition(((FCounter*10) mod 110));
     case FCounter mod 4 of
       0: Caption := DialogOptions.Caption + ' | ';
       1: Caption := DialogOptions.Caption + ' / ';
