@@ -808,8 +808,8 @@ begin
       end;
     // mouse messages are sent through TJvIPAddress.WMParentNotify
   end;
-  with Msg do
-    Result := DefWindowProc(Handle, Msg, WParam, LParam);
+
+  Dispatch(Msg);
 end;
 
 //=== { TJvIPAddressDataConnector } ==========================================
