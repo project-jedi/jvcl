@@ -144,7 +144,7 @@ type
     property Tag;
 
     //1 Creates a new instance of the same objecttype and assigns the property contents to the new instance
-    function Clone(AOwner: TComponent): TJvCustomPropertyStore;
+    function Clone(AOwner: TComponent): TJvCustomPropertyStore; virtual;
     //IJvPropertyEditorHandler = interface
     function EditIntf_GetVisibleObjectName: string; virtual;
     function EditIntf_TranslatePropertyName(const PropertyName: string): string;
