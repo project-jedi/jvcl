@@ -83,6 +83,7 @@
         <alias name="DBVCLv6up" value="c6,d6,d7,d9,d10,d11,d12,d14"/>
         <alias name="allv6up" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
         <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
+        <alias name="allv9up" value="d9,d9p,d10,d10p,d11,d12,d14"/>
         <alias name="allv12up" value="d12,d14"/>
         <alias name="windows" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14"/>
       </aliases>
