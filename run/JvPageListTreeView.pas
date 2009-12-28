@@ -377,7 +377,6 @@ type
     property Items;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -393,56 +392,6 @@ implementation
 uses
   JvResources,
   Forms, JvJVCLUtils;
-
-(* (ahuser) make Delphi 5 compiler happy
-procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);
-var
-  N: TTreeNode;
-begin
-  N := Items.GetFirstNode;
-  while Assigned(N) do
-  begin
-    if not N.HasChildren then
-    begin
-      N.ImageIndex := ImageIndex;
-      N.SelectedIndex := SelectedIndex;
-    end;
-    N := N.GetNext;
-  end;
-end;
-
-procedure ResetSiblings(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
-var
-  N: TTreeNode;
-begin
-  N := Node.getPrevSibling;
-  while Assigned(N) do
-  begin
-    if not N.HasChildren then
-    begin
-      N.ImageIndex := ImageIndex;
-      N.SelectedIndex := SelectedIndex;
-    end
-    else
-    if Recurse then
-      ResetSiblings(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
-    N := N.getPrevSibling;
-  end;
-  N := Node.getNextSibling;
-  while Assigned(N) do
-  begin
-    if not N.HasChildren then
-    begin
-      N.ImageIndex := ImageIndex;
-      N.SelectedIndex := SelectedIndex;
-    end
-    else
-    if Recurse then
-      ResetSiblings(N.getFirstChild, ImageIndex, SelectedIndex, Recurse);
-    N := N.getNextSibling;
-  end;
-end;
-*)
 
 procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
 var
@@ -768,7 +717,6 @@ begin
     FLastSelected := nil;
 end;
 
-
 procedure TJvCustomSettingsTreeView.DoGetImageIndex(Sender: TObject;
   Node: TTreeNode);
 begin
@@ -786,7 +734,6 @@ begin
   else
     GetSelectedIndex(Node);
 end;
-
 
 procedure TJvCustomSettingsTreeView.Expand(Node: TTreeNode);
 var
@@ -841,7 +788,6 @@ procedure TJvCustomSettingsTreeView.GetSelectedIndex(Node: TTreeNode);
 begin
   GetImageIndex(Node);
 end;
-
 
 procedure TJvCustomSettingsTreeView.Loaded;
 begin
