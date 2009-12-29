@@ -462,10 +462,7 @@ begin
             SetObjectProp(PersObj, PropName, SearchOwner.Components[i]);
             Exit;
           end;
-        if Assigned(SearchOwner.Owner) then
-          SearchOwner := SearchOwner.Owner
-        else
-          SearchOwner := nil;
+        SearchOwner := SearchOwner.Owner;
       end;
     end
     else
