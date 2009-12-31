@@ -231,7 +231,7 @@ function TJvRas32.GetActiveConnection: string;
 var
   Ret: Longint;
   nCB: DWORD;
-  RasConn: array [0..63] of TRASCONN;
+  RasConn: array of TRASCONN;
   nRasConnCount: DWORD;
   I: Integer;
 begin
@@ -239,11 +239,22 @@ begin
 
   if RasAvailable then
   begin
-    RasConn[0].dwSize := SizeOf(TRASCONN);
-    nCB := SizeOf(RasConn);
-    Ret := FRasEnumConnections(@RasConn, nCB, nRasConnCount);
+    // We enumerate the RAS connections in a loop which allows us to use
+    // a dynamic array rather than a static one that may not be big
+    // enough to contain all the connections (Mantis 5079).
+    // We start with 64 which should be fine on most systems
+    repeat
+      SetLength(RasConn, Length(RasConn) + 64);
+      RasConn[0].dwSize := SizeOf(RasConn[0]);
+      nCB := Length(RasConn) * SizeOf(RasConn[0]);
+      
+      Ret := FRasEnumConnections(@RasConn[0], nCB, nRasConnCount);
+    until Ret <> ERROR_BUFFER_TOO_SMALL;
 
-    if (Ret <> Success) or (nRasConnCount = 0) then
+    if Ret <> ERROR_SUCCESS then
+      raise Exception.CreateFmt('Unable to enumerate RAS connections, Error code is %d', [Ret]);
+      
+    if nRasConnCount = 0 then
       Exit;
 
     if not Assigned(FPhoneBook) then
@@ -331,8 +342,8 @@ end;
 
 procedure TJvRas32.RefreshPhoneBook;
 var
-  RASEntryName: array [1..50] of TRasEntryName;
-  I, BufSize, Entries: DWORD;
+  RASEntryName: array of TRasEntryName;
+  Ret, I, BufSize, Entries: DWORD;
 begin
   { Build internal copy. }
   if FPhoneBook = nil then
@@ -342,19 +353,33 @@ begin
     FPhoneBook.BeginUpdate;
     try
       FPhoneBook.Clear;
-      RASEntryName[1].dwSize := SizeOf(RASEntryName[1]);
-      BufSize := SizeOf(RASEntryName);
 
       if Assigned(FRasEnumEntries) then
       begin
-        if FPhoneBookPath <> '' then
-          I := FRasEnumEntries(nil, PChar(FPhoneBookPath), @RASEntryName[1], BufSize, Entries)
-        else
-          I := FRasEnumEntries(nil, nil, @RASEntryName[1], BufSize, Entries);
-        if (I = 0) or (I = ERROR_BUFFER_TOO_SMALL) then
-          for I := 1 to Entries do
-            if (I < 51) and (RASEntryName[I].szEntryName[0] <> #0) then
-              FPhoneBook.Add(StrPas(RASEntryName[I].szEntryName));
+        // We enumerate the RAS entries in a loop which allows us to use
+        // a dynamic array rather than a static one that may not be big
+        // enough to contain all the entries (Mantis 5079).
+        // We start with 50 which should be fine on most systems
+        repeat
+          SetLength(RASEntryName, Length(RASEntryName) + 50);
+          BufSize := Length(RASEntryName) * SizeOf(RASEntryName[0]);
+          RASEntryName[0].dwSize := SizeOf(RASEntryName[0]);
+          if FPhoneBookPath <> '' then
+            Ret := FRasEnumEntries(nil, PChar(FPhoneBookPath), @RASEntryName[0], BufSize, Entries)
+          else
+            Ret := FRasEnumEntries(nil, nil, @RASEntryName[0], BufSize, Entries);
+        until Ret <> ERROR_BUFFER_TOO_SMALL;
+
+        if Ret <> ERROR_SUCCESS then
+          raise Exception.CreateFmt('Unable to enumerate RAS entries, Error code is %d', [Ret]);
+
+        I := 0;
+        while I < Entries do
+        begin
+          if (RASEntryName[I].szEntryName[0] <> #0) then
+            FPhoneBook.Add(StrPas(RASEntryName[I].szEntryName));
+          Inc(I);
+        end;
       end;
     finally
       FPhoneBook.EndUpdate;
