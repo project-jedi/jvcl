@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -696,8 +696,13 @@ type
   { A TJvDockableForm is a base class for TJvDockConjoinHostForm
      and TJvDockTabHostForm which are the base classes for the two kinds of
      docked-views possible for handling multiple controls docked to the same
-     dock site. }
-  TJvDockableForm = class(TForm) { DO NOT MAKE THIS TJvForm! Mantis # 5023 }
+     dock site.
+     This form is not meant to be visible to the user nor to contain any
+     visible components, it is just part of the docking framework.
+     This is the reason why it does not inherit from TJvForm, and it were
+     inheriting from it, all sorts of weird bugs would show up (Mantis 5023)
+  }
+  TJvDockableForm = class(TForm) { DO NOT MAKE THIS TJvForm! }
   private
     FDockClient: TJvDockClient;
     FDockableControl: TWinControl;
