@@ -51,7 +51,9 @@ type
   TJvForm = class(TJvExForm)
   private
     FIsFocusable: Boolean;
+    {$IFNDEF DELPHI2009_UP}
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
+    {$ENDIF ~DELPHI2009_UP}
     procedure WMMouseActivate(var Msg: TMessage); message WM_MOUSEACTIVATE;
   public
     constructor Create(AOwner: TComponent); override;
@@ -144,6 +146,7 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
+{$IFNDEF DELPHI2009_UP}
 procedure TJvForm.CMShowingChanged(var Message: TMessage);
 var
   NewParent: HWND;
@@ -180,6 +183,7 @@ begin
   end;
   inherited;
 end;
+{$ENDIF ~DELPHI2009_UP}
 
 function TJvForm.ShowModal: Integer;
 var
