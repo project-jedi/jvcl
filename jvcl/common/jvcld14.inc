@@ -44,7 +44,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
 be compiled as "never-build package". }
-{$DEFINE JVCLThemesEnabled}
+{.$DEFINE JVCLThemesEnabled}
 
 { Activates MIDAS components (DBRemoteLogin).
 NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
@@ -53,7 +53,7 @@ the requires node of JvDBXXX.bpk !!! }
 
 { This define enables GIF image support. Deactivate this define
 if you are using another GIF image support library. }
-{.$DEFINE USE_JV_GIF}
+{$DEFINE USE_JV_GIF}
 
 { Activate this define if you do not want to use TGauge Borland sample
 component in TDBProgress component and FileUtil routines. In this case
@@ -141,4 +141,3 @@ For further informations have a look at http://www.allroundautomations.com }
 { Activates Support for the CoreLabs VCL Oracle Data Access Components
 For further informations have a look at http://www.crlab.com }
 {.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
-

@@ -44,7 +44,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
 be compiled as "never-build package". }
-{$DEFINE JVCLThemesEnabled}
+{.$DEFINE JVCLThemesEnabled}
 
 { Activates MIDAS components (DBRemoteLogin).
 NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
