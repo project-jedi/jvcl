@@ -6,7 +6,7 @@
   <C6Libs/>
   <ImageBase>495A0000</ImageBase>
   <Requires>
-	<Package Name="JvCore-R" Targets="VCL" Condition=""/>
+    <Package Name="JvCore-R" Targets="VCL" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>

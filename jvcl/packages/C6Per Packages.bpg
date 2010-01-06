@@ -9,249 +9,249 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JvCoreC6R.bpl JvCoreC6D.bpl                     \
-           JvSystemC6R.bpl JvSystemC6D.bpl                 \
-           JvStdCtrlsC6R.bpl JvStdCtrlsC6D.bpl             \
-           JvCtrlsC6R.bpl JvCtrlsC6D.bpl                   \
-           JvCmpC6R.bpl JvCmpC6D.bpl                       \
-           JvCustomC6R.bpl JvCustomC6D.bpl                 \
-           JvDlgsC6R.bpl JvDlgsC6D.bpl                     \
-           JvCryptC6R.bpl JvCryptC6D.bpl                   \
-           JvMMC6R.bpl JvMMC6D.bpl                         \
-           JvNetC6R.bpl JvNetC6D.bpl                       \
-           JvAppFrmC6R.bpl JvAppFrmC6D.bpl                 \
-           JvInterpreterC6R.bpl JvInterpreterC6D.bpl       \
-           JvBandsC6R.bpl JvBandsC6D.bpl                   \
-           JvPluginC6R.bpl JvPluginC6D.bpl                 \
-           JvJansC6R.bpl JvJansC6D.bpl                     \
-           JvGlobusC6R.bpl JvGlobusC6D.bpl                 \
-           JvPrintPreviewC6R.bpl JvPrintPreviewC6D.bpl     \
-           JvPageCompsC6R.bpl JvPageCompsC6D.bpl           \
-           JvValidatorsC6R.bpl JvValidatorsC6D.bpl         \
-           JvWizardC6R.bpl JvWizardC6D.bpl                 \
-           JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl   \
-           JvHMIC6R.bpl JvHMIC6D.bpl                       \
-           JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl \
-           JvXPCtrlsC6R.bpl JvXPCtrlsC6D.bpl               \
-           JvDockingC6R.bpl JvDockingC6D.bpl               \
-           JvDotNetCtrlsC6R.bpl JvDotNetCtrlsC6D.bpl       \
-           JvRuntimeDesignC6R.bpl JvRuntimeDesignC6D.bpl
+PROJECTS = JvCoreC60.bpl JvCoreDesignC60.bpl                     \
+           JvSystemC60.bpl JvSystemDesignC60.bpl                 \
+           JvStdCtrlsC60.bpl JvStdCtrlsDesignC60.bpl             \
+           JvCtrlsC60.bpl JvCtrlsDesignC60.bpl                   \
+           JvCmpC60.bpl JvCmpDesignC60.bpl                       \
+           JvCustomC60.bpl JvCustomDesignC60.bpl                 \
+           JvDlgsC60.bpl JvDlgsDesignC60.bpl                     \
+           JvCryptC60.bpl JvCryptDesignC60.bpl                   \
+           JvMMC60.bpl JvMMDesignC60.bpl                         \
+           JvNetC60.bpl JvNetDesignC60.bpl                       \
+           JvAppFrmC60.bpl JvAppFrmDesignC60.bpl                 \
+           JvInterpreterC60.bpl JvInterpreterDesignC60.bpl       \
+           JvBandsC60.bpl JvBandsDesignC60.bpl                   \
+           JvPluginC60.bpl JvPluginDesignC60.bpl                 \
+           JvJansC60.bpl JvJansDesignC60.bpl                     \
+           JvGlobusC60.bpl JvGlobusDesignC60.bpl                 \
+           JvPrintPreviewC60.bpl JvPrintPreviewDesignC60.bpl     \
+           JvPageCompsC60.bpl JvPageCompsDesignC60.bpl           \
+           JvValidatorsC60.bpl JvValidatorsDesignC60.bpl         \
+           JvWizardC60.bpl JvWizardDesignC60.bpl                 \
+           JvTimeFrameworkC60.bpl JvTimeFrameworkDesignC60.bpl   \
+           JvHMIC60.bpl JvHMIDesignC60.bpl                       \
+           JvManagedThreadsC60.bpl JvManagedThreadsDesignC60.bpl \
+           JvXPCtrlsC60.bpl JvXPCtrlsDesignC60.bpl               \
+           JvDockingC60.bpl JvDockingDesignC60.bpl               \
+           JvDotNetCtrlsC60.bpl JvDotNetCtrlsDesignC60.bpl       \
+           JvRuntimeDesignC60.bpl JvRuntimeDesignDesignC60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreC6R.bpl: c6per\JvCoreC6R.bpk
+JvCoreC60.bpl: c6per\JvCore.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCoreC6D.bpl: c6\JvCoreC6D.bpk
+JvCoreDesignC60.bpl: c6\JvCoreDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvSystemC6R.bpl: c6\JvSystemC6R.bpk
+JvSystemC60.bpl: c6\JvSystem.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvSystemC6D.bpl: c6\JvSystemC6D.bpk
+JvSystemDesignC60.bpl: c6\JvSystemDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCtrlsC6R.bpl: c6\JvCtrlsC6R.bpk
+JvCtrlsC60.bpl: c6\JvCtrls.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCtrlsC6D.bpl: c6\JvCtrlsC6D.bpk
+JvCtrlsDesignC60.bpl: c6\JvCtrlsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvStdCtrlsC6R.bpl: c6\JvStdCtrlsC6R.bpk
+JvStdCtrlsC60.bpl: c6\JvStdCtrls.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvStdCtrlsC6D.bpl: c6\JvStdCtrlsC6D.bpk
+JvStdCtrlsDesignC60.bpl: c6\JvStdCtrlsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCmpC6R.bpl: c6\JvCmpC6R.bpk
+JvCmpC60.bpl: c6\JvCmp.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCmpC6D.bpl: c6\JvCmpC6D.bpk
+JvCmpDesignC60.bpl: c6\JvCmpDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCustomC6R.bpl: c6\JvCustomC6R.bpk
+JvCustomC60.bpl: c6\JvCustom.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCustomC6D.bpl: c6\JvCustomC6D.bpk
+JvCustomDesignC60.bpl: c6\JvCustomDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDlgsC6R.bpl: c6\JvDlgsC6R.bpk
+JvDlgsC60.bpl: c6\JvDlgs.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDlgsC6D.bpl: c6\JvDlgsC6D.bpk
+JvDlgsDesignC60.bpl: c6\JvDlgsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCryptC6R.bpl: c6\JvCryptC6R.bpk
+JvCryptC60.bpl: c6\JvCrypt.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCryptC6D.bpl: c6\JvCryptC6D.bpk
+JvCryptDesignC60.bpl: c6\JvCryptDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvMMC6R.bpl: c6\JvMMC6R.bpk
+JvMMC60.bpl: c6\JvMM.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvMMC6D.bpl: c6\JvMMC6D.bpk
+JvMMDesignC60.bpl: c6\JvMMDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvNetC6R.bpl: c6\JvNetC6R.bpk
+JvNetC60.bpl: c6\JvNet.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvNetC6D.bpl: c6\JvNetC6D.bpk
+JvNetDesignC60.bpl: c6\JvNetDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvAppFrmC6R.bpl: c6\JvAppFrmC6R.bpk
+JvAppFrmC60.bpl: c6\JvAppFrm.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvAppFrmC6D.bpl: c6\JvAppFrmC6D.bpk
+JvAppFrmDesignC60.bpl: c6\JvAppFrmDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC6R.bpl: c6per\JvInterpreterC6R.bpk
+JvInterpreterC60.bpl: c6per\JvInterpreter.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC6D.bpl: c6per\JvInterpreterC6D.bpk
+JvInterpreterDesignC60.bpl: c6per\JvInterpreterDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvBandsC6R.bpl: c6\JvBandsC6R.bpk
+JvBandsC60.bpl: c6\JvBands.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvBandsC6D.bpl: c6\JvBandsC6D.bpk
+JvBandsDesignC60.bpl: c6\JvBandsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPluginC6R.bpl: c6\JvPluginC6R.bpk
+JvPluginC60.bpl: c6\JvPlugin.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPluginC6D.bpl: c6\JvPluginC6D.bpk
+JvPluginDesignC60.bpl: c6\JvPluginDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvJansC6R.bpl: c6\JvJansC6R.bpk
+JvJansC60.bpl: c6\JvJans.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvJansC6D.bpl: c6\JvJansC6D.bpk
+JvJansDesignC60.bpl: c6\JvJansDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvGlobusC6R.bpl: c6per\JvGlobusC6R.bpk
+JvGlobusC60.bpl: c6per\JvGlobus.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvGlobusC6D.bpl: c6per\JvGlobusC6D.bpk
+JvGlobusDesignC60.bpl: c6per\JvGlobusDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPrintPreviewC6R.bpl: c6\JvPrintPreviewC6R.bpk
+JvPrintPreviewC60.bpl: c6\JvPrintPreview.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPrintPreviewC6D.bpl: c6\JvPrintPreviewC6D.bpk
+JvPrintPreviewDesignC60.bpl: c6\JvPrintPreviewDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPageCompsC6R.bpl: c6\JvPageCompsC6R.bpk
+JvPageCompsC60.bpl: c6\JvPageComps.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPageCompsC6D.bpl: c6\JvPageCompsC6D.bpk
+JvPageCompsDesignC60.bpl: c6\JvPageCompsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvValidatorsC6R.bpl: c6\JvValidatorsC6R.bpk
+JvValidatorsC60.bpl: c6\JvValidators.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvValidatorsC6D.bpl: c6\JvValidatorsC6D.bpk
+JvValidatorsDesignC60.bpl: c6\JvValidatorsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvWizardC6R.bpl: c6\JvWizardC6R.bpk
+JvWizardC60.bpl: c6\JvWizard.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvWizardC6D.bpl: c6\JvWizardC6D.bpk
+JvWizardDesignC60.bpl: c6\JvWizardDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvTimeFrameworkC6R.bpl: c6\JvTimeFrameworkC6R.bpk
+JvTimeFrameworkC60.bpl: c6\JvTimeFramework.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvTimeFrameworkC6D.bpl: c6\JvTimeFrameworkC6D.bpk
+JvTimeFrameworkDesignC60.bpl: c6\JvTimeFrameworkDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvHMIC6R.bpl: c6\JvHMIC6R.bpk
+JvHMIC60.bpl: c6\JvHMI.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvHMIC6D.bpl: c6\JvHMIC6D.bpk
+JvHMIDesignC60.bpl: c6\JvHMIDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvManagedThreadsC6R.bpl: c6\JvManagedThreadsC6R.bpk
+JvManagedThreadsC60.bpl: c6\JvManagedThreads.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvManagedThreadsC6D.bpl: c6\JvManagedThreadsC6D.bpk
+JvManagedThreadsDesignC60.bpl: c6\JvManagedThreadsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvXPCtrlsC6R.bpl: c6\JvXPCtrlsC6R.bpk
+JvXPCtrlsC60.bpl: c6\JvXPCtrls.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvXPCtrlsC6D.bpl: c6\JvXPCtrlsC6D.bpk
+JvXPCtrlsDesignC60.bpl: c6\JvXPCtrlsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDockingC6R.bpl: c6\JvDockingC6R.bpk
+JvDockingC60.bpl: c6\JvDocking.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDockingC6D.bpl: c6\JvDockingC6D.bpk
+JvDockingDesignC60.bpl: c6\JvDockingDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDotNetCtrlsC6R.bpl: c6per\JvDotNetCtrlsC6R.bpk
+JvDotNetCtrlsC60.bpl: c6per\JvDotNetCtrls.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvDotNetCtrlsC6D.bpl: c6\JvDotNetCtrlsC6D.bpk
+JvDotNetCtrlsDesignC60.bpl: c6\JvDotNetCtrlsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvRuntimeDesignC6R.bpl: c6per\JvRuntimeDesignC6R.bpk
+JvRuntimeDesignC60.bpl: c6per\JvRuntimeDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvRuntimeDesignC6D.bpl: c6\JvRuntimeDesignC6D.bpk
+JvRuntimeDesignDesignC60.bpl: c6\JvRuntimeDesignDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
