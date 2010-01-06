@@ -299,7 +299,6 @@ type
   end;
 
 var
-  BplNameToGenericNameHook: function(const BplName: string): string = nil;
   ExpandPackageTargets: procedure(Targets: TStrings) = nil;
   ExpandPackageTargetsObj: procedure(Targets: TStrings) of object = nil;
 
@@ -361,6 +360,9 @@ procedure ClearXmlFileCache;
 
 implementation
 
+uses
+  JvJCLUtils;
+
 var
   XmlFileCache: TStringList; // cache for .xml files ( TPackageXmlInfo )
 
@@ -374,17 +376,20 @@ begin
 end;
 
 function BplNameToGenericName(const BplName: string): string;
+var
+  I, Len : Integer;
 begin
-  if Assigned(BplNameToGenericNameHook) then
-    Result := BplNameToGenericNameHook(BplName)
-  else
-  begin
-     // obtain package name used in the xml file
-    Result := ChangeFileExt(BplName, '');
-    Delete(Result, Length(Result) - 2, 2);
-    if Length(Result) > 2 then
-      Insert('-', Result, Length(Result)); // do not localize
-  end;
+   // obtain package name used in the xml file
+  Result := ChangeFileExt(BplName, '');
+
+  // Remove numbers from the end of the package name
+  Len := Length(Result);
+  I := Len;
+  while (I > 0) and CharInSet(Result[I], ['0'..'9']) do
+    Dec(I);
+  if (I > 0) and ((Result[I] = 'D') or (Result[I] = 'C')) then
+    Dec(I);
+  Delete(Result, I+1, Len-I);
 end;
 
 procedure ExpandTargets(Targets: TStrings);
@@ -401,9 +406,12 @@ end;
 function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo; overload;
 var
   Index: Integer;
-  Name: string;
+  GenericPrefix, Name: string;
 begin
-  Name := XmlDir + PathDelim + BplNameToGenericName(BplName) + '.xml';
+  GenericPrefix := XmlDir + PathDelim + BplNameToGenericName(BplName);
+  Name := GenericPrefix + '-R.xml';
+  if not FileExists(Name) then
+    Name := GenericPrefix + '-D.xml';
  // already in the cache
   if XmlFileCache.Find(Name, Index) then
     Result := TPackageXmlInfo(XmlFileCache.Objects[Index])
@@ -904,9 +912,12 @@ begin
 end;
 
 function TPackageGroup.Add(const TargetName, SourceName: string): TBpgPackageTarget;
+var
+  GenericPrefix: string;
 begin
   Result := nil;
-  if FileExists(PackagesXmlDir + PathDelim + BplNameToGenericName(TargetName) + '.xml') then // do not localize
+  GenericPrefix := PackagesXmlDir + PathDelim + BplNameToGenericName(TargetName);
+  if FileExists(GenericPrefix + '-R.xml') or FileExists(GenericPrefix + '-D.xml') then // do not localize
   begin
     try
       Result := GetPackageTargetClass.Create(Self, TargetName, SourceName)
