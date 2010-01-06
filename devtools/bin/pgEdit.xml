@@ -59,7 +59,7 @@
     be available.
   -->
   <models>
-    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" clxPrefix="JvQ" packages="..\..\packages" incfile="..\..\common\jvcl%t.inc" incdeffile="..\..\common\jvclbase.inc">
+    <model name="JVCL" prefix="Jv" format="%p%n" packages="..\..\packages" incfile="..\..\common\jvcl%t.inc" incdeffile="..\..\common\jvclbase.inc">
       <targets>
         <target name="c6" pname="c6p" pdir="c6per"/>
         <target name="d6" pname="d6p" pdir="d6per"/>

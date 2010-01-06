@@ -11,7 +11,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="%NAME%%BINEXTENSION%"/>
+    <PROJECT value="%NAME%C60%BINEXTENSION%"/>
     <OBJFILES value="
       ..\..\lib\c6\%NAME%.obj
 <%%% START FILES %%%>
@@ -94,6 +94,10 @@
   </BUILDTOOLS>
 
   <IDEOPTIONS>
+[Linker]
+LibPrefix=
+LibSuffix=C60
+LibVersion=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0

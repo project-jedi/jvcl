@@ -24,6 +24,7 @@
 			<DCC_Description>%DESCRIPTION%</DCC_Description>
 			<DCC_ImageBase>%IMAGE_BASE%</DCC_ImageBase>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+			<DllSuffix>140</DllSuffix>
 			<DCC_Platform>x86</DCC_Platform>
 			<DCC_UnitSearchPath>..\..\run;..\..\common;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_ResourcePath>..\..\resources;$(DCC_ResourcePath)</DCC_ResourcePath>
@@ -99,7 +100,7 @@
 						<VersionInfoKeys Name="InternalName">%NAME%</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999-2009 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
-						<VersionInfoKeys Name="OriginalFilename">%NAME%%BINEXTENSION%</VersionInfoKeys>
+						<VersionInfoKeys Name="OriginalFilename">%NAME%140%BINEXTENSION%</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER%.%RELEASE_NUMBER%.%BUILD_NUMBER%</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments">%VERSION_MAJOR_NUMBER%.%VERSION_MINOR_NUMBER% Build %BUILD_NUMBER%</VersionInfoKeys>

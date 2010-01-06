@@ -9,217 +9,217 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JvCoreD6R.bpl JvCoreD6D.bpl                     \
-  JvSystemD6R.bpl JvSystemD6D.bpl                 \
-  JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl             \
-  JvCtrlsD6R.bpl JvCtrlsD6D.bpl                   \
-  JvCmpD6R.bpl JvCmpD6D.bpl                       \
-  JvCustomD6R.bpl JvCustomD6D.bpl                 \
-  JvDlgsD6R.bpl JvDlgsD6D.bpl                     \
-  JvCryptD6R.bpl JvCryptD6D.bpl                   \
-  JvMMD6R.bpl JvMMD6D.bpl                         \
-  JvNetD6R.bpl JvNetD6D.bpl                       \
-  JvAppFrmD6R.bpl JvAppFrmD6D.bpl                 \
-  JvDBD6R.bpl JvDBD6D.bpl                         \
-  JvBDED6R.bpl JvBDED6D.bpl                       \
-  JvInterpreterD6R.bpl JvInterpreterD6D.bpl       \
-  JvBandsD6R.bpl JvBandsD6D.bpl                   \
-  JvPluginD6R.bpl JvPluginD6D.bpl                 \
-  JvJansD6R.bpl JvJansD6D.bpl                     \
-  JvGlobusD6R.bpl JvGlobusD6D.bpl                 \
-  JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl     \
-  JvPageCompsD6R.bpl JvPageCompsD6D.bpl           \
-  JvValidatorsD6R.bpl JvValidatorsD6D.bpl         \
-  JvWizardD6R.bpl JvWizardD6D.bpl                 \
-  JvTimeFrameworkD6R.bpl JvTimeFrameworkD6D.bpl   \
-  JvHMID6R.bpl JvHMID6D.bpl                       \
-  JvManagedThreadsD6R.bpl JvManagedThreadsD6D.bpl \
-  JvXPCtrlsD6R.bpl JvXPCtrlsD6D.bpl               \
-  JvDockingD6R.bpl JvDockingD6D.bpl               \
-  JvDotNetCtrlsD6R.bpl JvDotNetCtrlsD6D.bpl       \
-  JvEDID6R.bpl JvEDID6D.bpl                       \
-  JvRuntimeDesignD6R.bpl JvRuntimeDesignD6D.bpl
+PROJECTS = JvCoreD60.bpl JvCoreDesignD60.bpl                     \
+  JvSystemD60.bpl JvSystemDesignD60.bpl                 \
+  JvStdCtrlsD60.bpl JvStdCtrlsDesignD60.bpl             \
+  JvCtrlsD60.bpl JvCtrlsDesignD60.bpl                   \
+  JvCmpD60.bpl JvCmpDesignD60.bpl                       \
+  JvCustomD60.bpl JvCustomDesignD60.bpl                 \
+  JvDlgsD60.bpl JvDlgsDesignD60.bpl                     \
+  JvCryptD60.bpl JvCryptDesignD60.bpl                   \
+  JvMMD60.bpl JvMMDesignD60.bpl                         \
+  JvNetD60.bpl JvNetDesignD60.bpl                       \
+  JvAppFrmD60.bpl JvAppFrmDesignD60.bpl                 \
+  JvDBD60.bpl JvDBDesignD60.bpl                         \
+  JvBDED60.bpl JvBDEDesignD60.bpl                       \
+  JvInterpreterD60.bpl JvInterpreterDesignD60.bpl       \
+  JvBandsD60.bpl JvBandsDesignD60.bpl                   \
+  JvPluginD60.bpl JvPluginDesignD60.bpl                 \
+  JvJansD60.bpl JvJansDesignD60.bpl                     \
+  JvGlobusD60.bpl JvGlobusDesignD60.bpl                 \
+  JvPrintPreviewD60.bpl JvPrintPreviewDesignD60.bpl     \
+  JvPageCompsD60.bpl JvPageCompsDesignD60.bpl           \
+  JvValidatorsD60.bpl JvValidatorsDesignD60.bpl         \
+  JvWizardD60.bpl JvWizardDesignD60.bpl                 \
+  JvTimeFrameworkD60.bpl JvTimeFrameworkDesignD60.bpl   \
+  JvHMID60.bpl JvHMIDesignD60.bpl                       \
+  JvManagedThreadsD60.bpl JvManagedThreadsDesignD60.bpl \
+  JvXPCtrlsD60.bpl JvXPCtrlsDesignD60.bpl               \
+  JvDockingD60.bpl JvDockingDesignD60.bpl               \
+  JvDotNetCtrlsD60.bpl JvDotNetCtrlsDesignD60.bpl       \
+  JvEDID60.bpl JvEDIDesignD60.bpl                       \
+  JvRuntimeDesignD60.bpl JvRuntimeDesignDesignD60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreD6D.bpl: d6\JvCoreD6D.dpk
+JvCoreDesignD60.bpl: d6\JvCoreDesign.dpk
   $(DCC)
 
-JvCoreD6R.bpl: d6\JvCoreD6R.dpk
+JvCoreD60.bpl: d6\JvCore.dpk
   $(DCC)
 
-JvAppFrmD6R.bpl: d6\JvAppFrmD6R.dpk
+JvAppFrmD60.bpl: d6\JvAppFrm.dpk
   $(DCC)
 
-JvBDED6R.bpl: d6\JvBDED6R.dpk
+JvBDED60.bpl: d6\JvBDE.dpk
   $(DCC)
 
-JvCmpD6R.bpl: d6\JvCmpD6R.dpk
+JvCmpD60.bpl: d6\JvCmp.dpk
   $(DCC)
 
-JvCryptD6R.bpl: d6\JvCryptD6R.dpk
+JvCryptD60.bpl: d6\JvCrypt.dpk
   $(DCC)
 
-JvStdCtrlsD6R.bpl: d6\JvStdCtrlsD6R.dpk
+JvStdCtrlsD60.bpl: d6\JvStdCtrls.dpk
   $(DCC)
 
-JvCtrlsD6R.bpl: d6\JvCtrlsD6R.dpk
+JvCtrlsD60.bpl: d6\JvCtrls.dpk
   $(DCC)
 
-JvCustomD6R.bpl: d6\JvCustomD6R.dpk
+JvCustomD60.bpl: d6\JvCustom.dpk
   $(DCC)
 
-JvDBD6R.bpl: d6\JvDBD6R.dpk
+JvDBD60.bpl: d6\JvDB.dpk
   $(DCC)
 
-JvDlgsD6R.bpl: d6\JvDlgsD6R.dpk
+JvDlgsD60.bpl: d6\JvDlgs.dpk
   $(DCC)
 
-JvInterpreterD6R.bpl: d6\JvInterpreterD6R.dpk
+JvInterpreterD60.bpl: d6\JvInterpreter.dpk
   $(DCC)
 
-JvMMD6R.bpl: d6\JvMMD6R.dpk
+JvMMD60.bpl: d6\JvMM.dpk
   $(DCC)
 
-JvNetD6R.bpl: d6\JvNetD6R.dpk
+JvNetD60.bpl: d6\JvNet.dpk
   $(DCC)
 
-JvSystemD6R.bpl: d6\JvSystemD6R.dpk
+JvSystemD60.bpl: d6\JvSystem.dpk
   $(DCC)
 
-JvSystemD6D.bpl: d6\JvSystemD6D.dpk
+JvSystemDesignD60.bpl: d6\JvSystemDesign.dpk
   $(DCC)
 
-JvAppFrmD6D.bpl: d6\JvAppFrmD6D.dpk
+JvAppFrmDesignD60.bpl: d6\JvAppFrmDesign.dpk
   $(DCC)
 
-JvStdCtrlsD6D.bpl: d6\JvStdCtrlsD6D.dpk
+JvStdCtrlsDesignD60.bpl: d6\JvStdCtrlsDesign.dpk
   $(DCC)
 
-JvNetD6D.bpl: d6\JvNetD6D.dpk
+JvNetDesignD60.bpl: d6\JvNetDesign.dpk
   $(DCC)
 
-JvMMD6D.bpl: d6\JvMMD6D.dpk
+JvMMDesignD60.bpl: d6\JvMMDesign.dpk
   $(DCC)
 
-JvInterpreterD6D.bpl: d6\JvInterpreterD6D.dpk
+JvInterpreterDesignD60.bpl: d6\JvInterpreterDesign.dpk
   $(DCC)
 
-JvDlgsD6D.bpl: d6\JvDlgsD6D.dpk
+JvDlgsDesignD60.bpl: d6\JvDlgsDesign.dpk
   $(DCC)
 
-JvDBD6D.bpl: d6\JvDBD6D.dpk
+JvDBDesignD60.bpl: d6\JvDBDesign.dpk
   $(DCC)
 
-JvCustomD6D.bpl: d6\JvCustomD6D.dpk
+JvCustomDesignD60.bpl: d6\JvCustomDesign.dpk
   $(DCC)
 
-JvCtrlsD6D.bpl: d6\JvCtrlsD6D.dpk
+JvCtrlsDesignD60.bpl: d6\JvCtrlsDesign.dpk
   $(DCC)
 
-JvCryptD6D.bpl: d6\JvCryptD6D.dpk
+JvCryptDesignD60.bpl: d6\JvCryptDesign.dpk
   $(DCC)
 
-JvBDED6D.bpl: d6\JvBDED6D.dpk
+JvBDEDesignD60.bpl: d6\JvBDEDesign.dpk
   $(DCC)
 
-JvCmpD6D.bpl: d6\JvCmpD6D.dpk
+JvCmpDesignD60.bpl: d6\JvCmpDesign.dpk
   $(DCC)
 
-JvBandsD6D.bpl: d6\JvBandsD6D.dpk
+JvBandsDesignD60.bpl: d6\JvBandsDesign.dpk
   $(DCC)
 
-JvPluginD6D.bpl: d6\JvPluginD6D.dpk
+JvPluginDesignD60.bpl: d6\JvPluginDesign.dpk
   $(DCC)
 
-JvPluginD6R.bpl: d6\JvPluginD6R.dpk
+JvPluginD60.bpl: d6\JvPlugin.dpk
   $(DCC)
 
-JvBandsD6R.bpl: d6\JvBandsD6R.dpk
+JvBandsD60.bpl: d6\JvBands.dpk
   $(DCC)
 
-JvJansD6D.bpl: d6\JvJansD6D.dpk
+JvJansDesignD60.bpl: d6\JvJansDesign.dpk
   $(DCC)
 
-JvJansD6R.bpl: d6\JvJansD6R.dpk
+JvJansD60.bpl: d6\JvJans.dpk
   $(DCC)
 
-JvGlobusD6D.bpl: d6\JvGlobusD6D.dpk
+JvGlobusDesignD60.bpl: d6\JvGlobusDesign.dpk
   $(DCC)
 
-JvGlobusD6R.bpl: d6\JvGlobusD6R.dpk
+JvGlobusD60.bpl: d6\JvGlobus.dpk
   $(DCC)
 
-JvPrintPreviewD6D.bpl: d6\JvPrintPreviewD6D.dpk
+JvPrintPreviewDesignD60.bpl: d6\JvPrintPreviewDesign.dpk
   $(DCC)
 
-JvPageCompsD6R.bpl: d6\JvPageCompsD6R.dpk
+JvPageCompsD60.bpl: d6\JvPageComps.dpk
   $(DCC)
 
-JvPageCompsD6D.bpl: d6\JvPageCompsD6D.dpk
+JvPageCompsDesignD60.bpl: d6\JvPageCompsDesign.dpk
   $(DCC)
 
-JvPrintPreviewD6R.bpl: d6\JvPrintPreviewD6R.dpk
+JvPrintPreviewD60.bpl: d6\JvPrintPreview.dpk
   $(DCC)
 
-JvValidatorsD6D.bpl: d6\JvValidatorsD6D.dpk
+JvValidatorsDesignD60.bpl: d6\JvValidatorsDesign.dpk
   $(DCC)
 
-JvValidatorsD6R.bpl: d6\JvValidatorsD6R.dpk
+JvValidatorsD60.bpl: d6\JvValidators.dpk
   $(DCC)
 
-JvWizardD6R.bpl: d6\JvWizardD6R.dpk
+JvWizardD60.bpl: d6\JvWizard.dpk
   $(DCC)
 
-JvWizardD6D.bpl: d6\JvWizardD6D.dpk
+JvWizardDesignD60.bpl: d6\JvWizardDesign.dpk
   $(DCC)
 
-JvTimeFrameworkD6R.bpl: d6\JvTimeFrameworkD6R.dpk
+JvTimeFrameworkD60.bpl: d6\JvTimeFramework.dpk
   $(DCC)
 
-JvTimeFrameworkD6D.bpl: d6\JvTimeFrameworkD6D.dpk
+JvTimeFrameworkDesignD60.bpl: d6\JvTimeFrameworkDesign.dpk
   $(DCC)
 
-JvHMID6R.bpl: d6\JvHMID6R.dpk
+JvHMID60.bpl: d6\JvHMI.dpk
   $(DCC)
 
-JvHMID6D.bpl: d6\JvHMID6D.dpk
+JvHMIDesignD60.bpl: d6\JvHMIDesign.dpk
   $(DCC)
 
-JvManagedThreadsD6R.bpl: d6\JvManagedThreadsD6R.dpk
+JvManagedThreadsD60.bpl: d6\JvManagedThreads.dpk
   $(DCC)
 
-JvManagedThreadsD6D.bpl: d6\JvManagedThreadsD6D.dpk
+JvManagedThreadsDesignD60.bpl: d6\JvManagedThreadsDesign.dpk
   $(DCC)
 
-JvXPCtrlsD6R.bpl: d6\JvXPCtrlsD6R.dpk
+JvXPCtrlsD60.bpl: d6\JvXPCtrls.dpk
   $(DCC)
 
-JvXPCtrlsD6D.bpl: d6\JvXPCtrlsD6D.dpk
+JvXPCtrlsDesignD60.bpl: d6\JvXPCtrlsDesign.dpk
   $(DCC)
 
-JvDockingD6R.bpl: d6\JvDockingD6R.dpk
+JvDockingD60.bpl: d6\JvDocking.dpk
   $(DCC)
 
-JvDockingD6D.bpl: d6\JvDockingD6D.dpk
+JvDockingDesignD60.bpl: d6\JvDockingDesign.dpk
   $(DCC)
 
-JvDotNetCtrlsD6R.bpl: d6\JvDotNetCtrlsD6R.dpk
+JvDotNetCtrlsD60.bpl: d6\JvDotNetCtrls.dpk
   $(DCC)
 
-JvDotNetCtrlsD6D.bpl: d6\JvDotNetCtrlsD6D.dpk
+JvDotNetCtrlsDesignD60.bpl: d6\JvDotNetCtrlsDesign.dpk
   $(DCC)
 
-JvEDID6R.bpl: d6\JvEDID6R.dpk
+JvEDID60.bpl: d6\JvEDI.dpk
   $(DCC)
 
-JvEDID6D.bpl: d6\JvEDID6D.dpk
+JvEDIDesignD60.bpl: d6\JvEDIDesign.dpk
   $(DCC)
 
-JvRuntimeDesignD6R.bpl: d6\JvRuntimeDesignD6R.dpk
+JvRuntimeDesignD60.bpl: d6\JvRuntimeDesign.dpk
   $(DCC)
 
-JvRuntimeDesignD6D.bpl: d6\JvRuntimeDesignD6D.dpk
+JvRuntimeDesignDesignD60.bpl: d6\JvRuntimeDesignDesign.dpk
   $(DCC)
 
