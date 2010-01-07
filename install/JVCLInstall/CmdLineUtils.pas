@@ -31,7 +31,7 @@ unit CmdLineUtils;
 interface
 
 uses
-  Windows, SysUtils, Contnrs, Utils;
+  Windows, SysUtils, Classes, Contnrs, Utils;
 
 type
   TCmdOptions = class(TObject)

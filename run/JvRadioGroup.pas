@@ -66,9 +66,9 @@ type
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
     property HintColor;
-    {$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD6}
     property ParentBackground default True;
-    {$ENDIF JVCLThemesEnabledD56}
+    {$ENDIF JVCLThemesEnabledD6}
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -98,9 +98,9 @@ begin
   FEdgeInner := esRaised;
   FEdgeOuter := esLowered;
   FCaptionVisible := True;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
 end;
 
 procedure TJvRadioGroup.Paint;

@@ -23,33 +23,31 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_DependencyCheckOutputName>JVCLInstall.exe</DCC_DependencyCheckOutputName>
+			<DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
+			<DCC_Define>USE_DXGETTEXT;DEFAULT_JVCL_INC;$(DCC_Define)</DCC_Define>
+			<DCC_UnitSearchPath>..\..\common;..\..\run;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
+			<DCC_DependencyCheckOutputName>..\..\bin\JVCLInstall.exe</DCC_DependencyCheckOutputName>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
-			<DCC_DependencyCheckOutputName>..\..\bin\JVCLInstall.exe</DCC_DependencyCheckOutputName>
 			<Version>7.0</Version>
 			<DCC_DebugInformation>False</DCC_DebugInformation>
 			<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
 			<DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
 			<DCC_MapFile>3</DCC_MapFile>
-			<DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
-			<DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
 			<DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
 			<DCC_HppOutput>..\..\dcu</DCC_HppOutput>
-			<DCC_Define>NO_JCL;USE_DXGETTEXT;DEFAULT_JVCL_INC;DEBUG;RELEASE;$(DCC_Define)</DCC_Define>
+			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
 			<DCC_UNSAFE_TYPE>True</DCC_UNSAFE_TYPE>
 			<DCC_UNSAFE_CODE>True</DCC_UNSAFE_CODE>
 			<DCC_UNSAFE_CAST>True</DCC_UNSAFE_CAST>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
-			<DCC_DependencyCheckOutputName>..\..\bin\JVCLInstall.exe</DCC_DependencyCheckOutputName>
 			<Version>7.0</Version>
 			<DCC_MapFile>3</DCC_MapFile>
-			<DCC_ExeOutput>..\..\bin</DCC_ExeOutput>
-			<DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
 			<DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
 			<DCC_HppOutput>..\..\dcu</DCC_HppOutput>
-			<DCC_Define>NO_JCL;USE_DXGETTEXT;DEFAULT_JVCL_INC;DEBUG;DEBUG;$(DCC_Define)</DCC_Define>
+			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
 			<DCC_UNSAFE_TYPE>True</DCC_UNSAFE_TYPE>
 			<DCC_UNSAFE_CODE>True</DCC_UNSAFE_CODE>
 			<DCC_UNSAFE_CAST>True</DCC_UNSAFE_CAST>

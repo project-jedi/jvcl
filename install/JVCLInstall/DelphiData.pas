@@ -1345,6 +1345,8 @@ end;
 
 function TCompileTarget.VersionedDCP(const Filename: string): string;
 begin
+  { This function is used for 3rd-Party dependency packages. No JVCL package name is going
+    through this function. }
   if Version > 5 then
     Result := Filename
   else
@@ -1353,6 +1355,8 @@ end;
 
 function TCompileTarget.VersionedBPL(const Filename: string): string;
 begin
+  { This function is used for 3rd-Party dependency packages. No JVCL package name is going
+    through this function. }
   Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
 end;
 

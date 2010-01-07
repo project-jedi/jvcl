@@ -54,8 +54,7 @@ type
     ImageLogo: TImage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure JvWizardActivePageChanging(Sender: TObject;
-      var ToPage: TJvWizardCustomPage);
+    procedure JvWizardActivePageChanging(Sender: TObject; var ToPage: TJvWizardCustomPage);
     procedure JvWizardFinishButtonClick(Sender: TObject);
     procedure JvWizardCancelButtonClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);

@@ -98,13 +98,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   private
@@ -171,13 +171,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   private
@@ -381,7 +381,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExCustomMaskEdit.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -391,7 +391,7 @@ procedure TJvExCustomMaskEdit.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExCustomMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin
@@ -723,7 +723,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExMaskEdit.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -733,7 +733,7 @@ procedure TJvExMaskEdit.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExMaskEdit.SetClipboardCommands(const Value: TJvClipboardCommands);
 begin

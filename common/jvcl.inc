@@ -144,7 +144,7 @@ ALERT_jedi_inc_incompatible
  {$DEFINE JVCLThemesEnabled}
 {$ELSE}
  {$IFDEF JVCLThemesEnabled}
-  {$DEFINE JVCLThemesEnabledD56}
+  {$DEFINE JVCLThemesEnabledD6}
  {$ENDIF JVCLThemesEnabled}
 {$ENDIF COMPILER7_UP}
 
@@ -152,5 +152,5 @@ ALERT_jedi_inc_incompatible
 {$IFNDEF VCL}
  {$UNDEF JvInterpreter_OLEAUTO}
  {$UNDEF JVCLThemesEnabled}
- {$UNDEF JVCLThemesEnabledD56}
+ {$UNDEF JVCLThemesEnabledD6}
 {$ENDIF !VCL}
