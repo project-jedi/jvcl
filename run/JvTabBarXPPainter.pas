@@ -28,6 +28,8 @@ unit JvTabBarXPPainter;
 
 interface
 
+{$IFDEF JVCLThemesEnabled}
+
 uses
   Windows, SysUtils, Classes, Graphics, JvTabBar;
 
@@ -48,7 +50,11 @@ type
     property FixedTabSize: Integer read FFixedTabSize write SetFixedTabSize;
   end;
 
+{$ENDIF JVCLThemesEnabled}
+
 implementation
+
+{$IFDEF JVCLThemesEnabled}
 
 uses
   Math, JvThemes;
@@ -190,5 +196,6 @@ begin
     Changed;
   end;
 end;
+{$ENDIF JVCLThemesEnabled}
 
 end.
