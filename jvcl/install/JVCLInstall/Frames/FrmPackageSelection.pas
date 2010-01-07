@@ -630,6 +630,10 @@ begin
   CheckListBoxPackages.ParentDoubleBuffered := False;
   CheckListBoxFrameworks.ParentDoubleBuffered := False;
   {$ENDIF COMPILER12_UP}
+  {$IFDEF COMPILER11_UP}
+  CheckListBoxPackages.DoubleBuffered := False;
+  CheckListBoxFrameworks.DoubleBuffered := False;
+  {$ENDIF COMPILER11_UP}
 end;
 
 end.
