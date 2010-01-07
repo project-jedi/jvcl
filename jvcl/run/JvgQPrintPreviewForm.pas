@@ -43,7 +43,7 @@ uses
   JvgQRLabel;
 
 type
-  TJvgfPrintPreview = class(TJvForm)
+  TJvgPrintPreview = class(TJvForm)
     Panel2: TPanel;
     ToolBar1: TToolBar;
     tbPrior: TToolButton;
@@ -99,7 +99,7 @@ type
   TJvgMyQRPreview = class(TQRPreview);
 
 var
-  fPrintPreview: TJvgfPrintPreview;
+  fPrintPreview: TJvgPrintPreview;
   l: TJvgQRLabel;
 
 {$IFDEF UNITVERSIONING}
@@ -121,7 +121,7 @@ uses
 
 {$R *.dfm}
 
-procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
+procedure TJvgPrintPreview.FormCreate(Sender: TObject);
 begin
   {  l := TJvgQRLabel.Create(Self);
     l.Caption := 'FormCreate(Sender: TObject)';
@@ -131,13 +131,13 @@ begin
     l.Parent := Band;}
 end;
 
-procedure TJvgfPrintPreview.qrPreview(Sender: TObject);
+procedure TJvgPrintPreview.qrPreview(Sender: TObject);
 begin
   QRPreview1.QRPrinter := QR.QRPrinter;
   //  QRPreview1.UpdateImage;
 end;
 
-procedure TJvgfPrintPreview.tbPriorClick(Sender: TObject);
+procedure TJvgPrintPreview.tbPriorClick(Sender: TObject);
 begin
   QRPreview1.PageNumber := QRPreview1.PageNumber - 1;
   QRPreview1.UpdateZoom;
@@ -146,7 +146,7 @@ begin
   UpdateStatus;
 end;
 
-procedure TJvgfPrintPreview.tbFirstClick(Sender: TObject);
+procedure TJvgPrintPreview.tbFirstClick(Sender: TObject);
 begin
   QRPreview1.PageNumber := 1;
   QRPreview1.UpdateZoom;
@@ -155,7 +155,7 @@ begin
   UpdateStatus;
 end;
 
-procedure TJvgfPrintPreview.tbNextClick(Sender: TObject);
+procedure TJvgPrintPreview.tbNextClick(Sender: TObject);
 begin
   QRPreview1.PageNumber := QRPreview1.PageNumber + 1;
   QRPreview1.UpdateZoom;
@@ -164,13 +164,13 @@ begin
   UpdateStatus;
 end;
 
-procedure TJvgfPrintPreview.glLabel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TJvgPrintPreview.glLabel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   // (rom) should be removed
   //ShellExecute(0, nil, 'http://shop.biblio-globus.ru/cpr/', nil, nil, SW_SHOW);
 end;
 
-procedure TJvgfPrintPreview.ToolButton4Click(Sender: TObject);
+procedure TJvgPrintPreview.ToolButton4Click(Sender: TObject);
 begin
   QRPreview1.PageNumber := QRPreview1.QRPrinter.PageCount;
   QRPreview1.UpdateZoom;
@@ -179,7 +179,7 @@ begin
   UpdateStatus;
 end;
 
-procedure TJvgfPrintPreview.UpdateStatus;
+procedure TJvgPrintPreview.UpdateStatus;
 begin
   SB.Panels[0].Text := Format(RsPageOfPages, [QRPreview1.PageNumber, QRPreview1.QRPrinter.PageCount]);
   try
@@ -189,12 +189,12 @@ begin
   end;
 end;
 
-procedure TJvgfPrintPreview.tbExportExcelClick(Sender: TObject);
+procedure TJvgPrintPreview.tbExportExcelClick(Sender: TObject);
 begin
   ExportToExcel(QR);
 end;
 
-procedure TJvgfPrintPreview.InitPrintDialog;
+procedure TJvgPrintPreview.InitPrintDialog;
 begin
   Printer.Orientation := QR.Page.Orientation;
   PrintDialog.PrintRange := prAllPages;
@@ -203,7 +203,7 @@ begin
   PrintDialog.ToPage := 0;
 end;
 
-procedure TJvgfPrintPreview.SavePrintDialog;
+procedure TJvgPrintPreview.SavePrintDialog;
 begin
   QR.Page.Orientation := Printer.Orientation;
   QR.PrinterSettings.Copies := PrintDialog.Copies;
@@ -213,7 +213,7 @@ begin
   //  QR.Printer.LastPage := PrintDialog.ToPage;
 end;
 
-procedure TJvgfPrintPreview.tbPrinterSetupClick(Sender: TObject);
+procedure TJvgPrintPreview.tbPrinterSetupClick(Sender: TObject);
 begin
   Printer.Orientation := QR.Page.Orientation;
   //  Printer.Paper
@@ -227,7 +227,7 @@ begin
   UpdateStatus;
 end;
 
-procedure TJvgfPrintPreview.tbPrintRangeClick(Sender: TObject);
+procedure TJvgPrintPreview.tbPrintRangeClick(Sender: TObject);
 begin
   //  InitPrintDialog;
   //  PrintDialog.FromPage := QRPreview1.PageNumber;
@@ -242,7 +242,7 @@ begin
   QR.Print;
 end;
 
-procedure TJvgfPrintPreview.tbPrintClick(Sender: TObject);
+procedure TJvgPrintPreview.tbPrintClick(Sender: TObject);
 begin
   InitPrintDialog;
   if PrintDialog.Execute then
@@ -253,12 +253,12 @@ begin
   end;
 end;
 
-procedure TJvgfPrintPreview.cbDuplexClick(Sender: TObject);
+procedure TJvgPrintPreview.cbDuplexClick(Sender: TObject);
 begin
   QR.PrinterSettings.Duplex := cbDuplex.Checked;
 end;
 
-procedure TJvgfPrintPreview.tbLoadClick(Sender: TObject);
+procedure TJvgPrintPreview.tbLoadClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
   begin
@@ -268,18 +268,18 @@ begin
   end;
 end;
 
-procedure TJvgfPrintPreview.tbSaveClick(Sender: TObject);
+procedure TJvgPrintPreview.tbSaveClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
     QR.QRPrinter.Save(SaveDialog.FileName);
 end;
 
-procedure TJvgfPrintPreview.QuickRep1StartPage(Sender: TCustomQuickRep);
+procedure TJvgPrintPreview.QuickRep1StartPage(Sender: TCustomQuickRep);
 begin
   PB.Position := QRPreview1.PageNumber;
 end;
 
-procedure TJvgfPrintPreview.Execute(QR: TCustomQuickRep);
+procedure TJvgPrintPreview.Execute(QR: TCustomQuickRep);
 begin
   Self.QR := QR;
   QR.OnStartPage := nil;

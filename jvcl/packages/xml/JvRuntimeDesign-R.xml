@@ -24,6 +24,6 @@
     <File Name="..\..\run\JvDesignSurface.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignImp.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPropertyStoreEditor.pas" Targets="allv6up" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStoreEditor.pas" Targets="allv6up" Formname="JvPropertyStoreEditorForm" Condition=""/>
   </Contains>
 </Package>

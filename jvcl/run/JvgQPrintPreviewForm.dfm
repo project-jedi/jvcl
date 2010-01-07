@@ -1,4 +1,4 @@
-object JvgfPrintPreview: TJvgfPrintPreview
+object JvgPrintPreview: TJvgPrintPreview
   Left = 292
   Top = 149
   ClientWidth = 495
