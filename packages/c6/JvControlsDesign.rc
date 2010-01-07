@@ -18,7 +18,7 @@ BEGIN
               VALUE "CompanyName", "Project JEDI\0"
               VALUE "FileDescription", "JVCL Visual Controls\0"
               VALUE "FileVersion", "3.40.0.0\0"
-              VALUE "InternalName", "JvCtrlsDesign\0"
+              VALUE "InternalName", "JvControlsDesign\0"
               VALUE "LegalCopyright", "Copyright (C) 1999, 2009 Project JEDI\0"
               VALUE "OriginalFilename", "JvControlsDesignC60.bpl\0"
               VALUE "ProductName", "JEDI Visual Component Library\0"

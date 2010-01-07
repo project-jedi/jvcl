@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{08661E45-2C90-4301-A95E-77C50EE00CAF}</ProjectGuid>
 			<MainSource>JvPrintPreview.dpk</MainSource>

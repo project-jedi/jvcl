@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{86DF4ED4-828C-457A-ADE5-78BE9050BCF6}</ProjectGuid>
 			<MainSource>JvWizard.dpk</MainSource>

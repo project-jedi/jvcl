@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{4EED06C1-B111-4EA3-815B-8530F67D8659}</ProjectGuid>
 			<MainSource>JvCryptDesign.dpk</MainSource>

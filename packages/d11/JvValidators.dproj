@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{F9CFF80F-BA1D-4732-827E-0DD43E41E901}</ProjectGuid>
     <MainSource>JvValidators.dpk</MainSource>
