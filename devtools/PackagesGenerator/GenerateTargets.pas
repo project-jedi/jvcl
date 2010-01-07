@@ -128,7 +128,7 @@ begin
   FDefines.Add('CONDITIONALEXPRESSIONS');
 
   for I := Low(TargetDefines) to High(TargetDefines) do
-    if TargetDefines[I].TargetName = Name then
+    if SameText(TargetDefines[I].TargetName, Name) then
       FDefines.Add(TargetDefines[I].Define);
 end;
 
