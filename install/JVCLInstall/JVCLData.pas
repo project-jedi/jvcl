@@ -899,15 +899,12 @@ begin
 end;
 
 function TTargetConfig.VersionedJVCLXmlDcp(const Name: string): string;
-var
-  Suffix: string;
 begin
   { TODO : Keep in sync with JVCL naming schema }
-  if Target.IsBCB then
-    Suffix := Format('C%d', [Target.Version])
+  if EndsWith(Name, '-R', True) or EndsWith(Name, '-D', True) then
+    Result := Copy(Name, 1, Length(Name) - 2) + '.dcp'
   else
-    Suffix := Format('D%d', [Target.Version]);
-  Result := StringReplace(Name, '-', Suffix, []) + '.dcp';
+    Result := Name;
 end;
 
 function TTargetConfig.VersionedJVCLXmlBpl(const Name: string): string;
@@ -915,11 +912,17 @@ var
   Suffix: string;
 begin
   { TODO : Keep in sync with JVCL naming schema }
-  if Target.IsBCB then
-    Suffix := Format('C%d', [Target.Version])
+  if Target.Version >= 7 then
+    Suffix := Format('%d0', [Target.Version])
+  else if Target.IsBCB then
+    Suffix := Format('C%d0', [Target.Version])
   else
-    Suffix := Format('D%d', [Target.Version]);
-  Result := StringReplace(Name, '-', Suffix, []) + '.bpl';
+    Suffix := Format('D%d0', [Target.Version]);
+
+  if EndsWith(Name, '-R', True) or EndsWith(Name, '-D', True) then
+    Result := Copy(Name, 1, Length(Name) - 2) + Suffix + '.bpl'
+  else
+    Result := Name;
 end;
 
 function TTargetConfig.LinkMapFile(const BinaryFileName, MapFileName: string;
