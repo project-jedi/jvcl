@@ -98,13 +98,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -160,13 +160,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -357,7 +357,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExCustomDBGrid.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -367,7 +367,7 @@ procedure TJvExCustomDBGrid.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExCustomDBGrid.WndProc(var Msg: TMessage);
 var
@@ -658,7 +658,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExDBGrid.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -668,7 +668,7 @@ procedure TJvExDBGrid.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExDBGrid.WndProc(var Msg: TMessage);
 var

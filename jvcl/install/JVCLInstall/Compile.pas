@@ -138,6 +138,7 @@ type
     function GenerateAllPackages: Boolean; overload;
     function CompileTarget(TargetConfig: TTargetConfig; PackageGroupKind: TPackageGroupKind): Boolean;
     procedure DeleteRemovedFiles(TargetConfig: TTargetConfig);
+    procedure ClearSourceDirectory;
 
     //procedure AlterHppFiles(TargetConfig: ITargetConfig; Project: TPackageTarget);
   public
@@ -236,6 +237,14 @@ begin
     Insert(Format('%s%d', [LowerCase(TargetConfig.Target.TargetType), TargetConfig.Target.Version]),
       Result, ps);
   end;
+end;
+
+procedure DeleteFiles(Files: TStrings);
+var
+  I: Integer;
+begin
+  for I := 0 to Files.Count - 1 do
+    DeleteFile(Files[I]);
 end;
 
 { TCompiler }
@@ -437,7 +446,7 @@ function TCompiler.WriteDcc32Cfg(const Directory: string; TargetConfig: ITargetC
 var
   Lines: TStrings;
   SearchPaths, S: string;
-  i: Integer;
+  I: Integer;
   OutDirs: TOutputDirs;
   Target: TCompileTarget;
 begin
@@ -1256,6 +1265,9 @@ begin
   end;
   SetLength(TargetConfigs, Count);
 
+  // Delete all units from the JVCL source directory where they shouldn't be
+  ClearSourceDirectory;
+
   // compile all selected targets
   Index := 0;
   for i := 0 to Count - 1 do
@@ -1279,6 +1291,7 @@ procedure TCompiler.DeleteRemovedFiles(TargetConfig: TTargetConfig);
 var
   I: Integer;
   Filename, Path: string;
+  Files: TStrings;
 begin
   { Delete removed package files .dcp, .lib, .bpi, .dcu, .hpp file }
   for I := 0 to High(sRemovedPackages) do
@@ -1361,7 +1374,35 @@ begin
       end;
     end;
   end;
+
+  { Delete files from previous versions }
+  Files := TStringList.Create;
+  try
+    TargetConfig.GetOldFilesForDeletion(Files);
+    DeleteFiles(Files);
+  finally
+    Files.Free;
+  end;
 end;
+
+/// <summary>
+/// ClearSourceDirectory deletes all binary unit files from the source and
+/// include directory to get a clean installation.
+/// </summary>
+procedure TCompiler.ClearSourceDirectory;
+var
+  Files: TStrings;
+begin
+  Files := TStringList.Create;
+  try
+    FindFiles(Data.JVCLSourceDir, '*.*', False, Files, ['.dcu', '.dcp', '.obj', '.bpi', '.lib']);
+    FindFiles(Data.JVCLIncludeDir, '*.*', False, Files, ['.dcu', '.dcp', '.obj', '.bpi', '.lib']);
+    DeleteFiles(Files);
+  finally
+    Files.Free;
+  end;
+end;
+
 
 /// <summary>
 /// CompileTarget starts CompileProjectGroup for all sub targets of the
@@ -1669,6 +1710,7 @@ begin
       { .bpl and .dcp files may be in the wrong directory. So delete them. }
       TargetConfig.GetPackageBinariesForDeletion(Files);
       for i := 0 to Files.Count - 1 do
+      begin
         if not StartsWith(Files[i], TargetConfig.BplDir + PathDelim, True) and
            not StartsWith(Files[i], TargetConfig.DcpDir + PathDelim, True) then
         begin
@@ -1680,6 +1722,7 @@ begin
           end;
           DeleteFile(Files[i]);
         end;
+      end;
     finally
       Files.Free;
     end;

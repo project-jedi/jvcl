@@ -77,6 +77,7 @@ type
       DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
     function RegisterToIDE: Boolean;
     procedure GetPackageBinariesForDeletion(List: TStrings);
+    procedure GetOldFilesForDeletion(List: TStrings);
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
     procedure RegisterJVCLVersionInfo;
 

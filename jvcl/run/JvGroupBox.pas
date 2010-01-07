@@ -65,9 +65,9 @@ type
     property Canvas;
   published
     property HintColor;
-    {$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD6}
     property ParentBackground default True;
-    {$ENDIF JVCLThemesEnabledD56}
+    {$ENDIF JVCLThemesEnabledD6}
     property Caption: TCaption read GetCaption write SetCaption;
     property Checkable: Boolean read FCheckable write SetCheckable default False;
     property Checked: Boolean read GetChecked write SetChecked stored StoredCheckable;
@@ -100,9 +100,9 @@ begin
   FPropagateEnable := False;
   FCheckable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   IncludeThemeStyle(Self, [csParentBackground]);
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
 end;
 
 procedure TJvGroupBox.Paint;
@@ -110,10 +110,10 @@ var
   H: Integer;
   R: TRect;
   Flags: Longint;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   Details: TThemedElementDetails;
   CaptionRect: TRect;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   LastBkMode: Integer;
 begin
   {$IFDEF JVCLThemesEnabled}

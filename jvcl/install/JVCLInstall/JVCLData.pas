@@ -152,6 +152,7 @@ type
     procedure Save;
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
     procedure GetPackageBinariesForDeletion(List: TStrings);
+    procedure GetOldFilesForDeletion(List: TStrings);
     procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
       DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
     function RegisterToIDE: Boolean;
@@ -340,6 +341,8 @@ type
 
     function GetTargetConfig(Index: Integer): TTargetConfig;
     function GetJVCLDir: string;
+    function GetJVCLIncludeDir: string;
+    function GetJVCLSourceDir: string;
     function GetJVCLPackagesDir: string;
     function GetJVCLPackagesXmlDir: string;
     function GetOptionState(Index: Integer): Integer;
@@ -364,6 +367,8 @@ type
     property IsDxgettextInstalled: Boolean read FIsDxgettextInstalled;
 
     property JVCLDir: string read GetJVCLDir;
+    property JVCLSourceDir: string read GetJVCLSourceDir;
+    property JVCLIncludeDir: string read GetJVCLIncludeDir;
     property JVCLPackagesDir: string read GetJVCLPackagesDir;
     property JVCLPackagesXmlDir: string read GetJVCLPackagesXmlDir;
 
@@ -493,6 +498,16 @@ begin
     end;
   end;
   Result := FJVCLDir;
+end;
+
+function TJVCLData.GetJVCLSourceDir: string;
+begin
+  Result := JVCLDir + '\run';
+end;
+
+function TJVCLData.GetJVCLIncludeDir: string;
+begin
+  Result := JVCLDir + '\common';
 end;
 
 function TJVCLData.GetJVCLPackagesDir: string;
@@ -1684,10 +1699,15 @@ procedure TTargetConfig.GetPackageBinariesForDeletion(List: TStrings);
 var
   Mask: string;
 begin
-  if Target.IsBCB then
-    Mask := 'Jv*C' + IntToStr(Target.Version) + '?.*'  // do not localize
+  if Target.Version = 6 then
+  begin
+    if Target.IsBCB then
+      Mask := 'Jv*C' + IntToStr(Target.Version) + '0.*'   // do not localize
+    else
+      Mask := 'Jv*D' + IntToStr(Target.Version) + '0.*';  // do not localize
+  end
   else
-    Mask := 'Jv*D' + IntToStr(Target.Version) + '?.*';  // do not localize
+    Mask := 'Jv*' + IntToStr(Target.Version) + '0.*';  // do not localize
 
   FindFiles(BplDir, Mask, False, List,
     ['.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map']);  // do not localize
@@ -1702,6 +1722,38 @@ begin
      (CompareText(DcpDir, Target.DcpDir) <> 0) then
     FindFiles(Target.DcpDir, 'Jv*.*', False, List,       // do not localize
       ['.dcp', '.lib', '.bpi', '.lsp']);                 // do not localize
+end;
+
+procedure TTargetConfig.GetOldFilesForDeletion(List: TStrings);
+var
+  Mask: string;
+begin
+  { Old package names }
+  if Target.IsBCB then
+    Mask := 'Jv*C' + IntToStr(Target.Version) + '?.*'  // do not localize
+  else
+    Mask := 'Jv*D' + IntToStr(Target.Version) + '?.*';  // do not localize
+
+  FindFiles(BplDir, Mask, False, List,
+    ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
+  if CompareText(DcpDir, BplDir) <> 0 then
+    FindFiles(DcpDir, Mask, False, List,
+      ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
+  // in Default directories
+  if CompareText(BplDir, Target.BplDir) <> 0 then
+    FindFiles(Target.BplDir, Mask, False, List,
+      ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
+  if (CompareText(DcpDir, BplDir) <> 0) and
+     (CompareText(DcpDir, Target.DcpDir) <> 0) then
+    FindFiles(Target.DcpDir, Mask, False, List,       // do not localize
+      ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
+
+  // in *.hpp output directory
+  FindFiles(HppDir, Mask, False, List,
+    ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
+  // in unit output directory
+  FindFiles(UnitOutDir, Mask, False, List,
+    ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
 end;
 
 function TTargetConfig.GetPathEnvVar: string;

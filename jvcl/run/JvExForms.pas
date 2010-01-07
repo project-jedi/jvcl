@@ -98,13 +98,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -160,13 +160,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -222,13 +222,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -284,13 +284,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -346,13 +346,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   end;
@@ -408,13 +408,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   protected
@@ -475,13 +475,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   protected
@@ -542,13 +542,13 @@ type
     procedure FocusSet(PrevWnd: THandle); virtual;
     procedure FocusKilled(NextWnd: THandle); virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD6}
   private
     function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabledD6}
   published
     property DotNetHighlighting: Boolean read FDotNetHighlighting write FDotNetHighlighting default False;
   protected
@@ -752,7 +752,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExScrollingWinControl.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -762,7 +762,7 @@ procedure TJvExScrollingWinControl.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExScrollingWinControl.WndProc(var Msg: TMessage);
 var
@@ -1053,7 +1053,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExScrollBox.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -1063,7 +1063,7 @@ procedure TJvExScrollBox.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExScrollBox.WndProc(var Msg: TMessage);
 var
@@ -1354,7 +1354,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExCustomFrame.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -1364,7 +1364,7 @@ procedure TJvExCustomFrame.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExCustomFrame.WndProc(var Msg: TMessage);
 var
@@ -1655,7 +1655,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExFrame.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -1665,7 +1665,7 @@ procedure TJvExFrame.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExFrame.WndProc(var Msg: TMessage);
 var
@@ -1956,7 +1956,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExToolWindow.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -1966,7 +1966,7 @@ procedure TJvExToolWindow.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExToolWindow.WndProc(var Msg: TMessage);
 var
@@ -2257,7 +2257,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExCustomForm.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -2267,7 +2267,7 @@ procedure TJvExCustomForm.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExCustomForm.WndProc(var Msg: TMessage);
 var
@@ -2582,7 +2582,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExForm.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -2592,7 +2592,7 @@ procedure TJvExForm.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExForm.WndProc(var Msg: TMessage);
 var
@@ -2907,7 +2907,7 @@ begin
   Result := BaseWndProc(WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
+{$IFDEF JVCLThemesEnabledD6}
 function TJvExCustomDockForm.GetParentBackground: Boolean;
 begin
   Result := JvThemes.GetParentBackground(Self);
@@ -2917,7 +2917,7 @@ procedure TJvExCustomDockForm.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
-{$ENDIF JVCLThemesEnabledD56}
+{$ENDIF JVCLThemesEnabledD6}
 
 procedure TJvExCustomDockForm.WndProc(var Msg: TMessage);
 var
