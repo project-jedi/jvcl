@@ -20,8 +20,11 @@ type
   public
     constructor Create(incfile, ATargetDefines: TStrings);
     destructor Destroy; override;
+
     procedure EnsureCondition(lines: TStrings; Condition: string);
     function EnsurePFlagsCondition(const pflags: string): string;
+
+    procedure Append(incfile, ATargetDefines: TStrings);
   end;
 
 implementation
@@ -31,6 +34,12 @@ uses
   JclStrings;
 
 { TDefinesConditionParser }
+
+procedure TDefinesConditionParser.Append(incfile, ATargetDefines: TStrings);
+begin
+  FTargetDefines := ATargetDefines;
+  FDefinesList.Append(incfile);
+end;
 
 constructor TDefinesConditionParser.Create(incfile, ATargetDefines: TStrings);
 begin
