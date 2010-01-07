@@ -1361,7 +1361,6 @@ procedure TCompiler.DeleteRemovedFiles(TargetConfig: TTargetConfig);
 
 var
   UsedFiles: TStringList;
-  I: Integer;
 
   procedure UsedFilesAdd(const Filename: string);
   begin
@@ -1377,12 +1376,15 @@ var
   Package: TPackageTarget;
   FileIndex: Integer;
   Found: Boolean;
+  I: Integer;
   HashValue: Pointer;
+  HasDebugUnits: Boolean;
 begin
-    // Delete the files that aren't part of the installation
+  // Delete the files that aren't part of the installation
   UsedFiles := TStringList.Create;
   Files := TStringList.Create;
   try
+    HasDebugUnits := not TargetConfig.DeveloperInstall and TargetConfig.DebugUnits;
     OutputDirs := TargetConfig.GetOutputDirs(False);
     DebugOutputDirs := TargetConfig.GetOutputDirs(True);
 
@@ -1409,13 +1411,16 @@ begin
           UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
           UsedFilesAdd(OutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
 
-          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + Filename);
-          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lib'));
-          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lsp'));
-          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.bpi'));
-          UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
-          UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
-          UsedFilesAdd(DebugOutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+          if HasDebugUnits then
+          begin
+            UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + Filename);
+            UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lib'));
+            UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lsp'));
+            UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.bpi'));
+            UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
+            UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
+            UsedFilesAdd(DebugOutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+          end;
 
           { BPL }
           Filename := ExtractFileName(Package.TargetName);
@@ -1425,10 +1430,13 @@ begin
           UsedFilesAdd(OutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.jdbg'));
           UsedFilesAdd(OutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.tds'));
 
-          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + Filename);
-          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.map'));
-          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.jdbg'));
-          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.tds'));
+          if HasDebugUnits then
+          begin
+            UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + Filename);
+            UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.map'));
+            UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.jdbg'));
+            UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.tds'));
+          end;
 
           { Contained units }
           for FileIndex := 0 to Package.ContainCount - 1 do
@@ -1439,19 +1447,19 @@ begin
               Filename := ExtractFileName(Package.Contains[FileIndex].Name);
 
               if Package.Contains[FileIndex].FormName <> '' then
-              begin
                 UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dfm'));
-                UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dfm'));
-              end;
-
               UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
-              UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
-
               UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
-              UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
-
               UsedFilesAdd(OutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
-              UsedFilesAdd(DebugOutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+
+              if HasDebugUnits then
+              begin
+                if Package.Contains[FileIndex].FormName <> '' then
+                  UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dfm'));
+                UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
+                UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
+                UsedFilesAdd(DebugOutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+              end;
             end;
           end;
 
