@@ -1220,11 +1220,7 @@ begin
   begin
     target := targets[i];
     if GenericIncFile then
-    begin
-      FreeAndNil(FDefinesConditionParser);
-      LoadDefines('', ExtractFilePath(incFileName) + 'jedi%t.inc');
       LoadDefines(target, incFileName);
-    end;
 
     SendMsg(SysUtils.Format('Generating packages for %s', [target]));
     // find all template files for that target
