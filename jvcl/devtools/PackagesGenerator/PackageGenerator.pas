@@ -1198,6 +1198,7 @@ begin
   GenericIncFile := LoadDefines('', ExtractFilePath(incFileName) + 'jedi%t.inc') and
                     LoadDefines('', incFileName);
   FDefinesConditionParser.Defines.RemoveDefine('JEDI_INC');
+  FDefinesConditionParser.Defines.RemoveDefine('UNKNOWN_COMPILER_VERSION');
 
   FCallBack := CallBack;
 
