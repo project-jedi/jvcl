@@ -42,15 +42,6 @@ const
   sJvclIncFile = '%s\common\jvcl.inc';
   sBCBIncludeDir = '%s\Include\Vcl';
 
-  { Before any package is compiled these package files and units are deleted from the
-    output directories. }
-  sRemovedPackages: array[0..0] of string = (
-    'Jv3rd-R'
-  );
-  sRemovedUnits: array[0..0] of string = (
-    'JvgMailSlots'
-  );
-
 type
   TJVCLData = class;
   TTargetConfig = class;
@@ -152,7 +143,6 @@ type
     procedure Save;
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
     procedure GetPackageBinariesForDeletion(List: TStrings);
-    procedure GetOldFilesForDeletion(List: TStrings);
     procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
       DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
     function RegisterToIDE: Boolean;
@@ -1725,38 +1715,6 @@ begin
      (CompareText(DcpDir, Target.DcpDir) <> 0) then
     FindFiles(Target.DcpDir, 'Jv*.*', False, List,       // do not localize
       ['.dcp', '.lib', '.bpi', '.lsp']);                 // do not localize
-end;
-
-procedure TTargetConfig.GetOldFilesForDeletion(List: TStrings);
-var
-  Mask: string;
-begin
-  { Old package names }
-  if Target.IsBCB then
-    Mask := 'Jv*C' + IntToStr(Target.Version) + '?.*'  // do not localize
-  else
-    Mask := 'Jv*D' + IntToStr(Target.Version) + '?.*';  // do not localize
-
-  FindFiles(BplDir, Mask, False, List,
-    ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
-  if CompareText(DcpDir, BplDir) <> 0 then
-    FindFiles(DcpDir, Mask, False, List,
-      ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
-  // in Default directories
-  if CompareText(BplDir, Target.BplDir) <> 0 then
-    FindFiles(Target.BplDir, Mask, False, List,
-      ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
-  if (CompareText(DcpDir, BplDir) <> 0) and
-     (CompareText(DcpDir, Target.DcpDir) <> 0) then
-    FindFiles(Target.DcpDir, Mask, False, List,       // do not localize
-      ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
-
-  // in *.hpp output directory
-  FindFiles(HppDir, Mask, False, List,
-    ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
-  // in unit output directory
-  FindFiles(UnitOutDir, Mask, False, List,
-    ['.dcu', '.obj', '.hpp', '.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map', '.lsp']);  // do not localize
 end;
 
 function TTargetConfig.GetPathEnvVar: string;
