@@ -1197,6 +1197,7 @@ begin
     incFileName := FIncFileName;
   GenericIncFile := LoadDefines('', ExtractFilePath(incFileName) + 'jedi%t.inc') and
                     LoadDefines('', incFileName);
+  FDefinesConditionParser.Defines.RemoveDefine('JEDI_INC');
 
   FCallBack := CallBack;
 
