@@ -29,6 +29,10 @@ unit Compile;
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
+{$IF CompilerVersion >= 12.0}
+  {$STRINGCHECKS OFF} // who needs this performance killer, so turn it off
+{$IFEND}
+
 interface
 
 uses
@@ -212,6 +216,39 @@ const
     'jvcl.inc', 'jvclbase.inc', 'jvcl%t.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
   );
 
+type
+  { TListConditionParser searches for the idents in the List. If an ident is in
+    the list the ident is returned as True. }
+  TListConditionParser = class(TConditionParser)
+  private
+    FTargetConfig: ITargetConfig;
+  protected
+    procedure MissingRightParenthesis; override;
+    function GetIdentValue(const Ident: String): Boolean; override;
+  public
+    constructor Create(ATargetConfig: ITargetConfig);
+  end;
+
+{ TListConditionParser }
+
+constructor TListConditionParser.Create(ATargetConfig: ITargetConfig);
+begin
+  inherited Create;
+  FTargetConfig := ATargetConfig;
+end;
+
+function TListConditionParser.GetIdentValue(const Ident: String): Boolean;
+begin
+  Result := FTargetConfig.JVCLConfig.Enabled[Ident];
+end;
+
+procedure TListConditionParser.MissingRightParenthesis;
+begin
+  raise Exception.Create('Missing ")" in conditional expression');
+end;
+
+{----------------------------------------------------------------------}
+
 function CutPersEdition(const Edition: string): string;
 var
   i: Integer;
@@ -326,7 +363,7 @@ begin
   FOutput.Add(Line);
   if Assigned(FOnCaptureLine) then
     FOnCaptureLine(Line, FAborted);
-  //Aborted := FAborted;   We abort only when the compiler has finished its work.
+  //Aborted := FAborted;   We abort when the compiler has finished its work.
 end;
 
 procedure TCompiler.CaptureLineClean(const Line: string; var Aborted: Boolean);
@@ -341,7 +378,7 @@ begin
     Inc(FCount)
   else if (Line <> '') and (Line[1] <> #9) then
     CaptureLine(Line, FAborted);
-  //Aborted := FAborted;   We abort only when the compiler has finished its work.
+  //Aborted := FAborted;   We abort when the compiler has finished its work.
 end;
 
 procedure TCompiler.CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
@@ -1288,100 +1325,171 @@ end;
 /// DeleteRemovedFiles deletes the removed packages and units from the output directories.
 /// </summary>
 procedure TCompiler.DeleteRemovedFiles(TargetConfig: TTargetConfig);
+
+  procedure CollectExistingOutputFiles(Files: TStrings; const Dirs: array of string);
+  const
+    OutputFileExts: array[0..11] of string = (
+      '.dcu', '.dfm', '.hpp', '.obj', '.dcp', '.lib', '.bpi', '.bpl', '.jdbg', '.map', '.tds', '.lsp'
+    );
+  var
+    ProcessedDirs: TStrings;
+    I: Integer;
+  begin
+    ProcessedDirs := TStringList.Create;
+    try
+      for I := 0 to High(Dirs) do
+      begin
+        if ProcessedDirs.IndexOf(Dirs[I]) = -1 then
+        begin
+          ProcessedDirs.Add(Dirs[I]);
+          FindFiles(Dirs[I], 'Jv*.*', False, Files, OutputFileExts);
+        end;
+      end;
+    finally
+      ProcessedDirs.Free;
+    end;
+  end;
+
+  function GetHash(const Filename: string): SizeInt;
+  var
+    I: Integer;
+  begin
+    Result := Length(Filename);
+    for I := 1 to Length(Filename) do
+      Result := Result + Ord(Filename[I]);
+  end;
+
 var
+  UsedFiles: TStringList;
   I: Integer;
-  Filename, Path: string;
+
+  procedure UsedFilesAdd(const Filename: string);
+  begin
+    UsedFiles.AddObject(Filename, Pointer(GetHash(AnsiLowerCase(ExtractFileName(Filename)))));
+  end;
+
+var
+  PackageIndex: Integer;
+  Filename: string;
   Files: TStrings;
+  OutputDirs, DebugOutputDirs: TOutputDirs;
+  Group: TProjectGroup;
+  Package: TPackageTarget;
+  FileIndex: Integer;
+  Found: Boolean;
+  HashValue: Pointer;
 begin
-  { Delete removed package files .dcp, .lib, .bpi, .dcu, .hpp file }
-  for I := 0 to High(sRemovedPackages) do
-  begin
-    { Release }
-    Filename := TargetConfig.VersionedJVCLXmlDcp(sRemovedPackages[I]);
-    Path := IncludeTrailingPathDelimiter(TargetConfig.DcpDir);
-    if Path = '' then
-      IncludeTrailingPathDelimiter(TargetConfig.Target.DcpDir);
-    if FileExists(Path + Filename) then
-    begin
-      DeleteFile(Path + Filename);
-      DeleteFile(Path + ChangeFileExt(Filename, '.dcu'));
-      DeleteFile(Path + ChangeFileExt(Filename, '.lib'));
-      DeleteFile(Path + ChangeFileExt(Filename, '.bpi'));
-      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-      if TargetConfig.HppDir <> '' then
-        Path := IncludeTrailingPathDelimiter(TargetConfig.HppDir);
-      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-    end;
-
-    { Debug }
-    Filename := TargetConfig.VersionedJVCLXmlDcp(sRemovedPackages[I]);
-    Path := IncludeTrailingPathDelimiter(TargetConfig.DebugDcpDir);
-    if Path = '' then
-      IncludeTrailingPathDelimiter(TargetConfig.Target.DcpDir);
-    if FileExists(Path + Filename) then
-    begin
-      DeleteFile(Path + Filename);
-      DeleteFile(Path + ChangeFileExt(Filename, '.dcu'));
-      DeleteFile(Path + ChangeFileExt(Filename, '.lib'));
-      DeleteFile(Path + ChangeFileExt(Filename, '.bpi'));
-      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-      if TargetConfig.DebugHppDir <> '' then
-        Path := IncludeTrailingPathDelimiter(TargetConfig.DebugHppDir);
-      DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-    end;
-
-    { Delete package .bpl }
-    Filename := TargetConfig.VersionedJVCLXmlBpl(sRemovedPackages[I]);
-    Path := IncludeTrailingPathDelimiter(TargetConfig.BplDir);
-    if Path = '' then
-      Path := IncludeTrailingPathDelimiter(TargetConfig.Target.BplDir);
-    DeleteFile(Path + Filename);
-  end;
-
-
-  { Delete removed unit files .dcu, .dfm, .hpp }
-  for I := 0 to High(sRemovedUnits) do
-  begin
-    { Release }
-    Path := IncludeTrailingPathDelimiter(TargetConfig.UnitOutDir);
-    if Path <> '' then
-    begin
-      Filename := sRemovedUnits[I] + '.dcu';
-      if FileExists(Path + Filename) then
-      begin
-        DeleteFile(Path + Filename);
-        DeleteFile(Path + ChangeFileExt(Filename, '.dfm'));
-        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-        if TargetConfig.HppDir <> '' then
-          Path := IncludeTrailingPathDelimiter(TargetConfig.HppDir);
-        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-      end;
-    end;
-
-    { Debug }
-    Path := IncludeTrailingPathDelimiter(TargetConfig.DebugUnitOutDir);
-    if Path <> '' then
-    begin
-      Filename := sRemovedUnits[I] + '.dcu';
-      if FileExists(Path + Filename) then
-      begin
-        DeleteFile(Path + Filename);
-        DeleteFile(Path + ChangeFileExt(Filename, '.dfm'));
-        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-        if TargetConfig.DebugHppDir <> '' then
-          Path := IncludeTrailingPathDelimiter(TargetConfig.DebugHppDir);
-        DeleteFile(Path + ChangeFileExt(Filename, '.hpp'));
-      end;
-    end;
-  end;
-
-  { Delete files from previous versions }
+    // Delete the files that aren't part of the installation
+  UsedFiles := TStringList.Create;
   Files := TStringList.Create;
   try
-    TargetConfig.GetOldFilesForDeletion(Files);
-    DeleteFiles(Files);
+    OutputDirs := TargetConfig.GetOutputDirs(False);
+    DebugOutputDirs := TargetConfig.GetOutputDirs(True);
+
+    Group := nil;
+    if pkVCL in TargetConfig.InstallMode then
+      Group := TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL];
+
+    if Group <> nil then
+    begin
+      // Get all destination file names that are part of this distribution for the target
+      for PackageIndex := 0 to Group.Count - 1 do
+      begin
+        Package := Group.Packages[PackageIndex];
+        if Package.Compile then
+        begin
+          { DCP }
+          FileName := ExtractFileName(Package.DcpName);
+
+          UsedFilesAdd(OutputDirs.DcpDir + PathDelim + Filename);
+          UsedFilesAdd(OutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lib'));
+          UsedFilesAdd(OutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.bpi'));
+          UsedFilesAdd(OutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lsp'));
+          UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
+          UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
+          UsedFilesAdd(OutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+
+          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + Filename);
+          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lib'));
+          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.lsp'));
+          UsedFilesAdd(DebugOutputDirs.DcpDir + PathDelim + ChangeFileExt(Filename, '.bpi'));
+          UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
+          UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
+          UsedFilesAdd(DebugOutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+
+          { BPL }
+          Filename := ExtractFileName(Package.TargetName);
+
+          UsedFilesAdd(OutputDirs.BplDir + PathDelim + Filename);
+          UsedFilesAdd(OutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.map'));
+          UsedFilesAdd(OutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.jdbg'));
+          UsedFilesAdd(OutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.tds'));
+
+          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + Filename);
+          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.map'));
+          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.jdbg'));
+          UsedFilesAdd(DebugOutputDirs.BplDir + PathDelim + ChangeFileExt(Filename, '.tds'));
+
+          { Contained units }
+          for FileIndex := 0 to Package.ContainCount - 1 do
+          begin
+            if IsFileUsed(Group, Package.Contains[FileIndex]) then
+            begin
+              { PAS }
+              Filename := ExtractFileName(Package.Contains[FileIndex].Name);
+
+              if Package.Contains[FileIndex].FormName <> '' then
+              begin
+                UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dfm'));
+                UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dfm'));
+              end;
+
+              UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
+              UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.dcu'));
+
+              UsedFilesAdd(OutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
+              UsedFilesAdd(DebugOutputDirs.UnitOutDir + PathDelim + ChangeFileExt(Filename, '.obj'));
+
+              UsedFilesAdd(OutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+              UsedFilesAdd(DebugOutputDirs.HppDir + PathDelim + ChangeFileExt(Filename, '.hpp'));
+            end;
+          end;
+
+        end;
+      end;
+
+      { Collect all existing files that are in the output directories }
+      CollectExistingOutputFiles(Files,
+        [OutputDirs.UnitOutDir, OutputDirs.BplDir, OutputDirs.DcpDir, OutputDirs.HppDir,
+         DebugOutputDirs.UnitOutDir, DebugOutputDirs.BplDir, DebugOutputDirs.DcpDir, DebugOutputDirs.HppDir]);
+
+
+      { Delete all files that aren't created by the compiler/installer }
+      for FileIndex := 0 to Files.Count - 1 do
+      begin
+        Filename := Files[FileIndex];
+
+        // using the "hashed-compare" is faster than using binary search because the
+        // the directory names are equal most of the time what causes IndexOf to compare
+        // lot's of characters until it reaches the filename.
+        HashValue := Pointer(GetHash(AnsiLowerCase(ExtractFileName(Filename))));
+        Found := False;
+        for I := 0 to UsedFiles.Count - 1 do
+        begin
+          if (UsedFiles.Objects[I] = HashValue) and (AnsiCompareText(Filename, UsedFiles[I]) = 0) then
+          begin
+            Found := True;
+            Break;
+          end;
+        end;
+
+        if not Found then
+          DeleteFile(Filename);
+      end;
+    end;
   finally
     Files.Free;
+    UsedFiles.Free;
   end;
 end;
 
@@ -1981,20 +2089,6 @@ begin
   end;
 end;*)
 
-type
-  { TListConditionParser searches for the idents in the List. If an ident is in
-    the list the ident is returned as True. }
-  TListConditionParser = class(TConditionParser)
-  private
-    FTargetConfig: ITargetConfig;
-  protected
-    procedure MissingRightParenthesis; override;
-    function GetIdentValue(const Ident: String): Boolean; override;
-  public
-    constructor Create(ATargetConfig: ITargetConfig);
-  end;
-
-
 function TCompiler.IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
 var
   Parser: TListConditionParser;
@@ -2018,24 +2112,5 @@ begin
   else
     Result := False;
 end;
-
-{ TListConditionParser }
-
-constructor TListConditionParser.Create(ATargetConfig: ITargetConfig);
-begin
-  inherited Create;
-  FTargetConfig := ATargetConfig;
-end;
-
-function TListConditionParser.GetIdentValue(const Ident: String): Boolean;
-begin
-  Result := FTargetConfig.JVCLConfig.Enabled[Ident];
-end;
-
-procedure TListConditionParser.MissingRightParenthesis;
-begin
-  raise Exception.Create('Missing ")" in conditional expression');
-end;
-
 
 end.
