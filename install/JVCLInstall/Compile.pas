@@ -29,7 +29,7 @@ unit Compile;
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
-{$IF CompilerVersion >= 12.0}
+{$IF CompilerVersion >= 20.0} // Delphi 2009+
   {$STRINGCHECKS OFF} // who needs this performance killer, so turn it off
 {$IFEND}
 
