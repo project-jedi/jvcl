@@ -49,5 +49,6 @@
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
     <File Name="..\..\design\JvBackgroundEditors.pas" Targets="VCL" Formname="" Condition=""/>
     <File Name="..\..\design\JvBackgroundEditForm.pas" Targets="VCL" Formname="JvBackgroundClientsEditor" Condition=""/>
+    <File Name="..\..\design\JvValidatorsEditorForm.pas" Targets="all" Formname="frmValidatorsEditor" Condition=""/>
   </Contains>
 </Package>

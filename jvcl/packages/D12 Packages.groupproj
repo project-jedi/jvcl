@@ -244,23 +244,23 @@
   <Target Name="JvBDEDesign:Make">
     <MSBuild Projects="D12\JvBDEDesign.dproj" Targets="Make" />
   </Target>
-  <Target Name="JvInterpreter">
-    <MSBuild Projects="D12\JvInterpreter.dproj" Targets="" />
+  <Target Name="JvPascalInterpreter">
+    <MSBuild Projects="D12\JvPascalInterpreter.dproj" Targets="" />
   </Target>
-  <Target Name="JvInterpreter:Clean">
-    <MSBuild Projects="D12\JvInterpreter.dproj" Targets="Clean" />
+  <Target Name="JvPascalInterpreter:Clean">
+    <MSBuild Projects="D12\JvPascalInterpreter.dproj" Targets="Clean" />
   </Target>
-  <Target Name="JvInterpreter:Make">
-    <MSBuild Projects="D12\JvInterpreter.dproj" Targets="Make" />
+  <Target Name="JvPascalInterpreter:Make">
+    <MSBuild Projects="D12\JvPascalInterpreter.dproj" Targets="Make" />
   </Target>
-  <Target Name="JvInterpreterDesign">
-    <MSBuild Projects="D12\JvInterpreterDesign.dproj" Targets="" />
+  <Target Name="JvPascalInterpreterDesign">
+    <MSBuild Projects="D12\JvPascalInterpreterDesign.dproj" Targets="" />
   </Target>
-  <Target Name="JvInterpreterDesign:Clean">
-    <MSBuild Projects="D12\JvInterpreterDesign.dproj" Targets="Clean" />
+  <Target Name="JvPascalInterpreterDesign:Clean">
+    <MSBuild Projects="D12\JvPascalInterpreterDesign.dproj" Targets="Clean" />
   </Target>
-  <Target Name="JvInterpreterDesign:Make">
-    <MSBuild Projects="D12\JvInterpreterDesign.dproj" Targets="Make" />
+  <Target Name="JvPascalInterpreterDesign:Make">
+    <MSBuild Projects="D12\JvPascalInterpreterDesign.dproj" Targets="Make" />
   </Target>
   <Target Name="JvBands">
     <MSBuild Projects="D12\JvBands.dproj" Targets="" />
@@ -280,23 +280,23 @@
   <Target Name="JvBandsDesign:Make">
     <MSBuild Projects="D12\JvBandsDesign.dproj" Targets="Make" />
   </Target>
-  <Target Name="JvPlugin">
-    <MSBuild Projects="D12\JvPlugin.dproj" Targets="" />
+  <Target Name="JvPluginSystem">
+    <MSBuild Projects="D12\JvPluginSystem.dproj" Targets="" />
   </Target>
-  <Target Name="JvPlugin:Clean">
-    <MSBuild Projects="D12\JvPlugin.dproj" Targets="Clean" />
+  <Target Name="JvPluginSystem:Clean">
+    <MSBuild Projects="D12\JvPluginSystem.dproj" Targets="Clean" />
   </Target>
-  <Target Name="JvPlugin:Make">
-    <MSBuild Projects="D12\JvPlugin.dproj" Targets="Make" />
+  <Target Name="JvPluginSystem:Make">
+    <MSBuild Projects="D12\JvPluginSystem.dproj" Targets="Make" />
   </Target>
-  <Target Name="JvPluginDesign">
-    <MSBuild Projects="D12\JvPluginDesign.dproj" Targets="" />
+  <Target Name="JvPluginSystemDesign">
+    <MSBuild Projects="D12\JvPluginSystemDesign.dproj" Targets="" />
   </Target>
-  <Target Name="JvPluginDesign:Clean">
-    <MSBuild Projects="D12\JvPluginDesign.dproj" Targets="Clean" />
+  <Target Name="JvPluginSystemDesign:Clean">
+    <MSBuild Projects="D12\JvPluginSystemDesign.dproj" Targets="Clean" />
   </Target>
-  <Target Name="JvPluginDesign:Make">
-    <MSBuild Projects="D12\JvPluginDesign.dproj" Targets="Make" />
+  <Target Name="JvPluginSystemDesign:Make">
+    <MSBuild Projects="D12\JvPluginSystemDesign.dproj" Targets="Make" />
   </Target>
   <Target Name="JvJans">
     <MSBuild Projects="D12\JvJans.dproj" Targets="" />
@@ -370,41 +370,23 @@
   <Target Name="JvPageCompsDesign:Make">
     <MSBuild Projects="D12\JvPageCompsDesign.dproj" Targets="Make" />
   </Target>
-  <Target Name="JvValidators">
-    <MSBuild Projects="D12\JvValidators.dproj" Targets="" />
+  <Target Name="JvWizards">
+    <MSBuild Projects="D12\JvWizards.dproj" Targets="" />
   </Target>
-  <Target Name="JvValidators:Clean">
-    <MSBuild Projects="D12\JvValidators.dproj" Targets="Clean" />
+  <Target Name="JvWizards:Clean">
+    <MSBuild Projects="D12\JvWizards.dproj" Targets="Clean" />
   </Target>
-  <Target Name="JvValidators:Make">
-    <MSBuild Projects="D12\JvValidators.dproj" Targets="Make" />
+  <Target Name="JvWizards:Make">
+    <MSBuild Projects="D12\JvWizards.dproj" Targets="Make" />
   </Target>
-  <Target Name="JvValidatorsDesign">
-    <MSBuild Projects="D12\JvValidatorsDesign.dproj" Targets="" />
+  <Target Name="JvWizardsDesign">
+    <MSBuild Projects="D12\JvWizardsDesign.dproj" Targets="" />
   </Target>
-  <Target Name="JvValidatorsDesign:Clean">
-    <MSBuild Projects="D12\JvValidatorsDesign.dproj" Targets="Clean" />
+  <Target Name="JvWizardsDesign:Clean">
+    <MSBuild Projects="D12\JvWizardsDesign.dproj" Targets="Clean" />
   </Target>
-  <Target Name="JvValidatorsDesign:Make">
-    <MSBuild Projects="D12\JvValidatorsDesign.dproj" Targets="Make" />
-  </Target>
-  <Target Name="JvWizard">
-    <MSBuild Projects="D12\JvWizard.dproj" Targets="" />
-  </Target>
-  <Target Name="JvWizard:Clean">
-    <MSBuild Projects="D12\JvWizard.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="JvWizard:Make">
-    <MSBuild Projects="D12\JvWizard.dproj" Targets="Make" />
-  </Target>
-  <Target Name="JvWizardDesign">
-    <MSBuild Projects="D12\JvWizardDesign.dproj" Targets="" />
-  </Target>
-  <Target Name="JvWizardDesign:Clean">
-    <MSBuild Projects="D12\JvWizardDesign.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="JvWizardDesign:Make">
-    <MSBuild Projects="D12\JvWizardDesign.dproj" Targets="Make" />
+  <Target Name="JvWizardsDesign:Make">
+    <MSBuild Projects="D12\JvWizardsDesign.dproj" Targets="Make" />
   </Target>
   <Target Name="JvTimeFramework">
     <MSBuild Projects="D12\JvTimeFramework.dproj" Targets="" />
@@ -551,12 +533,12 @@
     <MSBuild Projects="D12\JvRuntimeDesignDesign.dproj" Targets="Make" />
   </Target>
   <Target Name="Build">
-    <CallTarget Targets="JvCore;JvCoreDesign;JvSystem;JvSystemDesign;JvStdCtrls;JvStdCtrlsDesign;JvCtrls;JvCtrlsDesign;JvCmp;JvCmpDesign;JvCustom;JvCustomDesign;JvDlgs;JvDlgsDesign;JvCrypt;JvCryptDesign;JvMM;JvMMDesign;JvNet;JvNetDesign;JvAppFrm;JvAppFrmDesign;JvDB;JvDBDesign;JvBDE;JvBDEDesign;JvInterpreter;JvInterpreterDesign;JvBands;JvBandsDesign;JvPlugin;JvPluginDesign;JvJans;JvJansDesign;JvGlobus;JvGlobusDesign;JvPrintPreview;JvPrintPreviewDesign;JvPageComps;JvPageCompsDesign;JvValidators;JvValidatorsDesign;JvWizard;JvWizardDesign;JvTimeFramework;JvTimeFrameworkDesign;JvHMI;JvHMIDesign;JvManagedThreads;JvManagedThreadsDesign;JvXPCtrls;JvXPCtrlsDesign;JvDocking;JvDockingDesign;JvDotNetCtrls;JvDotNetCtrlsDesign;JvEDI;JvEDIDesign;JvRuntimeDesign;JvRuntimeDesignDesign" />
+    <CallTarget Targets="JvCore;JvCoreDesign;JvSystem;JvSystemDesign;JvStdCtrls;JvStdCtrlsDesign;JvCtrls;JvCtrlsDesign;JvCmp;JvCmpDesign;JvCustom;JvCustomDesign;JvDlgs;JvDlgsDesign;JvCrypt;JvCryptDesign;JvMM;JvMMDesign;JvNet;JvNetDesign;JvAppFrm;JvAppFrmDesign;JvDB;JvDBDesign;JvBDE;JvBDEDesign;JvPascalInterpreter;JvPascalInterpreterDesign;JvBands;JvBandsDesign;JvPluginSystem;JvPluginSystemDesign;JvJans;JvJansDesign;JvGlobus;JvGlobusDesign;JvPrintPreview;JvPrintPreviewDesign;JvPageComps;JvPageCompsDesign;JvWizards;JvWizardsDesign;JvTimeFramework;JvTimeFrameworkDesign;JvHMI;JvHMIDesign;JvManagedThreads;JvManagedThreadsDesign;JvXPCtrls;JvXPCtrlsDesign;JvDocking;JvDockingDesign;JvDotNetCtrls;JvDotNetCtrlsDesign;JvEDI;JvEDIDesign;JvRuntimeDesign;JvRuntimeDesignDesign" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="JvCore:Clean;JvCoreDesign:Clean;JvSystem:Clean;JvSystemDesign:Clean;JvStdCtrls:Clean;JvStdCtrlsDesign:Clean;JvCtrls:Clean;JvCtrlsDesign:Clean;JvCmp:Clean;JvCmpDesign:Clean;JvCustom:Clean;JvCustomDesign:Clean;JvDlgs:Clean;JvDlgsDesign:Clean;JvCrypt:Clean;JvCryptDesign:Clean;JvMM:Clean;JvMMDesign:Clean;JvNet:Clean;JvNetDesign:Clean;JvAppFrm:Clean;JvAppFrmDesign:Clean;JvDB:Clean;JvDBDesign:Clean;JvBDE:Clean;JvBDEDesign:Clean;JvInterpreter:Clean;JvInterpreterDesign:Clean;JvBands:Clean;JvBandsDesign:Clean;JvPlugin:Clean;JvPluginDesign:Clean;JvJans:Clean;JvJansDesign:Clean;JvGlobus:Clean;JvGlobusDesign:Clean;JvPrintPreview:Clean;JvPrintPreviewDesign:Clean;JvPageComps:Clean;JvPageCompsDesign:Clean;JvValidators:Clean;JvValidatorsDesign:Clean;JvWizard:Clean;JvWizardDesign:Clean;JvTimeFramework:Clean;JvTimeFrameworkDesign:Clean;JvHMI:Clean;JvHMIDesign:Clean;JvManagedThreads:Clean;JvManagedThreadsDesign:Clean;JvXPCtrls:Clean;JvXPCtrlsDesign:Clean;JvDocking:Clean;JvDockingDesign:Clean;JvDotNetCtrls:Clean;JvDotNetCtrlsDesign:Clean;JvEDI:Clean;JvEDIDesign:Clean;JvRuntimeDesign:Clean;JvRuntimeDesignDesign:Clean" />
+    <CallTarget Targets="JvCore:Clean;JvCoreDesign:Clean;JvSystem:Clean;JvSystemDesign:Clean;JvStdCtrls:Clean;JvStdCtrlsDesign:Clean;JvCtrls:Clean;JvCtrlsDesign:Clean;JvCmp:Clean;JvCmpDesign:Clean;JvCustom:Clean;JvCustomDesign:Clean;JvDlgs:Clean;JvDlgsDesign:Clean;JvCrypt:Clean;JvCryptDesign:Clean;JvMM:Clean;JvMMDesign:Clean;JvNet:Clean;JvNetDesign:Clean;JvAppFrm:Clean;JvAppFrmDesign:Clean;JvDB:Clean;JvDBDesign:Clean;JvBDE:Clean;JvBDEDesign:Clean;JvPascalInterpreter:Clean;JvPascalInterpreterDesign:Clean;JvBands:Clean;JvBandsDesign:Clean;JvPluginSystem:Clean;JvPluginSystemDesign:Clean;JvJans:Clean;JvJansDesign:Clean;JvGlobus:Clean;JvGlobusDesign:Clean;JvPrintPreview:Clean;JvPrintPreviewDesign:Clean;JvPageComps:Clean;JvPageCompsDesign:Clean;JvWizards:Clean;JvWizardsDesign:Clean;JvTimeFramework:Clean;JvTimeFrameworkDesign:Clean;JvHMI:Clean;JvHMIDesign:Clean;JvManagedThreads:Clean;JvManagedThreadsDesign:Clean;JvXPCtrls:Clean;JvXPCtrlsDesign:Clean;JvDocking:Clean;JvDockingDesign:Clean;JvDotNetCtrls:Clean;JvDotNetCtrlsDesign:Clean;JvEDI:Clean;JvEDIDesign:Clean;JvRuntimeDesign:Clean;JvRuntimeDesignDesign:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="JvCore:Make;JvCoreDesign:Make;JvSystem:Make;JvSystemDesign:Make;JvStdCtrls:Make;JvStdCtrlsDesign:Make;JvCtrls:Make;JvCtrlsDesign:Make;JvCmp:Make;JvCmpDesign:Make;JvCustom:Make;JvCustomDesign:Make;JvDlgs:Make;JvDlgsDesign:Make;JvCrypt:Make;JvCryptDesign:Make;JvMM:Make;JvMMDesign:Make;JvNet:Make;JvNetDesign:Make;JvAppFrm:Make;JvAppFrmDesign:Make;JvDB:Make;JvDBDesign:Make;JvBDE:Make;JvBDEDesign:Make;JvInterpreter:Make;JvInterpreterDesign:Make;JvBands:Make;JvBandsDesign:Make;JvPlugin:Make;JvPluginDesign:Make;JvJans:Make;JvJansDesign:Make;JvGlobus:Make;JvGlobusDesign:Make;JvPrintPreview:Make;JvPrintPreviewDesign:Make;JvPageComps:Make;JvPageCompsDesign:Make;JvValidators:Make;JvValidatorsDesign:Make;JvWizard:Make;JvWizardDesign:Make;JvTimeFramework:Make;JvTimeFrameworkDesign:Make;JvHMI:Make;JvHMIDesign:Make;JvManagedThreads:Make;JvManagedThreadsDesign:Make;JvXPCtrls:Make;JvXPCtrlsDesign:Make;JvDocking:Make;JvDockingDesign:Make;JvDotNetCtrls:Make;JvDotNetCtrlsDesign:Make;JvEDI:Make;JvEDIDesign:Make;JvRuntimeDesign:Make;JvRuntimeDesignDesign:Make" />
+    <CallTarget Targets="JvCore:Make;JvCoreDesign:Make;JvSystem:Make;JvSystemDesign:Make;JvStdCtrls:Make;JvStdCtrlsDesign:Make;JvCtrls:Make;JvCtrlsDesign:Make;JvCmp:Make;JvCmpDesign:Make;JvCustom:Make;JvCustomDesign:Make;JvDlgs:Make;JvDlgsDesign:Make;JvCrypt:Make;JvCryptDesign:Make;JvMM:Make;JvMMDesign:Make;JvNet:Make;JvNetDesign:Make;JvAppFrm:Make;JvAppFrmDesign:Make;JvDB:Make;JvDBDesign:Make;JvBDE:Make;JvBDEDesign:Make;JvPascalInterpreter:Make;JvPascalInterpreterDesign:Make;JvBands:Make;JvBandsDesign:Make;JvPluginSystem:Make;JvPluginSystemDesign:Make;JvJans:Make;JvJansDesign:Make;JvGlobus:Make;JvGlobusDesign:Make;JvPrintPreview:Make;JvPrintPreviewDesign:Make;JvPageComps:Make;JvPageCompsDesign:Make;JvWizards:Make;JvWizardsDesign:Make;JvTimeFramework:Make;JvTimeFrameworkDesign:Make;JvHMI:Make;JvHMIDesign:Make;JvManagedThreads:Make;JvManagedThreadsDesign:Make;JvXPCtrls:Make;JvXPCtrlsDesign:Make;JvDocking:Make;JvDockingDesign:Make;JvDotNetCtrls:Make;JvDotNetCtrlsDesign:Make;JvEDI:Make;JvEDIDesign:Make;JvRuntimeDesign:Make;JvRuntimeDesignDesign:Make" />
   </Target>
 </Project>

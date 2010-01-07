@@ -22,15 +22,14 @@ PROJECTS = JvCore70.bpl JvCoreDesign70.bpl                     \
   JvAppFrm70.bpl JvAppFrmDesign70.bpl                 \
   JvDB70.bpl JvDBDesign70.bpl                         \
   JvBDE70.bpl JvBDEDesign70.bpl                       \
-  JvInterpreter70.bpl JvInterpreterDesign70.bpl       \
+  JvPascalInterpreter70.bpl JvPascalInterpreterDesign70.bpl \
   JvBands70.bpl JvBandsDesign70.bpl                   \
-  JvPlugin70.bpl JvPluginDesign70.bpl                 \
+  JvPluginSystem70.bpl JvPluginSystemDesign70.bpl     \
   JvJans70.bpl JvJansDesign70.bpl                     \
   JvGlobus70.bpl JvGlobusDesign70.bpl                 \
   JvPrintPreview70.bpl JvPrintPreviewDesign70.bpl     \
   JvPageComps70.bpl JvPageCompsDesign70.bpl           \
-  JvValidators70.bpl JvValidatorsDesign70.bpl         \
-  JvWizard70.bpl JvWizardDesign70.bpl                 \
+  JvWizards70.bpl JvWizardsDesign70.bpl               \
   JvTimeFramework70.bpl JvTimeFrameworkDesign70.bpl   \
   JvHMI70.bpl JvHMIDesign70.bpl                       \
   JvManagedThreads70.bpl JvManagedThreadsDesign70.bpl \
@@ -100,10 +99,10 @@ JvNetDesign70.bpl: d7\JvNetDesign.dpk
 JvMMDesign70.bpl: d7\JvMMDesign.dpk
   $(DCC)
 
-JvInterpreter70.bpl: d7\JvInterpreter.dpk
+JvPascalInterpreter70.bpl: d7\JvPascalInterpreter.dpk
   $(DCC)
 
-JvInterpreterDesign70.bpl: d7\JvInterpreterDesign.dpk
+JvPascalInterpreterDesign70.bpl: d7\JvPascalInterpreterDesign.dpk
   $(DCC)
 
 JvDlgsDesign70.bpl: d7\JvDlgsDesign.dpk
@@ -127,10 +126,10 @@ JvCmpDesign70.bpl: d7\JvCmpDesign.dpk
 JvBDEDesign70.bpl: d7\JvBDEDesign.dpk
   $(DCC)
 
-JvPluginDesign70.bpl: d7\JvPluginDesign.dpk
+JvPluginSystemDesign70.bpl: d7\JvPluginSystemDesign.dpk
   $(DCC)
 
-JvPlugin70.bpl: d7\JvPlugin.dpk
+JvPluginSystem70.bpl: d7\JvPluginSystem.dpk
   $(DCC)
 
 JvBands70.bpl: d7\JvBands.dpk
@@ -163,16 +162,10 @@ JvPrintPreviewDesign70.bpl: d7\JvPrintPreviewDesign.dpk
 JvPrintPreview70.bpl: d7\JvPrintPreview.dpk
   $(DCC)
 
-JvValidatorsDesign70.bpl: d7\JvValidatorsDesign.dpk
+JvWizards70.bpl: d7\JvWizards.dpk
   $(DCC)
 
-JvValidators70.bpl: d7\JvValidators.dpk
-  $(DCC)
-
-JvWizard70.bpl: d7\JvWizard.dpk
-  $(DCC)
-
-JvWizardDesign70.bpl: d7\JvWizardDesign.dpk
+JvWizardsDesign70.bpl: d7\JvWizardsDesign.dpk
   $(DCC)
 
 JvTimeFramework70.bpl: d7\JvTimeFramework.dpk

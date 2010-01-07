@@ -79,7 +79,7 @@ JvCmpReg.dcr \
 JvCustomReg.dcr \
 JvCoreReg.dcr \
 JvCryptReg.dcr \
-JvCtrlsReg.dcr \
+JvControlsReg.dcr \
 JvDBReg.dcr \
 JvDlgsReg.dcr \
 JvDockingReg.dcr \
@@ -87,19 +87,18 @@ JvDotNetCtrlsReg.dcr \
 JvEDIDBBufferingReg.dcr \
 JvGlobusReg.dcr \
 JvHMIReg.dcr \
-JvInterpreterReg.dcr \
+JvPascalInterpreterReg.dcr \
 JvJansReg.dcr \
 JvManagedThreadsReg.dcr \
 JvMMReg.dcr \
 JvNetReg.dcr \
 JvPageListTreeViewReg.dcr \
-JvPluginReg.dcr \
+JvPluginSystemReg.dcr \
 JvPreviewReg.dcr \
 JvStdCtrlsReg.dcr \
 JvSystemReg.dcr \
 JvTimeFrameWorkReg.dcr \
-JvValidatorsReg.dcr \
-JvWizardReg.dcr \
+JvWizardsReg.dcr \
 JvXPCtrlsReg.dcr \
 JvRuntimeDesignReg.dcr
 
@@ -171,7 +170,6 @@ JvGlobusReg.dcr: JvGlobusReg.rc
 JvUIBReg.dcr: JvUIBReg.rc
 JvPageListTreeViewReg.dcr: JvPageListTreeViewReg.rc
 JvPreviewReg.dcr: JvPreviewReg.rc
-JvValidatorsReg.dcr: JvValidatorsReg.rc
 JvWizardReg.dcr: JvWizardReg.rc
 JvTimeFrameWorkReg.dcr: JvTimeFrameWorkReg.rc
 JvManagedThreadsReg.dcr: JvManagedThreadsReg.rc
