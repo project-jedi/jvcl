@@ -80,7 +80,7 @@ const
                   (TargetName: 'd7'; Define: 'VER150'),
                   (TargetName: 'd9'; Define: 'VER170'),
                   (TargetName: 'd10'; Define: 'VER180'),
-                  (TargetName: 'd11'; Define: 'VER185'),
+                  (TargetName: 'd11'; Define: 'VER180,VER185'),
                   (TargetName: 'd12'; Define: 'VER200'),
                   (TargetName: 'd14'; Define: 'VER210')
                 );
@@ -90,6 +90,7 @@ const
 constructor TTarget.Create(Node: TJclSimpleXmlElem);
 var
   I: Integer;
+  Tmp: TStringList;
 begin
   inherited Create;
   FName := AnsiLowerCase(Node.Properties.ItemNamed['name'].Value);
@@ -129,7 +130,19 @@ begin
 
   for I := Low(TargetDefines) to High(TargetDefines) do
     if SameText(TargetDefines[I].TargetName, Name) then
-      FDefines.Add(TargetDefines[I].Define);
+    begin
+      Tmp := TStringList.Create;
+      try
+        StrToStrings(TargetDefines[I].Define,
+                 ',',
+                 Tmp,
+                 False);
+
+        FDefines.AddStrings(Tmp);
+      finally
+        Tmp.Free;
+      end;
+    end;
 end;
 
 destructor TTarget.Destroy;
