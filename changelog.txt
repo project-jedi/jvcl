@@ -1,5 +1,9 @@
 Changelog for JVCL 3.X
 ======================
+2010-01-06
+- Changed package names in order to use $LIBSUFFIX
+- Moved units from JvValidators.dpk into JvCore.dpk
+
 2009-06-10
 - Removed the USEJVCL define that was used to keep JvUIB, JvWizard and JvTimeFrameWork as separate packages
 
