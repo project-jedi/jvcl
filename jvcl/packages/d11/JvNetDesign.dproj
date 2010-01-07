@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{7F81A0A6-736F-4165-90E2-381F365CDDE9}</ProjectGuid>
     <MainSource>JvNetDesign.dpk</MainSource>

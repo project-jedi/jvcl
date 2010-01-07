@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{5E54CB04-C43A-4F05-853C-07A61538111C}</ProjectGuid>
 			<MainSource>JvRuntimeDesignDesign.dpk</MainSource>

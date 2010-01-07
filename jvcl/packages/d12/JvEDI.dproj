@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{E6B694C0-1FE7-4FF5-A8BD-FA186B72076F}</ProjectGuid>
 			<MainSource>JvEDI.dpk</MainSource>

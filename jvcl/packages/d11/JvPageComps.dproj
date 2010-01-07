@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{395E4777-D95E-4AB0-8290-0BA981C01E14}</ProjectGuid>
     <MainSource>JvPageComps.dpk</MainSource>

@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{E8945997-84A1-4589-89BA-EF5759023364}</ProjectGuid>
     <MainSource>JvHMI.dpk</MainSource>
