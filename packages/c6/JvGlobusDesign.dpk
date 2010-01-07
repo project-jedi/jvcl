@@ -40,7 +40,7 @@ package JvGlobusDesign;
 requires
   JvCoreDesign,
   JvCore,
-  JvCtrls,
+  JvControls,
   JvGlobus,
   Jcl,
   rtl,

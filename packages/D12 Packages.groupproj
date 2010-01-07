@@ -65,22 +65,22 @@
     <MSBuild Projects="D12\JvStdCtrlsDesign.dproj" Targets="Make" />
   </Target>
   <Target Name="JvCtrls">
-    <MSBuild Projects="D12\JvCtrls.dproj" Targets="" />
+    <MSBuild Projects="D12\JvControls.dproj" Targets="" />
   </Target>
   <Target Name="JvCtrls:Clean">
-    <MSBuild Projects="D12\JvCtrls.dproj" Targets="Clean" />
+    <MSBuild Projects="D12\JvControls.dproj" Targets="Clean" />
   </Target>
   <Target Name="JvCtrls:Make">
-    <MSBuild Projects="D12\JvCtrls.dproj" Targets="Make" />
+    <MSBuild Projects="D12\JvControls.dproj" Targets="Make" />
   </Target>
   <Target Name="JvCtrlsDesign">
-    <MSBuild Projects="D12\JvCtrlsDesign.dproj" Targets="" />
+    <MSBuild Projects="D12\JvControlsDesign.dproj" Targets="" />
   </Target>
   <Target Name="JvCtrlsDesign:Clean">
-    <MSBuild Projects="D12\JvCtrlsDesign.dproj" Targets="Clean" />
+    <MSBuild Projects="D12\JvControlsDesign.dproj" Targets="Clean" />
   </Target>
   <Target Name="JvCtrlsDesign:Make">
-    <MSBuild Projects="D12\JvCtrlsDesign.dproj" Targets="Make" />
+    <MSBuild Projects="D12\JvControlsDesign.dproj" Targets="Make" />
   </Target>
   <Target Name="JvCmp">
     <MSBuild Projects="D12\JvCmp.dproj" Targets="" />

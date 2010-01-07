@@ -42,7 +42,7 @@ requires
   JvDlgs,
   JvStdCtrls,
   JvSystem,
-  JvCtrls,
+  JvControls,
   Jcl,
   JclVcl,
   rtl,
