@@ -12,7 +12,7 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = JvCoreD60.bpl JvCoreDesignD60.bpl                     \
   JvSystemD60.bpl JvSystemDesignD60.bpl                 \
   JvStdCtrlsD60.bpl JvStdCtrlsDesignD60.bpl             \
-  JvCtrlsD60.bpl JvCtrlsDesignD60.bpl                   \
+  JvControlsD60.bpl JvControlsDesignD60.bpl             \
   JvCmpD60.bpl JvCmpDesignD60.bpl                       \
   JvCustomD60.bpl JvCustomDesignD60.bpl                 \
   JvDlgsD60.bpl JvDlgsDesignD60.bpl                     \
@@ -64,7 +64,7 @@ JvCryptD60.bpl: d6\JvCrypt.dpk
 JvStdCtrlsD60.bpl: d6\JvStdCtrls.dpk
   $(DCC)
 
-JvCtrlsD60.bpl: d6\JvCtrls.dpk
+JvControlsD60.bpl: d6\JvControls.dpk
   $(DCC)
 
 JvCustomD60.bpl: d6\JvCustom.dpk
@@ -115,7 +115,7 @@ JvDBDesignD60.bpl: d6\JvDBDesign.dpk
 JvCustomDesignD60.bpl: d6\JvCustomDesign.dpk
   $(DCC)
 
-JvCtrlsDesignD60.bpl: d6\JvCtrlsDesign.dpk
+JvControlsDesignD60.bpl: d6\JvControlsDesign.dpk
   $(DCC)
 
 JvCryptDesignD60.bpl: d6\JvCryptDesign.dpk

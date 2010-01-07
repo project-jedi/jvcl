@@ -12,7 +12,7 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = JvCoreC60.bpl JvCoreDesignC60.bpl                     \
            JvSystemC60.bpl JvSystemDesignC60.bpl                 \
            JvStdCtrlsC60.bpl JvStdCtrlsDesignC60.bpl             \
-           JvCtrlsC60.bpl JvCtrlsDesignC60.bpl                   \
+           JvControlsC60.bpl JvControlsDesignC60.bpl             \
            JvCmpC60.bpl JvCmpDesignC60.bpl                       \
            JvCustomC60.bpl JvCustomDesignC60.bpl                 \
            JvDlgsC60.bpl JvDlgsDesignC60.bpl                     \
@@ -59,11 +59,11 @@ JvSystemDesignC60.bpl: c6\JvSystemDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCtrlsC60.bpl: c6\JvCtrls.bpk
+JvControlsC60.bpl: c6\JvControls.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvCtrlsDesignC60.bpl: c6\JvCtrlsDesign.bpk
+JvControlsDesignC60.bpl: c6\JvControlsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

@@ -8,7 +8,7 @@
   <Requires>
     <Package Name="JvCoreDesign-D" Targets="VCL" Condition=""/>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
-    <Package Name="JvCtrls-R" Targets="VCL" Condition=""/>
+    <Package Name="JvControls-R" Targets="VCL" Condition=""/>
     <Package Name="JvGlobus-R" Targets="VCL" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>

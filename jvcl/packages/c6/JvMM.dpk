@@ -39,7 +39,7 @@ package JvMM;
 
 requires
   JvCore,
-  JvCtrls,
+  JvControls,
   JvSystem,
   JvStdCtrls,
   Jcl,

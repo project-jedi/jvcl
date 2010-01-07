@@ -40,7 +40,7 @@ package JvAppFrm;
 requires
   JvCore,
   JvSystem,
-  JvCtrls,
+  JvControls,
   Jcl,
   JclVcl,
   rtl,
