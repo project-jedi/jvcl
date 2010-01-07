@@ -25,6 +25,8 @@ type
     function EnsurePFlagsCondition(const pflags: string): string;
 
     procedure Append(incfile, ATargetDefines: TStrings);
+
+    property Defines: TDefinesList read FDefinesList;
   end;
 
 implementation
