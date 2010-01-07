@@ -28,6 +28,9 @@ type
     procedure SetItems(index: Integer; const Value: TDefine);
   public
     constructor Create(incfile : TStrings); overload;
+
+    procedure Append(incfile : TStrings);
+
     function IsDefined(const Condition: string; TargetDefines: TStrings;
       DefineLimit : Integer = -1): Boolean;
 
@@ -59,20 +62,22 @@ end;
 
 { TDefinesList }
 
-constructor TDefinesList.Create(incfile: TStrings);
+procedure TDefinesList.Append(incfile: TStrings);
 const
   IfDefMarker  : string = '{$IFDEF';
   IfNDefMarker : string = '{$IFNDEF';
   EndIfMarker  : string = '{$ENDIF';
   ElseMarker   : string = '{$ELSE';
   DefineMarker : string = '{$DEFINE';
+  IfMarker : string = '{$IF';
 var
   i: Integer;
   curLine: string;
   IfDefs : TStringList;
+  ClosePos: Integer;
+  LastIfIsIfDef: Boolean;
 begin
-  inherited Create(True);
-
+  LastIfIsIfDef := False;
   IfDefs := TStringList.Create;
   try
     if Assigned(incfile) then
@@ -80,20 +85,53 @@ begin
       begin
         curLine := Trim(incfile[i]);
 
-        if StrHasPrefix(curLine, [IfDefMarker]) then
-          IfDefs.AddObject(Copy(curLine, Length(IfDefMarker)+2, Length(curLine)-Length(IfDefMarker)-2), TObject(True))
-        else if StrHasPrefix(curLine, [IfNDefMarker]) then
-          IfDefs.AddObject(Copy(curLine, Length(IfNDefMarker)+2, Length(curLine)-Length(IfNDefMarker)-2), TObject(False))
-        else if StrHasPrefix(curLine, [ElseMarker]) then
-          IfDefs.Objects[IfDefs.Count-1] := TObject(not Boolean(IfDefs.Objects[IfDefs.Count-1]))
-        else if StrHasPrefix(curLine, [EndIfMarker]) then
-          IfDefs.Delete(IfDefs.Count-1)
-        else if StrHasPrefix(curLine, [DefineMarker]) then
-          Add(TDefine.Create(Copy(curLine, Length(DefineMarker)+2, Length(curLine)-Length(DefineMarker)-2), IfDefs));
+        while Pos('{', curLine) > 0 do
+        begin
+          if StrHasPrefix(curLine, [IfDefMarker]) then
+          begin
+            IfDefs.AddObject(Copy(curLine, Length(IfDefMarker)+2, Pos('}', curLine) - Length(IfDefMarker) - 2), TObject(True));
+            LastIfIsIfDef := True;
+          end
+          else if StrHasPrefix(curLine, [IfNDefMarker]) then
+          begin
+            IfDefs.AddObject(Copy(curLine, Length(IfNDefMarker)+2, Pos('}', curLine) - Length(IfNDefMarker) - 2), TObject(False));
+            LastIfIsIfDef := True;
+          end
+          else if StrHasPrefix(curLine, [ElseMarker]) then
+          begin
+            IfDefs.Objects[IfDefs.Count-1] := TObject(not Boolean(IfDefs.Objects[IfDefs.Count-1]))
+          end
+          else if StrHasPrefix(curLine, [EndIfMarker]) then
+          begin
+            if LastIfIsIfDef then
+              IfDefs.Delete(IfDefs.Count-1)
+          end
+          else if StrHasPrefix(curLine, [DefineMarker]) then
+          begin
+            Add(TDefine.Create(Copy(curLine, Length(DefineMarker)+2, Pos('}', curLine) - Length(DefineMarker) - 2), IfDefs));
+          end
+          else if StrHasPrefix(curLine, [IfMarker]) then
+          begin
+            LastIfIsIfDef := False;
+          end;
+
+          ClosePos := Pos('}', curLine);
+          if ClosePos > 0 then
+            curLine := Trim(Copy(curLine, ClosePos + 1, MaxInt))
+          else
+            curLine := '';
+        end;
       end;
   finally
     IfDefs.Free;
   end;
+end;
+
+constructor TDefinesList.Create(incfile: TStrings);
+begin
+  inherited Create(True);
+
+  Append(incfile);
 end;
 
 function TDefinesList.GetItems(index: integer): TDefine;
@@ -127,7 +165,7 @@ begin
 
   // If the condition is not defined by its name, maybe it
   // is as a consequence of the target we use
-  if not Result then
+  if not Result and Assigned(TargetDefines) then
     Result := TargetDefines.IndexOf(Condition) > -1;
 
   // If the condition is defined, then all the IfDefs in which
