@@ -34,7 +34,7 @@
     <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlComponent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpellChecker.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="JvSpellerForm" Condition=""/>
     <File Name="..\..\run\JvSpellIntf.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
