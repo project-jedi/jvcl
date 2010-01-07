@@ -20,15 +20,14 @@ PROJECTS = JvCoreD60.bpl JvCoreDesignD60.bpl                     \
   JvMMD60.bpl JvMMDesignD60.bpl                         \
   JvNetD60.bpl JvNetDesignD60.bpl                       \
   JvAppFrmD60.bpl JvAppFrmDesignD60.bpl                 \
-  JvInterpreterD60.bpl JvInterpreterDesignD60.bpl       \
+  JvPascalInterpreterD60.bpl JvPascalInterpreterDesignD60.bpl \
   JvBandsD60.bpl JvBandsDesignD60.bpl                   \
-  JvPluginD60.bpl JvPluginDesignD60.bpl                 \
+  JvPluginSystemD60.bpl JvPluginSystemDesignD60.bpl     \
   JvJansD60.bpl JvJansDesignD60.bpl                     \
   JvGlobusD60.bpl JvGlobusDesignD60.bpl                 \
   JvPrintPreviewD60.bpl JvPrintPreviewDesignD60.bpl     \
   JvPageCompsD60.bpl JvPageCompsDesignD60.bpl           \
-  JvValidatorsD60.bpl JvValidatorsDesignD60.bpl         \
-  JvWizardD60.bpl JvWizardDesignD60.bpl                 \
+  JvWizardsD60.bpl JvWizardsDesignD60.bpl               \
   JvTimeFrameworkD60.bpl JvTimeFrameworkDesignD60.bpl   \
   JvHMID60.bpl JvHMIDesignD60.bpl                       \
   JvManagedThreadsD60.bpl JvManagedThreadsDesignD60.bpl \
@@ -64,7 +63,7 @@ JvCustomD60.bpl: d6\JvCustom.dpk
 JvDlgsD60.bpl: d6\JvDlgs.dpk
   $(DCC)
 
-JvInterpreterD60.bpl: d6per\JvInterpreter.dpk
+JvPascalInterpreterD60.bpl: d6per\JvPascalInterpreter.dpk
   $(DCC)
 
 JvMMD60.bpl: d6\JvMM.dpk
@@ -94,7 +93,7 @@ JvNetDesignD60.bpl: d6\JvNetDesign.dpk
 JvMMDesignD60.bpl: d6\JvMMDesign.dpk
   $(DCC)
 
-JvInterpreterDesignD60.bpl: d6per\JvInterpreterDesign.dpk
+JvPascalInterpreterDesignD60.bpl: d6per\JvPascalInterpreterDesign.dpk
   $(DCC)
 
 JvDlgsDesignD60.bpl: d6\JvDlgsDesign.dpk
@@ -115,10 +114,10 @@ JvCmpDesignD60.bpl: d6\JvCmpDesign.dpk
 JvBandsDesignD60.bpl: d6\JvBandsDesign.dpk
   $(DCC)
 
-JvPluginDesignD60.bpl: d6\JvPluginDesign.dpk
+JvPluginSystemDesignD60.bpl: d6\JvPluginSystemDesign.dpk
   $(DCC)
 
-JvPluginD60.bpl: d6\JvPlugin.dpk
+JvPluginSystemD60.bpl: d6\JvPluginSystem.dpk
   $(DCC)
 
 JvBandsD60.bpl: d6\JvBands.dpk
@@ -148,16 +147,10 @@ JvPageCompsDesignD60.bpl: d6\JvPageCompsDesign.dpk
 JvPrintPreviewD60.bpl: d6\JvPrintPreview.dpk
   $(DCC)
 
-JvValidatorsDesignD60.bpl: d6\JvValidatorsDesign.dpk
+JvWizardsD60.bpl: d6\JvWizards.dpk
   $(DCC)
 
-JvValidatorsD60.bpl: d6\JvValidators.dpk
-  $(DCC)
-
-JvWizardD60.bpl: d6\JvWizard.dpk
-  $(DCC)
-
-JvWizardDesignD60.bpl: d6\JvWizardDesign.dpk
+JvWizardsDesignD60.bpl: d6\JvWizardsDesign.dpk
   $(DCC)
 
 JvTimeFrameworkD60.bpl: d6\JvTimeFramework.dpk

@@ -33,12 +33,12 @@
       <Projects Name="JvNetDesign100.bpl" Type="String">d10\JvNetDesign.bdsproj</Projects>
       <Projects Name="JvAppFrm100.bpl" Type="String">d10\JvAppFrm.bdsproj</Projects>
       <Projects Name="JvAppFrmDesign100.bpl" Type="String">d10\JvAppFrmDesign.bdsproj</Projects>
-      <Projects Name="JvInterpreter100.bpl" Type="String">d10per\JvInterpreter.bdsproj</Projects>
-      <Projects Name="JvInterpreterDesign100.bpl" Type="String">d10per\JvInterpreterDesign.bdsproj</Projects>
+      <Projects Name="JvPascalInterpreter100.bpl" Type="String">d10per\JvPascalInterpreter.bdsproj</Projects>
+      <Projects Name="JvPascalInterpreterDesign100.bpl" Type="String">d10per\JvPascalInterpreterDesign.bdsproj</Projects>
       <Projects Name="JvBands100.bpl" Type="String">d10\JvBands.bdsproj</Projects>
       <Projects Name="JvBandsDesign100.bpl" Type="String">d10\JvBandsDesign.bdsproj</Projects>
-      <Projects Name="JvPlugin100.bpl" Type="String">d10\JvPlugin.bdsproj</Projects>
-      <Projects Name="JvPluginDesign100.bpl" Type="String">d10\JvPluginDesign.bdsproj</Projects>
+      <Projects Name="JvPluginSystem100.bpl" Type="String">d10\JvPluginSystem.bdsproj</Projects>
+      <Projects Name="JvPluginSystemDesign100.bpl" Type="String">d10\JvPluginSystemDesign.bdsproj</Projects>
       <Projects Name="JvJans100.bpl" Type="String">d10\JvJans.bdsproj</Projects>
       <Projects Name="JvJansDesign100.bpl" Type="String">d10\JvJansDesign.bdsproj</Projects>
       <Projects Name="JvGlobus100.bpl" Type="String">d10per\JvGlobus.bdsproj</Projects>
@@ -47,10 +47,8 @@
       <Projects Name="JvPrintPreviewDesign100.bpl" Type="String">d10\JvPrintPreviewDesign.bdsproj</Projects>
       <Projects Name="JvPageComps100.bpl" Type="String">d10\JvPageComps.bdsproj</Projects>
       <Projects Name="JvPageCompsDesign100.bpl" Type="String">d10\JvPageCompsDesign.bdsproj</Projects>
-      <Projects Name="JvValidators100.bpl" Type="String">d10\JvValidators.bdsproj</Projects>
-      <Projects Name="JvValidatorsDesign100.bpl" Type="String">d10\JvValidatorsDesign.bdsproj</Projects>
-      <Projects Name="JvWizard100.bpl" Type="String">d10\JvWizard.bdsproj</Projects>
-      <Projects Name="JvWizardDesign100.bpl" Type="String">d10\JvWizardDesign.bdsproj</Projects>
+      <Projects Name="JvWizards100.bpl" Type="String">d10\JvWizards.bdsproj</Projects>
+      <Projects Name="JvWizardsDesign100.bpl" Type="String">d10\JvWizardsDesign.bdsproj</Projects>
       <Projects Name="JvTimeFramework100.bpl" Type="String">d10\JvTimeFramework.bdsproj</Projects>
       <Projects Name="JvTimeFrameworkDesign100.bpl" Type="String">d10\JvTimeFrameworkDesign.bdsproj</Projects>
       <Projects Name="JvHMI100.bpl" Type="String">d10\JvHMI.bdsproj</Projects>
@@ -65,7 +63,7 @@
       <Projects Name="JvDotNetCtrlsDesign100.bpl" Type="String">d10\JvDotNetCtrlsDesign.bdsproj</Projects>
       <Projects Name="JvRuntimeDesign100.bpl" Type="String">d10per\JvRuntimeDesign.bdsproj</Projects>
       <Projects Name="JvRuntimeDesignDesign100.bpl" Type="String">d10\JvRuntimeDesignDesign.bdsproj</Projects>
-      <Projects Name="Targets" Type="String">JvCore100.bpl JvCoreDesign100.bpl JvSystem100.bpl JvSystemDesign100.bpl JvStdCtrls100.bpl JvStdCtrlsDesign100.bpl JvControls100.bpl JvControlsDesign100.bpl JvCmp100.bpl JvCmpDesign100.bpl JvCustom100.bpl JvCustomDesign100.bpl JvDlgs100.bpl JvDlgsDesign100.bpl JvCrypt100.bpl JvCryptDesign100.bpl JvMM100.bpl JvMMDesign100.bpl JvNet100.bpl JvNetDesign100.bpl JvAppFrm100.bpl JvAppFrmDesign100.bpl JvInterpreter100.bpl JvInterpreterDesign100.bpl JvBands100.bpl JvBandsDesign100.bpl JvPlugin100.bpl JvPluginDesign100.bpl JvJans100.bpl JvJansDesign100.bpl JvGlobus100.bpl JvGlobusDesign100.bpl JvPrintPreview100.bpl JvPrintPreviewDesign100.bpl JvPageComps100.bpl JvPageCompsDesign100.bpl JvValidators100.bpl JvValidatorsDesign100.bpl JvWizard100.bpl JvWizardDesign100.bpl JvTimeFramework100.bpl JvTimeFrameworkDesign100.bpl JvHMI100.bpl JvHMIDesign100.bpl JvManagedThreads100.bpl JvManagedThreadsDesign100.bpl JvXPCtrls100.bpl JvXPCtrlsDesign100.bpl JvDocking100.bpl JvDockingDesign100.bpl JvDotNetCtrls100.bpl JvDotNetCtrlsDesign100.bpl JvRuntimeDesign100.bpl JvRuntimeDesignDesign100.bpl</Projects>
+      <Projects Name="Targets" Type="String">JvCore100.bpl JvCoreDesign100.bpl JvSystem100.bpl JvSystemDesign100.bpl JvStdCtrls100.bpl JvStdCtrlsDesign100.bpl JvControls100.bpl JvControlsDesign100.bpl JvCmp100.bpl JvCmpDesign100.bpl JvCustom100.bpl JvCustomDesign100.bpl JvDlgs100.bpl JvDlgsDesign100.bpl JvCrypt100.bpl JvCryptDesign100.bpl JvMM100.bpl JvMMDesign100.bpl JvNet100.bpl JvNetDesign100.bpl JvAppFrm100.bpl JvAppFrmDesign100.bpl JvPascalInterpreter100.bpl JvPascalInterpreterDesign100.bpl JvBands100.bpl JvBandsDesign100.bpl JvPluginSystem100.bpl JvPluginSystemDesign100.bpl JvJans100.bpl JvJansDesign100.bpl JvGlobus100.bpl JvGlobusDesign100.bpl JvPrintPreview100.bpl JvPrintPreviewDesign100.bpl JvPageComps100.bpl JvPageCompsDesign100.bpl JvWizards100.bpl JvWizardsDesign100.bpl JvTimeFramework100.bpl JvTimeFrameworkDesign100.bpl JvHMI100.bpl JvHMIDesign100.bpl JvManagedThreads100.bpl JvManagedThreadsDesign100.bpl JvXPCtrls100.bpl JvXPCtrlsDesign100.bpl JvDocking100.bpl JvDockingDesign100.bpl JvDotNetCtrls100.bpl JvDotNetCtrlsDesign100.bpl JvRuntimeDesign100.bpl JvRuntimeDesignDesign100.bpl</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>

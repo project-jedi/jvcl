@@ -20,15 +20,14 @@ PROJECTS = JvCoreC60.bpl JvCoreDesignC60.bpl                     \
            JvMMC60.bpl JvMMDesignC60.bpl                         \
            JvNetC60.bpl JvNetDesignC60.bpl                       \
            JvAppFrmC60.bpl JvAppFrmDesignC60.bpl                 \
-           JvInterpreterC60.bpl JvInterpreterDesignC60.bpl       \
+           JvPascalInterpreterC60.bpl JvPascalInterpreterDesignC60.bpl \
            JvBandsC60.bpl JvBandsDesignC60.bpl                   \
-           JvPluginC60.bpl JvPluginDesignC60.bpl                 \
+           JvPluginSystemC60.bpl JvPluginSystemDesignC60.bpl     \
            JvJansC60.bpl JvJansDesignC60.bpl                     \
            JvGlobusC60.bpl JvGlobusDesignC60.bpl                 \
            JvPrintPreviewC60.bpl JvPrintPreviewDesignC60.bpl     \
            JvPageCompsC60.bpl JvPageCompsDesignC60.bpl           \
-           JvValidatorsC60.bpl JvValidatorsDesignC60.bpl         \
-           JvWizardC60.bpl JvWizardDesignC60.bpl                 \
+           JvWizardsC60.bpl JvWizardsDesignC60.bpl               \
            JvTimeFrameworkC60.bpl JvTimeFrameworkDesignC60.bpl   \
            JvHMIC60.bpl JvHMIDesignC60.bpl                       \
            JvManagedThreadsC60.bpl JvManagedThreadsDesignC60.bpl \
@@ -128,11 +127,11 @@ JvAppFrmDesignC60.bpl: c6\JvAppFrmDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterC60.bpl: c6per\JvInterpreter.bpk
+JvPascalInterpreterC60.bpl: c6per\JvPascalInterpreter.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvInterpreterDesignC60.bpl: c6per\JvInterpreterDesign.bpk
+JvPascalInterpreterDesignC60.bpl: c6per\JvPascalInterpreterDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
@@ -144,11 +143,11 @@ JvBandsDesignC60.bpl: c6\JvBandsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPluginC60.bpl: c6\JvPlugin.bpk
+JvPluginSystemC60.bpl: c6\JvPluginSystem.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvPluginDesignC60.bpl: c6\JvPluginDesign.bpk
+JvPluginSystemDesignC60.bpl: c6\JvPluginSystemDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
@@ -184,19 +183,11 @@ JvPageCompsDesignC60.bpl: c6\JvPageCompsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvValidatorsC60.bpl: c6\JvValidators.bpk
+JvWizardsC60.bpl: c6\JvWizards.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvValidatorsDesignC60.bpl: c6\JvValidatorsDesign.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvWizardC60.bpl: c6\JvWizard.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvWizardDesignC60.bpl: c6\JvWizardDesign.bpk
+JvWizardsDesignC60.bpl: c6\JvWizardsDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

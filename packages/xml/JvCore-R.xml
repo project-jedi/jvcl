@@ -74,5 +74,7 @@
     <File Name="..\..\run\JvOfficeDragBarForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHotTrackPersistent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStdEditActions.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvValidators.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvErrorIndicator.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
