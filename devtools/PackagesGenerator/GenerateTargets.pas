@@ -126,7 +126,6 @@ begin
 
   FDefines.Add('WIN32');
   FDefines.Add('CONDITIONALEXPRESSIONS');
-  FDefines.Add('BORLAND');
 
   for I := Low(TargetDefines) to High(TargetDefines) do
     if TargetDefines[I].TargetName = Name then
