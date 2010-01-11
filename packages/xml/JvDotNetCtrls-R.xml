@@ -9,13 +9,13 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="DB" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
-    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="JclVcl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+	<Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>

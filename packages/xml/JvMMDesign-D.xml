@@ -13,24 +13,24 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvControls-R" Targets="all" Condition=""/>
-    <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="designide" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
+	<Package Name="JCL" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="designide" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="vclx" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPictureEditors.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\design\JvVirtualKeyEditorForm.pas" Targets="VCL" Formname="frmJvVirtualKeyEditor" Condition=""/>
+    <File Name="..\..\design\JvPictureEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvVirtualKeyEditorForm.pas" Targets="all" Formname="frmJvVirtualKeyEditor" Condition=""/>
     <File Name="..\..\design\JvAnimatedEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvAVICaptureEditors.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDirectoryListForm.pas" Targets="VCL" Formname="JvDirectoryListDialog" Condition=""/>
+    <File Name="..\..\design\JvAVICaptureEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDirectoryListForm.pas" Targets="all" Formname="JvDirectoryListDialog" Condition=""/>
     <File Name="..\..\design\JvIconListForm.pas" Targets="all" Formname="IconListDialog" Condition=""/>
-    <File Name="..\..\design\JvID3v2DefineForm.pas" Targets="VCL" Formname="JvID3DefineDlg" Condition=""/>
-    <File Name="..\..\design\JvID3v2EditorForm.pas" Targets="VCL" Formname="JvID3FramesEditor" Condition=""/>
-    <File Name="..\..\design\JvImagePreviewForm.pas" Targets="VCL" Formname="ImageForm" Condition=""/>
+    <File Name="..\..\design\JvID3v2DefineForm.pas" Targets="all" Formname="JvID3DefineDlg" Condition=""/>
+    <File Name="..\..\design\JvID3v2EditorForm.pas" Targets="all" Formname="JvID3FramesEditor" Condition=""/>
+    <File Name="..\..\design\JvImagePreviewForm.pas" Targets="all" Formname="ImageForm" Condition=""/>
     <File Name="..\..\design\JvMMReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPictureEditForm.pas" Targets="VCL" Formname="PictureEditDialog" Condition=""/>
+    <File Name="..\..\design\JvPictureEditForm.pas" Targets="all" Formname="PictureEditDialog" Condition=""/>
     <File Name="..\..\design\JvFullColorSpacesEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFullColorEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFullColorListForm.pas" Targets="all" Formname="JvFullColorListFrm" Condition=""/>

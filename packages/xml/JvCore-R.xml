@@ -6,30 +6,30 @@
   <C6Libs/>
   <ImageBase>490E0000</ImageBase>
   <Requires>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVcl" Targets="allv6up" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="JclVcl" Targets="all" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
-    <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
+	<Package Name="dbrtl" Targets="DB" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvGnugettext.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExButtons.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExCheckLst.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExComCtrls.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExControls.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExExtCtrls.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExForms.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExGrids.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExMask.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExStdCtrls.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="VCL" Formname="JvJVCLAboutForm" Condition=""/>
-    <File Name="..\..\run\JVCLVer.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExButtons.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExCheckLst.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExComCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExExtCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExGrids.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExMask.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExStdCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="all" Formname="JvJVCLAboutForm" Condition=""/>
+    <File Name="..\..\run\JVCLVer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWin32.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorProvider.pas" Targets="all" Formname="" Condition=""/>
@@ -56,19 +56,19 @@
     <File Name="..\..\run\JvStrings.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThemes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTypes.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvVersionInfo.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVersionInfo.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvActions.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTranslateString.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppIniStorage.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppRegistryStorage.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppRegistryStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppStorageSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDlg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaret.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaret.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvClipbrd.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClipbrd.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAutoComplete.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBackgrounds.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBackgrounds.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataSourceIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeDragBarForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHotTrackPersistent.pas" Targets="all" Formname="" Condition=""/>

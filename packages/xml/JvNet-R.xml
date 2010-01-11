@@ -10,11 +10,11 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="indy" Targets="allv6up" Condition="USE_3RDPARTY_INDY &amp;&amp; !USE_3RDPARTY_INDY10"/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+	<Package Name="indy" Targets="all" Condition="USE_3RDPARTY_INDY &amp;&amp; !USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols" Targets="allv9up" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
@@ -30,13 +30,13 @@
   <Contains>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHtmlParser.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMail.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvProgramVersionCheck.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMail.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgramVersionCheck.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRgbToHtml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRichEditToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStringListToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvStrToHtml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUrlGrabbers.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="windows" Formname="" Condition=""/>
+	<File Name="..\..\run\JvUrlGrabbers.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
