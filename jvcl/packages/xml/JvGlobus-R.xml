@@ -6,61 +6,61 @@
   <C6Libs/>
   <ImageBase>49660000</ImageBase>
   <Requires>
-    <Package Name="JvCore-R" Targets="VCL" Condition=""/>
+	<Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="DB" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
-    <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
-    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
+	<Package Name="dbrtl" Targets="DB" Condition=""/>
+	<Package Name="vcldb" Targets="DB" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+	<Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
-    <Package Name="vclie" Targets="DBv6up" Condition="INTERNET_COMPONENTS"/>
-    <Package Name="bdertl" Targets="DBv6up" Condition=""/>
+	<Package Name="vclie" Targets="DB" Condition="INTERNET_COMPONENTS"/>
+    <Package Name="bdertl" Targets="DB" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgShade.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgShadow.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgSpeedButton.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgStringGrid.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgTab.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgTabComm.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgTypes.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgUtils.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgShade.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgShadow.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgSpeedButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgStringGrid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgTab.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgTabComm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgTypes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="DB" Formname="" Condition="INTERNET_COMPONENTS"/>
-    <File Name="..\..\run\Jvg3DColors.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgAlignFunction.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgAskListBox.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgButton.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCaption.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCheckBox.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCommClasses.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\Jvg3DColors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgAlignFunction.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgAskListBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgButton.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgCaption.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgCheckBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgCommClasses.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCrossTable.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgDigits.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgDrawTab.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgDigits.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgDrawTab.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExport.pas" Targets="DB" Formname="" Condition=""/>
     <File Name="..\..\run\JvgExportComponents.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgFileIterator.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgGroupBox.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgHint.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgHoleShape.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgFileIterator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgGroupBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgHint.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgHoleShape.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="DB" Formname="" Condition="INTERNET_COMPONENTS"/>
-    <File Name="..\..\run\JvgImage.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgLabel.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgListBox.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgLogics.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgPage.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgProgress.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgImage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgLabel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgListBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgLogics.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgPage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgProgress.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="DB" Formname="JvgPrintPreview" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="DB" Formname="JvgPrintSetup" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgQRLabel.pas" Targets="DB" Formname="" Condition="JVCL_UseQuickReport"/>
-    <File Name="..\..\run\JvgReport.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgXMLSerializer.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgReport.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgXMLSerializer.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -11,18 +11,18 @@
     <Package Name="JvControls-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="designide" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="dclstd" Targets="allv6up" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="designide" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="dclstd" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvControlActnResForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvHTHintForm.pas" Targets="all" Formname="JvHintEditor" Condition=""/>
     <File Name="..\..\design\JvScrollMaxEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="VCL" Formname="JvSpeedbarEditor" Condition=""/>
+    <File Name="..\..\design\JvSpeedbarForm.pas" Targets="all" Formname="JvSpeedbarEditor" Condition=""/>
     <File Name="..\..\design\JvBehaviorLabelEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvControlsReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvFooterEditor.pas" Targets="all" Formname="" Condition=""/>

@@ -11,13 +11,13 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvControls-R" Targets="all" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="JclVcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
-    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="JclVcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="dbrtl" Targets="DB" Condition=""/>
+	<Package Name="vcldb" Targets="DB" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD6" Targets="d6" Condition="USE_3RDPARTY_SMEXPORT"/>
@@ -131,6 +131,6 @@
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_DOA"/>
     <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DBv6Up" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB" Formname="" Condition=""/>
   </Contains>
 </Package>

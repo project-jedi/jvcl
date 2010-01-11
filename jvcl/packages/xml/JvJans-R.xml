@@ -7,10 +7,10 @@
   <ImageBase>49820000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
+	<Package Name="JCL" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="vclx" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
@@ -27,12 +27,12 @@
     <File Name="..\..\run\JvSALCore.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSALHashList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSALMath.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvShapedButton.pas" Targets="VCL" Formname="" Condition=""/>
+	<File Name="..\..\run\JvShapedButton.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimLogic.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimPID.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimPIDLinker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimScope.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSticker.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSticker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTracker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTurtle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXmlTree.pas" Targets="all" Formname="" Condition=""/>

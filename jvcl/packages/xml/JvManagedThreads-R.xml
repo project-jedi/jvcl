@@ -7,9 +7,9 @@
   <ImageBase>498C0000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
+	<Package Name="JCL" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvMTComponents.pas" Targets="all" Formname="" Condition=""/>

@@ -11,20 +11,20 @@
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-    <Package Name="JCL" Targets="allv6up" Condition=""/>
-    <Package Name="qrpt" Targets="DBv6up" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
+	<Package Name="JCL" Targets="all" Condition=""/>
+	<Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="designide" Targets="allv6up" Condition=""/>
-    <Package Name="dclstd" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
-    <Package Name="bdertl" Targets="DBv6up" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="designide" Targets="all" Condition=""/>
+	<Package Name="dclstd" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+	<Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="DB" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -7,58 +7,58 @@
   <ImageBase>49D00000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="vclx" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\Ras32.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\Hid.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\HidToken.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\HidUsage.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\ModuleLoader.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\WinConvTypes.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\DBT.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\SetupApi.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\Ras32.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\Hid.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\HidToken.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\HidUsage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\ModuleLoader.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\WinConvTypes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\DBT.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\SetupApi.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXmlDatabase.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppInst.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvChangeNotify.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvClipboardMonitor.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvClipboardViewer.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCommStatus.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDdeCmd.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDragDrop.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppInst.pas" Targets="all" Formname="" Condition=""/>
+	<File Name="..\..\run\JvChangeNotify.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClipboardMonitor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvClipboardViewer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCommStatus.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDdeCmd.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDragDrop.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormPlacement.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormPlacementSelectList.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvHidControllerClass.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvJoystick.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMRUList.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMRUManager.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvNTEventLog.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPerfMon95.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvRas32.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScreenResolution.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScreenSaver.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSearchFiles.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvShellHook.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSHFileOperation.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvHidControllerClass.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJoystick.pas" Targets="all" Formname="" Condition=""/>
+	<File Name="..\..\run\JvMRUList.pas" Targets="all" Formname="" Condition=""/>
+	<File Name="..\..\run\JvMRUManager.pas" Targets="all" Formname="" Condition=""/>
+	<File Name="..\..\run\JvNTEventLog.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPerfMon95.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvRas32.pas" Targets="all" Formname="" Condition=""/>
+	<File Name="..\..\run\JvScreenResolution.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScreenSaver.pas" Targets="all" Formname="" Condition=""/>
+	<File Name="..\..\run\JvSearchFiles.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvShellHook.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSHFileOperation.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimpleXml.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSoundControl.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSoundControl.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThread.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThreadDialog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThreadTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTimerList.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWndProcHook.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDebugHandler.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimerList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWndProcHook.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDebugHandler.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComputerInfoEx.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppCommand.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvScreenSaveSuppress.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSysRequirements.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMailSlots.pas" Targets="VCL" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComputerInfoEx.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppCommand.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvScreenSaveSuppress.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSysRequirements.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMailSlots.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

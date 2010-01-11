@@ -6,18 +6,18 @@
   <C6Libs/>
   <ImageBase>4A380000</ImageBase>
   <Requires>
-    <Package Name="JvPluginSystem-R" Targets="VCL" Condition=""/>
-    <Package Name="JvCore-R" Targets="VCL" Condition=""/>
-    <Package Name="JvCoreDesign-D" Targets="VCL" Condition=""/>
-    <Package Name="Jcl" Targets="allv6up" Condition=""/>
-    <Package Name="vcl" Targets="allv6up" Condition=""/>
-    <Package Name="vclx" Targets="allv6up" Condition=""/>
-    <Package Name="rtl" Targets="allv6up" Condition=""/>
-    <Package Name="designide" Targets="allv6up" Condition=""/>
+    <Package Name="JvPluginSystem-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
+	<Package Name="Jcl" Targets="all" Condition=""/>
+	<Package Name="vcl" Targets="all" Condition=""/>
+	<Package Name="vclx" Targets="all" Condition=""/>
+	<Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPluginSystemReg.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPluginWizard.pas" Targets="VCL" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPluginParamsForm.pas" Targets="VCL" Formname="frmPluginParams" Condition=""/>
+    <File Name="..\..\design\JvPluginSystemReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPluginWizard.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPluginParamsForm.pas" Targets="all" Formname="frmPluginParams" Condition=""/>
   </Contains>
 </Package>
