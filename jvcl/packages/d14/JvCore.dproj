@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{CCA5391F-35F6-43D1-AB48-187085D1EF5B}</ProjectGuid>
 			<MainSource>JvCore.dpk</MainSource>
@@ -58,7 +58,6 @@
 			<DCCReference Include="vcl.dcp"/>
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="dbrtl.dcp"/>
-			<DCCReference Include="vcldb.dcp"/>
 			<DCCReference Include="vclimg.dcp"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
