@@ -56,7 +56,7 @@ type
 implementation
 
 uses
-  JclStrings, JclFileUtils;
+  JclAnsiStrings, JclStrings, JclFileUtils;
 
 function ParseFile(const AFileContent: string;
   ADefines, AIncludeDirs, UsesList: TStrings; var IfDefCount: Integer;
@@ -107,7 +107,7 @@ function ParseFile(const AFileContent: string;
     AFileName, BFileName: string;
   begin
     Result := False;
-    AFileName := AnsiDequotedStr(AnsiDequotedStr(Symbol, ''''), '"');
+    AFileName := StrTrimQuotes(Symbol);
     for Index := 0 to AIncludeDirs.Count - 1 do
     begin
       BFileName := PathAddSeparator(AIncludeDirs.Strings[Index]) + AFileName;
@@ -155,13 +155,15 @@ begin
               if (IfDefCount > 0) or not IfDef(GetNextWord(@Ptr[7])) then
                 Inc(IfDefCount);
             end
-            else if SameText(WordAtPtr, 'IFNDEF') then
+            else
+            if SameText(WordAtPtr, 'IFNDEF') then
             begin
               // inside $IFNDEF
               if (IfDefCount > 0) or IfDef(GetNextWord(@Ptr[8])) then
                 Inc(IfDefCount);
             end
-            else if SameText(WordAtPtr, 'ELSE') then
+            else
+            if SameText(WordAtPtr, 'ELSE') then
             begin
               // inside $ELSE
               if IfDefCount = 1 then
@@ -169,25 +171,29 @@ begin
               else if IfDefCount = 0 then
                 IfDefCount := 1;
             end
-            else if SameText(WordAtPtr, 'ENDIF') then
+            else
+            if SameText(WordAtPtr, 'ENDIF') then
             begin
               if IfDefCount > 0 then
                 Dec(IfDefCount);
               // inside $ENDIF
             end
-            else if SameText(WordAtPtr, 'DEFINE') then
+            else
+            if SameText(WordAtPtr, 'DEFINE') then
             begin
               // inside $DEFINE
               if IfDefCount = 0 then
                 Define(GetNextWord(@Ptr[8]));
             end
-            else if SameText(WordAtPtr, 'UNDEF') then
+            else
+            if SameText(WordAtPtr, 'UNDEF') then
             begin
               // inside $UNDEF
               if IfDefCount = 0 then
                 Undef(GetNextWord(@Ptr[7]));
             end
-            else if SameText(WordAtPtr, 'INCLUDE') then
+            else
+            if SameText(WordAtPtr, 'INCLUDE') then
             begin
               // inside $INCLUDE
               if IfDefCount = 0 then
@@ -197,7 +203,8 @@ begin
                   Exit;
               end;
             end
-            else if SameText(WordAtPtr, 'I') then
+            else
+            if SameText(WordAtPtr, 'I') then
             begin
               // inside $I
               if IfDefCount = 0 then
@@ -236,12 +243,13 @@ begin
       '_' :
         begin
           PtrStartWord := Ptr;
-          while Ptr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
+          while Ptr^ in ['a'..'z', 'A'..'Z', '_', '.', '0'..'9'] do
             Inc(Ptr);
           SetString(WordAtPtr, PtrStartWord, Ptr - PtrStartWord);
           if SameText(WordAtPtr, 'uses') and (IfDefCount = 0) then
             InUsesSection := True
-          else if InUsesSection and (UsesList.IndexOf(WordAtPtr) = -1)
+          else
+          if InUsesSection and (UsesList.IndexOf(WordAtPtr) = -1)
             and (IfDefCount = 0) then
             UsesList.Add(WordAtPtr);
         end;

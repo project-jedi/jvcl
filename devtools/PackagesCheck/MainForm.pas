@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls,
-  JvSimpleXml, TargetInfo, JvComponentBase, JvDualList;
+  JclSimpleXml, TargetInfo, JvComponentBase, JvDualList;
 
 type
   TPackageCheckForm = class(TForm)
@@ -50,8 +50,8 @@ type
   private
     FXMLFileName: string;
     FTargetsInfo: TTargetsInfo;
-    FSettings: TJvSimpleXml;
-    FPGSettings: TJvSimpleXml;
+    FSettings: TJclSimpleXml;
+    FPGSettings: TJclSimpleXml;
   public
 
   end;
@@ -353,11 +353,11 @@ var
 var
   IndexPackage, IndexTarget, IndexAlias, IndexList: Integer;
   ModelsNode, ModelNode, TargetsNode, TargetNode, AliasesNode, AliasNode,
-  GUINode, SelectedPackageNode: TJvSimpleXMLElem;
+  GUINode, SelectedPackageNode: TJclSimpleXMLElem;
   APackageXmlInfo: TPackageXmlInfo;
   PackageName: string;
   IsClx: Boolean;
-  PersonalProperty, IsClxProperty: TJvSimpleXMLProp;
+  PersonalProperty, IsClxProperty: TJclSimpleXMLProp;
 begin
   if ComboBoxModel.ItemIndex < 0 then
     Exit;
@@ -461,12 +461,12 @@ end;
 
 procedure TPackageCheckForm.FormCreate(Sender: TObject);
 var
-  ModelsNode, GUINode, FormNode, TargetsNode: TJvSimpleXMLElem;
+  ModelsNode, GUINode, FormNode, TargetsNode: TJclSimpleXMLElem;
   Index: Integer;
 begin
   FXMLFileName := ChangeFileExt(Application.ExeName, '.xml');
 
-  FSettings := TJvSimpleXML.Create(Self);
+  FSettings := TJclSimpleXML.Create;
   if FileExists(FXMLFileName) then
     FSettings.LoadFromFile(FXMLFileName)
   else
@@ -478,7 +478,7 @@ begin
   FTargetsInfo := TTargetsInfo.Create;
   FTargetsInfo.LoadFromXMLElem(TargetsNode);
 
-  FPGSettings := TJvSimpleXML.Create(Self);
+  FPGSettings := TJclSimpleXML.Create;
   FPGSettings.LoadFromFile(PathAddSeparator(ExtractFilePath(Application.ExeName)) + 'PGEdit.xml');
   FPGSettings.Options := FPGSettings.Options - [sxoAutoCreate];
 
@@ -499,7 +499,7 @@ end;
 
 procedure TPackageCheckForm.FormDestroy(Sender: TObject);
 var
-  GUINode, TargetsNode, FormNode: TJvSimpleXMLElem;
+  GUINode, TargetsNode, FormNode: TJclSimpleXMLElem;
 begin
   GUINode := FSettings.Root.Items.ItemNamed['GUI'];
   GUINode.Items.ItemNamed['MODEL'].Value := ComboBoxModel.Text;
