@@ -15,9 +15,6 @@
     <Package Name="vcl" Targets="allv6up" Condition=""/>
     <Package Name="vclx" Targets="allv6up" Condition=""/>
     <Package Name="indy" Targets="allv6up" Condition="USE_3RDPARTY_INDY &amp;&amp; !USE_3RDPARTY_INDY10"/>
-    <Package Name="IndySystem60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
-    <Package Name="IndySystem70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
-    <Package Name="IndySystem" Targets="allv9up" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols" Targets="allv9up" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
@@ -27,6 +24,8 @@
     <Package Name="IcsDel90" Targets="D9,D9p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel100" Targets="D10,D10p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel110" Targets="D11" Condition="USE_3RDPARTY_ICS"/>
+	<Package Name="IcsDel120" Targets="D12" Condition="USE_3RDPARTY_ICS"/>
+	<Package Name="IcsDel140" Targets="D14" Condition="USE_3RDPARTY_ICS"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>

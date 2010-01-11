@@ -7,7 +7,7 @@
   <ImageBase>49660000</ImageBase>
   <Requires>
     <Package Name="JvCore-R" Targets="VCL" Condition=""/>
-    <Package Name="JvSystem-R" Targets="VCL" Condition=""/>
+    <Package Name="JvSystem-R" Targets="DB" Condition=""/>
     <Package Name="Jcl" Targets="allv6up" Condition=""/>
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcl" Targets="allv6up" Condition=""/>
