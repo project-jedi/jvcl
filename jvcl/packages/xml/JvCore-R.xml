@@ -15,7 +15,6 @@
     <Package Name="rtl" Targets="allv6up" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="dbrtl" Targets="DBv6up" Condition=""/>
-    <Package Name="vcldb" Targets="DBv6up" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
