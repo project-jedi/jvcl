@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{33656D5A-B67F-4E6D-B879-6EA71C3C79F4}</ProjectGuid>
 			<MainSource>JvManagedThreadsDesign.dpk</MainSource>

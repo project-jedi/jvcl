@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{08932657-9DD1-4AA2-9926-F32E388E39EA}</ProjectGuid>
 			<MainSource>JvDBDesign.dpk</MainSource>
@@ -58,6 +58,7 @@
 			<DCCReference Include="JvStdCtrls.dcp"/>
 			<DCCReference Include="JvSystem.dcp"/>
 			<DCCReference Include="JvCore.dcp"/>
+			<DCCReference Include="JvControls.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="JclVcl.dcp"/>
 			<DCCReference Include="rtl.dcp"/>

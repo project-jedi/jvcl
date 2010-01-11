@@ -1,4 +1,4 @@
-	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{154C9AB7-1DCE-406A-9DCB-AB5352D4DF1F}</ProjectGuid>
 			<MainSource>JvBandsDesign.dpk</MainSource>
