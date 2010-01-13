@@ -25,6 +25,8 @@ Known Issues:
 
 unit DefineForm;
 
+{$I jvcl.inc}
+
 interface
 
 uses

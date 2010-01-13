@@ -25,6 +25,8 @@ Known Issues:
 
 unit MainForm;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -65,7 +67,7 @@ implementation
 
 uses
   DefineForm, UsesParser,
-  JclFileUtils, JclStrings,
+  JclFileUtils, JclAnsiStrings, JclStrings,
   PackageInformation;
 
 procedure TPackageCheckForm.ButtonGoClick(Sender: TObject);
@@ -136,7 +138,8 @@ var
   procedure CheckPackageTarget(const PackageInfo: TPackageXmlInfo;
     const TargetName: string);
   var
-    KnownUnits, IncludeDirs, PackageUsesList, DefinedSymbols, DependencyList: TStringList;
+    IncludeDirs, DependencyList: TStringList;
+    KnownUnits, PackageUsesList, DefinedSymbols: TJclAnsiStringList;
     IndexTarget, IndexRequire, IndexContained, IndexUnit, IndexJVCLPackage,
     IndexTargetPackage, IndexInclude, NbContained: Integer;
     ARequiredPackage: TRequiredPackage;
@@ -145,7 +148,7 @@ var
     BPackageInfo: TPackageXmlInfo;
     ATargetPackage: TTargetPackage;
     AUsesParser: TUsesParser;
-    UnitFileName, RequiredPackageName: string;
+    UnitFileName{, RequiredPackageName}: string;
     RequiredPackageUsed: Boolean;
   begin
     StatusBar.SimpleText := Format('Checking package %s for target %s', [PackageInfo.Name, TargetName]);
@@ -156,13 +159,13 @@ var
     else
       ATargetInfo := nil;
 
-    KnownUnits := TStringList.Create;
+    KnownUnits := TJclAnsiStringList.Create;
     KnownUnits.CaseSensitive := False;
     IncludeDirs := TStringList.Create;
     IncludeDirs.CaseSensitive := False;
-    PackageUsesList := TStringList.Create;
+    PackageUsesList := TJclAnsiStringList.Create;
     PackageUsesList.CaseSensitive := False;
-    DefinedSymbols := TStringList.Create;
+    DefinedSymbols := TJclAnsiStringList.Create;
     DefinedSymbols.CaseSensitive := False;
     DependencyList := TStringList.Create;
     DependencyList.CaseSensitive := False;
@@ -180,7 +183,7 @@ var
       end;
 
       // check that all required packages are part of the current package
-      for IndexContained := 0 to DependencyList.Count - 1 do
+      {for IndexContained := 0 to DependencyList.Count - 1 do
       begin
         RequiredPackageName := DependencyList.Strings[IndexContained];
         RequiredPackageUsed := False;
@@ -194,9 +197,9 @@ var
             Break;
           end;
         end;
-        //if not RequiredPackageUsed then
-        //  MemoMessages.Lines.Add(Format('Package %s need package %s for dependency', [PackageInfo.Name, RequiredPackageName]));
-      end;
+        if not RequiredPackageUsed then
+          MemoMessages.Lines.Add(Format('Package %s need package %s for dependency', [PackageInfo.Name, RequiredPackageName]));
+      end;}
 
       // build list of unit contained in required packages
       for IndexRequire := 0 to PackageInfo.RequireCount - 1 do
@@ -214,7 +217,7 @@ var
               AContainedFile := BPackageInfo.Contains[IndexUnit];
               if SameText(ExtractFileExt(AContainedFile.Name), '.pas')
                 and IsIncluded(TargetName, AContainedFile.Targets.CommaText) then
-                KnownUnits.AddObject(PathExtractFileNameNoExt(AContainedFile.Name), TObject(IndexRequire));
+                KnownUnits.AddObject(AnsiString(PathExtractFileNameNoExt(AContainedFile.Name)), TObject(IndexRequire));
             end;
           end
           else if Assigned(ATargetInfo) then
@@ -225,7 +228,7 @@ var
               // package is found in the dependencies (rtl, vcl, jcl...)
               ATargetPackage := ATargetInfo.Packages[IndexTargetPackage];
               for IndexUnit := 0 to ATargetPackage.UnitCount - 1 do
-                KnownUnits.AddObject(ATargetPackage.Units[IndexUnit], TObject(IndexRequire));
+                KnownUnits.AddObject(AnsiString(ATargetPackage.Units[IndexUnit]), TObject(IndexRequire));
             end
             else
               MemoMessages.Lines.Add(Format('Processing package %s for target %s, unable to find required package %s',
@@ -242,7 +245,7 @@ var
         AContainedFile := PackageInfo.Contains[IndexUnit];
         if SameText(ExtractFileExt(AContainedFile.Name), '.pas')
           and IsIncluded(TargetName, AContainedFile.Targets.CommaText) then
-            KnownUnits.AddObject(PathExtractFileNameNoExt(AContainedFile.Name), TObject(-1));
+            KnownUnits.AddObject(AnsiString(PathExtractFileNameNoExt(AContainedFile.Name)), TObject(-1));
       end;
   
       DefinedSymbols.Clear;
