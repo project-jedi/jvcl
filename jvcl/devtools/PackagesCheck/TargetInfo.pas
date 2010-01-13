@@ -25,6 +25,8 @@ Known Issues:
 
 unit TargetInfo;
 
+{$I jvcl.inc}
+
 interface
 
 uses
