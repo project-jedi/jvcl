@@ -42,9 +42,16 @@ uses
 type
   TJvCpuUsage = class(TJvComponent)
   private
+    // Used with GetSystemTimes
+    FPrevIdleTimeGST: TDateTime;
+    FPrevSystemTimeGST: TDateTime;
+
+    // Used with NtQuerySystemInformation (because GetSystemTimes is not available)
+    FPrevIdleTimeNQSI: LARGE_INTEGER;
+    FPrevSystemTimeNQSI: LARGE_INTEGER;
+
+    // Used when neither NtQuerySystemInformation nor GetSystemTimes are available
     FRegistry: TRegistry;
-    FPrevIdleTime: LARGE_INTEGER;
-    FPrevSystemTime: LARGE_INTEGER;
 
     function GetUsage: Double;
   public
@@ -67,7 +74,7 @@ const
 implementation
 
 uses
-  Math, SysUtils;
+  Math, SysUtils, JclDateTime;
 
 const
   RC_CpuUsageKey = 'KERNEL\CPUUsage';
@@ -123,12 +130,19 @@ type
 var
   NtQuerySystemInformation: TNtQuerySystemInformation;
 
+
+type
+  TGetSystemTimes = function (var lpIdleTime, lpKernelTime, lpUserTime: TFileTime): BOOL; stdcall;
+
+var
+  GetSystemTimes: TGetSystemTimes; 
+
 function Li2Double(Value: LARGE_INTEGER): Double;
 begin
   Result := (Value.HighPart * IntPower(2, 32)) + Value.LowPart;
 end;
 
-function GetCPUUsage(var PrevIdleTime: LARGE_INTEGER; var PrevSystemTime: LARGE_INTEGER): Double;
+function GetCPUUsageNQSI(var PrevIdleTime: LARGE_INTEGER; var PrevSystemTime: LARGE_INTEGER): Double;
 var
   SysBaseInfo: TSystem_Basic_Information;
   SysPerfInfo: TSystem_Performance_Information;
@@ -180,6 +194,53 @@ begin
   PrevSystemTime := SysTimeInfo.liKeSystemTime;
 end;
 
+function GetCPUUsageGST(var PrevIdleTime: TDateTime; var PrevSystemTime: TDateTime): Double;
+var
+  ProcessorsCount: Integer;
+
+  TmpNewIdleTime: TFileTime;
+  TmpNewKernelTime: TFileTime;
+  TmpNewUserTime: TFileTime;
+
+  NewIdleTime: TDateTime;
+
+  NewSystemTime: TDateTime;
+  IdleTimeDiff: TDateTime;
+  SystemTimeDiff: TDateTime;
+  SysInfo: TSystemInfo;
+begin
+  Result := 0;
+  
+  if not Assigned(GetSystemTimes) then
+    Exit;
+    
+  // Get number of CPUs
+  GetSystemInfo(SysInfo);
+  ProcessorsCount := SysInfo.dwNumberOfProcessors;
+
+  // Get system times
+  if not GetSystemTimes(TmpNewIdleTime, TmpNewKernelTime, TmpNewUserTime) then
+    Exit;
+  NewSystemTime := Now;
+  NewIdleTime := FileTimeToDateTime(TmpNewIdleTime);
+
+  // compute the CPU usage but skip if it's a first call
+  if PrevIdleTime <> 0 then
+  begin
+    IdleTimeDiff := NewIdleTime - PrevIdleTime;
+    SystemTimeDiff := NewSystemTime - PrevSystemTime;
+
+    Result := 100.0 - ((IdleTimeDiff) * 100) / (SystemTimeDiff) / ProcessorsCount;
+
+    if Result > 100 then
+      Result := 100;
+  end;
+
+  PrevIdleTime := NewIdleTime;
+  PrevSystemTime := NewSystemTime;
+end;
+
+
 constructor TJvCpuUsage.Create(AOwner: TComponent);
 var
   CurValue: Cardinal;
@@ -216,22 +277,28 @@ function TJvCpuUsage.GetUsage: Double;
 var
   CurValue: Cardinal;
 begin
-  if not Assigned(@NtQuerySystemInformation) then
+  if Assigned(@GetSystemTimes) then
+  begin
+    Result := GetCPUUsageGST(FPrevIdleTimeGST, FPrevSystemTimeGST);
+  end
+  else
+  if Assigned(@NtQuerySystemInformation) then
+  begin
+    Result := GetCPUUsageNQSI(FPrevIdleTimeNQSI, FPrevSystemTimeNQSI);
+  end
+  else
   begin
     FRegistry.OpenKey(RC_PerfStat, False);
     FRegistry.ReadBinaryData(RC_CpuUsageKey, CurValue, SizeOf(CurValue));
     FRegistry.CloseKey;
 
     Result := CurValue;
-  end
-  else
-  begin
-    Result := GetCPUUsage(FPrevIdleTime, FPrevSystemTime);
   end;
 end;
 
 initialization
   NtQuerySystemInformation := GetProcAddress(GetModuleHandle('ntdll.dll'), 'NtQuerySystemInformation');
+  GetSystemTimes := GetProcAddress(GetModuleHandle('kernel32.dll'), 'GetSystemTimes');
 {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
 {$ENDIF UNITVERSIONING}
