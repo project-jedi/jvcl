@@ -30,17 +30,17 @@ unit UsesParser;
 interface
 
 uses
-  SysUtils, Classes, JclAnsiStrings;
+  SysUtils, Classes;
 
 type
   TUsesParser = class (TObject)
   private
-    FFileContent: AnsiString;
-    FDefines: TJclAnsiStrings;
+    FFileContent: string;
+    FDefines: TStrings;
     FIncludeDirs: TStrings;
-    FUsesList: TJclAnsiStrings;
-    procedure SetDefines(const Value: TJclAnsiStrings);
-    procedure SetFileContent(const Value: AnsiString);
+    FUsesList: TStrings;
+    procedure SetDefines(const Value: TStrings);
+    procedure SetFileContent(const Value: string);
     procedure SetIncludeDirs(const Value: TStrings);
   public
     constructor Create; reintroduce;
@@ -49,66 +49,91 @@ type
     function ParseUses: Boolean;
     function LoadFromFile(const FileName: string): Boolean;
 
-    property FileContent: AnsiString read FFileContent write SetFileContent;
-    property Defines: TJclAnsiStrings read FDefines write SetDefines;
+    property FileContent: string read FFileContent write SetFileContent;
+    property Defines: TStrings read FDefines write SetDefines;
     property IncludeDirs: TStrings read FIncludeDirs write SetIncludeDirs;
-    property UsesList: TJclAnsiStrings read FUsesList;
+    property UsesList: TStrings read FUsesList;
   end;
 
 implementation
 
 uses
-  {$IFDEF SUPPORTS_UNICODE}
-  AnsiStrings,
-  {$ENDIF SUPPORTS_UNICODE}
-  Windows,
-  JclStrings, JclFileUtils;
+  JclStrings, JclFileUtils, JclStreams;
 
-function ParseFile(const AFileContent: AnsiString;
-  ADefines: TJclAnsiStrings; AIncludeDirs: TStrings; UsesList: TJclAnsiStrings; var IfDefCount: Integer;
+function LoadFile(const FileName: string): string;
+var
+  AFileStream: TStream;
+  AStringStream: TJclAutoStream;
+  Start, Count: Integer;
+begin
+  Result := '';
+  AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  if AFileStream.Size > MaxInt then
+    raise ERangeError.CreateFmt('File %s too big', [FileName]);
+  SetLength(Result, AFileStream.Size);
+  try
+    AStringStream := TJclAutoStream.Create(AFileStream);
+    try
+      Start := 0;
+      repeat
+        Count := AFileStream.Size;
+        SetLength(Result, Length(Result) + Count);
+        Count := AStringStream.ReadString(Result, Start + 1, Count);
+        Inc(Start, Count);
+      until Count = 0;
+      SetLength(Result, Start);
+    finally
+      AStringStream.Free;
+    end;
+  finally
+    AFileStream.Free;
+  end;
+end;
+
+function ParseFile(const AFileContent: string;
+  ADefines, AIncludeDirs, UsesList: TStrings; var IfDefCount: Integer;
   var InUsesSection: Boolean): Boolean;
-  function GetNextWord(Ptr: PAnsiChar): AnsiString;
+  function GetNextWord(Ptr: PChar): string;
   var
-    PtrStart: PAnsiChar;
+    PtrStart: PChar;
   begin
-    while not (Ptr^ in [AnsiNull, 'a'..'z', 'A'..'Z', '_', '0'..'9']) do
+    while (Ptr^ <> NativeNull) and not CharIsValidIdentifierLetter(Ptr^) do
       Inc(Ptr);
     PtrStart := Ptr;
-    while Ptr^ in ['a'..'z', 'A'..'Z', '_', '.', '0'..'9'] do
+    while (Ptr^ = '.') or CharIsValidIdentifierLetter(Ptr^) do
       Inc(Ptr);
     SetString(Result, PtrStart, Ptr - PtrStart);
   end;
-  procedure Define(const Symbol: AnsiString);
+  procedure Define(const Symbol: string);
   var
     Index: Integer;
   begin
     for Index := 0 to ADefines.Count - 1 do
-      if AnsiSameText(Symbol, ADefines.Strings[Index]) then
+      if SameText(Symbol, ADefines.Strings[Index]) then
         Exit;
     ADefines.Add(Symbol);
   end;
-  procedure Undef(const Symbol: AnsiString);
+  procedure Undef(const Symbol: string);
   var
     Index: Integer;
   begin
     for Index := ADefines.Count - 1 downto 0 do
-      if AnsiSameText(Symbol, ADefines.Strings[Index]) then
+      if SameText(Symbol, ADefines.Strings[Index]) then
         ADefines.Delete(Index);
   end;
-  function IfDef(const Symbol: AnsiString): Boolean;
+  function IfDef(const Symbol: string): Boolean;
   var
     Index: Integer;
   begin
     Result := True;
     for Index := 0 to ADefines.Count - 1 do
-      if AnsiSameText(Symbol, ADefines.Strings[Index]) then
+      if SameText(Symbol, ADefines.Strings[Index]) then
         Exit;
     Result := False;
   end;
-  function ParseInclude(const Symbol: AnsiString): Boolean;
+  function ParseInclude(const Symbol: string): Boolean;
   var
-    AFileStream: TFileStream;
-    BFileContent: AnsiString;
+    BFileContent: string;
     Index: Integer;
     AFileName, BFileName: string;
   begin
@@ -119,57 +144,49 @@ function ParseFile(const AFileContent: AnsiString;
       BFileName := PathAddSeparator(AIncludeDirs.Strings[Index]) + AFileName;
       if FileExists(BFileName) then
       begin
-        AFileStream := TFileStream.Create(BFileName, fmOpenRead or fmShareDenyWrite);
-        try
-          if AFileStream.Size > MaxInt then
-            raise ERangeError.CreateFmt('File %s too big', [BFileName]);
-          SetLength(BFileContent, AFileStream.Size);
-          AFileStream.Read(BFileContent[1], AFileStream.Size);
-          Result := ParseFile(BFileContent, ADefines, AIncludeDirs, UsesList, IfDefCount, InUsesSection);
-        finally
-          AFileStream.Free;
-        end;
+        BFileContent := LoadFile(BFileName);
+        Result := ParseFile(BFileContent, ADefines, AIncludeDirs, UsesList, IfDefCount, InUsesSection);
         Exit;
       end;
     end;
   end;
 var
-  Ptr, PtrStartWord: PAnsiChar;
-  WordAtPtr: AnsiString;
+  Ptr, PtrStartWord: PChar;
+  WordAtPtr: string;
 begin
   Result := True;
   InUsesSection := False;
 
-  Ptr := PAnsiChar(AFileContent);
+  Ptr := PChar(AFileContent);
   while True do
   begin
     case Ptr^ of
-      AnsiNull :
+      NativeNull :
         Exit;
-      AnsiForwardSlash :
+      NativeForwardSlash :
         if Ptr[1] = '/' then
-          while not (Ptr^ in [AnsiNull, AnsiCarriageReturn, AnsiLineFeed]) do
+          while (Ptr^ <> NativeNull) and (Ptr^ <> NativeCarriageReturn) and (Ptr^ <> NativeLineFeed) do
             Inc(Ptr);
       '{' :
         begin
           if Ptr[1] = '$' then
           begin
             WordAtPtr := GetNextWord(@Ptr[1]);
-            if AnsiSameText(WordAtPtr, AnsiString('IFDEF')) then
+            if SameText(WordAtPtr, 'IFDEF') then
             begin
               // inside $IFDEF
               if (IfDefCount > 0) or not IfDef(GetNextWord(@Ptr[7])) then
                 Inc(IfDefCount);
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('IFNDEF')) then
+            if SameText(WordAtPtr, 'IFNDEF') then
             begin
               // inside $IFNDEF
               if (IfDefCount > 0) or IfDef(GetNextWord(@Ptr[8])) then
                 Inc(IfDefCount);
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('ELSE')) then
+            if SameText(WordAtPtr, 'ELSE') then
             begin
               // inside $ELSE
               if IfDefCount = 1 then
@@ -178,28 +195,28 @@ begin
                 IfDefCount := 1;
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('ENDIF')) then
+            if SameText(WordAtPtr, 'ENDIF') then
             begin
               if IfDefCount > 0 then
                 Dec(IfDefCount);
               // inside $ENDIF
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('DEFINE')) then
+            if SameText(WordAtPtr, 'DEFINE') then
             begin
               // inside $DEFINE
               if IfDefCount = 0 then
                 Define(GetNextWord(@Ptr[8]));
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('UNDEF')) then
+            if SameText(WordAtPtr, 'UNDEF') then
             begin
               // inside $UNDEF
               if IfDefCount = 0 then
                 Undef(GetNextWord(@Ptr[7]));
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('INCLUDE')) then
+            if SameText(WordAtPtr, 'INCLUDE') then
             begin
               // inside $INCLUDE
               if IfDefCount = 0 then
@@ -210,7 +227,7 @@ begin
               end;
             end
             else
-            if AnsiSameText(WordAtPtr, AnsiString('I')) then
+            if SameText(WordAtPtr, 'I') then
             begin
               // inside $I
               if IfDefCount = 0 then
@@ -222,20 +239,21 @@ begin
             end; // TODO: $IF + condition
           end;
 
-          while not (Ptr^ in [AnsiNull, '}']) do
+          while (Ptr^ <> NativeNull) and (Ptr^ <>  '}') do
             Inc(Ptr);
         end;
-      AnsiSingleQuote :
+      NativeSingleQuote :
         begin
           Inc(Ptr);
-          while not (Ptr^ in [AnsiNull, AnsiCarriageReturn, AnsiLineFeed, AnsiSingleQuote]) do
+          while (Ptr^ <> NativeNull) and (Ptr^ <> NativeCarriageReturn) and
+                (Ptr^ <> NativeLineFeed) and (Ptr^ <> NativeSingleQuote) do
             Inc(Ptr);
         end;
       '(' :
         if Ptr[1] = '*' then
         begin
           Inc(Ptr, 2);
-          while Ptr^ <> AnsiNull do
+          while Ptr^ <> NativeNull do
             if (Ptr^ = '*') and (Ptr[1] = ')') then
           begin
             Inc(Ptr, 2);
@@ -249,10 +267,10 @@ begin
       '_' :
         begin
           PtrStartWord := Ptr;
-          while Ptr^ in ['a'..'z', 'A'..'Z', '_', '.', '0'..'9'] do
+          while (Ptr^ = '.') or CharIsValidIdentifierLetter(Ptr^) do
             Inc(Ptr);
           SetString(WordAtPtr, PtrStartWord, Ptr - PtrStartWord);
-          if SameText(WordAtPtr, AnsiString('uses')) and (IfDefCount = 0) then
+          if SameText(WordAtPtr, 'uses') and (IfDefCount = 0) then
             InUsesSection := True
           else
           if InUsesSection and (UsesList.IndexOf(WordAtPtr) = -1)
@@ -264,7 +282,7 @@ begin
           InUsesSection := False;
     end;
     case Ptr^ of
-      AnsiNull :
+      NativeNull :
         Exit;
       ';' :
         if IfDefCount = 0 then
@@ -279,9 +297,9 @@ end;
 constructor TUsesParser.Create;
 begin
   inherited Create;
-  FDefines := TJclAnsiStringList.Create;
+  FDefines := TStringList.Create;
   FIncludeDirs := TStringList.Create;
-  FUsesList := TJclAnsiStringList.Create;
+  FUsesList := TStringList.Create;
 end;
 
 destructor TUsesParser.Destroy;
@@ -293,23 +311,10 @@ begin
 end;
 
 function TUsesParser.LoadFromFile(const FileName: string): Boolean;
-var
-  AFileStream: TFileStream;
 begin
   SetLength(FFileContent, 0);
   if FileExists(FileName) then
-  begin
-    AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
-    try
-      if AFileStream.Size > MaxInt then
-        raise ERangeError.CreateFmt('File %s is too big', [FileName]);
-      SetLength(FFileContent, AFileStream.Size);
-      AFileStream.Read(FFileContent[1], AFileStream.Size);
-    finally
-      AFileStream.Free;
-    end;
-  end;
-
+    FFileContent := LoadFile(FileName);
   Result := Length(FileContent) > 0;
 end;
 
@@ -323,12 +328,12 @@ begin
   Result := ParseFile(FileContent, Defines, IncludeDirs, UsesList, IfDefCount, InUsesSection);
 end;
 
-procedure TUsesParser.SetDefines(const Value: TJclAnsiStrings);
+procedure TUsesParser.SetDefines(const Value: TStrings);
 begin
   FDefines.Assign(Value);
 end;
 
-procedure TUsesParser.SetFileContent(const Value: AnsiString);
+procedure TUsesParser.SetFileContent(const Value: string);
 begin
   FFileContent := Value;
 end;

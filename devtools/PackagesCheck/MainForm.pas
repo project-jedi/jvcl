@@ -67,7 +67,7 @@ implementation
 
 uses
   DefineForm, UsesParser,
-  JclFileUtils, JclAnsiStrings, JclStrings,
+  JclFileUtils, JclStrings,
   PackageInformation;
 
 procedure TPackageCheckForm.ButtonGoClick(Sender: TObject);
@@ -138,8 +138,7 @@ var
   procedure CheckPackageTarget(const PackageInfo: TPackageXmlInfo;
     const TargetName: string);
   var
-    IncludeDirs, DependencyList: TStringList;
-    KnownUnits, PackageUsesList, DefinedSymbols: TJclAnsiStringList;
+    IncludeDirs, DependencyList, KnownUnits, PackageUsesList, DefinedSymbols: TStringList;
     IndexTarget, IndexRequire, IndexContained, IndexUnit, IndexJVCLPackage,
     IndexTargetPackage, IndexInclude, NbContained: Integer;
     ARequiredPackage: TRequiredPackage;
@@ -159,13 +158,13 @@ var
     else
       ATargetInfo := nil;
 
-    KnownUnits := TJclAnsiStringList.Create;
+    KnownUnits := TStringList.Create;
     KnownUnits.CaseSensitive := False;
     IncludeDirs := TStringList.Create;
     IncludeDirs.CaseSensitive := False;
-    PackageUsesList := TJclAnsiStringList.Create;
+    PackageUsesList := TStringList.Create;
     PackageUsesList.CaseSensitive := False;
-    DefinedSymbols := TJclAnsiStringList.Create;
+    DefinedSymbols := TStringList.Create;
     DefinedSymbols.CaseSensitive := False;
     DependencyList := TStringList.Create;
     DependencyList.CaseSensitive := False;
@@ -217,7 +216,7 @@ var
               AContainedFile := BPackageInfo.Contains[IndexUnit];
               if SameText(ExtractFileExt(AContainedFile.Name), '.pas')
                 and IsIncluded(TargetName, AContainedFile.Targets.CommaText) then
-                KnownUnits.AddObject(AnsiString(PathExtractFileNameNoExt(AContainedFile.Name)), TObject(IndexRequire));
+                KnownUnits.AddObject(PathExtractFileNameNoExt(AContainedFile.Name), TObject(IndexRequire));
             end;
           end
           else if Assigned(ATargetInfo) then
@@ -228,7 +227,7 @@ var
               // package is found in the dependencies (rtl, vcl, jcl...)
               ATargetPackage := ATargetInfo.Packages[IndexTargetPackage];
               for IndexUnit := 0 to ATargetPackage.UnitCount - 1 do
-                KnownUnits.AddObject(AnsiString(ATargetPackage.Units[IndexUnit]), TObject(IndexRequire));
+                KnownUnits.AddObject(ATargetPackage.Units[IndexUnit], TObject(IndexRequire));
             end
             else
               MemoMessages.Lines.Add(Format('Processing package %s for target %s, unable to find required package %s',
@@ -245,7 +244,7 @@ var
         AContainedFile := PackageInfo.Contains[IndexUnit];
         if SameText(ExtractFileExt(AContainedFile.Name), '.pas')
           and IsIncluded(TargetName, AContainedFile.Targets.CommaText) then
-            KnownUnits.AddObject(AnsiString(PathExtractFileNameNoExt(AContainedFile.Name)), TObject(-1));
+            KnownUnits.AddObject(PathExtractFileNameNoExt(AContainedFile.Name), TObject(-1));
       end;
   
       DefinedSymbols.Clear;
