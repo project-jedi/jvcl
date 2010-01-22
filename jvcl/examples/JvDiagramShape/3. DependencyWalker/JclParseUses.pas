@@ -2,7 +2,7 @@
 
                        JEDI-VCL Demo
 
- Copyright (C) 2002 Project JEDI
+ Copyright (C) 2002/2010 Project JEDI -
 
  Original author:
 
@@ -22,11 +22,15 @@
  implied. See the License for the specific language governing
  rights and limitations under the License.
 
+ [warnings cleaned up on Delphi2009/Delphi2010 in January 2010.]
+
 ******************************************************************}
 
 unit JclParseUses;
 
 {$I jvcl.inc}
+
+
 
 interface
 
@@ -107,6 +111,11 @@ implementation
 uses
   RtlConsts;
 
+{$ifndef UNICODE}
+type
+    TJclCharSet = set of Char;
+{$endif}
+
 const
   Blanks: TSysCharSet = [#9, #10, #13, ' '];
   SLibrary = 'library';
@@ -127,15 +136,21 @@ function PeekKeyword(var P: PChar; Keyword: PChar): Boolean; forward;
 function ReadIdentifier(var P: PChar): string; forward;
 procedure SkipCommentsAndBlanks(var P: PChar); forward;
 
+{$ifndef UNICODE}
+function CharInSet(c:Char; setofc:TJclCharSet):Boolean;
+begin
+  result := c in setofc;
+end;
+{$endif}
 //----------------------------------------------------------------------------
 
 function CheckIdentifier(var P: PChar): Boolean;
 begin
-  Result := P^ in ['A'..'Z', '_', 'a'..'z'];
+  Result := CharInSet(P^, ['A'..'Z', '_', 'a'..'z']);
   if Result then
   begin
     Inc(P);
-    while P^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+    while CharInSet(P^, ['0'..'9', 'A'..'Z', '_', 'a'..'z']) do
       Inc(P);
   end;
 end;
@@ -199,12 +214,12 @@ var
 begin
   Result := '';
 
-  if P^ in ['A'..'Z', '_', 'a'..'z'] then
+  if CharInSet(P^, ['A'..'Z', '_', 'a'..'z']) then
   begin
     PStart := P;
     
     Inc(P);
-    while P^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+    while CharInSet(P^, ['0'..'9', 'A'..'Z', '_', 'a'..'z']) do
       Inc(P);
 
     SetString(Result, PStart, P - PStart);
@@ -215,7 +230,7 @@ end;
 
 procedure SkipChars(var P: PChar; Chars: TSysCharSet);
 begin
-  while P^ in Chars do
+  while CharInSet(P^, Chars) do
     Inc(P);
 end;
 
@@ -299,7 +314,7 @@ begin
         raise EUsesListError.Create(SInvalidUses);
       Inc(P);
         
-      while not (P^ in [#0, '''']) do
+      while not (CharInSet(P^, [#0, ''''])) do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.Create(SInvalidUses);
@@ -345,7 +360,7 @@ begin
     Inc(I);
     if I = Index then
     begin
-      while PIdentifier^ in ['0'..'9', 'A'..'Z', '_', 'a'..'z'] do
+      while CHarInSet( PIdentifier^, ['0'..'9', 'A'..'Z', '_', 'a'..'z']) do
       begin
         Result := Result + PIdentifier^;
         Inc(PIdentifier);
@@ -362,7 +377,7 @@ begin
         raise EUsesListError.Create(SInvalidUses);
       Inc(P);
 
-      while not (P^ in [#0, '''']) do
+      while not (CharInSet(P^, [#0, ''''])) do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.Create(SInvalidUses);
@@ -415,7 +430,7 @@ begin
           raise EUsesListError.Create(SInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while not (CharInSet(P^, [#0, ''''])) do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.Create(SInvalidUses);
@@ -485,7 +500,7 @@ begin
           raise EUsesListError.Create(SInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while not (CharInSet(P^, [#0, ''''])) do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.Create(SInvalidUses);
@@ -551,7 +566,7 @@ begin
         raise EUsesListError.Create(SInvalidUses);
       Inc(P);
 
-      while not (P^ in [#0, '''']) do
+      while not (CharInSet(P^, [#0, ''''])) do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.Create(SInvalidUses);
@@ -623,7 +638,7 @@ begin
           raise EUsesListError.Create(SInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while not (CharInSet(P^, [#0, ''''])) do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.Create(SInvalidUses);
@@ -689,7 +704,7 @@ begin
           raise EUsesListError.Create(SInvalidUses);
         Inc(P);
 
-        while not (P^ in [#0, '''']) do
+        while not (CharInSet(P^, [#0, ''''])) do
           Inc(P);
         if P^ <> '''' then
           raise EUsesListError.Create(SInvalidUses);
@@ -733,7 +748,7 @@ begin
         raise EUsesListError.Create(SInvalidUses);
       Inc(P);
 
-      while not (P^ in [#0, '''']) do
+      while not CharInSet(P^, [#0, '''']) do
         Inc(P);
       if P^ <> '''' then
         raise EUsesListError.Create(SInvalidUses);

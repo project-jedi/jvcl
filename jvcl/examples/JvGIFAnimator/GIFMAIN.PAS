@@ -43,7 +43,8 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, JvSpeedbar, Grids,
   ComCtrls, ExtDlgs{$IFNDEF BCB}, Jpeg{$ENDIF},
   JvGIF, JvLabel, Mask, JvToolEdit, ImgList,
-  JvComponent, JvFormPlacement, JvExControls, JvExExtCtrls, JvExMask;
+  JvComponent, JvFormPlacement, JvExControls, JvExExtCtrls, JvExMask,
+  JvComponentBase, JvExtComponent;
 
 type
   TAnimatorForm = class(TForm)
@@ -229,7 +230,7 @@ const
 
 function EnablePaste: Boolean; near;
 begin
-  Result := Clipboard.HasFormat(CF_GIF) or Clipboard.HasFormat(CF_BITMAP);
+  Result := {$ifdef CLIPBRD_GIF}Clipboard.HasFormat(CF_GIF) or {$endif}Clipboard.HasFormat(CF_BITMAP);
 end;
 
 { TAnimatorForm }
