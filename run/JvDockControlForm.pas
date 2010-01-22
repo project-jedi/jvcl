@@ -834,7 +834,7 @@ function GetClientAlignControlArea(AControl: TWinControl; Align: TAlign; Exclude
 procedure ResetDockClient(Control: TControl; NewTarget: TControl); overload;
 procedure ResetDockClient(DockClient: TJvDockClient; NewTarget: TControl); overload;
 
-{ Quick way to do tabbed docking programmatically - Added by Warren }
+{ Quick way to do tabbed docking programmatically - Added by Warren. New implementation Jan 2010 }
 function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
 { Must create the initial tab dock with two pages, using ManualTabDock,
   then you can add more pages with this:}
@@ -1512,9 +1512,50 @@ begin
   Result := ConjoinHost;
 end;
 
-{ Quick way to do tabbed docking programmatically - Added by Warren }
-
+{ Quick way to do tabbed docking programmatically - this way only works if your
+dock style is written to accept InsertControl calls of this type, and generate
+tab hosts. Rewritten January 21, 2010. WPostma }
 function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
+var
+ DockClient:TJvDockClient;
+ fm:TForm;
+begin
+  { This is an initial sanity check, but the actual DockClient is required later,
+    so we can find the tab host form that contains it. }
+  DockClient := FindDockClient(Form1);
+  if not Assigned(DockClient) then
+      raise EInvalidOperation.Create('ManualTabDock:DockClient not found. Form you are trying to dock must have a dock style');
+
+  {  This should create the tab host form, if the docking style supports tabbed docking,
+     as all 'advanced' docking styles provided in the JVCL do provide.
+
+     This is the same call used when you drag something with your mouse, so it
+     is much more reliable, and consistent, and updates the DOckManager state
+     which prevents all manner of weird problems.
+    }
+  DockSite.DockManager.InsertControl(Form2,alClient,Form1);
+
+  { Now find and return the the new tab host object created depp within the bowels
+     of the Docking Style code. If anything fails, return EInvalidOperation because its
+     likely that whoever called ManualTabDock sent us objects that can not be properly
+     docked, or is using a docking style that does not support tab docking. }
+
+  fm := DockClient.FindTabHostForm;
+
+  if not Assigned(fm) then
+      raise EInvalidOperation.Create('ManualTabDock:TabHost not created. Your Docking Style may not support tabbed docking.');
+
+  result := fm as TJvDockTabHostForm; {not nil, we checked, so this won't fail.}
+
+end;
+
+
+(*
+ This old way was a kludge written by Warren that never properly worked anyways.
+ It had the odd habit of rearranging controls, making previous docked forms (controls)
+  disappear when docking a new one, and all manner of bad stuff like that.
+
+function Old_ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
 var
   TabHost: TJvDockTabHostForm;
   DockClient1, DockCLient2: TJvDockClient;
@@ -1524,6 +1565,7 @@ var
 begin
   DockClient1 := FindDockClient(Form1);
   Form1.Hide;
+
 
   Assert(Assigned(DockClient1));
 
@@ -1564,6 +1606,7 @@ begin
   Result := TabHost;
 end;
 
+*)
 
 { Must create the initial tab dock with two pages, using ManualTabDock,
   then you can add more pages with this:}
