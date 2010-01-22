@@ -112,7 +112,7 @@ uses JvDynControlEngine,
 
   JvDynControlEngineDevExpcxDb,
 //  JvDynControlEngineVCLDB,
-//  JvDynControlEngineJVCLDB,
+  JvDynControlEngineJVCLDB,
   JvDynControlEngineTools,
   JvDynControlEngineDBTools,
   JvDBActionsEngineControlCxGrid,
@@ -124,9 +124,9 @@ uses JvDynControlEngine,
 
 procedure TJvDBActionMainFrm.FormCreate(Sender: TObject);
 begin
-//  SetDefaultDynControlEngineDB(DynControlEngineJVCLDB);
-  SetDefaultDynControlEngineDB(DynControlEngineCxDB);
-  JvDatabaseSingleRecordWindowAction1.OnCreateDataControlsEvent := DefaultDataSourceEditDialogCreateDataControlscxVGridEventClass.CreateDataControls;
+  SetDefaultDynControlEngineDB(DynControlEngineJVCLDB);
+  //SetDefaultDynControlEngineDB(DynControlEngineCxDB);
+//  JvDatabaseSingleRecordWindowAction1.OnCreateDataControlsEvent := DefaultDataSourceEditDialogCreateDataControlscxVGridEventClass.CreateDataControls;
 end;
 
 procedure TJvDBActionMainFrm.DBGrid1Enter(Sender: TObject);

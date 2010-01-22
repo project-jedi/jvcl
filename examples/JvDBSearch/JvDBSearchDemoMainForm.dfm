@@ -2,7 +2,6 @@ object JvDBSearchDemoMainFrm: TJvDBSearchDemoMainFrm
   Left = 295
   Top = 224
   ActiveControl = btnConnect
-  AutoScroll = False
   Caption = 'JvDBSearchDemo'
   ClientHeight = 332
   ClientWidth = 608

@@ -1,13 +1,13 @@
 object Mainform: TMainform
   Left = 113
   Top = 0
-  Width = 908
-  Height = 804
   Caption = 
     'JVCL3 - MegaDemo                                                ' +
     '                                                                ' +
     '                                                                ' +
     '                                      '
+  ClientHeight = 202
+  ClientWidth = 116
   Color = clBtnFace
   Constraints.MinHeight = 492
   Constraints.MinWidth = 652
@@ -28,14 +28,14 @@ object Mainform: TMainform
   object JvNetscapeSplitter1: TJvNetscapeSplitter
     Left = 225
     Top = 181
-    Height = 573
-    Cursor = crHSplit
+    Height = 2
     Hint = 'click me to have more '#13#10'space for the current demo'
     Align = alLeft
     MinSize = 10
     Maximized = False
     Minimized = False
     ButtonCursor = crDefault
+    ExplicitHeight = 573
   end
   object JvCaptionPanel1: TJvCaptionPanel
     Left = 239
@@ -55,12 +55,13 @@ object Mainform: TMainform
   object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 900
+    Width = 116
     Height = 48
     Align = alTop
     BevelOuter = bvNone
     Color = clWhite
     TabOrder = 1
+    ExplicitWidth = 900
     object JvNavPanelButton2: TJvNavPanelButton
       Tag = 65
       Left = 0
@@ -239,6 +240,8 @@ object Mainform: TMainform
     Top = 128
     Width = 26
     Height = 25
+    ImageIndex = 2
+    Images = LargeImages
     TabOrder = 2
     Visible = False
     Flat = True
@@ -247,8 +250,6 @@ object Mainform: TMainform
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-    Images = LargeImages
-    ImageIndex = 2
     Layout = blImageRight
     Spacing = 0
   end
@@ -256,7 +257,7 @@ object Mainform: TMainform
     Left = 0
     Top = 181
     Width = 225
-    Height = 573
+    Height = 2
     HorzScrollBar.Smooth = True
     HorzScrollBar.Style = ssFlat
     HorzScrollBar.Tracking = True
@@ -266,28 +267,32 @@ object Mainform: TMainform
     Align = alLeft
     BorderStyle = bsNone
     TabOrder = 3
+    ExplicitHeight = 573
     object JvSplitter1: TJvSplitter
       Left = 0
       Top = 139
-      Width = 225
+      Width = 208
       Height = 6
       Cursor = crVSplit
       Align = alTop
       Beveled = True
+      ExplicitWidth = 225
     end
     object JvXPContainer1: TJvXPContainer
       Left = 0
       Top = 145
-      Width = 225
-      Height = 428
+      Width = 208
+      Height = 0
       AutoSize = True
       BorderWidth = 4
       Caption = 'JvXPContainer1'
       Align = alClient
+      ExplicitWidth = 225
+      ExplicitHeight = 428
       object JvXPBarBrowseDemos: TJvXPBar
         Left = 4
         Top = 109
-        Width = 217
+        Width = 200
         Height = 35
         Caption = 'Browse All Demo Stuff'
         Collapsed = True
@@ -336,17 +341,19 @@ object Mainform: TMainform
         BeforeCollapsedChange = WinXPBarEnsureOnlyOneExpanded
         Align = alTop
         ParentFont = False
+        ExplicitWidth = 217
         object Panel4: TPanel
           Left = 4
           Top = 36
-          Width = 209
+          Width = 192
           Height = 45
           Align = alClient
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
+          ExplicitWidth = 209
           DesignSize = (
-            209
+            192
             45)
           object JvLabel1: TJvLabel
             Left = 8
@@ -354,6 +361,7 @@ object Mainform: TMainform
             Width = 161
             Height = 13
             Caption = 'Here are all availible demos listed:'
+            Transparent = True
             AutoOpenURL = False
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -381,7 +389,7 @@ object Mainform: TMainform
       object jvXPBarSettings: TJvXPBar
         Left = 4
         Top = 39
-        Width = 217
+        Width = 200
         Height = 35
         Hint = 'This is a hint'
         Caption = 'Settings'
@@ -495,7 +503,7 @@ object Mainform: TMainform
         object Panel1: TPanel
           Left = 4
           Top = 36
-          Width = 209
+          Width = 192
           Height = 20
           Align = alClient
           BevelOuter = bvNone
@@ -515,6 +523,7 @@ object Mainform: TMainform
             Font.Name = 'MS Sans Serif'
             Font.Style = []
             ParentFont = False
+            Transparent = True
             OnClick = ShellExecHint
             HotTrack = True
             HotTrackFont.Charset = DEFAULT_CHARSET
@@ -537,6 +546,7 @@ object Mainform: TMainform
             Font.Name = 'MS Sans Serif'
             Font.Style = []
             ParentFont = False
+            Transparent = True
             OnClick = ShellExecHint
             HotTrack = True
             HotTrackFont.Charset = DEFAULT_CHARSET
@@ -559,6 +569,7 @@ object Mainform: TMainform
             Font.Name = 'MS Sans Serif'
             Font.Style = []
             ParentFont = False
+            Transparent = True
             OnClick = ShellExecHint
             HotTrack = True
             HotTrackFont.Charset = DEFAULT_CHARSET
@@ -594,7 +605,7 @@ object Mainform: TMainform
       object JvXPBarInformation: TJvXPBar
         Left = 4
         Top = 4
-        Width = 217
+        Width = 200
         Height = 35
         Hint = 'This is a hint'
         Caption = 'Information'
@@ -684,11 +695,12 @@ object Mainform: TMainform
         BeforeCollapsedChange = WinXPBarEnsureOnlyOneExpanded
         Align = alTop
         ParentFont = False
+        ExplicitWidth = 217
       end
       object JvXPBarSearchByCompName: TJvXPBar
         Left = 4
         Top = 74
-        Width = 217
+        Width = 200
         Height = 35
         Caption = 'Search by Component'
         Collapsed = True
@@ -738,17 +750,19 @@ object Mainform: TMainform
         Align = alTop
         Anchors = [akLeft, akTop, akRight, akBottom]
         ParentFont = False
+        ExplicitWidth = 217
         object Panel2: TPanel
           Left = 4
           Top = 36
-          Width = 209
+          Width = 192
           Height = 153
           Align = alClient
           BevelOuter = bvNone
           Color = clInfoBk
           TabOrder = 0
+          ExplicitWidth = 209
           DesignSize = (
-            209
+            192
             153)
           object JvLabel2: TJvLabel
             Left = 8
@@ -756,6 +770,7 @@ object Mainform: TMainform
             Width = 86
             Height = 13
             Caption = 'type first letters in:'
+            Transparent = True
             AutoOpenURL = False
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -785,7 +800,6 @@ object Mainform: TMainform
             Height = 19
             Flat = True
             ParentFlat = False
-            Modified = False
             Color = clInfoBk
             TabOrder = 1
           end
@@ -795,23 +809,30 @@ object Mainform: TMainform
     object JvRichEditHints: TJvRichEdit
       Left = 0
       Top = 0
-      Width = 225
+      Width = 208
       Height = 139
       Align = alTop
-      AutoSize = False
       Color = clInfoBk
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 1
       OnURLClick = JvRichEditHintsURLClick
+      ExplicitWidth = 225
     end
   end
   object JvXPBarIDE: TJvXPBar
     Left = 0
     Top = 48
-    Width = 900
+    Width = 116
     Height = 133
     Caption = 'Components as in the Delphi IDE'
     Colors.BorderColor = 9845
     Colors.BodyColor = clWindow
+    Colors.GradientFrom = 13945028
     Colors.GradientTo = clGray
     Colors.SeparatorColor = 4227327
     Items = <
@@ -889,8 +910,9 @@ object Mainform: TMainform
     OnCollapsedChange = JvXPBarIDECollapsedChange
     Align = alTop
     ParentFont = False
+    ExplicitWidth = 900
     DesignSize = (
-      900
+      116
       133)
     object JvPageControlComps: TJvPageControl
       Left = 7
@@ -907,9 +929,7 @@ object Mainform: TMainform
     Top = 384
     Width = 25
     Height = 25
-    TabOrder = 5
-    Visible = False
-    OnClick = CompClick
+    DoubleBuffered = True
     Glyph.Data = {
       76060000424D7606000000000000360400002800000018000000180000000100
       08000000000040020000120B0000120B00000001000000010000000000000000
@@ -963,6 +983,10 @@ object Mainform: TMainform
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF373F3F3F3F3F3F3F3F3F3F3F3F3F
       3F3F3F3F3F3E3E3E3E3E37373F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3E3E
       3E3E3737373F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3F3E3E3E}
+    ParentDoubleBuffered = False
+    TabOrder = 5
+    Visible = False
+    OnClick = CompClick
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
@@ -971,11 +995,13 @@ object Mainform: TMainform
   end
   object StatusBar: TJvStatusBar
     Left = 0
-    Top = 754
-    Width = 900
+    Top = 183
+    Width = 116
     Height = 19
     Panels = <>
     SimplePanel = True
+    ExplicitTop = 754
+    ExplicitWidth = 900
   end
   object JvNavPaneStyleMan: TJvNavPaneStyleManager
     Theme = nptXPSilver
@@ -988,7 +1014,7 @@ object Mainform: TMainform
     Left = 828
     Top = 312
     Bitmap = {
-      494C010115001800040018001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010115001800100018001400FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000006000000078000000010020000000000000B4
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
