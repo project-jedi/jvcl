@@ -187,7 +187,7 @@ implementation
 
 uses
   SysUtils, StdCtrls, Dialogs,
-  OraClasses, OraError, OraCall,
+  OraClasses, OraError, OraCall, OraServices,
   JvDSADialogs, JvDBPasswordDialogOdac, JvResources;
 
 //=== { TJvDBOdacLogonDialogOptions } ========================================
@@ -440,7 +440,19 @@ begin
 end;
 
 procedure TJvDBOdacLogonDialog.FillDatabaseComboBoxDefaultValues(Items: TStrings);
+var
+  Enum: TOraServerEnumerator;
+  List: TStringList;
 begin
+  List := TStringList.Create;
+  Enum := TOraServerEnumerator.Create;
+  try
+    Enum.GetServerList(List);
+    Items.AddStrings(List);
+  finally
+    Enum.Free;
+    List.Free;
+  end;
 end;
 
 class function TJvDBOdacLogonDialog.GetDBLogonConnectionListClass:
