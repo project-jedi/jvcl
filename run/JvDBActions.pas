@@ -422,7 +422,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SMEWizardDlgGetCellParams(Sender: TObject; Field: TField; var Text: TSMEString;
+    procedure SMEWizardDlgGetCellParams(Sender: TObject; Field: TField; var Text: string;
       AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
     procedure SMEWizardDlgOnBeforeExecute(Sender: TObject);
   published
@@ -1461,7 +1461,7 @@ begin
 end;
 
 procedure TJvDatabaseSMExportOptions.SMEWizardDlgGetCellParams(Sender: TObject; Field: TField;
-  var Text: TSMEString; AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
+  var Text: string; AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
 const
   SToDateFormatLong = 'TO_DATE(''%s'', ''DD.MM.YYYY HH24:MI:SS'')';
   SToDateFormatShort = 'TO_DATE(''%s'', ''DD.MM.YYYY'')';
