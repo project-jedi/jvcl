@@ -64,6 +64,7 @@ type
   IJvThreadedDatasetInterface = interface
     ['{220CC94D-AA41-4195-B90C-ECA24BAD3CDB}']
     procedure BreakExecution;
+    procedure BringThreadDialogToFront;
     function CurrentFetchDuration: TDateTime;
     function CurrentOpenDuration: TDateTime;
     procedure DoInheritedInternalLast;
@@ -391,6 +392,7 @@ type
     procedure AfterRefresh; virtual;
     procedure BeforeOpen; virtual;
     procedure BeforeRefresh; virtual;
+    procedure BringDialogToFront;
     procedure CapitalizeDatasetLabels;
     function CheckContinueRecordFetch: TJvThreadedDatasetContinueCheckResult;
     function GetNextRecord: Boolean;
@@ -911,6 +913,13 @@ begin
     FetchMode := tdfmStop;
   end;
   IntRowCheckEnabled := False;
+end;
+
+procedure TJvBaseDatasetThreadHandler.BringDialogToFront;
+begin
+  if Assigned(ExecuteThread) and ExecuteThread.OneThreadIsRunning
+    and Assigned(ExecuteThread.ThreadDialogForm) then
+    ExecuteThread.ThreadDialogForm.BringToFront;
 end;
 
 procedure TJvBaseDatasetThreadHandler.CapitalizeDatasetLabels;

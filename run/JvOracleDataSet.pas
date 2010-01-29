@@ -73,6 +73,7 @@ type
 
   TJvOracleDataset = class(TOracleDataset, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    procedure BringThreadDialogToFront;
     function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
@@ -170,6 +171,12 @@ procedure TJvOracleDataset.BreakExecution;
 begin
   if Assigned(Session) and Session.Connected then
     Session.BreakExecution;
+end;
+
+procedure TJvOracleDataset.BringThreadDialogToFront;
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.BringDialogToFront;
 end;
 
 function TJvOracleDataset.CurrentFetchDuration: TDateTime;
