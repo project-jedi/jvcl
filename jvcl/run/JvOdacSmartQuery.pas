@@ -84,6 +84,7 @@ type
 
   TJvOdacSmartQuery = class(TSmartQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    procedure BringThreadDialogToFront;
     function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
@@ -154,6 +155,7 @@ type
 
   TJvOdacOraQuery = class(TOraQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    procedure BringThreadDialogToFront;
     function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
@@ -228,6 +230,7 @@ type
 type
   TJvOdacOraTable = class(TOraTable, IJvThreadedDatasetInterface)
     procedure BreakExecution;
+    procedure BringThreadDialogToFront;
     function DoGetInheritedNextRecord: Boolean;
     procedure DoInheritedAfterOpen;
     procedure DoInheritedAfterRefresh;
@@ -328,6 +331,12 @@ end;
 procedure TJvOdacSmartQuery.BreakExecution;
 begin
   BreakExec;
+end;
+
+procedure TJvOdacSmartQuery.BringThreadDialogToFront;
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.BringDialogToFront;
 end;
 
 function TJvOdacSmartQuery.CurrentFetchDuration: TDateTime;
@@ -738,6 +747,12 @@ begin
   BreakExec;
 end;
 
+procedure TJvOdacOraQuery.BringThreadDialogToFront;
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.BringDialogToFront;
+end;
+
 function TJvOdacOraQuery.CurrentFetchDuration: TDateTime;
 begin
   if Assigned(ThreadHandler) then
@@ -1054,6 +1069,12 @@ end;
 procedure TJvOdacOraTable.BreakExecution;
 begin
   BreakExec;
+end;
+
+procedure TJvOdacOraTable.BringThreadDialogToFront;
+begin
+  if Assigned(ThreadHandler) then
+    ThreadHandler.BringDialogToFront;
 end;
 
 function TJvOdacOraTable.CurrentFetchDuration: TDateTime;
