@@ -8299,7 +8299,8 @@ end;
 procedure TJvInspectorInt64Item.SetDisplayValue(const Value: string);
 begin
   // (rom) is this safe? StrToInt64 can throw exceptions.
-  Data.AsInt64 := StrToInt64(Value);
+  // (wpostma) definitely not safe. This is a crap implementation.
+  Data.AsInt64 := StrToInt64Def(Value,0);
 end;
 
 //=== { TJvInspectorStringItem } =============================================
