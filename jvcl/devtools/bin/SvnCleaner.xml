@@ -150,6 +150,8 @@
         <value>*.drc</value>
         <value>*.dsk</value>
         <value>*.exe</value>
+        <value>*.dll</value>
+        <value>*.dcu</value>
         <value>*.~*</value>
         <value>*.hpp</value>
         <value>*.local</value>
