@@ -181,7 +181,6 @@
           <UNIT NAME="JclArrayLists"/>
           <UNIT NAME="JclArraySets"/>
           <UNIT NAME="JclBinaryTrees"/>
-          <UNIT NAME="JclBorlandTools"/>
           <UNIT NAME="JclCIL"/>
           <UNIT NAME="JclCLR"/>
           <UNIT NAME="JclCOM"/>
@@ -257,6 +256,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="vclx">
           <UNIT NAME="Checklst"/>
@@ -711,7 +714,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -779,6 +781,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="vcljpg">
           <UNIT NAME="Jconsts"/>
@@ -1178,7 +1184,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -1246,6 +1251,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="vclx">
           <UNIT NAME="Checklst"/>
@@ -1673,7 +1682,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -1741,6 +1749,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="vclx">
           <UNIT NAME="Checklst"/>
@@ -2160,7 +2172,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -2228,6 +2239,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="vclx">
           <UNIT NAME="Checklst"/>
@@ -2621,7 +2636,6 @@
           <UNIT NAME="JclArrayLists"/>
           <UNIT NAME="JclArraySets"/>
           <UNIT NAME="JclBinaryTrees"/>
-          <UNIT NAME="JclBorlandTools"/>
           <UNIT NAME="JclCIL"/>
           <UNIT NAME="JclCLR"/>
           <UNIT NAME="JclCOM"/>
@@ -2697,6 +2711,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="ThemeManagerC6">
           <UNIT NAME=""/>
@@ -2813,7 +2831,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -2878,6 +2895,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="ThemeManagerD6">
           <UNIT NAME="Thememanagerd6"/>
@@ -3318,7 +3339,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -3383,6 +3403,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="Indy">
           <UNIT NAME="IdHTTP"/>
@@ -3544,7 +3568,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -3609,6 +3632,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="rtl">
           <UNIT NAME="Activex"/>
@@ -4009,7 +4036,6 @@
           <UNIT NAME="Jclarraysets"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclbinarytrees"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
           <UNIT NAME="Jclcom"/>
@@ -4074,6 +4100,10 @@
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="Indy">
           <UNIT NAME="IdHTTP"/>
@@ -4370,7 +4400,6 @@
           <UNIT NAME="Jclansistrings"/>
           <UNIT NAME="Jclappinst"/>
           <UNIT NAME="Jclbase"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcharsets"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
@@ -4446,6 +4475,10 @@
           <UNIT NAME="Sevenzip"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="JclVcl">
           <UNIT NAME="Jclfont"/>
@@ -4671,7 +4704,6 @@
           <UNIT NAME="Jclansistrings"/>
           <UNIT NAME="Jclappinst"/>
           <UNIT NAME="Jclbase"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcharsets"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
@@ -4747,6 +4779,10 @@
           <UNIT NAME="Sevenzip"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="JclVcl">
           <UNIT NAME="Jclfont"/>
@@ -5302,7 +5338,6 @@
           <UNIT NAME="Jclansistrings"/>
           <UNIT NAME="Jclappinst"/>
           <UNIT NAME="Jclbase"/>
-          <UNIT NAME="Jclborlandtools"/>
           <UNIT NAME="Jclcharsets"/>
           <UNIT NAME="Jclcil"/>
           <UNIT NAME="Jclclr"/>
@@ -5378,6 +5413,10 @@
           <UNIT NAME="Sevenzip"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
+        </PACKAGE>
+        <PACKAGE NAME="JclDeveloperTools">
+          <UNIT NAME="JclBorlandTools"/>
+          <UNIT NAME="JclDevToolsResources"/>
         </PACKAGE>
         <PACKAGE NAME="JclVcl">
           <UNIT NAME="Jclfont"/>
