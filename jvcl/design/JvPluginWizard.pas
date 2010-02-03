@@ -392,7 +392,7 @@ implementation
 uses
   Controls, SysUtils, Dialogs, Classes, ActnList, Menus,
   DesignIntf, DesignEditors,
-  JclFileUtils, JclBorlandTools,
+  JclFileUtils, JclIDEUtils,
   JvPlugin, JvPluginParamsForm, JvConsts, JvDsgnConsts;
 
 {$R JvPluginWiz.res}
