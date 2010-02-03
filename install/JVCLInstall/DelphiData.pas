@@ -274,7 +274,7 @@ uses
   {$ENDIF ~COMPILER12_UP}
   CmdLineUtils, Utils,
   JvConsts,
-  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclBorlandTools;
+  JclBase, JclSysInfo, JclSimpleXml, JclSysUtils, JclFileUtils, JclIDEUtils;
 
 function DequoteStr(const S: string): string;
 begin
