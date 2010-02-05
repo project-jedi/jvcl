@@ -260,7 +260,7 @@ var
 implementation
 
 uses
-  JCLParseUses,
+  JclUsesUtils,
   DepWalkUtils,
   Clipbrd,
   IniFiles,
