@@ -1512,6 +1512,9 @@ begin
   Result := ConjoinHost;
 end;
 
+type
+  TWinControlAccess = class(TWinControl);
+
 { Quick way to do tabbed docking programmatically - this way only works if your
 dock style is written to accept InsertControl calls of this type, and generate
 tab hosts. Rewritten January 21, 2010. WPostma }
@@ -1533,7 +1536,7 @@ begin
      is much more reliable, and consistent, and updates the DOckManager state
      which prevents all manner of weird problems.
     }
-  DockSite.DockManager.InsertControl(Form2,alClient,Form1);
+  TWinControlAccess(DockSite).DockManager.InsertControl(Form2,alClient,Form1);
 
   { Now find and return the the new tab host object created depp within the bowels
      of the Docking Style code. If anything fails, return EInvalidOperation because its
