@@ -457,7 +457,8 @@ type
   end;
 
   TJvDynControlCxListBox = class(TcxListBox, IUnknown, IJvDynControl, IJvDynControlData,
-    IJvDynControlItems, IJvDynControlItemIndex, IJvDynControlDblClick, IJvDynControlDevExpCx, IJvDynControlReadOnly)
+    IJvDynControlItems, IJvDynControlItemIndex, IJvDynControlDblClick, IJvDynControlDevExpCx, IJvDynControlReadOnly,
+    IJvDynControlKey, IJvDynControlMouse)
   public
     function ControlGetItemIndex: Integer;
     procedure ControlSetDefaultProperties;
@@ -482,6 +483,24 @@ type
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
     procedure ControlSetItemIndex(const Value: Integer);
+
+    function ControlGetOnKeyDown: TKeyEvent;
+    function ControlGetOnKeyPress: TKeyPressEvent;
+    function ControlGetOnKeyUp: TKeyEvent;
+    procedure ControlSetOnKeyDown(const Value: TKeyEvent);
+    procedure ControlSetOnKeyPress(const Value: TKeyPressEvent);
+    procedure ControlSetOnKeyUp(const Value: TKeyEvent);
+
+    function ControlGetOnMouseDown: TMouseEvent;
+    function ControlGetOnMouseEnter: TNotifyEvent;
+    function ControlGetOnMouseLeave: TNotifyEvent;
+    function ControlGetOnMouseMove: TMouseMoveEvent;
+    function ControlGetOnMouseUp: TMouseEvent;
+    procedure ControlSetOnMouseDown(const Value: TMouseEvent);
+    procedure ControlSetOnMouseEnter(const Value: TNotifyEvent);
+    procedure ControlSetOnMouseLeave(const Value: TNotifyEvent);
+    procedure ControlSetOnMouseMove(const Value: TMouseMoveEvent);
+    procedure ControlSetOnMouseUp(const Value: TMouseEvent);
   end;
 
   TJvDynControlCxCheckListBox = class(TcxCheckListBox, IUnknown, IJvDynControl, IJvDynControlData,
@@ -769,7 +788,8 @@ type
 
   TJvDynControlCxTreeView = class(TcxTreeView, IUnknown,
     IJvDynControl, IJvDynControlTreeView,
-    IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlDblClick)
+    IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlDblClick,
+    IJvDynControlMouse)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetTabOrder(Value: Integer);
@@ -806,6 +826,17 @@ type
 
     // IJvDynControlDevExpCx
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    function ControlGetOnMouseDown: TMouseEvent;
+    function ControlGetOnMouseEnter: TNotifyEvent;
+    function ControlGetOnMouseLeave: TNotifyEvent;
+    function ControlGetOnMouseMove: TMouseMoveEvent;
+    function ControlGetOnMouseUp: TMouseEvent;
+    procedure ControlSetOnMouseDown(const Value: TMouseEvent);
+    procedure ControlSetOnMouseEnter(const Value: TNotifyEvent);
+    procedure ControlSetOnMouseLeave(const Value: TNotifyEvent);
+    procedure ControlSetOnMouseMove(const Value: TMouseMoveEvent);
+    procedure ControlSetOnMouseUp(const Value: TMouseEvent);
   end;
 
   TJvDynControlCxProgressBar = class(TcxProgressBar, IUnknown, IJvDynControl,
@@ -2448,6 +2479,94 @@ begin
   ItemIndex := Value;
 end;
 
+function TJvDynControlCxListBox.ControlGetOnKeyDown: TKeyEvent;
+begin
+  Result := OnKeyDown;
+end;
+
+function TJvDynControlCxListBox.ControlGetOnKeyPress: TKeyPressEvent;
+begin
+  Result := OnKeyPress;
+end;
+
+function TJvDynControlCxListBox.ControlGetOnKeyUp: TKeyEvent;
+begin
+  Result := OnKeyUp;
+end;
+
+function TJvDynControlCxListBox.ControlGetOnMouseDown: TMouseEvent;
+begin
+  Result := OnMouseDown;
+end;
+
+function TJvDynControlCxListBox.ControlGetOnMouseEnter: TNotifyEvent;
+begin
+  {$IFDEF DELPHI2007_UP}
+  Result := OnMouseEnter;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+function TJvDynControlCxListBox.ControlGetOnMouseLeave: TNotifyEvent;
+begin
+  {$IFDEF DELPHI2007_UP}
+  Result := OnMouseLeave;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+function TJvDynControlCxListBox.ControlGetOnMouseMove: TMouseMoveEvent;
+begin
+  Result := OnMouseMove;
+end;
+
+function TJvDynControlCxListBox.ControlGetOnMouseUp: TMouseEvent;
+begin
+  Result := OnMouseUp;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnKeyDown(const Value: TKeyEvent);
+begin
+  OnKeyDown := Value;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnKeyPress(const Value: TKeyPressEvent);
+begin
+  OnKeyPress := Value;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnKeyUp(const Value: TKeyEvent);
+begin
+  OnKeyUp := Value;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnMouseDown(const Value: TMouseEvent);
+begin
+  OnMouseDown := Value;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnMouseEnter(const Value: TNotifyEvent);
+begin
+  {$IFDEF DELPHI2007_UP}
+  OnMouseEnter := Value;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnMouseLeave(const Value: TNotifyEvent);
+begin
+  {$IFDEF DELPHI2007_UP}
+  OnMouseEnter := Value;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnMouseMove(const Value: TMouseMoveEvent);
+begin
+  OnMouseMove := Value;
+end;
+
+procedure TJvDynControlCxListBox.ControlSetOnMouseUp(const Value: TMouseEvent);
+begin
+  OnMouseUp := Value;
+end;
+
 //=== { TJvDynControlCxCheckListBox } ========================================
 
 constructor TJvDynControlCxCheckListBox.Create(AOwner: TComponent);
@@ -3367,6 +3486,35 @@ begin
   Result := Items;
 end;
 
+function TJvDynControlCxTreeView.ControlGetOnMouseDown: TMouseEvent;
+begin
+  Result := OnMouseDown;
+end;
+
+function TJvDynControlCxTreeView.ControlGetOnMouseEnter: TNotifyEvent;
+begin
+  {$IFDEF DELPHI2007_UP}
+  Result := OnMouseEnter;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+function TJvDynControlCxTreeView.ControlGetOnMouseLeave: TNotifyEvent;
+begin
+  {$IFDEF DELPHI2007_UP}
+  Result := OnMouseLeave;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+function TJvDynControlCxTreeView.ControlGetOnMouseMove: TMouseMoveEvent;
+begin
+  Result := OnMouseMove;
+end;
+
+function TJvDynControlCxTreeView.ControlGetOnMouseUp: TMouseEvent;
+begin
+  Result := OnMouseUp;
+end;
+
 procedure TJvDynControlCxTreeView.ControlSetImages(Value: TCustomImageList);
 begin
   Images.Assign(Value);
@@ -3415,6 +3563,35 @@ end;
 function TJvDynControlCxTreeView.ControlGetSelected: TTreeNode;
 begin
   Result := Selected;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnMouseDown(const Value: TMouseEvent);
+begin
+  OnMouseDown := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnMouseEnter(const Value: TNotifyEvent);
+begin
+  {$IFDEF DELPHI2007_UP}
+  OnMouseEnter := Value;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnMouseLeave(const Value: TNotifyEvent);
+begin
+  {$IFDEF DELPHI2007_UP}
+  OnMouseEnter := Value;
+  {$ENDIF DELPHI2007_UP}
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnMouseMove(const Value: TMouseMoveEvent);
+begin
+  OnMouseMove := Value;
+end;
+
+procedure TJvDynControlCxTreeView.ControlSetOnMouseUp(const Value: TMouseEvent);
+begin
+  OnMouseUp := Value;
 end;
 
 procedure TJvDynControlCxTreeView.ControlSetSelected(const Value: TTreeNode);

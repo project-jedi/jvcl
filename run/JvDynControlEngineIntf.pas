@@ -366,6 +366,37 @@ type
 
   end;
 
+  IJvDynControlKey= interface
+    ['{BE648BE4-857C-4423-A229-3484E3686ABD}']
+    function ControlGetOnKeyDown: TKeyEvent;
+    function ControlGetOnKeyPress: TKeyPressEvent;
+    function ControlGetOnKeyUp: TKeyEvent;
+    procedure ControlSetOnKeyDown(const Value: TKeyEvent);
+    procedure ControlSetOnKeyPress(const Value: TKeyPressEvent);
+    procedure ControlSetOnKeyUp(const Value: TKeyEvent);
+    property ControlOnKeyDown: TKeyEvent read ControlGetOnKeyDown write ControlSetOnKeyDown;
+    property ControlOnKeyPress: TKeyPressEvent read ControlGetOnKeyPress write ControlSetOnKeyPress;
+    property ControlOnKeyUp: TKeyEvent read ControlGetOnKeyUp write ControlSetOnKeyUp;
+  end;
+
+  IJvDynControlMouse= interface
+    ['{032FFE48-C7B8-4388-A63D-A275FF2FF619}']
+    function ControlGetOnMouseDown: TMouseEvent;
+    function ControlGetOnMouseEnter: TNotifyEvent;
+    function ControlGetOnMouseLeave: TNotifyEvent;
+    function ControlGetOnMouseMove: TMouseMoveEvent;
+    function ControlGetOnMouseUp: TMouseEvent;
+    procedure ControlSetOnMouseDown(const Value: TMouseEvent);
+    procedure ControlSetOnMouseEnter(const Value: TNotifyEvent);
+    procedure ControlSetOnMouseLeave(const Value: TNotifyEvent);
+    procedure ControlSetOnMouseMove(const Value: TMouseMoveEvent);
+    procedure ControlSetOnMouseUp(const Value: TMouseEvent);
+    property ControlOnMouseDown: TMouseEvent read ControlGetOnMouseDown write ControlSetOnMouseDown;
+    property ControlOnMouseEnter : TNotifyEvent read ControlGetOnMouseEnter write ControlSetOnMouseEnter;
+    property ControlOnMouseLeave : TNotifyEvent read ControlGetOnMouseLeave write ControlSetOnMouseLeave;
+    property ControlOnMousePress: TMouseMoveEvent read ControlGetOnMouseMove write ControlSetOnMouseMove;
+    property ControlOnMouseUp: TMouseEvent read ControlGetOnMouseUp write ControlSetOnMouseUp;
+  end;
 
 {$IFDEF UNITVERSIONING}
 const

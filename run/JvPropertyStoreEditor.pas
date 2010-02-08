@@ -37,7 +37,7 @@ uses
   Dialogs, ComCtrls,
   JvComponent, JvExComCtrls, JvComCtrls, ExtCtrls, JvExControls,
   JvInspector, StdCtrls, JvExStdCtrls, JvListBox, JvPropertyStore,
-  JvPropertyStoreEditorIntf, JvDynControlEngineIntf;
+  JvPropertyStoreEditorIntf, JvDynControlEngineIntf, ActnList, Menus;
 
 
 type
@@ -46,43 +46,70 @@ type
         TJvCustomInspectorItem);
     procedure JvInspectorBeforeItemCreate(Sender: TObject; Data:
       TJvCustomInspectorData; var ItemClass: TJvInspectorItemClass);
-    procedure ListCopyButtonClick(Sender: TObject);
-    procedure ListDeleteButtonClick(Sender: TObject);
-    procedure ListDownButtonClick(Sender: TObject);
-    procedure ListEditButtonClick(Sender: TObject);
-    procedure ListInsertButtonClick(Sender: TObject);
-    procedure ListUpButtonClick(Sender: TObject);
-    procedure ListSortUpButtonClick(Sender: TObject);
-    procedure ListSortDownButtonClick(Sender: TObject);
-    procedure PropertyStoreTreeViewEnter(Sender: TObject);
+    procedure ListBoxOnClick(Sender: TObject);
+    procedure ListBoxOnEnter(Sender: TObject);
+    procedure ListBoxOnKeyPress(Sender: TObject; var Key: Char);
+    procedure ListBoxOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure ListCopyActionExecute(Sender: TObject);
+    procedure ListDeleteActionExecute(Sender: TObject);
+    procedure ListDownActionExecute(Sender: TObject);
+    procedure ListEditActionExecute(Sender: TObject);
+    procedure ListInsertActionExecute(Sender: TObject);
+    procedure ListSortDownActionExecute(Sender: TObject);
+    procedure ListSortUpActionExecute(Sender: TObject);
+    procedure ListUpActionExecute(Sender: TObject);
     procedure PropertyStoreTreeViewChange(Sender: TObject; Node: TTreeNode);
     procedure PropertyStoreTreeViewChanging(Sender: TObject; Node: TTreeNode; var
         AllowChange: Boolean);
+    procedure PropertyStoreTreeViewEnter(Sender: TObject);
     procedure RTTIInspectorEnter(Sender: TObject);
   private
     FInspectedObject: TPersistent;
     FInspectedObjectEditorHandlerIntf: IJvPropertyEditorHandler;
     FInspectedObjectListEditorHandlerIntf: IJvPropertyListEditorHandler;
+    FInspectedObjectListItemIndex: Integer;
     FPropertyStore: TComponent;
     InfoGroupBoxDynControlCaptionIntf: IJvDynControlCaption;
-    InfoMemoDynControlDataIntf: IJvDynControlData;
     InfoMemo: TWinControl;
+    InfoMemoDynControlDataIntf: IJvDynControlData;
     InfoPanel: TWinControl;
     Inspector: TWinControl;
     InspectorPanel: TWinControl;
-    ListBoxControlItemsIntf: IJvDynControlItems;
     ListBoxControlItemIndexIntf: IJvDynControlItemIndex;
+    ListBoxControlItemsIntf: IJvDynControlItems;
+    ListButtonPanel: TWinControl;
+    ListCopyAction: TAction;
+    ListCopyMenu: TMenuItem;
+    ListDeleteAction: TAction;
+    ListDeleteMenu: TMenuItem;
+    ListDownAction: TAction;
+    ListDownMenu: TMenuItem;
+    ListEditAction: TAction;
+    ListInsertAction: TAction;
+    ListInsertMenu: TMenuItem;
     ListInspectorPanel: TWinControl;
     ListPanel: TWinControl;
+    ListPopupMenu: TPopupMenu;
+    ListSortUpAction: TAction;
+    ListSortUpMenu: TMenuItem;
+    ListSortDownAction: TAction;
+    ListSortDownMenu: TMenuItem;
+    ListSplitter: TSplitter;
+    ListUpAction: TAction;
+    ListUpMenu: TMenuItem;
+    ListLineMenu: TMenuItem;
     PropertyStoreTreeViewIntf: IJvDynControlTreeView;
     RTTIInspectorControlIntf: IJvDynControlRTTIInspectorControl;
     TreePanel: TWinControl;
     TreeSplitter: TSplitter;
-    ListSplitter: TSplitter;
-    ListButtonPanel: TWinControl;
+    procedure FillListBox;
     function GetPropCount(Instance: TPersistent): Integer;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
+    procedure RTTIInspectorOnCanResize(Sender: TObject; var NewWidth, NewHeight:
+        Integer; var Resize: Boolean);
     procedure SetInspectedObject(const Value: TPersistent);
+    procedure SetInspectedObjectListEditorHandlerIntf(const Value: IJvPropertyListEditorHandler);
+    procedure SetInspectedObjectListItemIndex(const Value: Integer);
     procedure SetPropertyStore(const Value: TComponent);
     function ShowPropertyInTreeView(PropObject: TObject; const PropertyName:
         string): Boolean;
@@ -90,9 +117,11 @@ type
         SetInspectedObject;
     property InspectedObjectEditorHandlerIntf: IJvPropertyEditorHandler read
         FInspectedObjectEditorHandlerIntf;
-    procedure FillListBox;
-    procedure RTTIInspectorOnCanResize(Sender: TObject; var NewWidth, NewHeight:
-        Integer; var Resize: Boolean);
+    property InspectedObjectListEditorHandlerIntf: IJvPropertyListEditorHandler read FInspectedObjectListEditorHandlerIntf
+        write SetInspectedObjectListEditorHandlerIntf;
+    property InspectedObjectListItemIndex: Integer read FInspectedObjectListItemIndex write SetInspectedObjectListItemIndex;
+    procedure ChangeInspectedObjectListEditorHandlerIntf(iObject: TObject);
+    procedure SetActionsEnabled;
   protected
     procedure CreateControls;
     procedure DestroyControls;
@@ -108,53 +137,51 @@ type
   public
     destructor Destroy; override;
     procedure GotoEditObject(EditObject: TPersistent);
-    property InspectedObjectListEditorHandler: IJvPropertyListEditorHandler read
-        FInspectedObjectListEditorHandlerIntf;
   published
-    property PropertyStore: TComponent read FPropertyStore write SetPropertyStore;
     property Align;
     property Anchors;
     property AutoSize;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
     property BiDiMode;
-    property UseDockManager default True;
+    property BorderWidth;
+    property Color;
+    property Constraints;
     property DockSite;
     property DragCursor;
     property DragKind;
-    property ParentBiDiMode;
+    property Enabled;
+    property Font;
     property OnCanResize;
     property OnDockDrop;
     property OnDockOver;
     property OnEndDock;
+    property OnEnter;
+    property OnExit;
     property OnGetSiteInfo;
+    property OnResize;
     property OnStartDock;
     property OnUnDock;
-    property BevelInner;
-    property BevelOuter;
-    property BevelWidth;
-    property BorderWidth;
-    property Color;
-    property Constraints;
-    property Enabled;
-    property Font;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
+    property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
+    property PropertyStore: TComponent read FPropertyStore write SetPropertyStore;
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property UseDockManager default True;
     property Visible;
-    property OnEnter;
-    property OnExit;
-    property OnResize;
   end;
 
 type
   TJvPropertyStoreEditorForm = class(TJvForm)
-    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FPropertyStore: TComponent;
     FPropertyStoreEditorControl: TJvPropertyStoreEditorControl;
@@ -214,17 +241,9 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorForm.FormCreate(Sender: TObject);
+procedure TJvPropertyStoreEditorForm.CancelButtonClick(Sender: TObject);
 begin
-  CreateFormControls;
-  OnShow := IntOnShow;
-end;
-
-type tAccessCustomPanel = class(tCustomPanel);
-
-procedure TJvPropertyStoreEditorForm.FormDestroy(Sender: TObject);
-begin
-  DestroyFormControls;
+  // Do Not Remove
 end;
 
 procedure TJvPropertyStoreEditorForm.CreateFormControls;
@@ -260,26 +279,20 @@ begin
 
 end;
 
-procedure TJvPropertyStoreEditorForm.SetPropertyStore(const Value: TComponent);
-begin
-  FPropertyStore := Value;
-  if Assigned(FPropertyStoreEditorControl) then
-    FPropertyStoreEditorControl.PropertyStore := PropertyStore;
-end;
-
-procedure TJvPropertyStoreEditorForm.OkButtonClick(Sender: TObject);
-begin
-  // Do Not Remove
-end;
-
-procedure TJvPropertyStoreEditorForm.CancelButtonClick(Sender: TObject);
-begin
-  // Do Not Remove
-end;
-
 procedure TJvPropertyStoreEditorForm.DestroyFormControls;
 begin
   FreeAndNil(FPropertyStoreEditorControl);
+end;
+
+procedure TJvPropertyStoreEditorForm.FormCreate(Sender: TObject);
+begin
+  CreateFormControls;
+  OnShow := IntOnShow;
+end;
+
+procedure TJvPropertyStoreEditorForm.FormDestroy(Sender: TObject);
+begin
+  DestroyFormControls;
 end;
 
 procedure TJvPropertyStoreEditorForm.IntOnShow(Sender: TObject);
@@ -289,6 +302,20 @@ begin
     FPropertyStoreEditorControl.PropertyStore := PropertyStore;
   end;
 end;
+
+procedure TJvPropertyStoreEditorForm.OkButtonClick(Sender: TObject);
+begin
+  // Do Not Remove
+end;
+
+procedure TJvPropertyStoreEditorForm.SetPropertyStore(const Value: TComponent);
+begin
+  FPropertyStore := Value;
+  if Assigned(FPropertyStoreEditorControl) then
+    FPropertyStoreEditorControl.PropertyStore := PropertyStore;
+end;
+
+type tAccessCustomPanel = class(tCustomPanel);
 
 
 destructor TJvPropertyStoreEditorControl.Destroy;
@@ -307,6 +334,8 @@ var
   InfoMemoPanel: TWinControl;
   DynControlMemo: IJvDynControlMemo;
   DynControlReadOnly: IJvDynControlReadOnly;
+  DynControlKey: IJvDynControlKey;
+  DynControlMouse: IJvDynControlMouse;
   DynControl: IJvDynControl;
   Button: TButton;
 begin
@@ -328,6 +357,8 @@ begin
   PropertyStoreTreeViewIntf.ControlSetSortType(stNone);
   Supports(TreeView, IJvDynControl, DynControl);
   DynControl.ControlSetOnEnter(PropertyStoreTreeViewEnter);
+  if Supports(TreeView, IJvDynControlMouse, DynControlMouse) then
+    DynControlMouse.ControlSetOnMouseDown(ListBoxOnMouseDown);
 
   TreeSplitter := TSplitter.Create(Self);
   TreeSplitter.Align := alLeft;
@@ -364,6 +395,57 @@ begin
   if Supports(InfoMemo, IJvDynControlReadOnly, DynControlReadOnly) then
     DynControlReadOnly.ControlSetReadOnly(True);
   Supports(InfoMemo, IJvDynControlData, InfoMemoDynControlDataIntf);
+
+  ListInsertAction := TAction.Create(Self);
+  ListInsertAction.Caption := RSPropertyStoreEditorListButtonInsert;
+  ListInsertAction.OnExecute := ListInsertActionExecute;
+  ListCopyAction := TAction.Create(Self);
+  ListCopyAction.Caption := RSPropertyStoreEditorListButtonCopy;
+  ListCopyAction.OnExecute := ListCopyActionExecute;
+  ListEditAction := TAction.Create(Self);
+  ListEditAction.Caption := RSPropertyStoreEditorListButtonEdit;
+  ListEditAction.OnExecute := ListEditActionExecute;
+  ListDeleteAction := TAction.Create(Self);
+  ListDeleteAction.Caption := RSPropertyStoreEditorListButtonDelete;
+  ListDeleteAction.OnExecute := ListDeleteActionExecute;
+  ListUpAction := TAction.Create(Self);
+  ListUpAction.Caption := RSPropertyStoreEditorListButtonUp;
+  ListUpAction.OnExecute := ListUpActionExecute;
+  ListDownAction := TAction.Create(Self);
+  ListDownAction.Caption := RSPropertyStoreEditorListButtonDown;
+  ListDownAction.OnExecute := ListDownActionExecute;
+  ListSortUpAction := TAction.Create(Self);
+  ListSortUpAction.Caption := RSPropertyStoreEditorListButtonSortUp;
+  ListSortUpAction.OnExecute := ListSortUpActionExecute;
+  ListSortDownAction := TAction.Create(Self);
+  ListSortDownAction.Caption := RSPropertyStoreEditorListButtonSortDown;
+  ListSortDownAction.OnExecute := ListSortDownActionExecute;
+
+  ListPopupMenu := TPopupMenu.Create(Self);
+  ListInsertMenu := TMenuItem.Create(Self);
+  ListInsertMenu.Action := ListInsertAction;
+  ListPopupMenu.Items.Add(ListInsertMenu);
+  ListCopyMenu := TMenuItem.Create(Self);
+  ListCopyMenu.Action := ListCopyAction;
+  ListPopupMenu.Items.Add(ListCopyMenu);
+  ListDeleteMenu := TMenuItem.Create(Self);
+  ListDeleteMenu.Action := ListDeleteAction;
+//  ListPopupMenu.Items.Add(ListDeleteMenu);
+  ListLineMenu := NewLine;
+  ListPopupMenu.Items.Add(ListLineMenu);
+  ListUpMenu := TMenuItem.Create(Self);
+  ListUpMenu.Action := ListUpAction;
+  ListPopupMenu.Items.Add(ListUpMenu);
+  ListDownMenu := TMenuItem.Create(Self);
+  ListDownMenu.Action := ListDownAction;
+  ListPopupMenu.Items.Add(ListDownMenu);
+  ListSortUpMenu := TMenuItem.Create(Self);
+  ListSortUpMenu.Action := ListSortUpAction;
+  ListPopupMenu.Items.Add(ListSortUpMenu);
+  ListSortDownMenu := TMenuItem.Create(Self);
+  ListSortDownMenu.Action := ListSortDownAction;
+  ListPopupMenu.Items.Add(ListSortDownMenu);
+
   ListPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'ListPanel', '', alClient);
   if ListPanel is TPanel then
     TPanel(ListPanel).BevelOuter := bvNone;
@@ -379,28 +461,36 @@ begin
   ListButtonPanel.Height := 25;
   if ListButtonPanel is TPanel then
     TPanel(ListButtonPanel).BevelOuter := bvNone;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListInsertButton', RSPropertyStoreEditorListButtonInsert, '', ListInsertButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListInsertButton', RSPropertyStoreEditorListButtonInsert, '', ListInsertActionExecute);
+  Button.Action := ListInsertAction;
   Button.Left := 0;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListCopyButton', RSPropertyStoreEditorListButtonCopy, '', ListCopyButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListCopyButton', RSPropertyStoreEditorListButtonCopy, '', ListCopyActionExecute);
+  Button.Action := ListCopyAction;
   Button.Left := 40;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListEditButton', RSPropertyStoreEditorListButtonEdit, '', ListEditButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListEditButton', RSPropertyStoreEditorListButtonEdit, '', ListEditActionExecute);
+  Button.Action := ListEditAction;
   Button.Left := 80;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDeleteButton', RSPropertyStoreEditorListButtonDelete, '', ListDeleteButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDeleteButton', RSPropertyStoreEditorListButtonDelete, '', ListDeleteActionExecute);
+  Button.Action := ListDeleteAction;
   Button.Left := 120;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListUpButton', RSPropertyStoreEditorListButtonUp, '', ListUpButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListUpButton', RSPropertyStoreEditorListButtonUp, '', ListUpActionExecute);
+  Button.Action := ListUpAction;
   Button.Left := 165;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDownButton', RSPropertyStoreEditorListButtonDown, '', ListDownButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListDownButton', RSPropertyStoreEditorListButtonDown, '', ListDownActionExecute);
+  Button.Action := ListDownAction;
   Button.Left := 205;
   Button.Width := 40;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListSortUpButton', RSPropertyStoreEditorListButtonSortUp, '', ListSortUpButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListSortUpButton', RSPropertyStoreEditorListButtonSortUp, '', ListSortUpActionExecute);
+  Button.Action := ListSortUpAction;
   Button.Left := 245;
   Button.Width := 50;
-  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListSortDownButton', RSPropertyStoreEditorListButtonSortDown, '', ListSortDownButtonClick);
+  Button := DefaultDynControlEngine.CreateButton(Self, ListButtonPanel, 'ListSortDownButton', RSPropertyStoreEditorListButtonSortDown, '', ListSortDownActionExecute);
+  Button.Action := ListSortDownAction;
   Button.Left := 295;
   Button.Width := 60;
   ListBox := DefaultDynControlEngine.CreateListBoxControl(Self, ListPanel, 'ListBox', Nil);
@@ -408,7 +498,16 @@ begin
   Supports (ListBox, IJvDynControlItems, ListBoxControlItemsIntf);
   Supports (ListBox, IJvDynControlItemIndex, ListBoxControlItemIndexIntf);
   if Supports(ListBox, IJvDynControlDblClick, DynControlDblClick) then
-    DynControlDblClick.ControlSetOnDblClick(ListEditButtonClick);
+    DynControlDblClick.ControlSetOnDblClick(ListEditActionExecute);
+  if Supports(ListBox, IJvDynControl, DynControl) then
+    DynControl.ControlSetOnEnter(ListBoxOnEnter);
+  if Supports(ListBox, IJvDynControl, DynControl) then
+    DynControl.ControlSetOnClick(ListBoxOnClick);
+  if Supports(ListBox, IJvDynControlKey, DynControlKey) then
+    DynControlKey.ControlSetOnKeyPress(ListBoxOnKeyPress);
+  if Supports(ListBox, IJvDynControlMouse, DynControlMouse) then
+    DynControlMouse.ControlSetOnMouseDown(ListBoxOnMouseDown);
+
   InspectorPanel  := DefaultDynControlEngine.CreatePanelControl(Self, EditPanel, 'InspectorPanel', '', alClient);
   if InspectorPanel is TCustomPanel then
     tAccessCustomPanel(InspectorPanel).BevelOuter := bvNone;
@@ -432,6 +531,22 @@ end;
 
 procedure TJvPropertyStoreEditorControl.DestroyControls;
 begin
+  FreeAndNil(ListCopyAction);
+  FreeAndNil(ListCopyMenu);
+  FreeAndNil(ListDeleteAction);
+  FreeAndNil(ListDeleteMenu);
+  FreeAndNil(ListDownAction);
+  FreeAndNil(ListDownMenu);
+  FreeAndNil(ListEditAction);
+  FreeAndNil(ListInsertAction);
+  FreeAndNil(ListInsertMenu);
+  FreeAndNil(ListSortUpAction);
+  FreeAndNil(ListSortUpMenu);
+  FreeAndNil(ListSortDownAction);
+  FreeAndNil(ListSortDownMenu);
+  FreeAndNil(ListUpAction);
+  FreeAndNil(ListUpMenu);
+  FreeAndNil(ListLineMenu);
   PropertyStore := nil;
   InspectedObject := nil;
   FInspectedObjectEditorHandlerIntf := nil;
@@ -592,9 +707,9 @@ begin
   if csDestroying in Componentstate then
     Exit;
   ListBoxControlItemsIntf.ControlItems.Clear;
-  for i := 0 to InspectedObjectListEditorHandler.ListEditIntf_ObjectCount - 1 do
+  for i := 0 to InspectedObjectListEditorHandlerIntf.ListEditIntf_ObjectCount - 1 do
   begin
-    SubObj := InspectedObjectListEditorHandler.ListEditIntf_GetObject(i);
+    SubObj := InspectedObjectListEditorHandlerIntf.ListEditIntf_GetObject(i);
     if Supports(SubObj, IJvPropertyEditorHandler, DetailObjectEditorHandler) then
     begin
       ListBoxControlItemsIntf.ControlItems.AddObject(DetailObjectEditorHandler.EditIntf_GetVisibleObjectName + ' - ' + ' [' + inttostr(i + 1) + '] ', SubObj);
@@ -627,13 +742,37 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListCopyButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListBoxOnClick(Sender: TObject);
+begin
+  if Assigned(ListBoxControlItemIndexIntf) then
+    InspectedObjectListItemIndex := ListBoxControlItemIndexIntf.ControlItemIndex
+  else
+    InspectedObjectListItemIndex := -1;
+end;
+
+procedure TJvPropertyStoreEditorControl.ListBoxOnEnter(Sender: TObject);
+begin
+  if Assigned(ListBoxControlItemIndexIntf) then
+    InspectedObjectListItemIndex := ListBoxControlItemIndexIntf.ControlItemIndex
+  else
+    InspectedObjectListItemIndex := -1;
+end;
+
+procedure TJvPropertyStoreEditorControl.ListBoxOnKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Assigned(ListBoxControlItemIndexIntf) then
+    InspectedObjectListItemIndex := ListBoxControlItemIndexIntf.ControlItemIndex
+  else
+    InspectedObjectListItemIndex := -1;
+end;
+
+procedure TJvPropertyStoreEditorControl.ListCopyActionExecute(Sender: TObject);
 var
   NewObject: TPersistent;
 begin
-  if Assigned(InspectedObjectListEditorHandler) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) then
   begin
-    NewObject := InspectedObjectListEditorHandler.ListEditIntf_CloneNewObject(ListBoxControlItemIndexIntf.ControlItemIndex);
+    NewObject := InspectedObjectListEditorHandlerIntf.ListEditIntf_CloneNewObject(InspectedObjectListItemIndex);
     if Assigned(NewObject) then
     begin
       FillTreeView (NewObject);
@@ -641,96 +780,116 @@ begin
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListDeleteButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListDeleteActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
 begin
-  if Assigned(InspectedObjectListEditorHandler) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) then
     if (MessageDlg(RSPropertyStoreEditorDeleteEntry, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
     begin
       EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
-      InspectedObjectListEditorHandler.ListEditIntf_DeleteObject(ListBoxControlItemIndexIntf.ControlItemIndex);
+      if EditObject = InspectedObjectListEditorHandlerIntf.ListEditIntf_GetObject (InspectedObjectListItemIndex) then
+        if (InspectedObjectListItemIndex < InspectedObjectListEditorHandlerIntf.ListEditIntf_ObjectCount-1)
+          and (InspectedObjectListItemIndex > 0) then
+          EditObject := InspectedObjectListEditorHandlerIntf.ListEditIntf_GetObject (InspectedObjectListItemIndex)
+        else if InspectedObjectListEditorHandlerIntf.ListEditIntf_ObjectCount-1 > 0 then
+          EditObject := InspectedObjectListEditorHandlerIntf.ListEditIntf_GetObject (0)
+        else
+          EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Parent.Data);
+      InspectedObjectListEditorHandlerIntf.ListEditIntf_DeleteObject(InspectedObjectListItemIndex);
       FillTreeView (EditObject);
     end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListDownButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListDownActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
   Ind : Integer;
 begin
-  if Assigned(InspectedObjectListEditorHandler) and (ListBoxControlItemIndexIntf.ControlItemIndex < ListBoxControlItemsIntf.ControlItems.Count) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) and (InspectedObjectListItemIndex < ListBoxControlItemsIntf.ControlItems.Count) then
   begin
     EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
-    Ind := ListBoxControlItemIndexIntf.ControlItemIndex;
-    InspectedObjectListEditorHandler.ListEditIntf_MoveObjectPosition(ListBoxControlItemIndexIntf.ControlItemIndex, ListBoxControlItemIndexIntf.ControlItemIndex+1);
+    Ind := InspectedObjectListItemIndex;
+    InspectedObjectListEditorHandlerIntf.ListEditIntf_MoveObjectPosition(InspectedObjectListItemIndex, InspectedObjectListItemIndex+1);
     FillTreeView (EditObject);
-    ListBoxControlItemIndexIntf.ControlItemIndex := Ind +1;
+    InspectedObjectListItemIndex := Ind +1;
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListEditButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListEditActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
 begin
-  if Assigned(InspectedObjectListEditorHandler) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) then
   begin
-    EditObject := InspectedObjectListEditorHandler.ListEditIntf_GetObject(ListBoxControlItemIndexIntf.ControlItemIndex);
+    EditObject := InspectedObjectListEditorHandlerIntf.ListEditIntf_GetObject(InspectedObjectListItemIndex);
     if Assigned(EditObject) then
       GotoEditObject (EditObject);
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListInsertButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListInsertActionExecute(Sender: TObject);
 var
   newObject: TPersistent;
 begin
-  if Assigned(InspectedObjectListEditorHandler) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) then
   begin
-    NewObject := InspectedObjectListEditorHandler.ListEditIntf_CreateNewObject;
+    NewObject := InspectedObjectListEditorHandlerIntf.ListEditIntf_CreateNewObject;
     FillTreeView (NewObject);
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListUpButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListBoxOnMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+    X, Y: Integer);
+var aPos:TPoint;
+begin
+  if (Button = mbRight) and Assigned(InspectedObjectListEditorHandlerIntf) and
+    Assigned(Sender) and (Sender is TWinControl) then
+  begin
+    aPos := TWinControl(Sender).ClientToScreen(Point(X, Y));
+    ListPopupMenu.Popup(aPos.x,aPos.y);
+  end;
+end;
+
+procedure TJvPropertyStoreEditorControl.ListUpActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
   Ind : Integer;
 begin
-  if Assigned(InspectedObjectListEditorHandler) and (ListBoxControlItemIndexIntf.ControlItemIndex > 0) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) and (InspectedObjectListItemIndex > 0) then
   begin
     EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
-    Ind := ListBoxControlItemIndexIntf.ControlItemIndex;
-    InspectedObjectListEditorHandler.ListEditIntf_MoveObjectPosition(ListBoxControlItemIndexIntf.ControlItemIndex, ListBoxControlItemIndexIntf.ControlItemIndex-1);
+    Ind := InspectedObjectListItemIndex;
+    InspectedObjectListEditorHandlerIntf.ListEditIntf_MoveObjectPosition(InspectedObjectListItemIndex, InspectedObjectListItemIndex-1);
     FillTreeView (EditObject);
-    ListBoxControlItemIndexIntf.ControlItemIndex := Ind -1;
+    InspectedObjectListItemIndex := Ind -1;
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListSortUpButtonClick(Sender: TObject);
+procedure TJvPropertyStoreEditorControl.ListSortUpActionExecute(Sender: TObject);
 var
   EditObject: TPersistent;
 begin
-  if Assigned(InspectedObjectListEditorHandler) and (ListBoxControlItemsIntf.ControlItems.Count > 0) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) and (ListBoxControlItemsIntf.ControlItems.Count > 0) then
   begin
     EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
-    InspectedObjectListEditorHandler.ListEditIntf_SortObjects(True);
+    InspectedObjectListEditorHandlerIntf.ListEditIntf_SortObjects(True);
     FillTreeView (EditObject);
-    ListBoxControlItemIndexIntf.ControlItemIndex := 0;
+    InspectedObjectListItemIndex := 0;
   end;
 end;
 
-procedure TJvPropertyStoreEditorControl.ListSortDownButtonClick(Sender:
+procedure TJvPropertyStoreEditorControl.ListSortDownActionExecute(Sender:
     TObject);
 var
   EditObject: TPersistent;
 begin
-  if Assigned(InspectedObjectListEditorHandler) and (ListBoxControlItemsIntf.ControlItems.Count > 0) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) and (ListBoxControlItemsIntf.ControlItems.Count > 0) then
   begin
     EditObject := TPersistent(PropertyStoreTreeViewIntf.ControlSelected.Data);
-    InspectedObjectListEditorHandler.ListEditIntf_SortObjects(False);
+    InspectedObjectListEditorHandlerIntf.ListEditIntf_SortObjects(False);
     FillTreeView (EditObject);
-    ListBoxControlItemIndexIntf.ControlItemIndex := 0;
+    InspectedObjectListItemIndex := 0;
   end;
 end;
 
@@ -789,8 +948,18 @@ begin
     not (Supports(TObject(Node.Data), IJvPropertyEditorHandler)) then
     InspectedObject := nil
   else
+  begin
     InspectedObject :=
       TPersistent(Node.Data);
+    if Assigned(Node.Parent) and Assigned(Node.Parent.Data)
+      and (TObject(Node.Parent.Data) is TPersistent)
+      and (Supports(TObject(Node.Parent.Data), IJvPropertyListEditorHandler)) then
+    begin
+      ChangeInspectedObjectListEditorHandlerIntf(TObject(Node.Parent.Data));
+      if Assigned(InspectedObjectListEditorHandlerIntf) then
+        InspectedObjectListItemIndex := InspectedObjectListEditorHandlerIntf.ListEditIntf_IndexOfObject(InspectedObject);
+    end;
+  end;
 end;
 
 procedure TJvPropertyStoreEditorControl.PropertyStoreTreeViewChanging(Sender:
@@ -823,10 +992,10 @@ begin
   end;
   FInspectedObject := Value;
   Supports(InspectedObject, IJvPropertyEditorHandler, FInspectedObjectEditorHandlerIntf);
-  Supports(InspectedObject, IJvPropertyListEditorHandler, FInspectedObjectListEditorHandlerIntf);
+  ChangeInspectedObjectListEditorHandlerIntf(InspectedObject);
   RTTIInspectorControlIntf.ControlSaveEditorValues;
   RTTIInspectorControlIntf.ControlInspectedObject := Value;
-  if Assigned(FInspectedObjectListEditorHandlerIntf) then
+  if Assigned(InspectedObjectListEditorHandlerIntf) then
   begin
     ListPanel.visible := True;
     Inspector.Parent := ListInspectorPanel;
@@ -904,6 +1073,24 @@ begin
   RTTIInspectorControlIntf.ControlDividerWidth := Round(NewWidth/Ratio);
 end;
 
+procedure TJvPropertyStoreEditorControl.SetActionsEnabled;
+begin
+  ListInsertAction.Enabled := Assigned(FInspectedObjectListEditorHandlerIntf);
+  ListCopyAction.Enabled := ListInsertAction.Enabled and (InspectedObjectListItemIndex >= 0);
+  ListDownAction.Enabled := ListCopyAction.Enabled and (InspectedObjectListItemIndex < InspectedObjectListEditorHandlerIntf.ListEditIntf_ObjectCount-1);
+  ListUpAction.Enabled := ListCopyAction.Enabled and (InspectedObjectListItemIndex > 0);
+  ListDeleteAction.Enabled := ListCopyAction.Enabled;
+  ListEditAction.Enabled := ListCopyAction.Enabled;
+  ListSortUpAction.Enabled := ListInsertAction.Enabled and (InspectedObjectListEditorHandlerIntf.ListEditIntf_ObjectCount > 0);
+  ListSortDownAction.Enabled := ListSortUpAction.Enabled ;
+end;
+
+procedure TJvPropertyStoreEditorControl.ChangeInspectedObjectListEditorHandlerIntf(iObject: TObject);
+begin
+  Supports(iObject, IJvPropertyListEditorHandler, FInspectedObjectListEditorHandlerIntf);
+  InspectedObjectListEditorHandlerIntf := FInspectedObjectListEditorHandlerIntf; // Wegen dem Set-Aufruf
+end;
+
 procedure TJvPropertyStoreEditorControl.SetInformation(const iCaption, iInfo:
     string);
 begin
@@ -912,6 +1099,19 @@ begin
   InfoMemoDynControlDataIntf.ControlValue := iInfo;
   InfoGroupBoxDynControlCaptionIntf.ControlSetCaption(iCaption);
   InfoPanel.Visible := iInfo <> '';
+end;
+
+procedure TJvPropertyStoreEditorControl.SetInspectedObjectListEditorHandlerIntf(const Value:
+    IJvPropertyListEditorHandler);
+begin
+  FInspectedObjectListEditorHandlerIntf := Value;
+  InspectedObjectListItemIndex := -1;
+end;
+
+procedure TJvPropertyStoreEditorControl.SetInspectedObjectListItemIndex(const Value: Integer);
+begin
+  FInspectedObjectListItemIndex := Value;
+  SetActionsEnabled;
 end;
 
 {$IFDEF UNITVERSIONING}
