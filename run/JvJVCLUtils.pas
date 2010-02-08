@@ -7765,12 +7765,13 @@ var
     for I := 1 to Length(AName)  do
     begin
       C := AName[I];
-      if CharInSet(C, ['A'..'Z', 'a'..'z', '_', '0'..'9']) then
+      if CharInSet(C, ['A'..'Z', 'a'..'z', '_']) or
+         ((Result <> '') and CharInSet(C, ['0'..'9'])) then
       begin
         Ignore := False;
         Result := Result+C;
       end
-      else
+      else if Result <> '' then
       begin
         if not Ignore then
           Result := Result+'_';
@@ -7793,13 +7794,14 @@ var
     I: Integer;
   begin
     Result := True;
-    for I := 0 to AOwner.ComponentCount - 1 do
-      if (AOwner.Components[I] <> AComponent) and
-        (CompareText(AOwner.Components[I].Name, AName) = 0) then
-      begin
-        Result := False;
-        Break;
-      end;
+    if AName <> '' then
+      for I := 0 to AOwner.ComponentCount - 1 do
+        if (AOwner.Components[I] <> AComponent) and
+          (CompareText(AOwner.Components[I].Name, AName) = 0) then
+        begin
+          Result := False;
+          Break;
+        end;
   end;
 
 begin
