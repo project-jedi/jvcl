@@ -49,6 +49,7 @@ type
     ['{BC1F664F-867F-4041-B718-0FD76A0CA3E8}']
     function ListEditIntf_ObjectCount : integer;
     function ListEditIntf_GetObject(Index : integer): TPersistent;
+    function ListEditIntf_IndexOfObject(AObject : TPersistent) : Integer;
     procedure ListEditIntf_MoveObjectPosition (Index : Integer; PosDelta : Integer);
     procedure ListEditIntf_SortObjects (iAscending : Boolean);
     function ListEditIntf_CreateNewObject: TPersistent;
