@@ -65,7 +65,7 @@ type
     FOutfilteredValueFont: TFont;
     FComboBox: TJvCustomDBComboBox;
     procedure SetDataSource(const Value: TDataSource);
-    procedure SetFilter(const Value: string);
+    procedure SetFilter(Value: string);
     function GetDataSource: TDataSource;
     procedure SetDisplayField(const Value: string);
     procedure SetKeyField(const Value: string);
@@ -787,6 +787,7 @@ var
   FilterExpr: TJvDBFilterExpression;
   LKeyField, LDisplayField: TField;
   DataSet: TDataSet;
+  LastText: string;
 begin
   if ([csDesigning, csLoading, csDestroying] * ComponentState = []) and
      (ListSettings.DataSource <> nil) and (ListSettings.DataSource.DataSet <> nil) and
@@ -796,6 +797,7 @@ begin
     Items.BeginUpdate;
     Values.BeginUpdate;
     try
+      LastText := GetComboText();
       Items.Clear;
       Values.Clear;
       if ListSettings.IsValid and ListSettings.DataSource.DataSet.Active and (ListSettings.KeyField <> '') then
@@ -846,6 +848,7 @@ begin
       Items.EndUpdate;
       Values.EndUpdate;
     end;
+    SetComboText(LastText);
   end;
 end;
 
@@ -947,13 +950,15 @@ begin
   end;
 end;
 
-procedure TJvDBComboBoxListSettings.SetFilter(const Value: string);
+procedure TJvDBComboBoxListSettings.SetFilter(Value: string);
 begin
+  Value := Trim(Value);
   if Value <> FFilter then
   begin
-    FFilter := Trim(Value);
+    FFilter := Value;
     ComboBox.UpdateDropDownItems;
-    ComboBox.DataChange(Self);
+    if ComboBox.UpdateFieldImmediatelly then
+      ComboBox.DataChange(Self);
   end;
 end;
 
@@ -1003,7 +1008,8 @@ begin
   if FListDataLink.Active and (DataSource.State = dsBrowse) then
   begin
     ComboBox.UpdateDropDownItems;
-    ComboBox.DataChange(Self);
+    if ComboBox.UpdateFieldImmediatelly then
+      ComboBox.DataChange(Self);
   end;
 end;
 
