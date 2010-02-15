@@ -46,7 +46,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
-  cxProgressBar, cxPC, cxColorComboBox, cxGraphics,
+  cxProgressBar, cxPC, cxColorComboBox, cxGraphics, cxCheckComboBox,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
   cxOi, cxVGrid, cxVGridViewInfo,
   {$ENDIF}
@@ -863,7 +863,6 @@ type
   end;
 
 
-type
   TJvDynControlCxTabControl = class(TcxTabControl, IUnknown, IJvDynControl,
       IJvDynControlTabControl, IJvDynControlDevExpCx)
   public
@@ -972,6 +971,8 @@ type
         TJvDynControlInspectorControlOnPropertyChangeEvent);
   end;
 
+  {$ENDIF}
+
   TJvDynControlCxColorComboBox = class(TcxColorComboBox, IUnknown, IJvDynControl,
       IJvDynControlColorComboBoxControl, IJvDynControlDevExpCx)
   public
@@ -999,8 +1000,6 @@ type
     procedure SetControlDefaultColor(const Value: TColor); stdcall;
   end;
 
-  {$ENDIF}
-
   TJvDynControlEngineDevExpCx = class(TJvDynControlEngine)
   private
     FCxProperties: TCxDynControlWrapper;
@@ -1013,6 +1012,39 @@ type
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl; override;
   published
     property CxProperties: TCxDynControlWrapper read FCxProperties write FCxProperties;
+  end;
+
+  TJvDynControlCxCheckComboBox = class(TcxCheckComboBox, IUnknown, IJvDynControl, IJvDynControlData, IJvDynControlItems,
+      IJvDynControlDblClick, IJvDynControlDevExpCx, IJvDynControlReadOnly, IJvDynControlCheckComboBox)
+  private
+    FIntItems: TStrings;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetReadOnly(Value: Boolean);
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
+
+    procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
+
+    function ControlGetDelimiter: string;
+    procedure ControlSetAnchors(Value: TAnchors);
+    procedure ControlSetDelimiter(Value: string);
   end;
 
 
@@ -3987,6 +4019,7 @@ begin
   RegisterControlType(jctComboBox, TJvDynControlCxComboBox);
   RegisterControlType(jctListBox, TJvDynControlCxListBox);
   RegisterControlType(jctCheckListBox, TJvDynControlCxCheckListBox);
+  RegisterControlType(jctCheckComboBox, TJvDynControlCxCheckComboBox);
   RegisterControlType(jctRadioGroup, TJvDynControlCxRadioGroup);
   RegisterControlType(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
   RegisterControlType(jctTimeEdit, TJvDynControlCxTimeEdit);
@@ -4286,6 +4319,162 @@ procedure TJvDynControlCxColorComboBox.SetControlDefaultColor(const Value:
     TColor);
 begin
   Properties.DefaultColor := Value;
+end;
+
+//=== { TJvDynControlCxCheckComboBox } ========================================
+
+constructor TJvDynControlCxCheckComboBox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIntItems := TStringList.Create;
+end;
+
+destructor TJvDynControlCxCheckComboBox.Destroy;
+begin
+  FIntItems.Free;
+  Inherited Destroy;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetDefaultProperties;
+begin
+  Properties.EditValueFormat := cvfCaptions;
+  Properties.ShowEmptyText := False;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetReadOnly(Value: Boolean);
+begin
+  Properties.ReadOnly := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+  Properties.OnChange := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetValue(Value: Variant);
+var
+  ACheckStates: TcxCheckStates;
+  I: Integer;
+  st : tStringList;
+begin
+//  Self.Value := Value;
+  st := tStringList.Create;
+  Properties.Items.BeginUpdate;
+  try
+    st.Duplicates := dupIgnore;
+    if Properties.Delimiter <> '' then
+      st.Delimiter := Properties.Delimiter[1]
+    else
+      st.Delimiter := chr(0);
+    st.StrictDelimiter := True;
+    st.DelimitedText := Value;
+
+    SetLength(ACheckStates, Properties.Items.Count);
+    for i := 0 to Properties.Items.Count - 1 do
+      if st.IndexOf(Properties.Items[I].Description) >= 0 then
+        aCheckStates[i] :=  cbsChecked
+      else
+        aCheckStates[i] :=  cbsUnChecked;
+    Self.Value := CalculateCheckStatesValue (aCheckStates, Properties.Items, Properties.EditValueFormat);
+  finally
+    Properties.Items.EndUpdate;
+    St.Free;
+  end;
+end;
+
+function TJvDynControlCxCheckComboBox.ControlGetValue: Variant;
+var
+  APCheckStates: ^TcxCheckStates;
+  I: Integer;
+begin
+  New(APCheckStates);
+  try
+    CalculateCheckStates(Value, Properties.Items, Properties.EditValueFormat , APCheckStates^);
+    for i := 0 to Properties.Items.Count - 1 do
+      if APCheckStates^[I] = cbsChecked then
+        if Result = '' then
+          Result := Properties.Items[I].Description
+        else
+          Result := Result+Properties.Delimiter+Properties.Items[I].Description;
+  finally
+    Dispose(APCheckStates)
+  end;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetSorted(Value: Boolean);
+begin
+  Properties.Sorted := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetItems(Value: TStrings);
+var
+  I: Integer;
+begin
+  FIntItems.Assign(Value);
+  Properties.Items.Clear;
+  for I := 0 to FIntItems.Count-1 do
+    Properties.Items.AddCheckItem (FIntItems[I]);
+end;
+
+function TJvDynControlCxCheckComboBox.ControlGetItems: TStrings;
+var
+  I: Integer;
+begin
+  FIntItems.Clear;
+  for I := 0 to Properties.Items.Count-1 do
+    FIntItems.Add(Properties.Items[I].Description);
+  Result := FIntItems;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetOnDblClick(Value: TNotifyEvent);
+begin
+  OnDblClick := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetCxProperties(Value: TCxDynControlWrapper);
+begin
+  Style.LookAndFeel.Assign(Value.LookAndFeel);
+  Style.StyleController := Value.StyleController;
+end;
+
+function TJvDynControlCxCheckComboBox.ControlGetDelimiter: string;
+begin
+  Result := Properties.Delimiter;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlCxCheckComboBox.ControlSetDelimiter(Value: string);
+begin
+  Properties.Delimiter:= Value;
 end;
 
 {$ENDIF}

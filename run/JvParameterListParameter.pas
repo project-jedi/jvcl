@@ -610,6 +610,26 @@ type
     property RaggedRight: Boolean read FRaggedRight write FRaggedRight;
   end;
 
+  TJvCheckComboBoxParameter = class(TJvListParameter)
+  private
+    FDelimiter: string;
+    FSorted: Boolean;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
+    procedure SetWinControlProperties; override;
+    function GetWinControlData: Variant; override;
+    procedure SetWinControlData(Value: Variant); override;
+  public
+    constructor Create(AParameterList: TJvParameterList); override;
+    procedure GetData; override;
+    procedure SetData; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Delimiter: string read FDelimiter write FDelimiter;
+    property Sorted: Boolean read FSorted write FSorted;
+  end;
+
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -2620,6 +2640,79 @@ begin
   for i := 0 to Pages.Count - 1 do
     if Supports(PageWinControl(i), IJvArrangePanel, ITmpArrangePanel) then
       ITmpArrangePanel.ArrangeSettings := ArrangeSettings;
+end;
+
+//=== { TJvCheckComboBoxParameter } ===============================================
+
+constructor TJvCheckComboBoxParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  LabelArrangeMode := lamBefore;
+  FSorted := False;
+  FDelimiter := ';';
+end;
+
+procedure TJvCheckComboBoxParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvCheckComboBoxParameter then
+  begin
+    Sorted := TJvCheckComboBoxParameter(Source).Sorted;
+    Delimiter := TJvCheckComboBoxParameter(Source).Delimiter;
+  end;
+end;
+
+function TJvCheckComboBoxParameter.GetParameterNameExt: string;
+begin
+  Result := 'CheckComboBox';
+end;
+
+procedure TJvCheckComboBoxParameter.GetData;
+begin
+  if Assigned(WinControl) then
+    Value := WinControlData
+  else
+    Value := Null;
+end;
+
+procedure TJvCheckComboBoxParameter.SetData;
+begin
+  if Assigned(WinControl) then
+    WinControlData := Value;
+end;
+
+procedure TJvCheckComboBoxParameter.CreateWinControl(AParameterParent: TWinControl);
+begin
+  SetWinControl (DynControlEngine.CreateCheckComboBoxControl(Self, AParameterParent,
+    GetParameterName, ItemList, Delimiter));
+end;
+
+procedure TJvCheckComboBoxParameter.SetWinControlProperties;
+var
+  ITmpItems: IJvDynControlItems;
+  ITmpCheckComboBox: IJvDynControlCheckComboBox;
+begin
+  inherited SetWinControlProperties;
+  if Supports(WinControl, IJvDynControlItems, ITmpItems) then
+    ITmpItems.ControlSetSorted(Sorted);
+  if Supports(WinControl, IJvDynControlCheckComboBox, ITmpCheckComboBox) then
+    ITmpCheckComboBox.ControlSetDelimiter(Delimiter);
+end;
+
+function TJvCheckComboBoxParameter.GetWinControlData: Variant;
+var
+  Index: Integer;
+begin
+  if Assigned(JvDynControlData) then
+    Result := JvDynControlData.ControlValue
+  else
+    Result := null;
+end;
+
+procedure TJvCheckComboBoxParameter.SetWinControlData(Value: Variant);
+begin
+  if Assigned(JvDynControlData) then
+    JvDynControlData.ControlValue := Value;
 end;
 
 {$IFDEF UNITVERSIONING}

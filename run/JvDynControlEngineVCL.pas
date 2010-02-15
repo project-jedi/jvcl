@@ -2310,7 +2310,7 @@ end;
 
 procedure TJvDynControlVCLComboBox.ControlSetValue(Value: Variant);
 begin
-  if Style = csDropDownList then
+  if (Style = csDropDownList) and VarIsInt(Value) then
     ItemIndex := Items.IndexOf(VarToStr(Value))
   else
     Text := Value;
