@@ -819,6 +819,33 @@ type
     function ControlGetPage(const PageName: string): TWinControl;
   end;
 
+type
+  TJvDynControlJVCLCheckedComboBox = class(TJvCheckedComboBox, IUnknown, IJvDynControl, IJvDynControlData,
+      IJvDynControlItems, IJvDynControlDblClick, IJvDynControlCheckComboBox)
+  public
+    function ControlGetDelimiter: string;
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetTabOrder(Value: Integer);
+
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetHint(const Value: string);
+
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
+
+    procedure ControlSetSorted(Value: Boolean);
+    procedure ControlSetItems(Value: TStrings);
+    function ControlGetItems: TStrings;
+
+    procedure ControlSetOnDblClick(Value: TNotifyEvent);
+
+    procedure ControlSetAnchors(Value: TAnchors);
+    procedure ControlSetDelimiter(Value: string);
+  end;
+
 
 function DynControlEngineJVCL: TJvDynControlEngine;
 procedure SetDynControlEngineJVCLDefault;
@@ -2310,7 +2337,7 @@ end;
 
 procedure TJvDynControlJVCLComboBox.ControlSetValue(Value: Variant);
 begin
-  if Style = csDropDownList then
+  if (Style = csDropDownList) and VarIsInt(Value) then
     ItemIndex := Items.IndexOf(Value)
   else
     Text := Value;
@@ -3248,6 +3275,7 @@ begin
   RegisterControlType(jctComboBox, TJvDynControlJVCLComboBox);
   RegisterControlType(jctListBox, TJvDynControlJVCLListBox);
   RegisterControlType(jctCheckListBox, TJvDynControlJVCLCheckListBox);
+  RegisterControlType(jctCheckComboBox, TJvDynControlJVCLCheckedComboBox);
   RegisterControlType(jctRadioGroup, TJvDynControlJVCLRadioGroup);
   RegisterControlType(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
   RegisterControlType(jctTimeEdit, TJvDynControlJVCLTimeEdit);
@@ -3447,7 +3475,89 @@ begin
   TabOrder := Value;
 end;
 
+//=== { TJvDynControlJVCLCheckedComboBox } ======================================
 
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetOnChange(Value: TNotifyEvent);
+begin
+//  OnChange := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetValue(Value: Variant);
+begin
+  Text := Value;
+end;
+
+function TJvDynControlJVCLCheckedComboBox.ControlGetValue: Variant;
+begin
+  Result := Text;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetSorted(Value: Boolean);
+begin
+  Sorted := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetItems(Value: TStrings);
+begin
+  Items.Assign(Value);
+end;
+
+function TJvDynControlJVCLCheckedComboBox.ControlGetItems: TStrings;
+begin
+  Result := Items;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetOnDblClick(Value: TNotifyEvent);
+begin
+  OnDblClick := Value;
+end;
+
+function TJvDynControlJVCLCheckedComboBox.ControlGetDelimiter: string;
+begin
+  Result := Delimiter;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLCheckedComboBox.ControlSetDelimiter(Value: string);
+begin
+  if Value <> '' then
+    Delimiter:= Value[1]
+  else
+    Delimiter := chr(0);
+end;
 
 initialization
   {$IFDEF UNITVERSIONING}

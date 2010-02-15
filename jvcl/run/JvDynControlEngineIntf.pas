@@ -118,6 +118,13 @@ type
     property ControlItems: TStrings read ControlGetItems write ControlSetItems;
   end;
 
+  IJvDynControlCheckComboBox = interface
+    ['{86D2DD54-5114-42B2-9E44-1D32ECFDA5D0}']
+    procedure ControlSetDelimiter(Value: string);
+    function ControlGetDelimiter: string;
+    property Delimiter: string read ControlGetDelimiter write ControlSetDelimiter;
+  end;
+
   IJvDynControlItemIndex = interface
     ['{C4C80378-EC64-4DE0-B4D0-6BE1E09B06A1}']
     function ControlGetItemIndex: Integer;

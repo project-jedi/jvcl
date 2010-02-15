@@ -54,6 +54,7 @@ const
   jctRichEdit = TJvDynControlType('RichEdit');
   jctListBox = TJvDynControlType('ListBox');
   jctCheckListBox = TJvDynControlType('CheckListBox');
+  jctCheckComboBox = TJvDynControlType('CheckComboBox');
   jctDateTimeEdit = TJvDynControlType('DateTimeEdit');
   jctDateEdit = TJvDynControlType('DateEdit');
   jctTimeEdit = TJvDynControlType('TimeEdit');
@@ -162,9 +163,8 @@ type
       const AControlName: string): TWinControl; virtual;
     function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AItems: TStrings): TWinControl; virtual;
-    function CreateCheckListBoxControl(AOwner: TComponent; AParentControl:
-        TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
-        virtual;
+    function CreateCheckListBoxControl(AOwner: TComponent; AParentControl: TWinControl; const AControlName: string; AItems:
+        TStrings): TWinControl; virtual;
     function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string): TWinControl; virtual;
     function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
@@ -193,6 +193,8 @@ type
       const ARadioButtonName, ACaption: string): TWinControl; virtual;
     function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
+    function CreateCheckComboBoxControl(AOwner: TComponent; AParentControl: TWinControl; const AControlName: string;
+        AItems: TStrings; ADelimiter: string): TWinControl; virtual;
     function CreateColorComboboxControl(AOwner: TComponent; AParentControl:
         TWinControl; const AControlName: string; ADefaultColor: TColor):
         TWinControl; virtual;
@@ -730,9 +732,8 @@ begin
   end;
 end;
 
-function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent;
-    AParentControl: TWinControl; const AControlName: string; AItems: TStrings):
-    TWinControl;
+function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent; AParentControl: TWinControl; const
+    AControlName: string; AItems: TStrings): TWinControl;
 var
   DynCtrlItems: IJvDynControlItems;
 begin
@@ -854,6 +855,22 @@ begin
   Result := TWinControl(CreateControl(jctButtonEdit, AOwner, AParentControl, AControlName));
   IntfCast(Result, IJvDynControlButtonEdit, DynCtrlButtonEdit);
   DynCtrlButtonEdit.ControlSetOnButtonClick(AOnButtonClick);
+end;
+
+function TJvDynControlEngine.CreateCheckComboBoxControl(AOwner: TComponent; AParentControl: TWinControl; const
+    AControlName: string; AItems: TStrings; ADelimiter: string): TWinControl;
+var
+  DynCtrlItems: IJvDynControlItems;
+  DynControlCheckComboBox: IJvDynControlCheckComboBox;
+begin
+  Result := TWinControl(CreateControl(jctCheckComboBox, AOwner, AParentControl, AControlName));
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+    IntfCast(Result, IJvDynControlCheckComboBox, DynControlCheckComboBox);
+    DynControlCheckComboBox.Delimiter := ADelimiter;
+  end;
 end;
 
 function TJvDynControlEngine.CreateColorComboboxControl(AOwner: TComponent;
