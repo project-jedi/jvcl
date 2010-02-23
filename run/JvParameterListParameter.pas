@@ -2700,8 +2700,6 @@ begin
 end;
 
 function TJvCheckComboBoxParameter.GetWinControlData: Variant;
-var
-  Index: Integer;
 begin
   if Assigned(JvDynControlData) then
     Result := JvDynControlData.ControlValue
