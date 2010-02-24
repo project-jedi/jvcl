@@ -383,8 +383,8 @@ type
   public
     constructor Create(AJvEditor: TJvCustomEditorBase);
     destructor Destroy; override;
-    procedure Undo; {$IFDEF COMPILER12_UP}virtual; {$ELSE}dynamic;{$ENDIF COMPILER12_UP} abstract;
-    procedure Redo; dynamic; {abstract;}
+    procedure Undo; virtual; abstract;
+    procedure Redo; virtual; {abstract;}
     procedure SaveSelection;
     procedure RestoreSelection;
   end;
@@ -428,7 +428,7 @@ type
     FOnScroll: TScrollEvent;
     procedure SetParam(Index, Value: Integer);
   protected
-    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); dynamic;
+    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); virtual;
   public
     constructor Create;
     procedure SetParams(AMin, AMax, APosition, APage: Integer);
@@ -819,18 +819,18 @@ type
     procedure TextAllChangedInternal(Unselect: Boolean); virtual;
 
     { triggers for descendants }
-    procedure Changed; dynamic;
-    procedure TextAllChanged; dynamic;
-    procedure StatusChanged; dynamic;
-    procedure SelectionChanged; dynamic;
+    procedure Changed; virtual;
+    procedure TextAllChanged; virtual;
+    procedure StatusChanged; virtual;
+    procedure SelectionChanged; virtual;
     procedure GetAttr(Line, ColBeg, ColEnd: Integer); virtual;
     procedure ChangeAttr(Line, ColBeg, ColEnd: Integer); virtual;
-    procedure GutterPaint(Canvas: TCanvas); dynamic;
-    procedure GutterClick(Line: Integer); dynamic;
-    procedure GutterDblClick(Line: Integer); dynamic;
-    procedure BookmarkChanged(Bookmark: Integer); dynamic;
-    procedure CompletionIdentifier(var Cancel: Boolean); dynamic;
-    procedure CompletionTemplate(var Cancel: Boolean); dynamic;
+    procedure GutterPaint(Canvas: TCanvas); virtual;
+    procedure GutterClick(Line: Integer); virtual;
+    procedure GutterDblClick(Line: Integer); virtual;
+    procedure BookmarkChanged(Bookmark: Integer); virtual;
+    procedure CompletionIdentifier(var Cancel: Boolean); virtual;
+    procedure CompletionTemplate(var Cancel: Boolean); virtual;
     procedure DoCompletionIdentifier(var Cancel: Boolean);
     procedure DoCompletionTemplate(var Cancel: Boolean);
   protected
@@ -840,7 +840,7 @@ type
     procedure Loaded; override;
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
       ScrollPos: Integer);
-    procedure Scroll(Vert: Boolean; ScrollPos: Integer); dynamic;
+    procedure Scroll(Vert: Boolean; ScrollPos: Integer); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
 
@@ -853,9 +853,9 @@ type
     procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure FocusSet(PrevWnd: THandle); override;
     procedure FocusKilled(NextWnd: THandle); override;
-    procedure DoPaste; dynamic;
-    procedure DoCopy; dynamic;
-    procedure DoCut; dynamic;
+    procedure DoPaste; virtual;
+    procedure DoCopy; virtual;
+    procedure DoCut; virtual;
     procedure CursorChanged; override;
     procedure FontChanged; override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -870,7 +870,7 @@ type
     procedure IStandardEditActions.Cut = ClipboardCut;
     procedure IStandardEditActions.Copy = ClipboardCopy;
     procedure IStandardEditActions.Paste = ClipboardPaste;
-    procedure IStandardEditActions.Delete = DeleteSelected;
+    procedure IStandardEditActions.ClearSelection = DeleteSelected;
   protected
     { get/set methods for properties }
     procedure SetGutterWidth(AWidth: Integer);
@@ -974,11 +974,11 @@ type
     procedure SelectAll; { IFixedPopupIntf }
     function HasSelection: Boolean; { IFixedPopupIntf }
 
-    procedure ClipboardCopy; dynamic; abstract;
-    procedure ClipboardPaste; dynamic; abstract;
-    procedure ClipboardCut; dynamic;
-    procedure DeleteSelected; dynamic; abstract;
-    procedure ClearSelection; dynamic;
+    procedure ClipboardCopy; virtual; abstract;
+    procedure ClipboardPaste; virtual; abstract;
+    procedure ClipboardCut; virtual;
+    procedure DeleteSelected; virtual; abstract;
+    procedure Deselect; virtual;
 
     procedure Undo;
     procedure Redo; // not implemented yet
@@ -5157,7 +5157,7 @@ begin
   DeleteSelected;
 end;
 
-procedure TJvCustomEditorBase.ClearSelection;
+procedure TJvCustomEditorBase.Deselect;
 begin
   SetUnSelected;
 end;

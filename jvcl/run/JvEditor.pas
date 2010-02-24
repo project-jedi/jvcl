@@ -2636,7 +2636,7 @@ begin
       try
         BeginCompound;
         try
-          ClearSelection;
+          Deselect;
           ReLine;
 
           if Length(W) = 0 then

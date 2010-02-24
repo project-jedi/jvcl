@@ -47,9 +47,8 @@ type
     procedure Cut;
     procedure Copy;
     procedure Paste;
-    procedure Delete;
+    procedure ClearSelection; // deletes the selected text
     procedure SelectAll;
-    procedure ClearSelection;
   end;
 
   { Standard Editor actions }
@@ -154,7 +153,7 @@ begin
   begin
     if not SupportsControl(Value) then
       Value := nil;
-    ReplaceComponentReference (Self, Value, TComponent(FControl));
+    ReplaceComponentReference(Self, Value, TComponent(FControl));
   end;
 end;
 
@@ -226,9 +225,7 @@ begin
   if Supports(Target, IStandardEditActions, Intf) then
     Enabled :=  Intf.CanPaste
   else if Target is TCustomEdit then
-  begin
     Enabled := Clipboard.HasFormat(CF_TEXT) and not TOpenCustomEdit(GetEditControl(Target)).ReadOnly;
-  end;
 end;
 
 //=== { TJvEditSelectAll } ==========================================================
