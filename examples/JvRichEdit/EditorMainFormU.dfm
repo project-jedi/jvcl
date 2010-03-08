@@ -1,10 +1,10 @@
 object EditorMainForm: TEditorMainForm
   Left = 324
   Top = 105
-  Width = 554
-  Height = 282
   ActiveControl = FontName
   Caption = 'Rich Edit 2.0 Demo'
+  ClientHeight = 255
+  ClientWidth = 546
   Color = clBtnFace
   Constraints.MinHeight = 280
   Constraints.MinWidth = 550
@@ -112,7 +112,7 @@ object EditorMainForm: TEditorMainForm
     Left = 0
     Top = 88
     Width = 546
-    Height = 129
+    Height = 148
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -131,10 +131,11 @@ object EditorMainForm: TEditorMainForm
     OnGetDragDropEffect = EditorGetDragDropEffect
     OnQueryAcceptData = EditorQueryAcceptData
     OnURLClick = EditorURLClick
+    ExplicitHeight = 129
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 217
+    Top = 236
     Width = 546
     Height = 19
     Panels = <
@@ -148,7 +149,7 @@ object EditorMainForm: TEditorMainForm
       item
         Width = 50
       end>
-    SimplePanel = False
+    ExplicitTop = 217
   end
   object SpeedBar: TJvSpeedBar
     Left = 0
@@ -163,8 +164,8 @@ object EditorMainForm: TEditorMainForm
     BtnWidth = 24
     BtnHeight = 23
     Images = ToolbarImages
-    BevelOuter = bvNone
     Locked = True
+    BevelOuter = bvNone
     TabOrder = 0
     InternalVer = 1
     object SpeedbarSection1: TJvSpeedBarSection
@@ -307,9 +308,10 @@ object EditorMainForm: TEditorMainForm
       Width = 175
       Height = 22
       DroppedDownWidth = 175
-      FontName = 'Arial'
+      MaxMRUCount = 0
+      FontName = 'Californian FB'
       Device = fdBoth
-      ItemIndex = 0
+      ItemIndex = 47
       Options = [foWysiWyg]
       Sorted = True
       TabOrder = 0
@@ -323,9 +325,9 @@ object EditorMainForm: TEditorMainForm
       Alignment = taRightJustify
       ButtonKind = bkStandard
       Decimal = 0
-      MaxValue = 2147483647
-      MinValue = 1
-      Value = 8
+      MaxValue = 2147483647.000000000000000000
+      MinValue = 1.000000000000000000
+      Value = 8.000000000000000000
       TabOrder = 1
       OnChange = FontSizeChange
     end
@@ -362,8 +364,10 @@ object EditorMainForm: TEditorMainForm
       AllowAllUp = True
       Caption = 'Underline'
       GroupIndex = 7
+      DropDownMenu = UnderlineStyle
       Hint = 'Underline'
       ImageIndex = 15
+      MarkDropDown = False
       Spacing = 1
       Left = 276
       Top = 5
@@ -531,6 +535,11 @@ object EditorMainForm: TEditorMainForm
         Tag = -1
         Caption = 'Save Selec&ted...'
         OnClick = FileSaveSelected
+      end
+      object ExportToHtmlItem: TMenuItem
+        Tag = -1
+        Caption = 'Export to HTML...'
+        OnClick = ExportToHtmlItemClick
       end
       object N1: TMenuItem
         Tag = -1
@@ -737,8 +746,6 @@ object EditorMainForm: TEditorMainForm
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     Device = fdBoth
-    MinFontSize = 0
-    MaxFontSize = 0
     Left = 36
     Top = 100
   end
@@ -1871,6 +1878,22 @@ object EditorMainForm: TEditorMainForm
     OnActivate = FormActivate
     OnHint = ShowHint
     Left = 120
+    Top = 128
+  end
+  object UnderlineStyle: TJvPopupMenu
+    OnPopup = UnderlineStylePopup
+    Style = msXP
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 16
+    ImageSize.Width = 16
+    Left = 148
+    Top = 128
+  end
+  object JvRichEditToHtml1: TJvRichEditToHtml
+    Left = 176
     Top = 128
   end
 end

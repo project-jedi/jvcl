@@ -33,7 +33,9 @@ uses
   ImgList, Controls, Menus, JvMenus, ComCtrls, ExtCtrls, Classes, ActiveX,
   JvComponent, JvAppEvent, JvMaskEdit, JvSpin, JvCombobox, JvColorCombo,
   JvSpeedBar, JvRichEdit, JvClipboardMonitor, JvExMask, JvExStdCtrls,
-  JvExExtCtrls, XPColorMenuItemPainter;
+  JvExExtCtrls, XPColorMenuItemPainter, 
+  JvComponentBase, JvExtComponent,
+  JvRichEditToHtml, JvDialogs;
 
 type
   TEditorMainForm = class(TForm)
@@ -118,6 +120,9 @@ type
     App: TJvAppEvents;
     FormatTabsItem: TMenuItem;
     JustifyBtn: TJvSpeedItem;
+    UnderlineStyle: TJvPopupMenu;
+    JvRichEditToHtml1: TJvRichEditToHtml;
+    ExportToHtmlItem: TMenuItem;
     procedure SelectionChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ShowHint(Sender: TObject);
@@ -192,6 +197,8 @@ type
     procedure EditorGetDragDropEffect(Sender: TObject;
       ShiftState: TShiftState; var AllowedEffects: TRichDropEffects;
       var Handled: Boolean);
+    procedure ExportToHtmlItemClick(Sender: TObject);
+    procedure UnderlineStylePopup(Sender: TObject);
   private
     FFileName: string;
     FUpdating: Boolean;
@@ -253,6 +260,10 @@ const
     clBlack, clMaroon, clGreen, clOlive, clNavy, clPurple, clTeal, clGray,
     clSilver, clRed, clLime, clYellow, clBlue, clFuchsia, clAqua, clWhite,
     clWindow);
+
+  UnderlineTypes: array[TUnderlineType] of string =
+     ('None', 'Solid', 'Word', 'Double', 'Dotted', 'Dash',
+    'DashDot', 'DashDotDot', 'Wave', 'Thick');
 
 function ColorName(Color: TColor): string;
 begin
@@ -699,6 +710,19 @@ begin
       Add(Item);
     end;
   end;
+  with UnderlineStyle.Items do
+  begin
+    while Count > 0 do
+      Items[Count - 1].Free;
+    for I := 0 to 9 do
+    begin
+      Item := NewItem(UnderlineTypes[TUnderlineType(I)], scNone,
+        False, True, UnderlineButtonClick, 0, '');
+      Item.RadioItem := True;
+      Item.Tag := I;
+      Add(Item);
+    end;
+  end;
   FClipboardMonitor := TJvClipboardMonitor.Create(Self);
   FClipboardMonitor.OnChange := ClipboardChanged;
   SuperscriptBtn.Enabled := RichEditVersion >= 2;
@@ -1084,6 +1108,11 @@ procedure TEditorMainForm.UnderlineButtonClick(Sender: TObject);
 begin
   if FUpdating then
     Exit;
+  if Sender is TMenuItem then
+  begin
+    CurrText.UnderlineType := TUnderlineType(TMenuItem(Sender).Tag);
+  end
+  else
   if UnderlineBtn.Down then
     CurrText.Style := CurrText.Style + [fsUnderline]
   else
@@ -1236,6 +1265,32 @@ begin
     AllowedEffects := [];
 
   Handled := True;
+end;
+
+procedure TEditorMainForm.ExportToHtmlItemClick(Sender: TObject);
+const
+  cHtmlExportFilter = 'HTML documents|*.HTML;*.HTM';
+  cHtmlExportTitle = 'Where to save exported HTML?';
+  cHtmlExportExt = 'HTML';
+var
+  tmpHtmlFilename: string;
+begin
+  if PromptForFileName(tmpHtmlFilename, cHtmlExportFilter,cHtmlExportExt,cHtmlExportTitle,
+    '',True) then
+  begin
+    JvRichEditToHtml1.ConvertToHtml(self.Editor, tmpHtmlFilename);
+    RichEditChange(nil);
+  end;
+end;
+
+procedure TEditorMainForm.UnderlineStylePopup(Sender: TObject);
+var
+  I: Integer;
+  UT: TUnderlineType;
+begin
+  UT := CurrText.UnderlineType;
+  for I := 0 to 9 do
+    UnderlineStyle.Items[I].Checked := (UT =  TUnderlineType(i) );
 end;
 
 end.
