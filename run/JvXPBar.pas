@@ -1958,7 +1958,9 @@ begin
       FOnItemClick(Self, FVisibleItems[FHoverIndex]);
       CallInherited := False;
     end;
-    if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
+
+    // OnItemClick might steer focus away, thus removing the hovering item
+    if (FHoverIndex > -1) and Assigned(FVisibleItems[FHoverIndex].FOnClick) then
     begin
       { set linked 'action' as Sender }
       if Assigned(FVisibleItems[FHoverIndex].Action) and
