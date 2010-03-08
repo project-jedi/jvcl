@@ -444,7 +444,7 @@ var
 begin
   Item := SearchList.Selected;
   if Item <> nil then
-    WinExec(PChar('Notepad ' + Item.Caption), sw_Normal);
+    WinExec(PAnsiChar('Notepad ' + AnsiString(Item.Caption)), sw_Normal);
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
