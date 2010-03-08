@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain A copy of the License at
@@ -957,7 +957,8 @@ begin
   Col := Msg.Column;
   Row := Msg.Row;
   EditorMode := True;
-  InplaceEditor.SelectAll;
+  if Assigned(InplaceEditor) then
+    InplaceEditor.SelectAll;
 end;
 
 procedure TJvStringGrid.InvalidateCell(AColumn, ARow: Integer);
