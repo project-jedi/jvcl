@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -1115,8 +1115,8 @@ begin
   // Get the port
   if Pos(':', Host) <> 0 then
   begin
-    Host := Copy(Host, 1, Pos(':', Host) - 1);
     Port := StrToIntDef(Copy(Host, Pos(':', Host) + 1, Length(Host)), 0);
+    Host := Copy(Host, 1, Pos(':', Host) - 1);
   end;
 end;
 
