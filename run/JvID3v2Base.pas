@@ -4134,7 +4134,7 @@ begin
   TStringList(FList).OnChange := ListChanged;
   {$ELSE}
   FList := JclUnicode.TWideStringList.Create;
-  TWideStringList(FList).OnChange := ListChanged;
+  JclUnicode.TWideStringList(FList).OnChange := ListChanged;
   {$ENDIF COMPILER12_UP}
 end;
 
@@ -7158,7 +7158,7 @@ begin
   TStringList(FList).OnChange := ListChanged;
   {$ELSE}
   FList := JclUnicode.TWideStringList.Create;
-  TWideStringList(FList).OnChange := ListChanged;
+  JclUnicode.TWideStringList(FList).OnChange := ListChanged;
   {$ENDIF COMPILER12_UP}
 end;
 
