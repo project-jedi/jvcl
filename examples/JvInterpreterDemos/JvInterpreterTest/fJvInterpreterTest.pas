@@ -183,7 +183,7 @@ var
   AExeDir: string;
 begin
   AExeDir := ExtractFilePath(Application.ExeName);
-  Result := ExtractFilePath(ExcludeTrailingPathDelimiter(AExeDir)) + 'examples\RaLib\RaInterpreter\';
+  Result := ExtractFilePath(ExcludeTrailingPathDelimiter(AExeDir)) + 'examples\JvInterpreterDemos\JvInterpreterTest\';
 end;
 
 function SamplesDir: string;
