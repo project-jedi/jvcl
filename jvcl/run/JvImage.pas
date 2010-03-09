@@ -37,7 +37,7 @@ uses
   JvExExtCtrls;
 
 type
-  TPicState = (stDefault, stEntered, stClicked1, stClicked2, stDown);
+  TPicState = (stDefault, stEntered, stClicked1, stClicked2, stDown, stDisabled);
 
   TJvPictures = class(TPersistent)
   private
@@ -46,10 +46,12 @@ type
     FPicClicked2: TPicture;
     FPicDown: TPicture;
     FPicEnter: TPicture;
+    FPicDisabled: TPicture;
     procedure SetPicClicked(const Value: TPicture);
     procedure SetPicClicked2(const Value: TPicture);
     procedure SetPicDown(const Value: TPicture);
     procedure SetPicEnter(const Value: TPicture);
+    procedure SetPicDisabled(const Value: TPicture);
   protected
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     procedure Changed;
@@ -61,6 +63,7 @@ type
     property PicClicked1: TPicture read FPicClicked1 write SetPicClicked;
     property PicClicked2: TPicture read FPicClicked2 write SetPicClicked2;
     property PicDown: TPicture read FPicDown write SetPicDown;
+    property PicDisabled:TPicture read FPicDisabled write SetPicDisabled;
   end;
 
   TJvImage = class(TJvExImage)
@@ -82,6 +85,7 @@ type
   protected
     procedure Click; override;
     procedure Paint; override;
+    procedure SetEnabled(Value: Boolean); override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function HitTest(X, Y: Integer): Boolean; override;
@@ -285,6 +289,19 @@ begin
     SetState(State);
 end;
 
+procedure TJvImage.SetEnabled(Value: Boolean);
+begin
+  if Value <> Enabled then
+  begin
+    if not Value then
+      State := stDisabled
+    else
+      State := stDefault;
+  end;
+
+  inherited SetEnabled(Value);
+end;
+
 procedure TJvImage.SetPicture(const Value: TPicture);
 begin
   FPicture.Assign(Value);
@@ -329,6 +346,12 @@ begin
         inherited Picture.Assign(Pictures.PicDown);
         FState := Value;
       end;
+    stDisabled:
+      if NotEmpty(Pictures.PicDisabled) then
+      begin
+        inherited Picture.Assign(Pictures.PicDisabled);
+        FState := Value;
+      end;
   end;
   if Assigned(FOnStateChanged) then
     FOnStateChanged(Self);
@@ -344,7 +367,8 @@ begin
   Result := Assigned(Pictures.PicEnter.Graphic) or
     Assigned(Pictures.PicClicked1.Graphic) or
     Assigned(Pictures.PicClicked2.Graphic) or
-    Assigned(Pictures.PicDown.Graphic);
+    Assigned(Pictures.PicDown.Graphic) or
+    Assigned(Pictures.PicDisabled.Graphic);
 end;
 
 procedure TJvImage.LoadFromStream(AStream: TStream);
@@ -368,6 +392,7 @@ begin
   FPicClicked2 := TPicture.Create;
   FPicDown := TPicture.Create;
   FPicEnter := TPicture.Create;
+  FPicDisabled := TPicture.Create;
 end;
 
 destructor TJvPictures.Destroy;
@@ -376,6 +401,7 @@ begin
   FPicClicked2.Free;
   FPicDown.Free;
   FPicEnter.Free;
+  FPicDisabled.Free;
   inherited Destroy;
 end;
 
@@ -394,6 +420,12 @@ end;
 procedure TJvPictures.SetPicClicked2(const Value: TPicture);
 begin
   FPicClicked2.Assign(Value);
+  Changed;
+end;
+
+procedure TJvPictures.SetPicDisabled(const Value: TPicture);
+begin
+  FPicDisabled.Assign(Value);
   Changed;
 end;
 
