@@ -58,9 +58,11 @@ type
     FOnExecuteFunction: TOnExecuteFunction;
     FEnableWildcardMatching: Boolean;
     FErrorMessage: string;
+    FCaseInsensitive: Boolean;
     procedure SetExpression(const Value: string);
     function DoGetVariable(const VarName: string; var Value: Variant): Boolean;
     function DoExecuteFunction(const FuncName: string; const Args: Variant; var ResVal: Variant): Boolean;
+    procedure SetCaseInsensitive(const Value: Boolean);
   public
     constructor Create();
     destructor Destroy; override;
@@ -75,6 +77,7 @@ type
     property OnExecuteFunction: TOnExecuteFunction read FOnExecuteFunction write FOnExecuteFunction;
     property Value: Variant read FValue;
     property EnableWildcardMatching: Boolean read FEnableWildcardMatching write FEnableWildcardMatching;
+    property CaseInsensitive: Boolean read FCaseInsensitive write SetCaseInsensitive;
   end;
 
   EExprParserError = class(Exception);
@@ -107,7 +110,8 @@ const
     '>',
     '&',
     '|',
-    '!'];
+    '!',
+    '~'];
 
 type
   TToken = (tkNA, tkEOF, tkError,
@@ -413,10 +417,15 @@ begin
           if CompareText(S, 'and') = 0 then
             Add(TLex.Create(tkOperator, '&', StartIdx))
           else
-          if CompareText(S, 'or') = 0 then
-            Add(TLex.Create(tkOperator, '|', StartIdx))
-          else
-            Add(TLex.Create(CToken, S, StartIdx));
+            if CompareText(S, 'or') = 0 then
+              Add(TLex.Create(tkOperator, '|', StartIdx))
+            else
+            begin
+              if CompareText(S, 'like')=0 then
+                Add(TLex.Create(tkOperator, '~', StartIdx))
+              else
+                Add(TLex.Create(CToken, S, StartIdx));
+            end;
           S := '';
         end
       else
@@ -473,7 +482,10 @@ begin
       Result := True;
     except
       on E: Exception do
+      begin
         FErrorMessage := E.Message;
+//        raise;
+      end;
     end;
   end;
 end;
@@ -542,7 +554,7 @@ begin
 
     if Lex.Token = tkOperator then
     begin
-      if Lex.Chr in ['*', '/', '=', '&', '|', '<', '>'] then
+      if Lex.Chr in ['*', '/', '=', '&', '|', '<', '>', '~'] then
       begin
         LexAccept();
         RightNode := Expr();
@@ -673,41 +685,56 @@ function TNodeBin.Eval: Variant;
 var
   LeftValue, RightValue: Variant;
 
-  function FixupBoolean(var aVal1: variant; var aVal2: variant): boolean;
+  function FixupBoolean(var AVal1: Variant; var AVal2: Variant): Boolean;
   begin
-    Result := (TVarData(aVal1).VType=varBoolean) or (TVarData(aVal2).VType=varBoolean);
+    Result := (TVarData(AVal1).VType = varBoolean) or (TVarData(AVal2).VType = varBoolean);
     if Result then
     begin
-      if UpperCase(aVal1)='TRUE' then
-        aVal1 := 1
+      if UpperCase(AVal1) = 'TRUE' then
+        AVal1 := 1
       else
-        aVal1 := 0;
+        AVal1 := 0;
 
-      if UpperCase(aVal2)='TRUE' then
-        aVal2 := 1
+      if UpperCase(AVal2) = 'TRUE' then
+        AVal2 := 1
       else
-        aVal1 := 0;
+        AVal1 := 0;
     end;
   end;
 
-  function FixupDateTime(var aVal1: variant; var aVal2: variant): boolean;
+  function FixupDateTime(var AVal1: Variant; var AVal2: Variant): Boolean;
   begin
-    Result := TVarData(aVal1).VType=varDate;
+    Result := TVarData(AVal1).VType = varDate;
     if Result then
     begin
-      if TVarData(aVal2).VType=varString then
-        aVal2:=StrToDateTime(aVal2); //convert;
+      if TVarData(AVal2).VType = varString then
+        AVal2 := StrToDateTime(AVal2); //convert;
     end;
+  end;
+
+  function FixupString(var aVal: Variant): Boolean;
+  begin
+    Result:=((TVarData(aVal).VType = varString) or (TVarData(aVal).VType = varUString)) and FParser.Parent.FCaseInsensitive;
+    if Result then
+      aVal := AnsiUpperCase(aVal);
   end;
 
   //returns 'True' if a conversion was necessary.
-  function FixupValues(var aVal1: variant; var aVal2: variant): boolean;
+  function FixupValues(var AVal1: Variant; var AVal2: Variant): Boolean;
+  var
+    bChanged: Boolean;
   begin
-    Result:=FixupDateTime(aVal1, aVal2);
+    Result := FixupDateTime(AVal1, AVal2);
     if not Result then
-      Result:=FixupDateTime(aVal2, aVal1);
+      Result := FixupDateTime(AVal2, AVal1);
     if not Result then
-      Result:=FixupBoolean(aVal1, aVal2);
+      Result := FixupBoolean(AVal1, AVal2);
+    if not Result then //ensure that the 'String' case is the last one
+    begin
+      Result := FixupString(AVal1);
+      bChanged := FixupString(AVal2);
+      Result := Result or bChanged; //ensure that both Fixups are executed regardless of optimisations
+    end;
   end;
 
   function EvalLike: Boolean;
@@ -883,6 +910,7 @@ var
   VArgs: Variant;
   I: Integer;
 begin
+
   VArgs := VarArrayCreate([0, FArgs.Count - 1], varVariant);
   for I := 0 to FArgs.Count - 1 do
     VArgs[I] := TNode(FArgs[I]).Eval();
@@ -964,6 +992,11 @@ function TExprParser.Eval(const AExpression: string): Boolean;
 begin
   SetExpression(AExpression);
   Result := Eval();
+end;
+
+procedure TExprParser.SetCaseInsensitive(const Value: Boolean);
+begin
+  FCaseInsensitive := Value;
 end;
 
 procedure TExprParser.SetExpression(const Value: string);
