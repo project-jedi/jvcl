@@ -257,6 +257,7 @@ type
     property Active;
     property AutoCalcFields;
     property Filtered;
+    property FilterOptions;
     property FieldDefs;
     property ObjectView default False;
     property DataSet: TDataSet read FDataSet write SetDataSet;
@@ -1092,7 +1093,8 @@ begin
         RecordToBuffer(Records[FRecordPos], TempBuffer);
         if Assigned(FFilterParser) and FFilterParser.Eval() then
         begin
-          FFilterParser.EnableWildcardMatching := True;
+          FFilterParser.EnableWildcardMatching := not (foNoPartialCompare in FilterOptions);
+          FFilterParser.CaseInsensitive := foCaseInsensitive in FilterOptions;
           Result := FFilterParser.Value;
         end;
         if Assigned(OnFilterRecord) then
@@ -1501,7 +1503,10 @@ procedure TJvMemoryData.SetFilterText(const Value: string);
     begin
       FFilterParser := TExprParser.Create;
       FFilterParser.OnGetVariable := ParserGetVariableValue;
-      FFilterParser.Expression := Filter;
+      if foCaseInsensitive in FilterOptions then
+        FFilterParser.Expression := AnsiUpperCase(Filter)
+      else
+        FFilterParser.Expression := Filter;
     end;
   end;
 
@@ -1532,7 +1537,9 @@ begin
     Result := True;
   end
   else
+  begin
     Result := False;
+  end;
 end;
 
 procedure TJvMemoryData.InternalClose;
