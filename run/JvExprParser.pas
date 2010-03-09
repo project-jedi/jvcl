@@ -670,17 +670,51 @@ begin
 end;
 
 function TNodeBin.Eval: Variant;
+var
+  LeftValue, RightValue: Variant;
 
-  function EvalEquality: Boolean;
+  function FixupBoolean(var aVal1: variant; var aVal2: variant): boolean;
+  begin
+    Result := (TVarData(aVal1).VType=varBoolean) or (TVarData(aVal2).VType=varBoolean);
+    if Result then
+    begin
+      if UpperCase(aVal1)='TRUE' then
+        aVal1 := 1
+      else
+        aVal1 := 0;
+
+      if UpperCase(aVal2)='TRUE' then
+        aVal2 := 1
+      else
+        aVal1 := 0;
+    end;
+  end;
+
+  function FixupDateTime(var aVal1: variant; var aVal2: variant): boolean;
+  begin
+    Result := TVarData(aVal1).VType=varDate;
+    if Result then
+    begin
+      if TVarData(aVal2).VType=varString then
+        aVal2:=StrToDateTime(aVal2); //convert;
+    end;
+  end;
+
+  //returns 'True' if a conversion was necessary.
+  function FixupValues(var aVal1: variant; var aVal2: variant): boolean;
+  begin
+    Result:=FixupDateTime(aVal1, aVal2);
+    if not Result then
+      Result:=FixupDateTime(aVal2, aVal1);
+    if not Result then
+      Result:=FixupBoolean(aVal1, aVal2);
+  end;
+
+  function EvalLike: Boolean;
   var
     Wildcard1, Wildcard2: Boolean;
-    LeftValue, RightValue: Variant;
     LeftStr, RightStr: string;
   begin
-    // Determine values to have them handy.
-    LeftValue := FLeftNode.Eval;
-    RightValue := FRightNode.Eval;
-    // Special case, at least one of both is null:
     if (LeftValue = Null) or (RightValue = Null) then
       Result := (LeftValue = Null) and (RightValue = Null)
     else
@@ -689,19 +723,31 @@ function TNodeBin.Eval: Variant;
       // Left hand contains wildcards -> Match right hand against left hand.
       // Right hand contains wildcards -> Match left hand against right hand.
       // Both hands contain wildcards -> Match for string equality as if no wildcards are supported.
-      if FParser.Parent.FEnableWildcardMatching then
+
+      LeftStr := LeftValue;
+      RightStr := RightValue;
+      Wildcard1 := (Pos('*', LeftStr) > 0) or (Pos('?', LeftStr) > 0);
+      Wildcard2 := (Pos('*', RightStr) > 0) or (Pos('?', RightStr) > 0);
+      if Wildcard1 and not Wildcard2 then
+        Result := MatchesMask(RightStr, LeftStr)
+      else
+      if Wildcard2 then
+        Result := MatchesMask(LeftStr, RightStr)
+      else
+        Result := LeftValue = RightValue;
+    end;
+  end;
+
+  function EvalEquality: Boolean;
+  begin
+    // Special case, at least one of both is null:
+    if (LeftValue = Null) or (RightValue = Null) then
+      Result := (LeftValue = Null) and (RightValue = Null)
+    else
+    begin
+      if FParser.Parent.FEnableWildcardMatching and (TVarData(LeftValue).VType<>varDate) then
       begin
-        LeftStr := LeftValue;
-        RightStr := RightValue;
-        Wildcard1 := (Pos('*', LeftStr) > 0) or (Pos('?', LeftStr) > 0);
-        Wildcard2 := (Pos('*', RightStr) > 0) or (Pos('?', RightStr) > 0);
-        if Wildcard1 and not Wildcard2 then
-          Result := MatchesMask(RightStr, LeftStr)
-        else
-        if Wildcard2 then
-          Result := MatchesMask(LeftStr, RightStr)
-        else
-          Result := LeftValue = RightValue;
+        Result := EvalLike;
       end
       else
         Result := LeftValue = RightValue;
@@ -709,13 +755,7 @@ function TNodeBin.Eval: Variant;
   end;
 
   function EvalLT: Boolean;
-  var
-    LeftValue, RightValue: Variant;
   begin
-    // Determine values to have them handy.
-    LeftValue := FLeftNode.Eval;
-    RightValue := FRightNode.Eval;
-    //RightValue := FRightNode.Eval;
     // Special case, at least one of both is Null:
     if (LeftValue = Null) or (RightValue = Null) then
       // Null is considered to be smaller than any value.
@@ -725,12 +765,7 @@ function TNodeBin.Eval: Variant;
   end;
 
   function EvalGT: Boolean;
-  var
-    LeftValue, RightValue: Variant;
   begin
-    // Determine values to have them handy.
-    LeftValue := FLeftNode.Eval;
-    RightValue := FRightNode.Eval;
     // Special case, at least one of both is Null:
     if (LeftValue = Null) or (RightValue = Null) then
       // Null is considered to be smaller than any value.
@@ -740,28 +775,29 @@ function TNodeBin.Eval: Variant;
   end;
 
 var
-  LeftValue: Variant;
   LeftStr, RightStr: string;
 begin
+  // Determine values to have them handy.
+  LeftValue := FLeftNode.Eval;
+  RightValue := FRightNode.Eval;
+  FixupValues(LeftValue, RightValue);
+
   case FOperator.Chr of
     '+':
       begin
-        LeftValue := FLeftNode.Eval;
         // force string concatenation
         if (TVarData(LeftValue).VType = varString) or
           (TVarData(LeftValue).VType = varOleStr) then
         begin
           LeftStr := LeftValue;
-          RightStr := FRightNode.Eval;
+          RightStr := RightValue;
           LeftStr := LeftStr + RightStr;
           Result := LeftStr;
         end
         else
-        begin
-          Result := LeftValue + FRightNode.Eval;
-        end;
+          Result := LeftValue + RightValue;
       end;
-    '-': Result := FLeftNode.Eval - FRightNode.Eval;
+    '-': Result := LeftValue - RightValue;
     '*': Result := FLeftNode.Eval * FRightNode.Eval;
     '/': Result := FLeftNode.Eval / FRightNode.Eval;
     '=': Result := EvalEquality();
@@ -769,6 +805,7 @@ begin
     '>': Result := EvalGT();
     '&': Result := FLeftNode.Eval and FRightNode.Eval;
     '|': Result := FLeftNode.Eval or FRightNode.Eval;
+    '~': Result := EvalLike;
   else
     Result := Null;
   end;
