@@ -284,7 +284,7 @@ end;
 
 function TJvWaitingGradient.GetActive: Boolean;
 begin
-  Result := not FScroll.Suspended;
+  Result := not FScroll.Paused;
 end;
 
 procedure TJvWaitingGradient.SetActive(const Value: Boolean);
@@ -300,8 +300,9 @@ begin
       Restart;
   end
   else
-  if not Value then
+  begin
     FScroll.Paused := True;
+  end;
 end;
 
 procedure TJvWaitingGradient.SetEndColor(const Value: TColor);
