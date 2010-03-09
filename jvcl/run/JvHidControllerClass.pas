@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -784,7 +784,7 @@ begin
         end;
     end;
 
-  PnPInfo.Free;
+  FPnPInfo.Free;
   inherited Destroy;
 end;
 
@@ -1699,7 +1699,8 @@ var
               HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
               NewList.Add(HidDev);
             except
-              // ignore device if unreadable
+              // ignore device if unreadable but still free used memory
+              PnPInfo.Free;
             end;
             Inc(Devn);
           end;
