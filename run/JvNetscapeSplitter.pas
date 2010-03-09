@@ -77,7 +77,9 @@ type
     FAllowDrag: Boolean;
     FButtonStyle: TJvButtonStyle;
     FWindowsButtons: TJvWindowsButtons;
-    FOnClose: TNotifyEvent;
+    FOnClose   :TNotifyEvent;
+    FOnButtonDblClick :TNotifyEvent;
+    FOnLineDblClick   :TNotifyEvent;
     FButtonCursor: TCursor;
     procedure SetShowButton(const Value: Boolean);
     procedure SetButtonWidthKind(const Value: TJvButtonWidthKind);
@@ -106,8 +108,9 @@ type
     procedure MouseLeave(Control: TControl); override;
     procedure Paint; override;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
-    procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
-    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMLButtonUp(var Msg: TWMLButtonUp);     message WM_LBUTTONUP;
+    procedure WMMouseMove(var Msg: TWMMouseMove);     message WM_MOUSEMOVE;
+    procedure WMDblClick (var Msg:TWMLButtonDBLCLK);  message WM_LBUTTONDBLCLK;
     procedure LoadOtherProperties(Reader: TReader); dynamic;
     procedure StoreOtherProperties(Writer: TWriter); dynamic;
     procedure DefineProperties(Filer: TFiler); override;
@@ -158,7 +161,9 @@ type
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnMaximize: TNotifyEvent read FOnMaximize write FOnMaximize;
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
-    property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
+    property OnRestore : TNotifyEvent read FOnRestore  write FOnRestore;
+    property OnButtonDblClick: TNotifyEvent read FOnButtonDblClick write FOnButtonDblClick;
+    property OnLineDblClick  : TNotifyEvent read FOnLineDblClick   write FOnLineDblClick;
     property OnParentColorChange;
   end;
 
@@ -192,6 +197,8 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+    property OnButtonDblClick;
+    property OnLineDblClick;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -1244,8 +1251,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvCustomNetscapeSplitter.WMLButtonDown(var Msg: TWMLButtonDown);
 begin
   if Enabled then
@@ -1361,7 +1366,23 @@ begin
     PaintButton(False);
 end;
 
-
+procedure TJvCustomNetscapeSplitter.WMDblClick(var Msg: TWMLButtonDBLCLK);
+begin
+  if ButtonHitTest(Msg.XPos, Msg.YPos) and (ButtonStyle = bsNetscape) then
+  begin  //Double click in button
+    if Assigned (FOnButtonDblClick) then
+      FOnButtonDblClick(Self)
+    else
+      inherited;
+  end
+  else
+  begin  //Double on body splitter line
+    if Assigned (FOnLineDblClick) then
+      FOnLineDblClick(Self)
+    else
+      inherited;
+  end;
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization
