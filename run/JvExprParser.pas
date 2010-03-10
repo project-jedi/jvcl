@@ -714,7 +714,7 @@ var
 
   function FixupString(var aVal: Variant): Boolean;
   begin
-    Result:=((TVarData(aVal).VType = varString) or (TVarData(aVal).VType = varUString)) and FParser.Parent.FCaseInsensitive;
+    Result:=((TVarData(aVal).VType = varString) {$IFDEF UNICODE}or (TVarData(aVal).VType = varUString){$ENDIF UNICODE}) and FParser.Parent.FCaseInsensitive;
     if Result then
       aVal := AnsiUpperCase(aVal);
   end;
