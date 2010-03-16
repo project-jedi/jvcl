@@ -864,6 +864,7 @@ begin
       {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
       begin
+        Details := ThemeServices.GetElementDetails(ttbButtonNormal);
         if FState in [bsDown, bsExclusive] then
           Details := ThemeServices.GetElementDetails(ttbButtonPressed)
         else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
@@ -939,7 +940,6 @@ begin
       else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
         Details := ThemeServices.GetElementDetails(ttbButtonHot);
       ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
-      //PaintRect := ThemeServices.ContentRect(Canvas.Handle, Details, PaintRect);
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -959,8 +959,6 @@ begin
     Right := (Right - DivX div 2);
   end;
 
-  if not Flat then
-    Dec(Offset.X);
   OffsetRect(PaintRect, Offset.X, Offset.Y);
 
   if Enabled then
