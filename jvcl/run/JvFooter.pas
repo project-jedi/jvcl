@@ -70,7 +70,7 @@ type
     procedure UpdatePosition;
     procedure GetBtnsValues(const ABtnIndex: Integer;
       const AAlignment: TAlignment; const ADirection: Integer;
-      out BtnCount, BtnTotalSpc: Integer);
+      out BtnCount, BtnTotalSpc, BtnLeft: Integer);
     procedure SetMargin(const Value: Integer);
   protected
     procedure Paint; override;
@@ -265,7 +265,7 @@ end;
 
 procedure TJvFooter.GetBtnsValues(const ABtnIndex: Integer;
   const AAlignment: TAlignment; const ADirection: Integer;
-  out BtnCount, BtnTotalSpc: Integer);
+  out BtnCount, BtnTotalSpc, BtnLeft: Integer);
 var
   Idx: Integer;
 
@@ -279,6 +279,7 @@ var
     begin
       Inc(BtnCount);
       Inc(BtnTotalSpc, TJvFooterBtn(Controls[Idx]).SpaceInterval);
+      Inc(BtnLeft, TJvFooterBtn(Controls[Idx]).Width);
     end;
   end;
 
@@ -302,7 +303,7 @@ procedure TJvFooter.UpdatePosition;
 var
   Idx: Integer;
   FBtnLeft, FBtnTop, FBtnWidth, FBtnHeight: Integer;
-  FBtnCount, FBtnCount_2, FBtnSpace, FBtnSpace_2: Integer;
+  FBtnCount, FBtnCount_2, FBtnSpace, FBtnSpace_2, FBtnLeft_2: Integer;
 begin
   for Idx := 0 to ControlCount - 1 do
     if Controls[Idx] is TJvFooterBtn then
@@ -317,16 +318,16 @@ begin
             // Set anchors
             TJvFooterBtn(Controls[Idx]).Anchors := [akBottom];
             // Normal return
+            FBtnLeft_2 := 0;
             GetBtnsValues(TJvFooterBtn(Controls[Idx]).ButtonIndex,
-              TJvFooterBtn(Controls[Idx]).Alignment, -1, FBtnCount_2,
-              FBtnSpace_2);
+              TJvFooterBtn(Controls[Idx]).Alignment, -1, FBtnCount_2, FBtnSpace_2, FBtnLeft_2);
             // Get all buttons
-            GetBtnsValues(0, TJvFooterBtn(Controls[Idx]).Alignment, 0,
-              FBtnCount, FBtnSpace);
+            FBtnLeft := 0;
+            GetBtnsValues(0, TJvFooterBtn(Controls[Idx]).Alignment, 0, FBtnCount, FBtnSpace, FBtnLeft);
 
             FBtnLeft := (Width div 2) -
-              ((FBtnCount * FBtnWidth) + FBtnSpace) div 2 +
-              (FBtnCount_2 * FBtnWidth) + FBtnSpace_2;
+              (FBtnLeft + FBtnSpace) div 2 +
+              (FBtnLeft_2 + FBtnSpace_2);
           end;
         taLeftJustify:
           begin
@@ -334,10 +335,10 @@ begin
             TJvFooterBtn(Controls[Idx]).Anchors := [akLeft, akBottom];
 
             // get the number of backward buttons
+            FBtnLeft := 0;
             GetBtnsValues(TJvFooterBtn(Controls[Idx]).ButtonIndex,
-              TJvFooterBtn(Controls[Idx]).Alignment, -1, FBtnCount, FBtnSpace);
+              TJvFooterBtn(Controls[Idx]).Alignment, -1, FBtnCount, FBtnSpace, FBtnLeft);
 
-            FBtnLeft := FBtnCount * FBtnWidth;
             if FBtnCount = 0 then
               FBtnLeft := FBtnLeft + Margin
             else
@@ -349,10 +350,11 @@ begin
             // Set anchors
             TJvFooterBtn(Controls[Idx]).Anchors := [akRight, akBottom];
             // get the number of forward buttons
+            FBtnLeft := 0;
             GetBtnsValues(TJvFooterBtn(Controls[Idx]).ButtonIndex,
-              TJvFooterBtn(Controls[Idx]).Alignment, 1, FBtnCount, FBtnSpace);
+              TJvFooterBtn(Controls[Idx]).Alignment, 1, FBtnCount, FBtnSpace, FBtnLeft);
 
-            FBtnLeft := Width - ((FBtnCount + 1) * FBtnWidth);
+            FBtnLeft := Width - (FBtnLeft + FBtnWidth);
             if FBtnCount = 0 then
               FBtnLeft := FBtnLeft - Margin
             else
