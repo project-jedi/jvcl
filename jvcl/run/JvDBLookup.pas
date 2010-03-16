@@ -2666,7 +2666,7 @@ begin
     if Assigned(AnimateWindowProc) and Animate then
     begin
       { Can't use SWP_SHOWWINDOW here, because the window is then immediately shown }
-      SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
+      SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, Rect.Left), Y, 0, 0,
         SWP_NOSIZE or SWP_NOACTIVATE {or SWP_SHOWWINDOW});
       if Y < P.Y then
         SlideStyle := AW_VER_NEGATIVE
@@ -2679,7 +2679,7 @@ begin
       FDataList.Invalidate;
     end
     else
-    SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
+    SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, Rect.Left), Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
 
     FListVisible := True;
