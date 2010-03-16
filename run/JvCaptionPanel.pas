@@ -796,7 +796,12 @@ procedure TJvCaptionPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if FDragging then
+  begin
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+    ReleaseCapture;
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
     DoLeaveDrag;
+  end;
   FDragging := False;
 end;
 
