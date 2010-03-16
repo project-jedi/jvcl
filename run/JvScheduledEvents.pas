@@ -129,6 +129,10 @@ type
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   public
+    {$IFDEF COMPILER14_UP}
+    class destructor Destroy;
+    {$ENDIF COMPILER14_UP}
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Handle: THandle read FWnd;
@@ -230,6 +234,7 @@ type
   public
     constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
     procedure LoadState(const TriggerStamp: TTimeStamp; const TriggerCount, DayCount: Integer;
       const SnoozeStamp: TTimeStamp; const ALastSnoozeInterval: TSystemTime;
       const AEventInfo: TScheduledEventStateInfo); virtual;
@@ -475,6 +480,13 @@ begin
 end;
 
 //=== { TJvCustomScheduledEvents } ===========================================
+
+{$IFDEF COMPILER14_UP}
+class destructor TJvCustomScheduledEvents.Destroy;
+begin
+  FinalizeScheduleThread;
+end;
+{$ENDIF COMPILER14_UP}
 
 constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
@@ -780,7 +792,6 @@ begin
   FEvents.Assign(Value);
 end;
 
-
 procedure TJvCustomScheduledEvents.WndProc(var Msg: TMessage);
 var
   List: TList;
@@ -816,7 +827,6 @@ begin
       Result := DefWindowProc(Handle, Msg, WParam, LParam);
     end;
 end;
-
 
 procedure TJvCustomScheduledEvents.CMExecEvent(var Msg: TMessage);
 begin
@@ -913,6 +923,19 @@ begin
   finally
     ScheduleThread.Unlock;
   end;
+end;
+
+procedure TJvEventCollectionItem.Assign(Source: TPersistent);
+begin
+  if Source is TJvEventCollectionItem then
+  begin
+    Name := TJvEventCollectionItem(Source).Name;
+    CountMissedEvents := TJvEventCollectionItem(Source).CountMissedEvents;
+    Schedule := TJvEventCollectionItem(Source).Schedule;
+    OnExecute := TJvEventCollectionItem(Source).OnExecute;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvEventCollectionItem.Triggered;
@@ -1581,7 +1604,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFNDEF COMPILER14_UP}
   FinalizeScheduleThread;
+  {$ENDIF ~COMPILER14_UP}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
