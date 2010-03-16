@@ -441,6 +441,10 @@ type
     property CurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent
         read FCurrentInstanceCreateEvent;
   public
+    {$IFDEF COMPILER14_UP}
+    class destructor Destroy;
+    {$ENDIF COMPILER14_UP}
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     // (p3) moved Flush, Reload and AutoFlush to the base storage because users
@@ -994,6 +998,27 @@ begin
   Result := GlobalRegisteredAppStoragePropertyEngineList;
 end;
 
+//=== Global Engine Handling =================================================
+
+procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+begin
+  if RegisteredAppStoragePropertyEngineList <> nil then
+    RegisteredAppStoragePropertyEngineList.RegisterEngine(AEngineClass);
+end;
+
+procedure UnregisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+begin
+  if RegisteredAppStoragePropertyEngineList <> nil then
+    RegisteredAppStoragePropertyEngineList.UnregisterEngine(AEngineClass);
+end;
+
+procedure DestroyAppStoragePropertyEngineList;
+begin
+  GlobalRegisteredAppStoragePropertyEngineListDestroyed := True;
+  GlobalRegisteredAppStoragePropertyEngineList.Free;
+  GlobalRegisteredAppStoragePropertyEngineList := nil;
+end;
+
 const
   // (rom) this name is shared in several units and should be made global
   cCount = 'Count';
@@ -1286,6 +1311,13 @@ begin
 end;
 
 //=== { TJvCustomAppStorage } ================================================
+
+{$IFDEF COMPILER14_UP}
+class destructor TJvCustomAppStorage.Destroy;
+begin
+  DestroyAppStoragePropertyEngineList;
+end;
+{$ENDIF COMPILER14_UP}
 
 constructor TJvCustomAppStorage.Create(AOwner: TComponent);
 begin
@@ -3706,34 +3738,16 @@ begin
     Engine.WriteProperty(AStorage, APath, AObject, AProperty, Recursive);
 end;
 
-//=== Global Engine Handling =================================================
-
-procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
-begin
-  if RegisteredAppStoragePropertyEngineList <> nil then
-    RegisteredAppStoragePropertyEngineList.RegisterEngine(AEngineClass);
-end;
-
-procedure UnregisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
-begin
-  if RegisteredAppStoragePropertyEngineList <> nil then
-    RegisteredAppStoragePropertyEngineList.UnregisterEngine(AEngineClass);
-end;
-
-procedure DestroyAppStoragePropertyEngineList;
-begin
-  GlobalRegisteredAppStoragePropertyEngineListDestroyed := True;
-  GlobalRegisteredAppStoragePropertyEngineList.Free;
-  GlobalRegisteredAppStoragePropertyEngineList := nil;
-end;
-
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFNDEF COMPILER14_UP}
   DestroyAppStoragePropertyEngineList;
+  {$ENDIF ~COMPILER14_UP}
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
