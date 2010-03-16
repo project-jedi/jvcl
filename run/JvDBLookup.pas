@@ -64,9 +64,13 @@ type
     procedure UpdateData; override;
   end;
 
+  TJvLookupSourceLinkMethod = procedure of object;
+
   TLookupSourceLink = class(TDataLink)
   private
+    FLocked: Boolean;
     FDataControl: TJvLookupControl;
+    procedure InvokeLocked(AMethod: TJvLookupSourceLinkMethod);
   protected
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
@@ -748,22 +752,34 @@ end;
 
 //=== { TLookupSourceLink } ==================================================
 
+procedure TLookupSourceLink.InvokeLocked(AMethod: TJvLookupSourceLinkMethod);
+begin
+  if FLocked then
+    Exit;
+  FLocked := True;
+  try
+    AMethod();
+  finally
+    FLocked := False;
+  end;
+end;
+
 procedure TLookupSourceLink.ActiveChanged;
 begin
   if FDataControl <> nil then
-    FDataControl.ListLinkActiveChanged;
+    InvokeLocked(FDataControl.ListLinkActiveChanged);
 end;
 
 procedure TLookupSourceLink.LayoutChanged;
 begin
   if FDataControl <> nil then
-    FDataControl.ListLinkActiveChanged;
+    InvokeLocked(FDataControl.ListLinkActiveChanged);
 end;
 
 procedure TLookupSourceLink.DataSetChanged;
 begin
   if FDataControl <> nil then
-    FDataControl.ListLinkDataChanged;
+    InvokeLocked(FDataControl.ListLinkDataChanged);
 end;
 
 //=== { TJvLookupControl } ===================================================
@@ -2958,10 +2974,17 @@ begin
 end;
 
 procedure TJvDBLookupCombo.ListLinkDataChanged;
+var
+  LastKeyValue: Variant;
 begin
   if FDataLink.Active and FDataLink.DataSet.IsLinkedTo(LookupSource) then
     if FListActive then
+    begin
+      LastKeyValue := KeyValue;
       DataLinkRecordChanged(nil);
+      if LastKeyValue = KeyValue then // do not call KeyValueChanged twice (1. SetKeyValue(), 2. here)
+        KeyValueChanged;
+    end;
 end;
 
 procedure TJvDBLookupCombo.ListLinkActiveChanged;
