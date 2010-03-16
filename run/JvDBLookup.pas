@@ -153,6 +153,7 @@ type
     procedure DrawPicture(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
     procedure UpdateDisplayValue;
     function EmptyRowVisible: Boolean;
+    procedure SetDisplayIndex(const Value: Integer);
   protected
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
@@ -186,7 +187,7 @@ type
     property ListStyle: TLookupListStyle read FListStyle write SetListStyle default lsFixed;
     property FieldsDelimiter: Char read FFieldsDelimiter write SetFieldsDelimiter default DefFieldsDelimiter;
     property LookupDisplay: string read FLookupDisplay write SetLookupDisplay;
-    property LookupDisplayIndex: Integer read FDisplayIndex write FDisplayIndex default 0;
+    property LookupDisplayIndex: Integer read FDisplayIndex write SetDisplayIndex default 0;
     property LookupField: string read GetLookupField write SetLookupField;
     property LookupFormat: string read FLookupFormat write SetLookupFormat;
     property LookupSource: TDataSource read GetLookupSource write SetLookupSource;
@@ -1271,6 +1272,15 @@ begin
     FDisplayEmpty := Value;
     if not (csReading in ComponentState) then
       Invalidate;
+  end;
+end;
+
+procedure TJvLookupControl.SetDisplayIndex(const Value: Integer);
+begin
+  if Value <> FDisplayIndex then
+  begin
+    FDisplayIndex := Value;
+    ListLinkActiveChanged;
   end;
 end;
 
