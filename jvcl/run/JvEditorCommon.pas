@@ -6340,7 +6340,7 @@ begin
     FPopupList.ItemHeight := FItemHeight;
     FVisible := True;
     SetItemIndex(FItemIndex);
-    if FListBoxStyle in [lbStandard] then
+    if (FListBoxStyle in [lbStandard]) and Assigned(FJvEditor.OnCompletionDrawItem) then
       FPopupList.Style := lbOwnerDrawFixed
     else
       FPopupList.Style := FListBoxStyle;
