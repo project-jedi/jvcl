@@ -129,9 +129,9 @@ type
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
   public
-    {$IFDEF COMPILER14_UP}
+    {$IFDEF SUPPORTS_CLASS_CTORDTORS}
     class destructor Destroy;
-    {$ENDIF COMPILER14_UP}
+    {$ENDIF SUPPORTS_CLASS_CTORDTORS}
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -481,12 +481,12 @@ end;
 
 //=== { TJvCustomScheduledEvents } ===========================================
 
-{$IFDEF COMPILER14_UP}
+{$IFDEF SUPPORTS_CLASS_CTORDTORS}
 class destructor TJvCustomScheduledEvents.Destroy;
 begin
   FinalizeScheduleThread;
 end;
-{$ENDIF COMPILER14_UP}
+{$ENDIF SUPPORTS_CLASS_CTORDTORS}
 
 constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
@@ -1604,9 +1604,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFNDEF COMPILER14_UP}
+  {$IFNDEF SUPPORTS_CLASS_CTORDTORS}
   FinalizeScheduleThread;
-  {$ENDIF ~COMPILER14_UP}
+  {$ENDIF ~SUPPORTS_CLASS_CTORDTORS}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

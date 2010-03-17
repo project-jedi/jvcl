@@ -453,9 +453,9 @@ type
     function GetDataLink: TDataLink; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    {$IFDEF COMPILER14_UP}
+    {$IFDEF SUPPORTS_CLASS_CTORDTORS}
     class destructor Destroy;
-    {$ENDIF COMPILER14_UP}
+    {$ENDIF SUPPORTS_CLASS_CTORDTORS}
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1006,12 +1006,12 @@ end;
 
 //=== { TJvDBGrid } ==========================================================
 
-{$IFDEF COMPILER14_UP}
+{$IFDEF SUPPORTS_CLASS_CTORDTORS}
 class destructor TJvDBGrid.Destroy;
 begin
   FinalizeGridBitmaps;
 end;
-{$ENDIF COMPILER14_UP}
+{$ENDIF SUPPORTS_CLASS_CTORDTORS}
 
 constructor TJvDBGrid.Create(AOwner: TComponent);
 var
@@ -4747,9 +4747,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFNDEF COMPILER14_UP}
+  {$IFNDEF SUPPORTS_CLASS_CTORDTORS}
   FinalizeGridBitmaps;
-  {$ENDIF ~COMPILER14_UP}
+  {$ENDIF ~SUPPORTS_CLASS_CTORDTORS}
 
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

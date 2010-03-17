@@ -441,9 +441,9 @@ type
     property CurrentInstanceCreateEvent: TJvAppStorageObjectListItemCreateEvent
         read FCurrentInstanceCreateEvent;
   public
-    {$IFDEF COMPILER14_UP}
+    {$IFDEF SUPPORTS_CLASS_CTORDTORS}
     class destructor Destroy;
-    {$ENDIF COMPILER14_UP}
+    {$ENDIF SUPPORTS_CLASS_CTORDTORS}
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1312,12 +1312,12 @@ end;
 
 //=== { TJvCustomAppStorage } ================================================
 
-{$IFDEF COMPILER14_UP}
+{$IFDEF SUPPORTS_CLASS_CTORDTORS}
 class destructor TJvCustomAppStorage.Destroy;
 begin
   DestroyAppStoragePropertyEngineList;
 end;
-{$ENDIF COMPILER14_UP}
+{$ENDIF SUPPORTS_CLASS_CTORDTORS}
 
 constructor TJvCustomAppStorage.Create(AOwner: TComponent);
 begin
@@ -3744,9 +3744,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
-  {$IFNDEF COMPILER14_UP}
+  {$IFNDEF SUPPORTS_CLASS_CTORDTORS}
   DestroyAppStoragePropertyEngineList;
-  {$ENDIF ~COMPILER14_UP}
+  {$ENDIF ~SUPPORTS_CLASS_CTORDTORS}
 
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
