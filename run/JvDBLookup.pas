@@ -68,9 +68,7 @@ type
 
   TLookupSourceLink = class(TDataLink)
   private
-    FLocked: Boolean;
     FDataControl: TJvLookupControl;
-    procedure InvokeLocked(AMethod: TJvLookupSourceLinkMethod);
   protected
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
@@ -752,34 +750,22 @@ end;
 
 //=== { TLookupSourceLink } ==================================================
 
-procedure TLookupSourceLink.InvokeLocked(AMethod: TJvLookupSourceLinkMethod);
-begin
-  if FLocked then
-    Exit;
-  FLocked := True;
-  try
-    AMethod();
-  finally
-    FLocked := False;
-  end;
-end;
-
 procedure TLookupSourceLink.ActiveChanged;
 begin
   if FDataControl <> nil then
-    InvokeLocked(FDataControl.ListLinkActiveChanged);
+    FDataControl.ListLinkActiveChanged;
 end;
 
 procedure TLookupSourceLink.LayoutChanged;
 begin
   if FDataControl <> nil then
-    InvokeLocked(FDataControl.ListLinkActiveChanged);
+    FDataControl.ListLinkActiveChanged;
 end;
 
 procedure TLookupSourceLink.DataSetChanged;
 begin
   if FDataControl <> nil then
-    InvokeLocked(FDataControl.ListLinkDataChanged);
+    FDataControl.ListLinkDataChanged;
 end;
 
 //=== { TJvLookupControl } ===================================================
@@ -880,6 +866,17 @@ begin
       FLookupSource.DataSet := nil;
       FMasterField := FDataField;
     end;
+end;
+
+procedure TJvLookupControl.SetUseRecordCount(const Value: Boolean);
+begin
+  if Value <> FUseRecordCount then
+  begin
+    FUseRecordCount := Value;
+    ListLinkActiveChanged;
+    if FListActive then
+      DataLinkRecordChanged(nil);
+  end;
 end;
 
 function TJvLookupControl.GetKeyValue: Variant;
@@ -3872,17 +3869,6 @@ end;
 procedure TJvDBLookupEdit.SetUseRecordCount(const Value: Boolean);
 begin
   TJvPopupDataWindow(FPopup).UseRecordCount := Value;
-end;
-
-procedure TJvLookupControl.SetUseRecordCount(const Value: Boolean);
-begin
-  if Value <> FUseRecordCount then
-  begin
-    FUseRecordCount := Value;
-    ListLinkActiveChanged;
-    if FListActive then
-      DataLinkRecordChanged(nil);
-  end;
 end;
 
 {$IFDEF UNITVERSIONING}
