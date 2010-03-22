@@ -2298,26 +2298,19 @@ end;
 
 //=== { TJvMemInfo } =========================================================
 
-function GetMemoryStatus: TMemoryStatus;
-begin
-  FillChar(Result, SizeOf(Result), 0);
-  Result.dwLength := SizeOf(MemoryStatus);
-  GlobalMemoryStatus(Result);
-end;
-
 function TJvMemInfo.GetFreePageFileMemory: Int64;
 begin
-  Result := GetMemoryStatus.dwAvailPageFile;
+  Result := JclSysInfo.GetFreePageFileMemory;
 end;
 
 function TJvMemInfo.GetFreePhysicalMemory: Int64;
 begin
-  Result := GetMemoryStatus.dwAvailPhys;
+  Result := JclSysInfo.GetFreePhysicalMemory;
 end;
 
 function TJvMemInfo.GetFreeVirtualMemory: Int64;
 begin
-  Result := GetMemoryStatus.dwAvailVirtual;
+  Result := JclSysInfo.GetFreeVirtualMemory;
 end;
 
 function TJvMemInfo.GetMaxAppAddress: Integer;
@@ -2327,7 +2320,7 @@ end;
 
 function TJvMemInfo.GetMemoryLoad: Int64;
 begin
-  Result := GetMemoryStatus.dwMemoryLoad;
+  Result := JclSysInfo.GetMemoryLoad;
 end;
 
 function TJvMemInfo.GetMinAppAddress: Integer;
@@ -2336,40 +2329,28 @@ begin
 end;
 
 function TJvMemInfo.GetSwapFileSize: Int64;
-var
-  MemInfo: TMemoryStatus;
 begin
-  // (rom) avoid possible inconsistencies when calling GetMemoryStatus twice
-  MemInfo := GetMemoryStatus;
-  Result := MemInfo.dwTotalPageFile - MemInfo.dwAvailPageFile;
+  Result := JclSysInfo.GetSwapFileSize;
 end;
 
 function TJvMemInfo.GetSwapFileUsage: Integer;
-var
-  MemInfo: TMemoryStatus;
 begin
-  // (rom) avoid possible inconsistencies when calling GetMemoryStatus several times
-  MemInfo := GetMemoryStatus;
-  with MemInfo do
-    if dwTotalPageFile > 0 then
-      Result := 100 - Trunc(dwAvailPageFile / dwTotalPageFile * 100)
-    else
-      Result := 0;
+  Result := JclSysInfo.GetSwapFileUsage;
 end;
 
 function TJvMemInfo.GetTotalPageFileMemory: Int64;
 begin
-  Result := GetMemoryStatus.dwTotalPageFile;
+  Result := JclSysInfo.GetTotalPageFileMemory;
 end;
 
 function TJvMemInfo.GetTotalPhysicalMemory: Int64;
 begin
-  Result := GetMemoryStatus.dwTotalPhys;
+  Result := JclSysInfo.GetTotalPhysicalMemory;
 end;
 
 function TJvMemInfo.GetTotalVirtualMemory: Int64;
 begin
-  Result := GetMemoryStatus.dwTotalVirtual;
+  Result := JclSysInfo.GetTotalVirtualMemory;
 end;
 
 procedure TJvMemInfo.SetFreePageFileMemory(const Value: Int64);
