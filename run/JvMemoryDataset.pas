@@ -140,6 +140,8 @@ type
     FBeforeApplyRecord: TApplyRecordEvent;
     FAfterApplyRecord: TApplyRecordEvent;
     FFilterParser: TExprParser; // CSchiffler. June 2009.  See JvExprParser.pas
+    FCopyFromDataSetFieldDefs: array of Integer; // only valid while CopyFromDataSet is executed
+    FClearing: Boolean;
     function AddRecord: TJvMemoryRecord;
     function InsertRecord(Index: Integer): TJvMemoryRecord;
     function FindRecordID(ID: Integer): TJvMemoryRecord;
@@ -390,6 +392,33 @@ begin
     ApplicationHandleException(Sender);
 end;
 
+procedure CopyFieldValue(DestField, SourceField: TField);
+begin
+  if SourceField.IsNull then
+    DestField.Clear
+  else if DestField.ClassType = SourceField.ClassType then
+  begin
+    case DestField.DataType of
+      ftInteger, ftSmallint, ftWord:
+        DestField.AsInteger := SourceField.AsInteger;
+      ftBCD, ftCurrency:
+        DestField.AsCurrency := SourceField.AsCurrency;
+      ftFMTBcd:
+        DestField.AsBCD := SourceField.AsBCD;
+      ftString:
+        DestField.AsString := SourceField.AsString;
+      ftFloat:
+        DestField.AsFloat := SourceField.AsFloat;
+      ftDateTime:
+        DestField.AsDateTime := SourceField.AsDateTime;
+    else
+      DestField.Assign(SourceField);
+    end;
+  end
+  else
+    DestField.Assign(SourceField);;
+end;
+
 function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
 begin
   if not (FieldType in ftSupported) then
@@ -511,7 +540,8 @@ begin
   begin
     if FMemoryData <> nil then
     begin
-      FMemoryData.FRecords.Remove(Self);
+      if not FMemoryData.FClearing then
+        FMemoryData.FRecords.Remove(Self);
       if FMemoryData.BlobFieldCount > 0 then
         Finalize(PMemBlobArray(FBlobs)[0], FMemoryData.BlobFieldCount);
       ReallocMem(FBlobs, 0);
@@ -746,7 +776,10 @@ var
   DataType: TFieldType;
 begin
   Result := nil;
-  Index := FieldDefList.IndexOf(Field.FullName);
+  if Length(FCopyFromDataSetFieldDefs) > 0 then
+    Index := FCopyFromDataSetFieldDefs[Field.Index]
+  else
+    Index := FieldDefList.IndexOf(Field.FullName);
   if (Index >= 0) and (Buffer <> nil) then
   begin
     DataType := FieldDefList[Index].DataType;
@@ -777,9 +810,17 @@ begin
 end;
 
 procedure TJvMemoryData.ClearRecords;
+var
+  I: Integer;
 begin
-  while FRecords.Count > 0 do
-    TObject(FRecords.Last).Free;
+  FClearing := True;
+  try
+    for I := FRecords.Count - 1 downto 0  do
+      TJvMemoryRecord(FRecords[I]).Free;
+    FRecords.Clear;
+  finally
+    FClearing := False;
+  end;
   FLastID := Low(Integer);
   FRecordPos := -1;
 end;
@@ -1506,7 +1547,7 @@ procedure TJvMemoryData.SetFilterText(const Value: string);
       if foCaseInsensitive in FilterOptions then
         FFilterParser.Expression := AnsiUpperCase(Filter)
       else
-        FFilterParser.Expression := Filter;
+      FFilterParser.Expression := Filter;
     end;
   end;
 
@@ -1537,9 +1578,7 @@ begin
     Result := True;
   end
   else
-  begin
     Result := False;
-  end;
 end;
 
 procedure TJvMemoryData.InternalClose;
@@ -2244,16 +2283,17 @@ end;
 function TJvMemoryData.CopyFromDataSet: Integer;
 var
   I, Len: Integer;
-  FOriginal, FClient: TField;
+  Original, StatusField: TField;
+  OriginalFields: array of TField;
 begin
   Result := 0;
   if FDataSet = nil then
     Exit;
   if FApplyMode <> amNone then
-    Len := FieldDefs.Count - 2
+    Len := FieldDefs.Count - 1
   else
-    Len := FieldDefs.Count - 1;
-  if Len < 1 then
+    Len := FieldDefs.Count;
+  if Len < 2 then
     Exit;
   try
     if not FDataSet.Active then
@@ -2272,24 +2312,29 @@ begin
   DisableControls;
   FSaveLoadState := slsLoading;
   try
+    SetLength(OriginalFields, Len);
+    SetLength(FCopyFromDataSetFieldDefs, Len);
+    for I := 0 to Len - 1 do
+    begin
+      OriginalFields[I] := FDataSet.FindField(Fields[I].FieldName);
+      FCopyFromDataSetFieldDefs[I] := FieldDefList.IndexOf(Fields[I].FullName);
+    end;
+    StatusField := nil;
+    if FApplyMode <> amNone then
+      StatusField := FieldByName(FStatusName);
+
     FDataSet.First;
     while not FDataSet.EOF do
     begin
       Append;
-      for I := 0 to Len do
+      for I := 0 to Len - 1 do
       begin
-        FClient := Fields[I];
-        FOriginal := FDataSet.FindField(FClient.FieldName);
-        if (FClient <> nil) and (FOriginal <> nil) then
-        begin
-          if FOriginal.IsNull then
-            Fields[I].Clear
-          else
-            Fields[I].Value := FOriginal.Value;
-        end;
+        Original := OriginalFields[I];
+        if Original <> nil then
+          CopyFieldValue(Fields[I], Original);
       end;
       if FApplyMode <> amNone then
-        FieldByName(FStatusName).AsInteger := Integer(rsOriginal);
+        StatusField.AsInteger := Integer(rsOriginal);
       Post;
       Inc(Result);
       FDataSet.Next;
@@ -2297,6 +2342,7 @@ begin
     FRowsChanged := 0;
     FRowsAffected := 0;
   finally
+    SetLength(FCopyFromDataSetFieldDefs, 0);
     FSaveLoadState := slsNone;
     EnableControls;
     FDataSet.EnableControls;
