@@ -5822,11 +5822,9 @@ end;
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean; Headers: Boolean);
 var
-  R, C: Integer;
   ColWidths: array of Word;
-  S: string;
 
-  procedure AddLine;
+  procedure AddLine(const S: string);
   begin
     Strings.Add(TrimRight(S));
   end;
@@ -5854,6 +5852,9 @@ var
         Result := StrPadLeft(Text, ColWidths[Index]) + ' ';
   end;
 
+var
+  R, C: Integer;
+  S: string;
 begin
   SetLength(S, 256);
   with ListView do
@@ -5878,11 +5879,11 @@ begin
           S := '';
           for C := 0 to Count - 1 do
             S := S + MakeCellStr(Items[C].Caption, C);
-          AddLine;
+          AddLine(S);
           S := '';
           for C := 0 to Count - 1 do
             S := S + StringOfChar('-', ColWidths[C]) + ' ';
-          AddLine;
+          AddLine(S);
         end;
       for R := 0 to Items.Count - 1 do
         if not SelectedOnly or Items[R].Selected then
@@ -5891,7 +5892,7 @@ begin
             S := MakeCellStr(Caption, 0);
             for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
               S := S + MakeCellStr(SubItems[C], C + 1);
-            AddLine;
+            AddLine(S);
           end;
     finally
       Strings.EndUpdate;
@@ -5934,8 +5935,6 @@ end;
 
 procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem;
   var Compare: Integer);
-var
-  ColIndex: Integer;
 
   function FmtStrToInt(S: string): Integer;
   var
@@ -5950,6 +5949,8 @@ var
     Result := StrToInt(S);
   end;
 
+var
+  ColIndex: Integer;
 begin
   with ListView do
   begin
@@ -6249,8 +6250,8 @@ begin
 end;
 
 const
-  Lefts = ['[', '{', '('];
-  Rights = [']', '}', ')'];
+  LeftBrackets = ['[', '{', '('];
+  RightsBrackets = [']', '}', ')'];
 
 { Utilities routines }
 
@@ -6322,7 +6323,6 @@ begin
 end;
 
 
-
 function RectToStr(Rect: TRect): string;
 begin
   Result := Format('[%d,%d,%d,%d]', [Rect.Left, Rect.Top, Rect.Right, Rect.Bottom]);
@@ -6336,7 +6336,7 @@ var
 begin
   Result := Def;
   S := Str;
-  if (S <> '') and CharInSet(S[1], Lefts) and CharInSet(S[Length(S)], Rights) then
+  if (S <> '') and CharInSet(S[1], LeftBrackets) and CharInSet(S[Length(S)], RightsBrackets) then
   begin
     Delete(S, 1, 1);
     SetLength(S, Length(S) - 1);
@@ -6379,7 +6379,7 @@ var
 begin
   Result := Def;
   S := Str;
-  if (S <> '') and CharInSet(S[1], Lefts) and CharInSet(S[Length(Str)], Rights) then
+  if (S <> '') and CharInSet(S[1], LeftBrackets) and CharInSet(S[Length(Str)], RightsBrackets) then
   begin
     Delete(S, 1, 1);
     SetLength(S, Length(S) - 1);
@@ -7751,8 +7751,6 @@ end;
 
 function GenerateUniqueComponentName(AOwner, AComponent: TComponent; const
     AComponentName: string = ''): string;
-var
-  I: Integer;
 
   function ValidateName(const AName: string): String;
   var
@@ -7804,6 +7802,8 @@ var
         end;
   end;
 
+var
+  I: Integer;
 begin
   if not Assigned(AOwner) then
     Result := ''
