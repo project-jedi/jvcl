@@ -219,6 +219,7 @@ type
     procedure DoAfterOpen; override;
     procedure SetFilterText(const Value: string); override;
     function ParserGetVariableValue(Sender: TObject; const VarName: string; var Value: Variant): Boolean; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property Records[Index: Integer]: TJvMemoryRecord read GetMemoryRecord;
   public
     constructor Create(AOwner: TComponent); override;
@@ -361,6 +362,7 @@ uses
   {$IFNDEF UNICODE}
   JvJCLUtils,
   {$ENDIF ~UNICODE}
+  JvJVCLUtils,
   JvResources;
 
 const
@@ -621,6 +623,7 @@ begin
   end;
   FreeIndexList;
   ClearRecords;
+  SetDataSet(nil);
   FRecords.Free;
   FOffsets := nil;
   inherited Destroy;
@@ -1738,6 +1741,13 @@ begin
   end;
 end;
 
+procedure TJvMemoryData.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = DataSet) then
+    SetDataSet(nil);
+end;
+
 procedure TJvMemoryData.EmptyTable;
 begin
   if Active then
@@ -1771,8 +1781,6 @@ begin
 end;
 
 procedure TJvMemoryData.CheckStructure(UseAutoIncAsInteger: Boolean);
-var
-  I: Integer;
 
   procedure CheckDataTypes(FieldDefs: TFieldDefs);
   var
@@ -1787,6 +1795,8 @@ var
     end;
   end;
 
+var
+  I: Integer;
 begin
   CheckDataTypes(FieldDefs);
   for I := 0 to FieldDefs.Count - 1 do
@@ -1798,7 +1808,8 @@ end;
 
 procedure TJvMemoryData.SetDataSet(ADataSet: TDataSet);
 begin
-  FDataSet := ADataSet;
+  if ADataSet <> Self then
+    ReplaceComponentReference(Self, ADataSet, TComponent(FDataSet));
 end;
 
 procedure TJvMemoryData.FixReadOnlyFields(MakeReadOnly: Boolean);
