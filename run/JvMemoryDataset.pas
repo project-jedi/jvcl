@@ -53,6 +53,7 @@ Known Issues:
 //********************** Added by c.schiffler (CS) **************************
   Methods  (protected) SetFilterText <== hook up expression parsing.
   Field FFilterParser - see unit JvExprParser.pas
+
 Implementation : 2004/03/03
 Revisions : 1st = 2004/09/19
             2nd = 2004/10/19
@@ -62,8 +63,6 @@ Revisions : 1st = 2004/09/19
             6th = 2006/03/24
             7th = 2007/03/25
             8th = 2007/06/20
-
-Comments and Bugs : cfzwit att yahoo dott com dott ar
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -79,16 +78,14 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, DB, Variants,
-  JvDBUtils,
-  JvExprParser;
+  JvDBUtils, JvExprParser;
 
 type
   TPVariant = ^Variant;
   TApplyMode = (amNone, amAppend, amMerge);
   TApplyEvent = procedure(Dataset: TDataset; Rows: Integer) of object;
   TRecordStatus = (rsOriginal, rsUpdated, rsInserted, rsDeleted);
-  TApplyRecordEvent = procedure(Dataset: TDataset; RecStatus: TRecordStatus;
-    FoundApply: Boolean) of object;
+  TApplyRecordEvent = procedure(Dataset: TDataset; RecStatus: TRecordStatus; FoundApply: Boolean) of object;
   TMemBlobData = string;
   TMemBlobArray = array[0..0] of TMemBlobData;
   PMemBlobArray = ^TMemBlobArray;
@@ -388,6 +385,15 @@ const
 
   STATUSNAME = 'C67F70Z90'; (* Magic *)
 
+type
+  TBookmarkData = Integer;
+  PMemBookmarkInfo = ^TMemBookmarkInfo;
+
+  TMemBookmarkInfo = record
+    BookmarkData: TBookmarkData;
+    BookmarkFlag: TBookmarkFlag;
+  end;
+
 procedure AppHandleException(Sender: TObject);
 begin
   if Assigned(ApplicationHandleException) then
@@ -496,15 +502,6 @@ procedure ErrorFmt(const Msg: string; const Args: array of const);
 begin
   DatabaseErrorFmt(Msg, Args);
 end;
-
-type
-  TBookmarkData = Integer;
-  PMemBookmarkInfo = ^TMemBookmarkInfo;
-
-  TMemBookmarkInfo = record
-    BookmarkData: TBookmarkData;
-    BookmarkFlag: TBookmarkFlag;
-  end;
 
 //=== { TJvMemoryRecord } ====================================================
 
@@ -1887,9 +1884,7 @@ begin
     //**********************************
     try
       if RecordCount > 0 then
-      begin
-        MovedCount := RecordCount;
-      end
+        MovedCount := RecordCount
       else
       begin
         Source.First;
@@ -2296,6 +2291,7 @@ var
   I, Len: Integer;
   Original, StatusField: TField;
   OriginalFields: array of TField;
+  FieldReadOnly: Boolean;
 begin
   Result := 0;
   if FDataSet = nil then
@@ -2334,6 +2330,18 @@ begin
     if FApplyMode <> amNone then
       StatusField := FieldByName(FStatusName);
 
+    FAutoIncField := nil;
+    // find first source autoinc field
+    FSrcAutoIncField := nil;
+    for I := 0 to FDataSet.FieldCount - 1 do
+      if FDataSet.Fields[I].DataType = ftAutoInc then
+      begin
+        FSrcAutoIncField := FDataSet.Fields[I];
+        Break;
+      end;
+    if FSrcAutoIncField <> nil then
+      FAutoIncField := FindField(FSrcAutoIncField.FieldName);
+
     FDataSet.First;
     while not FDataSet.EOF do
     begin
@@ -2342,8 +2350,21 @@ begin
       begin
         Original := OriginalFields[I];
         if Original <> nil then
-          CopyFieldValue(Fields[I], Original);
+        begin
+          FieldReadOnly := Fields[I].ReadOnly;
+          if FieldReadOnly then
+            Fields[I].ReadOnly := False;
+          try
+            CopyFieldValue(Fields[I], Original);
+          finally
+            if FieldReadOnly then
+              Fields[I].ReadOnly := True;
+          end;
+        end;
       end;
+      // assign AutoInc value manually (make user keep largest if source isn't sorted by autoinc field)
+      if (FAutoIncField <> nil) and (FSrcAutoIncField <> nil) then
+        FAutoInc := Max(FAutoInc, FSrcAutoIncField.AsInteger);
       if FApplyMode <> amNone then
         StatusField.AsInteger := Integer(rsOriginal);
       Post;
