@@ -73,6 +73,7 @@ type
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
     procedure DataSetChanged; override;
+    procedure DataSetScrolled(Distance: Integer); override;
   end;
 
   TJvLookupControl = class(TJvCustomControl)
@@ -111,6 +112,7 @@ type
     FLookupMode: Boolean;
     FUseRecordCount: Boolean;
     FRightTrimmedLookup: Boolean;
+    FListNotificationLock: Integer;
     procedure CheckNotFixed;
     procedure SetLookupMode(Value: Boolean);
     function GetKeyValue: Variant;
@@ -170,8 +172,7 @@ type
     procedure DataLinkUpdateData; virtual;
     procedure ListLinkActiveChanged; virtual;
     procedure ListLinkDataChanged; virtual;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetPicture(Current, Empty: Boolean; var TextMargin: Integer): TGraphic; virtual;
     procedure UpdateDisplayEmpty(const Value: string); virtual;
     function SearchText(var AValue: string): Boolean;
@@ -184,8 +185,7 @@ type
     property EmptyItemColor: TColor read FEmptyItemColor write SetEmptyItemColor default clWindow;
     property IgnoreCase: Boolean read FIgnoreCase write FIgnoreCase default True;
     property IndexSwitch: Boolean read FIndexSwitch write FIndexSwitch default True;
-    property ItemHeight: Integer read GetItemHeight write SetItemHeight
-      stored ItemHeightStored;
+    property ItemHeight: Integer read GetItemHeight write SetItemHeight stored ItemHeightStored;
     property ListStyle: TLookupListStyle read FListStyle write SetListStyle default lsFixed;
     property FieldsDelimiter: Char read FFieldsDelimiter write SetFieldsDelimiter default DefFieldsDelimiter;
     property LookupDisplay: string read FLookupDisplay write SetLookupDisplay;
@@ -208,8 +208,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ClearValue;
-    function Locate(const SearchField: TField; const AValue: string;
-      Exact: Boolean): Boolean;
+    function Locate(const SearchField: TField; const AValue: string; Exact: Boolean): Boolean;
     procedure ResetField; virtual;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
@@ -753,19 +752,29 @@ end;
 procedure TLookupSourceLink.ActiveChanged;
 begin
   if FDataControl <> nil then
-    FDataControl.ListLinkActiveChanged;
+    if FDataControl.FListNotificationLock = 0 then
+      FDataControl.ListLinkActiveChanged;
 end;
 
 procedure TLookupSourceLink.LayoutChanged;
 begin
   if FDataControl <> nil then
-    FDataControl.ListLinkActiveChanged;
+    if FDataControl.FListNotificationLock = 0 then
+      FDataControl.ListLinkActiveChanged;
 end;
 
 procedure TLookupSourceLink.DataSetChanged;
 begin
   if FDataControl <> nil then
-    FDataControl.ListLinkDataChanged;
+    if FDataControl.FListNotificationLock = 0 then
+      FDataControl.ListLinkDataChanged;
+end;
+
+procedure TLookupSourceLink.DataSetScrolled(Distance: Integer);
+begin
+  // Do not call inherited because it will invoke DataSetChanged() that
+  // causes any grid or another lookup control to ignore dataset scrolling
+  // events.
 end;
 
 //=== { TJvLookupControl } ===================================================
@@ -1531,7 +1540,12 @@ begin
   try
     if not ValueIsEmpty(AValue) and (SearchField <> nil) then
     begin
-      Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase, True, RightTrimmedLookup);
+      Inc(FListNotificationLock);
+      try
+        Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase, True, RightTrimmedLookup);
+      finally
+        Dec(FListNotificationLock);
+      end;
       if Result then
       begin
         if SearchField = FDisplayField then
