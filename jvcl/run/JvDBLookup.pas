@@ -112,7 +112,6 @@ type
     FLookupMode: Boolean;
     FUseRecordCount: Boolean;
     FRightTrimmedLookup: Boolean;
-    FListNotificationLock: Integer;
     procedure CheckNotFixed;
     procedure SetLookupMode(Value: Boolean);
     function GetKeyValue: Variant;
@@ -172,6 +171,7 @@ type
     procedure DataLinkUpdateData; virtual;
     procedure ListLinkActiveChanged; virtual;
     procedure ListLinkDataChanged; virtual;
+    procedure ListLinkDataSetChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetPicture(Current, Empty: Boolean; var TextMargin: Integer): TGraphic; virtual;
     procedure UpdateDisplayEmpty(const Value: string); virtual;
@@ -375,8 +375,8 @@ type
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     FLastValue: Variant;
-    procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    FInListDataSetChanged: Boolean;
+    procedure ListMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
     function GetMinHeight: Integer;
@@ -421,16 +421,15 @@ type
     procedure DisplayValueChanged; override;
     procedure ListLinkActiveChanged; override;
     procedure ListLinkDataChanged; override;
+    procedure ListLinkDataSetChanged; override;
     procedure DataLinkRecordChanged(AField: TField); override;
     procedure DataLinkUpdateData; override;
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure UpdateDisplayEmpty(const Value: string); override;
     procedure DefineProperties(Filer: TFiler); override;
   public
@@ -752,29 +751,25 @@ end;
 procedure TLookupSourceLink.ActiveChanged;
 begin
   if FDataControl <> nil then
-    if FDataControl.FListNotificationLock = 0 then
-      FDataControl.ListLinkActiveChanged;
+    FDataControl.ListLinkActiveChanged;
 end;
 
 procedure TLookupSourceLink.LayoutChanged;
 begin
   if FDataControl <> nil then
-    if FDataControl.FListNotificationLock = 0 then
-      FDataControl.ListLinkActiveChanged;
+    FDataControl.ListLinkActiveChanged;
 end;
 
 procedure TLookupSourceLink.DataSetChanged;
 begin
   if FDataControl <> nil then
-    if FDataControl.FListNotificationLock = 0 then
-      FDataControl.ListLinkDataChanged;
+    FDataControl.ListLinkDataSetChanged;
 end;
 
 procedure TLookupSourceLink.DataSetScrolled(Distance: Integer);
 begin
-  // Do not call inherited because it will invoke DataSetChanged() that
-  // causes any grid or another lookup control to ignore dataset scrolling
-  // events.
+  if FDataControl <> nil then
+    FDataControl.ListLinkDataChanged;
 end;
 
 //=== { TJvLookupControl } ===================================================
@@ -1104,6 +1099,11 @@ procedure TJvLookupControl.ListLinkDataChanged;
 begin
 end;
 
+procedure TJvLookupControl.ListLinkDataSetChanged;
+begin
+  ListLinkDataChanged;
+end;
+
 function TJvLookupControl.LocateDisplay: Boolean;
 begin
   Result := False;
@@ -1189,21 +1189,9 @@ end;
 
 procedure TJvLookupControl.ResetField;
 begin
-  { if (FDataLink.DataSource = nil) or
-    ((FDataLink.DataSource <> nil) and CanModify) then
+  if (FDataLink.DataSource = nil) or (FMasterField = nil) or FDataLink.Edit then
   begin
-    if (FDataLink.DataSource <> nil) and (FMasterField <> nil) and
-      FDataLink.Edit then
-    begin
-      if FEmptyValue = '' then
-        FMasterField.Clear
-      else
-        FMasterField.AsString := FEmptyValue;
-                  end; }// Polaris
-  if (FDataLink.DataSource = nil) or
-    (FMasterField = nil) or FDataLink.Edit then
-  begin
-    if FDataLink.Edit then
+    if FDataLink.Edit and (FMasterField <> nil) then
       SetFieldValue(FMasterField, FEmptyValue);
     FValue := FEmptyValue;
     FDisplayValue := '';
@@ -1540,12 +1528,7 @@ begin
   try
     if not ValueIsEmpty(AValue) and (SearchField <> nil) then
     begin
-      Inc(FListNotificationLock);
-      try
-        Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase, True, RightTrimmedLookup);
-      finally
-        Dec(FListNotificationLock);
-      end;
+      Result := FLocate.Locate(SearchField.FieldName, AValue, Exact, not IgnoreCase, True, RightTrimmedLookup);
       if Result then
       begin
         if SearchField = FDisplayField then
@@ -2985,17 +2968,27 @@ begin
 end;
 
 procedure TJvDBLookupCombo.ListLinkDataChanged;
-var
-  LastKeyValue: Variant;
 begin
   if FDataLink.Active and FDataLink.DataSet.IsLinkedTo(LookupSource) then
     if FListActive then
-    begin
-      LastKeyValue := KeyValue;
       DataLinkRecordChanged(nil);
-      if LastKeyValue = KeyValue then // do not call KeyValueChanged twice (1. SetKeyValue(), 2. here)
+end;
+
+procedure TJvDBLookupCombo.ListLinkDataSetChanged;
+begin
+  inherited ListLinkDataSetChanged;
+  if not FInListDataSetChanged and not FListVisible then
+  begin
+    FInListDataSetChanged := True;
+    try
+      if FListActive and Assigned(FMasterField) then
+        UpdateKeyValue
+      else
         KeyValueChanged;
+    finally
+      FInListDataSetChanged := False;
     end;
+  end;
 end;
 
 procedure TJvDBLookupCombo.ListLinkActiveChanged;
