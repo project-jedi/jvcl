@@ -234,7 +234,7 @@ begin
       if IsDateAndTimeField then
         DateTime := Field.AsDateTime
       else
-        DateTime := Trunc(Field.AsDateTime);
+        DateTime := Int(Field.AsDateTime);
     end
     else
     begin
@@ -360,7 +360,7 @@ begin
           if IsDateAndTimeField then
             DateTime := NullDate
           else
-            DateTime := Trunc(NullDate);
+            DateTime := Int(NullDate);
         end
         else
         begin
@@ -490,18 +490,18 @@ begin
         Field.AsDateTime := Frac(DateTime)
     else
       if TrimValue or not IsDateAndTimeField then
-        Field.AsDateTime := Trunc(DateTime)
+        Field.AsDateTime := Int(DateTime)
       else
         Field.AsDateTime := DateTime;
   end
   else
-  if IsDateAndTimeField then
+  //if IsDateAndTimeField then  ahuser: Mantis #5191; with this condition the Kind = dtkTime doesn't update the field anymore
   begin
     if Frac(NullDate) = Frac(DateTime) then
       if TrimValue then
         Field.Value := Null
       else
-        Field.AsDateTime := Trunc(DateTime)
+        Field.AsDateTime := Int(DateTime)
     else
       if TrimValue then
         Field.AsDateTime := Frac(DateTime)
@@ -527,7 +527,7 @@ begin
         if IsDateAndTimeField then
           D := Field.AsDateTime
         else
-          D := Trunc(Field.AsDateTime);
+          D := Int(Field.AsDateTime);
       end
       else
       begin
