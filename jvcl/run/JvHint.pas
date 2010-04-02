@@ -261,14 +261,14 @@ end;
 
 procedure RegisterHtHints;
 begin
-(*  if Application.ShowHint then
+  if Application.ShowHint then
   begin
     Application.ShowHint := False;
     HintWindowClass := TJvHTHintWindow;
     Application.ShowHint := True;
   end
   else
-    HintWindowClass := TJvHTHintWindow;   *)
+    HintWindowClass := TJvHTHintWindow;
 end;
 
 {$IFDEF UNITVERSIONING}
