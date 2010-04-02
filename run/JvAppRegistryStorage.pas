@@ -459,11 +459,17 @@ function TJvAppRegistryStorage.DoReadFloat(const Path: string; Default: Extended
 var
   SubKey: string;
   ValueName: string;
+  DataType: Cardinal;
 begin
   SplitKeyPath(Path, SubKey, ValueName);
   Result := Default;
   try
-    RegReadBinary(FRegHKEY, SubKey, ValueName, Result, SizeOf(Result));
+    DataType := REG_NONE;
+    RegGetDataType(FRegHKEY, SubKey, ValueName, DataType);
+    if DataType = REG_BINARY then
+      RegReadBinary(FRegHKEY, SubKey, ValueName, Result, SizeOf(Result))
+    else
+      raise EJclRegistryError.CreateResFmt(@RsWrongDataType, ['', SubKey, ValueName]);
   except
     on E: EJclRegistryError do
       if StorageOptions.DefaultIfReadConvertError then
