@@ -36,7 +36,7 @@ uses
   Windows, Messages, Variants, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, JvEditor, JvEditorCommon, JvHLEditor, Menus,
   ShellApi, JvInterpreter, ImgList, JvComponent, JvHLEditorPropertyForm, JvFormPlacement,
-  JvExControls;
+  JvExControls, JvComponentBase;
 
 const
   WM_CHECKFILEMODIFIED = WM_USER + $101;
@@ -152,6 +152,14 @@ uses JvJCLUtils, JvConsts,
 const
   PadExt = '.pad'; { extension for macro-files }
 
+{$IF CompilerVersion >= 21.0}
+type
+  ShiftStateToOrdinal = Word;
+{$ELSE}
+type
+  ShiftStateToOrdinal = Byte;
+{$IFEND}
+
 {
 procedure FailProc;
 var
@@ -162,8 +170,8 @@ end;
 
 procedure TMain.RAHLEditor1ChangeStatus(Sender: TObject);
 const
-  Modi: array[boolean] of string[10] = ('', 'Modified');
-  Modes: array[boolean] of string[10] = ('Overwrite', 'Insert');
+  Modi: array[Boolean] of string = ('', 'Modified');
+  Modes: array[Boolean] of string = ('Overwrite', 'Insert');
 begin
   with StatusBar, RAHLEditor1 do
   begin
@@ -203,7 +211,8 @@ end;
 
 procedure TMain.CheckFileModified;
 begin
-  if FFileName = '' then Exit;
+  if FFileName = '' then
+    Exit;
   if FileExists(FFileName) then
   begin
     if FileTime <> FileAge(FFileName) then
@@ -279,21 +288,21 @@ end;
 procedure TMain.UpdateEditorSettings;
 begin
   SetHighlighter;
-end;    { UpdateEditorSettings }
+end;
 
 procedure TMain.SetHighlighter;
 var
   Ext: TFileName;
-  i, H: TJvHighlighter;
+  I, H: TJvHighlighter;
 begin
   Ext := ExtractFileExt(FFileName);
   H := hlNone;
   if RAHLEditor1.SyntaxHighlighting then
-    for i := Low(TJvHighlighter) to High(TJvHighlighter) do
-      if FileEquMasks(FFileName, Exts[i]) then
+    for I := Low(TJvHighlighter) to High(TJvHighlighter) do
+      if FileEquMasks(FFileName, Exts[I]) then
       begin
-        H := i;
-        break;
+        H := I;
+        Break;
       end;
   RAHLEditor1.HighLighter := H;
   LoadColors;
@@ -306,10 +315,10 @@ end;
 
 procedure TMain.raCommonAfterLoad(Sender: TObject);
 // var
-//   i: TJvHighlighter;
+//   I: TJvHighlighter;
 begin
-//!!!  for i := Low(TJvHighlighter) to High(TJvHighlighter) do
-//!!!    Exts[i] := Trim(raCommon.ReadString('Highlighters', HighLighters[i], Exts[i]));
+//!!!  for I := Low(TJvHighlighter) to High(TJvHighlighter) do
+//!!!    Exts[I] := Trim(raCommon.ReadString('Highlighters', HighLighters[I], Exts[I]));
   RAHLEdPropDlg1.Restore;
   UpdateEditorSettings;
 end;
@@ -468,7 +477,7 @@ begin
   { save S to log file }
   //.. not implemented
   ShowMessage(S);
-end;    { ErrorLogFmt }
+end;
 
 procedure TMain.JvInterpreterInitialize;
 begin
@@ -509,7 +518,7 @@ begin
   end;
   JvInterpreterProgram1.Compile;
   JvInterpreterSafeCall('main', nil, [Null]);
-end;    { RegisterJvInterpreterAdapters }
+end;
 
 procedure TMain.JvInterpreterUnInitialize;
 begin
@@ -520,7 +529,7 @@ end;
 function TMain.JvInterpreterScript: boolean;
 begin
   Result := JvInterpreterProgram1.Source <> '';
-end;    {  }
+end;
 
 function TMain.JvInterpreterSafeCall(const FunName: string; Args: TJvInterpreterArgs;
   Params: array of Variant): Variant;
@@ -533,17 +542,17 @@ begin
       on E: EJvInterpreterError do
         ErrorLogFmt('Call to function %s failed: %s', [FunName, E.Message]);
     end
-end;    { JvInterpreterSafeCall }
+end;
 
 procedure TMain.JvInterpreterFileOpened;
 begin
   JvInterpreterSafeCall('FileOpened', nil, [FFileName]);
-end;    { JvInterpreterOpen }
+end;
 
 procedure TMain.JvInterpreterFileClosed;
 begin
   JvInterpreterSafeCall('FileClosed', nil, [FFileName]);
-end;    { JvInterpreterFileClosed }
+end;
 
 procedure TMain.JvInterpreterProgram1GetValue(Sender: TObject; Identifer: String;
   var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
@@ -645,12 +654,11 @@ begin
   end;
 end;
 
-procedure TMain.RAHLEditor1KeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMain.RAHLEditor1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   Args.Clear;
   Args.Values[0] := Key;
-  Args.Values[1] := S2V(Byte(Shift));
+  Args.Values[1] := S2V(ShiftStateToOrdinal(Shift));
   Args.Types[0] := varInteger or varByRef;
   Args.Count := 2;
   JvInterpreterSafeCall('KeyDown', Args, [Null]);
@@ -662,7 +670,7 @@ procedure TMain.RAHLEditor1KeyUp(Sender: TObject; var Key: Word;
 begin
   Args.Clear;
   Args.Values[0] := Key;
-  Args.Values[1] := S2V(Byte(Shift));
+  Args.Values[1] := S2V(ShiftStateToOrdinal(Shift));
   Args.Types[0] := varInteger or varByRef;
   Args.Count := 2;
   JvInterpreterSafeCall('KeyUp', Args, [Null]);
@@ -682,11 +690,11 @@ begin
     Key := #0;
 end;
 
-
 procedure TMain.RAHLEditor1PaintGutter(Sender: TObject; Canvas: TCanvas);
-  procedure Draw(Y, ImageIndex : integer);
+
+  procedure Draw(Y, ImageIndex : Integer);
   var
-    Ro : integer;
+    Ro : Integer;
     R : TRect;
   begin
     if Y <> -1 then
@@ -699,12 +707,13 @@ procedure TMain.RAHLEditor1PaintGutter(Sender: TObject; Canvas: TCanvas);
           ImageIndex);
       end;
   end;
+
 var
-  i  : integer;
+  I: Integer;
 begin
-  for i := 0 to 9 do
-    if (Sender as TJvEditor).Bookmarks[i].Valid then
-      Draw((Sender as TJvEditor).Bookmarks[i].Y, i);
+  for I := 0 to 9 do
+    if (Sender as TJvEditor).Bookmarks[I].Valid then
+      Draw((Sender as TJvEditor).Bookmarks[I].Y, I);
 end;
 
 
