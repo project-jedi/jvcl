@@ -91,7 +91,7 @@ uses
   {$IFDEF COMPILER10_UP}
   WideStrings,
   {$ENDIF COMPILER10_UP}
-  SysUtils, Classes, TypInfo,
+  SysUtils, Classes, TypInfo, Variants,
   JclBase,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
@@ -2659,7 +2659,7 @@ begin
         SetOrdProp(PersObj, PropName, TmpValue);
       end;
     tkVariant:
-      SetVariantProp(PersObj, PropName, ReadString(Path, GetVariantProp(PersObj, PropName)));
+      SetVariantProp(PersObj, PropName, ReadString(Path, VarToStr(GetVariantProp(PersObj, PropName))));
     tkSet:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
@@ -2777,7 +2777,7 @@ begin
         WriteWideString(Path, GetWideStrProp(PersObj, PropName));
     tkVariant:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
-        WriteString(Path, GetVariantProp(PersObj, PropName));
+        WriteString(Path, VarToStr(GetVariantProp(PersObj, PropName)));
     tkEnumeration:
       begin
         if StorageOptions.StoreDefaultValues or not IsDefaultOrdProp(P) then
