@@ -3959,7 +3959,7 @@ begin
       siListCount]), 0);
     if Count > 0 then
     begin
-      for I := 0 to Count - 1 do
+      for I := Count - 1 downto 0 do
       begin
         FormClass :=
           TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
@@ -4099,18 +4099,14 @@ begin
           else
           if fpSize in Options then
           begin
-            {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
             if Form.Position = poDefault then
               ChangePosition(poDefaultPosOnly);
-            {.ENDIF}
           end
           else
           if fpLocation in Options then // obsolete but better to read
-            {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
             if Form.Position = poDefault then
               ChangePosition(poDefaultSizeOnly)
             else
-            {.ENDIF}
             if Form.Position <> poDesigned then
               ChangePosition(poDesigned);
         end;
