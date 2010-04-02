@@ -128,7 +128,7 @@ end;
 
 procedure TJvAppAnimatedIcon.SetIcons(const Value: TImageList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FIcons));
+  ReplaceComponentReference(Self, Value, TComponent(FIcons));
 end;
 
 {$IFDEF UNITVERSIONING}

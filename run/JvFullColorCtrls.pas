@@ -1294,7 +1294,7 @@ begin
     FColorTrackBar.FreeLink;
   end;
 
-  ReplaceComponentReference (Self, Value, TComponent(FColorTrackBar));
+  ReplaceComponentReference(Self, Value, TComponent(FColorTrackBar));
 
   if Assigned(FColorTrackBar) then
   begin
@@ -2073,7 +2073,7 @@ begin
     FBlueColorTrackBar.FreeLink;
   end;
 
-  ReplaceComponentReference (Self, Value, TComponent(FBlueColorTrackBar));
+  ReplaceComponentReference(Self, Value, TComponent(FBlueColorTrackBar));
 
   if Assigned(FBlueColorTrackBar) then
   begin
@@ -2097,7 +2097,7 @@ begin
     FGreenColorTrackBar.FreeLink;
   end;
 
-  ReplaceComponentReference (Self, Value, TComponent(FGreenColorTrackBar));
+  ReplaceComponentReference(Self, Value, TComponent(FGreenColorTrackBar));
 
   if Assigned(FGreenColorTrackBar) then
   begin
@@ -2121,7 +2121,7 @@ begin
     FRedColorTrackBar.FreeLink;
   end;
 
-  ReplaceComponentReference (Self, Value, TComponent(FRedColorTrackBar));
+  ReplaceComponentReference(Self, Value, TComponent(FRedColorTrackBar));
 
   if Assigned(FRedColorTrackBar) then
   begin
@@ -2145,7 +2145,7 @@ begin
     FCommonColorTrackBar.FreeLink;
   end;
 
-  ReplaceComponentReference (Self, Value, TComponent(FCommonColorTrackBar));
+  ReplaceComponentReference(Self, Value, TComponent(FCommonColorTrackBar));
 
   if Assigned(FCommonColorTrackBar) then
   begin

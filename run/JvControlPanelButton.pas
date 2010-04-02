@@ -177,7 +177,7 @@ end;
 
 procedure TJvControlPanelButton.SetImages(const Value: TCustomImageList);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FImages)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FImages)) then
     Refresh;
 end;
 

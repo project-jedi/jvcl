@@ -140,7 +140,7 @@ end;
 
 procedure TJvDualListDialog.SetCenterOnControl(const Value: TControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FCenterOnControl));
+  ReplaceComponentReference(Self, Value, TComponent(FCenterOnControl));
 end;
 
 procedure TJvDualListDialog.SetList1(Value: TStrings);

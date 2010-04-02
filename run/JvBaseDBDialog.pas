@@ -137,7 +137,7 @@ end;
 
 procedure TJvBaseDBDialog.SetAppStorage(Value: TJvCustomAppStorage);
 begin
-  ReplaceComponentReference (self, Value, TComponent(FAppStorage));
+  ReplaceComponentReference(self, Value, TComponent(FAppStorage));
 end;
 
 procedure TJvBaseDBDialog.SetAppStoragePath(Value: string);
@@ -148,7 +148,7 @@ end;
 
 procedure TJvBaseDBDialog.SetSession(const Value: TComponent);
 begin
-  ReplaceComponentReference (self, Value, FSession);
+  ReplaceComponentReference(self, Value, FSession);
 end;
 
 {$IFDEF UNITVERSIONING}

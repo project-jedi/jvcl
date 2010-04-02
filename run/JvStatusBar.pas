@@ -273,7 +273,7 @@ var
   S: TJvStatusBar;
 begin
   S := TStatusPanelsAccessProtected(Collection).Owner as TJvStatusBar;
-  ReplaceComponentReference (S, Value, TComponent(FControl));
+  ReplaceComponentReference(S, Value, TComponent(FControl));
   if FControl <> nil then
   begin
     if FControl = S then

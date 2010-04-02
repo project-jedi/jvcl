@@ -332,7 +332,7 @@ end;
 
 procedure TJvSimPID.SetSource(const Value: TJvSimPID);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FSource));
+  ReplaceComponentReference(Self, Value, TComponent(FSource));
 end;
 
 procedure TJvSimPID.Execute;

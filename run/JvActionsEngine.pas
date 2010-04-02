@@ -233,7 +233,7 @@ begin
     else
       intValue := nil;
     Changed := FActionComponent <> intValue;
-    ReplaceComponentReference (Self, intValue, FActionComponent);
+    ReplaceComponentReference(Self, intValue, FActionComponent);
     if changed then
       ChangeActionComponent(FActionComponent);
   end;

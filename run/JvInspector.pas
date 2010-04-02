@@ -3628,7 +3628,7 @@ begin
     if Painter <> nil then
       Painter.SetInspector(nil);
 
-    ReplaceComponentReference (Self, Value, TComponent(FPainter));
+    ReplaceComponentReference(Self, Value, TComponent(FPainter));
 
     if Painter <> nil then
     begin

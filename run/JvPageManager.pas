@@ -367,7 +367,7 @@ begin
   begin
     if not (csLoading in ComponentState) then
       SyncBtnClick(Index, False);
-    ReplaceComponentReference (Self, Value, tComponent(FButtons[Boolean(Index)]));
+    ReplaceComponentReference(Self, Value, tComponent(FButtons[Boolean(Index)]));
     if not (csLoading in ComponentState) then
       SyncBtnClick(Index, True);
   end;
@@ -445,7 +445,7 @@ end;
 
 procedure TJvPageManager.SetPageOwner(Value: TPageOwner);
 begin
-  if ReplaceComponentReference (Self, Value, tComponent(FPageOwner)) then
+  if ReplaceComponentReference(Self, Value, tComponent(FPageOwner)) then
   begin
     if not (csLoading in ComponentState) then
     begin

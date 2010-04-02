@@ -501,7 +501,7 @@ end;
 
 procedure THiddenPopupObject.SetEdit(const Value: TWinControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FEdit));
+  ReplaceComponentReference(Self, Value, TComponent(FEdit));
 end;
 
 procedure THiddenPopupObject.Notification(AComponent: TComponent;

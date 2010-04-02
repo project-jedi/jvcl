@@ -519,7 +519,7 @@ end;
 
 procedure TJvCustomScheduledEvents.SetAppStorage(Value: TJvCustomAppStorage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FAppStorage));
+  ReplaceComponentReference(Self, Value, TComponent(FAppStorage));
 end;
 
 procedure TJvCustomScheduledEvents.Notification(AComponent: TComponent; Operation: TOperation);

@@ -1290,7 +1290,7 @@ end;
 
 procedure TJvArrangeParameter.SetParentControl(const Value: TWinControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FParentControl));
+  ReplaceComponentReference(Self, Value, TComponent(FParentControl));
 end;
 
 //=== { TJvPanelParameter } ==================================================

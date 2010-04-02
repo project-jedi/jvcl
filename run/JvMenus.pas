@@ -1957,7 +1957,7 @@ begin
     if FItemPainter <> nil then
       FItemPainter.Menu := nil;
 
-    ReplaceComponentReference (Self, Value, TComponent(FItemPainter));
+    ReplaceComponentReference(Self, Value, TComponent(FItemPainter));
     // set value and if not nil, setup the painter correctly
     if FItemPainter <> nil then
     begin

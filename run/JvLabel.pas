@@ -1047,7 +1047,7 @@ end;
 
 procedure TJvCustomLabel.SetFocusControl(Value: TWinControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FFocusControl));
+  ReplaceComponentReference(Self, Value, TComponent(FFocusControl));
   if FShowFocus then
     Invalidate;
 end;

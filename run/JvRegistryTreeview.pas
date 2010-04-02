@@ -800,7 +800,7 @@ end;
 
 procedure TJvRegistryTreeView.SetListView(const Value: TCustomListView);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FListView));
+  ReplaceComponentReference(Self, Value, TComponent(FListView));
 end;
 
 {$IFDEF UNITVERSIONING}

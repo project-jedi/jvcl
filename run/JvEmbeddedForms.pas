@@ -269,7 +269,7 @@ begin
       raise Exception.CreateRes(@RsELinkCircularRef)
     else
     begin
-      ReplaceComponentReference (Self, Value, TComponent(FLink));
+      ReplaceComponentReference(Self, Value, TComponent(FLink));
       InitLinkedForm;
     end;
   end;

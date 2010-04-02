@@ -2449,7 +2449,7 @@ end;
 
 procedure TJvDSADialog.SetCheckControl(Value: TWinControl);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FCheckControl)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FCheckControl)) then
     if Value <> nil then
     begin
       if GetPropInfo(Value, 'Checked') = nil then

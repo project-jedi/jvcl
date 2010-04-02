@@ -177,7 +177,7 @@ end;
 
 procedure TJvMergeManager.SetMergeFrame(Value: TWinControl);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FMergeFrame)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FMergeFrame)) then
     FFormHistory.ResetHistory;
 end;
 

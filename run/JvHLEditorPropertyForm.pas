@@ -591,7 +591,7 @@ procedure TJvHLEdPropDlg.SetJvHLEditor(const Value: TJvCustomEditorBase);
 var
   HLed: IJvHLEditor;
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FJvHLEditor)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FJvHLEditor)) then
     if Value <> nil then
     begin
       if Value.GetInterface(IJvHLEditor, HLed) then
@@ -601,7 +601,7 @@ end;
 
 procedure TJvHLEdPropDlg.SetStorage(const Value: TJvFormStorage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FStorage));
+  ReplaceComponentReference(Self, Value, TComponent(FStorage));
 end;
 
 //=== { TJvHLEditorParamsForm } ==============================================

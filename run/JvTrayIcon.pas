@@ -1176,7 +1176,7 @@ end;
 
 procedure TJvTrayIcon.SetDropDownMenu(const Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FDropDownMenu));
 end;
 
 procedure TJvTrayIcon.SetHint(Value: string);
@@ -1210,7 +1210,7 @@ end;
 
 procedure TJvTrayIcon.SetIcons(const Value: TCustomImageList);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FIcons)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FIcons)) then
     IconPropertyChanged; //HEG: New
 end;
 
@@ -1224,7 +1224,7 @@ end;
 
 procedure TJvTrayIcon.SetPopupMenu(const Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FPopupMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FPopupMenu));
 end;
 
 procedure TJvTrayIcon.SetTask(const Value: Boolean);

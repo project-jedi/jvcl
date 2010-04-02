@@ -1228,7 +1228,7 @@ end;
 
 procedure TJvRollOutAction.SetRollOut(const Value: TJvCustomRollOut);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FRollOut));
+  ReplaceComponentReference(Self, Value, TComponent(FRollOut));
 end;
 
 procedure TJvRollOutAction.UpdateTarget(Target: TObject);

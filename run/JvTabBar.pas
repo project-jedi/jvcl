@@ -641,7 +641,7 @@ begin
   begin
     if Assigned(FPainter) then
       FPainter.FOnChangeList.Extract(Self);
-    ReplaceComponentReference (Self, Value, tComponent(FPainter));
+    ReplaceComponentReference(Self, Value, tComponent(FPainter));
     if Assigned(FPainter) then
     begin
       FreeAndNil(FDefaultPainter);

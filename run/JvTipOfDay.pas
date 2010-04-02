@@ -227,7 +227,7 @@ end;
 
 procedure TJvTipOfDay.SetAppStorage(Value: TJvCustomAppStorage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FAppStorage));
+  ReplaceComponentReference(Self, Value, TComponent(FAppStorage));
 end;
 
 procedure TJvTipOfDay.AutoExecute;

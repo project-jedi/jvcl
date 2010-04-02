@@ -84,7 +84,7 @@ procedure TJvSyncSplitter.SetPartner(const Value: TJvSyncSplitter);
 begin
   if Value <> Self then
   begin
-    ReplaceComponentReference (Self, Value, TComponent(FPartner));
+    ReplaceComponentReference(Self, Value, TComponent(FPartner));
     VerifyPartner;
   end
   else

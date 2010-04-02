@@ -728,7 +728,7 @@ var
   PropName: string;
   PropertyStore: TJvCustomPropertyStore;
 begin
-  if ReplaceComponentReference (Self, Value, tComponent(FAppStorage)) then
+  if ReplaceComponentReference(Self, Value, tComponent(FAppStorage)) then
   begin
     for Index := 0 to GetPropCount(Self) - 1 do
     begin

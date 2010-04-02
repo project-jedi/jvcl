@@ -2143,7 +2143,7 @@ begin
       FViewer.Notify(Self, sncDisconnectControl);
     if Assigned(Value) then
       Value.Notify(Self, sncConnectControl);
-    ReplaceComponentReference (Self, Value, TComponent(FViewer));
+    ReplaceComponentReference(Self, Value, TComponent(FViewer));
     if Assigned(FViewer) then
     begin
       FViewer.MoveTo(Cells.Cells[0, 0]);

@@ -1661,7 +1661,7 @@ end;
 
 procedure TJvBalloonHint.SetImages(const Value: TCustomImageList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FImages));
+  ReplaceComponentReference(Self, Value, TComponent(FImages));
 end;
 
 procedure TJvBalloonHint.SetOptions(const Value: TJvBalloonOptions);

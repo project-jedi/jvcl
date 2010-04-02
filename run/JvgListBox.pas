@@ -785,7 +785,7 @@ end;
 
 procedure TJvgListBox.SetWallpaperImage(Value: TImage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FWallpaperImage));
+  ReplaceComponentReference(Self, Value, TComponent(FWallpaperImage));
   Invalidate;
 end;
 

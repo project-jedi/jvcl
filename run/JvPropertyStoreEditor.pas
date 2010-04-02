@@ -1022,7 +1022,7 @@ begin
     Exit;
   if Assigned(Value) and not Supports(Value, IJvPropertyEditorHandler) then
     Raise Exception.Create ('TJvPropertyStoreEditorControl.SetPropertyStore : PropertyStore must support IJvPropertyEditorHandler');
-  ReplaceComponentReference (Self, Value, TComponent(FPropertyStore));
+  ReplaceComponentReference(Self, Value, TComponent(FPropertyStore));
   FillTreeView(Value);
 end;
 

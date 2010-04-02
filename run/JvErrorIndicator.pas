@@ -715,7 +715,7 @@ end;
 
 procedure TJvErrorControl.SetImageList(const Value: TCustomImageList);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FImageList)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FImageList)) then
   begin
     if FImageList <> nil then
       BoundsRect := CalcBoundsRect
@@ -729,7 +729,7 @@ procedure TJvErrorControl.SetControl(const Value: TControl);
 begin
   if FControl <> Value then
   begin
-    ReplaceComponentReference (Self, Value, TComponent(FControl));
+    ReplaceComponentReference(Self, Value, TComponent(FControl));
     if FControl <> nil then
       Parent := FControl.Parent
     else

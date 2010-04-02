@@ -509,7 +509,7 @@ end;
 procedure TJvMRUManager.SetRecentMenu(Value: TMenuItem);
 begin
   ClearRecentMenu;
-  ReplaceComponentReference (Self, Value, TComponent(FRecentMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FRecentMenu));
   FreeAndNil(FCanvas);
   UpdateRecentMenu;
 end;

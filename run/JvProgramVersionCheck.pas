@@ -1702,22 +1702,22 @@ end;
 
 procedure TJvProgramVersionCheck.SetLocationDatabase(const Value: TJvProgramVersionDatabaseLocation);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FLocationDatabase));
+  ReplaceComponentReference(Self, Value, TComponent(FLocationDatabase));
 end;
 
 procedure TJvProgramVersionCheck.SetLocationFTP(const Value: TJvProgramVersionFTPLocation);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FLocationFTP));
+  ReplaceComponentReference(Self, Value, TComponent(FLocationFTP));
 end;
 
 procedure TJvProgramVersionCheck.SetLocationHTTP(const Value: TJvProgramVersionHTTPLocation);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FLocationHTTP));
+  ReplaceComponentReference(Self, Value, TComponent(FLocationHTTP));
 end;
 
 procedure TJvProgramVersionCheck.SetLocationNetwork(const Value: TJvProgramVersionNetworkLocation);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FLocationNetwork));
+  ReplaceComponentReference(Self, Value, TComponent(FLocationNetwork));
 end;
 
 

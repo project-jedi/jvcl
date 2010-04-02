@@ -400,7 +400,7 @@ begin
     Exit;
   if ActiveWhileControlFocused and Assigned(FFocusControl) then
     UnhookFocusControlWndProc;
-  ReplaceComponentReference (Self, Value, TComponent(FFocusControl));
+  ReplaceComponentReference(Self, Value, TComponent(FFocusControl));
   if ActiveWhileControlFocused and Assigned(FFocusControl) then
     HookFocusControlWndProc;
 end;
