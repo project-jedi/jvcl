@@ -464,9 +464,7 @@ begin
   SplitKeyPath(Path, SubKey, ValueName);
   Result := Default;
   try
-    DataType := REG_NONE;
-    RegGetDataType(FRegHKEY, SubKey, ValueName, DataType);
-    if DataType = REG_BINARY then
+    if not RegGetDataType(FRegHKEY, SubKey, ValueName, DataType) or (DataType = REG_BINARY) then
       RegReadBinary(FRegHKEY, SubKey, ValueName, Result, SizeOf(Result))
     else
       raise EJclRegistryError.CreateResFmt(@RsWrongDataType, ['', SubKey, ValueName]);
