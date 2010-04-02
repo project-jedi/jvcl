@@ -1285,7 +1285,7 @@ var
     nil, { fiSyncedLyrics }
     nil, { fiSyncedTempo }
     TJvID3TextFrame, { fiAlbum }
-    TJvID3NumberFrame, { fiBPM }
+    TJvID3TextFrame, { fiBPM } // was NumberFrame changed 03/15/10 DW
     TJvID3SimpleListFrame, { fiComposer }
     TJvID3SimpleListFrame, { fiContentType }
     TJvID3TextFrame, { fiCopyright }
