@@ -34,12 +34,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Graphics, Controls,
-  JvID3v2Types, JvID3v2Base
-  {$IFDEF COMPILER12_UP}
-  {$ELSE}
-  ,JclUnicode
-  {$ENDIF COMPILER12_UP}
-  ;
+  {$IFNDEF COMPILER12_UP}
+  JclUnicode,
+  {$ENDIF ~COMPILER12_UP}
+  JvID3v2Types, JvID3v2Base;
 
 type
   TJvID3Persistent = class(TPersistent)
@@ -60,6 +58,8 @@ type
     procedure SetList(const FrameID: Integer{TJvID3FrameID}; const Value: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP});
     procedure SetNumber(const FrameID: Integer{TJvID3FrameID}; const Value: Cardinal);
     procedure SetText(const FrameID: Integer{TJvID3FrameID}; const Value: WideString);
+    function GetBPM: Cardinal;
+    procedure SetBPM(const Value: Cardinal);
   public
     constructor Create(AController: TJvID3Controller);
     destructor Destroy; override;
@@ -68,7 +68,8 @@ type
     property Album: WideString index fiAlbum read GetText write SetText stored False;
     property AlbumSortOrder: WideString index fiAlbumSortOrder read GetText write SetText stored False;
     property Band: WideString index fiBand read GetText write SetText stored False;
-    property BPM: Cardinal index fiBPM read GetNumber write SetNumber stored False;
+    property BPM: Cardinal read GetBPM write SetBPM stored False;
+    property BPMStr: WideString index fiBPM read GetText write SetText stored False;
     property Composer: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiComposer read GetList write SetList stored False;
     property Conductor: WideString index fiConductor read GetText write SetText stored False;
     property ContentType: {$IFDEF COMPILER12_UP}TStrings{$ELSE}TWideStrings{$ENDIF COMPILER12_UP} index fiContentType read GetList write SetList stored False;
@@ -763,6 +764,16 @@ begin
     Result := Frame.Text
   else
     Result := '';
+end;
+
+function TJvID3Text.GetBPM: Cardinal;
+begin
+  Result := Trunc(StrToFloat(StringReplace(BPMStr, '.', DecimalSeparator, [])));
+end;
+
+procedure TJvID3Text.SetBPM(const Value: Cardinal);
+begin
+  BPMStr := IntToStr(Value);
 end;
 
 procedure TJvID3Text.SetDateTime(const FrameID: Integer{TJvID3FrameID};
