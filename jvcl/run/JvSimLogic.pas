@@ -823,7 +823,7 @@ end;
 
 procedure TJvSIMConnector.SetFromLogic(const Value: TJvLogic);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FFromLogic));
+  ReplaceComponentReference(Self, Value, TComponent(FFromLogic));
 end;
 
 procedure TJvSIMConnector.SetToGate(const Value: Integer);
@@ -833,7 +833,7 @@ end;
 
 procedure TJvSIMConnector.SetToLogic(const Value: TJvLogic);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FToLogic));
+  ReplaceComponentReference(Self, Value, TComponent(FToLogic));
 end;
 
 procedure TJvSIMConnector.SetFromPoint(const Value: TJvPointX);

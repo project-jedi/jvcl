@@ -420,7 +420,7 @@ procedure TJvVersionControlActionList.SetVersionControlComponent(Value: TCompone
 var
   I: Integer;
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FVersionControlComponent)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FVersionControlComponent)) then
   begin
     for I := 0 to ActionCount - 1 do
       if Actions[I] is TJvVersionControlBaseAction then

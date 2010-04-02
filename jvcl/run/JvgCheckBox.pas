@@ -581,7 +581,7 @@ begin
   begin
     if (fcoActiveWhileControlFocused in Options) and Assigned(FFocusControl) then
       UnhookFocusControlWndProc;
-    ReplaceComponentReference (Self, Value, TComponent(FFocusControl));
+    ReplaceComponentReference(Self, Value, TComponent(FFocusControl));
     if (fcoActiveWhileControlFocused in Options) and Assigned(FFocusControl) then
       HookFocusControlWndProc;
   end;

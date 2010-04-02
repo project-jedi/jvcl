@@ -639,7 +639,7 @@ end;
 
 procedure TJvgAskListBox.SetWallpaperImage(Value: TImage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FWallpaperImage));
+  ReplaceComponentReference(Self, Value, TComponent(FWallpaperImage));
   if (not IsItAFilledBitmap(FWallpaper)) and Assigned(Value) then
   begin
     WallpaperBmp := Value.Picture.Bitmap;
@@ -682,7 +682,7 @@ end;
 procedure TJvgAskListBox.SetGlyphs(Value: TImageList);
 begin
   //if (Value=nil)or(Value.Width<=0)or(Value.Height<=0) then Exit;
-  ReplaceComponentReference (Self, Value, TComponent(FGlyphs));
+  ReplaceComponentReference(Self, Value, TComponent(FGlyphs));
   if FShowGlyphs then
     Invalidate;
 end;

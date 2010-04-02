@@ -628,7 +628,7 @@ end;
 
 procedure TJvComboListBox.SetDropdownMenu(const Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FDropdownMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FDropdownMenu));
 end;
 
 {$IFDEF UNITVERSIONING}

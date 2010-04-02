@@ -361,7 +361,7 @@ end;
 
 procedure TJvgShadow.SetControl(Value: TControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(fControl));
+  ReplaceComponentReference(Self, Value, TComponent(fControl));
   if FControl is TWinControl then
   begin
     TJvgPublicWinControl(FControl).OnEnter := ControlEnter;

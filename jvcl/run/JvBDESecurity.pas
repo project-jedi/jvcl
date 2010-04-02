@@ -136,7 +136,7 @@ end;
 
 procedure TJvDBSecurity.SetDatabase(Value: TDatabase);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FDatabase));
+  ReplaceComponentReference(Self, Value, TComponent(FDatabase));
 end;
 
 procedure TJvDBSecurity.SetUsersTableName(const Value: TFileName);

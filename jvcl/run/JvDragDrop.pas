@@ -333,7 +333,7 @@ begin
     { This will implicitly unhook the current DropTarget }
     AcceptDrag := False;
 
-    ReplaceComponentReference (Self, Value, TComponent(FDropTarget));
+    ReplaceComponentReference(Self, Value, TComponent(FDropTarget));
 
     if WasActive then
       { And hook again.. }
@@ -560,7 +560,7 @@ begin
   if Value <> FControl then
   begin
     UnregisterControl;
-    ReplaceComponentReference (Self, Value, TComponent(FControl));
+    ReplaceComponentReference(Self, Value, TComponent(FControl));
     RegisterControl;
   end;
 end;

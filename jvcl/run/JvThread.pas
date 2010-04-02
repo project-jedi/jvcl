@@ -1186,7 +1186,7 @@ end;
 
 procedure TJvThread.SetThreadDialog(const Value: TJvCustomThreadDialog);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FThreadDialog));
+  ReplaceComponentReference(Self, Value, TComponent(FThreadDialog));
 end;
 
 procedure TJvThread.ShowThreadDialogForm;

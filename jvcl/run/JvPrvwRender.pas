@@ -375,7 +375,7 @@ end;
 procedure TJvCustomPreviewRenderer.SetPrintPreview(
   const Value: TJvCustomPreviewControl);
 begin
-  ReplaceComponentReference (Self, Value, tComponent(FPrintPreview));
+  ReplaceComponentReference(Self, Value, tComponent(FPrintPreview));
 end;
 
 //=== { TJvPreviewRenderRichEdit } ===========================================
@@ -454,7 +454,7 @@ end;
 procedure TJvPreviewRenderRichEdit.SetRichEdit(
   const Value: TCustomRichEdit);
 begin
-  ReplaceComponentReference (Self, Value, tComponent(FRichEdit));
+  ReplaceComponentReference(Self, Value, tComponent(FRichEdit));
 end;
 
 //=== { TJvPreviewRenderJvRichEdit } =========================================
@@ -544,7 +544,7 @@ end;
 
 procedure TJvPreviewRenderJvRichEdit.SetRichEdit(const Value: TJvCustomRichEdit);
 begin
-  ReplaceComponentReference (Self, Value, tComponent(FRichEdit));
+  ReplaceComponentReference(Self, Value, tComponent(FRichEdit));
 end;
 
 //=== { TJvPreviewRenderStrings } ============================================
@@ -686,7 +686,7 @@ end;
 
 procedure TJvPreviewRenderControl.SetControl(const Value: TControl);
 begin
-  ReplaceComponentReference (Self, Value, tComponent(FControl));
+  ReplaceComponentReference(Self, Value, tComponent(FControl));
 end;
 
 procedure TJvPreviewRenderControl.DrawControl(ACanvas: TCanvas; AWidth, AHeight: Integer);
@@ -1017,7 +1017,7 @@ end;
 procedure TJvPreviewPrinter.SetPrintPreview(const Value: TJvCustomPreviewControl);
 begin
   CheckActive;
-  ReplaceComponentReference (Self, Value, tComponent(FPrintPreview));
+  ReplaceComponentReference(Self, Value, tComponent(FPrintPreview));
 end;
 
 procedure TJvPreviewPrinter.SetTitle(const Value: string);

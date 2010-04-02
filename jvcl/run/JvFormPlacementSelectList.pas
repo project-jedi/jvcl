@@ -65,7 +65,7 @@ uses
 
 procedure TJvFormStorageSelectList.SetFormStorage(Value: TJvFormStorage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FFormStorage));
+  ReplaceComponentReference(Self, Value, TComponent(FFormStorage));
 end;
 
 function TJvFormStorageSelectList.GetAppStorage: TJvCustomAppStorage;

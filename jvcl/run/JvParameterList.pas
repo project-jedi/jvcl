@@ -968,7 +968,7 @@ procedure TJvBaseParameter.SetWinControl(const Value: TWinControl);
 begin
   FJvDynControl := nil;
   FJvDynControlCaption := nil;
-  ReplaceComponentReference (Self, Value, TComponent(FWinControl));
+  ReplaceComponentReference(Self, Value, TComponent(FWinControl));
   if not Assigned(Value) then
     Exit;
   Supports(FWinControl, IJvDynControl, FJvDynControl);
@@ -1151,7 +1151,7 @@ end;
 
 procedure TJvBaseParameter.SetParameterList(const Value: TJvParameterList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FParameterList));
+  ReplaceComponentReference(Self, Value, TComponent(FParameterList));
 end;
 
 //=== { TJvParameterList } ===================================================
@@ -2163,7 +2163,7 @@ end;
 
 procedure TJvParameterListPropertyStore.SetParameterList(const Value: TJvParameterList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FParameterList));
+  ReplaceComponentReference(Self, Value, TComponent(FParameterList));
 end;
 
 procedure TJvParameterListPropertyStore.StoreData;
@@ -2198,7 +2198,7 @@ end;
 
 procedure TJvParameterListSelectList.SetParameterList(Value: TJvParameterList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FParameterList));
+  ReplaceComponentReference(Self, Value, TComponent(FParameterList));
 end;
 
 function TJvParameterListSelectList.GetAppStorage: TJvCustomAppStorage;

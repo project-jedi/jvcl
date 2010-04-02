@@ -2753,7 +2753,7 @@ end;
 
 procedure TJvCustomComboEdit.SetImages(const Value: TCustomImageList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FImages));
+  ReplaceComponentReference(Self, Value, TComponent(FImages));
   if FImages = nil then
     SetImageIndex(-1);
   if ImageKind = ikCustom then

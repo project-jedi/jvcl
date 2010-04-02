@@ -490,7 +490,7 @@ end;
 
 procedure TJvGradientCaption.SetPopupMenu(Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FPopupMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FPopupMenu));
 end;
 
 procedure TJvGradientCaption.SetCaptions(Value: TJvCaptionList);

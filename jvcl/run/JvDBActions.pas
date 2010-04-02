@@ -554,7 +554,7 @@ procedure TJvDatabaseActionList.SetDataComponent(Value: TComponent);
 var
   I: Integer;
 begin
-  if ReplaceComponentReference (Self, Value, FDataComponent) then
+  if ReplaceComponentReference(Self, Value, FDataComponent) then
   begin
     for I := 0 to ActionCount - 1 do
       if Actions[I] is TJvDatabaseBaseAction then
@@ -1196,7 +1196,7 @@ end;
 procedure TJvDatabaseInsertAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FSingleRecordWindowAction));
+  ReplaceComponentReference(Self, Value, TComponent(FSingleRecordWindowAction));
 end;
 
 procedure TJvDatabaseInsertAction.SingleRecordOnFormShowEvent(ADatacomponent :
@@ -1290,7 +1290,7 @@ end;
 procedure TJvDatabaseCopyAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FSingleRecordWindowAction));
+  ReplaceComponentReference(Self, Value, TComponent(FSingleRecordWindowAction));
 end;
 
 procedure TJvDatabaseCopyAction.SingleRecordOnFormShowEvent(ADatacomponent :
@@ -1335,7 +1335,7 @@ end;
 procedure TJvDatabaseEditAction.SetSingleRecordWindowAction(const Value:
     TJvDatabaseSingleRecordWindowAction);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FSingleRecordWindowAction));
+  ReplaceComponentReference(Self, Value, TComponent(FSingleRecordWindowAction));
 end;
 
 procedure TJvDatabaseEditAction.SingleRecordOnFormShowEvent(ADatacomponent :

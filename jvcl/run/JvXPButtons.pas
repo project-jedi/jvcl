@@ -923,7 +923,7 @@ end;
 
 procedure TJvXPCustomToolButton.SetDropDownMenu(const Value: TPopupMenu);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FDropDownMenu)) then
     LockedInvalidate;
 end;
 

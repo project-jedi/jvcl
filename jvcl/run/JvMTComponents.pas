@@ -336,7 +336,7 @@ end;
 
 procedure TJvMTManagedComponent.SetManager(Value: TJvMTManager);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FManager));
+  ReplaceComponentReference(Self, Value, TComponent(FManager));
 end;
 
 //=== { TJvMTThread } ========================================================

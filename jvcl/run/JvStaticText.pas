@@ -411,7 +411,7 @@ end;
 
 procedure TJvCustomStaticText.SetFocusControl(Value: TWinControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FFocusControl));
+  ReplaceComponentReference(Self, Value, TComponent(FFocusControl));
 end;
 
 procedure TJvCustomStaticText.SetShowAccelChar(Value: Boolean);

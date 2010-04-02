@@ -650,7 +650,7 @@ end;
 
 procedure TJvCSVEdit.SetCSVDataBase(const Value: TJvCSVBase);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FCSVDataBase));
+  ReplaceComponentReference(Self, Value, TComponent(FCSVDataBase));
 end;
 
 procedure TJvCSVEdit.SetCSVField(const Value: string);
@@ -791,7 +791,7 @@ end;
 
 procedure TJvCSVNavigator.SetCSVDataBase(const Value: TJvCSVBase);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FCSVDataBase));
+  ReplaceComponentReference(Self, Value, TComponent(FCSVDataBase));
 end;
 
 //=== { TJvCSVComboBox } =====================================================
@@ -809,7 +809,7 @@ end;
 
 procedure TJvCSVComboBox.SetCSVDataBase(const Value: TJvCSVBase);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FCSVDataBase));
+  ReplaceComponentReference(Self, Value, TComponent(FCSVDataBase));
 end;
 
 procedure TJvCSVComboBox.SetCSVField(const Value: string);
@@ -837,7 +837,7 @@ end;
 
 procedure TJvCSVCheckBox.SetCSVDataBase(const Value: TJvCSVBase);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FCSVDataBase));
+  ReplaceComponentReference(Self, Value, TComponent(FCSVDataBase));
 end;
 
 procedure TJvCSVCheckBox.SetCSVField(const Value: string);

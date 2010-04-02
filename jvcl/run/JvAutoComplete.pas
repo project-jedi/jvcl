@@ -472,7 +472,7 @@ end;
 
 procedure TJvBaseEditListAutoComplete.SetEditCtrl(Value: TCustomEdit);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FEditCtrl));
+  ReplaceComponentReference(Self, Value, TComponent(FEditCtrl));
 
   if FEditCtrl <> nil then
     SetFilter(FEditCtrl.Text)
@@ -609,7 +609,7 @@ end;
 
 procedure TJvEditListBoxAutoComplete.SetListBox(Value: TCustomListBox);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FListBox));
+  ReplaceComponentReference(Self, Value, TComponent(FListBox));
 
   if FListBox <> nil then
     List := FListBox.Items
@@ -870,7 +870,7 @@ procedure TJvLookupAutoComplete.SetListBox(Value: TCustomListBox);
 begin
   if Value <> FListBox then
   begin
-    ReplaceComponentReference (Self, Value, TComponent(FListBox));
+    ReplaceComponentReference(Self, Value, TComponent(FListBox));
     if Kind = akListBox then
     begin
       if FListBox <> nil then

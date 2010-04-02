@@ -922,7 +922,7 @@ begin
   begin
     if Assigned(FImages) then
       FImages.UnRegisterChanges(FChangeLink);
-    ReplaceComponentReference (Self, Value, TComponent(FImages));
+    ReplaceComponentReference(Self, Value, TComponent(FImages));
     if Assigned(FImages) then
       FImages.RegisterChanges(FChangeLink);
     Invalidate;

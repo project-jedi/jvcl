@@ -3188,7 +3188,7 @@ end;
 
 procedure TJvCustomAppStorage.SetTranslateStringEngine(const Value: TJvTranslateString);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FTranslateStringEngine));
+  ReplaceComponentReference(Self, Value, TComponent(FTranslateStringEngine));
 end;
 
 function TJvCustomAppStorage.ReadWideString(const Path: string;
@@ -3448,7 +3448,7 @@ begin
   begin
     if (Value <> nil) and (Value.HasSubStorage(OwnerStore) or (Value = OwnerStore)) then
       raise EJVCLAppStorageError.CreateRes(@RsECircularReferenceOfStorages);
-    ReplaceComponentReference (OwnerStore, Value, TComponent(FAppstorage));
+    ReplaceComponentReference(OwnerStore, Value, TComponent(FAppstorage));
   end;
 end;
 

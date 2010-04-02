@@ -518,12 +518,12 @@ end;
 
 procedure TJvDBProgress.SetMessageControl(Value: TControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FMessageControl));
+  ReplaceComponentReference(Self, Value, TComponent(FMessageControl));
 end;
 
 procedure TJvDBProgress.SetGauge(Value: TControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FGauge));
+  ReplaceComponentReference(Self, Value, TComponent(FGauge));
 end;
 
 procedure TJvDBProgress.Notification(AComponent: TComponent; AOperation: TOperation);

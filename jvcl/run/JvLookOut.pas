@@ -1592,7 +1592,7 @@ end;
 
 procedure TJvCustomLookOutButton.SetPopupMenu(const Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FPopupMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FPopupMenu));
 end;
 
 procedure TJvCustomLookOutButton.VisibleChanged;

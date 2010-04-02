@@ -975,7 +975,7 @@ end;
 
 procedure TJvDesktopAlert.SetImages(const Value: TCustomImageList);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FImages));
+  ReplaceComponentReference(Self, Value, TComponent(FImages));
 end;
 
 procedure TJvDesktopAlert.SetMessageText(const Value: string);
@@ -1727,7 +1727,7 @@ end;
 
 procedure TJvCustomDesktopAlert.SetAlertStack(const Value: TJvDesktopAlertStack);
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FStacker)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FStacker)) then
     if FStacker <> nil then
       Location.Position := FStacker.Position;
 end;

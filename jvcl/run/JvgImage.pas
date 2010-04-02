@@ -414,7 +414,7 @@ end;
 
 procedure TJvgBitmapImage.SetImage(Value: TImage);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FImage));
+  ReplaceComponentReference(Self, Value, TComponent(FImage));
   if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
     FBmp := FImage.Picture.Bitmap

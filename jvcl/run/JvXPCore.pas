@@ -774,7 +774,7 @@ begin
       Value.RegisterControls([Self])
     else if Assigned(FStyleManager) then
       FStyleManager.UnregisterControls([Self]);
-    ReplaceComponentReference (Self, Value, TComponent(FStyleManager));
+    ReplaceComponentReference(Self, Value, TComponent(FStyleManager));
     InternalRedraw;
   end;
 end;

@@ -1874,7 +1874,7 @@ begin
       if FHighlighter = hlSyntaxHighlighter then
         FHighlighter := hlNone;
 
-    ReplaceComponentReference (Self, Value, TComponent(FSyntaxHighlighter));
+    ReplaceComponentReference(Self, Value, TComponent(FSyntaxHighlighter));
     RescanLong(0);
     Invalidate;
   end;

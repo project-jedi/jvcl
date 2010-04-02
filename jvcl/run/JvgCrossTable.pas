@@ -1162,7 +1162,7 @@ end;
 
 procedure TJvgPrintCrossTable.SetDataSet(Value: TDataSet);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FDataSet));
+  ReplaceComponentReference(Self, Value, TComponent(FDataSet));
 end;
 
 procedure TJvgPrintCrossTable.SetColumnFieldName(const Value: string);

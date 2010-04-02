@@ -183,7 +183,7 @@ end;
 
 procedure TJvgReportParamsEditor.SetReport(const Value: TJvgReport);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FReport));
+  ReplaceComponentReference(Self, Value, TComponent(FReport));
 end;
 
 {$IFDEF UNITVERSIONING}

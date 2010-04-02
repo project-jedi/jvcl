@@ -455,7 +455,7 @@ procedure TJvBaseValidator.SetControlToValidate(Value: TControl);
 var
   Obj: IJvValidationProperty;
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FControlToValidate)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FControlToValidate)) then
     if FControlToValidate <> nil then
       if not (csLoading in ComponentState) then
       begin
@@ -468,7 +468,7 @@ end;
 
 procedure TJvBaseValidator.SetErrorControl(Value: TControl);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FErrorControl));
+  ReplaceComponentReference(Self, Value, TComponent(FErrorControl));
 end;
 
 procedure TJvBaseValidator.SetParentComponent(Value: TComponent);
@@ -683,7 +683,7 @@ procedure TJvControlsCompareValidator.SetCompareToControl(const Value: TControl)
 var
   Obj: IJvValidationProperty;
 begin
-  if ReplaceComponentReference (Self, Value, TComponent(FCompareToControl)) then
+  if ReplaceComponentReference(Self, Value, TComponent(FCompareToControl)) then
     if FCompareToControl <> nil then
     begin
       if Supports(FCompareToControl, IJvValidationProperty, Obj) then

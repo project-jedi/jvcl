@@ -2322,7 +2322,7 @@ begin
         RemoveDockStyle(FDockStyle);
       end;
 
-      ReplaceComponentReference (Self, ADockStyle, TComponent(FDockStyle));
+      ReplaceComponentReference(Self, ADockStyle, TComponent(FDockStyle));
 
       if FDockStyle <> nil then
       begin
@@ -3353,7 +3353,7 @@ begin
         Supports(TWinControlAccessProtected(FLastDockSite).DockManager, IJvDockManager, JvDockManager) then
         JvDockManager.RemoveControl(Self.ParentForm);
     end;
-    ReplaceComponentReference (Self, ALastDockSite, TComponent(FLastDockSite));
+    ReplaceComponentReference(Self, ALastDockSite, TComponent(FLastDockSite));
   end;
 end;
 
@@ -3372,7 +3372,7 @@ end;
 
 procedure TJvDockClient.SetNCPopupMenu(Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FNCPopupMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FNCPopupMenu));
 end;
 
 procedure TJvDockClient.SetParentVisible(const Value: Boolean);

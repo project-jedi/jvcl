@@ -1445,7 +1445,7 @@ end;
 
 procedure TJvCustomSpeedButton.SetDropdownMenu(Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FDropDownMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FDropDownMenu));
   if FMarkDropDown then
     Invalidate;
 end;

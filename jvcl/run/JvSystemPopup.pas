@@ -466,7 +466,7 @@ procedure TJvSystemPopup.SetPopup(const Value: TPopupMenu);
 begin
   if Assigned(FPopup) then
     FPopup.OnChange := nil;
-  ReplaceComponentReference (Self, Value, TComponent(FPopup));
+  ReplaceComponentReference(Self, Value, TComponent(FPopup));
   //if Assigned(FPopup) then
   //  FPopup.OnChange := MenuChanged;
   //if not (csLoading in ComponentState) then

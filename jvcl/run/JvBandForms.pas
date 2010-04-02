@@ -382,7 +382,7 @@ end;
 
 procedure TJvBandForm.SetContextMenu(const Value: TPopupMenu);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FBandContextMenu));
+  ReplaceComponentReference(Self, Value, TComponent(FBandContextMenu));
 end;
 
 procedure TJvBandForm.Notification(AComponent: TComponent;

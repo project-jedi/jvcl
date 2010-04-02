@@ -1166,14 +1166,14 @@ procedure TJvDirectoryListBox.SetFileList(Value: TJvFileListBox);
 begin
   if FFileList <> nil then
     FFileList.FDirList := nil;
-  ReplaceComponentReference (Self, Value, TComponent(FFileList));
+  ReplaceComponentReference(Self, Value, TComponent(FFileList));
   if FFileList <> nil then
     FFileList.Directory := Directory;
 end;
 
 procedure TJvDirectoryListBox.SetDirLabel(Value: TLabel);
 begin
-  ReplaceComponentReference (Self, Value, TComponent(FDirLabel));
+  ReplaceComponentReference(Self, Value, TComponent(FDirLabel));
   SetDirLabelCaption;
 end;
 
@@ -1495,7 +1495,7 @@ procedure TJvDirectoryListBox.SetDriveCombo(const Value: TJvDriveCombo);
 begin
   if FDriveCombo <> nil then
     FDriveCombo.FDirList := nil;
-  ReplaceComponentReference (Self, Value, TComponent(FDriveCombo));
+  ReplaceComponentReference(Self, Value, TComponent(FDriveCombo));
   if FDriveCombo <> nil then
   begin
     FDriveCombo.FDirList := Self;
