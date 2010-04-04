@@ -35,7 +35,7 @@ uses
 {$ENDIF UNITVERSIONING}
   Forms, Controls, Classes, DB,
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGridCustomTableView, cxDBData, cxGridCustomView, cxGrid,
+  cxGridCustomTableView, cxDBData, cxGridCustomView, cxGrid, cxGridChartView,
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   JvControlActionsEngine;
 
@@ -43,6 +43,7 @@ uses
 type
   TJvControlActioncxGridEngine = class(TJvControlActionEngine)
   private
+    procedure ExportChartViewToImage(aExtension, aFileName: string; aChartView: TcxGridChartView);
   protected
     procedure ExportGrid(aGrid: TcxGrid);
     function GetGridTableView(AActionComponent: TComponent):
@@ -73,10 +74,13 @@ implementation
 
 uses
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGridDBDataDefinitions, cxGridDBChartView,
+  cxGridDBDataDefinitions,
   cxCustomData, cxGridExportLink,
+  {$IFDEF DELPHI12_UP}
+  PngImage, Jpeg,
+  {$ENDIf}
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  Variants, SysUtils, Dialogs;
+  Graphics, Variants, SysUtils, Dialogs;
 
 //=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
 
@@ -108,9 +112,43 @@ begin
   end;
 end;
 
+procedure TJvControlActioncxGridEngine.ExportChartViewToImage(aExtension, aFileName: string; aChartView:
+    TcxGridChartView);
+var
+  AGraphic: TGraphic;
+  TmpGraphic: TGraphic;
+begin
+  if (aExtension = '.WMF') or (aExtension = '.EMF')  then
+  begin
+    AGraphic := AChartView.CreateImage(TMetaFile);
+    TMetaFile(AGraphic).Enhanced := aExtension = '.EMF';
+  end
+  else
+  AGraphic := AChartView.CreateImage(TBitmap);
+  {$IFDEF DELPHI12_UP}
+  if aExtension = '.PNG' then
+    TMPGraphic := TPNGImage.Create
+  else if aExtension = '.JPG' then
+    TMPGraphic := TJPEGImage.Create
+  else
+    TMPGraphic := nil;
+  if Assigned(TMPGraphic) then
+  begin
+    TMPGraphic.Assign(AGraphic);
+    TMPGraphic.SaveToFile(aFileName);
+    TMPGraphic.Free;
+  end
+  else
+  {$ENDIF}
+  AGraphic.SaveToFile(aFileName);
+  AGraphic.Free;
+end;
+
 procedure TJvControlActioncxGridEngine.ExportGrid(aGrid: TcxGrid);
 var
   SaveDialog: TSaveDialog;
+  Extension: String;
+  FileName: String;
 begin
   if not Assigned(aGrid) then
     Exit;
@@ -119,24 +157,32 @@ begin
     SaveDialog.Name := 'SaveDialog';
     SaveDialog.DefaultExt := 'XLS';
     SaveDialog.Filter :=
-      'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
+      'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.XML|HTML-Files (*.HTM;*.HTML)|*.HTM;*.HTML|Text-Files (*.TXT)|*.TXT';
+    if GetGridView(aGrid) is TcxGridChartView then
+      {$IFDEF DELPHI12_UP}
+      SaveDialog.Filter := SaveDialog.Filter+'|Image-Files (*.PNG;*.JPG;*.BMP)|*.PNG;*.JPG;*.BMP|Metafile-Graphics (*.WMF;*.EMF)|*.WMF;*.EMF';
+      {$ELSE}
+      SaveDialog.Filter := SaveDialog.Filter+'|Image-Files (*.BMP)|*.BMP|Metafile-Graphics (*.WMF;*.EMF)|*.WMF;*.EMF';
+      {$ENDIF}
+    SaveDialog.Filter := SaveDialog.Filter+'|All Files (*.*)|*.*';
     SaveDialog.Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
     if SaveDialog.Execute then
       if SaveDialog.FileName <> '' then
       begin
-        if (Pos('.XLS', UpperCase(SaveDialog.FileName)) =
-          Length(SaveDialog.FileName) - 3) then
-          ExportGridToExcel(SaveDialog.FileName, aGrid)
-        else if (Pos('.XML', UpperCase(SaveDialog.FileName)) =
-          Length(SaveDialog.FileName) - 3) then
-          ExportGridToXML(SaveDialog.FileName, aGrid)
-        else if ((Pos('.HTM', UpperCase(SaveDialog.FileName)) =
-          Length(SaveDialog.FileName) - 3) or
-          (Pos('.HTML', UpperCase(SaveDialog.FileName)) =
-            Length(SaveDialog.FileName) - 4)) then
-          ExportGridToHTML(SaveDialog.FileName, aGrid)
+        FileName := SaveDialog.Filename;
+        Extension := Uppercase(ExtractFileExt(FileName));
+        if Extension = '.XLS' then
+          ExportGridToExcel(Filename, aGrid)
+        else if ((Extension = '.BMP') or (Extension = '.JPG') or (Extension = '.PNG') or
+                 (Extension = '.WMF') or (Extension = '.EMF'))
+            and (GetGridView(aGrid) is TcxGridChartView) then
+          ExportChartViewToImage(Extension, Filename, TcxGridChartView(GetGridView(aGrid)))
+        else if Extension = 'XML' then
+          ExportGridToXML(Filename, aGrid)
+        else if (Extension = '.HTM') or (Extension = '.HTML') then
+          ExportGridToHTML(Filename, aGrid)
         else
-          ExportGridToText(SaveDialog.FileName, aGrid);
+          ExportGridToText(Filename, aGrid);
       end;
   finally
     SaveDialog.Free;
@@ -145,16 +191,11 @@ end;
 
 function TJvControlActioncxGridEngine.GetGridTableView(AActionComponent:
   TComponent): TcxCustomGridTableView;
+var GridView : TcxCustomGridView;
 begin
-  if Assigned(AActionComponent) then
-    if AActionComponent is TcxGridSite then
-      if Assigned(TcxGridSite(AActionComponent).GridView) and
-        (TcxGridSite(AActionComponent).GridView is TcxCustomGridTableView) then
-        Result := TcxCustomGridTableView(TcxGridSite(AActionComponent).GridView)
-      else
-        Result := nil
-    else
-      Result := nil
+  GridView := GetGridView(AActionComponent);
+  if GridView is TcxCustomGridTableView then
+    Result := TcxCustomGridTableView(GridView)
   else
     Result := nil;
 end;
@@ -166,7 +207,10 @@ begin
     if AActionComponent is TcxGridSite then
       Result := TcxGridSite(AActionComponent).GridView
     else
-      Result := nil
+      if AActionComponent is TcxGrid then
+        Result := TcxGrid(AActionComponent).ActiveView
+      else
+        Result := nil
   else
     Result := nil;
 end;
@@ -178,7 +222,10 @@ begin
     if AActionComponent is TcxGridSite then
       Result := TcxGrid(TcxGridSite(AActionComponent).Container)
     else
-      Result := nil
+      if AActionComponent is TcxGrid then
+        Result := TcxGrid(AActionComponent)
+      else
+        Result := nil
   else
     Result := nil;
 end;
