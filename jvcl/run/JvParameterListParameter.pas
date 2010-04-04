@@ -243,8 +243,13 @@ type
   end;
 
   TJvCheckBoxParameter = class(TJvBaseParameter)
+  private
+    FOnChange: TNotifyEvent;
   public
+    procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
+  published
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
   TJvEditParameter = class(TJvBasePanelEditParameter)
@@ -541,6 +546,11 @@ type
     FWantReturns: Boolean;
     FScrollBars: TScrollStyle;
     FFontName: string;
+    procedure SetFontName(const Value: string);
+    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetWantReturns(const Value: Boolean);
+    procedure SetWantTabs(const Value: Boolean);
+    procedure SetWordWrap(const Value: Boolean);
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
@@ -548,11 +558,11 @@ type
   public
     constructor Create(AParameterList: TJvParameterList); override;
   published
-    property WordWrap: Boolean read FWordWrap write FWordWrap;
-    property WantTabs: Boolean read FWantTabs write FWantTabs;
-    property WantReturns: Boolean read FWantReturns write FWantReturns;
-    property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
-    property FontName: string read FFontName write FFontName;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap;
+    property WantTabs: Boolean read FWantTabs write SetWantTabs;
+    property WantReturns: Boolean read FWantReturns write SetWantReturns;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property FontName: string read FFontName write SetFontName;
   end;
 
   TJvRichEditParameter = class(TJvBasePanelEditParameter)
@@ -1603,9 +1613,18 @@ begin
     ITmpRadioGroup.ControlSetColumns(Columns);
 end;
 
+procedure TJvCheckBoxParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TJvCheckBoxParameter then
+    OnChange := TJvCheckBoxParameter(Source).OnChange;
+end;
+
 //=== { TJvCheckBoxParameter } ===============================================
 
 procedure TJvCheckBoxParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
+var
+  DynCtrlData: IJvDynControlData;
 begin
   SetWinControl (DynControlEngine.CreateCheckBoxControl(Self, ParameterParent,
     GetParameterName, Caption));
@@ -1613,6 +1632,8 @@ begin
     WinControl.Height := Height;
   if Width > 0 then
     WinControl.Width := Width;
+  if Supports(WinControl, IJvDynControlData, DynCtrlData) then
+    DynCtrlData.ControlSetOnChange(OnChange);
 end;
 
 //=== { TJvComboBoxParameter } ===============================================
@@ -2411,6 +2432,42 @@ begin
   SetWinControl (DynControlEngine.CreateMemoControl(Self, AParameterParent, GetParameterName));
 end;
 
+procedure TJvMemoParameter.SetFontName(const Value: string);
+begin
+  if FFontName <> Value then
+  begin
+    FFontName := Value;
+    SetWinControlProperties;
+  end;
+end;
+
+procedure TJvMemoParameter.SetScrollBars(const Value: TScrollStyle);
+begin
+  if FScrollBars <> Value then
+  begin
+    FScrollBars := Value;
+    SetWinControlProperties;
+  end;
+end;
+
+procedure TJvMemoParameter.SetWantReturns(const Value: Boolean);
+begin
+  if FWantReturns <> Value then
+  begin
+    FWantReturns := Value;
+    SetWinControlProperties;
+  end;
+end;
+
+procedure TJvMemoParameter.SetWantTabs(const Value: Boolean);
+begin
+  if FWantTabs <> Value then
+  begin
+    FWantTabs := Value;
+    SetWinControlProperties;
+  end;
+end;
+
 procedure TJvMemoParameter.SetWinControlProperties;
 var
   ITmpMemo: IJvDynControlMemo;
@@ -2426,6 +2483,15 @@ begin
     ITmpMemo.ControlSetWantReturns(WantReturns);
     ITmpMemo.ControlSetWordWrap(WordWrap);
     ITmpMemo.ControlSetScrollbars(ScrollBars);
+  end;
+end;
+
+procedure TJvMemoParameter.SetWordWrap(const Value: Boolean);
+begin
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    SetWinControlProperties;
   end;
 end;
 

@@ -45,7 +45,7 @@ uses
   SMIWiz, SMIBase,
   {$ENDIF USE_3RDPARTY_SMIMPORT}
   DBGrids, JvActionsEngine, JvDBActionsEngine, JvDynControlEngineDBTools,
-  JvDynControlEngineDB;
+  JvDynControlEngineDB, JvParameterListParameter;
 
 type
 
@@ -422,8 +422,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SMEWizardDlgGetCellParams(Sender: TObject; Field: TField; var Text: string;
-      AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
+    procedure SMEWizardDlgGetCellParams(Sender: TObject; Field: TField; var Text: string; AFont: TFont; var Alignment:
+        TAlignment; var Background: TColor; var CellType: TCellType);
     procedure SMEWizardDlgOnBeforeExecute(Sender: TObject);
   published
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
@@ -501,12 +501,18 @@ type
   TJvDatabaseShowSQLStatementAction = class(TJvDatabaseBaseActiveAction)
   private
     FWordWrap: Boolean;
+    MemoParameter: TJvMemoParameter;
+    CheckBoxParameter : TJvCheckBoxParameter;
+    FShowWordWrapCheckBox: Boolean;
+    procedure CheckBoxOnChange(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     procedure ExecuteTarget(Target: TObject); override;
     procedure ShowSQLStatement;
     procedure UpdateTarget(Target: TObject); override;
   published
+    //1 Defines if there is a visible checkbox to customize the word wrap behaviour of the memo control
+    property ShowWordWrapCheckBox: Boolean read FShowWordWrapCheckBox write FShowWordWrapCheckBox default False;
     //1 Defines if the memo for the sql-statement is word-wrapped
     property WordWrap: Boolean read FWordWrap write FWordWrap default True;
   end;
@@ -544,7 +550,7 @@ uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   cxCustomData,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  JvResources, JvParameterList, JvParameterListParameter,
+  JvResources, JvParameterList,
   JvDSADialogs,
   Variants, Dialogs, StdCtrls, Clipbrd, JvJVCLUtils;
 
@@ -1460,8 +1466,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDatabaseSMExportOptions.SMEWizardDlgGetCellParams(Sender: TObject; Field: TField;
-  var Text: string; AFont: TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
+procedure TJvDatabaseSMExportOptions.SMEWizardDlgGetCellParams(Sender: TObject; Field: TField; var Text: string; AFont:
+    TFont; var Alignment: TAlignment; var Background: TColor; var CellType: TCellType);
 const
   SToDateFormatLong = 'TO_DATE(''%s'', ''DD.MM.YYYY HH24:MI:SS'')';
   SToDateFormatShort = 'TO_DATE(''%s'', ''DD.MM.YYYY'')';
@@ -1818,6 +1824,22 @@ constructor TJvDatabaseShowSQLStatementAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWordWrap := True;
+  FShowWordWrapCheckBox := False;
+  CheckBoxParameter := nil;
+  MemoParameter := nil;
+end;
+
+procedure TJvDatabaseShowSQLStatementAction.CheckBoxOnChange(Sender: TObject);
+begin
+  if Assigned(MemoParameter) and Assigned(CheckBoxParameter) then
+  begin
+    CheckBoxParameter.GetData;
+    MemoParameter.WordWrap := CheckBoxParameter.AsBoolean;
+    if CheckBoxParameter.AsBoolean then
+      MemoParameter.ScrollBars := ssVertical
+    else
+      MemoParameter.ScrollBars := ssBoth;
+  end;
 end;
 
 procedure TJvDatabaseShowSQLStatementAction.ExecuteTarget(Target: TObject);
@@ -1828,29 +1850,44 @@ end;
 procedure TJvDatabaseShowSQLStatementAction.ShowSQLStatement;
 var
   ParameterList: TJvParameterList;
-  Parameter: TJvBaseParameter;
 begin
   if not Assigned(DatasetEngine) then
     Exit;
   ParameterList := TJvParameterList.Create(Self);
   try
-    Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
-    Parameter.SearchName := 'SQLStatement';
-    TJvMemoParameter(Parameter).ScrollBars := ssBoth;
-    TJvMemoParameter(Parameter).WordWrap := Self.WordWrap;
-    Parameter.ReadOnly := True;
-    Parameter.AsString := DatasetEngine.GetSQL(DataSet);
-    Parameter.Width := 500;
-    Parameter.Height := 350;
-    ParameterList.AddParameter(Parameter);
+    MemoParameter := TJvMemoParameter.Create(ParameterList);
+    MemoParameter.SearchName := 'SQLStatement';
+    if Self.WordWrap then
+      MemoParameter.ScrollBars := ssVertical
+    else
+      MemoParameter.ScrollBars := ssBoth;
+    MemoParameter.WordWrap := Self.WordWrap;
+    MemoParameter.ReadOnly := True;
+    MemoParameter.AsString := DatasetEngine.GetSQL(DataSet);
+    MemoParameter.Width := 450;
+    MemoParameter.Height := 350;
+    ParameterList.AddParameter(MemoParameter);
+    if ShowWordWrapCheckBox then
+    begin
+      CheckboxParameter := TJvCheckboxParameter.Create(ParameterList);
+      CheckboxParameter.SearchName := 'CheckBox';
+      CheckBoxParameter.AsBoolean := Self.WordWrap;
+      CheckboxParameter.Width:= 300;
+      CheckboxParameter.OnChange := CheckboxOnChange;
+      CheckBoxParameter.Caption := SSQLStatementWordWrapped;
+      ParameterList.AddParameter(CheckboxParameter);
+    end;
     ParameterList.ArrangeSettings.WrapControls := True;
     ParameterList.ArrangeSettings.MaxWidth := 650;
+    ParameterList.MaxHeight := 650;
     ParameterList.Messages.Caption := SShowSQLStatementCaption;
     ParameterList.Messages.OkButton := SSQLStatementClipboardButton;
     if ParameterList.ShowParameterDialog then
-      ClipBoard.AsText := Parameter.AsString;
+      ClipBoard.AsText := MemoParameter.AsString;
   finally
     FreeAndNil(ParameterList);
+    CheckBoxParameter := nil;
+    MemoParameter := nil;
   end;
 end;
 

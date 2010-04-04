@@ -592,6 +592,7 @@ resourcestring
   SModifyAllClearFieldValues = 'Clear Field Values';
   SShowSQLStatementCaption = 'Show Current SQL Statement';
   SSQLStatementClipboardButton = '&Clipboard';
+  SSQLStatementWordWrapped = '&Word Wrapped';
 
 
 //=== JvDBControls.pas =======================================================
