@@ -23,8 +23,13 @@ Known Issues:
 {------------------------------------------------------------------------------}
 
 {%hidden%}
-{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
+{ Enable this define if you are using the Delphi 6, 7 or 2005 Personal Edition. }
 {.$DEFINE DelphiPersonalEdition}
+
+{%hidden%}
+{ The installer enables this define if you compile JVCL for Delphi and C++ Builder. It disables
+  the class constructor/destructor support that is not supported by C++Builder. }
+{.$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }

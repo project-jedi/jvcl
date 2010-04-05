@@ -1325,7 +1325,7 @@ begin
     BplDir := FixBackslashBackslash(BplDir);
     DcpDir := FixBackslashBackslash(DcpDir);
 
-    // Load jvcl%t.inc. Or the jvclbase.inc when no jvcl%t.inc exists
+    // Load jvcl%t.inc. Or the jvclbase.inc if no jvcl%t.inc exists
     if Target.IsBDS then
     begin
       if Target.IDEVersion < 7 then
@@ -1347,8 +1347,9 @@ begin
     else
       JVCLConfig.LoadFromFile(Filename);
 
-    // set (hidden) personal edition configuration
+    // set (hidden) configurations
     JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal; // do not localize
+    JVCLConfig.Enabled['JVCL_GENERATE_CPP_PACKAGE_FILES'] := Target.IsBDS and (persBCB in Target.SupportedPersonalities);
 
     JVCLRegistryConfig.LoadFromRegistry(Target.RegistryKey + '\Jedi\JVCL');
 
