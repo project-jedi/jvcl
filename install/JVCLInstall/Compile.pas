@@ -1783,7 +1783,7 @@ begin
       DccOpt := DccOpt + ' -GD';
     if TargetConfig.Target.IsBDS and (persBCB in TargetConfig.Target.SupportedPersonalities) then
       // Dual packages, bpi and lib files for BDS 2006
-      DccOpt := DccOpt + ' -JL -DJVCL_GENERATE_CPP_PACKAGE_FILES'; // for BCB 5/6 the -JPHNE is set during compilation
+      DccOpt := DccOpt + ' -JL'; // for BCB 5/6 the -JPHNE is set during compilation
 
     if not DebugUnits and not TargetConfig.DeveloperInstall then
       DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO';
