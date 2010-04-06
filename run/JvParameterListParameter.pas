@@ -1632,7 +1632,7 @@ begin
     WinControl.Height := Height;
   if Width > 0 then
     WinControl.Width := Width;
-  if Supports(WinControl, IJvDynControlData, DynCtrlData) then
+  if Supports(WinControl, IJvDynControlData, DynCtrlData) and Assigned(OnChange) then
     DynCtrlData.ControlSetOnChange(OnChange);
 end;
 
