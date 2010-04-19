@@ -2711,12 +2711,10 @@ begin
     Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
     crMultiDragLinkAlt := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
-    { begin RxLib }
     crHand := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crHand] := LoadCursor(HInstance, 'JvHANDCURSOR');
     crDragHand := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JvDRAGCURSOR');
-    { end RxLib }
   end;
 end;
 
@@ -6235,7 +6233,6 @@ begin
     if Screen <> nil then
     begin
       // now only available through SetDefaultJVCLCursors
-      { (ahuser) if used in VisualCLX mode Application.Destroy crashes }
       Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
       Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
       Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
