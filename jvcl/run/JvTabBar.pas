@@ -561,7 +561,7 @@ begin
     if Component = FPageList then
       PageList := nil;
   end;
-  if Assigned(FTabs) then
+  if FTabs <> nil then
     for I := Tabs.Count - 1 downto 0 do
       Tabs[I].Notification(Component, Operation);
 end;
@@ -639,10 +639,10 @@ procedure TJvCustomTabBar.SetPainter(Value: TJvTabBarPainter);
 begin
   if Value <> FPainter then
   begin
-    if Assigned(FPainter) then
+    if FPainter <> nil then
       FPainter.FOnChangeList.Extract(Self);
     ReplaceComponentReference(Self, Value, tComponent(FPainter));
-    if Assigned(FPainter) then
+    if FPainter <> nil then
     begin
       FreeAndNil(FDefaultPainter);
       FPainter.FOnChangeList.Add(Self);
@@ -684,7 +684,7 @@ procedure TJvCustomTabBar.SetSelectedTab(Value: TJvTabBarItem);
 begin
   if Value <> FSelectedTab then
   begin
-    if Assigned(Value) and not Value.CanSelect then
+    if (Value <> nil) and not Value.CanSelect then
       Exit;
 
     if TabSelecting(Value) then
@@ -701,9 +701,9 @@ end;
 function TJvCustomTabBar.CurrentPainter: TJvTabBarPainter;
 begin
   Result := FPainter;
-  if not Assigned(Result) then
+  if Result = nil then
   begin
-    if not Assigned(FDefaultPainter) then
+    if FDefaultPainter = nil then
       FDefaultPainter := TJvModernTabBarPainter.Create(Self);
     Result := FDefaultPainter;
   end;
@@ -731,7 +731,8 @@ begin
     if Assigned(FOnTabClosed) then
       FOnTabClosed(Self, Tab);
   finally
-    if AutoFreeClosed and not (csDesigning in ComponentState) then
+    // Do not double release if somebody "accidentally" released the Tab in TabClosed even if AutoFreeClosed is true
+    if AutoFreeClosed and not (csDesigning in ComponentState) and (FTabs.IndexOf(Tab) <> -1) then
       Tab.Free;
   end;
 end;
@@ -747,9 +748,9 @@ procedure TJvCustomTabBar.TabSelected(Tab: TJvTabBarItem);
 var
   PageListIntf: IPageList;
 begin
-  if Assigned(PageList) and Supports(PageList, IPageList, PageListIntf) then
+  if (PageList <> nil) and Supports(PageList, IPageList, PageListIntf) then
   begin
-    if Assigned(Tab) then
+    if Tab <> nil then
       PageListIntf.SetActivePageIndex(Tab.Index)
     else
       PageListIntf.SetActivePageIndex(-1);
@@ -764,7 +765,7 @@ var
   Index: Integer;
 begin
   Result := Tab;
-  if Assigned(Result) and not Result.CanSelect then
+  if (Result <> nil) and not Result.CanSelect then
   begin
     if AllowUnselected then
       Result := nil
@@ -793,7 +794,7 @@ begin
         Result := nil;
     end;
   end;
-  if not AllowUnselected and not Assigned(Result) then
+  if not AllowUnselected and not (Result <> nil) then
   begin
     // try to find a selectable tab
     for Index := 0 to Tabs.Count - 1 do
@@ -841,20 +842,19 @@ begin
   if AllowTabMoving then
   begin
     InsertTab := TabAt(X, Y);
-    if not Assigned(InsertTab) then
-      if Assigned(LeftTab) and (X < LeftTab.FLeft) then
+    if InsertTab = nil then
+      if (LeftTab <> nil) and (X < LeftTab.FLeft) then
         InsertTab := LeftTab
       else
       if Tabs.Count > 0 then
         InsertTab := Tabs[Tabs.Count - 1];
 
-    Accept := (Source = Self) and Assigned(SelectedTab) and (InsertTab <> SelectedTab) and
-      Assigned(InsertTab);
+    Accept := (Source = Self) and (SelectedTab <> nil) and (InsertTab <> SelectedTab) and (InsertTab <> nil);
     if Accept then
     begin
       if InsertTab <> FLastInsertTab then
       begin
-        if Assigned(FLastInsertTab) then
+        if FLastInsertTab <> nil then
           Repaint;
         { Paint MoveDivider }
         FLastInsertTab := InsertTab;
@@ -866,7 +866,7 @@ begin
       Exit;
     end
     else
-    if Assigned(FLastInsertTab) then
+    if FLastInsertTab <> nil then
     begin
       Repaint;
       FLastInsertTab := nil;
@@ -877,7 +877,7 @@ end;
 
 procedure TJvCustomTabBar.DragCanceled;
 begin
-  if Assigned(FLastInsertTab) then
+  if FLastInsertTab <> nil then
     Repaint;
   FLastInsertTab := nil;
   inherited DragCanceled;
@@ -887,15 +887,15 @@ procedure TJvCustomTabBar.DragDrop(Source: TObject; X: Integer; Y: Integer);
 var
   InsertTab: TJvTabBarItem;
 begin
-  if AllowTabMoving and (Source = Self) and Assigned(SelectedTab) then
+  if AllowTabMoving and (Source = Self) and (SelectedTab <> nil) then
   begin
     InsertTab := TabAt(X, Y);
-    if not Assigned(InsertTab) then
-      if Assigned(LeftTab) and (X < LeftTab.FLeft) then
+    if InsertTab = nil then
+      if (LeftTab <> nil) and (X < LeftTab.FLeft) then
         InsertTab := LeftTab
       else
         InsertTab := Tabs[Tabs.Count - 1];
-    if Assigned(InsertTab) then
+    if InsertTab <> nil then
     begin
       SelectedTab.Index := InsertTab.Index;
       TabMoved(SelectedTab);
@@ -904,7 +904,7 @@ begin
     end;
   end
   else
-  if Assigned(FLastInsertTab) then
+  if FLastInsertTab <> nil then
     Repaint;
   FLastInsertTab := nil;
   inherited DragDrop(Source, X, Y);
@@ -975,16 +975,18 @@ begin
 
     LastSelected := SelectedTab;
     Tab := TabAt(X, Y);
-    if Assigned(Tab) then
+    if Tab <> nil then
       SelectedTab := Tab;
 
-    if Assigned(Tab) and (Tab = SelectedTab) then
+    if (Tab <> nil) and (Tab = SelectedTab) then
       if CloseButton and (not SelectBeforeClose or (SelectedTab = LastSelected)) then
       begin
         if PtInRect(CurrentPainter.GetCloseRect(Canvas, Tab, Tab.DisplayRect), Point(X, Y)) then
         begin
           if TabClosing(Tab) then
           begin
+            if FTabs.IndexOf(Tab) = -1 then
+              Tab := nil; // We should not keep a reference if somebody "accidentally" released the Tab in TabClosing
             FMouseDownClosingTab := Tab;
             SetClosingTab(Tab);
           end;
@@ -1009,12 +1011,12 @@ begin
     Exit;
 
   try
-    if RightClickSelect and not Assigned(PopupMenu) and (Button = mbRight) then
+    if RightClickSelect and not (PopupMenu <> nil) and (Button = mbRight) then
     begin
       Tab := TabAt(X, Y);
-      if Assigned(Tab) then
+      if Tab <> nil then
         SelectedTab := Tab;
-      if Assigned(Tab) and Assigned(Tab.PopupMenu) then
+      if (Tab <> nil) and (Tab.PopupMenu <> nil) then
       begin
         Pt := ClientToScreen(Point(X, Y));
         Tab.PopupMenu.Popup(Pt.X, Pt.Y);
@@ -1023,7 +1025,7 @@ begin
     else
     if Button = mbLeft then
     begin
-      if Assigned(FClosingTab) and CloseButton then
+      if (FClosingTab <> nil) and CloseButton then
       begin
         CalcTabsRects;
         if PtInRect(CurrentPainter.GetCloseRect(Canvas, FClosingTab, FClosingTab.DisplayRect), Point(X, Y)) then
@@ -1053,7 +1055,7 @@ begin
   if HotTracking and ([ssLeft, ssMiddle, ssRight] * Shift = []) then
     SetHotTab(Tab);
 
-  if CloseButton and Assigned(FMouseDownClosingTab) and (ssLeft in Shift) then
+  if CloseButton and (FMouseDownClosingTab <> nil) and (ssLeft in Shift) then
   begin
     if PtInRect(CurrentPainter.GetCloseRect(Canvas, FMouseDownClosingTab,
       FMouseDownClosingTab.DisplayRect), Point(X, Y)) then
@@ -1062,7 +1064,7 @@ begin
       SetClosingTab(nil)
   end;
 
-  if Assigned(Tab) and Tab.ShowHint then
+  if (Tab <> nil) and Tab.ShowHint then
     NewHint := Tab.Hint
   else
     NewHint := FHint;
@@ -1315,7 +1317,7 @@ begin
     CurrentPainter.DrawBackground(Bmp.Canvas, Self, ClientRect);
     if (FBtnLeftScroll.State <> sbsHidden) and (FBtnRightScroll.State <> sbsHidden) then
     begin
-      if not Assigned(FScrollButtonBackground) then
+      if FScrollButtonBackground = nil then
         FScrollButtonBackground := TBitmap.Create;
       FScrollButtonBackground.Width := Bmp.Width - FBarWidth;
       FScrollButtonBackground.Height := Bmp.Height;
@@ -1358,11 +1360,11 @@ end;
 
 procedure TJvCustomTabBar.PaintScrollButtons;
 begin
-  if not Assigned(FScrollButtonBackground) and Visible then
+  if (FScrollButtonBackground = nil) and Visible then
     Paint
-  else
-    // paint scroll button's background and the buttons
+  else // paint scroll button's background and the buttons
     Canvas.Draw(FBarWidth, 0, FScrollButtonBackground);
+
   CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollLeft, FBtnLeftScroll.State, FBtnLeftScroll.Rect);
   CurrentPainter.DrawScrollButton(Canvas, Self, sbScrollRight, FBtnRightScroll.State, FBtnRightScroll.Rect);
 end;
@@ -1427,7 +1429,7 @@ var
   Tab: TJvTabBarItem;
 begin
   Index := 0;
-  if Assigned(Value) then
+  if Value <> nil then
   begin
     // find first visible before or at Value.Index
     if (Tabs <> nil) and (Tabs.Count > 0) and (Value <> Tabs[0]) then
@@ -1541,7 +1543,7 @@ var
   AtLeft: Boolean;
 begin
   Result := False;
-  if not Assigned(Tab) or not Tab.Visible then
+  if (Tab = nil) or not Tab.Visible then
     Exit;
 
   LastLeftIndex := FLeftIndex;
@@ -1621,10 +1623,10 @@ begin
         PageListIntf.SetActivePageIndex(0);
       PageListIntf := nil;
     end;
-    if Assigned(FPageList) then
+    if FPageList <> nil then
       FPageList.RemoveFreeNotification(Self);
     FPageList := Value;
-    if Assigned(FPageList) then
+    if FPageList <> nil then
       FPageList.FreeNotification(Self);
   end;
 end;
@@ -1743,7 +1745,7 @@ begin
   if Value <> FCaption then
   begin
     FCaption := Value;
-    if TabBar.PageListTabLink and Assigned(TabBar.PageList) and
+    if TabBar.PageListTabLink and (TabBar.PageList <> nil) and
        not (csLoading in TabBar.ComponentState) and
        Supports(TabBar.PageList, IPageList, PageListIntf) then
       PageListIntf.PageCaptionChanged(Index, FCaption);
@@ -1824,7 +1826,7 @@ end;
 
 function TJvTabBarItem.AutoDeleteData: TObjectList;
 begin
-  if not Assigned(FAutoDeleteDatas) then
+  if FAutoDeleteDatas = nil then
     FAutoDeleteDatas := TObjectList.Create;
   Result := FAutoDeleteDatas;
 end;
@@ -1847,10 +1849,10 @@ procedure TJvTabBarItem.SetPopupMenu(const Value: TPopupMenu);
 begin
   if Value <> FPopupMenu then
   begin
-    if Assigned(FPopupMenu) then
+    if FPopupMenu <> nil then
       FPopupMenu.RemoveFreeNotification(TabBar);
     FPopupMenu := Value;
-    if Assigned(FPopupMenu) then
+    if FPopupMenu <> nil then
       FPopupMenu.FreeNotification(TabBar);
   end;
 end;
@@ -1881,7 +1883,7 @@ var
 begin
   LastIndex := Index;
   inherited SetIndex(Value);
-  if TabBar.PageListTabLink and (LastIndex <> Index) and Assigned(TabBar.PageList) and
+  if TabBar.PageListTabLink and (LastIndex <> Index) and (TabBar.PageList <> nil) and
      not (csLoading in TabBar.ComponentState) and
      Supports(TabBar.PageList, IPageList, PageListIntf) then
     PageListIntf.MovePage(LastIndex, Index);
@@ -1947,7 +1949,7 @@ begin
     if not (csDestroying in TabBar.ComponentState) and (TabBar.LeftTab = Item) then
       TabBar.LeftTab := TabBar.LeftTab.GetPreviousVisible;
   end;
-  if TabBar.PageListTabLink and Assigned(TabBar.PageList) and
+  if TabBar.PageListTabLink and (TabBar.PageList <> nil) and
      not (csLoading in TabBar.ComponentState) and
      Supports(TabBar.PageList, IPageList, PageListIntf) then
   begin
@@ -2102,7 +2104,7 @@ procedure TJvModernTabBarPainter.DrawDivider(Canvas: TCanvas; LeftTab: TJvTabBar
 begin
   if not LeftTab.Selected then
   begin
-    if not Assigned(LeftTab.TabBar.SelectedTab) or
+    if (LeftTab.TabBar.SelectedTab = nil) or
       (LeftTab.GetNextVisible <> LeftTab.TabBar.SelectedTab) then
     begin
       with Canvas do
