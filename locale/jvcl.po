@@ -3507,12 +3507,6 @@ msgid ""
 "Dataset must be active"
 msgstr ""
 
-#. === JvEDIDBBuffering.pas ===================================================
-#. Programmer's name for it: RsENoProfileDatasets
-#: JvResources.pas:761 
-msgid "Not all profile datasets have been assigned."
-msgstr ""
-
 #. === JvEditor.pas, JvUnicodeEditor.pas ======================================
 #. Programmer's name for it: RsERedoNotYetImplemented
 #: JvResources.pas:765 

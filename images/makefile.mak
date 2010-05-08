@@ -84,7 +84,6 @@ JvDBReg.dcr \
 JvDlgsReg.dcr \
 JvDockingReg.dcr \
 JvDotNetCtrlsReg.dcr \
-JvEDIDBBufferingReg.dcr \
 JvGlobusReg.dcr \
 JvHMIReg.dcr \
 JvPascalInterpreterReg.dcr \
@@ -157,7 +156,6 @@ JvCryptReg.dcr: JvCryptReg.rc
 JvCtrlsReg.dcr: JvCtrlsReg.rc
 JvDBReg.dcr: JvDBReg.rc
 JvDlgsReg.dcr: JvDlgsReg.rc
-JvEDIDBBufferingReg.dcr: JvEDIDBBufferingReg.rc
 JvInterpreterReg.dcr: JvInterpreterReg.rc
 JvHMIReg.dcr: JvHMIReg.rc
 JvMMReg.dcr: JvMMReg.rc

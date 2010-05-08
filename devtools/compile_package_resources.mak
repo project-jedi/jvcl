@@ -26,8 +26,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\c5\JvDockingC5R.res                 \
            ..\packages\c5\JvDotNetCtrlsC5D.res             \
            ..\packages\c5\JvDotNetCtrlsC5R.res             \
-           ..\packages\c5\JvEDIC5D.res                     \
-           ..\packages\c5\JvEDIC5R.res                     \
            ..\packages\c5\JvGlobusC5D.res                  \
            ..\packages\c5\JvGlobusC5R.res                  \
            ..\packages\c5\JvHMIC5D.res                     \
@@ -97,8 +95,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\c6\JvDockingC6R.res                 \
            ..\packages\c6\JvDotNetCtrlsC6D.res             \
            ..\packages\c6\JvDotNetCtrlsC6R.res             \
-           ..\packages\c6\JvEDIC6D.res                     \
-           ..\packages\c6\JvEDIC6R.res                     \
            ..\packages\c6\JvGlobusC6D.res                  \
            ..\packages\c6\JvGlobusC6R.res                  \
            ..\packages\c6\JvHMIC6D.res                     \
@@ -168,8 +164,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d10\JvDockingD10R.res               \
            ..\packages\d10\JvDotNetCtrlsD10D.res           \
            ..\packages\d10\JvDotNetCtrlsD10R.res           \
-           ..\packages\d10\JvEDID10D.res                   \
-           ..\packages\d10\JvEDID10R.res                   \
            ..\packages\d10\JvGlobusD10D.res                \
            ..\packages\d10\JvGlobusD10R.res                \
            ..\packages\d10\JvHMID10D.res                   \
@@ -239,8 +233,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d5\JvDockingD5R.res                 \
            ..\packages\d5\JvDotNetCtrlsD5D.res             \
            ..\packages\d5\JvDotNetCtrlsD5R.res             \
-           ..\packages\d5\JvEDID5D.res                     \
-           ..\packages\d5\JvEDID5R.res                     \
            ..\packages\d5\JvGlobusD5D.res                  \
            ..\packages\d5\JvGlobusD5R.res                  \
            ..\packages\d5\JvHMID5D.res                     \
@@ -310,8 +302,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d6\JvDockingD6R.res                 \
            ..\packages\d6\JvDotNetCtrlsD6D.res             \
            ..\packages\d6\JvDotNetCtrlsD6R.res             \
-           ..\packages\d6\JvEDID6D.res                     \
-           ..\packages\d6\JvEDID6R.res                     \
            ..\packages\d6\JvGlobusD6D.res                  \
            ..\packages\d6\JvGlobusD6R.res                  \
            ..\packages\d6\JvHMID6D.res                     \
@@ -381,8 +371,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d7\JvDockingD7R.res                 \
            ..\packages\d7\JvDotNetCtrlsD7D.res             \
            ..\packages\d7\JvDotNetCtrlsD7R.res             \
-           ..\packages\d7\JvEDID7D.res                     \
-           ..\packages\d7\JvEDID7R.res                     \
            ..\packages\d7\JvGlobusD7D.res                  \
            ..\packages\d7\JvGlobusD7R.res                  \
            ..\packages\d7\JvHMID7D.res                     \
@@ -494,8 +482,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d9\JvDockingD9R.res                 \
            ..\packages\d9\JvDotNetCtrlsD9D.res             \
            ..\packages\d9\JvDotNetCtrlsD9R.res             \
-           ..\packages\d9\JvEDID9D.res                     \
-           ..\packages\d9\JvEDID9R.res                     \
            ..\packages\d9\JvGlobusD9D.res                  \
            ..\packages\d9\JvGlobusD9R.res                  \
            ..\packages\d9\JvHMID9D.res                     \

@@ -1,4 +1,4 @@
-# JVCL localization template
+﻿# JVCL localization template
 # Copyright (C) 2009 The JEDI Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
@@ -4298,12 +4298,6 @@ msgstr ""
 msgid ""
 "TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl: ADataSource."
 "Dataset must be active"
-msgstr ""
-
-#. === JvEDIDBBuffering.pas ===================================================
-#. Programmer's name for it: RsENoProfileDatasets
-#: JvResources.pas:761 
-msgid "Not all profile datasets have been assigned."
 msgstr ""
 
 #. === JvEditor.pas, JvUnicodeEditor.pas ======================================

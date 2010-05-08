@@ -133,8 +133,6 @@
   <File Name="..\..\packages\c5\JvDockingC5R.bpk"/>
   <File Name="..\..\packages\c5\JvDotNetCtrlsC5D.bpk"/>
   <File Name="..\..\packages\c5\JvDotNetCtrlsC5R.bpk"/>
-  <File Name="..\..\packages\c5\JvEDIC5D.bpk"/>
-  <File Name="..\..\packages\c5\JvEDIC5R.bpk"/>
   <File Name="..\..\packages\c5\JvGlobusC5D.bpk"/>
   <File Name="..\..\packages\c5\JvGlobusC5R.bpk"/>
   <File Name="..\..\packages\c5\JvHMIC5D.bpk"/>
@@ -205,8 +203,6 @@
   <File Name="..\..\packages\c6\JvDockingC6R.bpk"/>
   <File Name="..\..\packages\c6\JvDotNetCtrlsC6D.bpk"/>
   <File Name="..\..\packages\c6\JvDotNetCtrlsC6R.bpk"/>
-  <File Name="..\..\packages\c6\JvEDIC6D.bpk"/>
-  <File Name="..\..\packages\c6\JvEDIC6R.bpk"/>
   <File Name="..\..\packages\c6\JvGlobusC6D.bpk"/>
   <File Name="..\..\packages\c6\JvGlobusC6R.bpk"/>
   <File Name="..\..\packages\c6\JvHMIC6D.bpk"/>
