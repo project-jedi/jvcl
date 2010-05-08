@@ -36,7 +36,6 @@ PROJECTS = JvCore70.bpl JvCoreDesign70.bpl                     \
   JvXPCtrls70.bpl JvXPCtrlsDesign70.bpl               \
   JvDocking70.bpl JvDockingDesign70.bpl               \
   JvDotNetCtrls70.bpl JvDotNetCtrlsDesign70.bpl       \
-  JvEDI70.bpl JvEDIDesign70.bpl                       \
   JvRuntimeDesign70.bpl JvRuntimeDesignDesign70.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -202,12 +201,6 @@ JvDotNetCtrls70.bpl: d7\JvDotNetCtrls.dpk
   $(DCC)
 
 JvDotNetCtrlsDesign70.bpl: d7\JvDotNetCtrlsDesign.dpk
-  $(DCC)
-
-JvEDI70.bpl: d7\JvEDI.dpk
-  $(DCC)
-
-JvEDIDesign70.bpl: d7\JvEDIDesign.dpk
   $(DCC)
 
 JvRuntimeDesign70.bpl: d7\JvRuntimeDesign.dpk

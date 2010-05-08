@@ -36,7 +36,6 @@ PROJECTS = JvCoreD60.bpl JvCoreDesignD60.bpl                     \
   JvXPCtrlsD60.bpl JvXPCtrlsDesignD60.bpl               \
   JvDockingD60.bpl JvDockingDesignD60.bpl               \
   JvDotNetCtrlsD60.bpl JvDotNetCtrlsDesignD60.bpl       \
-  JvEDID60.bpl JvEDIDesignD60.bpl                       \
   JvRuntimeDesignD60.bpl JvRuntimeDesignDesignD60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -202,12 +201,6 @@ JvDotNetCtrlsD60.bpl: d6\JvDotNetCtrls.dpk
   $(DCC)
 
 JvDotNetCtrlsDesignD60.bpl: d6\JvDotNetCtrlsDesign.dpk
-  $(DCC)
-
-JvEDID60.bpl: d6\JvEDI.dpk
-  $(DCC)
-
-JvEDIDesignD60.bpl: d6\JvEDIDesign.dpk
   $(DCC)
 
 JvRuntimeDesignD60.bpl: d6\JvRuntimeDesign.dpk
