@@ -36,7 +36,6 @@ PROJECTS = JvCoreC60.bpl JvCoreDesignC60.bpl                     \
            JvXPCtrlsC60.bpl JvXPCtrlsDesignC60.bpl               \
            JvDockingC60.bpl JvDockingDesignC60.bpl               \
            JvDotNetCtrlsC60.bpl JvDotNetCtrlsDesignC60.bpl       \
-           JvEDIC60.bpl JvEDIDesignC60.bpl                       \
            JvRuntimeDesignC60.bpl JvRuntimeDesignDesignC60.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -255,14 +254,6 @@ JvDotNetCtrlsC60.bpl: c6\JvDotNetCtrls.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvDotNetCtrlsDesignC60.bpl: c6\JvDotNetCtrlsDesign.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvEDIC60.bpl: c6\JvEDI.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvEDIDesignC60.bpl: c6\JvEDIDesign.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
