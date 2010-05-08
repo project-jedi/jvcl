@@ -204,7 +204,6 @@ JvDynControlEngineTools=Core
 JvDynControlEngineVCL=Core
 JvDynControlEngineVCLDB=DB
 JvEasterEgg=Cmp
-JvEDIDBBuffering=EDI
 JvEdit=StdCtrls
 JvEditor=Custom
 JvEditorCommon=Custom

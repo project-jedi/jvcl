@@ -182,9 +182,6 @@ TJvDropTarget
 TJvDSADialog
 TJvDualListDialog
 TJvEasterEgg
-TJvEDIDBBuffer
-TJvEDIDBSEFProfiler
-TJvEDIDBSpecProfiler
 TJvEdit
 TJvEditor
 TJvEmbeddedFormLink

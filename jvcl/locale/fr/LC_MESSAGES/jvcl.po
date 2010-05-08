@@ -1,4 +1,4 @@
-# Copyright (C) 2009 The JEDI Visual Component Library group
+﻿# Copyright (C) 2009 The JEDI Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
 #
@@ -3617,12 +3617,6 @@ msgstr "TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl : ADataSourc
 #: JvResources.pas:757
 msgid "TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl: ADataSource.Dataset must be active"
 msgstr "TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl: ADataSource.Dataset doit être actif"
-
-#. === JvEDIDBBuffering.pas ===================================================
-#. Programmer's name for it: RsENoProfileDatasets
-#: JvResources.pas:761
-msgid "Not all profile datasets have been assigned."
-msgstr "Tous les profils de dataset n'ont pas été affectés."
 
 #. === JvEditor.pas, JvUnicodeEditor.pas ======================================
 #. Programmer's name for it: RsERedoNotYetImplemented

@@ -3,7 +3,7 @@
   <GUI>
     <MODEL>JVCL</MODEL>
     <FORM WIDTH="648" HEIGHT="527" TOP="136" LEFT="190"/>
-    <SELECTED JvAppFrm-R="1" JvAppFrmDesign-D="1" JvBands-R="1" JvBandsDesign-D="1" JvBDE-R="1" JvBDEDesign-D="1" JvCmp-R="1" JvCmpDesign-D="1" JvControls-R="1" JvControlsDesign-D="1" JvCore-R="1" JvCoreDesign-D="1" JvCrypt-R="1" JvCryptDesign-D="1" JvCustom-R="1" JvCustomDesign-D="1" JvDB-R="1" JvDBDesign-D="1" JvDlgs-R="1" JvDlgsDesign-D="1" JvDocking-R="1" JvDockingDesign-D="1" JvDotNetCtrls-R="1" JvDotNetCtrlsDesign-D="1" JvEDI-R="1" JvEDIDesign-D="1" JvGlobus-R="1" JvGlobusDesign-D="1" JvHMI-R="1" JvHMIDesign-D="1" JvJans-R="1" JvJansDesign-D="1" JvManagedThreads-R="1" JvManagedThreadsDesign-D="1" JvMM-R="1" JvMMDesign-D="1" JvNet-R="1" JvNetDesign-D="1" JvPageComps-R="1" JvPageCompsDesign-D="1" JvPascalInterpreter-R="1" JvPascalInterpreterDesign-D="1" JvPluginSystem-R="1" JvPluginSystemDesign-D="1" JvPrintPreview-R="1" JvPrintPreviewDesign-D="1" JvRuntimeDesign-R="1" JvRuntimeDesignDesign-D="1" JvStdCtrls-R="1" JvStdCtrlsDesign-D="1" JvSystem-R="1" JvSystemDesign-D="1" JvTimeFramework-R="1" JvTimeFrameworkDesign-D="1" JvWizards-R="1" JvWizardsDesign-D="1" JvXPCtrls-R="1" JvXPCtrlsDesign-D="1"/>
+    <SELECTED JvAppFrm-R="1" JvAppFrmDesign-D="1" JvBands-R="1" JvBandsDesign-D="1" JvBDE-R="1" JvBDEDesign-D="1" JvCmp-R="1" JvCmpDesign-D="1" JvControls-R="1" JvControlsDesign-D="1" JvCore-R="1" JvCoreDesign-D="1" JvCrypt-R="1" JvCryptDesign-D="1" JvCustom-R="1" JvCustomDesign-D="1" JvDB-R="1" JvDBDesign-D="1" JvDlgs-R="1" JvDlgsDesign-D="1" JvDocking-R="1" JvDockingDesign-D="1" JvDotNetCtrls-R="1" JvDotNetCtrlsDesign-D="1" JvGlobus-R="1" JvGlobusDesign-D="1" JvHMI-R="1" JvHMIDesign-D="1" JvJans-R="1" JvJansDesign-D="1" JvManagedThreads-R="1" JvManagedThreadsDesign-D="1" JvMM-R="1" JvMMDesign-D="1" JvNet-R="1" JvNetDesign-D="1" JvPageComps-R="1" JvPageCompsDesign-D="1" JvPascalInterpreter-R="1" JvPascalInterpreterDesign-D="1" JvPluginSystem-R="1" JvPluginSystemDesign-D="1" JvPrintPreview-R="1" JvPrintPreviewDesign-D="1" JvRuntimeDesign-R="1" JvRuntimeDesignDesign-D="1" JvStdCtrls-R="1" JvStdCtrlsDesign-D="1" JvSystem-R="1" JvSystemDesign-D="1" JvTimeFramework-R="1" JvTimeFrameworkDesign-D="1" JvWizards-R="1" JvWizardsDesign-D="1" JvXPCtrls-R="1" JvXPCtrlsDesign-D="1"/>
     <CLX ENABLED="0"/>
     <HALT ENABLED="-1"/>
   </GUI>
@@ -239,14 +239,6 @@
           <UNIT NAME="Jclalgorithms"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclcontainerintf"/>
-          <UNIT NAME="Jcledi"/>
-          <UNIT NAME="Jcledi_ansix12"/>
-          <UNIT NAME="Jcledi_ansix12_ext"/>
-          <UNIT NAME="Jcledi_unedifact"/>
-          <UNIT NAME="Jcledi_unedifact_ext"/>
-          <UNIT NAME="Jcledisef"/>
-          <UNIT NAME="Jcleditranslators"/>
-          <UNIT NAME="Jcledixml"/>
           <UNIT NAME="Jclinifiles"/>
           <UNIT NAME="Jclresources"/>
           <UNIT NAME="Mstask"/>
@@ -775,9 +767,6 @@
           <UNIT NAME="Jclwinmidi"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
-          <UNIT NAME="JclEDI"/>
-          <UNIT NAME="JclEDI_ANSIX12"/>
-          <UNIT NAME="JclEDISEF"/>
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
@@ -1245,9 +1234,6 @@
           <UNIT NAME="Jclwinmidi"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
-          <UNIT NAME="JclEDI"/>
-          <UNIT NAME="JclEDI_ANSIX12"/>
-          <UNIT NAME="JclEDISEF"/>
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
@@ -1743,9 +1729,6 @@
           <UNIT NAME="Jclwinmidi"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
-          <UNIT NAME="JclEDI"/>
-          <UNIT NAME="JclEDI_ANSIX12"/>
-          <UNIT NAME="JclEDISEF"/>
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
@@ -2233,9 +2216,6 @@
           <UNIT NAME="Jclwinmidi"/>
           <UNIT NAME="Snmp"/>
           <UNIT NAME="Zlibh"/>
-          <UNIT NAME="JclEDI"/>
-          <UNIT NAME="JclEDI_ANSIX12"/>
-          <UNIT NAME="JclEDISEF"/>
           <UNIT NAME="JclStreams"/>
           <UNIT NAME="JclSimpleXml"/>
           <UNIT NAME="JclAnsiStrings"/>
@@ -2694,14 +2674,6 @@
           <UNIT NAME="Jclalgorithms"/>
           <UNIT NAME="Jclbase"/>
           <UNIT NAME="Jclcontainerintf"/>
-          <UNIT NAME="Jcledi"/>
-          <UNIT NAME="Jcledi_ansix12"/>
-          <UNIT NAME="Jcledi_ansix12_ext"/>
-          <UNIT NAME="Jcledi_unedifact"/>
-          <UNIT NAME="Jcledi_unedifact_ext"/>
-          <UNIT NAME="Jcledisef"/>
-          <UNIT NAME="Jcleditranslators"/>
-          <UNIT NAME="Jcledixml"/>
           <UNIT NAME="Jclinifiles"/>
           <UNIT NAME="Jclresources"/>
           <UNIT NAME="Mstask"/>
@@ -4414,14 +4386,6 @@
           <UNIT NAME="Jcldebugxmldeserializer"/>
           <UNIT NAME="Jcldebugxmlserializer"/>
           <UNIT NAME="Jcldotnet"/>
-          <UNIT NAME="Jcledi"/>
-          <UNIT NAME="Jcledi_ansix12"/>
-          <UNIT NAME="Jcledi_ansix12_ext"/>
-          <UNIT NAME="Jcledi_unedifact"/>
-          <UNIT NAME="Jcledi_unedifact_ext"/>
-          <UNIT NAME="Jcledisef"/>
-          <UNIT NAME="Jcleditranslators"/>
-          <UNIT NAME="Jcledixml"/>
           <UNIT NAME="Jclexpreval"/>
           <UNIT NAME="Jclfileutils"/>
           <UNIT NAME="Jclhookexcept"/>
@@ -4718,14 +4682,6 @@
           <UNIT NAME="Jcldebugxmldeserializer"/>
           <UNIT NAME="Jcldebugxmlserializer"/>
           <UNIT NAME="Jcldotnet"/>
-          <UNIT NAME="Jcledi"/>
-          <UNIT NAME="Jcledi_ansix12"/>
-          <UNIT NAME="Jcledi_ansix12_ext"/>
-          <UNIT NAME="Jcledi_unedifact"/>
-          <UNIT NAME="Jcledi_unedifact_ext"/>
-          <UNIT NAME="Jcledisef"/>
-          <UNIT NAME="Jcleditranslators"/>
-          <UNIT NAME="Jcledixml"/>
           <UNIT NAME="Jclexpreval"/>
           <UNIT NAME="Jclfileutils"/>
           <UNIT NAME="Jclhookexcept"/>
@@ -5352,14 +5308,6 @@
           <UNIT NAME="Jcldebugxmldeserializer"/>
           <UNIT NAME="Jcldebugxmlserializer"/>
           <UNIT NAME="Jcldotnet"/>
-          <UNIT NAME="Jcledi"/>
-          <UNIT NAME="Jcledi_ansix12"/>
-          <UNIT NAME="Jcledi_ansix12_ext"/>
-          <UNIT NAME="Jcledi_unedifact"/>
-          <UNIT NAME="Jcledi_unedifact_ext"/>
-          <UNIT NAME="Jcledisef"/>
-          <UNIT NAME="Jcleditranslators"/>
-          <UNIT NAME="Jcledixml"/>
           <UNIT NAME="Jclexpreval"/>
           <UNIT NAME="Jclfileutils"/>
           <UNIT NAME="Jclhookexcept"/>

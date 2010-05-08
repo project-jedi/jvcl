@@ -160,7 +160,6 @@ Name: "Packages\JvWizard"; Description: "Wizard Controls"; Types: full prefered
 Name: "Packages\DB"; Description: "Database Packages"
 Name: "Packages\DB\JvDB"; Description: "DB-Aware Controls (Grids, Lookups, ComboBox, TreeViews, Edits)"; Types: full prefered
 Name: "Packages\DB\JvBDE"; Description: "BDE Component"; Types: full
-Name: "Packages\DB\JvEDI"; Description: "EDI Components"; Types: full
 
 Name: "Packages\JvAppFrm"; Description: "Application/Form Components (HotKey, FormMagnet, EmbeddedForms, Wallpaper)"; Types: full
 Name: "Packages\JvMM"; Description: "Multimedia and Images (Animated Images, ID3v1, WavePlayer, WaitingProgress)"; Types: full
