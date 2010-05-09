@@ -7,7 +7,7 @@
 ;    Include_DelphiX     Include the binaries for Delphi X (X in 5..12)
 ;    Include_BCBX        Include the binaries for C++Builder X (X in 5..6)
 
-#define JvclVersionStr "3.38.0.1"
+#define JvclVersionStr "3.39.0.1"
 #define JclVersionStr "2.0.1.3449"
 #define MyAppId "Jedi Visual Component Library"
 #define MyAppName "JEDI Visual Component Library"
@@ -38,6 +38,7 @@
   #define Include_Delphi10
   #define Include_Delphi11
   #define Include_Delphi12
+  #define Include_Delphi14
  #endif
 #endif
 
@@ -278,7 +279,7 @@ Source: {#Delphi12HPP}\Jv*.hpp; DestDir: "{code:GetHPPDir|12}"; Components: "IDE
 #ifdef Include_Delphi14
 ; SolidBreak; lib\Delphi 2010
 Source: {#JvclRoot}\lib\d14\*; DestDir: "{app}\lib\d14"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
-Source: {#Delphi14Bpl}\Jv*14?.bpl; DestDir: "{code:GetDelphiBplDir|14}"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
+Source: {#Delphi14Bpl}\Jv*140.bpl; DestDir: "{code:GetDelphiBplDir|14}"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs
 ;Source: {#Delphi14Root}\Include\Vcl\Jv*.hpp; DestDir: "{code:GetDelphiDir|14}\Include\Vcl"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#Delphi14HPP}\Jv*.hpp; DestDir: "{code:GetHPPDir|14}"; Components: "IDE\Delphi14"; Package: delphi14; Flags: ignoreversion sortfilesbyextension
 #endif
@@ -473,9 +474,9 @@ begin
   begin
     case IdeKind of
       ikDelphi:
-        Result := GetDelphiBplDir(IntToStr(Version)) + '\' + PackageName + 'D' + IntToStr(Version) + 'D.bpl';
+        Result := GetDelphiBplDir(IntToStr(Version)) + '\' + PackageName + 'Design' + IntToStr(Version) + '.bpl';
       ikBCB:
-        Result := GetBCBBplDir(IntToStr(Version)) + '\' + PackageName + 'C' + IntToStr(Version) + 'D.bpl';
+        Result := GetBCBBplDir(IntToStr(Version)) + '\' + PackageName + 'Design' + IntToStr(Version) + '.bpl';
     end;
   end;
 end;
