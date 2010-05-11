@@ -90,7 +90,6 @@ type
     FOnGetLineAttr: TJvGetLineAttrEvent;
     FOnCompletionApply: TOnCompletionApply;
 
-    procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
     { get/set for properties }
     function GetLines: TStrings;
     procedure SetLines(ALines: TStrings);
@@ -142,6 +141,7 @@ type
     procedure SetSelText(const AValue: string);
     function GetWordOnCaret: string;
     procedure SelectWordOnCaret; override;
+    function GetText: string; override;
 
     procedure InsertText(const Text: string);
     procedure InsertColumnText(X, Y: Integer; const Text: string);
@@ -1621,6 +1621,11 @@ begin
   end;
 end;
 
+function TJvCustomEditor.GetText: string;
+begin
+  Result := FLines.Text;
+end;
+
 procedure TJvCustomEditor.ClipboardCopy;
 var
   S: string;
@@ -2226,21 +2231,6 @@ begin
         Result := I;
         Exit;
       end;
-  end;
-end;
-
-procedure TJvCustomEditor.WMGetText(var Msg: TWMGetText);
-var
-  S: AnsiString;
-begin
-  if Msg.Text = nil then
-    Msg.Result := 0
-  else
-  begin
-    S := AnsiString(FLines.Text);   // losing data here, but with an ansi editor, what can we do?
-    Msg.Result := Min(Length(S) + 1, Msg.TextMax);
-    if Msg.Result > 0 then
-      Move(S[1], Msg.Text^, Msg.Result);
   end;
 end;
 

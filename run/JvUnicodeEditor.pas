@@ -85,6 +85,9 @@ type
 
   TJvCustomWideEditor = class(TJvCustomEditorBase)
   private
+    {$IFNDEF SUPPORTS_UNICODE}
+    FCodePage: Cardinal;
+    {$ENDIF ~SUPPORTS_UNICODE}
     { internal objects }
     FLines: TJvEditorWideStrings;
 
@@ -92,7 +95,9 @@ type
     FOnGetLineAttr: TJvGetLineAttrEventW;
     FOnCompletionApply: TOnCompletionApplyW;
 
-    procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
+    {$IFNDEF SUPPORTS_UNICODE}
+    procedure WMInputLangChange(var Msg: TMessage); message WM_INPUTLANGCHANGE;
+    {$ENDIF ~SUPPORTS_UNICODE}
 
     { get/set for properties }
     function GetLines: TWStrings;
@@ -145,6 +150,7 @@ type
     procedure SetSelText(const AValue: WideString);
     function GetWordOnCaret: WideString;
     procedure SelectWordOnCaret; override;
+    function GetText: string; override;
 
     procedure InsertText(const Text: WideString);
     procedure InsertColumnText(X, Y: Integer; const Text: WideString);
@@ -750,6 +756,9 @@ begin
   FLines.FJvEditor := Self;
   FLines.OnChange := DoLinesChange;
   Completion := TJvWideCompletion.Create(Self);
+  {$IFNDEF SUPPORTS_UNICODE}
+  FCodePage := CP_ACP;
+  {$ENDIF ~SUPPORTS_UNICODE}
 end;
 
 destructor TJvCustomWideEditor.Destroy;
@@ -922,6 +931,17 @@ begin
   FLines.ReLine;
 end;
 
+{$IFNDEF SUPPORTS_UNICODE}
+procedure TJvCustomWideEditor.WMInputLangChange(var Msg: TMessage);
+var
+  Buffer: array[0..6] of Char;
+begin
+  inherited;
+  GetLocaleInfo(Msg.LParamLo, LOCALE_IDEFAULTANSICODEPAGE, Buffer, Length(Buffer));
+  FCodePage := StrToIntDef(Buffer, CP_ACP);
+end;
+{$ENDIF ~SUPPORTS_UNICODE}
+
 procedure TJvCustomWideEditor.InsertChar(const Value: Word);
 var
   S: WideString;
@@ -929,12 +949,17 @@ var
   WasSelected: Boolean;
   Key: WideChar;
 begin
+  {$IFDEF SUPPORTS_UNICODE}
   Key := WideChar(Value);
+  {$ELSE}
+  MultiByteToWideChar(FCodePage, 0, @Value, 1, @Key, 1);
+  {$ENDIF SUPPORTS_UNICODE}
+
   WasSelected := (FSelection.IsSelected) and (not PersistentBlocks);
   if Value >= 32 then
   //if Key in [#32..#255] then
   begin
-    if not HasChar(Char(Key), JvEditorCompletionChars) then
+    if (Value < 256) and not HasChar(Char(Key), JvEditorCompletionChars) then
       Completion.DoKeyPress(Char(Key));
 
     RemoveSelectedBlock;
@@ -969,7 +994,7 @@ begin
     PaintLine(CaretY, -1, -1);
     Changed;
 
-    if HasChar(Char(Key), JvEditorCompletionChars) then
+    if (Value < 256) and HasChar(Char(Key), JvEditorCompletionChars) then
       Completion.DoKeyPress(Char(Key));
   end
   else
@@ -1576,6 +1601,11 @@ begin
     EndCompound;
     EndUpdate;
   end;
+end;
+
+function TJvCustomWideEditor.GetText: string;
+begin
+  Result := FLines.Text;
 end;
 
 procedure TJvCustomWideEditor.ClipboardCopy;
@@ -2185,21 +2215,6 @@ begin
   end;
 end;
 
-procedure TJvCustomWideEditor.WMGetText(var Msg: TWMGetText);
-var
-  S: string;
-begin
-  if Msg.Text = nil then
-    Msg.Result := 0
-  else
-  begin
-    S := FLines.Text;
-    Msg.Result := Min(Length(S) + 1, Msg.TextMax);
-    if Msg.Result > 0 then
-      MoveWideChar(S[1], Msg.Text^, Msg.Result);
-  end;
-end;
-
 //=== { TJvInsertUndo } ======================================================
 
 constructor TJvInsertUndo.Create(AJvEditor: TJvCustomWideEditor;
@@ -2752,9 +2767,7 @@ function TJvWideCompletion.GetUnicodeSeparator: UnicodeString;
 begin
   Result := FSeparator;
 end;
-
 {$ELSE}
-
 function TJvWideCompletion.GetAnsiSeparator: AnsiString;
 begin
   Result := FSeparator;

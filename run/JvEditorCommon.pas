@@ -784,6 +784,7 @@ type
     procedure EMSetSelection(var Msg: TMessage); message EM_SETSEL;
     procedure EMGetSelection(var Msg: TMessage); message EM_GETSEL;
     procedure EMCanUndo(var Msg: TMessage); message EM_CANUNDO;
+    procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
     procedure WMGetTextLength(var Msg: TMessage); message WM_GETTEXTLENGTH;
   protected
     FMyDi: TDynIntArray; //array [0..Max_X] of Integer;
@@ -999,6 +1000,7 @@ type
 
     procedure PaintCaret(bShow: Boolean);
     function GetTextLen: Integer;
+    function GetText: string; virtual; abstract;
     procedure SelectWordOnCaret; virtual; abstract;
 
     procedure BeginUpdate;
@@ -2796,6 +2798,21 @@ end;
 procedure TJvCustomEditorBase.EMCanUndo(var Msg: TMessage);
 begin
   Msg.Result := Ord(UndoBuffer.CanUndo);
+end;
+
+procedure TJvCustomEditorBase.WMGetText(var Msg: TWMGetText);
+var
+  S: string;
+begin
+  if Msg.Text = nil then
+    Msg.Result := 0
+  else
+  begin
+    S := GetText;
+    Msg.Result := Min(Length(S), Msg.TextMax);
+    if Msg.Result > 0 then
+      Move(S[1], Msg.Text^, Msg.Result * SizeOf(Char));
+  end;
 end;
 
 procedure TJvCustomEditorBase.WMGetTextLength(var Msg: TMessage);
