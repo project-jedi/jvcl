@@ -34,13 +34,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvComponentBase;
 
 type
   TJvTransparentFormMode = (
     tfmWindowRegion,             // Use Mask as the window region
-    tfmWindowRegionAlphaChannel, // Use Mask (32bit with alpha channel) as the window region
+    tfmWindowRegionAlphaChannel, // Use the alpha channel of Mask (32bit with alpha channel) for the window region
     tfmLayeredWindow             // Use Mask (32bit with alpha channel) for the layered window (Windows 2000 or newer)
   );
 
@@ -56,6 +56,7 @@ type
     FControlForm: TForm;
     FLayeredTransparentControlColor: TColor;
     FLayeredAlphaValue: Integer;
+    FMaskFromImage: TImage;
     procedure SetActive(Value: Boolean);
     procedure SetMask(Value: TBitmap);
     procedure SetMode(const Value: TJvTransparentFormMode);
@@ -65,6 +66,8 @@ type
     procedure SetLayeredTransparentControlColor(const Value: TColor);
     procedure ReparentChildControls(OldParent, NewParent: TWinControl);
     procedure SetLayeredAlphaValue(Value: Integer);
+    procedure SetMaskFromImage(const Value: TImage);
+    procedure UpdateMaskFromImage;
   protected
     procedure Loaded; override;
     procedure WndProc(var Msg: TMessage);
@@ -72,11 +75,16 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Update;
   published
     { Active enables/disables the transparent top level form }
     property Active: Boolean read FActive write SetActive default False;
     { Mask specifies (depending on Mode) the region or the 32bit alpha channel background picture }
     property Mask: TBitmap read FMask write SetMask;
+    { With MaskFromImage you can automatically use the image of a TImage component for the mask.
+      This is especially helpfull if you want to use a PNG image with tfmLayeredWindow. Setting
+      the property automatically sets the image's Visible property to False in the IDE (design time). }
+    property MaskFromImage: TImage read FMaskFromImage write SetMaskFromImage;
     { If AutoSize is True the top level window will be resized to fit the Mask }
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     { Mode specifies how Mask should be interpreted }
@@ -85,7 +93,7 @@ type
     property MovableForm: Boolean read FMovableForm write FMovableForm default False;
     { Mode=tfmLayeredWindow: LayeredTransparentControlColor controls the transparent color for
       child controls. You should keep the color as near as possible to the Mask bitmap. }
-    property LayeredTransparentControlColor: TColor read FLayeredTransparentControlColor write SetLayeredTransparentControlColor default clWindow;
+    property LayeredTransparentControlColor: TColor read FLayeredTransparentControlColor write SetLayeredTransparentControlColor default $FEFEFE;
     { Mode=tfmLayeredWindow: LayeredAlphaValue controls the form's general semi-transparency. }
     property LayeredAlphaValue: Integer read FLayeredAlphaValue write SetLayeredAlphaValue default 255;
   end;
@@ -140,22 +148,21 @@ var
   I: Integer;
   R: TRect;
   MaskDC: HDC;
+  Control: TControl;
 begin
   { Fill with transparent color }
   FillRect(Message.DC, Rect(0, 0, Width, Height), Brush.Handle);
 
-  if (Owner as TJvTransparentForm).LayeredAlphaValue = 255 then
+  { Replace the transparent color with the actual Mask content. This lets fonts and
+    other transparent controls that use aliasing look much better. }
+  MaskDC := TJvTransparentForm(Owner).FMask.Canvas.Handle;
+  for I := 0 to ControlCount - 1 do
   begin
-    { Replace the transparent color with the actual Mask content. This lets fonts and
-      other transparent controls that use aliasing look much better. }
-    MaskDC := TJvTransparentForm(Owner).FMask.Canvas.Handle;
-    for I := 0 to ControlCount - 1 do
+    Control := Controls[I];
+    if Control.Visible then
     begin
-      if Controls[I].Visible then
-      begin
-        R := Controls[I].BoundsRect;
-        BitBlt(Message.DC, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, MaskDC, R.Left, R.Top, SRCCOPY)
-      end;
+      R := Control.BoundsRect;
+      BitBlt(Message.DC, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, MaskDC, R.Left, R.Top, SRCCOPY)
     end;
   end;
   Message.Result := 1;
@@ -178,7 +185,7 @@ begin
     FOrgWndProc := FComponentOwner.WindowProc;
     FComponentOwner.WindowProc := WndProc;
   end;
-  FLayeredTransparentControlColor := clWindow;
+  FLayeredTransparentControlColor := $FEFEFE;
   FLayeredAlphaValue := 255;
   FMask := TBitmap.Create;
   FMask.PixelFormat := pf32bit;
@@ -194,6 +201,7 @@ begin
       FComponentOwner.WindowProc := FOrgWndProc;
     FComponentOwner := nil;
   end;
+  SetMaskFromImage(nil);
   FControlForm.Free;
   FMask.Free;
   inherited Destroy;
@@ -210,10 +218,27 @@ begin
     for I := 0 to OldParent.ControlCount - 1 do
       List.Add(OldParent.Controls[I]);
     for I := 0 to List.Count - 1 do
+    begin
       TControl(List[I]).Parent := NewParent;
+      if (TControl(List[I]) is TCustomLabel) and not TLabel(List[I]).Transparent then
+        TLabel(List[I]).Transparent := True;
+    end;
   finally
     List.Free;
   end;
+end;
+
+procedure TJvTransparentForm.Update;
+begin
+  UpdateMaskFromImage;
+  UpdateTransparency;
+end;
+
+procedure TJvTransparentForm.UpdateMaskFromImage;
+begin
+  if ([csLoading, csDesigning] * ComponentState = []) and (FMaskFromImage <> nil) and
+     (FMaskFromImage.Picture.Graphic <> nil) then
+    FMask.Assign(FMaskFromImage.Picture.Graphic);
 end;
 
 procedure TJvTransparentForm.DisableTransparency;
@@ -251,6 +276,9 @@ begin
 end;
 
 procedure TJvTransparentForm.UpdateTransparency;
+const
+  BorderStyles = WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX or
+                 WS_CAPTION or WS_BORDER or WS_THICKFRAME or WS_DLGFRAME;
 var
   Region: HRGN;
   BlendFunc: TBlendFunction;
@@ -262,7 +290,7 @@ begin
 
   { Remove caption }
   SetWindowLong(FComponentOwner.Handle, GWL_STYLE,
-    GetWindowLong(FComponentOwner.Handle, GWL_STYLE) and not (WS_SYSMENU or WS_CAPTION or WS_BORDER or WS_THICKFRAME or WS_DLGFRAME));
+    GetWindowLong(FComponentOwner.Handle, GWL_STYLE) and not BorderStyles);
   case Mode of
     tfmWindowRegion, tfmWindowRegionAlphaChannel:
       begin
@@ -279,6 +307,7 @@ begin
             DeleteObject(Region);
         { Region is now no longer valid }
       end;
+
     tfmLayeredWindow:
       begin
         if not FMask.Empty then
@@ -294,7 +323,7 @@ begin
           FControlForm.TransparentColor := True;
 
           FControlForm.BoundsRect := FComponentOwner.BoundsRect;
-           ReparentChildControls(FComponentOwner, FControlForm);
+          ReparentChildControls(FComponentOwner, FControlForm);
 
           SetWindowLong(FComponentOwner.Handle, GWL_EXSTYLE,
             GetWindowLong(FComponentOwner.Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
@@ -326,45 +355,64 @@ end;
 
 procedure TJvTransparentForm.WndProc(var Msg: TMessage);
 begin
-  if (Msg.Msg = WM_NCHITTEST) and MovableForm then
+  if Active then
   begin
-    Msg.Result := HTCAPTION;
-    Exit;
+    case Msg.Msg of
+      WM_NCHITTEST:
+        if MovableForm then
+        begin
+          Msg.Result := HTCAPTION;
+          Exit;
+        end;
+    end;
   end;
 
   if Assigned(FOrgWndProc) then
     FOrgWndProc(Msg);
 
-  case Msg.Msg of
-    WM_MOVE, WM_MOVING, WM_SIZE, WM_SIZING:
-      if (FControlForm <> nil) and (FComponentOwner <> nil) then
-        FControlForm.BoundsRect := FComponentOwner.BoundsRect;
+  if Active then
+  begin
+    case Msg.Msg of
+      WM_MOVE, WM_MOVING, WM_SIZE, WM_SIZING:
+        if (FControlForm <> nil) and (FComponentOwner <> nil) then
+          FControlForm.BoundsRect := FComponentOwner.BoundsRect;
 
-    WM_SHOWWINDOW:
-      begin
-        if TWMShowWindow(Msg).Show then
+      WM_SHOWWINDOW:
         begin
-          if Active and (Mode = tfmLayeredWindow) then
-            UpdateTransparency;
-        end
-        else
-        if FControlForm <> nil then
-          FControlForm.Hide;
-      end;
+          if TWMShowWindow(Msg).Show then
+          begin
+            if Mode = tfmLayeredWindow then
+              UpdateTransparency;
+          end
+          else
+          if FControlForm <> nil then
+            FControlForm.Hide;
+        end;
+
+      WM_SETFOCUS:
+        if (FControlForm <> nil) and FControlForm.Visible then
+          FControlForm.Perform(Msg.Msg, Msg.WParam, Msg.LParam);
+    end;
   end;
 end;
 
 procedure TJvTransparentForm.Loaded;
 begin
   inherited Loaded;
+  UpdateMaskFromImage;
   UpdateTransparency;
 end;
 
 procedure TJvTransparentForm.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FComponentOwner) then
-    FComponentOwner := nil;
+  if Operation = opRemove then
+  begin
+    if AComponent = FComponentOwner then
+      FComponentOwner := nil
+    else if AComponent = FMaskFromImage then
+      MaskFromImage := nil;
+  end;
 end;
 
 procedure TJvTransparentForm.SetMask(Value: TBitmap);
@@ -373,6 +421,23 @@ begin
   begin
     FMask.Assign(Value);
     UpdateTransparency;
+  end;
+end;
+
+procedure TJvTransparentForm.SetMaskFromImage(const Value: TImage);
+begin
+  if Value <> FMaskFromImage then
+  begin
+    if FMaskFromImage <> nil then
+      FMaskFromImage.RemoveFreeNotification(Self);
+    FMaskFromImage := Value;
+    if FMaskFromImage <> nil then
+      FMaskFromImage.FreeNotification(Self);
+
+    if (csDesigning in ComponentState) and (FMaskFromImage <> nil) then
+      FMaskFromImage.Visible := False;
+
+    UpdateMaskFromImage;
   end;
 end;
 
