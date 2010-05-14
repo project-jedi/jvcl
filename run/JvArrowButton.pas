@@ -86,6 +86,8 @@ type
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
     procedure SetAlignment(const Value: TAlignment);
     procedure SetVerticalAlignment(const Value: TVerticalAlignment);
+    procedure SetFlatArrowColor(const Value: TColor);
+    procedure SetFlatArrowDisabledColor(const Value: TColor);
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -1183,6 +1185,24 @@ begin
       ControlStyle := ControlStyle - [csOpaque]
     else
       ControlStyle := ControlStyle + [csOpaque];
+    Invalidate;
+  end;
+end;
+
+procedure TJvArrowButton.SetFlatArrowColor(const Value: TColor);
+begin
+  if Value <> FFlatArrowColor then
+  begin
+    FFlatArrowColor := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvArrowButton.SetFlatArrowDisabledColor(const Value: TColor);
+begin
+  if Value <> FFlatArrowDisabledColor then
+  begin
+    FFlatArrowDisabledColor := Value;
     Invalidate;
   end;
 end;
