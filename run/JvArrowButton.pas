@@ -63,6 +63,8 @@ type
     FOnDrop: TNotifyEvent;
     FVerticalAlignment: TVerticalAlignment;
     FAlignment: TAlignment;
+    FFlatArrowColor: TColor;
+    FFlatArrowDisabledColor: TColor;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
     function GetGlyph: TBitmap;
@@ -88,16 +90,13 @@ type
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
     procedure Loaded; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
 
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure TextChanged; override;
@@ -119,6 +118,8 @@ type
     property Caption;
     property Enabled;
     property Flat: Boolean read FFlat write SetFlat default False;
+    property FlatArrowColor: TColor read FFlatArrowColor write SetFlatArrowColor default clBlack;
+    property FlatArrowDisabledColor: TColor read FFlatArrowDisabledColor write SetFlatArrowDisabledColor default clBtnShadow;
     property Font;
     property FillFont: TFont read FFillFont write SetFillFont;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
@@ -787,6 +788,8 @@ begin
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
   FFillFont.Assign(Font);
+  FFlatArrowColor := clBlack;
+  FFlatArrowDisabledColor := clBtnShadow;
   FAllowAllUp := False;
   FArrowWidth := 13;
   FGroupIndex := 0;
@@ -961,10 +964,20 @@ begin
 
   OffsetRect(PaintRect, Offset.X, Offset.Y);
 
-  if Enabled then
-    Canvas.Pen.Color := clBlack
+  if Flat and (not FMouseInControl or (csDesigning in ComponentState)) then
+  begin
+    if Enabled then
+      Canvas.Pen.Color := FFlatArrowColor
+    else
+      Canvas.Pen.Color := FFlatArrowDisabledColor;
+  end
   else
-    Canvas.Pen.Color := clBtnShadow;
+  begin
+    if Enabled then
+      Canvas.Pen.Color := clBlack
+    else
+      Canvas.Pen.Color := clBtnShadow;
+  end;
 
   { Draw arrow }
   while PaintRect.Left < PaintRect.Right + 1 do
