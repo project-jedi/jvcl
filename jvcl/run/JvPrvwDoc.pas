@@ -432,15 +432,15 @@ type
     property OnUnDock;
   end;
 
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$URL$';
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-    );
-  {$ENDIF UNITVERSIONING}
+  );
+{$ENDIF UNITVERSIONING}
 
 implementation
 
@@ -1047,33 +1047,36 @@ var
 begin
   Result := False;
   ACanvas := TMetaFileCanvas.Create(AMetaFile, DeviceInfo.ReferenceHandle);
-  SetMapMode(ACanvas.Handle, MM_ANISOTROPIC);
-  with DeviceInfo do
-  begin
-    SetWindowOrgEx(ACanvas.Handle, 0, 0, nil);
-    SetWindowExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
-    SetViewportExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
-  end;
-  // NB! Font.Size is changed when PPI is changed, so store and reset
-  I := ACanvas.Font.Size;
-  ACanvas.Font.PixelsPerInch := DeviceInfo.LogPixelsY;
-  ACanvas.Font.Size := I;
-
-  if Assigned(FOnAddPage) then
+  try
+    SetMapMode(ACanvas.Handle, MM_ANISOTROPIC);
     with DeviceInfo do
     begin
-      APageRect := Rect(0, 0, PhysicalWidth, PhysicalHeight);
-      APrintRect := APageRect;
-
-      Inc(APrintRect.Left, OffsetLeft);
-      Inc(APrintRect.Top, OffsetTop);
-      Dec(APrintRect.Right, OffsetRight);
-      Dec(APrintRect.Bottom, OffsetBottom);
-
-      FOnAddPage(Self, PageIndex, ACanvas, APageRect, APrintRect, Result);
+      SetWindowOrgEx(ACanvas.Handle, 0, 0, nil);
+      SetWindowExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
+      SetViewportExtEx(ACanvas.Handle, PhysicalWidth, PhysicalHeight, nil);
     end;
-  // spool canvas to metafile
-  ACanvas.Free;
+    // NB! Font.Size is changed when PPI is changed, so store and reset
+    I := ACanvas.Font.Size;
+    ACanvas.Font.PixelsPerInch := DeviceInfo.LogPixelsY;
+    ACanvas.Font.Size := I;
+
+    if Assigned(FOnAddPage) then
+      with DeviceInfo do
+      begin
+        APageRect := Rect(0, 0, PhysicalWidth, PhysicalHeight);
+        APrintRect := APageRect;
+
+        Inc(APrintRect.Left, OffsetLeft);
+        Inc(APrintRect.Top, OffsetTop);
+        Dec(APrintRect.Right, OffsetRight);
+        Dec(APrintRect.Bottom, OffsetBottom);
+
+        FOnAddPage(Self, PageIndex, ACanvas, APageRect, APrintRect, Result);
+      end;
+  finally
+    // spool canvas to metafile
+    ACanvas.Free;
+  end;
 end;
 
 procedure TJvCustomPreviewControl.DoDrawPreviewPage(PageIndex: Integer;
