@@ -658,7 +658,7 @@ begin
   Printer.Copies := GridPrinter.PrintOptions.Copies;
   Printer.Orientation := GridPrinter.PrintOptions.Orientation;
   Printer.BeginDoc;
-  DrawToCanvas(Printer.Canvas, pmPrint, 1, Grid.ColCount - 1);
+  DrawToCanvas(Printer.Canvas, pmPrint, 1, Grid.RowCount - 1);
   Printer.EndDoc;
 end;
 
