@@ -467,7 +467,7 @@ function WriteFileEx(hFile: THandle; var Buffer; nNumberOfBytesToWrite: DWORD;
 
 constructor TJvHidDeviceReadThread.CtlCreate(const Dev: TJvHidDevice);
 begin
-  inherited Create(True);
+  inherited Create(False);
   Device := Dev;
   NumBytesRead := 0;
   SetLength(Report, Dev.Caps.InputReportByteLength);
@@ -1145,8 +1145,6 @@ begin
     HasReadWriteAccess and not Assigned(FDataThread) then
   begin
     FDataThread := TJvHidDeviceReadThread.CtlCreate(Self);
-    FDataThread.FreeOnTerminate := False;
-    FDataThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
   end;
 end;
 

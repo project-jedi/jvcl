@@ -1906,13 +1906,12 @@ end;
 
 constructor TDeactiveHintThread.Create(Delay: Integer; HintWindow: THintWindow);
 begin
-  inherited Create(True);
+  inherited Create(False);
   FreeOnTerminate := True;
   FHintWindow := HintWindow;
   FDelay := Delay;
   if FDelay = 0 then
     FDelay := Application.HintHidePause;
-  {$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 procedure TDeactiveHintThread.Execute;
