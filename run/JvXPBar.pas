@@ -1254,11 +1254,10 @@ end;
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
 begin
-  inherited Create(True);
+  inherited Create(False);
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
-  Suspended := False;
 end;
 
 procedure TJvXPFadeThread.DoWinXPBarInternalRedraw;

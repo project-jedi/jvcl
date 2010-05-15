@@ -237,8 +237,7 @@ type
   protected
     procedure Execute; override;
   public
-    constructor Create(BlinkRate: Integer);
-    property OnBlink: TJvBlinkThreadEvent read FOnBlink write FOnBlink;
+    constructor Create(BlinkRate: Integer; AOnBlink: TJvBlinkThreadEvent);
   end;
 
 //=== { TJvErrorIndicator } ==================================================
@@ -549,11 +548,7 @@ end;
 procedure TJvErrorIndicator.StartThread;
 begin
   if BlinkStyle <> ebsNeverBlink then
-  begin
-    FBlinkThread := TJvBlinkThread.Create(BlinkRate);
-    TJvBlinkThread(FBlinkThread).OnBlink := DoBlink;
-    FBlinkThread.{$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
-  end;
+    FBlinkThread := TJvBlinkThread.Create(BlinkRate, DoBlink);
 end;
 
 procedure TJvErrorIndicator.StopThread;
@@ -750,11 +745,12 @@ end;
 
 //=== { TJvBlinkThread } =====================================================
 
-constructor TJvBlinkThread.Create(BlinkRate: Integer);
+constructor TJvBlinkThread.Create(BlinkRate: Integer; AOnBlink: TJvBlinkThreadEvent);
 begin
-  inherited Create(True);
+  inherited Create(False);
   FBlinkRate := BlinkRate;
   FErase := False;
+  FOnBlink := AOnBlink;
 end;
 
 procedure TJvBlinkThread.Blink;

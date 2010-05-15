@@ -660,14 +660,12 @@ end;
 constructor TJvQueryThread.Create(Data: TBDEDataSet; RunMode: TRunQueryMode;
   Prepare, CreateSuspended: Boolean);
 begin
-  inherited Create(True);
+  inherited Create(CreateSuspended);
   FData := Data;
   FMode := RunMode;
   FPrepare := Prepare;
   FreeOnTerminate := True;
   FData.DisableControls;
-  if not CreateSuspended then
-    {$IFDEF COMPILER14_UP}Start{$ELSE}Resume{$ENDIF COMPILER14_UP};
 end;
 
 procedure TJvQueryThread.DoTerminate;

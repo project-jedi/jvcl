@@ -369,14 +369,12 @@ end;
 
 constructor TNotifyChangeEventLog.Create(AOwner: TComponent);
 begin
-  inherited Create(True); // Create thread suspended
+  inherited Create(False);
 
   // initialize system events
   FEventLog := TJvNTEventLog(AOwner);
   FEventHandle := CreateEvent(nil, True, False, nil);
   NotifyChangeEventLog(FEventLog.FLogHandle, FEventHandle);
-
-  Suspended := False; // Continue the thread
 end;
 
 procedure TNotifyChangeEventLog.DoChange;
