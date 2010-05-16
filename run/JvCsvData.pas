@@ -640,8 +640,7 @@ type
 
 
     procedure ClearFilter; // Clear all previous SetFilters, shows All Rows. Refresh screen.
-    // (rom) inacceptable name
-    procedure _ClearFilter; // Clear Previous Filtering. DOES NOT REFRESH SCREEN.
+    procedure ClearPreviousFilter; // Clear Previous Filtering. DOES NOT REFRESH SCREEN.
 
 
     procedure CustomFilter(FilterCallback: TJvCustomCsvDataSetFilterFunction); {NEW:APRIL 2004-WP}
@@ -1667,12 +1666,8 @@ var
   FieldIndex: Integer;
   sFieldValue: string;
   FieldValue: Double;
-  //stillVisible : Integer;
-  //m: TBookmark;
 begin
-  // m := GetBookmark;
   FieldRec := FCsvColumns.FindByName(FieldName);
-  // stillVisible := 0;
   if not Assigned(FieldRec) then
     Exit;
   FieldIndex := FieldRec^.FPhysical;
@@ -1715,12 +1710,8 @@ var
   FieldRec: PCsvColumn;
   FieldIndex: Integer;
   FieldValue: string;
-  //stillVisible : Integer;
-  //m: TBookmark;
 begin
-  // m := GetBookmark;
   FieldRec := FCsvColumns.FindByName(FieldName);
-  // stillVisible := 0;
   if not Assigned(FieldRec) then
     Exit;
   FieldIndex := FieldRec^.FPhysical;
@@ -1770,7 +1761,7 @@ begin
   FData.InternalInitRecord(TJvRecordBuffer(Result)); // {was PChar(Result) }
 end;
 
-procedure TJvCustomCsvDataSet._ClearFilter; // Clear Previous Filtering.
+procedure TJvCustomCsvDataSet.ClearPreviousFilter; // Clear Previous Filtering.
 var
   I: Integer;
   PRow: PCsvRow;
@@ -1789,13 +1780,17 @@ var
   M: TBookmark;
 begin
   M := GetBookmark;
-  _ClearFilter;
-  // Update screen.
-  if Active then
-    if Assigned(M) then
-      GotoBookmark(M)
-    else
-      First;
+  try
+    ClearPreviousFilter;
+    // Update screen.
+    if Active then
+      if Assigned(M) then
+        GotoBookmark(M)
+      else
+        First;
+  finally
+    FreeBookmark(M);
+  end;
 end;
 
 function TJvCustomCsvDataSet.BookmarkValid(Bookmark: TBookmark): Boolean;
@@ -2656,8 +2651,12 @@ begin
   DisableControls;
   try
     M := GetBookmark; // This appears a bit silly but it works very well.
-    First; // Redraws all controls once to relocate to top.
-    GotoBookmark(M); // Go back where we were. This could Result in some odd scrolling behaviour but I haven't seen it yet.
+    try
+      First; // Redraws all controls once to relocate to top.
+      GotoBookmark(M); // Go back where we were. This could Result in some odd scrolling behaviour but I haven't seen it yet.
+    finally
+      FreeBookmark(M);
+    end;
   finally
     EnableControls;
   end;
@@ -3006,7 +3005,6 @@ end;
 
 procedure TJvCustomCsvDataSet.GetBookmarkData(Buffer: TJvRecordBuffer; Data: Pointer);
 begin
-// I := PCsvRow(Buffer)^.bookmark.Data;
   PInteger(Data)^ := PCsvRow(Buffer)^.Bookmark.Data;
 end;
 
@@ -3070,7 +3068,6 @@ end;
 
 procedure TJvCustomCsvDataSet.InternalFirst;
 begin
-//  Eof := False;
   FRecordPos := JvCsv_ON_BOF_CRACK;
 end;
 
