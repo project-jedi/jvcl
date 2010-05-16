@@ -193,7 +193,6 @@ type
     procedure TextChanged; override;
     procedure Paint; override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
@@ -210,7 +209,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Invalidate; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure ArrangeControls;
     procedure EnableArrange;
@@ -359,20 +357,11 @@ const
 implementation
 
 uses
-  Types,
+  Types, {$IFDEF COMPILER7_UP}Themes,{$ENDIF}
   JvJCLUtils, JvJVCLUtils, JvResources;
 
 const
   BkModeTransparent = TRANSPARENT;
-
-(*function IsThemed: Boolean;
-begin
-  {$IFDEF JVCLThemesEnabled}
-  Result := ThemeServices.ThemesEnabled;
-  {$ELSE}
-  Result := False;
-  {$ENDIF JVCLThemesEnabled}
-end;*)
 
 //=== { TJvArrangeSettings } =================================================
 
@@ -617,17 +606,14 @@ end;
 procedure TJvCustomArrangePanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  if Transparent {and not IsThemed} then
+  if Transparent then
   begin
-    // (rom) gives a better look in IDE if always set (not fully correct though)
-    //if not (csDesigning in ComponentState) then
-      Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
+    Params.ExStyle := Params.ExStyle or WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle - [csOpaque];
   end
   else
   begin
-    //if not (csDesigning in ComponentState) then
-      Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
+    Params.ExStyle := Params.ExStyle and not WS_EX_TRANSPARENT;
     ControlStyle := ControlStyle + [csOpaque];
   end;
 end;
@@ -685,16 +671,6 @@ begin
     Exit;
   end;
 
-  // Mantis 3624: Draw our parent's image first if we are transparent.
-  // This might not seem useful at first as we have removed the csOpaque
-  // from our style and the API is doing the drawing just fine. But this
-  // is required for other transparent controls placed on us. This way,
-  // they call us with their own canvas into which we draw what we are
-  // placed on. This way, there is an automatic chain of transparency up
-  // to the controls at the bottom that are not transparent.
-  if Transparent then
-    CopyParentImage(Self, Canvas);
-
   if MouseOver and HotTrack then
   begin
     Canvas.Font := Self.HotTrackFont;
@@ -721,7 +697,7 @@ begin
   begin
     Canvas.Font := Self.Font;
     Canvas.Brush.Color := Color;
-    if not Transparent {or IsThemed} then
+    if not Transparent then
       DrawThemedBackground(Self, Canvas, ClientRect)
     else
       Canvas.Brush.Style := bsClear;
@@ -768,34 +744,22 @@ begin
           ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2))
     else
     {$ENDIF JVCLThemesEnabled}
-      begin
-        Canvas.Font.Name := 'Marlett';
-        Canvas.Font.Charset := DEFAULT_CHARSET;
-        Canvas.Font.Size := 12;
-        Canvas.Font.Style := [];
-        Canvas.Brush.Style := bsClear;
-        X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
-        Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
-        // (rom) bsClear takes care of that already
-        //if Transparent {and not IsThemed} then
-        //  SetBkMode(Handle, BkModeTransparent);
-        Canvas.Font.Color := clBtnHighlight;
-        Canvas.TextOut(X, Y, 'o');
-        Canvas.Font.Color := clBtnShadow;
-        Canvas.TextOut(X, Y, 'p');
-      end;
-  end;
-end;
-
-procedure TJvCustomArrangePanel.AdjustSize;
-begin
-  inherited AdjustSize;
-  if Transparent {and not IsThemed} then
-  begin
-    // (ahuser) 2009-02-07: This causes critical flicker
-    // (ahuser) That is the only way to draw the border of the contained controls.
-{    Width := Width + 1;
-    Width := Width - 1;}
+    begin
+      Canvas.Font.Name := 'Marlett';
+      Canvas.Font.Charset := DEFAULT_CHARSET;
+      Canvas.Font.Size := 12;
+      Canvas.Font.Style := [];
+      Canvas.Brush.Style := bsClear;
+      X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
+      Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
+      // (rom) bsClear takes care of that already
+      //if Transparent then
+      //  SetBkMode(Handle, BkModeTransparent);
+      Canvas.Font.Color := clBtnHighlight;
+      Canvas.TextOut(X, Y, 'o');
+      Canvas.Font.Color := clBtnShadow;
+      Canvas.TextOut(X, Y, 'p');
+    end;
   end;
 end;
 
@@ -878,7 +842,7 @@ begin
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
-      if Transparent {and not IsThemed} then
+      if Transparent then
         SetBkMode(ACanvas.Handle, BkModeTransparent);
       DrawText(ACanvas.Handle, Caption, -1, ATextRect, Flags);
     end;
@@ -903,7 +867,7 @@ begin
   begin
     OtherDragging := Mouse.IsDragging;
     NeedRepaint := not Transparent and
-     ({IsThemed or} (FHotTrack and Enabled and not FDragging and not OtherDragging));
+     ((FHotTrack and Enabled and not FDragging and not OtherDragging));
     inherited MouseEnter(Control); // set MouseOver
     if NeedRepaint then
       Repaint;
@@ -923,7 +887,7 @@ begin
   if MouseOver and Enabled and (Control = nil) then
   begin
     NeedRepaint := not Transparent and
-     ({IsThemed or} (FHotTrack and (FDragging or (Enabled and not OtherDragging))));
+     ((FHotTrack and (FDragging or (Enabled and not OtherDragging))));
     inherited MouseLeave(Control); // set MouseOver
 
     if Sizeable then
@@ -956,10 +920,7 @@ begin
   if Value <> FTransparent then
   begin
     FTransparent := Value;
-    {if not IsThemed then}
-    begin
-      RecreateWnd;
-    end;
+    RecreateWnd;
   end;
 end;
 
@@ -983,8 +944,18 @@ end;
 
 function TJvCustomArrangePanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  if Transparent {and not IsThemed} then
-    Result := True
+  // Mantis 3624: Draw our parent's image first if we are transparent.
+  // This might not seem useful at first as we have removed the csOpaque
+  // from our style and the API is doing the drawing just fine. But this
+  // is required for other transparent controls placed on us. This way,
+  // they call us with their own canvas into which we draw what we are
+  // placed on. This way, there is an automatic chain of transparency up
+  // to the controls at the bottom that are not transparent.
+  if Transparent then
+  begin
+    CopyParentImage(Self, Canvas);
+    Result := True;
+  end
   else
     Result := inherited DoEraseBackground(Canvas, Param);
 end;
@@ -1002,14 +973,6 @@ procedure TJvCustomArrangePanel.TextChanged;
 begin
   inherited TextChanged;
   Invalidate;
-end;
-
-procedure TJvCustomArrangePanel.Invalidate;
-begin
-{  if Transparent and Visible and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
-    RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or
-      RDW_INVALIDATE or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN); }
-  inherited Invalidate;
 end;
 
 procedure TJvCustomArrangePanel.SetSizeable(const Value: Boolean);
@@ -1102,7 +1065,7 @@ end;
 procedure TJvCustomArrangePanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  if Transparent {and not IsThemed} then
+  if Transparent then
     Invalidate;
 end;
 

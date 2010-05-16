@@ -223,20 +223,21 @@ type
 
   { SPECIAL TYPES OF  DATABASE COLUMNS FOR THIS COMPONENT }
   { Columns are numeric, text, or one of two kinds of Specially Encoded date/time formats: }
-  TJvCsvColumnFlag = (  jcsvNull,  // means not a valid type
-                        jcsvString,
-                        jcsvNumeric,  // Integer or Float (% or &)
-                        jcsvAsciiDateTime,
-                        jcsvGMTDateTime,
-                        jcsvTZDateTime,
-                        jcsvAsciiDate,
-                        jcsvAsciiTime,
-                        jcsvStringUTF8 // special NEW column type (~) - september 2008
-                         );
+  TJvCsvColumnFlag = (
+    jcsvNull,  // means not a valid type
+    jcsvString,
+    jcsvNumeric,  // Integer or Float (% or &)
+    jcsvAsciiDateTime,
+    jcsvGMTDateTime,
+    jcsvTZDateTime,
+    jcsvAsciiDate,
+    jcsvAsciiTime,
+    jcsvStringUTF8 // special NEW column type (~) - september 2008
+  );
 
   // SetFilterNum takes one of these as a compareOperator:
   // utility function JvCsvNumCondition uses this too.
-  TJvCsvFilterNumCompare = ( jfIntEqual, jfIntNotEqual, jfLessThan, jfGreaterThan  );
+  TJvCsvFilterNumCompare = (jfIntEqual, jfIntNotEqual, jfLessThan, jfGreaterThan);
   { pointer to special CSV COLUMN }
   PCsvColumn = ^TJvCsvColumn;
   // PFieldDef = ^TFieldDef;
@@ -513,8 +514,6 @@ type
     FAppendOnly: Boolean; // If true, we don't load the entire content of the CSV from disk, only the last row, and every time we append and write, we only maintain the last row in memory (saves a lot of RAM.)
 
     procedure SetActive(Value: Boolean); override;
-
-    //function GetRowAllocSize:Integer;
 
     //  Internal Use Only Protected Methods
     // function GetDataFileSize: Integer; virtual;
@@ -1049,7 +1048,7 @@ end;
 function GetCalcDataOffset(RowItem:PCsvRow):Integer;
 begin
   Assert(Assigned(RowItem));
-  Assert(RowItem^.Magic = JvCsvRowMagic );
+  Assert(RowItem^.Magic = JvCsvRowMagic);
   Assert(RowItem^.AllocSize>0);
   Assert(RowItem^.WordFieldsAddr > 0);
 
@@ -1246,7 +1245,7 @@ begin
   if not Assigned(FStreamBuffer) then
   begin
     //FStreamBuffer := AllocMem(JvCsvStreamReadChunkSize);
-    GetMem(FStreamBuffer,JvCsvStreamReadChunkSize);
+    GetMem(FStreamBuffer, JvCsvStreamReadChunkSize);
   end;
 end;
 
@@ -1767,7 +1766,7 @@ end;
   at once. }
 function TJvCustomCsvDataSet._AllocateRow: PCsvRow;
 begin
-  Result := PCsvRow(AllocMem( FData.GetRowAllocSize ));
+  Result := PCsvRow(AllocMem(FData.GetRowAllocSize));
   FData.InternalInitRecord(TJvRecordBuffer(Result)); // {was PChar(Result) }
 end;
 
@@ -1818,7 +1817,7 @@ begin
   // Assumes that our buffer is a TJvCsvRow followed by
   // a dynamically resized buffer used for calculated field
   // storage:
-  FillChar(Buffer[GetCalcDataOffset(PCsvRow(Buffer))], JvCsv_MaxCalcDataOffset{CalcFieldsSize}, {initbytevalue}0 );
+  FillChar(Buffer[GetCalcDataOffset(PCsvRow(Buffer))], JvCsv_MaxCalcDataOffset{CalcFieldsSize}, {initbytevalue}0);
 end;
 
 { calc fields support and buffer support }
@@ -1986,7 +1985,7 @@ begin
         { Default CLASSIC behaviour of this component is to encode outgoing data in US
           format regardless of system regional settings. This has become more flexible now,
           but we still default at designtime-defaults to using a DOT. }
-        Result := JvCsvStrToFloat(TempString, GetDecimalSeparator );
+        Result := JvCsvStrToFloat(TempString, GetDecimalSeparator);
 
       ftBoolean:
         Result := StrToIntDef(TempString, 0) <> 0;
@@ -2223,7 +2222,7 @@ begin
   case GetMode of
     gmPrior:
       begin
-        //Trace(' GetRecord( Buffer, gmPrior, DoCheck)');
+        //Trace(' GetRecord(Buffer, gmPrior, DoCheck)');
         if FRecordPos = JvCsv_ON_BOF_CRACK then
           Result := grBOF
         else
@@ -2253,7 +2252,7 @@ begin
       end;
     gmCurrent:
       begin
-         //Trace(' GetRecord( Buffer, gmCurrent, DoCheck)');
+         //Trace(' GetRecord(Buffer, gmCurrent, DoCheck)');
         if FRecordPos < 0 then // BOF Crack or EOF Crack?
           Result := grError
         else
@@ -2265,7 +2264,7 @@ begin
       end;
     gmNext:
       begin
-         //Trace(' GetRecord( Buffer, gmNext, DoCheck)');
+         //Trace(' GetRecord(Buffer, gmNext, DoCheck)');
         if FRecordPos = JvCsv_ON_EOF_CRACK then
           Result := grEOF
         else
@@ -2297,7 +2296,7 @@ begin
     try
       { get a record into a buffer }
       RowPtr := PCsvRow(Buffer); // Cast to a Row Data Structure to our own type.
-      Move(FData.GetRowPtr(FRecordPos)^, RowPtr^, FData.GetRowAllocSize );
+      Move(FData.GetRowPtr(FRecordPos)^, RowPtr^, FData.GetRowAllocSize);
       RowPtr^.Bookmark.Flag := bfCurrent;
       RowPtr^.Bookmark.Data := FRecordPos;
 
@@ -2725,7 +2724,7 @@ begin
     end;
 
 
-    Inc(PSource,     GetCalcDataOffset( RowPtr ) + Field.Offset);
+    Inc(PSource, GetCalcDataOffset(RowPtr) + Field.Offset);
     if Buffer = nil then
     begin
       // NULL CHECK MEANS THAT SOMEONE IS ASKING IF THIS FIELD HAS A VALUE. RETURN True.
@@ -2869,7 +2868,7 @@ begin
           if (length_n > Field.Size) then
             length_n := Field.Size;
 
-          MoveMemory( {dest} Buffer, {src} PAnsiChar(AnsiStr), {count} length_n);
+          MoveMemory({dest} Buffer, {src} PAnsiChar(AnsiStr), {count} length_n);
           PAnsiChar(Buffer)[length_n] := #0;
         end;
       // Standard Integer conversion:
@@ -2885,23 +2884,23 @@ begin
           PWordBool(Buffer)^ := StrToIntDef(TempString, 0) <> 0; // bugfix May 26, 2003 - WP
 
       ftDate:
-        if ( CsvColumnData^.FFlag = jcsvAsciiDate) then
-          // Ascii Date yyyy/mm/ddd
+        if CsvColumnData^.FFlag = jcsvAsciiDate then
+        // Ascii Date yyyy/mm/ddd
+        begin
+          ADateTime := JvIsoDateStrToDate(TempString);
+          if ADateTime <= 1.0 then
           begin
-            ADateTime := JvIsoDateStrToDate(TempString);
-            if ADateTime <= 1.0 then
-            begin
-              Result := False; { field is NULL, no date/time value }
-              Exit;
-            end;
-            // XXX Delphi Weirdness Ahead.  Read docs before you try to
-            // understand this. The data in Buffer^ is an Integer timestamp
-            Integer(Buffer^) := DateTimeToTimeStamp(ADateTime).Date;
-          end else
-            JvCsvDatabaseError(FTableName, RsETimeTConvError);
+            Result := False; { field is NULL, no date/time value }
+            Exit;
+          end;
+          // XXX Delphi Weirdness Ahead.  Read docs before you try to
+          // understand this. The data in Buffer^ is an Integer timestamp
+          Integer(Buffer^) := DateTimeToTimeStamp(ADateTime).Date;
+        end else
+          JvCsvDatabaseError(FTableName, RsETimeTConvError);
 
       ftTime:
-        if ( CsvColumnData^.FFlag = jcsvAsciiTime) then
+        if CsvColumnData^.FFlag = jcsvAsciiTime then
         begin
           ADateTime := JvIsoTimeStrToTime(TempString);
           if ADateTime < 0.0 then
@@ -2982,7 +2981,7 @@ begin
           JvCsvDatabaseError(FTableName, RsETimeTConvError);
         end;
     else // not a valid ftXXXX type for this TDataSet descendant!?
-      JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(Field.DataType) );
+      JvCsvDatabaseError2(FTableName, RsEFieldTypeNotHandled, Ord(Field.DataType));
     end
   except
     on E: EConvertError do
@@ -3308,7 +3307,7 @@ begin
       begin
         if CsvKeys[I] = '' then
           JvCsvDatabaseError(FTableName, RsEInternalErrorParsingCsvKeyDef);
-        PCsvFieldDef := FCsvColumns.FindByName( string(CsvKeys[I]));
+        PCsvFieldDef := FCsvColumns.FindByName(string(CsvKeys[I]));
         if not Assigned(PCsvFieldDef) then
           JvCsvDatabaseError(FTableName, Format(RsEContainsField, [CsvKeys[I]]))
         else
@@ -3629,7 +3628,7 @@ begin
           // otherwise this routine is parsing already-loaded Data, and we should NOT
           // return, or we won't get our Data in the table. -WP.
   FreeAndNil(FCsvStream);
-  FCsvStream := TJvCsvStream.Create(FOpenFileName, fmJVCSV_Truncate );
+  FCsvStream := TJvCsvStream.Create(FOpenFileName, fmJVCSV_Truncate);
   Result := True; // it worked!
 end;
 
@@ -3816,7 +3815,6 @@ begin
         ((State = dsEdit) and (KeyIndex <> FRecordPos)) then
       begin
         raise EJvCsvKeyError.CreateResFmt(@RsEKeyNotUnique, [FTableName]);
-        Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;
   end;
 
@@ -3824,7 +3822,7 @@ begin
   begin
     FFileDirty := True;
     RecPos := FRecordPos;
-    Move(PCsvRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, FData.GetRowAllocSize );
+    Move(PCsvRow(ActiveBuffer)^, FData.GetRowPtr(RecPos)^, FData.GetRowAllocSize);
     FData.GetRowPtr(RecPos)^.IsDirty := RowNeedsSaving;
   end
   else
@@ -3836,8 +3834,8 @@ begin
       Exit;
     end;
     FFileDirty := True;
-    PInsertRec := PCsvRow( AllocRecordBuffer);
-    Move(PCsvRow(ActiveBuffer)^, PInsertRec^, FData.GetRowAllocSize  );
+    PInsertRec := PCsvRow(AllocRecordBuffer);
+    Move(PCsvRow(ActiveBuffer)^, PInsertRec^, FData.GetRowAllocSize);
     PInsertRec^.IsDirty := RowNeedsSaving;
     FData.Insert(FRecordPos, Pointer(PInsertRec));
     FRecordPos := FData.IndexOf(Pointer(PInsertRec));
@@ -3910,7 +3908,7 @@ begin
 //    FTableName := ChangeFileExt(FTableName,'.csv');
 
   { update internal filename table }
-//  FBmkFileName := ChangeFileExt(FTableName, '.bmk' ); // bookmark file
+//  FBmkFileName := ChangeFileExt(FTableName, '.bmk'); // bookmark file
 end;
 
 procedure TJvCustomCsvDataSet.SetTextBufferSize(const Value: Integer);
@@ -3995,7 +3993,7 @@ begin
     begin
       if not SortAscending[I] then // inverts comparison Result when Descending!
         Result := -Result;
-           // XXX REPEAT Result := InternalFieldCompare( SortColumns[I],Left,Right);
+           // XXX REPEAT Result := InternalFieldCompare(SortColumns[I],Left,Right);
       Exit; // found greater or less than condition
     end;
   end;
@@ -4082,7 +4080,7 @@ begin
       SortAscending[I] := not SortAscending[I];
       SortFieldNames[I] := Copy(SortFieldNames[I],2,Length(SortFieldNames[I]));
     end;
-    SortColumns[I] := FCsvColumns.FindByName( string(SortFieldNames[I]));
+    SortColumns[I] := FCsvColumns.FindByName(string(SortFieldNames[I]));
     if not Assigned(SortColumns[I]) then
       JvCsvDatabaseError(FTableName, Format(RsESortFailedInvalidFieldNameInList, [SortFieldNames[I]]));
   end;
@@ -4258,14 +4256,14 @@ end;
 function TJvCsvRows.AllocRecordBuffer: TJvRecordBuffer;
 begin
   Assert(FTextBufferSize >= JvCsv_MINLINELENGTH);
-  Result := AllocMem( GetRowAllocSize );  {was SizeOf(TJvCsvRow)}
+  Result := AllocMem(GetRowAllocSize);  {was SizeOf(TJvCsvRow)}
   InternalInitRecord(Result);
 end;
 
 function TJvCsvRows.GetRowAllocSize: Integer;
 begin
   Assert(FTextBufferSize >= JvCsv_MINLINELENGTH);
-  Result := (SizeOf(TJvCsvRow) - JvCsv_MINLINELENGTH) + FTextBufferSize + SizeOf(TJvCsvRowWordFIelds) + JvCsv_MaxCalcDataOffset + FMarginSize;
+  Result := (SizeOf(TJvCsvRow) - JvCsv_MINLINELENGTH) + FTextBufferSize + SizeOf(TJvCsvRowWordFields) + JvCsv_MaxCalcDataOffset + FMarginSize;
 end;
 
 function TJvCsvRows.GetRowPtr(const RowIndex: Integer): PCsvRow;
@@ -4628,10 +4626,10 @@ var
   StrList: TStringList;
 begin
   StrList := TStringList.Create;
-  StrList.Add( string(FHeaderRow));
+  StrList.Add(string(FHeaderRow));
   try
     for I := FromRow to ToRow do
-      StrList.Add( string(FData.GetRowAnsiStr(I)));
+      StrList.Add(string(FData.GetRowAnsiStr(I)));
     AutoCreateDir(FileName);
     StrList.SaveToFile(FileName);
   finally
@@ -4791,7 +4789,7 @@ var
   RowItemText: PAnsiChar;
 begin
   Assert(Assigned(RowItem));
-  Assert(RowItem^.Magic = JvCsvRowMagic, 'Internal data corruption in JvCsvRow data storage area' );
+  Assert(RowItem^.Magic = JvCsvRowMagic, 'Internal data corruption in JvCsvRow data storage area');
   Col := 0;
   WordFields := GetWordFields(RowItem);
   WordFields.WordField[0] := 0; // zero out column marker and dirty bit!
