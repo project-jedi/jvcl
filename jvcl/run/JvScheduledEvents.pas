@@ -807,17 +807,20 @@ begin
           // "to be restarted", stop and then restart them.
           List := TList.Create;
           try
-            for I := 0 to FEvents.Count - 1 do
-            begin
-              if FEvents[I].State in [sesTriggered, sesExecuting, sesPaused] then
+            ScheduleThread.Lock;
+            try
+              for I := 0 to FEvents.Count - 1 do
               begin
-                List.Add(FEvents[I]);
-                FEvents[I].Stop;
+                if FEvents[I].State in [sesTriggered, sesExecuting, sesPaused] then
+                begin
+                  List.Add(FEvents[I]);
+                  FEvents[I].Stop;
+                end;
               end;
-            end;
-            for I := 0 to List.Count - 1 do
-            begin
-              TJvEventCollectionItem(List[I]).Start;
+              for I := 0 to List.Count - 1 do
+                TJvEventCollectionItem(List[I]).Start;
+            finally
+              ScheduleThread.Unlock;
             end;
           finally
             List.Free;
