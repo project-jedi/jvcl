@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
   Controls, FileCtrl, Dialogs, ComCtrls, Buttons, Variants,
   JvPanel, JvPropertyStore, JvParameterList, JvDynControlEngine, JvDSADialogs,
-  JvDynControlEngineIntf;
+  JvDynControlEngineIntf, ActnList;
 
 type
   TJvNoDataParameter = class(TJvBaseParameter)
@@ -55,6 +55,7 @@ type
 
   TJvButtonParameter = class(TJvNoDataParameter)
   private
+    FAction: TCustomAction;
     FGlyph: TBitmap;
     FNumGlyphs: Integer;
     FLayout: TButtonLayout;
@@ -70,6 +71,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
+    property Action: TCustomAction read FAction write FAction;
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: Integer read FNumGlyphs write FNumGlyphs;
     property Layout: TButtonLayout read FLayout write FLayout;
@@ -711,6 +713,8 @@ begin
     Glyph := TJvButtonParameter(Source).Glyph;
     Layout := TJvButtonParameter(Source).Layout;
     NumGlyphs := TJvButtonParameter(Source).NumGlyphs;
+    OnClick := TJvButtonParameter(Source).OnClick;
+    Action := TJvButtonParameter(Source).Action;
   end;
 end;
 
@@ -721,9 +725,13 @@ begin
 end;
 
 procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
+var
+  Button: TButton;
 begin
-  SetWinControl (DynControlEngine.CreateButton(Self, ParameterParent,
-    GetParameterName, Caption, Hint, Click, False, False));
+  Button := DynControlEngine.CreateButton(Self, ParameterParent,
+    GetParameterName, Caption, Hint, Click, False, False);
+  Button.Action := Action;
+  SetWinControl (Button);
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
