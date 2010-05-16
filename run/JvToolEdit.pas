@@ -3851,7 +3851,7 @@ end;
 
 procedure TJvCustomDateEdit.ValidateEdit;
 begin
-  if TextStored then
+  if TextStored and CheckOnExit then
     CheckValidDate;
 end;
 
