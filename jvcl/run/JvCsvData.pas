@@ -2027,15 +2027,15 @@ begin
   Max := -1;
   for RecIndex := 0 to FData.Count - 1 do
     try
-       // skip filtered rows:
-       RowPtr := FData[RecIndex];
-       Assert(Assigned(RowPtr)); // FData should never contain nils!
-       if RowPtr^.Filtered then
-         Continue; // skip filtered row!
-
-      Value := GetFieldValueAsVariant(CsvColumnData, FieldLookup, RecIndex);
-      if Value > Max then
-        Max := Value; // keep maximum.
+      // skip filtered rows:
+      RowPtr := FData[RecIndex];
+      Assert(Assigned(RowPtr)); // FData should never contain nils!
+      if not RowPtr^.Filtered then // skip filtered row!
+      begin
+        Value := GetFieldValueAsVariant(CsvColumnData, FieldLookup, RecIndex);
+        if Value > Max then
+          Max := Value; // keep maximum.
+      end;
     except
       on E: EVariantError do
         Exit; // failed.
@@ -2107,58 +2107,59 @@ begin
   end;
 
   // Now search
-  // First;
   for RecIndex := 0 to FData.Count - 1 do
   begin
-    MatchCount := 0;
-    for I := 0 to Count - 1 do
+    if not PCsvRow(FData.Items[RecIndex])^.Filtered then // Mantis #5108: Don't need to trap filtered records
     begin
-      Value := GetFieldValueAsVariant(CsvColumnData[I], FieldLookup[I], RecIndex);
-      if Lo < 0 then // non-vararray!
-        CompareResult := Value = KeyValues
-      else // vararray!
-        CompareResult := Value = KeyValues[I + Lo];
-
-      if CompareResult then
-        Inc(MatchCount)
-      else
-      if Options <> [] then
+      MatchCount := 0;
+      for I := 0 to Count - 1 do
       begin
-        if VarIsStr(Value) then
-        begin
-          StrValueA := Value;
-          StrValueB := KeyValues[I + Lo];
-          if loCaseInsensitive in Options then
-            CompareResult := {Ansi}CompareText(StrValueA, StrValueB) = 0
-          else
-            CompareResult := StrValueA = StrValueB;
+        Value := GetFieldValueAsVariant(CsvColumnData[I], FieldLookup[I], RecIndex);
+        if Lo < 0 then // non-vararray!
+          CompareResult := Value = KeyValues
+        else // vararray!
+          CompareResult := Value = KeyValues[I + Lo];
 
-          if CompareResult then
-            Inc(MatchCount)
-          else
+        if CompareResult then
+          Inc(MatchCount)
+        else
+        if Options <> [] then
+        begin
+          if VarIsStr(Value) then
           begin
-            if loPartialKey in Options then
+            StrValueA := Value;
+            StrValueB := KeyValues[I + Lo];
+            if loCaseInsensitive in Options then
+              CompareResult := {Ansi}CompareText(StrValueA, StrValueB) = 0
+            else
+              CompareResult := StrValueA = StrValueB;
+
+            if CompareResult then
+              Inc(MatchCount)
+            else
             begin
-              if loCaseInsensitive in Options then
+              if loPartialKey in Options then
               begin
-                StrValueA := {Ansi}UpperCase(StrValueA);
-                StrValueB := {Ansi}UpperCase(StrValueB);
+                if loCaseInsensitive in Options then
+                begin
+                  StrValueA := {Ansi}UpperCase(StrValueA);
+                  StrValueB := {Ansi}UpperCase(StrValueB);
+                end;
+                if Pos(StrValueB, StrValueA) = 1 then
+                  Inc(MatchCount);
               end;
-              if Pos(StrValueB, StrValueA) = 1 then
-                Inc(MatchCount);
             end;
           end;
         end;
       end;
-    end;
 
-    if MatchCount = Count then
-    begin
-      RecNo := RecIndex; // Move cursor position.
-      Result := True;
-      Exit;
+      if MatchCount = Count then
+      begin
+        RecNo := RecIndex; // Move cursor position.
+        Result := True;
+        Exit;
+      end;
     end;
-   // Next;
   end;
 end;
 
