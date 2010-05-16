@@ -146,7 +146,7 @@ type
     procedure AddThumb(ATitle: string; Redraw: Boolean);
     function AddFromFile(AFile: string) : Integer;
     procedure AddFromStream(AStream: TStream; AType: TGRFKind); overload;
-    function AddFromStream(AStream: TStream; AType: TGRFKind; aTitle : String): Integer; overload;
+    function AddFromStream(AStream: TStream; AType: TGRFKind; const aTitle: string): Integer; overload;
 
     procedure Delete(No: Longint);
     procedure EmptyList;
@@ -588,7 +588,7 @@ begin
   Invalidate;
 end;
 
-procedure TJvThumbView.Reposition;
+procedure TJvThumbView.Reposition(Start: Integer);
 var
   I: Integer;
   Tmp1: Longint;
@@ -786,10 +786,10 @@ end;
 
 procedure TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind);
 begin
-   Self.AddFromStream(AStream, AType, '');
+  AddFromStream(AStream, AType, '');
 end;
 
-function TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind; aTitle : String): Integer;
+function TJvThumbView.AddFromStream(AStream: TStream; AType: TGRFKind; const aTitle: string): Integer;
 var
   Thb: TJvThumbnail;
 begin
@@ -809,6 +809,7 @@ begin
   Result := FThumbList.AddObject(Thb.Title, Thb);
   InsertControl(Thb);
   CalculateSize;
+  Reposition(Result);
 end;
 
 function  TJvThumbView.AddFromFile(AFile: string) : Integer;
