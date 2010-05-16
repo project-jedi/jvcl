@@ -178,7 +178,7 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure CreateWnd; override;
     destructor Destroy; override;
-    procedure Refresh;
+    procedure Refresh; // ahuser: This hides the TControl.Refresh method, why was that name used
     property Drives[Index: Integer]: string read GetDrives;
     property DriveCount: Integer read GetDriveCount;
     property Items stored False;
@@ -791,7 +791,7 @@ var
   S: string;
   Options: Integer;
   Drv: Char;
-  Tmp: array [0..104] of Char;
+  Tmp: array [0..105] of Char;
   P: PChar;
   LastErrorMode: Cardinal;
 begin
@@ -813,7 +813,7 @@ begin
   FillChar(Tmp[0], SizeOf(Tmp), #0);
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
-    GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+    GetLogicalDriveStrings(Length(Tmp) - 1, Tmp);
     P := Tmp;
     while P^ <> #0 do
     begin
@@ -1047,7 +1047,8 @@ procedure TJvDriveList.Change;
 begin
   if ItemIndex <> -1 then
     FItemIndex := ItemIndex;
-  Drive := FDrives[FItemIndex][1];
+  if (FItemIndex >= 0) and (FItemIndex < FDrives.Count) then
+    Drive := FDrives[FItemIndex][1];
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
