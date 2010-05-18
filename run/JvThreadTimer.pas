@@ -46,13 +46,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QWindows,
-  {$ENDIF UNIX}
-  SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvTypes, JvComponentBase;
 
 type
@@ -65,7 +59,6 @@ type
     FPriority: TThreadPriority;
     FStreamedEnabled: Boolean;
     FThread: TThread;
-    function GetThread: TThread;
     procedure SetEnabled(const Value: Boolean);
     procedure SetInterval(const Value: Cardinal);
     procedure SetOnTimer(const Value: TNotifyEvent);
@@ -79,7 +72,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Thread: TThread read GetThread;
+    property Thread: TThread read FThread;
   published
     // (p3) renamed Active->Enabled, Delay->Interval to make it compatible with TTimer
     property Enabled: Boolean read FEnabled write SetEnabled default False;
@@ -139,7 +132,6 @@ constructor TJvTimerThread.Create(ATimer: TJvThreadTimer);
 begin
   inherited Create(False);
 
-  FreeOnTerminate := True;
   { Manually reset = false; Initial State = false }
   FEvent := CreateEvent(nil, False, False, nil);
   if FEvent = 0 then
@@ -206,7 +198,6 @@ begin
   SetEvent(FEvent);
   if Suspended then
     Suspended := False;
-  Sleep(0);
 end;
 
 //=== { TJvThreadTimer } =====================================================
@@ -215,12 +206,7 @@ constructor TJvThreadTimer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInterval := 1000;
-  {$IFDEF MSWINDOWS}
   FPriority := tpNormal;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  FPriority := 0;
-  {$ENDIF UNIX}
 end;
 
 destructor TJvThreadTimer.Destroy;
@@ -241,11 +227,6 @@ begin
     if Assigned(ApplicationHandleException) then
       ApplicationHandleException(Self);
   end;
-end;
-
-function TJvThreadTimer.GetThread: TThread;
-begin
-  Result := FThread;
 end;
 
 procedure TJvThreadTimer.Loaded;
@@ -306,9 +287,11 @@ end;
 
 procedure TJvThreadTimer.StopTimer;
 begin
-  if FThread is TJvTimerThread then
+  if FThread <> nil then
+  begin
     TJvTimerThread(FThread).Stop;
-  FThread := nil;
+    FreeAndNil(FThread);
+  end;
 end;
 
 procedure TJvThreadTimer.UpdateTimer;
@@ -325,16 +308,17 @@ begin
 
   if DoEnable then
   begin
-    if FThread is TJvTimerThread then
-      TJvTimerThread(FThread).FInterval := FInterval
+    if FThread <> nil then
+    begin
+      TJvTimerThread(FThread).FInterval := FInterval;
+      if FThread.Suspended then
+        FThread.Suspended := False;
+    end
     else
       FThread := TJvTimerThread.Create(Self);
-
-    if FThread.Suspended then
-      FThread.Suspended := False;
   end
   else
-  if FThread is TJvTimerThread then
+  if FThread <> nil then
   begin
     if not FThread.Suspended then
       TJvTimerThread(FThread).DoSuspend;
