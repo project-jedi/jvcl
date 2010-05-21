@@ -370,6 +370,9 @@ begin
   if Assigned(FOrgWndProc) then
     FOrgWndProc(Msg);
 
+  if Msg.Msg = CM_RELEASE then // the form can be evil
+    Exit;
+
   if Active then
   begin
     case Msg.Msg of
