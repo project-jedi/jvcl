@@ -438,27 +438,30 @@ end;
 }
 
 procedure TJvgXMLSerializer.DeSerialize(Component: TObject; Stream: TStream);
+var
+  Buf: AnsiString;
+  S: string;
 begin
-  GetMem(Buffer, Stream.Size);
-  try
-    //{ Получаем данные из потока }
-    { Retrievign data from stream  [translated] }
-    Stream.Read(Buffer[0], Stream.Size + 1);
+  SetLength(Buf, Stream.Size + 1);
+  //{ Получаем данные из потока }
+  { Retrievign data from stream  [translated] }
+  if Buf <> '' then
+    Stream.Read(Buf[1], Length(Buf));
+  S := string(Buf);
+  Buf := ''; // release unused memory
+  Buffer := PChar(S);
 
-    if Assigned(BeforeParsing) then
-      BeforeParsing(Self, Buffer);
+  if Assigned(BeforeParsing) then
+    BeforeParsing(Self, Buffer);
 
-    //{ Устанавливаем текущий указатель чтения данных }
-    { Setting current pointer of reading data  [translated] }
-    TokenPtr := Buffer;
-    BufferLength := Stream.Size - 1;
-    BufferEnd := Buffer + BufferLength;
-    //{ Вызываем загрузчик }
-    { Calling loader  [translated] }
-    DeSerializeInternal(Component, Component.ClassName);
-  finally
-    FreeMem(Buffer);
-  end;
+  //{ Устанавливаем текущий указатель чтения данных }
+  { Setting current pointer of reading data  [translated] }
+  TokenPtr := Buffer;
+  BufferLength := Length(S);
+  BufferEnd := Buffer + BufferLength;
+  //{ Вызываем загрузчик }
+  { Calling loader  [translated] }
+  DeSerializeInternal(Component, Component.ClassName);
 end;
 
 //  Рекурсивная процедура загрузки объекта их текстового буфера с XML
@@ -566,25 +569,14 @@ begin
     begin
       //{ быстрый поиск угловых скобок }
       { fast search for "<" and ">"  [translated] }
-      asm
-        MOV CL, '<'
-        MOV EDX, Pointer(TagEnd)
-        DEC EDX
-  @@1:  INC EDX
-        MOV AL, Byte[EDX]
-        CMP AL, CL
-        JNE @@1
-        MOV TagStart, EDX
+      TagStart := TagEnd;
+      while (TagStart^ <> '<') do
+        Inc(TagStart);
+      TagEnd := TagStart + 1;
+      while (TagEnd^ <> '>') do
+        Inc(TagEnd);
 
-        MOV CL, '>'
-  @@2:  INC EDX
-        MOV AL, Byte[EDX]
-        CMP AL, CL
-        JNE @@2
-        MOV TagEnd, EDX
-      end;
-
-      GetMem(TagName, TagEnd - TagStart + 1);
+      GetMem(TagName, (TagEnd - TagStart + 1) * SizeOf(Char));
       try
         //{ TagName - имя тега }
         { Tag Name - Tag Name  [translated] }
