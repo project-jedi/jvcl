@@ -170,14 +170,13 @@ type
 
   TJvInterpreterAdapterAccessProtected = class(TJvInterpreterAdapter);
 
-function TJvInterpreterReader.FindMethod(Root: TComponent;
-  const MethodName: string): Pointer;
+function TJvInterpreterReader.FindMethod(Root: TComponent; const MethodName: string): Pointer;
 var
   Len: Integer;
 begin
   // (rom) explicit allocation instead of deprecated NewStr
-  Len := StrLen(PChar(MethodName))+1;
-  GetMem(Result, Len);
+  Len := Length(MethodName) + 1;
+  GetMem(Result, Len * SizeOf(Char));
   Move(PChar(MethodName)^, Result^, Len * SizeOf(Char));
   TJvInterpreterForm(Root).FMethodList.Add(Result);
 end;
@@ -245,7 +244,7 @@ procedure TJvInterpreterForm.FixupMethods;
           end;
         end;
     finally
-      FreeMem(PropList, NumProps * SizeOf(Pointer));
+      FreeMem(PropList);
     end;
   end;
 

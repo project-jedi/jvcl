@@ -66,7 +66,7 @@ type
   private
     FFileName: TFileName;
     FValid: Boolean;
-    FBuffer: PChar;
+    FBuffer: Pointer;
     procedure ReadVersionInfo;
     procedure SetFileName(const Value: TFileName);
     function GetTranslation: Pointer;

@@ -368,10 +368,13 @@ var
 begin
   dwIndex := 0;
   dwBufLen := 1024;
-  GetMem(Buffer, dwBufLen);
-  InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
-  Result := StrPas(Buffer);
-  FreeMem(Buffer);
+  GetMem(Buffer, dwBufLen * SizeOf(Char));
+  try
+    InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
+    Result := StrPas(Buffer);
+  finally
+    FreeMem(Buffer);
+  end;
 end;
 
 // helper procedure to trigger various events depending on the
@@ -840,7 +843,7 @@ begin
 
       dwIndex := 0;
       dwBufLen := 1024;
-      GetMem(Buffer, dwBufLen);
+      GetMem(Buffer, dwBufLen * SizeOf(Char));
 
       HttpQueryInfo(hDownload, HTTP_QUERY_STATUS_CODE , Buffer, dwBufLen, dwIndex);
       Grabber.FHTTPStatus := Buffer;

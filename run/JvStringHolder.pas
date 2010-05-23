@@ -233,7 +233,12 @@ end;
 
 function IsLiteral(C: Char): Boolean;
 begin
-  Result := CharInSet(C, ['''', '"']);
+  case C of
+    '''', '"':
+      Result := True;
+  else
+    Result := False;
+  end;
 end;
 
 procedure CreateMacros(List: TJvMacros; const Value: PChar; SpecialChar: Char; Delims: TCharSet);
@@ -246,28 +251,30 @@ var
 
   function StripLiterals(Buffer: PChar): string;
   var
-    Len: Word;
+    BufLen: Integer;
     TempBuf: PChar;
 
     procedure StripChar(Value: Char);
+    var
+      Len: Integer;
     begin
       if TempBuf^ = Value then
-        StrMove(TempBuf, TempBuf + 1, Len - 1);
-      if TempBuf[StrLen(TempBuf) - 1] = Value then
-        TempBuf[StrLen(TempBuf) - 1] := #0;
+        StrMove(TempBuf, TempBuf + 1, BufLen - 1);
+      Len := StrLen(TempBuf);
+      if TempBuf[Len - 1] = Value then
+        TempBuf[Len - 1] := #0;
     end;
 
   begin
-    Len := StrLen(Buffer) + 1;
-    TempBuf := AllocMem(Len);
+    TempBuf := StrNew(Buffer);
+    BufLen := StrLen(TempBuf) + 1;
     Result := '';
     try
-      StrCopy(TempBuf, Buffer);
       StripChar('''');
       StripChar('"');
       Result := StrPas(TempBuf);
     finally
-      FreeMem(TempBuf, Len);
+      StrDispose(TempBuf);
     end;
   end;
 
@@ -288,7 +295,7 @@ begin
         CurChar := CurPos^;
         if IsLiteral(CurChar) then
         begin
-          Literal := Literal xor True;
+          Literal := not Literal;
           if CurPos = StartPos + 1 then
             EmbeddedLiteral := True;
         end;
@@ -302,10 +309,8 @@ begin
       else
         Name := StrPas(StartPos + 1);
       if Assigned(List) then
-      begin
         if List.FindMacro(Name) = nil then
           List.CreateMacro(Name);
-      end;
       CurPos^ := CurChar;
       StartPos^ := '?';
       Inc(StartPos);
@@ -317,7 +322,7 @@ begin
       StrMove(CurPos, CurPos + 1, StrLen(CurPos) + 1)
     else
     if IsLiteral(CurChar) then
-      Literal := Literal xor True;
+      Literal := not Literal;
     Inc(CurPos);
   until CurChar = #0;
 end;
@@ -565,10 +570,11 @@ end;
 
 procedure TJvMacros.GetMacroList(List: TList; const MacroNames: string);
 var
-  Pos: Integer;
+  Pos, Len: Integer;
 begin
   Pos := 1;
-  while Pos <= Length(MacroNames) do
+  Len := Length(MacroNames);
+  while Pos <= Len do
     List.Add(MacroByName(ExtractName(MacroNames, Pos)));
 end;
 
@@ -698,26 +704,27 @@ begin
   for I := Macros.Count - 1 downto 0 do
   begin
     Macro := Macros[I];
-    if VarIsEmpty(Macro.FData) then
-      Continue;
-    repeat
-      P := Pos(MacroChar + Macro.Name, Result);
-      Found := (P > 0) and ((Length(Result) = P + Length(Macro.Name)) or
-        NameDelimiter(Result[P + Length(Macro.Name) + 1], ['.']));
-      if Found then
-      begin
-        LiteralChars := 0;
-        for J := 1 to P - 1 do
-          if IsLiteral(Result[J]) then
-            Inc(LiteralChars);
-        Found := LiteralChars mod 2 = 0;
+    if not VarIsEmpty(Macro.FData) then
+    begin
+      repeat
+        P := Pos(MacroChar + Macro.Name, Result);
+        Found := (P > 0) and ((Length(Result) = P + Length(Macro.Name)) or
+          NameDelimiter(Result[P + Length(Macro.Name) + 1], ['.']));
         if Found then
         begin
-          Result := Copy(Result, 1, P - 1) + Macro.Text + Copy(Result,
-            P + Length(Macro.Name) + 1, MaxInt);
+          LiteralChars := 0;
+          for J := 1 to P - 1 do
+            if IsLiteral(Result[J]) then
+              Inc(LiteralChars);
+          Found := LiteralChars mod 2 = 0;
+          if Found then
+          begin
+            Result := Copy(Result, 1, P - 1) + Macro.Text + Copy(Result,
+              P + Length(Macro.Name) + 1, MaxInt);
+          end;
         end;
-      end;
-    until not Found;
+      until not Found;
+    end;
   end;
 end;
 
@@ -739,7 +746,7 @@ procedure TJvStrHolder.DefineProperties(Filer: TFiler);
           Break;
       end
     else
-      Result := (Strings.Count > 0) or (Length(KeyString) > 0);
+      Result := (Strings.Count > 0) or (KeyString <> '');
   end;
 
 begin
@@ -763,21 +770,24 @@ procedure TJvStrHolder.ReadStrings(Reader: TReader);
 var
   Tmp: string;
 begin
-  Reader.ReadListBegin;
-  if not Reader.EndOfList then
-    KeyString := Reader.ReadString;
-  Strings.Clear;
-  while not Reader.EndOfList do
-    if FReserved >= XorVersion then
-    begin
-      Strings.Add(XorDecode(KeyString, Reader.ReadString));
-    end
-    else
+  Strings.BeginUpdate;
+  try
+    Reader.ReadListBegin;
+    if not Reader.EndOfList then
+      KeyString := Reader.ReadString;
+    Strings.Clear;
+    while not Reader.EndOfList do
     begin
       Tmp := Reader.ReadString;
-      Strings.Add(string(XorString(ShortString(KeyString), ShortString(Tmp))));
+      if FReserved >= XorVersion then
+        Strings.Add(XorDecode(KeyString, Tmp))
+      else
+        Strings.Add(string(XorString(ShortString(KeyString), ShortString(Tmp))));
     end;
-  Reader.ReadListEnd;
+    Reader.ReadListEnd;
+  finally
+    Strings.EndUpdate;
+  end;
 end;
 
 procedure TJvStrHolder.SetDuplicates(Value: TDuplicates);
@@ -797,7 +807,8 @@ end;
 
 procedure TJvStrHolder.SetStrings(Value: TStrings);
 begin
-  FStrings.Assign(Value);
+  if Value <> FStrings then
+    FStrings.Assign(Value);
 end;
 
 procedure TJvStrHolder.StringsChanged(Sender: TObject);
@@ -852,7 +863,8 @@ end;
 
 procedure TJvMultiStringHolderCollectionItem.SetStrings(const Value: TStrings);
 begin
-  FStrings.Assign(Value);
+  if Value <> FStrings then
+    FStrings.Assign(Value);
 end;
 
 function TJvMultiStringHolderCollectionItem.GetDisplayName: string;
@@ -925,7 +937,8 @@ end;
 
 procedure TJvMultiStringHolder.SetMultipleStrings(Value: TJvMultiStringHolderCollection);
 begin
-  FMultipleStrings.Assign(Value);
+  if Value <> FMultipleStrings then
+    FMultipleStrings.Assign(Value);
 end;
 
 function TJvMultiStringHolder.GetItemByName(const Name: string): TJvMultiStringHolderCollectionItem;
