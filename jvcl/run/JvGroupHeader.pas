@@ -81,10 +81,10 @@ type
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
 //    procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
-    procedure StyleChanged(Sender: TObject);
-    procedure BevelLine(C: TColor; X, Y, Width: Integer);
-    procedure DoDrawText(var Rect: TRect; Flags: Longint);
   protected
+    procedure StyleChanged(Sender: TObject); virtual;
+    procedure BevelLine(C: TColor; X, Y, Width: Integer); virtual;
+    procedure DoDrawText(var Rect: TRect; Flags: Longint); virtual;
     function GetLabelText: string; virtual;
     procedure Paint; override;
     procedure TextChanged; override;
@@ -247,7 +247,6 @@ begin
   {$IFDEF JVCLThemesEnabled}
   IncludeThemeStyle(Self, [csParentBackground]);
   {$ENDIF JVCLThemesEnabled}
-  Font.Name := 'Tahoma';
   Width := 200;
   Height := 17;
 
