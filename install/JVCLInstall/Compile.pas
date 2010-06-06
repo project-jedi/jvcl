@@ -1477,9 +1477,9 @@ begin
       begin
         Filename := Files[FileIndex];
 
-        // using the "hashed-compare" is faster than using binary search because the
-        // the directory names are equal most of the time what causes IndexOf to compare
-        // lot's of characters until it reaches the filename.
+        // Using the "hashed-compare" is faster than using binary search because many
+        // filenames start with the same sub-string (aka directory name). So IndexOf
+        // has to compare a lot of matching characters until it reaches the filename.
         HashValue := Pointer(GetHash(AnsiLowerCase(ExtractFileName(Filename))));
         Found := False;
         for I := 0 to UsedFiles.Count - 1 do

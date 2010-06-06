@@ -51,7 +51,6 @@ type
     CheckBoxBuild: TCheckBox;
     CheckBoxIDERegister: TCheckBox;
     FrameDirEditBrowseBPL: TFrameDirEditBrowse;
-    FrameDirEditBrowseDCP: TFrameDirEditBrowse;
     FrameDirEditBrowseHPP: TFrameDirEditBrowse;
     LblBCBGuide: TLabel;
     CheckBoxVerbose: TCheckBox;
@@ -86,7 +85,6 @@ type
     procedure UpdateJvclIncSettings;
     function GetSelTargetConfig: TTargetConfig;
     procedure BplDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
-    procedure DcpDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure HppDirChanged(Sender: TObject; UserData: TObject; var Dir: string);
     procedure SetJVCLConfig(const Id: string; CheckBox: TCheckBox);
     procedure GetJVCLConfig(const Id: string; CheckBox: TCheckBox);
@@ -127,12 +125,6 @@ begin
   SelTargetConfig.BplDir := ExcludeTrailingPathDelimiter(Dir);
 end;
 
-procedure TFrameConfigPage.DcpDirChanged(Sender: TObject; UserData: TObject;
-  var Dir: string);
-begin
-  SelTargetConfig.DcpDir := ExcludeTrailingPathDelimiter(Dir);
-end;
-
 procedure TFrameConfigPage.HppDirChanged(Sender, UserData: TObject;
   var Dir: string);
 begin
@@ -164,7 +156,6 @@ begin
     ImageListTargets.Clear;
 
     FrameDirEditBrowseBPL.OnChange := BplDirChanged;
-    FrameDirEditBrowseDCP.OnChange := DcpDirChanged;
     FrameDirEditBrowseHPP.OnChange := HppDirChanged;
     FrameDirEditBrowseHPP.AllowEmpty := True;
 
@@ -503,7 +494,6 @@ begin
       CheckBoxDeleteMapFiles.Checked := TargetConfig.DeleteMapFiles;
 
       FrameDirEditBrowseBPL.EditDirectory.Text := TargetConfig.BplDir;
-      FrameDirEditBrowseDCP.EditDirectory.Text := TargetConfig.DcpDir;
       if TargetConfig.Target.SupportsPersonalities([persBCB]) then
         FrameDirEditBrowseHPP.EditDirectory.Text := TargetConfig.HppDir;
 
@@ -517,7 +507,6 @@ begin
     CheckBoxDeleteMapFiles.Enabled := (CheckBoxLinkMapFiles.Checked or CheckBoxCreateJdbgFiles.Checked)
       and CheckBoxGenerateMapFiles.Checked;
     FrameDirEditBrowseBPL.Visible := ItemIndex > 0;
-    FrameDirEditBrowseDCP.Visible := ItemIndex > 0;
     FrameDirEditBrowseHPP.Visible := (ItemIndex > 0) and SelTargetConfig.Target.SupportsPersonalities([persBCB]);
     //LblBCBGuide.Visible := FrameDirEditBrowseHPP.Visible;
 
