@@ -231,37 +231,12 @@ object FrameConfigPage: TFrameConfigPage
         Left = 234
       end
     end
-    inline FrameDirEditBrowseDCP: TFrameDirEditBrowse
+    inline FrameDirEditBrowseHPP: TFrameDirEditBrowse
       Left = 2
-      Top = 251
+      Top = 258
       Width = 261
       Height = 49
       TabOrder = 10
-      TabStop = True
-      Visible = False
-      inherited LblCaption: TLabel
-        Left = 7
-        Width = 71
-        Caption = '&DCP Directory:'
-      end
-      inherited Bevel: TBevel
-        Width = 261
-        Visible = False
-      end
-      inherited EditDirectory: TEdit
-        Left = 7
-        Width = 227
-      end
-      inherited BtnDirBrowse: TButton
-        Left = 234
-      end
-    end
-    inline FrameDirEditBrowseHPP: TFrameDirEditBrowse
-      Left = 2
-      Top = 307
-      Width = 261
-      Height = 49
-      TabOrder = 11
       TabStop = True
       Visible = False
       inherited LblCaption: TLabel

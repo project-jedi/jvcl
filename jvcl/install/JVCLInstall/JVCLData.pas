@@ -54,7 +54,6 @@ type
     FTarget: TCompileTarget;
     FInstalledJVCLVersion: Integer;
     FDefaultHppDir: string;
-    FDcpDir: string;
     FBplDir: string;
     FHppDir: string;
 
@@ -205,7 +204,7 @@ type
       // UnitOutDir specifies the JVCL directory where the .dcu should go.
     property BplDir: string read GetBplDir write FBplDir;
       // BPL directory for this target
-    property DcpDir: string read GetDcpDir write FDcpDir;
+    property DcpDir: string read GetDcpDir;
       // DCP directory for this target
     property HppDir: string read GetHppDir write FHppDir;
       // HppDir: (for BCB installation) specifies where the generated .hpp files
@@ -675,9 +674,9 @@ begin
   FBuild := CmdOptions.RebuildPackages;
 
   FInstallMode := [pkVcl];
-  {if Target.IsBDS then
-    FDefaultHppDir := ExtractFilePath(Format(sBCBIncludeDir, [Target.RootDir])) + 'JVCL' // do not localize
-  else}
+  if Target.IsBDS and (Target.IDEVersion >= 5) then // Delphi 2007+ have global include path
+    FDefaultHppDir := Target.ExpandDirMacros('$(BDSCOMMONDIR)\Hpp') // do not localize
+  else
     FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FHppDir := FDefaultHppDir;
 
@@ -689,14 +688,10 @@ begin
   FDeleteMapFiles := True;
 
   FBplDir := Target.BplDir;
-  {if Target.IsBDS then
-    FDcpDir := GetUnitOutDir
-  else
-    FDcpDir := Target.DcpDir;}
+  // DcpDir matches the DCU output directory.
   // The DCU output path will be added to the SearchPath and the IDE can then
   // access the DCP files.
-  FDcpDir := GetUnitOutDir;
-  
+
   Init;
   FInstallJVCL := CanInstallJVCL;
 
@@ -719,6 +714,7 @@ procedure TTargetConfig.Init;
   // more the once.
 var
   i, FindCount: Integer;
+  JclRegInfo: TJediInformation;
 begin
   FInstallMode := [];
   FOutdatedJcl := False;
@@ -744,13 +740,11 @@ begin
   FJclBplDir := '';
   FJclDcpDir := '';
 
-  with ReadJediRegInformation(Target.RegistryKey, 'JCL') do // do not localize
-  begin
-    FJclDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(RootDir))); // do not localize
-    FJclDcpDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(DcpDir)));
-    FJclBplDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(BplDir)));
-    FJclVersion := Version;
-  end;
+  JclRegInfo := ReadJediRegInformation(Target.RegistryKey, 'JCL'); // do not localize
+  FJclDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(JclRegInfo.RootDir)));
+  FJclDcpDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(JclRegInfo.DcpDir)));
+  FJclBplDir := FixBackslashBackslash(ExcludeTrailingPathDelimiter(Target.ExpandDirMacros(JclRegInfo.BplDir)));
+  FJclVersion := JclRegInfo.Version;
 
   FJVCLVersion := ReadJediRegInformation(Target.RegistryKey, 'JVCL').Version;
   if (FInstalledJVCLVersion = 0) and (FJVCLVersion <> '') then
@@ -1199,11 +1193,7 @@ end;
 
 function TTargetConfig.GetDcpDir: string;
 begin
-  Result := FDcpDir;
-  if Result = '' then
-    Result := Target.DcpDir;
-  if Result = '' then
-    Result := '.';
+  Result := GetUnitOutDir;
 end;
 
 function TTargetConfig.GetFrameworkCount: Integer;
@@ -1264,10 +1254,8 @@ begin
     else
       Ini.WriteString(Target.DisplayName, 'BPLDir', BplDir); // do not localize
 
-    if DcpDir = Target.DcpDir then
-      Ini.DeleteKey(Target.DisplayName, 'DCPDir') // do not localize
-    else
-      Ini.WriteString(Target.DisplayName, 'DCPDir', DcpDir); // do not localize
+    // delete unused value
+    Ini.DeleteKey(Target.DisplayName, 'DCPDir'); // do not localize
 
     Ini.WriteBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     Ini.WriteBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
@@ -1305,7 +1293,6 @@ begin
   try
     HppDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'HPPDir', HppDir));   // do not localize
     BplDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'BPLDir', BplDir));   // do not localize
-    DcpDir := ExcludeTrailingPathDelimiter(Ini.ReadString(Target.DisplayName, 'DCPDir', DcpDir));   // do not localize
     DeveloperInstall := Ini.ReadBool(Target.DisplayName, 'DeveloperInstall', DeveloperInstall); // do not localize
     CleanPalettes := Ini.ReadBool(Target.DisplayName, 'CleanPalettes', CleanPalettes); // do not localize
     GenerateMapFiles := Ini.ReadBool(Target.DisplayName, 'GenerateMapFiles', GenerateMapFiles); // do not localize
@@ -1323,7 +1310,6 @@ begin
     // fix "Delphi\\Projects" bug
     HppDir := FixBackslashBackslash(HppDir);
     BplDir := FixBackslashBackslash(BplDir);
-    DcpDir := FixBackslashBackslash(DcpDir);
 
     // Load jvcl%t.inc. Or the jvclbase.inc if no jvcl%t.inc exists
     if Target.IsBDS then
