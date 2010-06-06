@@ -6645,20 +6645,24 @@ begin
       TmpFileName := SysUtils.IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
       TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(string(MIMEType)), '');
 
-      SaveToFile(TmpFileName);
       try
+        SaveToFile(TmpFileName);
         try
-          if Dest is TPicture then
-            TPicture(Dest).LoadFromFile(TmpFileName)
-          else
-          if Dest is TGraphic then
-            TGraphic(Dest).LoadFromFile(TmpFileName);
-        except
-          on EInvalidGraphic do
-            ; { Do nothing }
-        end
-      finally
-        SysUtils.DeleteFile(TmpFileName);
+          try
+            if Dest is TPicture then
+              TPicture(Dest).LoadFromFile(TmpFileName)
+            else
+            if Dest is TGraphic then
+              TGraphic(Dest).LoadFromFile(TmpFileName);
+          except
+            on EInvalidGraphic do
+              ; { Do nothing }
+          end
+        finally
+          SysUtils.DeleteFile(TmpFileName);
+        end;
+      except
+        { Something went wrong while saving picture to file }
       end;
     end
     else
