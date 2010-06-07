@@ -107,7 +107,6 @@ type
     procedure CustomEndDock(Target: TObject; X, Y: Integer); override;
     function CustomUnDock(Source: TJvDockDragDockObject; NewTarget: TWinControl; Client: TControl): Boolean; override;
     function DoUnDock(NewTarget: TWinControl; Client: TControl): Boolean; override;
-    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
@@ -953,39 +952,6 @@ begin
   Result := GDockLoadCount > 0;
 end;
 
-{ ahuser: These functions are not call anywhere
-
-function GetActiveControl(AForm: TCustomForm): TWinControl;
-var
-  AControl: TWinControl;
-begin
-  Result := nil;
-  AControl := AForm.ActiveControl;
-  while AControl <> nil do
-  begin
-    if AControl.HostDockSite <> nil then
-    begin
-      Result := AControl;
-      Break;
-    end;
-    AControl := AControl.Parent;
-  end;
-end;
-
-function GetHostDockParent(AControl: TWinControl): TWinControl;
-begin
-  Result := nil;
-  while AControl <> nil do
-  begin
-    if AControl.HostDockSite <> nil then
-    begin
-      Result := AControl.HostDockSite;
-      Break;
-    end;
-    AControl := AControl.Parent;
-  end;
-end;}
-
 function ComputeDockingRect(AControl: TControl; var DockRect: TRect; MousePos: TPoint): TAlign;
 var
   DockTopRect, DockLeftRect, DockBottomRect, DockRightRect, DockCenterRect: TRect;
@@ -1516,40 +1482,39 @@ type
   TWinControlAccess = class(TWinControl);
 
 { Quick way to do tabbed docking programmatically - this way only works if your
-dock style is written to accept InsertControl calls of this type, and generate
-tab hosts. Rewritten January 21, 2010. WPostma }
+  dock style is written to accept InsertControl calls of this type, and generate
+  tab hosts. Rewritten January 21, 2010. WPostma }
 function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
 var
- DockClient:TJvDockClient;
- fm:TForm;
+  DockClient: TJvDockClient;
+  HostForm: TForm;
 begin
+  Assert(DockSite <> nil);
+
   { This is an initial sanity check, but the actual DockClient is required later,
     so we can find the tab host form that contains it. }
   DockClient := FindDockClient(Form1);
-  if not Assigned(DockClient) then
-      raise EInvalidOperation.Create('ManualTabDock:DockClient not found. Form you are trying to dock must have a dock style');
+  if DockClient = nil then
+    raise EInvalidOperation.Create('ManualTabDock:DockClient not found. Form you are trying to dock must have a dock style');
 
-  {  This should create the tab host form, if the docking style supports tabbed docking,
-     as all 'advanced' docking styles provided in the JVCL do provide.
+  { This should create the tab host form, if the docking style supports tabbed docking,
+    as all 'advanced' docking styles provided in the JVCL do provide.
 
-     This is the same call used when you drag something with your mouse, so it
-     is much more reliable, and consistent, and updates the DOckManager state
-     which prevents all manner of weird problems.
-    }
-  TWinControlAccess(DockSite).DockManager.InsertControl(Form2,alClient,Form1);
+    This is the same call used when you drag something with your mouse, so it
+    is much more reliable, and consistent, and updates the DOckManager state
+    which prevents all manner of weird problems. }
+  TWinControlAccess(DockSite).DockManager.InsertControl(Form2, alClient, Form1);
 
   { Now find and return the the new tab host object created depp within the bowels
-     of the Docking Style code. If anything fails, return EInvalidOperation because its
-     likely that whoever called ManualTabDock sent us objects that can not be properly
-     docked, or is using a docking style that does not support tab docking. }
+    of the Docking Style code. If anything fails, return EInvalidOperation because its
+    likely that whoever called ManualTabDock sent us objects that can not be properly
+    docked, or is using a docking style that does not support tab docking. }
 
-  fm := DockClient.FindTabHostForm;
+  HostForm := DockClient.FindTabHostForm;
+  if HostForm = nil then
+    raise EInvalidOperation.Create('ManualTabDock:TabHost not created. Your Docking Style may not support tabbed docking.');
 
-  if not Assigned(fm) then
-      raise EInvalidOperation.Create('ManualTabDock:TabHost not created. Your Docking Style may not support tabbed docking.');
-
-  result := fm as TJvDockTabHostForm; {not nil, we checked, so this won't fail.}
-
+  Result := HostForm as TJvDockTabHostForm; {not nil, we checked, so this won't fail.}
 end;
 
 
@@ -3132,9 +3097,7 @@ var
   CheckForm: TComponent;
 begin
   Result := nil;
-  if not Assigned(Owner) then
-    Exit;
-  if not (Owner is TWinControl) then
+  if not Assigned(Owner) or not (Owner is TWinControl) then
     Exit;
   OwnerWin := TWinControl(Owner);
   if Self.DockState <> JvDockState_Docking then
@@ -3943,11 +3906,6 @@ begin
     alBottom:
       Top := Parent.ClientHeight - GetClientAlignControlArea(Parent, Align) - Height - 1;
   end;
-end;
-
-procedure TJvDockPanel.Resize;
-begin
-  inherited Resize;
 end;
 
 procedure TJvDockPanel.SetDockServer(ADockServer: TJvDockServer);
