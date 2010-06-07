@@ -181,9 +181,14 @@ type
   end;
 
   TJvDBComboBox = class(TJvCustomDBComboBox)
+  private
+    { The "AutoSize" property was published what it never should have been. TComboBox doesn't
+      support it and TJvCustomComboBox/TJvDBCustomComboBox do not support it either. }
+    procedure ReadIgnoredBoolean(Reader: TReader);
+  protected
+    procedure DefineProperties(Filer: TFiler); override;
   published
     property Align;
-    property AutoSize;
     property Style default csDropDownList; { must be published before Items }
     property BeepOnError;
     property BevelEdges;
@@ -1011,6 +1016,19 @@ begin
     if ComboBox.UpdateFieldImmediatelly then
       ComboBox.DataChange(Self);
   end;
+end;
+
+{ TJvDBComboBox }
+
+procedure TJvDBComboBox.ReadIgnoredBoolean(Reader: TReader);
+begin
+  Reader.ReadBoolean;
+end;
+
+procedure TJvDBComboBox.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('AutoSize', ReadIgnoredBoolean, nil, False);
 end;
 
 {$IFDEF UNITVERSIONING}
