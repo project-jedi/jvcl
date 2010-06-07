@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -42,9 +42,8 @@ uses
   //JvPanel,
   JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
-type
-
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+type
   TJvDataSourceEditDialogCreateDataControlscxVGridEventClass = class(TObject)
   private
     FInternalDBVGrid: TcxDBVerticalGrid;
