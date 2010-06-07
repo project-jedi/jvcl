@@ -99,8 +99,8 @@ type
       const IlinkOpt: string; DebugUnits: Boolean; ObjFiles, LibFiles, ResFiles: TStrings): Integer;
     function Tlib(TargetConfig: ITargetConfig; Project: TPackageTarget;
       const TlibOpt: string; DebugUnits: Boolean; ObjFiles: TStrings): Integer;
-    function Make(TargetConfig: ITargetConfig; Args: string;
-      CaptureLine: TCaptureLine; StartDir: string = ''): Integer;
+    {function Make(TargetConfig: ITargetConfig; Args: string;
+      CaptureLine: TCaptureLine; StartDir: string = ''): Integer;}
     function CompileCppPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
       const DccOpt, BccOpt, IlinkOpt: string; DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
     function CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
@@ -133,7 +133,7 @@ type
       // DoProgress is called by every DoXxxProgress method
 
     function CompileProjectGroup(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
-    function GenerateResources(TargetConfig: ITargetConfig): Boolean;
+    //function GenerateResources(TargetConfig: ITargetConfig): Boolean;
     function DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
     function CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
 
@@ -450,7 +450,7 @@ end;
 /// executed a message dialog is shown with the complete command line. Returns
 /// the ExitCode of the last/failed command.
 /// </summary>
-function TCompiler.Make(TargetConfig: ITargetConfig; Args: string;
+(*function TCompiler.Make(TargetConfig: ITargetConfig; Args: string;
   CaptureLine: TCaptureLine; StartDir: string): Integer;
 begin
   if StartDir = '' then
@@ -473,7 +473,7 @@ begin
     MessageBox(0, PChar(Format(RsCommandNotFound,
                       ['"' + TargetConfig.Target.Make + '"' + Args, StartDir])),
                'JVCL Installer', MB_OK or MB_ICONERROR);
-end;
+end;*)
 
 /// <summary>
 /// WriteDcc32Cfg() writes the dcc32.cfg file to the directory
@@ -1342,7 +1342,7 @@ procedure TCompiler.DeleteRemovedFiles(TargetConfig: TTargetConfig);
         if ProcessedDirs.IndexOf(Dirs[I]) = -1 then
         begin
           ProcessedDirs.Add(Dirs[I]);
-          FindFiles(Dirs[I], 'Jv*.*', False, Files, OutputFileExts);
+          FindFiles(Dirs[I], 'Jv*.*', False, Files, OutputFileExts); // do not remove the leading "Jv" here otherwise the directories will be empty
         end;
       end;
     finally
@@ -1561,6 +1561,7 @@ end;
 /// <summary>
 /// GenerateResources starts the make file for the resource file compilation.
 /// </summary>
+(*
 function TCompiler.GenerateResources(TargetConfig: ITargetConfig): Boolean;
 begin
   Result := False;
@@ -1595,6 +1596,7 @@ begin
   end;
   Result := True;
 end;
+*)
 
 /// <summary>
 /// DeleteFormDataFiles deletes the .dfm, .xfm files from the lib-path.
