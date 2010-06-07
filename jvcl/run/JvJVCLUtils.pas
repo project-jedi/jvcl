@@ -712,15 +712,21 @@ type
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer = 100);
+  var LinkName: string; Scale: Integer = 100); overload;
+procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; var Width, Height: Integer;
+  CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
+  var LinkName: string; Scale: Integer = 100); overload;
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
 function HTMLDrawTextHL(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer;
   Scale: Integer = 100): string;
+function HTMLPlainText(const Text: string): string;
+function HTMLTextExtent(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): TSize;
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
-function HTMLPlainText(const Text: string): string;
 function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function HTMLPrepareText(const Text: string): string;
 
@@ -6135,7 +6141,6 @@ function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 var
   tt: TTextMetric;
 begin
-  // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
   GetTextMetrics(Canvas.Handle, tt);
   Result := tt.tmHeight;
 end;
@@ -6855,6 +6860,19 @@ procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
   var LinkName: string; Scale: Integer);
+var
+  H: Integer;
+begin
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Width, H, CalcType, MouseX, MouseY, MouseOnLink,
+    LinkName, Scale);
+  if CalcType = htmlCalcHeight then
+    Width := H;
+end;
+
+procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; var Width, Height: Integer;
+  CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
+  var LinkName: string; Scale: Integer);
 const
   DefaultLeft = 0; // (ahuser) was 2
 var
@@ -6924,9 +6942,9 @@ var
   begin
     case Alignment of
       taRightJustify:
-        Result := (Rect.Right {- Rect.Left}) - HTMLTextWidth(Canvas, Rect, State, Str, Scale);
+        Result := (Rect.Right - Rect.Left) - HTMLTextWidth(Canvas, Rect, State, Str, Scale);
       taCenter:
-        Result := (Rect.Right {- Rect.Left} - HTMLTextWidth(Canvas, Rect, State, Str)) div 2;
+        Result := DefaultLeft + ((Rect.Right - Rect.Left) - HTMLTextWidth(Canvas, Rect, State, Str)) div 2;
     else
       Result := DefaultLeft;
     end;
@@ -7018,14 +7036,15 @@ begin
     begin
       vText := vStr[vCount];
       CurLeft := CalcPos(vText);
-      while Length(vText) > 0 do
+      while vText <> '' do
       begin
         vM := HTMLBeforeTag(vText, True);
         vM := StringReplace(vM, '&lt;', cLT, [rfReplaceAll, rfIgnoreCase]); // <--+ this must be here
         vM := StringReplace(vM, '&gt;', cGT, [rfReplaceAll, rfIgnoreCase]); // <--/
         if GetChar(vText, 1) = cTagBegin then
         begin
-          Draw(vM);
+          if vM <> '' then
+            Draw(vM);
           if Pos(cTagEnd, vText) = 0 then
             Insert(cTagEnd, vText, 2);
           if GetChar(vText, 2) = '/' then
@@ -7048,9 +7067,9 @@ begin
                 begin
                   if not Selected then // restore old colors
                   begin
-                    Canvas.Font.Color  := RemFontColor;
+                    Canvas.Font.Color := RemFontColor;
                     Canvas.Brush.Color := RemBrushColor;
-                    Canvas.Font.Size   := RemFontSize;
+                    Canvas.Font.Size := RemFontSize;
                     Trans := True;
                   end;
                 end;
@@ -7063,7 +7082,7 @@ begin
                 begin
                   if GetChar(vText, 3, True) = 'L' then // ALIGN
                   begin
-                    TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
+                    TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText) - 2));
                     if Pos(cCENTER, TagPrp) > 0 then
                       Alignment := taCenter
                     else
@@ -7077,7 +7096,7 @@ begin
                   end
                   else
                   begin   // A HREF
-                    TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
+                    TagPrp := Copy(vText, 2, Pos(cTagEnd, vText) - 2);
                     if Pos(cHREF, UpperCase(TagPrp)) > 0 then
                     begin
                       IsLink := True;
@@ -7093,7 +7112,7 @@ begin
               'I':
                 if GetChar(vText, 3, True) = 'N' then //IND="%d"
                 begin
-                  TagPrp := Copy(vText, 2, Pos(cTagEnd, vText)-2);
+                  TagPrp := Copy(vText, 2, Pos(cTagEnd, vText) - 2);
                   CurLeft := StrToInt(ExtractPropertyValue(TagPrp, cIND)); // ex IND="10"
                   if odReserved1 in State then
                     CurLeft := Round((CurLeft * Scale) div 100);
@@ -7111,13 +7130,13 @@ begin
                     Canvas.Pen.Color := Canvas.Font.Color;
                   OldWidth := Canvas.Pen.Width;
                   TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
-                  Canvas.Pen.Width := StrToIntDef(ExtractPropertyValue(TagPrp, 'SIZE'),1); // ex HR="10"
+                  Canvas.Pen.Width := StrToIntDef(ExtractPropertyValue(TagPrp, 'SIZE'), 1); // ex HR="10"
                   if odReserved1 in State then
                     Canvas.Pen.Width := Round((Canvas.Pen.Width * Scale) div 100);
                   if CalcType = htmlShow then
                   begin
-                    Canvas.MoveTo(Rect.Left ,Rect.Top + CanvasMaxTextHeight(Canvas));
-                    Canvas.LineTo(Rect.Right,Rect.Top + CanvasMaxTextHeight(Canvas));
+                    Canvas.MoveTo(Rect.Left, Rect.Top + CanvasMaxTextHeight(Canvas));
+                    Canvas.LineTo(Rect.Right, Rect.Top + CanvasMaxTextHeight(Canvas));
                   end;
                   Rect.Top := Rect.Top + 1 + Canvas.Pen.Width;
                   Canvas.Pen.Width := OldWidth;
@@ -7126,8 +7145,8 @@ begin
               'F':
                 if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) {and (CalcType in [htmlShow, htmlHyperLink])} then // F from FONT
                 begin
-                  TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
-                  RemFontColor  := Canvas.Font.Color;
+                  TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText) - 2));
+                  RemFontColor := Canvas.Font.Color;
                   RemBrushColor := Canvas.Brush.Color;
 
                   if Pos(cCOLOR, TagPrp) > 0 then
@@ -7162,7 +7181,8 @@ begin
           vM := '';
         end;
       end;
-      Draw(vM);
+      if vM <> '' then
+        Draw(vM);
       NewLine;
       vM := '';
     end;
@@ -7180,10 +7200,8 @@ begin
     FreeAndNil(vStr);
     FreeAndNil(OldFont);
   end;
-  if CalcType = htmlCalcHeight then
-    Width := Rect.Top + CanvasMaxTextHeight(Canvas)
-  else
-    Width := Max(Width, CurLeft - DefaultLeft);
+  Width := Max(Width, CurLeft - DefaultLeft);
+  Height := Rect.Top + CanvasMaxTextHeight(Canvas);
 end;
 
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
@@ -7222,6 +7240,18 @@ begin
       Delete(S, 1, Pos(cTagBegin, S));
   end;
   Result := Result + S;
+end;
+
+function HTMLTextExtent(Canvas: TCanvas; Rect: TRect;
+  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): TSize;
+var
+  S: Boolean;
+  St: string;
+begin
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Result.cx, Result.cy, htmlCalcWidth, 0, 0, S, St);
+  if Result.cy = 0 then
+    Result.cy := CanvasMaxTextHeight(Canvas);
+  Inc(Result.cy);
 end;
 
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;

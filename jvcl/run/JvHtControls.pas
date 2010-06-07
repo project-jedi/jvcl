@@ -386,9 +386,11 @@ function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
 function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; Scale: Integer = 100): string;
+function ItemHTPlain(const Text: string): string;
+function ItemHTExtent(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
+  const Text: string; Scale: Integer = 100): TSize;
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
-function ItemHTPlain(const Text: string): string;
 function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
 function PrepareText(const A: string): string; deprecated;
 
@@ -449,6 +451,12 @@ end;
 function ItemHTPlain(const Text: string): string;
 begin
   Result := HTMLPlainText(Text);
+end;
+
+function ItemHTExtent(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
+  const Text: string; Scale: Integer = 100): TSize;
+begin
+  Result := HTMLTextExtent(Canvas, Rect, State, Text, Scale);
 end;
 
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
