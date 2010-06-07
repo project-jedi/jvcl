@@ -2856,11 +2856,14 @@ var
       {$IFDEF JVCLThemesEnabled}
       if not FixCell or not (UseXPThemes and ThemeServices.ThemesEnabled) then
       {$ENDIF JVCLThemesEnabled}
-      begin
-        if Brush.Style <> bsSolid then
-          Brush.Style := bsSolid;
-        FillRect(B);
-      end;
+        {$IFDEF COMPILER14_UP}
+        if not FixCell or (DrawingStyle = gdsClassic) then
+        {$ENDIF COMPILER14_UP}
+        begin
+          if Brush.Style <> bsSolid then
+            Brush.Style := bsSolid;
+          FillRect(B);
+        end;
       SetBkMode(Handle, TRANSPARENT);
       DrawBiDiText(Handle, Text, R, DrawOptions, Alignment, ARightToLeft, Canvas.CanvasOrientation);
     end;
@@ -3298,11 +3301,25 @@ begin
         {$IFDEF JVCLThemesEnabled}
         if not (UseXPThemes and ThemeServices.ThemesEnabled) then
         {$ENDIF JVCLThemesEnabled}
+        begin
+          {$IFDEF COMPILER14_UP}
+          DrawCellBackground(TitleRect, FixedColor, AState, ACol, ARow - TitleOffset);
+          {$ELSE}
           Canvas.FillRect(TitleRect);
+          {$ENDIF COMPILER14_UP}
+        end;
       end
       else
       if DrawColumn <> nil then
       begin
+        {$IFDEF JVCLThemesEnabled}
+        if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+        {$ENDIF JVCLThemesEnabled}
+        begin
+          {$IFDEF COMPILER14_UP}
+          DrawCellBackground(TitleRect, FixedColor, AState, ACol, ARow - TitleOffset);
+          {$ENDIF COMPILER14_UP}
+        end;
         case ASortMarker of
           smDown:
             Bmp := GetGridBitmap(gpMarkDown);
@@ -3338,7 +3355,11 @@ begin
             {$IFDEF JVCLThemesEnabled}
             if not (UseXPThemes and ThemeServices.ThemesEnabled) then
             {$ENDIF JVCLThemesEnabled}
+              {$IFDEF COMPILER14_UP}
+              DrawCellBackground(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom), FixedColor, AState, ACol, ARow - TitleOffset);
+              {$ELSE}
               Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
+              {$ENDIF COMPILER14_UP}
             if (ALeft > TitleRect.Left) and (ALeft + Bmp.Width < TitleRect.Right) then
               DrawBitmapTransparent(Canvas, ALeft, (TitleRect.Bottom +
                 TitleRect.Top - Bmp.Height) div 2, Bmp, clFuchsia);
