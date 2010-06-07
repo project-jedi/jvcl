@@ -3446,12 +3446,12 @@ begin
   PhysicalRow := PCsvRow(FData.AllocRecordBuffer);
   try
     JvStringToCsvRow(Key + Separator, Separator, LogicalRow, False, False); // initialize row and put items in their logical order.
-    CsvRowInit(@PhysicalRow);
+    CsvRowInit(PhysicalRow);
     // Move from Logical (TFieldDef order) to their physical (As found in CSV file) ordering:
     for I := 0 to FCsvKeyCount - 1 do
     begin
-      aStr := GetCsvRowItem(@LogicalRow, I);
-      SetCsvRowItem(@PhysicalRow, FCsvKeyFields[I].FPhysical, aStr);
+      aStr := GetCsvRowItem(LogicalRow, I);
+      SetCsvRowItem(PhysicalRow, FCsvKeyFields[I].FPhysical, aStr);
     end;
     RecNo := InternalFindByKey(PhysicalRow);
     if RecNo < 0 then
@@ -4234,7 +4234,7 @@ begin
   PJvCsvRowWordFields(P)^.Magic2 := JvCsvRowMagic2;
   //DebugPJvCsvRowWordFields := PJvCsvRowWordFields(P);
 
-  FREcordsValid := True;
+  FRecordsValid := True;
 end;
 
 function TJvCsvRows.RecordSize: Word;
