@@ -137,7 +137,6 @@ uses
   DependencyWalkerDemoMainForm in '..\JvDiagramShape\3. DependencyWalker\DependencyWalkerDemoMainForm.pas' {DependencyWalkerDemoMainFrm},
   DepWalkConsts in '..\JvDiagramShape\3. DependencyWalker\DepWalkConsts.pas',
   DepWalkUtils in '..\JvDiagramShape\3. DependencyWalker\DepWalkUtils.pas',
-  JclParseUses in '..\JvDiagramShape\3. DependencyWalker\JclParseUses.pas',
   OptionsFrm in '..\JvDiagramShape\3. DependencyWalker\OptionsFrm.pas' {frmOptions},
   PersistForm in '..\JvDiagramShape\3. DependencyWalker\PersistForm.pas' {frmPersistable},
   PersistSettings in '..\JvDiagramShape\3. DependencyWalker\PersistSettings.pas',
