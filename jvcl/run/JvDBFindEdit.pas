@@ -196,11 +196,11 @@ end;
 
 function TJvDBFindEdit.IsNumeric(const S1: string): Boolean;
 var
-  ier: Integer;
+  Err: Integer;
 begin
   Result := True;
-  ToDoubleVal(S1, ier);
-  if ier > 0 then
+  ToDoubleVal(S1, Err);
+  if Err > 0 then
     Result := False;
 end;
 
@@ -277,14 +277,14 @@ begin
   //begin
   //  DateSeparator :='/';
   //  ShortDateFormat := 'mm/dd/yyyy';
-    FSearchText := (DateToStr(StrToDate(FSearchText)));
+    FSearchText := DateToStr(StrToDate(FSearchText));
   //end;
 end;
 
 procedure TJvDBFindEdit.ResetFilter;
 begin
-  Text := '';
-  // FSearchText := '';
+  Text := ''; // updates FSearchText
+  FTimerTimer(FTimer); // if the developer calls ResetFilter we have to do it now and not later (timer)
   FDataLink.DataSet.Filtered := False;
 end;
 
@@ -317,7 +317,8 @@ begin
       else
         FDataLink.DataSet.Filtered := True;
   end;
-  FTimer.Interval := 100;
+  if FSearchText <> '' then // Do not change it if we just set it to 400 in Change()
+    FTimer.Interval := 100;
 end;
 
 procedure TJvDBFindEdit.Find(const AText: string);
