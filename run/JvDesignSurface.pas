@@ -878,12 +878,16 @@ begin
             // processed the WM_WINDOWPOSCHANGED message when this code executes.
             // If we did not, the designer would use the previous position of the
             // control to display the handles.
+            // Additionnaly, we must not work with controls that don't have their
+            // handle allocated. In some instances, creating the handle may trigger
+            // a second WM_WINDOWPOSCHANGED message, thus leading to an infinite
+            // loop and a crash (Mantis 5225)
             for I := 0 to Container.ComponentCount - 1 do
             begin
               if Container.Components[I] is TWinControl then
               begin
                 Control := TAccessWinControl(Container.Components[I]);
-                if PosChangedHandle = Control.Handle then
+                if Control.HandleAllocated and (PosChangedHandle = Control.Handle) then
                 begin
                   if not (csDestroyingHandle in Control.ControlState) then
                     {$IFDEF DELPHI10_UP}
