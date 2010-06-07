@@ -178,7 +178,7 @@ begin
   Header.Add('');
   Header.Add('function ToggleVisible(objID) {');
   Header.Add('');
-  Header.Add('  var obj = document.getElementById(objId);');
+  Header.Add('  var obj = document.getElementById(objID);');
   Header.Add('  if (obj == null) return;');
   Header.Add('  if ((lastobj) && (lastobj != obj)) {');
   Header.Add('    lastobj.style.display = "none";');
