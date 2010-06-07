@@ -675,7 +675,8 @@ begin
 
   FInstallMode := [pkVcl];
   if Target.IsBDS and (Target.IDEVersion >= 5) then // Delphi 2007+ have global include path
-    FDefaultHppDir := Target.ExpandDirMacros('$(BDSCOMMONDIR)\Hpp') // do not localize
+    FDefaultHppDir := GetJVCLDir + Format('\include\%s%d', [Target.TargetType, Target.Version]) // do not localize
+    //FDefaultHppDir := Target.ExpandDirMacros('$(BDSCOMMONDIR)\Hpp') // do not localize
   else
     FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FHppDir := FDefaultHppDir;
@@ -1026,7 +1027,7 @@ end;
 
 function TTargetConfig.GetUnitOutDir: string;
 begin
-  Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]) // do not localize
+  Result := GetJVCLDir + Format('\lib\%s%d', [Target.TargetType, Target.Version]); // do not localize
 end;
 
 procedure TTargetConfig.SetInstallMode(Value: TInstallMode);

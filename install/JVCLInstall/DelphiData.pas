@@ -40,12 +40,12 @@ const
                                 VersionStr: string;
                                 Version: Integer;
                                 CIV: string; // coreide version
-                                ProjectDirResId1: Integer;
+                                ProjectDirResId: Integer;
                                 Supported: Boolean;
                               end = (
-    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId1: 64507; Supported: False),
-    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId1: 64460; Supported: False),
-    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId1: 64431; Supported: True),
+    (Name: 'C#Builder'; VersionStr: '1.0'; Version: 1; CIV: '71'; ProjectDirResId: 64507; Supported: False),
+    (Name: 'Delphi'; VersionStr: '8'; Version: 8; CIV: '71'; ProjectDirResId: 64460; Supported: False),
+    (Name: 'Delphi'; VersionStr: '2005'; Version: 9; CIV: '90'; ProjectDirResId: 64431; Supported: True),
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True),
@@ -1048,13 +1048,13 @@ end;
 function TCompileTarget.GetHomepage: string;
 begin
   if IsBCB and not IsBDS then
-    Result := 'http://www.codegear.com/downloads/regusers/cppbuilder' // do not localize
+    Result := 'http://cc.embarcadero.com/reg/c_builder' // do not localize
   else
   begin
     if Version = 5 then
-      Result := 'http://www.codegear.com/downloads/regusers/' // do not localize
+      Result := 'http://cc.embarcadero.com/reg/' // do not localize
     else
-      Result := 'http://www.codegear.com/downloads/regusers/delphi' // do not localize
+      Result := 'http://cc.embarcadero.com/reg/delphi' // do not localize
   end;
 end;
 
@@ -1311,7 +1311,7 @@ begin
     if IDEVersion < 4 then
     begin
       Result := LoadResStrings(RootDir + '\Bin\coreide' + BDSVersions[IDEVersion].CIV + '.',
-        [BDSVersions[IDEVersion].ProjectDirResId1]);
+        [BDSVersions[IDEVersion].ProjectDirResId]);
 
       if Result = '' then
         Result := 'Borland Studio Projects'; // do not localize

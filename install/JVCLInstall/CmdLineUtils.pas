@@ -101,9 +101,9 @@ begin
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
   AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
   AddSpace;
-  AddString('-rDelphi=', 'Sets the Registry path for the Delphi IDEs.', FRegistryKeyDelphi);
-  AddString('-rBCB=', 'Sets the Registry path for the BCB IDEs.', FRegistryKeyBCB);
-  AddString('-rBDS=', 'Sets the Registry path for the BDS IDEs. (-rBDS=Win32Only)', FRegistryKeyBDS);
+  AddString('-rDelphi=', 'Sets the Registry sub-key for the Delphi IDEs.', FRegistryKeyDelphi);
+  AddString('-rBCB=', 'Sets the Registry sub-key for the BCB IDEs.', FRegistryKeyBCB);
+  AddString('-rBDS=', 'Sets the Registry sub-key for the BDS IDEs. (-rBDS=Win32Only)', FRegistryKeyBDS);
   AddString('--lang=', 'Sets the Installer''s language to X.', FLang);
   AddBool('--help', 'Show this screen.', FHelp);
   AddBool('/?', '', FHelp);
