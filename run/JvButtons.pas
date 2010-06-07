@@ -105,8 +105,7 @@ type
       Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
   protected
     FOriginal: TBitmap;
-    procedure CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
-      Caption: string); virtual;
+    procedure CalcTextRect(Canvas: TCanvas; var TextRect: TRect; const Caption: string); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -133,8 +132,7 @@ type
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
       TextBounds: TRect; State: TButtonState); override;
   protected
-    procedure CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
-      Caption: string); override;
+    procedure CalcTextRect(Canvas: TCanvas; var TextRect: TRect; const Caption: string); override;
   end;
 
   TJvaCaptionButton = class(TJvComponent)
@@ -471,8 +469,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvButtonGlyph.SetBiDiMode(Value: TBiDiMode);
 begin
   if FBiDiMode <> Value then
@@ -491,8 +487,6 @@ begin
     Invalidate;
   end;
 end;
-
-
 
 procedure TJvButtonGlyph.SetGlyph(Value: TBitmap);
 var
@@ -531,7 +525,6 @@ begin
     GlyphChanged(Glyph);
   end;
 end;
-
 
 function TJvButtonGlyph.CreateButtonGlyph(State: TButtonState): Integer;
 var
@@ -725,19 +718,17 @@ var
   TotalSize: TPoint;
 begin
   { calculate the item sizes }
-  ClientSize := Point(Client.Right - Client.Left, Client.Bottom -
-    Client.Top);
+  ClientSize := Point(Client.Right - Client.Left, Client.Bottom - Client.Top);
 
   if FOriginal <> nil then
     GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height)
   else
     GlyphSize := Point(0, 0);
 
-  if Length(Caption) > 0 then
+  if Caption <> '' then
   begin
     CalcTextRect(Canvas, TextBounds, Caption);
-    TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
-      TextBounds.Top);
+    TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom - TextBounds.Top);
   end
   else
   begin
@@ -777,8 +768,7 @@ begin
     end
     else
     begin
-      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y +
-        Spacing + TextSize.Y);
+      TotalSize := Point(GlyphSize.X + Spacing + TextSize.X, GlyphSize.Y + Spacing + TextSize.Y);
       if Layout in [blGlyphLeft, blGlyphRight] then
         Margin := (ClientSize.X - TotalSize.X + 1) div 2
       else
@@ -870,8 +860,7 @@ begin
   end;
 end;
 
-procedure TJvButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
-  Caption: string);
+procedure TJvButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect; const Caption: string);
 begin
   TextRect := Rect(0, 0, TextRect.Right - TextRect.Left, 0);
   DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT);
@@ -879,10 +868,7 @@ end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
-var
-  Cap: string;
 begin
-  Cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;
@@ -890,26 +876,26 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      ItemHtDraw(Canvas, TextBounds, [], Cap);
+      ItemHtDraw(Canvas, TextBounds, [], Caption);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      ItemHtDraw(Canvas, TextBounds, [], Cap);
+      ItemHtDraw(Canvas, TextBounds, [], Caption);
     end
     else
-      ItemHtDraw(Canvas, TextBounds, [], Cap);
+      ItemHtDraw(Canvas, TextBounds, [], Caption);
   end;
 end;
 
-procedure TJvHTButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect;
-  Caption: string);
+procedure TJvHTButtonGlyph.CalcTextRect(Canvas: TCanvas; var TextRect: TRect; const Caption: string);
+var
+  Size: TSize;
 begin
-  TextRect := Rect(0, 0, ItemHtWidth(Canvas, TextRect, [], Caption),
-    ItemHtHeight(Canvas, Caption));     // Kaczkowski
+  TextRect := Rect(0, 0, 0, 0);
+  Size := ItemHTExtent(Canvas, TextRect, [], Caption);
+  TextRect := Rect(0, 0, Size.cx, Size.cy);
 end;
 
 //=== { TJvaCaptionButton } ==================================================
-
-
 
 constructor TJvaCaptionButton.Create(AOwner: TComponent);
 
@@ -923,7 +909,7 @@ constructor TJvaCaptionButton.Create(AOwner: TComponent);
     begin
       B := Owner.Components[I];
       if B is TJvaCaptionButton then
-        Result := Max(Result, (B as TJvaCaptionButton).FBPos + 1);
+        Result := Max(Result, TJvaCaptionButton(B).FBPos + 1);
     end;
   end;
 
@@ -1464,8 +1450,6 @@ begin
   end;
 end;
 
-
-
 //=== { TJvaColorButton } ====================================================
 
 constructor TJvaColorButton.Create(AOwner: TComponent);
@@ -1483,8 +1467,6 @@ begin
   inherited Destroy;
   FreeAndNil(FCanvas);
 end;
-
-
 
 function TJvaColorButton.GetCanvas: TCanvas;
 begin
@@ -1529,10 +1511,6 @@ begin
 
   FCanvas.Handle := 0;
 end;
-
-
-
-
 
 procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault: Boolean; const State: TButtonState);
 var
