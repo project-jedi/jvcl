@@ -1500,7 +1500,8 @@ var
   begin
     ACol := Col;
     Original := ACol;
-    BeginUpdate;
+    //BeginUpdate;
+    inherited BeginUpdate;
     try
       while True do
       begin
@@ -1528,11 +1529,12 @@ var
         begin
           //MoveCol(ACol, 0);
           SelectedIndex := ACol - IndicatorOffset;
-          Exit;
+          Break;
         end;
       end;
     finally
-      EndUpdate;
+      inherited EndUpdate;
+      //EndUpdate; // => EndLayout => ... => Initialize => Col := FixedCols + 1
     end;
   end;
 
