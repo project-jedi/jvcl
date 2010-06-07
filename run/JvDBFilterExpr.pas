@@ -59,7 +59,7 @@ var
 type
   TExprParserAccess = class
   protected
-    FDecimalSeparator: Char;
+    FDecimalSeparator: {$IF CompilerVersion > 17.0}WideChar{$ELSE}Char{$IFEND}; // Delphi 2006+ use WideChar
     FFilter: TFilterExpr;
   end;
 
