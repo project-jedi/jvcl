@@ -314,11 +314,14 @@ type
     property Constraints;
   end;
 
+  TJvHTLabelMouseButtons = set of TMouseButton;
+
   TJvCustomHTLabel = class(TJvExCustomLabel)
   private
     FHyperlinkHovered: Boolean;
     FOnHyperLinkClick: TJvHyperLinkClickEvent;
     FMouseX, FMouseY: Integer;
+    FHyperLinkMouseButtons: TJvHTLabelMouseButtons;
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -330,7 +333,11 @@ type
     procedure SetAutoSize(Value: Boolean); override;
     procedure Paint; override;
     procedure Loaded; override;
+
+    property HyperLinkMouseButtons: TJvHTLabelMouseButtons read FHyperLinkMouseButtons write FHyperLinkMouseButtons default [mbLeft];
     property OnHyperLinkClick: TJvHyperLinkClickEvent read FOnHyperLinkClick write FOnHyperLinkClick;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
   TJvHTLabel = class(TJvCustomHTLabel)
@@ -374,6 +381,7 @@ type
     property OnStartDrag;
     property Layout;
     property Constraints;
+    property HyperLinkMouseButtons;
     property OnHyperLinkClick;
   end;
 
@@ -778,6 +786,12 @@ end;
 
 //=== { TJvCustomHTLabel } ===================================================
 
+constructor TJvCustomHTLabel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHyperLinkMouseButtons := [mbLeft];
+end;
+
 procedure TJvCustomHTLabel.FontChanged;
 begin
   inherited FontChanged;
@@ -922,17 +936,20 @@ begin
   FMouseX := X;
   FMouseY := Y;
   inherited MouseUp(Button, Shift, X, Y);
-  R := ClientRect;
-  case Layout of
-    tlTop:
-      ;
-    tlBottom:
-      R.Top := R.Bottom - ItemHTHeight(Canvas, Caption);
-    tlCenter:
-      R.Top := (R.Bottom - R.Top - ItemHTHeight(Canvas, Caption)) div 2;
+  if Button in FHyperLinkMouseButtons then
+  begin
+    R := ClientRect;
+    case Layout of
+      tlTop:
+        ;
+      tlBottom:
+        R.Top := R.Bottom - ItemHTHeight(Canvas, Caption);
+      tlCenter:
+        R.Top := (R.Bottom - R.Top - ItemHTHeight(Canvas, Caption)) div 2;
+    end;
+    if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
+      ExecuteHyperlink(Self, FOnHyperLinkClick, LinkName);
   end;
-  if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
-    ExecuteHyperlink(Self, FOnHyperLinkClick, LinkName);
 end;
 
 procedure TJvCustomHTLabel.MouseLeave(AControl: TControl);
