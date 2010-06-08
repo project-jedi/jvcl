@@ -300,6 +300,10 @@ type
     FOnBeforePaint: TNotifyEvent;
     FOnAfterPaint: TNotifyEvent;
 
+    FDelphi2010OptionsMigrated: Boolean;
+    procedure ReadDelphi2010OptionsMigrated(Reader: TReader);
+    procedure WriteDelphi2010OptionsMigrated(Writer: TWriter);
+
     {$IFDEF COMPILER10_UP}
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     {$ENDIF COMPILER10_UP}
@@ -3778,12 +3782,31 @@ begin
   end;
 end;
 
+procedure TJvDBGrid.ReadDelphi2010OptionsMigrated(Reader: TReader);
+begin
+  FDelphi2010OptionsMigrated := Reader.ReadBoolean;
+end;
+
+procedure TJvDBGrid.WriteDelphi2010OptionsMigrated(Writer: TWriter);
+begin
+  Writer.WriteBoolean(True);
+end;
+
 procedure TJvDBGrid.DefineProperties(Filer: TFiler);
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('AlternRowColor', ReadAlternateRowColor, nil, False);
   Filer.DefineProperty('AlternRowFontColor', ReadAlternateRowFontColor, nil, False);
   Filer.DefineProperty('PostOnEnter', ReadPostOnEnter, nil, False);
+
+  // We need to migrate the Options set for Delphi 2010 due to the added flags
+  Filer.DefineProperty('Delphi2010OptionsMigrated', ReadDelphi2010OptionsMigrated, WriteDelphi2010OptionsMigrated,
+    {$IFDEF COMPILER14_UP}
+    [dgTitleClick, dgTitleHotTrack] * Options = [] // if one of them is set we already know that we are migrated
+    {$ELSE}
+    False
+    {$ENDIF COMPILER14_UP}
+  );
 end;
 
 procedure TJvDBGrid.ReadPostOnEnter(Reader: TReader);
@@ -4066,6 +4089,14 @@ var
   WinControl: TWinControl;
 begin
   inherited Loaded;
+  {$IFDEF COMPILER14_UP}
+  // Fix the bug that Embarcadero has introduced when they added new flags to the Options set
+  if not FDelphi2010OptionsMigrated and ([dgTitleClick, dgTitleHotTrack] * Options = []) then
+  begin
+    FDelphi2010OptionsMigrated := True;
+    Options := Options + [dgTitleClick, dgTitleHotTrack];
+  end;
+  {$ENDIF COMPILER14_UP}
 
   // Edit controls are hidden
   for Ctrl_Idx := 0 to FControls.Count - 1 do
