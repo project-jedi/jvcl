@@ -35,14 +35,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms;
 
-const
-  // Classic XP Era record sizes for TNONCLIENTMETRICSA or TNONCLIENTMETRICSW
-  {$ifdef UNICODE}
-  JVDOCK_TNONCLIENTMETRICS_SZ =  500;  // TNONCLIENTMETRICSW
-  {$else}
-  JVDOCK_TNONCLIENTMETRICS_SZ =  340;  // TNONCLIENTMETRICSA
-  {$endif}
-
 type
   TJvDockListScanKind = (lskForward, lskBackward);
 
@@ -272,9 +264,12 @@ end;
 
 function JvDockGetNoNClientMetrics: TNONCLIENTMETRICS;
 begin
-  Result.cbSize := JVDOCK_TNONCLIENTMETRICS_SZ; // Delphi 2010 and higher require this fix.
-  SystemParametersInfo(SPI_GETNONCLIENTMETRICS, Result.cbSize,
-    @Result, 0);
+  {$IFDEF RTL210_UP}
+  Result.cbSize := TNonClientMetrics.SizeOf;
+  {$ELSE}
+  Result.cbSize := SizeOf(Result);
+  {$ENDIF RTL210_UP}
+  SystemParametersInfo(SPI_GETNONCLIENTMETRICS, Result.cbSize, @Result, 0);
 end;
 
 function JvDockGetSysCaptionHeight: Integer;

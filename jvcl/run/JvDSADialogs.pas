@@ -549,8 +549,12 @@ var
 
 begin
   inherited CreateNew(AOwner, Dummy);
+  {$IFDEF RTL210_UP}
+  NonClientMetrics.cbSize := TNonClientMetrics.SizeOf;
+  {$ELSE}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
-  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
+  {$ENDIF RTL210_UP}
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, NonClientMetrics.cbSize, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;

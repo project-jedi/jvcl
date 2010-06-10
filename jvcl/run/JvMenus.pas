@@ -882,8 +882,12 @@ procedure SetDefaultMenuFont(AFont: TFont);
 var
   NCMetrics: TNonCLientMetrics;
 begin
+  {$IFDEF RTL210_UP}
+  NCMetrics.cbSize := TNonClientMetrics.SizeOf;
+  {$ELSE}
   NCMetrics.cbSize := SizeOf(TNonCLientMetrics);
-  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
+  {$ENDIF RTL210_UP}
+  if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, NCMetrics.cbSize, @NCMetrics, 0) then
   begin
     AFont.Handle := CreateFontIndirect(NCMetrics.lfMenuFont);
     Exit;
