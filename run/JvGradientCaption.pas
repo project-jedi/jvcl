@@ -518,8 +518,12 @@ begin
   begin
     OnChange := nil;
     try
+      {$IFDEF RTL210_UP}
+      NCMetrics.cbSize := TNonClientMetrics.SizeOf;
+      {$ELSE}
       NCMetrics.cbSize := SizeOf(NCMetrics);
-      if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
+      {$ENDIF RTL210_UP}
+      if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, NCMetrics.cbSize, @NCMetrics, 0) then
       begin
         if (Owner is TForm) and
           ((Owner as TForm).BorderStyle in [bsToolWindow, bsSizeToolWin]) then

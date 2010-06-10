@@ -4246,8 +4246,12 @@ end;
 
 function TJvNonClientMetrics.GetNativeType: NONCLIENTMETRICS;
 begin
+  {$IFDEF RTL210_UP}
+  Result.cbSize := TNonClientMetrics.SizeOf;
+  {$ELSE}
   Result.cbSize := SizeOf(Result);
-  if not SystemParametersInfo(SPI_GETNONCLIENTMETRICS, SizeOf(Result), @Result, 0) then
+  {$ENDIF RTL210_UP}
+  if not SystemParametersInfo(SPI_GETNONCLIENTMETRICS, Result.cbSize, @Result, 0) then
   begin
     Result.iBorderWidth := 0;
     Result.iScrollWidth := 0;
@@ -4393,8 +4397,12 @@ procedure TJvNonClientMetrics.SetNativeType(Value: NONCLIENTMETRICS);
 begin
   if not IsDesigning and not ReadOnly then
   begin
+    {$IFDEF RTL210_UP}
+    Value.cbSize := NONCLIENTMETRICS.SizeOf;
+    {$ELSE}
     Value.cbSize := SizeOf(Value);
-    SystemParametersInfo(SPI_SETNONCLIENTMETRICS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    {$ENDIF RTL210_UP}
+    SystemParametersInfo(SPI_SETNONCLIENTMETRICS, Value.cbSize, @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
