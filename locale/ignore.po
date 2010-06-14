@@ -1031,6 +1031,12 @@ msgstr ""
 msgid "http://jvcl.delphi-jedi.org"
 msgstr ""
 
+msgid "http://jcl.delphi-jedi.org/"
+msgstr ""
+
+msgid "http://jvcl.delphi-jedi.org/"
+msgstr ""
+
 msgid "TJvCustomPropertyStore.StoreProperties:"
 msgstr ""
 

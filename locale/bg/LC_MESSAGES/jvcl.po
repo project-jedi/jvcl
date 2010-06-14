@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2010-06-14 11:26\n"
+"POT-Creation-Date: 2010-06-14 11:29\n"
 "PO-Revision-Date: 2004-10-12 03:23+0200\n"
 "Last-Translator: Georgi Panayotov <georgi@ada-soft.bg>\n"
 "Language-Team: \n"
@@ -6367,17 +6367,6 @@ msgstr "Модулния пакет не е открит: %s"
 #, fuzzy
 msgid "Calling %0:s in %1:s failed"
 msgstr "Извикването на %s в %s пропадна"
-
-#. === JvPoweredBy.pas ========================================================
-#. Programmer's name for it: RsURLPoweredByJCL
-#: JvResources.pas:1666 
-msgid "http://jcl.delphi-jedi.org/"
-msgstr ""
-
-#. Programmer's name for it: RsURLPoweredByJVCL
-#: JvResources.pas:1667 
-msgid "http://jvcl.delphi-jedi.org/"
-msgstr ""
 
 #. === JvProfilerForm.pas =====================================================
 #. Programmer's name for it: RsTotalElapsedTimedms

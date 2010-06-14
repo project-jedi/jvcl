@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2010-06-14 11:26\n"
+"POT-Creation-Date: 2010-06-14 11:29\n"
 "PO-Revision-Date: 2004-03-18 09:02+0200\n"
 "Last-Translator: Anton Iulian <Yulyul2003@yahoo.com>\n"
 "Language-Team: Anton Iulian <yulyul2003@yahoo.com>\n"
@@ -7407,17 +7407,6 @@ msgstr ""
 #. Programmer's name for it: RsERegisterPluginFailed
 #: JvResources.pas:1662 
 msgid "Calling %0:s in %1:s failed"
-msgstr ""
-
-#. === JvPoweredBy.pas ========================================================
-#. Programmer's name for it: RsURLPoweredByJCL
-#: JvResources.pas:1666 
-msgid "http://jcl.delphi-jedi.org/"
-msgstr ""
-
-#. Programmer's name for it: RsURLPoweredByJVCL
-#: JvResources.pas:1667 
-msgid "http://jvcl.delphi-jedi.org/"
 msgstr ""
 
 #. === JvProfilerForm.pas =====================================================
