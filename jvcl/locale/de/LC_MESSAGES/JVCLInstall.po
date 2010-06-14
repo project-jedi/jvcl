@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2009-08-13 09:59\n"
+"POT-Creation-Date: 2010-06-14 11:26\n"
 "PO-Revision-Date: 2006-10-28 19:16+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx.de>\n"
 "Language-Team: \n"
@@ -413,26 +413,18 @@ msgstr "In der &IDE registrieren"
 msgid "BP&L Directory:"
 msgstr "BP&L Verzeichnis:"
 
-#  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
-#  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
-#  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
-#. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:245 
-msgid "&DCP Directory:"
-msgstr "&DCP Verzeichnis:"
-
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..LblCaption..Caption
-#: Frames/FrmConfigPage.dfm:270 
+#: Frames/FrmConfigPage.dfm:245 
 msgid "&HPP Directory:"
 msgstr "&HPP Verzeichnis:"
 
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Width
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseHPP..EditDirectory....Hint
-#: Frames/FrmConfigPage.dfm:283 
+#: Frames/FrmConfigPage.dfm:258 
 msgid ""
 "The HPP directory specifies where the generated .hpp files\n"
 "should go. If this field is empty the generated .hpp files are\n"
@@ -445,7 +437,7 @@ msgstr ""
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles....Hint
-#: Frames/FrmConfigPage.dfm:299 
+#: Frames/FrmConfigPage.dfm:274 
 msgid ""
 "Activate this option if the installer should generate\n"
 "detailed map-files for each package.The .map files\n"
@@ -463,13 +455,13 @@ msgstr ""
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxGenerateMapFiles..Caption
-#: Frames/FrmConfigPage.dfm:301 
+#: Frames/FrmConfigPage.dfm:276 
 msgid "Genera&te Map files"
 msgstr "Map-Dateien &generieren"
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits....Hint
-#: Frames/FrmConfigPage.dfm:315 
+#: Frames/FrmConfigPage.dfm:290 
 msgid ""
 "Activate this option if you also want to compile debug units.\n"
 "JVCL Developer installations units do not need this because\n"
@@ -484,7 +476,7 @@ msgstr ""
 #  FormCompileMessages..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDebugUnits..Caption
-#: Frames/FrmConfigPage.dfm:317 
+#: Frames/FrmConfigPage.dfm:292 
 msgid "Compile debug units"
 msgstr "Debug Units kompilieren"
 
@@ -492,7 +484,7 @@ msgstr "Debug Units kompilieren"
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles....Hint
-#: Frames/FrmConfigPage.dfm:333 
+#: Frames/FrmConfigPage.dfm:308 
 msgid ""
 "Activate this option if the installer should link detailled\n"
 "map information as a resource of the binary it is describing.\n"
@@ -510,7 +502,7 @@ msgstr ""
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles..Caption
-#: Frames/FrmConfigPage.dfm:334 
+#: Frames/FrmConfigPage.dfm:309 
 msgid "&Link Map files in binaries"
 msgstr "Map Dateien in Kompilat &linken"
 
@@ -518,7 +510,7 @@ msgstr "Map Dateien in Kompilat &linken"
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Hint
-#: Frames/FrmConfigPage.dfm:348 
+#: Frames/FrmConfigPage.dfm:323 
 msgid ""
 "Activate this option if the installer should delete\n"
 "detailed map-files after they are linked in the binary\n"
@@ -532,7 +524,7 @@ msgstr ""
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
-#: Frames/FrmConfigPage.dfm:349 
+#: Frames/FrmConfigPage.dfm:324 
 msgid "&Delete after linking/compression"
 msgstr "Nach &Linken/Kompilieren löschen"
 
@@ -540,7 +532,7 @@ msgstr "Nach &Linken/Kompilieren löschen"
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Height
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles....Hint
-#: Frames/FrmConfigPage.dfm:363 
+#: Frames/FrmConfigPage.dfm:338 
 msgid ""
 "Activate this option if the installer should compress detailled\n"
 "map information to jdbg files.\n"
@@ -552,14 +544,14 @@ msgstr ""
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles..Caption
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCreateJdbgFiles..Caption
-#: Frames/FrmConfigPage.dfm:364 
+#: Frames/FrmConfigPage.dfm:339 
 msgid "Compress Map files to .jdbg"
 msgstr "Map Dateien in.jdbg komprimieren"
 
 #  FrameConfigPage..CheckBoxVerbose....Height
 #  FrameConfigPage..CheckBoxVerbose....Height
 #. FrameConfigPage..CheckBoxVerbose....Hint
-#: Frames/FrmConfigPage.dfm:378 
+#: Frames/FrmConfigPage.dfm:353 
 msgid ""
 "Activate this option if you want to see a more detailed compiler log on\n"
 "the installation progress page."
@@ -570,13 +562,13 @@ msgstr ""
 #  FrameConfigPage..CheckBoxVerbose..Caption
 #  FrameConfigPage..CheckBoxVerbose..Caption
 #. FrameConfigPage..CheckBoxVerbose..Caption
-#: Frames/FrmConfigPage.dfm:379 
+#: Frames/FrmConfigPage.dfm:354 
 msgid "&Verbose compiler output"
 msgstr "&Ausführliche Compilerausgabe"
 
 #  FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
 #. FrameConfigPage..CheckBoxIgnoreMakeErrors....Hint
-#: Frames/FrmConfigPage.dfm:392 
+#: Frames/FrmConfigPage.dfm:367 
 msgid ""
 "Activate this option if the installer should not stop when an error occured while\n"
 "compiling the packages."
@@ -586,13 +578,13 @@ msgstr ""
 
 #  FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
 #. FrameConfigPage..CheckBoxIgnoreMakeErrors..Caption
-#: Frames/FrmConfigPage.dfm:393 
+#: Frames/FrmConfigPage.dfm:368 
 msgid "D&o not stop on errors"
 msgstr "Bei Fehler nicht st&oppen"
 
 #  FrameConfigPage..GroupBoxJvclInc..BtnEditJvclInc..Hint
 #. FrameConfigPage..BtnEditJvclInc..Hint
-#: Frames/FrmConfigPage.dfm:415 
+#: Frames/FrmConfigPage.dfm:390 
 msgid "Edit all compile time conditions that are in the jvcl.inc file."
 msgstr "Alle Compiler-Direktiven (Bedingungen) bearbeiten, die in der jvcl.inc Datei vorhanden sind."
 
@@ -601,7 +593,7 @@ msgstr "Alle Compiler-Direktiven (Bedingungen) bearbeiten, die in der jvcl.inc D
 #  Programmer's name for it: RsEditJvclInc
 #. FrameConfigPage..BtnEditJvclInc..Caption
 #. Programmer's name for it: RsEditJvclInc
-#: Frames/FrmConfigPage.dfm:416 InstallerConsts.pas:162 
+#: Frames/FrmConfigPage.dfm:391 InstallerConsts.pas:162 
 msgid "Edit jvcl%s%d.inc"
 msgstr "jvcl%s%d.inc ändern"
 
@@ -610,7 +602,7 @@ msgstr "jvcl%s%d.inc ändern"
 #  FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
 #  FrameConfigPage..PanelBk..LblOptionsFor..Caption
 #. FrameConfigPage..PanelBk..LblOptionsFor..Caption
-#: Frames/FrmConfigPage.dfm:434 
+#: Frames/FrmConfigPage.dfm:409 
 msgid "&Options for:"
 msgstr "&Optionen für:"
 
@@ -618,7 +610,7 @@ msgstr "&Optionen für:"
 #  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #  FrameConfigPage..CheckBoxAddBplDirToPath..Caption
 #. FrameConfigPage..CheckBoxAddBplDirToPath..Caption
-#: Frames/FrmConfigPage.dfm:443 
+#: Frames/FrmConfigPage.dfm:418 
 msgid "Add BPL directory to PATH"
 msgstr "BPL Ordner zu PATH hinzufügen"
 
@@ -774,7 +766,7 @@ msgstr "&Abbrechen"
 #  Programmer's name for it: RsPackagesAreUpToDate
 #  Programmer's name for it: RsPackagesAreUpToDate
 #. Programmer's name for it: RsPackagesAreUpToDate
-#: Compile.pas:172 
+#: Compile.pas:178 
 msgid "Packages are up to date"
 msgstr "Packages sind bereits aktuell."
 
@@ -782,7 +774,7 @@ msgstr "Packages sind bereits aktuell."
 #  Programmer's name for it: RsGeneratingTemplates
 #  Programmer's name for it: RsGeneratingTemplates
 #. Programmer's name for it: RsGeneratingTemplates
-#: Compile.pas:183 
+#: Compile.pas:189 
 msgid "Generating templates..."
 msgstr "Templates generieren..."
 
@@ -790,7 +782,7 @@ msgstr "Templates generieren..."
 #  Programmer's name for it: RsGeneratingPackages
 #  Programmer's name for it: RsGeneratingPackages
 #. Programmer's name for it: RsGeneratingPackages
-#: Compile.pas:184 
+#: Compile.pas:190 
 msgid "Generating packages..."
 msgstr "Packagedateien generieren..."
 
@@ -798,7 +790,7 @@ msgstr "Packagedateien generieren..."
 #  Programmer's name for it: RsGeneratingResources
 #  Programmer's name for it: RsGeneratingResources
 #. Programmer's name for it: RsGeneratingResources
-#: Compile.pas:185 
+#: Compile.pas:191 
 msgid "Generating resources..."
 msgstr "Resourcedateien generieren..."
 
@@ -806,7 +798,7 @@ msgstr "Resourcedateien generieren..."
 #  Programmer's name for it: RsCompilingPackages
 #  Programmer's name for it: RsCompilingPackages
 #. Programmer's name for it: RsCompilingPackages
-#: Compile.pas:186 
+#: Compile.pas:192 
 msgid "Compiling packages..."
 msgstr "Packages kompilieren..."
 
@@ -817,7 +809,7 @@ msgstr "Packages kompilieren..."
 #  FrameConfigPage..GroupBoxInstallOptions..Caption
 #  Programmer's name for it: RsPostCompilationOperations
 #. Programmer's name for it: RsPostCompilationOperations
-#: Compile.pas:187 
+#: Compile.pas:193 
 msgid "Post-compilation operations..."
 msgstr "Nachbereitung..."
 
@@ -825,59 +817,59 @@ msgstr "Nachbereitung..."
 #  Programmer's name for it: RsCopyingFiles
 #  Programmer's name for it: RsCopyingFiles
 #. Programmer's name for it: RsCopyingFiles
-#: Compile.pas:188 
+#: Compile.pas:194 
 msgid "Copying files..."
 msgstr "Dateien werden kopiert..."
 
 #  Programmer's name for it: RsCompiling
 #  Programmer's name for it: RsCopyingFile
 #. Programmer's name for it: RsCopyingFile
-#: Compile.pas:189 
+#: Compile.pas:195 
 msgid "Copying %s"
 msgstr "Kopiere %s"
 
 #  Programmer's name for it: RsFinished
 #  Programmer's name for it: RsFinished
 #. Programmer's name for it: RsFinished
-#: Compile.pas:190 
+#: Compile.pas:196 
 msgid "Finished."
 msgstr "Fertig."
 
 #  Programmer's name for it: RsAbortedByUser
 #  Programmer's name for it: RsAbortedByUser
 #. Programmer's name for it: RsAbortedByUser
-#: Compile.pas:192 
+#: Compile.pas:198 
 msgid "Aborted by User"
 msgstr "Abbruch durch den Benutzer"
 
 #  Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
 #. Programmer's name for it: RsErrorLoadingPackageGeneratorConfigFile
-#: Compile.pas:193 
+#: Compile.pas:199 
 msgid "Error loading devtools\\bin\\pgEdit.xml"
 msgstr "Fehler beim Laden der Datei devtools\\bin\\pgEdit.xml"
 
 #  Programmer's name for it: RsErrorGeneratingPackages
 #  Programmer's name for it: RsErrorGeneratingPackages
 #. Programmer's name for it: RsErrorGeneratingPackages
-#: Compile.pas:194 
+#: Compile.pas:200 
 msgid "Error while generating packages for %s"
 msgstr "Es trat ein Fehler beim Erzeugen der Packages für %s auf."
 
 #  Programmer's name for it: RsErrorGeneratingTemplates
 #. Programmer's name for it: RsErrorGeneratingTemplates
-#: Compile.pas:195 
+#: Compile.pas:201 
 msgid "Error while generating templates."
 msgstr "Es trat ein Fehler beim Generieren der Templates auf."
 
 #  Programmer's name for it: RsErrorCompilingResources
 #. Programmer's name for it: RsErrorCompilingResources
-#: Compile.pas:196 
+#: Compile.pas:202 
 msgid "Error while compiling resources."
 msgstr "Es trat ein Fehler beim Kompilieren der Resourcedateien auf."
 
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
-#: Compile.pas:197 
+#: Compile.pas:203 
 msgid "Error generating templates for the %s directory."
 msgstr "Es trat ein Fehler beim Generieren der Templates für das Verzeichnis %s auf."
 
@@ -891,7 +883,7 @@ msgstr "Es trat ein Fehler beim Generieren der Templates für das Verzeichnis %s
 #  Programmer's name for it: RsErrorCompilingPackages
 #. this must not be the doubt of the installer
 #. Programmer's name for it: RsErrorCompilingPackages
-#: Compile.pas:198 
+#: Compile.pas:204 
 msgid "An error occured while compiling the packages."
 msgstr "Es trat ein Fehler während des Kompiliervorgangs auf."
 
@@ -905,7 +897,7 @@ msgstr "Es trat ein Fehler während des Kompiliervorgangs auf."
 #  Programmer's name for it: RsErrorCompilingPackages
 #  Programmer's name for it: RsErrorLinkingMapFiles
 #. Programmer's name for it: RsErrorLinkingMapFiles
-#: Compile.pas:199 
+#: Compile.pas:205 
 msgid "An error occured while linking the map files into binaries."
 msgstr "Es trat ein Fehler während des Linkens der Map Dateien auf."
 
@@ -919,14 +911,14 @@ msgstr "Es trat ein Fehler während des Linkens der Map Dateien auf."
 #  Programmer's name for it: RsErrorCompilingPackages
 #  Programmer's name for it: RsErrorDeletingMapFiles
 #. Programmer's name for it: RsErrorDeletingMapFiles
-#: Compile.pas:200 
+#: Compile.pas:206 
 msgid "An error occured while deleting the map files after the linking."
 msgstr "Es trat ein Fehler während des Löschens der Map Dateien nach dem Linken auf."
 
 #  Programmer's name for it: RsCommandNotFound
 #  Programmer's name for it: RsCommandNotFound
 #. Programmer's name for it: RsCommandNotFound
-#: Compile.pas:202 
+#: Compile.pas:208 
 msgid ""
 "Command could not be executed.\n"
 "\n"
@@ -1146,7 +1138,7 @@ msgstr "Es trat ein Fehler auf."
 #  Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
 #. Programmer's name for it: RsComplete
-#: InstallerConsts.pas:90 JVCLData.pas:401 
+#: InstallerConsts.pas:90 JVCLData.pas:398 
 msgid "Complete."
 msgstr "Fertig."
 
@@ -1562,10 +1554,10 @@ msgstr "JCL %s oder höher benötigt"
 #  Programmer's name for it: RsDownloadOrSelectJclDir
 #  http://jcl.sourceforge.net
 #  Programmer's name for it: RsDownloadOrSelectJclDir
-#. http://jcl.sourceforge.net
 #. Programmer's name for it: RsDownloadOrSelectJclDir
 #: InstallerConsts.pas:184 
-msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://homepages.borland.com/jedi/jcl/"
+#, fuzzy
+msgid "Download the JCL, close the JVCL Installer and install the JCL before restarting the JVCL Installer.|http://jcl.delphi-jedi.org/"
 msgstr "Laden Sie die JCL aus dem Internet, schhießen sie den JVCL Installer und installieren Sie die JCL bevor sie den JVCL Installer erneut starten.||http://homepages.borland.com/jedi/jcl/"
 
 #  Programmer's name for it: RsInstalledJVCLVersion
@@ -1643,27 +1635,27 @@ msgstr "Wollen Sie die Installation wirklich abbrechen?"
 
 #  Programmer's name for it: RsNoJVCLFound
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:394 
+#: JVCLData.pas:391 
 msgid "No JVCL directory found. Application terminated."
 msgstr "Das JVCL Verzeichnis wurde nicht gefunden. Die Anwendung wird beendet."
 
 #  Programmer's name for it: RsJVCLInstaller
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:395 
+#: JVCLData.pas:392 
 msgid "JVCL Installer"
 msgstr "JVCL Installer"
 
 #  Programmer's name for it: RsCleaningPalette
 #  Programmer's name for it: RsCleaningPalette
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:397 
+#: JVCLData.pas:394 
 msgid "Cleaning Palette..."
 msgstr "Komponentenpalette wird bereinigt..."
 
 #  Programmer's name for it: RsCleaningPathLists
 #  Programmer's name for it: RsCleaningPathLists
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:398 
+#: JVCLData.pas:395 
 msgid "Cleaning Path lists..."
 msgstr "Pfad-Listen werden bereinigt..."
 
@@ -1671,13 +1663,13 @@ msgstr "Pfad-Listen werden bereinigt..."
 #  Programmer's name for it: RsUnregisteringPackages
 #  Programmer's name for it: RsUnregisteringPackages
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:399 
+#: JVCLData.pas:396 
 msgid "Unregistering packages..."
 msgstr "Packages werden deinstalliert..."
 
 #  Programmer's name for it: RsDeletingFiles
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:400 
+#: JVCLData.pas:397 
 msgid "Deleting files..."
 msgstr "Dateien werden gelöscht..."
 
@@ -1747,6 +1739,12 @@ msgstr "(keine versioninfo)"
 #: Helpers/AHCompBrowseFolderDlg.pas:120 
 msgid "&Help"
 msgstr "&Hilfe"
+
+#  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
+#  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
+#  FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseDCP..LblCaption..Caption
+#~ msgid "&DCP Directory:"
+#~ msgstr "&DCP Verzeichnis:"
 
 #  FormMain..JvWizard..ButtonStart.Caption
 #~ msgid "To &Start Page"
