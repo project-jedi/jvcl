@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2010-06-14 11:26\n"
+"POT-Creation-Date: 2010-06-14 11:29\n"
 "PO-Revision-Date: 2005-07-24 01:34+0100\n"
 "Last-Translator: Grzegorz Skoczylas <gskoczylas@program.z.pl>\n"
 "Language-Team: \n"
@@ -7555,17 +7555,6 @@ msgstr "Funkcja wtyczki %s nie została znaleziona w %s"
 #, fuzzy
 msgid "Calling %0:s in %1:s failed"
 msgstr "Błąd wywołania %s w %s"
-
-#. === JvPoweredBy.pas ========================================================
-#. Programmer's name for it: RsURLPoweredByJCL
-#: JvResources.pas:1666 
-msgid "http://jcl.delphi-jedi.org/"
-msgstr ""
-
-#. Programmer's name for it: RsURLPoweredByJVCL
-#: JvResources.pas:1667 
-msgid "http://jvcl.delphi-jedi.org/"
-msgstr ""
 
 #  === JvProfilerForm.pas =====================================================
 #  Programmer's name for it: RsTotalElapsedTimedms
