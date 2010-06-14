@@ -1,12 +1,12 @@
 # Copyright (C) 2010 The JEDI Visual Component Library group
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2010-06-14 11:26\n"
-"PO-Revision-Date: 2009-08-13 11:28+0100\n"
+"POT-Creation-Date: 2010-06-14 11:29\n"
+"PO-Revision-Date: 2010-06-14 11:29+0100\n"
 "Last-Translator: Olivier Sannier <obones att altern dott org>\n"
 "Language-Team: JVCL <jvcl@delphi-jedi.org>\n"
 "MIME-Version: 1.0\n"
@@ -448,9 +448,8 @@ msgstr "Curseur après la f&in de fichier"
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbCursorBeyondEOL..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbCursorBeyondEOL
 #: JvHLEditorPropertyForm.dfm:156 JvResources.pas:1128 
-#, fuzzy
 msgid "Cursor beyond end of &line"
-msgstr "Curseur après la f&in de fichier"
+msgstr "Curseur après la fin de la &ligne"
 
 #. JvHLEditorParamsForm..Pages..tsColors..Caption
 #. Programmer's name for it: RsHLEdPropDlg_tsColors
@@ -3132,7 +3131,7 @@ msgstr "&Presse-papier"
 #. Programmer's name for it: SSQLStatementWordWrapped
 #: JvResources.pas:595 
 msgid "&Word Wrapped"
-msgstr ""
+msgstr "&Retour automatique"
 
 #. === JvDBControls.pas =======================================================
 #. Programmer's name for it: RsInactiveData
@@ -3630,7 +3629,7 @@ msgstr ""
 #. Programmer's name for it: RsENoProfileDatasets
 #: JvResources.pas:762 
 msgid "Not all profile datasets have been assigned."
-msgstr ""
+msgstr "Certains jeux de données de profil n'ont pas été affectés"
 
 #. === JvEditor.pas, JvUnicodeEditor.pas ======================================
 #. Programmer's name for it: RsERedoNotYetImplemented
@@ -6389,17 +6388,6 @@ msgstr "Fonction de plugin %0:s non trouvée dans %1:s"
 msgid "Calling %0:s in %1:s failed"
 msgstr "L'appel de %0:s dans %1:s a échoué"
 
-#. === JvPoweredBy.pas ========================================================
-#. Programmer's name for it: RsURLPoweredByJCL
-#: JvResources.pas:1666 
-msgid "http://jcl.delphi-jedi.org/"
-msgstr ""
-
-#. Programmer's name for it: RsURLPoweredByJVCL
-#: JvResources.pas:1667 
-msgid "http://jvcl.delphi-jedi.org/"
-msgstr ""
-
 #. === JvProfilerForm.pas =====================================================
 #. Programmer's name for it: RsTotalElapsedTimedms
 #: JvResources.pas:1671 
@@ -7663,9 +7651,8 @@ msgstr "Inconnu"
 #. === JvTimer.pas ============================================================
 #. Programmer's name for it: RsCannotChangeInTimerEvent
 #: JvResources.pas:2056 
-#, fuzzy
 msgid "Cannot change %s in the timer event"
-msgstr "Impossible de changer %s quand actif"
+msgstr "Impossible de changer %s dans l'événement du timer"
 
 #. === JvTimeLimit.pas ========================================================
 #. Programmer's name for it: RsExpired
