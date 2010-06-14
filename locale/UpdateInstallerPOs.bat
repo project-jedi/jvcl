@@ -36,7 +36,7 @@ if exist JVCLInstall.po msgmerge -o JVCLInstall.po JVCLInstall.po default.po
 if not exist JVCLInstall.po copy default.po JVCLInstall.po
 
 : set the headers to match JVCL ones
-..\devtools\bin\SetPoHeader -t "JVCL localization template" -c "The JEDI Visual Component Library group" -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" JVCLInstall.po
+..\devtools\bin\SetPoHeader -t "JVCL localization source file." -c "The JEDI Visual Component Library group." -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" JVCLInstall.po
 
 echo Translation template JVCLInstall.po has been updated
 

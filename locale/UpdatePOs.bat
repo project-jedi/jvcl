@@ -42,7 +42,7 @@ if exist jvcl.po msgmerge -o jvcl.po jvcl.po default.po
 if not exist jvcl.po copy default.po jvcl.po
 
 : set the headers to match JVCL ones
-..\devtools\bin\SetPoHeader -t "JVCL localization template" -c "The JEDI Visual Component Library group" -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" jvcl.po
+..\devtools\bin\SetPoHeader -t "JVCL localization source file." -c "The JEDI Visual Component Library group." -p JVCL -v 3 -a "JVCL Group" -e "jvcl@sourceforge.net" jvcl.po
 
 echo Translation template jvcl.po has been updated
 
