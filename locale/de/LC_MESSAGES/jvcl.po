@@ -1,4 +1,4 @@
-﻿# Copyright (C) 2009 The JEDI Visual Component Library group
+# Copyright (C) 2009 The JEDI Visual Component Library group.
 # This file is distributed under the same license as the JVCL package.
 # JVCL Group <jvcl@sourceforge.net>, 2004.
 # 
