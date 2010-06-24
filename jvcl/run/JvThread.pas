@@ -33,14 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, SyncObjs,
-  {$IFDEF MSWINDOWS}
-  Windows, Controls, ExtCtrls,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QWindows,
-  {$ENDIF UNIX}
-  Forms, Dialogs,
+  Windows, SysUtils, Classes, SyncObjs, Controls, ExtCtrls, Forms, Dialogs,
   JvTypes, JvComponentBase, JvComponent;
 
 type
@@ -65,11 +58,11 @@ type
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
   published
     property FormStyle: TFormStyle read FFormStyle write FFormStyle;
-    //1 Delay in milliseconds for starting the thread dialog
+    // Delay in milliseconds for starting the thread dialog
     property ShowDelay: Integer read FShowDelay write SetShowDelay default 0;
-    //1 Flag if there should be a dialog which shows the thread status
+    // Flag if there should be a dialog which shows the thread status
     property ShowDialog: Boolean read FShowDialog write SetShowDialog default False;
-    //1 Flag if the status dialog is modal
+    // Flag if the status dialog is modal
     property ShowModal: Boolean read FShowModal write SetShowModal default True;
   end;
 
@@ -140,7 +133,7 @@ type
   end;
 
   TJvThreadShowMessageDlgEvent = procedure(const Msg: string; AType: TMsgDlgType;
-      AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult: Word) of object;
+    AButtons: TMsgDlgButtons; HelpCtx: Longint; var DlgResult: Word) of object;
 
   // This thread is a descendent of TThread but proposes a different
   // behaviour with regard to being suspended or resumed.
@@ -281,29 +274,14 @@ type
     property Terminated: Boolean read GetTerminated; // in context of thread in list - for itself; in others - for all threads in list
     property ReturnValue: Integer read GetReturnValue write SetReturnValue; // in context of thread in list - set return value (slower)
     property OneThreadIsRunning: Boolean read GetOneThreadIsRunning;
-    //1 Property to allow/disallow the thread dialog form
+    // Property to allow/disallow the thread dialog form
     property ThreadDialogAllowed: Boolean read FThreadDialogAllowed write FThreadDialogAllowed default True;
     property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
-(*
-    function GetPriority(Thread: THandle): TThreadPriority;
-    procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
-    {$IFDEF UNIX}
-    function GetPolicy(Thread: THandle): Integer;
-    procedure SetPolicy(Thread: THandle; Policy: Integer);
-    procedure SetPolicyAll(Policy: Integer);
-    {$ENDIF UNIX}
-    procedure QuitThread(Thread: THandle);
-    procedure Suspend(Thread: THandle); // should not be used
-    procedure Resume(Thread: THandle); overload;
-*)
-    {$IFDEF UNIX}
-    procedure SetPolicy(Policy: Integer); // [not tested] in context of thread in list - for itself; in other contexts - for all threads in list
-    {$ENDIF UNIX}
-    //1 Disables the delayed showing of the thread dialog
+    // Disables the delayed showing of the thread dialog
     procedure DisableDialogShowDelay;
-    //1 Enables the delayed showing of the thread dialog
+    // Enables the delayed showing of the thread dialog
     procedure EnableDialogShowDelay;
-    //1 Is the delayed showing of the thread dialog disabled
+    // Is the delayed showing of the thread dialog disabled
     function IsDialogShowDelayDisabled: Boolean;
     procedure SetPriority(NewPriority: TThreadPriority); // in context of thread in list - for itself; in other contexts - for all threads in list
     procedure Resume(BaseThread: TJvBaseThread); overload;
@@ -334,11 +312,6 @@ type
       FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
   end;
 
-// Cannot be synchronized to the MainThread (VCL)
-// (rom) why are these in the interface section?
-procedure Synchronize(Method: TNotifyEvent);
-procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -353,29 +326,6 @@ implementation
 
 uses
   JvResources, JvJVCLUtils;
-
-var
-  SyncMtx: THandle = 0;
-
-procedure Synchronize(Method: TNotifyEvent);
-begin
-  WaitForSingleObject(SyncMtx, INFINITE);
-  try
-    Method(nil);
-  finally
-    ReleaseMutex(SyncMtx);
-  end;
-end;
-
-procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
-begin
-  WaitForSingleObject(SyncMtx, INFINITE);
-  try
-    Method(nil, P);
-  finally
-    ReleaseMutex(SyncMtx);
-  end;
-end;
 
 //=== { TJvCustomThreadDialogOptions } =======================================
 
@@ -633,7 +583,7 @@ begin
   while OneThreadIsRunning do
   begin
     Sleep(1);
-    // Delphi 6+ uses an event and CheckSynchronize
+    // Delphi 6+ uses an IPC event and CheckSynchronize
     CheckSynchronize; // TThread.OnTerminate is synchronized
   end;
   FThreads.Free;
@@ -1057,30 +1007,6 @@ begin
   end;
 end;
 
-// new
-{$IFDEF UNIX}
-// not tested
-procedure TJvThread.SetPolicy(Policy: Integer);
-var
-  List: TList;
-  Thread: TJvBaseThread;
-  I: Integer;
-begin
-  List := FThreads.LockList;
-  try
-    Thread := GetCurrentThread;
-    if Assigned(Thread) then
-      SetThreadPolicy(Thread.Handle, Policy)  // context of thread in list
-    else
-      for I := 0 to List.Count - 1 do    // context of all other threads
-        SetThreadPolicy(TJvBaseThread(List[I]).Handle, Policy);
-    end;
-  finally
-    FThreads.UnlockList;
-  end;
-end;
-{$ENDIF UNIX}
-
 procedure TJvThread.SetPriority(NewPriority: TThreadPriority);
 var
   List: TList;
@@ -1346,11 +1272,8 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
 finalization
-  CloseHandle(SyncMtx);
-  SyncMtx := 0;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
