@@ -151,7 +151,7 @@ var
 begin
   Str := Format('R %.2x  ', [ReportID]);
   for I := 0 to Size - 1 do
-    Str := Str + Format('%.2x ', [Cardinal(PChar(Data)[I])]);
+    Str := Str + Format('%.2x ', [Cardinal(PAnsiChar(Data)[I])]);
   HistoryListBox.ItemIndex := HistoryListBox.Items.Add(Str);
 end;
 
