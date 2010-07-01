@@ -5324,7 +5324,6 @@ begin
   Result := 0;
   for I := 0 to LineCount - 1 do
     Inc(Result, LineLength[I] + sLineBreakLen);
-  Dec(Result, sLineBreakLen);
 end;
 
 procedure TJvCustomEditorBase.BeginUpdate;
