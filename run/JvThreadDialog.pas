@@ -39,7 +39,7 @@ uses
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
-  JvTypes, JvComponentBase, JvThread, JvDynControlEngine;
+  JvTypes, JvComponentBase, JvThread, JvDynControlEngine, JvDynControlEngineIntf;
 
 type
   TJvThreadBaseDialogOptions = class;
@@ -153,6 +153,8 @@ type
     FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
     FCounter: Integer;
     FInfoText: TControl;
+    IInfoTextControlCaption: IJvDynControlCaption;
+    IInfoTextControlAutoSize: IJvDynControlAutoSize;
     FInfoTextPanel: TWinControl;
     FMainPanel: TWinControl;
     FOrgInfoTextWidth: Integer;
@@ -161,6 +163,8 @@ type
     FStartTime: TDateTime;
     FTimeText: TControl;
     FTimeTextPanel: TWinControl;
+    ITimeTextControlCaption: IJvDynControlCaption;
+    IProgressBarControl : IJvDynControlProgressbar;
     function GetDialogOptions: TJvThreadSimpleDialogOptions;
     procedure SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
     procedure SetFormInfoText;
@@ -184,10 +188,12 @@ type
     FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
     FInfoText: TControl;
     FInfoTextPanel: TWinControl;
+    IInfoTextControlCaption: IJvDynControlCaption;
     FMainPanel: TWinControl;
     FOrgInfoTextWidth: Integer;
     FStartTime: TDateTime;
     FTimeText: TControl;
+    ITimeTextControlCaption: IJvDynControlCaption;
     FTimeTextPanel: TWinControl;
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
@@ -217,7 +223,7 @@ implementation
 
 uses
   Dialogs, Graphics,
-  JvResources, JvDynControlEngineIntf;
+  JvResources;
 
 function Max(a, b: Integer): Integer;
 begin
@@ -380,7 +386,11 @@ begin
 
   CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
     DialogOptions.InfoTextAlignment, 'Info');
+  Supports(FInfoText, IJvDynControlCaption, IInfoTextControlCaption);
+  Supports(FInfoText, IJvDynControlAutoSize, IInfoTextControlAutoSize);
+
   CreateTextPanel(Self, FMainPanel, FTimeTextPanel, FTimeText, taCenter, 'Time');
+  Supports(FTimeText, IJvDynControlCaption, ITimeTextControlCaption);
 
   FProgressbarPanel := DynControlEngine.CreatePanelControl(Self,
     FMainPanel, 'ProgressbarPanel', '', alTop);
@@ -389,6 +399,8 @@ begin
   ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
   FProgressbar := DynControlEngine.CreateProgressbarControl(Self, FProgressbarPanel,
     'Progressbar');
+  Supports(FProgressbar, IJvDynControlProgressbar, IProgressBarControl);
+
   FProgressbarPanel.Height := FProgressbar.Height + FDefaultBorderWidth*2;
   if Supports(FProgressbar, IJvDynControlAlign, ITmpAlign) then
     ITmpAlign.ControlSetAlign(alClient);
@@ -440,7 +452,7 @@ procedure TJvThreadSimpleDialogForm.SetFormHeightWidth;
 var
   H, W: Integer;
 begin
-  if (csDestroying in ComponentState) then
+  if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
   if FInfoTextPanel.Visible then
     W := FOrgInfoTextWidth + 20
@@ -476,20 +488,17 @@ begin
 end;
 
 procedure TJvThreadSimpleDialogForm.SetFormInfoText;
-var
-  ITmpControl: IJvDynControlCaption;
-  ITmpAutoSize: IJvDynControlAutoSize;
 begin
-  if (csDestroying in ComponentState) then
+  if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
-  if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
-    if ITmpControl.ControlGetCaption<>DialogOptions.FInfoText then
+  if Assigned(IInfoTextControlCaption) then
+    if IInfoTextControlCaption.ControlGetCaption<>DialogOptions.FInfoText then
     begin
-      ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
-      if Supports(FInfoText, IJvDynControlAutoSize, ITmpAutoSize) then
+      IInfoTextControlCaption.ControlSetCaption(DialogOptions.FInfoText);
+      if Assigned(IInfoTextControlAutoSize) then
       begin
-        ITmpAutoSize.ControlSetAutoSize(True);
-        ITmpAutoSize.ControlSetAutoSize(False);
+        IInfoTextControlAutoSize.ControlSetAutoSize(True);
+        IInfoTextControlAutoSize.ControlSetAutoSize(False);
       end;
       FInfoText.Left := FDefaultBorderWidth; // Some Components change the left position when activating autosize (TcxStaticText)
       FOrgInfoTextWidth := FInfoText.Width;
@@ -498,11 +507,8 @@ begin
 end;
 
 procedure TJvThreadSimpleDialogForm.UpdateFormContents;
-var
-  ITmpControl: IJvDynControlCaption;
-  ITmpProgressbar : IJvDynControlProgressbar;
 begin
-  if (csDestroying in ComponentState) then
+  if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
   inherited UpdateFormContents;
   FCounter := FCounter + 1;
@@ -517,14 +523,14 @@ begin
 
     SetFormInfoText;
 
-    if Supports(FTimeText, IJvDynControlCaption, ITmpControl) then
-      ITmpControl.ControlSetCaption (FormatDateTime('hh:nn:ss', Now - FStartTime));
+    if Assigned(ITimeTextControlCaption) then
+      ITimeTextControlCaption.ControlSetCaption (FormatDateTime('hh:nn:ss', Now - FStartTime));
 
-    if Supports(FProgressbar, IJvDynControlProgressbar, ITmpProgressbar) then
+    if Assigned(IProgressBarControl) then
       if (DialogOptions.ProgressBarPosition >= 0) and (DialogOptions.ProgressBarPosition <= 100)  then
-        ITmpProgressbar.ControlSetPosition(DialogOptions.ProgressBarPosition)
+        IProgressBarControl.ControlSetPosition(DialogOptions.ProgressBarPosition)
       else
-        ITmpProgressbar.ControlSetPosition(((FCounter*10) mod 110));
+        IProgressBarControl.ControlSetPosition(((FCounter*10) mod 110));
     case FCounter mod 4 of
       0: Caption := DialogOptions.Caption + ' | ';
       1: Caption := DialogOptions.Caption + ' / ';
@@ -549,6 +555,7 @@ begin
 
   CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
     DialogOptions.InfoTextAlignment,  'Info');
+  Supports(FInfoText, IJvDynControlCaption, IInfoTextControlCaption);
 
   FAnimatePanel := DynControlEngine.CreatePanelControl(Self, FMainPanel,
     'AnimatePanel', '', alTop);
@@ -567,6 +574,7 @@ begin
   FAnimatePanel.Height := FAnimate.Height + FDefaultBorderWidth*2;
 
   CreateTextPanel(Self, FMainPanel, FTimeTextPanel, FTimeText, taCenter,  'Time');
+  Supports(FTimeText, IJvDynControlCaption, ITimeTextControlCaption);
 
   FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self,
     FMainPanel, 'ButtonPanel', '', alTop);
@@ -612,7 +620,7 @@ procedure TJvThreadAnimateDialogForm.SetFormHeightWidth;
 var
   H, W: Integer;
 begin
-  if (csDestroying in ComponentState) then
+  if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
   H := 0;
   W := 200;
@@ -658,19 +666,18 @@ begin
 end;
 
 procedure TJvThreadAnimateDialogForm.UpdateFormContents;
-var ITmpControl : IJvDynControlCaption;
 begin
-  if (csDestroying in ComponentState) then
+  if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
   inherited UpdateFormContents;
   if Assigned(DialogOptions) then
   begin
     if Assigned(ChangeThreadDialogOptions) then
       ChangeThreadDialogOptions(DialogOptions);
-    if Supports(FInfoText, IJvDynControlCaption, ITmpControl) then
-      ITmpControl.ControlSetCaption(DialogOptions.FInfoText);
-    if Supports(FTimeText, IJvDynControlCaption, ITmpControl) then
-      ITmpControl.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
+    if Assigned(IInfoTextControlCaption) then
+      IInfoTextControlCaption.ControlSetCaption(DialogOptions.FInfoText);
+    if Assigned(ITimeTextControlCaption) then
+      ITimeTextControlCaption.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
     Caption := DialogOptions.Caption;
     FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
     FAnimatePanel.Visible := FileExists(FAnimate.FileName) or
