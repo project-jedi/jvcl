@@ -215,7 +215,7 @@ type
       write SetRefreshLastPosition default False;
   end;
 
-  TJvDatasetThreadDialogForm = class(TJvCustomThreadDialogForm)
+  TJvDatasetThreadDialogForm = class(TJvDynControlEngineThreadDialogForm)
   private
     FRowsLabel: TControl;
     FTimeLabel: TControl;
@@ -226,26 +226,22 @@ type
     FRowsPanel: TWinControl;
     FTimePanel: TWinControl;
     FDialogOptions: TJvThreadedDatasetDialogOptions;
-    FDynControlEngine: TJvDynControlEngine;
-    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl;
-      var Panel: TWinControl; var LabelCtrl: TControl; var StaticText: TWinControl;
-      const BaseName: string);
+    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl; var LabelCtrl: TControl;
+        var StaticText: TWinControl; const BaseName: string);
     function GetConnectedDataset: TDataSet;
     function GetConnectedDatasetHandler: TJvBaseDatasetThreadHandler;
     function GetDialogOptions: TJvThreadedDatasetDialogOptions;
     procedure SetDialogOptions(const Value: TJvThreadedDatasetDialogOptions);
-    procedure SetDynControlEngine(const Value: TJvDynControlEngine);
   protected
     procedure FillDialogData;
     procedure InitializeFormContents; override;
     procedure UpdateFormContents; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure CreateFormControls;
+    procedure CreateFormControls; override;
     procedure TransferDialogOptions; override;
     property ConnectedDataset: TDataSet read GetConnectedDataset;
     property ConnectedDatasetHandler: TJvBaseDatasetThreadHandler read GetConnectedDatasetHandler;
-    property DynControlEngine: TJvDynControlEngine read FDynControlEngine write SetDynControlEngine;
   published
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
   end;
@@ -311,6 +307,7 @@ type
     FThreadDialog: TJvDatasetThreadDialog;
     FThreadOptions: TJvThreadedDatasetThreadOptions;
     IntThreadException: Exception;
+    MessageDlgIsActive: Boolean;
     function GetCurrentAction: TJvThreadedDatasetAction;
     function GetCurrentFetchDuration: tDateTime;
     function GetCurrentOpenDuration: tDateTime;
@@ -471,7 +468,6 @@ begin
       ThreadDialogForm := TJvDatasetThreadDialogForm.CreateNewFormStyle(ConnectedThread,
         DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
-    ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
   end
   else
@@ -493,7 +489,6 @@ end;
 constructor TJvDatasetThreadDialogForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  DynControlEngine := nil;
   InternalTimerInterval := 250;
 end;
 
@@ -503,6 +498,7 @@ var
   ITmpPanel: IJvDynControlPanel;
   ITmpControl: IJvDynControlCaption;
 begin
+  Inherited CreateFormControls;
   MainPanel := DynControlEngine.CreatePanelControl(Self, Self, 'MainPanel', '', alClient);
   if not Supports(MainPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
@@ -537,9 +533,8 @@ begin
   PixelsPerInch := 96;
 end;
 
-procedure TJvDatasetThreadDialogForm.CreateTextPanel(AOwner: TComponent;
-  AParent: TWinControl; var Panel: TWinControl; var LabelCtrl: TControl;
-  var StaticText: TWinControl; const BaseName: string);
+procedure TJvDatasetThreadDialogForm.CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl;
+    var LabelCtrl: TControl; var StaticText: TWinControl; const BaseName: string);
 var
   ITmpPanel: IJvDynControlPanel;
   ITmpAutoSize: IJvDynControlAutoSize;
@@ -630,14 +625,6 @@ begin
     DynControlEngine := DialogOptions.DynControlEngine
   else
     DynControlEngine := nil;
-end;
-
-procedure TJvDatasetThreadDialogForm.SetDynControlEngine(const Value: TJvDynControlEngine);
-begin
-  if not Assigned(Value) then
-    FDynControlEngine := DefaultDynControlEngine
-  else
-    FDynControlEngine := Value;
 end;
 
 procedure TJvDatasetThreadDialogForm.TransferDialogOptions;
@@ -846,6 +833,7 @@ begin
   FExecuteThread.ThreadDialog := ThreadDialog;
   FEnhancedOptions := CreateEnhancedOptions;
   IntCurrentOperation := tdoNothing;
+  MessageDlgIsActive := False;
 end;
 
 destructor TJvBaseDatasetThreadHandler.Destroy;
@@ -918,7 +906,8 @@ end;
 procedure TJvBaseDatasetThreadHandler.BringDialogToFront;
 begin
   if Assigned(ExecuteThread) and ExecuteThread.OneThreadIsRunning
-    and Assigned(ExecuteThread.ThreadDialogForm) then
+    and Assigned(ExecuteThread.ThreadDialogForm)
+    and not MessageDlgIsActive then
     ExecuteThread.ThreadDialogForm.BringToFront;
 end;
 
@@ -1504,9 +1493,14 @@ begin
     AddButton(RsODSContinueAll, Integer(mrAll));
   if EnhancedOptions.AllowedContinueRecordFetchOptions.Cancel then
     AddButton(RsODSContinueClose, Integer(mrAbort));
-  FSynchMessageDlgBtn := JvDSADialogs.MessageDlgEx(FSynchMessageDlgMsg,
-      mtConfirmation, Buttons, Results, 0, dckActiveForm, 0,
-      0, 1, -1, DialogOptions.DynControlEngine);
+  MessageDlgIsActive := True;
+  try
+    FSynchMessageDlgBtn := JvDSADialogs.MessageDlgEx(FSynchMessageDlgMsg,
+        mtConfirmation, Buttons, Results, 0, dckActiveForm, 0,
+        0, 1, -1, DialogOptions.DynControlEngine);
+  finally
+    MessageDlgIsActive := False;
+  end;
 end;
 
 procedure TJvBaseDatasetThreadHandler.SynchErrorMessageDlg;
@@ -1554,8 +1548,8 @@ begin
         end;
       end;
     end;
-    ExecuteThreadSynchronize(SynchAfterThreadExecution);
   finally
+    ExecuteThreadSynchronize(SynchAfterThreadExecution);
     IntCurrentOperation := tdoNothing;
     ExecuteThread.ThreadDialogAllowed := False;
   end;

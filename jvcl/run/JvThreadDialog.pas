@@ -74,6 +74,15 @@ type
     property ShowElapsedTime: Boolean read FShowElapsedTime write SetShowElapsedTime default True;
   end;
 
+  TJvThreadBaseDialog = class(TJvCustomThreadDialog)
+  private
+    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
+  published
+    property OnPressCancel;
+    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read FChangeThreadDialogOptions write
+        FChangeThreadDialogOptions;
+  end;
+
   TJvThreadAnimateDialogOptions = class(TJvThreadBaseDialogOptions)
   private
     FCommonAVI: TCommonAVI;
@@ -85,20 +94,16 @@ type
     property ResName: string read FResName write FResName;
   end;
 
-  TJvThreadAnimateDialog = class(TJvCustomThreadDialog)
+  TJvThreadAnimateDialog = class(TJvThreadBaseDialog)
   private
-    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
-  protected
-    function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
+  protected
+    function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
   public
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
   published
     property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions write SetDialogOptions;
-    property OnPressCancel;
-    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
-        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
   end;
 
   TJvThreadSimpleDialogOptions = class(TJvThreadBaseDialogOptions)
@@ -115,12 +120,9 @@ type
     property ShowProgressBar: Boolean read FShowProgressBar write SetShowProgressBar default False;
   end;
 
-  TJvThreadSimpleDialog = class(TJvCustomThreadDialog)
+  TJvThreadSimpleDialog = class(TJvThreadBaseDialog)
   private
-    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
     function GetDialogOptions: TJvThreadSimpleDialogOptions;
-    procedure SetChangeThreadDialogOptions(const Value:
-        TJvChangeThreadDialogOptionsEvent);
     procedure SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
   protected
     function CreateDialogOptions: TJvCustomThreadDialogOptions; override;
@@ -128,86 +130,98 @@ type
     function CreateThreadDialogForm(ConnectedThread: TJvThread): TJvCustomThreadDialogForm; override;
   published
     property DialogOptions: TJvThreadSimpleDialogOptions read GetDialogOptions write SetDialogOptions;
-    property OnPressCancel;
-    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
-        FChangeThreadDialogOptions write SetChangeThreadDialogOptions;
   end;
 
   TJvDynControlEngineThreadDialogForm = class(TJvCustomThreadDialogForm)
   private
     FDefaultBorderWidth: Integer;
+    FDynControlEngine: TJvDynControlEngine;
     function GetDynControlEngine: TJvDynControlEngine;
+    procedure SetDynControlEngine(const Value: TJvDynControlEngine);
   protected
-    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel:
-        TWinControl; var Text: TControl; TextAlignment: TAlignment; const BaseName:
-        string);
+    procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl; var Text: TControl;
+        TextAlignment: TAlignment; const BaseName: string);
     property DefaultBorderWidth: Integer read FDefaultBorderWidth write
         FDefaultBorderWidth;
-    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine;
+    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
 
-  TJvThreadSimpleDialogForm = class(TJvDynControlEngineThreadDialogForm)
+  TJvThreadBaseDialogForm = class(TJvDynControlEngineThreadDialogForm)
   private
     FCancelBtn: TButton;
     FCancelButtonPanel: TWinControl;
     FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
-    FCounter: Integer;
     FInfoText: TControl;
-    IInfoTextControlCaption: IJvDynControlCaption;
-    IInfoTextControlAutoSize: IJvDynControlAutoSize;
     FInfoTextPanel: TWinControl;
     FMainPanel: TWinControl;
     FOrgInfoTextWidth: Integer;
-    FProgressbar: TWinControl;
-    FProgressbarPanel: TWinControl;
     FStartTime: TDateTime;
     FTimeText: TControl;
     FTimeTextPanel: TWinControl;
+    IInfoTextControlAutoSize: IJvDynControlAutoSize;
+    IInfoTextControlCaption: IJvDynControlCaption;
     ITimeTextControlCaption: IJvDynControlCaption;
-    IProgressBarControl : IJvDynControlProgressbar;
-    function GetDialogOptions: TJvThreadSimpleDialogOptions;
-    procedure SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
-    procedure SetFormInfoText;
-  protected
-    procedure CreateFormControls;
-    procedure InitializeFormContents; override;
+    function CalculateFormHeight: Integer; virtual;
+    function CalculateFormWidth: Integer; virtual;
+    procedure CreateControlCancelButton;
+    procedure CreateControlInfoText;
+    procedure CreateControlMainPanel;
+    procedure CreateControlTimeText;
+    procedure SetControlHeightWidth; virtual;
+    procedure SetFormDefaultProperties;
+    procedure SetFormInfoText; virtual;
+    function GetDialogOptions: TJvThreadBaseDialogOptions;
+    procedure SetDialogOptions(const Value: TJvThreadBaseDialogOptions);
     procedure SetFormHeightWidth;
+  protected
+    procedure FreeFormControls; override;
+    procedure InitializeFormContents; override;
+    procedure UpdateFormContents; override;
+  public
+    property DialogOptions: TJvThreadBaseDialogOptions read GetDialogOptions write SetDialogOptions;
+    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
+        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
+  end;
+
+  TJvThreadSimpleDialogForm = class(TJvThreadBaseDialogForm)
+  private
+    FCounter: Integer;
+    FProgressbar: TWinControl;
+    FProgressbarPanel: TWinControl;
+    IProgressBarControl : IJvDynControlProgressbar;
+    function CalculateFormHeight: Integer; override;
+    procedure CreateControlProgressBar;
+    function GetDialogOptions: TJvThreadSimpleDialogOptions;
+    procedure SetControlHeightWidth; override;
+    procedure SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
+  protected
+    procedure CreateFormControls; override;
+    procedure FreeFormControls; override;
+    procedure InitializeFormContents; override;
     procedure UpdateFormContents; override;
   public
     property DialogOptions: TJvThreadSimpleDialogOptions read GetDialogOptions write SetDialogOptions;
-    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
-        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
   end;
 
-  TJvThreadAnimateDialogForm = class(TJvDynControlEngineThreadDialogForm)
+  TJvThreadAnimateDialogForm = class(TJvThreadBaseDialogForm)
   private
     FAnimate: TAnimate;
     FAnimatePanel: TWinControl;
-    FCancelBtn: TButton;
-    FCancelButtonPanel: TWinControl;
-    FChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent;
-    FInfoText: TControl;
-    FInfoTextPanel: TWinControl;
-    IInfoTextControlCaption: IJvDynControlCaption;
-    FMainPanel: TWinControl;
-    FOrgInfoTextWidth: Integer;
-    FStartTime: TDateTime;
-    FTimeText: TControl;
-    ITimeTextControlCaption: IJvDynControlCaption;
-    FTimeTextPanel: TWinControl;
+    function CalculateFormHeight: Integer; override;
+    function CalculateFormWidth: Integer; override;
+    procedure CreateControlAnimate;
     function GetDialogOptions: TJvThreadAnimateDialogOptions;
+    procedure SetControlHeightWidth; override;
     procedure SetDialogOptions(Value: TJvThreadAnimateDialogOptions);
-    //procedure SetFormInfoText;
   protected
-    procedure CreateFormControls;
+    procedure CreateFormControls; override;
     procedure InitializeFormContents; override;
-    procedure SetFormHeightWidth;
     procedure UpdateFormContents; override;
   public
     property DialogOptions: TJvThreadAnimateDialogOptions read GetDialogOptions write SetDialogOptions;
-    property ChangeThreadDialogOptions: TJvChangeThreadDialogOptionsEvent read
-        FChangeThreadDialogOptions write FChangeThreadDialogOptions;
   end;
+
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -293,7 +307,7 @@ begin
     ThreadDialogForm.DialogOptions := DialogOptions;
     ThreadDialogForm.OnPressCancel := OnPressCancel;
     ThreadDialogForm.ChangeThreadDialogOptions := ChangeThreadDialogOptions;
-    ThreadDialogForm.CreateFormControls;
+//    ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
   end
   else
@@ -303,12 +317,6 @@ end;
 function TJvThreadSimpleDialog.GetDialogOptions: TJvThreadSimpleDialogOptions;
 begin
   Result := TJvThreadSimpleDialogOptions(inherited DialogOptions);
-end;
-
-procedure TJvThreadSimpleDialog.SetChangeThreadDialogOptions(const Value:
-    TJvChangeThreadDialogOptionsEvent);
-begin
-  FChangeThreadDialogOptions := Value;
 end;
 
 procedure TJvThreadSimpleDialog.SetDialogOptions(Value: TJvThreadSimpleDialogOptions);
@@ -335,7 +343,7 @@ begin
     ThreadDialogForm.DialogOptions := DialogOptions;
     ThreadDialogForm.ChangeThreadDialogOptions := ChangeThreadDialogOptions;
     ThreadDialogForm.OnPressCancel := OnPressCancel;
-    ThreadDialogForm.CreateFormControls;
+//    ThreadDialogForm.CreateFormControls;
     Result := ThreadDialogForm;
   end
   else
@@ -372,138 +380,55 @@ begin
   FShowProgressBar := Value;
 end;
 
-procedure TJvThreadSimpleDialogForm.CreateFormControls;
+function TJvThreadSimpleDialogForm.CalculateFormHeight: Integer;
+begin
+  Result := inherited CalculateFormHeight;
+  if Assigned(FProgressbarPanel) and FProgressbarPanel.Visible then
+    Result := Result + FProgressbarPanel.Height;
+end;
+
+procedure TJvThreadSimpleDialogForm.CreateControlProgressBar;
 var
   ITmpPanel: IJvDynControlPanel;
   ITmpAlign: IJvDynControlAlign;
 begin
-  FDefaultBorderWidth := 3;
-  FMainPanel := DynControlEngine.CreatePanelControl(Self, Self,
-    'MainPanel', '', alClient);
-  if not Supports(FMainPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
-
-  CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
-    DialogOptions.InfoTextAlignment, 'Info');
-  Supports(FInfoText, IJvDynControlCaption, IInfoTextControlCaption);
-  Supports(FInfoText, IJvDynControlAutoSize, IInfoTextControlAutoSize);
-
-  CreateTextPanel(Self, FMainPanel, FTimeTextPanel, FTimeText, taCenter, 'Time');
-  Supports(FTimeText, IJvDynControlCaption, ITimeTextControlCaption);
-
-  FProgressbarPanel := DynControlEngine.CreatePanelControl(Self,
-    FMainPanel, 'ProgressbarPanel', '', alTop);
+  FProgressbarPanel := DynControlEngine.CreatePanelControl(Self, FMainPanel, 'ProgressbarPanel', '', alTop);
   if not Supports(FProgressbarPanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
   ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
-  FProgressbar := DynControlEngine.CreateProgressbarControl(Self, FProgressbarPanel,
-    'Progressbar');
+  FProgressbar := DynControlEngine.CreateProgressbarControl(Self, FProgressbarPanel, 'Progressbar');
   Supports(FProgressbar, IJvDynControlProgressbar, IProgressBarControl);
-
   FProgressbarPanel.Height := FProgressbar.Height + FDefaultBorderWidth*2;
   if Supports(FProgressbar, IJvDynControlAlign, ITmpAlign) then
     ITmpAlign.ControlSetAlign(alClient);
-
-  FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self,
-    FMainPanel, 'ButtonPanel', '', alTop);
-  FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
-    'CancelBtn', DialogOptions.CancelButtonCaption, '', DefaultCancelBtnClick,
-    True, True);
-  FCancelBtn.Anchors := [akTop];
-  FCancelBtn.Top := FDefaultBorderWidth;
-  FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
-
-  BorderIcons := [];
-  BorderStyle := bsDialog;
-  Caption := ' ';
-  ClientHeight := 88;
-  ClientWidth := 268;
-  FormStyle := DialogOptions.FormStyle;
-  {$IFDEF COMPILER7_UP}
-  Position := poOwnerFormCenter;
-  {$ELSE}
-  Position := poScreenCenter;
-  {$ENDIF COMPILER7_UP}
-
-  UpdateFormContents;
 end;
 
-function TJvThreadSimpleDialogForm.GetDialogOptions: TJvThreadSimpleDialogOptions;
+procedure TJvThreadSimpleDialogForm.CreateFormControls;
 begin
-  Result := TJvThreadSimpleDialogOptions(inherited DialogOptions);
+  Inherited CreateFormControls;
+  FDefaultBorderWidth := 3;
+  CreateControlMainPanel;
+
+  CreateControlInfoText;
+  CreateControlTimeText;
+  CreateControlProgressBar;
+
+  CreateControlCancelButton;
+
+  SetFormDefaultProperties;
+  SetFormHeightWidth;
+end;
+
+procedure TJvThreadSimpleDialogForm.FreeFormControls;
+begin
+  IProgressBarControl := nil;
+  inherited;
 end;
 
 procedure TJvThreadSimpleDialogForm.InitializeFormContents;
 begin
   inherited InitializeFormContents;
-  SetFormHeightWidth;
-  FStartTime := Now;
   FCounter   := 0;
-end;
-
-procedure TJvThreadSimpleDialogForm.SetDialogOptions(Value:
-  TJvThreadSimpleDialogOptions);
-begin
-  inherited DialogOptions := Value;
-end;
-
-procedure TJvThreadSimpleDialogForm.SetFormHeightWidth;
-var
-  H, W: Integer;
-begin
-  if (csDestroying in ComponentState) or not FormIsShown then
-    Exit;
-  if FInfoTextPanel.Visible then
-    W := FOrgInfoTextWidth + 20
-  else
-    W := 0;
-  W := Round(W/10)*10;
-  if W < 250 then
-    W := 250;
-  if W > Screen.Width-100 then
-    W := Screen.Width-100;
-  if (ClientWidth < W) or (ClientWidth > W+50)then // Reduces the resize flickering when the text is changed to often
-    ClientWidth := W;
-  FCancelBtn.Left := (FCancelButtonPanel.Width - FCancelBtn.Width) div 2;
-  FInfoText.Width := FInfoTextPanel.Width-FDefaultBorderWidth*2;
-  FInfoTextPanel.Height := FInfoText.Height+FDefaultBorderWidth*2;
-  FTimeText.Width := FTimeTextPanel.Width-FDefaultBorderWidth*2;
-  FTimeTextPanel.Height := FTimeText.Height+FDefaultBorderWidth*2;
-  FProgressbarPanel.Width := FTimeTextPanel.Width-FDefaultBorderWidth*2;
-  H := 0;
-  if FInfoTextPanel.Visible then
-    H := FInfoTextPanel.Height;
-  if FTimeTextPanel.Visible then
-    H := H + FTimeTextPanel.Height;
-  if FProgressbarPanel.Visible then
-    H := H + FProgressbarPanel.Height;
-  if FCancelButtonPanel.Visible then
-    H := H + FCancelButtonPanel.Height;
-  H := H + FDefaultBorderWidth*2;
-  if H > Screen.Height-100 then
-    H := Screen.Height-100;
-  if ClientHeight <> H then
-    ClientHeight := H;
-end;
-
-procedure TJvThreadSimpleDialogForm.SetFormInfoText;
-begin
-  if (csDestroying in ComponentState) or not FormIsShown then
-    Exit;
-  if Assigned(IInfoTextControlCaption) then
-    if IInfoTextControlCaption.ControlGetCaption<>DialogOptions.FInfoText then
-    begin
-      IInfoTextControlCaption.ControlSetCaption(DialogOptions.FInfoText);
-      if Assigned(IInfoTextControlAutoSize) then
-      begin
-        IInfoTextControlAutoSize.ControlSetAutoSize(True);
-        IInfoTextControlAutoSize.ControlSetAutoSize(False);
-      end;
-      FInfoText.Left := FDefaultBorderWidth; // Some Components change the left position when activating autosize (TcxStaticText)
-      FOrgInfoTextWidth := FInfoText.Width;
-    end;
-  FInfoTextPanel.Visible := DialogOptions.FInfoText <> '';
 end;
 
 procedure TJvThreadSimpleDialogForm.UpdateFormContents;
@@ -511,21 +436,10 @@ begin
   if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
   inherited UpdateFormContents;
-  FCounter := FCounter + 1;
   if Assigned(DialogOptions) then
   begin
-    FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
-    FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
-    FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
-    FProgressbarPanel.Visible := DialogOptions.ShowProgressBar;
-    if Assigned(ChangeThreadDialogOptions) then
-      ChangeThreadDialogOptions(DialogOptions);
-
-    SetFormInfoText;
-
-    if Assigned(ITimeTextControlCaption) then
-      ITimeTextControlCaption.ControlSetCaption (FormatDateTime('hh:nn:ss', Now - FStartTime));
-
+    if Assigned(FProgressbarPanel) then
+      FProgressbarPanel.Visible := DialogOptions.ShowProgressBar;
     if Assigned(IProgressBarControl) then
       if (DialogOptions.ProgressBarPosition >= 0) and (DialogOptions.ProgressBarPosition <= 100)  then
         IProgressBarControl.ControlSetPosition(DialogOptions.ProgressBarPosition)
@@ -542,26 +456,51 @@ begin
   SetFormHeightWidth;
 end;
 
-procedure TJvThreadAnimateDialogForm.CreateFormControls;
+function TJvThreadSimpleDialogForm.GetDialogOptions: TJvThreadSimpleDialogOptions;
+begin
+  Result := TJvThreadSimpleDialogOptions(inherited DialogOptions);
+end;
+
+procedure TJvThreadSimpleDialogForm.SetControlHeightWidth;
+begin
+  inherited SetControlHeightWidth;
+  if Assigned(FProgressbarPanel) then
+    FProgressbarPanel.Width := FTimeTextPanel.Width;
+end;
+
+procedure TJvThreadSimpleDialogForm.SetDialogOptions(Value:
+  TJvThreadSimpleDialogOptions);
+begin
+  inherited DialogOptions := Value;
+end;
+
+function TJvThreadAnimateDialogForm.CalculateFormHeight: Integer;
+begin
+  Result := inherited CalculateFormHeight;
+  if Assigned(FAnimatePanel) and FAnimatePanel.Visible then
+    Result := Result + FAnimatePanel.Height;
+end;
+
+function TJvThreadAnimateDialogForm.CalculateFormWidth: Integer;
+var
+  W: Integer;
+begin
+  W := Inherited CalculateFormWidth;
+
+  if Assigned(FAnimatePanel) and FAnimatePanel.Visible then
+    W := Max(W, FAnimate.Width + 20);
+
+  Result := w;
+end;
+
+procedure TJvThreadAnimateDialogForm.CreateControlAnimate;
 var
   ITmpPanel: IJvDynControlPanel;
 begin
-  FDefaultBorderWidth:=3;
-  FMainPanel := DynControlEngine.CreatePanelControl(Self, Self,
-    'MainPanel', '', alClient);
-  if not Supports(FMainPanel, IJvDynControlPanel, ITmpPanel) then
-    raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
-
-  CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
-    DialogOptions.InfoTextAlignment,  'Info');
-  Supports(FInfoText, IJvDynControlCaption, IInfoTextControlCaption);
-
-  FAnimatePanel := DynControlEngine.CreatePanelControl(Self, FMainPanel,
-    'AnimatePanel', '', alTop);
+  FAnimatePanel := DynControlEngine.CreatePanelControl(Self, FMainPanel, 'AnimatePanel', '', alTop);
   if not Supports(FAnimatePanel, IJvDynControlPanel, ITmpPanel) then
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
-  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+  ITmpPanel.ControlSetBorder(bvNone, bvRaised, 0, bsNone, FDefaultBorderWidth);
 
   FAnimate := TAnimate.Create(Self);
   FAnimate.Parent := FAnimatePanel;
@@ -572,97 +511,28 @@ begin
   FAnimate.FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
   FAnimate.ResName := TJvThreadAnimateDialogOptions(DialogOptions).ResName;
   FAnimatePanel.Height := FAnimate.Height + FDefaultBorderWidth*2;
-
-  CreateTextPanel(Self, FMainPanel, FTimeTextPanel, FTimeText, taCenter,  'Time');
-  Supports(FTimeText, IJvDynControlCaption, ITimeTextControlCaption);
-
-  FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self,
-    FMainPanel, 'ButtonPanel', '', alTop);
-  FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
-    'CancelBtn', DialogOptions.CancelButtonCaption, '', DefaultCancelBtnClick,
-    True, True);
-  FCancelBtn.Anchors := [akTop];
-  FCancelBtn.Top := FDefaultBorderWidth;
-  FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
-
-  BorderIcons := [];
-  BorderStyle := bsDialog;
-  Caption := ' ';
-  FormStyle := DialogOptions.FormStyle;
-  {$IFDEF COMPILER7_UP}
-  Position := poOwnerFormCenter;
-  {$ELSE}
-  Position := poScreenCenter;
-  {$ENDIF COMPILER7_UP}
-  UpdateFormContents;
 end;
 
-function TJvThreadAnimateDialogForm.GetDialogOptions: TJvThreadAnimateDialogOptions;
+procedure TJvThreadAnimateDialogForm.CreateFormControls;
 begin
-  Result := TJvThreadAnimateDialogOptions(inherited DialogOptions);
+  Inherited CreateFormControls;
+  FDefaultBorderWidth := 3;
+  CreateControlMainPanel;
+
+  CreateControlInfoText;
+  CreateControlAnimate;
+  CreateControlTimeText;
+
+  CreateControlCancelButton;
+
+  SetFormDefaultProperties;
+  SetFormHeightWidth;
 end;
 
 procedure TJvThreadAnimateDialogForm.InitializeFormContents;
 begin
   inherited InitializeFormContents;
-  SetFormHeightWidth;
-  FStartTime := Now;
   FAnimate.Active := True;
-end;
-
-procedure TJvThreadAnimateDialogForm.SetDialogOptions(Value:
-  TJvThreadAnimateDialogOptions);
-begin
-  inherited DialogOptions := Value;
-end;
-
-procedure TJvThreadAnimateDialogForm.SetFormHeightWidth;
-var
-  H, W: Integer;
-begin
-  if (csDestroying in ComponentState) or not FormIsShown then
-    Exit;
-  H := 0;
-  W := 200;
-
-  if FInfoTextPanel.Visible then
-    W := Max(FOrgInfoTextWidth + 80, W);
-  if FAnimatePanel.Visible then
-    W := Max(W, FAnimate.Width + 20);
-
-  if ClientWidth <> W then
-    ClientWidth := W;
-
-  FCancelBtn.Left := (FCancelButtonPanel.Width - FCancelBtn.Width) div 2;
-  FAnimate.Left   := (FAnimatePanel.Width - FAnimate.Width) div 2;
-  FInfoText.Width := FInfoTextPanel.Width-FDefaultBorderWidth*2;
-  FInfoTextPanel.Height := FInfoText.Height+FDefaultBorderWidth*2;
-  FTimeText.Width := FTimeTextPanel.Width-FDefaultBorderWidth*2;
-  FTimeTextPanel.Height := FTimeText.Height+FDefaultBorderWidth*2;
-
-  if FInfoTextPanel.Visible then
-  begin
-    FInfoTextPanel.Top := h;
-    H := H + FInfoTextPanel.Height;
-  end;
-  if FAnimatePanel.Visible then
-  begin
-    FAnimatePanel.Top := h;
-    H := H + FAnimatePanel.Height;
-  end;
-  if FTimeTextPanel.Visible then
-  begin
-    FTimeTextPanel.Top := h;
-    H := H + FTimeTextPanel.Height;
-  end;
-  if FCancelButtonPanel.Visible then
-  begin
-    FCancelButtonPanel.Top := h;
-    H := H + FCancelButtonPanel.Height;
-  end;
-  H := H + 6;
-  if ClientHeight <> H then
-    ClientHeight := H;
 end;
 
 procedure TJvThreadAnimateDialogForm.UpdateFormContents;
@@ -672,26 +542,55 @@ begin
   inherited UpdateFormContents;
   if Assigned(DialogOptions) then
   begin
-    if Assigned(ChangeThreadDialogOptions) then
-      ChangeThreadDialogOptions(DialogOptions);
-    if Assigned(IInfoTextControlCaption) then
-      IInfoTextControlCaption.ControlSetCaption(DialogOptions.FInfoText);
-    if Assigned(ITimeTextControlCaption) then
-      ITimeTextControlCaption.ControlSetCaption(FormatDateTime('hh:nn:ss', Now - FStartTime));
     Caption := DialogOptions.Caption;
-    FInfoTextPanel.Visible := DialogOptions.InfoText <> '';
     FAnimatePanel.Visible := FileExists(FAnimate.FileName) or
       (FAnimate.CommonAVI <> aviNone) or (FAnimate.ResName <> '');
-    FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
-    FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
-    FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
   end;
   SetFormHeightWidth;
 end;
 
-procedure TJvDynControlEngineThreadDialogForm.CreateTextPanel(AOwner:
-    TComponent; AParent: TWinControl; var Panel: TWinControl; var Text:
-    TControl; TextAlignment: TAlignment; const BaseName: string);
+function TJvThreadAnimateDialogForm.GetDialogOptions: TJvThreadAnimateDialogOptions;
+begin
+  Result := TJvThreadAnimateDialogOptions(inherited DialogOptions);
+end;
+
+procedure TJvThreadAnimateDialogForm.SetControlHeightWidth;
+var h : Integer;
+begin
+  Inherited SetControlHeightWidth;
+  FAnimate.Left   := (FAnimatePanel.Width - FAnimate.Width) div 2;
+  FAnimatePanel.Height := FAnimate.Height + FDefaultBorderWidth*2;
+  h := 0;
+  if Assigned(FInfoTextPanel) and FInfoTextPanel.Visible then
+  begin
+    FInfoTextPanel.Top := h;
+    H := H + FInfoTextPanel.Height;
+  end;
+  if Assigned(FAnimatePanel) and FAnimatePanel.Visible then
+  begin
+    FAnimatePanel.Top := h;
+    H := H + FAnimatePanel.Height;
+  end;
+  if Assigned(FTimeTextPanel) and FTimeTextPanel.Visible then
+  begin
+    FTimeTextPanel.Top := h;
+    H := H + FTimeTextPanel.Height;
+  end;
+  if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
+  begin
+    FCancelButtonPanel.Top := h;
+    H := H + FCancelButtonPanel.Height;
+  end;
+end;
+
+procedure TJvThreadAnimateDialogForm.SetDialogOptions(Value:
+  TJvThreadAnimateDialogOptions);
+begin
+  inherited DialogOptions := Value;
+end;
+
+procedure TJvDynControlEngineThreadDialogForm.CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel:
+    TWinControl; var Text: TControl; TextAlignment: TAlignment; const BaseName: string);
 var
   ITmpPanel: IJvDynControlPanel;
   ITmpAlignment: IJvDynControlAlignment;
@@ -712,6 +611,202 @@ end;
 function TJvDynControlEngineThreadDialogForm.GetDynControlEngine: TJvDynControlEngine;
 begin
   Result := DefaultDynControlEngine;
+end;
+
+procedure TJvDynControlEngineThreadDialogForm.SetDynControlEngine(const Value: TJvDynControlEngine);
+begin
+  if not Assigned(Value) then
+    FDynControlEngine := DefaultDynControlEngine
+  else
+    FDynControlEngine := Value;
+end;
+
+function TJvThreadBaseDialogForm.CalculateFormHeight: Integer;
+var
+  H: Integer;
+begin
+  H := 0;
+  if Assigned(FInfoTextPanel) and FInfoTextPanel.Visible then
+    H := FInfoTextPanel.Height;
+  if Assigned(FTimeTextPanel) and FTimeTextPanel.Visible then
+    H := H + FTimeTextPanel.Height;
+  if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
+    H := H + FCancelButtonPanel.Height;
+  Result := h;
+end;
+
+function TJvThreadBaseDialogForm.CalculateFormWidth: Integer;
+var
+  W: Integer;
+begin
+  if Assigned(FInfoTextPanel) and FInfoTextPanel.Visible then
+    W := FOrgInfoTextWidth + 20
+  else
+    W := 0;
+  W := Round(W/10)*10;
+  if W < 250 then
+    W := 250;
+  if W > Screen.Width-100 then
+    W := Screen.Width-100;
+  Result := w;
+end;
+
+procedure TJvThreadBaseDialogForm.CreateControlCancelButton;
+begin
+  FCancelButtonPanel := DynControlEngine.CreatePanelControl(Self,
+    FMainPanel, 'ButtonPanel', '', alTop);
+  FCancelBtn := DynControlEngine.CreateButton(Self, FCancelButtonPanel,
+    'CancelBtn', DialogOptions.CancelButtonCaption, '', DefaultCancelBtnClick,
+    True, True);
+  FCancelBtn.Anchors := [akTop];
+  FCancelBtn.Top := FDefaultBorderWidth;
+  FCancelButtonPanel.Height := FCancelBtn.Height + FDefaultBorderWidth*2;
+end;
+
+procedure TJvThreadBaseDialogForm.CreateControlInfoText;
+begin
+  CreateTextPanel(Self, FMainPanel, FInfoTextPanel, FInfoText,
+    DialogOptions.InfoTextAlignment, 'Info');
+  Supports(FInfoText, IJvDynControlCaption, IInfoTextControlCaption);
+  Supports(FInfoText, IJvDynControlAutoSize, IInfoTextControlAutoSize);
+end;
+
+procedure TJvThreadBaseDialogForm.CreateControlMainPanel;
+var
+  ITmpPanel: IJvDynControlPanel;
+begin
+  FMainPanel := DynControlEngine.CreatePanelControl(Self, Self,
+    'MainPanel', '', alClient);
+  if not Supports(FMainPanel, IJvDynControlPanel, ITmpPanel) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  ITmpPanel.ControlSetBorder(bvNone, bvNone, 0, bsNone, FDefaultBorderWidth);
+end;
+
+procedure TJvThreadBaseDialogForm.CreateControlTimeText;
+begin
+  CreateTextPanel(Self, FMainPanel, FTimeTextPanel, FTimeText, taCenter, 'Time');
+  Supports(FTimeText, IJvDynControlCaption, ITimeTextControlCaption);
+end;
+
+procedure TJvThreadBaseDialogForm.FreeFormControls;
+begin
+//  FreeAndNil(FCancelBtn);
+//  FreeAndNil(FCancelButtonPanel);
+//  FreeAndNil(FInfoText);
+//  FreeAndNil(FInfoTextPanel);
+//  FreeAndNil(FMainPanel);
+//  FreeAndNil(FTimeText);
+//  FreeAndNil(FTimeTextPanel);
+  IInfoTextControlAutoSize:= nil;
+  IInfoTextControlCaption:= nil;
+  ITimeTextControlCaption:= nil;
+  inherited;
+end;
+
+procedure TJvThreadBaseDialogForm.InitializeFormContents;
+begin
+  inherited InitializeFormContents;
+  SetFormHeightWidth;
+  FStartTime := Now;
+end;
+
+procedure TJvThreadBaseDialogForm.SetControlHeightWidth;
+begin
+  if Assigned(FCancelButtonPanel) and Assigned(FCancelBtn) then
+    FCancelBtn.Left := (FCancelButtonPanel.Width - FCancelBtn.Width) div 2;
+  if Assigned(FInfoText) and Assigned(FInfoTextPanel) then
+  begin
+    FInfoText.Width := FInfoTextPanel.Width-FDefaultBorderWidth*2;
+    FInfoTextPanel.Height := FInfoText.Height+FDefaultBorderWidth*2;
+  end;
+  if Assigned(FTimeText) and Assigned(FTimeTextPanel) then
+  begin
+    FTimeText.Width := FTimeTextPanel.Width-FDefaultBorderWidth*2;
+    FTimeTextPanel.Height := FTimeText.Height+FDefaultBorderWidth*2;
+  end;
+end;
+
+procedure TJvThreadBaseDialogForm.SetFormDefaultProperties;
+begin
+  BorderIcons := [];
+  BorderStyle := bsDialog;
+  Caption := ' ';
+  FormStyle := DialogOptions.FormStyle;
+  {$IFDEF COMPILER7_UP}
+  Position := poOwnerFormCenter;
+  {$ELSE}
+  Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};
+end;
+
+procedure TJvThreadBaseDialogForm.SetFormHeightWidth;
+var
+  H, W: Integer;
+begin
+  if (csDestroying in ComponentState) or not FormIsShown then
+    Exit;
+  w := CalculateFormWidth;
+  W := Round(W/10)*10;
+  if (ClientWidth < W-50) or (ClientWidth > W+50)then // Reduces the resize flickering when the text is changed to often
+    ClientWidth := W;
+  SetControlHeightWidth;
+  h := CalculateFormHeight + FDefaultBorderWidth*2;
+  h := Round(h/10)*10;
+  if H > Screen.Height-100 then
+    H := Screen.Height-100;
+  if ClientHeight <> H then
+    ClientHeight := H;
+end;
+
+procedure TJvThreadBaseDialogForm.SetFormInfoText;
+begin
+  if (csDestroying in ComponentState) or not FormIsShown then
+    Exit;
+  if Assigned(IInfoTextControlCaption) then
+    if IInfoTextControlCaption.ControlGetCaption<>DialogOptions.FInfoText then
+    begin
+      IInfoTextControlCaption.ControlSetCaption(DialogOptions.FInfoText);
+      if Assigned(IInfoTextControlAutoSize) then
+      begin
+        IInfoTextControlAutoSize.ControlSetAutoSize(True);
+        IInfoTextControlAutoSize.ControlSetAutoSize(False);
+      end;
+      FInfoText.Left := FDefaultBorderWidth; // Some Components change the left position when activating autosize (TcxStaticText)
+      FOrgInfoTextWidth := FInfoText.Width;
+    end;
+  FInfoTextPanel.Visible := DialogOptions.FInfoText <> '';
+end;
+
+procedure TJvThreadBaseDialogForm.UpdateFormContents;
+begin
+  if (csDestroying in ComponentState) or not FormIsShown then
+    Exit;
+  inherited UpdateFormContents;
+  if Assigned(DialogOptions) then
+  begin
+    FTimeTextPanel.Visible := DialogOptions.ShowElapsedTime;
+    FCancelBtn.Enabled := DialogOptions.EnableCancelButton;
+    FCancelButtonPanel.Visible := DialogOptions.ShowCancelButton;
+    if Assigned(ChangeThreadDialogOptions) then
+      ChangeThreadDialogOptions(DialogOptions);
+
+    SetFormInfoText;
+
+    if Assigned(ITimeTextControlCaption) then
+      ITimeTextControlCaption.ControlSetCaption (FormatDateTime('hh:nn:ss', Now - FStartTime));
+
+  end;
+  SetFormHeightWidth;
+end;
+
+function TJvThreadBaseDialogForm.GetDialogOptions: TJvThreadBaseDialogOptions;
+begin
+  Result := TJvThreadSimpleDialogOptions(inherited DialogOptions);
+end;
+
+procedure TJvThreadBaseDialogForm.SetDialogOptions(const Value: TJvThreadBaseDialogOptions);
+begin
+  inherited DialogOptions := Value;
 end;
 
 {$IFDEF UNITVERSIONING}
