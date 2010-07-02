@@ -71,6 +71,7 @@ type
     FConnectedDataObject: TObject;
     FConnectedThread: TJvThread;
     FDialogOptions: TJvCustomThreadDialogOptions;
+    FFormControlsCreated: Boolean;
     FFormIsShown: Boolean;
     FInternalShowDelay: Integer;
     FInternalTimer: TTimer;
@@ -90,6 +91,8 @@ type
     procedure SetOnClose(Value: TCloseEvent);
     procedure OnInternalTimer(Sender: TObject); virtual;
   protected
+    procedure CreateFormControls; virtual;
+    procedure FreeFormControls; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeFormContents; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -98,6 +101,7 @@ type
     procedure ReplaceFormShow(Sender: TObject);
     procedure TransferDialogOptions; virtual;
     procedure UpdateFormContents; virtual;
+    property FormControlsCreated: Boolean read FFormControlsCreated;
     property FormIsShown: Boolean read FFormIsShown default False;
     property OnPressCancel: TJvThreadCancelEvent read FOnPressCancel write FOnPressCancel;
   public
@@ -357,8 +361,7 @@ end;
 
 //=== { TJvCustomThreadDialogForm } ==========================================
 
-constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent; Dummy:
-    Integer = 0);
+constructor TJvCustomThreadDialogForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
 begin
   inherited CreateNew(AOwner, Dummy);
   FInternalTimerInterval := 500;
@@ -376,6 +379,7 @@ begin
   FInternalTimer.Interval := FInternalTimerInterval;
   FInternalShowDelay := 0;
   FFormIsShown := False;
+  FFormControlsCreated := False;
 end;
 
 constructor TJvCustomThreadDialogForm.CreateNewFormStyle(AOwner: TJvThread; FormStyle: TFormStyle;
@@ -391,6 +395,7 @@ end;
 
 destructor TJvCustomThreadDialogForm.Destroy;
 begin
+  FreeFormControls;
   FreeAndNil(FInternalTimer);
   inherited Destroy;
 end;
@@ -402,6 +407,16 @@ begin
     ModalResult := mrCancel
   else
     Close;
+end;
+
+procedure TJvCustomThreadDialogForm.CreateFormControls;
+begin
+  FFormControlsCreated := True;
+end;
+
+procedure TJvCustomThreadDialogForm.FreeFormControls;
+begin
+  FFormControlsCreated := False;
 end;
 
 procedure TJvCustomThreadDialogForm.CreateParams(var Params: TCreateParams);
@@ -501,6 +516,8 @@ end;
 procedure TJvCustomThreadDialogForm.ReplaceFormShow(Sender: TObject);
 begin
   FFormIsShown := True;
+  if not FormControlsCreated then
+    CreateFormControls;
   InitializeFormContents;
   UpdateFormContents;
   FInternalTimer.Enabled := True;
@@ -1037,6 +1054,7 @@ begin
     if Assigned(FThreadDialogForm) then
     begin
       FreeNotification(FThreadDialogForm);
+      FThreadDialogForm.CreateFormControls;
       FThreadDialogForm.ConnectedDataObject := ConnectedDataObject;
       FThreadDialogForm.TransferDialogOptions;
       InternalAfterCreateDialogForm(FThreadDialogForm);
