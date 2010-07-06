@@ -452,6 +452,7 @@ begin
     else
       Caption := DialogOptions.Caption + ' \ ';
     end;
+    Inc (FCounter);
   end;
   SetFormHeightWidth;
 end;
