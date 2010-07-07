@@ -2977,7 +2977,8 @@ end;
 procedure TJvDBLookupCombo.ListLinkDataSetChanged;
 begin
   inherited ListLinkDataSetChanged;
-  if not FInListDataSetChanged and not FListVisible then
+  if not FInListDataSetChanged and not FListVisible and
+    (FLookupSource <> nil) and (FLookupSource.DataSet <> nil) and (FLookupSource.DataSet.State = dsBrowse) then
   begin
     FInListDataSetChanged := True;
     try
