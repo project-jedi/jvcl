@@ -580,7 +580,9 @@ begin
   if Assigned(FCancelButtonPanel) and FCancelButtonPanel.Visible then
   begin
     FCancelButtonPanel.Top := h;
-    H := H + FCancelButtonPanel.Height;
+
+    // No need to assign, this is not used later on
+    //H := H + FCancelButtonPanel.Height;
   end;
 end;
 
