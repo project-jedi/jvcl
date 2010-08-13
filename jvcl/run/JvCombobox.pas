@@ -285,6 +285,7 @@ type
     procedure ChangeText(const NewText: string);
     procedure SetOrderedText(const Value: Boolean);
     function GetOrderedTextValue: string;
+    procedure RefreshCheckedCount;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -762,11 +763,23 @@ begin
   Result := FCapSelAll <> RsCapDeselAll;
 end;
 
+procedure TJvCustomCheckedComboBox.RefreshCheckedCount;
+var
+  I, Count: Integer;
+begin
+  Count := 0;
+  for I := 0 to Items.Count - 1 do
+    if Checked[I] then
+      Inc(Count);
+  FCheckedCount := Count;
+end;
+
 procedure TJvCustomCheckedComboBox.ItemsChange(Sender: TObject);
 begin
   FListBox.Clear;
   ChangeText('');
   FListBox.Items.Assign(FItems);
+  RefreshCheckedCount;
 end;
 
 procedure TJvCustomCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
