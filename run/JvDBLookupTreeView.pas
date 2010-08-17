@@ -214,6 +214,7 @@ type
     procedure CloseUp(Accept: Boolean);
     procedure DropDown;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    function CanFocusEx: Boolean;
     property KeyValue;
     property ListVisible: Boolean read FListVisible;
     property Text: string read FText;
@@ -997,18 +998,25 @@ begin
     FAlignment := taLeftJustify;
   end;
   Invalidate;
-
-
-
-
-
-
 end;
 
 procedure TJvDBLookupTreeViewCombo.ListLinkActiveChanged;
 begin
   inherited ListLinkActiveChanged;
   KeyValueChanged;
+end;
+
+function TJvDBLookupTreeViewCombo.CanFocusEx: Boolean;
+var
+  P: TWinControl;
+begin
+  P := Parent;
+  Result := Visible and Enabled;
+  while Result and (P <> nil) do
+  begin
+    Result := P.Visible and P.Enabled;
+    P := P.Parent;
+  end;
 end;
 
 procedure TJvDBLookupTreeViewCombo.CloseUp(Accept: Boolean);
@@ -1020,7 +1028,8 @@ begin
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     ListValue := FDataList.GetValue;
-    SetFocus;
+    if CanFocusEx then
+      SetFocus;
     FDataList.Hide;
 {    SetWindowPos(FDataList.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW); }
@@ -1320,7 +1329,6 @@ begin
   FTree.BorderStyle := bsNone;
   FTree.HideSelection := False;
   FTree.TabStop := False;
-//  FTree.OnDblClick := OnDblClick2;
 end;
 
 destructor TJvTreePopupDataList.Destroy;
@@ -1724,7 +1732,6 @@ begin
 
   inherited FocusKilled(NextWnd);
 end;
-
 
 {added by zelen}
 {$IFDEF JVCLThemesEnabled}
