@@ -5045,7 +5045,7 @@ end;
 
 procedure TJvInterpreterExpression.ParseToken;
 var
-  OldDecimalSeparator: Char;
+  FS: TFormatSettings;
   Dob: Extended;
   Int: Integer;
   Stub: Integer;
@@ -5060,15 +5060,10 @@ begin
       end;
     ttDouble:
       begin
-        OldDecimalSeparator := DecimalSeparator;
-        DecimalSeparator := '.';
-        if not TextToFloat(PChar(FTokenStr), Dob, fvExtended) then
-        begin
-          DecimalSeparator := OldDecimalSeparator;
+        FS.ThousandSeparator := ',';
+        FS.DecimalSeparator := '.';
+        if not TextToFloat(PChar(FTokenStr), Dob, fvExtended, FS) then
           JvInterpreterError(ieInternal, -1);
-        end
-        else
-          DecimalSeparator := OldDecimalSeparator;
         FToken := Dob;
       end;
     ttString:
