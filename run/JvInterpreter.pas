@@ -5045,7 +5045,11 @@ end;
 
 procedure TJvInterpreterExpression.ParseToken;
 var
+  {$IFDEF DELPHI7_UP}
   FS: TFormatSettings;
+  {$ELSE}
+  OldDecimalSeparator: Char;
+  {$ENDIF DELPHI7_UP}
   Dob: Extended;
   Int: Integer;
   Stub: Integer;
@@ -5060,10 +5064,22 @@ begin
       end;
     ttDouble:
       begin
+        {$IFDEF DELPHI7_UP}
         FS.ThousandSeparator := ',';
         FS.DecimalSeparator := '.';
         if not TextToFloat(PChar(FTokenStr), Dob, fvExtended, FS) then
           JvInterpreterError(ieInternal, -1);
+        {$ELSE}
+        OldDecimalSeparator := DecimalSeparator;
+        DecimalSeparator := '.';
+        if not TextToFloat(PChar(FTokenStr), Dob, fvExtended) then
+        begin
+          DecimalSeparator := OldDecimalSeparator;
+          JvInterpreterError(ieInternal, -1);
+        end
+        else
+          DecimalSeparator := OldDecimalSeparator;
+        {$ENDIF DELPHI7_UP}
         FToken := Dob;
       end;
     ttString:
