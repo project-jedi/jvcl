@@ -224,8 +224,10 @@ begin
       PropInfo := PropList[i];
       PropName := PropInfo^.Name;
       case PropInfo^.PropType^.Kind of
-        tkInteger, tkInt64:
+        tkInteger:
           AddItem(Category, PropName, IntToStr(GetOrdProp(AnObject, PropName)), Indent);
+        tkInt64:
+          AddItem(Category, PropName, IntToStr(GetInt64Prop(AnObject, PropName)), Indent);
         tkFloat:
           AddItem(Category, PropName, FloatToStr(GetFloatProp(AnObject, PropName)), Indent);
         tkEnumeration:
