@@ -100,13 +100,8 @@ type
     function GetLineLength(Index: Integer): Integer; override;
     function FindNotBlankCharPosInLine(Line: Integer): Integer; override;
 
-    {$IFDEF SUPPORTS_UNICODE}
-    function GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean; override;
-    function GetUnicodeWordOnCaret: UnicodeString; override;
-    {$ELSE}
-    function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; override;
-    function GetAnsiWordOnCaret: AnsiString; override;
-    {$ENDIF SUPPORTS_UNICODE}
+    function GetTextLine(Y: Integer; out Text: string): Boolean; override;
+    function InternGetWordOnCaret: string; override;
 
     procedure ReLine; override;
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; override;
@@ -268,11 +263,7 @@ type
     procedure ReplaceWordItemIndex(SubStrStart: Integer); override;
     function GetTemplateCount: Integer; override;
     function GetIdentifierCount: Integer; override;
-    {$IFDEF SUPPORTS_UNICODE}
-    function GetUnicodeSeparator: UnicodeString; override;
-    {$ELSE}
-    function GetAnsiSeparator: AnsiString; override;
-    {$ENDIF SUPPORTS_UNICODE}
+    function GetSeparator: string; override;
   public
     constructor Create(AJvEditor: TJvCustomEditor);
     destructor Destroy; override;
@@ -919,8 +910,7 @@ begin
   ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
-{$IFDEF SUPPORTS_UNICODE}
-function TJvCustomEditor.GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean;
+function TJvCustomEditor.GetTextLine(Y: Integer; out Text: string): Boolean;
 begin
   if (Y >= 0) and (Y < Lines.Count) then
   begin
@@ -934,30 +924,10 @@ begin
   end;
 end;
 
-function TJvCustomEditor.GetUnicodeWordOnCaret: UnicodeString;
+function TJvCustomEditor.InternGetWordOnCaret: string;
 begin
   Result := GetWordOnCaret;
 end;
-{$ELSE}
-function TJvCustomEditor.GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean;
-begin
-  if (Y >= 0) and (Y < Lines.Count) then
-  begin
-    Text := Lines[Y];
-    Result := True;
-  end
-  else
-  begin
-    Text := '';
-    Result := False;
-  end;
-end;
-
-function TJvCustomEditor.GetAnsiWordOnCaret: AnsiString;
-begin
-  Result := GetWordOnCaret;
-end;
-{$ENDIF SUPPORTS_UNICODE}
 
 procedure TJvCustomEditor.ReLine;
 begin
@@ -1863,7 +1833,7 @@ begin
   try
     SetLength(ClipS, Len);
     SetLength(ClipS, Clipboard.GetTextBuf(PChar(ClipS), Len));
-    ClipS := {$IFDEF SUPPORTS_UNICODE}ExpandTabsUnicode{$ELSE}ExpandTabsAnsi{$ENDIF SUPPORTS_UNICODE}(AdjustLineBreaks(ClipS));
+    ClipS := ExpandTabs(AdjustLineBreaks(ClipS));
     PaintCaret(False);
 
     ReLine;
@@ -2025,6 +1995,7 @@ var
   Tabs, LenSp: Integer;
   P: PChar;
 begin
+  // ahuser: I think we should reimplement that function with proper tab handling.
   ps := Pos(Tab, S);
   if ps > 0 then
   begin
@@ -2044,8 +2015,8 @@ begin
     // copy the chars before the Tab
     if ps > 1 then
     begin
-      Move(S[1], P[0], ps - 1 * SizeOf(Char));
-      Inc(P, ps - 1);
+      Move(S[1], P[0], ps * SizeOf(Char));
+      Inc(P, ps);
     end;
 
     for I := ps to Length(S) do
@@ -2780,17 +2751,10 @@ begin
   inherited Completion := Value;
 end;
 
-{$IFDEF SUPPORTS_UNICODE}
-function TJvCompletion.GetUnicodeSeparator: UnicodeString;
+function TJvCompletion.GetSeparator: string;
 begin
   Result := FSeparator;
 end;
-{$ELSE}
-function TJvCompletion.GetAnsiSeparator: AnsiString;
-begin
-  Result := FSeparator;
-end;
-{$ENDIF SUPPORTS_UNICODE}
 
 {$IFDEF UNITVERSIONING}
 initialization

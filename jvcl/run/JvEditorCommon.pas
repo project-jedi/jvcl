@@ -804,15 +804,8 @@ type
     function GetTabStop(X, Y: Integer; Next: Boolean): Integer; virtual; abstract;
     function GetBackStop(X, Y: Integer): Integer; virtual; abstract;
     function GetAutoIndentStop(Y: Integer): Integer; virtual; abstract;
-    {$IFDEF SUPPORTS_UNICODE}
-    function ExpandTabsUnicode(const S: UnicodeString): UnicodeString; // ClipboardPaste
-    function GetUnicodeTextLine(Y: Integer; out Text: UnicodeString): Boolean; virtual; abstract;
-    function GetUnicodeWordOnCaret: UnicodeString; virtual; abstract;
-    {$ELSE}
-    function ExpandTabsAnsi(const S: AnsiString): AnsiString; // ClipboardPaste
-    function GetAnsiTextLine(Y: Integer; out Text: AnsiString): Boolean; virtual; abstract;
-    function GetAnsiWordOnCaret: AnsiString; virtual; abstract;
-    {$ENDIF SUPPORTS_UNICODE}
+    function GetTextLine(Y: Integer; out Text: string): Boolean; virtual; abstract;
+    function InternGetWordOnCaret: string; virtual; abstract;
 
     { triggers when Lines changes }
     procedure DoLinesChange(Sender: TObject); virtual;
@@ -1137,11 +1130,7 @@ type
     procedure ReplaceWordItemIndex(SubStrStart: Integer); virtual; abstract;
     function GetTemplateCount: Integer; virtual; abstract;
     function GetIdentifierCount: Integer; virtual; abstract;
-    {$IFDEF SUPPORTS_UNICODE}
-    function GetUnicodeSeparator: UnicodeString; virtual; abstract;
-    {$ELSE}
-    function GetAnsiSeparator: AnsiString; virtual; abstract;
-    {$ENDIF SUPPORTS_UNICODE}
+    function GetSeparator: string; virtual; abstract;
 
     function GetItemCount: Integer;
     property JvEditor: TJvCustomEditorBase read FJvEditor;
@@ -2885,62 +2874,6 @@ begin
   end;
 end;
 
-{$IFDEF SUPPORTS_UNICODE}
-function TJvCustomEditorBase.ExpandTabsUnicode(const S: UnicodeString): UnicodeString;
-var
-  Ps, I: Integer;
-  Sp: UnicodeString;
-  Tabs, LenSp: Integer;
-  P: PChar;
-{$ELSE}
-function TJvCustomEditorBase.ExpandTabsAnsi(const S: AnsiString): AnsiString;
-var
-  Ps, I: Integer;
-  Sp: AnsiString;
-  Tabs, LenSp: Integer;
-  P: PAnsiChar;
-{$ENDIF SUPPORTS_UNICODE}
-begin
-  Ps := Pos(Tab, S);
-  if Ps > 0 then
-  begin
-   // How may Tab chars?
-    Tabs := 1;
-    for I := Ps + 1 to Length(S) do
-      if S[I] = Tab then
-        Inc(Tabs);
-
-    Sp := Spaces(GetDefTabStop(0, True));
-    LenSp := Length(Sp);
-
-   // needed memory
-    SetLength(Result, Length(S) - Tabs + Tabs * LenSp);
-    P := {$IFDEF SUPPORTS_UNICODE}PChar{$ELSE}PAnsiChar{$ENDIF SUPPORTS_UNICODE}(Result);
-
-   // copy the chars before the Tab
-    if Ps > 1 then
-    begin
-      Move(S[1], P[0], Ps - 1);
-      Inc(P, Ps - 1);
-    end;
-
-    for I := Ps to Length(S) do
-      if S[I] <> Tab then
-      begin
-        P[0] := S[I];
-        Inc(P);
-      end
-      else
-      if LenSp > 0 then
-      begin
-        Move(Sp[1], P[0], LenSp);
-        Inc(P, LenSp);
-      end;
-  end
-  else
-    Result := S;
-end;
-
 function TJvCustomEditorBase.GetDefTabStop(X: Integer; Next: Boolean): Integer;
 var
   I: Integer;
@@ -4553,7 +4486,7 @@ begin
   if not BracketHighlighting.Active or not Visible or not Enabled then
     Exit;
 
-  if (Y >= 0) and {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) and (X >= 0) and (X < Length(Text)) then
+  if (Y >= 0) and GetTextLine(Y, Text) and (X >= 0) and (X < Length(Text)) then
   begin
     LenText := Length(Text);
 
@@ -4592,7 +4525,7 @@ begin
     begin
       IsBracketCompare := False;
       // Text search
-      SearchStart := {$IFDEF SUPPORTS_UNICODE}GetUnicodeWordOnCaret{$ELSE}GetAnsiWordOnCaret{$ENDIF SUPPORTS_UNICODE};
+      SearchStart := InternGetWordOnCaret;
       while (X >= 0) and not CharInSet(Text[X + 1], Separators) do
         Dec(X);
       Inc(X);
@@ -4630,7 +4563,7 @@ begin
         if X < 0 then
         begin
           Dec(Y);
-          if (Y < 0) or not {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
+          if (Y < 0) or not GetTextLine(Y, Text) then
             Break;
           StringMap := BracketHighlighting.CreateStringMap(Text);
           X := Length(Text) - 1;
@@ -4643,7 +4576,7 @@ begin
         if X >= Length(Text) then
         begin
           Inc(Y);
-          if not {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
+          if not GetTextLine(Y, Text) then
             Break;
           StringMap := BracketHighlighting.CreateStringMap(Text);
           X := 0;
@@ -4744,7 +4677,7 @@ begin
 
   if not BetweenSearch and BracketHighlighting.ShowBetweenHighlighting and
      (BracketHighlighting.FStop.Left = -1) and
-     (Y >= 0) and (X >= 0) and {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
+     (Y >= 0) and (X >= 0) and GetTextLine(Y, Text) then
   begin
     // find ending bracket
     StringMap := BracketHighlighting.CreateStringMap(Text);
@@ -4753,7 +4686,7 @@ begin
       if X >= Length(Text) then
       begin
         Inc(Y);
-        if not {$IFDEF SUPPORTS_UNICODE}GetUnicodeTextLine{$ELSE}GetAnsiTextLine{$ENDIF SUPPORTS_UNICODE}(Y, Text) then
+        if not GetTextLine(Y, Text) then
           Break;
         StringMap := BracketHighlighting.CreateStringMap(Text);
         X := 0;
@@ -6229,13 +6162,13 @@ begin
       case Mode of
         cmIdentifiers:
           TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStrBySeparator(Items[Index], 1,
-            {$IFDEF SUPPORTS_UNICODE}GetUnicodeSeparator{$ELSE}GetAnsiSeparator{$ENDIF SUPPORTS_UNICODE}));
+            GetSeparator));
         cmTemplates:
           begin
             TJvUnicodeCanvas(Canvas).TextOut(Rect.Left + Offset, Rect.Top, SubStrBySeparator(Items[Index], 1,
-              {$IFDEF SUPPORTS_UNICODE}GetUnicodeSeparator{$ELSE}GetAnsiSeparator{$ENDIF SUPPORTS_UNICODE}));
+              GetSeparator));
             Canvas.Font.Style := [fsBold];
-            S := SubStrBySeparator(Items[Index], 0, {$IFDEF SUPPORTS_UNICODE}GetUnicodeSeparator{$ELSE}GetAnsiSeparator{$ENDIF SUPPORTS_UNICODE});
+            S := SubStrBySeparator(Items[Index], 0, GetSeparator);
             W := Canvas.TextWidth(S);
             TJvUnicodeCanvas(Canvas).TextOut(Rect.Right - 2 * Offset - W, Rect.Top, S);
           end;
