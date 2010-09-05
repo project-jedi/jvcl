@@ -75,7 +75,7 @@ type
   private
     FActionComponent: TComponent;
     FControlEngine: TJvActionBaseEngine;
-    FLastTarget: TObject;
+    FLastTarget: TComponent;
     FOnChangeActionComponent: TJvChangeActionComponent;
   protected
     function DetectControlEngine(aActionComponent: TComponent): Boolean; virtual;
@@ -93,7 +93,7 @@ type
     property EngineList: TJvActionEngineList read GetEngineList;
     property ActionComponent: TComponent read FActionComponent write
         SetActionComponent;
-    property LastTarget: TObject read FLastTarget;
+    property LastTarget: TComponent read FLastTarget;
     //1 Use this event to check the Enabled Flag depending on properties of the ActionComponent
     property OnChangeActionComponent: TJvChangeActionComponent read
         FOnChangeActionComponent write FOnChangeActionComponent;
@@ -242,8 +242,6 @@ end;
 procedure TJvActionEngineBaseAction.ChangeActionComponent(const
     AActionComponent: TComponent);
 begin
-  if AActionComponent <> nil then
-    AActionComponent.FreeNotification(Self);
   if Assigned(OnChangeActionComponent) then
     OnChangeActionComponent(AActionComponent);
 end;
