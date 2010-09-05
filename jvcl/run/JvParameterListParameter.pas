@@ -2327,7 +2327,7 @@ begin
       end
     else if (ofPathMustExist in DialogOptions) and
             (ExtractFilePath(Data) <> '') and
-            not DirectoryExists(ExtractFilePath(Data)) then
+            not {$IFDEF RTL220_UP}SysUtils.{$ENDIF RTL220_UP}DirectoryExists(ExtractFilePath(Data)) then
       begin
         vMsg := Format(RsErrParameterDirectoryNotExist, [Caption, ExtractFilePath(Data)]);
         Result:= False;
@@ -2399,7 +2399,7 @@ begin
   Data := Trim(AData);
   Result := Inherited IsDataValid(Data, vMsg);
   if Result then
-    if not DirectoryExists(AData) and not (sdAllowCreate in DialogOptions) then
+    if not {$IFDEF RTL220_UP}SysUtils.{$ENDIF RTL220_UP}DirectoryExists(AData) and not (sdAllowCreate in DialogOptions) then
       begin
         vMsg := Format(RsErrParameterDirectoryNotExist, [Caption, AData]);
         Result := False;

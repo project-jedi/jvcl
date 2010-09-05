@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry;
 
 const
-  BDSVersions: array[1..7] of record
+  BDSVersions: array[1..8] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -49,7 +49,8 @@ const
     (Name: 'Borland Developer Studio'; VersionStr: '2006'; Version: 10; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True),
-    (Name: 'CodeGear RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE'; Version: 15; CIV: '150'; Supported: True)
   );
 
 type
@@ -286,6 +287,7 @@ end;
 const
   KeyBorland = '\SOFTWARE\Borland\'; // do not localize
   KeyCodeGear = '\SOFTWARE\CodeGear\'; // do not localize
+  KeyEmbarcadero = '\SOFTWARE\Embarcadero\'; // do not localize
 
 function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 begin
@@ -396,7 +398,8 @@ begin
   if not CmdOptions.IgnoreDelphi then
   begin
     LoadTargets(KeyBorland, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize
-    LoadTargets(KeyCodeGear, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize    
+    LoadTargets(KeyCodeGear, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize
+    LoadTargets(KeyEmbarcadero, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize
   end;
 end;
 
@@ -481,6 +484,12 @@ begin
   else
     GetBDSVersion(FName, FVersion, FVersionStr);
 
+  if IsBDS and (IDEVersion >= 8) then
+  begin
+    FHKLMRegistryKey := KeyEmbarcadero + IDEName + '\' + IDEVersionStr;
+    FRegistryKey := KeyEmbarcadero + ARegSubKey + '\' + IDEVersionStr;
+  end
+  else
   if IsBDS and (IDEVersion >= 6) then
   begin
     FHKLMRegistryKey := KeyCodeGear + IDEName + '\' + IDEVersionStr;
@@ -851,34 +860,57 @@ begin
         PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
         if Assigned(PropertyGroupNode) then
         begin
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DCPOutput']; // do not localize
-          if Assigned(PropertyNode) then
-            FDCPOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBPLOutputPath']; // do not localize
-          if not Assigned(PropertyNode) then
+          if IDEVersion >= 8 then
+          begin
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['DelphiDCPOutput']; // do not localize
+            if Assigned(PropertyNode) then
+              FDCPOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['DelphiDLLOutputPath']; // do not localize
+            if Assigned(PropertyNode) then
+              FBPLOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['DelphiBrowsingPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FBrowsingPaths);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['DelphiLibraryPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FSearchPaths);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['DelphiDLLOutputPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FPackageSearchPaths);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['DelphiDebugDCUPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FDebugDcuPaths);
+          end
+          else
+          begin
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DCPOutput']; // do not localize
+            if Assigned(PropertyNode) then
+              FDCPOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBPLOutputPath']; // do not localize
+            if not Assigned(PropertyNode) then
+              PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
+            if Assigned(PropertyNode) then
+              FBPLOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FBrowsingPaths);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32LibraryPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FSearchPaths);
             PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
-          if Assigned(PropertyNode) then
-            FBPLOutputDir := ExcludeTrailingPathDelimiter(PropertyNode.Value);
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath']; // do not localize
-          if Assigned(PropertyNode) then
-            ConvertPathList(PropertyNode.Value, FBrowsingPaths);
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32LibraryPath']; // do not localize
-          if Assigned(PropertyNode) then
-            ConvertPathList(PropertyNode.Value, FSearchPaths);
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DLLOutputPath']; // do not localize
-          if Assigned(PropertyNode) then
-            ConvertPathList(PropertyNode.Value, FPackageSearchPaths);
-          PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath']; // do not localize
-          if Assigned(PropertyNode) then
-            ConvertPathList(PropertyNode.Value, FDebugDcuPaths);
-            
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FPackageSearchPaths);
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath']; // do not localize
+            if Assigned(PropertyNode) then
+              ConvertPathList(PropertyNode.Value, FDebugDcuPaths);
+          end;
             
           if SupportsPersonalities([persBCB]) then
           begin
             PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath']; // do not localize
             if Assigned(PropertyNode) then
               ConvertPathList(PropertyNode.Value, FGlobalIncludePaths); // do not localize
-            PropertyNode := PropertyGroupNode.Items.ItemNamed['Win32LibraryPath']; // do not localize
+            PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath']; // do not localize
             if Assigned(PropertyNode) then
               ConvertPathList(PropertyNode.Value, FGlobalCppSearchPaths); // do not localize
             PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath']; // do not localize
@@ -1084,9 +1116,18 @@ begin
 
       PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
 
-      PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath'].Value := ConvertPathList(FBrowsingPaths); // do not localize
-      PropertyGroupNode.Items.ItemNamed['Win32LibraryPath'].Value := ConvertPathList(FSearchPaths); // do not localize
-      PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath'].Value := ConvertPathList(FDebugDcuPaths); // do not localize
+      if IDEVersion >= 8 then
+      begin
+        PropertyGroupNode.Items.ItemNamed['DelphiBrowsingPath'].Value := ConvertPathList(FBrowsingPaths); // do not localize
+        PropertyGroupNode.Items.ItemNamed['DelphiLibraryPath'].Value := ConvertPathList(FSearchPaths); // do not localize
+        PropertyGroupNode.Items.ItemNamed['DelphiDebugDCUPath'].Value := ConvertPathList(FDebugDcuPaths); // do not localize
+      end
+      else
+      begin
+        PropertyGroupNode.Items.ItemNamed['Win32BrowsingPath'].Value := ConvertPathList(FBrowsingPaths); // do not localize
+        PropertyGroupNode.Items.ItemNamed['Win32LibraryPath'].Value := ConvertPathList(FSearchPaths); // do not localize
+        PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath'].Value := ConvertPathList(FDebugDcuPaths); // do not localize
+      end;
 
       if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
       begin
@@ -1326,6 +1367,9 @@ end;
 
 function TCompileTarget.GetEnvOptionsFileName: string; // Delphi 2007
 begin
+  if IsBDS and (IDEVersion >= 8) then
+    Result := Format('%s\Embarcadero\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion])
+  else
   if IsBDS and (IDEVersion >= 6) then
     Result := Format('%s\CodeGear\BDS\%d.0\EnvOptions.proj', [ExcludeTrailingPathDelimiter(GetAppdataFolder), IDEVersion])
   else

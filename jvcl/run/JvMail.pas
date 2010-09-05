@@ -667,15 +667,15 @@ begin
     FSubject := string(lpszSubject);
     Body.Text := string(lpszNoteText);
     //    FDateReceived := StrToDateTime(lpszDateReceived);
-    SOldDateFormat := ShortDateFormat;
-    OldDateSeparator := DateSeparator;
+    SOldDateFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+    OldDateSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
     try
-      ShortDateFormat := 'yyyy/M/d';
-      DateSeparator := '/';
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := 'yyyy/M/d';
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := '/';
       FReadedMail.DateReceived := StrToDateTime(string(lpszDateReceived));
     finally
-      ShortDateFormat := SOldDateFormat;
-      DateSeparator := OldDateSeparator;
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := SOldDateFormat;
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldDateSeparator;
     end;
     FReadedMail.ConversationID := string(lpszConversationID);
     DecodeAttachments(lpFiles, nFileCount);

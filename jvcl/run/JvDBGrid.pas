@@ -2754,7 +2754,7 @@ begin
       begin
         if DataType in [db.ftFloat{$IFDEF COMPILER12_UP},db.ftExtended{$ENDIF COMPILER12_UP}] then
           if CharInSet(Key, ['.', ',']) then
-            Key := DecimalSeparator;
+            Key := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
 
         if CharInSet(Key, CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin

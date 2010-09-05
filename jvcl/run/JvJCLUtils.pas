@@ -2265,7 +2265,7 @@ end;
 
 function CurrencyToStr(const Cur: Currency): string;
 begin
-  Result := CurrToStrF(Cur, ffCurrency, CurrencyDecimals)
+  Result := CurrToStrF(Cur, ffCurrency, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyDecimals)
 end;
 
 function HasChar(const Ch: Char; const S: string): Boolean;
@@ -4584,12 +4584,12 @@ begin
   M := 0;
   D := 0;
   DateOrder := GetDateOrder(DateFormat);
-  if ShortDateFormat[1] = 'g' then { skip over prefix text }
+  if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Position);
-  if not (ScanNumber(S, MaxInt, Position, N1) and ScanChar(S, Position, DateSeparator) and
+  if not (ScanNumber(S, MaxInt, Position, N1) and ScanChar(S, Position, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) and
     ScanNumber(S, MaxInt, Position, N2)) then
     Exit;
-  if ScanChar(S, Position, DateSeparator) then
+  if ScanChar(S, Position, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) then
   begin
     if not ScanNumber(S, MaxInt, Position, N3) then
       Exit;
@@ -4629,11 +4629,11 @@ begin
       D := N2;
     end;
   end;
-  ScanChar(S, Position, DateSeparator);
+  ScanChar(S, Position, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator);
   ScanBlanks(S, Position);
-  if SysLocale.FarEast and (Pos('ddd', ShortDateFormat) <> 0) then
+  if SysLocale.FarEast and (Pos('ddd', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat) <> 0) then
   begin { ignore trailing text }
-    if CharInSet(ShortTimeFormat[1], ['0'..'9']) then { stop at time digit }
+    if CharInSet({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortTimeFormat[1], ['0'..'9']) then { stop at time digit }
       ScanToNumber(S, Position)
     else { stop at time prefix }
       repeat
@@ -4641,8 +4641,8 @@ begin
           Inc(Position);
         ScanBlanks(S, Position);
       until (Position > Length(S)) or
-        AnsiSameText(TimeAMString, Copy(S, Position, Length(TimeAMString))) or
-        AnsiSameText(TimePMString, Copy(S, Position, Length(TimePMString)));
+        AnsiSameText({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString, Copy(S, Position, Length({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString))) or
+        AnsiSameText({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString, Copy(S, Position, Length({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString)));
   end;
   Result := IsValidDate(Y, M, D) and (Position > Length(S));
 end;
@@ -4652,8 +4652,8 @@ begin
   if Length(S) > 0 then
     for Result := 1 to 12 do
     begin
-      if (Length(LongMonthNames[Result]) > 0) and
-         AnsiSameText(Copy(S, 1, MaxLen), Copy(LongMonthNames[Result], 1, MaxLen)) then
+      if (Length({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames[Result]) > 0) and
+         AnsiSameText(Copy(S, 1, MaxLen), Copy({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames[Result], 1, MaxLen)) then
         Exit;
     end;
   Result := 0;
@@ -4746,7 +4746,7 @@ end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 begin
-  if not InternalStrToDate(ShortDateFormat, S, Result) then
+  if not InternalStrToDate({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat, S, Result) then
     Result := Trunc(Default);
 end;
 
@@ -4760,7 +4760,7 @@ function DefDateFormat(AFourDigitYear: Boolean): string;
 begin
   if AFourDigitYear then
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat) of
       doMDY:
         Result := 'MM/DD/YYYY';
       doDMY:
@@ -4771,7 +4771,7 @@ begin
   end
   else
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat) of
       doMDY:
         Result := 'MM/DD/YY';
       doDMY:
@@ -4786,7 +4786,7 @@ function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 begin
   if AFourDigitYear then
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat) of
       doMDY, doDMY:
         Result := '!99/99/9999;1;';
       doYMD:
@@ -4795,7 +4795,7 @@ begin
   end
   else
   begin
-    case GetDateOrder(ShortDateFormat) of
+    case GetDateOrder({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat) of
       doMDY, doDMY:
         Result := '!99/99/99;1;';
       doYMD:
@@ -4839,7 +4839,7 @@ end;
 
 function IsFourDigitYear: Boolean;
 begin
-  Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;
+  Result := Pos('YYYY', AnsiUpperCase({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat)) > 0;
 end;
 { end JvDateUtil }
 
@@ -6935,7 +6935,7 @@ end;
 function CharIsMoney(const Ch: Char): Boolean;
 begin
   Result := CharIsDigit(Ch) or (Ch = NativeSpace) or (Ch = '$') or (Ch = '-') or
-    (Pos(Ch, CurrencyString) > 0);
+    (Pos(Ch, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyString) > 0);
 end;
 
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
@@ -6950,7 +6950,7 @@ begin
   begin
     LStr := TJclStringBuilder.Create(Length(Str));
     try
-      CharSet := ['0'..'9', '-', '+', AnsiChar(DecimalSeparator)];
+      CharSet := ['0'..'9', '-', '+', AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator)];
       for I := 1 to Length(Str) do
         if CharInSet(Str[I], CharSet) then
           LStr.Append(Str[I]);
@@ -7173,7 +7173,7 @@ begin
   for I := 1 to Length(S) do
   begin
     Ch := Char(S[I]);
-    if not CharIsNumberChar(Ch) or (Ch = DecimalSeparator) then //Az
+    if not CharIsNumberChar(Ch) or (Ch = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator) then //Az
     begin
       Result := False;
       Exit;
@@ -7194,7 +7194,7 @@ begin
     { allow digits, space, Currency symbol and one decimal dot }
     Ch := Ps[I];
 
-    if Ch = DecimalSeparator then
+    if Ch = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator then
     begin
       Inc(liDots);
       if liDots > 1 then
@@ -7292,12 +7292,12 @@ begin
   { use the StrReplace in stringfunctions -
   the one in JclStrings is badly broken and brings down the app }
 
-  for I := Low(LongMonthNames) to High(LongMonthNames) do
-    Ps := LStrReplace(Ps, LongMonthNames[I], IntToStr(I), False);
+  for I := Low({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames) to High({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames) do
+    Ps := LStrReplace(Ps, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames[I], IntToStr(I), False);
 
   { now that 'January' is gone, catch 'Jan' }
-  for I := Low(ShortMonthNames) to High(ShortMonthNames) do
-    Ps := LStrReplace(Ps, ShortMonthNames[I], IntToStr(I), False);
+  for I := Low({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames) to High({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames) do
+    Ps := LStrReplace(Ps, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames[I], IntToStr(I), False);
 
   { remove redundant spaces }
   Ps := LStrReplace(Ps, NativeSpace + NativeSpace, NativeSpace, False);
@@ -8389,18 +8389,18 @@ var
   CharSet: TSysCharSet;
 begin
   Result := DelRSpace(AValue);
-  if DecimalSeparator <> ThousandSeparator then
-    Result := DelChars(Result, ThousandSeparator);
+  if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator then
+    Result := DelChars(Result, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator);
 
-  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
-    Result := ReplaceStr(Result, '.', DecimalSeparator);
-  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
-    Result := ReplaceStr(Result, ',', DecimalSeparator);
+  if ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> '.') and ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator <> '.') then
+    Result := ReplaceStr(Result, '.', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
+  if ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> ',') and ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator <> ',') then
+    Result := ReplaceStr(Result, ',', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
 
   J := 1;
   CharSet := ['0'..'9', '-', '+',
-        AnsiChar(DecimalSeparator),
-        AnsiChar(ThousandSeparator)];
+        AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator),
+        AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator)];
   for I := 1 to Length(Result) do
     if CharInSet(Result[I], CharSet) then
     begin

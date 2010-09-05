@@ -1524,7 +1524,7 @@ procedure TJvDBDateEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-    not CharInSet(Key, DigitChars) and (Key <> DateSeparator) then
+    not CharInSet(Key, DigitChars) and (Key <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) then
   begin
     DoBeepOnError;
     Key := #0;
@@ -1730,7 +1730,7 @@ begin
     if FDataLink.Field.IsNull then
     begin
       S := GetDateFormat;
-      S := ReplaceStr(ReplaceStr(ReplaceStr(ReplaceStr(S, '/', DateSeparator),
+      S := ReplaceStr(ReplaceStr(ReplaceStr(ReplaceStr(S, '/', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator),
         'Y', ' '), 'M', ' '), 'D', ' ');
     end
     else

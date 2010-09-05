@@ -714,7 +714,7 @@ begin
         if MonthDays[IsLeapYear(Y), M] = D then
         begin
           // draw text for end of this month:
-          S := ShortMonthNames[M];
+          S := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames[M];
           Size := ACanvas.TextExtent(S);
           R := Rect(I * FDayWidth + FDayWidth - Size.cx - 8,
             Height - Size.cy - 4, I * FDayWidth + FDayWidth, Height - 4);
@@ -727,7 +727,7 @@ begin
         if D = 1 then
         begin
           // draw text for start of this month and the year:
-          S := Format('%s %d', [ShortMonthNames[M], Y]);
+          S := Format('%s %d', [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames[M], Y]);
           Size := ACanvas.TextExtent(S);
           R := Rect(I * FDayWidth + 4, Height - Size.cy - 4, I * FDayWidth + Size.cx + 4, Height - 4);
           OffsetRect(R, FirstOffset, 0);

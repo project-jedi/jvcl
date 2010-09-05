@@ -679,10 +679,10 @@ begin
         //{ Замена разделителя на системный }
         { Changing delimiter to system-wide  [translated] }
         if PropTypeInf^.Kind = tkFloat then
-          if DecimalSeparator = ',' then
-            SValue := StringReplace(SValue, '.', DecimalSeparator, [rfReplaceAll])
+          if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator = ',' then
+            SValue := StringReplace(SValue, '.', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, [rfReplaceAll])
           else
-            SValue := StringReplace(SValue, ',', DecimalSeparator, [rfReplaceAll]);
+            SValue := StringReplace(SValue, ',', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, [rfReplaceAll]);
 
         //{ Для корректного преобразования парсером tkSet нужны угловые скобки }
         { tkSet parser needs "<" and ">" for correct transformation  [translated] }

@@ -5179,9 +5179,9 @@ function TJvTFDWNames.GetDWName(DWIndex: Integer): string;
 begin
   case Source of
     dwnsSysLong:
-      Result := SysUtils.LongDayNames[DWIndex];
+      Result := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongDayNames[DWIndex];
     dwnsSysShort:
-      Result := SysUtils.ShortDayNames[DWIndex];
+      Result := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDayNames[DWIndex];
   else // dwnsCustom
     Result := GetDWN(DWIndex);
   end;

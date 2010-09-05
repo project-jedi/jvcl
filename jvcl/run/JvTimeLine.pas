@@ -1700,9 +1700,9 @@ begin
   if csDestroying in ComponentState then
     Exit;
   if FMonthWidth > 120 then
-    AName := LongMonthNames[Month]
+    AName := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames[Month]
   else
-    AName := ShortMonthNames[Month];
+    AName := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames[Month];
 
   with ACanvas do
   begin
