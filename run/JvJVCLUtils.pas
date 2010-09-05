@@ -3912,8 +3912,12 @@ type
 
 function CrtResString: string;
 begin
-  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
-    GetSystemMetrics(SM_CYSCREEN)]);
+//  Result := Format('(%dx%d)', [GetSystemMetrics(SM_CXSCREEN),
+//    GetSystemMetrics(SM_CYSCREEN)]);
+
+//! New Resolution Identifier, because old method did not work
+//    properly for Multi-screen systems (returned only width/height of current screen)
+  Result := Format('(%dx%d)', [Screen.DesktopWidth, Screen.DesktopHeight]);
 end;
 
 function ReadPosStr(AppStorage: TJvCustomAppStorage; const Path: string): string;
