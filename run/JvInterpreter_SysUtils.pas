@@ -1383,14 +1383,14 @@ end;
 
 procedure JvInterpreter_AnsiLowerCaseFileName(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := AnsiLowerCaseFileName(Args.Values[0]);
+  Value := AnsiLowerCase(Args.Values[0]);
 end;
 
 { function AnsiUpperCaseFileName(const S: string): string; }
 
 procedure JvInterpreter_AnsiUpperCaseFileName(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := AnsiUpperCaseFileName(Args.Values[0]);
+  Value := AnsiUpperCase(Args.Values[0]);
 end;
 
 { function AnsiPos(const Substr, S: string): Integer; }

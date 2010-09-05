@@ -370,7 +370,7 @@ var
   DayNum: Integer;
 begin
   if ARow = 0 then { day names at tops of columns }
-    Result := ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]
+    Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]
   else
   begin
     DayNum := FMonthOffset + ACol + (ARow - 1) * 7;
@@ -1217,7 +1217,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     try
-      if (Trim(ReplaceStr(VarToStr(Value), DateSeparator, '')) = '') or
+      if (Trim(ReplaceStr(VarToStr(Value), {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator, '')) = '') or
         VarIsNull(Value) or VarIsEmpty(Value) then
         FCalendar.CalendarDate := VarToDateTime(SysUtils.Date)
       else
@@ -1703,7 +1703,7 @@ begin
   if StrDate <> '' then
   begin
     try
-      DateValue := StrToDateFmt(ShortDateFormat, StrDate);
+      DateValue := StrToDateFmt({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat, StrDate);
     except
       DateValue := Date;
     end;
@@ -1713,7 +1713,7 @@ begin
   Result := SelectDate(Sender, DateValue, DlgCaption, AStartOfWeek, AWeekends,
     AWeekendColor, BtnHints, MinDate, MaxDate); // Polaris
   if Result then
-    StrDate := FormatDateTime(ShortDateFormat, DateValue);
+    StrDate := FormatDateTime({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat, DateValue);
 end;
 
 {$IFDEF UNITVERSIONING}

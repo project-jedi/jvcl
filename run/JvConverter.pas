@@ -172,10 +172,10 @@ end;
 
 procedure TJvDateTimeFormat.ResetDefault;
 begin
-  FAMString := TimeAMString;
-  FPMString := TimePMString;
-  FTimeSeparator := SysUtils.TimeSeparator;
-  FDateSeparator := SysUtils.DateSeparator;
+  FAMString := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString;
+  FPMString := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString;
+  FTimeSeparator := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeSeparator;
+  FDateSeparator := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
   FDateOrder := doDMY;
   FTimeFormat := tfHHMMSS;
   FLongDate := False;
@@ -209,7 +209,7 @@ end;
 procedure TJvDateTimeFormat.SetAMString(const Value: string);
 begin
   if Value = '' then
-    FAMString := TimeAMString
+    FAMString := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString
   else
     FAMString := Value;
 end;
@@ -222,7 +222,7 @@ end;
 procedure TJvDateTimeFormat.SetPMString(const Value: string);
 begin
   if Value = '' then
-    FPMString := TimePMString
+    FPMString := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString
   else
     FPMString := Value;
 end;
@@ -413,7 +413,7 @@ begin
     dtInteger:
       Result := CharInSet(Ch, DigitSymbols + SignSymbols);
     dtFloat:
-      Result := CharInSet(Ch, DigitSymbols + SignSymbols + [DecimalSeparator, 'E', 'e']);
+      Result := CharInSet(Ch, DigitSymbols + SignSymbols + [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, 'E', 'e']);
     dtDateTime, dtDate, dtTime:
       Result := True;
     dtBoolean:
@@ -456,10 +456,10 @@ begin
   for I := 1 to Length(S) do
   begin
     if CharInSet(S[I], DateS) then
-      S[I] := DateSeparator
+      S[I] := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator
     else
     if CharInSet(S[I], TimeS) then
-      S[I] := TimeSeparator;
+      S[I] := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeSeparator;
   end;
   Result := StrToDateTime(S);
 end;

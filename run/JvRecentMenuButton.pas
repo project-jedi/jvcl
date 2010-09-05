@@ -75,6 +75,7 @@ implementation
 
 uses
   ShlObj, ActiveX, Math,
+  JclDateTime,
   JvResources;
 
 const
@@ -220,7 +221,7 @@ begin
         begin
           Tmp := ShellLinkResolve(Path + Sr.FindData.cFileName);
           if (Tmp <> '') and (ExtractFileExt(Tmp) <> '') then
-            Strings.AddObject(Tmp, TObject(Sr.Time));
+            Strings.AddObject(Tmp, TObject(FileTimeToDosDateTime(Sr.FindData.ftLastWriteTime)));
         end;
         H := FindNext(Sr);
       end;

@@ -5060,15 +5060,15 @@ begin
       end;
     ttDouble:
       begin
-        OldDecimalSeparator := DecimalSeparator;
-        DecimalSeparator := '.';
+        OldDecimalSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
+        {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator := '.';
         if not TextToFloat(PChar(FTokenStr), Dob, fvExtended) then
         begin
-          DecimalSeparator := OldDecimalSeparator;
+          {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator := OldDecimalSeparator;
           JvInterpreterError(ieInternal, -1);
         end
         else
-          DecimalSeparator := OldDecimalSeparator;
+          {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator := OldDecimalSeparator;
         FToken := Dob;
       end;
     ttString:

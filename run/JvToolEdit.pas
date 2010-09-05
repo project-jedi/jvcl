@@ -3801,7 +3801,7 @@ end;
 
 function TJvCustomDateEdit.TextStored: Boolean;
 begin
-  Result := not IsEmptyStr(Text, [#0, ' ', DateSeparator, FBlanksChar]);
+  Result := not IsEmptyStr(Text, [#0, ' ', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator, FBlanksChar]);
 end;
 
 procedure TJvCustomDateEdit.UpdateFormat;
