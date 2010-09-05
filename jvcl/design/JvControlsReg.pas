@@ -105,7 +105,7 @@ begin
   RegisterClass(TJvScrollMaxBand);
   RegisterClass(TJvFooterBtn);
   RegisterActions(RsJVCLActionsCategory, [TJvRollOutAction], nil);
-  RegisterActions(RsJVCLControlActionsCategory, [TJvControlCollapseAction, TJvControlExpandAction, TJvControlExportAction,
+  RegisterActions(RsJVCLControlActionsCategory, [TJvControlCommonAction, TJvControlCollapseAction, TJvControlExpandAction, TJvControlExportAction,
     TJvControlOptimizeColumnsAction, TJvControlCustomizeColumnsAction, TJvControlPrintAction, TJvControlCustomizeAction],
     TJvControlActionsDM);
     
