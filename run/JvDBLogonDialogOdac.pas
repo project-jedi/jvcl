@@ -33,10 +33,14 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   Classes, Forms, Controls, DBAccess, Ora,
   JvBaseDlg, JvAppStorage, JvBaseDBLogonDialog,
-  JvDynControlEngine, JvBaseDBPasswordDialog, JvDynControlEngineIntf;
+  JvDynControlEngine, JvBaseDBPasswordDialog, 
+  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+  JvDynControlEngineIntf;
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 type
 
   TJvOdacOracleConnectionInfo = class(TJvBaseOracleConnectionInfo)
@@ -172,6 +176,7 @@ type
     property OnSessionConnect: TJvLogonDialogBaseSessionEvent read
         GetOnSessionConnect write SetOnSessionConnect;
   end;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -185,6 +190,7 @@ const
 
 implementation
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 uses
   SysUtils, StdCtrls, Dialogs,
   OraClasses, OraError, OraCall, OraServices,
@@ -622,6 +628,7 @@ begin
   if Net then
     Result := Result + ' - '+RsNetOptionConnectionList;
 end;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF UNITVERSIONING}
 initialization

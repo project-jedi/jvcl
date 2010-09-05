@@ -35,12 +35,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
   DB,
   OraSmart, Ora, DBaccess,
   JvThread, JvThreadDialog, JvDynControlEngine,
+  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvBaseDBThreadedDataset;
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 type
   TJvOdacThreadedDatasetAllowedContinueRecordFetchOptions =
     class(TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions)
@@ -298,6 +301,7 @@ type
     property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
         GetOnThreadException write SetOnThreadException;
   end;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -311,6 +315,7 @@ const
 
 implementation
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 uses Variants, MemData;
 
 //=== { TJvOdacSmartQuery } ==================================================
@@ -1360,6 +1365,7 @@ begin
   else
     Result := False;
 end;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 
 {$IFDEF UNITVERSIONING}

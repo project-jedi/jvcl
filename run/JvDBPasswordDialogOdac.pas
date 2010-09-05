@@ -32,10 +32,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   Classes, Menus,
   Ora, dbaccess,
+  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvBaseDBPasswordDialog;
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 type
   TJvDBOdacPasswordDialog = class(TJvBaseDBPasswordDialog)
   private
@@ -48,6 +51,7 @@ type
   published
     property Session: TCustomDAConnection read GetSession write SetSession;
   end;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -61,6 +65,7 @@ const
 
 implementation
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 uses
   SysUtils, ExtCtrls, ComCtrls, StdCtrls, Types;
 
@@ -95,6 +100,7 @@ procedure TJvDBOdacPasswordDialog.SetSession(const Value: TCustomDAConnection);
 begin
   inherited SetSession(Value);
 end;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF UNITVERSIONING}
 initialization
