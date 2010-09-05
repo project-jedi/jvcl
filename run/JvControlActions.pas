@@ -181,7 +181,7 @@ begin
   else
     if Assigned(ControlEngine) then
       ControlEngine.ExecuteOperation(ControlOperation, ActionControl)
-    else                                                  
+    else
       inherited ExecuteTarget(Target);
 end;
 
@@ -202,11 +202,8 @@ end;
 
 function TJvControlBaseAction.HandlesTarget(Target: TObject): Boolean;
 begin
-  if Target is TWinControl then
-    if TwinControl(Target).Focused then
-      Result := inherited HandlesTarget(Target)
-    else
-      Result := False
+  if (Target is TWinControl) and TWinControl(Target).Focused then
+    Result := inherited HandlesTarget(Target)
   else
     Result := False;
 end;
