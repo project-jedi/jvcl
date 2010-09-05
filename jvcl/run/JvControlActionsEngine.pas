@@ -42,26 +42,20 @@ uses
   Forms, Controls, Classes, JvActionsEngine;
 
 type
-  TJvControlActionOperation = (caoCollapse, caoExpand,
-       caoExport, caoOptimizeColumns, caoCustomize, caoPrint,
+  TJvControlActionOperation = (caoCollapse, caoExpand, caoExport, caoOptimizeColumns, caoCustomize, caoPrint,
        caoCustomizeColumns);
   TJvControlActionOperations = set of TJvControlActionOperation;
   TJvControlActionEngine = class(TJvActionBaseEngine)
-  private
-    FOnChangeActionComponent: TJvChangeActionComponent;
   protected
     function GetEngineList: TJvActionEngineList; virtual; abstract;
     function GetSupportedOperations: TJvControlActionOperations; virtual; abstract;
     property EngineList: TJvActionEngineList read GetEngineList;
   public
     constructor Create(AOwner: TComponent); override;
-    function ExecuteOperation(const aOperation: TJvControlActionOperation; const
-        aActionControl: TControl): Boolean; virtual;
+    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean;
+        virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
-    property SupportedOperations: TJvControlActionOperations read
-        GetSupportedOperations;
-    property OnChangeActionComponent: TJvChangeActionComponent read
-        FOnChangeActionComponent write FOnChangeActionComponent;
+    property SupportedOperations: TJvControlActionOperations read GetSupportedOperations;
   end;
 
   TJvControlActionEngineClass = class of TJvControlActionEngine;
@@ -120,8 +114,6 @@ end;
 procedure InitActionEngineList;
 begin
   CreateActionEngineList;
-//  RegisterActionEngine(TJvDatabaseActionBaseControlEngine);
-//  RegisterActionEngine(TJvDatabaseActionDBGridControlEngine);
 end;
 
 constructor TJvControlActionEngine.Create(AOwner: TComponent);
@@ -129,14 +121,13 @@ begin
   inherited Create(AOwner);
 end;
 
-function TJvControlActionEngine.ExecuteOperation(const aOperation:
-    TJvControlActionOperation; const aActionControl: TControl): Boolean;
+function TJvControlActionEngine.ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl:
+    TControl): Boolean;
 begin
   Result := False;
 end;
 
-function TJvControlActionEngine.SupportsAction(AAction:
-    TJvActionEngineBaseAction): Boolean;
+function TJvControlActionEngine.SupportsAction(AAction: TJvActionEngineBaseAction): Boolean;
 begin
   Result := (AAction is TJvControlBaseAction) and
     (TJvControlBaseAction(AAction).ControlOperation in SupportedOperations);
