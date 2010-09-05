@@ -334,7 +334,7 @@ var
 begin
   Result := False;
   for I := 1 to Length(Value) do
-    if not CharInSet(Value[I], [DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
+    if not CharInSet(Value[I], [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '-', '+', '0'..'9', 'e', 'E']) then
       Exit;
   Result := TextToFloat(PChar(Value), RetValue, fvExtended);
 end;
@@ -351,7 +351,7 @@ begin
     MinSym := 2
   else
     MinSym := 1;
-  I := Pos(DecimalSeparator, S);
+  I := Pos({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, S);
   if I > 0 then
     MaxSym := I - 1;
   I := Pos('E', AnsiUpperCase(S));
@@ -366,7 +366,7 @@ begin
     if (Group = 3) and Thousands and (I > MinSym) then
     begin
       Group := 0;
-      Result := ThousandSeparator + Result;
+      Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator + Result;
     end;
   end;
   if IsSign then
@@ -442,12 +442,12 @@ end;
 function xTextToValText(const AValue: string): string;
 begin
   Result := DelRSpace(AValue);
-  if AnsiChar(DecimalSeparator) <> AnsiChar(ThousandSeparator) then
-    Result := DelChars(Result, ThousandSeparator);
-  if (DecimalSeparator <> '.') and (ThousandSeparator <> '.') then
-    Result := ReplaceStr(Result, '.', DecimalSeparator);
-  if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
-    Result := ReplaceStr(Result, ',', DecimalSeparator);
+  if AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator) <> AnsiChar({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator) then
+    Result := DelChars(Result, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator);
+  if ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> '.') and ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator <> '.') then
+    Result := ReplaceStr(Result, '.', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
+  if ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> ',') and ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator <> ',') then
+    Result := ReplaceStr(Result, ',', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
   if Result = '' then
     Result := '0'
   else
@@ -467,7 +467,7 @@ begin
   Delete(S, SelStart + 1, SelStop - SelStart);
   Insert(Key, S, SelStart + 1);
   S := xTextToValText(S);
-  DecPos := Pos(DecimalSeparator, S);
+  DecPos := Pos({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, S);
   if DecPos > 0 then
   begin
     SelStart := Pos('E', UpperCase(S));
@@ -487,14 +487,14 @@ procedure TJvCustomNumEdit.KeyPress(var Key: Char);
 begin
   if PopupVisible and CharInSet(UpCase(Key),
     DigitSymbols +
-    [DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
-    [ThousandSeparator]) then
+    [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '.', ',', '+', '-', '*', '/', '_', '=', 'C', 'R', 'Q', '%', Backspace, Cr] -
+    [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator]) then
   begin
     TJvPopupWindowAccessProtected(FPopup).KeyPress(Key);
     Key := #0;
   end;
-  if CharInSet(Key, ['.', ','] - [ThousandSeparator]) then
-    Key := DecimalSeparator;
+  if CharInSet(Key, ['.', ','] - [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator]) then
+    Key := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
   inherited KeyPress(Key);
   if CharInSet(Key, [#32..#255]) and not IsValidChar(Key) then
   begin
@@ -969,18 +969,18 @@ var
   I: Integer;
   C: Char;
 begin
-  Result := ',0.' + MakeStr('0', CurrencyDecimals);
+  Result := ',0.' + MakeStr('0', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyDecimals);
   CurrStr := '';
-  for I := 1 to Length(CurrencyString) do
+  for I := 1 to Length({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyString) do
   begin
-    C := CurrencyString[I];
+    C := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyString[I];
     if CharInSet(C, [',', '.']) then
       CurrStr := CurrStr + '''' + C + ''''
     else
       CurrStr := CurrStr + C;
   end;
   if Length(CurrStr) > 0 then
-    case CurrencyFormat of
+    case {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyFormat of
       0:
         Result := CurrStr + Result; { '$1' }
       1:

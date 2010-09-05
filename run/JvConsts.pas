@@ -77,6 +77,9 @@ const
   {$IFDEF DELPHI14}
   SDelphiKey = 'Software\CodeGear\BDS\7.0';
   {$ENDIF DELPHI14}
+  {$IFDEF DELPHI15}
+  SDelphiKey = 'Software\Embarcadero\BDS\8.0';
+  {$ENDIF DELPHI15}
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;

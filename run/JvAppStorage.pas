@@ -3126,7 +3126,11 @@ begin
   {$IFDEF COMPILER7_UP}
   if Not IsUpdating then
   begin
+    {$IFDEF RTL220_UP}
+    CachedFormatSettings := TFormatSettings.Create;
+    {$ELSE ~RTL220_UP}
     GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, CachedFormatSettings);
+    {$ENDIF ~RTL220_UP}
     if Assigned(ActiveTranslateStringEngine) then
     begin
       if (ActiveTranslateStringEngine.DateFormat <> '') then

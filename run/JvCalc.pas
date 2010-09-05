@@ -312,7 +312,7 @@ begin
       Caption := IntToStr(Tag)
     else
     if Kind = cbDcm then
-      Caption := DecimalSeparator
+      Caption := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator
     else
     if Kind in [cbSgn..cbMC] then
       Caption := BtnCaptions[Kind];
@@ -791,7 +791,7 @@ begin
     cbSgn:
       CalcKey('_');
     cbDcm:
-      CalcKey(DecimalSeparator);
+      CalcKey({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
     cbDiv:
       CalcKey('/');
     cbMul:
@@ -865,11 +865,11 @@ begin
     Key := #0;
   if Assigned(FOnCalcKey) then
     FOnCalcKey(Self, Key);
-  if CharInSet(Key, [DecimalSeparator, '.', ',']) then
+  if CharInSet(Key, [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '.', ',']) then
   begin
     CheckFirst;
-    if Pos(DecimalSeparator, Text) = 0 then
-      SetText(Text + DecimalSeparator);
+    if Pos({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, Text) = 0 then
+      SetText(Text + {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
     Exit;
   end;
   case Key of
@@ -1025,7 +1025,7 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if CharInSet(Key, [DecimalSeparator, '.', ',']) then
+  if CharInSet(Key, [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '.', ',']) then
     Key := '.'
   else
   if Key = Cr then
@@ -1060,7 +1060,7 @@ begin
   if Clipboard.HasFormat(CF_TEXT) then
   try
     SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
-      CurrencyString, ''))));
+      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyString, ''))));
   except
     SetText('0');
   end;

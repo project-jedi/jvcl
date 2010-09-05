@@ -1258,11 +1258,16 @@ begin
 
   FData := TJvCsvRows.Create;
 
+  { this is updated later, to modify to have custom DecimalSeparator }
+  {$IFDEF RTL220_UP}
+  FFormatSettings := FormatSettings.Create;
+  {$ELSE ~RTL220_UP}
   {$IFDEF RTL150_UP}
-  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, FFormatSettings); { this is updated later, to modify to have custom DecimalSeparator }
-  {$ELSE}
+  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, FFormatSettings);
+  {$ELSE ~RTL150_UP}
   FFormatSettings.DecimalSeparator := DecimalSeparator;
-  {$ENDIF RTL150_UP}
+  {$ENDIF ~RTL150_UP}
+  {$ENDIF ~RTL220_UP}
 
   Separator := ','; // set After creating FData!
 
@@ -1408,7 +1413,7 @@ begin
   inherited;
   FFileDirty := False;
   if FUseSystemDecimalSeparator then
-    FData.DecimalSeparator := SysUtils.DecimalSeparator;
+    FData.DecimalSeparator := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
 end;
 
 procedure TJvCustomCsvDataSet.SetAllUserData(Data: Pointer);

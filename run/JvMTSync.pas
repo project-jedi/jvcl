@@ -57,7 +57,7 @@ type
     procedure Release; override;
     procedure Signal;
     procedure Wait;
-    function WaitFor(Timeout: LongWord): Boolean; virtual;
+    function WaitFor(Timeout: LongWord): Boolean; {$IFDEF RTL220_UP}reintroduce;{$ENDIF RTL220_UP} virtual;
     property Handle: THandle read FHandle;
     property LastError: Integer read FLastError;
     property Name: string read FName;

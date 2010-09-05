@@ -2191,7 +2191,7 @@ var
   Ext: string;
   I: Integer;
 begin
-  Ext := AnsiLowerCaseFileName(ExtractFileExt(AFileName));
+  Ext := AnsiLowerCase(ExtractFileExt(AFileName));
   System.Delete(Ext, 1, 1);
 
   for I := 0 to Count - 1 do
@@ -4949,7 +4949,7 @@ begin
 
   LoadConverter;
   if not Assigned(FInitConverter32) or
-    not FInitConverter32(ParentWindow, PAnsiChar(AnsiString(AnsiUpperCaseFileName(Application.ExeName)))) then
+    not FInitConverter32(ParentWindow, PAnsiChar(AnsiString(AnsiUpperCase(Application.ExeName)))) then
 
     raise EMSTextConversionError.CreateRes(@RsECouldNotInitConverter);
 end;

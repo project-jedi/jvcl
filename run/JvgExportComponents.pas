@@ -236,7 +236,7 @@ begin
     raise EJvgExportException.CreateRes(@RsEDataSetIsUnassigned);
   DataSet.Active := True;
   if SaveToFileName <> '' then
-    ForceDirectories(ExtractFilePath(SaveToFileName));
+    {$IFDEF RTL220_UP}SysUtils.{$ENDIF RTL220_UP}ForceDirectories(ExtractFilePath(SaveToFileName));
 end;
 
 procedure TJvgCommonExport.SetCaptions(const Value: TJvExportCaptions);

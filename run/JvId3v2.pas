@@ -768,7 +768,7 @@ end;
 
 function TJvID3Text.GetBPM: Cardinal;
 begin
-  Result := Trunc(StrToFloat(StringReplace(BPMStr, '.', DecimalSeparator, [])));
+  Result := Trunc(StrToFloat(StringReplace(BPMStr, '.', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, [])));
 end;
 
 procedure TJvID3Text.SetBPM(const Value: Cardinal);
