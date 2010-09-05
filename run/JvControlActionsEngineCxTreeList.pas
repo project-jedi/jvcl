@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvDBActionsEngineControlCxGrid.Pas, released on 2004-12-30.
+The Original Code is: JvDBActionsEngineControlcxTreeList.Pas, released on 2004-12-30.
 
 The Initial Developer of the Original Code is Jens Fudickar [jens dott fudicker  att oratool dott de]
 Portions created by Jens Fudickar are Copyright (C) 2002 Jens Fudickar.
@@ -41,7 +41,7 @@ uses
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 type
-  TJvControlActioncxGridEngine = class(TJvControlActionEngine)
+  TJvControlActioncxTreeListEngine = class(TJvControlActionEngine)
   private
   protected
     function GetSupportedOperations: TJvControlActionOperations; override;
@@ -71,11 +71,11 @@ uses
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
   Variants, SysUtils, Grids;
 
-//=== { TJvDatabaseActionDevExpCxGridControlEngine } =========================
+//=== { TJvDatabaseActionDevExpcxTreeListControlEngine } =========================
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 
-function TJvControlActioncxGridEngine.ExecuteOperation(const aOperation:
+function TJvControlActioncxTreeListEngine.ExecuteOperation(const aOperation:
     TJvControlActionOperation; const aActionControl: TControl): Boolean;
 begin
   Result := false;
@@ -87,13 +87,13 @@ begin
     End;
 end;
 
-function TJvControlActioncxGridEngine.GetSupportedOperations:
+function TJvControlActioncxTreeListEngine.GetSupportedOperations:
     TJvControlActionOperations;
 begin
   Result := [caoCollapse, caoExpand, caoOptimizeColumns];
 end;
 
-function TJvControlActioncxGridEngine.GetTreeList(AActionComponent:
+function TJvControlActioncxTreeListEngine.GetTreeList(AActionComponent:
     TComponent): TcxCustomTreeList;
 begin
   if Assigned(AActionComponent) then
@@ -105,7 +105,7 @@ begin
     Result := nil;
 end;
 
-function TJvControlActioncxGridEngine.SupportsComponent(aActionComponent:
+function TJvControlActioncxTreeListEngine.SupportsComponent(aActionComponent:
     TComponent): Boolean;
 begin
   Result := Assigned(GetTreeList(AActionComponent));
@@ -116,7 +116,7 @@ end;
 procedure InitActionEngineList;
 begin
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
-  RegisterControlActionEngine(TJvControlActioncxGridEngine);
+  RegisterControlActionEngine(TJvControlActioncxTreeListEngine);
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 end;
 
