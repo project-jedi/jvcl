@@ -295,7 +295,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-  published
   end;
 
   TJvSimLogicBox = class(TGraphicControl)
@@ -327,7 +326,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-  published
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -706,11 +704,12 @@ end;
 procedure TJvSIMConnector.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) then
-  if (AComponent = FromLogic) then
-    FromLogic := nil
-  else if (AComponent = ToLogic) then
-    ToLogic := nil;
+    if (AComponent = FromLogic) then
+      FromLogic := nil
+    else if (AComponent = ToLogic) then
+      ToLogic := nil;
 end;
 
 procedure TJvSIMConnector.Paint;

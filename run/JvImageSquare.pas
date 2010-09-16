@@ -147,6 +147,7 @@ end;
 
 procedure TJvImageSquare.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if (AComponent = FImageList) and (Operation = opRemove) then
     FImageList := nil;
 end;
@@ -192,12 +193,9 @@ begin
   end;
 
   { fill in the rest }
-  with Canvas do
-  begin
-    Brush.Color := FTmpColor;
-    Brush.Style := bsSolid;
-    FillRect(R);
-  end;
+  Canvas.Brush.Color := FTmpColor;
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(R);
 
   if Assigned(FImageList) then
   begin
