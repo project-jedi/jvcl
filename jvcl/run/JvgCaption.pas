@@ -204,6 +204,7 @@ end;
 procedure TJvgCaption.Notification(Component: TComponent;
   Operation: TOperation);
 begin
+  inherited Notification(Component, Operation);
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvgCaption) then
     raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvgCaption);
 end;

@@ -107,6 +107,7 @@ end;
 
 procedure TJvMouseTimerNotify.Notification(AComponent: TComponent; Operation: TOperation);
 begin
+  inherited Notification(AComponent, Operation);
   if IsValidMouseTimer and (Operation = opRemove) and (AComponent is TControl) then
     MouseTimer.Detach(TControl(AComponent));
 end;

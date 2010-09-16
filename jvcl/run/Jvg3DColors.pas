@@ -162,6 +162,7 @@ end;
 
 procedure TJvg3DColors.Notification(Component: TComponent; Operation: TOperation);
 begin
+  inherited Notification(Component, Operation);
   if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
     raise Exception.CreateRes(@RsEOnlyOneInstanceOfTJvg3DLocalColors);
 end;
