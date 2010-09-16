@@ -513,25 +513,22 @@ begin
     MinMax := TWMGetMinMaxInfo(Msg).MinMaxInfo;
     if CheckMinMaxInfo then
     begin
-      with MinMax^ do
-      begin
-        if FWinMinMaxInfo.MinTrackWidth <> 0 then
-          ptMinTrackSize.X := FWinMinMaxInfo.MinTrackWidth;
-        if FWinMinMaxInfo.MinTrackHeight <> 0 then
-          ptMinTrackSize.Y := FWinMinMaxInfo.MinTrackHeight;
-        if FWinMinMaxInfo.MaxTrackWidth <> 0 then
-          ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
-        if FWinMinMaxInfo.MaxTrackHeight <> 0 then
-          ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
-        if FWinMinMaxInfo.MaxSizeWidth <> 0 then
-          ptMaxSize.X := FWinMinMaxInfo.MaxSizeWidth;
-        if FWinMinMaxInfo.MaxSizeHeight <> 0 then
-          ptMaxSize.Y := FWinMinMaxInfo.MaxSizeHeight;
-        if FWinMinMaxInfo.MaxPosLeft <> 0 then
-          ptMaxPosition.X := FWinMinMaxInfo.MaxPosLeft;
-        if FWinMinMaxInfo.MaxPosTop <> 0 then
-          ptMaxPosition.Y := FWinMinMaxInfo.MaxPosTop;
-      end;
+      if FWinMinMaxInfo.MinTrackWidth <> 0 then
+        MinMax^.ptMinTrackSize.X := FWinMinMaxInfo.MinTrackWidth;
+      if FWinMinMaxInfo.MinTrackHeight <> 0 then
+        MinMax^.ptMinTrackSize.Y := FWinMinMaxInfo.MinTrackHeight;
+      if FWinMinMaxInfo.MaxTrackWidth <> 0 then
+        MinMax^.ptMaxTrackSize.X := FWinMinMaxInfo.MaxTrackWidth;
+      if FWinMinMaxInfo.MaxTrackHeight <> 0 then
+        MinMax^.ptMaxTrackSize.Y := FWinMinMaxInfo.MaxTrackHeight;
+      if FWinMinMaxInfo.MaxSizeWidth <> 0 then
+        MinMax^.ptMaxSize.X := FWinMinMaxInfo.MaxSizeWidth;
+      if FWinMinMaxInfo.MaxSizeHeight <> 0 then
+        MinMax^.ptMaxSize.Y := FWinMinMaxInfo.MaxSizeHeight;
+      if FWinMinMaxInfo.MaxPosLeft <> 0 then
+        MinMax^.ptMaxPosition.X := FWinMinMaxInfo.MaxPosLeft;
+      if FWinMinMaxInfo.MaxPosTop <> 0 then
+        MinMax^.ptMaxPosition.Y := FWinMinMaxInfo.MaxPosTop;
     end
     else
     begin
