@@ -26,7 +26,7 @@ Known Issues:
 
 unit FrmCompile;
 
-{$I jedi.inc}
+{$I jvcl.inc}
 
 interface
 

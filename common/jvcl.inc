@@ -23,7 +23,7 @@ Known Issues:
  {$D-}
 {$ENDIF JVCL_NO_DEBUGINFO}
 
-{$I jedi.inc}
+{$I jedi\jedi.inc}
 
 {$IFNDEF JEDI_INC}
 ALERT_jedi_inc_incompatible

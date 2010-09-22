@@ -1,1 +1,1 @@
-{$I ..\..\common\jedi.inc}
+{$I ..\..\common\jedi\jedi.inc}
