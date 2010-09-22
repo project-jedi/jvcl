@@ -213,7 +213,7 @@ const
 
 const
   CommonDependencyFiles: array[0..5] of string = (
-    'jvcl.inc', 'jvclbase.inc', 'jvcl%t.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
+    'jvcl.inc', 'jvclbase.inc', 'jvcl%t.inc', 'jedi\jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
   );
 
 type
