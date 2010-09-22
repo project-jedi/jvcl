@@ -38,7 +38,7 @@
 
 unit SetupApi;
 
-{$I jedi.inc}
+{$I jvcl.inc}
 {$I windowsversion.inc}
 
 interface
