@@ -25,7 +25,7 @@ Known Issues:
 
 unit JvDBFilterExpr;
 
-{$I jedi.inc}
+{$I jvcl.inc}
 
 interface
 
