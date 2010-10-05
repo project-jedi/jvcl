@@ -396,6 +396,9 @@ begin
   FHotTrack := False;
   FMaxWidth := 0;
   FScroll := True;
+  {$IFDEF COMPILER14_UP}
+  ParentDoubleBuffered := False;
+  {$ENDIF COMPILER14_UP}
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
@@ -459,7 +462,7 @@ begin
     if FScroll then
       Style := Style or WS_HSCROLL
     else
-      Style := Style xor WS_HSCROLL;
+      Style := Style and not WS_HSCROLL;
 end;
 
 function TJvCheckListBox.DeleteExactString(Value: string; All: Boolean;
