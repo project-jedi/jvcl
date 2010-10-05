@@ -681,7 +681,7 @@ begin
     Font := Self.Font;
     Width := Self.Width;
     // use the current "DisplayDropDownLines" to determine height of window
-    Height := (DisplayDropDownLines * FListBox.itemHeight + 4 { FEdit.Height });
+    Height := (DisplayDropDownLines * FListBox.ItemHeight + 4 { FEdit.Height });
   end;
 end;
 
