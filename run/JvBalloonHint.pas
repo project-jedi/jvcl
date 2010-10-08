@@ -411,6 +411,11 @@ begin
   Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6);
 end;
 
+function IsWinSeven_UP: Boolean;
+begin
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6) and (Win32MinorVersion >= 1);
+end;
+
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
   AParent: TWinControl): TPoint;
 begin
@@ -966,7 +971,7 @@ begin
     begin
       WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
       {$IFDEF JVCLThemesEnabled}
-      if IsWinVista_UP and ThemeServices.ThemesEnabled then
+      if not IsWinSeven_UP and IsWinVista_UP and ThemeServices.ThemesEnabled then
         ExStyle := ExStyle or WS_EX_LAYERED;
       {$ENDIF JVCLThemesEnabled}
     end
