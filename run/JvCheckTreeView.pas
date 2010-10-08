@@ -334,7 +334,7 @@ var
   ItemHandle: HTREEITEM;
   ItemRect: TRect;
 begin
-  if CheckBoxOptions.Style = cbsJVCL then
+  if (CheckBoxOptions.Style = cbsJVCL) and (csClicked in ControlState) then
   begin
     GetCursorPos(P);
     P := ScreenToClient(P);
