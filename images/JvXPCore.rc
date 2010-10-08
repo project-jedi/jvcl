@@ -1,3 +1,4 @@
+LANGUAGE 0, 0
 JvXPCheckboxCHECKBOX           BITMAP "XPCoreCheckBox.bmp"
 JvXPCheckboxCHECKBOXGRAY       BITMAP "XPCoreCheckBoxGray.bmp"
 JvXPCustomToolButtonARROWLEFT  BITMAP "XPCoreArrowLeft.bmp"

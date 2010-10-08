@@ -1,3 +1,4 @@
+LANGUAGE 0, 0
 JvgLabelEditorDlgBRUSH               BITMAP "JvResBRUSH.BMP"
 JvgLabelEditorDlgDOWN                BITMAP "JvResDOWN.BMP"
 ; JvgLabelEditorDlgGLYPHDISABLED       BITMAP "JvResGLYPHDISABLED.BMP"
