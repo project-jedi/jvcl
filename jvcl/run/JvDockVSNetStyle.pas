@@ -2534,7 +2534,7 @@ procedure TJvDockVSNetStyle.Timer(Sender: TObject);
     end;
   end;
 
-  function PointIsOnPopup(P: TPoint; GlobalCheck: Boolean): Boolean;
+  function PointIsOnPopup(P: TPoint; GlobalCheck: Boolean; Recurse: Boolean): Boolean;
   const
     GW_ENABLEDPOPUP = 6;
   var
@@ -2561,17 +2561,17 @@ procedure TJvDockVSNetStyle.Timer(Sender: TObject);
         end;
       end;
 
-      if ActivePopupWindow then
+      if Recurse and ActivePopupWindow then
       begin
         GetWindowRect(Handle, Rect);
         // Search for a control one pixel to the left;
         Dec(Rect.Left);
-        Result := PointIsOnPopup(Rect.TopLeft, False);
+        Result := PointIsOnPopup(Rect.TopLeft, False, False);
         if not Result then
         begin
           // Search for a control one pixel to the Right;
           Inc(Rect.Right);
-          Result := PointIsOnPopup(Point(Rect.Right, Rect.Top), False);
+          Result := PointIsOnPopup(Point(Rect.Right, Rect.Top), False, False);
         end;
       end;
     end;
@@ -2587,7 +2587,7 @@ begin
     Exit;
 
   GetCursorPos(P);
-  if PointIsOnPopup(P, True) then
+  if PointIsOnPopup(P, True, True) then
   begin
     { Reset timer }
     FCurrentTimer := ChannelOption.HideHoldTime;
