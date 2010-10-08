@@ -2395,7 +2395,7 @@ procedure TJvTreeNode.SetChecked(Value: Boolean);
 var
   Item: TTVItem;
 begin
-  if Value <> FChecked then
+  if Value <> GetChecked then
   begin
     FChecked := Value;
     FillChar(Item, SizeOf(Item), 0);
