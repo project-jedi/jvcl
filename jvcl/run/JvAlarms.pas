@@ -17,6 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck att bigfoot dott com].
 Peter Thörnqvist [peter3 at sourceforge dot net]
+Jerry Gagnon [jgagnon at paladus dot com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.delphi-jedi.org
@@ -40,17 +41,22 @@ uses
   JvTypes, JvComponentBase;
 
 type
+  TJvAlarmItemEvent = procedure(Sender: TObject;
+    const TriggerTime: TDateTime) of object;
+
   TJvAlarmItem = class(TCollectionItem)
   private
     FName: string;
     FTime: TDateTime;
     FKind: TJvTriggerKind;
+    FOnAlarm : TJvAlarmItemEvent;
   public
     procedure Assign(Source: TPersistent); override;
   published
     property Name: string read FName write FName;
     property Time: TDateTime read FTime write FTime;
     property Kind: TJvTriggerKind read FKind write FKind;
+    property OnAlarm: TJvAlarmItemEvent read FOnAlarm write FOnAlarm;
   end;
 
   TJvAlarmEvent = procedure(Sender: TObject;
@@ -160,7 +166,9 @@ end;
 procedure TJvAlarms.DoAlarm(const Alarm: TJvAlarmItem;
   const TriggerTime: TDateTime);
 begin
-  if Assigned(FOnAlarm) then
+  if Assigned(Alarm.FOnAlarm) then
+    Alarm.FOnAlarm(Self, TriggerTime)
+  else if Assigned(FOnAlarm) then
     FOnAlarm(Self, Alarm, TriggerTime);
 end;
 
