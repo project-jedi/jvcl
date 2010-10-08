@@ -467,7 +467,7 @@ function FindToolbar(Window: THandle; var ToolbarHandle: THandle): BOOL; stdcall
 var
   Buf: array [Byte] of Char;
 begin
-  GetClassName(Window, Buf, SizeOf(Buf));
+  GetClassName(Window, Buf, Length(Buf) - 1);
   // Set result to false when we have found a toolbar
   Result := StrIComp(Buf, TOOLBARCLASSNAME) <> 0;
   if not Result then
@@ -608,9 +608,9 @@ begin
       HideBalloon;
 
     with FIconData do
-      StrPLCopy(szInfoTitle, Title, SizeOf(szInfoTitle) - 1);
+      StrPLCopy(szInfoTitle, Title, Length(szInfoTitle) - 1);
     with FIconData do
-      StrPLCopy(szInfo, Value, SizeOf(szInfo) - 1);
+      StrPLCopy(szInfo, Value, Length(szInfo) - 1);
 
     FIconData.uTimeOut := ADelay;
     FIconData.dwInfoFlags := cInfoFlagValues[BalloonType];
