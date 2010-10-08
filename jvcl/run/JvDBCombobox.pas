@@ -229,6 +229,7 @@ type
     property ListSettings; { should be published after Items and Values }
     property OnChange;
     property OnClick;
+    property OnCloseUp;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
