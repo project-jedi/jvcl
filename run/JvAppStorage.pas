@@ -1768,7 +1768,7 @@ function TJvCustomAppStorage.DoReadWideString(const Path: string;
   const Default: Widestring): Widestring;
 begin
   {$IFDEF COMPILER12_UP}
-  Result := UTF8ToWideString(RawByteString(ReadString(Path, string(UTF8Encode(Default)))));
+  Result := ReadString(Path, string(Default));
   {$ELSE}
   Result := UTF8Decode(ReadString(Path, UTF8Encode(Default)));
   {$ENDIF COMPILER12_UP}
@@ -1782,7 +1782,11 @@ end;
 procedure TJvCustomAppStorage.DoWriteWideString(const Path: string;
   const Value: Widestring);
 begin
+  {$IFDEF COMPILER12_UP}
+  DoWriteString(Path,string(Value));
+  {$ELSE}
   DoWriteString(Path,string(UTF8Encode(Value)));
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure TJvCustomAppStorage.DoError(const msg: string);
