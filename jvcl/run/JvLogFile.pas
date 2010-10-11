@@ -32,27 +32,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Controls, Forms, Contnrs,
-  JvComponentBase;
+  SysUtils, Classes, Controls, Forms, Contnrs, Graphics,
+  JvComponentBase, JvLogClasses;
 
 type
-  TJvLogRecord = class(TObject)
-  public
-    Time: string;
-    Title: string;
-    Description: string;
-
-    function GetOutputString: string;
-  end;
-
-  TJvLogRecordList = class(TObjectList)
-  private
-    function GetItem(Index: Integer): TJvLogRecord;
-    procedure SetItem(Index: Integer; const ALogRecord: TJvLogRecord);
-  public
-    property Items[Index: Integer]: TJvLogRecord read GetItem write SetItem; default;
-  end;
-
   TJvLogFile = class(TJvComponent)
   private
     FList: TJvLogRecordList;
@@ -62,6 +45,8 @@ type
     FActive: Boolean;
     FAutoSave: Boolean;
     FSizeLimit: Cardinal;
+    FSeverity : TJvLogEventSeverity;
+    FDefaultSeverity: TJvLogEventSeverity;
     function GetElement(Index: Integer): TJvLogRecord;
     procedure SetAutoSave(const Value: Boolean);
     procedure DoAutoSave;
@@ -76,6 +61,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
+    procedure Add(const Time, Title: string; const Severity : TJvLogEventSeverity; const Description: string); overload;
+    procedure Add(const Title: string; const Severity : TJvLogEventSeverity; const Description: string = ''); overload;
     procedure Add(const Time, Title: string; const Description: string); overload;
     procedure Add(const Title: string; const Description: string = ''); overload;
     procedure Delete(Index: Integer);
@@ -83,13 +70,16 @@ type
     function Count: Integer;
     property Elements[Index: Integer]: TJvLogRecord read GetElement; default;
 
-    procedure ShowLog(const Title: string);
+    procedure ShowLog(const Title: string); overload;
+    procedure ShowLog(const Title: string; const aIcon : TIcon); overload;
   published
     // (obones) some extra properties to make transparent use a bit easier
     property FileName: TFileName read FFileName write SetFileName;
     property Active: Boolean read FActive write FActive default True;
     property AutoSave: Boolean read FAutoSave write SetAutoSave default False;
     property SizeLimit: Cardinal read FSizeLimit write FSizeLimit default 0;  // 0 for infinity
+    property Severity: TJvLogEventSeverity read FSeverity write FSeverity default lesInformation;
+    property DefaultSeverity: TJvLogEventSeverity read FDefaultSeverity write FDefaultSeverity default lesError;
 
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
@@ -110,26 +100,6 @@ implementation
 uses
   JvLogForm, JvConsts;
 
-// === { TJvLogRecord } =======================================
-
-function TJvLogRecord.GetOutputString: string;
-begin
-  Result := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) +
-            '>' + Description + sLineBreak;
-end;
-
-// === { TJvLogRecordList } ===================================
-
-function TJvLogRecordList.GetItem(Index: Integer): TJvLogRecord;
-begin
-  Result := TJvLogRecord(inherited Items[Index]);
-end;
-
-procedure TJvLogRecordList.SetItem(Index: Integer;
-  const ALogRecord: TJvLogRecord);
-begin
-  inherited Items[Index] := ALogRecord;
-end;
 
 // === { TJvLogFile } =========================================
 
@@ -142,6 +112,8 @@ begin
   FActive := True;
   FAutoSave := False;
   FSizeLimit := 0;
+  FSeverity := lesInformation;
+  FDefaultSeverity := lesError;
 end;
 
 destructor TJvLogFile.Destroy;
@@ -151,20 +123,34 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvLogFile.Add(const Time, Title, Description: string);
+procedure TJvLogFile.Add(const Time, Title : string; const Severity : TJvLogEventSeverity; const Description: string);
 var
   LogRecord: TJvLogRecord;
 begin
   if not Active then // Do not log if not active (obones)
     Exit;
 
+  if Severity > FSeverity then //not all the information is required to be keeped
+    Exit;
+
   LogRecord := TJvLogRecord.Create;
   LogRecord.Time := Time;
   LogRecord.Title := Title;
+  LogRecord.Severity := Severity;
   LogRecord.Description := Description;
   FList.Add(LogRecord);
   EnsureSize;
   DoAutoSave;
+end;
+
+procedure TJvLogFile.Add(const Title : string; const Severity : TJvLogEventSeverity; const Description: string);
+begin
+  Add(DateTimeToStr(Now), Title, Severity, Description);
+end;
+
+procedure TJvLogFile.Add(const Time, Title, Description: string);
+begin
+  Add(DateTimeToStr(Now), Title, FDefaultSeverity, Description);
 end;
 
 procedure TJvLogFile.Add(const Title, Description: string);
@@ -280,6 +266,10 @@ begin
       LogRecord.Title := Copy(LogRecord.Time, J + 1, MaxInt);
       System.Delete(LogRecord.Time, J, MaxInt);
 
+      J := Pos( '>', LogRecord.Title);
+      LogRecord.Severity := GetSeverityFromString( Copy( LogRecord.Title, 1, J - 1));
+      LogRecord.Title := Copy(LogRecord.Title, J + 1, MaxInt);
+
       //Extract title and description
       J := 1;
       L := Length(LogRecord.Title);
@@ -357,25 +347,18 @@ begin
 end;
 
 procedure TJvLogFile.ShowLog(const Title: string);
-var
-  I: Integer;
+begin
+  ShowLog(Title, nil);
+end;
+
+procedure TJvLogFile.ShowLog(const Title: string; const aIcon : TIcon);
 begin
   with TFoLog.Create(nil) do
   try
+    Icon := aIcon;
     Caption := Title;
-    with ListView1 do
-    begin
-      Items.BeginUpdate;
-      for I := 0 to FList.Count - 1 do
-        with FList[I] do
-          with Items.Add do
-          begin
-            Caption := Time;
-            SubItems.Add(Title);
-            SubItems.Add(Description);
-          end;
-      Items.EndUpdate;
-    end;
+    LogRecordList := FList;
+    FillList;
 
     if Assigned(FOnShow) then
       FOnShow(Self);
