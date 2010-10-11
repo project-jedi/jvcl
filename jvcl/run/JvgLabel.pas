@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
-  JvComponent,
+  JvComponent, JvJVCLUtils,
   JvgTypes, JvgCommClasses, JvgUtils;
 
 const
@@ -278,8 +278,7 @@ const
 implementation
 
 uses
-  Math,
-  JvJVCLUtils;
+  Math;
 
 //=== { TJvgCustomLabel } ====================================================
 

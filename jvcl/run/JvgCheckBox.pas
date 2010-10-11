@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
-  JvComponent,
+  JvComponent, JvJVCLUtils,
   JvgTypes, JvgCommClasses, JvgUtils;
 
 type
@@ -168,7 +168,7 @@ implementation
 
 uses
   Math,
-  JvThemes, JvJVCLUtils;
+  JvThemes;
 
 {$R JvgCheckBox.res}
 

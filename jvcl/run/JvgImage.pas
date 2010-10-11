@@ -36,7 +36,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
-  JvComponent,
+  JvComponent, JvJVCLUtils,
   JvgTypes, JvgUtils, JvgCommClasses;
 
 type
@@ -146,7 +146,7 @@ const
 implementation
 
 uses
-  Math, JvJVCLUtils;
+  Math;
 
 constructor TJvgBitmapImage.Create(AOwner: TComponent);
 begin
