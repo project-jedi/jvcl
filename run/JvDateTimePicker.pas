@@ -72,6 +72,7 @@ type
     function CheckNullValue(const ANullText, AFormat: string; AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean; overload; virtual;
     procedure Change; override;
     function MsgSetDateTime(Value: TSystemTime): Boolean; override;
+    procedure CheckValidDate(Value: TDate); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -174,6 +175,12 @@ begin
     SendMessage(Handle, DTM_SETFORMAT, 0, LPARAM(PChar('''' + ANullText + '''')))
   else
     SendMessage(Handle, DTM_SETFORMAT, 0, LPARAM(PChar(AFormat)));
+end;
+
+procedure TJvDateTimePicker.CheckValidDate(Value: TDate);
+begin
+  if Value <> NullDate then
+    inherited CheckValidDate(Value);
 end;
 
 procedure TJvDateTimePicker.SetNullDate(const Value: TDateTime);
