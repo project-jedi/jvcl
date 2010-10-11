@@ -191,8 +191,8 @@ const
 implementation
 
 uses
-  JvConsts, JvJCLUtils, JvResources,
-  JvgUtils, JvJVCLUtils;
+  JvConsts, JvJCLUtils, JvJVCLUtils, JvResources,
+  JvgUtils;
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin

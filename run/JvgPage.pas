@@ -142,8 +142,8 @@ const
 implementation
 
 uses
-  Math,
-  JvgUtils, JvJVCLUtils;
+  Math, JvJVCLUtils,
+  JvgUtils;
 
 const
   FontDirs: array [TglSide] of TglLabelDir =
