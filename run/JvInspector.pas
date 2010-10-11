@@ -365,6 +365,7 @@ type
     FStyle: TJvInspectorStyle;
     FStylePainter: TJvInspectorPainter;
     FSettingStyle: Boolean;
+    FMouseWheelRecursion: Boolean;
     procedure SetInspectObject(const Value: TObject);
     procedure SetStyle(const Value: TJvInspectorStyle);
     function GetActivePainter: TJvInspectorPainter;
@@ -4132,8 +4133,17 @@ var
 begin
   if (Selected <> nil) and Selected.DroppedDown then
   begin
-    LbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));
-    Selected.ListBox.Perform(WM_MOUSEWHEEL, WheelDelta shl 16, MakeLong(LbPos.X, LbPos.Y));
+    // If Selected.ListBox gets the WM_MOUSEWHEEL we would run into an infinite recursion
+    if not FMouseWheelRecursion then
+    begin
+      FMouseWheelRecursion := True;
+      try
+        LbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));
+        Selected.ListBox.Perform(WM_MOUSEWHEEL, WheelDelta shl 16, MakeLong(LbPos.X, LbPos.Y));
+      finally
+        FMouseWheelRecursion := False;
+      end;
+    end;
   end
   else
   begin
