@@ -1195,10 +1195,6 @@ begin
 
   if incFileName = '' then
     incFileName := FIncFileName;
-  GenericIncFile := LoadDefines('', ExtractFilePath(incFileName) + 'jedi%t.inc') and
-                    LoadDefines('', incFileName);
-  FDefinesConditionParser.Defines.RemoveDefine('JEDI_INC');
-  FDefinesConditionParser.Defines.RemoveDefine('UNKNOWN_COMPILER_VERSION');
 
   FCallBack := CallBack;
 
@@ -1220,6 +1216,14 @@ begin
   // for all targets
   for i := 0 to targets.Count - 1 do
   begin
+    if Assigned(FDefinesConditionParser) then
+      FDefinesConditionParser.Defines.Clear;
+
+    GenericIncFile := LoadDefines('', ExtractFilePath(incFileName) + 'jedi%t.inc') and
+                      LoadDefines('', incFileName);
+    FDefinesConditionParser.Defines.RemoveDefine('JEDI_INC');
+    FDefinesConditionParser.Defines.RemoveDefine('UNKNOWN_COMPILER_VERSION');
+
     target := targets[i];
     if GenericIncFile then
       LoadDefines(target, incFileName);
