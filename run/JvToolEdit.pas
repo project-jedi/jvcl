@@ -1708,17 +1708,25 @@ var
   I: Integer;
   SysMetrics, Metrics: TTextMetric;
 begin
+  // Get text height
   DC := GetDC(HWND_DESKTOP);
   GetTextMetrics(DC, SysMetrics);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
   ReleaseDC(HWND_DESKTOP, DC);
-  if not Flat then
-    I := 8
-  else
-    I := 6;
-  I := GetSystemMetrics(SM_CYBORDER) * I;
+
+  // If necessary reserve space for border
+  i:=0;
+  if BorderStyle <> bsNone then
+  begin
+    if not Flat then
+      I := 8
+    else
+      I := 6;
+    I := GetSystemMetrics(SM_CYBORDER) * I;
+  end;
+
   if Height < Metrics.tmHeight + I then
     Height := Metrics.tmHeight + I;
 end;
