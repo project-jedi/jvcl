@@ -4038,6 +4038,17 @@ var
     end;
   end;
 
+  function IsOnAnyMonitor(ARect: TRect) : Boolean;
+  var
+    BottomRight : TPoint;
+  begin
+    BottomRight := ARect.BottomRight;
+    Dec(BottomRight.X);
+    Dec(BottomRight.Y);
+    Result := (Screen.MonitorFromPoint(ARect.TopLeft, mdNull) <> Nil) and
+        (Screen.MonitorFromPoint(BottomRight, mdNull) <> Nil);
+  end;
+
 begin
   if Options = [fpActiveControl] then
     Exit;
@@ -4098,7 +4109,8 @@ begin
       AppStorage.ConcatPaths([StorePath, siPixels]), Screen.PixelsPerInch));
     if DataFound then
     begin
-      if Placement.rcNormalPosition.Right > Placement.rcNormalPosition.Left then
+      if (Placement.rcNormalPosition.Right > Placement.rcNormalPosition.Left) and
+         IsOnAnyMonitor(Placement.rcNormalPosition) then
       begin
         if not (csDesigning in Form.ComponentState) then
         begin
