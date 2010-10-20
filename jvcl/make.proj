@@ -1,0 +1,186 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Make">
+<!--
+{**************************************************************************************************}
+{                                                                                                  }
+{ Project JEDI Visual Component Library (JVCL)                                                     }
+{                                                                                                  }
+{ The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); }
+{ you may not use this file except in compliance with the License. You may obtain a copy of the    }
+{ License at http://www.mozilla.org/MPL/                                                           }
+{                                                                                                  }
+{ Software distributed under the License is distributed on an "AS IS" basis, WITHOUT WARRANTY OF   }
+{ ANY KIND, either express or implied. See the License for the specific language governing rights  }
+{ and limitations under the License.                                                               }
+{                                                                                                  }
+{ The Original Code is make.proj.                                                                  }
+{                                                                                                  }
+{ The Initial Developer of the Original Code is Andreas Hausladen.                                 }
+{ Portions created by Andreas Hausladen Copyright (C) 2010 Andreas Hausladen. All rights reserved. }
+{                                                                                                  }
+{ Contributor(s):                                                                                  }
+{                                                                                                  }
+{**************************************************************************************************}
+-->
+	<PropertyGroup>
+		<BDSLIB>$(BDS)\lib</BDSLIB>
+		<PLATFORM>win32</PLATFORM>
+		<ProjectVersion>12.0</ProjectVersion> <!-- must be not empty, value doesn't matter -->
+	</PropertyGroup>
+	<Import Condition=" Exists('$(BDS)\Bin\CodeGear.Common.Targets') " Project="$(BDS)\Bin\CodeGear.Common.Targets" />
+
+	
+	<!-- Make/Clean/Rebuild targets (declared after the import of the groupproj) -->
+<!--
+	<Target Name="Make" DependsOnTargets="CheckEnv;CompilePackages" />
+	<Target Name="Clean" DependsOnTargets="CheckEnv;DeleteOutputFiles" />
+	<Target Name="Rebuild" DependsOnTargets="Clean;Make" />
+-->
+
+	<!-- Delphi Version -->
+	<PropertyGroup>
+		<!--
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc60.dll') ">d6</LibDirVersion>
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc70.dll') ">d7</LibDirVersion>
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc90.dll') ">d9</LibDirVersion>
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc100.dll') and Exists('$(BDS)\bin\bordbk100N.dll') ">d10</LibDirVersion>
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc100.dll') and Exists('$(BDS)\bin\bordbk105N.dll') ">d11</LibDirVersion>
+		-->
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc120.dll') ">d12</LibDirVersion> <!-- 2009 -->
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc140.dll') ">d14</LibDirVersion> <!-- 2010 -->
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc150.dll') ">d15</LibDirVersion> <!-- XE   -->
+		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc160.dll') ">d16</LibDirVersion> <!-- XE2  -->
+	</PropertyGroup>
+
+
+	<PropertyGroup>
+		<DCC32>&quot;$(BDS)\bin\dcc32.exe&quot; --no-config -Q</DCC32>
+
+		<BCBCompile>false</BCBCompile>
+		<BCBCompile Condition=" Exists('$(BDS)\bin\bccide.dll') ">true</BCBCompile>
+
+		<!-- Use Delphi XE's properties -->
+		<DelphiLibraryPath Condition=" '$(DelphiLibraryPath)' == '' ">$(Win32LibraryPath)</DelphiLibraryPath>
+		<DelphiDebugDCUPath Condition=" '$(DelphiDebugDCUPath)' == '' ">$(Win32DebugDCUPath)</DelphiDebugDCUPath>
+		<DelphiDLLOutputPath Condition=" '$(DelphiDLLOutputPath)' == '' ">$(Win32DLLOutputPath)</DelphiDLLOutputPath>
+		<DelphiDCPOutput Condition=" '$(DelphiDCPOutput)' == '' ">$(Win32DCPOutput)</DelphiDCPOutput>
+
+		<!-- Directories -->
+		<JvclDir>$(MSBuildProjectDirectory)</JvclDir>
+
+		<IncludeDirs>$(JvclDir)\Common</IncludeDirs>
+		<UnitDirs>$(JvclDir)\Run</UnitDirs>
+		<ResDirs>$(UnitDirs);$(JvclDir)\Resources</ResDirs>
+		<DcuOutDir Condition=" '$(DcuOutDir)' == '' ">$(JvclDir)\lib\$(LibDirVersion)</DcuOutDir>
+		<ObjOutDir Condition=" '$(ObjOutDir)' == '' ">$(DcuOutDir)</ObjOutDir>
+		<DcpOutDir Condition=" '$(DcpOutDir)' == '' ">$(DcuOutDir)</DcpOutDir>
+		<HppOutDir Condition=" '$(HppOutDir)' == '' ">$(BDSCOMMONDIR)\hpp</HppOutDir>
+		<BplOutDir Condition=" '$(BplOutDir)' == '' ">$(DelphiDLLOutputPath)</BplOutDir>
+		<DebugDcuOutDir Condition=" '$(DebugDcuOutDir)' == '' ">$(DcuOutDir)\debug</DebugDcuOutDir>
+		<DebugObjOutDir Condition=" '$(DebugObjOutDir)' == '' ">$(DebugDcuOutDir)</DebugObjOutDir>
+		<DebugDcpOutDir Condition=" '$(DebugDcpOutDir)' == '' ">$(DebugDcuOutDir)</DebugDcpOutDir>
+
+		<!-- Compiler command line options -->
+		<PackageOptions Condition=" '$(BCBCompile)' == 'true' ">$(PackageOptions) -JL -DBCB</PackageOptions>
+		<PackageOptions>$(PackageOptions) -LE&quot;$(BplOutDir)&quot;</PackageOptions>
+		<PackageOptions>$(PackageOptions) -I&quot;$(IncludeDirs)&quot; -R&quot;$(ResDirs)&quot;</PackageOptions>
+		
+		<ReleasePackageOptions>$(PackageOptions)</ReleasePackageOptions>
+		<ReleasePackageOptions>$(ReleasePackageOptions) -DRELEASE -$D- -$Y- -$L-</ReleasePackageOptions>
+		<ReleasePackageOptions>$(ReleasePackageOptions) -LN&quot;$(DcuOutDir)&quot;</ReleasePackageOptions>
+		<ReleasePackageOptions>$(ReleasePackageOptions) -N0&quot;$(DcuOutDir)&quot; -NO&quot;$(ObjOutDir)&quot; -N1&quot;$(HppOutDir)&quot; -NB&quot;$(DcuOutDir)&quot;</ReleasePackageOptions>
+		<ReleasePackageOptions>$(ReleasePackageOptions) -U&quot;$(DcuOutDir);$(DcpOutDir);$(DelphiLibraryPath)&quot;</ReleasePackageOptions>
+
+		<DebugPackageOptions>$(PackageOptions)</DebugPackageOptions>
+		<DebugPackageOptions>$(DebugPackageOptions) -DDEBUG -$D+ -$Y+ -$L+</DebugPackageOptions>
+		<DebugPackageOptions>$(DebugPackageOptions) -LN&quot;$(DebugDcuOutDir)&quot;</DebugPackageOptions>
+		<DebugPackageOptions>$(DebugPackageOptions) -N0&quot;$(DebugDcuOutDir)&quot; -NO&quot;$(DebugObjOutDir)&quot; -N1&quot;$(HppOutDir)&quot; -NB&quot;$(DebugDcuOutDir)&quot;</DebugPackageOptions>
+		<DebugPackageOptions>$(DebugPackageOptions) -U&quot;$(DebugDcuOutDir);$(DebugDcpOutDir);$(DelphiDebugDCUPath);$(DelphiLibraryPath)&quot;</DebugPackageOptions>
+
+		<JvclIncTplFile>$(JvclDir)\Common\jvclbase.inc</JvclIncTplFile>
+		<JvclIncFile>$(JvclDir)\Common\jvcl$(LibDirVersion).inc</JvclIncFile>
+	</PropertyGroup>
+
+	<Import Project="$(JvclDir)\Packages\$(LibDirVersion) Packages.groupproj" />
+
+	<!-- Make/Clean/Rebuild targets -->
+	<Target Name="Make" DependsOnTargets="CheckEnv;CompilePackages" />
+	<Target Name="Clean" DependsOnTargets="CheckEnv;DeleteOutputFiles" />
+	<Target Name="Rebuild" DependsOnTargets="Clean;Make" />
+
+	<ItemGroup>
+		<JvclSources Include="$(JvclDir)\Run\*.pas" />
+		<JvclSources Include="$(JvclDir)\Design\*.pas" />
+		<JvclResFiles Include="$(JvclDir)\Run\*.dfm" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- BPL output files for "/t:Clean" -->
+		<PackageOutputFiles Include="$(BplOutDir)\Jv*.bpl" />
+		<PackageOutputFiles Include="$(BplOutDir)\Jv*.map" />
+		<PackageOutputFiles Include="$(BplOutDir)\Jv*.tds" />
+		<PackageOutputFiles Include="$(BplOutDir)\Jv*.jdbg" />	
+	</ItemGroup>
+
+	<!-- Output filenames -->
+	<PropertyGroup>
+		<JvclSourcesOutput>@(JvclSources->'$(DcuOutDir)\%(Filename).dcu');@(JvclSources->'$(DebugDcuOutDir)\%(Filename).dcu');</JvclSourcesOutput>
+		<JvclBcbSourceOutput>@(JvclSources->'$(ObjOutDir)\%(Filename).obj');@(JvclSources->'$(DebugObjOutDir)\%(Filename).obj');@(JvclSources->'$(HppOutDir)\%(Filename).hpp')</JvclBcbSourceOutput>
+		<JvclSourcesOutput Condition=" '$(BCBCompile)' == 'true' ">$(JvclSourcesOutput);$(JvclBcbSourceOutput)</JvclSourcesOutput>
+		<JvclResFileOutput>@(JvclResFiles->'$(DcuOutDir)\%(Filename)%(Extension)');@(JvclResFiles->'$(DebugDcuOutDir)\%(Filename)%(Extension)')</JvclResFileOutput>
+	</PropertyGroup>
+
+
+	<!-- Targets -->
+	
+	<Target Name="CheckEnv">
+		<Error Condition=" '$(BDS)' == '' " Text="BDS environment variable isn't set. You must execute rsvars.bat before using msbuild." />
+		<Error Condition=" '$(LibDirVersion)' == '' " Text="RAD Studio version couldn't be identified. Have you executed rsvars.bat?" />
+	</Target>
+	
+	<!-- Create output directories -->
+	<Target Name="CreateOutputDirectories">
+		<MakeDir Directories="$(DcuOutDir);$(DebugDcuOutDir);$(ObjOutDir);$(DebugObjOutDir);$(HppOutDir);$(DcpOutDir);$(BplOutDir)" />
+	</Target>
+
+	<!-- Copy *.res files to the dcu output directories -->
+	<Target Name="CopyResFiles" Inputs="@(JvclResFiles)" Outputs="$(JvclResFileOutput)">
+		<Copy SourceFiles="@(JvclResFiles)" DestinationFolder="$(DcuOutDir)" />
+		<Copy SourceFiles="@(JvclResFiles)" DestinationFolder="$(DebugDcuOutDir)" />
+	</Target>
+
+	<!-- Create JvclXXX.ini file if it doesn't exist -->
+	<Target Name="CreateJvclIniFile">
+		<Copy Condition=" !Exists('$(JvclIncFile)') " SourceFiles="$(JvclIncTplFile)" DestinationFiles="$(JvclIncFile)" />
+	</Target>
+
+<!--	<Target Name="CompileJvclSources" Inputs="@(JvclSources);$(JvclResFiles);$(JvclIncFile)" Outputs="$(JvclSourcesOutput)" DependsOnTargets="CreateOutputDirectories;CopyResFiles;CreateJvclIniFile">
+		<Exec Command="$(DCC32) @(JvclSources->'%(Filename)', ' ') $(ReleaseOptions)" WorkingDirectory="%(JvclSources.WorkDir)" />
+		<Exec Command="$(DCC32) @(JvclSources->'%(Filename)', ' ') $(DebugOptions)" WorkingDirectory="%(JvclSources.WorkDir)" />
+	</Target>-->
+
+	<!-- Use Batching via "%(Projects.Identity)" for the packages -->
+	<Target Name="CompilePackages" DependsOnTargets="CreateOutputDirectories;CopyResFiles;CreateJvclIniFile">
+			<!--Inputs="@(JvclSources);$(JvclResFiles);$(JvclIncFile);@(Packages->'$(JvclDir)\Packages\$(LibDirVersion)\%(Filename).dpk')"
+			Outputs="@(Packages->'$(DcpOutDir)\%(Filename).dcp')">-->
+		<MSBuild Projects="$(JvclDir)\Packages\%(Projects.Identity)" Properties="Config=Debug" Targets="make" />
+		<MSBuild Projects="$(JvclDir)\Packages\%(Projects.Identity)" Properties="Config=Release" Targets="make" />
+	</Target>
+
+	<Target Name="DeleteOutputFiles">
+		<!--<MSBuild Projects="$(JvclDir)\Packages\%(Projects.Identity)" Properties="Config=Debug" Targets="clean" />
+		<MSBuild Projects="$(JvclDir)\Packages\%(Projects.Identity)" Properties="Config=Release" Targets="clean" />-->
+
+		<Delete Files="$(JvclSourcesOutput)" />
+		<Delete Files="$(JvclBcbSourceOutput)" />
+		<Delete Files="$(JvclResFileOutput)" />
+	
+		<Delete Files="@(Projects->'$(DcpOutDir)\%(Filename).dcu')" />
+		<Delete Files="@(Projects->'$(DcpOutDir)\%(Filename).dcp')" />
+		<Delete Files="@(Projects->'$(DcpOutDir)\%(Filename).bpi')" />
+		<Delete Files="@(Projects->'$(DcpOutDir)\%(Filename).lib')" />
+		<Delete Files="@(Projects->'$(DcpOutDir)\%(Filename).lst')" />
+
+		<Delete Files="@(PackageOutputFiles)" />
+	</Target>
+	
+</Project>
