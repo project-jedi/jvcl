@@ -11,13 +11,13 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvControls-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="JclVcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
-	<Package Name="dbrtl" Targets="DB" Condition=""/>
-	<Package Name="vcldb" Targets="DB" Condition=""/>
-	<Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="vclx" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD6" Targets="d6" Condition="USE_3RDPARTY_SMEXPORT"/>
@@ -25,16 +25,18 @@
     <Package Name="SMExportD2005" Targets="d9" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2006" Targets="d10" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2007" Targets="d11" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportD2009" Targets="d12" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportD2010" Targets="d14" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2009r" Targets="d12" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportD2010r" Targets="d14" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportXEr" Targets="d15" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2005" Targets="d9" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2006" Targets="d10" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2007" Targets="d11" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportD2009" Targets="d12" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportD2010" Targets="d14" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2009r" Targets="d12" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportD2010r" Targets="d14" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportXEr" Targets="d15" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
@@ -50,31 +52,47 @@
     <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC120" Targets="d12" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC140" Targets="d14" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="ODAC150" Targets="d15" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
-    <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridVCLD6" Targets="d6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridVCLD7" Targets="d7" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridD9" Targets="d9" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridD10" Targets="d10" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridD11" Targets="d11" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
-    <Package Name="cxGridD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
-    <Package Name="cxDataD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxTreeListD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridD12" Targets="d12" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxGridD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxTreeListD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridD14" Targets="d14" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDataD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxTreeListD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB" Formname="" Condition=""/>
