@@ -343,6 +343,7 @@ type
     FPicture: TPicture;
     FExtendedColumns: TJvListExtendedColumns;
     FSavedExtendedColumns: TJvListExtendedColumns;
+    FSavedColumnOrder: string;
     FViewStylesItemBrush: TJvViewStyles;  // use for Create/DestroyWnd process
     {$IFNDEF RTL200_UP}
     FGroupView: Boolean;
@@ -646,9 +647,6 @@ const
   AlignmentToLVGA: array[TAlignment] of Integer = (LVGA_HEADER_LEFT, LVGA_HEADER_RIGHT, LVGA_HEADER_CENTER);
   TileSizeKindToLVTVIF: array[TJvTileSizeKind] of Integer = (LVTVIF_AUTOSIZE, LVTVIF_FIXEDWIDTH, LVTVIF_FIXEDHEIGHT, LVTVIF_FIXEDSIZE);
   InsertMarkPositionToLVIM: array[TJvInsertMarkPosition] of Integer = (0, LVIM_AFTER);
-
-  // (rom) increased from 100
-  cColumnsHandled = 1024;
 
 //=== { TJvListItem } ========================================================
 
@@ -1696,48 +1694,64 @@ end;
 
 function TJvListView.GetColumnsOrder: string;
 var
-  Res: array [0..cColumnsHandled - 1] of Integer;
+  Res: array of Integer;
   I: Integer;
 begin
-  ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
-  Result := '';
-  if Columns.Count > cColumnsHandled then
-    raise EJvListViewError.CreateRes(@RsETooManyColumns);
-  for I := 0 to Columns.Count - 1 do
+  if Columns.Count > 0 then
   begin
-    if Result <> '' then
-      Result := Result + ',';
-    Result := Result + IntToStr(Res[I]) + '=' + IntToStr(Columns[I].Width);
-  end;
+    if not Columns.Owner.HandleAllocated then
+      Result := FSavedColumnOrder
+    else
+    begin
+      SetLength(Res, Columns.Count);
+      ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
+      Result := '';
+      for I := 0 to Columns.Count - 1 do
+      begin
+        if Result <> '' then
+          Result := Result + ',';
+        Result := Result + IntToStr(Res[I]) + '=' + IntToStr(Columns[I].Width);
+      end;
+    end;
+  end
+  else
+    Result := '';
 end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
 var
-  Res: array [0..cColumnsHandled - 1] of Integer;
+  Res: array of Integer;
   I, J: Integer;
-  st: string;
+  S: string;
+  SL: TStrings;
 begin
-  FillChar(Res, SizeOf(Res), #0);
-  with TStringList.Create do
-  try
-    CommaText := Order;
-    I := 0;
-    while Count > 0 do
+  if not Columns.Owner.HandleAllocated then
+    FSavedColumnOrder := Order
+  else
+  begin
+    if Columns.Count > 0 then
     begin
-      st := Strings[0];
-      J := Pos('=', st);
-      if (J <> 0) and (I < Columns.Count) then
-      begin
-        Columns[I].Width := StrToIntDef(Copy(st, J + 1, Length(st)), Columns[I].Width);
-        st := Copy(st, 1, J - 1);
+      SetLength(Res, Columns.Count);
+      FillChar(Res[0], Length(Res) * SizeOf(Integer), 0);
+      SL := TStringList.Create;
+      try
+        SL.CommaText := Order;
+        for I := 0 to SL.Count - 1 do
+        begin
+          S := SL[I];
+          J := Pos('=', S);
+          if (J <> 0) and (I < Columns.Count) then
+          begin
+            Columns[I].Width := StrToIntDef(Copy(S, J + 1, Length(S)), Columns[I].Width);
+            S := Copy(S, 1, J - 1);
+          end;
+          Res[I] := StrToIntDef(S, 0);
+        end;
+      finally
+        SL.Free;
       end;
-      Res[I] := StrToIntDef(st, 0);
-      Delete(0);
-      Inc(I);
+      ListView_SetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
     end;
-    ListView_SetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
-  finally
-    Free;
   end;
 end;
 
@@ -1788,6 +1802,11 @@ begin
   SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(not FGroupView), 0);
   SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(FGroupView), 0);
   {$ENDIF !RTL200_UP}
+  if FSavedColumnOrder <> '' then
+  begin
+    ColumnsOrder := FSavedColumnOrder;
+    FSavedColumnOrder := '';
+  end;
 end;
 
 procedure TJvListView.UpdateHeaderImages(HeaderHandle: Integer);
@@ -2277,7 +2296,11 @@ end;
 
 procedure TJvListView.DestroyWnd;
 begin
-  FSavedExtendedColumns.Assign(FExtendedColumns);
+  if not (csDestroying in ComponentState) then
+  begin
+    FSavedColumnOrder := ColumnsOrder;
+    FSavedExtendedColumns.Assign(FExtendedColumns);
+  end;
   inherited DestroyWnd;
 end;
 
