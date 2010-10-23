@@ -394,8 +394,10 @@ type
     { Property to get access to the parameters }
     property Parameters[Index: Integer]: TJvBaseParameter read GetParameters write SetParameters;
     // Enable/DisableReason for the OkButton
-    property OkButtonDisableReasons: TJvParameterListEnableDisableReasonList read FOkButtonDisableReasons write
-        FOkButtonDisableReasons;
+    property OkButtonDisableReasons: TJvParameterListEnableDisableReasonList
+        read FOkButtonDisableReasons write FOkButtonDisableReasons;
+    property OkButtonEnableReasons: TJvParameterListEnableDisableReasonList
+        read FOkButtonEnableReasons write FOkButtonEnableReasons;
     //1 Number of visible parameters
     property VisibleCount: Integer read GetVisibleCount;
     procedure AssignValues(iSourceList: TJvParameterList);
@@ -406,8 +408,7 @@ type
     procedure CreateWinControlsOnWinControl(ParameterParent: TWinControl);
     {
     Checks the IsDataValid of each Parameter, When the ShowParameterValidStatus is
-    activated the
-    labels invalid parameters will be shown italic
+    activated the labels invalid parameters will be shown italic
     }
     procedure HandleShowValidState;
     { load the data of all allowed parameters from the AppStorage }
