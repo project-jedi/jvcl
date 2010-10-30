@@ -11,21 +11,21 @@
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="designide" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
-	<Package Name="dclstd" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="dclstd" Targets="all" Condition=""/>
     <Package Name="vclx" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvLookoutEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvOutlookBarForm.pas" Targets="all" Formname="FrmOLBEditor" Condition=""/>
-	<File Name="..\..\design\JvScheduleEditorForm.pas" Targets="all" Formname="FrmScheduleEditor" Condition=""/>
-	<File Name="..\..\design\JvScheduleEditors.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvTimeLineEditor.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvCustomReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="all" Formname="FrmScheduleEditor" Condition=""/>
+    <File Name="..\..\design\JvScheduleEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimeLineEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvHLEditEditor.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

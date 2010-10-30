@@ -10,20 +10,20 @@
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="designide" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
     <Package Name="vclx" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvAppletEditor.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvProgressComponentEditor.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvFindReplaceEditor.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvDlgsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvAppletEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProgressComponentEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFindReplaceEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDlgsReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDialogActnResForm.pas" Targets="all" Formname="JvDialogActions: TDataModule" Condition=""/>
   </Contains>
 </Package>

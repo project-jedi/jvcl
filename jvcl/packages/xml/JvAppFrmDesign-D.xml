@@ -11,17 +11,17 @@
     <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="JclVcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="designide" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
     <Package Name="vclx" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-	<File Name="..\..\design\JvGradientCaptionForm.pas" Targets="all" Formname="GradCaptionsEditor" Condition=""/>
-	<File Name="..\..\design\JvAppFrmReg.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\design\JvFormWallpaperEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="all" Formname="GradCaptionsEditor" Condition=""/>
+    <File Name="..\..\design\JvAppFrmReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFormWallpaperEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWallpaperEditForm.pas" Targets="all" Formname="FoWallpaperChooser" Condition=""/>
   </Contains>
 </Package>
