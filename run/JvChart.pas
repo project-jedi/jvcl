@@ -4471,7 +4471,7 @@ begin
     FDragFloatingMarker.FRawYPosition := Y;
 
     Self.Invalidate; // Repaint control LATER ! .. like a PostMessage(WM_PAINT)
-   	//Self.Repaint; // much more CPU intensive, but smoother.
+    //Self.Repaint; // much more CPU intensive, but smoother.
   end;
 
 end;
