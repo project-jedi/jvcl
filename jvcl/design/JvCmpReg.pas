@@ -62,7 +62,7 @@ begin
     TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvMultiStringHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile,
-	TJvSpellChecker, TJvSpeller]);
+    TJvSpellChecker, TJvSpeller]);
   RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
