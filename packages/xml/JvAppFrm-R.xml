@@ -9,23 +9,23 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvControls-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="JclVcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="vcl" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
-	<File Name="..\..\run\JvGradientCaption.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGradientCaption.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAnimTitle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppEvent.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\run\JvAppHotKey.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppHotKey.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAnimatedIcon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAnimation.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormAutoSize.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\run\JvFormMagnet.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormMagnet.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormTransparent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>

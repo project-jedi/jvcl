@@ -13,15 +13,15 @@
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvControls-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="JclVcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="designide" Targets="all" Condition=""/>
-	<Package Name="dcldb" Targets="DB" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
-	<Package Name="dbrtl" Targets="DB" Condition=""/>
-	<Package Name="vcldb" Targets="DB" Condition=""/>
-	<Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="all" Condition=""/>
+    <Package Name="dcldb" Targets="DB" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="vclx" Targets="all" Condition=""/>
     <Package Name="dclstd" Targets="all" Condition=""/>
   </Requires>
   <Contains>

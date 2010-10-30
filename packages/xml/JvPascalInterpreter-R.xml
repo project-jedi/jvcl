@@ -10,17 +10,17 @@
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-	<Package Name="JCL" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
-	<Package Name="dbrtl" Targets="DB" Condition=""/>
-	<Package Name="bdertl" Targets="DB" Condition=""/>
-	<Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
+    <Package Name="JCL" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="DB" Condition=""/>
+    <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
-	<Package Name="inet" Targets="DB" Condition="INTERNET_COMPONENTS"/>
-	<Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="inet" Targets="DB" Condition="INTERNET_COMPONENTS"/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
     <Package Name="vclx" Targets="all" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>

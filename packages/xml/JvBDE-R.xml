@@ -11,12 +11,12 @@
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="JvDB-R" Targets="DB" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
-	<Package Name="dbrtl" Targets="DB" Condition=""/>
-	<Package Name="bdertl" Targets="DB" Condition=""/>
-	<Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="DB" Condition=""/>
+    <Package Name="vcldb" Targets="DB" Condition=""/>
     <Package Name="vclx" Targets="all" Condition=""/>
   </Requires>
   <Contains>

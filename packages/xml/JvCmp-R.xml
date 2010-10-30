@@ -8,9 +8,9 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="rtl" Targets="all" Condition=""/>
-	<Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
     <Package Name="vclx" Targets="all" Condition=""/>
   </Requires>
   <Contains>
@@ -22,7 +22,7 @@
     <File Name="..\..\run\JvStringHolder.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimeLimit.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTranslator.pas" Targets="all" Formname="" Condition=""/>
-	<File Name="..\..\run\JvWinHelp.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWinHelp.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAlarms.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvConverter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCreateProcess.pas" Targets="all" Formname="" Condition=""/>

@@ -8,11 +8,11 @@
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
-	<Package Name="Jcl" Targets="all" Condition=""/>
-	<Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="Jcl" Targets="all" Condition=""/>
+    <Package Name="JclVcl" Targets="all" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
-	<Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
     <Package Name="vcl" Targets="all" Condition=""/>
   </Requires>
   <Contains>
