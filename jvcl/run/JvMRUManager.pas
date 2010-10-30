@@ -475,7 +475,7 @@ begin
           C := ' ';
         Item.Caption := C + AccelDelimChars[FAccelDelimiter] + DoMinimizeName(S);
       end
- 	  	else
+    else
       begin
         Item.Caption := DoMinimizeName(S);
       end;

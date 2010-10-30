@@ -849,7 +849,7 @@ type
     property WordWrap;
     property Zoom; // added by J.G. Boerema
     property OnChange;
-	property OnClick;
+    property OnClick;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;

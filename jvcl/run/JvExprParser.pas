@@ -161,7 +161,6 @@ type
 
     // Delphi 5 compiler shows hints about a not exported or used symbol
     // TNode.Eval. This is a compiler bug that is caused by the "abstract" keyword.
-	
     function Eval(): Variant; virtual; abstract;
   end;
 

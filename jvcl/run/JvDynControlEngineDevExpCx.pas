@@ -3691,7 +3691,7 @@ end;
 
 procedure TJvDynControlCxProgressbar.ControlSetOrientation(Value: TProgressBarOrientation);
 begin
-  if Value = pbHorizontal	then
+  if Value = pbHorizontal then
     Properties.Orientation:= cxorHorizontal
   else
     Properties.Orientation:= cxorVertical;
