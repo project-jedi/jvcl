@@ -43,6 +43,7 @@ type
 
   TJvCustomThreadDialogFormEvent = procedure(DialogForm: TJvCustomThreadDialogForm) of object;
   TJvThreadCancelEvent = procedure(CurrentThread: TJvThread) of object;
+  TJvThreadExceptionEvent = procedure (Sender: TObject; E: Exception; EAddr: Pointer) of object;
 
   TJvCustomThreadDialogOptions = class(TPersistent)
   private
@@ -182,6 +183,7 @@ type
     FExecuteIsActive: Boolean;
     FFinished: Boolean;
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
+    FOnException: TJvThreadExceptionEvent;
     FParams: Pointer;
     FSender: TObject;
     FSynchAButtons: TMsgDlgButtons;
@@ -208,8 +210,8 @@ type
     property Terminated;
     property Params: Pointer read FParams;
     property ReturnValue;
-    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent
-      read FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
+    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
+    property OnException: TJvThreadExceptionEvent read FOnException write FOnException;
   end;
 
   TJvThread = class(TJvComponent)
@@ -231,6 +233,7 @@ type
     FFreeOnTerminate: Boolean;
     FOnCancelExecute: TJvThreadCancelEvent;
     FOnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent;
+    FOnException: TJvThreadExceptionEvent;
     FPriority: TThreadPriority;
     FThreadDialog: TJvCustomThreadDialog;
     FThreadDialogAllowed: Boolean;
@@ -264,8 +267,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     procedure Synchronize(Method: TThreadMethod); // (slower)
-    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-      AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+    function SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 
     procedure Lock;   // for safe use of property Threads[]
     procedure Unlock;
@@ -304,16 +306,15 @@ type
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
     property Priority: TThreadPriority read FPriority write FPriority default tpNormal;
     property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write SetThreadDialog;
-    property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent
-      read FAfterCreateDialogForm write FAfterCreateDialogForm;
+    property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent read FAfterCreateDialogForm write FAfterCreateDialogForm;
     property BeforeResume: TNotifyEvent read FBeforeResume write FBeforeResume;
     property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
     property OnCancelExecute: TJvThreadCancelEvent read FOnCancelExecute write FOnCancelExecute;
     property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
-    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read
-      FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
+    property OnShowMessageDlgEvent: TJvThreadShowMessageDlgEvent read FOnShowMessageDlgEvent write FOnShowMessageDlgEvent;
+    property OnException: TJvThreadExceptionEvent read FOnException write FOnException;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -634,6 +635,7 @@ begin
       BaseThread := TJvBaseThread.Create(Self, FOnExecute, P);
       BaseThread.FreeOnTerminate := FFreeOnTerminate;
       BaseThread.OnShowMessageDlgEvent := OnShowMessageDlgEvent;
+      BaseThread.OnException := OnException;
       BaseThread.Priority := Priority;
       BaseThread.OnTerminate := DoTerminate;
       FThreads.Add(BaseThread);
@@ -1003,8 +1005,8 @@ begin
   end;
 end;
 
-function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType;
-  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
+function TJvThread.SynchMessageDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint):
+    Word;
 var
  Thread: TJvBaseThread;
 begin
@@ -1205,6 +1207,9 @@ begin
     FExecuteEvent(Self, FParams);
   except
     on E: Exception do
+    if Assigned(OnException) then
+      OnException(self, E, ExceptAddr)
+    else
     begin
       FException := E;
       FExceptionAddr := ExceptAddr;
