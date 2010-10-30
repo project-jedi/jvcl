@@ -1282,7 +1282,7 @@ begin
   end;
   CaptureLine(Format('JVCL %d.%d.%d.%d',
     [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]),
-	FAborted);
+    FAborted);
   CaptureLine('', FAborted);
 
   AbortReason := '';

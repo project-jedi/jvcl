@@ -90,7 +90,7 @@ uses
 
 type
   {$IFDEF MSWINDOWS}
-	THashedStringList = TStringList;
+  THashedStringList = TStringList;
   {$ENDIF}
 
   // used in CvsChangelog
@@ -410,12 +410,12 @@ var
 
 function FileIsReadOnly(const AFileName: string): boolean;
 begin
-	Result := FileGetAttr(AFileName) and faReadOnly > 0;
+  Result := FileGetAttr(AFileName) and faReadOnly > 0;
 end;
 
 function AnsiToUtf8(const AString: string): string;
 begin
-	Result := AString;
+  Result := AString;
 end;
 {$ENDIF VER130}
 
