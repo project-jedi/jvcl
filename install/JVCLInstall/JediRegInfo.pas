@@ -84,7 +84,7 @@ begin
     try
       Reg.RootKey := HKEY_CURRENT_USER;
       if Reg.OpenKey(IdeRegKey + '\Jedi', True) then // do not localize
-	    Reg.CloseKey;
+        Reg.CloseKey;
       if Reg.OpenKey(IdeRegKey + '\Jedi\' + ProjectName, True) then // do not localize
       begin
         Reg.WriteString('Version', Version); // do not localize
