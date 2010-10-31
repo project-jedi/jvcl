@@ -4391,7 +4391,9 @@ begin
       st.Delimiter := Properties.Delimiter[1]
     else
       st.Delimiter := chr(0);
+    {$IFDEF DELPHI2009_UP}
     st.StrictDelimiter := True;
+    {$ENDIF DELPHI2009_UP}
     st.DelimitedText := Value;
 
     SetLength(ACheckStates, Properties.Items.Count);

@@ -928,7 +928,9 @@ begin
     Connection := ConnectionList.Connection[i];
     GroupList := TStringList.Create;
     try
+      {$IFDEF DELPHI2009_UP}    
       GroupList.StrictDelimiter:=true;
+      {$ENDIF DELPHI2009_UP}
       GroupList.Duplicates := dupIgnore;
       GroupList.Sorted := True;
       if (Pos(';',Connection.Group) >= 1) and (Pos(',',Connection.Group) < 1)then
