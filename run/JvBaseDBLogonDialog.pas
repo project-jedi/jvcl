@@ -928,7 +928,16 @@ begin
     Connection := ConnectionList.Connection[i];
     GroupList := TStringList.Create;
     try
-      GroupList.CommaText := Connection.Group;
+      GroupList.StrictDelimiter:=true;
+      GroupList.Duplicates := dupIgnore;
+      GroupList.Sorted := True;
+      if (Pos(';',Connection.Group) >= 1) and (Pos(',',Connection.Group) < 1)then
+        GroupList.Delimiter := ';'
+      else
+        GroupList.Delimiter := ',';
+      GroupList.DelimitedText := Connection.Group;
+      GroupList.Delimiter := ',';
+      Connection.Group := GroupList.CommaText;
       if GroupList.CommaText = '' then
         GroupList.CommaText := RsGroupNameUndefined;
 
