@@ -755,6 +755,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetHint(const Value: string);
     //IJvDynControlProgressBar
+    procedure ControlSetMarquee(Value: Boolean);
     procedure ControlSetMax(Value: Integer);
     procedure ControlSetMin(Value: Integer);
     procedure ControlSetOnClick(Value: TNotifyEvent);
@@ -3211,6 +3212,16 @@ end;
 procedure TJvDynControlJVCLProgressbar.ControlSetAnchors(Value: TAnchors);
 begin
   Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLProgressBar.ControlSetMarquee(Value: Boolean);
+begin
+  {$IFDEF DELPHI2007_UP}
+  if Value then
+    Style := pbstMarquee
+  else
+    Style := pbstNormal;
+  {$ENDIF DELPHI2007_UP}
 end;
 
 procedure TJvDynControlJVCLProgressbar.ControlSetMax(Value: Integer);

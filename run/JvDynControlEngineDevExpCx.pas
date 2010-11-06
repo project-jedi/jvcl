@@ -850,6 +850,7 @@ type
     procedure ControlSetDefaultProperties;
     procedure ControlSetHint(const Value: string);
     //IJvDynControlProgressBar
+    procedure ControlSetMarquee(Value: Boolean);
     procedure ControlSetMax(Value: Integer);
     procedure ControlSetMin(Value: Integer);
     procedure ControlSetOnClick(Value: TNotifyEvent);
@@ -3641,6 +3642,7 @@ end;
 procedure TJvDynControlCxProgressbar.ControlSetDefaultProperties;
 begin
   Properties.ShowText := False;
+  Properties.AnimationSpeed := 3;
 end;
 
 procedure TJvDynControlCxProgressbar.ControlSetCaption(const Value: string);
@@ -3719,6 +3721,11 @@ end;
 procedure TJvDynControlCxProgressbar.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   LookAndFeel.Assign(Value.LookAndFeel);
+end;
+
+procedure TJvDynControlCxProgressBar.ControlSetMarquee(Value: Boolean);
+begin
+  Properties.Marquee := Value;
 end;
 
 

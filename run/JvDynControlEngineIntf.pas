@@ -290,6 +290,7 @@ type
 
   IJvDynControlProgressbar = interface
     ['{BAC5B6CD-3B65-4EBA-910A-49D152671B06}']
+    procedure ControlSetMarquee(Value: Boolean);
     procedure ControlSetMax(Value: Integer);
     procedure ControlSetMin(Value: Integer);
     procedure ControlSetOrientation(Value: TProgressBarOrientation);
