@@ -64,8 +64,7 @@ type
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
   published
-    property CancelButtonCaption: string read FCancelButtonCaption
-      write SetCancelButtonCaption;
+    property CancelButtonCaption: string read FCancelButtonCaption write SetCancelButtonCaption;
     property Caption: string read FCaption write SetCaption;
     property EnableCancelButton: Boolean read FEnableCancelButton write SetEnableCancelButton default True;
     property InfoText: string read FInfoText write SetInfoText;
@@ -108,16 +107,21 @@ type
 
   TJvThreadSimpleDialogOptions = class(TJvThreadBaseDialogOptions)
   private
+    FProgressBarMarquee: Boolean;
+    FProgressBarMax: Integer;
+    FProgressBarMin: Integer;
     FProgressBarPosition: Integer;
+    FProgressBarSmooth: Boolean;
     FShowProgressBar: Boolean;
-    procedure SetProgressBarPosition(const Value: Integer);
-    procedure SetShowProgressBar(const Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
-    property ProgressBarPosition: Integer read FProgressBarPosition write
-        SetProgressBarPosition;
   published
-    property ShowProgressBar: Boolean read FShowProgressBar write SetShowProgressBar default False;
+    property ProgressBarMarquee: Boolean read FProgressBarMarquee write FProgressBarMarquee default False;
+    property ProgressBarMax: Integer read FProgressBarMax write FProgressBarMax default 100;
+    property ProgressBarMin: Integer read FProgressBarMin write FProgressBarMin default 0;
+    property ProgressBarPosition: Integer read FProgressBarPosition write FProgressBarPosition default -1;
+    property ProgressBarSmooth: Boolean read FProgressBarSmooth write FProgressBarSmooth default False;
+    property ShowProgressBar: Boolean read FShowProgressBar write FShowProgressBar default False;
   end;
 
   TJvThreadSimpleDialog = class(TJvThreadBaseDialog)
@@ -141,8 +145,7 @@ type
   protected
     procedure CreateTextPanel(AOwner: TComponent; AParent: TWinControl; var Panel: TWinControl; var Text: TControl;
         TextAlignment: TAlignment; const BaseName: string);
-    property DefaultBorderWidth: Integer read FDefaultBorderWidth write
-        FDefaultBorderWidth;
+    property DefaultBorderWidth: Integer read FDefaultBorderWidth write FDefaultBorderWidth;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
 
@@ -367,17 +370,10 @@ begin
   inherited Create(AOwner);
   FShowProgressBar := False;
   FProgressBarPosition := -1;
-end;
-
-procedure TJvThreadSimpleDialogOptions.SetProgressBarPosition(const Value:
-    Integer);
-begin
-  FProgressBarPosition := Value;
-end;
-
-procedure TJvThreadSimpleDialogOptions.SetShowProgressBar(const Value: Boolean);
-begin
-  FShowProgressBar := Value;
+  FProgressBarSmooth := False;
+  FProgressBarMax := 100;
+  FProgressBarMin := 0;
+  FProgressBarMarquee := False;
 end;
 
 function TJvThreadSimpleDialogForm.CalculateFormHeight: Integer;
@@ -441,10 +437,17 @@ begin
     if Assigned(FProgressbarPanel) then
       FProgressbarPanel.Visible := DialogOptions.ShowProgressBar;
     if Assigned(IProgressBarControl) then
-      if (DialogOptions.ProgressBarPosition >= 0) and (DialogOptions.ProgressBarPosition <= 100)  then
-        IProgressBarControl.ControlSetPosition(DialogOptions.ProgressBarPosition)
-      else
-        IProgressBarControl.ControlSetPosition(((FCounter*10) mod 110));
+    begin
+      IProgressBarControl.ControlSetMin(DialogOptions.ProgressBarMin);
+      IProgressBarControl.ControlSetMax(DialogOptions.ProgressBarMax);
+      IProgressBarControl.ControlSetMarquee(DialogOptions.ProgressBarMarquee);
+      if not DialogOptions.ProgressBarMarquee then
+        if (DialogOptions.ProgressBarPosition >= DialogOptions.ProgressBarMin) and (DialogOptions.ProgressBarPosition <= DialogOptions.ProgressBarMax)  then
+          IProgressBarControl.ControlSetPosition(DialogOptions.ProgressBarPosition)
+        else
+          IProgressBarControl.ControlSetPosition(((FCounter*10) mod (DialogOptions.ProgressBarMax-DialogOptions.ProgressBarMin)+10));
+      IProgressBarControl.ControlSetSmooth(DialogOptions.ProgressBarSmooth);
+    end;
     case FCounter mod 4 of
       0: Caption := DialogOptions.Caption + ' | ';
       1: Caption := DialogOptions.Caption + ' / ';
@@ -693,13 +696,6 @@ end;
 
 procedure TJvThreadBaseDialogForm.FreeFormControls;
 begin
-//  FreeAndNil(FCancelBtn);
-//  FreeAndNil(FCancelButtonPanel);
-//  FreeAndNil(FInfoText);
-//  FreeAndNil(FInfoTextPanel);
-//  FreeAndNil(FMainPanel);
-//  FreeAndNil(FTimeText);
-//  FreeAndNil(FTimeTextPanel);
   IInfoTextControlAutoSize:= nil;
   IInfoTextControlCaption:= nil;
   ITimeTextControlCaption:= nil;
