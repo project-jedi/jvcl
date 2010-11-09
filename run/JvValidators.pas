@@ -686,10 +686,13 @@ begin
   if ReplaceComponentReference(Self, Value, TComponent(FCompareToControl)) then
     if FCompareToControl <> nil then
     begin
-      if Supports(FCompareToControl, IJvValidationProperty, Obj) then
-        CompareToProperty := Obj.GetValidationPropertyName
-      else
-        CompareToProperty := '';
+      if not (csLoading in ComponentState) then
+      begin
+        if Supports(FCompareToControl, IJvValidationProperty, Obj) then
+          CompareToProperty := Obj.GetValidationPropertyName
+        else
+          CompareToProperty := '';
+      end;
     end;
 end;
 
