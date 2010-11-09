@@ -2956,8 +2956,8 @@ procedure TJvDockPageControl.CMUnDockClient(var Msg: TCMUnDockClient);
 var
   Page: TJvDockTabSheet;
 begin
-{$ifdef VER210}
-  if (csDestroying in Self.ComponentState) then exit; // rather ugly workaround for Delphi2010 crash at shutdown.
+{$ifdef RTL210_UP}
+  if (csDestroying in Self.ComponentState) then exit; // rather ugly workaround for Delphi 2010+ crash at shutdown.
 {$endif}
 
   Msg.Result := 0;
