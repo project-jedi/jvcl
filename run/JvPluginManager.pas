@@ -97,6 +97,9 @@ type
   TJvBeforeLoadEvent = procedure(Sender: TObject; FileName: string; var AllowLoad: Boolean) of object;
   TJvAfterLoadEvent = procedure(Sender: TObject; FileName: string;
     const ALibHandle: THandle; var AllowLoad: Boolean) of object;
+  TJvBeforeUnloadEvent = procedure(Sender: TObject; FileName: string;
+    const ALibHandle: THandle) of object;
+  TJvAfterUnloadEvent = procedure(Sender: TObject; FileName: string) of object;
   TJvBeforeCommandsEvent = procedure(Sender: TObject; APlugIn: TJvPlugIn) of object;
   TJvAfterCommandsEvent = procedure(Sender: TObject; APlugIn: TJvPlugIn) of object;
   TJvPlgInErrorEvent = procedure(Sender: TObject; AError: Exception) of object;
@@ -128,6 +131,8 @@ type
     FPluginInfos: TList;
     FOnBeforeLoad: TJvBeforeLoadEvent;
     FOnAfterLoad: TJvAfterLoadEvent;
+    FOnBeforeUnload: TJvBeforeUnloadEvent;
+    FOnAfterUnload: TJvAfterUnloadEvent;
     FOnNewCommand: TNewCommandEvent;
 
     FOnBeforeNewCommand: TJvBeforeCommandsEvent;
@@ -162,6 +167,8 @@ type
     property OnBeforeLoad: TJvBeforeLoadEvent read FOnBeforeLoad write FOnBeforeLoad;
     property OnNewCommand: TNewCommandEvent read FOnNewCommand write FOnNewCommand;
     property OnAfterLoad: TJvAfterLoadEvent read FOnAfterLoad write FOnAfterLoad;
+    property OnBeforeUnload: TJvBeforeUnloadEvent read FOnBeforeUnload write FOnBeforeUnload;
+    property OnAfterUnload: TJvAfterUnloadEvent read FOnAfterUnload write FOnAfterUnload;
     property OnBeforeNewCommand: TJvBeforeCommandsEvent read FOnBeforeNewCommand write FOnBeforeNewCommand;
     property OnAfterNewCommand: TJvAfterCommandsEvent read FOnAfterNewCommand write FOnAfterNewCommand;
     property OnPlugInError: TJvPlgInErrorEvent read FOnPlugInError write FOnPlugInError;
@@ -473,12 +480,18 @@ end;
 procedure TJvPluginManager.UnloadPlugin(Index: Integer);
 var
   PlgI: TPluginInfo;
+  name: string;
 begin
   PlgI := FPluginInfos.Items[Index];
+  name := PlgI.PlugIn.FileName;
+  if assigned(FOnBeforeUnload) then
+    FOnBeforeUnload(self, name, PlgI.Handle);
   PlgI.PlugIn.Free;
   UnloadLibrary(PlgI.PluginKind, PlgI.Handle);
   PlgI.Free;
   FPluginInfos.Delete(Index);
+  if assigned(FOnAfterUnload) then
+    FOnAfterUnload(self, name);
 end;
 
 {$WARN SYMBOL_DEPRECATED OFF}
