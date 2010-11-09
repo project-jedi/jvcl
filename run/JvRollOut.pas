@@ -55,11 +55,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Controls, Graphics, ImgList, ExtCtrls, ACtnList,
+  Windows, Forms, Messages, Controls, Graphics, ImgList, ExtCtrls, ACtnList,
   JvExtComponent, JvThemes;
 
 const
   CM_EXPANDED = WM_USER + 155;
+  DefaultButtonColor = clBtnFace;
+  DefaultHotTextColor = clWindowText;
 
 type
   TJvPlacement = (plTop, plLeft);
@@ -88,8 +90,8 @@ type
   published
     property ButtonBottom: TColor read FButtonBottom write SetButtonBottom default clBtnShadow;
     property ButtonTop: TColor read FButtonTop write SetButtonTop default clBtnHighlight;
-    property ButtonColor: TColor read FButtonColor write SetButtonColor default clBtnFace;
-    property HotTrackText: TColor read FHotTrackText write SetHotTrackText default clWindowText;
+    property ButtonColor: TColor read FButtonColor write SetButtonColor default DefaultButtonColor;
+    property HotTrackText: TColor read FHotTrackText write SetHotTrackText default DefaultHotTextColor;
     property Color: TColor read FColor write SetColor default clBtnFace;
     property FrameBottom: TColor read FFrameBottom write SetFrameBottom default clBtnHighlight;
     property FrameTop: TColor read FFrameTop write SetFrameTop default clBtnShadow;
@@ -143,9 +145,21 @@ type
     FImageOptions: TJvRollOutImageOptions;
     FToggleAnywhere: Boolean;
     FShowFocus: Boolean;
-    FTabStops: TStringList;
+    FChildControlVisibility: TStringList;
+
+    FButtonFont: TFont;
+    FCollapsedList: array of Boolean;
+    FSmartExpand: Boolean;
+    FSmartShow: Boolean;
+    FTopForm: TForm;
+    FOldParent: TControl;
+    FOldPos: TPoint;
+    FOldWidthHeight: TPoint;
+    FOldAlign: TAlign;
+
     procedure SetGroupIndex(Value: Integer);
     procedure SetPlacement(Value: TJvPlacement);
+
     procedure WriteAWidth(Writer: TWriter);
     procedure WriteAHeight(Writer: TWriter);
     procedure WriteCWidth(Writer: TWriter);
@@ -154,35 +168,33 @@ type
     procedure ReadAHeight(Reader: TReader);
     procedure ReadCWidth(Reader: TReader);
     procedure ReadCHeight(Reader: TReader);
+
     procedure SetCollapsed(Value: Boolean);
     procedure SetButtonHeight(Value: Integer);
     procedure SetChildOffset(Value: Integer);
     procedure RedrawControl(DrawAll: Boolean);
     procedure DrawButtonFrame;
     procedure UpdateGroup;
+    procedure SetExpandedSize(const Value: Integer);
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
     procedure ChangeHeight(NewHeight: Integer);
     procedure ChangeWidth(NewWidth: Integer);
     procedure SetShowFocus(const Value: Boolean);
+    procedure SetButtonFont(const Value: TFont);
+
+    procedure SetSmartExpand(const Value: Boolean);
+    procedure OnTopDeactivate(Sender : TObject);
+    procedure RestoreFromTopForm;
+    procedure PutOnForm;
+    function IsButtonFontStored: Boolean;
   protected
-    // Sets or gets the TabStop value of child controls depending on the value of Collapsed.
-    // When Collapsed is True, calls GetChildTabStops.
-    // When Collapsed is False, calls SetChildTabStops.
-    procedure CheckChildTabStops;
-    // Checks the TabStop value of all child controls and adds the control to
-    // an internal list if TabStop is True. TabStop is then set to False.
-    // This is done to disable tabbing into the child control when the rollout
-    // is collapsed. Normally, you don't need to call this method.
-    procedure GetChildTabStops;
-    // Resets the TabStop value of child controls to True if they where added to
-    // an internal list with a previous call to GetTabStops.
-    // Does nothing if GetChildTabStops hasn't been called.
-    // Normally, you don't need to call this method.
-    procedure SetChildTabStops;
-    // Clears the internal list with children TabStop values *without* restoring
-    // the childrens TabStop values first.
-    // Normally, you don't need to call this method.
-    procedure ClearChildTabStops;
+    // When the rollout-panel is collaped all contained controls are hidden
+    //   to avoid tabbing into the child when the child is not visible or the
+    //   rollout-caption-button being hidden by a contained control that is
+    //   aligned tot he bottom
+    // The original visiblility of each control is restored then the rollout
+    //   is expanded again
+    procedure CheckChildVisibility;
 
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
@@ -204,6 +216,7 @@ type
     procedure Click; override;
     procedure DoImageOptionsChange(Sender: TObject);
     procedure DoColorsChange(Sender: TObject);
+    property ButtonFont: TFont read FButtonFont write SetButtonFont stored IsButtonFontStored;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 20;
     property ChildOffset: Integer read FChildOffset write SetChildOffset default 0;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
@@ -213,6 +226,8 @@ type
     property Placement: TJvPlacement read FPlacement write SetPlacement default plTop;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default True;
     property ToggleAnywhere: Boolean read FToggleAnywhere write FToggleAnywhere default True;
+    property SmartExpand: Boolean read FSmartExpand write SetSmartExpand default True;
+    property SmartShow: Boolean read FSmartShow write FSmartShow default True;
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
@@ -223,6 +238,8 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure Collapse; virtual;
     procedure Expand; virtual;
+
+    property ExpandedSize: Integer write SetExpandedSize stored False;
   end;
 
   TJvRollOutAction = class(TAction)
@@ -250,6 +267,7 @@ type
     property Align;
     property BevelWidth;
     property BorderWidth;
+    property ButtonFont;
     property ButtonHeight;
     property Caption;
     property ChildOffset;
@@ -271,12 +289,13 @@ type
     property PopupMenu;
     property ShowFocus;
     property ShowHint;
+    property SmartExpand;
+    property SmartShow;
     property TabOrder;
     property TabStop;
     property ToggleAnywhere;
     property Visible;
     property OnClick;
-    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -303,7 +322,7 @@ const
 implementation
 
 uses
-  Forms, JvJVCLUtils; // for IsAccel()
+  JvJVCLUtils; // for IsAccel()
 
 
 // (p3) not used
@@ -432,8 +451,8 @@ begin
   inherited Create;
   FButtonBottom := clBtnShadow;
   FButtonTop := clBtnHighlight;
-  FButtonColor := clBtnFace;
-  FHotTrackText := clWindowText;
+  FButtonColor := DefaultButtonColor;
+  FHotTrackText := DefaultHotTextColor;
   FColor := clBtnFace;
   FFrameBottom := clBtnHighlight;
   FFrameTop := clBtnShadow;
@@ -534,12 +553,35 @@ begin
   FCWidth := 22;
   FCHeight := 22;
   FShowFocus := True;
+
+  FButtonFont := TFont.Create;
+  FButtonFont.Name := 'Verdana';
+  FButtonFont.Size := 7;
+  FButtonFont.Style := [fsBold];
+  FButtonFont.Color := clWhite;
+
+  // SmartExpand / SmartShow
+  FSmartExpand := True;
+  FSmartShow := True;
+
+  FTopForm := TForm.Create(self);
+  with FTopForm do
+  begin
+    BorderStyle := bsNone;
+    FormStyle := fsStayOnTop;
+    OnDeactivate := OnTopDeactivate;
+    Position := poDesigned;
+  end;
+  FOldParent := nil;
+
+  ControlStyle := ControlStyle - [csDoubleClicks];    // Doubleclicks are converted into single clicks
 end;
 
 destructor TJvCustomRollOut.Destroy;
 begin
+  FButtonFont.Free;
   FreeAndNil(FImageOptions);
-  FreeAndNil(FTabStops);
+  FreeAndNil(FChildControlVisibility);
   FreeAndNil(FColors);
   inherited Destroy;
 end;
@@ -657,8 +699,13 @@ begin
   if FCollapsed <> Value then
   begin
     FCollapsed := Value;
-    if Value then
+    if FCollapsed then
     begin
+      // If Rollout panel was floating (= mapped onto a special form)
+      //   -> restore old state
+      if FSmartShow and (FOldParent <> nil) then
+        RestoreFromTopForm;
+
       if Placement = plTop then
         ChangeHeight(FCHeight)
       else
@@ -674,7 +721,7 @@ begin
       DoExpand;
       UpdateGroup;
     end;
-    CheckChildTabStops;
+    CheckChildVisibility;
   end;
 end;
 
@@ -713,13 +760,93 @@ begin
 end;
 
 procedure TJvCustomRollOut.DoExpand;
+var 
+  I: Integer;
+  OldSmartExpand: Boolean;
 begin
+  // Smart-Expand: If there's not enough space to expand the rollup-panel
+  //   then collapse the other rollout-panels
+  if FSmartExpand then
+  begin
+    // Todo: SmartExpand was only made for panels that are bottom-aligned
+
+    // Remember Collapsed status of all other TJvCustomRollOut components:
+    SetLength(FCollapsedList, 0);
+    if Assigned(Parent) and (Top + Height > Parent.Height) then
+    begin
+      for I := 0 to Parent.ControlCount-1 do
+      begin
+        if (Parent.Controls[I] is TJvCustomRollOut) and (Parent.Controls[I] <> Self) then
+        begin
+          SetLength(FCollapsedList, Length(FCollapsedList) + 1);
+          FCollapsedList[Length(FCollapsedList) - 1] := (Parent.Controls[I] as TJvCustomRollOut).Collapsed;
+
+          // Disable SmartExpand because it may cause troubles!!
+          // especially when there is less space and another panel would be
+          // shown obove the window (smartshow)
+          OldSmartExpand := (Parent.Controls[I] as TJvCustomRollOut).SmartExpand;
+          (Parent.Controls[I] as TJvCustomRollOut).SmartExpand := False;
+          (Parent.Controls[I] as TJvCustomRollOut).Collapsed := True;
+
+          (Parent.Controls[I] as TJvCustomRollOut).SmartExpand := OldSmartExpand;
+        end;
+      end;
+    end;
+  end;
+
+  if FSmartShow then
+    PutOnForm;
+
   if Assigned(FOnExpand) then
     FOnExpand(Self);
 end;
 
 procedure TJvCustomRollOut.DoCollapse;
+var
+  ColIndex: Integer;
+  I : integer;
+  DoRestore: Boolean;
 begin
+  // Smart-Expand: If other rollouts where collapsed automatically when this rollout
+  //   expanded, then their old collapsed-state is now restored
+  if FSmartExpand then
+  begin
+    DoRestore := Length(FCollapsedList)<>0;
+
+    // Check if one of the auto-collapsed rollouts wad expanded manually
+    // In this case we do not restore the old collapsed-states
+    for I := 0 to Parent.ControlCount-1 do
+    begin
+      if (Parent.Controls[I] is TJvCustomRollOut) and
+      (Parent.Controls[I] <> Self) then
+      begin
+        if (Parent.Controls[I] as TJvCustomRollOut).Collapsed = False then
+        begin
+          DoRestore := False;
+          Break;
+        end;
+      end;
+    end;
+
+    if DoRestore then
+    begin
+      // Restore other rollouts
+      ColIndex := 0;
+      for I := 0 to Parent.ControlCount - 1 do
+      begin
+        if (Parent.Controls[I] is TJvCustomRollOut) and (Parent.Controls[I] <> Self) then
+        begin
+          (Parent.Controls[I] as TJvCustomRollOut).Collapsed := FCollapsedList[ColIndex];
+          Inc(ColIndex);
+
+          if ColIndex > Length(FCollapsedList) then
+            Break;
+        end;
+      end;
+    end;
+    SetLength(FCollapsedList, 0);
+  end;
+
   if Assigned(FOnCollapse) then
     FOnCollapse(Self);
 end;
@@ -828,6 +955,70 @@ begin
   end;
 end;
 
+procedure TJvCustomRollOut.SetSmartExpand(const Value: boolean);
+begin
+  FSmartExpand := Value;
+  SetLength(FCollapsedList, 0);
+end;
+
+// To make Setting of expanded size possible, even if panel is collapsed
+procedure TJvCustomRollOut.SetExpandedSize(const Value: integer);
+begin
+  if ((FPlacement = plTop) and (FAHeight = Value)) or
+     ((FPlacement = plLeft) and (FAWidth = Value)) then
+    Exit;
+
+  if FPlacement = plTop then
+    FAHeight := Value
+  else
+    FAWidth := Value;
+
+  if not FCollapsed then
+  begin
+    // The top form is assigned so set the width and height of this form
+    if Parent = FTopForm then
+    begin
+      FTopForm.DisableAlign;
+      if FPlacement = plTop then
+      begin
+        FTopForm.Height := FAHeight;
+        FOldWidthHeight.Y := FAHeight;
+      end
+      else
+      begin
+        FTopForm.Width := FAWidth;
+        FOldWidthHeight.X := FAWidth;
+      end;
+      FTopForm.EnableAlign;
+    end;
+
+    if FPlacement = plTop then
+      ChangeHeight(FAHeight)
+    else
+      ChangeWidth(FAWidth);
+
+    if (Parent = FTopForm) and (FOldPos.Y + Height < FOldParent.Height) then
+      RestoreFromTopForm
+    else
+      PutOnForm;
+  end;
+end;
+
+procedure TJvCustomRollOut.SetButtonFont(const Value: TFont);
+begin
+  FButtonFont.Assign(Value);
+  Invalidate;
+end;
+
+// Only store button font if not default value
+function TJvCustomRollOut.IsButtonFontStored: Boolean;
+begin
+  Result := (FButtonFont.Name <> 'Verdana') or
+            (FButtonFont.Size <> 7) or
+            (FButtonFont.Style <> [fsBold]) or
+            (FButtonFont.Color <> clWhite);
+end;
+
 procedure TJvCustomRollOut.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
@@ -900,6 +1091,7 @@ begin
   else
     FIndex := ImageOptions.IndexExpanded;
 
+  Canvas.Font.Assign(FButtonFont);
   R := FButtonRect;
   if FPlacement = plTop then
   begin
@@ -925,7 +1117,6 @@ begin
       R.Top := ImageOptions.Offset * 2 + BevelWidth;
     R.Left := R.Left + (Canvas.TextHeight(Caption) + (FButtonRect.Right - FButtonRect.Left)) div 2 + BevelWidth div 2;
   end;
-  Canvas.Font := Font;
   if FInsideButton then
     Canvas.Font.Color := Colors.HotTrackText;
 
@@ -1006,7 +1197,7 @@ begin
     if (Sender <> Self) then
     begin
       SetCollapsed(True);
-      CheckChildTabStops;
+      CheckChildVisibility;
       Invalidate;
     end;
   end;
@@ -1077,14 +1268,14 @@ end;
 
 procedure TJvCustomRollOut.FocusKilled(NextWnd: THandle);
 begin
-  CheckChildTabStops;
+  CheckChildVisibility;
   inherited FocusKilled(NextWnd);
   Invalidate;
 end;
 
 procedure TJvCustomRollOut.FocusSet(PrevWnd: THandle);
 begin
-  CheckChildTabStops;
+  CheckChildVisibility;
   inherited FocusSet(PrevWnd);
   Invalidate;
 end;
@@ -1099,49 +1290,121 @@ begin
   end;
 end;
 
-procedure TJvCustomRollOut.CheckChildTabStops;
+procedure TJvCustomRollOut.CheckChildVisibility;
+  procedure GetChildVisibility;
+  var
+    I: Integer;
+  begin
+    if FChildControlVisibility = nil then
+    begin
+      FChildControlVisibility := TStringList.Create;
+      FChildControlVisibility.Sorted := True;
+    end;
+
+    for I := 0 to ControlCount - 1 do
+      if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).Visible) then
+      begin
+        FChildControlVisibility.AddObject(Controls[I].Name, Controls[I]);
+        TWinControl(Controls[I]).Visible := False;
+      end;
+  end;
+
+  procedure SetChildVisibility;
+  var
+    I: Integer;
+  begin
+    if FChildControlVisibility <> nil then
+    begin
+      for I := 0 to FChildControlVisibility.Count - 1 do
+        if FindChildControl(FChildControlVisibility[I]) <> nil then
+          TWinControl(FChildControlVisibility.Objects[I]).Visible := True;
+      FreeAndNil(FChildControlVisibility);
+    end;
+  end;
 begin
   if csDesigning in ComponentState then
     Exit;
+
   if Collapsed then
-    GetChildTabStops
+    GetChildVisibility
   else
-    SetChildTabStops;
+    SetChildVisibility;
 end;
 
-procedure TJvCustomRollOut.GetChildTabStops;
-var
-  I: Integer;
+// Event handler called by the "TopWindow" when the window-rolloutpanel loses focus
+//   to automatically collapse panel again
+procedure TJvCustomRollOut.OnTopDeactivate(Sender: TObject);
 begin
-  if FTabStops = nil then
+  if not FCollapsed then
+    RestoreFromTopForm;
+//  Collapse;       // Use this line instead of the previous one if you want the rollout
+                  //   to collapse after the "topForm" lost focus
+end;
+
+procedure TJvCustomRollOut.RestoreFromTopForm;
+var
+  OldCollapsed: Boolean;
+begin
+  if not FSmartShow then
+    Exit;
+
+  // Rollout panel was mapped onto a special form (TopForm)
+  // -> restore old state
+  if Parent = FTopForm then
   begin
-    FTabStops := TStringList.Create;
-    FTabStops.Sorted := True;
+    FTopForm.OnDeactivate := nil; // Deactivate the Event to prevent
+                                // calling this method a second time
+    FTopForm.Hide;
+
+    OldCollapsed := FCollapsed;
+    FCollapsed := False;  // Set control to expanded, so that SetBounds stores expanded dimesions
+
+    // Set the control back to it's old position!!
+    Parent := FOldParent as TWinControl;
+    Align := FOldAlign;
+    SetBounds(FOldPos.X, FOldPos.Y, FOldWidthHeight.X, FOldWidthHeight.Y);
+    FOldParent := nil;
+
+    FCollapsed := OldCollapsed;
+    FTopForm.OnDeactivate := OnTopDeactivate; // restore Event handling
   end;
-  for I := 0 to ControlCount - 1 do
-    if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).TabStop) then
+end;
+
+// If expanded panel doesn't fit on parent form -> create a separate form
+//   so panel can be shown in it's full size:
+procedure TJvCustomRollOut.PutOnForm;
+var
+  ScrPos : TPoint;
+begin
+  // Remember old pos
+  if FSmartShow and not Assigned(FOldParent) then
+  begin
+    // Don't Smart-Expand if parent form not visible
+    //   (e.g. Collapsed-property is set from outside)
+    if (Owner is TForm) and not (Owner as TForm).Visible then
+      Exit;
+
+    FOldPos := Point( Left, Top );
+    FOldAlign := Align;
+
+    if Top + Height > Parent.Height then
     begin
-      FTabStops.AddObject(Controls[I].Name, Controls[I]);
-      TWinControl(Controls[I]).TabStop := False;
+      // Save old size and position to be able to restore it
+      FOldParent:=Parent;
+      FOldWidthHeight:=Point(Width, Height);
+
+      // set size of the special form
+      FTopForm.Width := Width;
+      FTopForm.Height := Height;
+      ScrPos := Parent.ClientToScreen(Point(Left, Top));
+      FTopForm.Left := ScrPos.X;
+      FTopForm.Top := ScrPos.Y;
+
+      Parent := FTopForm;
+      Align := alClient;
+      FTopForm.Show;
     end;
-end;
-
-procedure TJvCustomRollOut.SetChildTabStops;
-var
-  I: Integer;
-begin
-  if FTabStops <> nil then
-  begin
-    for I := 0 to FTabStops.Count - 1 do
-      if FindChildControl(FTabStops[I]) <> nil then
-        TWinControl(FTabStops.Objects[I]).TabStop := True;
-    FreeAndNil(FTabStops);
   end;
-end;
-
-procedure TJvCustomRollOut.ClearChildTabStops;
-begin
-  FreeAndNil(FTabStops);
 end;
 
 //=== { TJvRollOutAction } ===================================================
