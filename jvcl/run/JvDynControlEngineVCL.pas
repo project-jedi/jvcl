@@ -3173,12 +3173,12 @@ end;
 
 procedure TJvDynControlVCLProgressBar.ControlSetMarquee(Value: Boolean);
 begin
-  {$IFDEF DELPHI2007_UP}
+  {$IFDEF DELPHI2009_UP}
   if Value then
     Style := pbstMarquee
   else
     Style := pbstNormal;
-  {$ENDIF DELPHI2007_UP}
+  {$ENDIF DELPHI2009_UP}
 end;
 
 procedure TJvDynControlVCLProgressbar.ControlSetMax(Value: Integer);
