@@ -435,7 +435,7 @@ begin
   { Draw vertical 'bar' }
   Canvas.Pen.Color := clBtnShadow;
   DrawLine(Canvas, Rec.Left, Rec.Top + 4, Rec.Left, Rec.Bottom - 4);
-  Canvas.Pen.Color := clBtnHighLight;
+  Canvas.Pen.Color := clBtnHighlight;
   DrawLine(Canvas, Rec.Left + 1, Rec.Top + 4, Rec.Left + 1, Rec.Bottom - 4);
 
   { Draw arrow }

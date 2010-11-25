@@ -65,6 +65,7 @@ type
     FAlignment: TAlignment;
     FFlatArrowColor: TColor;
     FFlatArrowDisabledColor: TColor;
+    FSplittedButton: Boolean;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
     function GetGlyph: TBitmap;
@@ -133,6 +134,7 @@ type
     property PressBoth: Boolean read FPressBoth write FPressBoth default True;
     property ShowHint;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
+    property SplittedButton: Boolean read FSplittedButton write FSplittedButton default True;
     property VerticalAlignment: TVerticalAlignment read FVerticalAlignment write SetVerticalAlignment default taVerticalCenter;
     property Visible;
     property OnDrop: TNotifyEvent read FOnDrop write FOnDrop;
@@ -164,12 +166,16 @@ type
   private
     FUsed: TBits;
     FCount: Integer;
+    FRefCount: Integer;
     function AllocateIndex: Integer;
   public
     constructor CreateSize(AWidth, AHeight: Integer);
     destructor Destroy; override;
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     procedure Delete(Index: Integer);
+    procedure AddReference;
+    function RemoveReference: Integer;
+
     property Count: Integer read FCount;
   end;
 
@@ -266,6 +272,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TGlyphList.AddReference;
+begin
+  Inc(FRefCount);
+end;
+
+function TGlyphList.RemoveReference: Integer;
+begin
+  Dec(FRefCount);
+  Result := FRefCount;
+end;
+
 function TGlyphList.AllocateIndex: Integer;
 begin
   Result := FUsed.OpenBit;
@@ -315,19 +332,25 @@ begin
   begin
     Result := TGlyphList(FGlyphLists[I]);
     if (AWidth = Result.Width) and (AHeight = Result.Height) then
+    begin
+      Result.AddReference;
       Exit;
+    end;
   end;
   Result := TGlyphList.CreateSize(AWidth, AHeight);
   FGlyphLists.Add(Result);
+  Result.AddReference;
 end;
 
 procedure TGlyphCache.ReturnList(var List: TGlyphList);
 begin
-  if (List <> nil) and (List.Count = 0) then
+  if (List <> nil) and (List.RemoveReference = 0) then
   begin
     FGlyphLists.Remove(List);
     FreeAndNil(List);
-  end;
+  end
+  else
+    List := nil;
 end;
 
 function TGlyphCache.Empty: Boolean;
@@ -392,7 +415,7 @@ var
 begin
   for I := Low(TButtonState) to High(TButtonState) do
   begin
-    if FIndexs[I] <> -1 then
+    if (FIndexs[I] <> -1) and (FGlyphList <> nil) then
       FGlyphList.Delete(FIndexs[I]);
     FIndexs[I] := -1;
   end;
@@ -803,13 +826,14 @@ begin
   FVerticalAlignment := taVerticalCenter;
   FMargin := -1;
   FSpacing := 4;
+  FSplittedButton := True;
   FPressBoth := True;
   Inc(ButtonCount);
 end;
 
 destructor TJvArrowButton.Destroy;
 begin
-  TButtonGlyph(FGlyph).Free;
+  FGlyph.Free;
   FFillFont.Free;
   Dec(ButtonCount);
   if ButtonCount = 0 then
@@ -846,7 +870,11 @@ begin
     Canvas.Font := FillFont
   else
     Canvas.Font := Self.Font;
-  PaintRect := Rect(0, 0, Width - ArrowWidth, Height);
+
+  if SplittedButton then
+    PaintRect := Rect(0, 0, Width - ArrowWidth, Height)
+  else
+    PaintRect := Rect(0, 0, Width, Height);
 
   if FArrowClick and not Down then
     FState := bsUp;
@@ -854,7 +882,9 @@ begin
   if not Flat then
   begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
-    if (FState in [bsDown, bsExclusive]) then
+    if not Enabled and not (csDesigning in ComponentState) then
+      DrawFlags := DrawFlags or DFCS_INACTIVE
+    else if (FState in [bsDown, bsExclusive]) or (not SplittedButton and FArrowClick) then
       DrawFlags := DrawFlags or DFCS_PUSHED;
     if FMouseInControl and not (csDesigning in ComponentState) then
       DrawFlags := DrawFlags or DFCS_HOT;
@@ -870,7 +900,9 @@ begin
       if ThemeServices.ThemesEnabled then
       begin
         Details := ThemeServices.GetElementDetails(ttbButtonNormal);
-        if FState in [bsDown, bsExclusive] then
+        if not Enabled and (csDesigning in ComponentState)  then
+          Details := ThemeServices.GetElementDetails(ttbButtonDisabled)
+        else if (FState in [bsDown, bsExclusive]) or (not SplittedButton and FArrowClick) then
           Details := ThemeServices.GetElementDetails(ttbButtonPressed)
         else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
           Details := ThemeServices.GetElementDetails(ttbButtonHot);
@@ -884,6 +916,9 @@ begin
     end;
     InflateRect(PaintRect, -1, -1);
   end;
+
+  if not SplittedButton then
+    PaintRect := Rect(0, 0, Width - ArrowWidth, Height);
 
   if FState in [bsDown, bsExclusive] then
   begin
@@ -925,32 +960,40 @@ begin
     Offset.Y := 0;
   end;
 
-  if not Flat then
+  if FSplittedButton then
   begin
-    DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
-    if Push then
-      DrawFlags := DrawFlags or DFCS_PUSHED;
-    if FMouseInControl and not (csDesigning in ComponentState) then
-      DrawFlags := DrawFlags or DFCS_HOT;
-    DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
-  end
-  else
-  if FMouseInControl and Enabled or (csDesigning in ComponentState) then
-  begin
-    {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if not Flat then
     begin
-      if FState in [bsDown, bsExclusive] then
-        Details := ThemeServices.GetElementDetails(ttbButtonPressed)
-      else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
-        Details := ThemeServices.GetElementDetails(ttbButtonHot);
-      ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
+      DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
+      if not Enabled and not (csDesigning in ComponentState) then
+        DrawFlags := DrawFlags or DFCS_INACTIVE
+      else if Push then
+        DrawFlags := DrawFlags or DFCS_PUSHED
+      else if FMouseInControl and not (csDesigning in ComponentState) then
+        DrawFlags := DrawFlags or DFCS_HOT;
+      DrawThemedFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
     end
     else
-    {$ENDIF JVCLThemesEnabled}
-      DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
-        FillStyles[Flat] or BF_RECT);
+    if FMouseInControl and Enabled or (csDesigning in ComponentState) then
+    begin
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+      begin
+        if not Enabled and (csDesigning in ComponentState)  then
+          Details := ThemeServices.GetElementDetails(ttbButtonDisabled)
+        else if FState in [bsDown, bsExclusive] then
+          Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+        else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
+          Details := ThemeServices.GetElementDetails(ttbButtonHot);
+        ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
+      end
+      else
+      {$ENDIF JVCLThemesEnabled}
+        DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
+          FillStyles[Flat] or BF_RECT);
+    end;
   end;
+
   { find middle pixel }
   with PaintRect do
   begin
@@ -966,6 +1009,16 @@ begin
 
   OffsetRect(PaintRect, Offset.X, Offset.Y);
 
+  if not SplittedButton then
+  begin
+    { Draw vertical 'bar' }
+    Canvas.Pen.Color := clBtnShadow;
+    DrawLine(Canvas, Width - ArrowWidth - 1 + Offset.X, 4, Width - ArrowWidth - 1 + Offset.X, Height - 4);
+    Canvas.Pen.Color := clBtnHighlight;
+    DrawLine(Canvas, Width - ArrowWidth + Offset.X, 4, Width - ArrowWidth + Offset.X, Height - 4);
+    Dec(PaintRect.Right, 1);
+  end;
+
   if Flat and (not FMouseInControl or (csDesigning in ComponentState)) then
   begin
     if Enabled then
@@ -975,7 +1028,7 @@ begin
   end
   else
   begin
-    if Enabled then
+    if Enabled and not (csDesigning in ComponentState) then
       Canvas.Pen.Color := clBlack
     else
       Canvas.Pen.Color := clBtnShadow;
