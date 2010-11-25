@@ -1717,7 +1717,7 @@ begin
   ReleaseDC(HWND_DESKTOP, DC);
 
   // If necessary reserve space for border
-  i:=0;
+  I := 0;
   if BorderStyle <> bsNone then
   begin
     if not Flat then
