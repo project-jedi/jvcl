@@ -14,7 +14,8 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buyp
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com]
+                Michiel Koot [makoot att gmx dott net] (inverted property)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.delphi-jedi.org
@@ -138,11 +139,14 @@ type
   private
     FBarColorFrom: TColor;
     FBarColorTo: TColor;
+    FInverted: Boolean;
     procedure SetBarColorFrom(Value: TColor);
     procedure SetBarColorTo(const Value: TColor);
+    procedure SetInverted(const Value: Boolean);
   public
     property BarColorFrom: TColor read FBarColorFrom write SetBarColorFrom;
     property BarColorTo: TColor read FBarColorTo write SetBarColorTo;
+    property Inverted: Boolean read FInverted write SetInverted default False; // Michiel Koot: enabling inverted drawing behaviour.
   end;
 
   TJvCustomGradientProgressBar = class(TJvBaseGradientProgressBar)
@@ -161,6 +165,7 @@ type
     property Orientation;
     property Position;
     property Smooth;
+    property Inverted;
 
     property Align;
     property Anchors;
@@ -576,6 +581,15 @@ begin
   end;
 end;
 
+procedure TJvBaseGradientProgressBar.SetInverted(const Value: Boolean);
+begin
+  if FInverted <> Value then
+  begin
+    FInverted := Value;
+    Invalidate;
+  end;
+end;
+
 //=== { TJvGradientProgressBar } =============================================
 
 constructor TJvCustomGradientProgressBar.Create(AOwner: TComponent);
@@ -599,14 +613,20 @@ begin
   InflateRect(R, -1, -1);
   if Orientation = pbHorizontal then
   begin
-    R.Right := BarSize;
+    if not FInverted then
+      R.Right := BarSize
+    else
+      R.Left := R.Right - BarSize;
     if R.Right > ClientWidth - 2 then
       R.Right := ClientWidth - 2;
     GradientFillRect(ACanvas, R, BarColorFrom, BarColorTo, fdLeftToRight, 255);
   end
   else
   begin
-    R.Top := R.Bottom - BarSize;
+    if not FInverted then
+      R.Top := R.Bottom - BarSize
+    else
+      R.Bottom := R.Top + BarSize;
     if R.Top < 2 then
       R.Top := 2;
     GradientFillRect(ACanvas, R, BarColorFrom, BarColorTo, fdBottomToTop, 255);
@@ -622,33 +642,69 @@ begin
     if Orientation = pbHorizontal then
     begin
       R := ClientRect;
-      InflateRect(R, -2, -2);
-      R.Right := R.Left + Round(LBlockSize);
-      while R.Left <= BarSize do
+      if not FInverted then
       begin
-        ACanvas.MoveTo(R.Left, R.Top);
-        ACanvas.LineTo(R.Left, R.Bottom);
-        Inc(I);
-        R := ClientRect;
         InflateRect(R, -2, -2);
         R.Right := R.Left + Round(LBlockSize);
-        OffsetRect(R, Round(I * LBlockSize), 0);
+        while R.Left <= BarSize do
+        begin
+          ACanvas.MoveTo(R.Left, R.Top);
+          ACanvas.LineTo(R.Left, R.Bottom);
+          Inc(I);
+          R := ClientRect;
+          InflateRect(R, -2, -2);
+          R.Right := R.Left + Round(LBlockSize);
+          OffsetRect(R, Round(I * LBlockSize), 0);
+        end;
+      end
+      else // Inverted horizontal
+      begin
+        InflateRect(R, 2, 2);
+        R.Left := R.Right - Round(LBlockSize);
+        while (BarSize <> 0) and (R.Left >= (GetMaxBarSize - BarSize)) do
+        begin
+          ACanvas.MoveTo(R.Right, R.Top);
+          ACanvas.LineTo(R.Right, R.Bottom);
+          Inc(I);
+          R := ClientRect;
+          InflateRect(R, 2, 2);
+          R.Left := R.Right - Round(LBlockSize);
+          OffsetRect(R, -Round(I * LBlockSize), 0);
+        end;
       end;
     end
     else
     begin
       R := ClientRect;
-      InflateRect(R, -2, -2);
-      R.Top := R.Bottom - Round(LBlockSize);
-      while R.Bottom >= GetMaxBarSize - BarSize do
+      if not FInverted then
       begin
-        ACanvas.MoveTo(R.Left, R.Bottom);
-        ACanvas.LineTo(R.Right, R.Bottom);
-        Inc(I);
-        R := ClientRect;
         InflateRect(R, -2, -2);
         R.Top := R.Bottom - Round(LBlockSize);
-        OffsetRect(R, 0, -Round(I * LBlockSize));
+        while R.Bottom >= GetMaxBarSize - BarSize do
+        begin
+          ACanvas.MoveTo(R.Left, R.Bottom);
+          ACanvas.LineTo(R.Right, R.Bottom);
+          Inc(I);
+          R := ClientRect;
+          InflateRect(R, -2, -2);
+          R.Top := R.Bottom - Round(LBlockSize);
+          OffsetRect(R, 0, -Round(I * LBlockSize));
+        end;
+      end
+      else // Inverted vertical
+      begin
+        InflateRect(R, 2, 2);
+        R.Bottom := R.Top + Round(LBlockSize);
+        while (BarSize <> 0) and (R.Top <= BarSize) do
+        begin
+          ACanvas.MoveTo(R.Left, R.Top);
+          ACanvas.LineTo(R.Right, R.Top);
+          Inc(I);
+          R := ClientRect;
+          InflateRect(R, 2, 2);
+          R.Bottom := R.Top + Round(LBlockSize);
+          OffsetRect(R, 0, Round(I * LBlockSize));
+        end;
       end;
     end;
   end;
