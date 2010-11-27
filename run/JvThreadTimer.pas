@@ -107,6 +107,7 @@ type
     FInterval: Cardinal;
     FTimer: TJvThreadTimer;
     FPriority: TThreadPriority;
+    FSynchronizing: Boolean;
   protected
     procedure DoSuspend;
     procedure Execute; override;
@@ -116,6 +117,7 @@ type
     procedure Stop;
     property Interval: Cardinal read FInterval;
     property Timer: TJvThreadTimer read FTimer;
+    property Synchronizing: Boolean read FSynchronizing;
   end;
 
 function SubtractMin0(const Big, Small: Cardinal): Cardinal;
@@ -169,7 +171,14 @@ begin
 
     TickCount := GetTickCount;
     if not Terminated then
-      Synchronize(FTimer.DoOnTimer);
+    begin
+      FSynchronizing := True;
+      try
+        Synchronize(FTimer.DoOnTimer);
+      finally
+        FSynchronizing := False;
+      end;
+    end;
 
     // Determine how much time it took to execute OnTimer event handler. Take a care
     // of wrapping the value returned by GetTickCount API around zero if Windows is
@@ -187,7 +196,7 @@ begin
 
     // Make sure Offset is less than or equal to FInterval.
     // (rb) Ensure it's atomic, because of KeepAlive
-    if WaitForSingleObject(FEvent, SubtractMin0(Interval, Offset)) <> WAIT_TIMEOUT then
+    if Terminated or (WaitForSingleObject(FEvent, SubtractMin0(Interval, Offset)) <> WAIT_TIMEOUT) then
       Exit;
   end;
 end;
@@ -290,7 +299,15 @@ begin
   if FThread <> nil then
   begin
     TJvTimerThread(FThread).Stop;
-    FreeAndNil(FThread);
+    if not TJvTimerThread(FThread).Synchronizing then
+      FreeAndNil(FThread)
+    else
+    begin
+      // We can't destroy the thread because it called us through Synchronize()
+      // and is waiting for our return. But we need to destroy it after it returned.
+      TJvTimerThread(FThread).FreeOnTerminate := True;
+      FThread := nil
+    end;
   end;
 end;
 
