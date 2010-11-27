@@ -518,6 +518,7 @@ type
     FReinitializeTreeNode: Boolean;
     FOnNodeCheckedChange: TJvTreeViewNodeCheckedChange;
     FCheckEventsDisabled: Boolean;
+    FRecreateCheckedState: array of Boolean;
 
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -2493,6 +2494,8 @@ begin
 end;
 
 procedure TJvTreeView.CreateWnd;
+var
+  I: Integer;
 begin
   FReinitializeTreeNode := True;
   inherited CreateWnd;
@@ -2501,7 +2504,16 @@ begin
   // scroll bar that has nothing to do here. Setting the GWL_STYLE window
   // long shows the checkboxes and does not trigger this bug.
   if FCheckBoxes then
+  begin
     SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or TVS_CHECKBOXES);
+    // After a recreate we must set our saved checked state
+    if FRecreateCheckedState <> nil then
+    begin
+      for I := 0 to Min(Length(FRecreateCheckedState), Items.Count) - 1 do
+        TJvTreeNode(Items[I]).FChecked := FRecreateCheckedState[I];
+      FRecreateCheckedState := nil;
+    end;
+  end;
 end;
 
 procedure TJvTreeView.DestroyWnd;
@@ -2509,8 +2521,15 @@ var
   I: Integer;
 begin
   // update the FChecked field with the current data
-  for I := 0 to Items.Count - 1 do
-    TJvTreeNode(Items[I]).FChecked := TJvTreeNode(Items[I]).Checked;
+  if not (csDestroying in ComponentState) then
+  begin
+    SetLength(FRecreateCheckedState, Items.Count);
+    for I := 0 to Items.Count - 1 do
+    begin
+      TJvTreeNode(Items[I]).FChecked := TJvTreeNode(Items[I]).Checked;
+      FRecreateCheckedState[I] := TJvTreeNode(Items[I]).FChecked;
+    end;
+  end;
   inherited DestroyWnd;
 end;
 
