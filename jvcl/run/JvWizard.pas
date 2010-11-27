@@ -1411,9 +1411,14 @@ procedure TJvWizardRouteMapControl.SetPageIndex(Value: Integer);
 begin
   if (FPageIndex <> Value) and (Value >= 0) and (Value < PageCount) then
   begin
-    FPageIndex := Value;
-    if Assigned(FWizard) and (Pages[FPageIndex].Wizard = FWizard) then
-      FWizard.SetActivePage(Pages[FPageIndex]);
+    if Assigned(FWizard) and (Pages[Value].Wizard = FWizard) then
+    begin
+      FWizard.SetActivePage(Pages[Value]);
+      // read PageIndex from Wizard because the OnChanging event could have stopped it from switching to the page
+      FPageIndex := FWizard.ActivePageIndex;
+    end
+    else
+      FPageIndex := Value;
   end;
 end;
 
@@ -1449,7 +1454,7 @@ begin
       if APage.PageIndex = PageIndex - 1 then
         Wizard.SelectPriorPage
       else
-        PageIndex := APage.PageIndex;
+        Wizard.ActivePage := APage;
     end;
   end;
   inherited MouseDown(Button, Shift, X, Y);
