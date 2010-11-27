@@ -318,6 +318,7 @@ type
 
     FSeparator: Char;
     FDecimalSeparator: Char; { NOTE: DEFAULT value for historical backwards compatibilty reasons is the USA default of '.' }
+    FFilteredCount: Integer; // number of records that are filtered
 
     function GetUserTag(Index: Integer): Integer;
     procedure SetUserTag(Index, Value: Integer);
@@ -351,6 +352,8 @@ type
     property BackslashCrLf:Boolean read FBackslashCrLf write FBackslashCrLf; // Are CR/LFs changed to \r and \n?
     property UserTag[Index: Integer]: Integer read GetUserTag write SetUserTag;
     property UserData[Index: Integer]: Pointer read GetUserData write SetUserData;
+
+    property FilteredCount: Integer read FFilteredCount;
 
     { these properties should ONLY be set before any actual rows have been allocated. }
     property TextBufferSize: Integer read FTextBufferSize write FTextBufferSize; // How big is TJvCsvRow.Text effectively?
@@ -446,6 +449,7 @@ type
 
     function _CsvFloatToStr(Value: Double): string;
 
+    procedure SetRowFiltered(ARow: PCsvRow; AFiltered: Boolean);
   protected
     // (rom) inacceptable names. Probably most of this should be private.
     FTempBuffer: TJvRecordBuffer; // Allocated on first access to field variable data only!
@@ -1361,6 +1365,18 @@ begin
   Result := FData.GetUserTag(RecNo);
 end;
 
+procedure TJvCustomCsvDataSet.SetRowFiltered(ARow: PCsvRow; AFiltered: Boolean);
+begin
+  if ARow^.Filtered <> AFiltered then
+  begin
+    if AFiltered then
+      Inc(FData.FFilteredCount)
+    else
+      Dec(FData.FFilteredCount);
+    ARow^.Filtered := AFiltered;
+  end;
+end;
+
 procedure TJvCustomCsvDataSet.SetRowTag(TagValue: Integer);
 var
   RecNo: Integer;
@@ -1613,7 +1629,7 @@ begin
     PRow := PCsvRow(FData[I]);
     Assert(Assigned(PRow));
     // if custom function returns False, hide the row.
-    PRow^.Filtered := not FilterCallback(I);
+    SetRowFiltered(PRow, not FilterCallback(I));
   end;
   FIsFiltered := True;
   if Active then
@@ -1642,7 +1658,7 @@ begin
     begin
       FieldValue := FData.GetARowItem(I, FieldIndex);
       if (Length(FieldValue) > 0) = NullFlag then
-        PRow^.Filtered := True;
+        SetRowFiltered(PRow, True);
     end;
   end;
   FIsFiltered := True;
@@ -1695,10 +1711,10 @@ begin
           // Inc(stillVisible)   // count the number that are still visible.
         end
         else
-          PRow^.Filtered := True
+          SetRowFiltered(PRow, True)
       except
         on E: EConvertError do
-          PRow^.Filtered := True; // hide error rows.
+          SetRowFiltered(PRow, True); // hide error rows.
       end;
     end;{if not already hidden!}
   end;{ for loop}
@@ -1735,7 +1751,7 @@ begin
       if ValueLen = 0 then
       begin
         if FieldValue <> '' then // if not empty, hide row.
-          PRow^.Filtered := True;
+          SetRowFiltered(PRow, True);
       end
       else
       begin
@@ -1746,7 +1762,7 @@ begin
           // Inc(stillVisible)   // count the number that are still visible.
         end
         else
-          PRow^.Filtered := True
+          SetRowFiltered(PRow, True);
       end;
     end
   end;
@@ -1775,7 +1791,7 @@ begin
   begin
     PRow := PCsvRow(FData[I]);
     if Assigned(PRow) then
-      PRow^.Filtered := False; // clear all filter bits.
+      SetRowFiltered(PRow, False); // clear all filter bits.
   end;
   FIsFiltered := False;
 end;
@@ -3859,7 +3875,7 @@ end;
 function TJvCustomCsvDataSet.GetRecordCount: Integer;
 begin
   if FData.Count > 0 then
-    Result := FData.Count
+    Result := FData.Count - FData.FilteredCount
   else
     Result := 0;
 end;
@@ -4167,6 +4183,18 @@ end;
 
 { CsvRows: dynamic array of pointers }
 
+constructor TJvCsvRows.Create;
+begin
+  FTextBufferSize := JvCsvDefaultTextBufferSize;
+  FMarginSize := JvCsvDefaultMarginSize;
+
+{ DecimalSeparator:
+  This 'US' constant value is important for backwards compatibility.
+  DO NOT CHANGE this default, it would break people's code.
+}
+  FDecimalSeparator := USDecimalSeparator;
+end;
+
 function TJvCsvRows.GetUserTag(Index: Integer): Integer;
 begin
   if (Index < 0) or (Index >= FUserLength) then
@@ -4188,7 +4216,6 @@ begin
   end;
   FUserTag[Index] := Value;
 end;
-
 
 function TJvCsvRows.GetUserData(Index: Integer): Pointer;
 begin
@@ -4214,11 +4241,15 @@ end;
 procedure TJvCsvRows.AddRow(Item: PCsvRow);
 begin
   Add(Pointer(Item));
+  if Item.Filtered then
+    Inc(FFilteredCount);
 end;
 
 procedure TJvCsvRows.InsertRow(const Position: Integer; Item: PCsvRow);
 begin
   Insert(Position, Pointer(Item));
+  if Item.Filtered then
+    Inc(FFilteredCount);
 end;
 
 procedure TJvCsvRows.InternalInitRecord(Buffer: TJvRecordBuffer);
@@ -4293,7 +4324,9 @@ var
 begin
   if (RowIndex >= 0) and (RowIndex < Count) then
   begin
-    P := Self[RowIndex];
+    if PCsvRow(List^[RowIndex]).Filtered then
+      Dec(FFilteredCount);
+    P := Items[RowIndex];
     if P <> nil then
       FreeMem(P);
   end;
@@ -4316,19 +4349,8 @@ var
 begin
   for I := 0 to Count - 1 do
     FreeMem(Items[I]);
+  FFilteredCount := 0;
   inherited Clear;
-end;
-
-constructor TJvCsvRows.Create;
-begin
-  FTextBufferSize := JvCsvDefaultTextBufferSize;
-  FMarginSize := JvCsvDefaultMarginSize;
-
-{ DecimalSeparator:
-  This 'US' constant value is important for backwards compatibility.
-  DO NOT CHANGE this default, it would break people's code.
-}
-  FDecimalSeparator := USDecimalSeparator;
 end;
 
 { Call this one first, then AssignFromStrings on subsequent updates only.}
