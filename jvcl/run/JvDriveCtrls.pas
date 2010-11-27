@@ -38,8 +38,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, Controls,
-  FileCtrl, StdCtrls,
+  Windows, Messages, Classes, Graphics, Controls, StdCtrls,
+  FileCtrl,
   JvComboBox, JvListBox, JvSearchFiles, JvTypes, JVCLVer;
 
 type
@@ -241,6 +241,7 @@ type
     FForceFileExtensions: Boolean;
     FSearchFiles: TJvSearchFiles;
     procedure SetForceFileExtensions(const Value: Boolean);
+    procedure SetDirectory(const Value: string);
   protected
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
@@ -251,7 +252,7 @@ type
     procedure ApplyFilePath(const EditText: string); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Directory stored False;
+    property Directory write SetDirectory stored False;
     property FileName stored False;
     // set this property to True to force the display of filename extensions for all files even if
     // the user has activated the Explorer option "Don't show extensions for known file types"
@@ -1632,6 +1633,18 @@ begin
       Screen.Cursor := SaveCursor;
     end;
     Change;
+  end;
+end;
+
+procedure TJvFileListBox.SetDirectory(const Value: string);
+begin
+  // Mantis #5301. We split the Directory and FileName setter to handle them slightly different.
+  // For FileName we must only change the directory if the file path changed.
+  if (Value <> '') and
+     (AnsiCompareFileName(ExcludeTrailingPathDelimiter(FileName), ExcludeTrailingPathDelimiter(Directory)) <> 0) then
+  begin
+    inherited ApplyFilePath(Value);
+    ReadFileNames;
   end;
 end;
 
