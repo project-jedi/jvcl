@@ -3397,7 +3397,6 @@ var
   Highlight: Boolean;
   Bmp: TBitmap;
   Field, ReadOnlyTestField: TField;
-  MemoText: string;
 begin
   Field := Column.Field;
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
@@ -3443,11 +3442,7 @@ begin
       if (Field is TStringField) or (FShowMemos and ((Field is TMemoField)
         {$IFDEF COMPILER10_UP} or (Field is TWideMemoField) {$ENDIF})) then
       begin
-        if Assigned(Field.OnGetText) then
-          MemoText := Field.DisplayText
-        else
-          MemoText := Field.AsString;
-        WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
+        WriteCellText(Rect, 2, 2, Field.DisplayText, Column.Alignment,
           UseRightToLeftAlignmentForField(Field, Column.Alignment), False);
       end
       else
@@ -4275,7 +4270,7 @@ begin
             begin
               if (Field is TStringField) or (Field is TMemoField) then
               begin
-                HintStr := Field.AsString;
+                HintStr := Field.DisplayText;
                 if WordWrap then
                   CalcOptions := CalcOptions or DT_WORDBREAK;
               end
