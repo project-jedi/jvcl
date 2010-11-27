@@ -43,6 +43,25 @@ uses
   JclBase,
   JvComponentBase, JvDataProviderIntf;
 
+{$IFDEF COMPILER15_UP}
+  // C++Builder XE now overloads GetInterface() with a generic version. But the Delphi compiler
+  // only emits the old version if you use "const GUID: TGUID" as a parameter. This causes the
+  // GetInterface() reintroduction, that this unit makes in TExtensibleInterfacedPersistent, to
+  // generate compile errors in the C++ code.
+  // With the new "HPPEMIT END" we can work around this by disabling the new
+  // MANAGED_INTERFACE_OPERATORS define for this HPP file.
+
+  {$HPPEMIT '#ifdef MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT '  #undef MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT '  #define JvDataProviderHpp_MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT '#endif'}
+
+  {$HPPEMIT END '#ifdef JvDataProvider_MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT END '  #define MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT END '  #undef JvDataProviderHpp_MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT END '#endif'}
+{$ENDIF COMPILER15_UP}
+
 type
   // Forwards
   TExtensibleInterfacedPersistent = class;
