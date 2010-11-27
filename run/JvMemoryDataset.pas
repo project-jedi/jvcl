@@ -359,7 +359,7 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  FMTBcd,
+  FMTBcd, SqlTimSt,
   {$IFNDEF UNICODE}
   JvJCLUtils,
   {$ENDIF ~UNICODE}
@@ -371,6 +371,7 @@ const
     ftDBaseOle, ftTypedBinary, ftOraBlob, ftOraClob
     {$IFDEF COMPILER10_UP}, ftWideMemo{$ENDIF COMPILER10_UP}];
 
+  // If you add a new supported type you _must_ also update CalcFieldLen()
   ftSupported = [ftString, ftSmallint, ftInteger, ftWord, ftBoolean,
     ftFloat, ftCurrency, ftDate, ftTime, ftDateTime, ftAutoInc, ftBCD,
     ftFMTBCD, ftTimestamp,
@@ -456,18 +457,36 @@ begin
         Result := SizeOf(Double);
       ftCurrency:
         Result := SizeOf(Double);
-      ftFMTBCD, ftBCD:
-        Result := SizeOf(TBcd);
       ftDate, ftTime:
         Result := SizeOf(Longint);
       ftDateTime:
         Result := SizeOf(TDateTime);
+      ftAutoInc:
+        Result := SizeOf(Longint);
+      ftBCD, ftFMTBCD:
+        Result := SizeOf(TBcd);
+      ftTimeStamp:
+        Result := SizeOf(TSQLTimeStamp);
+      {$IFDEF COMPILER10_UP}
+      ftOraTimestamp:
+        Result := SizeOf(TSQLTimeStamp);
+      ftFixedWideChar:
+        Result := (Result + 1) * SizeOf(WideChar);
+      {$ENDIF COMPILER10_UP}
+      {$IFDEF COMPILER12_UP}
+      ftLongWord:
+        Result := SizeOf(LongWord);
+      ftShortint:
+        Result := SizeOf(Shortint);
+      ftByte:
+        Result := SizeOf(Byte);
+      ftExtended:
+        Result := SizeOf(Extended);
+      {$ENDIF COMPILER12_UP}
       ftBytes:
         Result := Size;
       ftVarBytes:
         Result := Size + 2;
-      ftAutoInc:
-        Result := SizeOf(Longint);
       ftADT:
         Result := 0;
       ftFixedChar:
