@@ -2997,11 +2997,14 @@ begin
     Inc(MaxLen, 3); // ' AM'
 
   case SelStart of
-    0:  if not CharInSet(Key, ['0'..'2']) then Key := #0;
-    1:  if not CharInSet(Key, ['0'..'9']) then Key := #0;
-    2:  Key := ':';
-    3:  if not CharInSet(Key, ['0'..'5']) then Key := #0;
-    4:  if not CharInSet(Key, ['0'..'9']) then Key := #0;
+    0: if not CharInSet(Key, ['0'..'2']) then Key := #0;
+    1: if not CharInSet(Key, ['0'..'9']) then Key := #0;
+    2: if CharInSet(Key, ['0'..'5']) then // allow the user to skip the ':'
+         SelStart := SelStart + 1
+       else
+         Key := ':';
+    3: if not CharInSet(Key, ['0'..'5']) then Key := #0;
+    4: if not CharInSet(Key, ['0'..'9']) then Key := #0;
   end;
   if SelStart >= 5 then
   begin
@@ -3011,15 +3014,18 @@ begin
     if SelStart < MaxLen then
     begin
       case TimePos of
-        5:  Key := ':';
-        6:  if not CharInSet(Key, ['0'..'5']) then Key := #0;
-        7:  if not CharInSet(Key, ['0'..'9']) then Key := #0;
-        8:  Key := ' ';
-        9:  if (Key = 'a') or (Key = 'A') then Key := 'A'
-            else if (Key = 'p') or (Key = 'P') then Key := 'P'
-            else Key := #0;
-       10:  if (Key = 'm') or (Key = 'M') then Key := 'M'
-            else Key := #0;
+        5: if CharInSet(Key, ['0'..'5']) then
+             SelStart := SelStart + 1 // allow the user to skip the ':'
+           else
+             Key := ':';
+        6: if not CharInSet(Key, ['0'..'5']) then Key := #0;
+        7: if not CharInSet(Key, ['0'..'9']) then Key := #0;
+        8: Key := ' ';
+        9: if (Key = 'a') or (Key = 'A') then Key := 'A'
+           else if (Key = 'p') or (Key = 'P') then Key := 'P'
+           else Key := #0;
+       10: if (Key = 'm') or (Key = 'M') then Key := 'M'
+           else Key := #0;
       end;
     end
     else
