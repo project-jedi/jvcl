@@ -640,7 +640,7 @@ type
     FEnabledButtons: TJvWizardButtonSet;
     FVisibleButtons: TJvWizardButtonSet;
     FDrawing: Boolean;
-    FEnableJumpToPage: Boolean;    // Nonn
+    FEnableJumpToPage: Boolean;
     FOnPaintPage: TJvWizardPaintPageEvent;
     FOnEnterPage: TJvWizardChangePageEvent;
     FOnPage: TNotifyEvent;
@@ -695,7 +695,7 @@ type
     property Panel: TJvWizardPagePanel read FPanel write FPanel;
     property EnabledButtons: TJvWizardButtonSet read FEnabledButtons write SetEnabledButtons default bkAllButtons;
     property VisibleButtons: TJvWizardButtonSet read FVisibleButtons write SetVisibleButtons default [bkBack, bkNext, bkCancel];
-    property EnableJumpToPage: Boolean read FEnableJumpToPage write FEnableJumpToPage default True;  // Nonn
+    property EnableJumpToPage: Boolean read FEnableJumpToPage write FEnableJumpToPage default True;
     property Color default clBtnFace;
     property Caption;
     property Enabled;
@@ -1441,7 +1441,7 @@ begin
   begin
     APage := PageAtPos(Point(X, Y));
     if Assigned(APage) and ((csDesigning in ComponentState) or
-      (APage.Enabled and APage.EnableJumpToPage)) then  // Nonn
+      (APage.Enabled and APage.EnableJumpToPage)) then
     begin
       if APage.PageIndex = PageIndex + 1 then
         Wizard.SelectNextPage
@@ -2638,13 +2638,10 @@ end;
 
 function TJvWizard.FindNextEnabledPage(PageIndex: Integer; const Step: Integer;
   CheckDisable: Boolean): TJvWizardCustomPage;
-var
-  APage: TJvWizardCustomPage;
 begin
-  APage := FindNextPage(PageIndex, Step, CheckDisable);
-  if Assigned(APage) and not APage.EnableJumpToPage then
-    APage := FindNextPage(APage.PageIndex, Step, CheckDisable);
-  Result := APage;
+  Result := FindNextPage(PageIndex, Step, CheckDisable);
+  while (Result <> nil) and not Result.EnableJumpToPage do
+    Result := FindNextPage(Result.PageIndex, Step, CheckDisable);
 end;
 
 procedure TJvWizard.SelectFirstPage;
