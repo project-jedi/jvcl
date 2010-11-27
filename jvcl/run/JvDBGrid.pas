@@ -338,7 +338,7 @@ type
     function GetOptions: TDBGridOptions;
     procedure SetOptions(Value: TDBGridOptions);
     function GetMasterColumn(ACol, ARow: Longint): TColumn;
-    function GetTitleOffset: Byte;
+    function GetTitleOffset: Integer;
     procedure SetFixedCols(Value: Integer);
     function GetFixedCols: Integer;
     function CalcLeftColumn: Integer;
@@ -506,7 +506,7 @@ type
     property VisibleRowCount;
     property VisibleColCount;
     property IndicatorOffset;
-    property TitleOffset: Byte read GetTitleOffset;
+    property TitleOffset: Integer read GetTitleOffset;
     property CharList: TCharList read FCharList write FCharList;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   published
@@ -1384,7 +1384,7 @@ begin
   TInternalInplaceEdit(Result).OnChange := EditChanged;
 end;
 
-function TJvDBGrid.GetTitleOffset: Byte;
+function TJvDBGrid.GetTitleOffset: Integer;
 var
   I, J: Integer;
 begin
@@ -1392,8 +1392,7 @@ begin
   if dgTitles in Options then
   begin
     Result := 1;
-    if (DataLink <> nil) and (DataLink.DataSet <> nil) and
-      DataLink.DataSet.ObjectView then
+    if (DataLink <> nil) and (DataLink.DataSet <> nil) and DataLink.DataSet.ObjectView then
       for I := 0 to Columns.Count - 1 do
       begin
         if Columns[I].Showing then
@@ -2562,7 +2561,7 @@ begin
     begin
       ACol := Cell.X;
       if dgIndicator in Options then
-        Dec(ACol);
+        Dec(ACol, IndicatorOffset);
       if (DataLink <> nil) and DataLink.Active and (ACol >= 0) and
         (ACol < Columns.Count) then
         DoTitleClick(FPressedCol.Index, FPressedCol.Field);
@@ -4242,7 +4241,7 @@ begin
     // ARow = -1 if 'outside' a valid cell;
     // Adjust CursorRect
     //-------------------------------------------------------------------------
-    if (FShowTitleHint or FShowCellHint) then
+    if FShowTitleHint or FShowCellHint then
     begin
       if (ARow = -1) or ((ARow >= 1) and not FShowCellHint) then
       begin
@@ -4262,9 +4261,9 @@ begin
     end;
 
     if dgIndicator in Options then
-      Dec(ACol);
+      Dec(ACol, IndicatorOffset);
     if dgTitles in Options then
-      Dec(ARow);
+      Dec(ARow, TitleOffset);
 
     if FShowTitleHint and (ACol >= 0) and (ARow = -1) then
     begin
@@ -4717,7 +4716,7 @@ end;
 function TJvDBGrid.ColumnOffset: Integer;
 begin
   if dgIndicator in Options then
-    Result := 1
+    Result := IndicatorOffset
   else
     Result := 0;
 end;
