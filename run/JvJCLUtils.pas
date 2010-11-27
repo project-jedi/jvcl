@@ -7822,102 +7822,56 @@ end;
 
 { String routines }
 
-{ function GetParamStr copied from SYSTEM.PAS unit of Delphi 2.0 }
+procedure SplitCommandLine(const CmdLine: string; var ExeName, Params: string);
 
-function GetParamStr(P: PChar; var Param: string): PChar;
-var
-  Len: Integer;
-  Buffer: array [Byte] of Char;
-begin
-  while True do
+  function SkipString(P: PChar): PChar;
   begin
-    while (P[0] <> #0) and (P[0] <= ' ') do
-      Inc(P);
-    if (P[0] = '"') and (P[1] = '"') then
-      Inc(P, 2)
-    else
-      Break;
-  end;
-  Len := 0;
-  while P[0] > ' ' do
-    if P[0] = '"' then
+    if P^ = '"' then
     begin
       Inc(P);
-      while (P[0] <> #0) and (P[0] <> '"') do
-      begin
-        Buffer[Len] := P[0];
-        Inc(Len);
+      while (P^ <> #0) and (P^ <> '"') do
         Inc(P);
-      end;
-      if P[0] <> #0 then
+      if P^ <> #0 then
         Inc(P);
     end
     else
-    begin
-      Buffer[Len] := P[0];
-      Inc(Len);
-      Inc(P);
-    end;
-  SetString(Param, Buffer, Len);
-  Result := P;
-end;
-
-function ParamCountFromCommandLine(CmdLine: PChar): Integer;
-var
-  S: string;
-  P: PChar;
-begin
-  P := CmdLine;
-  Result := 0;
-  while True do
-  begin
-    P := GetParamStr(P, S);
-    if S = '' then
-      Break;
-    Inc(Result);
+      while P^ > ' ' do
+      begin
+        if P^ = '"' then
+        begin
+          Inc(P);
+          while (P^ <> #0) and (P^ <> '"') do
+            Inc(P);
+          if P^ = #0 then
+            Break;
+        end;
+        Inc(P);
+      end;
+    Result := P;
   end;
-end;
 
-function ParamStrFromCommandLine(CmdLine: PChar; Index: Integer): string;
-var
-  P: PChar;
-begin
-  P := CmdLine;
-  while True do
+  function SkipWhiteChars(P: PChar): PChar;
   begin
-    P := GetParamStr(P, Result);
-    if (Index = 0) or (Result = '') then
-      Break;
-    Dec(Index);
+    Result := P;
+    while (Result^ <> #0) and (Result^ <= ' ') do
+      Inc(Result);
   end;
-end;
 
-procedure SplitCommandLine(const CmdLine: string; var ExeName, Params: string);
 var
-  Buffer: PChar;
-  Cnt, I: Integer;
-  S: string;
+  F, P: PChar;
 begin
   ExeName := '';
   Params := '';
-  Buffer := StrPAlloc(CmdLine);
-  try
-    Cnt := ParamCountFromCommandLine(Buffer);
-    if Cnt > 0 then
-    begin
-      ExeName := ParamStrFromCommandLine(Buffer, 0);
-      for I := 1 to Cnt - 1 do
-      begin
-        S := ParamStrFromCommandLine(Buffer, I);
-        if Pos(' ', S) > 0 then
-          S := '"' + S + '"';
-        Params := Params + S;
-        if I < Cnt - 1 then
-          Params := Params + ' ';
-      end;
-    end;
-  finally
-    StrDispose(Buffer);
+  if CmdLine <> '' then
+  begin
+    F := PChar(CmdLine);
+    P := SkipString(F);
+    if F^ = '"' then
+      SetString(ExeName, F + 1, P - F - 2)
+    else
+      SetString(ExeName, F, P - F);
+    P := SkipWhiteChars(P);
+    SetString(Params, P, StrLen(P));
   end;
 end;
 
