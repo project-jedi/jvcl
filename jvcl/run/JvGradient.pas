@@ -11,7 +11,7 @@ the specific language governing Rights and limitations under the License.
 The Original Code is: JvGradient.PAS, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are CopyRight (C) 2001 Sébastien Buysse.
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
@@ -38,6 +38,8 @@ uses
   JvTypes, JvComponent;
 
 type
+  TJvGradientPaintEvent = procedure(Sender: TObject; Canvas: TCanvas) of object;
+
   TJvGradient = class(TJvGraphicControl)
   private
     FStyle: TJvGradientStyle;
@@ -51,6 +53,7 @@ type
     FLoadedTop: Integer;
     FLoadedWidth: Integer;
     FLoadedHeight: Integer;
+    FOnPaint: TJvGradientPaintEvent;
     procedure SetSteps(Value: Word);
     procedure SetStartColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
@@ -64,7 +67,6 @@ type
     function GetHeight: Integer;
     procedure SetHeight(const Value: Integer);
   protected
-    { Note: No need to respond to WM_ERASEBKGND; this is not a TWinControl }
     procedure Paint; override;
     procedure Loaded; override;
   public
@@ -72,6 +74,11 @@ type
     destructor Destroy; override;
   published
     property Align default alClient;
+    property Anchors;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
     property Left: Integer read GetLeft write SetLeft;
     property Top: Integer read GetTop write SetTop;
     property Width: Integer read GetWidth write SetWidth;
@@ -85,6 +92,23 @@ type
     property StartColor: TColor read FStartColor write SetStartColor default clBlue;
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
     property Steps: Word read FSteps write SetSteps default 100;
+
+    property OnClick;
+    property OnContextPopup;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseActivate;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint: TJvGradientPaintEvent read FOnPaint write FOnPaint;
+    property OnStartDock;
+    property OnStartDrag;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -159,7 +183,7 @@ procedure TJvGradient.Paint;
 var
   I: Integer;
   J, K: Real;
-  Deltas: array [0..2] of Real; // R,G,B
+  Deltas: array [0..2] of Double; // R,G,B
   R: TRect;
   LStartRGB, LEndRGB: TColor;
   LSteps: Word;
@@ -179,9 +203,6 @@ begin
 
     FBuffer.Width := FBufferWidth;
     FBuffer.Height := FBufferHeight;
-    //bt := TBitmap.Create;
-    //bt.Width := Width;
-    //bt.Height := Height;
     case FStyle of
       grFilled:
         begin
@@ -332,8 +353,8 @@ begin
           end;
         end;
     end;
-    //FBuffer.Assign(bt);
-    //bt.Free;
+    if Assigned(FOnPaint) then
+      FOnPaint(Self, FBuffer.Canvas);
   end;
   Canvas.Draw(0, 0, FBuffer);
 end;
