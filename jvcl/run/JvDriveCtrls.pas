@@ -400,9 +400,6 @@ uses
   DBT,
   JvJCLUtils, JvJVCLUtils, JvConsts;
 
-const
-  cDirPrefix = #32;
-
 function GetItemHeight(Font: TFont): Integer;
 var
   DC: HDC;
@@ -1544,6 +1541,12 @@ begin
   { No filter on drives }
   FSearchFiles.DirParams.SearchTypes := [];
   FSearchFiles.ErrorResponse := erIgnore;
+
+  // We sort the directory and file list ourself. This is necessary to fix Mantis #5295.
+  // The control inserted a space character in front of all directory names to get them
+  // sorted above all files. But this space character couldn't be removed before handling
+  // the item's text to the user.
+  inherited Sorted := False;
 end;
 
 destructor TJvFileListBox.Destroy;
@@ -1600,6 +1603,8 @@ begin
         Flags := Flags or SHGFI_OVERLAYINDEX;
 
       { First add directories.. }
+      if FSearchFiles.Directories is TStringList then
+        TStringList(FSearchFiles.Directories).Sort;
       with FSearchFiles.Directories do
         for J := 0 to Count - 1 do
         begin
@@ -1607,15 +1612,17 @@ begin
           FillChar(shinf, SizeOf(shinf), 0);
           SHGetFileInfo(PChar(Strings[J]), 0, shinf, SizeOf(shinf), Flags);
           if FForceFileExtensions then
-            I := Items.Add(cDirPrefix + Strings[J])
+            I := Items.Add(Strings[J])
           else
-            I := Items.Add(cDirPrefix + string(shinf.szDisplayName));
+            I := Items.Add(string(shinf.szDisplayName));
           Items.Objects[I] := TObject(shinf.iIcon);
           if I = 100 then
             Screen.Cursor := crHourGlass;
         end;
 
       { ..then add files }
+      if FSearchFiles.Files is TStringList then
+        TStringList(FSearchFiles.Files).Sort;
       with FSearchFiles.Files do
         for J := 0 to Count - 1 do
         begin
@@ -1717,12 +1724,10 @@ begin
       Offset := FImages.Width + 6;
     end;
 
-    // Use Trim because directories have a space as prefix, so that
-    // the directory names appear above the files.
     tmpR.Left := tmpR.Left + Offset - 2;
-    tmpR.Right := tmpR.Left + TextWidth(Trim(Items[Index])) + 4;
+    tmpR.Right := tmpR.Left + TextWidth(Items[Index]) + 4;
     FillRect(tmpR);
-    TextOut(Rect.Left + Offset, Rect.Top, Trim(Items[Index]));
+    TextOut(Rect.Left + Offset, Rect.Top, Items[Index]);
 
     if odFocused in State then
       DrawFocusRect(tmpR);
