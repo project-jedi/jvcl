@@ -412,6 +412,9 @@ type
     property ShowSeconds default False;
     property Hour24 default True;
     property DataConnector;
+    property ShowButton;
+    property EditorEnabled;
+    property ArrowKeys;
 
     property Align;
     property Alignment;
@@ -442,6 +445,7 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+    property OnBottomClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -457,6 +461,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property OnTopClick;
     property OnContextPopup;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
