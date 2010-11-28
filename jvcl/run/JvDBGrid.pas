@@ -2359,8 +2359,11 @@ begin
         (dgTitles in Options) and (dgIndicator in Options) and
         (Cell.Y = 0) then
       begin
-        if (FTitleArrow and Assigned(FOnTitleArrowMenuEvent)) then
+        if (Cell.X = 0) and FTitleArrow and Assigned(FOnTitleArrowMenuEvent) then
+        begin
           FOnTitleArrowMenuEvent(Self);
+          Exit;
+        end;
 
         // Display TitlePopup if it exists
         if Assigned(FTitlePopup) then
@@ -2368,8 +2371,8 @@ begin
           GetCursorPos(CursorPos);
           FTitlePopup.PopupComponent := Self;
           FTitlePopup.Popup(CursorPos.X, CursorPos.Y);
+          Exit;
         end;
-        Exit;
       end;
 
       if (DragKind = dkDock) and (Cell.X < IndicatorOffset) and
