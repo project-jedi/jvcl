@@ -266,7 +266,9 @@ type
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
     FCharList: TCharList;
+    {$IFDEF COMPILER9_UP}
     FScrollBars: TScrollStyle;
+    {$ENDIF COMPILER9_UP}
     FWordWrap: Boolean;
     FWordWrapAllFields: Boolean;
     FChangeLinks: TObjectList;
@@ -363,7 +365,9 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure SetShowMemos(const Value: Boolean);
     procedure SetBooleanEditor(const Value: Boolean);
+    {$IFDEF COMPILER9_UP}
     procedure SetScrollBars(Value: TScrollStyle);
+    {$ENDIF COMPILER9_UP}
     procedure ReadPostOnEnter(Reader: TReader);
 
     procedure SetControls(Value: TJvDBGridControls);
@@ -425,7 +429,9 @@ type
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure Scroll(Distance: Integer); override;
     procedure LinkActive(Value: Boolean); override;
+    {$IFDEF COMPILER9_UP}
     procedure UpdateScrollBar; override;
+    {$ENDIF COMPILER9_UP}
     procedure LayoutChanged; override;
     procedure TopLeftChanged; override;
     procedure GridInvalidateRow(Row: Longint);
@@ -552,7 +558,9 @@ type
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default False;
+    {$IFDEF COMPILER9_UP}
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
+    {$ENDIF COMPILER9_UP}
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -1008,7 +1016,9 @@ var
   Bmp: TBitmap;
 begin
   inherited Create(AOwner);
+  {$IFDEF COMPILER9_UP}
   FScrollBars := ssBoth;
+  {$ENDIF COMPILER9_UP}
 
   // (obones): issue 3026: need to create FChangeLinks at the beginning
   // so that any change can access the object. It seems that on some
@@ -2237,6 +2247,7 @@ begin
     ShowEditor;
 end;
 
+{$IFDEF COMPILER9_UP}
 procedure TJvDBGrid.UpdateScrollBar;
 begin
   if HandleAllocated then
@@ -2256,6 +2267,7 @@ begin
     end;
   end;
 end;
+{$ENDIF COMPILER9_UP}
 
 procedure TJvDBGrid.TopLeftChanged;
 begin
@@ -4667,11 +4679,14 @@ end;
 procedure TJvDBGrid.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
+  {$IFDEF COMPILER9_UP}
   // The grid can only handle ssNone and ssHorizontal. We have to emulate the other modes.
   if FScrollBars = ssVertical then
     Params.Style := Params.Style and not WS_HSCROLL;
+  {$ENDIF COMPILER9_UP}
 end;
 
+{$IFDEF COMPILER9_UP}
 procedure TJvDBGrid.SetScrollBars(Value: TScrollStyle);
 begin
   if Value <> FScrollBars then
@@ -4690,6 +4705,7 @@ begin
       ShowScrollBar(Handle, SB_HORZ, False);
   end;
 end;
+{$ENDIF COMPILER9_UP}
 
 procedure TJvDBGrid.SetSelectColumnsDialogStrings(const Value: TJvSelectDialogColumnStrings);
 begin
