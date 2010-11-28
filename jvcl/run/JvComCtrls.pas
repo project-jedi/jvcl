@@ -1282,7 +1282,6 @@ begin
     SetBkColor(DC, ColorToRGB(Brush.Color));
     SetTextColor(Msg.ChildDC, ColorToRGB(Font.Color));
     SetBkColor(Msg.ChildDC, ColorToRGB(Brush.Color));
-    SetBkMode(Msg.ChildDC, TRANSPARENT);
   finally
     ReleaseDC(Handle, DC);
   end;
