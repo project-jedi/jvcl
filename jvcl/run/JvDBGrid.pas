@@ -424,6 +424,8 @@ type
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure Scroll(Distance: Integer); override;
+    procedure LinkActive(Value: Boolean); override;
+    procedure UpdateScrollBar; override; // the only virtual method that is called from TDBGrid.DataChanged
     procedure LayoutChanged; override;
     procedure TopLeftChanged; override;
     procedure GridInvalidateRow(Row: Longint);
@@ -1996,8 +1998,9 @@ begin
   end
   else
   begin
-    if not (Assigned(InplaceEditor) and InplaceEditor.Visible) then
-      HideEditor;
+    if not FAlwaysShowEditor or ([dgRowSelect, dgEditing] * Options <> [dgEditing]) then
+      if HandleAllocated and not (Assigned(InplaceEditor) and InplaceEditor.Visible) then
+        HideEditor;
   end;
 end;
 
@@ -2187,6 +2190,13 @@ begin
     if ((AlternateRowColor <> clNone) and (AlternateRowColor <> Color)) or
        ((AlternateRowFontColor <> clNone) and (AlternateRowFontColor <> Font.Color)) then
       Invalidate;
+
+    if FAlwaysShowEditor and HandleAllocated and ([dgRowSelect, dgEditing] * Options = [dgEditing]) and
+       Focused then
+    begin
+      ShowEditor;
+      InvalidateCol(Col);
+    end;
   end;
 end;
 
@@ -2248,6 +2258,24 @@ var
 begin
   for I := 0 to ColCount - 1 do
     InvalidateCell(I, Row);
+end;
+
+procedure TJvDBGrid.LinkActive(Value: Boolean);
+begin
+  inherited LinkActive(Value);
+  if Value and FAlwaysShowEditor then
+    ShowEditor;
+end;
+
+procedure TJvDBGrid.UpdateScrollBar;
+begin
+  inherited UpdateScrollBar;
+  if FAlwaysShowEditor and HandleAllocated and ([dgRowSelect, dgEditing] * Options = [dgEditing]) and
+     Focused then
+  begin
+    ShowEditor;
+    InvalidateCol(Col);
+  end;
 end;
 
 procedure TJvDBGrid.TopLeftChanged;
@@ -4720,9 +4748,9 @@ begin
   begin
     {$IFDEF COMPILER14_UP}
     if Value then
-      DrawingStyle := gdsClassic
+      DrawingStyle := gdsThemed
     else
-      DrawingStyle := gdsThemed;
+      DrawingStyle := gdsClassic;
     {$ELSE}
     FUseXPThemes := Value;
     Invalidate;
