@@ -1447,6 +1447,9 @@ begin
     ['common', 'run', 'Resources', 'qcommon', 'qrun']); // do not localize
   AddPaths(Target.DebugDcuPaths, {Add:=}False, Owner.JVCLDir,
     [Target.InsertDirMacros(DebugUnitOutDir), DebugUnitOutDir]); // do not localize
+  if Target.SupportsPersonalities([persBCB]) then
+    AddPaths(Target.GlobalCppBrowsingPaths, {Add:=}False, Owner.JVCLDir,
+      ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize, clean up because we had browsing and library path wrong
 
   // update paths
   AddPaths(Target.BrowsingPaths, True, Owner.JVCLDir, // Resources directory must not be in browse-paths
@@ -1460,10 +1463,10 @@ begin
   begin
     AddPaths(Target.GlobalIncludePaths, True, Owner.JVCLDir,
      [Target.InsertDirMacros(HppDir)]);
-    AddPaths(Target.GlobalCppSearchPaths, True, Owner.JVCLDir,
-      ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+    AddPaths(Target.GlobalCppBrowsingPaths, True, Owner.JVCLDir,
+      ['run', 'common']); // do not localize
     AddPaths(Target.GlobalCppLibraryPaths, True, Owner.JVCLDir,
-      [Target.InsertDirMacros(UnitOutDir)]); // do not localize
+      ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
   end;
 
   // add
@@ -1623,12 +1626,12 @@ begin
     [Target.InsertDirMacros(DebugUnitOutDir), DebugUnitOutDir]); // do not localize
   if Target.SupportsPersonalities([persBCB]) then
   begin
-    AddPaths(Target.GlobalIncludePaths, False, Owner.JVCLDir,
+    AddPaths(Target.GlobalIncludePaths, {Add:=}False, Owner.JVCLDir,
      [Target.InsertDirMacros(HppDir)]);
-    AddPaths(Target.GlobalCppSearchPaths, False, Owner.JVCLDir,
+    AddPaths(Target.GlobalCppBrowsingPaths, {Add:=}False, Owner.JVCLDir,
+      ['run', 'common', 'Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize, clean up because we had browsing and library path wrong
+    AddPaths(Target.GlobalCppLibraryPaths, {Add:=}False, Owner.JVCLDir,
       ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
-    AddPaths(Target.GlobalCppLibraryPaths, False, Owner.JVCLDir,
-      [Target.InsertDirMacros(UnitOutDir)]); // do not localize
   end;
   Target.SavePaths;
 
