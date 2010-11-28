@@ -23,5 +23,7 @@
     <File Name="..\..\run\JvXPButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPCheckCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXPProgressBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExplorerBar.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExplorerBarItems.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -41,7 +41,7 @@ uses
   DesignIntf, DesignEditors, VCLEditors,
   JvDsgnConsts, JvXPProgressBar,
   JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,
-  JvXPButtons, JvXPCheckCtrls;
+  JvXPButtons, JvXPCheckCtrls, JvExplorerBar;
 
 procedure Register;
 begin
@@ -51,6 +51,9 @@ begin
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexProperty);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);
+
+  // ExplorerBar
+  RegisterComponents(RsPaletteXPControls, [TJvExplorerBar]);
 end;
 
 end.
