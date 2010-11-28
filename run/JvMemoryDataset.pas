@@ -2363,12 +2363,17 @@ begin
   DisableControls;
   FSaveLoadState := slsLoading;
   try
-    SetLength(OriginalFields, Len);
-    SetLength(FCopyFromDataSetFieldDefs, Len);
-    for I := 0 to Len - 1 do
+    SetLength(OriginalFields, Fields.Count);
+    SetLength(FCopyFromDataSetFieldDefs, Fields.Count);
+    for I := 0 to Fields.Count - 1 do
     begin
-      OriginalFields[I] := FDataSet.FindField(Fields[I].FieldName);
-      FCopyFromDataSetFieldDefs[I] := FieldDefList.IndexOf(Fields[I].FullName);
+      if Fields[I].FieldKind <> fkCalculated then
+      begin
+        OriginalFields[I] := FDataSet.FindField(Fields[I].FieldName);
+        FCopyFromDataSetFieldDefs[I] := FieldDefList.IndexOf(Fields[I].FullName);
+      end
+      else
+        FCopyFromDataSetFieldDefs[I] := -1;
     end;
     StatusField := nil;
     if FApplyMode <> amNone then
@@ -2390,19 +2395,22 @@ begin
     while not FDataSet.EOF do
     begin
       Append;
-      for I := 0 to Len - 1 do
+      for I := 0 to Fields.Count - 1 do
       begin
-        Original := OriginalFields[I];
-        if Original <> nil then
+        if Fields[I].FieldKind <> fkCalculated then
         begin
-          FieldReadOnly := Fields[I].ReadOnly;
-          if FieldReadOnly then
-            Fields[I].ReadOnly := False;
-          try
-            CopyFieldValue(Fields[I], Original);
-          finally
+          Original := OriginalFields[I];
+          if Original <> nil then
+          begin
+            FieldReadOnly := Fields[I].ReadOnly;
             if FieldReadOnly then
-              Fields[I].ReadOnly := True;
+              Fields[I].ReadOnly := False;
+            try
+              CopyFieldValue(Fields[I], Original);
+            finally
+              if FieldReadOnly then
+                Fields[I].ReadOnly := True;
+            end;
           end;
         end;
       end;
