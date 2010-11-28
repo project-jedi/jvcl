@@ -411,7 +411,7 @@ type
     function AllowTitleClick: Boolean; virtual;
 
     procedure EditChanged(Sender: TObject); dynamic;
-    procedure GetCellProps(Field: TField; AFont: TFont; var Background: TColor;
+    procedure GetCellProps(Column: TColumn; AFont: TFont; var Background: TColor;
       Highlight: Boolean); dynamic;
     function HighlightCell(DataCol, DataRow: Integer; const Value: string;
       AState: TGridDrawState): Boolean; override;
@@ -1982,20 +1982,12 @@ begin
     FOnCanEditCell(Self, AField, Result);
 end;
 
-procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
+procedure TJvDBGrid.GetCellProps(Column: TColumn; AFont: TFont;
   var Background: TColor; Highlight: Boolean);
 
   function IsAfterFixedCols: Boolean;
-  var
-    I: Integer;
   begin
-    Result := True;
-    for I := 0 to FixedCols - 1 do
-      if Assigned(Field) and Assigned(Columns.Items[I]) and (Columns.Items[I].FieldName = Field.FieldName) then
-      begin
-        Result := False;
-        Break;
-      end;
+    Result := Column.Index >= FixedCols;
   end;
 
 begin
@@ -2004,9 +1996,17 @@ begin
     if Odd(FCurrentDrawRow + FixedRows) then
     begin
       if (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) then
-        Background := AlternateRowColor;
+      begin
+        // Prefer the column's color
+        if not ((cvColor in Column.AssignedValues) and (Column.Color <> Column.DefaultColor)) then
+          Background := AlternateRowColor;
+      end;
       if FAlternateRowFontColor <> clNone then
-        AFont.Color := AlternateRowFontColor;
+      begin
+        // Prefer the column's font.color if it has a prefered color
+        if not ((cvColor in Column.AssignedValues) and (Column.Color <> Column.DefaultColor)) then
+          AFont.Color := AlternateRowFontColor;
+      end;
     end;
   end
   else
@@ -2018,10 +2018,10 @@ begin
     Background := clHighlight;
   end;
   if Assigned(FOnGetCellParams) then
-    FOnGetCellParams(Self, Field, AFont, Background, Highlight)
+    FOnGetCellParams(Self, Column.Field, AFont, Background, Highlight)
   else
   if Assigned(FOnGetCellProps) then
-    FOnGetCellProps(Self, Field, AFont, Background);
+    FOnGetCellProps(Self, Column.Field, AFont, Background);
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
@@ -2041,7 +2041,6 @@ var
   var
     I: Integer;
     IsDescending: Boolean;
-
   begin
     Result := False;
     for I := 0 to IndexDefs.Count - 1 do
@@ -2702,20 +2701,20 @@ begin
     if not DoKeyPress(Msg) then
       case Char(Msg.CharCode) of
         #32:
-        begin
-          ShowEditor;
-          ChangeBoolean(JvGridBool_INVERT);
-        end;
+          begin
+            ShowEditor;
+            ChangeBoolean(JvGridBool_INVERT);
+          end;
         Backspace, '0', '-':
-        begin
-          ShowEditor;
-          ChangeBoolean(JvGridBool_UNCHECK);
-        end;
+          begin
+            ShowEditor;
+            ChangeBoolean(JvGridBool_UNCHECK);
+          end;
         '1', '+':
-        begin
-          ShowEditor;
-          ChangeBoolean(JvGridBool_CHECK);
-        end;
+          begin
+            ShowEditor;
+            ChangeBoolean(JvGridBool_CHECK);
+          end;
       end;
   end
   else
@@ -3483,7 +3482,7 @@ begin
     Include(State, gdSelected);
   NewBackgrnd := Canvas.Brush.Color;
   Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or Focused);
-  GetCellProps(Field, Canvas.Font, NewBackgrnd, Highlight or ActiveRowSelected);
+  GetCellProps(Column, Canvas.Font, NewBackgrnd, Highlight or ActiveRowSelected);
   if not Highlight and (ReadOnlyCellColor <> clDefault) and
      (not Field.CanModify or not CanEditCell(Field)) then
   begin
