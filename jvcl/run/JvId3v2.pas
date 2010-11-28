@@ -311,6 +311,7 @@ type
     FImages: TJvID3Images;
     FOwner: TJvID3Owner;
     FPopularimeter: TJvID3Popularimeter;
+    FProcessPictures: Boolean;
     function GetPlayCounter: Cardinal;
     procedure SetPlayCounter(const Value: Cardinal);
   protected
@@ -324,6 +325,7 @@ type
   published
     { Do not store dummies }
     property Texts: TJvID3Text read FID3Text;
+    property ProcessPictures: Boolean read FProcessPictures write FProcessPictures stored True;
     property UserDefinedText: TJvID3UDText read FUserDefinedText;
     property Web: TJvID3Web read FWeb;
     property UserDefinedWeb: TJvID3UDUrl read FUserDefinedWeb;
@@ -972,6 +974,7 @@ begin
   inherited Create(AOwner);
   RegisterClient(Self, ActiveChanged);
 
+  FProcessPictures := True;
   FID3Text := TJvID3Text.Create(Self);
   FWeb := TJvID3Web.Create(Self);
   FUserDefinedText := TJvID3UDText.Create(Self);
@@ -1004,10 +1007,13 @@ end;
 
 procedure TJvID3v2.ActiveChanged(Sender: TObject; Activated: Boolean);
 begin
-  if Activated then
-    FImages.Pictures.RetrievePictures
-  else
-    FImages.Pictures.RemovePictures;
+  if FProcessPictures then
+  begin
+    if Activated then
+      FImages.Pictures.RetrievePictures
+    else
+      FImages.Pictures.RemovePictures;
+  end;
 end;
 
 function TJvID3v2.GetPlayCounter: Cardinal;
