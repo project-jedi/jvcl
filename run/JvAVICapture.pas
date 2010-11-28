@@ -809,7 +809,7 @@ begin
       if FExtra <> nil then
         FreeMem(FExtra);
       GetMem(FExtra, ExtraSize);
-      CopyMemory(FExtra, (PChar(@Info)) + SizeOf(tWAVEFORMATEX), FExtraSize);
+      CopyMemory(FExtra, PAnsiChar(@Info) + SizeOf(tWAVEFORMATEX), FExtraSize);
     end;
   end;
 end;
@@ -854,7 +854,7 @@ begin
     wfex^.cbSize := FExtraSize;
 
       // copy Extra to the end of the structure
-    CopyMemory((PChar(@wfex)) + SizeOf(tWAVEFORMATEX), FExtra, FExtraSize);
+    CopyMemory(PAnsiChar(@wfex) + SizeOf(tWAVEFORMATEX), FExtra, FExtraSize);
   end;
 end;
 
@@ -1456,7 +1456,6 @@ begin
       FCaptureSettings.Update;
       FAudioFormat.Update;
       UpdateCaptureStatus;
-
     end
     else
       // if not, trigger an exception

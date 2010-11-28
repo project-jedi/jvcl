@@ -2,10 +2,6 @@ unit VFW;
 
 interface
 
-{$IFNDEF VER200}
-{$UNDEF UNICODE}
-{$ENDIF !VER200}
-
 (****************************************************************************
  *
  *      VfW.H - Video for windows include file for WIN32
