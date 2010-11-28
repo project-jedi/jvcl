@@ -112,7 +112,7 @@ type
     FDebugDcuPaths: TStringList;
     FInstalledPersonalities: TStrings;
     FGlobalIncludePaths: TStringList;
-    FGlobalCppSearchPaths: TStringList;
+    FGlobalCppBrowsingPaths: TStringList;
     FGlobalCppLibraryPaths: TStringList;
     
     FOrgEnvVars: TStrings;
@@ -224,7 +224,7 @@ type
     property SearchPaths: TStringList read FSearchPaths; // with macros
     property DebugDcuPaths: TStringList read FDebugDcuPaths; // with macros
     property GlobalIncludePaths: TStringList read FGlobalIncludePaths; // BDS only, with macros
-    property GlobalCppSearchPaths: TStringList read FGlobalCppSearchPaths; // BDS only, with macros
+    property GlobalCppBrowsingPaths: TStringList read FGlobalCppBrowsingPaths; // BDS only, with macros
     property GlobalCppLibraryPaths: TStringList read FGlobalCppLibraryPaths;  // BDS v5 and upper only, with macros
 
     property BDSProjectsDir: string read GetBDSProjectsDir;
@@ -509,7 +509,7 @@ begin
   FSearchPaths := TStringList.Create;
   FDebugDcuPaths := TStringList.Create;
   FGlobalIncludePaths := TStringList.Create;
-  FGlobalCppSearchPaths := TStringList.Create;
+  FGlobalCppBrowsingPaths := TStringList.Create;
   FGlobalCppLibraryPaths := TStringList.Create;
 
   FBrowsingPaths.Duplicates := dupIgnore;
@@ -517,7 +517,7 @@ begin
   FSearchPaths.Duplicates := dupIgnore;
   FDebugDcuPaths.Duplicates := dupIgnore;
   FGlobalIncludePaths.Duplicates := dupIgnore;
-  FGlobalCppSearchPaths.Duplicates := dupIgnore;
+  FGlobalCppBrowsingPaths.Duplicates := dupIgnore;
   FGlobalCppLibraryPaths.Duplicates := dupIgnore;
 
   FDisabledPackages := TDelphiPackageList.Create;
@@ -539,7 +539,7 @@ begin
   FSearchPaths.Free;
   FDebugDcuPaths.Free;
   FGlobalIncludePaths.Free;
-  FGlobalCppSearchPaths.Free;
+  FGlobalCppBrowsingPaths.Free;
   FGlobalCppLibraryPaths.Free;
 
   FDisabledPackages.Free;
@@ -819,7 +819,7 @@ begin
     FSearchPaths.Clear;
     FDebugDcuPaths.Clear;
     FGlobalIncludePaths.Clear;
-    FGlobalCppSearchPaths.Clear;
+    FGlobalCppBrowsingPaths.Clear;
 
     // Must read personalities before using library paths.
     if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\Personalities') then  // do not localize
@@ -912,7 +912,7 @@ begin
               ConvertPathList(PropertyNode.Value, FGlobalIncludePaths); // do not localize
             PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath']; // do not localize
             if Assigned(PropertyNode) then
-              ConvertPathList(PropertyNode.Value, FGlobalCppSearchPaths); // do not localize
+              ConvertPathList(PropertyNode.Value, FGlobalCppBrowsingPaths); // do not localize
             PropertyNode := PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath']; // do not localize
             if Assigned(PropertyNode) then
               ConvertPathList(PropertyNode.Value, FGlobalCppLibraryPaths); // do not localize
@@ -956,7 +956,7 @@ begin
     if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
     begin
       ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-      ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
+      ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
       Reg.CloseKey;
     end;
 
@@ -964,8 +964,8 @@ begin
     begin
       if FGlobalIncludePaths.Count = 0 then
         ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-      if FGlobalCppSearchPaths.Count = 0 then
-        ConvertPathList(Reg.ReadString('SearchPath'), FGlobalCppSearchPaths); // do not localize
+      if FGlobalCppBrowsingPaths.Count = 0 then
+        ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
       if FGlobalCppLibraryPaths.Count = 0 then
         ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
       Reg.CloseKey;
@@ -1129,9 +1129,10 @@ begin
         PropertyGroupNode.Items.ItemNamed['Win32DebugDCUPath'].Value := ConvertPathList(FDebugDcuPaths); // do not localize
       end;
 
-      if (IDEVersion = 5) and SupportsPersonalities([persBCB]) then
+      if SupportsPersonalities([persBCB]) then
       begin
         PropertyGroupNode.Items.ItemNamed['CBuilderIncludePath'].Value := ConvertPathList(FGlobalIncludePaths); // do not localize
+        PropertyGroupNode.Items.ItemNamed['CBuilderBrowsingPath'].Value := ConvertPathList(FGlobalCppBrowsingPaths); // do not localize
         PropertyGroupNode.Items.ItemNamed['CBuilderLibraryPath'].Value := ConvertPathList(FGlobalCppLibraryPaths); // do not localize
       end;
 
@@ -1166,9 +1167,9 @@ begin
       S := ConvertPathList(FGlobalIncludePaths);
       if not Reg.ValueExists('IncludePath') or (S <> Reg.ReadString('IncludePath')) then
         Reg.WriteString('IncludePath', S);
-      S := ConvertPathList(FGlobalCppSearchPaths);
-      if not Reg.ValueExists('SearchPath') or (S <> Reg.ReadString('SearchPath')) then
-        Reg.WriteString('SearchPath', S);
+      S := ConvertPathList(FGlobalCppBrowsingPaths);
+      if not Reg.ValueExists('BrowsingPath') or (S <> Reg.ReadString('BrowsingPath')) then
+        Reg.WriteString('BrowsingPath', S);
       S := ConvertPathList(FGlobalCppLibraryPaths);
       if not Reg.ValueExists('LibraryPath') or (S <> Reg.ReadString('LibraryPath')) then
         Reg.WriteString('LibraryPath', S);
