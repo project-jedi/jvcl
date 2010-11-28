@@ -1000,6 +1000,10 @@ begin
     ReleaseMouse;
     EnableAlign;
     FinishMouseTool;
+    // We have to call UpdateDesigner for GraphicControls because they don't get
+    // WM_WINDOWPOSCHANGED messages that update the designer handles.
+    if FClicked is TGraphicControl then
+      Surface.UpdateDesigner;
     FClicked := nil;
   end;
   Result := True;
