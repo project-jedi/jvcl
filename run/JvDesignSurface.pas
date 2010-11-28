@@ -873,7 +873,7 @@ begin
             // then we must update the designer. This allows to programatically
             // change the location of a control while making the designer handles
             // follow it around (Mantis 4693).
-            // For this to work properly, we MUST udpate the bounds of the
+            // For this to work properly, we MUST update the bounds of the
             // control before calling UpdateDesigner because the VCL has not yet
             // processed the WM_WINDOWPOSCHANGED message when this code executes.
             // If we did not, the designer would use the previous position of the
