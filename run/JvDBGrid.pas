@@ -363,7 +363,7 @@ type
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure SetShowMemos(const Value: Boolean);
     procedure SetBooleanEditor(const Value: Boolean);
-    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetScrollBars(Value: TScrollStyle);
     procedure ReadPostOnEnter(Reader: TReader);
 
     procedure SetControls(Value: TJvDBGridControls);
@@ -425,7 +425,7 @@ type
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure Scroll(Distance: Integer); override;
     procedure LinkActive(Value: Boolean); override;
-    procedure UpdateScrollBar; override; // the only virtual method that is called from TDBGrid.DataChanged
+    procedure UpdateScrollBar; override;
     procedure LayoutChanged; override;
     procedure TopLeftChanged; override;
     procedure GridInvalidateRow(Row: Longint);
@@ -465,6 +465,8 @@ type
     procedure RowHeightsChanged; override;
     function GetDataLink: TDataLink; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     {$IFDEF SUPPORTS_CLASS_CTORDTORS}
     class destructor Destroy;
@@ -512,7 +514,6 @@ type
     property IndicatorOffset;
     property TitleOffset: Integer read GetTitleOffset;
     property CharList: TCharList read FCharList write FCharList;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
   published
     property AutoAppend: Boolean read FAutoAppend write FAutoAppend default True;
     property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
@@ -551,6 +552,7 @@ type
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property AlternateRowFontColor: TColor read FAlternateRowFontColor write SetAlternateRowFontColor default clNone;
     property PostOnEnterKey: Boolean read FPostOnEnterKey write FPostOnEnterKey default False;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
     property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
@@ -1006,6 +1008,7 @@ var
   Bmp: TBitmap;
 begin
   inherited Create(AOwner);
+  FScrollBars := ssBoth;
 
   // (obones): issue 3026: need to create FChangeLinks at the beginning
   // so that any change can access the object. It seems that on some
@@ -2237,12 +2240,21 @@ end;
 
 procedure TJvDBGrid.UpdateScrollBar;
 begin
-  inherited UpdateScrollBar;
-  if FAlwaysShowEditor and HandleAllocated and ([dgRowSelect, dgEditing] * Options = [dgEditing]) and
-     Focused then
+  if HandleAllocated then
   begin
-    ShowEditor;
-    InvalidateCol(Col);
+    // The grid can only handle ssNone and ssHorizontal. We have to emulate the other modes.
+    if not (FScrollBars in [ssNone, ssHorizontal]) then
+      inherited UpdateScrollBar;
+    if FScrollBars = ssVertical then
+      ShowScrollBar(Handle, SB_HORZ, False);
+
+    // UpdateScrollBar is the only virtual method that is called from TDBGrid.DataChanged
+    if FAlwaysShowEditor and ([dgRowSelect, dgEditing] * Options = [dgEditing]) and
+       Focused then
+    begin
+      ShowEditor;
+      InvalidateCol(Col);
+    end;
   end;
 end;
 
@@ -4650,6 +4662,33 @@ begin
   ShowColumnsDialog;
 end;
 
+procedure TJvDBGrid.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  // The grid can only handle ssNone and ssHorizontal. We have to emulate the other modes.
+  if FScrollBars = ssVertical then
+    Params.Style := Params.Style and not WS_HSCROLL;
+end;
+
+procedure TJvDBGrid.SetScrollBars(Value: TScrollStyle);
+begin
+  if Value <> FScrollBars then
+  begin
+    FScrollBars := Value;
+    // The grid can only handle ssNone and ssHorizontal. We have to emulate the other modes.
+    if Value in [ssVertical, ssBoth] then
+      Value := ssHorizontal;
+
+    if Value = inherited ScrollBars then
+      RecreateWnd
+    else
+      inherited ScrollBars := Value;
+
+    if (FScrollBars = ssVertical) and HandleAllocated then
+      ShowScrollBar(Handle, SB_HORZ, False);
+  end;
+end;
+
 procedure TJvDBGrid.SetSelectColumnsDialogStrings(const Value: TJvSelectDialogColumnStrings);
 begin
   // do nothing
@@ -4702,20 +4741,6 @@ begin
   begin
     FBooleanEditor := Value;
     Invalidate;
-  end;
-end;
-
-procedure TJvDBGrid.SetScrollBars(const Value: TScrollStyle);
-var
-  Style: Integer;
-const
-  ScrollStyles: array [TScrollStyle] of Integer = (0, WS_HSCROLL, WS_VSCROLL, WS_HSCROLL or WS_VSCROLL);
-begin
-  if FScrollBars <> Value then
-  begin
-    FScrollBars := Value;
-    Style := GetWindowLong(Handle, GWL_STYLE);
-    SetWindowLong(Handle, GWL_STYLE, Style or ScrollStyles[Value]);
   end;
 end;
 
