@@ -54,12 +54,10 @@ type
     FOnKillFocus: TJvFocusChangeEvent;
     FWordWrap: Boolean;
     FMultiLine: Boolean;
-    FAlignment: TAlignment;
     FOnAfterPaint: TNotifyEvent;
     FScrollBars: TScrollStyle;
     FCanvas: TControlCanvas;
     procedure SetHotTrack(Value: Boolean);
-    procedure SetAlignment(const Value: TAlignment);
     procedure SetMultiLine(const Value: Boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure SetWordWrap(const Value: Boolean);
@@ -100,8 +98,6 @@ type
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
 
-    // From Globus
-    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssNone;
     property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
@@ -208,7 +204,6 @@ begin
   FLeaving := False;
 
   FScrollBars := ssNone;
-  FAlignment := taLeftJustify;
   FMultiLine := False;
   FWordWrap := False;
 
@@ -370,15 +365,6 @@ begin
   inherited Text := Value;
 end;
 
-procedure TJvCustomMaskEdit.SetAlignment(const Value: TAlignment);
-begin
-  if FAlignment <> Value then
-  begin
-    FAlignment := Value;
-    RecreateWnd;
-  end;
-end;
-
 procedure TJvCustomMaskEdit.SetMultiLine(const Value: Boolean);
 begin
   if FMultiLine <> Value then
@@ -419,15 +405,6 @@ begin
 
   if FMultiline then
     Params.Style := Params.Style or ES_MULTILINE;
-
-  case FAlignment of
-    taLeftJustify:
-      Params.Style := Params.Style or ES_LEFT;
-    taRightJustify:
-      Params.Style := Params.Style or ES_RIGHT;
-    taCenter:
-      Params.Style := Params.Style or ES_CENTER;
-  end;
 
   case FScrollBars of
     ssHorizontal:
