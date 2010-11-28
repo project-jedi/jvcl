@@ -3317,7 +3317,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
-    if (not FListActive) or (not Enabled) or ReadOnly then
+    if not FListActive or not Enabled or ReadOnly then
       State := tcDropDownButtonDisabled
     else
     if FPressed then
