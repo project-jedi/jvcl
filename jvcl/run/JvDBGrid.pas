@@ -642,6 +642,8 @@ type
   TScrollDirection = (sdLeft, sdRight, sdUp, sdDown);
   {$ENDIF ~COMPILER7_UP}
 
+  TCustomGridAccess = class(TCustomGrid);
+
 const
   GridBmpNames: array [TGridPicture] of PChar =
   ('JvDBGridBLOB', 'JvDBGridMEMO', 'JvDBGridPICT', 'JvDBGridOLE', 'JvDBGridOBJECT',
@@ -2295,6 +2297,7 @@ var
   lLastSelected, lNewSelected: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
   lCompare: Integer;
   WasAlwaysShowEditor: Boolean;
+  WasRowResizing: Boolean;
 begin
   if not AcquireFocus then
     Exit;
@@ -2418,7 +2421,20 @@ begin
             // Does not work if there's no indicator column
             //-------------------------------------------------------------------------------
             if (dgRowSelect in Options) and (Cell.Y >= TitleOffset) then
-              inherited MouseDown(Button, Shift, 1, Y)
+            begin
+              // Why do we always have to work around the VCL. If we use the original X the
+              // Grid will scroll back to the first column. But if we don't use the original X
+              // and goRowSizing is enabled, the user can start resizing rows in the wild.
+              WasRowResizing := goRowSizing in TCustomGridAccess(Self).Options;
+              try
+                // Disable goRowSizing without all the code that SetOptions executes.
+                TGridOptions(Pointer(@TCustomGridAccess(Self).Options)^) := TCustomGridAccess(Self).Options - [goRowSizing];
+                inherited MouseDown(Button, Shift, 1, Y);
+              finally
+                if WasRowResizing then
+                  TGridOptions(Pointer(@TCustomGridAccess(Self).Options)^) := TCustomGridAccess(Self).Options + [goRowSizing];
+              end;
+            end
             else
               inherited MouseDown(Button, Shift, X, Y);
             if (Col = LastCell.X) and (Row <> LastCell.Y) then
