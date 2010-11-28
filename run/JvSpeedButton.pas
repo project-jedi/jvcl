@@ -1323,7 +1323,7 @@ begin
     if (FState = rbsExclusive) and not Transparent and
       (not FFlat or (State = rbsInactive)) then
     begin
-      Canvas.Brush.Bitmap := AllocPatternBitmap(clBtnFace, clBtnHighlight);
+      Canvas.Brush.Bitmap := AllocPatternBitmap(Self.Color, clBtnHighlight);
       InflateRect(PaintRect, 1, 1);
       Canvas.FillRect(PaintRect);
       InflateRect(PaintRect, -1, -1);
