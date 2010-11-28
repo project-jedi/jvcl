@@ -268,6 +268,7 @@ type
     FCharList: TCharList;
     FScrollBars: TScrollStyle;
     FWordWrap: Boolean;
+    FWordWrapAllFields: Boolean;
     FChangeLinks: TObjectList;
     FShowMemos: Boolean;
     FOnShowEditor: TJvDBEditShowEvent;
@@ -372,6 +373,7 @@ type
     function EditWithBoolBox(Field: TField): Boolean; {$IFDEF DELPHI9} inline; {$ENDIF DELPHI9}
     function DoKeyPress(var Msg: TWMChar): Boolean;
     procedure SetWordWrap(Value: Boolean);
+    procedure SetWordWrapAllFields(Value: Boolean);
     procedure NotifyLayoutChange(const Kind: TJvDBGridLayoutChangeKind);
 
     // XP Theming
@@ -580,6 +582,8 @@ type
     property TitleRowHeight: Integer read FTitleRowHeight write SetTitleRowHeight;
     { WordWrap: if true, titles, memo and string fields are displayed on several lines }
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
+    { WordWrapAllFields: if true and WordWrap is true, not only memo and string fields are displayed on several lines }
+    property WordWrapAllFields: Boolean read FWordWrapAllFields write SetWordWrapAllFields default False;
     { ShowMemos: if true, memo fields are shown as text }
     property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
     { BooleanEditor: if true, a checkbox is used to edit boolean fields }
@@ -720,6 +724,11 @@ begin
 end;
  {$ENDIF JVCLThemesEnabled}
 {$ENDIF ~COMPILER7_UP}
+
+function IsMemoField(AField: TField): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Result := AField.DataType in [ftMemo {$IFDEF COMPILER10_UP}, ftWideMemo {$ENDIF}];
+end;
 
 //=== { TInternalInplaceEdit } ===============================================
 
@@ -3428,6 +3437,7 @@ var
   Highlight: Boolean;
   Bmp: TBitmap;
   Field, ReadOnlyTestField: TField;
+  MemoText: string;
 begin
   Field := Column.Field;
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
@@ -3470,10 +3480,16 @@ begin
     end
     else
     begin
-      if (Field is TStringField) or (FShowMemos and ((Field is TMemoField)
-        {$IFDEF COMPILER10_UP} or (Field is TWideMemoField) {$ENDIF})) then
+      if WordWrapAllFields or (Field is TStringField) or (FShowMemos and IsMemoField(Field)) then
       begin
-        WriteCellText(Rect, 2, 2, Field.DisplayText, Column.Alignment,
+        MemoText := Field.DisplayText;
+        if FShowMemos and IsMemoField(Field) then
+        begin
+          // The MemoField's default DisplayText is '(Memo)' but we want the content
+          if not Assigned(Field.OnGetText) then
+            MemoText := Field.AsString;
+        end;
+        WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
           UseRightToLeftAlignmentForField(Field, Column.Alignment), False);
       end
       else
@@ -4297,22 +4313,17 @@ begin
           DataLink.ActiveRecord := ARow;
           if Field <> nil then
           begin
-            if Assigned(Field.OnGetText) then
-              HintStr := Field.DisplayText
+            if WordWrap and
+               (WordWrapAllFields or (Field is TStringField) or (FShowMemos and IsMemoField(Field))) then
+              CalcOptions := CalcOptions or DT_WORDBREAK;
+
+            HintStr := Field.DisplayText;
+            // MemoField's DisplayText is '(Memo)'
+            if not Assigned(Field.OnGetText) and IsMemoField(Field) then
+              HintStr := Field.AsString
             else
-            begin
-              if (Field is TStringField) or (Field is TMemoField) then
-              begin
-                HintStr := Field.DisplayText;
-                if WordWrap then
-                  CalcOptions := CalcOptions or DT_WORDBREAK;
-              end
-              else
-              if (Field is TBlobField) or EditWithBoolBox(Field) then
-                HintStr := ''
-              else
-                HintStr := Field.DisplayText;
-            end;
+            if (Field is TBlobField) or EditWithBoolBox(Field) then
+              HintStr := '';
           end;
         end;
 
@@ -4336,9 +4347,7 @@ begin
     end;
 
     if not AtCursorPosition and HintWindowClass.ClassNameIs('THintWindow') then
-    begin
       HintPos := ClientToScreen(CursorRect.TopLeft);
-    end;
   end;
   inherited;
 end;
@@ -4347,7 +4356,7 @@ procedure TJvDBGrid.WMVScroll(var Msg: TWMVScroll);
 var
   ALeftCol: Integer;
 begin
-  if (dgRowSelect in Options) then
+  if dgRowSelect in Options then
   begin
     ALeftCol := LeftCol;
     inherited;
@@ -4359,10 +4368,20 @@ end;
 
 procedure TJvDBGrid.SetWordWrap(Value: Boolean);
 begin
-  if FWordWrap <> Value then
+  if Value <> FWordWrap then
   begin
     FWordWrap := Value;
     Invalidate;
+  end;
+end;
+
+procedure TJvDBGrid.SetWordWrapAllFields(Value: Boolean);
+begin
+  if Value <> FWordWrapAllFields then
+  begin
+    FWordWrapAllFields := Value;
+    if WordWrap then
+      Invalidate;
   end;
 end;
 
