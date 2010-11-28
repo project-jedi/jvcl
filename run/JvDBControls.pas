@@ -60,7 +60,6 @@ type
     {Standard data-aware crap}
     FDataLink: TFieldDataLink;
     FCanvas: TControlCanvas;
-    FAlignment: TAlignment;
     FFocused: Boolean;
 
     {new: Specific to this component}
@@ -77,13 +76,11 @@ type
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
-    function GetTextMargins: TPoint;
     procedure ResetMaxLength;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure SetFocused(Value: Boolean);
     procedure UpdateData(Sender: TObject);
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     function GetReadOnly: Boolean; reintroduce;
     procedure SetReadOnly(Value: Boolean); reintroduce;
@@ -824,7 +821,7 @@ begin
   if FFocused <> Value then
   begin
     FFocused := Value;
-    if (FAlignment <> taLeftJustify) and not IsMasked then
+    if (Alignment <> taLeftJustify) and not IsMasked then
       Invalidate;
     FDataLink.Reset;
   end;
@@ -908,10 +905,10 @@ procedure TJvDBMaskEdit.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
   begin
-    if FAlignment <> FDataLink.Field.Alignment then
+    if Alignment <> FDataLink.Field.Alignment then
     begin
       EditText := '';  {forces update}
-      FAlignment := FDataLink.Field.Alignment;
+      Alignment := FDataLink.Field.Alignment;
     end;
     if EditMask = '' then
     begin
@@ -932,7 +929,7 @@ begin
   end
   else
   begin
-    FAlignment := taLeftJustify;
+    Alignment := taLeftJustify;
     //EditMask := '';
     if csDesigning in ComponentState then
       EditText := Name
@@ -1017,7 +1014,7 @@ begin
     end;
   try
    if Accept then
-      FDataLink.UpdateRecord;
+     FDataLink.UpdateRecord;
   except
     SelectAll;
     SetFocus;
@@ -1039,126 +1036,9 @@ begin
         DataSource.DataSet.Post;
 end;
 
-procedure TJvDBMaskEdit.WMPaint(var Msg: TWMPaint);
-(*const
-  AlignmentValues: array [Boolean, TAlignment] of TAlignment = (
-    (taLeftJustify, taRightJustify, taCenter),
-    (taRightJustify, taLeftJustify, taCenter)
-  ); *)
-const
-  AlignStyle: array [Boolean, TAlignment] of DWORD =
-   ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
-var
-  Left: Integer;
-  Margins: TPoint;
-  R: TRect;
-  DC: HDC;
-  PS: TPaintStruct;
-  S: string;
-  AAlignment: TAlignment;
-  ExStyle: DWORD;
-begin
-  if csDestroying in ComponentState then
-    Exit;
-  AAlignment := FAlignment;
-  if UseRightToLeftAlignment then
-    ChangeBiDiModeAlignment(AAlignment);
-  if ((AAlignment = taLeftJustify) or FFocused) and
-    not (csPaintCopy in ControlState) then
-  begin
-    if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
-    begin { This keeps the right aligned text, right aligned }
-      ExStyle := DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) and (not WS_EX_RIGHT) and
-        (not WS_EX_RTLREADING) and (not WS_EX_LEFTSCROLLBAR);
-      if UseRightToLeftReading then
-        ExStyle := ExStyle or WS_EX_RTLREADING;
-      if UseRightToLeftScrollbar then
-        ExStyle := ExStyle or WS_EX_LEFTSCROLLBAR;
-      ExStyle := ExStyle or
-        AlignStyle[UseRightToLeftAlignment, AAlignment];
-      if DWORD(GetWindowLong(Handle, GWL_EXSTYLE)) <> ExStyle then
-        SetWindowLong(Handle, GWL_EXSTYLE, ExStyle);
-    end;
-    // MAIN THING FOR MOST PEOPLE IS WE JUST CALL OUR BASE CLASS METHOD HERE:
-    inherited; // This is where the main Non Control-Grid Paint Code lives.
-    Exit;
-  end;
-
-  { Handler code here is for
-    Data Aware Controls drawing themselves into their own internal
-    canvas, for purpose of being displayed in a DBControl Grid:
-  }
-  DC := Msg.DC;
-  if DC = 0 then
-    DC := BeginPaint(Handle, PS);
-  FCanvas.Handle := DC;
-  try
-    FCanvas.Font := Font;
-    with FCanvas do
-    begin
-      R := ClientRect;
-      if not Ctl3D and (BorderStyle = bsSingle) then
-      begin
-        Brush.Color := clWindowFrame;
-        FrameRect(R);
-        InflateRect(R, -1, -1);
-      end;
-      Brush.Color := Color;
-      if not Enabled then
-        Font.Color := clGrayText;
-      if (csPaintCopy in ControlState) and (FDataLink.Field <> nil) then
-      begin
-        S := FDataLink.Field.DisplayText;
-        case CharCase of
-          ecUpperCase:
-            S := AnsiUpperCase(S);
-          ecLowerCase:
-            S := AnsiLowerCase(S);
-        end;
-      end
-      else
-        S := EditText;
-      if PasswordChar <> #0 then
-        FillChar(S[1], Length(S), PasswordChar);
-      Margins := GetTextMargins;
-      case AAlignment of
-        taLeftJustify:
-          Left := Margins.X;
-        taRightJustify:
-          Left := ClientWidth - TextWidth(S) - Margins.X - 1;
-      else
-        Left := (ClientWidth - TextWidth(S)) div 2;
-      end;
-      if SysLocale.MiddleEast then
-        UpdateTextFlags;
-      TextRect(R, Left, Margins.Y, S);
-    end;
-  finally
-    FCanvas.Handle := 0;
-    if Msg.DC = 0 then
-      EndPaint(Handle, PS);
-  end;
-end;
-
 procedure TJvDBMaskEdit.CMGetDataLink(var Msg: TMessage);
 begin
   Msg.Result := Integer(FDataLink);
-end;
-
-function TJvDBMaskEdit.GetTextMargins: TPoint;
-var
-  I: Integer;
-begin
-  if BorderStyle = bsNone then
-    I := 0
-  else
-  if Ctl3D then
-    I := 1
-  else
-    I := 2;
-  Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
-  Result.Y := I;
 end;
 
 function TJvDBMaskEdit.ExecuteAction(Action: TBasicAction): Boolean;
