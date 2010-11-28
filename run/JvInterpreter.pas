@@ -5151,7 +5151,7 @@ var
     while True do
     begin
       case TTyp of
-        ttInteger, ttDouble, ttString, ttFalse, ttTrue, ttIdentifier:
+        ttInteger, ttDouble, ttFalse, ttTrue, ttIdentifier:
           begin
             Result := Token;
             if TTyp = ttIdentifier then
@@ -5163,6 +5163,18 @@ var
             if TTyp in [ttInteger, ttDouble, ttString,
               ttFalse, ttTrue, ttIdentifier] then
               JvInterpreterError(ieMissingOperator, PosEnd {!!});
+            if Prior(TTyp) < Prior(OpTyp) then
+              Exit;
+          end;
+        ttString:
+          begin
+            Result := '';
+            repeat
+              Result := Result + Token;
+              NextToken;
+              if TTyp in [ttInteger, ttDouble, ttFalse, ttTrue, ttIdentifier] then
+                JvInterpreterError(ieMissingOperator, PosEnd {!!});
+            until TTyp <> ttString;
             if Prior(TTyp) < Prior(OpTyp) then
               Exit;
           end;
