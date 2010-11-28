@@ -39,7 +39,7 @@ uses
   JvDockTree;
 
 type
-  TJvAlphaBlendedForm = class(TJvForm)
+  TJvAlphaBlendedForm = class(TForm)
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   end;
@@ -2326,6 +2326,7 @@ var
     begin
       WasVisible := Control.Visible;
       try
+        DragObject.AlphaBlendedForm.Hide;
         Control.Dock(nil, DragObject.DockRect);
         if (Control.Left <> DragObject.DockRect.Left) or (Control.Top <> DragObject.DockRect.Top) then
         begin
