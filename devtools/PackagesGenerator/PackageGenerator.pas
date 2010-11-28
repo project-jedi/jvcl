@@ -92,6 +92,9 @@ implementation
 
 uses
   Windows, SysUtils, FileUtils,
+  {$IFDEF UNICODE}
+  Character, // needed for JclStrings inlined functions
+  {$ENDIF UNICODE}
   JclStrings, JclFileUtils, JclDateTime, JclSysUtils,
   GenerateUtils;
 
