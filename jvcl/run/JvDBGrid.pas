@@ -693,40 +693,6 @@ begin
     AlignFlags[Alignment] or RTL[RightToLeft] or Flags);
 end;
 
-{$IFNDEF COMPILER7_UP}
- {$IFDEF JVCLThemesEnabled}
-procedure DrawArrow(ACanvas: TCanvas; Direction: TScrollDirection;
-  Location: TPoint; Size: Integer);
-const
-  ArrowPts: array[TScrollDirection, 0..2] of TPoint =
-    (((X:1; Y:0), (X:0; Y:1), (X:1; Y:2)),
-     ((X:0; Y:0), (X:1; Y:1), (X:0; Y:2)),
-     ((X:0; Y:1), (X:1; Y:0), (X:2; Y:1)),
-     ((X:0; Y:0), (X:1; Y:1), (X:2; Y:0)));
-var
-  I: Integer;
-  Pts: array[0..2] of TPoint;
-  OldWidth: Integer;
-  OldColor: TColor;
-begin
-  if ACanvas = nil then exit;
-  OldColor := ACanvas.Brush.Color;
-  ACanvas.Brush.Color := ACanvas.Pen.Color;
-  Move(ArrowPts[Direction], Pts, SizeOf(Pts));
-  for I := 0 to 2 do
-    Pts[I] := Point(Pts[I].x * Size + Location.X, Pts[I].y * Size + Location.Y);
-  with ACanvas do
-  begin
-    OldWidth := Pen.Width;
-    Pen.Width := 1;
-    Polygon(Pts);
-    Pen.Width := OldWidth;
-    Brush.Color := OldColor;
-  end;
-end;
- {$ENDIF JVCLThemesEnabled}
-{$ENDIF ~COMPILER7_UP}
-
 function IsMemoField(AField: TField): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := AField.DataType in [ftMemo {$IFDEF COMPILER10_UP}, ftWideMemo {$ENDIF}];
@@ -2992,7 +2958,8 @@ var
   Details: TThemedElementDetails;
   lCaptionRect: TRect;
   lCellRect: TRect;
-  PenRecall: TPenRecall;
+  Bmp: TBitmap;
+  DC: HDC;
 {$ENDIF JVCLThemesEnabled}
 {$ENDIF ~COMPILER14_UP}
 begin
@@ -3044,15 +3011,27 @@ begin
       // draw the indicator
       if (Datalink.Active) and (ARow - TitleOffset = Datalink.ActiveRecord) then
       begin
-        PenRecall := TPenRecall.Create(Canvas.Pen);
+        // Unfortunatelly the TDBGrid.FIndicators: TImageList is a private field so we have to
+        // call the original painter for the indicator and draw it into a transparent bitmap
+        // without the 3D border.
+        Bmp := TBitmap.Create;
         try
-          Canvas.Pen.Color := clWhite;
-          { BiDiMode <> bidiLeftToRight is handled by the CanvasOrientation }
-          DrawArrow(Canvas, sdRight, Point(lCellRect.Left + 4, lCellRect.Top + 3), 5);
-          Canvas.Pen.Color := clBlack;
-          DrawArrow(Canvas, sdRight, Point(lCellRect.Left + 3, lCellRect.Top + 3), 5);
+          Bmp.Canvas.Brush.Color := FixedColor;
+          Bmp.Width := lCellRect.Right - lCellRect.Left;
+          Bmp.Height := lCellRect.Bottom - lCellRect.Top;
+          DC := Canvas.Handle;
+          try
+            Canvas.Handle := Bmp.Canvas.Handle;
+            IntersectClipRect(Canvas.Handle, 2, 2, Bmp.Width - 2, Bmp.Height - 2);
+            CallDrawCellEvent(ACol, ARow, Rect(0, 0, Bmp.Width - 1, Bmp.Height - 1), [gdFixed]);
+          finally
+            Canvas.Handle := DC;
+          end;
+          Bmp.TransparentColor := FixedColor;
+          Bmp.Transparent := True;
+          Canvas.Draw(lCellRect.Left, lCellRect.Top, Bmp);
         finally
-          PenRecall.Free;
+          Bmp.Free;
         end;
       end;
     end
