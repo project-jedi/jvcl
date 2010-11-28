@@ -100,7 +100,6 @@ type
     property OnDragOver;
     property OnEndDock;
     property OnEndDrag;
-    property OnMouseActivate;
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
