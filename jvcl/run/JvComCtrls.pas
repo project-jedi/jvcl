@@ -2512,6 +2512,10 @@ begin
         TJvTreeNode(Items[I]).FChecked := FRecreateCheckedState[I];
       FRecreateCheckedState := nil;
     end;
+    // Mantis #4715. We must set the StateImages image list after changing TVS_CHECKBOXES
+    // because changing TVS_CHECKBOXES disables the TVSIL_STATE imagelist.
+    if (StateImages <> nil) and StateImages.HandleAllocated then
+      TreeView_SetImageList(Handle, StateImages.Handle, TVSIL_STATE);
   end;
 end;
 
