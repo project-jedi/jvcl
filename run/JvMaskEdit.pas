@@ -114,6 +114,7 @@ type
     property BevelOuter;
     property Alignment;
     property Caret;
+    property CheckOnExit;
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
