@@ -4303,12 +4303,12 @@ begin
     Self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
 
     //-------------------------------------------------------------------------
-    // ARow = -1 if 'outside' a valid cell;
+    // ARow <= -1 if 'outside' a valid cell;
     // Adjust CursorRect
     //-------------------------------------------------------------------------
     if FShowTitleHint or FShowCellHint then
     begin
-      if (ARow = -1) or ((ARow >= 1) and not FShowCellHint) then
+      if (ARow <= -1) or ((ARow >= 1) and not FShowCellHint) then
       begin
         if FShowCellHint then
         begin
@@ -4330,7 +4330,7 @@ begin
     if dgTitles in Options then
       Dec(ARow, TitleOffset);
 
-    if FShowTitleHint and (ACol >= 0) and (ARow = -1) then
+    if FShowTitleHint and (ACol >= 0) and (ARow <= -1) then
     begin
       AtCursorPosition := False;
       HintStr := Columns[ACol].FieldName;
@@ -4341,14 +4341,14 @@ begin
     end;
 
     if FShowCellHint and (ACol >= 0) and DataLink.Active and
-      ((ARow >= 0) or (not FShowTitleHint)) then
+      ((ARow >= 0) or not FShowTitleHint) then
     begin
       AtCursorPosition := False;
       HintStr := Hint;
       SaveRow := DataLink.ActiveRecord;
       try
         CalcOptions := DT_CALCRECT or DT_LEFT or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly;
-        if ARow = -1 then
+        if ARow <= -1 then // can be less than -1 if the column header is multiline (AdtField)
         begin
           Canvas.Font.Assign(Columns[ACol].Title.Font);
           HintStr := Columns[ACol].Title.Caption;
