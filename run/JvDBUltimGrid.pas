@@ -679,10 +679,10 @@ begin
   begin
     FValueToSearch := ValueToSearch;
     Result := PrivateSearch(ResultCol, ResultField, CaseSensitive, WholeFieldOnly, False);
-    if Result and Focus then
+    if Result then
     begin
       Self.Col := ResultCol;
-      if Self.Visible and Self.CanFocus then
+      if Focus and Self.Visible and Self.CanFocus then
         Self.SetFocus;
     end
     else
@@ -697,10 +697,10 @@ begin
   if (SearchFields.Count > 0) and (FValueToSearch <> Null) and (FValueToSearch <> '') then
   begin
     Result := PrivateSearch(ResultCol, ResultField, CaseSensitive, WholeFieldOnly, True);
-    if Result and Focus then
+    if Result then
     begin
       Self.Col := ResultCol;
-      if Self.Visible then
+      if Focus and Self.Visible and Self.CanFocus then
         Self.SetFocus;
     end
     else
