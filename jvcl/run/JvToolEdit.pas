@@ -230,6 +230,8 @@ type
     FTextChanged: Boolean;
     FInCMExit: Integer;
     FCheckOnExit: Boolean;
+    FOnPopupChange: TNotifyEvent;
+    FOnPopupValueAccepted: TNotifyEvent;
     procedure SetAutoCompleteItems(Strings: TStrings);
     procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
     procedure SetAlignment(Value: TAlignment);
@@ -389,6 +391,11 @@ type
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
     property OnPopupShown: TNotifyEvent read FOnPopupShown write FOnPopupShown;
     property OnPopupHidden: TNotifyEvent read FOnPopupHidden write FOnPopupHidden;
+      // OnPopupChange is triggered when the edit text is changed while the popup is visible.
+    property OnPopupChange: TNotifyEvent read FOnPopupChange write FOnPopupChange;
+      // OnPopupValueAccepted is triggered when the value from the popup is accepted and written to
+      // the edit's text property. It is not triggered if the new value is the same as the old value.
+    property OnPopupValueAccepted: TNotifyEvent read FOnPopupValueAccepted write FOnPopupValueAccepted;
 
     property DataConnector: TJvCustomComboEditDataConnector read FDataConnector write SetDataConnector;
   public
@@ -488,6 +495,10 @@ type
     property OnStartDrag;
 
     property DataConnector;
+    property OnPopupShown;
+    property OnPopupHidden;
+    property OnPopupChange;
+    property OnPopupValueAccepted;
   end;
 
   { TJvFileDirEdit }
@@ -1697,6 +1708,8 @@ begin
     UpdatePopupVisible;
     //DoChange; (ahuser) "Text := Value" triggers Change;
   end;
+  if Assigned(FOnPopupValueAccepted) then
+    FOnPopupValueAccepted(Self);
 end;
 
 procedure TJvCustomComboEdit.ActionChange(Sender: TObject;
@@ -2376,6 +2389,8 @@ end;
 
 procedure TJvCustomComboEdit.PopupChange;
 begin
+  if Assigned(FOnPopupChange) then
+    FOnPopupChange(Self);
 end;
 
 procedure TJvCustomComboEdit.PopupCloseUp(Sender: TObject; Accept: Boolean);
@@ -3358,6 +3373,8 @@ begin
   UpdatePopupVisible;
   if Modified then
     inherited Change;
+  if Assigned(FOnPopupValueAccepted) then
+    FOnPopupValueAccepted(Self);
 end;
 
 procedure TJvCustomDateEdit.ApplyDate(Value: TDateTime);

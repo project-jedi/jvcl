@@ -331,6 +331,10 @@ type
     property OnStartDrag;
 
     property OnGetValidDateString;
+    property OnPopupShown;
+    property OnPopupHidden;
+    property OnPopupChange;
+    property OnPopupValueAccepted;
   end;
 
 {$IFDEF UNITVERSIONING}
