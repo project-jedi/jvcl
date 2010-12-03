@@ -3529,7 +3529,8 @@ begin
     end
     else
     begin
-      if WordWrapAllFields or (Field is TStringField) or (FShowMemos and IsMemoField(Field)) then
+      if (Field <> nil) and
+         (WordWrapAllFields or (Field is TStringField) or (FShowMemos and IsMemoField(Field))) then
       begin
         MemoText := Field.DisplayText;
         if FShowMemos and IsMemoField(Field) then
