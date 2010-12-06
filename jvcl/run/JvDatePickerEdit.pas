@@ -153,7 +153,7 @@ type
     procedure SetCalAppearance(const AValue: TJvMonthCalAppearance);
     function GetDate: TDateTime;
     procedure SetDate(const AValue: TDateTime);
-    procedure SetDateFormat(const AValue: string);
+    procedure SetDateFormat(AValue: string);
     function GetDropped: Boolean;
     procedure SetNoDateText(const AValue: string);
     procedure SetNoDateValue(const AValue: TDateTime);
@@ -1138,19 +1138,26 @@ begin
   UpdateDisplay;
 end;
 
-procedure TJvCustomDatePickerEdit.SetDateFormat(const AValue: string);
+procedure TJvCustomDatePickerEdit.SetDateFormat(AValue: string);
 begin
-  FDateFormat := AValue;
-  if FDateFormat = '' then
-    FDateFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
-  DateSeparator := DetermineDateSeparator(FDateFormat); //calls ResetDateFormat implicitly
-  StoreDateFormat := FDateFormat <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+  if AValue = '' then
+    AValue := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+  if AValue <> FDateFormat then
+  begin
+    FDateFormat := AValue;
+    FDateSeparator := DetermineDateSeparator(FDateFormat);
+    StoreDateFormat := FDateFormat <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+    ResetDateFormat;
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.SetDateSeparator(const AValue: Char);
 begin
-  FDateSeparator := AValue;
-  ResetDateFormat;
+  if AValue <> FDateSeparator then
+  begin
+    FDateSeparator := AValue;
+    ResetDateFormat;
+  end;
 end;
 
 { The only purpose of the following overrides is to overcome a known issue in
