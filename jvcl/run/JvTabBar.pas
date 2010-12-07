@@ -2193,7 +2193,7 @@ begin
       else
         Brush.Color := CloseColor;
 
-      CloseR := GetCloseRect(Canvas, Tab, Tab.DisplayRect);
+      CloseR := GetCloseRect(Canvas, Tab, R);
       Pen.Color := CloseRectColor;
       if not Tab.Enabled then
         Pen.Color := CloseRectColorDisabled;
