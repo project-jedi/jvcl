@@ -505,7 +505,7 @@ implementation
 
 uses
   Math, DateUtils,
-  JvJCLUtils, JvJVCLUtils, JvThemes;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JclSysUtils;
 
 {$R JvTimeLine.res}
 
@@ -1700,9 +1700,9 @@ begin
   if csDestroying in ComponentState then
     Exit;
   if FMonthWidth > 120 then
-    AName := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames[Month]
+    AName := JclFormatSettings.LongMonthNames[Month]
   else
-    AName := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortMonthNames[Month];
+    AName := JclFormatSettings.ShortMonthNames[Month];
 
   with ACanvas do
   begin

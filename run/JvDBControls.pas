@@ -709,7 +709,7 @@ implementation
 uses
   FMTBcd,
   Variants, SysUtils, Math, Forms,
-  JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources, JclSysUtils;
 
 {$R JvDBControls.res}
 
@@ -1404,7 +1404,7 @@ procedure TJvDBDateEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-    not CharInSet(Key, DigitChars) and (Key <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) then
+    not CharInSet(Key, DigitChars) and (Key <> JclFormatSettings.DateSeparator) then
   begin
     DoBeepOnError;
     Key := #0;
@@ -1610,7 +1610,7 @@ begin
     if FDataLink.Field.IsNull then
     begin
       S := GetDateFormat;
-      S := ReplaceStr(ReplaceStr(ReplaceStr(ReplaceStr(S, '/', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator),
+      S := ReplaceStr(ReplaceStr(ReplaceStr(ReplaceStr(S, '/', JclFormatSettings.DateSeparator),
         'Y', ' '), 'M', ' '), 'D', ' ');
     end
     else

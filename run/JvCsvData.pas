@@ -947,7 +947,7 @@ implementation
 
 uses
   Variants, Controls, Forms,
-  JvJVCLUtils, JvCsvParse, JvConsts, JvResources, JvTypes;
+  JvJVCLUtils, JvCsvParse, JvConsts, JvResources, JvTypes, JclSysUtils;
 
 const
   // These characters cannot be used for separator for various reasons:
@@ -1429,7 +1429,7 @@ begin
   inherited;
   FFileDirty := False;
   if FUseSystemDecimalSeparator then
-    FData.DecimalSeparator := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
+    FData.DecimalSeparator := JclFormatSettings.DecimalSeparator;
 end;
 
 procedure TJvCustomCsvDataSet.SetAllUserData(Data: Pointer);

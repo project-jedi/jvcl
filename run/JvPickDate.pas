@@ -153,7 +153,7 @@ implementation
 uses
   Math, Consts, MultiMon,
   JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton,
-  JvComponent, JvJVCLUtils;
+  JvComponent, JvJVCLUtils, JclSysUtils;
 
 procedure FontSetDefault(AFont: TFont);
 
@@ -370,7 +370,7 @@ var
   DayNum: Integer;
 begin
   if ARow = 0 then { day names at tops of columns }
-    Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]
+    Result := JclFormatSettings.ShortDayNames[(Ord(StartOfWeek) + ACol) mod 7 + 1]
   else
   begin
     DayNum := FMonthOffset + ACol + (ARow - 1) * 7;
@@ -1217,7 +1217,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     try
-      if (Trim(ReplaceStr(VarToStr(Value), {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator, '')) = '') or
+      if (Trim(ReplaceStr(VarToStr(Value), JclFormatSettings.DateSeparator, '')) = '') or
         VarIsNull(Value) or VarIsEmpty(Value) then
         FCalendar.CalendarDate := VarToDateTime(SysUtils.Date)
       else
@@ -1703,7 +1703,7 @@ begin
   if StrDate <> '' then
   begin
     try
-      DateValue := StrToDateFmt({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat, StrDate);
+      DateValue := StrToDateFmt(JclFormatSettings.ShortDateFormat, StrDate);
     except
       DateValue := Date;
     end;
@@ -1713,7 +1713,7 @@ begin
   Result := SelectDate(Sender, DateValue, DlgCaption, AStartOfWeek, AWeekends,
     AWeekendColor, BtnHints, MinDate, MaxDate); // Polaris
   if Result then
-    StrDate := FormatDateTime({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat, DateValue);
+    StrDate := FormatDateTime(JclFormatSettings.ShortDateFormat, DateValue);
 end;
 
 {$IFDEF UNITVERSIONING}

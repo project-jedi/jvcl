@@ -208,7 +208,7 @@ uses
   SysConst,
   {$ENDIF COMPILER7_UP}
   SysUtils, Forms, ExtCtrls, Consts,
-  JvThemes;
+  JvThemes, JclSysUtils;
 
 var
   Registered: Boolean = False;
@@ -277,8 +277,8 @@ procedure InvalidTime(Hour, Min, Sec: Word);
 var
   sTime: string;
 begin
-  sTime := IntToStr(Hour) + {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeSeparator + IntToStr(Min) +
-    {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeSeparator + IntToStr(Sec);
+  sTime := IntToStr(Hour) + JclFormatSettings.TimeSeparator + IntToStr(Min) +
+    JclFormatSettings.TimeSeparator + IntToStr(Sec);
   raise EConvertError.CreateResFmt(@SInvalidTime, [sTime]);
 end;
 
@@ -399,7 +399,7 @@ begin
   FShowSeconds := True;
   FLeadingZero := True;
   FShowDate := False;
-  FDateFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+  FDateFormat := JclFormatSettings.ShortDateFormat;
   GetTime(FDisplayTime);
   if FDisplayTime.Hour >= 12 then
     Dec(FDisplayTime.Hour, 12);
@@ -562,10 +562,10 @@ begin
       TimeStr := TimeStr + '888';
     if FTwelveHour then
     begin
-      if Canvas.TextWidth({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString) > Canvas.TextWidth({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString) then
-        TimeStr := TimeStr + ' ' + {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString
+      if Canvas.TextWidth(JclFormatSettings.TimeAMString) > Canvas.TextWidth(JclFormatSettings.TimePMString) then
+        TimeStr := TimeStr + ' ' + JclFormatSettings.TimeAMString
       else
-        TimeStr := TimeStr + ' ' + {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString;
+        TimeStr := TimeStr + ' ' + JclFormatSettings.TimePMString;
     end;
     SetNewFontSize(Canvas, TimeStr, H, W);
     Font := Canvas.Font;

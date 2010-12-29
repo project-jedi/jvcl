@@ -282,7 +282,7 @@ implementation
 
 uses
   JvConsts, JvResources,
-  JvYearGridEditForm;
+  JvYearGridEditForm, JclSysUtils;
 
 const
   TodayFontColor = clWhite;
@@ -426,7 +426,7 @@ begin
         ADate := EncodeDate(Year, Month, Day);
         DS := FormatDateTime('d-mmm-yyyy', ADate);
         W := DayOfWeek(ADate);
-        DS := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDayNames[W] + ' ' + DS;
+        DS := JclFormatSettings.ShortDayNames[W] + ' ' + DS;
         AList.Append('<tr>');
         AList.Append('<td width=20%>' + DS + '</td>');
         Infs := FYearData[ACol, ARow].InfoText;
@@ -578,7 +578,7 @@ begin
         Inc(DayOfWeekIndex, Integer(FFirstDayOfWeek)+1);
         If DayOfWeekIndex > 7 then
           DayOfWeekIndex := DayOfWeekIndex - 7;
-        D := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDayNames[DayOfWeekIndex][1];
+        D := JclFormatSettings.ShortDayNames[DayOfWeekIndex][1];
       end;
 
       // By default, there is no day in the current cell
@@ -589,7 +589,7 @@ begin
       if (MonthIndex = 0) and (DayIndex > 0) then
         S := D;
       if (MonthIndex <> 0) and (DayIndex = 0) then
-        S := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongMonthNames[MonthIndex];
+        S := JclFormatSettings.LongMonthNames[MonthIndex];
       if (MonthIndex <> 0) and (DayIndex > 0) then
       begin
         if (DayIndex >= StartDays[MonthIndex]) and (DayIndex < StartDays[MonthIndex] + DaysInMonth[MonthIndex]) then

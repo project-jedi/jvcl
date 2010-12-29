@@ -495,7 +495,7 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvToolEdit, JclStrings;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, JvToolEdit, JclStrings, JclSysUtils;
 
 {$R JvSpin.Res}
 
@@ -636,8 +636,8 @@ end;
 
 function RemoveThousands(const AValue: string): string;
 begin
-  if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator then
-    Result := DelChars(AValue, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator)
+  if JclFormatSettings.DecimalSeparator <> JclFormatSettings.ThousandSeparator then
+    Result := DelChars(AValue, JclFormatSettings.ThousandSeparator)
   else
     Result := AValue;
 end;
@@ -716,8 +716,8 @@ begin
     // (outchy) only shift SelStart by the difference in number of ThousandSeparator BEFORE SelStart
     // do not shift if SelStart was clamped (new text length is shorter than OldSelText)
     if Thousands and (SelStart = OldSelStart) then
-      SelStart := SelStart + StrCharCount(Copy(Text, 1, SelStart), {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator) -
-        StrCharCount(Copy(OldText, 1, SelStart), {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator);
+      SelStart := SelStart + StrCharCount(Copy(Text, 1, SelStart), JclFormatSettings.ThousandSeparator) -
+        StrCharCount(Copy(OldText, 1, SelStart), JclFormatSettings.ThousandSeparator);
 
     inherited Change;
     FOldValue := Value;
@@ -1042,12 +1042,12 @@ begin
   ValidChars := DigitChars + ['+', '-'];
   if ValueType = vtFloat then
   begin
-    if Pos({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, Text) = 0 then
+    if Pos(JclFormatSettings.DecimalSeparator, Text) = 0 then
     begin
-      if not Thousands or ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator <> '.') then
-        ValidChars := ValidChars + [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '.']
+      if not Thousands or (JclFormatSettings.ThousandSeparator <> '.') then
+        ValidChars := ValidChars + [JclFormatSettings.DecimalSeparator, '.']
       else
-        ValidChars := ValidChars + [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator];
+        ValidChars := ValidChars + [JclFormatSettings.DecimalSeparator];
     end;
     if Pos('E', AnsiUpperCase(Text)) = 0 then
       ValidChars := ValidChars + ['e', 'E'];
@@ -1082,9 +1082,9 @@ begin
   end;
   // do not delete the decimal separator while typing
   // all decimal digits were moved to the integer part and new decimals were added at the end
-  if (Key = VK_DELETE) and (SelStart < Length(Text)) and (Text[SelStart + 1] = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator) then
+  if (Key = VK_DELETE) and (SelStart < Length(Text)) and (Text[SelStart + 1] = JclFormatSettings.DecimalSeparator) then
     Key := VK_RIGHT;
-  if (Key = VK_BACK) and (SelStart > 0) and (Text[SelStart] = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator) then
+  if (Key = VK_BACK) and (SelStart > 0) and (Text[SelStart] = JclFormatSettings.DecimalSeparator) then
     Key := VK_LEFT;
 end;
 
@@ -1093,13 +1093,13 @@ var
   I: Integer;
 begin
   // (outchy) moved at the beginning, hitting '.' now behaves like hitting the decimal separator
-  if (Key = '.') and (not Thousands or ({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator <> '.')) then
-    Key := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
+  if (Key = '.') and (not Thousands or (JclFormatSettings.ThousandSeparator <> '.')) then
+    Key := JclFormatSettings.DecimalSeparator;
 
-  if (Key = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator) and (ValueType = vtFloat) then
+  if (Key = JclFormatSettings.DecimalSeparator) and (ValueType = vtFloat) then
   begin
     { If the key is the decimal separator move the caret behind it. }
-    I := Pos({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, Text);
+    I := Pos(JclFormatSettings.DecimalSeparator, Text);
     if I <> 0 then
     begin
       Key := #0;
