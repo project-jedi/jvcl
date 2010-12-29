@@ -28,7 +28,7 @@ unit JvParameterListMainForm;
 
 interface
 
-{$DEFINE INCLUDE_DEVEXP_CX}
+{.$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   JclUnitVersioning,
@@ -159,8 +159,11 @@ type
   private
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
     function DefaultStorage: TJvCustomAppStorage;
+  {$IFDEF INCLUDE_DEVEXP_CX}
     procedure SetDevExpressDynControlEngineProperties(ParameterList:
         TJvParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
+
   public
     { Public-Deklarationen }
     procedure ShowTest1(const aDynControlEngine: tJvDynControlEngine);
@@ -1290,18 +1293,16 @@ begin
     mtConfirmation, [mbYes, mbNo], 0);
 end;
 
+{$IFDEF INCLUDE_DEVEXP_CX}
 procedure TJvParameterListDemoMainFrm.SetDevExpressDynControlEngineProperties(
     ParameterList: TJvParameterList);
 begin
-  {$IFDEF INCLUDE_DEVEXP_CX}
   if ParameterList.DynControlEngine is tJvDynControlEngineDevExpCx then
     with tJvDynControlEngineDevExpCx(ParameterList.DynControlEngine) do
     begin
       case DevExpCxLookAndFeelRadioGroup.ItemIndex of
-        1:
-          cxProperties.LookAndFeel.Kind := lfFlat;
-        2:
-          cxProperties.LookAndFeel.Kind := lfUltraFlat;
+        1: cxProperties.LookAndFeel.Kind := lfFlat;
+        2: cxProperties.LookAndFeel.Kind := lfUltraFlat;
       else
         cxProperties.LookAndFeel.Kind := lfStandard;
       end;
@@ -1314,8 +1315,8 @@ begin
           CxProperties.StyleController.Style.BorderStyle := ebsNone;
       end;
     end;
-  {$ENDIF INCLUDE_DEVEXP_CX};
 end;
+{$ENDIF INCLUDE_DEVEXP_CX}
 
 
 initialization
