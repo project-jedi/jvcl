@@ -1623,7 +1623,7 @@ end;
 function TDSAQueueStorage.ReadFloat(const DSAInfo: TDSARegItem; const Key: string): Extended;
 begin
   Result := StrToFloat(StringReplace(GetDSAValue(DSAInfo, Key, DSAFloat),
-    {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, [rfReplaceAll, rfIgnoreCase]));
+    JclFormatSettings.ThousandSeparator, JclFormatSettings.DecimalSeparator, [rfReplaceAll, rfIgnoreCase]));
 end;
 
 function TDSAQueueStorage.ReadFloatDef(const DSAInfo: TDSARegItem; const Key: string;

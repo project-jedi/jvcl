@@ -2084,7 +2084,7 @@ implementation
 uses
   RTLConsts, Types, StrUtils, Variants, Consts, Dialogs, Forms, Buttons,
   JclRTTI, JclLogic, JclStrings,
-  JvJCLUtils, JvThemes, JvResources;
+  JvJCLUtils, JvThemes, JvResources, JclSysUtils;
 
 // BCB Type Info support
 var
@@ -8989,7 +8989,7 @@ constructor TJvInspectorDateItem.Create(const AParent: TJvCustomInspectorItem;
   const AData: TJvCustomInspectorData);
 begin
   inherited Create(AParent, AData);
-  FFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+  FFormat := JclFormatSettings.ShortDateFormat;
 end;
 
 function TJvInspectorDateItem.GetDisplayValue: string;
@@ -9025,7 +9025,7 @@ begin
     case Value[I] of
       'd':
         begin
-          if (DCount = 0) and (I > 1) and (Value[I - 1] <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) then
+          if (DCount = 0) and (I > 1) and (Value[I - 1] <> JclFormatSettings.DateSeparator) then
             raise EJvInspectorData.CreateRes(@RsESpecifierBeforeSeparator);
           if (DCount = 1) and (Value[I - 1] <> 'd') then
             raise EJvInspectorData.CreateRes(@RsEDOrDDOnlyOnce);
@@ -9035,7 +9035,7 @@ begin
         end;
       'm':
         begin
-          if (MCount = 0) and (I > 1) and (Value[I - 1] <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) then
+          if (MCount = 0) and (I > 1) and (Value[I - 1] <> JclFormatSettings.DateSeparator) then
             raise EJvInspectorData.CreateRes(@RsESpecifierBeforeSeparator);
           if (MCount = 1) and (Value[I - 1] <> 'm') then
             raise EJvInspectorData.CreateRes(@RsEMOrMMOnlyOnce);
@@ -9045,7 +9045,7 @@ begin
         end;
       'y':
         begin
-          if (MCount = 0) and (I > 1) and (Value[I - 1] <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) then
+          if (MCount = 0) and (I > 1) and (Value[I - 1] <> JclFormatSettings.DateSeparator) then
             raise EJvInspectorData.CreateRes(@RsESpecifierBeforeSeparator);
           if (YCount > 1) and (YCount < 4) and (Value[I - 1] <> 'y') then
             raise EJvInspectorData.CreateRes(@RsEYYOrYYYYOnlyOnce);
@@ -9054,17 +9054,17 @@ begin
           Inc(YCount);
         end;
     else
-      if Value[I] = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator then
+      if Value[I] = JclFormatSettings.DateSeparator then
       begin
         if ((SepCount = 0) and (I = 1)) or
-          ((SepCount = 1) and ((Value[I - 1]) = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator) or (I = Length(Value))) then
+          ((SepCount = 1) and ((Value[I - 1]) = JclFormatSettings.DateSeparator) or (I = Length(Value))) then
           raise EJvInspectorData.CreateRes(@RsESpecifierBeforeSeparator);
         if SepCount = 2 then
           raise EJvInspectorData.CreateRes(@RsEOnlyTwoSeparators);
         Inc(SepCount);
       end
       else
-        raise EJvInspectorData.CreateResFmt(@RsEOnlyDMYSAllowed, [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator]);
+        raise EJvInspectorData.CreateResFmt(@RsEOnlyDMYSAllowed, [JclFormatSettings.DateSeparator]);
     end;
     Inc(I);
   end;
@@ -11477,7 +11477,7 @@ function TJvInspectorCustomConfData.GetAsFloat: Extended;
 begin
   CheckReadAccess;
   if TypeInfo.Kind = tkFloat then
-    Result := StrToFloat(Trim(StringReplace(ReadValue, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator, {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator,
+    Result := StrToFloat(Trim(StringReplace(ReadValue, JclFormatSettings.ThousandSeparator, JclFormatSettings.DecimalSeparator,
       [rfReplaceAll, rfIgnoreCase])))
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorFloat]);

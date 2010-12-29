@@ -352,7 +352,7 @@ implementation
 uses
   Variants, SysUtils, Menus,
   JclStrings,
-  JvConsts, JvTypes, JvResources;
+  JvConsts, JvTypes, JvResources, JclSysUtils;
 
 const
   DateMaskSuffix = '!;1;_';
@@ -381,17 +381,17 @@ begin
   // date when it is not.
   if VarIsType(Value, varDate) then
   begin
-    OldFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
-    OldSeparator := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
+    OldFormat := JclFormatSettings.ShortDateFormat;
+    OldSeparator := JclFormatSettings.DateSeparator;
     try
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := FInternalDateFormat;
-      SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := FDateSeparator;
+      JclFormatSettings.ShortDateFormat := FInternalDateFormat;
+      JclFormatSettings.DateSeparator := FDateSeparator;
       TmpDate := Value;
       TmpValue := DateToStr(TmpDate);
       inherited AcceptValue(TmpValue);
     finally
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := OldFormat;
-      SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSeparator;
+      JclFormatSettings.ShortDateFormat := OldFormat;
+      JclFormatSettings.DateSeparator := OldSeparator;
     end;
   end
   else
@@ -441,11 +441,11 @@ begin
   begin
     Result := True;
     OldDate := ADate;
-    OldFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
-    OldSeparator := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
+    OldFormat := JclFormatSettings.ShortDateFormat;
+    OldSeparator := JclFormatSettings.DateSeparator;
     try
-      SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := FDateSeparator;
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := FInternalDateFormat;
+      JclFormatSettings.DateSeparator := FDateSeparator;
+      JclFormatSettings.ShortDateFormat := FInternalDateFormat;
       if AllowNoDate and ((Text = NoDateText) or IsEmptyMaskText(AText)) then
         ADate := NoDateValue
       else
@@ -465,8 +465,8 @@ begin
         end;
       end;
     finally
-      SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSeparator;
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := OldFormat;
+      JclFormatSettings.DateSeparator := OldSeparator;
+      JclFormatSettings.ShortDateFormat := OldFormat;
     end;
   end
   else
@@ -673,8 +673,8 @@ end;
 function TJvCustomDatePickerEdit.DateFormatToEditMask(
   var ADateFormat: string): string;
 begin
-  StrReplace(ADateFormat, 'dddddd', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongDateFormat, []);
-  StrReplace(ADateFormat, 'ddddd', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat, []);
+  StrReplace(ADateFormat, 'dddddd', JclFormatSettings.LongDateFormat, []);
+  StrReplace(ADateFormat, 'ddddd', JclFormatSettings.ShortDateFormat, []);
   StrReplace(ADateFormat, 'dddd', '', []); // unsupported: DoW as full name
   StrReplace(ADateFormat, 'ddd', '', []); // unsupported: DoW as abbrev
   StrReplace(ADateFormat, 'MMMM', 'MM', []);
@@ -694,13 +694,13 @@ function TJvCustomDatePickerEdit.DateToText(const ADate: TDateTime): string;
 var
   OldSep: Char;
 begin
-  OldSep := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
+  OldSep := JclFormatSettings.DateSeparator;
   // without this a slash would always be converted to SysUtils.DateSeparator
-  SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := Self.DateSeparator;
+  JclFormatSettings.DateSeparator := Self.DateSeparator;
   try
     Result := FormatDateTime(FInternalDateFormat, ADate);
   finally
-    SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSep;
+    JclFormatSettings.DateSeparator := OldSep;
   end;
 end;
 
@@ -721,7 +721,7 @@ begin
   if AFormat <> '' then
     Result := AFormat[1]
   else
-    Result := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
+    Result := JclFormatSettings.DateSeparator;
 end;
 
 procedure TJvCustomDatePickerEdit.DoCtl3DChanged;
@@ -866,12 +866,12 @@ function TJvCustomDatePickerEdit.GetText: TCaption;
 var
   OldSep: Char;
 begin
-  OldSep := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
-  SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := Self.DateSeparator;
+  OldSep := JclFormatSettings.DateSeparator;
+  JclFormatSettings.DateSeparator := Self.DateSeparator;
   try
     Result := inherited Text;
   finally
-    SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSep;
+    JclFormatSettings.DateSeparator := OldSep;
   end;
 end;
 
@@ -992,12 +992,12 @@ begin
   { EditCanModify could have triggered a ClearMask. }
   RestoreMaskForKeyPress;
 
-  OldSep := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
-  SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := Self.DateSeparator;
+  OldSep := JclFormatSettings.DateSeparator;
+  JclFormatSettings.DateSeparator := Self.DateSeparator;
   try
     inherited KeyPress(Key);
   finally
-    SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSep;
+    JclFormatSettings.DateSeparator := OldSep;
   end;
 end;
 
@@ -1141,12 +1141,12 @@ end;
 procedure TJvCustomDatePickerEdit.SetDateFormat(AValue: string);
 begin
   if AValue = '' then
-    AValue := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+    AValue := JclFormatSettings.ShortDateFormat;
   if AValue <> FDateFormat then
   begin
     FDateFormat := AValue;
     FDateSeparator := DetermineDateSeparator(FDateFormat);
-    StoreDateFormat := FDateFormat <> {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
+    StoreDateFormat := FDateFormat <> JclFormatSettings.ShortDateFormat;
     ResetDateFormat;
   end;
 end;
@@ -1174,12 +1174,12 @@ begin
 {  if csDesigning in ComponentState then
     Exit;}
 
-  OldSep := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
-  SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := Self.DateSeparator;
+  OldSep := JclFormatSettings.DateSeparator;
+  JclFormatSettings.DateSeparator := Self.DateSeparator;
   try
     inherited EditMask := AValue;
   finally
-    SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSep;
+    JclFormatSettings.DateSeparator := OldSep;
   end;
 end;
 
@@ -1233,12 +1233,12 @@ procedure TJvCustomDatePickerEdit.SetText(const AValue: TCaption);
 var
   OldSep: Char;
 begin
-  OldSep := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
-  SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := Self.DateSeparator;
+  OldSep := JclFormatSettings.DateSeparator;
+  JclFormatSettings.DateSeparator := Self.DateSeparator;
   try
     inherited Text := AValue;
   finally
-    SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSep;
+    JclFormatSettings.DateSeparator := OldSep;
   end;
 end;
 
@@ -1308,12 +1308,12 @@ begin
   if csDesigning in ComponentState then
     Exit;
 
-  OldSep := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
-  SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := Self.DateSeparator;
+  OldSep := JclFormatSettings.DateSeparator;
+  JclFormatSettings.DateSeparator := Self.DateSeparator;
   try
     inherited;
   finally
-    SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldSep;
+    JclFormatSettings.DateSeparator := OldSep;
   end;
 end;
 

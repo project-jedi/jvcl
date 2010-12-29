@@ -442,7 +442,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvThemes, JvConsts, JvResources;
+  JvThemes, JvConsts, JvResources, JclSysUtils;
 
 {$R JvSegmentedLEDDisplay.res}
 
@@ -1562,11 +1562,11 @@ begin
   if HdrInfo.Flags and 16 <> 0 then
   begin
     // Swap . for DecimalSeparator and , for ThousandSeparator
-    if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> '.' then
+    if JclFormatSettings.DecimalSeparator <> '.' then
     begin
-      OldMapping := FActiveMapping[{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator];
-      FActiveMapping[{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator] := FActiveMapping['.'];
-      FActiveMapping[{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ThousandSeparator] := OldMapping;
+      OldMapping := FActiveMapping[JclFormatSettings.DecimalSeparator];
+      FActiveMapping[JclFormatSettings.DecimalSeparator] := FActiveMapping['.'];
+      FActiveMapping[JclFormatSettings.ThousandSeparator] := OldMapping;
     end;
   end;
 end;
@@ -1590,8 +1590,8 @@ begin
   if (CurDigit is TJvBaseSegmentedLEDDigit) and TJvBaseSegmentedLEDDigit(CurDigit).UseDP then
   begin
     if UpdateStates(Segments, 1 shl CurDigit.GetSegmentIndex('DP')) then
-      TextForDigit := TextForDigit + {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
-    while Text[0] = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator do
+      TextForDigit := TextForDigit + JclFormatSettings.DecimalSeparator;
+    while Text[0] = JclFormatSettings.DecimalSeparator do
       Inc(Text);
   end;
 end;
@@ -1667,7 +1667,7 @@ begin
     Inc(Text);
     TextForDigit := TextForDigit + ']';
   end;
-  if Text[0] = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator then
+  if Text[0] = JclFormatSettings.DecimalSeparator then
     HandleDecimalSeparator(Text, Segments);
 end;
 
@@ -1676,7 +1676,7 @@ begin
   if CharToSegments(Text^, Segments) then
     TextForDigit := TextForDigit + Text^;
   Inc(Text);
-  if Text[0] = {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator then
+  if Text[0] = JclFormatSettings.DecimalSeparator then
     HandleDecimalSeparator(Text, Segments);
 end;
 
@@ -1836,7 +1836,7 @@ begin
   Hdr.MappedChars := [];
   TmpDot := FActiveMapping['.'];
   TmpComma := FActiveMapping[','];
-  if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> '.' then
+  if JclFormatSettings.DecimalSeparator <> '.' then
   begin
     FActiveMapping['.'] := TmpComma;
     FActiveMapping[','] := TmpDot;
@@ -1850,7 +1850,7 @@ begin
       if FActiveMapping[Chr] <> 0 then
         Stream.WriteBuffer(FActiveMapping[Chr], MapSize);
   finally
-    if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator <> '.' then
+    if JclFormatSettings.DecimalSeparator <> '.' then
     begin
       FActiveMapping['.'] := TmpDot;
       FActiveMapping[','] := TmpComma;

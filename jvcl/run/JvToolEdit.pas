@@ -1100,7 +1100,7 @@ uses
   MultiMon,
   JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
-  JvThemes, JvResources;
+  JvThemes, JvResources, JclSysUtils;
 
 {$R JvToolEdit.res}
 
@@ -3866,7 +3866,7 @@ end;
 
 function TJvCustomDateEdit.TextStored: Boolean;
 begin
-  Result := not IsEmptyStr(Text, [#0, ' ', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator, FBlanksChar]);
+  Result := not IsEmptyStr(Text, [#0, ' ', JclFormatSettings.DateSeparator, FBlanksChar]);
 end;
 
 procedure TJvCustomDateEdit.UpdateFormat;

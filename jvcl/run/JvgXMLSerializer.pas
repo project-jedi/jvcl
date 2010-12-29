@@ -165,7 +165,7 @@ const
 implementation
 
 uses
-  JvResources, JvgUtils;
+  JvResources, JvgUtils, JclSysUtils;
 
 const
   ORDINAL_TYPES = [tkInteger, tkChar, tkEnumeration, tkSet];
@@ -679,10 +679,10 @@ begin
         //{ Замена разделителя на системный }
         { Changing delimiter to system-wide  [translated] }
         if PropTypeInf^.Kind = tkFloat then
-          if {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator = ',' then
-            SValue := StringReplace(SValue, '.', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, [rfReplaceAll])
+          if JclFormatSettings.DecimalSeparator = ',' then
+            SValue := StringReplace(SValue, '.', JclFormatSettings.DecimalSeparator, [rfReplaceAll])
           else
-            SValue := StringReplace(SValue, ',', {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, [rfReplaceAll]);
+            SValue := StringReplace(SValue, ',', JclFormatSettings.DecimalSeparator, [rfReplaceAll]);
 
         //{ Для корректного преобразования парсером tkSet нужны угловые скобки }
         { tkSet parser needs "<" and ">" for correct transformation  [translated] }

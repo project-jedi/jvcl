@@ -189,7 +189,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvConsts, JvResources, JclSysUtils;
 
 //=== { TJvMailRecipient } ===================================================
 
@@ -667,15 +667,15 @@ begin
     FSubject := string(lpszSubject);
     Body.Text := string(lpszNoteText);
     //    FDateReceived := StrToDateTime(lpszDateReceived);
-    SOldDateFormat := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat;
-    OldDateSeparator := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator;
+    SOldDateFormat := JclFormatSettings.ShortDateFormat;
+    OldDateSeparator := JclFormatSettings.DateSeparator;
     try
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := 'yyyy/M/d';
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := '/';
+      JclFormatSettings.ShortDateFormat := 'yyyy/M/d';
+      JclFormatSettings.DateSeparator := '/';
       FReadedMail.DateReceived := StrToDateTime(string(lpszDateReceived));
     finally
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := SOldDateFormat;
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := OldDateSeparator;
+      JclFormatSettings.ShortDateFormat := SOldDateFormat;
+      JclFormatSettings.DateSeparator := OldDateSeparator;
     end;
     FReadedMail.ConversationID := string(lpszConversationID);
     DecodeAttachments(lpFiles, nFileCount);

@@ -128,7 +128,7 @@ implementation
 uses
   Variants, SysUtils, Math, Graphics, Buttons, Clipbrd,
   JvToolEdit, JvSpeedButton, JvExExtCtrls,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources, JclSysUtils;
 
 {$R JvCalc.Res} // (ahuser) the filename should be fixed
 
@@ -312,7 +312,7 @@ begin
       Caption := IntToStr(Tag)
     else
     if Kind = cbDcm then
-      Caption := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator
+      Caption := JclFormatSettings.DecimalSeparator
     else
     if Kind in [cbSgn..cbMC] then
       Caption := BtnCaptions[Kind];
@@ -791,7 +791,7 @@ begin
     cbSgn:
       CalcKey('_');
     cbDcm:
-      CalcKey({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
+      CalcKey(JclFormatSettings.DecimalSeparator);
     cbDiv:
       CalcKey('/');
     cbMul:
@@ -865,11 +865,11 @@ begin
     Key := #0;
   if Assigned(FOnCalcKey) then
     FOnCalcKey(Self, Key);
-  if CharInSet(Key, [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '.', ',']) then
+  if CharInSet(Key, [JclFormatSettings.DecimalSeparator, '.', ',']) then
   begin
     CheckFirst;
-    if Pos({$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, Text) = 0 then
-      SetText(Text + {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator);
+    if Pos(JclFormatSettings.DecimalSeparator, Text) = 0 then
+      SetText(Text + JclFormatSettings.DecimalSeparator);
     Exit;
   end;
   case Key of
@@ -1025,7 +1025,7 @@ var
   I: Integer;
   BtnTag: Longint;
 begin
-  if CharInSet(Key, [{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator, '.', ',']) then
+  if CharInSet(Key, [JclFormatSettings.DecimalSeparator, '.', ',']) then
     Key := '.'
   else
   if Key = Cr then
@@ -1059,8 +1059,7 @@ procedure TJvCalculatorPanel.Paste;
 begin
   if Clipboard.HasFormat(CF_TEXT) then
   try
-    SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText,
-      {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}CurrencyString, ''))));
+    SetDisplay(StrToFloat(Trim(ReplaceStr(Clipboard.AsText, JclFormatSettings.CurrencyString, ''))));
   except
     SetText('0');
   end;

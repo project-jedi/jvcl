@@ -1046,7 +1046,7 @@ implementation
 
 uses
   JvConsts, JvResources,
-  Dialogs, Forms, JvJVCLUtils;
+  Dialogs, Forms, JvJVCLUtils, JclSysUtils;
 
 function AdjustEndTime(ATime: TTime): TTime;
 begin
@@ -5179,9 +5179,9 @@ function TJvTFDWNames.GetDWName(DWIndex: Integer): string;
 begin
   case Source of
     dwnsSysLong:
-      Result := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}LongDayNames[DWIndex];
+      Result := JclFormatSettings.LongDayNames[DWIndex];
     dwnsSysShort:
-      Result := SysUtils.{$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDayNames[DWIndex];
+      Result := JclFormatSettings.ShortDayNames[DWIndex];
   else // dwnsCustom
     Result := GetDWN(DWIndex);
   end;

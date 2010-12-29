@@ -640,7 +640,7 @@ uses
   {$IFDEF COMPILER7_UP}
   GraphUtil, // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
   {$ENDIF COMPILER7_UP}
-  JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm;
+  JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm, JclSysUtils;
 
 {$R JvDBGrid.res}
 
@@ -2815,7 +2815,7 @@ begin
       begin
         if DataType in [db.ftFloat{$IFDEF COMPILER12_UP},db.ftExtended{$ENDIF COMPILER12_UP}] then
           if CharInSet(Key, ['.', ',']) then
-            Key := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator;
+            Key := JclFormatSettings.DecimalSeparator;
 
         if CharInSet(Key, CharList) and (Columns[SelectedIndex].PickList.Count <> 0) then
         begin
