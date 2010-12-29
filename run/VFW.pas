@@ -2734,7 +2734,7 @@ function    capDriverGetName(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 function    capDriverGetVersion(hwnd: HWND; szVer: LPTSTR; wSize: WORD): BOOL;
 function    capDriverGetCaps(hwnd: HWND; s: PCAPDRIVERCAPS; wSize: WORD): BOOL;
 
-function    capFileSetCaptureFile(hwnd: HWND; szName: LPCTSTR): BOOL;
+function    capFileSetCaptureFile(hwnd: HWND; szName: LPTSTR): BOOL;
 function    capFileGetCaptureFile(hwnd: HWND; szName: LPTSTR; wSize: WORD): BOOL;
 function    capFileAlloc(hwnd: HWND; dwSize: DWORD): BOOL;
 function    capFileSaveAs(hwnd: HWND; szName: LPCTSTR): BOOL;
@@ -3938,7 +3938,7 @@ begin
     Result  := AVICapSM(hwnd, WM_CAP_DRIVER_GET_CAPS, wSize, LPARAM(s)) <> 0;
 end;
 
-function    capFileSetCaptureFile(hwnd: HWND; szName: LPCTSTR): BOOL;
+function    capFileSetCaptureFile(hwnd: HWND; szName: LPTSTR): BOOL;
 begin
     Result  := AVICapSM(hwnd, WM_CAP_FILE_SET_CAPTURE_FILE, 0, LPARAM(szName)) <> 0;
 end;
