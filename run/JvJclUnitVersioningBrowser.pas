@@ -101,6 +101,9 @@ var
   I: Integer;
   MainNode: TTreeNode;
   Nodes: TTreeNodes;
+  {$IFDEF UNITVERSIONING}
+  Item : TUnitVersion;
+  {$ENDIF UNITVERSIONING}
 
   function FindMasterNode(iNodes: TTreeNodes; iNode: TTreeNode; const iPath: string): tTreeNode;
   var
@@ -219,10 +222,14 @@ begin
       Nodes.Clear;
       IJvTreeView.ControlSetOnChange(TreeViewOnChange);
       MainNode := Nodes.AddChild(nil, ExtractFileName(ParamStr(0)) + ' ' + VersionFixedFileInfoString(ParamStr(0)));
-      with GetUnitVersioning do
-        for I := 0 to Count - 1 do
-          Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Items[I].LogPath),
-           StrRestOf(Items[I].RCSfile, StrLastPos('/', Items[I].RCSfile)+1) + ' - ' + Items[I].Revision, Items[I]);
+      {$IFDEF UNITVERSIONING}
+      for I := 0 to GetUnitVersioning.Count - 1 do
+      begin
+        Item := GetUnitVersioning.Items[I];
+        Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Item.LogPath),
+         StrRestOf(Item.RCSfile, StrLastPos('/', Item.RCSfile)+1) + ' - ' + Item.Revision, Item);
+      end;
+      {$ENDIF UNITVERSIONING}
       IJvTreeView.ControlSetSortType(stText);
       if TreeView is TTreeView then
         TTreeView(TreeView).FullExpand;
