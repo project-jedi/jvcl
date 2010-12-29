@@ -74,7 +74,7 @@ implementation
 
 uses
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGridDBDataDefinitions,
+  cxGridDBDataDefinitions, cxControls,
   cxCustomData, cxGridExportLink,
   {$IFDEF DELPHI12_UP}
   PngImage, Jpeg,
