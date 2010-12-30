@@ -3115,7 +3115,10 @@ begin
 end;
 
 function TJvCustomAppStorage.GetFormatSettings: TFormatSettings;
-var atse: TJvTranslateString;
+{$IFDEF COMPILER7_UP}
+var 
+  Atse: TJvTranslateString;
+{$ENDIF COMPILER7_UP}
 begin
   {$IFDEF COMPILER7_UP}
   if Not IsUpdating then
