@@ -1166,7 +1166,7 @@ begin
       begin
         TgName := Copy(NameProperty.Value, 1, Pos(':', NameProperty.Value) - 1);
 
-        MsBuild := CurItem.Items[0];
+        MsBuild := CurItem.Items.ItemNamed['MsBuild'];
         // change .dproj to .dpk and add the target
         DpkFilename := ChangeFileExt(MsBuild.Properties.ItemNamed['Projects'].Value, '.dpk');
 
