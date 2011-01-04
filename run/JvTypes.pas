@@ -634,6 +634,19 @@ type
      );
   end;
 
+type
+  TJvCustomThread = class(TThread)
+  private
+    FThreadName: String;
+    function GetThreadName: String; virtual;
+    procedure SetThreadName(const Value: String); virtual;
+  public
+    {$IFNDEF DELPHI2010_UP}
+    procedure NameThreadForDebugging(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF);
+    {$ENDIF}
+    property ThreadName: String read GetThreadName write SetThreadName;
+  end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -736,6 +749,46 @@ begin
     Changing
   else
     Changed;
+end;
+
+{$IFNDEF DELPHI2010_UP}
+procedure TJvCustomThread.NameThreadForDebugging(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF);
+type
+  TThreadNameInfo = record
+    FType: LongWord;     // must be 0x1000
+    FName: PAnsiChar;    // pointer to name (in user address space)
+    FThreadID: LongWord; // thread ID (-1 indicates caller thread)
+    FFlags: LongWord;    // reserved for future use, must be zero
+  end;
+var
+  ThreadNameInfo: TThreadNameInfo;
+begin
+  //if IsDebuggerPresent then
+  begin
+    ThreadNameInfo.FType := $1000;
+    ThreadNameInfo.FName := PAnsiChar(AThreadName);
+    ThreadNameInfo.FThreadID := AThreadID;
+    ThreadNameInfo.FFlags := 0;
+
+    try
+      RaiseException($406D1388, 0, sizeof(ThreadNameInfo) div sizeof(LongWord), @ThreadNameInfo);
+    except
+    end;
+  end;
+end;
+{$ENDIF DELPHI2010_UP}
+
+function TJvCustomThread.GetThreadName: String;
+begin
+  if FThreadName = '' then
+    Result := ClassName
+  else
+    Result := FThreadName;
+end;
+
+procedure TJvCustomThread.SetThreadName(const Value: String);
+begin
+  FThreadName := Value;
 end;
 
 {$IFDEF UNITVERSIONING}

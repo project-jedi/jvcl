@@ -63,7 +63,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils,
   Graphics, Controls, Forms, ExtCtrls, ImgList, ActnList, Messages,
-  JvConsts, JvXPCore, JvXPCoreUtils, JvJVCLUtils;
+  JvConsts, JvXPCore, JvXPCoreUtils, JvJVCLUtils, JvTypes;
 
 type
   TJvXPBarRollDirection = (rdExpand, rdCollapse);
@@ -259,7 +259,7 @@ type
     property Items[Index: Integer]: TJvXPBarItem read GetItem; default;
   end;
 
-  TJvXPFadeThread = class(TThread)
+  TJvXPFadeThread = class(TJvCustomThread)
   private
     FWinXPBar: TJvXPCustomWinXPBar;
     FRollDirection: TJvXPBarRollDirection;
@@ -267,9 +267,9 @@ type
   protected
     procedure DoWinXPBarSetRollOffset;
     procedure DoWinXPBarInternalRedraw;
+    procedure Execute; override;
   public
     constructor Create(WinXPBar: TJvXPCustomWinXPBar; RollDirection: TJvXPBarRollDirection);
-    procedure Execute; override;
   end;
 
   TJvXPBarColors = class(TPersistent)
@@ -1258,6 +1258,7 @@ begin
   FWinXPBar := WinXPBar;
   FRollDirection := RollDirection;
   FreeOnTerminate := True;
+  ThreadName := Format('%s: %s',[ClassName, WinXPBar.Name]);
 end;
 
 procedure TJvXPFadeThread.DoWinXPBarInternalRedraw;
@@ -1274,6 +1275,7 @@ procedure TJvXPFadeThread.Execute;
 var
   NewOffset: Integer;
 begin
+  NameThreadForDebugging(ThreadName);
   while not Terminated do
   try
     FWinXPBar.FRolling := True;

@@ -100,7 +100,7 @@ uses
   JvJCLUtils;
 
 type
-  TJvTimerThread = class(TThread)
+  TJvTimerThread = class(TJvCustomThread)
   private
     FEvent: THandle;
     FHasBeenSuspended: Boolean;
@@ -141,6 +141,7 @@ begin
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
   FPriority := ATimer.Priority; // setting the priority is deferred to Execute()
+  ThreadName := Format('%s: %s',[ClassName, ATimer.Name]);
 end;
 
 destructor TJvTimerThread.Destroy;
@@ -161,6 +162,7 @@ procedure TJvTimerThread.Execute;
 var
   Offset, TickCount: Cardinal;
 begin
+  NameThreadForDebugging(ThreadName);
   Priority := FPriority;
   if WaitForSingleObject(FEvent, Interval) <> WAIT_TIMEOUT then
     Exit;

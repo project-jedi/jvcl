@@ -446,7 +446,7 @@ implementation
 
 uses
   Math,
-  JvThemes;
+  JvThemes, JvTypes;
 
 var
   HintWindow: THintWindow = nil;
@@ -462,7 +462,7 @@ begin
 end;
 
 type
-  TDeactiveHintThread = class(TThread)
+  TDeactiveHintThread = class(TJvCustomThread)
   private
     FHintWindow: THintWindow;
     FDelay: Integer;
@@ -1916,6 +1916,7 @@ end;
 
 procedure TDeactiveHintThread.Execute;
 begin
+  NameThreadForDebugging(ThreadName);
   Sleep(FDelay);
   if FHintWindow <> nil then
   begin

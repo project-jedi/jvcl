@@ -49,7 +49,7 @@ uses
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
   OleCtnrs,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
-  JVCLVer, JvExStdCtrls;
+  JVCLVer, JvExStdCtrls, JvTypes;
 
 type
   TJvCustomRichEdit = class;
@@ -940,7 +940,7 @@ uses
   {$IFDEF RTL200_UP}
   CommDlg,
   {$ENDIF RTL200_UP}
-  JvThemes, JvConsts, JvResources, JvFixedEditPopUp, JvTypes;
+  JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
 
 type
   PENLink = ^TENLink;
@@ -1155,7 +1155,7 @@ type
     property Mode: TRichStreamModes read FMode write FMode;
   end;
 
-  TMSTextConversionThread = class(TThread)
+  TMSTextConversionThread = class(TJvCustomThread)
   protected
     procedure Execute; override;
   public
@@ -7150,6 +7150,7 @@ end;
 
 procedure TMSTextConversionThread.Execute;
 begin
+  NameThreadForDebugging(ThreadName);
   if GCurrentConverter <> nil then
     GCurrentConverter.DoConversion;
 end;

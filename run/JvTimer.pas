@@ -86,12 +86,12 @@ implementation
 
 uses
   Forms, Consts, SyncObjs,
-  JvJVCLUtils, JvResources;
+  JvJVCLUtils, JvResources, JvTypes;
 
 //=== { TJvTimerThread } =====================================================
 
 type
-  TJvTimerThread = class(TThread)
+  TJvTimerThread = class(TJvCustomThread)
   private
     FOwner: TJvTimer;
     FInterval: Cardinal;
@@ -120,6 +120,7 @@ begin
   inherited Create(not Enabled);
   FInterval := 1000;
   FreeOnTerminate := False;
+  ThreadName := Format('%s: %s',[ClassName, Timer.Name]);
 end;
 
 procedure TJvTimerThread.HandleException;
@@ -161,6 +162,7 @@ var
   end;
 
 begin
+  NameThreadForDebugging(ThreadName);
   repeat
     EventTime := FOwner.EventTime;
 

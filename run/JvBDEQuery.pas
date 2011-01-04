@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, DB, DBTables, Bde,
-  JvComponentBase, JVCLVer;
+  JvComponentBase, JVCLVer, JvTypes;
 
 const
   DefaultMacroChar = '%';
@@ -97,7 +97,7 @@ type
 
   TRunQueryMode = (rqOpen, rqExecute, rqExecDirect, rqOpenOrExec);
 
-  TJvQueryThread = class(TThread)
+  TJvQueryThread = class(TJvCustomThread)
   private
     FData: TBDEDataSet;
     FMode: TRunQueryMode;
@@ -666,6 +666,7 @@ begin
   FPrepare := Prepare;
   FreeOnTerminate := True;
   FData.DisableControls;
+  ThreadName := Format('%s: %s',[ClassName, Data.Name]);
 end;
 
 procedure TJvQueryThread.DoTerminate;
@@ -698,6 +699,7 @@ end;
 
 procedure TJvQueryThread.Execute;
 begin
+  NameThreadForDebugging(ThreadName);
   try
     if FPrepare and not (FMode in [rqExecDirect]) then
     begin

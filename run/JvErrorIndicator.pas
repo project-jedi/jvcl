@@ -228,7 +228,7 @@ const
 type
   TJvBlinkThreadEvent = procedure(Sender: TObject; Erase: Boolean) of object;
 
-  TJvBlinkThread = class(TThread)
+  TJvBlinkThread = class(TJvCustomThread)
   private
     FBlinkRate: Integer;
     FErase: Boolean;
@@ -761,6 +761,7 @@ end;
 
 procedure TJvBlinkThread.Execute;
 begin
+  NameThreadForDebugging(ThreadName);
   FErase := False;
   while not Terminated and not Suspended do
   begin

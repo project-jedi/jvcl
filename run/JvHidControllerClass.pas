@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, SysUtils,
   JvComponentBase,
-  DBT, SetupApi, HID;
+  DBT, SetupApi, HID, JvTypes;
 
 const
   // a version string for the component
@@ -147,17 +147,18 @@ type
 
   // a thread helper class to implement TJvHidDevice.OnData
 
-  TJvHidDeviceReadThread = class(TThread)
+  TJvHidDeviceReadThread = class(TJvCustomThread)
   private
     FErr: DWORD;
     procedure DoData;
     procedure DoDataError;
     constructor CtlCreate(const Dev: TJvHidDevice);
+  protected
+    procedure Execute; override;
   public
     Device: TJvHidDevice;
     NumBytesRead: Cardinal;
     Report: array of Byte;
-    procedure Execute; override;
     constructor Create(CreateSuspended: Boolean);
   end;
 
@@ -447,7 +448,7 @@ const
 implementation
 
 uses
-  JvResources, JvTypes;
+  JvResources;
 
 type
   EControllerError = class(EJVCLException);
@@ -497,6 +498,7 @@ procedure TJvHidDeviceReadThread.Execute;
 var
   SleepRet: DWORD;
 begin
+  NameThreadForDebugging(ThreadName);
   SleepRet := WAIT_IO_COMPLETION;
   while not Terminated do
   begin
