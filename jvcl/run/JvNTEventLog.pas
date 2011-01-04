@@ -389,7 +389,7 @@ var
   LResult: DWORD;
 begin
   // (rom) secure thread against exceptions
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   LResult := WAIT_OBJECT_0;
   try
     while not Terminated do

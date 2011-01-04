@@ -7150,7 +7150,7 @@ end;
 
 procedure TMSTextConversionThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   if GCurrentConverter <> nil then
     GCurrentConverter.DoConversion;
 end;

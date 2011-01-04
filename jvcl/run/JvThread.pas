@@ -1234,7 +1234,7 @@ procedure TJvBaseThread.Execute;
 begin
   try
     FExecuteIsActive := True;
-    NameThreadForDebugging(ThreadName);
+    NameThread(ThreadName);
     if FInternalTerminate then
       Terminate;
     FExecuteEvent(Self, FParams);

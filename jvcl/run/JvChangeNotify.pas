@@ -518,7 +518,7 @@ procedure TJvChangeThread.Execute;
 var
   I: Integer;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   // (rom) secure thread against exceptions (Delphi 5 needs it)
   try
     while not Terminated do

@@ -699,7 +699,7 @@ end;
 
 procedure TJvQueryThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   try
     if FPrepare and not (FMode in [rqExecDirect]) then
     begin

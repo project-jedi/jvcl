@@ -725,7 +725,7 @@ procedure TJvWaitForProcessThread.Execute;
 var
   WaitHandles: array [0..1] of THandle;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   WaitHandles[0] := FCloseEvent;
   WaitHandles[1] := FProcessHandle;
   WaitForInputIdle(FProcessHandle, INFINITE);

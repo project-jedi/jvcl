@@ -644,8 +644,25 @@ type
     {$IFNDEF DELPHI2010_UP}
     procedure NameThreadForDebugging(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF);
     {$ENDIF}
+    procedure NameThread(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF); virtual;
     property ThreadName: String read GetThreadName write SetThreadName;
   end;
+
+// Using this variable you can enhance the NameThread Procedure system wide by inserting a procedure
+// which executes for example a MadExcept TraceOut to enhance the MadExcept call stack results.
+// The procedure for MadExcept could look like:
+//
+//      procedure NameThreadMadExcept(AThreadName: AnsiString; AThreadID: LongWord);
+//      begin
+//        MadExcept.NameThread(AThreadID, AThreadName);
+//      end;
+//
+// And the initialization of the unit should look like:
+//
+//     initialization
+//       JvTypes.JvCustomThreadNamingProc := NameThreadMadExcept;
+//
+var JvCustomThreadNamingProc : procedure (AThreadName: AnsiString; AThreadID: LongWord);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -783,7 +800,16 @@ begin
   if FThreadName = '' then
     Result := ClassName
   else
-    Result := FThreadName;
+    Result := FThreadName+' {'+ClassName+'}';
+end;
+
+procedure TJvCustomThread.NameThread(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF);
+begin
+  if AThreadID = $FFFFFFFF then
+    AThreadID := ThreadID;
+  NameThreadForDebugging(aThreadName, AThreadID);
+  if Assigned(JvCustomThreadNamingProc) then
+    JvCustomThreadNamingProc(aThreadName, AThreadID);
 end;
 
 procedure TJvCustomThread.SetThreadName(const Value: String);

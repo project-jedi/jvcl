@@ -81,7 +81,7 @@ end;
 
 procedure TJvImageDrawThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   try
     while not Terminated do
     begin

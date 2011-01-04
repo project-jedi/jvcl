@@ -1228,7 +1228,7 @@ end;
 
 procedure TJvCustomUrlGrabberThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   SetGrabberStatus(gsStopped);
   FGrabber.Stream := nil;
   try

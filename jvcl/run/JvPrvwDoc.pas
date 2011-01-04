@@ -1916,7 +1916,7 @@ end;
 
 procedure TDeactiveHintThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   Sleep(FDelay);
   if FHintWindow <> nil then
   begin

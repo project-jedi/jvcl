@@ -761,7 +761,7 @@ end;
 
 procedure TJvBlinkThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   FErase := False;
   while not Terminated and not Suspended do
   begin

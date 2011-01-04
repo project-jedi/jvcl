@@ -322,7 +322,7 @@ var
   SysTime: TSystemTime;
   NowStamp: TTimeStamp;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   try
     FEnded := False;
     while not Terminated do

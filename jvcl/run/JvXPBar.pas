@@ -1275,7 +1275,7 @@ procedure TJvXPFadeThread.Execute;
 var
   NewOffset: Integer;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   while not Terminated do
   try
     FWinXPBar.FRolling := True;
