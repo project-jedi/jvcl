@@ -157,7 +157,7 @@ type
   // Obviously, the Execute method in derived classes has to be cooperative
   // and actually acquire and release the FPauseSection critical section via
   // the appropriate protected methods
-  TJvPausableThread = class(TThread)
+  TJvPausableThread = class(TJvCustomThread)
   private
     FPauseSection: TCriticalSection;
     FPaused: Boolean;
@@ -238,6 +238,7 @@ type
     FThreadDialog: TJvCustomThreadDialog;
     FThreadDialogAllowed: Boolean;
     FThreadDialogForm: TJvCustomThreadDialogForm;
+    FThreadName: String;
     procedure DoBegin;
     procedure DoTerminate(Sender: TObject);
     function GetCount: Integer;
@@ -252,6 +253,7 @@ type
     procedure SetConnectedDataComponent(Value: TComponent);
     procedure SetConnectedDataObject(Value: TObject);
     procedure SetThreadDialog(const Value: TJvCustomThreadDialog);
+    procedure SetThreadName(const Value: String);
     procedure ShowThreadDialogForm;
   protected
     procedure InternalAfterCreateDialogForm(DialogForm: TJvCustomThreadDialogForm); virtual;
@@ -283,6 +285,7 @@ type
     // Property to allow/disallow the thread dialog form
     property ThreadDialogAllowed: Boolean read FThreadDialogAllowed write FThreadDialogAllowed default True;
     property ThreadDialogForm: TJvCustomThreadDialogForm read FThreadDialogForm;
+    function CalcThreadName(ThreadPos: Integer): String;
     // Disables the delayed showing of the thread dialog
     procedure DisableDialogShowDelay;
     // Enables the delayed showing of the thread dialog
@@ -306,6 +309,7 @@ type
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
     property Priority: TThreadPriority read FPriority write FPriority default tpNormal;
     property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write SetThreadDialog;
+    property ThreadName: String read FThreadName write SetThreadName;
     property AfterCreateDialogForm: TJvCustomThreadDialogFormEvent read FAfterCreateDialogForm write FAfterCreateDialogForm;
     property BeforeResume: TNotifyEvent read FBeforeResume write FBeforeResume;
     property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
@@ -609,6 +613,18 @@ begin
   inherited Destroy;
 end;
 
+function TJvThread.CalcThreadName(ThreadPos: Integer): String;
+begin
+  if ThreadName = '' then
+    Result := Name
+  else
+    Result := ThreadName;
+  if Result = '' then
+    Result := ClassName;
+  if ThreadPos > 0 then
+    Result := Result + ' ['+Inttostr(ThreadPos)+']';
+end;
+
 procedure TJvThread.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -638,6 +654,7 @@ begin
       BaseThread.OnException := OnException;
       BaseThread.Priority := Priority;
       BaseThread.OnTerminate := DoTerminate;
+      BaseThread.ThreadName := CalcThreadName(Count);
       FThreads.Add(BaseThread);
       DoBegin;
     except
@@ -1135,6 +1152,21 @@ begin
   ReplaceComponentReference(Self, Value, TComponent(FThreadDialog));
 end;
 
+procedure TJvThread.SetThreadName(const Value: String);
+var
+  i: Integer;
+begin
+  FThreadName := Value;
+  Lock;
+  try
+    for i := 0 to Count -1 do
+      if Assigned(Threads[i]) then
+        Threads[i].ThreadName := CalcThreadName(i);
+  finally
+    UnLock;
+  end;
+end;
+
 procedure TJvThread.ShowThreadDialogForm;
 begin
   if Assigned (ThreadDialog) and Assigned(FThreadDialogForm) then
@@ -1202,6 +1234,7 @@ procedure TJvBaseThread.Execute;
 begin
   try
     FExecuteIsActive := True;
+    NameThreadForDebugging(ThreadName);
     if FInternalTerminate then
       Terminate;
     FExecuteEvent(Self, FParams);

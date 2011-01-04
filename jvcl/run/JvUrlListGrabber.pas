@@ -486,7 +486,7 @@ type
   // this is the ancestor of all the grabber threads, and there
   // should be as many descendants as there are TJvCustomUrlGrabber
   // descendants.
-  TJvCustomUrlGrabberThread = class(TThread)
+  TJvCustomUrlGrabberThread = class(TJvCustomThread)
   private
     FErrorText: string; // the error string received from the server
     FStatus: DWORD;
@@ -1202,6 +1202,7 @@ begin
   inherited Create(True);
   FContinue := True;
   FGrabber := Grabber;
+  ThreadName := Format('%s: %s',[ClassName, Grabber.Name]);
 end;
 
 procedure TJvCustomUrlGrabberThread.DoProgress;
@@ -1227,6 +1228,7 @@ end;
 
 procedure TJvCustomUrlGrabberThread.Execute;
 begin
+  NameThreadForDebugging(ThreadName);
   SetGrabberStatus(gsStopped);
   FGrabber.Stream := nil;
   try

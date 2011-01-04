@@ -283,7 +283,7 @@ const
 //=== { TScheduleThread } ====================================================
 
 type
-  TScheduleThread = class(TThread)
+  TScheduleThread = class(TJvCustomThread)
   private
     FCritSect: TCriticalSection;
     FEnded: Boolean;
@@ -322,6 +322,7 @@ var
   SysTime: TSystemTime;
   NowStamp: TTimeStamp;
 begin
+  NameThreadForDebugging(ThreadName);
   try
     FEnded := False;
     while not Terminated do

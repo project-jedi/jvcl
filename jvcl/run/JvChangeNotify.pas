@@ -110,7 +110,7 @@ type
   { WARNING: Do not call Thread.Terminate from user code. This will leave a
     dangling TJvChangeNotify.FThread reference which will cause an access
     violation at the next TJvChangeNotify.SetActive call. }
-  TJvChangeThread = class(TThread)
+  TJvChangeThread = class(TJvCustomThread)
   private
     FNotifyArray: TJvNotifyArray;
     FCount: Integer;
@@ -518,6 +518,7 @@ procedure TJvChangeThread.Execute;
 var
   I: Integer;
 begin
+  NameThreadForDebugging(ThreadName);
   // (rom) secure thread against exceptions (Delphi 5 needs it)
   try
     while not Terminated do

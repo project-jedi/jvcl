@@ -190,6 +190,7 @@ procedure TJvCommWatcher.Execute;
 var
   Mask: Cardinal;
 begin
+  NameThreadForDebugging(ThreadName);
   // (rom) secure thread against exceptions
   try
     while not Terminated do

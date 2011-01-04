@@ -1222,6 +1222,7 @@ begin
   FRemoteProgramVersionHistory.IgnoreLastLoadTime := True;
   FVersionHistoryFileOptions := TJvProgramVersionHistoryAppStorageOptions.Create;
   FThread := TJvThread.Create(Self);
+  FThread.ThreadName := Format('%s: %s',[ClassName, Name]);
   FThread.Exclusive := True;
   FThread.RunOnCreate := True;
   FThread.FreeOnTerminate := True;
