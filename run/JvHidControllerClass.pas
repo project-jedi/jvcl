@@ -498,7 +498,7 @@ procedure TJvHidDeviceReadThread.Execute;
 var
   SleepRet: DWORD;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   SleepRet := WAIT_IO_COMPLETION;
   while not Terminated do
   begin

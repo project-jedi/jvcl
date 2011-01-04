@@ -162,7 +162,7 @@ var
   end;
 
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   repeat
     EventTime := FOwner.EventTime;
 

@@ -157,7 +157,7 @@ end;
 
 procedure TJvWinampThread.Execute;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   // (rom) secure thread against exceptions
   try
     while not Terminated do

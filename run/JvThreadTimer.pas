@@ -162,7 +162,7 @@ procedure TJvTimerThread.Execute;
 var
   Offset, TickCount: Cardinal;
 begin
-  NameThreadForDebugging(ThreadName);
+  NameThread(ThreadName);
   Priority := FPriority;
   if WaitForSingleObject(FEvent, Interval) <> WAIT_TIMEOUT then
     Exit;
