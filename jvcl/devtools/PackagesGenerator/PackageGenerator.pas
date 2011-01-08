@@ -758,8 +758,10 @@ begin
               Inc(ItemIndex);
               tmpLines.Assign(repeatLines);
               reqPackName := BuildPackageName(xml.Requires[j], target);
-              StrReplaceLines(tmpLines, '%NAME%', reqPackName);
-              StrReplaceLines(tmpLines, '%INDEX%', IntToStr(ItemIndex));
+              MacroReplaceLines(tmpLines, '%',
+                ['NAME%', reqPackName,
+                 'INDEX%', IntToStr(ItemIndex),
+                 'INDEX0%', IntToStr(ItemIndex - 1)]);
               // We do not say that the package contains something because
               // a package is only interesting if it contains files for
               // the given target
@@ -904,6 +906,7 @@ begin
               MacroReplaceLines(tmpLines, '%',
                 ['FILENAME%', bcblibsList[j],
                  'INDEX%', IntToStr(ItemIndex),
+                 'INDEX0%', IntToStr(ItemIndex - 1),
                  'UNITNAME%', GetUnitName(bcblibsList[j])]);
               outFile.AddStrings(tmpLines);
             end;
@@ -926,7 +929,8 @@ begin
             tmpLines.Assign(repeatLines);
             MacroReplaceLines(tmpLines, '%',
               ['COMPILERDEFINE%', CompilerDefines[j],
-               'INDEX%', IntToStr(ItemIndex)]);
+               'INDEX%', IntToStr(ItemIndex),
+               'INDEX0%', IntToStr(ItemIndex - 1)]);
             outFile.AddStrings(tmpLines);
           end;
         end
