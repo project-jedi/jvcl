@@ -39,9 +39,8 @@ uses
   JvInspector, StdCtrls, JvExStdCtrls, JvListBox, JvPropertyStore,
   JvPropertyStoreEditorIntf, JvDynControlEngineIntf, ActnList, Menus;
 
-
 type
-  TJvPropertyStoreEditorControl = class(TCustomControl)
+  TJvPropertyStoreEditorControl = class(TJvCustomControl)
     procedure JvInspectorAfterItemCreate(Sender: TObject; Item:
         TJvCustomInspectorItem);
     procedure JvInspectorBeforeItemCreate(Sender: TObject; Data:
