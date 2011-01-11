@@ -11,11 +11,11 @@
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
     <Package Name="JclVcl" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="designide" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
-    <Package Name="vclx" Targets="all" Condition=""/>
-    <Package Name="dclstd" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="dclstd" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all" Formname="JvCheckItemsEditor" Condition=""/>

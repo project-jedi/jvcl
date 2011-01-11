@@ -8,8 +8,8 @@
   <Requires>
     <Package Name="JvCrypt-R" Targets="all" Condition=""/>
     <Package Name="JvCoreDesign-D" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvCryptReg.pas" Targets="all" Formname="" Condition=""/>

@@ -506,6 +506,7 @@ begin
      'UNITNAME%', unitname,
      'Unitname%', punitname,
      'INDEX%', IntToStr(Index),
+     'INDEX0%', IntToStr(Index - 1),
      'FORMNAME%', formName,
      'FORMTYPE%', formType,
      'FORMNAMEANDTYPE%', formNameAndType,

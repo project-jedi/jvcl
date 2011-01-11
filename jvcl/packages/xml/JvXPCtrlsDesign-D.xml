@@ -10,9 +10,9 @@
     <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
     <Package Name="JclVcl" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
-    <Package Name="designide" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all" Formname="" Condition=""/>

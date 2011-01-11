@@ -11,10 +11,10 @@
     <Package Name="JvControls-R" Targets="all" Condition=""/>
     <Package Name="JvGlobus-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="designide" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
-    <Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="designide" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
     <Package Name="vcldb" Targets="DB" Condition=""/>
     <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>

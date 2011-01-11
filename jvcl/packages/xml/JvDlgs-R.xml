@@ -11,9 +11,9 @@
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
-    <Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>

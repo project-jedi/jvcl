@@ -57,7 +57,7 @@
 			<DCCReference Include="JvCustom.dcp"/>
 			<DCCReference Include="JvStdCtrls.dcp"/>
 			<DCCReference Include="JvSystem.dcp"/>
-			<DCCReference Include="JCL.dcp"/>
+			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="designide.dcp"/>
 			<DCCReference Include="dclstd.dcp"/>

@@ -53,7 +53,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="JvCore.dcp"/>
-			<DCCReference Include="JCL.dcp"/>
+			<DCCReference Include="Jcl.dcp"/>
 			<DCCReference Include="JclVcl.dcp"/>
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="vcl.dcp"/>

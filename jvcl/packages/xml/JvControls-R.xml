@@ -13,9 +13,9 @@
     <Package Name="JclVcl" Targets="all" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
-    <Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvActionsEngine.pas" Targets="all" Formname="" Condition=""/>

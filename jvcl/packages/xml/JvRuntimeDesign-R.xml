@@ -9,11 +9,11 @@
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="dbrtl" Targets="DB" Condition="!DelphiPersonalEdition"/>
     <Package Name="vcldb" Targets="DB" Condition="!DelphiPersonalEdition"/>
-    <Package Name="vclx" Targets="all" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvInspDB.pas" Targets="DB" Formname="" Condition="!DelphiPersonalEdition"/>
