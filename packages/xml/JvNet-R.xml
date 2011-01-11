@@ -11,11 +11,11 @@
     <Package Name="JvDlgs-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
-    <Package Name="rtl" Targets="all" Condition=""/>
-    <Package Name="vcl" Targets="all" Condition=""/>
-    <Package Name="vclx" Targets="all" Condition=""/>
-    <Package Name="indy" Targets="all" Condition="USE_3RDPARTY_INDY &amp;&amp; !USE_3RDPARTY_INDY10"/>
-    <Package Name="indysystem" Targets="all" Condition="USE_3RDPARTY_INDY || USE_3RDPARTY_INDY10"/>
+    <Package Name="rtl" Targets="C,D" Condition=""/>
+    <Package Name="vcl" Targets="C,D,help" Condition=""/>
+    <Package Name="vclx" Targets="C,D" Condition=""/>
+    <Package Name="indy" Targets="C,D" Condition="USE_3RDPARTY_INDY &amp;&amp; !USE_3RDPARTY_INDY10"/>
+    <Package Name="indysystem" Targets="C,D" Condition="USE_3RDPARTY_INDY || USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols60" Targets="C6,C6p,D6,D6p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols70" Targets="D7,D7p" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IndyProtocols" Targets="allv9up" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
