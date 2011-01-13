@@ -951,10 +951,7 @@ begin
 
     // add additional .lib files
     if TargetConfig.Target.Version = 6 then
-      LibFiles.AddStrings(Project.Info.XmlInfo.C6Libs)
-    else
-    if TargetConfig.Target.Version = 10 then // not used
-      LibFiles.AddStrings(Project.Info.XmlInfo.C10Libs);
+      LibFiles.AddStrings(Project.Info.XmlInfo.C6Libs);
 
     AgeIndex := ObjFiles.Count;
     // add .pas.obj files

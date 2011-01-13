@@ -25,7 +25,6 @@ object frmMain: TfrmMain
     Top = 52
     Width = 2
     Height = 511
-    ExplicitHeight = 502
   end
   object jsbStatus: TJvStatusBar
     Left = 0
@@ -45,9 +44,6 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
-    DesignSize = (
-      137
-      511)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -214,11 +210,8 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
-    DesignSize = (
-      668
-      511)
     object lblDependencies: TLabel
-      Left = 12
+      Left = 14
       Top = 132
       Width = 72
       Height = 13
@@ -227,8 +220,8 @@ object frmMain: TfrmMain
       Caption = 'Dependencies'
     end
     object lblFiles: TLabel
-      Left = 12
-      Top = 328
+      Left = 14
+      Top = 296
       Width = 72
       Height = 13
       Alignment = taRightJustify
@@ -236,8 +229,8 @@ object frmMain: TfrmMain
       Caption = 'Files'
     end
     object lblName: TLabel
-      Left = 12
-      Top = 16
+      Left = 14
+      Top = 13
       Width = 72
       Height = 13
       Alignment = taRightJustify
@@ -245,43 +238,30 @@ object frmMain: TfrmMain
       Caption = 'Name'
     end
     object lblDescription: TLabel
-      Left = 12
-      Top = 36
+      Left = 14
+      Top = 37
       Width = 72
       Height = 13
       Alignment = taRightJustify
       AutoSize = False
       Caption = 'Description'
     end
-    object lblC6PFlags: TLabel
-      Left = 12
-      Top = 457
-      Width = 72
-      Height = 13
-      Alignment = taRightJustify
-      Anchors = [akLeft, akBottom]
-      AutoSize = False
-      Caption = 'BCB6 PFlags'
-    end
     object lblGUID: TLabel
-      Left = 8
-      Top = 431
+      Left = 10
+      Top = 61
       Width = 76
-      Height = 13
+      Height = 17
       Alignment = taRightJustify
       Anchors = [akLeft, akBottom]
       AutoSize = False
       Caption = 'Package GUID'
     end
-    object lblCompilerDefines: TLabel
-      Left = 12
-      Top = 485
-      Width = 72
+    object lblProperties: TLabel
+      Left = 39
+      Top = 440
+      Width = 47
       Height = 13
-      Alignment = taRightJustify
-      Anchors = [akLeft, akBottom]
-      AutoSize = False
-      Caption = 'Compiler defines'
+      Caption = 'Properties'
     end
     object ledName: TEdit
       Left = 92
@@ -301,37 +281,37 @@ object frmMain: TfrmMain
       TabOrder = 1
       OnChange = ledDescriptionChange
     end
-    object ledC6PFlags: TEdit
-      Left = 92
-      Top = 454
-      Width = 460
-      Height = 21
-      Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 2
-      OnChange = ledC6PFlagsChange
-    end
     object pnlDepAndFiles: TPanel
       Left = 92
-      Top = 56
+      Top = 80
       Width = 552
-      Height = 365
+      Height = 425
       Anchors = [akLeft, akTop, akRight, akBottom]
       BevelOuter = bvNone
-      TabOrder = 3
+      TabOrder = 2
       object sptDepAndFiles: TSplitter
         Left = 0
-        Top = 165
+        Top = 129
         Width = 552
         Height = 4
         Cursor = crVSplit
         Align = alTop
         OnMoved = sptDepAndFilesMoved
       end
+      object sptFilesAndProps: TSplitter
+        Left = 0
+        Top = 301
+        Width = 552
+        Height = 4
+        Cursor = crVSplit
+        Align = alBottom
+        OnMoved = sptFilesAndPropsMoved
+      end
       object jsgFiles: TJvStringGrid
         Left = 0
-        Top = 169
+        Top = 133
         Width = 552
-        Height = 196
+        Height = 168
         Align = alClient
         ColCount = 4
         DefaultColWidth = 40
@@ -342,20 +322,21 @@ object frmMain: TfrmMain
         PopupMenu = jpmFilesPopup
         TabOrder = 0
         OnGetEditText = jsgFilesGetEditText
+        OnSetEditText = jsgFilesSetEditText
         Alignment = taLeftJustify
         FixedFont.Charset = DEFAULT_CHARSET
         FixedFont.Color = clWindowText
         FixedFont.Height = -11
         FixedFont.Name = 'MS Sans Serif'
         FixedFont.Style = []
-        OnExitCell = jsgDependenciesExitCell
-        OnGetCellAlignment = jsgDependenciesGetCellAlignment
+        OnExitCell = jsgStringGridExitCell
+        OnGetCellAlignment = jsgStringGridGetCellAlignment
       end
       object jsgDependencies: TJvStringGrid
         Left = 0
         Top = 0
         Width = 552
-        Height = 165
+        Height = 129
         Align = alTop
         ColCount = 3
         DefaultColWidth = 40
@@ -363,9 +344,9 @@ object frmMain: TfrmMain
         FixedCols = 0
         RowCount = 2
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
-        PopupMenu = jpmDepPopup
+        PopupMenu = jpmFilesPopup
         TabOrder = 1
-        OnGetEditText = jsgFilesGetEditText
+        OnGetEditText = jsgDependenciesGetEditText
         OnSetEditText = jsgDependenciesSetEditText
         Alignment = taLeftJustify
         FixedFont.Charset = DEFAULT_CHARSET
@@ -373,47 +354,59 @@ object frmMain: TfrmMain
         FixedFont.Height = -11
         FixedFont.Name = 'MS Sans Serif'
         FixedFont.Style = []
-        OnExitCell = jsgDependenciesExitCell
-        OnGetCellAlignment = jsgDependenciesGetCellAlignment
+        OnExitCell = jsgStringGridExitCell
+        OnGetCellAlignment = jsgStringGridGetCellAlignment
+      end
+      object jsgProperties: TJvStringGrid
+        Left = 0
+        Top = 305
+        Width = 552
+        Height = 120
+        Align = alBottom
+        ColCount = 2
+        FixedCols = 0
+        RowCount = 2
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor]
+        TabOrder = 2
+        OnGetEditText = jsgPropertiesGetEditText
+        OnSetEditText = jsgPropertiesSetEditText
+        Alignment = taLeftJustify
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'Tahoma'
+        FixedFont.Style = []
+        OnExitCell = jsgStringGridExitCell
+        OnGetCellAlignment = jsgStringGridGetCellAlignment
       end
     end
-    object btnAdvancedBCB: TButton
-      Left = 555
-      Top = 454
-      Width = 89
-      Height = 21
-      Anchors = [akRight, akBottom]
-      Caption = 'Advanced'
-      TabOrder = 4
-      OnClick = btnAdvancedBCBClick
-    end
     object btnCLXDescription: TButton
-      Left = 544
+      Left = 543
       Top = 32
-      Width = 97
+      Width = 98
       Height = 21
       Anchors = [akTop, akRight]
       Caption = 'CLX Description'
-      TabOrder = 5
+      TabOrder = 3
       OnClick = btnCLXDescriptionClick
     end
     object edtGUID: TEdit
       Left = 92
-      Top = 427
-      Width = 460
+      Top = 56
+      Width = 445
       Height = 21
       Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 6
+      TabOrder = 4
       OnChange = edtGUIDChange
     end
     object btnGenerateGUID: TButton
-      Left = 555
-      Top = 427
-      Width = 89
+      Left = 543
+      Top = 56
+      Width = 98
       Height = 21
       Anchors = [akRight, akBottom]
       Caption = 'Generate'
-      TabOrder = 7
+      TabOrder = 5
       OnClick = btnGenerateGUIDClick
     end
     object ComboBoxType: TComboBox
@@ -424,7 +417,7 @@ object frmMain: TfrmMain
       Style = csDropDownList
       Anchors = [akTop, akRight]
       ItemHeight = 13
-      TabOrder = 8
+      TabOrder = 6
       OnClick = ComboBoxTypeSelect
       Items.Strings = (
         'Package Run-only'
@@ -432,15 +425,6 @@ object frmMain: TfrmMain
         'Package'
         'Library'
         'Program')
-    end
-    object edtCompilerDefines: TEdit
-      Left = 92
-      Top = 481
-      Width = 460
-      Height = 21
-      Anchors = [akLeft, akRight, akBottom]
-      TabOrder = 9
-      OnChange = edtCompilerDefinesChange
     end
   end
   object jmmMain: TJvMainMenu
@@ -453,8 +437,8 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Left = 760
-    Top = 116
+    Left = 736
+    Top = 164
     object mnuFile: TMenuItem
       Caption = '&File'
       object mnuOpen: TMenuItem
@@ -513,8 +497,8 @@ object frmMain: TfrmMain
   end
   object aclActions: TActionList
     Images = imlActive
-    Left = 732
-    Top = 116
+    Left = 708
+    Top = 164
     object actExit: TAction
       Category = 'File'
       Caption = '&Exit'
@@ -618,8 +602,8 @@ object frmMain: TfrmMain
     end
   end
   object imlActive: TImageList
-    Left = 704
-    Top = 116
+    Left = 680
+    Top = 164
     Bitmap = {
       494C010108000A00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001001000000000000018
@@ -833,8 +817,8 @@ object frmMain: TfrmMain
       000000000000}
   end
   object imlDisabled: TImageList
-    Left = 676
-    Top = 116
+    Left = 652
+    Top = 164
     Bitmap = {
       494C010104000600040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001001000000000000010
@@ -985,21 +969,21 @@ object frmMain: TfrmMain
     StatusText = 
       'Please indicate below the directory where the package sources ar' +
       'e located'
-    Left = 760
-    Top = 144
+    Left = 736
+    Top = 192
   end
   object aevEvents: TApplicationEvents
     OnHint = aevEventsHint
-    Left = 732
-    Top = 144
+    Left = 708
+    Top = 192
   end
   object odlAddFiles: TOpenDialog
     DefaultExt = '*.pas'
     Filter = 'Pascal files (*.pas)|*.pas|All files (*.*)|*.*'
     InitialDir = '..\..\run'
     Options = [ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Left = 760
-    Top = 172
+    Left = 736
+    Top = 220
   end
   object jpmDepPopup: TJvPopupMenu
     Images = imlActive
@@ -1011,8 +995,8 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Left = 676
-    Top = 144
+    Left = 652
+    Top = 192
     object mnuUpD: TMenuItem
       Action = actUp
     end
@@ -1031,8 +1015,8 @@ object frmMain: TfrmMain
       'odlAddFiles.InitialDir'
       'cmbModel.ItemIndex')
     StoredValues = <>
-    Left = 704
-    Top = 172
+    Left = 680
+    Top = 220
   end
   object jpmFilesPopup: TJvPopupMenu
     Images = imlActive
@@ -1044,8 +1028,8 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Left = 704
-    Top = 144
+    Left = 680
+    Top = 192
     object mnuUpF: TMenuItem
       Action = actUp
     end
@@ -1063,8 +1047,8 @@ object frmMain: TfrmMain
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Left = 676
-    Top = 172
+    Left = 652
+    Top = 220
     object mnuDeletePackageP: TMenuItem
       Action = actDelete
     end
@@ -1077,7 +1061,7 @@ object frmMain: TfrmMain
     StorageOptions.InvalidCharReplacement = '_'
     RootNodeName = 'Configuration'
     SubStorages = <>
-    Left = 732
-    Top = 172
+    Left = 708
+    Top = 220
   end
 end

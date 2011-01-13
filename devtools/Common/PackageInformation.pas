@@ -110,17 +110,10 @@ type
     FRequiresDB: Boolean;
     FProjectType: TProjectType;
     FIsXPlatform: Boolean;
-    FC6PFlags: string;
-    FC10PFlags: string;
-    FC6Libs: TStrings;
-    FC10Libs: TStrings;
     FGUID: string;
+    FProperties: TStrings;
+    FC6Libs: TStrings;
     FCompilerDefines: TStrings;
-    FReleaseNumber: string;
-    FVersionMinorNumber: string;
-    FVersionMajorNumber: string;
-    FImageBase: string;
-    FBuildNumber: string;
 
     function GetContainCount: Integer;
     function GetContains(Index: Integer): TContainedFile;
@@ -128,6 +121,14 @@ type
     function GetRequires(Index: Integer): TRequiredPackage;
 
     procedure LoadFromFile(const Filename: string);
+    function GetBuildNumber: string;
+    function GetC6Libs: TStrings;
+    function GetC6PFlags: string;
+    function GetCompilerDefines: TStrings;
+    function GetImageBase: string;
+    function GetReleaseNumber: string;
+    function GetVersionMajorNumber: string;
+    function GetVersionMinorNumber: string;
   public
     constructor Create(const AFilename: string);
     destructor Destroy; override;
@@ -144,19 +145,18 @@ type
     property RequiresDB: Boolean read FRequiresDB;
     property ProjectType: TProjectType read FProjectType;
     property IsXPlaform: Boolean read FIsXPlatform;
-    property ImageBase: string read FImageBase;
-    property VersionMajorNumber: string read FVersionMajorNumber;
-    property VersionMinorNumber: string read FVersionMinorNumber;
-    property ReleaseNumber: string read FReleaseNumber;
-    property BuildNumber: string read FBuildNumber;
+    property ImageBase: string read GetImageBase;
+    property VersionMajorNumber: string read GetVersionMajorNumber;
+    property VersionMinorNumber: string read GetVersionMinorNumber;
+    property ReleaseNumber: string read GetReleaseNumber;
+    property BuildNumber: string read GetBuildNumber;
 
-    property C6PFlags: string read FC6PFlags;
-    property C10PFlags: string read FC10PFlags;
-    property C6Libs: TStrings read FC6Libs;
-    property C10Libs: TStrings read FC10Libs;
+    property C6PFlags: string read GetC6PFlags;
+    property C6Libs: TStrings read GetC6Libs;
 
-    property CompilerDefines: TStrings read FCompilerDefines;
+    property CompilerDefines: TStrings read GetCompilerDefines;
     property GUID: string read FGUID;  // D9 support
+    property Properties: TStrings read FProperties;
   end;
 
   { Package Group }
@@ -370,6 +370,25 @@ function ProjectTypeToProjectName(ProjectType: TProjectType): string;
   // Clear the cache of XML package files
   // </summary>
 procedure ClearXmlFileCache;
+
+const
+  C6PFlagsKnownPackageProperty           = 'C6PFlags';
+  C6LibsKnownPackageProperty             = 'C6Libs';
+  CompilerDefinesKnownPackageProperty    = 'CompilerDefines';
+  ImageBaseKnownPackageProperty          = 'ImageBase';
+  VersionMajorNumberKnownPackageProperty = 'VersionMajorNumber';
+  VersionMinorNumberKnownPackageProperty = 'VersionMinorNumber';
+  ReleaseNumberKnownPackageProperty      = 'ReleaseNumber';
+  BuildNumberKnownPackageProperty        = 'BuildNumber';
+  KnownPackageProperties: array [0..7] of string =
+    ( C6PFlagsKnownPackageProperty,
+      C6LibsKnownPackageProperty,
+      CompilerDefinesKnownPackageProperty,
+      ImageBaseKnownPackageProperty,
+      VersionMajorNumberKnownPackageProperty,
+      VersionMinorNumberKnownPackageProperty,
+      ReleaseNumberKnownPackageProperty,
+      BuildNumberKnownPackageProperty );
 
 implementation
 
@@ -769,21 +788,49 @@ begin
     FProjectType := ptPackageRun;
   end;
 
-  FC6Libs := TStringList.Create;
-  FC10Libs := TStringList.Create;
-  FCompilerDefines := TStringList.Create;
+  FProperties := TStringList.Create;
 
   LoadFromFile(FFilename);
 end;
 
 destructor TPackageXmlInfo.Destroy;
 begin
+  FCompilerDefines.Free;
   FC6Libs.Free;
-  FC10Libs.Free;
+  FProperties.Free;
   FRequires.Free;
   FContains.Free;
-  FCompilerDefines.Free;
   inherited Destroy;
+end;
+
+function TPackageXmlInfo.GetBuildNumber: string;
+begin
+  Result := FProperties.Values[BuildNumberKnownPackageProperty];
+end;
+
+function TPackageXmlInfo.GetC6Libs: TStrings;
+begin
+  if not Assigned(FC6Libs) then
+    FC6Libs := TStringList.Create;
+
+  StrToStrings(FProperties.Values[C6LibsKnownPackageProperty], ' ', FC6Libs, False);
+
+  Result := FC6Libs;
+end;
+
+function TPackageXmlInfo.GetC6PFlags: string;
+begin
+  Result := FProperties.Values[C6PFlagsKnownPackageProperty];
+end;
+
+function TPackageXmlInfo.GetCompilerDefines: TStrings;
+begin
+  if not Assigned(FCompilerDefines) then
+    FCompilerDefines := TStringList.Create;
+
+  StrToStrings(FProperties.Values[CompilerDefinesKnownPackageProperty], ' ', FCompilerDefines, False);
+
+  Result := FCompilerDefines;
 end;
 
 function TPackageXmlInfo.GetContainCount: Integer;
@@ -796,6 +843,16 @@ begin
   Result := TContainedFile(FContains[Index]);
 end;
 
+function TPackageXmlInfo.GetImageBase: string;
+begin
+  Result := FProperties.Values[ImageBaseKnownPackageProperty];
+end;
+
+function TPackageXmlInfo.GetReleaseNumber: string;
+begin
+  Result := FProperties.Values[ReleaseNumberKnownPackageProperty];
+end;
+
 function TPackageXmlInfo.GetRequireCount: Integer;
 begin
   Result := FRequires.Count;
@@ -806,6 +863,16 @@ begin
   Result := TRequiredPackage(FRequires[Index]);
 end;
 
+function TPackageXmlInfo.GetVersionMajorNumber: string;
+begin
+  Result := FProperties.Values[VersionMajorNumberKnownPackageProperty];
+end;
+
+function TPackageXmlInfo.GetVersionMinorNumber: string;
+begin
+  Result := FProperties.Values[VersionMinorNumberKnownPackageProperty];
+end;
+
 procedure TPackageXmlInfo.LoadFromFile(const Filename: string);
 var
   i: Integer;
@@ -813,6 +880,7 @@ var
   ContainsFileName, FormName, Condition: string;
   xml: TJclSimpleXML;
   RootNode : TJclSimpleXmlElemClassic;
+  PropertiesNode, PropertyNode: TJclSimpleXmlElem;
   RequiredNode: TJclSimpleXmlElem;
   PackageNode: TJclSimpleXmlElem;
   ContainsNode: TJclSimpleXmlElem;
@@ -828,18 +896,18 @@ begin
     RootNode := xml.Root;
 
     FGUID := RootNode.Items.Value('GUID');
-    if Assigned(RootNode.Items.ItemNamed['CompilerDefines']) then
-      StrToStrings(RootNode.Items.Value('CompilerDefines'), ' ', CompilerDefines, False);
 
-    FC6PFlags := RootNode.Items.Value('C6PFlags');
-    FC10PFlags := FC6PFlags;
-    if Assigned(RootNode.Items.ItemNamed['C10PFlags']) then
-      FC10PFlags := RootNode.Items.Value('C10PFlags');
+    for i := Low(KnownPackageProperties) to High(KnownPackageProperties) do
+      if Assigned(RootNode.Items.ItemNamed[KnownPackageProperties[i]]) then
+        FProperties.Values[KnownPackageProperties[i]] := RootNode.Items.ItemNamed[KnownPackageProperties[i]].Value;
 
-    StrToStrings(RootNode.Items.Value('C6Libs'), ' ', C6Libs, False);
-    FC10Libs.Assign(FC6Libs);
-    if Assigned(RootNode.Items.ItemNamed['C10Libs']) then
-      StrToStrings(RootNode.Items.Value('C10Libs'), ' ', C10Libs, False);
+    PropertiesNode := RootNode.Items.ItemNamed['Properties'];
+    if Assigned(PropertiesNode) then
+      for i := 0 to PropertiesNode.Items.Count - 1 do
+    begin
+      PropertyNode := PropertiesNode.Items.Item[i];
+      FProperties.Values[PropertyNode.Properties.ItemNamed['Name'].Value] := PropertyNode.Properties.ItemNamed['Value'].Value;
+    end;
 
     RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
@@ -859,17 +927,6 @@ begin
     FIsXPlatform := RootNode.Properties.BoolValue('XPlatform', False);  // do not localize
     FDescription := RootNode.Items.Value('Description');                // do not localize
     FClxDescription := RootNode.Items.Value('ClxDescription');          // do not localize
-
-    if Assigned(RootNode.Items.ItemNamed['ImageBase']) then             // do not localize
-      FImageBase := RootNode.Items.Value('ImageBase');
-    if Assigned(RootNode.Items.ItemNamed['VersionMajorNumber']) then    // do not localize
-      FVersionMajorNumber := RootNode.Items.Value('VersionMajorNumber');
-    if Assigned(RootNode.Items.ItemNamed['VersionMinorNumber']) then    // do not localize
-      FVersionMinorNumber := RootNode.Items.Value('VersionMinorNumber');
-    if Assigned(RootNode.Items.ItemNamed['ReleaseNumber']) then         // do not localize
-      FReleaseNumber := RootNode.Items.Value('ReleaseNumber');
-    if Assigned(RootNode.Items.ItemNamed['BuildNumber']) then           // do not localize
-      FBuildNumber := RootNode.Items.Value('BuildNumber');
 
    // requires
     for i := 0 to RequiredNode.Items.Count -1 do
