@@ -575,6 +575,12 @@ end;
 function TPackageGenerator.ApplyTemplateAndSave(const path, target, package, extension: string;
   template : TStrings; xml : TPackageXmlInfo;
   const templateName, xmlName : string): string;
+  procedure AddProperty(Properties: TStrings; const Name, Value: string);
+  begin
+    Properties.Values[Name] := Value;
+    if Value = '' then
+      Properties.Add(Name + '=');
+  end;
 type
   TProjectConditional = record
     StartLine: string;
@@ -712,42 +718,42 @@ begin
     // prefetch replacements
     Properties.CaseSensitive := True;
     for i := 0 to FProjectProperties.Count - 1 do
-      Properties.Values[UpperCase(FProjectProperties.Names[i])] := FProjectProperties.ValueFromIndex[i];
+      AddProperty(Properties,UpperCase(FProjectProperties.Names[i]), FProjectProperties.ValueFromIndex[i]);
     for i := 0 to xml.Properties.Count - 1 do
-      Properties.Values[UpperCase(xml.Properties.Names[i])] := xml.Properties.ValueFromIndex[i];
+      AddProperty(Properties, UpperCase(xml.Properties.Names[i]), xml.Properties.ValueFromIndex[i]);
     // add custom properties (with backward compatibility)
-    Properties.Values['NAME'] := PathExtractFileNameNoExt(OutFileName);
-    Properties.Values['XMLNAME'] := ExtractFileName(xmlName);
-    Properties.Values['DESCRIPTION'] := GetDescription(xml, target);
-    Properties.Values['C6PFLAGS'] := FDefinesConditionParser.EnsurePFlagsCondition(Properties.Values['C6PFLAGS']);
-    Properties.Values['GUID'] := xml.GUID;
-    Properties.Values['IMAGE_BASE'] := Properties.Values[UpperCase(ImageBaseKnownPackageProperty)];
-    Properties.Values['IMAGE_BASE_INT'] := IntToStr(StrToInt('$' + Properties.Values[UpperCase(ImageBaseKnownPackageProperty)]));
-    Properties.Values['VERSION_MAJOR_NUMBER'] := Properties.Values[UpperCase(VersionMajorNumberKnownPackageProperty)];
-    Properties.Values['VERSION_MINOR_NUMBER'] := Properties.Values[UpperCase(VersionMinorNumberKnownPackageProperty)];
-    Properties.Values['RELEASE_NUMBER'] := Properties.Values[UpperCase(ReleaseNumberKnownPackageProperty)];
-    Properties.Values['BUILD_NUMBER'] := Properties.Values[UpperCase(BuildNumberKnownPackageProperty)];
-    Properties.Values['TYPE'] := Iff(ProjectTypeIsDesign(xml.ProjectType), 'DESIGN', 'RUN');
-    Properties.Values['DATETIME'] := FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC';
-    Properties.Values['type'] := OneLetterType;
-    Properties.Values['PATHPAS'] := PathPAS;
-    Properties.Values['PATHCPP'] := PathCPP;
-    Properties.Values['PATHASM'] := PathASM;
-    Properties.Values['PATHRC'] := PathRC;
-    Properties.Values['PATHLIB'] := PathLIB;
-    Properties.Values['PROJECT'] := ProjectTypeToProjectName(xml.ProjectType);
-    Properties.Values['BINEXTENSION'] := ProjectTypeToBinaryExtension(xml.ProjectType);
-    Properties.Values['ISDLL'] := Iff(ProjectTypeIsDLL(xml.ProjectType), 'True', 'False');
-    Properties.Values['ISPACKAGE'] := Iff(ProjectTypeIsPackage(xml.ProjectType), 'True', 'False');
-    Properties.Values['SOURCEEXTENSION'] := ProjectTypeToSourceExtension(xml.ProjectType);
-    Properties.Values['NOLINKPACKAGELIST'] := NoLinkPackageList;
-    Properties.Values['DEFINES'] := StringsToStr(CompilerDefines, ';', False);
-    Properties.Values['COMPILERDEFINES'] := Iff(DefineCount > 0, '-D' + StringsToStr(CompilerDefines, ';', False), '');
-    Properties.Values['REQUIRECOUNT'] := IntToStr(RequireCount);
-    Properties.Values['CONTAINCOUNT'] := IntToStr(ContainCount);
-    Properties.Values['FORMCOUNT'] := IntToStr(FormCount);
-    Properties.Values['LIBCOUNT'] := IntToStr(LibCount);
-    Properties.Values['DEFINECOUNT'] := IntToStr(DefineCount);
+    AddProperty(Properties, 'NAME', PathExtractFileNameNoExt(OutFileName));
+    AddProperty(Properties, 'XMLNAME', ExtractFileName(xmlName));
+    AddProperty(Properties, 'DESCRIPTION', GetDescription(xml, target));
+    AddProperty(Properties, 'C6PFLAGS', FDefinesConditionParser.EnsurePFlagsCondition(Properties.Values['C6PFLAGS']));
+    AddProperty(Properties, 'GUID', xml.GUID);
+    AddProperty(Properties, 'IMAGE_BASE', Properties.Values[UpperCase(ImageBaseKnownPackageProperty)]);
+    AddProperty(Properties, 'IMAGE_BASE_INT', IntToStr(StrToInt('$' + Properties.Values[UpperCase(ImageBaseKnownPackageProperty)])));
+    AddProperty(Properties, 'VERSION_MAJOR_NUMBER', Properties.Values[UpperCase(VersionMajorNumberKnownPackageProperty)]);
+    AddProperty(Properties, 'VERSION_MINOR_NUMBER', Properties.Values[UpperCase(VersionMinorNumberKnownPackageProperty)]);
+    AddProperty(Properties, 'RELEASE_NUMBER', Properties.Values[UpperCase(ReleaseNumberKnownPackageProperty)]);
+    AddProperty(Properties, 'BUILD_NUMBER', Properties.Values[UpperCase(BuildNumberKnownPackageProperty)]);
+    AddProperty(Properties, 'TYPE', Iff(ProjectTypeIsDesign(xml.ProjectType), 'DESIGN', 'RUN'));
+    AddProperty(Properties, 'DATETIME', FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC');
+    AddProperty(Properties, 'type', OneLetterType);
+    AddProperty(Properties, 'PATHPAS', PathPAS);
+    AddProperty(Properties, 'PATHCPP', PathCPP);
+    AddProperty(Properties, 'PATHASM', PathASM);
+    AddProperty(Properties, 'PATHRC', PathRC);
+    AddProperty(Properties, 'PATHLIB', PathLIB);
+    AddProperty(Properties, 'PROJECT', ProjectTypeToProjectName(xml.ProjectType));
+    AddProperty(Properties, 'BINEXTENSION', ProjectTypeToBinaryExtension(xml.ProjectType));
+    AddProperty(Properties, 'ISDLL', Iff(ProjectTypeIsDLL(xml.ProjectType), 'True', 'False'));
+    AddProperty(Properties, 'ISPACKAGE', Iff(ProjectTypeIsPackage(xml.ProjectType), 'True', 'False'));
+    AddProperty(Properties, 'SOURCEEXTENSION', ProjectTypeToSourceExtension(xml.ProjectType));
+    AddProperty(Properties, 'NOLINKPACKAGELIST', NoLinkPackageList);
+    AddProperty(Properties, 'DEFINES', StringsToStr(CompilerDefines, ';', False));
+    AddProperty(Properties, 'COMPILERDEFINES', Iff(DefineCount > 0, '-D' + StringsToStr(CompilerDefines, ';', False), ''));
+    AddProperty(Properties, 'REQUIRECOUNT', IntToStr(RequireCount));
+    AddProperty(Properties, 'CONTAINCOUNT', IntToStr(ContainCount));
+    AddProperty(Properties, 'FORMCOUNT', IntToStr(FormCount));
+    AddProperty(Properties, 'LIBCOUNT', IntToStr(LibCount));
+    AddProperty(Properties, 'DEFINECOUNT', IntToStr(DefineCount));
     SetLength(Replacements, Properties.Count * 2);
     for i := 0 to Properties.Count - 1 do
     begin
