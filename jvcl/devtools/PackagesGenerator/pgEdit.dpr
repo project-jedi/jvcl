@@ -9,7 +9,6 @@ uses
   GenerateUtils in 'GenerateUtils.pas',
   KnownTagsForm in 'KnownTagsForm.pas' {frmKnownTags},
   FormTypeDialog in 'FormTypeDialog.pas' {frmFormType},
-  AdvancedOptionsForm in 'AdvancedOptionsForm.pas' {frmAdvancedOptions},
   GenerationMessagesForm in 'GenerationMessagesForm.pas' {frmGenMessages},
   ModelsForm in 'ModelsForm.pas' {frmModels},
   ConditionParser in 'ConditionParser.pas',
@@ -30,7 +29,6 @@ begin
   Application.CreateForm(TfrmTargets, frmTargets);
   Application.CreateForm(TfrmKnownTags, frmKnownTags);
   Application.CreateForm(TfrmFormType, frmFormType);
-  Application.CreateForm(TfrmAdvancedOptions, frmAdvancedOptions);
   Application.CreateForm(TfrmGenMessages, frmGenMessages);
   Application.CreateForm(TfrmModels, frmModels);
   Application.Run;

@@ -47,7 +47,7 @@
            <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
            <VersionInfo Name="AutoIncBuild">False</VersionInfo>
            <VersionInfo Name="MajorVer">3</VersionInfo>
-           <VersionInfo Name="MinorVer">40</VersionInfo>
+           <VersionInfo Name="MinorVer">41</VersionInfo>
            <VersionInfo Name="Release">0</VersionInfo>
            <VersionInfo Name="Build">0</VersionInfo>
            <VersionInfo Name="Debug">False</VersionInfo>
@@ -61,13 +61,13 @@
          <VersionInfoKeys>
           <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="FileDescription">JVCL System Components Runtime Package</VersionInfoKeys>
-          <VersionInfoKeys Name="FileVersion">3.40.0.0</VersionInfoKeys>
+          <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JvSystem</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2007 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
           <VersionInfoKeys Name="OriginalFilename">JvSystem110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
-          <VersionInfoKeys Name="ProductVersion">3.40 Build 0</VersionInfoKeys>
+          <VersionInfoKeys Name="ProductVersion">3.41 Build 0</VersionInfoKeys>
          </VersionInfoKeys>
         <Source>
           <Source Name="MainSource">JvSystem.dpk</Source>

@@ -56,7 +56,6 @@ type
     jsgFiles: TJvStringGrid;
     lblFiles: TLabel;
     odlAddFiles: TOpenDialog;
-    ledC6PFlags: TEdit;
     actSaveAll: TAction;
     actAddFiles: TAction;
     tbtAddFiles: TToolButton;
@@ -73,7 +72,6 @@ type
     sptDepAndFiles: TSplitter;
     lblName: TLabel;
     lblDescription: TLabel;
-    lblC6PFlags: TLabel;
     jfsStore: TJvFormStorage;
     mnuHelp: TMenuItem;
     mnuKnown: TMenuItem;
@@ -82,7 +80,6 @@ type
     mnuAddFiles: TMenuItem;
     N3: TMenuItem;
     mnuExit: TMenuItem;
-    btnAdvancedBCB: TButton;
     actOptions: TAction;
     mnuParameters: TMenuItem;
     jpmFilesPopup: TJvPopupMenu;
@@ -105,16 +102,17 @@ type
     btnGenerateGUID: TButton;
     edtGUID: TEdit;
     ComboBoxType: TComboBox;
-    edtCompilerDefines: TEdit;
-    lblCompilerDefines: TLabel;
+    sptFilesAndProps: TSplitter;
+    jsgProperties: TJvStringGrid;
+    lblProperties: TLabel;
     procedure ComboBoxTypeSelect(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
-    procedure jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
+    procedure jsgStringGridGetCellAlignment(Sender: TJvStringGrid;
       AColumn, ARow: Integer; State: TGridDrawState;
       var CellAlignment: TAlignment);
-    procedure jsgDependenciesExitCell(Sender: TJvStringGrid; AColumn,
+    procedure jsgStringGridExitCell(Sender: TJvStringGrid; AColumn,
       ARow: Integer; const EditText: String);
     procedure actAddFilesExecute(Sender: TObject);
     procedure actSaveUpdate(Sender: TObject);
@@ -140,9 +138,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure sptDepAndFilesMoved(Sender: TObject);
     procedure mnuAboutClick(Sender: TObject);
-    procedure jsgFilesGetEditText(Sender: TObject; ACol, ARow: Integer;
+    procedure jsgDependenciesGetEditText(Sender: TObject; ACol, ARow: Integer;
       var Value: String);
-    procedure btnAdvancedBCBClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure actUpExecute(Sender: TObject);
     procedure actDownExecute(Sender: TObject);
@@ -160,6 +157,15 @@ type
     procedure edtGUIDChange(Sender: TObject);
     procedure btnGenerateGUIDClick(Sender: TObject);
     procedure edtCompilerDefinesChange(Sender: TObject);
+    procedure sptFilesAndPropsMoved(Sender: TObject);
+    procedure jsgPropertiesSetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
+    procedure jsgFilesSetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
+    procedure jsgFilesGetEditText(Sender: TObject; ACol, ARow: Integer;
+      var Value: string);
+    procedure jsgPropertiesGetEditText(Sender: TObject; ACol, ARow: Integer;
+      var Value: string);
   private
     { Private declarations }
     FPackageGenerator: TPackageGenerator;
@@ -169,8 +175,10 @@ type
 
     FOrgValueDep: string; // original value of current column (dependencies list)
     FOrgValueFiles: string; // original value of current column (files list)
+    FOrgValueProps: string; // original value of current column (properties list)
     FValidOrgDep: Boolean; // True if FOrgValueDep is officially set
     FValidOrgFiles: Boolean; // True if FOrgValueFiles is officially set
+    FValidOrgProps: Boolean; // True if FOrgValueProps is officially set
 
     FClxDescription: string; // The CLX description of the active package
 
@@ -192,9 +200,10 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedOptionsForm,
+  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi,
   GenerationMessagesForm, ActiveX, PackageInformation,
   ModelsForm;
+
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -220,6 +229,7 @@ end;
 constructor TfrmMain.Create(AOwner: TComponent);
 var
   ErrMsg : string;
+  i: Integer;
 begin
   inherited Create(AOwner);
   FPackageGenerator := TPackageGenerator.Create;
@@ -262,6 +272,18 @@ begin
     ColWidths[2] := 170;
     ColWidths[3] := 70;
   end;
+
+  with jsgProperties do
+  begin
+    RowCount := Length(KnownPackageProperties) + 1;
+    Cells[0, 0] := 'Name';
+    Cells[1, 0] := 'Value';
+    ColWidths[0] := 130;
+    ColWidths[1] := 350;
+    for i := Low(KnownPackageProperties) to High(KnownPackageProperties) do
+      Cells[0, i + 1] := KnownPackageProperties[i];
+  end;
+
   jtbMenus.AutoSize := true;
 end;
 
@@ -271,7 +293,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrmMain.jsgDependenciesGetCellAlignment(Sender: TJvStringGrid;
+procedure TfrmMain.jsgStringGridGetCellAlignment(Sender: TJvStringGrid;
   AColumn, ARow: Integer; State: TGridDrawState;
   var CellAlignment: TAlignment);
 begin
@@ -281,7 +303,7 @@ begin
     CellAlignment := taCenter;
 end;
 
-procedure TfrmMain.jsgDependenciesExitCell(Sender: TJvStringGrid; AColumn,
+procedure TfrmMain.jsgStringGridExitCell(Sender: TJvStringGrid; AColumn,
   ARow: Integer; const EditText: String);
 var
   row : TStrings;
@@ -297,12 +319,17 @@ begin
      (Sender.Cells[0, Sender.RowCount-1] <> '') then
   begin
     Sender.InsertRow(Sender.RowCount);
-    row := Sender.Rows[ARow];
-    row[1] := 'all';
-    Changed := True;
+    if Sender <> jsgProperties then
+    begin
+      row := Sender.Rows[ARow];
+      row[1] := 'all';
+      Changed := True;
+    end;
   end;
-  if (ARow > 0) and (((Sender = jsgDependencies) and FValidOrgDep and (FOrgValueDep <> EditText) or
-      (Sender = jsgFiles) and FValidOrgFiles and (FOrgValueFiles <> EditText))) then
+  if (ARow > 0) and
+     (((Sender = jsgDependencies) and FValidOrgDep and (FOrgValueDep <> EditText)) or
+      ((Sender = jsgFiles) and FValidOrgFiles and (FOrgValueFiles <> EditText)) or
+      ((Sender = jsgProperties) and FValidOrgProps and (FOrgValueProps <> EditText))) then
     Changed := True;
 end;
 
@@ -387,10 +414,43 @@ begin
   Changed := True;
 end;
 
+procedure TfrmMain.jsgDependenciesGetEditText(Sender: TObject; ACol,
+  ARow: Integer; var Value: String);
+begin
+  FOrgValueDep := Value;
+  FValidOrgDep := True;
+end;
+
 procedure TfrmMain.jsgDependenciesSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: String);
 begin
   FOrgValueDep := jsgDependencies.Cells[ACol, ARow];
+end;
+
+procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol, ARow: Integer;
+  var Value: string);
+begin
+  FOrgValueFiles := Value;
+  FValidOrgFiles := True;
+end;
+
+procedure TfrmMain.jsgFilesSetEditText(Sender: TObject; ACol, ARow: Integer;
+  const Value: string);
+begin
+  FOrgValueFiles := jsgFiles.Cells[ACol, ARow];
+end;
+
+procedure TfrmMain.jsgPropertiesGetEditText(Sender: TObject; ACol,
+  ARow: Integer; var Value: string);
+begin
+  FOrgValueProps := Value;
+  FValidOrgProps := True;
+end;
+
+procedure TfrmMain.jsgPropertiesSetEditText(Sender: TObject; ACol,
+  ARow: Integer; const Value: string);
+begin
+  FOrgValueProps := jsgProperties.Cells[ACol, ARow];
 end;
 
 procedure TfrmMain.ledDescriptionChange(Sender: TObject);
@@ -441,6 +501,7 @@ var
   propname : string;
   row : TStrings;
   rootNode : TJvSimpleXmlElemClassic;
+  propertiesNode, propertyNode : TJvSimpleXmlElem;
   requiredNode : TJvSimpleXmlElem;
   packageNode : TJvSimpleXmlElem;
   filesNode : TJvSimpleXmlElem;
@@ -482,19 +543,15 @@ begin
       if FClxDescription <> '' then
         rootNode.Items.Add('ClxDescription', FClxDescription);
       rootNode.Items.Add('GUID', edtGUID.Text);
-      rootNode.Items.Add('C6PFlags', ledC6PFlags.Text);
-      rootNode.Items.Add('C6Libs', frmAdvancedOptions.edtBCB6.Text);
-      rootNode.Items.Add('CompilerDefines', edtCompilerDefines.Text);
-      if frmAdvancedOptions.edtImageBase.Text <> '' then
-        rootNode.Items.Add('ImageBase', frmAdvancedOptions.edtImageBase.Text);
-      if frmAdvancedOptions.edtVersionMajorNumber.Text <> '' then
-        rootNode.Items.Add('VersionMajorNumber', frmAdvancedOptions.edtVersionMajorNumber.Text);
-      if frmAdvancedOptions.edtVersionMinorNumber.Text <> '' then
-        rootNode.Items.Add('VersionMinorNumber', frmAdvancedOptions.edtVersionMinorNumber.Text);
-      if frmAdvancedOptions.edtReleaseNumber.Text <> '' then
-        rootNode.Items.Add('ReleaseNumber', frmAdvancedOptions.edtReleaseNumber.Text);
-      if frmAdvancedOptions.edtBuildNumber.Text <> '' then
-        rootNode.Items.Add('BuildNumber', frmAdvancedOptions.edtBuildNumber.Text);
+
+      // add properties
+      propertiesNode := rootNode.Items.Add('Properties');
+      for i := 1 to jsgProperties.RowCount - 2 do
+      begin
+        propertyNode := propertiesNode.Items.Add('Property');
+        propertyNode.Properties.Add('Name', jsgProperties.Cells[0,i]);
+        propertyNode.Properties.Add('Value', jsgProperties.Cells[1,i]);
+      end;
 
       // add required packages
       requiredNode := rootNode.Items.Add('Requires');
@@ -555,6 +612,7 @@ var
   propname : string;
   row : TStrings;
   rootNode : TJvSimpleXmlElemClassic;
+  propertiesNode, propertyNode : TJvSimpleXMLElem;
   requiredNode : TJvSimpleXmlElem;
   packageNode : TJvSimpleXmlElem;
   filesNode : TJvSimpleXmlElem;
@@ -602,24 +660,35 @@ begin
 
       // read description, PFLAGS, GUID, and libs
       ledDescription.Text := rootNode.Items.ItemNamed['Description'].Value;
-      ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
+      //ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
       if Assigned(rootNode.Items.ItemNamed['GUID']) then
         edtGUID.Text := rootNode.Items.ItemNamed['GUID'].Value;
-      frmAdvancedOptions.edtBCB6.Text := rootNode.Items.ItemNamed['C6Libs'].Value;
-      if Assigned(rootNode.Items.ItemNamed['CompilerDefines']) then
-        edtCompilerDefines.Text := rootNode.Items.ItemNamed['CompilerDefines'].Value;
-      if Assigned(rootNode.Items.ItemNamed['ClxDescription']) then
-        FClxDescription := rootNode.Items.ItemNamed['ClxDescription'].Value;
-      if Assigned(RootNode.Items.ItemNamed['ImageBase']) then             // do not localize
-        frmAdvancedOptions.edtImageBase.Text := RootNode.Items.Value('ImageBase');
-      if Assigned(RootNode.Items.ItemNamed['VersionMajorNumber']) then    // do not localize
-        frmAdvancedOptions.edtVersionMajorNumber.Text := RootNode.Items.Value('VersionMajorNumber');
-      if Assigned(RootNode.Items.ItemNamed['VersionMinorNumber']) then    // do not localize
-        frmAdvancedOptions.edtVersionMinorNumber.Text := RootNode.Items.Value('VersionMinorNumber');
-      if Assigned(RootNode.Items.ItemNamed['ReleaseNumber']) then         // do not localize
-        frmAdvancedOptions.edtReleaseNumber.Text := RootNode.Items.Value('ReleaseNumber');
-      if Assigned(RootNode.Items.ItemNamed['BuildNumber']) then           // do not localize
-        frmAdvancedOptions.edtBuildNumber.Text := RootNode.Items.Value('BuildNumber');
+
+      for i := Low(KnownPackageProperties) to High(KnownPackageProperties) do
+        if Assigned(rootNode.Items.ItemNamed[KnownPackageProperties[i]]) then
+      begin
+        j := jsgProperties.RowCount;
+        if jsgProperties.Cells[0,j-1] <> '' then
+          jsgProperties.RowCount := j + 1
+        else
+          Dec(j);
+        jsgProperties.Cells[0,j] := KnownPackageProperties[i];
+        jsgProperties.Cells[1,j] := rootNode.Items.ItemNamed[KnownPackageProperties[i]].Value;
+      end;
+
+      propertiesNode := rootNode.Items.ItemNamed['Properties'];
+      if Assigned(propertiesNode) then
+        for i := 0 to propertiesNode.Items.Count - 1 do
+      begin
+        j := jsgProperties.RowCount;
+        if jsgProperties.Cells[0,j-1] <> '' then
+          jsgProperties.RowCount := j + 1
+        else
+          Dec(j);
+        propertyNode := propertiesNode.Items.Item[i];
+        jsgProperties.Cells[0,j] := propertyNode.Properties.ItemNamed['Name'].Value;
+        jsgProperties.Cells[1,j] := propertyNode.Properties.ItemNamed['Value'].Value;
+      end;
 
       // read required packages
       requiredNode := rootNode.Items.ItemNamed['Requires'];
@@ -800,10 +869,20 @@ end;
 procedure TfrmMain.sptDepAndFilesMoved(Sender: TObject);
 begin
   lblDependencies.Top := pnlDepAndFiles.Top +
-                        (jsgDependencies.Height - lblDependencies.Height) div 2;
+                         (jsgDependencies.Height - lblDependencies.Height) div 2;
   lblFiles.Top := pnlDepAndFiles.Top +
-                  pnlDepAndFiles.Height - jsgFiles.Height +
-                        (jsgFiles.Height - lblFiles.Height) div 2;
+                  jsgFiles.Top +
+                  (jsgFiles.Height - lblFiles.Height) div 2;
+end;
+
+procedure TfrmMain.sptFilesAndPropsMoved(Sender: TObject);
+begin
+  lblFiles.Top := pnlDepAndFiles.Top +
+                  jsgFiles.Top +
+                  (jsgFiles.Height - lblFiles.Height) div 2;
+  lblProperties.Top := pnlDepAndFiles.Top +
+                       jsgProperties.Top +
+                       (jsgProperties.Height - lblProperties.Height) div 2;
 end;
 
 procedure TfrmMain.mnuAboutClick(Sender: TObject);
@@ -812,27 +891,6 @@ begin
     'JEDI Package Generator'#13#10+
     #13#10+
     '(c) 2003-2005 Olivier Sannier for the JEDI group');
-end;
-
-procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol,
-  ARow: Integer; var Value: String);
-begin
-  if Sender = jsgDependencies then
-  begin
-    FOrgValueDep := Value;
-    FValidOrgDep := True;
-  end
-  else
-  if Sender = jsgFiles then
-  begin
-    FOrgValueFiles := Value;
-    FValidOrgFiles := True;
-  end;
-end;
-
-procedure TfrmMain.btnAdvancedBCBClick(Sender: TObject);
-begin
-  frmAdvancedOptions.ShowModal;
 end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
@@ -943,12 +1001,14 @@ begin
   ledDescription.Text := '';
   ComboBoxType.ItemIndex := Integer(ptPackageRun);
   edtGUID.Text := '';
-  ledC6PFlags.Text := '';
-  edtCompilerDefines.Text := '';
+  //ledC6PFlags.Text := '';
+  //edtCompilerDefines.Text := '';
   jsgDependencies.Rows[1].Text := '';
   jsgDependencies.RowCount := 2;
   jsgFiles.Rows[1].Text := '';
   jsgFiles.RowCount := 2;
+  jsgProperties.Rows[1].Text := '';
+  jsgProperties.RowCount := 2;
 end;
 
 procedure TfrmMain.jlbListKeyDown(Sender: TObject; var Key: Word;
