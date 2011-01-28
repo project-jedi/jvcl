@@ -644,7 +644,10 @@ type
     {$IFNDEF DELPHI2010_UP}
     procedure NameThreadForDebugging(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF);
     {$ENDIF}
-    procedure NameThread(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF); virtual;
+    procedure NameThread(AThreadName: AnsiString; AThreadID: LongWord = $FFFFFFFF); {$IFDEF SUPPORTS_UNICODE_STRING} overload; {$ENDIF} virtual;
+    {$IFDEF SUPPORTS_UNICODE_STRING}
+    procedure NameThread(AThreadName: String; AThreadID: LongWord = $FFFFFFFF); overload;
+    {$ENDIF}
     property ThreadName: String read GetThreadName write SetThreadName;
   end;
 
@@ -811,6 +814,13 @@ begin
   if Assigned(JvCustomThreadNamingProc) then
     JvCustomThreadNamingProc(aThreadName, AThreadID);
 end;
+
+{$IFDEF SUPPORTS_UNICODE_STRING}
+procedure TJvCustomThread.NameThread(AThreadName: String; AThreadID: LongWord = $FFFFFFFF);
+begin
+  NameThread(AnsiString(AThreadName), AThreadId);
+end;
+{$ENDIF}
 
 procedure TJvCustomThread.SetThreadName(const Value: String);
 begin
