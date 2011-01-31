@@ -379,6 +379,7 @@ type
     function TabAt(X, Y: Integer): TJvTabBarItem;
     function MakeVisible(Tab: TJvTabBarItem): Boolean;
     function FindData(Data: TObject): TJvTabBarItem;
+    function CloseTab(ATab: TJvTabBarItem): Boolean;
 
     procedure DragDrop(Source: TObject; X: Integer; Y: Integer); override;
 
@@ -1244,6 +1245,22 @@ begin
     FHotTab := Tab;
     if poPaintsHotTab in CurrentPainter.Options then
       Paint;
+  end;
+end;
+
+function TJvCustomTabBar.CloseTab(ATab: TJvTabBarItem): Boolean;
+begin
+  Result := False;
+  if ATab <> nil then
+  begin
+     FClosingTab := ATab;
+    try
+      Result := TabCloseQuery(FClosingTab);
+      if Result then
+        TabClosed(FClosingTab);
+    finally
+      FClosingTab := nil;
+    end;
   end;
 end;
 
