@@ -29,7 +29,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls,
-  JvComponent, JvClipboardViewer, JvExForms;
+  JvComponent, JvClipboardViewer, JvExForms, JvJVCLUtils;
 
 type
   TJvClipboardViewerMainForm = class(TForm)
@@ -39,7 +39,7 @@ type
     Image1: TImage;
     Label2: TLabel;
     Label3: TLabel;
-    procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
+    procedure JvClipboardViewer1Image(Sender: TObject; Image: TJvBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; AText: string);
   end;
 
@@ -50,7 +50,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TJvClipboardViewerMainForm.JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
+procedure TJvClipboardViewerMainForm.JvClipboardViewer1Image(Sender: TObject; Image: TJvBitmap);
 begin
   Image1.Picture.Bitmap.Assign(Image);
 end;
