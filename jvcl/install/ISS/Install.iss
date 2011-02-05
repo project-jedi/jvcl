@@ -116,31 +116,31 @@ Name: "Examples"; Description: "Example projects"; Types: full;
 Name: "Packages"; Description: "Register Designtime Packages"; Types: full prefered
 Name: "Packages\JvCore"; Description: "Core (Property editors, AppStorage)"; Types: full prefered
 Name: "Packages\JvCmp"; Description: "Non-visual Components (PageManager, DataEmbedded, StrHolder, MouseGesture)"; Types: full prefered
-Name: "Packages\JvCtrls"; Description: "Controls (Buttons, ComboBox, ListBox, Labels, Splitter, Hint, Bars)"; Types: full prefered
+Name: "Packages\JvControls"; Description: "Controls (Buttons, ComboBox, ListBox, Labels, Splitter, Hint, Bars)"; Types: full prefered
 Name: "Packages\JvCustom"; Description: "Custom Controls (Edits, Outlook bar, TabBar, Labels, TrayIcon, Timeline)"; Types: full prefered
 Name: "Packages\JvStdCtrls"; Description: "Standard Controls (improved standard controls, BrowseDirDlg)"; Types: full prefered
 Name: "Packages\JvPageComps"; Description: "Page Controls (Navigation Pane, PageList, PageListTreeView)"; Types: full prefered
 Name: "Packages\JvSystem"; Description: "System Components (FormStorage, SimpleXML, Clipboard, Drag&Drop, MRU)"; Types: full prefered
+Name: "Packages\JvAppFrm"; Description: "Application/Form Components (HotKey, FormMagnet, EmbeddedForms, Wallpaper)"; Types: full prefered
 Name: "Packages\JvValidators"; Description: "Visual Control Validator"; Types: full prefered
 Name: "Packages\JvNet"; Description: "Network Components (HTTP/FTP/Local Grabber, ProgramVersionCheck)"; Types: full prefered
 Name: "Packages\JvXPCtrls"; Description: "XP Controls (XPBar, Button in XP style)"; Types: full prefered
 Name: "Packages\JvDocking"; Description: "Docking Components"; Types: full prefered
-Name: "Packages\JvWizard"; Description: "Wizard Controls"; Types: full prefered
+Name: "Packages\JvWizards"; Description: "Wizard Controls"; Types: full prefered
 
 Name: "Packages\DB"; Description: "Database Packages"
 Name: "Packages\DB\JvDB"; Description: "DB-Aware Controls (Grids, Lookups, ComboBox, TreeViews, Edits)"; Types: full prefered
 Name: "Packages\DB\JvBDE"; Description: "BDE Component"; Types: full
 
-Name: "Packages\JvAppFrm"; Description: "Application/Form Components (HotKey, FormMagnet, EmbeddedForms, Wallpaper)"; Types: full
 Name: "Packages\JvMM"; Description: "Multimedia and Images (Animated Images, ID3v1, WavePlayer, WaitingProgress)"; Types: full
-Name: "Packages\JvTimeframework"; Description: "Time Framework Controls"; Types: full
+Name: "Packages\JvTimeFramework"; Description: "Time Framework Controls"; Types: full
 Name: "Packages\JvCrypt"; Description: "Encryption and Compression Components"; Types: full
 Name: "Packages\JvHMI"; Description: "HMI Controls"; Types: full
-Name: "Packages\JvInterpreter"; Description: "Pascal Interpreter Components"; Types: full
+Name: "Packages\JvPascalInterpreter"; Description: "Pascal Interpreter Components"; Types: full
 Name: "Packages\JvManagedThreads"; Description: "Managed Threads Components"; Types: full
 Name: "Packages\JvPrintPreview"; Description: "Print Preview Components"; Types: full
 Name: "Packages\JvRuntimeDesign"; Description: "Runtime Design Components"; Types: full
-Name: "Packages\JvPlugin"; Description: "Plugin System"; Types: full
+Name: "Packages\JvPluginSystem"; Description: "Plugin System"; Types: full
 Name: "Packages\JvBands"; Description: "Band Objects"; Types: full
 Name: "Packages\JvDlgs"; Description: "Dialog Components"; Types: full
 
