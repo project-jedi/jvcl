@@ -945,7 +945,19 @@ begin
     begin
       F := Dest.FindField(Source.Fields[I].FieldName);
       if (F <> nil) and (F.DataType <> ftAutoInc) then
-        F.Value := Source.Fields[I].Value;
+      begin
+        case F.DataType of
+           ftString: F.AsString := Source.Fields[i].AsString;
+           ftInteger: F.AsInteger := Source.Fields[i].AsInteger;
+           ftBoolean: F.AsBoolean := Source.Fields[i].AsBoolean;
+           ftFloat: F.AsFloat := Source.Fields[i].AsFloat;
+           ftCurrency: F.AsCurrency := Source.Fields[i].AsCurrency;
+           ftDate: F.AsDateTime := Source.Fields[i].AsDateTime;
+           ftDateTime: F.AsDateTime := Source.Fields[i].AsDateTime;
+        else
+           F.Value := Source.Fields[I].Value;
+        end;
+      end;
     end;
   end
   else
@@ -955,7 +967,19 @@ begin
       F := Dest.FindField(Dest.FieldDefs[I].Name);
       FSrc := Source.FindField(Source.FieldDefs[I].Name);
       if (F <> nil) and (FSrc <> nil) and (F.DataType <> ftAutoInc) then
-        F.Value := FSrc.Value;
+      begin
+        case F.DataType of
+           ftString: F.AsString := FSrc.AsString;
+           ftInteger: F.AsInteger := FSrc.AsInteger;
+           ftBoolean: F.AsBoolean := FSrc.AsBoolean;
+           ftFloat: F.AsFloat := FSrc.AsFloat;
+           ftCurrency: F.AsCurrency := FSrc.AsCurrency;
+           ftDate: F.AsDateTime := FSrc.AsDateTime;
+           ftDateTime: F.AsDateTime := FSrc.AsDateTime;
+        else
+           F.Value := FSrc.Value;
+        end;
+      end;
     end;
   end;
 end;
