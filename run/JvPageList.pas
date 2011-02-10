@@ -772,14 +772,13 @@ begin
       end;
     end;
 
+    Page.BringToFront;
+    Page.Visible := True;
     {$IFDEF COMPILER9_UP}
     for I := 0 to PageCount - 1 do
       if Pages[i] <> Page then
-        Pages[i].Hide;
-    {$ELSE}
-    Page.BringToFront;
+        Pages[i].Visible := False;
     {$ENDIF COMPILER9_UP}
-    Page.Visible := True;
     if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
     begin
       if Page.CanFocus then
