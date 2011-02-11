@@ -882,8 +882,8 @@ begin
     ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
     ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
 
-    if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft)) then
-      SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft), 0)
+    if (Screen.Width div 2) > (CenterParWidth + (2 * CenterParLeft - Screen.DesktopLeft)) then
+      SetRect(TextRect, 0, 0, CenterParWidth + (2 * CenterParLeft - Screen.DesktopLeft), 0)
     else
       SetRect(TextRect, 0, 0, Screen.Width div 2, 0);
 
