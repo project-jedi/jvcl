@@ -3,105 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvThumbViews.pas
 Summary
-  Contains the TJvThumbViews component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvThumbViews component.
 Author
   John Kozikopulos
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbList
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbList.Thumbnail
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView
-<TITLEIMG TJvThumbView>
-JVCLInfo
-  GROUP=JVCL.Graphics
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AddFromFile
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFile - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AddFromStream@TStream@TGRFKind
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  AStream - Description for this parameter
-  AType   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AddFromStream@TStream@TGRFKind@String
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  AStream - Description for this parameter
-  AType   - Description for this parameter
-  aTitle  - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AddThumb
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ATitle - Description for this parameter
-  Redraw - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AlignView
+@@TJvThumbView.Size
 Summary
   Write here a summary (1 line)
 Description
@@ -111,7 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AsButtons
+@@TJvThumbView.ShowShadow
 Summary
   Write here a summary (1 line)
 Description
@@ -121,7 +31,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AutoHandleKeyb
+@@TJvThumbView.ShadowColor
 Summary
   Write here a summary (1 line)
 Description
@@ -131,7 +41,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.AutoScrolling
+@@TJvThumbView.SelectedFile
 Summary
   Write here a summary (1 line)
 Description
@@ -141,7 +51,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Count
+@@TJvThumbView.Selected
 Summary
   Write here a summary (1 line)
 Description
@@ -151,19 +61,50 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Delete
+@@TJvThumbView.ScrollMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.Refresh
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.OnStopScanning
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.OnStartScanning
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  No - Description for this parameter
+  Sender - Description for this parameter
+  Max    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Directory
+@@TJvThumbView.OnScanProgress
 Summary
   Write here a summary (1 line)
 Description
@@ -173,7 +114,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.EmptyList
+@@TJvThumbView.OnKeyUp
 Summary
   Write here a summary (1 line)
 Description
@@ -183,7 +124,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Filter
+@@TJvThumbView.OnKeyPress
 Summary
   Write here a summary (1 line)
 Description
@@ -193,19 +134,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.GetCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.MaxHeight
+@@TJvThumbView.OnKeyDown
 Summary
   Write here a summary (1 line)
 Description
@@ -215,37 +144,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.MaxWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.MinMemory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnChanging
+@@TJvThumbView.OnInvalidImage
 Summary
   Write here a summary (1 line)
 Description
@@ -271,7 +170,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnInvalidImage
+@@TJvThumbView.OnChange
 Summary
   Write here a summary (1 line)
 Description
@@ -281,7 +180,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnKeyDown
+@@TJvThumbView.OnChanging
 Summary
   Write here a summary (1 line)
 Description
@@ -291,7 +190,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnKeyPress
+@@TJvThumbView.MinMemory
 Summary
   Write here a summary (1 line)
 Description
@@ -301,7 +200,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnKeyUp
+@@TJvThumbView.MaxWidth
 Summary
   Write here a summary (1 line)
 Description
@@ -311,7 +210,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnScanProgress
+@@TJvThumbView.MaxHeight
 Summary
   Write here a summary (1 line)
 Description
@@ -321,20 +220,61 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnStartScanning
+@@TJvThumbView.GetCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.EmptyList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.Filter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.Directory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.Delete
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender - Description for this parameter
-  Max    - Description for this parameter
+  No - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.OnStopScanning
+@@TJvThumbView.Count
 Summary
   Write here a summary (1 line)
 Description
@@ -344,7 +284,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Refresh
+@@TJvThumbView.AutoScrolling
 Summary
   Write here a summary (1 line)
 Description
@@ -354,7 +294,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.ScrollMode
+@@TJvThumbView.AutoHandleKeyb
 Summary
   Write here a summary (1 line)
 Description
@@ -364,7 +304,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Selected
+@@TJvThumbView.AsButtons
 Summary
   Write here a summary (1 line)
 Description
@@ -374,7 +314,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.SelectedFile
+@@TJvThumbView.AlignView
 Summary
   Write here a summary (1 line)
 Description
@@ -384,31 +324,93 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.ShadowColor
+@@TJvThumbView.AddThumb
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  ATitle - Description for this parameter
+  Redraw - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.ShowShadow
+@@TJvThumbView.AddFromStream@TStream@TGRFKind@String
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  AStream - Description for this parameter
+  AType   - Description for this parameter
+  aTitle  - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbView.Size
+@@TJvThumbView.AddFromStream@TStream@TGRFKind
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  AStream - Description for this parameter
+  AType   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView.AddFromFile
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  AFile - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbView
+<TITLEIMG TJvThumbView>
+JVCLInfo
+  GROUP=JVCL.Graphics
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbList.Thumbnail
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -475,8 +477,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TProgressStartNotify
-<TITLE TProgressStartNotify type>
-<COMBINE TJvThumbView.OnStartScanning>
+<TITLE TProgressStartNotify type> <COMBINE TJvThumbView.OnStartScanning>
 
 ----------------------------------------------------------------------------------------------------
 @@TScrollMode
@@ -491,20 +492,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TScrollMode.smHorizontal
-  Description for smHorizontal
+Description for smHorizontal
 
 ----------------------------------------------------------------------------------------------------
 @@TScrollMode.smVertical
-  Description for smVertical
+Description for smVertical
 
 ----------------------------------------------------------------------------------------------------
 @@TScrollMode.smBoth
-  Description for smBoth
+Description for smBoth
 
 ----------------------------------------------------------------------------------------------------
 @@TTitleNotify
-<TITLE TTitleNotify type>
-<COMBINE TJvThumbView.OnGetTitle>
+<TITLE TTitleNotify type> <COMBINE TJvThumbView.OnGetTitle>
 
 ----------------------------------------------------------------------------------------------------
 @@TViewType
@@ -519,13 +519,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TViewType.vtNormal
-  Description for vtNormal
+Description for vtNormal
 
 ----------------------------------------------------------------------------------------------------
 @@TViewType.vtCenter
-  Description for vtCenter
+Description for vtCenter
 
 ----------------------------------------------------------------------------------------------------
 @@TViewType.vtFitToScreen
-  Description for vtFitToScreen
+Description for vtFitToScreen
 

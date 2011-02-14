@@ -1,27 +1,39 @@
 ##Package: DB
 ##Status: Generated
-##Skip: TJvSearchComboBoxLink
 ----------------------------------------------------------------------------------------------------
 @@JvDBSearchComboBox.pas
 Summary
-  Contains the TJvDBSearchComboBox component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBSearchComboBox component.
 Author
   Lionel Reynaud
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBCustomSearchComboBox
+@@TJvDBSearchComboBox
+<TITLEIMG TJvDBSearchComboBox>
+JVCLInfo
+  GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos,JVCL.EditsMemosAndCombos
+  FLAG=Component
+Summary
+  Combo box for navigating in a dataset.
+Description
+  TJvDBSearchComboBox is useful for navigation in dataset. It displays one field value of the current
+  record and contains list of all values of that field in the dataset. Selecting a value from the
+  drop down list causes the dataset to move to the corresponding record.
+  
+  To use this control just drop it on the form and set the DataSource and DataField properties.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCustomSearchComboBox.Refresh
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCustomSearchComboBox.DataField
-Summary
-  Identifies the field from which the combo box displays data.
-Description
-  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCustomSearchComboBox.DataResult
@@ -37,8 +49,8 @@ Description
 Summary
   Links the combo box to a dataset.
 Description
-  Specify the data source component that identifies the dataset in which the target field is found. To
-  allow the combo box to represent the data for a field, both the DataSource and the DataField
+  Specify the data source component that identifies the dataset in which the target field is found.
+  To allow the combo box to represent the data for a field, both the DataSource and the DataField
   properties must be set.
 
 ----------------------------------------------------------------------------------------------------
@@ -46,51 +58,38 @@ Description
 Summary
   Retrieves field values from a record that matches the search value.
 Description
-  Call GetResult to search for a record in the dataset in which the DataField field contains the value
-  of the combo box text and return other field values from the found record.
-
+  Call GetResult to search for a record in the dataset in which the DataField field contains the
+  value of the combo box text and return other field values from the found record.
+  
   <CODE>
   procedure TForm1.Button1Click(Sender: TObject);
   var
-    V: Variant;
-    C: Integer;
-    A: String;
+  V: Variant;
+  C: Integer;
+  A: String;
   begin
-    JvDBSearchComboBox.DataResult := 'CustNo;Addr1';
-    V := JvDBSearchComboBox.GetResult;
-    if not (VarType(V) in [varNull]) then
-    begin
-      C := V[0];
-      A := V[1];
-      ShowMessage(IntToStr(C) + #10 + A);
-    end
-    else
-      ShowMessage('Search unsuccessful!');
-  end;
-  </CODE>
+  JvDBSearchComboBox.DataResult := 'CustNo;Addr1';
+  V := JvDBSearchComboBox.GetResult;
+  if not (VarType(V) in [varNull]) then
+  begin
+    C := V[0];
+    A := V[1];
+    ShowMessage(IntToStr(C) + #10 + A);
+  end
+  else
+    ShowMessage('Search unsuccessful!'); end; </CODE>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBCustomSearchComboBox.Refresh
+@@TJvDBCustomSearchComboBox
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBSearchComboBox
-<TITLEIMG TJvDBSearchComboBox>
-JVCLInfo
-  GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos,JVCL.EditsMemosAndCombos
-  FLAG=Component
+@@TJvDBCustomSearchComboBox.DataField
 Summary
-  Combo box for navigating in a dataset.
+  Identifies the field from which the combo box displays data.
 Description
-  TJvDBSearchComboBox is useful for navigation in dataset. It displays one field value of the current
-  record and contains list of all values of that field in the dataset. Selecting a value from the drop
-  down list causes the dataset to move to the corresponding record.
-
-  To use this control just drop it on the form and set the DataSource and DataField properties.
+  Write here a description
 

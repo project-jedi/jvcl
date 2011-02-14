@@ -3,54 +3,21 @@
 ----------------------------------------------------------------------------------------------------
 @@JvgInspectorGrid.pas
 Summary
-  Contains the TJvgInspectorGrid component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvgInspectorGrid component.
 Author
   Andrey V. Chudin
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem
+@@TJvgInspectorGrid.RowToItem
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.Caption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.EditMask
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.Expanded
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.GetValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+Parameters
+  ARow - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -58,23 +25,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.HasChanged
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.IsChanged
+@@TJvgInspectorGrid.ItemToRow
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ValueIndex - Description for this parameter
+  Item - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -82,7 +39,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.OriginalValues
+@@TJvgInspectorGrid.Items
 Summary
   Write here a summary (1 line)
 Description
@@ -92,7 +49,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.Row
+@@TJvgInspectorGrid
+<TITLEIMG TJvgInspectorGrid>
+JVCLInfo
+  GROUP=JVCL.GridsAndContent.Grids
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItems.ShowMultiValues
 Summary
   Write here a summary (1 line)
 Description
@@ -102,7 +70,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.Selected
+@@TJvgGridItems.OnUpdate
 Summary
   Write here a summary (1 line)
 Description
@@ -112,34 +80,27 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.Sequence
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.SetValue
+@@TJvgGridItems.Items
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ValueIndex - Description for this parameter
-  Value      - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItem.Values
+@@TJvgGridItems.Insert
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -164,13 +125,76 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItems.Insert
+@@TJvgGridItem.Values
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.SetValue
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  ValueIndex - Description for this parameter
+  Value      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.Sequence
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.Selected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.Row
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.OriginalValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.IsChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ValueIndex - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -178,19 +202,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItems.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGridItems.OnUpdate
+@@TJvgGridItem.HasChanged
 Summary
   Write here a summary (1 line)
 Description
@@ -200,44 +212,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGridItems.ShowMultiValues
+@@TJvgGridItem.GetValue
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgInspectorGrid
-<TITLEIMG TJvgInspectorGrid>
-JVCLInfo
-  GROUP=JVCL.GridsAndContent.Grids
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgInspectorGrid.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgInspectorGrid.ItemToRow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -245,15 +224,38 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgInspectorGrid.RowToItem
+@@TJvgGridItem.Expanded
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ARow - Description for this parameter
-Return value
-  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.EditMask
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGridItem.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

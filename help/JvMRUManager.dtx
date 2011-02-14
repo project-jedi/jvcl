@@ -3,240 +3,190 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMRUManager.pas
 Summary
-  Contains the TJvMRUManager component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMRUManager component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-
-----------------------------------------------------------------------------------------------------
-@@TAccelDelimiter
-<TITLE TAccelDelimiter type>
-Summary
-  Type that describes the possible delimiters between the accelerator and the path in a TJvMRUManager
-  item
 Description
-  TAccelDelimiter is used for the AccelDelimiter property of a TJvMRUManager.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TAccelDelimiter.adTab
-  Use a tab as delimiter
-
-----------------------------------------------------------------------------------------------------
-@@TAccelDelimiter.adSpace
-  Use a space as delimiter
-
-----------------------------------------------------------------------------------------------------
-@@TClickMenuEvent
-<TITLE TClickMenuEvent type>
-<COMBINE TJvMRUManager.OnClick>
-
-----------------------------------------------------------------------------------------------------
-@@TGetItemEvent
-<TITLE TGetItemEvent type>
-<COMBINE TJvMRUManager.OnGetItemData>
-
-----------------------------------------------------------------------------------------------------
-@@TGetItemInfoEvent
-<TITLE TGetItemInfoEvent type>
-<COMBINE TJvMRUManager.OnGetItemInfo>
-
-----------------------------------------------------------------------------------------------------
-@@TGetItemInfoExEvent
-<TITLE TGetItemInfoExEvent type>
-<COMBINE TJvMRUManager.OnGetItemInfoEx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvMRUManager
-<TITLEIMG TJvMRUManager>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvRecentStrings.DeleteExceed
 Summary
-  The TJvMRUManager component is a most recently used (MRU) item manager.
+  Deletes items beyond the limit.
 Description
-  Use the TJvMRUManager when you need to handle files and similar items in a menu of some kind.
+  Delete items from the list that is beyond the specified MaxSize.
+  
+  If Mode is rmAppend, items are deleted from the end. If Mode is rmInsert, items are removed from
+  the front.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.AccelDelimiter
+@@TJvRecentStrings.AddStrings
 Summary
-  Specifies the delimiter between accelerator and path
+  Adds several items to the list.
 Description
-  Use AccelDelimiter to specify the character that should be used between an accelerator character and
-  the path item in a TJvMRUManager. AccelDelimiter can be either a space or a tab.
-
-  If ShowAccelChar is false, this property has no effect.
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Strings - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Add
+@@TJvRecentStrings
+Summary
+  Special TStrings descendant used by TJvMUManager.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvRecentStrings.Add
 Summary
   Adds an item to the list.
 Description
-  Call Add to add a new item to the list. Typically, a new item is added in response to opening a file
-  or similar. The item is either added to the front or rear of the list depending on the value of
-  Mode.
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
-  RecentName - The name of the item
-  UserData   - Arbitrary user data
+  S - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.AutoEnable
+@@TJvMRUManager.UpdateRecentMenu
 Summary
-  Specifies whether the menu's Enabled state should change automatically.
+  Updates the menu items.
 Description
-  Use AutoEnable to control whether RecentMenu is enabled/disabled automatically when items are added
-  and removed. If true, RecentMenu is disabled as long as there are no items in the list. If false,
-  RecentMenu.Enabled will not be changed by the MRU manager.
+  Call UpdateRecentMenu to update the menu items to match the state of the MRU items.
+  
+  UpdateRecentMenu is called internally when properties and items change.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.AutoUpdate
+@@TJvMRUManager.Strings
 Summary
-  Specifies whether the state of the menu is updated automatically or not.
+  Array of all items in the MRU list.
 Description
-  When AutoUpdate is true, changing properties of the component that affects the menu, automatically
-  updates and rebuilds the menu as necessary.
-
-  If you are doing lengthy updates or several changes at once, set AutoUpdate to false to avoid
-  unnecessary recalculations and updates. When you are finished set AutoUpdate to true again.
+  Use Strings to directly read the items of the MRU list as a TStrings. Although you could use
+  Strings to write items as well, it is not recommended,. Use the standard methods of the MRU manager
+  instead as this ensures proper operation.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Capacity
+@@TJvMRUManager.StartEllipsis
 Summary
-  Specifies how many items can be in the list.
+  Specifies how to shorten a path when it is too long.
 Description
-  Use Capacity to specify how many items the list can hold. When a new item is added that would make
-  the list exceed Capacity, the oldest item is removed. What item is considered the "oldest item" is
-  determined by the settings of Mode.
+  Use StartEllipsis to specify where any ellipsis characters should appear in a path string that
+  needs shortening.
+  
+  If StartEllipsis is true, the path is cut at the start, leaving the trailing part alone. If it is
+  false, the path is cut approximately in the middle.
+  
+  Note that if MaxLength is 0, no cutting of the path is performed and StartEllipsis has no relevance.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Clear
+@@TJvMRUManager.ShowAccelChar
 Summary
-  Removes all items from the list
+  Displays an accelerator character.
 Description
-  Call Clear to empty the list.
+  Specifies whether an accelerator character is displayed next to the item or not.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Duplicates
+@@TJvMRUManager.StartAccel
 Summary
-  Specifies whether duplicate strings can be added to the list.
+  Specifies accelerator character for first item in list.
 Description
-  Set Duplicates to specify what should happen when an attempt is made to add a duplicate string to the
-  list.
+  Use StartAccel to specify an accelerator character for the first item in the list. Subsequent items
+  are assigned an accelerator based on this value.
+  
+  Note that StartAccel must be a number (0, 1, 2, etc) although it is used as a character.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.IniStorage
+@@TJvMRUManager.SeparateSize
 Summary
-  Specifies the IniStorage component to use when saving and restoring MRU items automatically.
+  Specifies the number of items to display together as a group.
 Description
-  Specify an IniStorage component (For example TJvAppIniFileStorage or TJvAppRegistryStorage) that
-  should be used to save and restore items from.
-
-  Even if you don't specify an IniStorage component, you can save and load items manually using code.
+  Use SeparateSize to specify how many items should be displayed before showing a break line in the
+  menu. If SeparateSize is 0, no break line is displayed.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.IsMenuEnabled
+@@TJvMRUManager.SaveToAppStorage
 Summary
-  Determines if the menu is enabled or not.
+  Saves items to storage.
 Description
-  Call IsMenuEnabled to determine whether the menu is enabled or not.
-Return value
-  True if the menu is enabled. False if the menu is disabled.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Load
-Summary
-  Loads items from storage.
-Description
-  Call Load to load items from storage into the component. If IniStorage is nil, this method does
-  nothing.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.LoadFromAppStorage
-Summary
-  Loads items from storage.
-Description
-  Use LoadFromAppStorage to load items into the component and you want to use another storage component
+  Use SaveToAppStorage to save items from the component and you want to use another storage component
   than IniStorage.
 Parameters
   AppStorage - The storage component to use
   Path       - The path within the storage component to use
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.MaxLength
+@@TJvMRUManager.Save
 Summary
-  Specifies the allowed length of a path.
+  Saves items to storage.
 Description
-  Specifies the maximum number of characters a path can have in the menu. If a path contains more than
-  the allowed number of characters, the menu item caption will be shortened by removing one or more
-  characters and replacing them with ellipses (...).
-
-  A value of 0 indicates that there is no user-defined limit on the length.
-
-  Note that this only affects the visual display of the path, not the actual stored path.
+  Call Save to save items from the component into storage. If IniStorage is nil, this method does
+  nothing.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.MenuLocation
+@@TJvMRUManager.RemoveInvalid
 Summary
-  Specifies where the menu items for the MRU list appears in relation to RecentMenu.
+  Removes invalid items.
 Description
-  Use MenuLocation to specify where the MRU items appear in relation to RecentMenu. If MenuLocation is
-  mnuSibling, MRU items appear just below RecentMenu. If MenuLocation is mnuChild, MRU items appear as
-  children of RecentMenu.
+  Call RemoveInvalid to delete all items that can no longer be found in the file system.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Mode
+@@TJvMRUManager.RemoveOnSelect
 Summary
-  Specifies how items are added to the list.
+  Automatically removes items that are selected.
 Description
-  If Mode is rmAppend, items are added to the bottom of the list. If Mode is rmInsert, items are added
-  at the top of the list.
+  Specifies whether items are automatically removed from the MRU list when they are clicked. If
+  false, items are not removed.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnAfterUpdate
+@@TJvMRUManager.Remove
 Summary
-  Occurs after the menu has been updated.
+  Removes an item from the list.
 Description
-  Write a handler for this event to take specific action after the menu has been updated.
+  Call Remove to remove an item that matches RecentName from the list.
+Parameters
+  RecentName - Name of item to remove.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnBeforeUpdate
+@@TJvMRUManager.RecentMenu
 Summary
-  Occurs before the menu is updated.
+  Specifies the menu item to use as an anchor for the MRU list.
 Description
-  Write a handler for this event to take specific action before the menu is updated.
+  Assign an existing menu item either in a main menu or popup menu to RecentMenu to enable the MRU
+  list to be displayed. Depending on the value of MenuLocation, the MRU list either appears on the
+  same level as RecentMenu or as a child menu of RecentMenu.
+  
+  If you don't assign a menu item to RecentMenu, no MRU items will be shown. You can still use the
+  MRU manager in an invisible mode.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnChange
+@@TJvMRUManager.OnWriteItem
 Summary
-  Occurs when the list changes.
+  Occurs when an item is saved to a storage.
 Description
-  Write a handler for this event to take specific action when the list of MRU items changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnClick
-Summary
-  Occurs when an item in the list is clicked in the menu.
-Description
-  Write a handler for this event to take specific action when an MRU item is clicked in the menu. For
-  example, it would be quite common to load the clicked file into the application.
+  Write an OnWriteItem event handler to take specific action when an item is saved to a storage.
 Parameters
   Sender     - the MRU manager
-  RecentName - the name of the item
-  Caption    - the caption of the menu
+  AppStorage - the storage component
+  Path       - the path in storage
+  Index      - index of the item
+  RecentName - caption of the item
   UserData   - arbitrary user data
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnGetItemData
+@@TJvMRUManager.OnReadItem
 Summary
-  Occurs when info about an MRU item is requested
+  Occurs when an item is loaded from storage
 Description
-  Write a handler for this event to take specific action when info for an item is requested.
+  Write a handler for this event to take specific action when an item is loaded from storage.
 Parameters
-  Sender   - the MRU manager
-  Caption  - text of item
-  ShortCut - shortcut for item
-  UserData - arbitrary data for item
+  Sender     - the MRU manager
+  AppStorage - the storage component in use
+  Path       - the path of the item (in the storage component)
+  Index      - the index of the item
+  RecentName - the name of the item
+  UserData   - arbitrary user data
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMRUManager.OnGetItemInfo
@@ -264,180 +214,228 @@ See Also
   TJvMRUManager.OnGetItemInfo
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnReadItem
+@@TJvMRUManager.OnGetItemData
 Summary
-  Occurs when an item is loaded from storage
+  Occurs when info about an MRU item is requested
 Description
-  Write a handler for this event to take specific action when an item is loaded from storage.
+  Write a handler for this event to take specific action when info for an item is requested.
+Parameters
+  Sender   - the MRU manager
+  Caption  - text of item
+  ShortCut - shortcut for item
+  UserData - arbitrary data for item
+
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.OnChange
+Summary
+  Occurs when the list changes.
+Description
+  Write a handler for this event to take specific action when the list of MRU items changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.OnClick
+Summary
+  Occurs when an item in the list is clicked in the menu.
+Description
+  Write a handler for this event to take specific action when an MRU item is clicked in the menu. For
+  example, it would be quite common to load the clicked file into the application.
 Parameters
   Sender     - the MRU manager
-  AppStorage - the storage component in use
-  Path       - the path of the item (in the storage component)
-  Index      - the index of the item
   RecentName - the name of the item
+  Caption    - the caption of the menu
   UserData   - arbitrary user data
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.OnWriteItem
+@@TJvMRUManager.OnBeforeUpdate
 Summary
-  Occurs when an item is saved to a storage.
+  Occurs before the menu is updated.
 Description
-  Write an OnWriteItem event handler to take specific action when an item is saved to a storage.
-Parameters
-  Sender     - the MRU manager
-  AppStorage - the storage component
-  Path       - the path in storage
-  Index      - index of the item
-  RecentName - caption of the item
-  UserData   - arbitrary user data
+  Write a handler for this event to take specific action before the menu is updated.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.RecentMenu
+@@TJvMRUManager.OnAfterUpdate
 Summary
-  Specifies the menu item to use as an anchor for the MRU list.
+  Occurs after the menu has been updated.
 Description
-  Assign an existing menu item either in a main menu or popup menu to RecentMenu to enable the MRU list
-  to be displayed. Depending on the value of MenuLocation, the MRU list either appears on the same
-  level as RecentMenu or as a child menu of RecentMenu.
-
-  If you don't assign a menu item to RecentMenu, no MRU items will be shown. You can still use the MRU
-  manager in an invisible mode.
+  Write a handler for this event to take specific action after the menu has been updated.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Remove
+@@TJvMRUManager.Mode
 Summary
-  Removes an item from the list.
+  Specifies how items are added to the list.
 Description
-  Call Remove to remove an item that matches RecentName from the list.
-Parameters
-  RecentName - Name of item to remove.
+  If Mode is rmAppend, items are added to the bottom of the list. If Mode is rmInsert, items are
+  added at the top of the list.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.RemoveInvalid
+@@TJvMRUManager.MenuLocation
 Summary
-  Removes invalid items.
+  Specifies where the menu items for the MRU list appears in relation to RecentMenu.
 Description
-  Call RemoveInvalid to delete all items that can no longer be found in the file system.
+  Use MenuLocation to specify where the MRU items appear in relation to RecentMenu. If MenuLocation
+  is mnuSibling, MRU items appear just below RecentMenu. If MenuLocation is mnuChild, MRU items
+  appear as children of RecentMenu.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.RemoveOnSelect
+@@TJvMRUManager.MaxLength
 Summary
-  Automatically removes items that are selected.
+  Specifies the allowed length of a path.
 Description
-  Specifies whether items are automatically removed from the MRU list when they are clicked. If false,
-  items are not removed.
+  Specifies the maximum number of characters a path can have in the menu. If a path contains more
+  than the allowed number of characters, the menu item caption will be shortened by removing one or
+  more characters and replacing them with ellipses (...).
+  
+  A value of 0 indicates that there is no user-defined limit on the length.
+  
+  Note that this only affects the visual display of the path, not the actual stored path.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Save
+@@TJvMRUManager.LoadFromAppStorage
 Summary
-  Saves items to storage.
+  Loads items from storage.
 Description
-  Call Save to save items from the component into storage. If IniStorage is nil, this method does
-  nothing.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.SaveToAppStorage
-Summary
-  Saves items to storage.
-Description
-  Use SaveToAppStorage to save items from the component and you want to use another storage component
-  than IniStorage.
+  Use LoadFromAppStorage to load items into the component and you want to use another storage
+  component than IniStorage.
 Parameters
   AppStorage - The storage component to use
   Path       - The path within the storage component to use
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.SeparateSize
+@@TJvMRUManager.Load
 Summary
-  Specifies the number of items to display together as a group.
+  Loads items from storage.
 Description
-  Use SeparateSize to specify how many items should be displayed before showing a break line in the
-  menu. If SeparateSize is 0, no break line is displayed.
+  Call Load to load items from storage into the component. If IniStorage is nil, this method does
+  nothing.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.ShowAccelChar
+@@TJvMRUManager.IsMenuEnabled
 Summary
-  Displays an accelerator character.
+  Determines if the menu is enabled or not.
 Description
-  Specifies whether an accelerator character is displayed next to the item or not.
+  Call IsMenuEnabled to determine whether the menu is enabled or not.
+Return value
+  True if the menu is enabled. False if the menu is disabled.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.StartAccel
+@@TJvMRUManager.IniStorage
 Summary
-  Specifies accelerator character for first item in list.
+  Specifies the IniStorage component to use when saving and restoring MRU items automatically.
 Description
-  Use StartAccel to specify an accelerator character for the first item in the list. Subsequent items
-  are assigned an accelerator based on this value.
-
-  Note that StartAccel must be a number (0, 1, 2, etc) although it is used as a character.
+  Specify an IniStorage component (For example TJvAppIniFileStorage or TJvAppRegistryStorage) that
+  should be used to save and restore items from.
+  
+  Even if you don't specify an IniStorage component, you can save and load items manually using code.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.StartEllipsis
+@@TJvMRUManager.Clear
 Summary
-  Specifies how to shorten a path when it is too long.
+  Removes all items from the list
 Description
-  Use StartEllipsis to specify where any ellipsis characters should appear in a path string that needs
-  shortening.
-
-  If StartEllipsis is true, the path is cut at the start, leaving the trailing part alone. If it is
-  false, the path is cut approximately in the middle.
-
-  Note that if MaxLength is 0, no cutting of the path is performed and StartEllipsis has no relevance.
+  Call Clear to empty the list.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.Strings
+@@TJvMRUManager.Duplicates
 Summary
-  Array of all items in the MRU list.
+  Specifies whether duplicate strings can be added to the list.
 Description
-  Use Strings to directly read the items of the MRU list as a TStrings. Although you could use Strings
-  to write items as well, it is not recommended,. Use the standard methods of the MRU manager instead
-  as this ensures proper operation.
+  Set Duplicates to specify what should happen when an attempt is made to add a duplicate string to
+  the list.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMRUManager.UpdateRecentMenu
+@@TJvMRUManager.Capacity
 Summary
-  Updates the menu items.
+  Specifies how many items can be in the list.
 Description
-  Call UpdateRecentMenu to update the menu items to match the state of the MRU items.
-
-  UpdateRecentMenu is called internally when properties and items change.
+  Use Capacity to specify how many items the list can hold. When a new item is added that would make
+  the list exceed Capacity, the oldest item is removed. What item is considered the "oldest item" is
+  determined by the settings of Mode.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRecentStrings
+@@TJvMRUManager.AutoUpdate
 Summary
-  Special TStrings descendant used by TJvMUManager.
+  Specifies whether the state of the menu is updated automatically or not.
 Description
-  Write here a description
+  When AutoUpdate is true, changing properties of the component that affects the menu, automatically
+  updates and rebuilds the menu as necessary.
+  
+  If you are doing lengthy updates or several changes at once, set AutoUpdate to false to avoid
+  unnecessary recalculations and updates. When you are finished set AutoUpdate to true again.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRecentStrings.Add
+@@TJvMRUManager.AutoEnable
+Summary
+  Specifies whether the menu's Enabled state should change automatically.
+Description
+  Use AutoEnable to control whether RecentMenu is enabled/disabled automatically when items are added
+  and removed. If true, RecentMenu is disabled as long as there are no items in the list. If false,
+  RecentMenu.Enabled will not be changed by the MRU manager.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMRUManager.Add
 Summary
   Adds an item to the list.
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
+  Call Add to add a new item to the list. Typically, a new item is added in response to opening a
+  file or similar. The item is either added to the front or rear of the list depending on the value of
+  Mode.
 Parameters
-  S - Description for this parameter
+  RecentName - The name of the item
+  UserData   - Arbitrary user data
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRecentStrings.AddStrings
+@@TJvMRUManager
+<TITLEIMG TJvMRUManager>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
-  Adds several items to the list.
+  The TJvMRUManager component is a most recently used (MRU) item manager.
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Strings - Description for this parameter
+  Use the TJvMRUManager when you need to handle files and similar items in a menu of some kind.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRecentStrings.DeleteExceed
+@@TJvMRUManager.AccelDelimiter
 Summary
-  Deletes items beyond the limit.
+  Specifies the delimiter between accelerator and path
 Description
-  Delete items from the list that is beyond the specified MaxSize.
+  Use AccelDelimiter to specify the character that should be used between an accelerator character
+  and the path item in a TJvMRUManager. AccelDelimiter can be either a space or a tab.
+  
+  If ShowAccelChar is false, this property has no effect.
 
-  If Mode is rmAppend, items are deleted from the end. If Mode is rmInsert, items are removed from the
-  front.
+----------------------------------------------------------------------------------------------------
+@@TGetItemInfoExEvent
+<TITLE TGetItemInfoExEvent type> <COMBINE TJvMRUManager.OnGetItemInfoEx>
+
+----------------------------------------------------------------------------------------------------
+@@TGetItemInfoEvent
+<TITLE TGetItemInfoEvent type> <COMBINE TJvMRUManager.OnGetItemInfo>
+
+----------------------------------------------------------------------------------------------------
+@@TGetItemEvent
+<TITLE TGetItemEvent type> <COMBINE TJvMRUManager.OnGetItemData>
+
+----------------------------------------------------------------------------------------------------
+@@TClickMenuEvent
+<TITLE TClickMenuEvent type> <COMBINE TJvMRUManager.OnClick>
+
+----------------------------------------------------------------------------------------------------
+@@TAccelDelimiter.adTab
+Use a tab as delimiter
+
+----------------------------------------------------------------------------------------------------
+@@TAccelDelimiter.adSpace
+Use a space as delimiter
+
+----------------------------------------------------------------------------------------------------
+@@TAccelDelimiter
+<TITLE TAccelDelimiter type>
+Summary
+  Type that describes the possible delimiters between the accelerator and the path in a TJvMRUManager
+  item
+Description
+  TAccelDelimiter is used for the AccelDelimiter property of a TJvMRUManager.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.MaxSize
@@ -451,8 +449,8 @@ Description
 Summary
   Specifies how items are added to the list.
 Description
-  Use Mode to specify how items are added to the list. If Mode is rmAppend, items are added to the end
-  of the list. If Mode is rmInsert, items are added to the top of the list.
+  Use Mode to specify how items are added to the list. If Mode is rmAppend, items are added to the
+  end of the list. If Mode is rmInsert, items are added to the top of the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRecentStrings.Remove
@@ -474,16 +472,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuLocation.mruChild
-  Items are added as children of the selected menu item.
+Items are added as children of the selected menu item.
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuLocation.mruSibling
-  Items are added as siblings of the selected menu item.
+Items are added as siblings of the selected menu item.
 
 ----------------------------------------------------------------------------------------------------
 @@TReadItemEvent
-<TITLE TReadItemEvent type>
-<COMBINE TJvMRUManager.OnReadItem>
+<TITLE TReadItemEvent type> <COMBINE TJvMRUManager.OnReadItem>
 
 ----------------------------------------------------------------------------------------------------
 @@TRecentMode
@@ -495,14 +492,13 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TRecentMode.rmInsert
-  New items are added at the start of the list.
+New items are added at the start of the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TRecentMode.rmAppend
-  New items are added at the end of the list.
+New items are added at the end of the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TWriteItemEvent
-<TITLE TWriteItemEvent type>
-<COMBINE TJvMRUManager.OnWriteItem>
+<TITLE TWriteItemEvent type> <COMBINE TJvMRUManager.OnWriteItem>
 

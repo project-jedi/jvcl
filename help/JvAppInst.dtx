@@ -3,91 +3,107 @@
 ----------------------------------------------------------------------------------------------------
 @@JvAppInst.pas
 Summary
-  Contains the TJvAppInstances component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAppInstances component.
 Author
   Andreas Hausladen
-
-----------------------------------------------------------------------------------------------------
-@@TCmdLineReceivedEvent
-<TITLE TCmdLineReceivedEvent type>
-<COMBINE TJvAppInstances.OnCmdLineReceived>
-
-----------------------------------------------------------------------------------------------------
-@@TDataAvailableEvent
-<TITLE TDataAvailableEvent type>
-<COMBINE TJvAppInstances.OnDataAvailable>
-
-----------------------------------------------------------------------------------------------------
-@@TInstanceChangeEvent
-<TITLE TInstanceChangeEvent type>
-Summary
-  The type for event handlers that respond when another application instance is created or destroyed.
 Description
-  TInstanceChangeEvent is the type for event handlers that respond when another application instance is
-  created or destroyed.
-Parameters
-  Sender    - TJvAppInstance object.
-  ProcessId - The process id of the created or destroyed application instance.
+  <INCLUDE JVCL.UnitText.dtx>
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppInstDataKind
+<TITLE TJvAppInstDataKind type>
+Summary
+  The type for data kinds send between applications.
+Description
+  TJvAppInstDataKind is a 32-bit value that uniquely identifies a specific data kind.
 See Also
-  TJvAppInstances.OnInstanceCreated, TJvAppInstances.OnInstanceDestroyed
+  TJvAppInstances.SendData
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances
-<TITLEIMG TJvAppInstances>
-JVCLInfo
-  GROUP=JVCL.System
-  FLAG=Component
+@@TJvAppInstances.UserNotify
 Summary
-  Allows you to control the number of application instances running at the same time.
+  Sends a simple message to all instances.
 Description
-  The TJvAppInstances component encapsulates the TJclAppInstance class. It allows you to control the
-  number of application instances running at the same time. If a new instance is rejected it can send
-  its command line and other commands to the first instance.
-
-  To set a UniqueAppIdGuidStr you must call JclAppInst.JclAppInstances in the initialization section of
-  a unit or before the forms are created (OnCreate is too late).
-
-  This class is not thread safe.
+  Use UserNotify to send a simple message to all instances.
+Parameters
+  Param - A user defined value that is sent to all instances.
+See Also
+  TJvAppInstances.OnUserNotify, TJvAppInstances.SendData
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.Active
+@@TJvAppInstances.SendData
 Summary
-  Controls the state of the component.
+  Sends a message to all instances.
 Description
-  Set Active to False if you want to disable the component.
+  Call SendData to send a message to all running instances. Also the calling instance receives the
+  command line.
+Parameters
+  DataKind - The message kind.
+  Data     - The data to send.
+  Size     - Size of Data.
+Return value
+  Returns False if the function fails.
+See Also
+  TJvAppInstances.OnDataAvailable, TJvAppInstances.SendCmdLine
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.AppInstances
+@@TJvAppInstances.SendCmdLine
 Summary
-  Gives access to the underlying TJclAppInstances class.
+  Sends the command line to the first instance.
 Description
-  This property gives you access to the underlying JEDI Code Library TJclAppInstances class.
+  Messages sent by SendCmdLine are sent to all running instances. Also the calling instance receives
+  the command line.
+See Also
+  TJvAppInstances.OnCmdLineReceived, TJvAppInstances.SendData
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.AutoActivate
+@@TJvAppInstances.OnUserNotify
 Summary
-  Controls the activation of the first instance.
+  Occurs when a message sent by UserNotify is received.
 Description
-  If AutoActivate is True then the first instance is brought to front by the second process instance.
+  Install an event handler for this event if you want to receive messages sent by UserNotify.
+Parameters
+  Sender - calling TJvAppInstances object
+  Param  - The argument specified by the UserNotify call
+See Also
+  TJvAppInstances.UserNotify
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.Check
+@@TJvAppInstances.OnRejected
 Summary
-  Tests for an existing instance.
+  Occurs when this instance was rejected by another instance.
 Description
-  If Check finds an existing application instance, it will communicate with the first instance and then
-  terminate.
-
-  Check is called by the Loaded method. So there is no need to call it directly.
+  OnRejected is raised and handled by the instance that wants to start if another instance does not
+  allow further instances.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.Handle
+@@TJvAppInstances.OnInstanceCreated
 Summary
-  Window Handle to the communication window.
+  Occurs after another instances is started.
 Description
-  Every instance has its own communication window. So you can use SendMessage/PostMessage with this
-  handle.
+  Install an event handler for this event if you want to be notified about new application instances.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppInstances.OnInstanceDestroyed
+Summary
+  Occurs when another instances is terminating.
+Description
+  Install an event handler for this event if you want to be notified about terminating application
+  instances.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppInstances.OnDataAvailable
+Summary
+  Occurs when data from a SendData call is available.
+Description
+  Install an event handler for this event if you want to receive data from other instances sent by
+  SendData.
+Parameters
+  Sender - Calling TJvAppInstances object.
+  Kind   - The message kind.
+  Data   - Pointer to the message data. (automatically released)
+  Size   - Size of the message data.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppInstances.MaxInstances
@@ -110,102 +126,85 @@ Parameters
   CmdLine - Contains the command line arguments (1 to ParamCount).
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.OnDataAvailable
+@@TJvAppInstances.Handle
 Summary
-  Occurs when data from a SendData call is available.
+  Window Handle to the communication window.
 Description
-  Install an event handler for this event if you want to receive data from other instances sent by
-  SendData.
-Parameters
-  Sender - Calling TJvAppInstances object.
-  Kind   - The message kind.
-  Data   - Pointer to the message data. (automatically released)
-  Size   - Size of the message data.
+  Every instance has its own communication window. So you can use SendMessage/PostMessage with this
+  handle.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.OnInstanceCreated
+@@TJvAppInstances.Check
 Summary
-  Occurs after another instances is started.
+  Tests for an existing instance.
 Description
-  Install an event handler for this event if you want to be notified about new application instances.
+  If Check finds an existing application instance, it will communicate with the first instance and
+  then terminate.
+  
+  Check is called by the Loaded method. So there is no need to call it directly.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.OnInstanceDestroyed
+@@TJvAppInstances.Active
 Summary
-  Occurs when another instances is terminating.
+  Controls the state of the component.
 Description
-  Install an event handler for this event if you want to be notified about terminating application
-  instances.
+  Set Active to False if you want to disable the component.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.OnRejected
+@@TJvAppInstances.AppInstances
 Summary
-  Occurs when this instance was rejected by another instance.
+  Gives access to the underlying TJclAppInstances class.
 Description
-  OnRejected is raised and handled by the instance that wants to start if another instance does not
-  allow further instances.
+  This property gives you access to the underlying JEDI Code Library TJclAppInstances class.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.OnUserNotify
+@@TJvAppInstances
+<TITLEIMG TJvAppInstances>
+JVCLInfo
+  GROUP=JVCL.System
+  FLAG=Component
 Summary
-  Occurs when a message sent by UserNotify is received.
+  Allows you to control the number of application instances running at the same time.
 Description
-  Install an event handler for this event if you want to receive messages sent by UserNotify.
-Parameters
-  Sender - calling TJvAppInstances object
-  Param  - The argument specified by the UserNotify call
-See Also
-  TJvAppInstances.UserNotify
+  The TJvAppInstances component encapsulates the TJclAppInstance class. It allows you to control the
+  number of application instances running at the same time. If a new instance is rejected it can send
+  its command line and other commands to the first instance.
+  
+  To set a UniqueAppIdGuidStr you must call JclAppInst.JclAppInstances in the initialization section
+  of a unit or before the forms are created (OnCreate is too late).
+  
+  This class is not thread safe.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.SendCmdLine
+@@TJvAppInstances.AutoActivate
 Summary
-  Sends the command line to the first instance.
+  Controls the activation of the first instance.
 Description
-  Messages sent by SendCmdLine are sent to all running instances. Also the calling instance receives
-  the command line.
-See Also
-  TJvAppInstances.OnCmdLineReceived, TJvAppInstances.SendData
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.SendData
-Summary
-  Sends a message to all instances.
-Description
-  Call SendData to send a message to all running instances. Also the calling instance receives the
-  command line.
-Parameters
-  DataKind - The message kind.
-  Data     - The data to send.
-  Size     - Size of Data.
-Return value
-  Returns False if the function fails.
-See Also
-  TJvAppInstances.OnDataAvailable, TJvAppInstances.SendCmdLine
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppInstances.UserNotify
-Summary
-  Sends a simple message to all instances.
-Description
-  Use UserNotify to send a simple message to all instances.
-Parameters
-  Param - A user defined value that is sent to all instances.
-See Also
-  TJvAppInstances.OnUserNotify, TJvAppInstances.SendData
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppInstDataKind
-<TITLE TJvAppInstDataKind type>
-Summary
-  The type for data kinds send between applications.
-Description
-  TJvAppInstDataKind is a 32-bit value that uniquely identifies a specific data kind.
-See Also
-  TJvAppInstances.SendData
+  If AutoActivate is True then the first instance is brought to front by the second process instance.
 
 ----------------------------------------------------------------------------------------------------
 @@TUserNotifyEvent
-<TITLE TUserNotifyEvent type>
-<COMBINE TJvAppInstances.OnUserNotify>
+<TITLE TUserNotifyEvent type> <COMBINE TJvAppInstances.OnUserNotify>
+
+----------------------------------------------------------------------------------------------------
+@@TCmdLineReceivedEvent
+<TITLE TCmdLineReceivedEvent type> <COMBINE TJvAppInstances.OnCmdLineReceived>
+
+----------------------------------------------------------------------------------------------------
+@@TDataAvailableEvent
+<TITLE TDataAvailableEvent type> <COMBINE TJvAppInstances.OnDataAvailable>
+
+----------------------------------------------------------------------------------------------------
+@@TInstanceChangeEvent
+<TITLE TInstanceChangeEvent type>
+Summary
+  The type for event handlers that respond when another application instance is created or destroyed.
+Description
+  TInstanceChangeEvent is the type for event handlers that respond when another application instance
+  is created or destroyed.
+Parameters
+  Sender    - TJvAppInstance object.
+  ProcessId - The process id of the created or destroyed application instance.
+See Also
+  TJvAppInstances.OnInstanceCreated, TJvAppInstances.OnInstanceDestroyed
 

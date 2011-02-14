@@ -3,76 +3,60 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPageSetup.pas
 Summary
-  Contains the TJvPageSetup component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPageSetup component.
 Author
   Pasha Sivtsov
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarginSize
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.AsRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvPageSetupFlags.poNoWarning
+Description for poNoWarning
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.Bottom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvPageSetupFlags.poThousandthsOfInches
+Description for poThousandthsOfInches
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.IsNull
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvPageSetupFlags.poHundredthsOfMillimeters
+Description for poHundredthsOfMillimeters
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.Left
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvPageSetupFlags.poDisablePrinter
+Description for poDisablePrinter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.MarginsEqu
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AMargin - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvPageSetupFlags.poDisablePaper
+Description for poDisablePaper
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.Right
+@@TJvPageSetupFlags.poDisablePagePainting
+Description for poDisablePagePainting
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupFlags.poDisableOrientation
+Description for poDisableOrientation
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupFlags.poMargins
+Description for poMargins
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupFlags.poMinMargins
+Description for poMinMargins
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupFlags.poDisableMargins
+Description for poDisableMargins
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupFlags.poDefaultMinMargins
+Description for poDefaultMinMargins
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupFlags
+<TITLE TJvPageSetupFlags type>
 Summary
   Write here a summary (1 line)
 Description
@@ -82,7 +66,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarginSize.Top
+@@TJvPageSetupDialog.PaperSize
 Summary
   Write here a summary (1 line)
 Description
@@ -92,36 +76,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageOptions
-<TITLE TJvPageOptions type>
-<COMBINE TJvPageSetupFlags>
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog
-<TITLEIMG TJvPageSetupDialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.Execute
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.GetDefaults
+@@TJvPageSetupDialog.OnPrinter
 Summary
   Write here a summary (1 line)
 Description
@@ -131,17 +86,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.Margin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.MinMargin
+@@TJvPageSetupDialog.Options
 Summary
   Write here a summary (1 line)
 Description
@@ -170,7 +115,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.OnPrinter
+@@TJvPageSetupDialog.Margin
 Summary
   Write here a summary (1 line)
 Description
@@ -180,7 +125,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.Options
+@@TJvPageSetupDialog.MinMargin
 Summary
   Write here a summary (1 line)
 Description
@@ -190,7 +135,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupDialog.PaperSize
+@@TJvPageSetupDialog.GetDefaults
 Summary
   Write here a summary (1 line)
 Description
@@ -200,8 +145,35 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags
-<TITLE TJvPageSetupFlags type>
+@@TJvPageSetupDialog.Execute
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageOptions
+<TITLE TJvPageOptions type> <COMBINE TJvPageSetupFlags>
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageSetupDialog
+<TITLEIMG TJvPageSetupDialog>
+JVCLInfo
+  GROUP=JVCL.Dialogs.Common
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarginSize.Top
 Summary
   Write here a summary (1 line)
 Description
@@ -211,53 +183,81 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poDefaultMinMargins
-  Description for poDefaultMinMargins
+@@TJvMarginSize.Right
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poMargins
-  Description for poMargins
+@@TJvMarginSize.MarginsEqu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMargin - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poMinMargins
-  Description for poMinMargins
+@@TJvMarginSize.Left
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poDisableMargins
-  Description for poDisableMargins
+@@TJvMarginSize.IsNull
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poDisableOrientation
-  Description for poDisableOrientation
+@@TJvMarginSize.Bottom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poDisablePagePainting
-  Description for poDisablePagePainting
+@@TJvMarginSize.AsRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poDisablePaper
-  Description for poDisablePaper
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poDisablePrinter
-  Description for poDisablePrinter
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poHundredthsOfMillimeters
-  Description for poHundredthsOfMillimeters
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poThousandthsOfInches
-  Description for poThousandthsOfInches
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageSetupFlags.poNoWarning
-  Description for poNoWarning
+@@TJvMarginSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintEvent
-<TITLE TJvPSPaintEvent type>
-<COMBINE TJvPageSetupDialog.OnPaint>
+<TITLE TJvPSPaintEvent type> <COMBINE TJvPageSetupDialog.OnPaint>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat
@@ -272,25 +272,25 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat.pwFullPage
-  Description for pwFullPage
+Description for pwFullPage
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat.pwMinimumMargins
-  Description for pwMinimumMargins
+Description for pwMinimumMargins
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat.pwMargins
-  Description for pwMargins
+Description for pwMargins
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat.pwGreekText
-  Description for pwGreekText
+Description for pwGreekText
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat.pwEnvStamp
-  Description for pwEnvStamp
+Description for pwEnvStamp
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPSPaintWhat.pwYAFullPage
-  Description for pwYAFullPage
+Description for pwYAFullPage
 

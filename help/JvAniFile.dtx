@@ -3,12 +3,14 @@
 ----------------------------------------------------------------------------------------------------
 @@JvAniFile.pas
 Summary
-  Contains the TJvAniFile component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAniFile component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedCursorImage
@@ -59,7 +61,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Clear
+@@TJvIconFrame.Icon
 Summary
   Write here a summary (1 line)
 Description
@@ -69,7 +71,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Creator
+@@TJvIconFrame.HotSpot
 Summary
   Write here a summary (1 line)
 Description
@@ -79,20 +81,27 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Draw
+@@TJvIconFrame
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIconFrame.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
-  ACanvas - Description for this parameter
-  ARect   - Description for this parameter
+  Source - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.FrameCount
+@@TJvAnimatedCursorImage.Title
 Summary
   Write here a summary (1 line)
 Description
@@ -102,73 +111,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Frames
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Header
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.IconCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Icons
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Index
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.LoadFromFile
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.LoadFromStream
+@@TJvAnimatedCursorImage.SaveToStream
 Summary
   Write here a summary (1 line)
 Description
@@ -202,7 +145,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.SaveToStream
+@@TJvAnimatedCursorImage.LoadFromStream
 Summary
   Write here a summary (1 line)
 Description
@@ -214,7 +157,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedCursorImage.Title
+@@TJvAnimatedCursorImage.Index
 Summary
   Write here a summary (1 line)
 Description
@@ -224,27 +167,41 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIconFrame
+@@TJvAnimatedCursorImage.IconCount
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIconFrame.Assign
+@@TJvAnimatedCursorImage.Icons
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
+  Write here a description
 Parameters
-  Source - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIconFrame.HotSpot
+@@TJvAnimatedCursorImage.Frames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.Header
 Summary
   Write here a summary (1 line)
 Description
@@ -254,7 +211,52 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIconFrame.Icon
+@@TJvAnimatedCursorImage.Draw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.FrameCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.LoadFromFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedCursorImage.Creator
 Summary
   Write here a summary (1 line)
 Description

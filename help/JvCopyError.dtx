@@ -3,31 +3,55 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCopyError.pas
 Summary
-  Contains the TJvCopyError component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvCopyError component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCopyError
-<TITLEIMG TJvCopyError>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Component
+@@TJvCopyError.TargetFile
 Summary
-  Displays a dialog box for errors encountered when copying a file.
+  The target file for the copy operation.
 Description
-  This component is used to display a dialog box encountered when copying a file during a setup
-  routine. It is a wrapper for the SetupCopyError API call.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCopyError.DiskName
-Summary
-  The name of the disk to prompt for.
-Description
-  This property contains the name of the disk the user will be prompted for.
+  This property contains the destination file of the copy operation.
 See Also
-  TJvCopyError.PathToSource
+  TJvCopyError.Win32ErrorCode
+
+----------------------------------------------------------------------------------------------------
+@@TJvCopyError.Style
+Summary
+  Flags used for modifying the dialog box.
+Description
+  These flags modify how the dialog box is presented to the user.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCopyError.SourceFile
+Summary
+  File to look for.
+Description
+  This property contains the file that the user needs to provide the location for.
+See Also
+  TJvCopyError.NewPath, TJvCopyError.PathToSource
+
+----------------------------------------------------------------------------------------------------
+@@TJvCopyError.PathToSource
+Summary
+  Default path to look for the file.
+Description
+  This property contains the initial contents for the combo box used to hold the user-selected path.
+See Also
+  TJvCopyError.DiskName
+
+----------------------------------------------------------------------------------------------------
+@@TJvCopyError.NewPath
+Summary
+  Contains the path chosen by the user.
+Description
+  This property contains the new path chosen by the user in the dialog box.
+See Also
+  TJvCopyError.PathToSource, TJvCopyError.SourceFile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.Execute
@@ -40,47 +64,25 @@ Return value
   dsSkipFile if the user pressed "Skip File", and dsError if an error occurred.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCopyError.NewPath
+@@TJvCopyError.DiskName
 Summary
-  Contains the path chosen by the user.
+  The name of the disk to prompt for.
 Description
-  This property contains the new path chosen by the user in the dialog box.
+  This property contains the name of the disk the user will be prompted for.
 See Also
-  TJvCopyError.PathToSource, TJvCopyError.SourceFile
+  TJvCopyError.PathToSource
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCopyError.PathToSource
+@@TJvCopyError
+<TITLEIMG TJvCopyError>
+JVCLInfo
+  GROUP=JVCL.Dialogs.Common
+  FLAG=Component
 Summary
-  Default path to look for the file.
+  Displays a dialog box for errors encountered when copying a file.
 Description
-  This property contains the initial contents for the combo box used to hold the user-selected path.
-See Also
-  TJvCopyError.DiskName
-
-----------------------------------------------------------------------------------------------------
-@@TJvCopyError.SourceFile
-Summary
-  File to look for.
-Description
-  This property contains the file that the user needs to provide the location for.
-See Also
-  TJvCopyError.NewPath, TJvCopyError.PathToSource
-
-----------------------------------------------------------------------------------------------------
-@@TJvCopyError.Style
-Summary
-  Flags used for modifying the dialog box.
-Description
-  These flags modify how the dialog box is presented to the user.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCopyError.TargetFile
-Summary
-  The target file for the copy operation.
-Description
-  This property contains the destination file of the copy operation.
-See Also
-  TJvCopyError.Win32ErrorCode
+  This component is used to display a dialog box encountered when copying a file during a setup
+  routine. It is a wrapper for the SetupCopyError API call.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCopyError.Win32ErrorCode

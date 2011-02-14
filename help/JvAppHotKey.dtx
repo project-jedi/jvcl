@@ -3,10 +3,51 @@
 ----------------------------------------------------------------------------------------------------
 @@JvAppHotKey.pas
 Summary
-  Contains the TJvApplicationHotKey component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvApplicationHotKey component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvApplicationHotKey.WindowsKey
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvHotKeyRegisterFailed
+<TITLE TJvHotKeyRegisterFailed type> <COMBINE TJvApplicationHotKey.OnHotKeyRegisterFailed>
+
+----------------------------------------------------------------------------------------------------
+@@TJvApplicationHotKey.OnHotKeyRegisterFailed
+Summary
+  Occurs when the registration of a hot key combination failed.
+Description
+  \Write an OnHotKeyRegisterFailed event handler to respond when the registration of a hot key
+  combination failed. The registration fails if the keystrokes specified for the hot key have already
+  been registered by another application.
+  
+  Change the \HotKey parameter to a new combination to try to register this new combination. By not
+  changing \HotKey you cancel the registration attempt for this hot key.
+Parameters
+  Sender - The object that triggered the event.
+  HotKey - Specifies a new hot key combination.
+
+----------------------------------------------------------------------------------------------------
+@@TJvApplicationHotKey.DoHotKey
+Summary
+  Generates the OnHotKey event.
+Description
+  DoHotKey is called when the registered key combination is pressed. DoHotKey will generate the
+  OnHotKey event if a handler is assigned.
+See Also
+  TJvApplicationHotKey.OnHotKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey
@@ -19,36 +60,15 @@ Summary
 Description
   The TJvApplicationHotKey components allows you to register a system wide hot key combination. When
   the key combination is pressed an event is generated.
-
+  
   To use this component you should:
-
+  
   * Drop a TJvApplicationHotKey component on a form or data module.
   * Assign a <B>unique</B> <LINK TJvApplicationHotKey.HotKey, hot key combination> to the component.
   * <LINK TJvApplicationHotKey.OnHotKey, Assign a handler> to the notification event.
-  * You may assign a handler to OnHotKeyRegisterFailed to respond when the registration of the hot key
-    combination failed.
+  * You may assign a handler to OnHotKeyRegisterFailed to respond when the registration of the hot
+  key   combination failed.
   * Activate the component by setting property Active to true.
-
-----------------------------------------------------------------------------------------------------
-@@TJvApplicationHotKey.Active
-Summary
-  Indicates the active state of the component.
-Description
-  Active indicates whether or not the hot key combination is registered and active. When set to True,
-  the event will be generated for the key combination, otherwise the key combination is not registered
-  and no event will be generated for the key combination.
-See Also
-  TJvApplicationHotKey.HotKey, TJvApplicationHotKey.OnHotKey
-
-----------------------------------------------------------------------------------------------------
-@@TJvApplicationHotKey.DoHotKey
-Summary
-  Generates the OnHotKey event.
-Description
-  DoHotKey is called when the registered key combination is pressed. DoHotKey will generate the
-  OnHotKey event if a handler is assigned.
-See Also
-  TJvApplicationHotKey.OnHotKey
 
 ----------------------------------------------------------------------------------------------------
 @@TJvApplicationHotKey.HotKey
@@ -70,32 +90,13 @@ See Also
   TJvApplicationHotKey.Active, TJvApplicationHotKey.HotKey
 
 ----------------------------------------------------------------------------------------------------
-@@TJvApplicationHotKey.OnHotKeyRegisterFailed
+@@TJvApplicationHotKey.Active
 Summary
-  Occurs when the registration of a hot key combination failed.
+  Indicates the active state of the component.
 Description
-  \Write an OnHotKeyRegisterFailed event handler to respond when the registration of a hot key
-  combination failed. The registration fails if the keystrokes specified for the hot key have already
-  been registered by another application.
-
-  Change the \HotKey parameter to a new combination to try to register this new combination. By not
-  changing \HotKey you cancel the registration attempt for this hot key.
-Parameters
-  Sender - The object that triggered the event.
-  HotKey - Specifies a new hot key combination.
-
-----------------------------------------------------------------------------------------------------
-@@TJvApplicationHotKey.WindowsKey
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Active indicates whether or not the hot key combination is registered and active. When set to True,
+  the event will be generated for the key combination, otherwise the key combination is not
+  registered and no event will be generated for the key combination.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvHotKeyRegisterFailed
-<TITLE TJvHotKeyRegisterFailed type>
-<COMBINE TJvApplicationHotKey.OnHotKeyRegisterFailed>
+  TJvApplicationHotKey.HotKey, TJvApplicationHotKey.OnHotKey
 

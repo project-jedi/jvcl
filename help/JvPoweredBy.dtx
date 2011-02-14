@@ -3,19 +3,22 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPoweredBy.pas
 Summary
-  Contains the TJvPoweredByJCL and the TJvPoweredByJVCL components.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPoweredByJCL and the TJvPoweredByJVCL components.
 Author
   Robert Marquardt
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPoweredBy
+@@TJvPoweredBy.URLActive
 Summary
-  Base class for controls that show a 'Powered by' banner.
+  Specifies whether to automatically open the associated URL when the user clicks the control.
 Description
-  TJvPoweredBy is a base class for the banner classes TJvPoweredByJCL and TJvPoweredByJVCL. Do not
-  create instances of TJvPoweredBy. If you would like to create a custom banner, use the class
-  TJvPoweredBy as a parent class for your replacement class.
+  Set URLActive to true to automatically open the URL or object specified by property URL when the
+  user clicks the control.
+See Also
+  TJvPoweredBy.URL
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredBy.Image
@@ -34,20 +37,19 @@ Description
   Use URL to associate a URL, an executable file, a document file, or a folder with the label. If
   URLActive is set to true and the user clicks on the label, then the object specified by URL is
   opened.
-Note
+  Note
   If URLActive is set to false, then URL is ignored.
 See Also
   TJvPoweredBy.Image, TJvPoweredBy.URLActive
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPoweredBy.URLActive
+@@TJvPoweredBy
 Summary
-  Specifies whether to automatically open the associated URL when the user clicks the control.
+  Base class for controls that show a 'Powered by' banner.
 Description
-  Set URLActive to true to automatically open the URL or object specified by property URL when the user
-  clicks the control.
-See Also
-  TJvPoweredBy.URL
+  TJvPoweredBy is a base class for the banner classes TJvPoweredByJCL and TJvPoweredByJVCL. Do not
+  create instances of TJvPoweredBy. If you would like to create a custom banner, use the class
+  TJvPoweredBy as a parent class for your replacement class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPoweredByJCL
@@ -59,7 +61,7 @@ Summary
   Shows a 'Powered by JCL' banner.
 Description
   Use the TJvPoweredByJVCL control to display a 'Powered by JCL' banner.
-
+  
   When the user clicks the banner, the JCL web-site is opened.
 See Also
   TJvPoweredByJVCL
@@ -74,7 +76,7 @@ Summary
   Shows a 'Powered by JVCL' banner.
 Description
   Use the TJvPoweredByJVCL control to display a 'Powered by JVCL' banner.
-
+  
   When the user clicks the banner, the JVCL web-site is opened.
 See Also
   TJvPoweredByJCL

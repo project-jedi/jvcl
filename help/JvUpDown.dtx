@@ -3,169 +3,12 @@
 ----------------------------------------------------------------------------------------------------
 @@JvUpDown.pas
 Summary
-  Contains the TJvUpDown component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvUpDown component.
 Author
   Peter Below
-
-----------------------------------------------------------------------------------------------------
-@@TJvAlignButton
-<TITLE TJvAlignButton type>
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <INCLUDE JVCL.UnitText.dtx>
 
-----------------------------------------------------------------------------------------------------
-@@TJvAlignButton.abLeft
-  Description for abLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvAlignButton.abRight
-  Description for abRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvAlignButton.abNone
-  Description for abNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDomainUpDown
-Summary
-  Base class for up-down controls that displays strings instead of numbers.
-Description
-  Use TJvCustomDomainUpDown as a base class when you need to implement an up-down control that scrolls
-  through text items instead of numeric values. Do not create instances of TJvCustomDomainUpDown.
-  Instead, drop a descendant - like TJvDomainUpDown - on a form and associate it through its <LINK
-  TJvCustomUpDown.Associate, Associate> property with an edit control to display the items in its <LINK
-  Items> array.
-
-  The text of the currently displayed item can be accessed through the <LINK Text> property.
-See Also
-  TJvCustomDomainUpDown.Items, TJvCustomDomainUpDown.Text
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDomainUpDown.Items
-Summary
-  Provides indexed access to the items stored in the control.
-Description
-  Use the properties and methods of Items to add, modify and delete the items that the control can
-  iterate through. To access or change the currently selected item, use the Text property.
-See Also
-  TJvCustomDomainUpDown.Text
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDomainUpDown.Text
-Summary
-  Provides access to the value of the currently selected item.
-Description
-  Use Text to set and retrieve the currently selected item in the Items property. If Text is set to a
-  nonexistent item, the selected item is not changed.
-See Also
-  TJvCustomDomainUpDown.Items
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.AcceptInteger
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.AlignButton
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Associate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Format
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.HotTrack
-Summary
-  Specifies whether the up-down control is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the up-down control text. When HotTrack is False, there is no
-  visual feedback when the mouse passes over the up-down control.
-See Also
-  TJvCustomUpDown.HotGlyph, TJvCustomUpDown.HotTrackFont, TJvCustomUpDown.OnMouseEnter,
-  TJvCustomUpDown.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Increment
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Max
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Min
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomUpDown.Position
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDomainUpDown
@@ -192,6 +35,167 @@ Description
   input field.
 
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.Position
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.Increment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.HotTrack
+Summary
+  Specifies whether the up-down control is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font specified by HotTrackFont is used for the up-down
+  control text. When HotTrack is False, there is no visual feedback when the mouse passes over the
+  up-down control.
+See Also
+  TJvCustomUpDown.HotGlyph, TJvCustomUpDown.HotTrackFont, TJvCustomUpDown.OnMouseEnter,
+  TJvCustomUpDown.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.Format
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.Associate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.AlignButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown.AcceptInteger
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUpDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDomainUpDown.Text
+Summary
+  Provides access to the value of the currently selected item.
+Description
+  Use Text to set and retrieve the currently selected item in the Items property. If Text is set to a
+  nonexistent item, the selected item is not changed.
+See Also
+  TJvCustomDomainUpDown.Items
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDomainUpDown.Items
+Summary
+  Provides indexed access to the items stored in the control.
+Description
+  Use the properties and methods of Items to add, modify and delete the items that the control can
+  iterate through. To access or change the currently selected item, use the Text property.
+See Also
+  TJvCustomDomainUpDown.Text
+
+----------------------------------------------------------------------------------------------------
+@@TJvAlignButton.abRight
+Description for abRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvAlignButton.abNone
+Description for abNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDomainUpDown
+Summary
+  Base class for up-down controls that displays strings instead of numbers.
+Description
+  Use TJvCustomDomainUpDown as a base class when you need to implement an up-down control that
+  scrolls through text items instead of numeric values. Do not create instances of
+  TJvCustomDomainUpDown.
+  Instead, drop a descendant - like TJvDomainUpDown - on a form and associate it through its <LINK
+  TJvCustomUpDown.Associate, Associate> property with an edit control to display the items in its
+  <LINK
+  Items> array.
+  
+  The text of the currently displayed item can be accessed through the <LINK Text> property.
+See Also
+  TJvCustomDomainUpDown.Items, TJvCustomDomainUpDown.Text
+
+----------------------------------------------------------------------------------------------------
+@@TJvAlignButton.abLeft
+Description for abLeft
+
+----------------------------------------------------------------------------------------------------
+@@TJvAlignButton
+<TITLE TJvAlignButton type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvUpDownFormat
 <TITLE TJvUpDownFormat type>
 Summary
@@ -204,9 +208,9 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUpDownFormat.ufInt
-  Description for ufInt
+Description for ufInt
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUpDownFormat.ufHex
-  Description for ufHex
+Description for ufHex
 

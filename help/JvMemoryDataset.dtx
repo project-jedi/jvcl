@@ -3,36 +3,27 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMemoryDataset.pas
 Summary
-  Contains the TJvMemoryDataset component. This component may be used to manipulate records within
-  memory, and provide them to any DataSource for use in data components.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMemoryDataset component. This component may be used to manipulate records within
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-
-----------------------------------------------------------------------------------------------------
-@@PMemBlobArray
-<TITLE PMemBlobArray type>
-<COMBINE TMemBlobArray>
-
-----------------------------------------------------------------------------------------------------
-@@TApplyEvent
-<TITLE TApplyEvent type>
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-Parameters
-  Dataset - Description for this parameter
-  Rows    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+    memory, and provide them to any DataSource for use in data components.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TApplyMode
-<TITLE TApplyMode type>
+@@TLoadMode.lmAppend
+Description for lmAppend
+
+----------------------------------------------------------------------------------------------------
+@@TLoadMode.lmCopy
+Description for lmCopy
+
+----------------------------------------------------------------------------------------------------
+@@TLoadMode
+<TITLE TLoadMode type>
 Summary
   Write here a summary (1 line)
 Description
@@ -42,57 +33,89 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TApplyMode.amNone
-  Description for amNone
-
-----------------------------------------------------------------------------------------------------
-@@TApplyMode.amAppend
-  Description for amAppend
-
-----------------------------------------------------------------------------------------------------
-@@TApplyMode.amMerge
-  Description for amMerge
-
-----------------------------------------------------------------------------------------------------
-@@TApplyRecordEvent
-<TITLE TApplyRecordEvent type>
+@@TJvMemoryRecord.MemoryData
 Summary
   Write here a summary (1 line)
 Description
-  This type is used by (for reference): TJvMemoryData.AfterApplyRecord TJvMemoryData.BeforeApplyRecord
-Parameters
-  Dataset    - Description for this parameter
-  RecStatus  - Description for this parameter
-  FoundApply - Description for this parameter
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TCompareRecords
-<TITLE TCompareRecords type>
+@@TJvMemoryRecord.Index
 Summary
   Write here a summary (1 line)
 Description
-  Nothing in this unit.
-Parameters
-  Item1 - Description for this parameter
-  Item2 - Description for this parameter
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemBlobStream
+@@TJvMemoryRecord.ID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryRecord.Data
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryRecord
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemBlobStream.Read
+@@TJvMemoryRecord.CreateEx
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
+  Write here a description
 Parameters
-  Buffer - Description for this parameter
-  Count  - Description for this parameter
+  MemoryData   - Description for this parameter
+  UpdateParent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.SortOnFields
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FieldNames      - Description for this parameter
+  CaseInsensitive - Description for this parameter
+  Descending      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.SaveToDataSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest               - Description for this parameter
+  RecordCount        - Description for this parameter
+  DisableAllControls - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -100,23 +123,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemBlobStream.Seek
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Offset - Description for this parameter
-  Origin - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemBlobStream.Truncate
+@@TJvMemoryData.SaveLoadState
 Summary
   Write here a summary (1 line)
 Description
@@ -126,41 +133,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemBlobStream.Write
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Buffer - Description for this parameter
-  Count  - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData
-<TITLEIMG TJvMemoryData>
-JVCLInfo
-  GROUP=JVCL.Storage
-  FLAG=Component
-Summary
-  Allows developer to create and maintain a memory-driven database.
-Description
-  This object, derived from TDataSet, provides methods that allow for creation and maintenance of
-  memory-based databases. This can be useful if you want to drive data-driven components from memory
-  rather than a disk-based database, say in the case of a client-server app where you wish to cache
-  frequently used data at the client side.
-
-  You could then use a TJvMemoryData object to provide this data to data access controls for display
-  and/or selection. Remember, however, that you would need to deliberately write information back to
-  the server if you wish for it to be persistent.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.AfterApply
+@@TJvMemoryData.RowsOriginal
 Summary
   Write here a summary (1 line)
 Description
@@ -170,7 +143,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.AfterApplyRecord
+@@TJvMemoryData.RowsChanged
 Summary
   Write here a summary (1 line)
 Description
@@ -180,268 +153,48 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.ApplyChanges
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.ApplyMode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.AutoIncAsInteger
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.BeforeApply
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.BeforeApplyRecord
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.BookmarkValid
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Bookmark - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.CancelChanges
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.Capacity
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.CompareBookmarks
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Bookmark1 - Description for this parameter
-  Bookmark2 - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.CopyStructure
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source              - Description for this parameter
-  UseAutoIncAsInteger - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.CreateBlobStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Field - Description for this parameter
-  Mode  - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.DataSet
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.DatasetClosed
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.EmptyTable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.ExactApply
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.FindDeleted
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  KeyValues - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.GetCurrentRecord
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Buffer - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.GetFieldData
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Field  - Description for this parameter
-  Buffer - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.GetValues
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FldNames - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.IsDeleted
+@@TJvMemoryData.Records
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Index - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.IsInserted
+@@TJvMemoryData.RowsAffected
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.IsLoading
+@@TJvMemoryData.OneValueInArray
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.Locate
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  KeyFields - Description for this parameter
+  KeyValues - Description for this parameter
+  Options   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -449,7 +202,54 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.IsOriginal
+@@TJvMemoryData.LoadStructure
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.LoadRecords
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.LoadFromDataSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Source             - Description for this parameter
+  RecordCount        - Description for this parameter
+  Mode               - Description for this parameter
+  DisableAllControls - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.KeyFieldNames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.IsUpdated
 Summary
   Write here a summary (1 line)
 Description
@@ -486,7 +286,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.IsUpdated
+@@TJvMemoryData.IsOriginal
 Summary
   Write here a summary (1 line)
 Description
@@ -498,26 +298,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.KeyFieldNames
+@@TJvMemoryData.IsInserted
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.LoadFromDataSet
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Source             - Description for this parameter
-  RecordCount        - Description for this parameter
-  Mode               - Description for this parameter
-  DisableAllControls - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -525,36 +310,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.LoadRecords
+@@TJvMemoryData.IsLoading
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.LoadStructure
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.Locate
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  KeyFields - Description for this parameter
-  KeyValues - Description for this parameter
-  Options   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -562,77 +322,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.OneValueInArray
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.Records
+@@TJvMemoryData.IsDeleted
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.RowsAffected
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.RowsChanged
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.RowsOriginal
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.SaveLoadState
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.SaveToDataSet
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest               - Description for this parameter
-  RecordCount        - Description for this parameter
-  DisableAllControls - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -640,41 +336,66 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryData.SortOnFields
+@@TJvMemoryData.GetValues
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FieldNames      - Description for this parameter
-  CaseInsensitive - Description for this parameter
-  Descending      - Description for this parameter
+  FldNames - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryRecord
+@@TJvMemoryData.GetFieldData
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Field  - Description for this parameter
+  Buffer - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryRecord.CreateEx
+@@TJvMemoryData.GetCurrentRecord
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Buffer - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.FindDeleted
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  MemoryData   - Description for this parameter
-  UpdateParent - Description for this parameter
+  KeyValues - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryRecord.Data
+@@TJvMemoryData.EmptyTable
 Summary
   Write here a summary (1 line)
 Description
@@ -684,7 +405,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryRecord.ID
+@@TJvMemoryData.ExactApply
 Summary
   Write here a summary (1 line)
 Description
@@ -694,7 +415,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryRecord.Index
+@@TJvMemoryData.DataSet
 Summary
   Write here a summary (1 line)
 Description
@@ -704,7 +425,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMemoryRecord.MemoryData
+@@TJvMemoryData.DatasetClosed
 Summary
   Write here a summary (1 line)
 Description
@@ -714,8 +435,52 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TLoadMode
-<TITLE TLoadMode type>
+@@TJvMemoryData.CreateBlobStream
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Field - Description for this parameter
+  Mode  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.CopyStructure
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Source              - Description for this parameter
+  UseAutoIncAsInteger - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.CompareBookmarks
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Bookmark1 - Description for this parameter
+  Bookmark2 - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.Capacity
 Summary
   Write here a summary (1 line)
 Description
@@ -725,12 +490,247 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TLoadMode.lmCopy
-  Description for lmCopy
+@@TJvMemoryData.CancelChanges
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TLoadMode.lmAppend
-  Description for lmAppend
+@@TJvMemoryData.BookmarkValid
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Bookmark - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.BeforeApplyRecord
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.AutoIncAsInteger
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.BeforeApply
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.ApplyMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.ApplyChanges
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.AfterApplyRecord
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData.AfterApply
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemoryData
+<TITLEIMG TJvMemoryData>
+JVCLInfo
+  GROUP=JVCL.Storage
+  FLAG=Component
+Summary
+  Allows developer to create and maintain a memory-driven database.
+Description
+  This object, derived from TDataSet, provides methods that allow for creation and maintenance of memory-based databases. This can be useful if you want to dri
+  e data-driven components from memory rather than a disk-based database, say in the case of a
+  client-server app where you wish to cache frequently used data at the client side.
+  
+  You could then use a TJvMemoryData object to provide this data to data access controls for display
+  and/or selection. Remember, however, that you would need to deliberately write information back to
+  the server if you wish for it to be persistent.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemBlobStream.Truncate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemBlobStream.Write
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Buffer - Description for this parameter
+  Count  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemBlobStream.Seek
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Offset - Description for this parameter
+  Origin - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemBlobStream.Read
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Buffer - Description for this parameter
+  Count  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMemBlobStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TCompareRecords
+<TITLE TCompareRecords type>
+Summary
+  Write here a summary (1 line)
+Description
+  Nothing in this unit.
+Parameters
+  Item1 - Description for this parameter
+  Item2 - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TApplyMode.amNone
+Description for amNone
+
+----------------------------------------------------------------------------------------------------
+@@TApplyMode.amAppend
+Description for amAppend
+
+----------------------------------------------------------------------------------------------------
+@@TApplyMode.amMerge
+Description for amMerge
+
+----------------------------------------------------------------------------------------------------
+@@TApplyRecordEvent
+<TITLE TApplyRecordEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference): TJvMemoryData.AfterApplyRecord TJvMemoryData.BeforeApplyRecord
+Parameters
+  Dataset    - Description for this parameter
+  RecStatus  - Description for this parameter
+  FoundApply - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TApplyMode
+<TITLE TApplyMode type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PMemBlobArray
+<TITLE PMemBlobArray type> <COMBINE TMemBlobArray>
+
+----------------------------------------------------------------------------------------------------
+@@TApplyEvent
+<TITLE TApplyEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dataset - Description for this parameter
+  Rows    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TMemBlobArray
@@ -772,19 +772,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordStatus.rsOriginal
-  Description for rsOriginal
+Description for rsOriginal
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordStatus.rsUpdated
-  Description for rsUpdated
+Description for rsUpdated
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordStatus.rsInserted
-  Description for rsInserted
+Description for rsInserted
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordStatus.rsDeleted
-  Description for rsDeleted
+Description for rsDeleted
 
 ----------------------------------------------------------------------------------------------------
 @@TSaveLoadState
@@ -799,15 +799,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TSaveLoadState.slsNone
-  Description for slsNone
+Description for slsNone
 
 ----------------------------------------------------------------------------------------------------
 @@TSaveLoadState.slsLoading
-  Description for slsLoading
+Description for slsLoading
 
 ----------------------------------------------------------------------------------------------------
 @@TSaveLoadState.slsSaving
-  Description for slsSaving
+Description for slsSaving
 
 ----------------------------------------------------------------------------------------------------
 @@TWordArray

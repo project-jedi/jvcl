@@ -3,38 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvJanTreeView.pas
 Summary
-  Contains the TJvJanTreeView component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvJanTreeView component.
 Author
   Jan Verhoeven
-
-----------------------------------------------------------------------------------------------------
-@@ErrorRange
-<TITLE ErrorRange type>
-Summary
-  Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  0..TotalErrors; - for reference)
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TGetVarEvent
-<TITLE TGetVarEvent type>
-<COMBINE TJvMathParser.OnGetVar>
-
-----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView
-<TITLEIMG TJvJanTreeView>
-JVCLInfo
-  GROUP=JVCL.ListsAndTrees.Trees
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.ColorFormulas
+@@TTreeKeyMappings.EditNode
 Summary
   Write here a summary (1 line)
 Description
@@ -44,7 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DefaultExt
+@@TTreeKeyMappings.DuplicateNode
 Summary
   Write here a summary (1 line)
 Description
@@ -54,7 +31,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoAddChildNode
+@@TTreeKeyMappings.DeleteNode
 Summary
   Write here a summary (1 line)
 Description
@@ -64,7 +41,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoAddNode
+@@TTreeKeyMappings.CloseTree
 Summary
   Write here a summary (1 line)
 Description
@@ -74,7 +51,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoCloseTree
+@@TTreeKeyMappings.AddNode
 Summary
   Write here a summary (1 line)
 Description
@@ -84,7 +61,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoDeleteNode
+@@TTreeKeyMappings.AddChildNode
 Summary
   Write here a summary (1 line)
 Description
@@ -94,7 +71,71 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoEditNode
+@@TokenTypes.ttModu
+Description for ttModu
+
+----------------------------------------------------------------------------------------------------
+@@TParseErrorEvent
+<TITLE TParseErrorEvent type> <COMBINE TJvMathParser.OnParseError>
+
+----------------------------------------------------------------------------------------------------
+@@TTreeKeyMappings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttEol
+Description for ttEol
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttBad
+Description for ttBad
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttErr
+Description for ttErr
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttCParen
+Description for ttCParen
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttNum
+Description for ttNum
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttFunc
+Description for ttFunc
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttExpo
+Description for ttExpo
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttOParen
+Description for ttOParen
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttDivide
+Description for ttDivide
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttMinus
+Description for ttMinus
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttTimes
+Description for ttTimes
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes.ttPlus
+Description for ttPlus
+
+----------------------------------------------------------------------------------------------------
+@@TokenTypes
+<TITLE TokenTypes type>
 Summary
   Write here a summary (1 line)
 Description
@@ -104,7 +145,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoFindNode
+@@TokenRec.FuncName
+Description for FuncName
+
+----------------------------------------------------------------------------------------------------
+@@TokenRec.Value
+Description for Value
+
+----------------------------------------------------------------------------------------------------
+@@TokenRec.State
+Description for State
+
+----------------------------------------------------------------------------------------------------
+@@TokenRec
+<TITLE TokenRec type>
 Summary
   Write here a summary (1 line)
 Description
@@ -114,7 +168,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoInsertNode
+@@TJvMathParser.Position
 Summary
   Write here a summary (1 line)
 Description
@@ -124,7 +178,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoLoadTree
+@@TJvMathParser.ParseValue
 Summary
   Write here a summary (1 line)
 Description
@@ -134,7 +188,122 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DoSaveTree
+@@TJvMathParser.ParseString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMathParser.ParseError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMathParser.Parse
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMathParser.OnParseError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender     - Description for this parameter
+  ParseError - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMathParser.OnGetVar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  VarName - Description for this parameter
+  Value   - Description for this parameter
+  Found   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMathParser
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvJanTreeView.Recalculate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvJanTreeView.KeyMappingsEnabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvJanTreeView.KeyMappings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvJanTreeView.FormuleColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvJanTreeView.FileName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvJanTreeView.DuplicateNode
 Summary
   Write here a summary (1 line)
 Description
@@ -169,7 +338,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.DuplicateNode
+@@TJvJanTreeView.DoSaveTree
 Summary
   Write here a summary (1 line)
 Description
@@ -179,7 +348,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.FileName
+@@TJvJanTreeView.DoLoadTree
 Summary
   Write here a summary (1 line)
 Description
@@ -189,7 +358,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.FormuleColor
+@@TJvJanTreeView.DoInsertNode
 Summary
   Write here a summary (1 line)
 Description
@@ -199,7 +368,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.KeyMappings
+@@TJvJanTreeView.DoFindNode
 Summary
   Write here a summary (1 line)
 Description
@@ -209,7 +378,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.KeyMappingsEnabled
+@@TJvJanTreeView.DoEditNode
 Summary
   Write here a summary (1 line)
 Description
@@ -219,7 +388,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvJanTreeView.Recalculate
+@@TJvJanTreeView.DoDeleteNode
 Summary
   Write here a summary (1 line)
 Description
@@ -229,42 +398,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMathParser
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvMathParser.OnGetVar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender  - Description for this parameter
-  VarName - Description for this parameter
-  Value   - Description for this parameter
-  Found   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMathParser.OnParseError
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender     - Description for this parameter
-  ParseError - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMathParser.Parse
+@@TJvJanTreeView.DoCloseTree
 Summary
   Write here a summary (1 line)
 Description
@@ -274,7 +408,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMathParser.ParseError
+@@TJvJanTreeView.DoAddNode
 Summary
   Write here a summary (1 line)
 Description
@@ -284,7 +418,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMathParser.ParseString
+@@TJvJanTreeView.DoAddChildNode
 Summary
   Write here a summary (1 line)
 Description
@@ -294,7 +428,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMathParser.ParseValue
+@@TJvJanTreeView.DefaultExt
 Summary
   Write here a summary (1 line)
 Description
@@ -304,7 +438,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMathParser.Position
+@@TJvJanTreeView.ColorFormulas
 Summary
   Write here a summary (1 line)
 Description
@@ -314,162 +448,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TokenRec
-<TITLE TokenRec type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TGetVarEvent
+<TITLE TGetVarEvent type> <COMBINE TJvMathParser.OnGetVar>
 
 ----------------------------------------------------------------------------------------------------
-@@TokenRec.State
-  Description for State
-
-----------------------------------------------------------------------------------------------------
-@@TokenRec.Value
-  Description for Value
-
-----------------------------------------------------------------------------------------------------
-@@TokenRec.FuncName
-  Description for FuncName
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes
-<TITLE TokenTypes type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttPlus
-  Description for ttPlus
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttMinus
-  Description for ttMinus
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttTimes
-  Description for ttTimes
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttDivide
-  Description for ttDivide
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttExpo
-  Description for ttExpo
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttOParen
-  Description for ttOParen
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttCParen
-  Description for ttCParen
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttNum
-  Description for ttNum
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttFunc
-  Description for ttFunc
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttEol
-  Description for ttEol
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttBad
-  Description for ttBad
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttErr
-  Description for ttErr
-
-----------------------------------------------------------------------------------------------------
-@@TokenTypes.ttModu
-  Description for ttModu
-
-----------------------------------------------------------------------------------------------------
-@@TParseErrorEvent
-<TITLE TParseErrorEvent type>
-<COMBINE TJvMathParser.OnParseError>
-
-----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings
+@@TJvJanTreeView
+<TITLEIMG TJvJanTreeView>
+JVCLInfo
+  GROUP=JVCL.ListsAndTrees.Trees
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings.AddChildNode
+@@ErrorRange
+<TITLE ErrorRange type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings.AddNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings.CloseTree
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings.DeleteNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings.DuplicateNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TTreeKeyMappings.EditNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  0..TotalErrors; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TTreeKeyMappings.FindNode

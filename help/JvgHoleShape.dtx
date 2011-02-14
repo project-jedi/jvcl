@@ -3,14 +3,16 @@
 ----------------------------------------------------------------------------------------------------
 @@JvgHoleShape.pas
 Summary
-  Contains the TJvgHoleShape component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvgHoleShape component.
 Author
   Andrey V. Chudin
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@THoleShapeType
-<TITLE THoleShapeType type>
+@@TRGNCombineMode
+<TITLE TRGNCombineMode type>
 Summary
   Write here a summary (1 line)
 Description
@@ -20,42 +22,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@THoleShapeType.stRectangle
-  Description for stRectangle
-
-----------------------------------------------------------------------------------------------------
-@@THoleShapeType.stSquare
-  Description for stSquare
-
-----------------------------------------------------------------------------------------------------
-@@THoleShapeType.stRoundRect
-  Description for stRoundRect
-
-----------------------------------------------------------------------------------------------------
-@@THoleShapeType.stRoundSquare
-  Description for stRoundSquare
-
-----------------------------------------------------------------------------------------------------
-@@THoleShapeType.stEllipse
-  Description for stEllipse
-
-----------------------------------------------------------------------------------------------------
-@@THoleShapeType.stCircle
-  Description for stCircle
-
-----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape
-<TITLEIMG TJvgHoleShape>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.BevelInner
+@@TJvgHoleShape.UpdateRGN
 Summary
   Write here a summary (1 line)
 Description
@@ -65,7 +32,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.BevelInnerBold
+@@TJvgHoleShape.ShapeBitmap
 Summary
   Write here a summary (1 line)
 Description
@@ -75,7 +42,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.BevelOffset
+@@TJvgHoleShape.Shape
 Summary
   Write here a summary (1 line)
 Description
@@ -85,7 +52,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.BevelOuter
+@@TJvgHoleShape.RGNOuter
 Summary
   Write here a summary (1 line)
 Description
@@ -95,7 +62,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.BevelOuterBold
+@@TJvgHoleShape.RGNInner
 Summary
   Write here a summary (1 line)
 Description
@@ -105,17 +72,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.CombineMode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.Enabled
+@@TJvgHoleShape.RectEllipse
 Summary
   Write here a summary (1 line)
 Description
@@ -146,7 +103,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.RectEllipse
+@@TJvgHoleShape.Enabled
 Summary
   Write here a summary (1 line)
 Description
@@ -156,7 +113,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.RGNInner
+@@TJvgHoleShape.CombineMode
 Summary
   Write here a summary (1 line)
 Description
@@ -166,7 +123,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.RGNOuter
+@@TJvgHoleShape.BevelOuterBold
 Summary
   Write here a summary (1 line)
 Description
@@ -176,7 +133,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.Shape
+@@TJvgHoleShape.BevelOuter
 Summary
   Write here a summary (1 line)
 Description
@@ -186,7 +143,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.ShapeBitmap
+@@TJvgHoleShape.BevelOffset
 Summary
   Write here a summary (1 line)
 Description
@@ -196,7 +153,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgHoleShape.UpdateRGN
+@@TJvgHoleShape.BevelInnerBold
 Summary
   Write here a summary (1 line)
 Description
@@ -206,8 +163,53 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TRGNCombineMode
-<TITLE TRGNCombineMode type>
+@@TJvgHoleShape.BevelInner
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgHoleShape
+<TITLEIMG TJvgHoleShape>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType.stEllipse
+Description for stEllipse
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType.stCircle
+Description for stCircle
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType.stRoundSquare
+Description for stRoundSquare
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType.stRoundRect
+Description for stRoundRect
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType.stSquare
+Description for stSquare
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType.stRectangle
+Description for stRectangle
+
+----------------------------------------------------------------------------------------------------
+@@THoleShapeType
+<TITLE THoleShapeType type>
 Summary
   Write here a summary (1 line)
 Description
@@ -218,21 +220,21 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TRGNCombineMode.cmAND
-  Description for cmAND
+Description for cmAND
 
 ----------------------------------------------------------------------------------------------------
 @@TRGNCombineMode.cmCOPY
-  Description for cmCOPY
+Description for cmCOPY
 
 ----------------------------------------------------------------------------------------------------
 @@TRGNCombineMode.cmDIFF
-  Description for cmDIFF
+Description for cmDIFF
 
 ----------------------------------------------------------------------------------------------------
 @@TRGNCombineMode.cmOR
-  Description for cmOR
+Description for cmOR
 
 ----------------------------------------------------------------------------------------------------
 @@TRGNCombineMode.cmXOR
-  Description for cmXOR
+Description for cmXOR
 

@@ -3,56 +3,55 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDdeCmd.pas
 Summary
-  Contains the TJvDdeCmd component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDdeCmd component.
 Author
   Petr Vones
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@EJvADCParserError
+@@TJvAppDdeCmd.OnExecParsedCmd
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvADCBusyEvent
-<TITLE TJvADCBusyEvent type>
-<COMBINE TJvAppDdeCmd.OnBusyChanged>
-
-----------------------------------------------------------------------------------------------------
-@@TJvADCMacroEvent
-<TITLE TJvADCMacroEvent type>
-<COMBINE TJvAppDdeCmd.OnExecCommand>
-
-----------------------------------------------------------------------------------------------------
-@@TJvADCParsedEvent
-<TITLE TJvADCParsedEvent type>
-<COMBINE TJvAppDdeCmd.OnExecParsedCmd>
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd
-<TITLEIMG TJvAppDdeCmd>
-JVCLInfo
-  GROUP=JVCL.System
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd.Commands
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+Parameters
+  Sender     - Description for this parameter
+  Command    - Description for this parameter
+  Parameters - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd.CorrectParams
+@@TJvAppDdeCmd.OnExecCommand
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender     - Description for this parameter
+  CommandStr - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppDdeCmd.OnBusyChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  IsBusy - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppDdeCmd.IgnoreAppBusy
 Summary
   Write here a summary (1 line)
 Description
@@ -72,7 +71,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd.IgnoreAppBusy
+@@TJvAppDdeCmd.CorrectParams
 Summary
   Write here a summary (1 line)
 Description
@@ -82,42 +81,42 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd.OnBusyChanged
+@@TJvAppDdeCmd.Commands
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender - Description for this parameter
-  IsBusy - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd.OnExecCommand
+@@TJvAppDdeCmd
+<TITLEIMG TJvAppDdeCmd>
+JVCLInfo
+  GROUP=JVCL.System
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender     - Description for this parameter
-  CommandStr - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppDdeCmd.OnExecParsedCmd
+@@TJvADCParsedEvent
+<TITLE TJvADCParsedEvent type> <COMBINE TJvAppDdeCmd.OnExecParsedCmd>
+
+----------------------------------------------------------------------------------------------------
+@@TJvADCMacroEvent
+<TITLE TJvADCMacroEvent type> <COMBINE TJvAppDdeCmd.OnExecCommand>
+
+----------------------------------------------------------------------------------------------------
+@@TJvADCBusyEvent
+<TITLE TJvADCBusyEvent type> <COMBINE TJvAppDdeCmd.OnBusyChanged>
+
+----------------------------------------------------------------------------------------------------
+@@EJvADCParserError
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender     - Description for this parameter
-  Command    - Description for this parameter
-  Parameters - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 

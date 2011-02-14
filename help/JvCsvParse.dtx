@@ -3,223 +3,138 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCsvParse.pas
 Summary
-  The Unit JvCsvParse is a library of Pascal PChar buffer, and Pascal String handling functions. They
-  are used by TJvCsvDataSet. They are also generally useful to any component which needs to parse
-  semantic information in a file, and are useful for parsing CSV, XML, or any other structured textual
-  file format which you may encounter.
-
-  See also TJvCsvDataSet.
-<INCLUDE JVCL.UnitText.dtx>
+    The Unit JvCsvParse is a library of Pascal PChar buffer, and Pascal String handling functions.
+  They
 Author
   Warren Postma
+Description
+    are used by TJvCsvDataSet. They are also generally useful to any component which needs to parse
+    semantic information in a file, and are useful for parsing CSV, XML, or any other structured
+  textual
+    file format which you may encounter.
+  
+    See also TJvCsvDataSet.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@AsciiToHex
-<TITLE AsciiToHex function>
+@@ValidNumericLiteral
+<TITLE ValidNumericLiteral function>
 Summary
-  Create a hex encoded dump of a string. Useful for displaying a string containing non printable
-  characters.
+  Check if the string presented is a valid integer literal string. (For Example, '123' is valid and
+  also floating point numbers like '123.45')
 Description
-  If the input is the string 'A'+Chr(13), the result returned is '41 0D'. 41 is the hex value for the
-  ascii Character A, and 0D is Hexadecimal code for a Carriage return.
+  Check if provided string is integer or float literal.
 Parameters
-  S - (String) The incoming String object to be encoded as a set of Hexadecimal bytes.
+  S1 - buffer to be checked.
 See Also
-  HexToAscii
+  ValidHexLiteral, ValidIdentifier, ValidIntLiteral, ValidStringLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@BuildPathName
-<TITLE BuildPathName function>
+@@ValidIntLiteral
+<TITLE ValidIntLiteral function>
 Summary
-  Takes a directory (pathname) and a filename and puts them together to make a filename.
+  Check if the string presented is a valid integer literal string. (For example, '123' is valid but
+  not '123.45')
 Description
-  Appends PathName + FileName, and places a backslash between them, only if necessary. This is a useful
-  function because PathName may or may end in a backslash, and FileName may or may not begin with a
-  backslash.
+  Check if the provided string is an integer literal.
 Parameters
-  PathName - A path name for the fully qualified filename you are creating (For example, 'C:\\')
-  FileName - A filename (For example, 'autoexec.bat')
-
-----------------------------------------------------------------------------------------------------
-@@EndChar
-<TITLE EndChar function>
-Summary
-  A parsing function used by TJvCsvDataSet for breaking up lines in a CSV file.
-Description
-  Returns true if the param (x) is one of these: ',;:[]()# <> =*/+'
-Parameters
-  X - Character to be tested
-
-----------------------------------------------------------------------------------------------------
-@@GetIntValueFromResultString
-<TITLE GetIntValueFromResultString function>
-Summary
-  Finds and returns variable name/value pairs in a TStringList.
-Description
-  TStringList helper function. Finds and returns variable name/value pairs in a TStringList. Retrieve
-  an integer value from a result string, Formats that are valid include:
-  <TABLE>
-    Value                 Meaning
-    --------------------  --------------------------------
-    VariableName : Value  usual format for status results
-    VariableName = Value  usual format in ini files
-    Label Name = Value    labels names can contain spaces.
-  </TABLE>
-Parameters
-  VarName       - The variable name you want to read.
-  ResultStrings - The TStringList to search for that variable name.
-  DefVal        - The default value to return if the variable is not found.
+  S1 - buffer to be checked
 See Also
-  GetValueFromResultString
+  ValidHexLiteral, ValidIdentifier, ValidNumericLiteral, ValidStringLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@GetParenthesis
-<TITLE GetParenthesis function>
+@@ValidIdentifier
+<TITLE ValidIdentifier function>
 Summary
-  Pascal Low Level PChar Functions for TJvCsvDataSet
+  Write here a summary (1 line)
 Description
-  Pascal Low Level PChar Functions for TJvCsvDataSet. Checks if string contains proper number of
-  open/close parenthesis pairs.
-Parameters
-  S1 - Input string.
-  S2 - Output string without parenthesis.
-
-----------------------------------------------------------------------------------------------------
-@@GetString
-<TITLE GetString function>
-Summary
-  Return the substring that follows the separator character.
-Description
-  Pass in a source string (For example, 'abc:def') and the separator (':'), returns the portion of the
-  string after the separator.
-Parameters
-  Source    - Description for this parameter
-  Separator - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@GetToken
-<TITLE GetToken procedure>
-Summary
-  Tokenize a string according to a fixed set of tokenization characters (see EndChar for a list)
-Description
-  Pass in buffer in s1, and returns one token into s2, deletes that token from s1. Call repeatedly to
-  parse a large string buffer. The buffer s1 is modified (the token is removed from the buffer).
-Parameters
-  S1 - Source buffer (modified by this function!)
-  S2 - Destination buffer (result returned here)
-See Also
-  EndChar
-
-----------------------------------------------------------------------------------------------------
-@@GetTokenCount
-<TITLE GetTokenCount function>
-Summary
-  Debugging helper function for parsers.
-Description
-  Returns a count of the number of times GetToken has returned a token.
-See Also
-  ResetTokenCount, GetToken
-
-----------------------------------------------------------------------------------------------------
-@@GetValueFromResultString
-<TITLE GetValueFromResultString function>
-Summary
-  TStringList helper function. Finds and returns variable name/value pairs in a TStringList.
-Description
-  TStringList helper function. Finds and returns variable name/value pairs in a TStringList. Retrieve
-  an integer value from a result string, Formats that are valid include:
-  <TABLE>
-    Value                 Meaning
-    --------------------  --------------------------------
-    VariableName : Value  usual format for status results
-    VariableName = Value  usual format in ini files
-    Label Name = Value    labels names can contain spaces.
-  </TABLE>
-Parameters
-  VarName       - The variable name you want to read.
-  ResultStrings - The TStringList to search for that variable name.
-See Also
-  GetIntValueFromResultString
-
-----------------------------------------------------------------------------------------------------
-@@GetVarReference
-<TITLE GetVarReference procedure>
-Summary
-  Parse a variable or label reference.
-Description
-  Gets a single token like ABC, or gets ABC[X] type reference if present
-Parameters
-  S1   - Source String.
-  S2   - Contains a variable name part of the string
-  SIdx - Contains an array index or null if the variable is not an array reference
-
-----------------------------------------------------------------------------------------------------
-@@HexPCharToInt
-<TITLE HexPCharToInt function>
-Summary
-  Convert a hexadecimal string value to a Pascal Integer type.
-Description
-  Call HexPcharToInt('FFFF') and it will return 65535.
-Parameters
-  S1 - The hexadecimal string.
-
-----------------------------------------------------------------------------------------------------
-@@HexToAscii
-<TITLE HexToAscii function>
-Summary
-  Decode a hex dump back into the original ascii string. Useful for decoding something that contained
-  control characters.
-Description
-  The reverse of the AsciiToHex function. Pass it a string in the form 'AA BB CC DD 00 11' that
-  contains only hex digits, and the decoded string is returned.
-Parameters
-  S - The hex encoded source.
-See Also
-  AsciiToHex
-
-----------------------------------------------------------------------------------------------------
-@@IsExpressionKeyword
-<TITLE IsExpressionKeyword function>
-Summary
-  Return True if valid script boolean operator string (and, or, xor, etc)
-Description
-  Return True if valid expression.
-Parameters
-  S1 - String to check
-
-----------------------------------------------------------------------------------------------------
-@@IsKeyword
-<TITLE IsKeyword function>
-Summary
-  Return True if valid script keyword
-Description
-  Checks against valid keywords
+  Write here a description
 Parameters
   S1 - Description for this parameter
+See Also
+  ValidIntLiteral, ValidNumericLiteral, ValidStringLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@PadString
-<TITLE PadString function>
+@@StrStrip
+<TITLE StrStrip function>
 Summary
-  Pad a string out to a fixed length.
+  Strip leading and trailing whitespace, carriage returns and line feeds from a string.
 Description
-  Adds PadChar until buffer 's' is of length 'len'
+  Strip leading and trailing whitespace, carriage returns and line feeds from a string.
 Parameters
-  S       - The buffer.
-  Len     - The length desired.
-  PadChar - The character to pad with (usually a space)
+  S - The string to strip.
+See Also
+  StrEatWhiteSpace
 
 ----------------------------------------------------------------------------------------------------
-@@PCharEatWhiteChars
-<TITLE PCharEatWhiteChars procedure>
+@@ValidHexLiteral
+<TITLE ValidHexLiteral function>
 Summary
-  Eat whitespace from a PChar buffer.
+  Check if the string presented is a valid hexadecimal literal string.
 Description
-  Deletes the leading whitespace by eating one character at a time from the buffer, until a non
-  whitespace character is reached. Whitespace is either a Space or a Tab. Does NOT disturb any trailing
-  whitespace.
+  Returns true if string is valid hex literal. We expect hex literals to be preceded by a $ and
+  contain digits 0-9 and A-F.
 Parameters
-  S1 - The buffer to be stripped of whitespace
+  S1 - buffer to be checked.
+See Also
+  ValidIntLiteral, ValidNumericLiteral
+
+----------------------------------------------------------------------------------------------------
+@@StrSplitStrings
+<TITLE StrSplitStrings function>
+Summary
+  Get a TStrings from a string spliting on a split char
+Description
+  Write here a description
+Parameters
+  InString   - String to be splited
+  SplitChar  - character delimiter (ex comma ',')
+  QuoteChar  - character that delimited the strings
+  OutStrings - TStrings resulting
+
+----------------------------------------------------------------------------------------------------
+@@StrSplit
+<TITLE StrSplit function>
+Summary
+  Split a string into an array of strings. Result is stored in a standard Pascal String Array (Array
+  of
+  String).
+Description
+  Split a string into an array of strings.
+Parameters
+  InString   - Original string.
+  SplitChar  - What character to split using. Usually a Tab or a Comma.
+  QuoteChar  - Description for this parameter
+  OutStrings - Array of String. Results.
+  MaxSplit   - Set MaxSplit to no larger than the maximum size of your OutStrings array.
+
+----------------------------------------------------------------------------------------------------
+@@StripPCharQuotes
+<TITLE StripPCharQuotes function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S1 - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@StripQuotes
+<TITLE StripQuotes function>
+Summary
+  Strips quotes from a string if it has quotes around it. Will de-escape embedded quotes if they are
+  properly escaped.
+Description
+  Modifies a PChar buffer containing a string which may or may not have leading and trailing quotes.
+  Result after call is that the buffer contains only the data that was previously inside the quotes,
+  all leading and trailing whitespace, and the quote characters themselves, are gone. Escaped quote
+  characters (\") within the string have been replaced with their literal equivalents (").
+Parameters
+  S1 - Buffer to strip quotes from.
 
 ----------------------------------------------------------------------------------------------------
 @@ResetTokenCount
@@ -245,122 +160,213 @@ See Also
   StrStrip
 
 ----------------------------------------------------------------------------------------------------
-@@StripPCharQuotes
-<TITLE StripPCharQuotes function>
+@@PCharEatWhiteChars
+<TITLE PCharEatWhiteChars procedure>
 Summary
-  Write here a summary (1 line)
+  Eat whitespace from a PChar buffer.
 Description
-  Write here a description
+  Deletes the leading whitespace by eating one character at a time from the buffer, until a non
+  whitespace character is reached. Whitespace is either a Space or a Tab. Does NOT disturb any
+  trailing
+  whitespace.
+Parameters
+  S1 - The buffer to be stripped of whitespace
+
+----------------------------------------------------------------------------------------------------
+@@IsKeyword
+<TITLE IsKeyword function>
+Summary
+  Return True if valid script keyword
+Description
+  Checks against valid keywords
 Parameters
   S1 - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@PadString
+<TITLE PadString function>
+Summary
+  Pad a string out to a fixed length.
+Description
+  Adds PadChar until buffer 's' is of length 'len'
+Parameters
+  S       - The buffer.
+  Len     - The length desired.
+  PadChar - The character to pad with (usually a space)
+
+----------------------------------------------------------------------------------------------------
+@@IsExpressionKeyword
+<TITLE IsExpressionKeyword function>
+Summary
+  Return True if valid script boolean operator string (and, or, xor, etc)
+Description
+  Return True if valid expression.
+Parameters
+  S1 - String to check
+
+----------------------------------------------------------------------------------------------------
+@@HexToAscii
+<TITLE HexToAscii function>
+Summary
+  Decode a hex dump back into the original ascii string. Useful for decoding something that contained
+  control characters.
+Description
+  The reverse of the AsciiToHex function. Pass it a string in the form 'AA BB CC DD 00 11' that
+  contains only hex digits, and the decoded string is returned.
+Parameters
+  S - The hex encoded source.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AsciiToHex
 
 ----------------------------------------------------------------------------------------------------
-@@StripQuotes
-<TITLE StripQuotes function>
+@@HexPCharToInt
+<TITLE HexPCharToInt function>
 Summary
-  Strips quotes from a string if it has quotes around it. Will de-escape embedded quotes if they are
-  properly escaped.
+  Convert a hexadecimal string value to a Pascal Integer type.
 Description
-  Modifies a PChar buffer containing a string which may or may not have leading and trailing quotes.
-  Result after call is that the buffer contains only the data that was previously inside the quotes,
-  all leading and trailing whitespace, and the quote characters themselves, are gone. Escaped quote
-  characters (\\") within the string have been replaced with their literal equivalents (").
+  Call HexPcharToInt('FFFF') and it will return 65535.
 Parameters
-  S1 - Buffer to strip quotes from.
+  S1 - The hexadecimal string.
 
 ----------------------------------------------------------------------------------------------------
-@@StrSplit
-<TITLE StrSplit function>
+@@GetVarReference
+<TITLE GetVarReference procedure>
 Summary
-  Split a string into an array of strings. Result is stored in a standard Pascal String Array (Array of
-  String).
+  Parse a variable or label reference.
 Description
-  Split a string into an array of strings.
+  Gets a single token like ABC, or gets ABC[X] type reference if present
 Parameters
-  InString   - Original string.
-  SplitChar  - What character to split using. Usually a Tab or a Comma.
-  QuoteChar  - Description for this parameter
-  OutStrings - Array of String. Results.
-  MaxSplit   - Set MaxSplit to no larger than the maximum size of your OutStrings array.
+  S1   - Source String.
+  S2   - Contains a variable name part of the string
+  SIdx - Contains an array index or null if the variable is not an array reference
 
 ----------------------------------------------------------------------------------------------------
-@@StrSplitStrings
-<TITLE StrSplitStrings function>
+@@GetValueFromResultString
+<TITLE GetValueFromResultString function>
 Summary
-  Get a TStrings from a string spliting on a split char
+  TStringList helper function. Finds and returns variable name/value pairs in a TStringList.
 Description
-  Write here a description
+  TStringList helper function. Finds and returns variable name/value pairs in a TStringList. Retrieve
+  an integer value from a result string, Formats that are valid include:
+  <TABLE>
+    Value                 Meaning
+    --------------------  --------------------------------
+    VariableName : Value  usual format for status results
+    VariableName = Value  usual format in ini files
+    Label Name = Value    labels names can contain spaces.
+  </TABLE>
 Parameters
-  InString   - String to be splited
-  SplitChar  - character delimiter (ex comma ',')
-  QuoteChar  - character that delimited the strings
-  OutStrings - TStrings resulting
-
-----------------------------------------------------------------------------------------------------
-@@StrStrip
-<TITLE StrStrip function>
-Summary
-  Strip leading and trailing whitespace, carriage returns and line feeds from a string.
-Description
-  Strip leading and trailing whitespace, carriage returns and line feeds from a string.
-Parameters
-  S - The string to strip.
+  VarName       - The variable name you want to read.
+  ResultStrings - The TStringList to search for that variable name.
 See Also
-  StrEatWhiteSpace
+  GetIntValueFromResultString
 
 ----------------------------------------------------------------------------------------------------
-@@ValidHexLiteral
-<TITLE ValidHexLiteral function>
+@@GetTokenCount
+<TITLE GetTokenCount function>
 Summary
-  Check if the string presented is a valid hexadecimal literal string.
+  Debugging helper function for parsers.
 Description
-  Returns true if string is valid hex literal. We expect hex literals to be preceded by a $ and contain
-  digits 0-9 and A-F.
-Parameters
-  S1 - buffer to be checked.
+  Returns a count of the number of times GetToken has returned a token.
 See Also
-  ValidIntLiteral, ValidNumericLiteral
+  ResetTokenCount, GetToken
 
 ----------------------------------------------------------------------------------------------------
-@@ValidIdentifier
-<TITLE ValidIdentifier function>
+@@GetToken
+<TITLE GetToken procedure>
 Summary
-  Write here a summary (1 line)
+  Tokenize a string according to a fixed set of tokenization characters (see EndChar for a list)
 Description
-  Write here a description
+  Pass in buffer in s1, and returns one token into s2, deletes that token from s1. Call repeatedly to
+  parse a large string buffer. The buffer s1 is modified (the token is removed from the buffer).
 Parameters
-  S1 - Description for this parameter
+  S1 - Source buffer (modified by this function!)
+  S2 - Destination buffer (result returned here)
 See Also
-  ValidIntLiteral, ValidNumericLiteral, ValidStringLiteral
+  EndChar
 
 ----------------------------------------------------------------------------------------------------
-@@ValidIntLiteral
-<TITLE ValidIntLiteral function>
+@@GetString
+<TITLE GetString function>
 Summary
-  Check if the string presented is a valid integer literal string. (For example, '123' is valid but not
-  '123.45')
+  Return the substring that follows the separator character.
 Description
-  Check if the provided string is an integer literal.
+  Pass in a source string (For example, 'abc:def') and the separator (':'), returns the portion of
+  the string after the separator.
 Parameters
-  S1 - buffer to be checked
-See Also
-  ValidHexLiteral, ValidIdentifier, ValidNumericLiteral, ValidStringLiteral
+  Source    - Description for this parameter
+  Separator - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@ValidNumericLiteral
-<TITLE ValidNumericLiteral function>
+@@GetParenthesis
+<TITLE GetParenthesis function>
 Summary
-  Check if the string presented is a valid integer literal string. (For Example, '123' is valid and
-  also floating point numbers like '123.45')
+  Pascal Low Level PChar Functions for TJvCsvDataSet
 Description
-  Check if provided string is integer or float literal.
+  Pascal Low Level PChar Functions for TJvCsvDataSet. Checks if string contains proper number of
+  open/close parenthesis pairs.
 Parameters
-  S1 - buffer to be checked.
+  S1 - Input string.
+  S2 - Output string without parenthesis.
+
+----------------------------------------------------------------------------------------------------
+@@GetIntValueFromResultString
+<TITLE GetIntValueFromResultString function>
+Summary
+  Finds and returns variable name/value pairs in a TStringList.
+Description
+  TStringList helper function. Finds and returns variable name/value pairs in a TStringList. Retrieve
+  an integer value from a result string, Formats that are valid include:
+  <TABLE>
+    Value                 Meaning
+    --------------------  --------------------------------
+    VariableName : Value  usual format for status results
+    VariableName = Value  usual format in ini files
+    Label Name = Value    labels names can contain spaces.
+  </TABLE>
+Parameters
+  VarName       - The variable name you want to read.
+  ResultStrings - The TStringList to search for that variable name.
+  DefVal        - The default value to return if the variable is not found.
 See Also
-  ValidHexLiteral, ValidIdentifier, ValidIntLiteral, ValidStringLiteral
+  GetValueFromResultString
+
+----------------------------------------------------------------------------------------------------
+@@EndChar
+<TITLE EndChar function>
+Summary
+  A parsing function used by TJvCsvDataSet for breaking up lines in a CSV file.
+Description
+  Returns true if the param (x) is one of these: ',;:[]()# <> =*/+'
+Parameters
+  X - Character to be tested
+
+----------------------------------------------------------------------------------------------------
+@@BuildPathName
+<TITLE BuildPathName function>
+Summary
+  Takes a directory (pathname) and a filename and puts them together to make a filename.
+Description
+  Appends PathName + FileName, and places a backslash between them, only if necessary. This is a
+  useful function because PathName may or may end in a backslash, and FileName may or may not begin
+  with a backslash.
+Parameters
+  PathName - A path name for the fully qualified filename you are creating (For example, 'C:\')
+  FileName - A filename (For example, 'autoexec.bat')
+
+----------------------------------------------------------------------------------------------------
+@@AsciiToHex
+<TITLE AsciiToHex function>
+Summary
+  Create a hex encoded dump of a string. Useful for displaying a string containing non printable
+  characters.
+Description
+  If the input is the string 'A'+Chr(13), the result returned is '41 0D'. 41 is the hex value for the
+  ascii Character A, and 0D is Hexadecimal code for a Carriage return.
+Parameters
+  S - (String) The incoming String object to be encoded as a set of Hexadecimal bytes.
+See Also
+  HexToAscii
 
 ----------------------------------------------------------------------------------------------------
 @@ValidStringLiteral

@@ -3,234 +3,74 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCtrls.pas
 Summary
-  Contains the TJvCtrls component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvCtrls component.
 Author
   Petr Vones
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton
-Summary
-  Base class for button controls with a window handle.
-Description
-  Use TJvCustomImageButton as a base class when creating new button controls with a handle.
-  TJvCustomImageButton introduces support for new functionality not available in a standard TButton,
-  like Wordwrap, a DropDownMenu and hot tracking.
+@@TJvImgBtnAnimIndexEvent
+<TITLE TJvImgBtnAnimIndexEvent type> <COMBINE TJvCustomImageButton.OnGetAnimateIndex>
 
-  Several button controls in JVCL derives from TJvCustomImageButton, among them TJvImgBtn
+----------------------------------------------------------------------------------------------------
+@@TJvImgBtnActionLink
+Summary
+  Action link class used internally by TJvImgBtn to support the Action property
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvImgBtn
+<TITLEIMG TJvImgBtn>
+JVCLInfo
+  GROUP=JVCL.Buttons.Push
+  FLAG=Component
+Summary
+  A button similar to TJvBitBtn that displays images from an imagelist instead of from a bitmap. This
+  button can also show an animation.
+Description
+  Use TJvImgBtn when you need a button that can have focus (derived from TWinControl) and can display
+  text as well as an image. TJvImgBtn is very similar to a TJvBitBtn but gets its images from an
+  imagelist instead of from a bitmap.
+  
+  Using imagelists is the preferred method in modern UIs since it minimizes memory usage and
+  simplifies a consistent look and feel.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.OwnerDraw
+Summary
+  Specifies whether the control receives an OnButtonDraw event.
+Description
+  Set OwnerDraw to True to allow the button to receive the OnButtonDraw event. If OwnerDraw is true,
+  the button is not drawn automatically, instead you will have to provide the drawing logic in the
+  event handler.
 See Also
-  TJvImgBtn
+  TJvCustomImageButton.OnButtonDraw
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Alignment
+@@TJvCustomImageButton.Spacing
 Summary
-  Controls the horizontal placement of the text within the control.
+  Determines where the image and text appear on an image button.
 Description
-  Set Alignment to specify how the text of the control is justified within the ClientRect.
-
-  The effect of the Alignment property is more obvious if the WordWrap property is True and the control
-  includes more than one line of text.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Animate
-Summary
-  Specifies if the image on the button is animated
-Description
-  Set Animate to true to start an animation of the image on the button. To set up the animation, use
-  the properties AnimateFrames and AnimateInterval.
-See Also
-  TJvCustomImageButton.AnimateFrames, TJvCustomImageButton.AnimateInterval,
-  TJvCustomImageButton.CurrentAnimateFrame
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.AnimateFrames
-Summary
-  Specifies how many images are animated when Animate is True.
-Description
-  Use AnimateFrames to specify how many images in the imagelist are displayed before restarting the
-  animation. The animation always starts at the image indicated by the ImageIndex property.
-
-  For example, if ImageIndex is set to 0 and AnimateFrames is set to 3, the images with index 0, 1 and
-  3 are animated.
-See Also
-  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateInterval, TJvCustomImageButton.ImageIndex,
-  TJvCustomImageButton.Images
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.AnimateInterval
-Summary
-  Specifies the interval between the animations.
-Description
-  Use AnimateInterval to set the number of milliseconds that should pass before a new image is
-  displayed on the button when animation is active.
-See Also
-  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateFrames
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Canvas
-Summary
-  Provides access to the drawing surface of the control.
-Description
-  Use the methods of the Canvas property to draw directly on the buttons surface.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Click
-Summary
-  Simulates a mouse click, as if the user had clicked the button.
-Description
-  Use Click to simulate a mouse click. Click performs the following tasks:
-
-  1. If the value of the Kind property is bkClose, Click closes the form. If the value of Kind is
-     bkHelp, Click displays the Help screen assigned with the HelpContext property.
-  2. Any associated action fires, or, if there is no associated action, any code attached to the
-     OnClick event is executed.
-See Also
-  <DELPHILINK TControl.Action>, TJvCustomImageButton.Kind, <DELPHILINK TButton.ModalResult>,
-  <DELPHILINK TControl.OnClick>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.CurrentAnimateFrame
-Summary
-  Specifies the index of the current animation frame displayed in the button.
-Description
-  To find the index of the actual image displayed, add CurrentAnimateFrame and ImageIndex together
-See Also
-  TJvCustomImageButton.ImageIndex
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.DrawButtonFocusRect
-Summary
-  Draws a focus rect in the button if it has the focus
-Description
-  Call this method in derived classes to draw a focus rect on the button
-Parameters
-  RectContent - The rect to draw the focus rect within
-See Also
-  TJvCustomImageButton.DrawButtonImage, TJvCustomImageButton.DrawButtonFrame,
-  TJvCustomImageButton.DrawButtonText
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.DrawButtonFrame
-Summary
-  Draws the frame of the button
-Description
-  Call this method in derived classes when you need to draw the frame of the button
-Parameters
-  DrawItemStruct - Contains the state of the button
-  RectContent    - The bounds to draw within
-See Also
-  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonImage,
-  TJvCustomImageButton.DrawButtonText
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.DrawButtonImage
-Summary
-  Draws the image in the button
-Description
-  Call this method in derived classes when you need to draw the current image in the button
-Parameters
-  ImageBounds - The bounds of the image
-See Also
-  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonFrame,
-  TJvCustomImageButton.DrawButtonText
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.DrawButtonText
-Summary
-  Draws the caption in the button
-Description
-  Call this method in derived classes when you need to draw text (like the Caption) on the button
-Parameters
-  TextBounds  - The bounds to draw the text within
-  TextEnabled - Specifies if the text should be drawn as enabled or disabled
-See Also
-  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonFrame,
-  TJvCustomImageButton.DrawButtonImage
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Flat
-Summary
-  Determines whether the button has a 3D or flat border.
-Description
-  Set Flat to True to change the normal thick 3D border into a thinner and flatter looking border. When
-  Flat is True, the border is only shown when the button has focus or when the mouse is within the
-  control's client area.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.ImageIndex
-Summary
-  Identifies the image associated with the control.
-Description
-  Set ImageIndex to specify the image that appears in the control. ImageIndex is an index into the
-  Images property of the control.
-See Also
-  TJvCustomImageButton.Images
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Images
-Summary
-  Specifies the imagelist containing the image displayed in the control.
-Description
-  Use Images to specify the imagelist that contains the image you want to display in the control. To
-  select an image from the list, set the ImageIndex property to a valid value.
-See Also
-  TJvCustomImageButton.ImageIndex
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.ImageVisible
-Summary
-  Specifies if an image is shown in the control.
-Description
-  Use ImageVisible to quickly turn on and off the display of the image in the control without having to
-  change any image related settings.
-
-  To display an image, you must first set up the Images and ImageIndex properties. To animate the
-  image, you must also set up the AnimateInterval and AnimateFrames properties as well as set Animate
-  to true.
-See Also
-  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateFrames,
-  TJvCustomImageButton.AnimateInterval, TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Kind
-Summary
-  Specifies the kind of image the button displays.
-Description
-  Use Kind to specify the appearance of the image button and the value of ModalResult when the user
-  clicks the button.
-
-  The images (such as the green check mark on the OK button) appear on the button when using this
-  version of TBitBtn.
-See Also
-  <DELPHILINK TButton.ModalResult>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Layout
-Summary
-  Specifies where the image appears on the image button.
-Description
-  Layout indicates whether the text appears on the left of the button (blImageLeft) or the right of the
-  button (blImageRight).
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Margin
-Summary
-  Specifies the number of pixels between the edge of the image and the edge of the button.
-Description
-  The margin is the space between the image edge and the button edge. The format of the edges depends
-  on the layout of the image and text (specified in the Layout property). For example, if Layout is
-  blImageLeft, the margin appears between the left edge of the image and the left edge of the button.
-  If Margin is 3, three pixels separate the image and the button edges. If Margin is 0, there is no
-  space between the image and the button edges.
-
-  If Margin is -1 (the default value), the image and text (specified in the Caption property) are
-  centered. The number of pixels between the image and button edge is equal to the number of pixels
-  between the opposite edge of the button and the text.
+  Spacing determines the number of pixels between the image and the text. The default value is 4
+  pixels.
 See Also
   TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images, TJvCustomImageButton.Layout
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.OnGetAnimateIndex
+Summary
+  Occurs just before a new image is to be displayed in an animation sequence
+Description
+  Assign a handler to this event if you want to be notified when the image is changed in the button
+  or if you want to handle image transitions yourself. Assign a new value to ImageIndex to change the
+  next image that is displayed.
+Parameters
+  Sender              - The object that triggered the event
+  CurrentAnimateFrame - The index of the currently displayed image
+  ImageIndex          - The index of the next image to display
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomImageButton.MouseInControl
@@ -256,72 +96,233 @@ See Also
   TJvCustomImageButton.OwnerDraw
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.OnGetAnimateIndex
+@@TJvCustomImageButton.Kind
 Summary
-  Occurs just before a new image is to be displayed in an animation sequence
+  Specifies the kind of image the button displays.
 Description
-  Assign a handler to this event if you want to be notified when the image is changed in the button or
-  if you want to handle image transitions yourself. Assign a new value to ImageIndex to change the next
-  image that is displayed.
-Parameters
-  Sender              - The object that triggered the event
-  CurrentAnimateFrame - The index of the currently displayed image
-  ImageIndex          - The index of the next image to display
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.OwnerDraw
-Summary
-  Specifies whether the control receives an OnButtonDraw event.
-Description
-  Set OwnerDraw to True to allow the button to receive the OnButtonDraw event. If OwnerDraw is true,
-  the button is not drawn automatically, instead you will have to provide the drawing logic in the
-  event handler.
+  Use Kind to specify the appearance of the image button and the value of ModalResult when the user
+  clicks the button.
+  
+  The images (such as the green check mark on the OK button) appear on the button when using this
+  version of TBitBtn.
 See Also
-  TJvCustomImageButton.OnButtonDraw
+  <DELPHILINK TButton.ModalResult>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomImageButton.Spacing
+@@TJvCustomImageButton.Layout
 Summary
-  Determines where the image and text appear on an image button.
+  Specifies where the image appears on the image button.
 Description
-  Spacing determines the number of pixels between the image and the text. The default value is 4
-  pixels.
+  Layout indicates whether the text appears on the left of the button (blImageLeft) or the right of
+  the button (blImageRight).
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.Margin
+Summary
+  Specifies the number of pixels between the edge of the image and the edge of the button.
+Description
+  The margin is the space between the image edge and the button edge. The format of the edges depends
+  on the layout of the image and text (specified in the Layout property). For example, if Layout is
+  blImageLeft, the margin appears between the left edge of the image and the left edge of the button.
+  If Margin is 3, three pixels separate the image and the button edges. If Margin is 0, there is no
+  space between the image and the button edges.
+  
+  If Margin is -1 (the default value), the image and text (specified in the Caption property) are
+  centered. The number of pixels between the image and button edge is equal to the number of pixels
+  between the opposite edge of the button and the text.
 See Also
   TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images, TJvCustomImageButton.Layout
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImgBtn
-<TITLEIMG TJvImgBtn>
-JVCLInfo
-  GROUP=JVCL.Buttons.Push
-  FLAG=Component
+@@TJvCustomImageButton.ImageVisible
 Summary
-  A button similar to TJvBitBtn that displays images from an imagelist instead of from a bitmap. This
-  button can also show an animation.
+  Specifies if an image is shown in the control.
 Description
-  Use TJvImgBtn when you need a button that can have focus (derived from TWinControl) and can display
-  text as well as an image. TJvImgBtn is very similar to a TJvBitBtn but gets its images from an
-  imagelist instead of from a bitmap.
-
-  Using imagelists is the preferred method in modern UIs since it minimizes memory usage and simplifies
-  a consistent look and feel.
+  Use ImageVisible to quickly turn on and off the display of the image in the control without having
+  to change any image related settings.
+  
+  To display an image, you must first set up the Images and ImageIndex properties. To animate the
+  image, you must also set up the AnimateInterval and AnimateFrames properties as well as set Animate
+  to true.
+See Also
+  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateFrames,
+  TJvCustomImageButton.AnimateInterval, TJvCustomImageButton.ImageIndex, TJvCustomImageButton.Images
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImgBtnActionLink
+@@TJvCustomImageButton.Images
 Summary
-  Action link class used internally by TJvImgBtn to support the Action property
+  Specifies the imagelist containing the image displayed in the control.
 Description
-  Write here a description
+  Use Images to specify the imagelist that contains the image you want to display in the control. To
+  select an image from the list, set the ImageIndex property to a valid value.
+See Also
+  TJvCustomImageButton.ImageIndex
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImgBtnAnimIndexEvent
-<TITLE TJvImgBtnAnimIndexEvent type>
-<COMBINE TJvCustomImageButton.OnGetAnimateIndex>
+@@TJvCustomImageButton.ImageIndex
+Summary
+  Identifies the image associated with the control.
+Description
+  Set ImageIndex to specify the image that appears in the control. ImageIndex is an index into the
+  Images property of the control.
+See Also
+  TJvCustomImageButton.Images
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.Flat
+Summary
+  Determines whether the button has a 3D or flat border.
+Description
+  Set Flat to True to change the normal thick 3D border into a thinner and flatter looking border.
+  When
+  Flat is True, the border is only shown when the button has focus or when the mouse is within the
+  control's client area.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.DrawButtonText
+Summary
+  Draws the caption in the button
+Description
+  Call this method in derived classes when you need to draw text (like the Caption) on the button
+Parameters
+  TextBounds  - The bounds to draw the text within
+  TextEnabled - Specifies if the text should be drawn as enabled or disabled
+See Also
+  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonFrame,
+  TJvCustomImageButton.DrawButtonImage
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.DrawButtonImage
+Summary
+  Draws the image in the button
+Description
+  Call this method in derived classes when you need to draw the current image in the button
+Parameters
+  ImageBounds - The bounds of the image
+See Also
+  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonFrame,
+  TJvCustomImageButton.DrawButtonText
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.DrawButtonFrame
+Summary
+  Draws the frame of the button
+Description
+  Call this method in derived classes when you need to draw the frame of the button
+Parameters
+  DrawItemStruct - Contains the state of the button
+  RectContent    - The bounds to draw within
+See Also
+  TJvCustomImageButton.DrawButtonFocusRect, TJvCustomImageButton.DrawButtonImage,
+  TJvCustomImageButton.DrawButtonText
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.DrawButtonFocusRect
+Summary
+  Draws a focus rect in the button if it has the focus
+Description
+  Call this method in derived classes to draw a focus rect on the button
+Parameters
+  RectContent - The rect to draw the focus rect within
+See Also
+  TJvCustomImageButton.DrawButtonImage, TJvCustomImageButton.DrawButtonFrame,
+  TJvCustomImageButton.DrawButtonText
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.CurrentAnimateFrame
+Summary
+  Specifies the index of the current animation frame displayed in the button.
+Description
+  To find the index of the actual image displayed, add CurrentAnimateFrame and ImageIndex together
+See Also
+  TJvCustomImageButton.ImageIndex
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.Canvas
+Summary
+  Provides access to the drawing surface of the control.
+Description
+  Use the methods of the Canvas property to draw directly on the buttons surface.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.Click
+Summary
+  Simulates a mouse click, as if the user had clicked the button.
+Description
+  Use Click to simulate a mouse click. Click performs the following tasks:
+  
+  1. If the value of the Kind property is bkClose, Click closes the form. If the value of Kind is   
+  bkHelp, Click displays the Help screen assigned with the HelpContext property.
+  2. Any associated action fires, or, if there is no associated action, any code attached to the
+     OnClick event is executed.
+See Also
+  <DELPHILINK TControl.Action>, TJvCustomImageButton.Kind, <DELPHILINK TButton.ModalResult>,
+  <DELPHILINK TControl.OnClick>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.AnimateInterval
+Summary
+  Specifies the interval between the animations.
+Description
+  Use AnimateInterval to set the number of milliseconds that should pass before a new image is
+  displayed on the button when animation is active.
+See Also
+  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateFrames
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.AnimateFrames
+Summary
+  Specifies how many images are animated when Animate is True.
+Description
+  Use AnimateFrames to specify how many images in the imagelist are displayed before restarting the
+  animation. The animation always starts at the image indicated by the ImageIndex property.
+  
+  For example, if ImageIndex is set to 0 and AnimateFrames is set to 3, the images with index 0, 1
+  and 3 are animated.
+See Also
+  TJvCustomImageButton.Animate, TJvCustomImageButton.AnimateInterval, TJvCustomImageButton.ImageIndex,
+  TJvCustomImageButton.Images
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.Alignment
+Summary
+  Controls the horizontal placement of the text within the control.
+Description
+  Set Alignment to specify how the text of the control is justified within the ClientRect.
+  
+  The effect of the Alignment property is more obvious if the WordWrap property is True and the
+  control includes more than one line of text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton.Animate
+Summary
+  Specifies if the image on the button is animated
+Description
+  Set Animate to true to start an animation of the image on the button. To set up the animation, use
+  the properties AnimateFrames and AnimateInterval.
+See Also
+  TJvCustomImageButton.AnimateFrames, TJvCustomImageButton.AnimateInterval,
+  TJvCustomImageButton.CurrentAnimateFrame
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomImageButton
+Summary
+  Base class for button controls with a window handle.
+Description
+  Use TJvCustomImageButton as a base class when creating new button controls with a handle.
+  TJvCustomImageButton introduces support for new functionality not available in a standard TButton,
+  like Wordwrap, a DropDownMenu and hot tracking.
+  
+  Several button controls in JVCL derives from TJvCustomImageButton, among them TJvImgBtn
+See Also
+  TJvImgBtn
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnDrawEvent
-<TITLE TJvImgBtnDrawEvent type>
-<COMBINE TJvCustomImageButton.OnButtonDraw>
+<TITLE TJvImgBtnDrawEvent type> <COMBINE TJvCustomImageButton.OnButtonDraw>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind
@@ -333,47 +334,47 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkCustom
-  Displays an image selected from Images and ImageIndex and sets ModalResult to mrNone
+Displays an image selected from Images and ImageIndex and sets ModalResult to mrNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkOK
-  Displays a green check mark as the image and sets ModalResult to mrOk
+Displays a green check mark as the image and sets ModalResult to mrOk
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkCancel
-  Displays a red X as the image and sets ModalResult to mrCancel
+Displays a red X as the image and sets ModalResult to mrCancel
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkHelp
-  Displays a question mark as the image and sets ModalResult to mrNone
+Displays a question mark as the image and sets ModalResult to mrNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkYes
-  Displays a green check mark as the image and sets ModalResult to mrYes
+Displays a green check mark as the image and sets ModalResult to mrYes
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkNo
-  Displays a red slashed circle as the image and sets ModalResult to mrNo
+Displays a red slashed circle as the image and sets ModalResult to mrNo
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkClose
-  Displays a door as the image and sets ModalResult to mrNone
+Displays a door as the image and sets ModalResult to mrNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkAbort
-  Displays a red X as the image and sets ModalResult to mrAbort
+Displays a red X as the image and sets ModalResult to mrAbort
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkRetry
-  Displays two green circling arrows as the image and sets ModalResult to mrRetry
+Displays two green circling arrows as the image and sets ModalResult to mrRetry
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkIgnore
-  Displays a man walking away as the image and sets ModalResult to mrIgnore
+Displays a man walking away as the image and sets ModalResult to mrIgnore
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnKind.bkAll
-  Displays a green double check mark as the image and sets ModalResult to mrAll
+Displays a green double check mark as the image and sets ModalResult to mrAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnLayout
@@ -387,9 +388,9 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnLayout.blImageLeft
-  Displays the image left of the caption.
+Displays the image left of the caption.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImgBtnLayout.blImageRight
-  Displays the image right of the caption.
+Displays the image right of the caption.
 

@@ -3,141 +3,192 @@
 ----------------------------------------------------------------------------------------------------
 @@JvRollOut.pas
 Summary
-  Contains the TJvRollOut component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvRollOut component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut
+@@TJvRollOutImageOptions.IndexCollapsed
 Summary
-  Base class for panels that can have their size collapsed and expanded.
+  Specifies the button image to use when the rollout is collapsed.
 Description
-  Derive a new control from TJvCustomRollOut when you need a panel-like control that can be easily
-  expanded and collapsed. To drop a control on a form, don't use TJvCustomRollOut. Instead, use a
-  control that publishes all properties and events of TJvCustomRollOut, like TJvRollOut.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.ButtonHeight
-Summary
-  Specifies the size of the button at the top (left) of the rollout.
-Description
-  Use ButtonHeight to specify the size of the button at the top (left) of the rollout. The size is
-  applied to the button depending on the value of the Placement property. If the button is displayed at
-  the top, ButtonHeight adjusts the height, if the button is displayed on the left, ButtonHeight
-  adjusts the width of the button instead.
+  Use IndexCollapsed to set the index of the image in Images that is used when the rollout is
+  collapsed. The image is displayed next to the button's text. If no image is to be displayed, set
+  IndexCollapsed to -1.
 See Also
-  TJvCustomRollOut.Placement
+  TJvRollOutImageOptions.Images, TJvRollOutImageOptions.IndexExpanded
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.ChildOffset
+@@TJvRollOutImageOptions.Images
 Summary
-  Specifies the top/left margin of the control.
+  Specifies the image list to display an image from.
 Description
-  Use ChildOffset to specify the top/left edge of the control. Child controls placed outside this edge,
-  will be realigned to be placed inside the edge.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.Collapse
-Summary
-  Collapses the rollout.
-Description
-  Call Collapse to collapse the rollout to its collapsed height or width (depending on the value of
-  Placement). The height or width of the collapsed rollout is controlled by the height or width set
-  when it is collapsed, that is, if you change the height or width when the rollout is collapsed, the
-  new values are used as the height and width for the collapsed state.
-
-  When you all Collapse, Collapsed is set to true.
+  Use Images to assign an existing TImageList instance to the control. The images to display on the
+  button is extracted from this image list.
 See Also
-  TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand
+  TJvRollOutImageOptions.IndexCollapsed, TJvRollOutImageOptions.IndexExpanded
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.Collapsed
+@@TJvRollOutImageOptions
 Summary
-  Specifies whether the rollout is collapsed or not.
+  Maintains the image options in a rollout.
 Description
-  Use Collapsed to specify if the rollout is collapsed or not. Setting Collapsed to true is the same as
-  calling Collapse.
+  Class used by the TJvRollOut component to maintain settings affecting image display. Do not create
+  instances of this class: an instance is created and maintained by the TJvRollOut component and made
+  available through its ImageOptions property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOutColors.OnChange
+Summary
+  Occurs when any of the colors changes.
+Description
+  Don't create an event handler for OnChange. The rollout control that creates the class, assigns its
+  own handler to this event.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOutColors.HotTrackText
+Summary
+  Specifies the color for text in a rollout button when the mouse cursor is in the button.
+Description
+  Use HotTrackText to specify the font color when the user hovers the mouse inside the rollout's
+  button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOutColors.FrameTop
+Summary
+  Specifies the color for the top and left line in a rollout control.
+Description
+  Use FrameTop to specify the color used to draw the top and left frame line in a rollout control.
 See Also
-  TJvCustomRollOut.Collapse, TJvCustomRollOut.Expand
+  TJvRollOutColors.Color, TJvRollOutColors.FrameBottom
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.Colors
+@@TJvRollOutColors.FrameBottom
 Summary
-  Specifies the colors for various parts of the control.
+  Specifies the color for the bottom and right line in a rollout control.
 Description
-  Use Colors to customize the way the rollout looks. Colors controls such aspects of the rollout as the
-  colors of the edges, the color of the button and the background color of the control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.Expand
-Summary
-  Expands the rollout.
-Description
-  Call Expand to expand the rollout if it was collapsed. When you call Expand, Collapsed is set to
-  false.
+  Use FrameBottom to specify the color used to draw the bottom and right frame line in a rollout
+  control.
 See Also
-  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed
+  TJvRollOutColors.Color, TJvRollOutColors.FrameTop
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.GroupIndex
+@@TJvRollOutColors.Color
 Summary
-  Index of the group this rollout belongs to.
+  Specifies the background color for the rollout control.
 Description
-  GroupIndex holds the index of the group this rollout is part of. If several rollouts have a
-  GroupIndex > 0, they will behave as a radio group: when one rollout is expanded, the others are
-  collapsed. To disable the radio group behavior, set GroupIndex to 0.
+  Use Color to set the background color for the rollout.
+See Also
+  TJvRollOutColors.FrameBottom, TJvRollOutColors.FrameTop
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.ImageOptions
+@@TJvRollOutColors.ButtonTop
 Summary
-  Specifies options acting on the images on the button.
+  Specifies the color for the top and left line in a rollout button.
 Description
-  Use ImageOptions to specify settings regarding the image display on the rollout button.
+  Use ButtonTop to specify the color used for the frame line drawn at the top and left side of the
+  button.
+See Also
+  TJvRollOutColors.ButtonBottom, TJvRollOutColors.ButtonColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.MouseIsOnButton
+@@TJvRollOutColors.ButtonColor
+Summary
+  Specifies the background color for the rollout button.
+Description
+  Use ButtonColor to set the color of the button.
+See Also
+  TJvRollOutColors.ButtonBottom, TJvRollOutColors.ButtonTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOutColors.ButtonBottom
+Summary
+  Specifies the color for the bottom and right line in a rollout button.
+Description
+  Use ButtonBottom to specify the color used for the frame line drawn at the bottom and right side of
+  the button.
+See Also
+  TJvRollOutColors.ButtonColor, TJvRollOutColors.ButtonTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOutColors
+Summary
+  Maintains color settings for a rollout control.
+Description
+  TJvRollOutColors is the class type for color settings in a TJvRollOut. An instance of this class is
+  created and maintained by the TJvRollOut class. Do not create instances of this class as it has
+  internal references to the rollout it maintains the colors for.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOutAction.RollOut
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.OnCollapse
+@@TJvRollOutAction.LinkCheckedToCollapsed
 Summary
-  Occurs when the rollout is collapsed.
+  Write here a summary (1 line)
 Description
-  Write a handler for OnCollapse to take specific action when the rollout is collapsed.
+  Write here a description
 See Also
-  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand,
-  TJvCustomRollOut.OnExpand
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.OnExpand
+@@TJvRollOutAction
 Summary
-  Occurs when the rollout is expanded.
+  Write here a summary (1 line)
 Description
-  Write a handler for OnCollapse to take specific action when the rollout is expanded.
-See Also
-  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand,
-  TJvCustomRollOut.OnCollapse
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRollOut.Placement
+@@TJvRollOut.Caption
 Summary
-  Specifies where the button is located and how the rollout is expanded and collapsed.
+  Specifies the caption of the button.
 Description
-  Use Placement to control how the rollout expands and collapses as you call Collapse and Expand. To
-  place the button on the left edge and make the rollout \expand and \collapse its width, set Placement
-  to plLeft. To place the button at the top and make the rollout \expand and \collapse its height, set
-  Placement to plTop.
+  Use Caption to set the text of the button. If Placement is plLeft and the font is a true-type font,
+  the text is rotated to fit in the button.
 See Also
-  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand
+  TJvCustomRollOut.Placement
+
+----------------------------------------------------------------------------------------------------
+@@TJvPlacement.plTop
+Places the rollout button at the top (covering the entire width of the rollout) and makes the rollout alter its height when collapsed and expanded.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPlacement.plLeft
+Places the rollout button at the left (covering the entire height of the rollout) and makes the rollout alter its width when collapsed and expanded. This also rotates the text if the font used is a true-type font (non true-type fonts cannot be rotated).
+
+----------------------------------------------------------------------------------------------------
+@@TJvRollOut
+<TITLEIMG TJvRollOut>
+JVCLInfo
+  GROUP=JVCL.PanelsBevelsAndGroups.Panels
+  FLAG=Component
+Summary
+  A control that acts like a pane but can also alter its height or width to predefined values.
+Description
+  Use a TJvRollOut when screen real-estate is at a premium or if the form contains a multitude of
+  controls that can be logically grouped and where each group doesn't have to be visible at the same
+  time as other groups. The rollout also has a button that is used at runtime to expand and collapse
+  the control.
+  
+  To use a TJvRollOut, drop it on a form and:
+  
+  * Set Placement to specify in what direction the control expands and collapses and where the button
+    is located.
+  * Set Collapsed to true and adjust the rollout's width and height to define its collapsed size.
+  * Set Collapsed to false and adjust the rollout's width and height to define its expanded size.
+  * When Collapsed is false, drop other visual controls on the surface of the rollout. These controls
+    will only be visible while the rollout is expanded.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRollOut.ShowFocus
@@ -168,187 +219,136 @@ Description
   TJvPlacement is the type for the Placement property of TJvCustomRollOut.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPlacement.plTop
-  Places the rollout button at the top (covering the entire width of the rollout) and makes the rollout
-  alter its height when collapsed and expanded.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPlacement.plLeft
-  Places the rollout button at the left (covering the entire height of the rollout) and makes the
-  rollout alter its width when collapsed and expanded. This also rotates the text if the font used is a
-  true-type font (non true-type fonts cannot be rotated).
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOut
-<TITLEIMG TJvRollOut>
-JVCLInfo
-  GROUP=JVCL.PanelsBevelsAndGroups.Panels
-  FLAG=Component
+@@TJvCustomRollOut.Placement
 Summary
-  A control that acts like a pane but can also alter its height or width to predefined values.
+  Specifies where the button is located and how the rollout is expanded and collapsed.
 Description
-  Use a TJvRollOut when screen real-estate is at a premium or if the form contains a multitude of
-  controls that can be logically grouped and where each group doesn't have to be visible at the same
-  time as other groups. The rollout also has a button that is used at runtime to expand and collapse
-  the control.
-
-  To use a TJvRollOut, drop it on a form and:
-
-  * Set Placement to specify in what direction the control expands and collapses and where the button
-    is located.
-  * Set Collapsed to true and adjust the rollout's width and height to define its collapsed size.
-  * Set Collapsed to false and adjust the rollout's width and height to define its expanded size.
-  * When Collapsed is false, drop other visual controls on the surface of the rollout. These controls
-    will only be visible while the rollout is expanded.
+  Use Placement to control how the rollout expands and collapses as you call Collapse and Expand. To
+  place the button on the left edge and make the rollout \expand and \collapse its width, set
+  Placement to plLeft. To place the button at the top and make the rollout \expand and \collapse its
+  height, set
+  Placement to plTop.
+See Also
+  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRollOut.Caption
+@@TJvCustomRollOut.OnExpand
 Summary
-  Specifies the caption of the button.
+  Occurs when the rollout is expanded.
 Description
-  Use Caption to set the text of the button. If Placement is plLeft and the font is a true-type font,
-  the text is rotated to fit in the button.
+  Write a handler for OnCollapse to take specific action when the rollout is expanded.
+See Also
+  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand,
+  TJvCustomRollOut.OnCollapse
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.OnCollapse
+Summary
+  Occurs when the rollout is collapsed.
+Description
+  Write a handler for OnCollapse to take specific action when the rollout is collapsed.
+See Also
+  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand,
+  TJvCustomRollOut.OnExpand
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.MouseIsOnButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.ImageOptions
+Summary
+  Specifies options acting on the images on the button.
+Description
+  Use ImageOptions to specify settings regarding the image display on the rollout button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.GroupIndex
+Summary
+  Index of the group this rollout belongs to.
+Description
+  GroupIndex holds the index of the group this rollout is part of. If several rollouts have a
+  GroupIndex > 0, they will behave as a radio group: when one rollout is expanded, the others are
+  collapsed. To disable the radio group behavior, set GroupIndex to 0.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.Colors
+Summary
+  Specifies the colors for various parts of the control.
+Description
+  Use Colors to customize the way the rollout looks. Colors controls such aspects of the rollout as
+  the colors of the edges, the color of the button and the background color of the control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.Expand
+Summary
+  Expands the rollout.
+Description
+  Call Expand to expand the rollout if it was collapsed. When you call Expand, Collapsed is set to
+  false.
+See Also
+  TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.Collapsed
+Summary
+  Specifies whether the rollout is collapsed or not.
+Description
+  Use Collapsed to specify if the rollout is collapsed or not. Setting Collapsed to true is the same
+  as calling Collapse.
+See Also
+  TJvCustomRollOut.Collapse, TJvCustomRollOut.Expand
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.ChildOffset
+Summary
+  Specifies the top/left margin of the control.
+Description
+  Use ChildOffset to specify the top/left edge of the control. Child controls placed outside this
+  edge, will be realigned to be placed inside the edge.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.Collapse
+Summary
+  Collapses the rollout.
+Description
+  Call Collapse to collapse the rollout to its collapsed height or width (depending on the value of
+  Placement). The height or width of the collapsed rollout is controlled by the height or width set
+  when it is collapsed, that is, if you change the height or width when the rollout is collapsed, the
+  new values are used as the height and width for the collapsed state.
+  
+  When you all Collapse, Collapsed is set to true.
+See Also
+  TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRollOut.ButtonHeight
+Summary
+  Specifies the size of the button at the top (left) of the rollout.
+Description
+  Use ButtonHeight to specify the size of the button at the top (left) of the rollout. The size is
+  applied to the button depending on the value of the Placement property. If the button is displayed
+  at the top, ButtonHeight adjusts the height, if the button is displayed on the left, ButtonHeight
+  adjusts the width of the button instead.
 See Also
   TJvCustomRollOut.Placement
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRollOutAction
+@@TJvCustomRollOut
 Summary
-  Write here a summary (1 line)
+  Base class for panels that can have their size collapsed and expanded.
 Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutAction.LinkCheckedToCollapsed
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutAction.RollOut
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors
-Summary
-  Maintains color settings for a rollout control.
-Description
-  TJvRollOutColors is the class type for color settings in a TJvRollOut. An instance of this class is
-  created and maintained by the TJvRollOut class. Do not create instances of this class as it has
-  internal references to the rollout it maintains the colors for.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.ButtonBottom
-Summary
-  Specifies the color for the bottom and right line in a rollout button.
-Description
-  Use ButtonBottom to specify the color used for the frame line drawn at the bottom and right side of
-  the button.
-See Also
-  TJvRollOutColors.ButtonColor, TJvRollOutColors.ButtonTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.ButtonColor
-Summary
-  Specifies the background color for the rollout button.
-Description
-  Use ButtonColor to set the color of the button.
-See Also
-  TJvRollOutColors.ButtonBottom, TJvRollOutColors.ButtonTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.ButtonTop
-Summary
-  Specifies the color for the top and left line in a rollout button.
-Description
-  Use ButtonTop to specify the color used for the frame line drawn at the top and left side of the
-  button.
-See Also
-  TJvRollOutColors.ButtonBottom, TJvRollOutColors.ButtonColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.Color
-Summary
-  Specifies the background color for the rollout control.
-Description
-  Use Color to set the background color for the rollout.
-See Also
-  TJvRollOutColors.FrameBottom, TJvRollOutColors.FrameTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.FrameBottom
-Summary
-  Specifies the color for the bottom and right line in a rollout control.
-Description
-  Use FrameBottom to specify the color used to draw the bottom and right frame line in a rollout
-  control.
-See Also
-  TJvRollOutColors.Color, TJvRollOutColors.FrameTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.FrameTop
-Summary
-  Specifies the color for the top and left line in a rollout control.
-Description
-  Use FrameTop to specify the color used to draw the top and left frame line in a rollout control.
-See Also
-  TJvRollOutColors.Color, TJvRollOutColors.FrameBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.HotTrackText
-Summary
-  Specifies the color for text in a rollout button when the mouse cursor is in the button.
-Description
-  Use HotTrackText to specify the font color when the user hovers the mouse inside the rollout's
-  button.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutColors.OnChange
-Summary
-  Occurs when any of the colors changes.
-Description
-  Don't create an event handler for OnChange. The rollout control that creates the class, assigns its
-  own handler to this event.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutImageOptions
-Summary
-  Maintains the image options in a rollout.
-Description
-  Class used by the TJvRollOut component to maintain settings affecting image display. Do not create
-  instances of this class: an instance is created and maintained by the TJvRollOut component and made
-  available through its ImageOptions property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutImageOptions.Images
-Summary
-  Specifies the image list to display an image from.
-Description
-  Use Images to assign an existing TImageList instance to the control. The images to display on the
-  button is extracted from this image list.
-See Also
-  TJvRollOutImageOptions.IndexCollapsed, TJvRollOutImageOptions.IndexExpanded
-
-----------------------------------------------------------------------------------------------------
-@@TJvRollOutImageOptions.IndexCollapsed
-Summary
-  Specifies the button image to use when the rollout is collapsed.
-Description
-  Use IndexCollapsed to set the index of the image in Images that is used when the rollout is
-  collapsed. The image is displayed next to the button's text. If no image is to be displayed, set
-  IndexCollapsed to -1.
-See Also
-  TJvRollOutImageOptions.Images, TJvRollOutImageOptions.IndexExpanded
+  Derive a new control from TJvCustomRollOut when you need a panel-like control that can be easily
+  expanded and collapsed. To drop a control on a form, don't use TJvCustomRollOut. Instead, use a
+  control that publishes all properties and events of TJvCustomRollOut, like TJvRollOut.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRollOutImageOptions.IndexExpanded

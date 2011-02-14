@@ -3,44 +3,28 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDebugHandler.pas
 Summary
-  Contains the TJvDebugHandler component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDebugHandler component.
 Author
+  
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDebugHandler
-<TITLEIMG TJvDebugHandler>
-JVCLInfo
-  GROUP=JVCL.System
-  FLAG=Component
+@@TJvDebugHandler.UnhandledExceptionsOnly
 Summary
-  Write here a summary (1 line)
+  Specifies whether to log only unhandled exceptions.
 Description
-  Drop the component onto the MainForm of a project and set the properties in the object inspector or
-  in your mainform's OnCreate method as code.
+  Set UnhandledExceptionsOnly to true if you only want those exceptions NOT handled by the
+  application to be logged.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDebugHandler.AppendLogFile
+@@TJvDebugHandler.StackTrackingEnable
 Summary
-  Specifies whether to append generated exception information to an already existing logfile.
+  Specifies whether to provide a full stack trace of any exceptions including line numbers.
 Description
-  True will append the exception information generated to the beginning of any logfile for this project
-  already in existence. If one doesn't yet exist, it will be created. Each new exception logged will
-  appear above the last and separated by two blank lines.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDebugHandler.ExceptionLogging
-Summary
-  Specifies whether exception logging is enabled.
-Description
-  True will send exception info to logfile and/or any other viewer as set in the "OnOtherDestination"
-  event. In other words, this turns the component on and off. Note: This is NOT the same as
-  loading/unloading the component! It provides a means by which an option could be set at runtime that
-  will activate it.
-
-  A good example would be in the case of an unexplained error on a users machine, The user could be
-  instructed to turn this on via a menu item, then send the resulting log file back to you for
-  analysis.
+  Set StackTrackingEnable to true to provide a full stack trace of any exceptions including line
+  numbers.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDebugHandler.ExceptionStringList
@@ -58,8 +42,8 @@ Summary
   The name of the application's log file.
 Description
   Can be set at design-time or in the mainform's OnCreate with or without path. If no name or path is
-  given, any logfiles created will be provided the name: Application.Title + 'ERRORLOG.txt' and will be
-  placed in the application's directory.
+  given, any logfiles created will be provided the name: Application.Title + 'ERRORLOG.txt' and will
+  be placed in the application's directory.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDebugHandler.LogToFile
@@ -73,53 +57,71 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  Is the only event provided. When assigned, by double-clicking it in the object inspector, a procedure
-  of this name will be created for you in your mainform's unit. Any code you write here will be run
-  immediately upon any exception information being generated, before and completely independent of the
-  component's own logfile and whether or not "CreateLogFile" is set to True or False.
-
+  Is the only event provided. When assigned, by double-clicking it in the object inspector, a
+  procedure of this name will be created for you in your mainform's unit. Any code you write here
+  will be run immediately upon any exception information being generated, before and completely
+  independent of the component's own logfile and whether or not "CreateLogFile" is set to True or
+  False.
+  
   From here you may access the "ExceptionSgtringList" which holds this information and do with it as
   wanted. You may for example, have the "ExceptionStringList" saved to another logfile, or to another
   utility application such as CodeSite.
-
+  
   Please note that the "ExceptionStringList" is created and freed properly by the component
   itself...you need only access it if wanted. Also note that even though "AppendLogFile" may be set to
   True, this property ONLY applies to the component's own logfile. When the "ExceptionStringList" is
   accessed from within the "OnOtherDestination" method, it is holding ONLY the current exception's
-  information. To use this information in an appended form, it will be necessary to write such code as
-  necessary. As an example: You could, within this method, create a second stringList of your own and
-  assign the "ExceptionStringList's" lines to it each time the event fires. Finally, as an example of
-  how CodeSite users can easily make use of the exception information, the code as written below and
-  added to "OnOtherDestination" method is all that is needed:
-
+  information. To use this information in an appended form, it will be necessary to write such code
+  as necessary. As an example: You could, within this method, create a second stringList of your own
+  and assign the "ExceptionStringList's" lines to it each time the event fires. Finally, as an
+  example of how CodeSite users can easily make use of the exception information, the code as written
+  below and added to "OnOtherDestination" method is all that is needed:
+  
   For CodeSite 2:
   <CODE>
   If CodeSite.Enabled = True Then
-    CodeSite.SendStringList('ERROR INFO', JclDebugHandler1.ExceptionStringList);
-  </CODE>
-
+  CodeSite.SendStringList('ERROR INFO', JclDebugHandler1.ExceptionStringList); </CODE>
+  
   For CodeSite 3:
   <CODE>
   If CodeSite.Enabled = True Then
-    CodeSite.Send('ERROR INFO: ', JclDebugHandler1.ExceptionStringList);
-  </CODE>
-
+  CodeSite.Send('ERROR INFO: ', JclDebugHandler1.ExceptionStringList); </CODE>
+  
   Although it is NOT necessary to check if CodeSite is enabled or not here, I choose to do so because
   if I disable it and still leave this code in place, an exception will not occur.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDebugHandler.StackTrackingEnable
+@@TJvDebugHandler.ExceptionLogging
 Summary
-  Specifies whether to provide a full stack trace of any exceptions including line numbers.
+  Specifies whether exception logging is enabled.
 Description
-  Set StackTrackingEnable to true to provide a full stack trace of any exceptions including line
-  numbers.
+  True will send exception info to logfile and/or any other viewer as set in the "OnOtherDestination"
+  event. In other words, this turns the component on and off. Note: This is NOT the same as
+  loading/unloading the component! It provides a means by which an option could be set at runtime
+  that will activate it.
+  
+  A good example would be in the case of an unexplained error on a users machine, The user could be
+  instructed to turn this on via a menu item, then send the resulting log file back to you for
+  analysis.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDebugHandler.UnhandledExceptionsOnly
+@@TJvDebugHandler.AppendLogFile
 Summary
-  Specifies whether to log only unhandled exceptions.
+  Specifies whether to append generated exception information to an already existing logfile.
 Description
-  Set UnhandledExceptionsOnly to true if you only want those exceptions NOT handled by the application
-  to be logged.
+  True will append the exception information generated to the beginning of any logfile for this
+  project already in existence. If one doesn't yet exist, it will be created. Each new exception
+  logged will appear above the last and separated by two blank lines.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDebugHandler
+<TITLEIMG TJvDebugHandler>
+JVCLInfo
+  GROUP=JVCL.System
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Drop the component onto the MainForm of a project and set the properties in the object inspector or
+  in your mainform's OnCreate method as code.
 

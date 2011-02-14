@@ -3,43 +3,19 @@
 ----------------------------------------------------------------------------------------------------
 @@JvScrollBar.pas
 Summary
-  Contains the TJvScrollBar component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvScrollBar component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvScrollBar
-<TITLEIMG TJvScrollBar>
-JVCLInfo
-  GROUP=JVCL.GridsAndContent.Scrollbars,JVCL.CommCtrl
-  FLAG=Component
+@@TJvScrollBar.OnParentColorChange
 Summary
-  Supports extended features such as hot tracking.
+  Occurs when the color property for the parent of the scroll bar changes.
 Description
-  TJvScrollBar is a scroll bar that supports extended features such as hot tracking. It adds events to
-  TScrollBar: OnParentColorChange, OnMouseEnter and OnMouseLeave.
-
-  Use OnMouseEnter and OnMouseLeave to alter the controls look or behavior, when the user moves the
-  mouse pointer over the control.
-
-  Alternatively, you could use property HotTrack to highlight the scroll bar automatically when the
-  mouse passes over it.
-
-  Property HintColor can be used to set a different color of the Help hint boxes for the scroll bar.
-
-  A TJvScrollBar scroll bar can contain objects, such as TButton and TLabel objects.
-
-----------------------------------------------------------------------------------------------------
-@@TJvScrollBar.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the scroll bar.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-See Also
-  TJvScrollBar.HotTrack
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollBar.HotTrack
@@ -52,9 +28,35 @@ See Also
   TJvScrollBar.OnMouseEnter, TJvScrollBar.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
-@@TJvScrollBar.OnParentColorChange
+@@TJvScrollBar.HintColor
 Summary
-  Occurs when the color property for the parent of the scroll bar changes.
+  Determines the color of the hint boxes for the Help Hints for the scroll bar.
 Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+See Also
+  TJvScrollBar.HotTrack
+
+----------------------------------------------------------------------------------------------------
+@@TJvScrollBar
+<TITLEIMG TJvScrollBar>
+JVCLInfo
+  GROUP=JVCL.GridsAndContent.Scrollbars,JVCL.CommCtrl
+  FLAG=Component
+Summary
+  Supports extended features such as hot tracking.
+Description
+  TJvScrollBar is a scroll bar that supports extended features such as hot tracking. It adds events to
+  TScrollBar: OnParentColorChange, OnMouseEnter and OnMouseLeave.
+  
+  Use OnMouseEnter and OnMouseLeave to alter the controls look or behavior, when the user moves the
+  mouse pointer over the control.
+  
+  Alternatively, you could use property HotTrack to highlight the scroll bar automatically when the
+  mouse passes over it.
+  
+  Property HintColor can be used to set a different color of the Help hint boxes for the scroll bar.
+  
+  A TJvScrollBar scroll bar can contain objects, such as TButton and TLabel objects.
 

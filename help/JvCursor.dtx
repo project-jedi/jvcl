@@ -3,28 +3,87 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCursor.pas
 Summary
-  Contains the TJvCursor component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvCursor component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@CF_CURSOR
-<TITLE CF_CURSOR variable>
+@@TJvCursorImage.SaveToClipboardFormat
+Summary
+  Unsupported method
+Description
+  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also"
+  lists additional unsupported methods.
+See Also
+  <DELPHILINK TGraphic.SaveToFile>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCursorImage.LoadFromStream
+Summary
+  Unsupported method.
+Description
+  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also"
+  lists additional unsupported methods.
+See Also
+  TJvCursorImage.LoadFromClipboardFormat, TJvCursorImage.LoadFromStream,
+  TJvCursorImage.SaveToClipboardFormat, TJvCursorImage.SaveToStream
+
+----------------------------------------------------------------------------------------------------
+@@TJvCursorImage.LoadFromResourceName
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Instance - Description for this parameter
+  ResName  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCursorImage
+@@TJvCursorImage.LoadFromResourceID
 Summary
-  A TGraphic descendant that can display cursors
+  Write here a summary (1 line)
 Description
-  Use TJvCursorImage when you need to display a cursor image on a Canvas.
+  Write here a description
+Parameters
+  Instance - Description for this parameter
+  ResID    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCursorImage.LoadFromFile
+Summary
+  Loads a cursor from a file.
+Description
+  Loads a cursor from a cursor file. If the file is not a cursor, an Exception is raised.
+Parameters
+  FileName - The file to load the image from.
+See Also
+  <DELPHILINK TGraphic.SaveToFile>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCursorImage.Handle
+Summary
+  Provides access to the cursor handle.
+Description
+  Use Handle to call Windows API functions that require a cursor handle.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCursorImage.LoadFromClipboardFormat
+Summary
+  Unsupported method
+Description
+  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also"
+  lists additional unsupported methods.
+See Also
+  <DELPHILINK TGraphic.SaveToFile>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.Assign
@@ -45,87 +104,30 @@ Parameters
   Source - The object to copy from.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.Handle
-Summary
-  Provides access to the cursor handle.
-Description
-  Use Handle to call Windows API functions that require a cursor handle.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.LoadFromClipboardFormat
-Summary
-  Unsupported method
-Description
-  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also" lists
-  additional unsupported methods.
-See Also
-  <DELPHILINK TGraphic.SaveToFile>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.LoadFromFile
-Summary
-  Loads a cursor from a file.
-Description
-  Loads a cursor from a cursor file. If the file is not a cursor, an Exception is raised.
-Parameters
-  FileName - The file to load the image from.
-See Also
-  <DELPHILINK TGraphic.SaveToFile>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.LoadFromResourceID
+@@CF_CURSOR
+<TITLE CF_CURSOR variable>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Instance - Description for this parameter
-  ResID    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.LoadFromResourceName
+@@TJvCursorImage
 Summary
-  Write here a summary (1 line)
+  A TGraphic descendant that can display cursors
 Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-  ResName  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.LoadFromStream
-Summary
-  Unsupported method.
-Description
-  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also" lists
-  additional unsupported methods.
-See Also
-  TJvCursorImage.LoadFromClipboardFormat, TJvCursorImage.LoadFromStream,
-  TJvCursorImage.SaveToClipboardFormat, TJvCursorImage.SaveToStream
-
-----------------------------------------------------------------------------------------------------
-@@TJvCursorImage.SaveToClipboardFormat
-Summary
-  Unsupported method
-Description
-  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also" lists
-  additional unsupported methods.
-See Also
-  <DELPHILINK TGraphic.SaveToFile>
+  Use TJvCursorImage when you need to display a cursor image on a Canvas.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCursorImage.SaveToStream
 Summary
   Unsupported method
 Description
-  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also" lists
-  additional unsupported methods.
+  TJvCursorImage does not support this method and raises an Exception if you call it. "See Also"
+  lists additional unsupported methods.
 See Also
   <DELPHILINK TGraphic.SaveToFile>
 

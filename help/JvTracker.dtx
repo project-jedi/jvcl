@@ -3,14 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvTracker.pas
 Summary
-  Contains the TJvTracker component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvTracker component.
 Author
   Jan Verhoeven
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TjtbOrientation
-<TITLE TjtbOrientation type>
+@@TJvTracker.TrackPositionColored
 Summary
   Write here a summary (1 line)
 Description
@@ -20,26 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TjtbOrientation.jtbHorizontal
-  Description for jtbHorizontal
-
-----------------------------------------------------------------------------------------------------
-@@TjtbOrientation.jtbVertical
-  Description for jtbVertical
-
-----------------------------------------------------------------------------------------------------
-@@TJvTracker
-<TITLEIMG TJvTracker>
-JVCLInfo
-  GROUP=JVCL.Bars.SlideAndProgress.Sliders
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvTracker.BackBitmap
+@@TJvTracker.TrackHeight
 Summary
   Write here a summary (1 line)
 Description
@@ -49,7 +31,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.BackBorder
+@@TJvTracker.TrackColor
 Summary
   Write here a summary (1 line)
 Description
@@ -59,7 +41,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.BackColor
+@@TJvTracker.TrackBorder
 Summary
   Write here a summary (1 line)
 Description
@@ -69,7 +51,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.BorderColor
+@@TJvTracker.ThumbWidth
 Summary
   Write here a summary (1 line)
 Description
@@ -79,7 +61,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.CaptionBold
+@@TJvTracker.ThumbHeight
 Summary
   Write here a summary (1 line)
 Description
@@ -89,7 +71,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.CaptionColor
+@@TJvTracker.ThumbColor
 Summary
   Write here a summary (1 line)
 Description
@@ -99,7 +81,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.Maximum
+@@TJvTracker.ThumbBorder
 Summary
   Write here a summary (1 line)
 Description
@@ -109,7 +91,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.Minimum
+@@TJvTracker.ShowCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTracker.Paint
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTracker.Orientation
 Summary
   Write here a summary (1 line)
 Description
@@ -132,7 +135,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.Orientation
+@@TJvTracker.Minimum
 Summary
   Write here a summary (1 line)
 Description
@@ -142,18 +145,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.Paint
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTracker.ShowCaption
+@@TJvTracker.Maximum
 Summary
   Write here a summary (1 line)
 Description
@@ -163,7 +155,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.ThumbBorder
+@@TJvTracker.CaptionColor
 Summary
   Write here a summary (1 line)
 Description
@@ -173,7 +165,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.ThumbColor
+@@TJvTracker.CaptionBold
 Summary
   Write here a summary (1 line)
 Description
@@ -183,7 +175,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.ThumbHeight
+@@TJvTracker.BorderColor
 Summary
   Write here a summary (1 line)
 Description
@@ -193,7 +185,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.ThumbWidth
+@@TJvTracker.BackColor
 Summary
   Write here a summary (1 line)
 Description
@@ -203,7 +195,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.TrackBorder
+@@TJvTracker.BackBorder
 Summary
   Write here a summary (1 line)
 Description
@@ -213,7 +205,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.TrackColor
+@@TJvTracker.BackBitmap
 Summary
   Write here a summary (1 line)
 Description
@@ -223,17 +215,27 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.TrackHeight
+@@TJvTracker
+<TITLEIMG TJvTracker>
+JVCLInfo
+  GROUP=JVCL.Bars.SlideAndProgress.Sliders
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTracker.TrackPositionColored
+@@TjtbOrientation.jtbVertical
+Description for jtbVertical
+
+----------------------------------------------------------------------------------------------------
+@@TjtbOrientation.jtbHorizontal
+Description for jtbHorizontal
+
+----------------------------------------------------------------------------------------------------
+@@TjtbOrientation
+<TITLE TjtbOrientation type>
 Summary
   Write here a summary (1 line)
 Description
@@ -254,6 +256,5 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TOnChangedValue
-<TITLE TOnChangedValue type>
-<COMBINE TJvTracker.OnChangedValue>
+<TITLE TOnChangedValue type> <COMBINE TJvTracker.OnChangedValue>
 

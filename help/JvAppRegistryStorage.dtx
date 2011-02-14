@@ -1,33 +1,14 @@
 ##Package: Core
 ##Status: Completed (I)
-##Skip: TJvAppRegistryStorage.Root
 ----------------------------------------------------------------------------------------------------
 @@JvAppRegistryStorage.pas
 Summary
-  Contains the TJvAppRegistryStorage component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAppRegistryStorage component.
 Author
   Marcel Bestebroer
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStorage
-<TITLEIMG TJvAppRegistryStorage>
-JVCLInfo
-  GROUP=JVCL.Storage
-  FLAG=Component
-Summary
-  Registry based application data storage.
 Description
-  TJvAppRegistryStorage is a data storage backend that stores the data in the registry.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  As a descendant of TJvCustomAppStorage, it provides in the standard interface for storing data (such
-  as settings, form positions and sizes, etc). This data will be stored in the registry.
-
-  The component publishes the <LINK TJvCustomAppStorage.Root, Root> property and introduces a new
-  property RegRoot to specify which registry root key should be used (HKEY_CURRENT_USER,
-  HKEY_LOCAL_MACHINE, etc).
-
-  All the abstract access methods are implemented.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppRegistryStorage.RegRoot
@@ -47,6 +28,33 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvAppRegistryStorage
+<TITLEIMG TJvAppRegistryStorage>
+JVCLInfo
+  GROUP=JVCL.Storage
+  FLAG=Component
+Summary
+  Registry based application data storage.
+Description
+  TJvAppRegistryStorage is a data storage backend that stores the data in the registry.
+  
+  As a descendant of TJvCustomAppStorage, it provides in the standard interface for storing data (such
+  as settings, form positions and sizes, etc). This data will be stored in the registry.
+  
+  The component publishes the <LINK TJvCustomAppStorage.Root, Root> property and introduces a new
+  property RegRoot to specify which registry root key should be used (HKEY_CURRENT_USER,
+  HKEY_LOCAL_MACHINE, etc).
+  
+  All the abstract access methods are implemented.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAppRegistryStorageOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
 @@TJvAppRegistryStorage.UseOldDefaultRoot
 Summary
   Write here a summary (1 line)
@@ -55,11 +63,4 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvAppRegistryStorageOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 

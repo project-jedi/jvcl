@@ -3,39 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBUltimGrid.pas
 Summary
-  Contains the TJvDBUltimGrid component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBUltimGrid component.
 Author
   Frédéric Leneuf-Magaud
-
-----------------------------------------------------------------------------------------------------
-@@TCheckIfValidSortFieldEvent
-<TITLE TCheckIfValidSortFieldEvent type>
-<COMBINE TJvDBUltimGrid.OnCheckIfValidSortField>
-
-----------------------------------------------------------------------------------------------------
-@@TGetSortFieldNameEvent
-<TITLE TGetSortFieldNameEvent type>
-<COMBINE TJvDBUltimGrid.OnGetSortFieldName>
-
-----------------------------------------------------------------------------------------------------
-@@TIndexNotFoundEvent
-<TITLE TIndexNotFoundEvent type>
-<COMBINE TJvDBUltimGrid.OnIndexNotFound>
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid
-<TITLEIMG TJvDBUltimGrid>
-JVCLInfo
-  GROUP=JVCL.DBAware.GridsTreesLists.Grids
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.MultiColSort
+@@TJvDBUltimGrid.SortWith
 Summary
   Write here a summary (1 line)
 Description
@@ -45,7 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.OnAfterSort
+@@TJvDBUltimGrid.SortOK
 Summary
   Write here a summary (1 line)
 Description
@@ -55,43 +31,90 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.OnCheckIfValidSortField
+@@TJvDBUltimGrid.SortedFields
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid.Sort
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender      - Description for this parameter
-  FieldToSort - Description for this parameter
+  FieldsToSort - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.OnGetSortFieldName
-Summary
-  Is triggered to get the field name where the sort marker should be displayed
-Description
-  Write here a description
-Parameters
-  Sender    - Description for this parameter
-  FieldName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.OnIndexNotFound
+@@TJvDBUltimGrid.SearchNext
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender          - Description for this parameter
-  FieldsToSort    - Description for this parameter
-  IndexFieldNames - Description for this parameter
-  DescFields      - Description for this parameter
-  Retry           - Description for this parameter
+  ResultCol      - Description for this parameter
+  ResultField    - Description for this parameter
+  CaseSensitive  - Description for this parameter
+  WholeFieldOnly - Description for this parameter
+  Focus          - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid.SearchFields
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid.Search
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ValueToSearch  - Description for this parameter
+  ResultCol      - Description for this parameter
+  ResultField    - Description for this parameter
+  CaseSensitive  - Description for this parameter
+  WholeFieldOnly - Description for this parameter
+  Focus          - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid.RestoreGridPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid.SaveGridPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -126,46 +149,36 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.RestoreGridPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.SaveGridPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.Search
+@@TJvDBUltimGrid.OnIndexNotFound
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ValueToSearch  - Description for this parameter
-  ResultCol      - Description for this parameter
-  ResultField    - Description for this parameter
-  CaseSensitive  - Description for this parameter
-  WholeFieldOnly - Description for this parameter
-  Focus          - Description for this parameter
-Return value
-  Describe here what the function returns
+  Sender          - Description for this parameter
+  FieldsToSort    - Description for this parameter
+  IndexFieldNames - Description for this parameter
+  DescFields      - Description for this parameter
+  Retry           - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.SearchFields
+@@TJvDBUltimGrid.OnGetSortFieldName
+Summary
+  Is triggered to get the field name where the sort marker should be displayed
+Description
+  Write here a description
+Parameters
+  Sender    - Description for this parameter
+  FieldName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid.OnAfterSort
 Summary
   Write here a summary (1 line)
 Description
@@ -175,37 +188,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.SearchNext
+@@TJvDBUltimGrid.OnCheckIfValidSortField
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ResultCol      - Description for this parameter
-  ResultField    - Description for this parameter
-  CaseSensitive  - Description for this parameter
-  WholeFieldOnly - Description for this parameter
-  Focus          - Description for this parameter
-Return value
-  Describe here what the function returns
+  Sender      - Description for this parameter
+  FieldToSort - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.Sort
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FieldsToSort - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.SortedFields
+@@TJvDBUltimGrid.MultiColSort
 Summary
   Write here a summary (1 line)
 Description
@@ -215,29 +211,31 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.SortOK
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TGetSortFieldNameEvent
+<TITLE TGetSortFieldNameEvent type> <COMBINE TJvDBUltimGrid.OnGetSortFieldName>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBUltimGrid.SortWith
+@@TIndexNotFoundEvent
+<TITLE TIndexNotFoundEvent type> <COMBINE TJvDBUltimGrid.OnIndexNotFound>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBUltimGrid
+<TITLEIMG TJvDBUltimGrid>
+JVCLInfo
+  GROUP=JVCL.DBAware.GridsTreesLists.Grids
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TCheckIfValidSortFieldEvent
+<TITLE TCheckIfValidSortFieldEvent type> <COMBINE TJvDBUltimGrid.OnCheckIfValidSortField>
 
 ----------------------------------------------------------------------------------------------------
 @@TRestoreGridPosEvent
-<TITLE TRestoreGridPosEvent type>
-<COMBINE TJvDBUltimGrid.OnRestoreGridPosition>
+<TITLE TRestoreGridPosEvent type> <COMBINE TJvDBUltimGrid.OnRestoreGridPosition>
 
 ----------------------------------------------------------------------------------------------------
 @@TSortField
@@ -252,11 +250,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TSortField.Name
-  Description for Name
+Description for Name
 
 ----------------------------------------------------------------------------------------------------
 @@TSortField.Order
-  Description for Order
+Description for Order
 
 ----------------------------------------------------------------------------------------------------
 @@TSortFields
@@ -280,22 +278,21 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TSortWith.swIndex
-  Description for swIndex
+Description for swIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TSortWith.swFields
-  Description for swFields
+Description for swFields
 
 ----------------------------------------------------------------------------------------------------
 @@TSortWith.swUserFunc
-  Description for swUserFunc
+Description for swUserFunc
 
 ----------------------------------------------------------------------------------------------------
 @@TSortWith.swWhere
-  Description for swWhere
+Description for swWhere
 
 ----------------------------------------------------------------------------------------------------
 @@TUserSortEvent
-<TITLE TUserSortEvent type>
-<COMBINE TJvDBUltimGrid.OnUserSort>
+<TITLE TUserSortEvent type> <COMBINE TJvDBUltimGrid.OnUserSort>
 

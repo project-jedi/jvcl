@@ -1,162 +1,163 @@
 ##Package: XPCtrls
 ##Status: Completed,Checked (peter3)
-##Skip: TJvXPBoundLines
-##Skip: TJvXPControlStyle
-##Skip: TJvXPCustomComponent.Version
-##Skip: TJvXPCustomControl.Version
-##Skip: TJvXPDrawState
-##Skip: TJvXPStyle.GetTheme
 ----------------------------------------------------------------------------------------------------
 @@JvXPCore.pas
 Summary
-  Contains the TJvXPCore component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvXPCore component.
 Author
   Marc Hoffman
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPCustomComponent
+@@TJvXPStyleManager.Theme
 Summary
-  Base class for XP style components.
+  Defines the current theme.
 Description
-  Derive from TJvXPCustomComponent when you want to create a non-visual component that is part of the
-  XP style component hierarchy.
+  Use Theme to set and change the current theme for all connected controls.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl
+@@TJvXPStyleManager.RegisterControls
 Summary
-  Base class for XP style controls.
+  Adds controls to the style manager.
 Description
-  Derive from TJvXPCustomControl when you want to create a visual control that has the basic properties
-  and events of the XP style controls. Do not create instances of TJvXPCustomControl.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.DrawState
-Summary
-  Describes the current state of the control.
-Description
-  Use DrawState to determine or change the current state of the control. DrawState is used to modify
-  the visual appearance of the control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.IsLocked
-Summary
-  Determines if the control is being updated.
-Description
-  IsLocked is true when a call to BeginUpdate has been made without a corresponding call to EndUpdate.
-  When IsLocked is true, the control is not redrawn. Use IsLocked to make multiple updates to the
-  visual appearance of the control without redrawing it between each change.
-##See Also
-##  BeginUpdate, EndUpdate
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.IsSibling
-Summary
-  Determines if the currently selected control is a sibling of this control.
-Description
-  \Read IsSibling to determine if the currently focused control is also a TJvXPCustomControl
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.ModalResult
-Summary
-  Determines whether and how the control closes its (modal) parent form.
-Description
-  Setting the TJvXPCustomControl's ModalResult property is an easy way to make clicking the control
-  close a modal form. When a TJvXPCustomControl is clicked, the ModalResult property of its parent form
-  is set to the same value as the TJvXPCustomControl's ModalResult property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the control.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  control.
+  RegisterControls is called automatically by XP controls when their StyleManager property is set to
+  a valid style manager. All registered controls changes together when the style manager's Theme
+  property changes.
+Parameters
+  AControls - an array of XP style controls
 See Also
-  TJvXPCustomControl.OnMouseLeave
+  TJvXPStyleManager.UnregisterControls
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.OnMouseLeave
+@@TJvXPStyleManager.OnThemeChanged
 Summary
-  Occurs when the mouse pointer moves off the control.
+  Called when the theme of the style manager changes.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
+  Write a handler for the OnThemeChanged event when you want to take specific action when the theme
+  of the style manager changes. For example, use it to change the visual appearance of other controls
+  that cannot be associated with the style manager but still need to synchronize their looks with the
+  XP controls.
 See Also
-  TJvXPCustomControl.OnMouseEnter
+  TJvXPStyleManager.Theme
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPCustomStyleControl
+@@TJvXPStyleManager
+<TITLEIMG TJvXPStyleManager>
+JVCLInfo
+  GROUP=JVCL.XPControls
+  FLAG=Component
 Summary
-  Base class for controls that can have their appearance modified by a style manager.
+  A component that manages the theme and style of any number of connected controls.
 Description
-  TJvXPCustomStyleControl introduces the Style and StyleManager property. These properties allows
-  centralized control over the look and feel of controls.
+  Use a TJvXPStyleManager when you want to control the visual appearance of several or all XP style
+  controls on a form. By setting each XP controls StyleManager to point to a TJvXPStyleManager, you
+  can change all associated controls from one central location.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPCustomStyleControl.Style
+@@TJvXPStyle.UseStyleManager
 Summary
-  Determines the style of the control.
+  Determines if the style and theme is controlled from a style manager.
 Description
-  Use Style to set a visual style for the control.
+  Use UseStyleManager to control whether the style of a control is controlled from the control itself
+  or from a central style manager component. UseStyleManager only have any effect if the <LINK
+  TJvXPCustomStyleControl.StyleManager, StyleManager> property of the control is set to a valid
+  TJvXPStyleManager.
 See Also
-  TJvXPCustomStyleControl.StyleManager
+  TJvXPStyleManager
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPCustomStyleControl.StyleManager
+@@TJvXPStyle.Theme
 Summary
-  Sets the style manager responsible for drawing the control.
+  Defines the theme of the control.
 Description
-  Set StyleManager to point to a TJvXPStyleManager instance on your form. If you set the same style
-  manager for all TJvXPCustomControls on the form, you can control the style of all controls from one
-  central point
+  Use Theme to modify the visual appearance of a control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPStyle
+Summary
+  Class that is used to describe the way styles are handled in an XP style control.
+Description
+  TJvXPStyle is used by XP style controls to control how the style of the control is managed. Either
+  the control handles its own style changes or the style is controlled from a style manager.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradientStyle.gsBottom
+The gradient starts at the bottom edge of the image and moves upwards.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradientStyle.gsLeft
+The gradient starts at the left edge of the image and moves to the right.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradientStyle.gsTop
+The gradient starts at the top edge of the image and moves down.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradientStyle.gsRight
+The gradient starts at the right edge of the image and moves left.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradientStyle
+<TITLE TJvXPGradientStyle type>
+Summary
+  Defines the available styles for a gradient.
+Description
+  TJvXPGradientStyle is used for the Style property of the TJvXPGradient class. TJvXPGradientStyle
+  describes where the StartColor of the gradient have its origin.
 See Also
-  TJvXPCustomStyleControl.Style
+  TJvXPGradient
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGlyphLayout
-<TITLE TJvXPGlyphLayout type>
+@@TJvXPGradient.Style
 Summary
-  Determines the layout of images in XP style controls.
+  Defines the origin of the gradient.
 Description
-  TJvXPGlyphLayout defines the possible locations of images on a XP style control.
+  Use Style to change the origin of the gradient. Style determines where the gradient's starts
+  drawing with its StartColor.
+See Also
+  TJvXPGradient.Colors, TJvXPGradient.EndColor, TJvXPGradient.StartColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGlyphLayout.glBottom
-  The image(s) are aligned to the bottom of the control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGlyphLayout.glCenter
-  The image(s) are centered in the control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGlyphLayout.glTop
-  The image(s) are aligned to the top of the control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGradient
+@@TJvXPGradientColors
+<TITLE TJvXPGradientColors type>
 Summary
-  Defines properties for drawing an image gradient.
+  Defines the number of colors a gradient can contain.
 Description
-  TJvXPGradient defines properties for drawing a gradient image. The gradient is available through the
-  Bitmap variable.
+  TJvXPGradientColors is used for the Colors property of TJvXPGradient and defines the allowable
+  range of colors in the gradient.
+See Also
+  TJvXPGradient
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradient.Bitmap
+@@TJvXPGradient.StartColor
 Summary
-  Contains a gradient image.
+  Determines the start color of the gradient.
 Description
-  Use bitmap to access the gradient created by the class based on its property settings. For example,
-  the bitmap can be used as the background of an XP style control.
+  Use StartColor to \read and change the start color of the gradient. The gradient is created as a
+  color starting with StartColor and shifting towards EndColor using the number of color bands
+  determined by Colors.
+See Also
+  TJvXPGradient.Colors, TJvXPGradient.EndColor, TJvXPGradient.Style
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradient.Colors
+@@TJvXPGradient.RecreateBands
 Summary
-  Defines the number of colors in the gradient.
+  Recreates the gradient.
 Description
-  Use Colors to define the number of color shifts the gradient contains. The minimum value for Colors
-  is 2 and the maximum value is 255.
+  Call RecreateBands to recreate the gradient.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradient.EndColor
+Summary
+  Determines the end color of the gradient.
+Description
+  Use EndColor to \read and change the end color of the gradient. The gradient is created as a color
+  starting with StartColor and shifting towards EndColor using the number of color bands determined by
+  Colors.
+See Also
+  TJvXPGradient.Colors, TJvXPGradient.StartColor, TJvXPGradient.Style
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.Dithered
@@ -174,153 +175,148 @@ Description
   gradient is more "alive" than when disabled.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradient.EndColor
+@@TJvXPGradient.Colors
 Summary
-  Determines the end color of the gradient.
+  Defines the number of colors in the gradient.
 Description
-  Use EndColor to \read and change the end color of the gradient. The gradient is created as a color
-  starting with StartColor and shifting towards EndColor using the number of color bands determined by
-  Colors.
+  Use Colors to define the number of color shifts the gradient contains. The minimum value for Colors
+  is 2 and the maximum value is 255.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradient.Bitmap
+Summary
+  Contains a gradient image.
+Description
+  Use bitmap to access the gradient created by the class based on its property settings. For example,
+  the bitmap can be used as the background of an XP style control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGlyphLayout.glCenter
+The image(s) are centered in the control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGlyphLayout.glTop
+The image(s) are aligned to the top of the control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGradient
+Summary
+  Defines properties for drawing an image gradient.
+Description
+  TJvXPGradient defines properties for drawing a gradient image. The gradient is available through the
+  Bitmap variable.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGlyphLayout.glBottom
+The image(s) are aligned to the bottom of the control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPGlyphLayout
+<TITLE TJvXPGlyphLayout type>
+Summary
+  Determines the layout of images in XP style controls.
+Description
+  TJvXPGlyphLayout defines the possible locations of images on a XP style control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPCustomStyleControl.StyleManager
+Summary
+  Sets the style manager responsible for drawing the control.
+Description
+  Set StyleManager to point to a TJvXPStyleManager instance on your form. If you set the same style
+  manager for all TJvXPCustomControls on the form, you can control the style of all controls from one
+  central point
 See Also
-  TJvXPGradient.Colors, TJvXPGradient.StartColor, TJvXPGradient.Style
+  TJvXPCustomStyleControl.Style
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradient.RecreateBands
+@@TJvXPCustomStyleControl.Style
 Summary
-  Recreates the gradient.
+  Determines the style of the control.
 Description
-  Call RecreateBands to recreate the gradient.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGradient.StartColor
-Summary
-  Determines the start color of the gradient.
-Description
-  Use StartColor to \read and change the start color of the gradient. The gradient is created as a
-  color starting with StartColor and shifting towards EndColor using the number of color bands
-  determined by Colors.
+  Use Style to set a visual style for the control.
 See Also
-  TJvXPGradient.Colors, TJvXPGradient.EndColor, TJvXPGradient.Style
+  TJvXPCustomStyleControl.StyleManager
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradient.Style
+@@TJvXPCustomStyleControl
 Summary
-  Defines the origin of the gradient.
+  Base class for controls that can have their appearance modified by a style manager.
 Description
-  Use Style to change the origin of the gradient. Style determines where the gradient's starts drawing
-  with its StartColor.
+  TJvXPCustomStyleControl introduces the Style and StyleManager property. These properties allows
+  centralized control over the look and feel of controls.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPCustomControl.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
 See Also
-  TJvXPGradient.Colors, TJvXPGradient.EndColor, TJvXPGradient.StartColor
+  TJvXPCustomControl.OnMouseEnter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradientColors
-<TITLE TJvXPGradientColors type>
+@@TJvXPCustomControl.OnMouseEnter
 Summary
-  Defines the number of colors a gradient can contain.
+  Occurs when the mouse pointer moves over the control.
 Description
-  TJvXPGradientColors is used for the Colors property of TJvXPGradient and defines the allowable range
-  of colors in the gradient.
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
 See Also
-  TJvXPGradient
+  TJvXPCustomControl.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradientStyle
-<TITLE TJvXPGradientStyle type>
+@@TJvXPCustomControl.ModalResult
 Summary
-  Defines the available styles for a gradient.
+  Determines whether and how the control closes its (modal) parent form.
 Description
-  TJvXPGradientStyle is used for the Style property of the TJvXPGradient class. TJvXPGradientStyle
-  describes where the StartColor of the gradient have its origin.
-See Also
-  TJvXPGradient
+  Setting the TJvXPCustomControl's ModalResult property is an easy way to make clicking the control
+  close a modal form. When a TJvXPCustomControl is clicked, the ModalResult property of its parent
+  form is set to the same value as the TJvXPCustomControl's ModalResult property.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPGradientStyle.gsLeft
-  The gradient starts at the left edge of the image and moves to the right.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGradientStyle.gsTop
-  The gradient starts at the top edge of the image and moves down.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGradientStyle.gsRight
-  The gradient starts at the right edge of the image and moves left.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPGradientStyle.gsBottom
-  The gradient starts at the bottom edge of the image and moves upwards.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPStyle
+@@TJvXPCustomControl.IsSibling
 Summary
-  Class that is used to describe the way styles are handled in an XP style control.
+  Determines if the currently selected control is a sibling of this control.
 Description
-  TJvXPStyle is used by XP style controls to control how the style of the control is managed. Either
-  the control handles its own style changes or the style is controlled from a style manager.
+  \Read IsSibling to determine if the currently focused control is also a TJvXPCustomControl
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPStyle.Theme
+@@TJvXPCustomControl.IsLocked
 Summary
-  Defines the theme of the control.
+  Determines if the control is being updated.
 Description
-  Use Theme to modify the visual appearance of a control.
+  IsLocked is true when a call to BeginUpdate has been made without a corresponding call to EndUpdate.
+  When IsLocked is true, the control is not redrawn. Use IsLocked to make multiple updates to the
+  visual appearance of the control without redrawing it between each change.
+  ##See Also
+  ##  BeginUpdate, EndUpdate
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPStyle.UseStyleManager
+@@TJvXPCustomControl.DrawState
 Summary
-  Determines if the style and theme is controlled from a style manager.
+  Describes the current state of the control.
 Description
-  Use UseStyleManager to control whether the style of a control is controlled from the control itself
-  or from a central style manager component. UseStyleManager only have any effect if the <LINK
-  TJvXPCustomStyleControl.StyleManager, StyleManager> property of the control is set to a valid
-  TJvXPStyleManager.
-See Also
-  TJvXPStyleManager
+  Use DrawState to determine or change the current state of the control. DrawState is used to modify
+  the visual appearance of the control.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPStyleManager
-<TITLEIMG TJvXPStyleManager>
-JVCLInfo
-  GROUP=JVCL.XPControls
-  FLAG=Component
+@@TJvXPCustomControl
 Summary
-  A component that manages the theme and style of any number of connected controls.
+  Base class for XP style controls.
 Description
-  Use a TJvXPStyleManager when you want to control the visual appearance of several or all XP style
-  controls on a form. By setting each XP controls StyleManager to point to a TJvXPStyleManager, you can
-  change all associated controls from one central location.
+  Derive from TJvXPCustomControl when you want to create a visual control that has the basic
+  properties and events of the XP style controls. Do not create instances of TJvXPCustomControl.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXPStyleManager.OnThemeChanged
+@@TJvXPCustomComponent
 Summary
-  Called when the theme of the style manager changes.
+  Base class for XP style components.
 Description
-  Write a handler for the OnThemeChanged event when you want to take specific action when the theme of
-  the style manager changes. For example, use it to change the visual appearance of other controls that
-  cannot be associated with the style manager but still need to synchronize their looks with the XP
-  controls.
-See Also
-  TJvXPStyleManager.Theme
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPStyleManager.RegisterControls
-Summary
-  Adds controls to the style manager.
-Description
-  RegisterControls is called automatically by XP controls when their StyleManager property is set to a
-  valid style manager. All registered controls changes together when the style manager's Theme property
-  changes.
-Parameters
-  AControls - an array of XP style controls
-See Also
-  TJvXPStyleManager.UnregisterControls
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPStyleManager.Theme
-Summary
-  Defines the current theme.
-Description
-  Use Theme to set and change the current theme for all connected controls.
+  Derive from TJvXPCustomComponent when you want to create a non-visual component that is part of the
+  XP style component hierarchy.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyleManager.UnregisterControls
@@ -343,11 +339,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPTheme.WindowsXP
-  Use a visual style resembling Windows XP.
+Use a visual style resembling Windows XP.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPTheme.OfficeXP
-  Use a visual style resembling Office XP.
+Use a visual style resembling Office XP.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPUnlimitedControl

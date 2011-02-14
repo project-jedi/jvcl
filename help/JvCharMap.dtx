@@ -3,61 +3,533 @@
 ----------------------------------------------------------------------------------------------------
 @@JvCharMap.pas
 Summary
-  Contains the TJvCharMap component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvCharMap component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCharMap
-<TITLEIMG TJvCharMap>
-JVCLInfo
-  GROUP=JVCL.GridsAndContent.Grids,JVCL.SelectAndChoose
-  FLAG=Component
+@@TJvCustomCharMap.OnValidateChar
 Summary
-  Use this component when you want to allow your user to choose a character in a grid displaying the
-  current character set.
+  Event that is called when a character needs validating.
 Description
-  TJvCharMap is a grid component similar to the grid available in the CharMap utility included in
-  Windows. TJvCharMap can display the characters from any font installed on the system.
-
-  On Unicode enabled operating systems it can also display the Unicode characters as well as the
-  Unicode subranges (with some limitations, see TJvCharMapRange.Filter for details).
-
-  TJvCharMap inherits from TJvCustomCharMap and publish many of its properties but does not introduce
-  any new behavior.
+  Write a handler for the OnValidateChar event to take specific action when a character needs
+  validating. For example, to accept any character, write a handler that always returns true in the
+  Valid parameter.
+Parameters
+  Sender - The component that triggered the event.
+  AChar  - The character to validate.
+  Valid  - Set to true to mark the character as valid or to false to mark it as invalid.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCharMapRange
+@@TJvCustomCharMap.OnSelectChar
 Summary
-  Provides options for the TJvCharMap component.
+  Event that is called when a character is selected in the grid.
 Description
-  TJvCharMapRange provides display options for a TJvCharMap and is the type for the <LINK
-  TJvCustomCharMap.CharRange, CharRange> property.
+  Write a handler for the OnSelectChar event to take specific actions when the user selects a
+  character in the grid. For example, use this event to display information on the currently selected
+  character.
+Parameters
+  Sender - The component that triggered the event.
+  AChar  - The selected character.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCharMapRange.EndChar
+@@TJvCustomCharMap.Locale
 Summary
-  Determines the last character to display in a character map.
+  Determines the locale to use when extracting character info.
 Description
-  Use EndChar to set the last char to display in a TJvCharMap. Although EndChar is of type Cardinal, it
-  is actually used as a WideChar. EndChar has effect only if Filter is set to ufUndefined.
+  Use Locale to set the locale to use when the character map extracts character info. \Character info
+  is extracted using the GetStringTypeEx(W) function and, by default, only characters returning valid
+  information is displayed in the grid.
+  Note
+  This property has no function in Unicode enabled operating systems, like Windows 2000 and Windows
+  XP, since the Locale parameter is ignored by GetStringTypeExW.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap.HighlightInvalid
+Summary
+  Determines whether invalid cells are drawn in another style.
+Description
+  Use HighlightInvalid to define whether invalid cells are drawn using a background pattern in the
+  cell. Invalid characters can be of three types:
+  
+  * Characters outside the currently selected range
+  * Characters without character info as returned by GetStringTypeEx
+  * Characters that have been marked as invalid by an event handler for the OnValidateChar event
 See Also
-  TJvCharMapRange.Filter, TJvCharMapRange.StartChar
+  TJvCustomCharMap.CharRange, TJvCustomCharMap.OnValidateChar
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCharMapRange.Filter
+@@TJvCustomCharMap.Columns
 Summary
-  Determines the Unicode subrange to show in a character map.
+  Defines the number of columns to display in the gird.
 Description
-  Use Filter to set the Unicode subrange for a TJvCharMap. When Filter is ufUndefined, the TJvCharMap
-  uses StartChar and EndChar instead.
-Note
-  Unicode defines several subranges that are non-contiguous. The TJvCharMap can only display contiguous
-  character ranges and thus some subranges cannot be displayed in their entirety. The subranges
-  affected are ufPrivateUse and ufSpecials.
+  Use Columns to read and change the number of columns in the grid. The number of rows is
+  automatically adjusted to accommodate the currently selected character range.
 See Also
-  TJvCharMapRange.StartChar, TJvCharMapRange.EndChar
+  TJvCustomCharMap.CharRange
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap.CharRange
+Summary
+  Defines what characters are displayed in the grid.
+Description
+  Use the properties of CharRange to define what characters are displayed in the grid.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap.Character
+Summary
+  Determines the currently selected character in the grid.
+Description
+  Read Character to determine the currently selected character in the grid.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap.CellSize
+Summary
+  Returns the current size of a grid cell.
+Description
+  Call CellSize to learn the current size of a grid cell. The size of a grid cell is automatically
+  adjusted to accommodate the size of the currently selected font.
+Return value
+  A TSize value where cx is the width and cy is the height of a cell.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap.AutoSizeWidth
+Summary
+  Determines whether the component adjusts is width to match its content.
+Description
+  Set AutoSizeWidth to true to make the control automatically adjust its Width property to display
+  its content without using scrollbars.
+See Also
+  TJvCustomCharMap.AutoSizeHeight
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap.AutoSizeHeight
+Summary
+  Determines whether the component adjusts is height to match its content.
+Description
+  Set AutoSizeHeight to true to make the control automatically adjust its Height property to display
+  its content without using scrollbars.
+See Also
+  TJvCustomCharMap.AutoSizeWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCharMap
+Summary
+  Base class for a component that displays characters in a character set in a grid.
+Description
+  TJvCustomCharMap is the base class for TJvCharMap and defines all its properties and events as
+  protected.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapValidateEvent
+<TITLE TJvCharMapValidateEvent type> <COMBINE TJvCustomCharMap.OnValidateChar>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufTags
+Description for ufTags
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKCompatibilityIdeographsSupplement
+Description for ufCJKCompatibilityIdeographsSupplement
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKUnifiedIdeographsExtensionB
+Description for ufCJKUnifiedIdeographsExtensionB
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMathematicalAlphanumericSymbols
+Description for ufMathematicalAlphanumericSymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMusicalSymbols
+Description for ufMusicalSymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufDeseret
+Description for ufDeseret
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufByzantineMusicalSymbols
+Description for ufByzantineMusicalSymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGothic
+Description for ufGothic
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufOldItalic
+Description for ufOldItalic
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHalfwidthAndFullwidthForms
+Description for ufHalfwidthAndFullwidthForms
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufSpecials
+Description for ufSpecials
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufArabicPresentationFormsB
+Description for ufArabicPresentationFormsB
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufSmallFormVariants
+Description for ufSmallFormVariants
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKCompatibilityForms
+Description for ufCJKCompatibilityForms
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCombiningHalfMarks
+Description for ufCombiningHalfMarks
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufArabicPresentationFormsA
+Description for ufArabicPresentationFormsA
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufAlphabeticPresentationForms
+Description for ufAlphabeticPresentationForms
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKCompatibilityIdeographs
+Description for ufCJKCompatibilityIdeographs
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufPrivateUse
+Description for ufPrivateUse
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLowSurrogates
+Description for ufLowSurrogates
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHighPrivateUseSurrogates
+Description for ufHighPrivateUseSurrogates
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHighSurrogates
+Description for ufHighSurrogates
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHangulSyllables
+Description for ufHangulSyllables
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufYiRadicals
+Description for ufYiRadicals
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufYiSyllables
+Description for ufYiSyllables
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKUnifiedIdeographs
+Description for ufCJKUnifiedIdeographs
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKUnifiedIdeographsExtensionA
+Description for ufCJKUnifiedIdeographsExtensionA
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKCompatibility
+Description for ufCJKCompatibility
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufEnclosedCJKLettersAndMonths
+Description for ufEnclosedCJKLettersAndMonths
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBopomofoExtended
+Description for ufBopomofoExtended
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufKanbun
+Description for ufKanbun
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHangulCompatibilityJamo
+Description for ufHangulCompatibilityJamo
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBopomofo
+Description for ufBopomofo
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufKatakana
+Description for ufKatakana
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHiragana
+Description for ufHiragana
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKSymbolsAndPunctuation
+Description for ufCJKSymbolsAndPunctuation
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufIdeographicDescriptionCharacters
+Description for ufIdeographicDescriptionCharacters
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufKangxiRadicals
+Description for ufKangxiRadicals
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCJKRadicalsSupplement
+Description for ufCJKRadicalsSupplement
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBraillePatterns
+Description for ufBraillePatterns
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufDingbats
+Description for ufDingbats
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMiscellaneousSymbols
+Description for ufMiscellaneousSymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGeometricShapes
+Description for ufGeometricShapes
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBlockElements
+Description for ufBlockElements
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBoxDrawing
+Description for ufBoxDrawing
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufEnclosedAlphanumerics
+Description for ufEnclosedAlphanumerics
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufOpticalCharacterRecognition
+Description for ufOpticalCharacterRecognition
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufControlPictures
+Description for ufControlPictures
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMiscellaneousTechnical
+Description for ufMiscellaneousTechnical
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMathematicalOperators
+Description for ufMathematicalOperators
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufArrows
+Description for ufArrows
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufNumberForms
+Description for ufNumberForms
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLetterlikeSymbols
+Description for ufLetterlikeSymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCombiningMarksForSymbols
+Description for ufCombiningMarksForSymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCurrencySymbols
+Description for ufCurrencySymbols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufSuperscriptsAndSubscripts
+Description for ufSuperscriptsAndSubscripts
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGeneralPunctuation
+Description for ufGeneralPunctuation
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGreekExtended
+Description for ufGreekExtended
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLatinExtendedAdditional
+Description for ufLatinExtendedAdditional
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMongolian
+Description for ufMongolian
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufKhmer
+Description for ufKhmer
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufRunic
+Description for ufRunic
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufOgham
+Description for ufOgham
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufUnifiedCanadianAboriginalSyllabics
+Description for ufUnifiedCanadianAboriginalSyllabics
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCherokee
+Description for ufCherokee
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufEthiopic
+Description for ufEthiopic
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHangulJamo
+Description for ufHangulJamo
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGeorgian
+Description for ufGeorgian
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMyanmar
+Description for ufMyanmar
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufTibetan
+Description for ufTibetan
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLao
+Description for ufLao
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufThai
+Description for ufThai
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufSinhala
+Description for ufSinhala
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufMalayalam
+Description for ufMalayalam
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufKannada
+Description for ufKannada
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufTamil
+Description for ufTamil
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufTelugu
+Description for ufTelugu
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBengali
+Description for ufBengali
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGurmukhi
+Description for ufGurmukhi
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGujarati
+Description for ufGujarati
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufOriya
+Description for ufOriya
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufDevanagari
+Description for ufDevanagari
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufArabic
+Description for ufArabic
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufSyriac
+Description for ufSyriac
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufThaana
+Description for ufThaana
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCombiningDiacriticalMarks
+Description for ufCombiningDiacriticalMarks
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufGreek
+Description for ufGreek
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufCyrillic
+Description for ufCyrillic
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufArmenian
+Description for ufArmenian
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufHebrew
+Description for ufHebrew
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufBasicLatin
+Description for ufBasicLatin
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLatin1Supplement
+Description for ufLatin1Supplement
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLatinExtendedA
+Description for ufLatinExtendedA
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufLatinExtendedB
+Description for ufLatinExtendedB
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufIPAExtensions
+Description for ufIPAExtensions
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufSpacingModifierLetters
+Description for ufSpacingModifierLetters
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter
+<TITLE TJvCharMapUnicodeFilter type>
+Summary
+  Defines the possible values for Unicode subranges.
+Description
+  TJvCharMapUnicodeFilter defines the possible values for Unicode subranges as used by the Filter
+  property in a TJvCharMapRange.
+See Also
+  TJvCharMapRange, TJvCharMapRange.Filter
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapUnicodeFilter.ufUndefined
+No subrange is defined. In the case of TJvCharMapRange, when Filter is set to this value,
+TJvCharMapRange uses the values of StartChar and EndChar instead.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapSelectedEvent
+<TITLE TJvCharMapSelectedEvent type> <COMBINE TJvCustomCharMap.OnSelectChar>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCharMapRange.OnChange
@@ -79,526 +551,55 @@ See Also
   TJvCharMapRange.Filter, TJvCharMapRange.EndChar
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCharMapSelectedEvent
-<TITLE TJvCharMapSelectedEvent type>
-<COMBINE TJvCustomCharMap.OnSelectChar>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter
-<TITLE TJvCharMapUnicodeFilter type>
+@@TJvCharMapRange.Filter
 Summary
-  Defines the possible values for Unicode subranges.
+  Determines the Unicode subrange to show in a character map.
 Description
-  TJvCharMapUnicodeFilter defines the possible values for Unicode subranges as used by the Filter
-  property in a TJvCharMapRange.
+  Use Filter to set the Unicode subrange for a TJvCharMap. When Filter is ufUndefined, the TJvCharMap
+  uses StartChar and EndChar instead.
+  Note
+  Unicode defines several subranges that are non-contiguous. The TJvCharMap can only display
+  contiguous character ranges and thus some subranges cannot be displayed in their entirety. The
+  subranges affected are ufPrivateUse and ufSpecials.
 See Also
-  TJvCharMapRange, TJvCharMapRange.Filter
+  TJvCharMapRange.StartChar, TJvCharMapRange.EndChar
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufUndefined
-  No subrange is defined. In the case of TJvCharMapRange, when Filter is set to this value,
-  TJvCharMapRange uses the values of StartChar and EndChar instead.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBasicLatin
-  Description for ufBasicLatin
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLatin1Supplement
-  Description for ufLatin1Supplement
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLatinExtendedA
-  Description for ufLatinExtendedA
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLatinExtendedB
-  Description for ufLatinExtendedB
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufIPAExtensions
-  Description for ufIPAExtensions
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufSpacingModifierLetters
-  Description for ufSpacingModifierLetters
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCombiningDiacriticalMarks
-  Description for ufCombiningDiacriticalMarks
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGreek
-  Description for ufGreek
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCyrillic
-  Description for ufCyrillic
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufArmenian
-  Description for ufArmenian
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHebrew
-  Description for ufHebrew
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufArabic
-  Description for ufArabic
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufSyriac
-  Description for ufSyriac
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufThaana
-  Description for ufThaana
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufDevanagari
-  Description for ufDevanagari
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBengali
-  Description for ufBengali
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGurmukhi
-  Description for ufGurmukhi
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGujarati
-  Description for ufGujarati
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufOriya
-  Description for ufOriya
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufTamil
-  Description for ufTamil
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufTelugu
-  Description for ufTelugu
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufKannada
-  Description for ufKannada
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMalayalam
-  Description for ufMalayalam
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufSinhala
-  Description for ufSinhala
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufThai
-  Description for ufThai
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLao
-  Description for ufLao
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufTibetan
-  Description for ufTibetan
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMyanmar
-  Description for ufMyanmar
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGeorgian
-  Description for ufGeorgian
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHangulJamo
-  Description for ufHangulJamo
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufEthiopic
-  Description for ufEthiopic
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCherokee
-  Description for ufCherokee
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufUnifiedCanadianAboriginalSyllabics
-  Description for ufUnifiedCanadianAboriginalSyllabics
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufOgham
-  Description for ufOgham
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufRunic
-  Description for ufRunic
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufKhmer
-  Description for ufKhmer
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMongolian
-  Description for ufMongolian
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLatinExtendedAdditional
-  Description for ufLatinExtendedAdditional
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGreekExtended
-  Description for ufGreekExtended
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGeneralPunctuation
-  Description for ufGeneralPunctuation
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufSuperscriptsAndSubscripts
-  Description for ufSuperscriptsAndSubscripts
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCurrencySymbols
-  Description for ufCurrencySymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCombiningMarksForSymbols
-  Description for ufCombiningMarksForSymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLetterlikeSymbols
-  Description for ufLetterlikeSymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufNumberForms
-  Description for ufNumberForms
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufArrows
-  Description for ufArrows
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMathematicalOperators
-  Description for ufMathematicalOperators
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMiscellaneousTechnical
-  Description for ufMiscellaneousTechnical
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufControlPictures
-  Description for ufControlPictures
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufOpticalCharacterRecognition
-  Description for ufOpticalCharacterRecognition
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufEnclosedAlphanumerics
-  Description for ufEnclosedAlphanumerics
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBoxDrawing
-  Description for ufBoxDrawing
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBlockElements
-  Description for ufBlockElements
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGeometricShapes
-  Description for ufGeometricShapes
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMiscellaneousSymbols
-  Description for ufMiscellaneousSymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufDingbats
-  Description for ufDingbats
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBraillePatterns
-  Description for ufBraillePatterns
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKRadicalsSupplement
-  Description for ufCJKRadicalsSupplement
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufKangxiRadicals
-  Description for ufKangxiRadicals
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufIdeographicDescriptionCharacters
-  Description for ufIdeographicDescriptionCharacters
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKSymbolsAndPunctuation
-  Description for ufCJKSymbolsAndPunctuation
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHiragana
-  Description for ufHiragana
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufKatakana
-  Description for ufKatakana
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBopomofo
-  Description for ufBopomofo
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHangulCompatibilityJamo
-  Description for ufHangulCompatibilityJamo
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufKanbun
-  Description for ufKanbun
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufBopomofoExtended
-  Description for ufBopomofoExtended
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufEnclosedCJKLettersAndMonths
-  Description for ufEnclosedCJKLettersAndMonths
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKCompatibility
-  Description for ufCJKCompatibility
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKUnifiedIdeographsExtensionA
-  Description for ufCJKUnifiedIdeographsExtensionA
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKUnifiedIdeographs
-  Description for ufCJKUnifiedIdeographs
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufYiSyllables
-  Description for ufYiSyllables
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufYiRadicals
-  Description for ufYiRadicals
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHangulSyllables
-  Description for ufHangulSyllables
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHighSurrogates
-  Description for ufHighSurrogates
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHighPrivateUseSurrogates
-  Description for ufHighPrivateUseSurrogates
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufLowSurrogates
-  Description for ufLowSurrogates
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufPrivateUse
-  Description for ufPrivateUse
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKCompatibilityIdeographs
-  Description for ufCJKCompatibilityIdeographs
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufAlphabeticPresentationForms
-  Description for ufAlphabeticPresentationForms
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufArabicPresentationFormsA
-  Description for ufArabicPresentationFormsA
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCombiningHalfMarks
-  Description for ufCombiningHalfMarks
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKCompatibilityForms
-  Description for ufCJKCompatibilityForms
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufSmallFormVariants
-  Description for ufSmallFormVariants
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufArabicPresentationFormsB
-  Description for ufArabicPresentationFormsB
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufSpecials
-  Description for ufSpecials
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufHalfwidthAndFullwidthForms
-  Description for ufHalfwidthAndFullwidthForms
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufOldItalic
-  Description for ufOldItalic
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufGothic
-  Description for ufGothic
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufDeseret
-  Description for ufDeseret
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufByzantineMusicalSymbols
-  Description for ufByzantineMusicalSymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMusicalSymbols
-  Description for ufMusicalSymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufMathematicalAlphanumericSymbols
-  Description for ufMathematicalAlphanumericSymbols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKUnifiedIdeographsExtensionB
-  Description for ufCJKUnifiedIdeographsExtensionB
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufCJKCompatibilityIdeographsSupplement
-  Description for ufCJKCompatibilityIdeographsSupplement
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapUnicodeFilter.ufTags
-  Description for ufTags
-
-----------------------------------------------------------------------------------------------------
-@@TJvCharMapValidateEvent
-<TITLE TJvCharMapValidateEvent type>
-<COMBINE TJvCustomCharMap.OnValidateChar>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap
+@@TJvCharMap
+<TITLEIMG TJvCharMap>
+JVCLInfo
+  GROUP=JVCL.GridsAndContent.Grids,JVCL.SelectAndChoose
+  FLAG=Component
 Summary
-  Base class for a component that displays characters in a character set in a grid.
+  Use this component when you want to allow your user to choose a character in a grid displaying the
+  current character set.
 Description
-  TJvCustomCharMap is the base class for TJvCharMap and defines all its properties and events as
-  protected.
+  TJvCharMap is a grid component similar to the grid available in the CharMap utility included in
+  Windows. TJvCharMap can display the characters from any font installed on the system.
+  
+  On Unicode enabled operating systems it can also display the Unicode characters as well as the
+  Unicode subranges (with some limitations, see TJvCharMapRange.Filter for details).
+  
+  TJvCharMap inherits from TJvCustomCharMap and publish many of its properties but does not introduce
+  any new behavior.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.AutoSizeHeight
+@@TJvCharMapRange
 Summary
-  Determines whether the component adjusts is height to match its content.
+  Provides options for the TJvCharMap component.
 Description
-  Set AutoSizeHeight to true to make the control automatically adjust its Height property to display
-  its content without using scrollbars.
+  TJvCharMapRange provides display options for a TJvCharMap and is the type for the <LINK
+  TJvCustomCharMap.CharRange, CharRange> property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCharMapRange.EndChar
+Summary
+  Determines the last character to display in a character map.
+Description
+  Use EndChar to set the last char to display in a TJvCharMap. Although EndChar is of type Cardinal,
+  it is actually used as a WideChar. EndChar has effect only if Filter is set to ufUndefined.
 See Also
-  TJvCustomCharMap.AutoSizeWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.AutoSizeWidth
-Summary
-  Determines whether the component adjusts is width to match its content.
-Description
-  Set AutoSizeWidth to true to make the control automatically adjust its Width property to display its
-  content without using scrollbars.
-See Also
-  TJvCustomCharMap.AutoSizeHeight
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.CellSize
-Summary
-  Returns the current size of a grid cell.
-Description
-  Call CellSize to learn the current size of a grid cell. The size of a grid cell is automatically
-  adjusted to accommodate the size of the currently selected font.
-Return value
-  A TSize value where cx is the width and cy is the height of a cell.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.Character
-Summary
-  Determines the currently selected character in the grid.
-Description
-  Read Character to determine the currently selected character in the grid.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.CharRange
-Summary
-  Defines what characters are displayed in the grid.
-Description
-  Use the properties of CharRange to define what characters are displayed in the grid.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.Columns
-Summary
-  Defines the number of columns to display in the gird.
-Description
-  Use Columns to read and change the number of columns in the grid. The number of rows is automatically
-  adjusted to accommodate the currently selected character range.
-See Also
-  TJvCustomCharMap.CharRange
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.HighlightInvalid
-Summary
-  Determines whether invalid cells are drawn in another style.
-Description
-  Use HighlightInvalid to define whether invalid cells are drawn using a background pattern in the
-  cell. Invalid characters can be of three types:
-
-  * Characters outside the currently selected range
-  * Characters without character info as returned by GetStringTypeEx
-  * Characters that have been marked as invalid by an event handler for the OnValidateChar event
-See Also
-  TJvCustomCharMap.CharRange, TJvCustomCharMap.OnValidateChar
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.Locale
-Summary
-  Determines the locale to use when extracting character info.
-Description
-  Use Locale to set the locale to use when the character map extracts character info. \Character info
-  is extracted using the GetStringTypeEx(W) function and, by default, only characters returning valid
-  information is displayed in the grid.
-Note
-  This property has no function in Unicode enabled operating systems, like Windows 2000 and Windows XP,
-  since the Locale parameter is ignored by GetStringTypeExW.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.OnSelectChar
-Summary
-  Event that is called when a character is selected in the grid.
-Description
-  Write a handler for the OnSelectChar event to take specific actions when the user selects a character
-  in the grid. For example, use this event to display information on the currently selected character.
-Parameters
-  Sender - The component that triggered the event.
-  AChar  - The selected character.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCharMap.OnValidateChar
-Summary
-  Event that is called when a character needs validating.
-Description
-  Write a handler for the OnValidateChar event to take specific action when a character needs
-  validating. For example, to accept any character, write a handler that always returns true in the
-  Valid parameter.
-Parameters
-  Sender - The component that triggered the event.
-  AChar  - The character to validate.
-  Valid  - Set to true to mark the character as valid or to false to mark it as invalid.
+  TJvCharMapRange.Filter, TJvCharMapRange.StartChar
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCharMap.PanelVisible
@@ -625,8 +626,8 @@ See Also
 Summary
   Determines whether a shadow is drawn behind the zoom panel.
 Description
-  Set ShowShadow to true to show a drop shadow behind the zoom panel. On systems that supports it, the
-  shadow is alpha blended. On other systems, it is drawn black.
+  Set ShowShadow to true to show a drop shadow behind the zoom panel. On systems that supports it,
+  the shadow is alpha blended. On other systems, it is drawn black.
 See Also
   TJvCustomCharMap.ShadowSize
 
@@ -636,20 +637,20 @@ Summary
   Determines whether clicking a cell in the grid shows a zoom panel or not.
 Description
   Use ShowZoomPanel to define whether a zoom panel is shown when the user selects a cell in the grid.
-
+  
   A zoom panel displays the currently selected character in a larger font and in a separate window
   overlaying the currently selected cell.
-
-  To show the zoom panel at run-time, ShowZoomPanel must be true. The zoom panel can then be displayed
-  using any of the following methods:
-
+  
+  To show the zoom panel at run-time, ShowZoomPanel must be true. The zoom panel can then be
+  displayed using any of the following methods:
+  
   * Programmatically by setting PanelVisible to true.
   * By clicking the left mouse button in a valid cell.
   * By selecting a cell and pressing the Enter key.
-
-  Once the zoom panel is visible, the user can use the arrow keys or the mouse scroll wheel to move the
-  zoom panel to another cell.
-Note
+  
+  Once the zoom panel is visible, the user can use the arrow keys or the mouse scroll wheel to move
+  the zoom panel to another cell.
+  Note
   A user can toggle the zoom panel on and off using the Spacebar and hide it using by pressing the
   Escape key.
 See Also

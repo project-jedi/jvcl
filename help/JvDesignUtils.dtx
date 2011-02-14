@@ -3,29 +3,44 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDesignUtils.pas
 Summary
-  Contains the TJvDesignUtils component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDesignUtils component.
 Author
   Scott J Miles
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@DesignClientToParent
-<TITLE DesignClientToParent function>
+@@DesignUniqueName
+<TITLE DesignUniqueName function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  APt      - Description for this parameter
-  AControl - Description for this parameter
-  AParent  - Description for this parameter
+  AOwner     - Description for this parameter
+  AClassName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignLoadComponentFromFile
-<TITLE DesignLoadComponentFromFile procedure>
+@@DesignSaveComponentToStream
+<TITLE DesignSaveComponentToStream procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AComp   - Description for this parameter
+  AStream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DesignSaveComponentToFile
+<TITLE DesignSaveComponentToFile procedure>
 Summary
   Write here a summary (1 line)
 Description
@@ -33,64 +48,62 @@ Description
 Parameters
   AComp     - Description for this parameter
   AFileName - Description for this parameter
-  AOnError  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignLoadComponentFromStream
-<TITLE DesignLoadComponentFromStream function>
+@@DesignRectWidth
+<TITLE DesignRectWidth function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AComp    - Description for this parameter
-  AStream  - Description for this parameter
-  AOnError - Description for this parameter
+  ARect - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignMax
-<TITLE DesignMax function>
+@@DesignRectHeight
+<TITLE DesignRectHeight function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AA - Description for this parameter
-  AB - Description for this parameter
+  ARect - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignMin
-<TITLE DesignMin function>
+@@DesignPaintRules
+<TITLE DesignPaintRules procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AA - Description for this parameter
-  AB - Description for this parameter
+  ACanvas    - Description for this parameter
+  ARect      - Description for this parameter
+  ADivPixels - Description for this parameter
+  ASubDivs   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignNameIsUnique
-<TITLE DesignNameIsUnique function>
+@@DesignPaintRubberbandRect
+<TITLE DesignPaintRubberbandRect procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AOwner - Description for this parameter
-  AName  - Description for this parameter
+  ARect     - Description for this parameter
+  APenStyle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -113,64 +126,65 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignPaintRubberbandRect
-<TITLE DesignPaintRubberbandRect procedure>
+@@DesignNameIsUnique
+<TITLE DesignNameIsUnique function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ARect     - Description for this parameter
-  APenStyle - Description for this parameter
+  AOwner - Description for this parameter
+  AName  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignPaintRules
-<TITLE DesignPaintRules procedure>
+@@DesignMin
+<TITLE DesignMin function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ACanvas    - Description for this parameter
-  ARect      - Description for this parameter
-  ADivPixels - Description for this parameter
-  ASubDivs   - Description for this parameter
+  AA - Description for this parameter
+  AB - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignRectHeight
-<TITLE DesignRectHeight function>
+@@DesignMax
+<TITLE DesignMax function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ARect - Description for this parameter
+  AA - Description for this parameter
+  AB - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignRectWidth
-<TITLE DesignRectWidth function>
+@@DesignLoadComponentFromStream
+<TITLE DesignLoadComponentFromStream function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ARect - Description for this parameter
+  AComp    - Description for this parameter
+  AStream  - Description for this parameter
+  AOnError - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignSaveComponentToFile
-<TITLE DesignSaveComponentToFile procedure>
+@@DesignLoadComponentFromFile
+<TITLE DesignLoadComponentFromFile procedure>
 Summary
   Write here a summary (1 line)
 Description
@@ -178,34 +192,22 @@ Description
 Parameters
   AComp     - Description for this parameter
   AFileName - Description for this parameter
+  AOnError  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@DesignSaveComponentToStream
-<TITLE DesignSaveComponentToStream procedure>
+@@DesignClientToParent
+<TITLE DesignClientToParent function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AComp   - Description for this parameter
-  AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DesignUniqueName
-<TITLE DesignUniqueName function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner     - Description for this parameter
-  AClassName - Description for this parameter
+  APt      - Description for this parameter
+  AControl - Description for this parameter
+  AParent  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

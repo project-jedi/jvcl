@@ -3,86 +3,23 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBImage.pas
 Summary
-  Contains the TJvDBImage component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBImage component.
 Author
   Sergio Samayoa
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBImage
-<TITLEIMG TJvDBImage>
-JVCLInfo
-  GROUP=JVCL.DBAware.Graphics,JVCL.Graphics
-  FLAG=Component
+@@TJvDBImage.Transparent
 Summary
-  This component is a TDBImage replacement that supports other image formats than bitmap, a limitation
-  of TDBImage since D1.
+  Write here a summary (1 line)
 Description
-  IMAGE FORMATS: The implementation is simple: Just register image signatures with
-  RegisterGraphicSignature procedure and the component takes care of the correct instantiation of the
-  TGraphic object. The signatures register at unit's initialization are: BMP, WMF, EMF, ICO, JPG. If
-  you got some other image library (such as GIF, PCX, TIFF, ANI or PNG), just register the signature:
-
-  <CODE>
-       RegisterGraphicSignature(<string value>, <offset>, <class>)
-  </CODE>
-
-  or
-
-  <CODE>
-       RegisterGraphicSignature([<byte values>], <offset>, <class>)
-  </CODE>
-
-  This means: When \<string value\> (or byte values) found at \<offset\> the graphic class to use is
-  \<class\>.
-
-  For example (actual code of the initialization section):
-
-  <CODE>
-       RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
-       RegisterGraphicSignature([0, 1], 0, TMetafile);     // EMF
-       RegisterGraphicSignature('JFIF', 6, TJPEGImage);
-  </CODE>
-
-  You can also unregister signature. IF you want use TGIFImage instead of TJvGIFImage, you can
-  unregister with:
-
-  <CODE>
-       UnregisterGraphicSignature('GIF', 0);
-  </CODE>
-
-  or just
-
-  <CODE>
-       UnregisterGraphicSignature(TJvGIFImage); // must add JvGIF unit in uses clause
-  </CODE>
-
-  then:
-  <CODE>
-       RegisterGraphicSignature('GIF', 0, TGIFImage); // must add GIFImage to uses clause
-  </CODE>
-
-  If you don't like the signature registration there is a new event called OnGetGraphicClass. The event
-  gets the following parameters:
-
-  <CODE>
-      Sender: TObject;
-      Stream: TMemoryStream;
-      var GraphicClass: TGraphicClass)
-  </CODE>
-
-  The memory stream containing the blob data is sent in Stream to allow the user to inspect the
-  contents and figure out which graphic class is.
-
-  If the component can't find the graphic class and the user doesn't provide it in the
-  OnGetGraphicClass event no graphic object is created, the default behavior is used
-  (Picture.Assign(Field)). This might raise an exception ('Bitmap image is not valid').
-
-  The graphic class to be used must implement LoadFromStream and SaveToStream methods in order to work
-  properly.
-
-  SUPPORT FOR TDBCtrlGrid: You can safely put a TJvDBImage in TDBCtrlGrid.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBImage.AutoDisplay
@@ -139,12 +76,70 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBImage.Transparent
+@@TJvDBImage
+<TITLEIMG TJvDBImage>
+JVCLInfo
+  GROUP=JVCL.DBAware.Graphics,JVCL.Graphics
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  This component is a TDBImage replacement that supports other image formats than bitmap, a
+  limitation of TDBImage since D1.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IMAGE FORMATS: The implementation is simple: Just register image signatures with
+  RegisterGraphicSignature procedure and the component takes care of the correct instantiation of the
+  TGraphic object. The signatures register at unit's initialization are: BMP, WMF, EMF, ICO, JPG. If
+  you got some other image library (such as GIF, PCX, TIFF, ANI or PNG), just register the signature:
+  
+  <CODE>
+     RegisterGraphicSignature(<string value>, <offset>, <class>) </CODE>
+  
+  or
+  
+  <CODE>
+     RegisterGraphicSignature([<byte values>], <offset>, <class>) </CODE>
+  
+  This means: When \<string value\> (or byte values) found at \<offset\> the graphic class to use is
+  \<class\>.
+  
+  For example (actual code of the initialization section):
+  
+  <CODE>
+     RegisterGraphicSignature([$D7, $CD], 0, TMetafile); // WMF
+     RegisterGraphicSignature([0, 1], 0, TMetafile);     // EMF
+     RegisterGraphicSignature('JFIF', 6, TJPEGImage); </CODE>
+  
+  You can also unregister signature. IF you want use TGIFImage instead of TJvGIFImage, you can
+  unregister with:
+  
+  <CODE>
+     UnregisterGraphicSignature('GIF', 0); </CODE>
+  
+  or just
+  
+  <CODE>
+     UnregisterGraphicSignature(TJvGIFImage); // must add JvGIF unit in uses clause </CODE>
+  
+  then:
+  <CODE>
+     RegisterGraphicSignature('GIF', 0, TGIFImage); // must add GIFImage to uses clause </CODE>
+  
+  If you don't like the signature registration there is a new event called OnGetGraphicClass. The
+  event gets the following parameters:
+  
+  <CODE>
+    Sender: TObject;
+    Stream: TMemoryStream;
+    var GraphicClass: TGraphicClass) </CODE>
+  
+  The memory stream containing the blob data is sent in Stream to allow the user to inspect the
+  contents and figure out which graphic class is.
+  
+  If the component can't find the graphic class and the user doesn't provide it in the
+  OnGetGraphicClass event no graphic object is created, the default behavior is used
+  (Picture.Assign(Field)). This might raise an exception ('Bitmap image is not valid').
+  
+  The graphic class to be used must implement LoadFromStream and SaveToStream methods in order to
+  work properly.
+  
+  SUPPORT FOR TDBCtrlGrid: You can safely put a TJvDBImage in TDBCtrlGrid.
 

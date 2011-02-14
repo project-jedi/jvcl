@@ -3,52 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMTThreading.pas
 Summary
-  Contains the TJvMTThreading component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMTThreading component.
 Author
   Erwin Molendijk
-
-----------------------------------------------------------------------------------------------------
-@@CurrentMTThread
-<TITLE CurrentMTThread function>
-Summary
-  The current active MT thread.
 Description
-  This global function returns the MT thread, which is currently active. The caller is running in the
-  context of this thread. The return value will be nil if the caller is running in the context of the
-  main VCL thread (or any other non MT thread).
-Note
-  The TJvMTThread type is equal to the TJvMtSingleThread type defined in JvMtComponents.pas.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TIntThread
-<TITLE TIntThread type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  TThread; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TMTEvent
-<TITLE TMTEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference): TMTThread.OnExecute TMTThread.OnFinished
-  TMTThread.OnTerminating
-Parameters
-  Thread - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TMTInternalThread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TMTInternalThread.Name
+@@TMTThread.Terminate
 Summary
   Write here a summary (1 line)
 Description
@@ -58,75 +21,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTInternalThread.OnExecute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTManager
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TMTManager.AcquireNewThread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTManager.AcquireThread
+@@TMTThread.Synchronize
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Ticket - Description for this parameter
-  Thread - Description for this parameter
-Return value
-  Describe here what the function returns
+  Method - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTManager.ActiveThreads
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTManager.ReleaseThread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Ticket - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTManager.TerminateThreads
+@@TMTThread.Status
 Summary
   Write here a summary (1 line)
 Description
@@ -136,7 +43,67 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTManager.WaitThreads
+@@TMTThread.Run
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTThread.Release
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTThread.ReferenceCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTThread.OnTerminating
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTThread.OnFinished
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTThread.OnExecute
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTThread.Name
 Summary
   Write here a summary (1 line)
 Description
@@ -163,7 +130,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTThread.Name
+@@TMTManager.WaitThreads
 Summary
   Write here a summary (1 line)
 Description
@@ -173,7 +140,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTThread.OnExecute
+@@TMTManager.TerminateThreads
 Summary
   Write here a summary (1 line)
 Description
@@ -183,79 +150,65 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTThread.OnFinished
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTThread.OnTerminating
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTThread.ReferenceCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTThread.Release
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTThread.Run
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTThread.Status
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTThread.Synchronize
+@@TMTManager.ReleaseThread
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Method - Description for this parameter
+  Ticket - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTThread.Terminate
+@@TMTManager.ActiveThreads
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTManager.AcquireThread
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ticket - Description for this parameter
+  Thread - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTManager
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TMTManager.AcquireNewThread
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTInternalThread.OnExecute
 Summary
   Write here a summary (1 line)
 Description
@@ -263,6 +216,55 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTInternalThread.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTInternalThread
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TMTEvent
+<TITLE TMTEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference): TMTThread.OnExecute TMTThread.OnFinished
+  TMTThread.OnTerminating
+Parameters
+  Thread - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TIntThread
+<TITLE TIntThread type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  TThread; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@CurrentMTThread
+<TITLE CurrentMTThread function>
+Summary
+  The current active MT thread.
+Description
+  This global function returns the MT thread, which is currently active. The caller is running in the
+  context of this thread. The return value will be nil if the caller is running in the context of the
+  main VCL thread (or any other non MT thread).
+  Note
+  The TJvMTThread type is equal to the TJvMtSingleThread type defined in JvMtComponents.pas.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThread.TerminateSignal

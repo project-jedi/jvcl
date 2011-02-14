@@ -3,33 +3,49 @@
 ----------------------------------------------------------------------------------------------------
 @@JvXmlTree.pas
 Summary
-  Contains the TJvXMLTree component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvXMLTree component.
 Author
   Jan Verhoeven
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@PreProcessXML
-<TITLE PreProcessXML procedure>
+@@TJvXMLTree.LoadFromStream
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AList - Description for this parameter
+  Stream - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLAttribute
+@@TJvXMLTree.LoadFromFile
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  FileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLAttribute.Document
+@@TJvXMLTree.Lines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLTree.AsText
 Summary
   Write here a summary (1 line)
 Description
@@ -41,7 +57,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLAttribute.Name
+@@TJvXMLTree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.Value
 Summary
   Write here a summary (1 line)
 Description
@@ -51,7 +74,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLAttribute.Parent
+@@TJvXMLNode.ValueType
 Summary
   Write here a summary (1 line)
 Description
@@ -61,168 +84,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLAttribute.Value
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilter.Filters
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilter.Name
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterAtom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterAtom.AttributeFilter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterAtom.Name
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterAtom.Operator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterAtom.Value
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator
-<TITLE TJvXMLFilterOperator type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoNOP
-  Description for xfoNOP
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoEQ
-  Description for xfoEQ
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoIEQ
-  Description for xfoIEQ
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoNE
-  Description for xfoNE
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoINE
-  Description for xfoINE
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoGE
-  Description for xfoGE
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoIGE
-  Description for xfoIGE
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoLE
-  Description for xfoLE
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoILE
-  Description for xfoILE
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoGT
-  Description for xfoGT
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoIGT
-  Description for xfoIGT
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoLT
-  Description for xfoLT
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLFilterOperator.xfoILT
-  Description for xfoILT
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.AddAttribute
+@@TJvXMLNode.TransformNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AName  - Description for this parameter
-  AValue - Description for this parameter
+  AStyleSheet - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -230,14 +98,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.AddNode
+@@TJvXMLNode.SelectSingleNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AName  - Description for this parameter
-  AValue - Description for this parameter
+  APattern - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -245,14 +112,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.AddNodeEx
+@@TJvXMLNode.SelectNodes
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AName  - Description for this parameter
-  AValue - Description for this parameter
+  APattern - Description for this parameter
+  AList    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.RemoveChildNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ANode - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -260,104 +139,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.Attributes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.ClearAttributes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.ClearNodes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.CloneNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.DeleteAttribute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.DeleteNamePathNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APath - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.DeleteNamePathNodeAttribute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APath - Description for this parameter
-  AName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.DeleteNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.Document
+@@TJvXMLNode.Process
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   ALevel - Description for this parameter
+  ANode  - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -365,47 +154,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.FindNamedAttributes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AName - Description for this parameter
-  AList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.FindNamedNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.FindNamedNodes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AName - Description for this parameter
-  AList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.FirstChild
+@@TJvXMLNode.PreviousSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -417,132 +166,37 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.ForceNamePathNode
+@@TJvXMLNode.ParentNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  APath - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.ForceNamePathNodeAttribute
+@@TJvXMLNode.Nodes
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  APath  - Description for this parameter
-  AName  - Description for this parameter
-  AValue - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetAllNodes
+@@TJvXMLNode.Name
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetAttributeNames
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetAttributeValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetNamedAttribute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetNamedNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetNamePathNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APath - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetNamePathNodeAttribute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APath - Description for this parameter
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetNameSpace
+@@TJvXMLNode.NextSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -554,13 +208,68 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.GetNodeNames
+@@TJvXMLNode.MoveInsertNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AList - Description for this parameter
+  Dest - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.MoveAddNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.MatchPattern
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APattern - Description for this parameter
+  AList    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.MatchFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AObjFilter - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.LastChild
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -590,25 +299,23 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.LastChild
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.MatchFilter
+@@TJvXMLNode.GetNodeNames
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AObjFilter - Description for this parameter
+  AList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.GetNameSpace
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -616,26 +323,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.MatchPattern
+@@TJvXMLNode.GetNamePathNodeAttribute
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  APattern - Description for this parameter
-  AList    - Description for this parameter
+  APath - Description for this parameter
+  AName - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.MoveAddNode
+@@TJvXMLNode.GetNamePathNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Dest - Description for this parameter
+  APath - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -643,13 +352,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.MoveInsertNode
+@@TJvXMLNode.GetNamedNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Dest - Description for this parameter
+  AName - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -657,17 +366,89 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.Name
+@@TJvXMLNode.GetNamedAttribute
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  AName - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.NextSibling
+@@TJvXMLNode.GetAttributeValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.GetAttributeNames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.GetAllNodes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.ForceNamePathNodeAttribute
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APath  - Description for this parameter
+  AName  - Description for this parameter
+  AValue - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.ForceNamePathNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APath - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.FirstChild
 Summary
   Write here a summary (1 line)
 Description
@@ -679,31 +460,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.Nodes
+@@TJvXMLNode.FindNamedNodes
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  AName - Description for this parameter
+  AList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.ParentNode
+@@TJvXMLNode.FindNamedNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.PreviousSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+Parameters
+  AName - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -711,14 +487,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.Process
+@@TJvXMLNode.FindNamedAttributes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AName - Description for this parameter
+  AList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.Document
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   ALevel - Description for this parameter
-  ANode  - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -726,89 +514,56 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.RemoveChildNode
+@@TJvXMLNode.DeleteNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ANode - Description for this parameter
-Return value
-  Describe here what the function returns
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.SelectNodes
+@@TJvXMLNode.DeleteNamePathNodeAttribute
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  APattern - Description for this parameter
-  AList    - Description for this parameter
+  APath - Description for this parameter
+  AName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.SelectSingleNode
+@@TJvXMLNode.DeleteNamePathNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  APattern - Description for this parameter
-Return value
-  Describe here what the function returns
+  APath - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.TransformNode
+@@TJvXMLNode.DeleteAttribute
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AStyleSheet - Description for this parameter
-Return value
-  Describe here what the function returns
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.Value
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLNode.ValueType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLTree
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvXMLTree.AsText
+@@TJvXMLNode.CloneNode
 Summary
   Write here a summary (1 line)
 Description
@@ -820,7 +575,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLTree.Lines
+@@TJvXMLNode.ClearNodes
 Summary
   Write here a summary (1 line)
 Description
@@ -830,25 +585,272 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLTree.LoadFromFile
+@@TJvXMLNode.ClearAttributes
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvXMLTree.LoadFromStream
+@@TJvXMLNode.Attributes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.AddNodeEx
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Stream - Description for this parameter
+  AName  - Description for this parameter
+  AValue - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.AddNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AName  - Description for this parameter
+  AValue - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode.AddAttribute
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AName  - Description for this parameter
+  AValue - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoIGT
+Description for xfoIGT
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoLT
+Description for xfoLT
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoILT
+Description for xfoILT
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoGT
+Description for xfoGT
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoILE
+Description for xfoILE
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoLE
+Description for xfoLE
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoIGE
+Description for xfoIGE
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoGE
+Description for xfoGE
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoINE
+Description for xfoINE
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoNE
+Description for xfoNE
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoIEQ
+Description for xfoIEQ
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoEQ
+Description for xfoEQ
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator.xfoNOP
+Description for xfoNOP
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterOperator
+<TITLE TJvXMLFilterOperator type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterAtom.Value
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterAtom.Operator
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterAtom.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterAtom.AttributeFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilterAtom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilter.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLFilter.Filters
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLAttribute.Value
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLAttribute.Parent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLAttribute.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLAttribute.Document
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXMLAttribute
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@PreProcessXML
+<TITLE PreProcessXML procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -920,9 +922,9 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLValueType.xvtString
-  Description for xvtString
+Description for xvtString
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLValueType.xvtCDATA
-  Description for xvtCDATA
+Description for xvtCDATA
 

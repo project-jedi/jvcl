@@ -3,16 +3,17 @@
 ----------------------------------------------------------------------------------------------------
 @@JvBDEQBE.pas
 Summary
-  Contains the TJvBDEQBE component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvBDEQBE component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TCheckType
-<TITLE TCheckType type>
+@@TJvQBEQuery.StmtHandle
 Summary
   Write here a summary (1 line)
 Description
@@ -22,38 +23,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TCheckType.ctNone
-  Description for ctNone
-
-----------------------------------------------------------------------------------------------------
-@@TCheckType.ctCheck
-  Description for ctCheck
-
-----------------------------------------------------------------------------------------------------
-@@TCheckType.ctCheckPlus
-  Description for ctCheckPlus
-
-----------------------------------------------------------------------------------------------------
-@@TCheckType.ctCheckDesc
-  Description for ctCheckDesc
-
-----------------------------------------------------------------------------------------------------
-@@TCheckType.ctCheckGroup
-  Description for ctCheckGroup
-
-----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery
-<TITLEIMG TJvQBEQuery>
-JVCLInfo
-  GROUP=JVCL.DBAware.Providers.Datasets
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.AuxiliaryTables
+@@TJvQBEQuery.StartParam
 Summary
   Write here a summary (1 line)
 Description
@@ -63,7 +33,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.BlankAsZero
+@@TJvQBEQuery.RowsAffected
 Summary
   Write here a summary (1 line)
 Description
@@ -73,7 +43,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.Constrained
+@@TJvQBEQuery.RequestLive
 Summary
   Write here a summary (1 line)
 Description
@@ -83,7 +53,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.ExecQBE
+@@TJvQBEQuery.RefreshQuery
 Summary
   Write here a summary (1 line)
 Description
@@ -93,13 +63,61 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.GetQBEText
+@@TJvQBEQuery.QBE
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery.Prepared
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery.Prepare
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery.Params
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery.ParamCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery.ParamCheck
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -129,7 +147,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.ParamCheck
+@@TJvQBEQuery.GetQBEText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery.ExecQBE
 Summary
   Write here a summary (1 line)
 Description
@@ -139,7 +169,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.ParamCount
+@@TJvQBEQuery.Constrained
 Summary
   Write here a summary (1 line)
 Description
@@ -149,7 +179,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.Params
+@@TJvQBEQuery.BlankAsZero
 Summary
   Write here a summary (1 line)
 Description
@@ -159,7 +189,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.Prepare
+@@TJvQBEQuery.AuxiliaryTables
 Summary
   Write here a summary (1 line)
 Description
@@ -169,67 +199,39 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.Prepared
+@@TCheckType.ctCheckGroup
+Description for ctCheckGroup
+
+----------------------------------------------------------------------------------------------------
+@@TJvQBEQuery
+<TITLEIMG TJvQBEQuery>
+JVCLInfo
+  GROUP=JVCL.DBAware.Providers.Datasets
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.QBE
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TCheckType.ctCheckDesc
+Description for ctCheckDesc
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.RefreshQuery
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TCheckType.ctCheckPlus
+Description for ctCheckPlus
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.RequestLive
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TCheckType.ctCheck
+Description for ctCheck
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.RowsAffected
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TCheckType.ctNone
+Description for ctNone
 
 ----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.StartParam
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvQBEQuery.StmtHandle
+@@TCheckType
+<TITLE TCheckType type>
 Summary
   Write here a summary (1 line)
 Description

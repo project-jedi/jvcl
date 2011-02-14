@@ -3,84 +3,72 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPrint.pas
 Summary
-  Contains the TJvPrint component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPrint component.
 Author
   Sébastien Buysse
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint
-<TITLEIMG TJvPrint>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPrint.Abort
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint.GetScaleX
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint.GetScaleY
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint.OnBeginPrint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint.OnDrawItem
+@@TJvPrint.PrintImage
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender  - Description for this parameter
-  ACanvas - Description for this parameter
-  ARect   - Description for this parameter
-  AIndex  - Description for this parameter
-  AItem   - Description for this parameter
+  Value - Description for this parameter
+  Style - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPrint.OnFinishedPrint
+@@TJvPrint.PrintHTML
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint.Print
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint.OwnerDraw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint.OnProgress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint.OnNextPage
 Summary
   Write here a summary (1 line)
 Description
@@ -106,7 +94,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPrint.OnNextPage
+@@TJvPrint.OnFinishedPrint
 Summary
   Write here a summary (1 line)
 Description
@@ -116,69 +104,81 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPrint.OnProgress
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint.OwnerDraw
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPrint.Print
+@@TJvPrint.OnDrawItem
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
+  Sender  - Description for this parameter
+  ACanvas - Description for this parameter
+  ARect   - Description for this parameter
+  AIndex  - Description for this parameter
+  AItem   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPrint.PrintHTML
+@@TJvPrint.OnBeginPrint
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPrint.PrintImage
+@@TJvPrint.GetScaleY
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Value - Description for this parameter
-  Style - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint.GetScaleX
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint.Abort
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPrint
+<TITLEIMG TJvPrint>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPrintDrawItemEvent
-<TITLE TJvPrintDrawItemEvent type>
-<COMBINE TJvPrint.OnDrawItem>
+<TITLE TJvPrintDrawItemEvent type> <COMBINE TJvPrint.OnDrawItem>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPrintMeasureItemEvent
-<TITLE TJvPrintMeasureItemEvent type>
-<COMBINE TJvPrint.OnMeasureItem>
+<TITLE TJvPrintMeasureItemEvent type> <COMBINE TJvPrint.OnMeasureItem>
 

@@ -3,76 +3,16 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDialogs.pas
 Summary
-  Contains the TJvDialogs component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDialogs component.
 Author
   Petr Vones
-
-----------------------------------------------------------------------------------------------------
-@@JvDialogsUseFixW2k
-<TITLE JvDialogsUseFixW2k variable>
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TDialogErrorEvent
-<TITLE TDialogErrorEvent type>
-<COMBINE TJvOpenDialog.OnError>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCDQueryEvent
-<TITLE TJvCDQueryEvent type>
-<COMBINE TJvColorDialog.OnQueryColor>
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorDialog
-<TITLEIMG TJvColorDialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorDialog.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorDialog.OnQueryColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender        - Description for this parameter
-  SelectedColor - Description for this parameter
-  Accept        - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorDialog.SelectColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Color - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog
-<TITLEIMG TJvOpenDialog>
+@@TJvSaveDialog
+<TITLEIMG TJvSaveDialog>
 JVCLInfo
   GROUP=JVCL.Dialogs.Common
   FLAG=Component
@@ -82,11 +22,16 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
+@@TJvOpenDialogAS.asReport
+Description for asReport
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.ActiveControl
+@@TJvOpenDialogAS.asSmallIcon
+Description for asSmallIcon
+
+----------------------------------------------------------------------------------------------------
+@@TJvOpenDialogAS
+<TITLE TJvOpenDialogAS type>
 Summary
   Write here a summary (1 line)
 Description
@@ -96,7 +41,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.ActiveStyle
+@@TJvOpenDialogAC.acEdit
+Description for acEdit
+
+----------------------------------------------------------------------------------------------------
+@@TJvOpenDialogAC.acListView
+Description for acListView
+
+----------------------------------------------------------------------------------------------------
+@@TJvOpenDialogAC
+<TITLE TJvOpenDialogAC type>
 Summary
   Write here a summary (1 line)
 Description
@@ -106,7 +60,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.AutoSize
+@@TJvOpenDialog.Width
 Summary
   Write here a summary (1 line)
 Description
@@ -116,7 +70,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.DefBtnCaption
+@@TJvOpenDialog.UseUserSize
 Summary
   Write here a summary (1 line)
 Description
@@ -126,7 +80,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.FilterLabelCaption
+@@TJvOpenDialog.SelectFolder
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FolderName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvOpenDialog.ParentWnd
 Summary
   Write here a summary (1 line)
 Description
@@ -136,7 +102,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.Height
+@@TJvOpenDialog.OnShareViolation
 Summary
   Write here a summary (1 line)
 Description
@@ -159,7 +125,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.OnShareViolation
+@@TJvOpenDialog.Height
 Summary
   Write here a summary (1 line)
 Description
@@ -169,7 +135,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.ParentWnd
+@@TJvOpenDialog.FilterLabelCaption
 Summary
   Write here a summary (1 line)
 Description
@@ -179,19 +145,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.SelectFolder
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FolderName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.UseUserSize
+@@TJvOpenDialog.DefBtnCaption
 Summary
   Write here a summary (1 line)
 Description
@@ -201,7 +155,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialog.Width
+@@TJvOpenDialog.AutoSize
 Summary
   Write here a summary (1 line)
 Description
@@ -211,8 +165,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialogAC
-<TITLE TJvOpenDialogAC type>
+@@TJvOpenDialog.ActiveStyle
 Summary
   Write here a summary (1 line)
 Description
@@ -222,16 +175,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialogAC.acEdit
-  Description for acEdit
+@@TJvOpenDialog.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialogAC.acListView
-  Description for acListView
-
-----------------------------------------------------------------------------------------------------
-@@TJvOpenDialogAS
-<TITLE TJvOpenDialogAS type>
+@@TJvOpenDialog.ActiveControl
 Summary
   Write here a summary (1 line)
 Description
@@ -241,16 +189,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOpenDialogAS.asSmallIcon
-  Description for asSmallIcon
-
-----------------------------------------------------------------------------------------------------
-@@TJvOpenDialogAS.asReport
-  Description for asReport
-
-----------------------------------------------------------------------------------------------------
-@@TJvSaveDialog
-<TITLEIMG TJvSaveDialog>
+@@TJvOpenDialog
+<TITLEIMG TJvOpenDialog>
 JVCLInfo
   GROUP=JVCL.Dialogs.Common
   FLAG=Component
@@ -258,6 +198,66 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDialog.SelectColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Color - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDialog.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDialog.OnQueryColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender        - Description for this parameter
+  SelectedColor - Description for this parameter
+  Accept        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorDialog
+<TITLEIMG TJvColorDialog>
+JVCLInfo
+  GROUP=JVCL.Dialogs
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@JvDialogsUseFixW2k
+<TITLE JvDialogsUseFixW2k variable>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDialogErrorEvent
+<TITLE TDialogErrorEvent type> <COMBINE TJvOpenDialog.OnError>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCDQueryEvent
+<TITLE TJvCDQueryEvent type> <COMBINE TJvColorDialog.OnQueryColor>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSaveDialog.TaskModalDialog

@@ -3,10 +3,392 @@
 ----------------------------------------------------------------------------------------------------
 @@JvRichEditToHtml.pas
 Summary
-  Contains the TJvRichEditToHtml component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvRichEditToHtml component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.Header
+Summary
+  Tags added to the beginning of the generated HTML.
+Description
+  Header is a TStrings property that represents the HTML tags added to the beginning of the HTML
+  generated using the ConvertToHtml or ConvertToHtmlStrings methods. The default value for the Header
+  property is assigned in the constructor for the component, and contains the following:
+  
+  <CODE>
+    <HTML>
+      <HEAD>
+        <TITLE><#TITLE></TITLE>
+      </HEAD>
+      <BODY> </CODE>
+  
+  During processing in the ConvertToHtmlStrings method, the value of the Title property is used to
+  replace all instances of the \<\#TITLE\> tag found in the Header property.
+  
+  The Footer property contains tags added to the end of the generated HTML.
+  
+  The Header and Footer properties are used in the overloaded ConvertToHtmlStrings methods.
+See Also
+  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.Footer
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.Footer
+Summary
+  Tags added to the end of the generated HTML.
+Description
+  Footer is a TStrings property that represents the HTML tags added to the end of the HTML generated
+  using the ConvertToHtml or ConvertToHtmlStrings methods. The default value for the Footer property
+  is assigned in the constructor for the component, and contains the following:
+  
+  <CODE>
+      </BODY>
+    </HTML> </CODE>
+  
+  The Header property contains the preamble for the generated HTML, including the Title assigned to
+  the generated HTML.
+  
+  The Header and Footer properties are used in the overloaded ConvertToHtmlStrings methods.
+See Also
+  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.Header
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.ConvertToHtmlStrings@TRichEdit@TStrings
+Summary
+  Converts the contents of the specified rich edit control to HTML.
+Description
+  ConvertToHtmlStrings is an overloaded method used to convert the contents of the TRichEdit control
+  specified in Value to HTML.
+  
+  HTML created in the method from the contents of the rich edit control is stored in the Strings
+  argument. Strings is cleared prior to converting the RTF contents of the control and generating the
+  HTML output.
+  
+  Strings will contain a complete HTML document that includes the contents from the Header property,
+  the converted RTF contents of Value, and the Footer property. Each occurrence of the \<\#TITLE\>
+  tag in the lines of the Header property are replaced with the value from the Title property.
+  
+  ConvertToHtmlStrings uses instances of TJvParaAttributesRec to maintain the default, starting, and
+  current paragraph attributes when processing the RTF content in the rich edit control. Each line in
+  the rich edit control is processed to detect changes to font and paragraph attributes in the RTF
+  content for the specified rich edit control, and converts the RTF markup to the equivalent HTML
+  markup.
+  
+  RTF font attributes handled during conversion include:
+  
+  * Font Family (or Face)
+  * Size
+  * Color
+  
+  RTF paragraph attributes handled during conversion include:
+  
+  * Alignment
+  * Numbering
+  * Bullets
+  * Bold
+  * Italic
+  * Strikeout
+  * Underline
+  
+  Font attributes are indicated using the \<FONT\> and \<\/FONT\> HTML tags. The FONT tag will include
+  Color, Face, and Size attributes.
+  
+  Paragraph breaks are indicated by the \<BR\> HTML tag.
+  
+  Paragraph alignment is indicated by using an ALIGN attribute in the \<P\> HTML tag. For example:
+  
+  <CODE>
+    <P ALIGN="LEFT"> The rain in Spain... </P>
+    <P ALIGN="RIGHT"> The rain in Spain... </P>
+    <P ALIGN="CENTER"> The rain in Spain... </P> </CODE>
+  
+  Font styles are indicated in the HTML output using the following markup:
+  
+  <TABLE>
+    Attribute   Markup
+    ----------  ----------------------
+    Bold        \<B\>\<\/B\>
+    Italic      \<I\>\<\/I\>
+    Strikeout   \<STRIKE\>\<\/STRIKE\>
+    Underline   \<U\>\<\/U\> </TABLE>
+  
+  Bullet numbering style is indicated in the HTML output by wrapping the content in list item tags.
+  For example:
+  
+  <CODE>
+  <LI>This is an Item</LI>
+  <LI>This is another Item</LI>
+  <LI>This is the final Item</LI> </CODE>
+  
+  Please note that ConvertToHtmlStrings does not attempt to convert tabs, tables, images, or other
+  advanced RTF markup instructions.
+  
+  ConvertToHtmlStrings is used in the ConvertToHtml method which stores the HTML output in a
+  specified file.
+Parameters
+  Value   - Rich edit with content to convert to HTML.
+  Strings - Stores the HTML created by the method.
+See Also
+  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml, TJvParaAttributesRec
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.ConvertToHtml@TRichEdit@string
+Summary
+  Convert the contents of a rich edit control to HTML.
+Description
+  ConvertToHtml is an overloaded method used to convert the contents of the TRichEdit control
+  specified in Value to HTML. ConvertToHtml stores the generated HTML in the file specified in the
+  Filename argument.
+  
+  ConvertToHtml calls the ConvertToHtmlStrings method to perform conversion of the RTF content in the
+  control specified by Value.
+  
+  Use ConvertToHtmlStrings to convert the RTF content of a rich edit control to HTML and to store the
+  results in a TStrings instance.
+Parameters
+  Value    - Rich edit control with the content to convert to HTML.
+  FileName - File where generated HTML is stored.
+See Also
+  TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.ConvertToHtmlStrings
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.ConvertToHtmlStrings@TJvRichEdit@TStrings
+Summary
+  Converts the contents of the specified rich edit control to HTML.
+Description
+  ConvertToHtmlStrings is an overloaded method used to convert the contents of the TJvRichEdit
+  control specified in Value to HTML.
+  
+  HTML created in the method from the contents of the rich edit control is stored in the Strings
+  argument. Strings is cleared prior to converting the RTF contents of the control and generating the
+  HTML output.
+  
+  Strings will contain a complete HTML document that includes the contents from the Header property,
+  the converted RTF contents of Value, and the Footer property. Each occurrence of the \<\#TITLE\>
+  tag in the lines of the Header property are replaced with the value from the Title property.
+  
+  ConvertToHtmlStrings uses instances of TJvRichEditParaAttributesRec to maintain the default,
+  starting, and current paragraph attributes when processing the RTF content in the rich edit control.
+  Each line in the rich edit control is processed to detect changes to font and paragraph attributes
+  in the RTF content for the specified rich edit control, and converts the RTF markup to the
+  equivalent
+  HTML markup.
+  
+  RTF font attributes handled during conversion include:
+  
+  * Font Family (or Face)
+  * Size
+  * Color
+  
+  RTF paragraph attributes handled during conversion include:
+  
+  * Alignment
+  * Numbering
+  * Bullets
+  * Bold
+  * Italic
+  * Strikeout
+  * Underline
+  
+  Font attributes are indicated using the \<FONT\> and \<\/FONT\> HTML tags. The FONT tag will include
+  Color, Face, and Size attributes.
+  
+  Paragraph breaks are indicated by the \<BR\> HTML tag.
+  
+  Paragraph alignment is indicated by using an ALIGN attribute in the \<P\> HTML tag. For example:
+  
+  <CODE>
+    <P ALIGN="LEFT"> The rain in Spain... </P>
+    <P ALIGN="RIGHT"> The rain in Spain... </P>
+    <P ALIGN="CENTER"> The rain in Spain... </P> </CODE>
+  
+  Font styles are indicated in the HTML output using the following markup:
+  
+  <TABLE>
+    Attribute   Markup
+    ----------  ----------------------
+    Bold        \<B\>\<\/B\>
+    Italic      \<I\>\<\/I\>
+    Strikeout   \<STRIKE\>\<\/STRIKE\>
+    Underline   \<U\>\<\/U\> </TABLE>
+  
+  Bullet numbering style is indicated in the HTML output by wrapping the content in list item tags.
+  For example:
+  
+  <CODE>
+  <LI>This is an Item</LI>
+  <LI>This is another Item</LI>
+  <LI>This is the final Item</LI> </CODE>
+  
+  Please note that ConvertToHtmlStrings does not attempt to convert tabs, tables, images, or other
+  advanced RTF markup instructions.
+  
+  ConvertToHtmlStrings is used in the ConvertToHtml method which stores the HTML output in a
+  specified file.
+Parameters
+  Value   - Rich edit with content to convert to HTML.
+  Strings - Stores the HTML created by the method.
+See Also
+  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml,
+  TJvRichEditParaAttributesRec
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml.ConvertToHtml@TJvRichEdit@string
+Summary
+  Convert the contents of a rich edit control to HTML.
+Description
+  ConvertToHtml is an overloaded method used to convert the contents of the TJvRichEdit control
+  specified in Value to HTML. ConvertToHtml stores the generated HTML in the file specified in the
+  Filename argument.
+  
+  ConvertToHtml calls the ConvertToHtmlStrings method to perform conversion of the RTF content in the
+  control specified by Value.
+  
+  Use ConvertToHtmlStrings to convert the RTF contents of a rich edit control to HTML and to store
+  the results in a TStrings instance.
+Parameters
+  Value    - Rich edit control with the content to convert to HTML.
+  FileName - File where generated HTML is stored.
+See Also
+  TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.ConvertToHtmlStrings
+
+----------------------------------------------------------------------------------------------------
+@@TFontInfo.Pitch
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TFontInfo.Size
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TFontInfo.Style
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvParaAttributesRec
+<TITLE TJvParaAttributesRec type>
+Summary
+  Stores paragraph attributes.
+Description
+  TJvParaAttributesRec is a record type used to store paragraph attributes for RTF-encoded values in
+  a rich edit control.
+  
+  Use the Alignment and Numbering members to access or update the text alignment and numbering styles
+  for content occurring in the paragraph.
+  
+  TJvParaAttributesRec is similar to TJvRichEditParaAttributesRec which implements additional
+  paragraph alignment and numbering styles.
+  
+  TJvParaAttributesRec and TJvRichEditParaAttributesRec are used in methods in the TJvRichEditToHtml
+  component when converting RTF content to HTML.
+See Also
+  TJvRichEditParaAttributesRec, TJvRichEditToHtml.ConvertToHtmlStrings
+
+----------------------------------------------------------------------------------------------------
+@@TJvParaAttributesRec.Alignment
+Indicates the paragraph alignment for RTF content in a rich edit control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvParaAttributesRec.Numbering
+Indicates the paragraph numbering for RTF content in a rich edit control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditParaAttributesRec
+<TITLE TJvRichEditParaAttributesRec type>
+Summary
+  Stores paragraph attributes.
+Description
+  TJvRichEditParaAttributesRec is a record type used to store paragraph attributes for RTF-encoded
+  values in a TJvRichEdit control.
+  
+  Use the Alignment and Numbering members to access or update the text alignment and numbering styles
+  for content occurring in the paragraph.
+  
+  TJvRichEditParaAttributesRec is similar to TJvParaAttributesRec.
+  
+  TJvParaAttributesRec and TJvRichEditParaAttributesRec are used in methods in the TJvRichEditToHtml
+  component when converting RTF content to HTML.
+See Also
+  TJvParaAttributesRec TJvRichEditToHtml.ConvertToHtmlStrings
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditParaAttributesRec.Alignment
+Indicates the paragraph alignment for RTF content in a rich edit control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditParaAttributesRec.Numbering
+Indicates the paragraph numbering for RTF content in a rich edit control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRichEditToHtml
+<TITLEIMG TJvRichEditToHtml>
+JVCLInfo
+  GROUP=JVCL.Internet.ConvertersAndParsers.HTML
+  FLAG=Component
+Summary
+  Converts the contents of a rich edit control to HTML.
+Description
+  TJvRichEditToHtml is a TJvComponent used to convert the content in a rich edit control to HTML.
+  TJvRichEditToHtml provides methods and properties needed to control converting the RTF-based
+  content of a TRichEdit or TJvRichEdit component to HTML.
+  
+  Use ConvertToHtml to store the converted RTF content for the rich edit control to a specified file
+  name.
+  
+  Use ConvertToHtmlStrings to store the HTML converted from the RTF content for the rich edit control
+  to a TStrings instance passed as a parameter to the method.
+  
+  Use Header and Footer to control the HTML tags prior to and following the generated HTML when
+  converting the RTF content for the rich edit control.
+  
+  Use the Title property to set the value used in the HTML \<TITLE\> tag when converting the RTF
+  content for the rich edit control.
+  
+  TJvRichEditToHtml detects changes to font and paragraph attributes in the RTF content for the
+  specified rich edit control, and converts the RTF markup to the equivalent HTML markup.
+  
+  RTF font attributes handled by TJvRichEditToHtml include:
+  
+  * Font Family (or Face)
+  * Size
+  * Color
+  
+  RTF paragraph attributes handled by TJvRichEditToHtml include:
+  
+  * Alignment
+  * Numbering
+  * Bullets
+  * Bold
+  * Italic
+  * Strikeout
+  * Underline
+  
+  Please note that TJvRichEditToHtml does not attempt to convert tabs, tables, images, or other
+  advanced RTF markup instructions.
+See Also
+  TJvRichEditToHtml.Title, TJvRichEditToHtml.Header, TJvRichEditToHtml.Footer,
+  TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.ConvertToHtmlStrings
 
 ----------------------------------------------------------------------------------------------------
 @@TFontInfo
@@ -66,400 +448,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TFontInfo.Pitch
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TFontInfo.Size
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TFontInfo.Style
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvParaAttributesRec
-<TITLE TJvParaAttributesRec type>
-Summary
-  Stores paragraph attributes.
-Description
-  TJvParaAttributesRec is a record type used to store paragraph attributes for RTF-encoded values in a
-  rich edit control.
-
-  Use the Alignment and Numbering members to access or update the text alignment and numbering styles
-  for content occurring in the paragraph.
-
-  TJvParaAttributesRec is similar to TJvRichEditParaAttributesRec which implements additional paragraph
-  alignment and numbering styles.
-
-  TJvParaAttributesRec and TJvRichEditParaAttributesRec are used in methods in the TJvRichEditToHtml
-  component when converting RTF content to HTML.
-See Also
-  TJvRichEditParaAttributesRec, TJvRichEditToHtml.ConvertToHtmlStrings
-
-----------------------------------------------------------------------------------------------------
-@@TJvParaAttributesRec.Alignment
-  Indicates the paragraph alignment for RTF content in a rich edit control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvParaAttributesRec.Numbering
-  Indicates the paragraph numbering for RTF content in a rich edit control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditParaAttributesRec
-<TITLE TJvRichEditParaAttributesRec type>
-Summary
-  Stores paragraph attributes.
-Description
-  TJvRichEditParaAttributesRec is a record type used to store paragraph attributes for RTF-encoded
-  values in a TJvRichEdit control.
-
-  Use the Alignment and Numbering members to access or update the text alignment and numbering styles
-  for content occurring in the paragraph.
-
-  TJvRichEditParaAttributesRec is similar to TJvParaAttributesRec.
-
-  TJvParaAttributesRec and TJvRichEditParaAttributesRec are used in methods in the TJvRichEditToHtml
-  component when converting RTF content to HTML.
-See Also
-  TJvParaAttributesRec TJvRichEditToHtml.ConvertToHtmlStrings
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditParaAttributesRec.Alignment
-  Indicates the paragraph alignment for RTF content in a rich edit control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditParaAttributesRec.Numbering
-  Indicates the paragraph numbering for RTF content in a rich edit control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml
-<TITLEIMG TJvRichEditToHtml>
-JVCLInfo
-  GROUP=JVCL.Internet.ConvertersAndParsers.HTML
-  FLAG=Component
-Summary
-  Converts the contents of a rich edit control to HTML.
-Description
-  TJvRichEditToHtml is a TJvComponent used to convert the content in a rich edit control to HTML.
-  TJvRichEditToHtml provides methods and properties needed to control converting the RTF-based content
-  of a TRichEdit or TJvRichEdit component to HTML.
-
-  Use ConvertToHtml to store the converted RTF content for the rich edit control to a specified file
-  name.
-
-  Use ConvertToHtmlStrings to store the HTML converted from the RTF content for the rich edit control
-  to a TStrings instance passed as a parameter to the method.
-
-  Use Header and Footer to control the HTML tags prior to and following the generated HTML when
-  converting the RTF content for the rich edit control.
-
-  Use the Title property to set the value used in the HTML \<TITLE\> tag when converting the RTF
-  content for the rich edit control.
-
-  TJvRichEditToHtml detects changes to font and paragraph attributes in the RTF content for the
-  specified rich edit control, and converts the RTF markup to the equivalent HTML markup.
-
-  RTF font attributes handled by TJvRichEditToHtml include:
-
-  * Font Family (or Face)
-  * Size
-  * Color
-
-  RTF paragraph attributes handled by TJvRichEditToHtml include:
-
-  * Alignment
-  * Numbering
-  * Bullets
-  * Bold
-  * Italic
-  * Strikeout
-  * Underline
-
-  Please note that TJvRichEditToHtml does not attempt to convert tabs, tables, images, or other
-  advanced RTF markup instructions.
-See Also
-  TJvRichEditToHtml.Title, TJvRichEditToHtml.Header, TJvRichEditToHtml.Footer,
-  TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.ConvertToHtmlStrings
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtml@TJvRichEdit@string
-Summary
-  Convert the contents of a rich edit control to HTML.
-Description
-  ConvertToHtml is an overloaded method used to convert the contents of the TJvRichEdit control
-  specified in Value to HTML. ConvertToHtml stores the generated HTML in the file specified in the
-  Filename argument.
-
-  ConvertToHtml calls the ConvertToHtmlStrings method to perform conversion of the RTF content in the
-  control specified by Value.
-
-  Use ConvertToHtmlStrings to convert the RTF contents of a rich edit control to HTML and to store the
-  results in a TStrings instance.
-Parameters
-  Value    - Rich edit control with the content to convert to HTML.
-  FileName - File where generated HTML is stored.
-See Also
-  TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.ConvertToHtmlStrings
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtml@TRichEdit@string
-Summary
-  Convert the contents of a rich edit control to HTML.
-Description
-  ConvertToHtml is an overloaded method used to convert the contents of the TRichEdit control specified
-  in Value to HTML. ConvertToHtml stores the generated HTML in the file specified in the Filename
-  argument.
-
-  ConvertToHtml calls the ConvertToHtmlStrings method to perform conversion of the RTF content in the
-  control specified by Value.
-
-  Use ConvertToHtmlStrings to convert the RTF content of a rich edit control to HTML and to store the
-  results in a TStrings instance.
-Parameters
-  Value    - Rich edit control with the content to convert to HTML.
-  FileName - File where generated HTML is stored.
-See Also
-  TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.ConvertToHtmlStrings
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtmlStrings@TJvRichEdit@TStrings
-Summary
-  Converts the contents of the specified rich edit control to HTML.
-Description
-  ConvertToHtmlStrings is an overloaded method used to convert the contents of the TJvRichEdit control
-  specified in Value to HTML.
-
-  HTML created in the method from the contents of the rich edit control is stored in the Strings
-  argument. Strings is cleared prior to converting the RTF contents of the control and generating the
-  HTML output.
-
-  Strings will contain a complete HTML document that includes the contents from the Header property,
-  the converted RTF contents of Value, and the Footer property. Each occurrence of the \<\#TITLE\> tag
-  in the lines of the Header property are replaced with the value from the Title property.
-
-  ConvertToHtmlStrings uses instances of TJvRichEditParaAttributesRec to maintain the default,
-  starting, and current paragraph attributes when processing the RTF content in the rich edit control.
-  Each line in the rich edit control is processed to detect changes to font and paragraph attributes in
-  the RTF content for the specified rich edit control, and converts the RTF markup to the equivalent
-  HTML markup.
-
-  RTF font attributes handled during conversion include:
-
-  * Font Family (or Face)
-  * Size
-  * Color
-
-  RTF paragraph attributes handled during conversion include:
-
-  * Alignment
-  * Numbering
-  * Bullets
-  * Bold
-  * Italic
-  * Strikeout
-  * Underline
-
-  Font attributes are indicated using the \<FONT\> and \<\/FONT\> HTML tags. The FONT tag will include
-  Color, Face, and Size attributes.
-
-  Paragraph breaks are indicated by the \<BR\> HTML tag.
-
-  Paragraph alignment is indicated by using an ALIGN attribute in the \<P\> HTML tag. For example:
-
-  <CODE>
-    <P ALIGN="LEFT"> The rain in Spain... </P>
-    <P ALIGN="RIGHT"> The rain in Spain... </P>
-    <P ALIGN="CENTER"> The rain in Spain... </P>
-  </CODE>
-
-  Font styles are indicated in the HTML output using the following markup:
-
-  <TABLE>
-    Attribute   Markup
-    ----------  ----------------------
-    Bold        \<B\>\<\/B\>
-    Italic      \<I\>\<\/I\>
-    Strikeout   \<STRIKE\>\<\/STRIKE\>
-    Underline   \<U\>\<\/U\>
-  </TABLE>
-
-  Bullet numbering style is indicated in the HTML output by wrapping the content in list item tags. For
-  example:
-
-  <CODE>
-  <LI>This is an Item</LI>
-  <LI>This is another Item</LI>
-  <LI>This is the final Item</LI>
-  </CODE>
-
-  Please note that ConvertToHtmlStrings does not attempt to convert tabs, tables, images, or other
-  advanced RTF markup instructions.
-
-  ConvertToHtmlStrings is used in the ConvertToHtml method which stores the HTML output in a specified
-  file.
-Parameters
-  Value   - Rich edit with content to convert to HTML.
-  Strings - Stores the HTML created by the method.
-See Also
-  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml,
-  TJvRichEditParaAttributesRec
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.ConvertToHtmlStrings@TRichEdit@TStrings
-Summary
-  Converts the contents of the specified rich edit control to HTML.
-Description
-  ConvertToHtmlStrings is an overloaded method used to convert the contents of the TRichEdit control
-  specified in Value to HTML.
-
-  HTML created in the method from the contents of the rich edit control is stored in the Strings
-  argument. Strings is cleared prior to converting the RTF contents of the control and generating the
-  HTML output.
-
-  Strings will contain a complete HTML document that includes the contents from the Header property,
-  the converted RTF contents of Value, and the Footer property. Each occurrence of the \<\#TITLE\> tag
-  in the lines of the Header property are replaced with the value from the Title property.
-
-  ConvertToHtmlStrings uses instances of TJvParaAttributesRec to maintain the default, starting, and
-  current paragraph attributes when processing the RTF content in the rich edit control. Each line in
-  the rich edit control is processed to detect changes to font and paragraph attributes in the RTF
-  content for the specified rich edit control, and converts the RTF markup to the equivalent HTML
-  markup.
-
-  RTF font attributes handled during conversion include:
-
-  * Font Family (or Face)
-  * Size
-  * Color
-
-  RTF paragraph attributes handled during conversion include:
-
-  * Alignment
-  * Numbering
-  * Bullets
-  * Bold
-  * Italic
-  * Strikeout
-  * Underline
-
-  Font attributes are indicated using the \<FONT\> and \<\/FONT\> HTML tags. The FONT tag will include
-  Color, Face, and Size attributes.
-
-  Paragraph breaks are indicated by the \<BR\> HTML tag.
-
-  Paragraph alignment is indicated by using an ALIGN attribute in the \<P\> HTML tag. For example:
-
-  <CODE>
-    <P ALIGN="LEFT"> The rain in Spain... </P>
-    <P ALIGN="RIGHT"> The rain in Spain... </P>
-    <P ALIGN="CENTER"> The rain in Spain... </P>
-  </CODE>
-
-  Font styles are indicated in the HTML output using the following markup:
-
-  <TABLE>
-    Attribute   Markup
-    ----------  ----------------------
-    Bold        \<B\>\<\/B\>
-    Italic      \<I\>\<\/I\>
-    Strikeout   \<STRIKE\>\<\/STRIKE\>
-    Underline   \<U\>\<\/U\>
-  </TABLE>
-
-  Bullet numbering style is indicated in the HTML output by wrapping the content in list item tags. For
-  example:
-
-  <CODE>
-  <LI>This is an Item</LI>
-  <LI>This is another Item</LI>
-  <LI>This is the final Item</LI>
-  </CODE>
-
-  Please note that ConvertToHtmlStrings does not attempt to convert tabs, tables, images, or other
-  advanced RTF markup instructions.
-
-  ConvertToHtmlStrings is used in the ConvertToHtml method which stores the HTML output in a specified
-  file.
-Parameters
-  Value   - Rich edit with content to convert to HTML.
-  Strings - Stores the HTML created by the method.
-See Also
-  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml, TJvParaAttributesRec
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.Footer
-Summary
-  Tags added to the end of the generated HTML.
-Description
-  Footer is a TStrings property that represents the HTML tags added to the end of the HTML generated
-  using the ConvertToHtml or ConvertToHtmlStrings methods. The default value for the Footer property is
-  assigned in the constructor for the component, and contains the following:
-
-  <CODE>
-      </BODY>
-    </HTML>
-  </CODE>
-
-  The Header property contains the preamble for the generated HTML, including the Title assigned to the
-  generated HTML.
-
-  The Header and Footer properties are used in the overloaded ConvertToHtmlStrings methods.
-See Also
-  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.Header
-
-----------------------------------------------------------------------------------------------------
-@@TJvRichEditToHtml.Header
-Summary
-  Tags added to the beginning of the generated HTML.
-Description
-  Header is a TStrings property that represents the HTML tags added to the beginning of the HTML
-  generated using the ConvertToHtml or ConvertToHtmlStrings methods. The default value for the Header
-  property is assigned in the constructor for the component, and contains the following:
-
-  <CODE>
-    <HTML>
-      <HEAD>
-        <TITLE><#TITLE></TITLE>
-      </HEAD>
-      <BODY>
-  </CODE>
-
-  During processing in the ConvertToHtmlStrings method, the value of the Title property is used to
-  replace all instances of the \<\#TITLE\> tag found in the Header property.
-
-  The Footer property contains tags added to the end of the generated HTML.
-
-  The Header and Footer properties are used in the overloaded ConvertToHtmlStrings methods.
-See Also
-  TJvRichEditToHtml.ConvertToHtmlStrings, TJvRichEditToHtml.ConvertToHtml, TJvRichEditToHtml.Footer
-
-----------------------------------------------------------------------------------------------------
 @@TJvRichEditToHtml.Title
 Summary
   Title for the HTML generated by the component.
 Description
-  Title is a String property that represents the value used in the TITLE tag for the generated HTML for
-  the component.
-
+  Title is a String property that represents the value used in the TITLE tag for the generated HTML
+  for the component.
+  
   Title is the value used in the ConvertToHtmlStrings method to replace all occurrences of the
   \<\#TITLE\> tag found in the Header property.
 See Also

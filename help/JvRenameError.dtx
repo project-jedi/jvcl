@@ -3,31 +3,38 @@
 ----------------------------------------------------------------------------------------------------
 @@JvRenameError.pas
 Summary
-  Contains the TJvRenameError component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvRenameError component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRenameError
-<TITLEIMG TJvRenameError>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Component
+@@TJvRenameError.Win32ErrorCode
 Summary
-  Displays a dialog box for errors encountered when renaming a file.
+  Error code listed in the dialog box.
 Description
-  This component is used to display a dialog box encountered when renaming a file during a setup
-  routine. It is a wrapper for the SetupRenameError API call.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRenameError.DestFile
-Summary
-  The target filename for the rename operation.
-Description
-  This property contains the destination filename of the rename operation.
+  This property contains the Windows error code that occurred for presentation to and interpretation
+  for the user.
 See Also
-  TJvRenameError.SourceFile, TJvRenameError.Win32ErrorCode
+  TJvRenameError.DestFile, TJvRenameError.SourceFile
+
+----------------------------------------------------------------------------------------------------
+@@TJvRenameError.Style
+Summary
+  Flags used for modifying the dialog box.
+Description
+  These flags modify how the dialog box is presented to the user.
+
+----------------------------------------------------------------------------------------------------
+@@TJvRenameError.SourceFile
+Summary
+  The original filename for the rename operation.
+Description
+  This property contains the original filename of the rename operation.
+See Also
+  TJvRenameError.DestFile, TJvRenameError.Win32ErrorCode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRenameError.Execute
@@ -40,28 +47,23 @@ Return value
   dsSkipFile if the user pressed "Skip File", and dsError if an error occurred.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRenameError.SourceFile
+@@TJvRenameError.DestFile
 Summary
-  The original filename for the rename operation.
+  The target filename for the rename operation.
 Description
-  This property contains the original filename of the rename operation.
+  This property contains the destination filename of the rename operation.
 See Also
-  TJvRenameError.DestFile, TJvRenameError.Win32ErrorCode
+  TJvRenameError.SourceFile, TJvRenameError.Win32ErrorCode
 
 ----------------------------------------------------------------------------------------------------
-@@TJvRenameError.Style
+@@TJvRenameError
+<TITLEIMG TJvRenameError>
+JVCLInfo
+  GROUP=JVCL.Dialogs.Common
+  FLAG=Component
 Summary
-  Flags used for modifying the dialog box.
+  Displays a dialog box for errors encountered when renaming a file.
 Description
-  These flags modify how the dialog box is presented to the user.
-
-----------------------------------------------------------------------------------------------------
-@@TJvRenameError.Win32ErrorCode
-Summary
-  Error code listed in the dialog box.
-Description
-  This property contains the Windows error code that occurred for presentation to and interpretation
-  for the user.
-See Also
-  TJvRenameError.DestFile, TJvRenameError.SourceFile
+  This component is used to display a dialog box encountered when renaming a file during a setup
+  routine. It is a wrapper for the SetupRenameError API call.
 

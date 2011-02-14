@@ -3,10 +3,74 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBHTLabel.pas
 Summary
-  Contains the TJvDBHTLabel component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBHTLabel component.
 Author
   Maciej Kaczkowski
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBHTLabel.UpdateCaption
+Summary
+  Derives the caption for the data-aware HTML-enabled control.
+Description
+  UpdateCaption is a procedure used to derive the Caption for the data-aware HTML-enabled control.
+  UpdateCaption uses the Mask property to determine the field names and resulting values from
+  DataSource to merge in to the Caption.
+  
+  Please note that UpdateCaption requires an associated Dataset in the DataSource property or only
+  the field name(s) is/are merged into the Caption for the control.
+  
+  Use Mask to define one or more field names to use in the Caption for the control.
+See Also
+  TJvDBHTLabel.Mask, TJvDBHTLabel.DataSource
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBHTLabel.DataSource
+Summary
+  Specifies the source of data for field names and values in the data-aware control.
+Description
+  DataSource is a TDataSource property that specifies the source of data for field names and values
+  used in the data-aware control. DataSource provides access to an associated Dataset to retrieve the
+  field names and values required for the control.
+  
+  Use Mask to specify the field names to merge into the caption for the control.
+  
+  Changing the object reference assigned to the DataSource property forces the Caption for control to
+  be updated by calling UpdateCaption.
+See Also
+  TJvDBHTLabel.Mask, TJvDBHTLabel.UpdateCaption
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBHTLabel.Mask
+Summary
+  Defines field values used in the caption for the data-aware control.
+Description
+  Mask is a String property that defines the field values in the DataSource dataset used in the
+  caption for the data-aware control. Values defined in the Mask property are used when the data is
+  changed for the underlying dataset or when the Mask property is changed and UpdateCaption is called.
+  
+  Mask uses pseudo-HTML tagging to define the field values to merge into the Caption for the
+  data-aware control. For instance, the following code uses the CustomerNo and CustomerName fields
+  from the
+  Datasource dataset:
+  
+  <CODE>
+    ADBHTLabel.Mask :=
+      'Customer number <B><FIELD="CustomerNo"></B> is
+      <U><FIELD="CustomerName"></U>.'; </CODE>
+  
+  The following is the value for the Caption property for the control (sans rendered HTML bold and
+  underline attributes):
+  
+  <CODE>
+   Customer number 1234 is Harley's Motorcycle Emporium.
+  </CODE>
+  
+  Use DataSource to specify the dataset containing field values for use in the data-aware control.
+See Also
+  TJvDBHTLabel.DataSource, TJvDBHTLabel.UpdateCaption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBHTLabel
@@ -19,76 +83,14 @@ Summary
 Description
   TJvDBHTLabel is a TJvCustomHTLabel descendant that implements an HTML-enabled data-aware label
   control.
-
+  
   TJvDBHTLabel contains the DataSource property which provides access to both the dataset and field
-  names available for use in the data-aware control. Unlike most data-aware controls, TJvDBHTLabel does
-  not require a FieldName for accessing values in a dataset; use the Mask property to specify the HTML
-  used when updating the Caption for the control.
-
+  names available for use in the data-aware control. Unlike most data-aware controls, TJvDBHTLabel
+  does not require a FieldName for accessing values in a dataset; use the Mask property to specify
+  the HTML used when updating the Caption for the control.
+  
   See TJvCustomHTLabel or TJvHTLabel for a description of the HTML tags supported in the HTML-enabled
   control.
 See Also
   TJvCustomHTLabel, TJvHTLabel, TJvDBHTLabel.DataSource, TJvDBHTLabel.Mask, TJvDBHTLabel.UpdateCaption
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBHTLabel.DataSource
-Summary
-  Specifies the source of data for field names and values in the data-aware control.
-Description
-  DataSource is a TDataSource property that specifies the source of data for field names and values
-  used in the data-aware control. DataSource provides access to an associated Dataset to retrieve the
-  field names and values required for the control.
-
-  Use Mask to specify the field names to merge into the caption for the control.
-
-  Changing the object reference assigned to the DataSource property forces the Caption for control to
-  be updated by calling UpdateCaption.
-See Also
-  TJvDBHTLabel.Mask, TJvDBHTLabel.UpdateCaption
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBHTLabel.Mask
-Summary
-  Defines field values used in the caption for the data-aware control.
-Description
-  Mask is a String property that defines the field values in the DataSource dataset used in the caption
-  for the data-aware control. Values defined in the Mask property are used when the data is changed for
-  the underlying dataset or when the Mask property is changed and UpdateCaption is called.
-
-  Mask uses pseudo-HTML tagging to define the field values to merge into the Caption for the data-aware
-  control. For instance, the following code uses the CustomerNo and CustomerName fields from the
-  Datasource dataset:
-
-  <CODE>
-    ADBHTLabel.Mask :=
-      'Customer number <B><FIELD="CustomerNo"></B> is
-      <U><FIELD="CustomerName"></U>.';
-  </CODE>
-
-  The following is the value for the Caption property for the control (sans rendered HTML bold and
-  underline attributes):
-
-  <CODE>
-   Customer number 1234 is Harley's Motorcycle Emporium.
-  </CODE>
-
-  Use DataSource to specify the dataset containing field values for use in the data-aware control.
-See Also
-  TJvDBHTLabel.DataSource, TJvDBHTLabel.UpdateCaption
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBHTLabel.UpdateCaption
-Summary
-  Derives the caption for the data-aware HTML-enabled control.
-Description
-  UpdateCaption is a procedure used to derive the Caption for the data-aware HTML-enabled control.
-  UpdateCaption uses the Mask property to determine the field names and resulting values from
-  DataSource to merge in to the Caption.
-
-  Please note that UpdateCaption requires an associated Dataset in the DataSource property or only the
-  field name(s) is/are merged into the Caption for the control.
-
-  Use Mask to define one or more field names to use in the Caption for the control.
-See Also
-  TJvDBHTLabel.Mask, TJvDBHTLabel.DataSource
 

@@ -3,114 +3,89 @@
 ----------------------------------------------------------------------------------------------------
 @@JvTurtle.pas
 Summary
-  Contains the TJvTurtle component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvTurtle component.
 Author
   Jan Verhoeven
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle
-<TITLEIMG TJvTurtle>
-JVCLInfo
-  GROUP=JVCL.Graphics
-  FLAG=Component
-Summary
-  Drawing component that allows the drawing of the path of a turtle.
 Description
-  Basic turtle object used in for ex. childgame. Assign a canvas (ex. form.canvas) to the TJvTurtle,
-  and a starting point (position: ex. 100, 100). From this point on you can start by moving your turtle
-  across the screen, while it leaves it's trail (it draws a line). Make sure your pen is down, or it
-  will not draw (PenDown property set to true). Easy made functions like Moveforward, Movebackward,
-  Turn, .... allow you to control the turtles movement.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Area
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Canvas
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.DoCom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Heading
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Interpret
+@@TJvTurtle.Turn
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ALine - Description for this parameter
-  ACol  - Description for this parameter
-  S     - Description for this parameter
-Return value
-  Describe here what the function returns
+  AAngle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Mark
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.MoveBackward
+@@TJvTurtle.Right
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ADistance - Description for this parameter
+  AAngle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.MoveForward
+@@TJvTurtle.Position
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.PenWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.PenDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.OnRequestImageSize
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ADistance - Description for this parameter
+  Sender - Description for this parameter
+  ARect  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.OnRequestFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Filter - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -139,33 +114,31 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.OnRequestFilter
+@@TJvTurtle.MoveForward
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender - Description for this parameter
-  Filter - Description for this parameter
+  ADistance - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.OnRequestImageSize
+@@TJvTurtle.MoveBackward
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender - Description for this parameter
-  ARect  - Description for this parameter
+  ADistance - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.PenDown
+@@TJvTurtle.Mark
 Summary
   Write here a summary (1 line)
 Description
@@ -175,61 +148,88 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.PenWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Position
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Right
+@@TJvTurtle.Interpret
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AAngle - Description for this parameter
+  ALine - Description for this parameter
+  ACol  - Description for this parameter
+  S     - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTurtle.Turn
+@@TJvTurtle.Heading
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AAngle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.DoCom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle.Area
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTurtle
+<TITLEIMG TJvTurtle>
+JVCLInfo
+  GROUP=JVCL.Graphics
+  FLAG=Component
+Summary
+  Drawing component that allows the drawing of the path of a turtle.
+Description
+  Basic turtle object used in for ex. childgame. Assign a canvas (ex. form.canvas) to the TJvTurtle,
+  and a starting point (position: ex. 100, 100). From this point on you can start by moving your
+  turtle across the screen, while it leaves it's trail (it draws a line). Make sure your pen is down,
+  or it will not draw (PenDown property set to true). Easy made functions like Moveforward,
+  Movebackward,
+  Turn, .... allow you to control the turtles movement.
 
 ----------------------------------------------------------------------------------------------------
 @@TRequestBackgroundEvent
-<TITLE TRequestBackgroundEvent type>
-<COMBINE TJvTurtle.OnRequestBackground>
+<TITLE TRequestBackgroundEvent type> <COMBINE TJvTurtle.OnRequestBackground>
 
 ----------------------------------------------------------------------------------------------------
 @@TRequestFilterEvent
-<TITLE TRequestFilterEvent type>
-<COMBINE TJvTurtle.OnRequestFilter>
+<TITLE TRequestFilterEvent type> <COMBINE TJvTurtle.OnRequestFilter>
 
 ----------------------------------------------------------------------------------------------------
 @@TRequestImageSizeEvent
-<TITLE TRequestImageSizeEvent type>
-<COMBINE TJvTurtle.OnRequestImageSize>
+<TITLE TRequestImageSizeEvent type> <COMBINE TJvTurtle.OnRequestImageSize>
 

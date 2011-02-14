@@ -3,55 +3,63 @@
 ----------------------------------------------------------------------------------------------------
 @@JvThreadTimer.pas
 Summary
-  Contains the TJvThreadTimer component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvThreadTimer component.
 Author
   Sébastien Buysse
   Ivo Bauer
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer
-<TITLEIMG TJvThreadTimer>
-JVCLInfo
-  GROUP=JVCL.System.AlarmsAndTimers.Timers,JVCL.System.LibProcAndThread.Threads
-  FLAG=Component
+@@TJvThreadTimer.Priority
 Summary
-  TTimer replacement that utilizes a thread and has a higher accuracy.
+  Determines the thread's scheduling priority relative to other threads in the process.
 Description
-  This component is a replacement for the TTimer component with a better accuracy (1 millisecond) and
-  without consuming a window handle for the timer.
-
-  TJvThreadTimer uses an internal thread instead of the Windows API timer functions, and can have an
-  accuracy of a millisecond, but it will consume more CPU than a TTimer.
+  Priority indicates the priority used when scheduling the thread. Adjust the priority higher or
+  lower as needed.
+  Note
+  Boosting the thread priority of a CPU intensive operation may "starve" the other threads in the
+  application. Only apply priority boosts to threads that spend most of their time waiting for
+  external events.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.Create
+@@TJvThreadTimer.OnTimer
 Summary
-  Creates and initializes a new TJvThreadTimer object.
+  Occurs when a specified amount of time, determined by the Interval property, has passed.
 Description
-  Use \Create to create and initialize a new TJvThreadTimer object.
+  \Write an OnTimer event handler to execute an action at regular intervals.
+  
+  The Interval property of a timer determines how frequently the OnTimer event occurs. Each time the
+  specified interval passes, the OnTimer event occurs.
 
-  \Create calls the inherited \Create method, creates a thread and then sets the initial values for the
-  timer as follows:
-
-  * Interval is set to 100.
-  * Enabled is set to false.
-  * Priority is set to tpNormal
-  * KeepAlive is set to false.
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the timer.
+----------------------------------------------------------------------------------------------------
+@@TJvThreadTimer.KeepAlive
+Summary
+  Indicates whether to keep the thread alive while disabling the timer.
+Description
+  Use KeepAlive to specify whether the timer should keep the thread alive or destroy the thread when
+  Enabled is set to false.
+  
+  Set KeepAlive to false to destroy the thread when Enabled is set to false. When Enabled is set to
+  true again, the timer will create a new thread. Set KeepAlive to true to suspend but not destroy
+  the thread if Enabled is set to false.
 See Also
-  TJvThreadTimer.Interval
+  TJvThreadTimer.Enabled
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.Destroy
+@@TJvThreadTimer.Interval
 Summary
-  Destroys an instance of TJvThreadTimer
+  Determines the amount of time, in milliseconds, that passes before the timer component initiates
+  another OnTimer event.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
-  TJvThreadTimer object is not nil and only then calls Destroy.
+  Interval determines how frequently the OnTimer event occurs. Each time the specified interval
+  passes, the OnTimer event occurs.
+  
+  Use Interval to specify any cardinal value as the interval between OnTimer events. The default
+  value is 100 (1/10 second).
 See Also
-  TJvThreadTimer.Create
+  TJvThreadTimer.OnTimer
 
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Enabled
@@ -64,54 +72,48 @@ See Also
   TJvThreadTimer.KeepAlive, TJvThreadTimer.OnTimer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.Interval
+@@TJvThreadTimer.Destroy
 Summary
-  Determines the amount of time, in milliseconds, that passes before the timer component initiates
-  another OnTimer event.
+  Destroys an instance of TJvThreadTimer
 Description
-  Interval determines how frequently the OnTimer event occurs. Each time the specified interval passes,
-  the OnTimer event occurs.
-
-  Use Interval to specify any cardinal value as the interval between OnTimer events. The default value
-  is 100 (1/10 second).
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
+  TJvThreadTimer object is not nil and only then calls Destroy.
 See Also
-  TJvThreadTimer.OnTimer
+  TJvThreadTimer.Create
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.KeepAlive
+@@TJvThreadTimer.Create
 Summary
-  Indicates whether to keep the thread alive while disabling the timer.
+  Creates and initializes a new TJvThreadTimer object.
 Description
-  Use KeepAlive to specify whether the timer should keep the thread alive or destroy the thread when
-  Enabled is set to false.
-
-  Set KeepAlive to false to destroy the thread when Enabled is set to false. When Enabled is set to
-  true again, the timer will create a new thread. Set KeepAlive to true to suspend but not destroy the
-  thread if Enabled is set to false.
+  Use \Create to create and initialize a new TJvThreadTimer object.
+  
+  \Create calls the inherited \Create method, creates a thread and then sets the initial values for
+  the timer as follows:
+  
+  * Interval is set to 100.
+  * Enabled is set to false.
+  * Priority is set to tpNormal
+  * KeepAlive is set to false.
+Parameters
+  AOwner - A component, typically the form, that is responsible for freeing the timer.
 See Also
-  TJvThreadTimer.Enabled
+  TJvThreadTimer.Interval
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.OnTimer
+@@TJvThreadTimer
+<TITLEIMG TJvThreadTimer>
+JVCLInfo
+  GROUP=JVCL.System.AlarmsAndTimers.Timers,JVCL.System.LibProcAndThread.Threads
+  FLAG=Component
 Summary
-  Occurs when a specified amount of time, determined by the Interval property, has passed.
+  TTimer replacement that utilizes a thread and has a higher accuracy.
 Description
-  \Write an OnTimer event handler to execute an action at regular intervals.
-
-  The Interval property of a timer determines how frequently the OnTimer event occurs. Each time the
-  specified interval passes, the OnTimer event occurs.
-
-----------------------------------------------------------------------------------------------------
-@@TJvThreadTimer.Priority
-Summary
-  Determines the thread's scheduling priority relative to other threads in the process.
-Description
-  Priority indicates the priority used when scheduling the thread. Adjust the priority higher or lower
-  as needed.
-Note
-  Boosting the thread priority of a CPU intensive operation may "starve" the other threads in the
-  application. Only apply priority boosts to threads that spend most of their time waiting for external
-  events.
+  This component is a replacement for the TTimer component with a better accuracy (1 millisecond) and
+  without consuming a window handle for the timer.
+  
+  TJvThreadTimer uses an internal thread instead of the Windows API timer functions, and can have an
+  accuracy of a millisecond, but it will consume more CPU than a TTimer.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Thread

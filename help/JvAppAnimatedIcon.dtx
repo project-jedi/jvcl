@@ -3,30 +3,19 @@
 ----------------------------------------------------------------------------------------------------
 @@JvAppAnimatedIcon.pas
 Summary
-  Contains the TJvAppAnimatedIcon component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAppAnimatedIcon component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppAnimatedIcon
-<TITLEIMG TJvAppAnimatedIcon>
-JVCLInfo
-  GROUP=JVCL.FormsAndApp.Forms.DecoratingAndEffects,JVCL.Graphics.Animations
-  FLAG=Component
+@@TJvAppAnimatedIcon.Icons
 Summary
-  Animates the application's icon.
+  The list of icons used for animation.
 Description
-  The TJvAppAnimatedIcon component allows you to make an animated application icon. The component will
-  change the applications icon every interval by cycling a list of icons.
-
-  To create an application with an animated icon you should execute the following tasks:
-
-  * Drop a TJvAppAnimatedIcon component on a form or data module.
-  * Set the <LINK TJvAppAnimatedIcon.Delay, animation interval> to an appropriate value.
-  * <LINK TJvAppAnimatedIcon.Icons, Link the component to an image list> containing the icons to use
-    for animation.
-  * Activate the component by setting property Active to true.
+  Icons is an image list, containing the icons to use in the animation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAppAnimatedIcon.Active
@@ -49,9 +38,22 @@ See Also
   TJvAppAnimatedIcon.Active, TJvAppAnimatedIcon.Icons
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppAnimatedIcon.Icons
+@@TJvAppAnimatedIcon
+<TITLEIMG TJvAppAnimatedIcon>
+JVCLInfo
+  GROUP=JVCL.FormsAndApp.Forms.DecoratingAndEffects,JVCL.Graphics.Animations
+  FLAG=Component
 Summary
-  The list of icons used for animation.
+  Animates the application's icon.
 Description
-  Icons is an image list, containing the icons to use in the animation.
+  The TJvAppAnimatedIcon component allows you to make an animated application icon. The component
+  will change the applications icon every interval by cycling a list of icons.
+  
+  To create an application with an animated icon you should execute the following tasks:
+  
+  * Drop a TJvAppAnimatedIcon component on a form or data module.
+  * Set the <LINK TJvAppAnimatedIcon.Delay, animation interval> to an appropriate value.
+  * <LINK TJvAppAnimatedIcon.Icons, Link the component to an image list> containing the icons to use 
+   for animation.
+  * Activate the component by setting property Active to true.
 

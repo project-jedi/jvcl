@@ -3,16 +3,29 @@
 ----------------------------------------------------------------------------------------------------
 @@JvButton.pas
 Summary
-  Contains the TJvButton component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvButton component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvButtonMouseState
-<TITLE TJvButtonMouseState type>
+@@TJvCustomGraphicButton.OnDropDownMenu
 Summary
-  Defines the possible states the mouse can be in in relation to the control.
+  Occurs just before the DropDownMenu is displayed
+Description
+  Write a handler for this event to take specific action when a DropDownMenu is about to be shown.
+  For example, you can prevent the menu to be displayed by setting the Handled parameter to True.
+  
+  Note that this event is only triggered if there is a DropDownMenu assigned to the button.
+See Also
+  TJvCustomGraphicButton.DropDownMenu, <DELPHILINK TControl.OnContextPopup>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.OnDropDownClose
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
 See Also
@@ -20,32 +33,302 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvButtonMouseState.bsMouseInside
-  The mouse is inside the control
-
-----------------------------------------------------------------------------------------------------
-@@TJvButtonMouseState.bsMouseDown
-  The mouse has been pressed
-
-----------------------------------------------------------------------------------------------------
-@@TJvButtonMouseStates
-<TITLE TJvButtonMouseStates type>
-<COMBINE TJvButtonMouseState>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomButton
+@@TJvCustomGraphicButton.MouseStates
 Summary
-  Base class for buttons that have a window handle
+  Specifies the current state of the mouse
 Description
-  Use TJvCustomButton as a base class when creating new button controls that should have a window
-  handle.
+  Read MouseStates to determine the current state of the mouse.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.Click
+@@TJvCustomGraphicButton.HotTrackFontOptions
 Summary
-  Simulates a mouse click, as if the user had clicked the button.
+  Specifies how changes to the Font affects HotTrackFont.
 Description
-  Calling Click calls the inherited Click method and then shows the DropDownMenu if assigned
+  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
+  property changes in Font are copied to HotTrackFont except Color changes.
+  
+  Note that hoFollowFont must be included for any properties to be copied at all.
+  
+  To implement the HotTrackFontOptions property in a new control, you should perform the following
+  steps:
+  
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default  
+  value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+See Also
+  TJvCustomGraphicButton.HotTrack, TJvCustomGraphicButton.HotTrackFont
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.HotTrackFont
+Summary
+  Specifies the font used when the mouse passes over the button and HotTrack is True.
+Description
+  When the mouse passes over the button and HotTrack is set to True, HotTrackFont is used as the font
+  for the button text. To change to a new font, specify a new TFont object. To modify a font, change
+  the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+See Also
+  TJvCustomGraphicButton.HotTrack
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.HotTrack
+Summary
+  Specifies whether the button is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
+  feedback when the mouse passes over the button.
+See Also
+  TJvCustomGraphicButton.HotTrackFont, TJvExGraphicControl.OnMouseEnter,
+  TJvExGraphicControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.Flat
+Summary
+  Determines whether the button has a 3D or flat border.
+Description
+  Set Flat to True to change the normal thick 3D border into a thinner and flatter looking border.
+  When
+  Flat is True, the border is only shown when the mouse is within the control's client area.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.ForceSameSize
+Summary
+  Specifies whether all buttons should have the same size.
+Description
+  Set ForceSameSize to true for all buttons that should have the same size. When the size of one of
+  the buttons changes, all the other buttons assume the same size.
+  
+  ForceSameSize only affects buttons on the same form that either handle the CM_FORCESIZE message
+  (VCL) or are of the same class (VisualCLX) and that also have their ForceSameSize property set to
+  true.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.GroupIndex
+Summary
+  Allows buttons to work together as a group.
+Description
+  Set GroupIndex to determine how the button behaves when clicked.
+  
+  When GroupIndex is 0, the button behaves independently of all other buttons on the form. When the
+  user clicks such a button, the button appears pressed (in its clicked state) and then returns to
+  its normal up state when the user releases the mouse button.
+  
+  When GroupIndex is greater than 0, the button remains selected (in its down state) when clicked by
+  the user. When the user clicks a selected button, it returns to the up state, unless AllowAllUp is
+  False. Setting the G oupIndex property of a single button to a value greater than 0 causes the
+  button to behave as a two-state button when AllowAllUp is True.
+  
+  Buttons with the same GroupIndex property value (other than 0), work together as a group. When the
+  user clicks one of these buttons, it remains selected until the user clicks another button in the
+  same group. Buttons used in this way can present mutually exclusive choices to the user, much like
+  radio buttons.
+See Also
+  TJvCustomGraphicButton.AllowAllUp, TJvCustomGraphicButton.Down
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.DropDownMenu
+Summary
+  Specifies a TPopupMenu to display when the button is clicked
+Description
+  Assign a TPopupMenu to the DropDownMenu to display a menu when the button is clicked. The menu is
+  displayed below the button. To control where the menu is displayed (right, left, center), use the
+  menus <LINK TPopUpMenu.Align, Align> property.
+See Also
+  TJvCustomGraphicButton.OnDropDownMenu
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.DropArrow
+Summary
+  Determines whether a drop arrow is drawn on the control when a DropDownMenu is assigned
+Description
+  Set DropArrow to true to automatically show an arrow in the button when the DropDownMenu property
+  is assigned. The arrow is always displayed in a fixed position on the right side of the button. If
+  the arrow interferes with the image or text of the button, either resize the button or change the
+  values of Margin and Spacing until you are satisfied.
+See Also
+  TJvCustomGraphicButton.DropDownMenu
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.DrawDropArrow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas    - Description for this parameter
+  ArrowRect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.Down
+Summary
+  Specifies whether the button is selected (down) or unselected (up).
+Description
+  Read Down to determine whether a button is selected. The Down property only applies if the
+  GroupIndex property of the button is nonzero.
+  
+  When GroupIndex is greater than 0, set Down to True to select a button. When the user clicks on a
+  button in the unselected (up) state, the button is selected and Down is set to True. When the user
+  clicks on a button in the selected (down) state, if AllowAllUp is True, the button becomes
+  unselected and Down is set to False.
+  
+  At design time, specify which button in a group is the initially selected button by setting the
+  Down property of the selected button to True.
+  Note
+  When GroupIndex is 0, buttons do not remain in the selected state when clicked.
+See Also
+  TJvCustomGraphicButton.AllowAllUp, TJvCustomGraphicButton.GroupIndex
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton.AllowAllUp
+Summary
+  Specifies whether all buttons in a group can be unselected at the same time.
+Description
+  Use AllowAllUp with a group of buttons that belong to the same group. Buttons belong to the same
+  group if they have the same value on their GroupIndex property. Buttons in the same group behave in
+  a mutually exclusive fashion: when one button in the group is selected (down), all other buttons in
+  the group become unselected (up).
+  
+  If AllowAllUp is True, all of the buttons in a group can be unselected at the same time. Clicking
+  the single selected button in the group will deselect that button without selecting another. If
+  AllowAllUp is False, exactly one of the buttons in the group must be selected at any time. Clicking
+  a down button won't return the button to its up state.
+  
+  Changing the value of the AllowAllUp property for one button in a group changes the AllowAllUp
+  value for all buttons in the group.
+  Note
+  If GroupIndex is zero, AllowAllUp has no effect.
+See Also
+  TJvCustomGraphicButton.Down, TJvCustomGraphicButton.GroupIndex
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomGraphicButton
+Summary
+  Base class for button controls that doesn't need a windows handle.
+Description
+  Use TJvCustomGraphicButton as a base class when you creating a button control that doesn't need a
+  window handle. TJvCustomGraphicButton implements the basic behavior of a button and have methods
+  and events to simplify creating a derived button with special features.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.WordWrap
+Summary
+  Specifies whether the text wraps when it is too long for the width of the button.
+Description
+  Set WordWrap to True to allow the button to display multiple line of text. When WordWrap is True,
+  text that is too wide for the control wraps at the right margin and continues in additional lines.
+  
+  Set WordWrap to False to limit the text to a single line. When WordWrap is False, text that is too
+  wide for the button appears truncated.
+  Note
+  To control where lines are word wrapped, you can include '||' in the Caption. These are replaced at
+  run-time with CRLF's to break the text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.SetBounds
+Summary
+  Sets the size of the control
+Description
+  SetBounds calls the inherited SetBounds method and then adjusts the size of all other buttons if
+  ForceSameSize is True.
+See Also
+  TJvCustomButton.ForceSameSize
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.OnDropDownMenu
+Summary
+  Occurs just before the DropDownMenu is displayed
+Description
+  Write a handler for this event to take specific action when a DropDownMenu is about to be shown.
+  For example, you can prevent the menu to be displayed by setting the Handled parameter to True.
+  
+  Note that this event is only triggered if there is a DropDownMenu assigned to the button.
+See Also
+  TJvCustomButton.DropDownMenu, <DELPHILINK TControl.OnContextPopup>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.HotTrackFontOptions
+Summary
+  Specifies how changes to the Font affects HotTrackFont.
+Description
+  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
+  property changes in Font are copied to HotTrackFont except Color changes.
+  
+  Note that hoFollowFont must be included for any properties to be copied at all.
+  
+  To implement the HotTrackFontOptions property in a new control, you should perform the following
+  steps:
+  
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default  
+  value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+See Also
+  TJvCustomButton.HotTrack, TJvCustomButton.HotTrackFont
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.HotTrackFont
+Summary
+  Specifies the font used when the mouse passes over the button and HotTrack is True.
+Description
+  When the mouse passes over the button and HotTrack is set to True, HotTrackFont is used as the font
+  for the button text. To change to a new font, specify a new TFont object. To modify a font, change
+  the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+See Also
+  TJvCustomButton.HotTrack
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.HotTrack
+Summary
+  Specifies whether the button is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
+  feedback when the mouse passes over the button.
+See Also
+  TJvCustomButton.HotTrackFont, TJvExButton.OnMouseEnter, TJvExButton.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.ForceSameSize
+Summary
+  Specifies whether all buttons should have the same size.
+Description
+  Set ForceSameSize to true for all buttons that should have the same size. When the size of one of
+  the buttons changes, all the other buttons assume the same size.
+  
+  ForceSameSize only affects buttons on the same form that either handle the CM_FORCESIZE message
+  (VCL) or are of the same class (VisualCLX) and that also have their ForceSameSize property set to
+  true.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.DropDownMenu
+Summary
+  Specifies a TPopupMenu to display when the button is clicked
+Description
+  Assign a TPopupMenu to the DropDownMenu to display a menu when the button is clicked. The menu is
+  displayed below the button. To control where the menu is displayed (right, left, center), use the
+  menus <LINK TPopupMenu.Align, Align> property
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomButton.DropArrow
+Summary
+  Determines whether a drop arrow is drawn on the control when a DropDownMenu is assigned
+Description
+  Set DropArrow to true to automatically show an arrow in the button when the DropDownMenu property
+  is assigned. The arrow is always displayed in a fixed position on the right side of the button. If
+  the arrow interferes with the image or text of the button, either resize the button or change the
+  values of Margin and Spacing until you are satisfied.
 See Also
   TJvCustomButton.DropDownMenu
 
@@ -63,306 +346,31 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.DropArrow
+@@TJvCustomButton.Click
 Summary
-  Determines whether a drop arrow is drawn on the control when a DropDownMenu is assigned
+  Simulates a mouse click, as if the user had clicked the button.
 Description
-  Set DropArrow to true to automatically show an arrow in the button when the DropDownMenu property is
-  assigned. The arrow is always displayed in a fixed position on the right side of the button. If the
-  arrow interferes with the image or text of the button, either resize the button or change the values
-  of Margin and Spacing until you are satisfied.
+  Calling Click calls the inherited Click method and then shows the DropDownMenu if assigned
 See Also
   TJvCustomButton.DropDownMenu
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.DropDownMenu
-Summary
-  Specifies a TPopupMenu to display when the button is clicked
-Description
-  Assign a TPopupMenu to the DropDownMenu to display a menu when the button is clicked. The menu is
-  displayed below the button. To control where the menu is displayed (right, left, center), use the
-  menus <LINK TPopupMenu.Align, Align> property
+@@TJvButtonMouseStates
+<TITLE TJvButtonMouseStates type> <COMBINE TJvButtonMouseState>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.ForceSameSize
+@@TJvCustomButton
 Summary
-  Specifies whether all buttons should have the same size.
+  Base class for buttons that have a window handle
 Description
-  Set ForceSameSize to true for all buttons that should have the same size. When the size of one of the
-  buttons changes, all the other buttons assume the same size.
-
-  ForceSameSize only affects buttons on the same form that either handle the CM_FORCESIZE message (VCL)
-  or are of the same class (VisualCLX) and that also have their ForceSameSize property set to true.
+  Use TJvCustomButton as a base class when creating new button controls that should have a window
+  handle.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.HotTrack
+@@TJvButtonMouseState
+<TITLE TJvButtonMouseState type>
 Summary
-  Specifies whether the button is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
-  feedback when the mouse passes over the button.
-See Also
-  TJvCustomButton.HotTrackFont, TJvExButton.OnMouseEnter, TJvExButton.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.HotTrackFont
-Summary
-  Specifies the font used when the mouse passes over the button and HotTrack is True.
-Description
-  When the mouse passes over the button and HotTrack is set to True, HotTrackFont is used as the font
-  for the button text. To change to a new font, specify a new TFont object. To modify a font, change
-  the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
-See Also
-  TJvCustomButton.HotTrack
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.HotTrackFontOptions
-Summary
-  Specifies how changes to the Font affects HotTrackFont.
-Description
-  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
-  changes in Font are copied to HotTrackFont except Color changes.
-
-  Note that hoFollowFont must be included for any properties to be copied at all.
-
-  To implement the HotTrackFontOptions property in a new control, you should perform the following
-  steps:
-
-  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-    value to be DefaultTrackFontOptions (defined in JvTypes).
-  * Set the default value in the constructor.
-  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-    JvJVCLUtils) after calling inherited.
-  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
-See Also
-  TJvCustomButton.HotTrack, TJvCustomButton.HotTrackFont
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.OnDropDownMenu
-Summary
-  Occurs just before the DropDownMenu is displayed
-Description
-  Write a handler for this event to take specific action when a DropDownMenu is about to be shown. For
-  example, you can prevent the menu to be displayed by setting the Handled parameter to True.
-
-  Note that this event is only triggered if there is a DropDownMenu assigned to the button.
-See Also
-  TJvCustomButton.DropDownMenu, <DELPHILINK TControl.OnContextPopup>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.SetBounds
-Summary
-  Sets the size of the control
-Description
-  SetBounds calls the inherited SetBounds method and then adjusts the size of all other buttons if
-  ForceSameSize is True.
-See Also
-  TJvCustomButton.ForceSameSize
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomButton.WordWrap
-Summary
-  Specifies whether the text wraps when it is too long for the width of the button.
-Description
-  Set WordWrap to True to allow the button to display multiple line of text. When WordWrap is True,
-  text that is too wide for the control wraps at the right margin and continues in additional lines.
-
-  Set WordWrap to False to limit the text to a single line. When WordWrap is False, text that is too
-  wide for the button appears truncated.
-Note
-  To control where lines are word wrapped, you can include '||' in the Caption. These are replaced at
-  run-time with CRLF's to break the text.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton
-Summary
-  Base class for button controls that doesn't need a windows handle.
-Description
-  Use TJvCustomGraphicButton as a base class when you creating a button control that doesn't need a
-  window handle. TJvCustomGraphicButton implements the basic behavior of a button and have methods and
-  events to simplify creating a derived button with special features.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.AllowAllUp
-Summary
-  Specifies whether all buttons in a group can be unselected at the same time.
-Description
-  Use AllowAllUp with a group of buttons that belong to the same group. Buttons belong to the same
-  group if they have the same value on their GroupIndex property. Buttons in the same group behave in a
-  mutually exclusive fashion: when one button in the group is selected (down), all other buttons in the
-  group become unselected (up).
-
-  If AllowAllUp is True, all of the buttons in a group can be unselected at the same time. Clicking the
-  single selected button in the group will deselect that button without selecting another. If
-  AllowAllUp is False, exactly one of the buttons in the group must be selected at any time. Clicking a
-  down button won't return the button to its up state.
-
-  Changing the value of the AllowAllUp property for one button in a group changes the AllowAllUp value
-  for all buttons in the group.
-Note
-  If GroupIndex is zero, AllowAllUp has no effect.
-See Also
-  TJvCustomGraphicButton.Down, TJvCustomGraphicButton.GroupIndex
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.Down
-Summary
-  Specifies whether the button is selected (down) or unselected (up).
-Description
-  Read Down to determine whether a button is selected. The Down property only applies if the GroupIndex
-  property of the button is nonzero.
-
-  When GroupIndex is greater than 0, set Down to True to select a button. When the user clicks on a
-  button in the unselected (up) state, the button is selected and Down is set to True. When the user
-  clicks on a button in the selected (down) state, if AllowAllUp is True, the button becomes unselected
-  and Down is set to False.
-
-  At design time, specify which button in a group is the initially selected button by setting the Down
-  property of the selected button to True.
-Note
-  When GroupIndex is 0, buttons do not remain in the selected state when clicked.
-See Also
-  TJvCustomGraphicButton.AllowAllUp, TJvCustomGraphicButton.GroupIndex
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.DrawDropArrow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas    - Description for this parameter
-  ArrowRect - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.DropArrow
-Summary
-  Determines whether a drop arrow is drawn on the control when a DropDownMenu is assigned
-Description
-  Set DropArrow to true to automatically show an arrow in the button when the DropDownMenu property is
-  assigned. The arrow is always displayed in a fixed position on the right side of the button. If the
-  arrow interferes with the image or text of the button, either resize the button or change the values
-  of Margin and Spacing until you are satisfied.
-See Also
-  TJvCustomGraphicButton.DropDownMenu
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.DropDownMenu
-Summary
-  Specifies a TPopupMenu to display when the button is clicked
-Description
-  Assign a TPopupMenu to the DropDownMenu to display a menu when the button is clicked. The menu is
-  displayed below the button. To control where the menu is displayed (right, left, center), use the
-  menus <LINK TPopUpMenu.Align, Align> property.
-See Also
-  TJvCustomGraphicButton.OnDropDownMenu
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.Flat
-Summary
-  Determines whether the button has a 3D or flat border.
-Description
-  Set Flat to True to change the normal thick 3D border into a thinner and flatter looking border. When
-  Flat is True, the border is only shown when the mouse is within the control's client area.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.ForceSameSize
-Summary
-  Specifies whether all buttons should have the same size.
-Description
-  Set ForceSameSize to true for all buttons that should have the same size. When the size of one of the
-  buttons changes, all the other buttons assume the same size.
-
-  ForceSameSize only affects buttons on the same form that either handle the CM_FORCESIZE message (VCL)
-  or are of the same class (VisualCLX) and that also have their ForceSameSize property set to true.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.GroupIndex
-Summary
-  Allows buttons to work together as a group.
-Description
-  Set GroupIndex to determine how the button behaves when clicked.
-
-  When GroupIndex is 0, the button behaves independently of all other buttons on the form. When the
-  user clicks such a button, the button appears pressed (in its clicked state) and then returns to its
-  normal up state when the user releases the mouse button.
-
-  When GroupIndex is greater than 0, the button remains selected (in its down state) when clicked by
-  the user. When the user clicks a selected button, it returns to the up state, unless AllowAllUp is
-  False. Setting the G oupIndex property of a single button to a value greater than 0 causes the button
-  to behave as a two-state button when AllowAllUp is True.
-
-  Buttons with the same GroupIndex property value (other than 0), work together as a group. When the
-  user clicks one of these buttons, it remains selected until the user clicks another button in the
-  same group. Buttons used in this way can present mutually exclusive choices to the user, much like
-  radio buttons.
-See Also
-  TJvCustomGraphicButton.AllowAllUp, TJvCustomGraphicButton.Down
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.HotTrack
-Summary
-  Specifies whether the button is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
-  feedback when the mouse passes over the button.
-See Also
-  TJvCustomGraphicButton.HotTrackFont, TJvExGraphicControl.OnMouseEnter,
-  TJvExGraphicControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.HotTrackFont
-Summary
-  Specifies the font used when the mouse passes over the button and HotTrack is True.
-Description
-  When the mouse passes over the button and HotTrack is set to True, HotTrackFont is used as the font
-  for the button text. To change to a new font, specify a new TFont object. To modify a font, change
-  the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
-See Also
-  TJvCustomGraphicButton.HotTrack
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.HotTrackFontOptions
-Summary
-  Specifies how changes to the Font affects HotTrackFont.
-Description
-  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
-  changes in Font are copied to HotTrackFont except Color changes.
-
-  Note that hoFollowFont must be included for any properties to be copied at all.
-
-  To implement the HotTrackFontOptions property in a new control, you should perform the following
-  steps:
-
-  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-    value to be DefaultTrackFontOptions (defined in JvTypes).
-  * Set the default value in the constructor.
-  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-    JvJVCLUtils) after calling inherited.
-  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
-See Also
-  TJvCustomGraphicButton.HotTrack, TJvCustomGraphicButton.HotTrackFont
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.MouseStates
-Summary
-  Specifies the current state of the mouse
-Description
-  Read MouseStates to determine the current state of the mouse.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.OnDropDownClose
-Summary
-  Write here a summary (1 line)
+  Defines the possible states the mouse can be in in relation to the control.
 Description
   Write here a description
 See Also
@@ -370,16 +378,12 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomGraphicButton.OnDropDownMenu
-Summary
-  Occurs just before the DropDownMenu is displayed
-Description
-  Write a handler for this event to take specific action when a DropDownMenu is about to be shown. For
-  example, you can prevent the menu to be displayed by setting the Handled parameter to True.
+@@TJvButtonMouseState.bsMouseInside
+The mouse is inside the control
 
-  Note that this event is only triggered if there is a DropDownMenu assigned to the button.
-See Also
-  TJvCustomGraphicButton.DropDownMenu, <DELPHILINK TControl.OnContextPopup>
+----------------------------------------------------------------------------------------------------
+@@TJvButtonMouseState.bsMouseDown
+The mouse has been pressed
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomGraphicButton.Pattern
@@ -388,7 +392,7 @@ Summary
 Description
   Pattern holds an image that is used as the brush in the control when the button is pressed or when
   the Down property is true.
-
+  
   Do not modify this bitmap.
 See Also
   TJvCustomGraphicButton.Down, TJvCustomGraphicButton.MouseStates
@@ -408,7 +412,7 @@ See Also
 Summary
   Specialized button that looks like a combo box drop arrow button
 Description
-  Use TJvDropDownButton when you need a button that looks like a combo box drop down arrow button. This
-  button is not meant to be installed on the Component Palette. Instead, use it when creating new
-  controls.
+  Use TJvDropDownButton when you need a button that looks like a combo box drop down arrow button.
+  This button is not meant to be installed on the Component Palette. Instead, use it when creating
+  new controls.
 

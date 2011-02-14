@@ -1,31 +1,45 @@
 ##Package: ManagedThreads
 ##Status: Generated
-##Skip: TThreadNameInfo
 ----------------------------------------------------------------------------------------------------
 @@JvMTConsts.pas
 Summary
-  Contains the TJvMTConsts component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMTConsts component.
 Author
   Erwin Molendijk
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@EMTTerminateError
-Summary
-  The exception class for thread terminate errors.
-Description
-  EMTThreadError is the exception class for terminate errors in the Managed Thread components.
-See Also
-  EMTThreadError
+@@TMTThreadStatus.tsFinished
+The thread has finished executing.
 
 ----------------------------------------------------------------------------------------------------
-@@EMTThreadError
+@@TMTTicket
+<TITLE TMTTicket type>
 Summary
-  The exception class for thread synchronization errors.
+  Represents a thread ticket.
 Description
-  EMTThreadError is the exception class for errors in the Managed Thread components.
+  TMTTicket is an integer that identifies a thread. It is used by the Ticket property of the
+  TJvMTThread component.
 See Also
-  EMTTerminateError
+  TJvMTThread.Ticket
+
+----------------------------------------------------------------------------------------------------
+@@TMTThreadStatus.tsTerminating
+The thread has been asked to terminate.
+
+----------------------------------------------------------------------------------------------------
+@@TMTThreadStatus.tsRunning
+The thread is running.
+
+----------------------------------------------------------------------------------------------------
+@@TMTThreadStatus.tsWaiting
+The thread is suspended.
+
+----------------------------------------------------------------------------------------------------
+@@TMTThreadStatus.tsInitializing
+The thread is not yet created.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTThreadStatus
@@ -38,33 +52,20 @@ See Also
   TJvMTThread.Status
 
 ----------------------------------------------------------------------------------------------------
-@@TMTThreadStatus.tsInitializing
-  The thread is not yet created.
-
-----------------------------------------------------------------------------------------------------
-@@TMTThreadStatus.tsWaiting
-  The thread is suspended.
-
-----------------------------------------------------------------------------------------------------
-@@TMTThreadStatus.tsRunning
-  The thread is running.
-
-----------------------------------------------------------------------------------------------------
-@@TMTThreadStatus.tsTerminating
-  The thread has been asked to terminate.
-
-----------------------------------------------------------------------------------------------------
-@@TMTThreadStatus.tsFinished
-  The thread has finished executing.
-
-----------------------------------------------------------------------------------------------------
-@@TMTTicket
-<TITLE TMTTicket type>
+@@EMTThreadError
 Summary
-  Represents a thread ticket.
+  The exception class for thread synchronization errors.
 Description
-  TMTTicket is an integer that identifies a thread. It is used by the Ticket property of the
-  TJvMTThread component.
+  EMTThreadError is the exception class for errors in the Managed Thread components.
 See Also
-  TJvMTThread.Ticket
+  EMTTerminateError
+
+----------------------------------------------------------------------------------------------------
+@@EMTTerminateError
+Summary
+  The exception class for thread terminate errors.
+Description
+  EMTThreadError is the exception class for terminate errors in the Managed Thread components.
+See Also
+  EMTThreadError
 

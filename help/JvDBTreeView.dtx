@@ -3,121 +3,411 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBTreeView.pas
 Summary
-  Contains the TJvDBTreeView component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBTreeView component.
 Author
   Andrei Prygounkov
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@EJvDBTreeViewError
+@@TJvDBTreeViewDataLink
 Summary
-  Exception raised when the dataset for the TJvDBTreeView data-aware tree view is in an invalid state.
+  Manages the link and event responses for the data source in the data-aware tree view control.
 Description
-  EJvDBTreeViewError is an ETreeViewError descendant that represents an exception raised when the
-  underlying dataset for the TJvDBTreeView data-aware tree view is in an invalid state.
+  TJvDBTreeViewDataLink is a TDataLink descendant used to help the data-aware tree view manage its
+  link to the data source and respond to data events.
+  
+  TJvDBTreeViewDataLink introduces a new member that stores the TJvCustomDBTreeView instance for the
+  data link.
+  
+  TJvDBTreeViewDataLink provides overridden methods in the protected interface for the class that
+  allow responding to dataset events that occur in the following event categories:
+  
+  * Respond to changes in the values of fields.
+  * Respond to changes in record currency after scrolling.
+  * Respond to changes in the editing state of the dataset.
+  * Keep track of unposted edits.
+  
+  Applications should not need to explicitly create instance of TJvDBTreeViewDataLink; it is
+  automatically created when the data-aware tree view control is initialized.
 
-  EJvDBTreeViewError is raised with the following messages and their associated meanings:
+----------------------------------------------------------------------------------------------------
+@@TJvDBTreeView
+<TITLEIMG TJvDBTreeView>
+JVCLInfo
+  GROUP=JVCL.DBAware.GridsTreesLists.Trees,JVCL.ListsAndTrees.Trees
+  FLAG=Component
+Summary
+  Implements a data-aware tree view control.
+Description
+  TJvDBTreeView is a TJvCustomDBTreeView descendant that implements a data-aware tree view control.
+  TJvDBTreeView introduces no new functionality, but publishes properties found in
+  TJvCustomDBTreeView.
 
+----------------------------------------------------------------------------------------------------
+@@TJvDBTreeNode.SetMasterValue
+Summary
+  Updates the value that represents the parent for a node in the data-aware tree view control.
+Description
+  SetMasterValue is the method used to update the current contents of the MasterValue property.
+  Please note that MasterValue is declared as a read-only property, but calling SetMasterValue allows
+  updating the member that stores the property value.
+  
+  SetMasterValue is used when the content of a tree node has changed after updating the dataset field
+  that provides the value for the parent in the relationship.
+  
+  Use MasterValue to read the value that indicates the parent node in the tree structure.
+Parameters
+  AValue - New value for the property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBTreeNode.MoveTo
+Summary
+  Moves the node to another location in the tree view.
+Description
+  MoveTo is an overridden method used to re-parent a node in the TJvDBTreeView data-aware tree view
+  component.
+  
+  The Destination parameter specifies a node that will be the parent or sibling for the current node
+  or sibling after the move.
+  
+  The Mode parameter specifies the new relationship between this node and the destination node.
+  
+  MoveTo uses the value in the TreeView property to capture and restore its' PersistNode property
+  after updating the tree structure.
+  
+  MoveTo is used in the RecordChanged and DragAndDrop methods in TJvCustomDBTreeView.
+Parameters
+  Destination - Node to use as the new parent for the current node.
+  Mode        - Relationship for the node and its' new parent/sibling.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBTreeNode.MasterValue
+Summary
+  Identifies the parent in a parent/child relationship for the tree node.
+Description
+  MasterValue is a read-only Variant property that identifies the parent in a parent/child relationship for the tree node. MasterValue represents the value fro
+   the MasterField in TJvDBTreeView, and is used when creating and navigating among nodes in the
+  data-aware tree view.
+  
+  Use SetMasterValue to update the member that stores the value for the property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBTreeNode
+Summary
+  Represents nodes added to the TJvDBTreeView data-aware tree view control.
+Description
+  TJvDBTreeNode is a TTreeNode descendant that represents nodes added to the TJvDBTreeView data-aware
+  tree view control. TJvDBTreeNode introduces properties and methods need to create and maintain the
+  node.
+  
+  TJvDBTreeNode is the data type created when creating nodes in TJvDBTreeView using its' CreateNode
+  method and maintained in its' Items property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.UpdateUnLock
+Summary
+  Maintains the update lock count for the tree view.
+Description
+  UpdateUnLock is a method used to maintain the UpdateLock count following completion of changes to
+  nodes or the data for data-aware tree view control.
+  
+  UpdateUnLock decrements the value in UpdateLock when previous calls to UpdateLock have been made.
+  When UpdateLock reaches zero (0), the value in AUpdateTree is used to determine if content in the
+  tree needs to be updated.
+  Note
+  Not currently used in the implementation.
+Parameters
+  AUpdateTree - Indicates if the tree view is redrawn when no other update locks exist.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.UseFilter
+Summary
+  Indicates if a filter should be use on the dataset when building the tree structure in the
+  data-aware tree view.
+Description
+  UseFilter is a Boolean property that indicates if a filter on the underlying dataset for the
+  DataSource can be used when building the tree structure in the data-aware tree view.
+  
+  Setting UseFilter to True indicates that the underlying TDataSet should use a filter when building
+  child nodes for the current node in the tree view. The filter will consist of a statement that
+  compares the current value in MasterField to values found in DetailField. An existing filter
+  expression for the dataset is retained, and any new content for the expression is appended using a
+  logical AND to support both conditions. The filter is enabled prior to scanning the dataset for
+  rows having a value in DetailField that matches the current value of MasterField.
+  
+  When UseFilter contains False, data in the underlying dataset must already be ordered to produce
+  the desired tree structure based on values in MasterField and DetailField.
+  
+  Do not set UseFilter to True if the dataset does not support use of filters expressions.
+  
+  UseFilter is used in the RefreshChild method when building and displaying nodes in the tree
+  structure.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.UpdateTree
+Summary
+  Forces the tree view to be updated following changes to node(s) or the dataset for the data-aware
+  tree view control.
+Description
+  UpdateTree is the method used to force the content in the tree view to be updated following changes
+  to node(s) or the dataset for the data-aware tree view control. UpdateTree is called from the
+  UpdateUnLock method when UpdateLock reaches the value zero (0).
+  
+  UpdateTree calls CheckDataset to ensure that a valid dataset is available for access values used in
+  building and rendering the tree in the data-aware tree view control.
+  
+  When UpdateLock has been called previously, or a nested call to UpdateTree has been performed, no
+  additional action is taken in the method.
+  
+  UpdateTree visits rows in the underlying dataset for the DataSource to ensure that TJvDBTreeNode
+  instances in the Items property match the values present in the dataset. This includes visiting any
+  child nodes and their associated data as represented in Items.
+  
+  When data is located that does not exist in the Items for the tree structure, the node (or child
+  node) is added using the values indicated by the MasterField, DetailField, and ItemField properties.
+  
+  Applications do not normally call UpdateTree; it is called automatically in UpdateUnLock and when
+  the dataset performs event notifications for scroll, browse, or data changed events.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.UpdateLocked
+Summary
+  Write here a summary (1 line)
+Description
+  UpdateLocked is a Boolean function used to indicate if UpdateLock has been called and the corresponding UpdateUnlo
+  k call has not been performed. UpdateLocked returns Tree when an update is in progress for the
+  data-aware tree view control.
+  
+  UpdateLocked is used to prevent updates to the component when the tree structure or child nodes are
+  being updated from the underlying data.
+Return value
+  Boolean - True when an update is in progress for the component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.UpdateLock
+Summary
+  Counts the number of times the tree view has been asked to update itself since the initial update
+  request.
+Description
+  UpdateLock is a procedure used to increment the internal byte member that reflects the number of
+  updates performed for the data-aware tree view control.
+  
+  UpdateLock is used to prevent the component from repainting while the data in the tree view changes.
+  When UpdateLock returns to 0, the data-aware tree view can repaint its Items. When UpdateLock is
+  greater than 0, the tree view defers repaints. UpdateLock prevents the component from flickering
+  when the tree view is resized or the user scrolls through the data.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.StartMasterValue
+Summary
+  Write here a summary (1 line)
+Description
+  StartMasterValue is a String property.
+  
+  TODO: Can anyone come up with a coherent description for this?
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.SelectNode
+Summary
+  Finds a tree node with the specified value in the Items for the data-aware tree view.
+Description
+  SelectNode is a TreeNode function used to find a tree node with the value specified in AMasterValue
+  in the Items for the data-aware tree view.
+  
+  SelectNode calls FindNode to locate the TJvDBTreeNode in Items having a value in MasterValue that
+  matches the value in AMasterValue. When a node cannot be located with the requested value,
+  SelectNode tries to locate a child node in the tree with the value requested in AMasterValue in the
+  DetailField for the component.
+  
+  SelectNode cause the node to set its' selected property to True. If a node cannot be located with
+  requested value, no action is performed.
+  
+  SelectNode can be used to force the node that matched value in the underlying dataset to become the
+  selected node.
+Parameters
+  AMasterValue - Value for the node to locate in the tree.
+Return value
+  TTreeNode - Node located for the specified value, or Nil.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.SelectedIndex
+Summary
+  Represents an image index offset to use for items in the data-aware tree view when the item is
+  selected.
+Description
+  SelectedIndex is an Integer property that represents an image index offset to use for items in the
+  data-aware tree view when the item is selected. The value in selected is added to the field value
+  retrieved from the IconField in the underlying dataset.
+  
+  The default value for SelectedIndex is 1, as assigned in the constructor for the object instance.
+  
+  As an example, let's assume the tree view has four images and four selected images.
+  
+  <TABLE 20c%,40c%,40c%>
+  Position  Description                    Use In IconField --------  ----------------------------- 
+  ---------------- 0         RootNode (Unselected)          Yes 1         RootNode (Selected)        
+     No 2         ChildLevel0 (Unselected)       Yes 3         ChildLevel0 (Selected)         No 4   
+       ChildLevel1 (Unselected)       Yes 5         ChildLevel1 (Selected)         No 6        
+  ChildLevel2 (Unselected)       Yes 7         ChildLevel2 (Selected)         No </TABLE>
+  
+  When SelectIndex contains 1, values returned from IconField should contain either 0, 2, 4, or 6.
+  
+  Another way to store and access the images includes:
+  
+  <TABLE 20c%,40c%,40c%>
+  Position  Description                    Use In IconField --------  ----------------------------- 
+  ---------------- 0         RootNode (Unselected)          Yes 1         ChildLevel0 (Unselected)   
+     Yes 2         ChildLevel1 (Unselected)       Yes 3         ChildLevel2 (Unselected)       Yes 4 
+         RootNode (Selected)            No 5         ChildLevel0 (Selected)         No 6        
+  ChildLevel1 (Selected)         No 7         ChildLevel2 (Selected)         No </TABLE>
+  
+  When SelectIndex contains 4, values returned from IconField should contain either 0, 1, 2, or 3.
+  
+  Set SelecteIndex to 0 to use the same ImageIndex for both selected and unselected items in the tree
+  view.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.ParentField
+Summary
+  Write here a summary (1 line)
+Description
+  TODO: To be added.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.PersistentNode
+Summary
+  Indicates if child nodes are stored in the tree, or recreated when the parent node is expanded.
+Description
+  PersistentNode is a Boolean property that indicates if child nodes are stored in the tree, or
+  recreated when the parent node is expanded.
+  
+  When PersistentNode contains False, collapsing a node causes its' child nodes to be removed from
+  the tree structure. Expanding the node will cause its children to be derived by calling
+  RefreshChild.
+  
+  When PersistentNode contains True, child nodes are unaffected by actions that collapse the parent
+  node.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.RefreshChild
+Summary
+  Ensures that child nodes for a specified tree node are calculated and refreshed.
+Description
+  RefreshChild is a method used to ensure that the child nodes for the tree node specified in ANode
+  are calculated and refreshed. When ANode contains the value Nil, the entire tree is refreshed.
+  
+  RefreshChild requires that an active dataset be attached to the DataSource for the data-aware tree
+  view. If the dataset is not active, or the tree view is already in the process of rebuilding its'
+  nodes, no additional action is performed.
+  
+  RefreshChild calls UpdateLock to signal that an update is in progress, and removes any existing
+  child nodes for the tree node specified in ANode.
+  
+  RefreshChild iterates over rows in the DataLink starting with the value specified in MasterField
+  for the node in ANode. When a value is located in DetailField that matches the MasterValue for the
+  node in ANode, it is added as a child node. It is also considered a child node if the string
+  content for
+  DetailField returns a value stating with '-' ('-' for string fields or a negative value for numeric
+  fields).
+  
+  Set UseFilter to True to indicate that a dataset filter expression can be used to located rows
+  having data related to the current node. When UseFilter contains False, the data in the dataset
+  must be ordered in the manner required to build the tree using values in MasterField and
+  DetailField.
+  
+  The values in the field specified by IconField is used in the ImageIndex property, and incremented
+  by an existing SelectIndex value for use when a tree node is selected.
+  
+  RefreshChild calls UpdateUnLock to signal that the update is complete prior to exiting from the
+  method.
+  
+  RefreshChild is called in the implementation of other methods in TJvDBTreeView, including:
+  
   <TABLE>
-    Message                        Meaning
-    -----------------------------  -----------------------------------------------------------
-    RsEDataSetNotActive            Dataset is unassigned or not opened.
-    RsEErrorValueForDetailValue    Data for the mater/detail relationship is no longer valid.
-    RsEInternalError               Data for the mater/detail relationship represents a
-                                     circular reference.
-    RsEMoveToModeError             Reparenting a tree node results in an invalid tree
-                                     representation occurs during a Drag-and-Drop operation.
+    Changing the value in MasterField, DetailField, ItemField, or IconField properties.
+    Expanding tree nodes.
+    DragAndDrop operations.
+    Adding nodes in the tree.
   </TABLE>
+Parameters
+  ANode - Node needing to refresh its' list of child nodes.
 
 ----------------------------------------------------------------------------------------------------
-@@TFieldTypes
-<TITLE TFieldTypes type>
+@@TJvCustomDBTreeView.Mirror
 Summary
-  Set of field types allowed in the DBTree component.
+  Write here a summary (1 line)
 Description
-  TFieldTypes is set data type that contains TFieldType values allowed for columns used in the
-  data-aware TJvDBTreeView component. TFieldTypes arguments are passed to methods in TJvDBTreeView that
-  check for valid field types when setting the field name for properties in the component.
+  TODO: To be added.
 
 ----------------------------------------------------------------------------------------------------
-@@TGetDetailValue
-<TITLE TGetDetailValue type>
-<COMBINE TJvCustomDBTreeView.GetDetailValue>
+@@TJvCustomDBTreeView.MasterField
 Summary
-  Event type used to retrieve one or more detail values for a node selected in the data-aware tree view
-  component.
+  Set Masterfield to the item_id
 Description
-  TGetDetailValue is an event type used to implement the event handler that retrieves one or more
-  detail values for a node selected in the TJvDBTreeView data-aware tree view control.
+  Set Masterfield to the item_id of the table
+  
+  eg: masterfield = table1.item_id
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView
-Summary
-  Specifies the interface for a data-aware tree view control.
-Description
-  TJvCustomDBTreeView is a TJvCustomTreeView descendant that specifies the interface for a data-aware
-  tree view control. TJvCustomDBTreeView introduces properties, methods, and events needed to render a
-  tree-structured view using values loaded from a linked data source.
-
-  Values rendered in the tree view are provided using the DataSource introduced in the component. The
-  tree structure is derived by using the field names specified in the MasterField and DetailField
-  properties.
-
-  MasterField provides a unique identifier for a node in the tree view. ParentField is provided as a
-  simple alias for the MasterField property.
-
-  Values in DetailField are used to indicate the relationship to the master (or parent) node.
-
-  The content for nodes in Items for the tree view are derived and rendered using the values specified
-  in the ItemField, IconField, ImageIndex, and SelectedIdex properties. The contents of the data-aware
-  tree view are updated when the linked DataSource scrolls or when nodes in the tree view are
-  interactively changed using mouse and keyboard events.
-
-  Use the Items property to access TJvDBTreeNode instances created in the data-aware tree view
-  component.
-
-  Editing is permitted in the tree view when the underlying dataset for the DataSource is not in
-  read-only mode.
-
-  TJvCustomDBTreeView also implements support for Drag-and-Drop operations; values in the MasterField
-  and DetailField in the dataset are updated to reflect the new parent / child relationship in the tree
-  view following the Drag-and-Drop operation.
-
-  Applications should use instances of the TJvDBTreeView descendant class which publishes properties
-  introduced in TJvCustomDBTreeView.
-
-  TODO: Include some demo code / data to demonstrate usage.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.AddChildNode
+@@TJvCustomDBTreeView.LinkActive
 Summary
   Write here a summary (1 line)
 Description
   TODO: To be added.
 Parameters
-  Node   - Description for this parameter
-  Select - Description for this parameter
+  Value - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.DataLink
+@@TJvCustomDBTreeView.KeyField
 Summary
-  Manages the link and event responses for the data source in the data-aware tree view control.
+  Write here a summary (1 line)
 Description
-  DataLink is a TJvDBTreeViewDataLink property used to help the data-aware tree view manage its link to
-  the data source and respond to data events.
+  TODO: To be added.
 
-  DataLink helps TJvCustomDBTreeView to:
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.ItemField
+Summary
+  Set ItemField to the description field
+Description
+  Set ItemField to the description field of the table. (This will be displayed)
 
-  * Resolve field bindings for the tree view with fields in the dataset.
-  * Respond to changes in the values of fields.
-  * Respond to changes in record currency.
-  * Respond to changes in the editing state of the dataset.
-  * Keep track of unposted edits.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.IconField
+Summary
+  Write here a summary (1 line)
+Description
+  TODO: To be added.
 
-  Applications should not need to use the DataLink property. It is exposed as a public property so that
-  component writers can use descendant classes to respond to additional data events.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.FindNextNode
+Summary
+  Write here a summary (1 line)
+Description
+  TODO: To be added.
+Parameters
+  Node - Description for this parameter
 
-  Use DataSource to access the underlying dataset for the data-aware tree view control.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.FindNode
+Summary
+  Write here a summary (1 line)
+Description
+  TODO: To be added.
+Parameters
+  AMasterValue - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.GetDetailValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write a GetDetailValue event handler to return one or more detail values for a node selected in the
+  TJvDBTreeView data-aware tree view control.
+Parameters
+  AMasterValue - Description for this parameter
+  DetailValue  - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.DataSource
@@ -168,412 +458,114 @@ Parameters
   Y      - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.FindNextNode
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-Parameters
-  Node - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.FindNode
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-Parameters
-  AMasterValue - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.GetDetailValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write a GetDetailValue event handler to return one or more detail values for a node selected in the
-  TJvDBTreeView data-aware tree view control.
-Parameters
-  AMasterValue - Description for this parameter
-  DetailValue  - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.IconField
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.ItemField
-Summary
-  Set ItemField to the description field
-Description
-  Set ItemField to the description field of the table. (This will be displayed)
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.KeyField
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.LinkActive
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-Parameters
-  Value - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.MasterField
-Summary
-  Set Masterfield to the item_id
-Description
-  Set Masterfield to the item_id of the table
-
-  eg: masterfield = table1.item_id
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.Mirror
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.ParentField
-Summary
-  Write here a summary (1 line)
-Description
-  TODO: To be added.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.PersistentNode
-Summary
-  Indicates if child nodes are stored in the tree, or recreated when the parent node is expanded.
-Description
-  PersistentNode is a Boolean property that indicates if child nodes are stored in the tree, or
-  recreated when the parent node is expanded.
-
-  When PersistentNode contains False, collapsing a node causes its' child nodes to be removed from the
-  tree structure. Expanding the node will cause its children to be derived by calling RefreshChild.
-
-  When PersistentNode contains True, child nodes are unaffected by actions that collapse the parent
-  node.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.RefreshChild
-Summary
-  Ensures that child nodes for a specified tree node are calculated and refreshed.
-Description
-  RefreshChild is a method used to ensure that the child nodes for the tree node specified in ANode are
-  calculated and refreshed. When ANode contains the value Nil, the entire tree is refreshed.
-
-  RefreshChild requires that an active dataset be attached to the DataSource for the data-aware tree
-  view. If the dataset is not active, or the tree view is already in the process of rebuilding its'
-  nodes, no additional action is performed.
-
-  RefreshChild calls UpdateLock to signal that an update is in progress, and removes any existing child
-  nodes for the tree node specified in ANode.
-
-  RefreshChild iterates over rows in the DataLink starting with the value specified in MasterField for
-  the node in ANode. When a value is located in DetailField that matches the MasterValue for the node
-  in ANode, it is added as a child node. It is also considered a child node if the string content for
-  DetailField returns a value stating with '-' ('-' for string fields or a negative value for numeric
-  fields).
-
-  Set UseFilter to True to indicate that a dataset filter expression can be used to located rows having
-  data related to the current node. When UseFilter contains False, the data in the dataset must be
-  ordered in the manner required to build the tree using values in MasterField and DetailField.
-
-  The values in the field specified by IconField is used in the ImageIndex property, and incremented by
-  an existing SelectIndex value for use when a tree node is selected.
-
-  RefreshChild calls UpdateUnLock to signal that the update is complete prior to exiting from the
-  method.
-
-  RefreshChild is called in the implementation of other methods in TJvDBTreeView, including:
-
-  <TABLE>
-    Changing the value in MasterField, DetailField, ItemField, or IconField properties.
-    Expanding tree nodes.
-    DragAndDrop operations.
-    Adding nodes in the tree.
-  </TABLE>
-Parameters
-  ANode - Node needing to refresh its' list of child nodes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.SelectedIndex
-Summary
-  Represents an image index offset to use for items in the data-aware tree view when the item is
-  selected.
-Description
-  SelectedIndex is an Integer property that represents an image index offset to use for items in the
-  data-aware tree view when the item is selected. The value in selected is added to the field value
-  retrieved from the IconField in the underlying dataset.
-
-  The default value for SelectedIndex is 1, as assigned in the constructor for the object instance.
-
-  As an example, let's assume the tree view has four images and four selected images.
-
-  <TABLE 20c%,40c%,40c%>
-    Position  Description                    Use In IconField
-    --------  -----------------------------  ----------------
-    0         RootNode (Unselected)          Yes
-    1         RootNode (Selected)            No
-    2         ChildLevel0 (Unselected)       Yes
-    3         ChildLevel0 (Selected)         No
-    4         ChildLevel1 (Unselected)       Yes
-    5         ChildLevel1 (Selected)         No
-    6         ChildLevel2 (Unselected)       Yes
-    7         ChildLevel2 (Selected)         No
-  </TABLE>
-
-  When SelectIndex contains 1, values returned from IconField should contain either 0, 2, 4, or 6.
-
-  Another way to store and access the images includes:
-
-  <TABLE 20c%,40c%,40c%>
-    Position  Description                    Use In IconField
-    --------  -----------------------------  ----------------
-    0         RootNode (Unselected)          Yes
-    1         ChildLevel0 (Unselected)       Yes
-    2         ChildLevel1 (Unselected)       Yes
-    3         ChildLevel2 (Unselected)       Yes
-    4         RootNode (Selected)            No
-    5         ChildLevel0 (Selected)         No
-    6         ChildLevel1 (Selected)         No
-    7         ChildLevel2 (Selected)         No
-  </TABLE>
-
-  When SelectIndex contains 4, values returned from IconField should contain either 0, 1, 2, or 3.
-
-  Set SelecteIndex to 0 to use the same ImageIndex for both selected and unselected items in the tree
-  view.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.SelectNode
-Summary
-  Finds a tree node with the specified value in the Items for the data-aware tree view.
-Description
-  SelectNode is a TreeNode function used to find a tree node with the value specified in AMasterValue
-  in the Items for the data-aware tree view.
-
-  SelectNode calls FindNode to locate the TJvDBTreeNode in Items having a value in MasterValue that
-  matches the value in AMasterValue. When a node cannot be located with the requested value, SelectNode
-  tries to locate a child node in the tree with the value requested in AMasterValue in the DetailField
-  for the component.
-
-  SelectNode cause the node to set its' selected property to True. If a node cannot be located with
-  requested value, no action is performed.
-
-  SelectNode can be used to force the node that matched value in the underlying dataset to become the
-  selected node.
-Parameters
-  AMasterValue - Value for the node to locate in the tree.
-Return value
-  TTreeNode - Node located for the specified value, or Nil.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.StartMasterValue
-Summary
-  Write here a summary (1 line)
-Description
-  StartMasterValue is a String property.
-
-  TODO: Can anyone come up with a coherent description for this?
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.UpdateLock
-Summary
-  Counts the number of times the tree view has been asked to update itself since the initial update
-  request.
-Description
-  UpdateLock is a procedure used to increment the internal byte member that reflects the number of
-  updates performed for the data-aware tree view control.
-
-  UpdateLock is used to prevent the component from repainting while the data in the tree view changes.
-  When UpdateLock returns to 0, the data-aware tree view can repaint its Items. When UpdateLock is
-  greater than 0, the tree view defers repaints. UpdateLock prevents the component from flickering when
-  the tree view is resized or the user scrolls through the data.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.UpdateLocked
-Summary
-  Write here a summary (1 line)
-Description
-  UpdateLocked is a Boolean function used to indicate if UpdateLock has been called and the
-  corresponding UpdateUnlo k call has not been performed. UpdateLocked returns Tree when an update is
-  in progress for the data-aware tree view control.
-
-  UpdateLocked is used to prevent updates to the component when the tree structure or child nodes are
-  being updated from the underlying data.
-Return value
-  Boolean - True when an update is in progress for the component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.UpdateTree
-Summary
-  Forces the tree view to be updated following changes to node(s) or the dataset for the data-aware
-  tree view control.
-Description
-  UpdateTree is the method used to force the content in the tree view to be updated following changes
-  to node(s) or the dataset for the data-aware tree view control. UpdateTree is called from the
-  UpdateUnLock method when UpdateLock reaches the value zero (0).
-
-  UpdateTree calls CheckDataset to ensure that a valid dataset is available for access values used in
-  building and rendering the tree in the data-aware tree view control.
-
-  When UpdateLock has been called previously, or a nested call to UpdateTree has been performed, no
-  additional action is taken in the method.
-
-  UpdateTree visits rows in the underlying dataset for the DataSource to ensure that TJvDBTreeNode
-  instances in the Items property match the values present in the dataset. This includes visiting any
-  child nodes and their associated data as represented in Items.
-
-  When data is located that does not exist in the Items for the tree structure, the node (or child
-  node) is added using the values indicated by the MasterField, DetailField, and ItemField properties.
-
-  Applications do not normally call UpdateTree; it is called automatically in UpdateUnLock and when the
-  dataset performs event notifications for scroll, browse, or data changed events.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.UpdateUnLock
-Summary
-  Maintains the update lock count for the tree view.
-Description
-  UpdateUnLock is a method used to maintain the UpdateLock count following completion of changes to
-  nodes or the data for data-aware tree view control.
-
-  UpdateUnLock decrements the value in UpdateLock when previous calls to UpdateLock have been made.
-  When UpdateLock reaches zero (0), the value in AUpdateTree is used to determine if content in the
-  tree needs to be updated.
-Note
-  Not currently used in the implementation.
-Parameters
-  AUpdateTree - Indicates if the tree view is redrawn when no other update locks exist.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBTreeView.UseFilter
-Summary
-  Indicates if a filter should be use on the dataset when building the tree structure in the data-aware
-  tree view.
-Description
-  UseFilter is a Boolean property that indicates if a filter on the underlying dataset for the
-  DataSource can be used when building the tree structure in the data-aware tree view.
-
-  Setting UseFilter to True indicates that the underlying TDataSet should use a filter when building
-  child nodes for the current node in the tree view. The filter will consist of a statement that
-  compares the current value in MasterField to values found in DetailField. An existing filter
-  expression for the dataset is retained, and any new content for the expression is appended using a
-  logical AND to support both conditions. The filter is enabled prior to scanning the dataset for rows
-  having a value in DetailField that matches the current value of MasterField.
-
-  When UseFilter contains False, data in the underlying dataset must already be ordered to produce the
-  desired tree structure based on values in MasterField and DetailField.
-
-  Do not set UseFilter to True if the dataset does not support use of filters expressions.
-
-  UseFilter is used in the RefreshChild method when building and displaying nodes in the tree
-  structure.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBTreeNode
-Summary
-  Represents nodes added to the TJvDBTreeView data-aware tree view control.
-Description
-  TJvDBTreeNode is a TTreeNode descendant that represents nodes added to the TJvDBTreeView data-aware
-  tree view control. TJvDBTreeNode introduces properties and methods need to create and maintain the
-  node.
-
-  TJvDBTreeNode is the data type created when creating nodes in TJvDBTreeView using its' CreateNode
-  method and maintained in its' Items property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBTreeNode.MasterValue
-Summary
-  Identifies the parent in a parent/child relationship for the tree node.
-Description
-  MasterValue is a read-only Variant property that identifies the parent in a parent/child relationship
-  for the tree node. MasterValue represents the value from the MasterField in TJvDBTreeView, and is
-  used when creating and navigating among nodes in the data-aware tree view.
-
-  Use SetMasterValue to update the member that stores the value for the property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBTreeNode.MoveTo
-Summary
-  Moves the node to another location in the tree view.
-Description
-  MoveTo is an overridden method used to re-parent a node in the TJvDBTreeView data-aware tree view
-  component.
-
-  The Destination parameter specifies a node that will be the parent or sibling for the current node or
-  sibling after the move.
-
-  The Mode parameter specifies the new relationship between this node and the destination node.
-
-  MoveTo uses the value in the TreeView property to capture and restore its' PersistNode property after
-  updating the tree structure.
-
-  MoveTo is used in the RecordChanged and DragAndDrop methods in TJvCustomDBTreeView.
-Parameters
-  Destination - Node to use as the new parent for the current node.
-  Mode        - Relationship for the node and its' new parent/sibling.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBTreeNode.SetMasterValue
-Summary
-  Updates the value that represents the parent for a node in the data-aware tree view control.
-Description
-  SetMasterValue is the method used to update the current contents of the MasterValue property. Please
-  note that MasterValue is declared as a read-only property, but calling SetMasterValue allows updating
-  the member that stores the property value.
-
-  SetMasterValue is used when the content of a tree node has changed after updating the dataset field
-  that provides the value for the parent in the relationship.
-
-  Use MasterValue to read the value that indicates the parent node in the tree structure.
-Parameters
-  AValue - New value for the property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBTreeView
-<TITLEIMG TJvDBTreeView>
-JVCLInfo
-  GROUP=JVCL.DBAware.GridsTreesLists.Trees,JVCL.ListsAndTrees.Trees
-  FLAG=Component
-Summary
-  Implements a data-aware tree view control.
-Description
-  TJvDBTreeView is a TJvCustomDBTreeView descendant that implements a data-aware tree view control.
-  TJvDBTreeView introduces no new functionality, but publishes properties found in
-  TJvCustomDBTreeView.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBTreeViewDataLink
+@@TJvCustomDBTreeView.DataLink
 Summary
   Manages the link and event responses for the data source in the data-aware tree view control.
 Description
-  TJvDBTreeViewDataLink is a TDataLink descendant used to help the data-aware tree view manage its link
+  DataLink is a TJvDBTreeViewDataLink property used to help the data-aware tree view manage its link
   to the data source and respond to data events.
-
-  TJvDBTreeViewDataLink introduces a new member that stores the TJvCustomDBTreeView instance for the
-  data link.
-
-  TJvDBTreeViewDataLink provides overridden methods in the protected interface for the class that allow
-  responding to dataset events that occur in the following event categories:
-
+  
+  DataLink helps TJvCustomDBTreeView to:
+  
+  * Resolve field bindings for the tree view with fields in the dataset.
   * Respond to changes in the values of fields.
-  * Respond to changes in record currency after scrolling.
+  * Respond to changes in record currency.
   * Respond to changes in the editing state of the dataset.
   * Keep track of unposted edits.
+  
+  Applications should not need to use the DataLink property. It is exposed as a public property so
+  that component writers can use descendant classes to respond to additional data events.
+  
+  Use DataSource to access the underlying dataset for the data-aware tree view control.
 
-  Applications should not need to explicitly create instance of TJvDBTreeViewDataLink; it is
-  automatically created when the data-aware tree view control is initialized.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView.AddChildNode
+Summary
+  Write here a summary (1 line)
+Description
+  TODO: To be added.
+Parameters
+  Node   - Description for this parameter
+  Select - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TFieldTypes
+<TITLE TFieldTypes type>
+Summary
+  Set of field types allowed in the DBTree component.
+Description
+  TFieldTypes is set data type that contains TFieldType values allowed for columns used in the
+  data-aware TJvDBTreeView component. TFieldTypes arguments are passed to methods in TJvDBTreeView
+  that check for valid field types when setting the field name for properties in the component.
+
+----------------------------------------------------------------------------------------------------
+@@TGetDetailValue
+<TITLE TGetDetailValue type> <COMBINE TJvCustomDBTreeView.GetDetailValue>
+Summary
+  Event type used to retrieve one or more detail values for a node selected in the data-aware tree
+  view component.
+Description
+  TGetDetailValue is an event type used to implement the event handler that retrieves one or more
+  detail values for a node selected in the TJvDBTreeView data-aware tree view control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBTreeView
+Summary
+  Specifies the interface for a data-aware tree view control.
+Description
+  TJvCustomDBTreeView is a TJvCustomTreeView descendant that specifies the interface for a data-aware tree 
+  iew control. TJvCustomDBTreeView introduces properties, methods, and events needed to render a
+  tree-structured view using values loaded from a linked data source.
+  
+  Values rendered in the tree view are provided using the DataSource introduced in the component. The
+  tree structure is derived by using the field names specified in the MasterField and DetailField
+  properties.
+  
+  MasterField provides a unique identifier for a node in the tree view. ParentField is provided as a
+  simple alias for the MasterField property.
+  
+  Values in DetailField are used to indicate the relationship to the master (or parent) node.
+  
+  The content for nodes in Items for the tree view are derived and rendered using the values spec
+  fied in the ItemField, IconField, ImageIndex, and SelectedIdex properties. The contents of the
+  data-aware tree view are updated when the linked DataSource scrolls or when nodes in the tree view
+  are interactively changed using mouse and keyboard events.
+  
+  Use the Items property to access TJvDBTreeNode instances created in the data-aware tree view
+  component.
+  
+  Editing is permitted in the tree view when the underlying dataset for the DataSource is not in
+  read-only mode.
+  
+  TJvCustomDBTreeView also implements support for Drag-and-Drop operations; values in the MasterField and DetailField in the datase
+   are updated to reflect the new parent / child relationship in the tree view following the
+  Drag-and-Drop operation.
+  
+  Applications should use instances of the TJvDBTreeView descendant class which publishes properties
+  introduced in TJvCustomDBTreeView.
+  
+  TODO: Include some demo code / data to demonstrate usage.
+
+----------------------------------------------------------------------------------------------------
+@@EJvDBTreeViewError
+Summary
+  Exception raised when the dataset for the TJvDBTreeView data-aware tree view is in an invalid state.
+Description
+  EJvDBTreeViewError is an ETreeViewError descendant that represents an exception raised when the
+  underlying dataset for the TJvDBTreeView data-aware tree view is in an invalid state.
+  
+  EJvDBTreeViewError is raised with the following messages and their associated meanings:
+  
+  <TABLE>
+  Message                        Meaning
+  -----------------------------  -----------------------------------------------------------
+  RsEDataSetNotActive            Dataset is unassigned or not opened.
+  RsEErrorValueForDetailValue    Data for the mater/detail relationship is no longer valid.
+  RsEInternalError               Data for the mater/detail relationship represents a
+                                   circular reference.
+  RsEMoveToModeError             Reparenting a tree node results in an invalid tree
+                                   representation occurs during a Drag-and-Drop operation.
+  </TABLE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBTreeViewDataLink.Create
@@ -581,7 +573,7 @@ Summary
   Constructor for the object instance.
 Description
   Create is the constructor for the object instance.
-
+  
   Create calls the inherited constructor, and assigns the value passed in ATreeView to the internal
   member used to store the object reference.
 Parameters

@@ -3,71 +3,60 @@
 ----------------------------------------------------------------------------------------------------
 @@JvgCrossTable.pas
 Summary
-  Contains the TJvgCrossTable component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvgCrossTable component.
 Author
   Andrey V. Chudin
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TCalcResultEvent
-<TITLE TCalcResultEvent type>
-<COMBINE TJvgPrintCrossTable.OnCalcResult>
+@@TPCTableElement.teCell
+Description for teCell
 
 ----------------------------------------------------------------------------------------------------
-@@TDrawCellEvent
-<TITLE TDrawCellEvent type>
+@@TPCTableElement.teColCapt
+Description for teColCapt
+
+----------------------------------------------------------------------------------------------------
+@@TPCTableElement.teRowCapt
+Description for teRowCapt
+
+----------------------------------------------------------------------------------------------------
+@@TPCTableElement.teColIRes
+Description for teColIRes
+
+----------------------------------------------------------------------------------------------------
+@@TPCTableElement.teRowIRes
+Description for teRowIRes
+
+----------------------------------------------------------------------------------------------------
+@@TPCTableElement.teColRes
+Description for teColRes
+
+----------------------------------------------------------------------------------------------------
+@@TPCTableElement.teRowRes
+Description for teRowRes
+
+----------------------------------------------------------------------------------------------------
+@@TPCTOptions
+<TITLE TPCTOptions type>
 Summary
   Write here a summary (1 line)
 Description
-  This type is used by (for reference): Nothing in this unit.
-Parameters
-  Sender   - Description for this parameter
-  ColNo    - Description for this parameter
-  RowNo    - Description for this parameter
-  Value    - Description for this parameter
-  CanPrint - Description for this parameter
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (fcoIntermediateColResults, fcoIntermediateRowResults, fcoColResults, fcoRowResults,
+  fcoIntermediateColCaptions, fcoIntermediateRowCaptions, fcoIntermediateLeftIndent,
+  fcoIntermediateTopIndent, fc IntermediateRightIndent, fcoIntermediateBottomIndent,
+  fcoShowPageNumbers, fcoVertColCaptionsFont); - for reference)
 
 ----------------------------------------------------------------------------------------------------
-@@TDuplicateCellValueEvent
-<TITLE TDuplicateCellValueEvent type>
-<COMBINE TJvgPrintCrossTable.OnDuplicateCellValue>
+@@TPCTableElement.teTitle
+Description for teTitle
 
 ----------------------------------------------------------------------------------------------------
-@@TglPrintingStatus
-<TITLE TglPrintingStatus type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TglPrintingStatus.fpsContinue
-  Description for fpsContinue
-
-----------------------------------------------------------------------------------------------------
-@@TglPrintingStatus.fpsResume
-  Description for fpsResume
-
-----------------------------------------------------------------------------------------------------
-@@TglPrintingStatus.fpsAbort
-  Description for fpsAbort
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable
-<TITLEIMG TJvgPrintCrossTable>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.CaptColWidthInSantim
+@@TPCTableElement
+<TITLE TPCTableElement type>
 Summary
   Write here a summary (1 line)
 Description
@@ -77,7 +66,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.CaptRowHeightInSantim
+@@TJvgPrintCrossTableIndents._Top
 Summary
   Write here a summary (1 line)
 Description
@@ -87,7 +76,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.Colors
+@@TJvgPrintCrossTableIndents._Right
 Summary
   Write here a summary (1 line)
 Description
@@ -97,350 +86,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.ColumnFieldName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.ColWidthInSantim
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.DataSet
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.Fonts
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.IndentsInSantim
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.OnCalcResult
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender                - Description for this parameter
-  ColNo                 - Description for this parameter
-  RowNo                 - Description for this parameter
-  CellValue             - Description for this parameter
-  IntermediateColResult - Description for this parameter
-  IntermediateRowResult - Description for this parameter
-  ColResult             - Description for this parameter
-  RowResult             - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.OnDuplicateCellValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender            - Description for this parameter
-  ColNo             - Description for this parameter
-  RowNo             - Description for this parameter
-  Value             - Description for this parameter
-  UseDuplicateValue - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.OnPrintNewPage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender         - Description for this parameter
-  ColPageNo      - Description for this parameter
-  RowPageNo      - Description for this parameter
-  PrintingStatus - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.OnPrintQuery
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender       - Description for this parameter
-  ColPageCount - Description for this parameter
-  RowPageCount - Description for this parameter
-  CanPrint     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.OnPrintTableElement
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender       - Description for this parameter
-  Text         - Description for this parameter
-  ColNo        - Description for this parameter
-  RowNo        - Description for this parameter
-  TableElement - Description for this parameter
-  Font         - Description for this parameter
-  Color        - Description for this parameter
-  AlignFlags   - Description for this parameter
-  CanPrint     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.Options
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.PageHeight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.PageWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.PreviewTo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas     - Description for this parameter
-  PageWidth  - Description for this parameter
-  PageHeight - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.Print
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.RowFieldName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.RowHeightInSantim
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.Title
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.TitleAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTable.ValueFieldName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableColors
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableColors.Captions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableColors.Cells
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableColors.IntermediateResults
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableColors.Results
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts.Cells
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts.ColCaptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts.IntermediateResults
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts.Results
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts.RowCaptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableFonts.Titles
+@@TJvgPrintCrossTableIndents._Left
 Summary
   Write here a summary (1 line)
 Description
@@ -467,7 +113,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableIndents._Left
+@@TJvgPrintCrossTableFonts.Titles
 Summary
   Write here a summary (1 line)
 Description
@@ -477,7 +123,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableIndents._Right
+@@TJvgPrintCrossTableFonts.RowCaptions
 Summary
   Write here a summary (1 line)
 Description
@@ -487,7 +133,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgPrintCrossTableIndents._Top
+@@TJvgPrintCrossTableFonts.Results
 Summary
   Write here a summary (1 line)
 Description
@@ -497,8 +143,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TPCTableElement
-<TITLE TPCTableElement type>
+@@TJvgPrintCrossTableFonts.IntermediateResults
 Summary
   Write here a summary (1 line)
 Description
@@ -508,61 +153,413 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teTitle
-  Description for teTitle
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teCell
-  Description for teCell
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teColCapt
-  Description for teColCapt
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teRowCapt
-  Description for teRowCapt
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teColIRes
-  Description for teColIRes
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teRowIRes
-  Description for teRowIRes
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teColRes
-  Description for teColRes
-
-----------------------------------------------------------------------------------------------------
-@@TPCTableElement.teRowRes
-  Description for teRowRes
-
-----------------------------------------------------------------------------------------------------
-@@TPCTOptions
-<TITLE TPCTOptions type>
+@@TJvgPrintCrossTableFonts.ColCaptions
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  set of (fcoIntermediateColResults, fcoIntermediateRowResults, fcoColResults, fcoRowResults,
-  fcoIntermediateColCaptions, fcoIntermediateRowCaptions, fcoIntermediateLeftIndent,
-  fcoIntermediateTopIndent, fc IntermediateRightIndent, fcoIntermediateBottomIndent,
-  fcoShowPageNumbers, fcoVertColCaptionsFont); - for reference)
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableFonts.Cells
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableFonts
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableColors.Results
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableColors.IntermediateResults
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableColors.Cells
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableColors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTableColors.Captions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.ValueFieldName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.TitleAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.Title
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.RowHeightInSantim
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.RowFieldName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.Print
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.PreviewTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas     - Description for this parameter
+  PageWidth  - Description for this parameter
+  PageHeight - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.PageWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.PageHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.Options
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.OnPrintTableElement
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender       - Description for this parameter
+  Text         - Description for this parameter
+  ColNo        - Description for this parameter
+  RowNo        - Description for this parameter
+  TableElement - Description for this parameter
+  Font         - Description for this parameter
+  Color        - Description for this parameter
+  AlignFlags   - Description for this parameter
+  CanPrint     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.OnPrintQuery
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender       - Description for this parameter
+  ColPageCount - Description for this parameter
+  RowPageCount - Description for this parameter
+  CanPrint     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.OnPrintNewPage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender         - Description for this parameter
+  ColPageNo      - Description for this parameter
+  RowPageNo      - Description for this parameter
+  PrintingStatus - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.OnDuplicateCellValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender            - Description for this parameter
+  ColNo             - Description for this parameter
+  RowNo             - Description for this parameter
+  Value             - Description for this parameter
+  UseDuplicateValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.OnCalcResult
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender                - Description for this parameter
+  ColNo                 - Description for this parameter
+  RowNo                 - Description for this parameter
+  CellValue             - Description for this parameter
+  IntermediateColResult - Description for this parameter
+  IntermediateRowResult - Description for this parameter
+  ColResult             - Description for this parameter
+  RowResult             - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.IndentsInSantim
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.Fonts
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.DataSet
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.ColWidthInSantim
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.ColumnFieldName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.Colors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.CaptRowHeightInSantim
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable.CaptColWidthInSantim
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TglPrintingStatus.fpsResume
+Description for fpsResume
+
+----------------------------------------------------------------------------------------------------
+@@TglPrintingStatus.fpsAbort
+Description for fpsAbort
+
+----------------------------------------------------------------------------------------------------
+@@TJvgPrintCrossTable
+<TITLEIMG TJvgPrintCrossTable>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TglPrintingStatus.fpsContinue
+Description for fpsContinue
+
+----------------------------------------------------------------------------------------------------
+@@TDuplicateCellValueEvent
+<TITLE TDuplicateCellValueEvent type> <COMBINE TJvgPrintCrossTable.OnDuplicateCellValue>
+
+----------------------------------------------------------------------------------------------------
+@@TglPrintingStatus
+<TITLE TglPrintingStatus type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDrawCellEvent
+<TITLE TDrawCellEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference): Nothing in this unit.
+Parameters
+  Sender   - Description for this parameter
+  ColNo    - Description for this parameter
+  RowNo    - Description for this parameter
+  Value    - Description for this parameter
+  CanPrint - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TCalcResultEvent
+<TITLE TCalcResultEvent type> <COMBINE TJvgPrintCrossTable.OnCalcResult>
 
 ----------------------------------------------------------------------------------------------------
 @@TPrintNewPageEvent
-<TITLE TPrintNewPageEvent type>
-<COMBINE TJvgPrintCrossTable.OnPrintNewPage>
+<TITLE TPrintNewPageEvent type> <COMBINE TJvgPrintCrossTable.OnPrintNewPage>
 
 ----------------------------------------------------------------------------------------------------
 @@TPrintQueryEvent
-<TITLE TPrintQueryEvent type>
-<COMBINE TJvgPrintCrossTable.OnPrintQuery>
+<TITLE TPrintQueryEvent type> <COMBINE TJvgPrintCrossTable.OnPrintQuery>
 
 ----------------------------------------------------------------------------------------------------
 @@TPrintTableElement
-<TITLE TPrintTableElement type>
-<COMBINE TJvgPrintCrossTable.OnPrintTableElement>
+<TITLE TPrintTableElement type> <COMBINE TJvgPrintCrossTable.OnPrintTableElement>
 

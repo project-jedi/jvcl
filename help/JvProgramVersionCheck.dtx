@@ -3,63 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvProgramVersionCheck.pas
 Summary
-  Contains the TJvProgramVersionCheck component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvProgramVersionCheck component.
 Author
   Jens Fudickar
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionFileBasedLocation
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionFileBasedLocation.LoadInstallerFileFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ARemotePath     - Description for this parameter
-  ARemoteFileName - Description for this parameter
-  ALocalPath      - Description for this parameter
-  ALocalFileName  - Description for this parameter
-  ABaseThread     - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionFileBasedLocation.LoadVersionInfoFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ALocalDirectory           - Description for this parameter
-  ALocalVersionInfoFileName - Description for this parameter
-  ABaseThread               - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionInternetLocation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionInternetLocation.Password
+@@TJvProgramVersionInfo.ProgramVersion
 Summary
   Write here a summary (1 line)
 Description
@@ -69,7 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionInternetLocation.PasswordRequired
+@@TJvProgramVersionInfo.ProgramSize
 Summary
   Write here a summary (1 line)
 Description
@@ -79,797 +31,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionInternetLocation.Port
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionInternetLocation.ProxySettings
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionInternetLocation.UserName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation.DownloadError
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation.DownloadStatus
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation.DownloadThreaded
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation.LoadFileFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ARemotePath     - Description for this parameter
-  ARemoteFileName - Description for this parameter
-  ALocalPath      - Description for this parameter
-  ALocalFileName  - Description for this parameter
-  ABaseThread     - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation.LoadInstallerFileFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ARemotePath     - Description for this parameter
-  ARemoteFileName - Description for this parameter
-  ALocalPath      - Description for this parameter
-  ALocalFileName  - Description for this parameter
-  ABaseThread     - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomProgramVersionLocation.LoadVersionInfoFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ALocalDirectory           - Description for this parameter
-  ALocalVersionInfoFileName - Description for this parameter
-  ABaseThread               - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLoadFileFromRemoteDatabaseEvent
-<TITLE TJvLoadFileFromRemoteDatabaseEvent type>
-<COMBINE TJvProgramVersionDatabaseLocation.OnLoadFileFromRemote>
-
-----------------------------------------------------------------------------------------------------
-@@TJvLoadFileFromRemoteFTPEvent
-<TITLE TJvLoadFileFromRemoteFTPEvent type>
-<COMBINE TJvProgramVersionFTPLocation.OnLoadFileFromRemote>
-
-----------------------------------------------------------------------------------------------------
-@@TJvLoadFileFromRemoteHTTPEvent
-<TITLE TJvLoadFileFromRemoteHTTPEvent type>
-<COMBINE TJvProgramVersionHTTPLocation.OnLoadFileFromRemote>
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramReleaseType
-<TITLE TJvProgramReleaseType type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramReleaseType.prtProduction
-  Description for prtProduction
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramReleaseType.prtBeta
-  Description for prtBeta
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramReleaseType.prtAlpha
-  Description for prtAlpha
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck
-<TITLEIMG TJvProgramVersionCheck>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.AllowedReleaseType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.CheckFrequency
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.DownloadError
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.DownloadInstallerFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.Execute
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.GetRemoteVersionOperation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ReleaseType - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.IsRemoteProgramVersionNewer
+@@TJvProgramVersionInfo.ProgramSizeString
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Return value
   Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LastCheck
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LoadRemoteVersionHistoryFromFile
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aFileFormat - Description for this parameter
-  aFileName   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocalDirectory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocalInstallerFileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocalVersionInfoFileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocationDatabase
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocationFTP
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocationHTTP
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocationNetwork
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocationType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.LocationTypesSupported
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.RemoteProgramVersionHistory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.SelectedLocation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.ShowProgramVersionsDescription
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFromVersion - Description for this parameter
-  AToVersion   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.StoreRemoteVersionHistoryToFile
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aFileFormat - Description for this parameter
-  aFilename   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.Thread
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.ThreadDialog
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.UserOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionCheck.VersionHistoryFileOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation
-<TITLEIMG TJvProgramVersionDatabaseLocation>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation.LoadVersionInfoFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ALocalDirectory           - Description for this parameter
-  ALocalVersionInfoFileName - Description for this parameter
-  ABaseThread               - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation.OnLoadFileFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AProgramVersionLocation - Description for this parameter
-  ARemotePath             - Description for this parameter
-  ARemoteFileName         - Description for this parameter
-  ALocalPath              - Description for this parameter
-  ALocalFileName          - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation.Password
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation.SelectStatementVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation.ServerName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionDatabaseLocation.UserName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionFTPLocation
-<TITLEIMG TJvProgramVersionFTPLocation>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionFTPLocation.OnLoadFileFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AProgramVersionLocation - Description for this parameter
-  ARemotePath             - Description for this parameter
-  ARemoteFileName         - Description for this parameter
-  ALocalPath              - Description for this parameter
-  ALocalFileName          - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.AllowedCurrentProgramVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AAllowedReleaseType - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.CurrentAlphaProgramVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.CurrentBetaProgramVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.CurrentProductionProgramVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.CurrentProgramVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.GetVersionsDescription
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFromVersion - Description for this parameter
-  AToVersion   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.LoadData
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.ProgramVersion
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistory.RecalculateCurrentProgramVersions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistoryAppStorageOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistoryAppStorageOptions.FileFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistoryAppStorageOptions.INIOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHistoryAppStorageOptions.XMLOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TjvProgramVersionHistoryFileFormat
-<TITLE TjvProgramVersionHistoryFileFormat type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TjvProgramVersionHistoryFileFormat.hffIni
-  Description for hffIni
-
-----------------------------------------------------------------------------------------------------
-@@TjvProgramVersionHistoryFileFormat.hffXML
-  Description for hffXML
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHTTPLocation
-<TITLEIMG TJvProgramVersionHTTPLocation>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionHTTPLocation.OnLoadFileFromRemote
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AProgramVersionLocation - Description for this parameter
-  ARemotePath             - Description for this parameter
-  ARemoteFileName         - Description for this parameter
-  ALocalPath              - Description for this parameter
-  ALocalFileName          - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.DownloadPasswordRequired
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.LocalInstallerParams
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.ProgramLocationFileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -905,7 +73,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.ProgramSize
+@@TJvProgramVersionInfo.ProgramLocationFileName
 Summary
   Write here a summary (1 line)
 Description
@@ -915,7 +83,549 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.ProgramSizeString
+@@TJvProgramVersionInfo.LocalInstallerParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionInfo.DownloadPasswordRequired
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionInfo.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHTTPLocation.OnLoadFileFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AProgramVersionLocation - Description for this parameter
+  ARemotePath             - Description for this parameter
+  ARemoteFileName         - Description for this parameter
+  ALocalPath              - Description for this parameter
+  ALocalFileName          - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TjvProgramVersionHistoryFileFormat.hffXML
+Description for hffXML
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHTTPLocation
+<TITLEIMG TJvProgramVersionHTTPLocation>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TjvProgramVersionHistoryFileFormat
+<TITLE TjvProgramVersionHistoryFileFormat type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TjvProgramVersionHistoryFileFormat.hffIni
+Description for hffIni
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistoryAppStorageOptions.INIOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistoryAppStorageOptions.XMLOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistoryAppStorageOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistoryAppStorageOptions.FileFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.RecalculateCurrentProgramVersions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.ProgramVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.LoadData
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.GetVersionsDescription
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFromVersion - Description for this parameter
+  AToVersion   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.CurrentProgramVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.CurrentProductionProgramVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.CurrentBetaProgramVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.CurrentAlphaProgramVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory.AllowedCurrentProgramVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AAllowedReleaseType - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionHistory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionFTPLocation.OnLoadFileFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AProgramVersionLocation - Description for this parameter
+  ARemotePath             - Description for this parameter
+  ARemoteFileName         - Description for this parameter
+  ALocalPath              - Description for this parameter
+  ALocalFileName          - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionFTPLocation
+<TITLEIMG TJvProgramVersionFTPLocation>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation.UserName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation.ServerName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation.SelectStatementVersion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation.Password
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation.OnLoadFileFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AProgramVersionLocation - Description for this parameter
+  ARemotePath             - Description for this parameter
+  ARemoteFileName         - Description for this parameter
+  ALocalPath              - Description for this parameter
+  ALocalFileName          - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation.LoadVersionInfoFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  ALocalDirectory           - Description for this parameter
+  ALocalVersionInfoFileName - Description for this parameter
+  ABaseThread               - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionDatabaseLocation
+<TITLEIMG TJvProgramVersionDatabaseLocation>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.VersionHistoryFileOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.ThreadDialog
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.UserOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.StoreRemoteVersionHistoryToFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aFileFormat - Description for this parameter
+  aFilename   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.Thread
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.ShowProgramVersionsDescription
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFromVersion - Description for this parameter
+  AToVersion   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.SelectedLocation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.RemoteProgramVersionHistory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocationTypesSupported
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocationNetwork
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocationType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocationHTTP
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocationFTP
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocationDatabase
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocalVersionInfoFileName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocalInstallerFileName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LocalDirectory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LoadRemoteVersionHistoryFromFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aFileFormat - Description for this parameter
+  aFileName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.LastCheck
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.IsRemoteProgramVersionNewer
 Summary
   Write here a summary (1 line)
 Description
@@ -927,7 +637,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgramVersionInfo.ProgramVersion
+@@TJvProgramVersionCheck.GetRemoteVersionOperation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ReleaseType - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.DownloadInstallerFromRemote
 Summary
   Write here a summary (1 line)
 Description
@@ -935,6 +659,281 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.Execute
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.DownloadError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.CheckFrequency
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck
+<TITLEIMG TJvProgramVersionCheck>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramVersionCheck.AllowedReleaseType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramReleaseType.prtBeta
+Description for prtBeta
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramReleaseType.prtAlpha
+Description for prtAlpha
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramReleaseType.prtProduction
+Description for prtProduction
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgramReleaseType
+<TITLE TJvProgramReleaseType type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLoadFileFromRemoteFTPEvent
+<TITLE TJvLoadFileFromRemoteFTPEvent type> <COMBINE TJvProgramVersionFTPLocation.OnLoadFileFromRemote>
+
+----------------------------------------------------------------------------------------------------
+@@TJvLoadFileFromRemoteHTTPEvent
+<TITLE TJvLoadFileFromRemoteHTTPEvent type> <COMBINE TJvProgramVersionHTTPLocation.OnLoadFileFromRemote>
+
+----------------------------------------------------------------------------------------------------
+@@TJvLoadFileFromRemoteDatabaseEvent
+<TITLE TJvLoadFileFromRemoteDatabaseEvent type> <COMBINE TJvProgramVersionDatabaseLocation.OnLoadFileFromRemote>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation.LoadVersionInfoFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ALocalDirectory           - Description for this parameter
+  ALocalVersionInfoFileName - Description for this parameter
+  ABaseThread               - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation.LoadInstallerFileFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARemotePath     - Description for this parameter
+  ARemoteFileName - Description for this parameter
+  ALocalPath      - Description for this parameter
+  ALocalFileName  - Description for this parameter
+  ABaseThread     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation.LoadFileFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARemotePath     - Description for this parameter
+  ARemoteFileName - Description for this parameter
+  ALocalPath      - Description for this parameter
+  ALocalFileName  - Description for this parameter
+  ABaseThread     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation.DownloadThreaded
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation.DownloadStatus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation.DownloadError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionLocation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionInternetLocation.UserName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionInternetLocation.ProxySettings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionInternetLocation.Port
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionInternetLocation.Password
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionInternetLocation.PasswordRequired
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionInternetLocation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionFileBasedLocation.LoadVersionInfoFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  ALocalDirectory           - Description for this parameter
+  ALocalVersionInfoFileName - Description for this parameter
+  ABaseThread               - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionFileBasedLocation.LoadInstallerFileFromRemote
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  ARemotePath     - Description for this parameter
+  ARemoteFileName - Description for this parameter
+  ALocalPath      - Description for this parameter
+  ALocalFileName  - Description for this parameter
+  ABaseThread     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomProgramVersionFileBasedLocation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionInfo.ProgramVersionInfo
@@ -994,24 +993,23 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionLocationType.pvltNetwork
-  Description for pvltNetwork
+Description for pvltNetwork
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionLocationType.pvltDatabase
-  Description for pvltDatabase
+Description for pvltDatabase
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionLocationType.pvltFTP
-  Description for pvltFTP
+Description for pvltFTP
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionLocationType.pvltHTTP
-  Description for pvltHTTP
+Description for pvltHTTP
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionLocationTypes
-<TITLE TJvProgramVersionLocationTypes type>
-<COMBINE TJvProgramVersionLocationType>
+<TITLE TJvProgramVersionLocationTypes type> <COMBINE TJvProgramVersionLocationType>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionNetworkLocation
@@ -1102,40 +1100,39 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoCheckFrequency
-  Description for uoCheckFrequency
+Description for uoCheckFrequency
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoLocalDirectory
-  Description for uoLocalDirectory
+Description for uoLocalDirectory
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoAllowedReleaseType
-  Description for uoAllowedReleaseType
+Description for uoAllowedReleaseType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoLocationType
-  Description for uoLocationType
+Description for uoLocationType
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoLocationNetwork
-  Description for uoLocationNetwork
+Description for uoLocationNetwork
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoLocationHTTP
-  Description for uoLocationHTTP
+Description for uoLocationHTTP
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoLocationFTP
-  Description for uoLocationFTP
+Description for uoLocationFTP
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOption.uoLocationDatabase
-  Description for uoLocationDatabase
+Description for uoLocationDatabase
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgramVersionUserOptions
-<TITLE TJvProgramVersionUserOptions type>
-<COMBINE TJvProgramVersionUserOption>
+<TITLE TJvProgramVersionUserOptions type> <COMBINE TJvProgramVersionUserOption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRemoteVersionOperation
@@ -1150,13 +1147,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRemoteVersionOperation.rvoIgnore
-  Description for rvoIgnore
+Description for rvoIgnore
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRemoteVersionOperation.rvoCopy
-  Description for rvoCopy
+Description for rvoCopy
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRemoteVersionOperation.rvoCopyInstall
-  Description for rvoCopyInstall
+Description for rvoCopyInstall
 

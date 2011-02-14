@@ -3,23 +3,40 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDockTree.pas
 Summary
-  Contains the TJvDockTree component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDockTree component.
 Author
   Luxiaoban
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager
-Summary
-  Internal use only. Not directly accessed by end users of JvDocking. Internal use only. Not directly
-  accessed by end users of JvDocking.
 Description
-  Internal Interface used to interface with the base TControl docking features in the VCL.
-  IJvDockManager is the interface to the JvDockManager. Each TJvDockPanel exposes an IJvDockManager
-  interface.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.ActiveControl
+@@TJvDockZone.SetZoneSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Size - Description for this parameter
+  Show - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.ResetChildren
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Exclude - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.PrevSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -29,7 +46,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.BeginResizeDockSite
+@@TJvDockZone.PrevSiblingCount
 Summary
   Write here a summary (1 line)
 Description
@@ -39,7 +56,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.BorderWidth
+@@TJvDockZone.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockSize - Description for this parameter
+  Hide     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.ParentZone
 Summary
   Write here a summary (1 line)
 Description
@@ -49,7 +79,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.DockRect
+@@TJvDockZone.Orientation
 Summary
   Write here a summary (1 line)
 Description
@@ -59,7 +89,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.DockSiteSize
+@@TJvDockZone.NextSiblingCount
 Summary
   Write here a summary (1 line)
 Description
@@ -69,7 +99,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.EndResizeDockSite
+@@TJvDockZone.NextSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -79,63 +109,126 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetActiveControl
+@@TJvDockZone.LimitSize
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetBorderWidth
+@@TJvDockZone.LimitBegin
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetDockClientLimit
+@@TJvDockZone.Left
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.LastVisibleChildZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.LastSibling
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.LastChild
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.IsInside
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.InsertOrRemove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockSize - Description for this parameter
+  Insert   - Description for this parameter
+  Hide     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.Insert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockSize - Description for this parameter
+  Hide     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.HeightWidth
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Orient - Description for this parameter
-  IsMin  - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetDockEdge
+@@TJvDockZone.Height
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  DockRect  - Description for this parameter
-  MousePos  - Description for this parameter
-  DropAlign - Description for this parameter
-  Control   - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetDockRect
+@@TJvDockZone.GetFrameRect
 Summary
   Write here a summary (1 line)
 Description
@@ -147,112 +240,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetDockSiteSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetDockSplitterWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetFrameRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetFrameRectEx
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetGrabberSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetHTFlag
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MousePos - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetMinSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GetSiteInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Client        - Description for this parameter
-  InfluenceRect - Description for this parameter
-  MousePos      - Description for this parameter
-  CanDock       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.GrabberSize
+@@TJvDockZone.FirstVisibleChildZone
 Summary
   Write here a summary (1 line)
 Description
@@ -262,21 +250,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.HasZoneWithControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.HideAllControl
+@@TJvDockZone.FirstSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -286,31 +260,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.HideControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.HideSingleControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.MinSize
+@@TJvDockZone.FirstChild
 Summary
   Write here a summary (1 line)
 Description
@@ -320,92 +270,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.ReplaceZoneChild
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  OldControl - Description for this parameter
-  NewControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SetActiveControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SetBorderWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SetDockRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SetDockSiteSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SetDockSplitterWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SetGrabberSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.ShowAllControl
+@@TJvDockZone.ChildZones
 Summary
   Write here a summary (1 line)
 Description
@@ -415,31 +280,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvDockManager.ShowControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.ShowSingleControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDockManager.SplitterWidth
+@@TJvDockZone.ChildTotal
 Summary
   Write here a summary (1 line)
 Description
@@ -449,14 +290,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockAdvZone.CloseBtnDown
+@@TJvDockZone.ChildCount
 Summary
   Write here a summary (1 line)
 Description
@@ -466,21 +300,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvZone.Insert
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  DockSize - Description for this parameter
-  Hide     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockAdvZone.MouseDown
+@@TJvDockZone.ChildControl
 Summary
   Write here a summary (1 line)
 Description
@@ -490,58 +310,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockAdvZone.Remove
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  DockSize - Description for this parameter
-  Hide     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption
-Summary
-  Provides the basic properties describing a conjoin docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.GrabbersSize
-Summary
-  Size of grabber.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOption.SplitterWidth
-Summary
-  Width of splitter.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicConjoinServerOptionClass
-<TITLE TJvDockBasicConjoinServerOptionClass type>
-Summary
-  Defines the metaclass for TJvDockBasicConjoinServerOption.
-Description
-  TJvDockBasicConjoinServerOptionClass is the metaclass for TJvDockBasicConjoinServerOption. Its value
-  is the class reference for TJvDockBasicConjoinServerOption or for one of its descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption
-Summary
-  Provides the basic properties describing a docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.BeginUpdate
+@@TJvDockZone.BeforeClosestVisibleZone
 Summary
   Write here a summary (1 line)
 Description
@@ -551,14 +320,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.DockStyle
-Summary
-  Gives access to the dock style object that owns this option object.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicServerOption.EndUpdate
+@@TJvDockZone.BeforeApoapsisVisibleZone
 Summary
   Write here a summary (1 line)
 Description
@@ -568,50 +330,124 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption
-Summary
-  Provides the basic properties describing a docking page control.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.HotTrack
-Summary
-  Specifies whether the <xxx> is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
-  feedback when the mouse passes over the <xxx> .
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOption.TabPosition
-Summary
-  Specifies the position of the tab.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBasicTabServerOptionClass
-<TITLE TJvDockBasicTabServerOptionClass type>
-Summary
-  Defines the metaclass for TJvDockBasicTabServerOption.
-Description
-  TJvDockBasicTabServerOptionClass is the metaclass for TJvDockBasicTabServerOption. Its value is the
-  class reference for TJvDockBasicTabServerOption or for one of its descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockForEachZoneProc
-<TITLE TJvDockForEachZoneProc type>
+@@TJvDockZone.AfterClosestVisibleZone
 Summary
   Write here a summary (1 line)
 Description
-  This type is used by (for reference): Nothing in this unit.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone.AfterApoapsisVisibleZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockZone
+Summary
+  Every item in a TJvDockTree is called a TJvDockZone, so you could thing of TJvDockZone as being
+  really TJvDockTreeItem
+Description
+  This is a base class from which you derive a subclass for each docking style that is defined.
+  
+  A Zone is really a tree node in a TJvDockTree which contains the current state of the docking
+  manager's docking tree. A dock zone is a reference to a visible Control (TWinControl). Typically in
+  JvDocking each Zone is really a reference to a docked form. Your application forms which are docked
+  or floating somewhere, are located in the JvDockTree which contains somewhere one of these objects
+  (a zone is a tree item object) which contains reference to your form, but cast as a TWinControl.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanPriority.tspSibling
+Description for tspSibling
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanPriority.tspChild
+Description for tspChild
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanPriority
+<TITLE TJvDockTreeScanPriority type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanKind.tskForward
+Description for tskForward
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanKind.tskMiddle
+Description for tskMiddle
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanKind.tskBackward
+Description for tskBackward
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeScanKind
+<TITLE TJvDockTreeScanKind type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTreeClass
+<TITLE TJvDockTreeClass type>
+Summary
+  Defines the metaclass for TJvDockTree.
+Description
+  TJvDockTreeClass is the metaclass for TJvDockTree. Its value is the class reference for TJvDockTree
+  or for one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.Version
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.UpdateCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.UpdateChild
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
   Zone - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersPosition
-<TITLE TJvDockGrabbersPosition type>
+@@TJvDockTree.UpdateAll
 Summary
   Write here a summary (1 line)
 Description
@@ -621,85 +457,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersPosition.gpTop
-  Description for gpTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersPosition.gpBottom
-  Description for gpBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersPosition.gpLeft
-  Description for gpLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersPosition.gpRight
-  Description for gpRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockGrabbersSize
-<TITLE TJvDockGrabbersSize type>
-Summary
-  The subrange type for certain TJvDockBasicConjoinServerOption properties.
-Description
-  TJvDockGrabbersSize is the subrange type for certain TJvDockBasicConjoinServerOption properties.
-See Also
-  TJvDockBasicConjoinServerOption.GrabbersSize
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockObservableStyle
-Summary
-  Provides the basic properties describing a docking style.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockObservableStyle.ConjoinServerOption
-Summary
-  Object that provides the properties describing a conjoin docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockObservableStyle.ConjoinServerOptionClass
-Summary
-  Specifies the class for the conjoin panel zones.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockObservableStyle.TabServerOption
-Summary
-  Object that provides the properties describing a tabbed docking site.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockObservableStyle.TabServerOptionClass
-Summary
-  Specifies the class for the conjoin panel zones.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockSplitterWidth
-<TITLE TJvDockSplitterWidth type>
-Summary
-  The subrange type for certain TJvDockBasicConjoinServerOption properties.
-Description
-  TJvDockSplitterWidth is the subrange type for certain TJvDockBasicConjoinServerOption properties.
-See Also
-  TJvDockBasicConjoinServerOption.SplitterWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockStyleLink
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockStyleLink.DockStyle
+@@TJvDockTree.TopZone
 Summary
   Write here a summary (1 line)
 Description
@@ -709,7 +467,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockStyleLink.OnStyleChanged
+@@TJvDockTree.TopXYLimit
 Summary
   Write here a summary (1 line)
 Description
@@ -719,271 +477,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockStyleLink.StyleChanged
+@@TJvDockTree.SplitterWidth
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree
-Summary
-  Internal base class used by JvDocking. Not directly created by users of JvDocking components.
-Description
-  This is a base class, not intended to be used, but rather to inherit from.
-
-  TJvDockTree implements only a basic starting set of docking tree management behaviors.
-
-  This object is used to track the tree structure of controls which are docked inside each other. For
-  each style of docking, a subclass of TJvDockTree is create, and certain important virtual methods are
-  overloaded, in order to change details of docked-window-painting, dragging and dropping, and other
-  important aspects of your currently selected docking style.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.BorderWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.Canvas
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockSite
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockSiteBegin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockSiteOrientation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockSiteSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockSiteSizeAlternate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockSiteSizeWithOrientation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Orient - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.DockZoneClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.GrabberBgColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.GrabberBottomEdgeColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.GrabberShowLines
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.GrabberSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.GrabbersPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.MinSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.PaintSite
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DC - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.ParentLimit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.PreviousRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.ReplacementZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.ResizeCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.ScaleBy
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.SetSplitterCursor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  CursorIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -1049,59 +547,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTree.SplitterWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.TopXYLimit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.TopZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.UpdateAll
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTree.UpdateChild
+@@TJvDockTree.SetSplitterCursor
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Zone - Description for this parameter
+  CursorIndex - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTree.UpdateCount
+@@TJvDockTree.ScaleBy
 Summary
   Write here a summary (1 line)
 Description
@@ -1111,7 +569,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTree.Version
+@@TJvDockTree.ResizeCount
 Summary
   Write here a summary (1 line)
 Description
@@ -1121,17 +579,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTreeClass
-<TITLE TJvDockTreeClass type>
-Summary
-  Defines the metaclass for TJvDockTree.
-Description
-  TJvDockTreeClass is the metaclass for TJvDockTree. Its value is the class reference for TJvDockTree
-  or for one of its descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanKind
-<TITLE TJvDockTreeScanKind type>
+@@TJvDockTree.ReplacementZone
 Summary
   Write here a summary (1 line)
 Description
@@ -1141,20 +589,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanKind.tskForward
-  Description for tskForward
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanKind.tskMiddle
-  Description for tskMiddle
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanKind.tskBackward
-  Description for tskBackward
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanPriority
-<TITLE TJvDockTreeScanPriority type>
+@@TJvDockTree.PreviousRect
 Summary
   Write here a summary (1 line)
 Description
@@ -1164,29 +599,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanPriority.tspSibling
-  Description for tspSibling
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockTreeScanPriority.tspChild
-  Description for tspChild
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone
-Summary
-  Every item in a TJvDockTree is called a TJvDockZone, so you could thing of TJvDockZone as being
-  really TJvDockTreeItem
-Description
-  This is a base class from which you derive a subclass for each docking style that is defined.
-
-  A Zone is really a tree node in a TJvDockTree which contains the current state of the docking
-  manager's docking tree. A dock zone is a reference to a visible Control (TWinControl). Typically in
-  JvDocking each Zone is really a reference to a docked form. Your application forms which are docked
-  or floating somewhere, are located in the JvDockTree which contains somewhere one of these objects (a
-  zone is a tree item object) which contains reference to your form, but cast as a TWinControl.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.AfterApoapsisVisibleZone
+@@TJvDockTree.ParentLimit
 Summary
   Write here a summary (1 line)
 Description
@@ -1196,7 +609,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.AfterClosestVisibleZone
+@@TJvDockTree.PaintSite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DC - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.MinSize
 Summary
   Write here a summary (1 line)
 Description
@@ -1206,7 +631,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.BeforeApoapsisVisibleZone
+@@TJvDockTree.GrabbersPosition
 Summary
   Write here a summary (1 line)
 Description
@@ -1216,7 +641,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.BeforeClosestVisibleZone
+@@TJvDockTree.GrabberSize
 Summary
   Write here a summary (1 line)
 Description
@@ -1226,7 +651,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.ChildControl
+@@TJvDockTree.GrabberShowLines
 Summary
   Write here a summary (1 line)
 Description
@@ -1236,7 +661,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.ChildCount
+@@TJvDockTree.GrabberBottomEdgeColor
 Summary
   Write here a summary (1 line)
 Description
@@ -1246,7 +671,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.ChildTotal
+@@TJvDockTree.GrabberBgColor
 Summary
   Write here a summary (1 line)
 Description
@@ -1256,7 +681,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.ChildZones
+@@TJvDockTree.DockStyle
 Summary
   Write here a summary (1 line)
 Description
@@ -1266,7 +691,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.FirstChild
+@@TJvDockTree.DockZoneClass
 Summary
   Write here a summary (1 line)
 Description
@@ -1276,49 +701,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.FirstSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.FirstVisibleChildZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.GetFrameRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.Height
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.HeightWidth
+@@TJvDockTree.DockSiteSizeWithOrientation
 Summary
   Write here a summary (1 line)
 Description
@@ -1330,11 +713,331 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.Insert
+@@TJvDockTree.DockSiteSizeAlternate
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.DockSiteSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.DockSiteOrientation
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.DockSiteBegin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.DockSite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.DockRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree.BorderWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockTree
+Summary
+  Internal base class used by JvDocking. Not directly created by users of JvDocking components.
+Description
+  This is a base class, not intended to be used, but rather to inherit from.
+  
+  TJvDockTree implements only a basic starting set of docking tree management behaviors.
+  
+  This object is used to track the tree structure of controls which are docked inside each other. For each style of docking, a subclass of TJvDockTree is creat
+  , and certain important virtual methods are overloaded, in order to change details of
+  docked-window-painting, dragging and dropping, and other important aspects of your currently
+  selected docking style.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockStyleLink.StyleChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockStyleLink.OnStyleChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockStyleLink
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockStyleLink.DockStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockObservableStyle
+Summary
+  Provides the basic properties describing a docking style.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockObservableStyle.ConjoinServerOption
+Summary
+  Object that provides the properties describing a conjoin docking site.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockObservableStyle.ConjoinServerOptionClass
+Summary
+  Specifies the class for the conjoin panel zones.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockObservableStyle.TabServerOption
+Summary
+  Object that provides the properties describing a tabbed docking site.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockObservableStyle.TabServerOptionClass
+Summary
+  Specifies the class for the conjoin panel zones.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockSplitterWidth
+<TITLE TJvDockSplitterWidth type>
+Summary
+  The subrange type for certain TJvDockBasicConjoinServerOption properties.
+Description
+  TJvDockSplitterWidth is the subrange type for certain TJvDockBasicConjoinServerOption properties.
+See Also
+  TJvDockBasicConjoinServerOption.SplitterWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockGrabbersPosition.gpRight
+Description for gpRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockGrabbersSize
+<TITLE TJvDockGrabbersSize type>
+Summary
+  The subrange type for certain TJvDockBasicConjoinServerOption properties.
+Description
+  TJvDockGrabbersSize is the subrange type for certain TJvDockBasicConjoinServerOption properties.
+See Also
+  TJvDockBasicConjoinServerOption.GrabbersSize
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockGrabbersPosition.gpLeft
+Description for gpLeft
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockGrabbersPosition.gpTop
+Description for gpTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockGrabbersPosition.gpBottom
+Description for gpBottom
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockGrabbersPosition
+<TITLE TJvDockGrabbersPosition type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockForEachZoneProc
+<TITLE TJvDockForEachZoneProc type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference): Nothing in this unit.
+Parameters
+  Zone - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicTabServerOptionClass
+<TITLE TJvDockBasicTabServerOptionClass type>
+Summary
+  Defines the metaclass for TJvDockBasicTabServerOption.
+Description
+  TJvDockBasicTabServerOptionClass is the metaclass for TJvDockBasicTabServerOption. Its value is the
+  class reference for TJvDockBasicTabServerOption or for one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicTabServerOption.TabPosition
+Summary
+  Specifies the position of the tab.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicTabServerOption.HotTrack
+Summary
+  Specifies whether the <xxx> is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
+  feedback when the mouse passes over the <xxx> .
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicTabServerOption
+Summary
+  Provides the basic properties describing a docking page control.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicServerOption.EndUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicServerOption.DockStyle
+Summary
+  Gives access to the dock style object that owns this option object.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicServerOption.BeginUpdate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicServerOption
+Summary
+  Provides the basic properties describing a docking site.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicConjoinServerOptionClass
+<TITLE TJvDockBasicConjoinServerOptionClass type>
+Summary
+  Defines the metaclass for TJvDockBasicConjoinServerOption.
+Description
+  TJvDockBasicConjoinServerOptionClass is the metaclass for TJvDockBasicConjoinServerOption. Its
+  value is the class reference for TJvDockBasicConjoinServerOption or for one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicConjoinServerOption
+Summary
+  Provides the basic properties describing a conjoin docking site.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicConjoinServerOption.GrabbersSize
+Summary
+  Size of grabber.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBasicConjoinServerOption.SplitterWidth
+Summary
+  Width of splitter.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockAdvZone.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   DockSize - Description for this parameter
   Hide     - Description for this parameter
@@ -1343,21 +1046,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.InsertOrRemove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DockSize - Description for this parameter
-  Insert   - Description for this parameter
-  Hide     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.IsInside
+@@TJvDockAdvZone.MouseDown
 Summary
   Write here a summary (1 line)
 Description
@@ -1367,131 +1056,12 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.LastChild
+@@TJvDockAdvZone.Insert
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.LastSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.LastVisibleChildZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.Left
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.LimitBegin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.LimitSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.NextSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.NextSiblingCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.Orientation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.ParentZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.PrevSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.PrevSiblingCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockZone.Remove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   DockSize - Description for this parameter
   Hide     - Description for this parameter
@@ -1500,29 +1070,461 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.ResetChildren
+@@TJvDockAdvZone
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Exclude - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockAdvZone.CloseBtnDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockZone.SetZoneSize
+@@IJvDockManager.SplitterWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.ShowSingleControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Size - Description for this parameter
-  Show - Description for this parameter
+  Control - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.ShowControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.ShowAllControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.SetGrabberSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.SetDockSplitterWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.SetDockSiteSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.SetDockRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.SetBorderWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.SetActiveControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.ReplaceZoneChild
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  OldControl - Description for this parameter
+  NewControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.MinSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.HideSingleControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.HideControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.HideAllControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.HasZoneWithControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GrabberSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetSiteInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Client        - Description for this parameter
+  InfluenceRect - Description for this parameter
+  MousePos      - Description for this parameter
+  CanDock       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetMinSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetHTFlag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MousePos - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetGrabberSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetFrameRectEx
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetFrameRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetDockSplitterWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetDockSiteSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetDockRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetDockEdge
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockRect  - Description for this parameter
+  MousePos  - Description for this parameter
+  DropAlign - Description for this parameter
+  Control   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetDockClientLimit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Orient - Description for this parameter
+  IsMin  - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetBorderWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.GetActiveControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.EndResizeDockSite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.DockRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.DockSiteSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.BorderWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.BeginResizeDockSite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager.ActiveControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IJvDockManager
+Summary
+  Internal use only. Not directly accessed by end users of JvDocking. Internal use only. Not directly
+  accessed by end users of JvDocking.
+Description
+  Internal Interface used to interface with the base TControl docking features in the VCL.
+  IJvDockManager is the interface to the JvDockManager. Each TJvDockPanel exposes an IJvDockManager
+  interface.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZone.Top

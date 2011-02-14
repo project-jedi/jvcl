@@ -3,53 +3,37 @@
 ----------------------------------------------------------------------------------------------------
 @@JvProgressUtils.pas
 Summary
-  Contains the TJvProgressUtils component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvProgressUtils component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@RegisterProgressControl
-<TITLE RegisterProgressControl procedure>
+@@UnRegisterProgressControl
+<TITLE UnRegisterProgressControl procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AClass           - Description for this parameter
-  MaxPropName      - Description for this parameter
-  MinPropName      - Description for this parameter
-  ProgressPropName - Description for this parameter
+  AClass - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SetProgressMax
-<TITLE SetProgressMax procedure>
+@@SupportsProgressControl
+<TITLE SupportsProgressControl function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Control  - Description for this parameter
-  MaxValue - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SetProgressMin
-<TITLE SetProgressMin procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control  - Description for this parameter
-  MinValue - Description for this parameter
+  Control - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -69,27 +53,45 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SupportsProgressControl
-<TITLE SupportsProgressControl function>
+@@SetProgressMin
+<TITLE SetProgressMin procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Control - Description for this parameter
+  Control  - Description for this parameter
+  MinValue - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@UnRegisterProgressControl
-<TITLE UnRegisterProgressControl procedure>
+@@SetProgressMax
+<TITLE SetProgressMax procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AClass - Description for this parameter
+  Control  - Description for this parameter
+  MaxValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RegisterProgressControl
+<TITLE RegisterProgressControl procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AClass           - Description for this parameter
+  MaxPropName      - Description for this parameter
+  MinPropName      - Description for this parameter
+  ProgressPropName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

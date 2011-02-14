@@ -3,266 +3,173 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPrvwRender.pas
 Summary
-  Contains the preview renderer components.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the preview renderer components.
 Author
   Peter Thörnqvist
-
-----------------------------------------------------------------------------------------------------
-@@EPrintPreviewError
-<TITLE EPrintPreviewError type>
-Summary
-  Exception class used by print preview components.
 Description
-  EPrintPreviewError is the exception class used by print preview components when errors are detected.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewRenderer
+@@TJvPreviewRenderRichEdit.RichEdit
 Summary
-  Base class for components that can render a print preview on a TJvCustomPreviewControl.
+  References the rich edit that should be rendered.
 Description
-  Use TJvCustomPreviewRenderer as a base class to derive from when you want to create components that
-  can render a print preview. Override the abstract DoAddPage to create a print preview page by page.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewRenderer.CreatePreview
-Summary
-  Called when a preview should be created.
-Description
-  CreatePreview is called by a TJvCustomPreviewControl when the user wants to create a preview.
-Parameters
-  Append - True if the preview should be appended to the existing preview or false if a new preview
-            should be created
-Return value
-  True if the preview could be created, false otherwise.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewRenderer.PrintPreview
-Summary
-  Specifies the print preview component that is associated with this renderer.
-Description
-  \Read PrintPreview to determine the TJvCustomPreviewControl or descendant that displays the preview
-  created by the renderer.
-
-----------------------------------------------------------------------------------------------------
-@@TJvNewPageEvent
-<TITLE TJvNewPageEvent type>
-<COMBINE TJvPreviewPrinter.OnNewPage>
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem
-Summary
-  An item representing a graphic object.
-Description
-  TJvPreviewGraphicItem is the class of items maintained by the TJvPreviewGraphicItems class. It
-  represents the image data and property settings for a graphic object that can be rendered to a
-  preview.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.Center
-Summary
-  Specifies if the graphic should be centered in its container.
-Description
-  Use Center to specify whether the image should be centered on the preview page or not.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.DestRect
-Summary
-  Calculates the size of the output rectangle based on a reference rectangle and a DC.
-Description
-  Call DestRect to calculate the size of the output rectangle needed for the image when it is resized
-  according to the settings of the DC.
-Parameters
-  RefRect - Reference rectangle.
-  DestDC  - The DC to render to.
-Return value
-  A rectangle that specifies the coordinates of the required destination rectangle of the image.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.Picture
-Summary
-  The graphic object associated with this item.
-Description
-  Use Picture to specify the image that is associated with this object. At design time, click the
-  ellipsis button in the Object Inspector to select an image.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.Proportional
-Summary
-  Indicates whether the image should be changed, without distortion, so that it fits the bounds of the
-  container.
-Description
-  Use Proportional to set whether images are stretched to fill the entire client area when Stretch is
-  true or if they should be stretched to fill as much as possible without changing the original width
-  to height ratio of the image.
+  Set RichEdit to a rich edit control on your form that you want to preview.
 See Also
-  TJvPreviewGraphicItem.DestRect, TJvPreviewGraphicItem.Stretch
+  TJvCustomPreviewRenderer.CreatePreview
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.Stretch
-Summary
-  Indicates whether the image should be changed so that it exactly fits the bounds of the container.
-Description
-  If Stretch is true, the image is changed to fill the entire available client area. If Stretch is
-  false, the image is displayed at its original size.
-See Also
-  TJvPreviewGraphicItem.Proportional
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.Transparent
-Summary
-  Indicates whether the image should be rendered transparently.
-Description
-  Use Transparent to indicate whether the background of the rendering area is filled or not.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItem.UpdateGraphic
-Summary
-  Updates the image to match the current property settings.
-Description
-  Call UpdateGraphic to make sure that property changes are propagated to the image in Picture.
-See Also
-  TJvPreviewGraphicItem.Picture
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItems
-Summary
-  Collection that maintains a list of graphic objects.
-Description
-  TJvPreviewGraphicItems is a collection that maintains a list of TJvPreviewGraphicItem objects.
-  TJvPreviewGraphicItems is the type of the <LINK TJvPreviewRenderGraphics.Images, Images> property of
-  TJvPreviewRenderGraphics.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItems.Add
-Summary
-  Adds a new graphic object to the collection.
-Description
-  Call add to add a new image object to the collection.
-Return value
-  The newly added image object.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewGraphicItems.Items
-Summary
-  Provides indexed access to the items in the collection.
-Description
-  Use Items to access the image objects using an index.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter
-<TITLEIMG TJvPreviewPrinter>
+@@TJvPreviewRenderStrings
+<TITLEIMG TJvPreviewRenderStrings>
 JVCLInfo
   GROUP=JVCL.Printing
   FLAG=Component
 Summary
-  A class that implements the IJvPrinter interface using TPrinter as the output device.
+  Preview render for string lists.
 Description
-  Use TJvPreviewPrinter when you want to output the content of a preview control to the printer. If a
-  preview control is assigned to the PrintPreview property, calling Print will call the preview
-  control's <LINK TJvCustomPreviewControl.PrintRange, PrintRange> method to create a printout using the
-  current settings of the TJvPreviewPrinter and send it to the currently selected printer.
+  Use TJvPreviewRenderStrings when you want to render a preview for a TStrings or descendant. Assign a
+  TStrings to the Strings property or use the methods of Strings to add content to the string list.
+  Use
+  Font to specify the visual appearance of the text and call CreatePreview to render the string list
+  content to a print preview control.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.Assign
+@@TJvPreviewRenderJvRichEdit.RichEdit
 Summary
-  Copies the properties of a compatible object to this object
+  Write here a summary (1 line)
 Description
-  Call Assign to copy the properties of a TJvPreviewPrinter or a TPrintDialog to this object. If Source
-  is a TPrintDialog the Collate, Copies, FromPage, Options, PrintRange and ToPage properties are
-  copied.
-Parameters
-  Source - The object to copy from
+  Write here a description
 See Also
-  <DELPHILINK TPrintDialog>
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.Collate
+@@TJvPreviewRenderRichEdit
+<TITLEIMG TJvPreviewRenderRichEdit>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
 Summary
-  Indicates whether collating is active.
+  Preview renderer for rich edits.
 Description
-  Use Collate to specify if collating should be used or not when printing.
+  Use TJvPreviewRenderRichEdit when you want to render a preview of the content in a rich edit
+  control.
+  This renderer supports formatted output of RTF. Assign a rich edit to the RichEdit property and call
+  CreatePreview to render the rich edit to a preview control.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.Copies
+@@TJvPreviewRenderJvRichEdit
+<TITLEIMG TJvPreviewRenderJvRichEdit>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
 Summary
-  Indicates the number of copies to print.
+  Write here a summary (1 line)
 Description
-  Set Copies to the number of copies of the document to print. Copies can never be less than 1.
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.FromPage
+@@TJvPreviewRenderGraphics.Images
 Summary
-  Indicates the page on which the print job is to begin.
+  A collection of images to render.
 Description
-  The FromPage property corresponds to the From field in a Print dialog.
+  Use Images to add and modify the images to preview. At design time, click the ellipsis button in the
+  Object Inspector to show the collection editor. Use the editor to add and modify the images in the
+  collection.
 See Also
-  TJvPreviewPrinter.ToPage
+  TJvCustomPreviewRenderer.CreatePreview
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.OnAbort
+@@TJvPreviewRenderGraphics
+<TITLEIMG TJvPreviewRenderGraphics>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
 Summary
-  Occurs when the print job is aborted.
+  A renderer that can render a collection of images.
 Description
-  Write a handler for OnAbort to take specific action when the print job is aborted. For example, you
-  could display a dialog to the user warning them that the print job was aborted or you could hide a
-  progress dialog previously shown in OnBeginDoc.
-See Also
-  TJvPreviewPrinter.OnBeginDoc, TJvPreviewPrinter.OnEndDoc, TJvPreviewPrinter.OnNewPage
+  Use TJvPreviewRenderGraphics when you want to preview a set of images. Add images to the renderer by
+  using the methods of the Images property. Every image in the collection can have a different format
+  and use different property settings. When you are ready to show the preview, call CreatePreview.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.OnBeginDoc
+@@TJvPreviewRenderControl.Stretch
 Summary
-  Occurs when the print job is started.
+  Indicates whether the Control preview should be changed so that it exactly fits the bounds of the
+  container.
 Description
-  Write a handler for OnBeginDoc to take specific action when the print job starts. For example, you
-  could display a dialog to the user while the printing is in progress.
+  If Stretch is true, the image is changed to fill the entire available client area. If Stretch is
+  false, the image is displayed at its original size.
 See Also
-  TJvPreviewPrinter.OnEndDoc, TJvPreviewPrinter.OnNewPage
+  TJvPreviewRenderControl.Proportional
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.OnEndDoc
+@@TJvPreviewRenderControl.Proportional
 Summary
-  Occurs when the print job is finished.
+  Indicates whether the Control preview should be changed, without distortion, so that it fits the
+  bounds of the container.
 Description
-  Write a handler for OnEndDoc to take specific action when the print job has finished. For example,
-  you could hide a dialog previously shown in OnBeginDoc.
+  Use Proportional to set whether the Control preview is stretched to fill the entire client area or
+  if it should be stretched to fill as much as possible without changing the original width to height
+  ratio of the image. Proportional only have effect if Stretch is true.
 See Also
-  TJvPreviewPrinter.OnBeginDoc, TJvPreviewPrinter.OnNewPage
+  TJvPreviewGraphicItem.DestRect, TJvPreviewRenderControl.Stretch
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.OnNewPage
+@@TJvPreviewRenderControl.Control
 Summary
-  Occurs when a new page is to be printed.
+  Indicates the control to render.
 Description
-  Write a handler for OnNewPage to take specific action when a new page is about to be sent to the
-  printer. For example, you can update the progress on a dialog shown to the user.
-Parameters
-  Sender    - The object that called the event.
-  PageIndex - The number of the page that is to be printed.
+  Use Control to specify the TControl descendant to render to the preview control. If Control is nil,
+  no preview is generated when CreatePreview is called.
 See Also
-  TJvPreviewPrinter.OnAbort, TJvPreviewPrinter.OnBeginDoc, TJvPreviewPrinter.OnEndDoc
+  TJvCustomPreviewRenderer.CreatePreview
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.Options
+@@TJvPreviewRenderControl.Center
 Summary
-  Indicates the options to use when a print dialog is displayed.
+  Indicates whether the preview is centered in its container.
 Description
-  Use Options to specify the print options to use when a print dialog is to be displayed. Options isn't
-  used by TJvPreviewPrinter itself. It is only provided as a convenient way of storing the print dialog
-  options without actually having to create a dialog to house them.
-See Also
-  <DELPHILINK TPrintDialog.Options>
+  Use Center to specify whether the TControl is rendered centered on the preview control
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.Print
+@@TJvPreviewRenderControl
+<TITLEIMG TJvPreviewRenderControl>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
 Summary
-  Starts the print job.
+  Renders a preview of a TControl descendant.
 Description
-  Call Print to send the document in the preview control to the printer. If a preview control is
-  assigned to the PrintPreview property, its PrintRange method is called to do the actual printing.
+  Use TJvPreviewRenderControl when you want to render a TControl descendant (visual control) in a
+  simple way. Assign the TControl to render to the Control property and call the CreatePreview method
+  to render the output to a preview control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.ToPage
+Summary
+  Indicates the page on which the print job is to end.
+Description
+  The ToPage property corresponds to the To field in a Print dialog.
 See Also
-  TJvPreviewPrinter.PrintPreview
+  TJvPreviewPrinter.FromPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.Title
+Summary
+  Determines the text that is listed in the Print Manager and on network header pages.
+Description
+  Title is used by Windows in the Print Manager and for network title pages.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.PrintRange
+Summary
+  Specifies whether FromPage and ToPage are valid.
+Description
+  Use PrintRange to determine whether FromPage and ToPage contains valid values. If PrintRange is
+  prAllPages, FromPage and ToPage are ignored, otherwise they are considered valid.
+  Note prSelection is not supported by the print preview components at his time.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Printer
@@ -286,164 +193,260 @@ See Also
   TJvCustomPreviewControl
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.PrintRange
+@@TJvPreviewPrinter.Print
 Summary
-  Specifies whether FromPage and ToPage are valid.
+  Starts the print job.
 Description
-  Use PrintRange to determine whether FromPage and ToPage contains valid values. If PrintRange is
-  prAllPages, FromPage and ToPage are ignored, otherwise they are considered valid.
-Note
-  prSelection is not supported by the print preview components at his time.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.Title
-Summary
-  Determines the text that is listed in the Print Manager and on network header pages.
-Description
-  Title is used by Windows in the Print Manager and for network title pages.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPrinter.ToPage
-Summary
-  Indicates the page on which the print job is to end.
-Description
-  The ToPage property corresponds to the To field in a Print dialog.
+  Call Print to send the document in the preview control to the printer. If a preview control is
+  assigned to the PrintPreview property, its PrintRange method is called to do the actual printing.
 See Also
-  TJvPreviewPrinter.FromPage
+  TJvPreviewPrinter.PrintPreview
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderControl
-<TITLEIMG TJvPreviewRenderControl>
+@@TJvPreviewPrinter.Options
+Summary
+  Indicates the options to use when a print dialog is displayed.
+Description
+  Use Options to specify the print options to use when a print dialog is to be displayed. Options
+  isn't
+  used by TJvPreviewPrinter itself. It is only provided as a convenient way of storing the print
+  dialog options without actually having to create a dialog to house them.
+See Also
+  <DELPHILINK TPrintDialog.Options>
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.OnNewPage
+Summary
+  Occurs when a new page is to be printed.
+Description
+  Write a handler for OnNewPage to take specific action when a new page is about to be sent to the
+  printer. For example, you can update the progress on a dialog shown to the user.
+Parameters
+  Sender    - The object that called the event.
+  PageIndex - The number of the page that is to be printed.
+See Also
+  TJvPreviewPrinter.OnAbort, TJvPreviewPrinter.OnBeginDoc, TJvPreviewPrinter.OnEndDoc
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.OnEndDoc
+Summary
+  Occurs when the print job is finished.
+Description
+  Write a handler for OnEndDoc to take specific action when the print job has finished. For example,
+  you could hide a dialog previously shown in OnBeginDoc.
+See Also
+  TJvPreviewPrinter.OnBeginDoc, TJvPreviewPrinter.OnNewPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.OnBeginDoc
+Summary
+  Occurs when the print job is started.
+Description
+  Write a handler for OnBeginDoc to take specific action when the print job starts. For example, you
+  could display a dialog to the user while the printing is in progress.
+See Also
+  TJvPreviewPrinter.OnEndDoc, TJvPreviewPrinter.OnNewPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.FromPage
+Summary
+  Indicates the page on which the print job is to begin.
+Description
+  The FromPage property corresponds to the From field in a Print dialog.
+See Also
+  TJvPreviewPrinter.ToPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.OnAbort
+Summary
+  Occurs when the print job is aborted.
+Description
+  Write a handler for OnAbort to take specific action when the print job is aborted. For example, you
+  could display a dialog to the user warning them that the print job was aborted or you could hide a
+  progress dialog previously shown in OnBeginDoc.
+See Also
+  TJvPreviewPrinter.OnBeginDoc, TJvPreviewPrinter.OnEndDoc, TJvPreviewPrinter.OnNewPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.Assign
+Summary
+  Copies the properties of a compatible object to this object
+Description
+  Call Assign to copy the properties of a TJvPreviewPrinter or a TPrintDialog to this object. If
+  Source is a TPrintDialog the Collate, Copies, FromPage, Options, PrintRange and ToPage properties
+  are copied.
+Parameters
+  Source - The object to copy from
+See Also
+  <DELPHILINK TPrintDialog>
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.Collate
+Summary
+  Indicates whether collating is active.
+Description
+  Use Collate to specify if collating should be used or not when printing.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter.Copies
+Summary
+  Indicates the number of copies to print.
+Description
+  Set Copies to the number of copies of the document to print. Copies can never be less than 1.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewGraphicItems.Items
+Summary
+  Provides indexed access to the items in the collection.
+Description
+  Use Items to access the image objects using an index.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPrinter
+<TITLEIMG TJvPreviewPrinter>
 JVCLInfo
   GROUP=JVCL.Printing
   FLAG=Component
 Summary
-  Renders a preview of a TControl descendant.
+  A class that implements the IJvPrinter interface using TPrinter as the output device.
 Description
-  Use TJvPreviewRenderControl when you want to render a TControl descendant (visual control) in a
-  simple way. Assign the TControl to render to the Control property and call the CreatePreview method
-  to render the output to a preview control.
+  Use TJvPreviewPrinter when you want to output the content of a preview control to the printer. If a
+  preview control is assigned to the PrintPreview property, calling Print will call the preview
+  control's <LINK TJvCustomPreviewControl.PrintRange, PrintRange> method to create a printout using
+  the current settings of the TJvPreviewPrinter and send it to the currently selected printer.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderControl.Center
+@@TJvPreviewGraphicItems.Add
 Summary
-  Indicates whether the preview is centered in its container.
+  Adds a new graphic object to the collection.
 Description
-  Use Center to specify whether the TControl is rendered centered on the preview control
+  Call add to add a new image object to the collection.
+Return value
+  The newly added image object.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderControl.Control
+@@TJvPreviewGraphicItems
 Summary
-  Indicates the control to render.
+  Collection that maintains a list of graphic objects.
 Description
-  Use Control to specify the TControl descendant to render to the preview control. If Control is nil,
-  no preview is generated when CreatePreview is called.
+  TJvPreviewGraphicItems is a collection that maintains a list of TJvPreviewGraphicItem objects.
+  TJvPreviewGraphicItems is the type of the <LINK TJvPreviewRenderGraphics.Images, Images> property of
+  TJvPreviewRenderGraphics.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewGraphicItem.Transparent
+Summary
+  Indicates whether the image should be rendered transparently.
+Description
+  Use Transparent to indicate whether the background of the rendering area is filled or not.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewGraphicItem.UpdateGraphic
+Summary
+  Updates the image to match the current property settings.
+Description
+  Call UpdateGraphic to make sure that property changes are propagated to the image in Picture.
 See Also
-  TJvCustomPreviewRenderer.CreatePreview
+  TJvPreviewGraphicItem.Picture
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderControl.Proportional
+@@TJvPreviewGraphicItem.Stretch
 Summary
-  Indicates whether the Control preview should be changed, without distortion, so that it fits the
-  bounds of the container.
-Description
-  Use Proportional to set whether the Control preview is stretched to fill the entire client area or if
-  it should be stretched to fill as much as possible without changing the original width to height
-  ratio of the image. Proportional only have effect if Stretch is true.
-See Also
-  TJvPreviewGraphicItem.DestRect, TJvPreviewRenderControl.Stretch
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderControl.Stretch
-Summary
-  Indicates whether the Control preview should be changed so that it exactly fits the bounds of the
-  container.
+  Indicates whether the image should be changed so that it exactly fits the bounds of the container.
 Description
   If Stretch is true, the image is changed to fill the entire available client area. If Stretch is
   false, the image is displayed at its original size.
 See Also
-  TJvPreviewRenderControl.Proportional
+  TJvPreviewGraphicItem.Proportional
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderGraphics
-<TITLEIMG TJvPreviewRenderGraphics>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
+@@TJvPreviewGraphicItem.Proportional
 Summary
-  A renderer that can render a collection of images.
+  Indicates whether the image should be changed, without distortion, so that it fits the bounds of
+  the container.
 Description
-  Use TJvPreviewRenderGraphics when you want to preview a set of images. Add images to the renderer by
-  using the methods of the Images property. Every image in the collection can have a different format
-  and use different property settings. When you are ready to show the preview, call CreatePreview.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderGraphics.Images
-Summary
-  A collection of images to render.
-Description
-  Use Images to add and modify the images to preview. At design time, click the ellipsis button in the
-  Object Inspector to show the collection editor. Use the editor to add and modify the images in the
-  collection.
+  Use Proportional to set whether images are stretched to fill the entire client area when Stretch is
+  true or if they should be stretched to fill as much as possible without changing the original width
+  to height ratio of the image.
 See Also
-  TJvCustomPreviewRenderer.CreatePreview
+  TJvPreviewGraphicItem.DestRect, TJvPreviewGraphicItem.Stretch
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderJvRichEdit
-<TITLEIMG TJvPreviewRenderJvRichEdit>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
+@@TJvPreviewGraphicItem.Picture
 Summary
-  Write here a summary (1 line)
+  The graphic object associated with this item.
 Description
-  Write here a description
+  Use Picture to specify the image that is associated with this object. At design time, click the
+  ellipsis button in the Object Inspector to select an image.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderJvRichEdit.RichEdit
+@@TJvPreviewGraphicItem.DestRect
 Summary
-  Write here a summary (1 line)
+  Calculates the size of the output rectangle based on a reference rectangle and a DC.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Call DestRect to calculate the size of the output rectangle needed for the image when it is resized
+  according to the settings of the DC.
+Parameters
+  RefRect - Reference rectangle.
+  DestDC  - The DC to render to.
+Return value
+  A rectangle that specifies the coordinates of the required destination rectangle of the image.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderRichEdit
-<TITLEIMG TJvPreviewRenderRichEdit>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
+@@TJvPreviewGraphicItem.Center
 Summary
-  Preview renderer for rich edits.
+  Specifies if the graphic should be centered in its container.
 Description
-  Use TJvPreviewRenderRichEdit when you want to render a preview of the content in a rich edit control.
-  This renderer supports formatted output of RTF. Assign a rich edit to the RichEdit property and call
-  CreatePreview to render the rich edit to a preview control.
+  Use Center to specify whether the image should be centered on the preview page or not.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderRichEdit.RichEdit
+@@TJvPreviewGraphicItem
 Summary
-  References the rich edit that should be rendered.
+  An item representing a graphic object.
 Description
-  Set RichEdit to a rich edit control on your form that you want to preview.
-See Also
-  TJvCustomPreviewRenderer.CreatePreview
+  TJvPreviewGraphicItem is the class of items maintained by the TJvPreviewGraphicItems class. It
+  represents the image data and property settings for a graphic object that can be rendered to a
+  preview.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderStrings
-<TITLEIMG TJvPreviewRenderStrings>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
+@@TJvCustomPreviewRenderer.PrintPreview
 Summary
-  Preview render for string lists.
+  Specifies the print preview component that is associated with this renderer.
 Description
-  Use TJvPreviewRenderStrings when you want to render a preview for a TStrings or descendant. Assign a
-  TStrings to the Strings property or use the methods of Strings to add content to the string list. Use
-  Font to specify the visual appearance of the text and call CreatePreview to render the string list
-  content to a print preview control.
+  \Read PrintPreview to determine the TJvCustomPreviewControl or descendant that displays the preview
+  created by the renderer.
+
+----------------------------------------------------------------------------------------------------
+@@TJvNewPageEvent
+<TITLE TJvNewPageEvent type> <COMBINE TJvPreviewPrinter.OnNewPage>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewRenderer.CreatePreview
+Summary
+  Called when a preview should be created.
+Description
+  CreatePreview is called by a TJvCustomPreviewControl when the user wants to create a preview.
+Parameters
+  Append - True if the preview should be appended to the existing preview or false if a new preview  
+          should be created
+Return value
+  True if the preview could be created, false otherwise.
+
+----------------------------------------------------------------------------------------------------
+@@EPrintPreviewError
+<TITLE EPrintPreviewError type>
+Summary
+  Exception class used by print preview components.
+Description
+  EPrintPreviewError is the exception class used by print preview components when errors are detected.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewRenderer
+Summary
+  Base class for components that can render a print preview on a TJvCustomPreviewControl.
+Description
+  Use TJvCustomPreviewRenderer as a base class to derive from when you want to create components that
+  can render a print preview. Override the abstract DoAddPage to create a print preview page by page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderStrings.Font
@@ -460,10 +463,10 @@ See Also
 Summary
   List of text strings that should be rendered.
 Description
-  use Strings to specify the text strings to render to the preview. You can copy strings from any other
-  control or TStrings descendant by assigning directly to the Strings property or you can use the
-  methods of TStrings (like Add, Remove, LoadFromFile etc) to define the content of the list.
-
+  use Strings to specify the text strings to render to the preview. You can copy strings from any
+  other control or TStrings descendant by assigning directly to the Strings property or you can use
+  the methods of TStrings (like Add, Remove, LoadFromFile etc) to define the content of the list.
+  
   To view the new or changed content of Strings, you must call the CreatePreview method.
 See Also
   TJvCustomPreviewRenderer.CreatePreview

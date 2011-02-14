@@ -3,136 +3,27 @@
 ----------------------------------------------------------------------------------------------------
 @@JvChart.pas
 Summary
-  Contains the TJvChart Charting Component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvChart Charting Component.
 Author
   Warren Postma
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart
-<TITLEIMG TJvChart>
-JVCLInfo
-  GROUP=JVCL.Graphics
-  FLAG=Component
-Summary
-  The TJvChart component is a Charting/Graphing component.
 Description
-  TJvChart can do line charts (also known as graphs), bar charts, pie charts, and other
-  charting/graphing/plotting.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  To use it, you need to set the display/formatting options (which are sub-properties of
-  TJvChart.Options) and put data into the Data.Values property, set Data.ValuesCount to tell the chart
-  how much data to put into the chart, then call PlotGraph, to make it all appear.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.AddFloatingMarker
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.AddGraphToOpenPrintCanvas
-Summary
-  Internal Method.
-Description
-  Internal Method.
-Parameters
-  XStartPos   - Description for this parameter
-  YStartPos   - Description for this parameter
-  GraphWidth  - Description for this parameter
-  GraphHeight - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.AddHorizontalBar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.AddVerticalBar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.AutoHint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.AverageData
-Summary
-  This property contains the averaging data of all the pens.
-Description
-  The average of all the pen values goes into AverageData. Only used on certain chart types.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ClearFloatingMarkers
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ClearHorizontalBars
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ClearVerticalBars
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.CopyFloatingMarkers
+@@TJvChartOptions.PenValueLabels
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Source - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.CursorPosition
+@@TJvChartOptions.PenUnit
 Summary
   Write here a summary (1 line)
 Description
@@ -142,24 +33,1188 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.Data
+@@TJvChartOptions.PenStyle
 Summary
-  The actual chart data.
+  Write here a summary (1 line)
 Description
-  This is the data we are plotting. You must set Data.Values[pen,index], and Data.ValueCount, and if
-  the points also have a datetime value, set the Data.Timestamp[index]. After changing Data values, you
-  must call PlotGraph to cause the change to become visible on the screen.
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenSecondaryAxisFlag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenMarkerKind
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenLineWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenLegends
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PenAxis
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.PaperColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.NoDataMessage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.MouseInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.MouseEdit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.MouseDragObjects
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.MarkerSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.LegendWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.LegendRowCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.LegendFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.Legend
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx> .
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.HeaderFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.GradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.GradientColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.DivisionLineColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.DateTimeFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.CursorStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.CursorColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.ChartKind
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.AxisLineWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.AxisLineColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.AxisFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.AverageValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.AverageLineColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions.AutoUpdateGraph
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartLegend.clChartLegendRight
+Description for clChartLegendRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartLegend.clChartLegendBelow
+Description for clChartLegendBelow
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartLegend.clChartLegendNone
+Description for clChartLegendNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartLegend
+<TITLE TJvChartLegend type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartPieChart
+Description for ckChartPieChart
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartMarkers
+Description for ckChartMarkers
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartDeltaAverage
+Description for ckChartDeltaAverage
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartBarAverage
+Description for ckChartBarAverage
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartStackedBarAverage
+Description for ckChartStackedBarAverage
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartLine
+Description for ckChartLine
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartBar
+Description for ckChartBar
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartStackedBar
+Description for ckChartStackedBar
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind.ckChartNone
+Description for ckChartNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartKind
+<TITLE TJvChartKind type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartHorizontalBar.YTop
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartHorizontalBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartHorizontalBar.YBottom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientDirection.grLeft
+Description for grLeft
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientDirection.grRight
+Description for grRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientDirection.grNone
+Description for grNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientDirection.grUp
+Description for grUp
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientDirection.grDown
+Description for grDown
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientDirection
+<TITLE TJvChartGradientDirection type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar.YTop
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar.YBottom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar.GradDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar.GradColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar.Color
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartGradientBar
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.YDraggable
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.YPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarkerDragEvent
+<TITLE TJvChartFloatingMarkerDragEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender         - Description for this parameter
+  FloatingMarker - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.XPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.XDragMin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.XDragMax
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.XDraggable
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.Visible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.Tag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.MarkerColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.Marker
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.LineWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.LineVertical
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.LineToMarker
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.LineStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.LineColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.Index
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.CaptionPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.CaptionColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker.CaptionBoxed
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartFloatingMarker
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartEvent
+<TITLE TJvChartEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference): TJvChart.OnAltYAxisClick TJvChart.OnTitleClick
+  TJvChart.OnXAxisClick TJvChart.OnYAxisClick
+Parameters
+  Sender - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.ValueCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.Value
+Summary
+  Pen Data Values.
+Description
+  Array property. Access as Value[pen,values] where values is the sample index, and pen is the pen
+  index. pen and values are array indexes, and they start at 0.
+Parameters
+  Pen        - Description for this parameter
+  ValueIndex - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.Timestamp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ValueIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.StartDateTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.Scroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.PreGrow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Pen        - Description for this parameter
+  ValueIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.EndDateTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.DebugStr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ValueIndex - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.ClearToValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.Clear
+Summary
+  Clear data.
+Description
+  Clear data.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData.ClearPenValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartData
+Summary
+  This class is used to create the TJvChart.Data property. It contains a growable array of data
+  values, and optionally, timestamps.
+Description
+  This class is used to create the TJvChart.Data property. It contains a growable array of data
+  values, and optionally, timestamps.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartCaptionPosition.cpTitleArea
+Description for cpTitleArea
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartClickEvent
+<TITLE TJvChartClickEvent type> <COMBINE TJvChart.OnChartClick>
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartCaptionPosition.cpMarker
+Description for cpMarker
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartCaptionPosition.cpXAxisBottom
+Description for cpXAxisBottom
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartCaptionPosition.cpXAxisTop
+Description for cpXAxisTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.YOrigin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChartCaptionPosition
+<TITLE TJvChartCaptionPosition type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.XOrigin
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.VerticalBarsCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.SetCursorPosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Pos - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.ResizeChartCanvas
+Summary
+  Internal. Invoked internally when the control resizes.
+Description
+  Internal. Invoked internally when the control resizes. Replots graph with new dimensions.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.PrintGraph
+Summary
+  Print to current printer.
+Description
+  Print to current printer. Must call PlotGraph first.
 See Also
   TJvChart.PlotGraph
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.DeleteFloatingMarker
+@@TJvChart.ResetGraphModule
+Summary
+  Clear image, clear options and internal formatting values.
+Description
+  Clear charting before you begin charting a completely new chart. Erases everything in Data, but does
+  NOT delete the current Options.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.Picture
+Summary
+  This is the TImage generated by PlotGraph
+Description
+  This is the TImage generated by PlotGraph
+See Also
+  TJvChart.PlotGraph
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.PivotData
+Summary
+  Deprecated. Will be removed.
+Description
+  Deprecated. Will be removed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.PlotGraph
+Summary
+  Draw Chart
+Description
+  Take the values in Data.Values and draw the chart. Uses options from TJvChart.Options to determine
+  the appearance and style of the chart.
+See Also
+  TJvChart.Options
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnYAxisClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.Options
+Summary
+  All the options for the appearance of the chart, including X and Y axis range options and labels,
+  fonts, colors, and margins/spacing are set as sub-properties of this property.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnXAxisClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnTitleClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnEndFloatingMarkerDrag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnChartPaint
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  index - Description for this parameter
+  Sender  - Description for this parameter aCanvas - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnChartClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender            - Description for this parameter
+  Button            - Description for this parameter
+  Shift             - Description for this parameter
+  X                 - Description for this parameter
+  Y                 - Description for this parameter
+  ChartValueIndex   - Description for this parameter
+  ChartPenIndex     - Description for this parameter
+  ShowHint          - Description for this parameter
+  HintFirstLineBold - Description for this parameter
+  HintStrs          - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnBeginFloatingMarkerDrag
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.OnAltYAxisClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.MouseToYValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Y - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.MouseToXValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.HorizontalBarsCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.GraphToClipboard
+Summary
+  Copy graph image to clipboard.
+Description
+  Copy graph image to clipboard. After that, you can paste it as an image into another document or
+  program.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.FloatingMarkerCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -197,231 +1252,89 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.FloatingMarkerCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.GraphToClipboard
-Summary
-  Copy graph image to clipboard.
-Description
-  Copy graph image to clipboard. After that, you can paste it as an image into another document or
-  program.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.HorizontalBarsCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.MouseToXValue
+@@TJvChart.DeleteFloatingMarker
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  X - Description for this parameter
-Return value
-  Describe here what the function returns
+  index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.MouseToYValue
+@@TJvChart.Data
 Summary
-  Write here a summary (1 line)
+  The actual chart data.
 Description
-  Write here a description
-Parameters
-  Y - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnAltYAxisClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnBeginFloatingMarkerDrag
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnChartClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender            - Description for this parameter
-  Button            - Description for this parameter
-  Shift             - Description for this parameter
-  X                 - Description for this parameter
-  Y                 - Description for this parameter
-  ChartValueIndex   - Description for this parameter
-  ChartPenIndex     - Description for this parameter
-  ShowHint          - Description for this parameter
-  HintFirstLineBold - Description for this parameter
-  HintStrs          - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnChartPaint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender  - Description for this parameter
-  aCanvas - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnEndFloatingMarkerDrag
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnTitleClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnXAxisClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.OnYAxisClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.Options
-Summary
-  All the options for the appearance of the chart, including X and Y axis range options and labels,
-  fonts, colors, and margins/spacing are set as sub-properties of this property.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.Picture
-Summary
-  This is the TImage generated by PlotGraph
-Description
-  This is the TImage generated by PlotGraph
+  This is the data we are plotting. You must set Data.Values[pen,index], and Data.ValueCount, and if
+  the points also have a datetime value, set the Data.Timestamp[index]. After changing Data values,
+  you must call PlotGraph to cause the change to become visible on the screen.
 See Also
   TJvChart.PlotGraph
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.PivotData
-Summary
-  Deprecated. Will be removed.
-Description
-  Deprecated. Will be removed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.PlotGraph
-Summary
-  Draw Chart
-Description
-  Take the values in Data.Values and draw the chart. Uses options from TJvChart.Options to determine
-  the appearance and style of the chart.
-See Also
-  TJvChart.Options
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.PrintGraph
-Summary
-  Print to current printer.
-Description
-  Print to current printer. Must call PlotGraph first.
-See Also
-  TJvChart.PlotGraph
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ResetGraphModule
-Summary
-  Clear image, clear options and internal formatting values.
-Description
-  Clear charting before you begin charting a completely new chart. Erases everything in Data, but does
-  NOT delete the current Options.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.ResizeChartCanvas
-Summary
-  Internal. Invoked internally when the control resizes.
-Description
-  Internal. Invoked internally when the control resizes. Replots graph with new dimensions.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChart.SetCursorPosition
+@@TJvChart.CursorPosition
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Pos - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.VerticalBarsCount
+@@TJvChart.CopyFloatingMarkers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.ClearVerticalBars
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.ClearHorizontalBars
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.ClearFloatingMarkers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.AverageData
+Summary
+  This property contains the averaging data of all the pens.
+Description
+  The average of all the pen values goes into AverageData. Only used on certain chart types.
+
+----------------------------------------------------------------------------------------------------
+@@TJvChart.AddVerticalBar
 Summary
   Write here a summary (1 line)
 Description
@@ -433,7 +1346,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.XOrigin
+@@TJvChart.AutoHint
 Summary
   Write here a summary (1 line)
 Description
@@ -443,91 +1356,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChart.YOrigin
+@@TJvChart.AddHorizontalBar
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartCaptionPosition
-<TITLE TJvChartCaptionPosition type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartCaptionPosition.cpMarker
-  Description for cpMarker
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartCaptionPosition.cpXAxisBottom
-  Description for cpXAxisBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartCaptionPosition.cpXAxisTop
-  Description for cpXAxisTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartCaptionPosition.cpTitleArea
-  Description for cpTitleArea
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartClickEvent
-<TITLE TJvChartClickEvent type>
-<COMBINE TJvChart.OnChartClick>
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData
-Summary
-  This class is used to create the TJvChart.Data property. It contains a growable array of data values,
-  and optionally, timestamps.
-Description
-  This class is used to create the TJvChart.Data property. It contains a growable array of data values,
-  and optionally, timestamps.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.Clear
-Summary
-  Clear data.
-Description
-  Clear data.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.ClearPenValues
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.ClearToValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.DebugStr
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ValueIndex - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -535,877 +1368,44 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartData.EndDateTime
+@@TJvChart.AddGraphToOpenPrintCanvas
 Summary
-  Write here a summary (1 line)
+  Internal Method.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.PreGrow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Internal Method.
 Parameters
-  Pen        - Description for this parameter
-  ValueIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.Scroll
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.StartDateTime
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.Timestamp
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ValueIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.Value
-Summary
-  Pen Data Values.
-Description
-  Array property. Access as Value[pen,values] where values is the sample index, and pen is the pen
-  index. pen and values are array indexes, and they start at 0.
-Parameters
-  Pen        - Description for this parameter
-  ValueIndex - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartData.ValueCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartEvent
-<TITLE TJvChartEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference): TJvChart.OnAltYAxisClick TJvChart.OnTitleClick
-  TJvChart.OnXAxisClick TJvChart.OnYAxisClick
-Parameters
-  Sender - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.Caption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.CaptionBoxed
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.CaptionColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.CaptionPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.Index
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.LineColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.LineStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.LineToMarker
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.LineVertical
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.LineWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.Marker
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.MarkerColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.Tag
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.Visible
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.XDraggable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.XDragMax
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.XDragMin
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.XPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.YDraggable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarker.YPosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartFloatingMarkerDragEvent
-<TITLE TJvChartFloatingMarkerDragEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender         - Description for this parameter
-  FloatingMarker - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar.Color
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar.GradColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar.GradDirection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar.Visible
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar.YBottom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientBar.YTop
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientDirection
-<TITLE TJvChartGradientDirection type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientDirection.grNone
-  Description for grNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientDirection.grUp
-  Description for grUp
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientDirection.grDown
-  Description for grDown
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientDirection.grLeft
-  Description for grLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartGradientDirection.grRight
-  Description for grRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartHorizontalBar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartHorizontalBar.YBottom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartHorizontalBar.YTop
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind
-<TITLE TJvChartKind type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartNone
-  Description for ckChartNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartLine
-  Description for ckChartLine
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartBar
-  Description for ckChartBar
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartStackedBar
-  Description for ckChartStackedBar
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartBarAverage
-  Description for ckChartBarAverage
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartStackedBarAverage
-  Description for ckChartStackedBarAverage
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartPieChart
-  Description for ckChartPieChart
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartMarkers
-  Description for ckChartMarkers
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartKind.ckChartDeltaAverage
-  Description for ckChartDeltaAverage
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend
-<TITLE TJvChartLegend type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend.clChartLegendNone
-  Description for clChartLegendNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend.clChartLegendRight
-  Description for clChartLegendRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartLegend.clChartLegendBelow
-  Description for clChartLegendBelow
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AutoUpdateGraph
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AverageLineColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AverageValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AxisFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AxisLineColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.AxisLineWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.ChartKind
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.CursorColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.CursorStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.DateTimeFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.DivisionLineColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.GradientColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.GradientDirection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.HeaderFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx> .
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.Legend
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.LegendFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.LegendRowCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.LegendWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MarkerSize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MouseDragObjects
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MouseEdit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.MouseInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.NoDataMessage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PaperColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenAxis
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenLegends
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenLineWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenMarkerKind
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenSecondaryAxisFlag
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  XStartPos   - Description for this parameter
+  YStartPos   - Description for this parameter
+  GraphWidth  - Description for this parameter
+  GraphHeight - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenUnit
+@@TJvChart.AddFloatingMarker
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvChartOptions.PenValueLabels
+@@TJvChart
+<TITLEIMG TJvChart>
+JVCLInfo
+  GROUP=JVCL.Graphics
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  The TJvChart component is a Charting/Graphing component.
 Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvChart can do line charts (also known as graphs), bar charts, pie charts, and other
+  charting/graphing/plotting.
+  
+  To use it, you need to set the display/formatting options (which are sub-properties of
+  TJvChart.Options) and put data into the Data.Values property, set Data.ValuesCount to tell the
+  chart how much data to put into the chart, then call PlotGraph, to make it all appear.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartOptions.PrimaryYAxis
@@ -1659,8 +1659,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPaintEvent
-<TITLE TJvChartPaintEvent type>
-<COMBINE TJvChart.OnChartPaint>
+<TITLE TJvChartPaintEvent type> <COMBINE TJvChart.OnChartPaint>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind
@@ -1675,23 +1674,23 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkNone
-  Description for pmkNone
+Description for pmkNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkDiamond
-  Description for pmkDiamond
+Description for pmkDiamond
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkCircle
-  Description for pmkCircle
+Description for pmkCircle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkSquare
-  Description for pmkSquare
+Description for pmkSquare
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartPenMarkerKind.pmkCross
-  Description for pmkCross
+Description for pmkCross
 
 ----------------------------------------------------------------------------------------------------
 @@TJvChartVerticalBar

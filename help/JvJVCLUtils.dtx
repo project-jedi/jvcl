@@ -3,100 +3,254 @@
 ----------------------------------------------------------------------------------------------------
 @@JvJVCLUtils.pas
 Summary
-  Contains the TJvJVCLUtils component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvJVCLUtils component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@AllocateHWndEx
-<TITLE AllocateHWndEx function>
+@@StrToPoint
+<TITLE StrToPoint function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Method     - Description for this parameter
-  AClassName - Description for this parameter
+  Str - Description for this parameter
+  Def - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@AppBroadcast
-<TITLE AppBroadcast procedure>
+@@StrToIniStr
+<TITLE StrToIniStr function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Msg    - Description for this parameter
-  wParam - Description for this parameter
-  lParam - Description for this parameter
+  Str - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@AppMinimized
-<TITLE AppMinimized function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@AppTaskbarIcons
-<TITLE AppTaskbarIcons procedure>
+@@StripAllFromResult
+<TITLE StripAllFromResult function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AppOnly - Description for this parameter
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@AssignBitmapCell
-<TITLE AssignBitmapCell procedure>
+@@StringToFont
+<TITLE StringToFont function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Source - Description for this parameter
-  Dest   - Description for this parameter
-  Cols   - Description for this parameter
-  Rows   - Description for this parameter
-  Index  - Description for this parameter
+  Str - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@BitmapToMemory
-<TITLE BitmapToMemory function>
+@@StringToFontStyles
+<TITLE StringToFontStyles function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Bitmap - Description for this parameter
-  Colors - Description for this parameter
+  Styles - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@BitmapToMemoryStream
-<TITLE BitmapToMemoryStream function>
+@@StretchBltTransparent
+<TITLE StretchBltTransparent procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DstDC            - Description for this parameter
+  DstX             - Description for this parameter
+  DstY             - Description for this parameter
+  DstW             - Description for this parameter
+  DstH             - Description for this parameter
+  SrcDC            - Description for this parameter
+  SrcX             - Description for this parameter
+  SrcY             - Description for this parameter
+  SrcW             - Description for this parameter
+  Srch             - Description for this parameter
+  Palette          - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@StretchBitmapRectTransparent
+<TITLE StretchBitmapRectTransparent procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest             - Description for this parameter
+  DstX             - Description for this parameter
+  DstY             - Description for this parameter
+  DstW             - Description for this parameter
+  DstH             - Description for this parameter
+  SrcRect          - Description for this parameter
+  Bitmap           - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@StopWait
+<TITLE StopWait procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@StartWait
+<TITLE StartWait procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ShowSafeRemovalDialog
+<TITLE ShowSafeRemovalDialog procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ShowMenu
+<TITLE ShowMenu procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Form    - Description for this parameter
+  MenuAni - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ShowMDIClientEdge
+<TITLE ShowMDIClientEdge procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ClientHandle - Description for this parameter
+  ShowEdge     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ShowDialog
+<TITLE ShowDialog function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ShadeRect
+<TITLE ShadeRect procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DC   - Description for this parameter
+  Rect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@SetWallpaper@string@TJvWallpaperStyle
+<TITLE SetWallpaper procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Path  - Description for this parameter
+  Style - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@SetWallpaper@string
+<TITLE SetWallpaper procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Path - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@SetDefaultJVCLCursors
+<TITLE SetDefaultJVCLCursors procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@SetBitmapPixelFormat
+<TITLE SetBitmapPixelFormat procedure>
 Summary
   Write here a summary (1 line)
 Description
@@ -110,1422 +264,69 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@CanvasMaxTextHeight
-<TITLE CanvasMaxTextHeight function>
+@@SelectColorByLuminance
+<TITLE SelectColorByLuminance function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Canvas - Description for this parameter
+  AColor      - Description for this parameter
+  DarkColor   - Description for this parameter
+  BrightColor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@CenterControl
-<TITLE CenterControl procedure>
+@@ScreenWorkArea
+<TITLE ScreenWorkArea function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CenterHeight
-<TITLE CenterHeight procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  pc       - Description for this parameter
-  pcParent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CenterHor
-<TITLE CenterHor procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Parent   - Description for this parameter
-  MinLeft  - Description for this parameter
-  Controls - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ChangeBitmapColor
-<TITLE ChangeBitmapColor function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Bitmap   - Description for this parameter
-  Color    - Description for this parameter
-  NewColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ChangeHasDefocus
-<TITLE ChangeHasDefocus function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  peOld - Description for this parameter
-  peNew - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ChangeHasDeselect
-<TITLE ChangeHasDeselect function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  peOld - Description for this parameter
-  peNew - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ChangeHasFocus
-<TITLE ChangeHasFocus function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  peOld - Description for this parameter
-  peNew - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ChangeHasSelect
-<TITLE ChangeHasSelect function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  peOld - Description for this parameter
-  peNew - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ControlAtPos2
-<TITLE ControlAtPos2 function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Parent - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ConvertStates
-<TITLE ConvertStates function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  State - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CopyParentImage
-<TITLE CopyParentImage procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-  Dest    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateBitmapFromIcon
-<TITLE CreateBitmapFromIcon function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Icon      - Description for this parameter
-  BackColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateDisabledBitmap
-<TITLE CreateDisabledBitmap function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FOriginal    - Description for this parameter
-  OutlineColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateDisabledBitmapEx
-<TITLE CreateDisabledBitmapEx function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FOriginal      - Description for this parameter
-  OutlineColor   - Description for this parameter
-  BackColor      - Description for this parameter
-  HighLightColor - Description for this parameter
-  ShadowColor    - Description for this parameter
-  DrawHighlight  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateDisabledBitmap_NewStyle
-<TITLE CreateDisabledBitmap_NewStyle function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FOriginal - Description for this parameter
-  BackColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateIconFromBitmap
-<TITLE CreateIconFromBitmap function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Bitmap           - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateRotatedFont
-<TITLE CreateRotatedFont function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Font  - Description for this parameter
-  Angle - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@CreateTwoColorsBrushPattern
-<TITLE CreateTwoColorsBrushPattern function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Color1 - Description for this parameter
-  Color2 - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DeallocateHWndEx
-<TITLE DeallocateHWndEx procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Wnd - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DefaultMappingMethod
-<TITLE DefaultMappingMethod variable>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DefCompanyName
-<TITLE DefCompanyName variable>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DefineCursor
-<TITLE DefineCursor function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Instance - Description for this parameter
-  ResID    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@Delay
-<TITLE Delay procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MSecs - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawArrow@TCanvas@Integer@Integer@Integer@TColor@TAnchorKind
-<TITLE DrawArrow procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Canvas    - Description for this parameter
-  X         - Description for this parameter
-  Y         - Description for this parameter
-  Size      - Description for this parameter
-  Color     - Description for this parameter
-  Direction - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawArrow@TCanvas@TRect@TColor@TAnchorKind@Integer
-<TITLE DrawArrow procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Canvas    - Description for this parameter
-  ARect     - Description for this parameter
-  Color     - Description for this parameter
-  Direction - Description for this parameter
-  Margin    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawBitmapRectTransparent
-<TITLE DrawBitmapRectTransparent procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest             - Description for this parameter
-  DstX             - Description for this parameter
-  DstY             - Description for this parameter
-  SrcRect          - Description for this parameter
-  Bitmap           - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawBitmapTransparent
-<TITLE DrawBitmapTransparent procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest             - Description for this parameter
-  DstX             - Description for this parameter
-  DstY             - Description for this parameter
-  Bitmap           - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawCellBitmap
-<TITLE DrawCellBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-  ACol    - Description for this parameter
-  ARow    - Description for this parameter
-  Bmp     - Description for this parameter
-  Rect    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawCellText@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment
-<TITLE DrawCellText procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Control   - Description for this parameter
-  ACol      - Description for this parameter
-  ARow      - Description for this parameter
-  S         - Description for this parameter
-  ARect     - Description for this parameter
-  Align     - Description for this parameter
-  VertAlign - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@DrawCellText@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment@Boolean
-<TITLE DrawCellText procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Control      - Description for this parameter
-  ACol         - Description for this parameter
-  ARow         - Description for this parameter
-  S            - Description for this parameter
-  ARect        - Description for this parameter
-  Align        - Description for this parameter
-  VertAlign    - Description for this parameter
-  ARightToLeft - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@DrawCellTextEx@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment@Boolean
-<TITLE DrawCellTextEx procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Control   - Description for this parameter
-  ACol      - Description for this parameter
-  ARow      - Description for this parameter
-  S         - Description for this parameter
-  ARect     - Description for this parameter
-  Align     - Description for this parameter
-  VertAlign - Description for this parameter
-  WordWrap  - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@DrawCellTextEx@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment@Boolean@Boolean
-<TITLE DrawCellTextEx procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Control      - Description for this parameter
-  ACol         - Description for this parameter
-  ARow         - Description for this parameter
-  S            - Description for this parameter
-  ARect        - Description for this parameter
-  Align        - Description for this parameter
-  VertAlign    - Description for this parameter
-  WordWrap     - Description for this parameter
-  ARightToLeft - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@DrawInvertFrame
-<TITLE DrawInvertFrame procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ScreenRect - Description for this parameter
-  Width      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawLine
-<TITLE DrawLine procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-  X2     - Description for this parameter
-  Y2     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DrawTransparentBitmap
-<TITLE DrawTransparentBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DC               - Description for this parameter
-  Bitmap           - Description for this parameter
-  DstX             - Description for this parameter
-  DstY             - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@DualInputQuery
-<TITLE DualInputQuery function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACaption     - Description for this parameter
-  Prompt1      - Description for this parameter
-  Prompt2      - Description for this parameter
-  AValue1      - Description for this parameter
-  AValue2      - Description for this parameter
-  PasswordChar - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@EnableControls
-<TITLE EnableControls procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-  Enable  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@EnableMenuItems
-<TITLE EnableMenuItems procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MenuItem - Description for this parameter
-  Tag      - Description for this parameter
-  Enable   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ExecAfterPause
-<TITLE ExecAfterPause procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Proc  - Description for this parameter
-  Pause - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ExpandWidth
-<TITLE ExpandWidth procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Parent   - Description for this parameter
-  MinWidth - Description for this parameter
-  Controls - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FindByTag
-<TITLE FindByTag function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  WinControl     - Description for this parameter
-  ComponentClass - Description for this parameter
-  Tag            - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FindForm
-<TITLE FindForm function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FormClass - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FindFormByClass
-<TITLE FindFormByClass function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FormClass - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FindFormByClassName
-<TITLE FindFormByClassName function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FormClassName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FindMonitor
-<TITLE FindMonitor function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FindShowForm
-<TITLE FindShowForm function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FormClass - Description for this parameter
-  Caption   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FontStylesToString
-<TITLE FontStylesToString function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Styles - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@FontToString
-<TITLE FontToString function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Font - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GenerateUniqueComponentName
-<TITLE GenerateUniqueComponentName function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner         - Description for this parameter
-  AComponent     - Description for this parameter
-  AComponentName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetAppHandle
-<TITLE GetAppHandle function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetAveCharSize
-<TITLE GetAveCharSize function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetBBitmap
-<TITLE GetBBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetBitmapPixelFormat
-<TITLE GetBitmapPixelFormat function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Bitmap - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetControlPanelApplet
-<TITLE GetControlPanelApplet function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFileName - Description for this parameter
-  Strings   - Description for this parameter
-  Images    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetControlPanelApplets
-<TITLE GetControlPanelApplets function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APath   - Description for this parameter
-  AMask   - Description for this parameter
-  Strings - Description for this parameter
-  Images  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetControlRect
-<TITLE GetControlRect function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetControlScreenRect
-<TITLE GetControlScreenRect function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetDefaultCheckBoxSize
-<TITLE GetDefaultCheckBoxSize function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetDefaultIniName
-<TITLE GetDefaultIniName function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetDefaultIniRegKey
-<TITLE GetDefaultIniRegKey function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetDefaultSection
-<TITLE GetDefaultSection function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Component - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetFirstParentForm
-<TITLE GetFirstParentForm function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetGBitmap
-<TITLE GetGBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetGraphicClass
-<TITLE GetGraphicClass function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetGraphicObject@TStream
-<TITLE GetGraphicObject function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  AStream - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@GetGraphicObject@TStream@TObject@TJvGetGraphicClassEvent
-<TITLE GetGraphicObject function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  AStream - Description for this parameter
-  ASender - Description for this parameter
-  AOnProc - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@GetHueBitmap
-<TITLE GetHueBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetListItemColumn
-<TITLE GetListItemColumn function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  pcItem  - Description for this parameter
-  piIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetMonochromeBitmap
-<TITLE GetMonochromeBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetNextFreeCursorIndex
-<TITLE GetNextFreeCursorIndex function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  StartHint  - Description for this parameter
-  PreDefined - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetPaletteBitmapFormat
-<TITLE GetPaletteBitmapFormat function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Bitmap - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetRBitmap
-<TITLE GetRBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetSaturationBitmap
-<TITLE GetSaturationBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetTickCount64
-<TITLE GetTickCount64 function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetTopForm
-<TITLE GetTopForm function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aCmp - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetTopOwner
-<TITLE GetTopOwner function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aCmp - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetValueBitmap
-<TITLE GetValueBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Dest   - Description for this parameter
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GetWorkareaRect
-<TITLE GetWorkareaRect function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Monitor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GradientFillRect
-<TITLE GradientFillRect procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas     - Description for this parameter
-  ARect      - Description for this parameter
-  StartColor - Description for this parameter
-  EndColor   - Description for this parameter
-  Direction  - Description for this parameter
-  Colors     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@GrayscaleBitmap
-<TITLE GrayscaleBitmap procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Bitmap - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HideFormCaption
-<TITLE HideFormCaption procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  FormHandle - Description for this parameter
-  Hide       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HTMLDrawText
-<TITLE HTMLDrawText function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Rect   - Description for this parameter
-  State  - Description for this parameter
-  Text   - Description for this parameter
-  Scale  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HTMLDrawTextEx
-<TITLE HTMLDrawTextEx procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas      - Description for this parameter
-  Rect        - Description for this parameter
-  State       - Description for this parameter
-  Text        - Description for this parameter
-  Width       - Description for this parameter
-  CalcType    - Description for this parameter
-  MouseX      - Description for this parameter
-  MouseY      - Description for this parameter
-  MouseOnLink - Description for this parameter
-  LinkName    - Description for this parameter
-  Scale       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HTMLPlainText
-<TITLE HTMLPlainText function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Text - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HTMLPrepareText
-<TITLE HTMLPrepareText function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Text - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HTMLTextHeight
-<TITLE HTMLTextHeight function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Text   - Description for this parameter
-  Scale  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@HTMLTextWidth
-<TITLE HTMLTextWidth function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Rect   - Description for this parameter
-  State  - Description for this parameter
-  Text   - Description for this parameter
-  Scale  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IconToBitmap
-<TITLE IconToBitmap function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Ico - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IconToBitmap2
-<TITLE IconToBitmap2 function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Ico              - Description for this parameter
-  Size             - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IconToBitmap3
-<TITLE IconToBitmap3 function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Ico              - Description for this parameter
-  Size             - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ImageListDrawDisabled
-<TITLE ImageListDrawDisabled procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Images         - Description for this parameter
-  Canvas         - Description for this parameter
-  X              - Description for this parameter
-  Y              - Description for this parameter
-  Index          - Description for this parameter
-  HighLightColor - Description for this parameter
-  GrayColor      - Description for this parameter
-  DrawHighlight  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IniStrToStr
-<TITLE IniStrToStr function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Str - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@InputQueryPassword
-<TITLE InputQueryPassword function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACaption     - Description for this parameter
-  APrompt      - Description for this parameter
-  PasswordChar - Description for this parameter
-  Value        - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@InstantiateForm
-<TITLE InstantiateForm function>
+@@ScreenPixelFormat
+<TITLE ScreenPixelFormat function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  FormClass - Description for this parameter
-  Reference - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@InternalRestoreFormPlacement
-<TITLE InternalRestoreFormPlacement procedure>
+@@ScreenCursor
+<TITLE ScreenCursor function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Form       - Description for this parameter
-  AppStorage - Description for this parameter
-  StorePath  - Description for this parameter
-  Options    - Description for this parameter
+  ACursor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@InternalRestoreGridLayout
-<TITLE InternalRestoreGridLayout procedure>
+@@ScreenColorCount
+<TITLE ScreenColorCount function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Grid       - Description for this parameter
-  AppStorage - Description for this parameter
-  StorePath  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@InternalRestoreMDIChildren
-<TITLE InternalRestoreMDIChildren procedure>
+@@SaveMDIChildren
+<TITLE SaveMDIChildren procedure>
 Summary
   Write here a summary (1 line)
 Description
@@ -1533,30 +334,13 @@ Description
 Parameters
   MainForm   - Description for this parameter
   AppStorage - Description for this parameter
-  StorePath  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@InternalSaveFormPlacement
-<TITLE InternalSaveFormPlacement procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Form       - Description for this parameter
-  AppStorage - Description for this parameter
-  StorePath  - Description for this parameter
-  Options    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@InternalSaveGridLayout
-<TITLE InternalSaveGridLayout procedure>
+@@SaveGridLayout
+<TITLE SaveGridLayout procedure>
 Summary
   Write here a summary (1 line)
 Description
@@ -1564,593 +348,326 @@ Description
 Parameters
   Grid       - Description for this parameter
   AppStorage - Description for this parameter
-  StorePath  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@InternalSaveMDIChildren
-<TITLE InternalSaveMDIChildren procedure>
+@@SaveFormPlacement
+<TITLE SaveFormPlacement procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  MainForm   - Description for this parameter
+  Form       - Description for this parameter
   AppStorage - Description for this parameter
-  StorePath  - Description for this parameter
+  Options    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IsAbortResult
-<TITLE IsAbortResult function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IsChildWindow
-<TITLE IsChildWindow function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AChild  - Description for this parameter
-  AParent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IsForegroundTask
-<TITLE IsForegroundTask function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IsNegativeResult
-<TITLE IsNegativeResult function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IsPositiveResult
-<TITLE IsPositiveResult function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvCreateToolBarMenu
-<TITLE JvCreateToolBarMenu procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm    - Description for this parameter
-  AToolBar - Description for this parameter
-  AMenu    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvFreeObjectInstance
-<TITLE JvFreeObjectInstance procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ObjectInstance - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewCompare
-<TITLE JvListViewCompare procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ListView - Description for this parameter
-  Item1    - Description for this parameter
-  Item2    - Description for this parameter
-  Compare  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewGetOrderedColumnIndex
-<TITLE JvListViewGetOrderedColumnIndex function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Column - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewRestoreState
-<TITLE JvListViewRestoreState function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ListView    - Description for this parameter
-  Data        - Description for this parameter
-  MakeVisible - Description for this parameter
-  FocusFirst  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewSafeSubItemString
-<TITLE JvListViewSafeSubItemString function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item         - Description for this parameter
-  SubItemIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewSaveState
-<TITLE JvListViewSaveState function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ListView - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewSelectAll
-<TITLE JvListViewSelectAll procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ListView - Description for this parameter
-  Deselect - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewSetSystemImageList
-<TITLE JvListViewSetSystemImageList procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ListView - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewSortClick
-<TITLE JvListViewSortClick procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Column              - Description for this parameter
-  AscendingSortImage  - Description for this parameter
-  DescendingSortImage - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvListViewToStrings
-<TITLE JvListViewToStrings procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ListView     - Description for this parameter
-  Strings      - Description for this parameter
-  SelectedOnly - Description for this parameter
-  Headers      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvMakeObjectInstance
-<TITLE JvMakeObjectInstance function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Method - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@JvMessageBox@string@DWORD
-<TITLE JvMessageBox function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Text  - Description for this parameter
-  Flags - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@JvMessageBox@string@string@DWORD
-<TITLE JvMessageBox function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Text    - Description for this parameter
-  Caption - Description for this parameter
-  Flags   - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@LaunchCpl
-<TITLE LaunchCpl procedure>
+@@SaveBitmapToFile
+<TITLE SaveBitmapToFile procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   FileName - Description for this parameter
+  Bitmap   - Description for this parameter
+  Colors   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@LoadAniCursor
-<TITLE LoadAniCursor function>
+@@RGBToHSV
+<TITLE RGBToHSV procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Instance - Description for this parameter
-  ResID    - Description for this parameter
+  R - Description for this parameter
+  G - Description for this parameter
+  B - Description for this parameter
+  H - Description for this parameter
+  S - Description for this parameter
+  V - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@LoadIcoToImage
-<TITLE LoadIcoToImage procedure>
+@@RestoreMDIChildren
+<TITLE RestoreMDIChildren procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ALarge  - Description for this parameter
-  ASmall  - Description for this parameter
-  NameRes - Description for this parameter
+  MainForm   - Description for this parameter
+  AppStorage - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@LoadOLEDragCursors
-<TITLE LoadOLEDragCursors function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MakeBitmap
-<TITLE MakeBitmap function>
+@@RestoreGridLayout
+<TITLE RestoreGridLayout procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ResID - Description for this parameter
+  Grid       - Description for this parameter
+  AppStorage - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MakeBitmapID
-<TITLE MakeBitmapID function>
+@@RestoreFormPlacement
+<TITLE RestoreFormPlacement procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ResID - Description for this parameter
+  Form       - Description for this parameter
+  AppStorage - Description for this parameter
+  Options    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MakeIcon
-<TITLE MakeIcon function>
+@@ResolveLink
+<TITLE ResolveLink function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ResID - Description for this parameter
+  HWND     - Description for this parameter
+  LinkFile - Description for this parameter
+  FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MakeIconID
-<TITLE MakeIconID function>
+@@RegUseAppTitle
+<TITLE RegUseAppTitle variable>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  ResID - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MakeModuleBitmap
-<TITLE MakeModuleBitmap function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Module - Description for this parameter
-  ResID  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@RegisterGraphicSignature@AnsiString@Integer@TGraphicClass
+<COMBINE RegisterGraphicSignature@array of Byte@Integer@TGraphicClass>
 
 ----------------------------------------------------------------------------------------------------
-@@MakeModuleIcon
-<TITLE MakeModuleIcon function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Module - Description for this parameter
-  ResID  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MapControlPoint
-<TITLE MapControlPoint function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACtlFrom - Description for this parameter
-  ACtlTo   - Description for this parameter
-  APoint   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MapControlRect
-<TITLE MapControlRect function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACtlFrom    - Description for this parameter
-  ACtlTo      - Description for this parameter
-  AClientRect - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MergeForm
-<TITLE MergeForm procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  AForm    - Description for this parameter
-  Align    - Description for this parameter
-  Show     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MessageBox
-<TITLE MessageBox function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Msg     - Description for this parameter
-  Caption - Description for this parameter
-  Flags   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MsgAbortRetryIgnore
-<TITLE MsgAbortRetryIgnore function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle  - Description for this parameter
-  Msg     - Description for this parameter
-  Caption - Description for this parameter
-  Flags   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MsgAbout
-<TITLE MsgAbout procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle  - Description for this parameter
-  Msg     - Description for this parameter
-  Caption - Description for this parameter
-  IcoName - Description for this parameter
-  Flags   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MsgBox@string@string@Integer
-<COMBINE MsgBox@THandle@string@string@Integer>
-
-----------------------------------------------------------------------------------------------------
-@@MsgBox@THandle@string@string@Integer
-<TITLE MsgBox function>
+@@RegisterGraphicSignature@array of Byte@Integer@TGraphicClass
+<TITLE RegisterGraphicSignature procedure>
 Summary
   Write here a summary (1 line)
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
-  Handle  - Description for this parameter
-  Caption - Description for this parameter
-  Text    - Description for this parameter
-  Flags   - Description for this parameter
+  ASignature    - Description for this parameter
+  AOffset       - Description for this parameter
+  AGraphicClass - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@MsgDlg
-<TITLE MsgDlg function>
+@@RectToStr
+<TITLE RectToStr function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Msg      - Description for this parameter
-  AType    - Description for this parameter
-  AButtons - Description for this parameter
-  HelpCtx  - Description for this parameter
+  Rect - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MsgDlg2
-<TITLE MsgDlg2 function>
+@@RectScreenToClient
+<TITLE RectScreenToClient function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Msg         - Description for this parameter
-  ACaption    - Description for this parameter
-  DlgType     - Description for this parameter
-  Buttons     - Description for this parameter
-  HelpContext - Description for this parameter
-  Control     - Description for this parameter
+  AScreenRect - Description for this parameter
+  AControl    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MsgDlgDef
-<TITLE MsgDlgDef function>
+@@RectClientToScreen
+<TITLE RectClientToScreen function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Msg         - Description for this parameter
-  ACaption    - Description for this parameter
-  DlgType     - Description for this parameter
-  Buttons     - Description for this parameter
-  DefButton   - Description for this parameter
-  HelpContext - Description for this parameter
-  Control     - Description for this parameter
+  AClientRect - Description for this parameter
+  AControl    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MsgError
-<TITLE MsgError procedure>
+@@RectChildToParent
+<TITLE RectChildToParent function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APoint   - Description for this parameter
+  AControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RBTag
+<TITLE RBTag function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Parent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PointToStr
+<TITLE PointToStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@Pixels
+<TITLE Pixels function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+  APixels - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PJvLVItemStateData
+<TITLE PJvLVItemStateData type> <COMBINE TJvLVItemStateData>
+
+----------------------------------------------------------------------------------------------------
+@@PointInPolyRgn
+<TITLE PointInPolyRgn function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P      - Description for this parameter
+  Points - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PaletteEntries
+<TITLE PaletteEntries function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Palette - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PanelBorder
+<TITLE PanelBorder function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Panel - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PaletteColor
+<TITLE PaletteColor function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Color - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@PaintInverseRect
+<TITLE PaintInverseRect procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RectOrg - Description for this parameter
+  RectEnd - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@OnGetDefaultIniName
+<TITLE OnGetDefaultIniName variable>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MsgYesNoCancel
+<TITLE MsgYesNoCancel function>
 Summary
   Write here a summary (1 line)
 Description
@@ -2165,56 +682,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MsgInfo
-<TITLE MsgInfo procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle  - Description for this parameter
-  Msg     - Description for this parameter
-  Caption - Description for this parameter
-  Flags   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MsgOK
-<TITLE MsgOK procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle  - Description for this parameter
-  Msg     - Description for this parameter
-  Caption - Description for this parameter
-  Flags   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MsgOKCancel
-<TITLE MsgOKCancel function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handle  - Description for this parameter
-  Msg     - Description for this parameter
-  Caption - Description for this parameter
-  Flags   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@MsgQuestion
-<TITLE MsgQuestion procedure>
+@@MsgYesNo
+<TITLE MsgYesNo function>
 Summary
   Write here a summary (1 line)
 Description
@@ -2261,8 +730,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MsgYesNo
-<TITLE MsgYesNo function>
+@@MsgQuestion
+<TITLE MsgQuestion procedure>
 Summary
   Write here a summary (1 line)
 Description
@@ -2277,8 +746,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@MsgYesNoCancel
-<TITLE MsgYesNoCancel function>
+@@MsgOKCancel
+<TITLE MsgOKCancel function>
 Summary
   Write here a summary (1 line)
 Description
@@ -2293,205 +762,1789 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@OnGetDefaultIniName
-<TITLE OnGetDefaultIniName variable>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@PaintInverseRect
-<TITLE PaintInverseRect procedure>
+@@MsgOK
+<TITLE MsgOK procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  RectOrg - Description for this parameter
-  RectEnd - Description for this parameter
+  Handle  - Description for this parameter
+  Msg     - Description for this parameter
+  Caption - Description for this parameter
+  Flags   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@PaletteColor
-<TITLE PaletteColor function>
+@@MsgInfo
+<TITLE MsgInfo procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Color - Description for this parameter
+  Handle  - Description for this parameter
+  Msg     - Description for this parameter
+  Caption - Description for this parameter
+  Flags   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@PaletteEntries
-<TITLE PaletteEntries function>
+@@MsgError
+<TITLE MsgError procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Palette - Description for this parameter
+  Handle  - Description for this parameter
+  Msg     - Description for this parameter
+  Caption - Description for this parameter
+  Flags   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@PanelBorder
-<TITLE PanelBorder function>
+@@MsgDlgDef
+<TITLE MsgDlgDef function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Panel - Description for this parameter
+  Msg         - Description for this parameter
+  ACaption    - Description for this parameter
+  DlgType     - Description for this parameter
+  Buttons     - Description for this parameter
+  DefButton   - Description for this parameter
+  HelpContext - Description for this parameter
+  Control     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@Pixels
-<TITLE Pixels function>
+@@MsgDlg2
+<TITLE MsgDlg2 function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Msg         - Description for this parameter
+  ACaption    - Description for this parameter
+  DlgType     - Description for this parameter
+  Buttons     - Description for this parameter
+  HelpContext - Description for this parameter
+  Control     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MsgDlg
+<TITLE MsgDlg function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Msg      - Description for this parameter
+  AType    - Description for this parameter
+  AButtons - Description for this parameter
+  HelpCtx  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MsgBox@THandle@string@string@Integer
+<TITLE MsgBox function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Handle  - Description for this parameter
+  Caption - Description for this parameter
+  Text    - Description for this parameter
+  Flags   - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@MsgBox@string@string@Integer
+<COMBINE MsgBox@THandle@string@string@Integer>
+
+----------------------------------------------------------------------------------------------------
+@@MsgAbout
+<TITLE MsgAbout procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Handle  - Description for this parameter
+  Msg     - Description for this parameter
+  Caption - Description for this parameter
+  IcoName - Description for this parameter
+  Flags   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MsgAbortRetryIgnore
+<TITLE MsgAbortRetryIgnore function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Handle  - Description for this parameter
+  Msg     - Description for this parameter
+  Caption - Description for this parameter
+  Flags   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MessageBox
+<TITLE MessageBox function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Msg     - Description for this parameter
+  Caption - Description for this parameter
+  Flags   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MergeForm
+<TITLE MergeForm procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  AForm    - Description for this parameter
+  Align    - Description for this parameter
+  Show     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MapControlRect
+<TITLE MapControlRect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACtlFrom    - Description for this parameter
+  ACtlTo      - Description for this parameter
+  AClientRect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MapControlPoint
+<TITLE MapControlPoint function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACtlFrom - Description for this parameter
+  ACtlTo   - Description for this parameter
+  APoint   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MakeModuleIcon
+<TITLE MakeModuleIcon function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Module - Description for this parameter
+  ResID  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MakeModuleBitmap
+<TITLE MakeModuleBitmap function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Module - Description for this parameter
+  ResID  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MakeIconID
+<TITLE MakeIconID function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ResID - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MakeIcon
+<TITLE MakeIcon function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ResID - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MakeBitmapID
+<TITLE MakeBitmapID function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ResID - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@LoadOLEDragCursors
+<TITLE LoadOLEDragCursors function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@MakeBitmap
+<TITLE MakeBitmap function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ResID - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@LoadIcoToImage
+<TITLE LoadIcoToImage procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ALarge  - Description for this parameter
+  ASmall  - Description for this parameter
+  NameRes - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@LaunchCpl
+<TITLE LaunchCpl procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@LoadAniCursor
+<TITLE LoadAniCursor function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance - Description for this parameter
+  ResID    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvMessageBox@string@string@DWORD
+<TITLE JvMessageBox function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Text    - Description for this parameter
+  Caption - Description for this parameter
+  Flags   - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@JvMessageBox@string@DWORD
+<TITLE JvMessageBox function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Text  - Description for this parameter
+  Flags - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@JvMakeObjectInstance
+<TITLE JvMakeObjectInstance function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Method - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewToStrings
+<TITLE JvListViewToStrings procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ListView     - Description for this parameter
+  Strings      - Description for this parameter
+  SelectedOnly - Description for this parameter
+  Headers      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewSortClick
+<TITLE JvListViewSortClick procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Column              - Description for this parameter
+  AscendingSortImage  - Description for this parameter
+  DescendingSortImage - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewSetSystemImageList
+<TITLE JvListViewSetSystemImageList procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ListView - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewSelectAll
+<TITLE JvListViewSelectAll procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ListView - Description for this parameter
+  Deselect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewSafeSubItemString
+<TITLE JvListViewSafeSubItemString function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item         - Description for this parameter
+  SubItemIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewSaveState
+<TITLE JvListViewSaveState function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ListView - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewGetOrderedColumnIndex
+<TITLE JvListViewGetOrderedColumnIndex function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Column - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewRestoreState
+<TITLE JvListViewRestoreState function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ListView    - Description for this parameter
+  Data        - Description for this parameter
+  MakeVisible - Description for this parameter
+  FocusFirst  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvListViewCompare
+<TITLE JvListViewCompare procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ListView - Description for this parameter
+  Item1    - Description for this parameter
+  Item2    - Description for this parameter
+  Compare  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvFreeObjectInstance
+<TITLE JvFreeObjectInstance procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ObjectInstance - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@JvCreateToolBarMenu
+<TITLE JvCreateToolBarMenu procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AForm    - Description for this parameter
+  AToolBar - Description for this parameter
+  AMenu    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IsPositiveResult
+<TITLE IsPositiveResult function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IsForegroundTask
+<TITLE IsForegroundTask function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IsNegativeResult
+<TITLE IsNegativeResult function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IsChildWindow
+<TITLE IsChildWindow function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AChild  - Description for this parameter
+  AParent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IsAbortResult
+<TITLE IsAbortResult function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InternalSaveMDIChildren
+<TITLE InternalSaveMDIChildren procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MainForm   - Description for this parameter
+  AppStorage - Description for this parameter
+  StorePath  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InternalSaveGridLayout
+<TITLE InternalSaveGridLayout procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid       - Description for this parameter
+  AppStorage - Description for this parameter
+  StorePath  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InternalSaveFormPlacement
+<TITLE InternalSaveFormPlacement procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Form       - Description for this parameter
+  AppStorage - Description for this parameter
+  StorePath  - Description for this parameter
+  Options    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InternalRestoreMDIChildren
+<TITLE InternalRestoreMDIChildren procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MainForm   - Description for this parameter
+  AppStorage - Description for this parameter
+  StorePath  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InternalRestoreFormPlacement
+<TITLE InternalRestoreFormPlacement procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Form       - Description for this parameter
+  AppStorage - Description for this parameter
+  StorePath  - Description for this parameter
+  Options    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InternalRestoreGridLayout
+<TITLE InternalRestoreGridLayout procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Grid       - Description for this parameter
+  AppStorage - Description for this parameter
+  StorePath  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InstantiateForm
+<TITLE InstantiateForm function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormClass - Description for this parameter
+  Reference - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IniStrToStr
+<TITLE IniStrToStr function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Str - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@InputQueryPassword
+<TITLE InputQueryPassword function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption     - Description for this parameter
+  APrompt      - Description for this parameter
+  PasswordChar - Description for this parameter
+  Value        - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IconToBitmap3
+<TITLE IconToBitmap3 function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ico              - Description for this parameter
+  Size             - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ImageListDrawDisabled
+<TITLE ImageListDrawDisabled procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Images         - Description for this parameter
+  Canvas         - Description for this parameter
+  X              - Description for this parameter
+  Y              - Description for this parameter
+  Index          - Description for this parameter
+  HighLightColor - Description for this parameter
+  GrayColor      - Description for this parameter
+  DrawHighlight  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IconToBitmap2
+<TITLE IconToBitmap2 function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ico              - Description for this parameter
+  Size             - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IconToBitmap
+<TITLE IconToBitmap function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ico - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HTMLTextWidth
+<TITLE HTMLTextWidth function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  Rect   - Description for this parameter
+  State  - Description for this parameter
+  Text   - Description for this parameter
+  Scale  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HTMLTextHeight
+<TITLE HTMLTextHeight function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  Text   - Description for this parameter
+  Scale  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HTMLPrepareText
+<TITLE HTMLPrepareText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HTMLPlainText
+<TITLE HTMLPlainText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HTMLDrawTextEx
+<TITLE HTMLDrawTextEx procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas      - Description for this parameter
+  Rect        - Description for this parameter
+  State       - Description for this parameter
+  Text        - Description for this parameter
+  Width       - Description for this parameter
+  CalcType    - Description for this parameter
+  MouseX      - Description for this parameter
+  MouseY      - Description for this parameter
+  MouseOnLink - Description for this parameter
+  LinkName    - Description for this parameter
+  Scale       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HTMLDrawText
+<TITLE HTMLDrawText function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  Rect   - Description for this parameter
+  State  - Description for this parameter
+  Text   - Description for this parameter
+  Scale  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@HideFormCaption
+<TITLE HideFormCaption procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormHandle - Description for this parameter
+  Hide       - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GrayscaleBitmap
+<TITLE GrayscaleBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Bitmap - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GradientFillRect
+<TITLE GradientFillRect procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas     - Description for this parameter
+  ARect      - Description for this parameter
+  StartColor - Description for this parameter
+  EndColor   - Description for this parameter
+  Direction  - Description for this parameter
+  Colors     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetWorkareaRect
+<TITLE GetWorkareaRect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Monitor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetValueBitmap
+<TITLE GetValueBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetTopForm
+<TITLE GetTopForm function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aCmp - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetTopOwner
+<TITLE GetTopOwner function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aCmp - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetTickCount64
+<TITLE GetTickCount64 function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetSaturationBitmap
+<TITLE GetSaturationBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetRBitmap
+<TITLE GetRBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetPaletteBitmapFormat
+<TITLE GetPaletteBitmapFormat function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Bitmap - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetNextFreeCursorIndex
+<TITLE GetNextFreeCursorIndex function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  StartHint  - Description for this parameter
+  PreDefined - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetListItemColumn
+<TITLE GetListItemColumn function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  pcItem  - Description for this parameter piIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetMonochromeBitmap
+<TITLE GetMonochromeBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetHueBitmap
+<TITLE GetHueBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetGraphicObject@TStream@TObject@TJvGetGraphicClassEvent
+<TITLE GetGraphicObject function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  AStream - Description for this parameter
+  ASender - Description for this parameter
+  AOnProc - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@GetGraphicObject@TStream
+<TITLE GetGraphicObject function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  AStream - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@GetGraphicClass
+<TITLE GetGraphicClass function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AStream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetDefaultSection
+<TITLE GetDefaultSection function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Component - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetFirstParentForm
+<TITLE GetFirstParentForm function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Control - Description for this parameter
-  APixels - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@PJvLVItemStateData
-<TITLE PJvLVItemStateData type>
-<COMBINE TJvLVItemStateData>
-
-----------------------------------------------------------------------------------------------------
-@@PointInPolyRgn
-<TITLE PointInPolyRgn function>
+@@GetGBitmap
+<TITLE GetGBitmap procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  P      - Description for this parameter
-  Points - Description for this parameter
+  Dest   - Description for this parameter
+  Source - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@PointToStr
-<TITLE PointToStr function>
+@@GetDefaultIniRegKey
+<TITLE GetDefaultIniRegKey function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  P - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RBTag
-<TITLE RBTag function>
+@@GetDefaultIniName
+<TITLE GetDefaultIniName function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Parent - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RectChildToParent
-<TITLE RectChildToParent function>
+@@GetDefaultCheckBoxSize
+<TITLE GetDefaultCheckBoxSize function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetControlRect
+<TITLE GetControlRect function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  APoint   - Description for this parameter
   AControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RectClientToScreen
-<TITLE RectClientToScreen function>
+@@GetControlScreenRect
+<TITLE GetControlScreenRect function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AClientRect - Description for this parameter
-  AControl    - Description for this parameter
+  AControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RectScreenToClient
-<TITLE RectScreenToClient function>
+@@GetControlPanelApplets
+<TITLE GetControlPanelApplets function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AScreenRect - Description for this parameter
-  AControl    - Description for this parameter
+  APath   - Description for this parameter
+  AMask   - Description for this parameter
+  Strings - Description for this parameter
+  Images  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RectToStr
-<TITLE RectToStr function>
+@@GetControlPanelApplet
+<TITLE GetControlPanelApplet function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Rect - Description for this parameter
+  AFileName - Description for this parameter
+  Strings   - Description for this parameter
+  Images    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RegisterGraphicSignature@AnsiString@Integer@TGraphicClass
-<COMBINE RegisterGraphicSignature@array of Byte@Integer@TGraphicClass>
+@@GetBitmapPixelFormat
+<TITLE GetBitmapPixelFormat function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Bitmap - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RegisterGraphicSignature@array of Byte@Integer@TGraphicClass
-<TITLE RegisterGraphicSignature procedure>
+@@GetBBitmap
+<TITLE GetBBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest   - Description for this parameter
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetAveCharSize
+<TITLE GetAveCharSize function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GetAppHandle
+<TITLE GetAppHandle function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@GenerateUniqueComponentName
+<TITLE GenerateUniqueComponentName function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner         - Description for this parameter
+  AComponent     - Description for this parameter
+  AComponentName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FontToString
+<TITLE FontToString function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Font - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FontStylesToString
+<TITLE FontStylesToString function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Styles - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FindShowForm
+<TITLE FindShowForm function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormClass - Description for this parameter
+  Caption   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FindMonitor
+<TITLE FindMonitor function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Handle - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FindFormByClassName
+<TITLE FindFormByClassName function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormClassName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FindFormByClass
+<TITLE FindFormByClass function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FindForm
+<TITLE FindForm function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FormClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@FindByTag
+<TITLE FindByTag function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  WinControl     - Description for this parameter
+  ComponentClass - Description for this parameter
+  Tag            - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ExpandWidth
+<TITLE ExpandWidth procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Parent   - Description for this parameter
+  MinWidth - Description for this parameter
+  Controls - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ExecAfterPause
+<TITLE ExecAfterPause procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Proc  - Description for this parameter
+  Pause - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@EnableMenuItems
+<TITLE EnableMenuItems procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MenuItem - Description for this parameter
+  Tag      - Description for this parameter
+  Enable   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@EnableControls
+<TITLE EnableControls procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+  Enable  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DualInputQuery
+<TITLE DualInputQuery function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption     - Description for this parameter
+  Prompt1      - Description for this parameter
+  Prompt2      - Description for this parameter
+  AValue1      - Description for this parameter
+  AValue2      - Description for this parameter
+  PasswordChar - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawTransparentBitmap
+<TITLE DrawTransparentBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DC               - Description for this parameter
+  Bitmap           - Description for this parameter
+  DstX             - Description for this parameter
+  DstY             - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawLine
+<TITLE DrawLine procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  X2     - Description for this parameter
+  Y2     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawInvertFrame
+<TITLE DrawInvertFrame procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ScreenRect - Description for this parameter
+  Width      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawCellTextEx@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment@Boolean@Boolean
+<TITLE DrawCellTextEx procedure>
 Summary
   Write here a summary (1 line)
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
-  ASignature    - Description for this parameter
-  AOffset       - Description for this parameter
-  AGraphicClass - Description for this parameter
+  Control      - Description for this parameter
+  ACol         - Description for this parameter
+  ARow         - Description for this parameter
+  S            - Description for this parameter
+  ARect        - Description for this parameter
+  Align        - Description for this parameter
+  VertAlign    - Description for this parameter
+  WordWrap     - Description for this parameter
+  ARightToLeft - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@RegUseAppTitle
-<TITLE RegUseAppTitle variable>
+@@DrawCellTextEx@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment@Boolean
+<TITLE DrawCellTextEx procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Control   - Description for this parameter
+  ACol      - Description for this parameter
+  ARow      - Description for this parameter
+  S         - Description for this parameter
+  ARect     - Description for this parameter
+  Align     - Description for this parameter
+  VertAlign - Description for this parameter
+  WordWrap  - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@DrawCellText@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment@Boolean
+<TITLE DrawCellText procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Control      - Description for this parameter
+  ACol         - Description for this parameter
+  ARow         - Description for this parameter
+  S            - Description for this parameter
+  ARect        - Description for this parameter
+  Align        - Description for this parameter
+  VertAlign    - Description for this parameter
+  ARightToLeft - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@DrawCellBitmap
+<TITLE DrawCellBitmap procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+  ACol    - Description for this parameter
+  ARow    - Description for this parameter
+  Bmp     - Description for this parameter
+  Rect    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawCellText@TCustomControl@Longint@Longint@string@TRect@TAlignment@TVertAlignment
+<TITLE DrawCellText procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Control   - Description for this parameter
+  ACol      - Description for this parameter
+  ARow      - Description for this parameter
+  S         - Description for this parameter
+  ARect     - Description for this parameter
+  Align     - Description for this parameter
+  VertAlign - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@DrawBitmapRectTransparent
+<TITLE DrawBitmapRectTransparent procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest             - Description for this parameter
+  DstX             - Description for this parameter
+  DstY             - Description for this parameter
+  SrcRect          - Description for this parameter
+  Bitmap           - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawBitmapTransparent
+<TITLE DrawBitmapTransparent procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Dest             - Description for this parameter
+  DstX             - Description for this parameter
+  DstY             - Description for this parameter
+  Bitmap           - Description for this parameter
+  TransparentColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawArrow@TCanvas@TRect@TColor@TAnchorKind@Integer
+<TITLE DrawArrow procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Canvas    - Description for this parameter
+  ARect     - Description for this parameter
+  Color     - Description for this parameter
+  Direction - Description for this parameter
+  Margin    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@Delay
+<TITLE Delay procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MSecs - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawArrow@TCanvas@Integer@Integer@Integer@TColor@TAnchorKind
+<TITLE DrawArrow procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Canvas    - Description for this parameter
+  X         - Description for this parameter
+  Y         - Description for this parameter
+  Size      - Description for this parameter
+  Color     - Description for this parameter
+  Direction - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DefineCursor
+<TITLE DefineCursor function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Instance - Description for this parameter
+  ResID    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DefCompanyName
+<TITLE DefCompanyName variable>
 Summary
   Write here a summary (1 line)
 Description
@@ -2501,203 +2554,302 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ResolveLink
-<TITLE ResolveLink function>
+@@DefaultMappingMethod
+<TITLE DefaultMappingMethod variable>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  HWND     - Description for this parameter
-  LinkFile - Description for this parameter
-  FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RestoreFormPlacement
-<TITLE RestoreFormPlacement procedure>
+@@DeallocateHWndEx
+<TITLE DeallocateHWndEx procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Form       - Description for this parameter
-  AppStorage - Description for this parameter
-  Options    - Description for this parameter
+  Wnd - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RestoreGridLayout
-<TITLE RestoreGridLayout procedure>
+@@CreateTwoColorsBrushPattern
+<TITLE CreateTwoColorsBrushPattern function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Grid       - Description for this parameter
-  AppStorage - Description for this parameter
+  Color1 - Description for this parameter
+  Color2 - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RestoreMDIChildren
-<TITLE RestoreMDIChildren procedure>
+@@CreateRotatedFont
+<TITLE CreateRotatedFont function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  MainForm   - Description for this parameter
-  AppStorage - Description for this parameter
+  Font  - Description for this parameter
+  Angle - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RGBToHSV
-<TITLE RGBToHSV procedure>
+@@CreateIconFromBitmap
+<TITLE CreateIconFromBitmap function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  R - Description for this parameter
-  G - Description for this parameter
-  B - Description for this parameter
-  H - Description for this parameter
-  S - Description for this parameter
-  V - Description for this parameter
+  Bitmap           - Description for this parameter
+  TransparentColor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SaveBitmapToFile
-<TITLE SaveBitmapToFile procedure>
+@@CreateDisabledBitmap_NewStyle
+<TITLE CreateDisabledBitmap_NewStyle function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FileName - Description for this parameter
+  FOriginal - Description for this parameter
+  BackColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@CreateDisabledBitmap
+<TITLE CreateDisabledBitmap function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FOriginal    - Description for this parameter
+  OutlineColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@CreateDisabledBitmapEx
+<TITLE CreateDisabledBitmapEx function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FOriginal      - Description for this parameter
+  OutlineColor   - Description for this parameter
+  BackColor      - Description for this parameter
+  HighLightColor - Description for this parameter
+  ShadowColor    - Description for this parameter
+  DrawHighlight  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@CreateBitmapFromIcon
+<TITLE CreateBitmapFromIcon function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Icon      - Description for this parameter
+  BackColor - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@CopyParentImage
+<TITLE CopyParentImage procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control - Description for this parameter
+  Dest    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ConvertStates
+<TITLE ConvertStates function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  State - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ControlAtPos2
+<TITLE ControlAtPos2 function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Parent - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ChangeHasSelect
+<TITLE ChangeHasSelect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  peOld - Description for this parameter
+  peNew - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ChangeHasFocus
+<TITLE ChangeHasFocus function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  peOld - Description for this parameter
+  peNew - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ChangeHasDeselect
+<TITLE ChangeHasDeselect function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  peOld - Description for this parameter
+  peNew - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ChangeHasDefocus
+<TITLE ChangeHasDefocus function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  peOld - Description for this parameter
+  peNew - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ChangeBitmapColor
+<TITLE ChangeBitmapColor function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
   Bitmap   - Description for this parameter
-  Colors   - Description for this parameter
+  Color    - Description for this parameter
+  NewColor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SaveFormPlacement
-<TITLE SaveFormPlacement procedure>
+@@CenterHor
+<TITLE CenterHor procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Form       - Description for this parameter
-  AppStorage - Description for this parameter
-  Options    - Description for this parameter
+  Parent   - Description for this parameter
+  MinLeft  - Description for this parameter
+  Controls - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SaveGridLayout
-<TITLE SaveGridLayout procedure>
+@@CenterHeight
+<TITLE CenterHeight procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Grid       - Description for this parameter
-  AppStorage - Description for this parameter
+  pc       - Description for this parameter
+  pcParent - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SaveMDIChildren
-<TITLE SaveMDIChildren procedure>
+@@CenterControl
+<TITLE CenterControl procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  MainForm   - Description for this parameter
-  AppStorage - Description for this parameter
+  Control - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ScreenColorCount
-<TITLE ScreenColorCount function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ScreenCursor
-<TITLE ScreenCursor function>
+@@CanvasMaxTextHeight
+<TITLE CanvasMaxTextHeight function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ACursor - Description for this parameter
+  Canvas - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ScreenPixelFormat
-<TITLE ScreenPixelFormat function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@ScreenWorkArea
-<TITLE ScreenWorkArea function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SelectColorByLuminance
-<TITLE SelectColorByLuminance function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AColor      - Description for this parameter
-  DarkColor   - Description for this parameter
-  BrightColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SetBitmapPixelFormat
-<TITLE SetBitmapPixelFormat procedure>
+@@BitmapToMemoryStream
+<TITLE BitmapToMemoryStream function>
 Summary
   Write here a summary (1 line)
 Description
@@ -2711,237 +2863,84 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SetDefaultJVCLCursors
-<TITLE SetDefaultJVCLCursors procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SetWallpaper@string
-<TITLE SetWallpaper procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Path - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@SetWallpaper@string@TJvWallpaperStyle
-<TITLE SetWallpaper procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Path  - Description for this parameter
-  Style - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@ShadeRect
-<TITLE ShadeRect procedure>
+@@BitmapToMemory
+<TITLE BitmapToMemory function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  DC   - Description for this parameter
-  Rect - Description for this parameter
+  Bitmap - Description for this parameter
+  Colors - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ShowDialog
-<TITLE ShowDialog function>
+@@AppTaskbarIcons
+<TITLE AppTaskbarIcons procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FormClass - Description for this parameter
+  AppOnly - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ShowMDIClientEdge
-<TITLE ShowMDIClientEdge procedure>
+@@AssignBitmapCell
+<TITLE AssignBitmapCell procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ClientHandle - Description for this parameter
-  ShowEdge     - Description for this parameter
+  Source - Description for this parameter
+  Dest   - Description for this parameter
+  Cols   - Description for this parameter
+  Rows   - Description for this parameter
+  Index  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ShowMenu
-<TITLE ShowMenu procedure>
+@@AppMinimized
+<TITLE AppMinimized function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@AppBroadcast
+<TITLE AppBroadcast procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Form    - Description for this parameter
-  MenuAni - Description for this parameter
+  Msg    - Description for this parameter wParam - Description for this parameter lParam -
+  Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ShowSafeRemovalDialog
-<TITLE ShowSafeRemovalDialog procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StartWait
-<TITLE StartWait procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StopWait
-<TITLE StopWait procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StretchBitmapRectTransparent
-<TITLE StretchBitmapRectTransparent procedure>
+@@AllocateHWndEx
+<TITLE AllocateHWndEx function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Dest             - Description for this parameter
-  DstX             - Description for this parameter
-  DstY             - Description for this parameter
-  DstW             - Description for this parameter
-  DstH             - Description for this parameter
-  SrcRect          - Description for this parameter
-  Bitmap           - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StretchBltTransparent
-<TITLE StretchBltTransparent procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DstDC            - Description for this parameter
-  DstX             - Description for this parameter
-  DstY             - Description for this parameter
-  DstW             - Description for this parameter
-  DstH             - Description for this parameter
-  SrcDC            - Description for this parameter
-  SrcX             - Description for this parameter
-  SrcY             - Description for this parameter
-  SrcW             - Description for this parameter
-  Srch             - Description for this parameter
-  Palette          - Description for this parameter
-  TransparentColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StringToFont
-<TITLE StringToFont function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Str - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StringToFontStyles
-<TITLE StringToFontStyles function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Styles - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StripAllFromResult
-<TITLE StripAllFromResult function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StrToIniStr
-<TITLE StrToIniStr function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Str - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@StrToPoint
-<TITLE StrToPoint function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Str - Description for this parameter
-  Def - Description for this parameter
+  Method     - Description for this parameter
+  AClassName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -2986,19 +2985,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TFillDirection.fdTopToBottom
-  Description for fdTopToBottom
+Description for fdTopToBottom
 
 ----------------------------------------------------------------------------------------------------
 @@TFillDirection.fdBottomToTop
-  Description for fdBottomToTop
+Description for fdBottomToTop
 
 ----------------------------------------------------------------------------------------------------
 @@TFillDirection.fdLeftToRight
-  Description for fdLeftToRight
+Description for fdLeftToRight
 
 ----------------------------------------------------------------------------------------------------
 @@TFillDirection.fdRightToLeft
-  Description for fdRightToLeft
+Description for fdRightToLeft
 
 ----------------------------------------------------------------------------------------------------
 @@TileImage
@@ -3166,15 +3165,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLCalcType.htmlShow
-  Description for htmlShow
+Description for htmlShow
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLCalcType.htmlCalcWidth
-  Description for htmlCalcWidth
+Description for htmlCalcWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLCalcType.htmlCalcHeight
-  Description for htmlCalcHeight
+Description for htmlCalcHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLVItemStateData
@@ -3189,19 +3188,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLVItemStateData.Caption
-  Description for Caption
+Description for Caption
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLVItemStateData.Data
-  Description for Data
+Description for Data
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLVItemStateData.Focused
-  Description for Focused
+Description for Focused
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLVItemStateData.Selected
-  Description for Selected
+Description for Selected
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPicture
@@ -3234,8 +3233,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   Source - Description for this parameter
 See Also
@@ -3310,8 +3309,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   Source - Description for this parameter
 See Also
@@ -3446,8 +3445,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   Source - Description for this parameter
 See Also
@@ -3531,15 +3530,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wpTile
-  Description for wpTile
+Description for wpTile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wpCenter
-  Description for wpCenter
+Description for wpCenter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWallpaperStyle.wpStretch
-  Description for wpStretch
+Description for wpStretch
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod
@@ -3554,27 +3553,27 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod.mmHistogram
-  Description for mmHistogram
+Description for mmHistogram
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod.mmQuantize
-  Description for mmQuantize
+Description for mmQuantize
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod.mmTrunc784
-  Description for mmTrunc784
+Description for mmTrunc784
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod.mmTrunc666
-  Description for mmTrunc666
+Description for mmTrunc666
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod.mmTripel
-  Description for mmTripel
+Description for mmTripel
 
 ----------------------------------------------------------------------------------------------------
 @@TMappingMethod.mmGrayscale
-  Description for mmGrayscale
+Description for mmGrayscale
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuAnimation
@@ -3589,19 +3588,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuAnimation.maNone
-  Description for maNone
+Description for maNone
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuAnimation.maRandom
-  Description for maRandom
+Description for maRandom
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuAnimation.maUnfold
-  Description for maUnfold
+Description for maUnfold
 
 ----------------------------------------------------------------------------------------------------
 @@TMenuAnimation.maSlide
-  Description for maSlide
+Description for maSlide
 
 ----------------------------------------------------------------------------------------------------
 @@TOnGetDefaultIniName
@@ -3619,8 +3618,7 @@ Summary
 Description
   Write here a description
 Parameters
-  pc      - Description for this parameter
-  piSpace - Description for this parameter
+  pc      - Description for this parameter piSpace - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -3638,11 +3636,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOperation.poSave
-  Description for poSave
+Description for poSave
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOperation.poRestore
-  Description for poRestore
+Description for poRestore
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOption
@@ -3657,24 +3655,23 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOption.fpState
-  Description for fpState
+Description for fpState
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOption.fpSize
-  Description for fpSize
+Description for fpSize
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOption.fpLocation
-  Description for fpLocation
+Description for fpLocation
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOption.fpActiveControl
-  Description for fpActiveControl
+Description for fpActiveControl
 
 ----------------------------------------------------------------------------------------------------
 @@TPlacementOptions
-<TITLE TPlacementOptions type>
-<COMBINE TPlacementOption>
+<TITLE TPlacementOptions type> <COMBINE TPlacementOption>
 
 ----------------------------------------------------------------------------------------------------
 @@TProcObj
@@ -3697,15 +3694,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TVertAlignment.vaTopJustify
-  Description for vaTopJustify
+Description for vaTopJustify
 
 ----------------------------------------------------------------------------------------------------
 @@TVertAlignment.vaCenterJustify
-  Description for vaCenterJustify
+Description for vaCenterJustify
 
 ----------------------------------------------------------------------------------------------------
 @@TVertAlignment.vaBottomJustify
-  Description for vaBottomJustify
+Description for vaBottomJustify
 
 ----------------------------------------------------------------------------------------------------
 @@UnregisterGraphicSignature@array of Byte@Integer
@@ -3715,8 +3712,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   ASignature - Description for this parameter
   AOffset    - Description for this parameter
@@ -3729,8 +3726,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   ASignature - Description for this parameter
   AOffset    - Description for this parameter
@@ -3743,8 +3740,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
 Parameters
   AGraphicClass - Description for this parameter
 

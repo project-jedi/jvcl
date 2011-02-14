@@ -3,70 +3,47 @@
 ----------------------------------------------------------------------------------------------------
 @@JvColorBox.pas
 Summary
-  Contains controls used by the TJvColorButton.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains controls used by the TJvColorButton.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorBox
+@@TJvCustomDropButton.ArrowWidth
 Summary
-  Displays the Windows standard colors as a set of 5x4 color squares.
+  Specifies the width of the arrow part of the button.
 Description
-  Use TJvColorBox when you need to display the Windows standard colors in a control.
+  Use ArrowWidth to specify the width of the arrow part of the button. The arrow image will be sized
+  accordingly.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDropButton.DropDown
+Summary
+  Specifies a pop up menu that is used as the drop down for the arrow.
+Description
+  Use DropDown to assign a popup menu to use as the drop down menu for the button. When the user
+  clicks the arrow part of the button, the menu is displayed below the button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDropButton
+Summary
+  A button that can display a drop-down arrow at the side of the button.
+Description
+  The TJvCustomDropButton is used as the basis for the TJvColorButton component. Derive a new control
+  from TJvCustomDropButton when you need a button that can draw a drop-arrow and react to both button
+  clicks as well as drop arrow clicks.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSquare.OnColorClick
+Summary
+  Occurs when the user clicks on the square with the mouse.
+Description
+  Write a handler for the OnColorClick event to take specific action when the user clicks on the
+  color squares using either mouse button.
 See Also
-  TJvColorButton
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorBox.BorderStyle
-Summary
-  Determines the appearance of the control’s border.
-Description
-  Use BorderStyle to affect the visual appearance of the controls border. BorderStyle can have a value
-  of either bsSingle or bsNone. If BorderStyle is bsSingle, the control has a single-line border around
-  the client area. If BorderStyle is bsNone, there will be no border.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorBox.OnColorClick
-Summary
-  Occurs when one of the color squares are clicked by the user.
-Description
-  Write a handler for the OnColorClick event to take specific action when the user clicks on one of the
-  color squares.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorClickEvent
-<TITLE TJvColorClickEvent type>
-Summary
-  Type of event handlers that respond to color square click events.
-Description
-  Use TJvColorClickEvent to respond to color square click events.
-Parameters
-  Sender - The object whose event handler is called.
-  Button - The mouse button that was used to click the color square.
-  Shift  - Indicates whether the Shift, Alt, or Ctrl keys are combined with the keystroke.
-  Color  - The Color of the square
-See Also
-  TJvColorBox.OnColorClick, TJvColorSquare.OnColorClick
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSquare
-Summary
-  A component that can display a color and optionally draw a frame around its edge when the mouse
-  hovers over it.
-Description
-  TJvColorSquare is used by the TJvColorBox and TJvColorButton to manage and display the individual
-  colors in the color grids. To display a color in a window that also can highlight the current
-  selection by drawing a special frame around the edge, use TJvColorSquare.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSquare.BorderStyle
-Summary
-  Determines the appearance of the control’s border.
-Description
-  Use BorderStyle to affect the visual appearance of the controls border. BorderStyle can have a value
-  of either bsSingle or bsNone. If BorderStyle is bsSingle, the control has a single-line border around
-  the client area. If BorderStyle is bsNone, there will be no border.
+  TJvColorSquare.OnChange
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorSquare.Color
@@ -86,39 +63,64 @@ See Also
   TJvColorSquare.OnColorClick
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorSquare.OnColorClick
+@@TJvColorSquare.BorderStyle
 Summary
-  Occurs when the user clicks on the square with the mouse.
+  Determines the appearance of the control’s border.
 Description
-  Write a handler for the OnColorClick event to take specific action when the user clicks on the color
-  squares using either mouse button.
+  Use BorderStyle to affect the visual appearance of the controls border. BorderStyle can have a
+  value of either bsSingle or bsNone. If BorderStyle is bsSingle, the control has a single-line
+  border around the client area. If BorderStyle is bsNone, there will be no border.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSquare
+Summary
+  A component that can display a color and optionally draw a frame around its edge when the mouse
+  hovers over it.
+Description
+  TJvColorSquare is used by the TJvColorBox and TJvColorButton to manage and display the individual
+  colors in the color grids. To display a color in a window that also can highlight the current
+  selection by drawing a special frame around the edge, use TJvColorSquare.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorBox.OnColorClick
+Summary
+  Occurs when one of the color squares are clicked by the user.
+Description
+  Write a handler for the OnColorClick event to take specific action when the user clicks on one of
+  the color squares.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorClickEvent
+<TITLE TJvColorClickEvent type>
+Summary
+  Type of event handlers that respond to color square click events.
+Description
+  Use TJvColorClickEvent to respond to color square click events.
+Parameters
+  Sender - The object whose event handler is called.
+  Button - The mouse button that was used to click the color square.
+  Shift  - Indicates whether the Shift, Alt, or Ctrl keys are combined with the keystroke.
+  Color  - The Color of the square
 See Also
-  TJvColorSquare.OnChange
+  TJvColorBox.OnColorClick, TJvColorSquare.OnColorClick
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDropButton
+@@TJvColorBox.BorderStyle
 Summary
-  A button that can display a drop-down arrow at the side of the button.
+  Determines the appearance of the control’s border.
 Description
-  The TJvCustomDropButton is used as the basis for the TJvColorButton component. Derive a new control
-  from TJvCustomDropButton when you need a button that can draw a drop-arrow and react to both button
-  clicks as well as drop arrow clicks.
+  Use BorderStyle to affect the visual appearance of the controls border. BorderStyle can have a
+  value of either bsSingle or bsNone. If BorderStyle is bsSingle, the control has a single-line
+  border around the client area. If BorderStyle is bsNone, there will be no border.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDropButton.ArrowWidth
+@@TJvColorBox
 Summary
-  Specifies the width of the arrow part of the button.
+  Displays the Windows standard colors as a set of 5x4 color squares.
 Description
-  Use ArrowWidth to specify the width of the arrow part of the button. The arrow image will be sized
-  accordingly.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDropButton.DropDown
-Summary
-  Specifies a pop up menu that is used as the drop down for the arrow.
-Description
-  Use DropDown to assign a popup menu to use as the drop down menu for the button. When the user clicks
-  the arrow part of the button, the menu is displayed below the button.
+  Use TJvColorBox when you need to display the Windows standard colors in a control.
+See Also
+  TJvColorButton
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropButton

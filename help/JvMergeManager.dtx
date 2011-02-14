@@ -3,16 +3,17 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMergeManager.pas
 Summary
-  Contains the TJvMergeManager component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMergeManager component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TFormHistoryCommand
-<TITLE TFormHistoryCommand type>
+@@TJvMergeManager.OnGetForwardForm
 Summary
   Write here a summary (1 line)
 Description
@@ -22,63 +23,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TFormHistoryCommand.hcNone
-  Description for hcNone
-
-----------------------------------------------------------------------------------------------------
-@@TFormHistoryCommand.hcAdd
-  Description for hcAdd
-
-----------------------------------------------------------------------------------------------------
-@@TFormHistoryCommand.hcBack
-  Description for hcBack
-
-----------------------------------------------------------------------------------------------------
-@@TFormHistoryCommand.hcForward
-  Description for hcForward
-
-----------------------------------------------------------------------------------------------------
-@@TFormHistoryCommand.hcGoto
-  Description for hcGoto
-
-----------------------------------------------------------------------------------------------------
-@@TFormReorderEvent
-<TITLE TFormReorderEvent type>
-<COMBINE TJvMergeManager.OnReorder>
-
-----------------------------------------------------------------------------------------------------
-@@TFormRequestEvent
-<TITLE TFormRequestEvent type>
-Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference): TJvMergeManager.OnGetBackForm TJvMergeManager.OnGetForwardForm
-Parameters
-  Sender      - Description for this parameter
-  CurrentForm - Description for this parameter
-  NewForm     - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.AddForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.Current
+@@TJvMergeManager.OnGetBackForm
 Summary
   Write here a summary (1 line)
 Description
@@ -88,173 +33,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.DeleteHistoryItem
+@@TJvMergeManager.OnChange
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.Forms
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.HistoryCapacity
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.RemoveItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormHistory.ResetHistory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager
-<TITLEIMG TJvMergeManager>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.ActiveForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.FormHistory
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.GoBack
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.GoForward
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.GotoForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.GotoFormClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFormClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.GotoHistoryIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  HistoryIndex - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.HistoryCommand
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.Merge
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AForm - Description for this parameter
-  Show  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -283,7 +66,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.OnChange
+@@TJvMergeManager.Merge
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AForm - Description for this parameter
+  Show  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager.HistoryCommand
 Summary
   Write here a summary (1 line)
 Description
@@ -293,7 +89,47 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.OnGetBackForm
+@@TJvMergeManager.GotoHistoryIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HistoryIndex - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager.GotoFormClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFormClass - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager.GotoForm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AForm - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager.GoForward
 Summary
   Write here a summary (1 line)
 Description
@@ -303,7 +139,172 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMergeManager.OnGetForwardForm
+@@TJvMergeManager.GoBack
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager.FormHistory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager.ActiveForm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvMergeManager
+<TITLEIMG TJvMergeManager>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.ResetHistory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.RemoveItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.HistoryCapacity
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.Forms
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.DeleteHistoryItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.AddForm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AForm - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory.Current
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormHistory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TFormHistoryCommand.hcGoto
+Description for hcGoto
+
+----------------------------------------------------------------------------------------------------
+@@TFormReorderEvent
+<TITLE TFormReorderEvent type> <COMBINE TJvMergeManager.OnReorder>
+
+----------------------------------------------------------------------------------------------------
+@@TFormRequestEvent
+<TITLE TFormRequestEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  This type is used by (for reference): TJvMergeManager.OnGetBackForm TJvMergeManager.OnGetForwardForm
+Parameters
+  Sender      - Description for this parameter
+  CurrentForm - Description for this parameter
+  NewForm     - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TFormHistoryCommand.hcNone
+Description for hcNone
+
+----------------------------------------------------------------------------------------------------
+@@TFormHistoryCommand.hcAdd
+Description for hcAdd
+
+----------------------------------------------------------------------------------------------------
+@@TFormHistoryCommand.hcBack
+Description for hcBack
+
+----------------------------------------------------------------------------------------------------
+@@TFormHistoryCommand.hcForward
+Description for hcForward
+
+----------------------------------------------------------------------------------------------------
+@@TFormHistoryCommand
+<TITLE TFormHistoryCommand type>
 Summary
   Write here a summary (1 line)
 Description

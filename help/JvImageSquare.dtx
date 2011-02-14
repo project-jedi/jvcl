@@ -3,25 +3,43 @@
 ----------------------------------------------------------------------------------------------------
 @@JvImageSquare.pas
 Summary
-  Contains the TJvImageSquare component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvImageSquare component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImageSquare
-<TITLEIMG TJvImageSquare>
-JVCLInfo
-  GROUP=JVCL.Graphics.Static
-  FLAG=Component
+@@TJvImageSquare.ShowClick
 Summary
-  A control that can display an image from an imagelist.
+  Specifies if mouse clicks are shown visually.
 Description
-  Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting
-  the Images and ImageIndex properties, the control displays the selected image in its client area.
+  Use ShowClick to specify whether mouse clinks are shown or not. if ShowClick is true, a small,
+  double-line frame with a white background is drawn around the image when the user clicks with the
+  mouse.
+See Also
+  <DELPHILINK TControl.Click>, <DELPHILINK TControl.OnClick>
 
-  Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use ShowClick
-  to alter its behavior.
+----------------------------------------------------------------------------------------------------
+@@TJvImageSquare.Images
+Summary
+  Specifies an imagelist to retrieve the displayed image from.
+Description
+  Set Images to an imagelist where the component should retrieve the image to display. Images in
+  combination with the ImageIndex property determines what image to display.
+See Also
+  TJvImageSquare.ImageIndex
+
+----------------------------------------------------------------------------------------------------
+@@TJvImageSquare.ImageIndex
+Summary
+  Specifies the index of the image to display from the image list.
+Description
+  Use ImageIndex to specify the image to display in the control. The icon with the specified index is
+  drawn using Images. To not display an image, set ImageIndex to -1.
+See Also
+  TJvImageSquare.Images
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.BorderStyle
@@ -40,33 +58,17 @@ See Also
   <DELPHILINK TControl.Color>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.ImageIndex
+@@TJvImageSquare
+<TITLEIMG TJvImageSquare>
+JVCLInfo
+  GROUP=JVCL.Graphics.Static
+  FLAG=Component
 Summary
-  Specifies the index of the image to display from the image list.
+  A control that can display an image from an imagelist.
 Description
-  Use ImageIndex to specify the image to display in the control. The icon with the specified index is
-  drawn using Images. To not display an image, set ImageIndex to -1.
-See Also
-  TJvImageSquare.Images
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.Images
-Summary
-  Specifies an imagelist to retrieve the displayed image from.
-Description
-  Set Images to an imagelist where the component should retrieve the image to display. Images in
-  combination with the ImageIndex property determines what image to display.
-See Also
-  TJvImageSquare.ImageIndex
-
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.ShowClick
-Summary
-  Specifies if mouse clicks are shown visually.
-Description
-  Use ShowClick to specify whether mouse clinks are shown or not. if ShowClick is true, a small,
-  double-line frame with a white background is drawn around the image when the user clicks with the
-  mouse.
-See Also
-  <DELPHILINK TControl.Click>, <DELPHILINK TControl.OnClick>
+  Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting
+  the Images and ImageIndex properties, the control displays the selected image in its client area.
+  
+  Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use
+  ShowClick to alter its behavior.
 

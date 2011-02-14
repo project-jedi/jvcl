@@ -3,80 +3,49 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPanel.pas
 Summary
-  Contains the TJvPanel component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPanel component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings
+@@TJvPanel.OnChangedWidth
 Summary
-  Helper class that specifies the properties of an autoarranging panel
+  Write here a summary (1 line)
 Description
-  TJvArrangeSettings is the class of the TJvPanel.AutoArrange property. It has properties for
-  controlling the behavior when auto arranging controls put on the panel.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.Assign
+@@TJvPanel.OnPaint
 Summary
-  Copies the values of another object to this object
+  Write here a summary (1 line)
 Description
-  Call Assign to copy the values of another TJvArrangeSettings to the current object. If Source is not
-  a TJvArrangeSettings or descendant, the inherited Assign method is called
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPanel.OnResizeParent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  Source - The object to copy from. This object must be of type TJvArrangeSettings (or a descendant)
+  Sender  - Description for this parameter nLeft   - Description for this parameter nTop    -
+  Description for this parameter nWidth  - Description for this parameter nHeight - Description for
+  this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.AutoArrange
-Summary
-  Specifies whether auto arranging is active or not
-Description
-  Set AutoArrange to true to active auto arranging of child controls on a panel
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.AutoSize
-Summary
-  Determines what type of auto sizing is applied to the controls on a panel
-Description
-  Use AutoSize to specify how controls on the panel should be sized and moved when the panel is sized
-  or controls are auto arranged on the panel
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.BorderLeft
-Summary
-  Determines the minimum distance from the left edge of the panel and the left edge of the child
-  controls
-Description
-  Use BorderLeft to specify how many pixels any controls should leave between the left edge of the
-  panel and the left edge of the control
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.BorderTop
-Summary
-  Determines the minimum distance from the top edge of the panel and the top edge of the child
-  controls
-Description
-  Use BorderTop to specify how many pixels any controls should leave between the top edge of the panel
-  and the top edge of the control
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.DistanceHorizontal
-Summary
-  Determines the horizontal distance between child controls when auto arranged
-Description
-  Use DistanceHorizontal to specify the horizontal distance between child controls of an auto arranging
-  panel
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.DistanceVertical
-Summary
-  Determines the vertical distance between child controls when auto arranged
-Description
-  Use DistanceVertical to specify the vertical distance between child controls of an auto arranging
-  panel
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.MaxWidth
+@@TJvPanel.Sizeable
 Summary
   Write here a summary (1 line)
 Description
@@ -86,7 +55,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.ShowNotVisibleAtDesignTime
+@@TJvPanel.OnChangedHeight
 Summary
   Write here a summary (1 line)
 Description
@@ -96,7 +65,22 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrangeSettings.WrapControls
+@@TJvPanel.OnBeforeMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  Allow  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPanel.OnAfterMove
 Summary
   Write here a summary (1 line)
 Description
@@ -106,39 +90,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAutoSizePanel
-<TITLE TJvAutoSizePanel type>
-Summary
-  Specifies the possible ways the child controls of a panel can be auto arranged
-Description
-  TJvAutoSizePanel is the type of the AutoSize property of the TJvAutoArrange class. This property
-  determines how a TJvPanel arranges child controls when auto arrange is active
-
-----------------------------------------------------------------------------------------------------
-@@TJvAutoSizePanel.asNone
-  Don't auto size neither width nor height
-
-----------------------------------------------------------------------------------------------------
-@@TJvAutoSizePanel.asWidth
-  Auto size the width
-
-----------------------------------------------------------------------------------------------------
-@@TJvAutoSizePanel.asHeight
-  Auto size the height
-
-----------------------------------------------------------------------------------------------------
-@@TJvAutoSizePanel.asBoth
-  Auto size both width and height
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.ArrangeControls
+@@TJvPanel.MultiLine
 Summary
   Write here a summary (1 line)
 Description
@@ -148,19 +100,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.ArrangeEnabled
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.ArrangeHeight
+@@TJvPanel.Movable
 Summary
   Write here a summary (1 line)
 Description
@@ -170,7 +110,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.ArrangeSettings
+@@TJvPanel.Height
 Summary
   Write here a summary (1 line)
 Description
@@ -180,7 +120,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.ArrangeWidth
+@@TJvPanel.FlatBorderColor
 Summary
   Write here a summary (1 line)
 Description
@@ -190,7 +130,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.DisableArrange
+@@TJvPanel.FlatBorder
 Summary
   Write here a summary (1 line)
 Description
@@ -200,7 +140,38 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.EnableArrange
+@@TJvPanel.ArrangeSettings
+Summary
+  Enables and controls automatic layout of components on the panel
+Description
+  These settings control how components are arranged on the panel. For Example, put components on the
+  panel, *without* carefully aligning them. Set the ArrangeSettings properties, e.g. set the
+  BorderLeft, DistanceHorizontal. Then set the ArrangeSettings.AutoArrange to true and the controls
+  will be arranged.
+  Note
+  Only works with TWinControl descendants, so will not work with TLabel for instance.
+  
+  Excellent for automatically arranging buttons on a panel, when the panel is likely to be resized.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPanel
+<TITLEIMG TJvPanel>
+JVCLInfo
+  GROUP=JVCL.PanelsBevelsAndGroups.Panels
+  FLAG=Component
+Summary
+  A panel control that extends the standard TPanel
+Description
+  Use TJvPanel to put an empty panel on a form. TJvPanel extends the standard TPanel with new
+  properties like Movable, Sizable, FlatBorder, MultiLine, Transparent, AutoArrange and new events
+  like
+  OnBeforeMove, OnAfterMove, OnParentResize, OnChangedHeight and OnChangedWidth
+  Note
+  The AutoArrange functionality only works with descendants of TWinControl, for example it will not
+  AutoArrange labels
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.Width
 Summary
   Write here a summary (1 line)
 Description
@@ -210,7 +181,126 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.FlatBorder
+@@TJvCustomArrangePanel.Transparent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.Sizeable
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.OnResizeParent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter nLeft   - Description for this parameter nTop    -
+  Description for this parameter nWidth  - Description for this parameter nHeight - Description for
+  this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.OnPaint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.OnChangedHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.OnChangedWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.OnBeforeMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  Allow  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.OnAfterMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.MultiLine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.Movable
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.HotTrackOptions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.HotTrackFontOptions
 Summary
   Write here a summary (1 line)
 Description
@@ -260,7 +350,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.HotTrackFontOptions
+@@TJvCustomArrangePanel.FlatBorder
 Summary
   Write here a summary (1 line)
 Description
@@ -270,7 +360,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.HotTrackOptions
+@@TJvCustomArrangePanel.EnableArrange
 Summary
   Write here a summary (1 line)
 Description
@@ -280,7 +370,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.Movable
+@@TJvCustomArrangePanel.DisableArrange
 Summary
   Write here a summary (1 line)
 Description
@@ -290,7 +380,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.MultiLine
+@@TJvCustomArrangePanel.ArrangeWidth
 Summary
   Write here a summary (1 line)
 Description
@@ -300,7 +390,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.OnAfterMove
+@@TJvCustomArrangePanel.ArrangeSettings
 Summary
   Write here a summary (1 line)
 Description
@@ -310,256 +400,165 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.OnBeforeMove
+@@TJvCustomArrangePanel.ArrangeHeight
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.ArrangeEnabled
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel.ArrangeControls
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAutoSizePanel.asBoth
+Auto size both width and height
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomArrangePanel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvAutoSizePanel.asHeight
+Auto size the height
+
+----------------------------------------------------------------------------------------------------
+@@TJvAutoSizePanel.asWidth
+Auto size the width
+
+----------------------------------------------------------------------------------------------------
+@@TJvAutoSizePanel.asNone
+Don't auto size neither width nor height
+
+----------------------------------------------------------------------------------------------------
+@@TJvAutoSizePanel
+<TITLE TJvAutoSizePanel type>
+Summary
+  Specifies the possible ways the child controls of a panel can be auto arranged
+Description
+  TJvAutoSizePanel is the type of the AutoSize property of the TJvAutoArrange class. This property
+  determines how a TJvPanel arranges child controls when auto arrange is active
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.WrapControls
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.ShowNotVisibleAtDesignTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.MaxWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.DistanceVertical
+Summary
+  Determines the vertical distance between child controls when auto arranged
+Description
+  Use DistanceVertical to specify the vertical distance between child controls of an auto arranging
+  panel
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.DistanceHorizontal
+Summary
+  Determines the horizontal distance between child controls when auto arranged
+Description
+  Use DistanceHorizontal to specify the horizontal distance between child controls of an auto
+  arranging panel
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.BorderTop
+Summary
+  Determines the minimum distance from the top edge of the panel and the top edge of the child
+  controls
+Description
+  Use BorderTop to specify how many pixels any controls should leave between the top edge of the
+  panel and the top edge of the control
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.BorderLeft
+Summary
+  Determines the minimum distance from the left edge of the panel and the left edge of the child
+  controls
+Description
+  Use BorderLeft to specify how many pixels any controls should leave between the left edge of the
+  panel and the left edge of the control
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.AutoSize
+Summary
+  Determines what type of auto sizing is applied to the controls on a panel
+Description
+  Use AutoSize to specify how controls on the panel should be sized and moved when the panel is sized
+  or controls are auto arranged on the panel
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.AutoArrange
+Summary
+  Specifies whether auto arranging is active or not
+Description
+  Set AutoArrange to true to active auto arranging of child controls on a panel
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrangeSettings.Assign
+Summary
+  Copies the values of another object to this object
+Description
+  Call Assign to copy the values of another TJvArrangeSettings to the current object. If Source is
+  not a TJvArrangeSettings or descendant, the inherited Assign method is called
 Parameters
-  Sender - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-  Allow  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Source - The object to copy from. This object must be of type TJvArrangeSettings (or a descendant)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.OnChangedHeight
+@@TJvArrangeSettings
 Summary
-  Write here a summary (1 line)
+  Helper class that specifies the properties of an autoarranging panel
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.OnChangedWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.OnPaint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.OnResizeParent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender  - Description for this parameter
-  nLeft   - Description for this parameter
-  nTop    - Description for this parameter
-  nWidth  - Description for this parameter
-  nHeight - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.Sizeable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.Transparent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomArrangePanel.Width
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel
-<TITLEIMG TJvPanel>
-JVCLInfo
-  GROUP=JVCL.PanelsBevelsAndGroups.Panels
-  FLAG=Component
-Summary
-  A panel control that extends the standard TPanel
-Description
-  Use TJvPanel to put an empty panel on a form. TJvPanel extends the standard TPanel with new
-  properties like Movable, Sizable, FlatBorder, MultiLine, Transparent, AutoArrange and new events like
-  OnBeforeMove, OnAfterMove, OnParentResize, OnChangedHeight and OnChangedWidth
-Note
-  The AutoArrange functionality only works with descendants of TWinControl, for example it will not
-  AutoArrange labels
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.ArrangeSettings
-Summary
-  Enables and controls automatic layout of components on the panel
-Description
-  These settings control how components are arranged on the panel. For Example, put components on the
-  panel, *without* carefully aligning them. Set the ArrangeSettings properties, e.g. set the
-  BorderLeft, DistanceHorizontal. Then set the ArrangeSettings.AutoArrange to true and the controls
-  will be arranged.
-Note
-  Only works with TWinControl descendants, so will not work with TLabel for instance.
-
-  Excellent for automatically arranging buttons on a panel, when the panel is likely to be resized.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.FlatBorder
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.FlatBorderColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.Height
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.Movable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.MultiLine
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.OnAfterMove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.OnBeforeMove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-  Allow  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.OnChangedHeight
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.OnChangedWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.OnPaint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.OnResizeParent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender  - Description for this parameter
-  nLeft   - Description for this parameter
-  nTop    - Description for this parameter
-  nWidth  - Description for this parameter
-  nHeight - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPanel.Sizeable
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvArrangeSettings is the class of the TJvPanel.AutoArrange property. It has properties for
+  controlling the behavior when auto arranging controls put on the panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanel.Transparent
@@ -604,11 +603,9 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanelMoveEvent
-<TITLE TJvPanelMoveEvent type>
-<COMBINE TJvCustomArrangePanel.OnBeforeMove>
+<TITLE TJvPanelMoveEvent type> <COMBINE TJvCustomArrangePanel.OnBeforeMove>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPanelResizeParentEvent
-<TITLE TJvPanelResizeParentEvent type>
-<COMBINE TJvCustomArrangePanel.OnResizeParent>
+<TITLE TJvPanelResizeParentEvent type> <COMBINE TJvCustomArrangePanel.OnResizeParent>
 

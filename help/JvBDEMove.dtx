@@ -3,31 +3,16 @@
 ----------------------------------------------------------------------------------------------------
 @@JvBDEMove.pas
 Summary
-  Contains the TJvBDEMove component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvBDEMove component.
 Author
   Andrei Prygounkov
-
-----------------------------------------------------------------------------------------------------
-@@EJvDBMoveError
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove
-<TITLEIMG TJvDBMove>
-JVCLInfo
-  GROUP=JVCL.DBAware
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMove.CurrentRecord
+@@TMoveAction
+<TITLE TMoveAction type>
 Summary
   Write here a summary (1 line)
 Description
@@ -37,7 +22,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.Destination
+@@TJvDBMove.TempTable
 Summary
   Write here a summary (1 line)
 Description
@@ -47,7 +32,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.ErrorBlobCount
+@@TJvDBMove.Tables
 Summary
   Write here a summary (1 line)
 Description
@@ -57,7 +42,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.ErrorCount
+@@TJvDBMove.Source
 Summary
   Write here a summary (1 line)
 Description
@@ -67,7 +52,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.Execute
+@@TJvDBMove.References
 Summary
   Write here a summary (1 line)
 Description
@@ -77,7 +62,27 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.Mappings
+@@TJvDBMove.RecordCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMove.Progress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMove.OnPostError
 Summary
   Write here a summary (1 line)
 Description
@@ -101,7 +106,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.OnPostError
+@@TJvDBMove.Mappings
 Summary
   Write here a summary (1 line)
 Description
@@ -111,7 +116,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.Progress
+@@TJvDBMove.Execute
 Summary
   Write here a summary (1 line)
 Description
@@ -121,7 +126,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.RecordCount
+@@TJvDBMove.ErrorCount
 Summary
   Write here a summary (1 line)
 Description
@@ -131,7 +136,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.References
+@@TJvDBMove.ErrorBlobCount
 Summary
   Write here a summary (1 line)
 Description
@@ -141,7 +146,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.Source
+@@TJvDBMove.Destination
 Summary
   Write here a summary (1 line)
 Description
@@ -151,7 +156,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.Tables
+@@TJvDBMove
+<TITLEIMG TJvDBMove>
+JVCLInfo
+  GROUP=JVCL.DBAware
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMove.CurrentRecord
 Summary
   Write here a summary (1 line)
 Description
@@ -161,40 +177,25 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMove.TempTable
+@@EJvDBMoveError
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMoveAction
-<TITLE TMoveAction type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TMoveAction.maMove
-  Description for maMove
+Description for maMove
 
 ----------------------------------------------------------------------------------------------------
 @@TMoveAction.maMap
-  Description for maMap
+Description for maMap
 
 ----------------------------------------------------------------------------------------------------
 @@TMoveAction.maIgnore
-  Description for maIgnore
+Description for maIgnore
 
 ----------------------------------------------------------------------------------------------------
 @@TMoveEvent
-<TITLE TMoveEvent type>
-<COMBINE TJvDBMove.OnMoveRecord>
+<TITLE TMoveEvent type> <COMBINE TJvDBMove.OnMoveRecord>
 

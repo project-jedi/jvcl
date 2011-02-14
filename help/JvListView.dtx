@@ -3,252 +3,183 @@
 ----------------------------------------------------------------------------------------------------
 @@JvListView.pas
 Summary
-  Contains the TJvListView component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvListView component.
 Author
   Sébastien Buysse
-
-----------------------------------------------------------------------------------------------------
-@@EJvListViewError
-<TITLE EJvListViewError type>
-Summary
-  Exception raised when an error occurs in the TJvListView code
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  EJVCLException; - for reference)
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGroupsProperties
+@@TJvListView.LoadFromStrings
+Summary
+  Loads the listview content from a string list.
+Description
+  Write here a description
+Parameters
+  Strings   - The string list containing the content
+  Separator - The separator between the values and sub values
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.LoadFromCSV
+Summary
+  Loads the listview content from a CSV file.
+Description
+  Write here a description
+Parameters
+  FileName  - Description for this parameter
+  Separator - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.LoadFromFile
+Summary
+  Loads the listview content from a file.
+Description
+  Write here a description
+Parameters
+  FileName - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.LoadFromStream
+Summary
+  Loads the listview content from a stream.
+Description
+  Write here a description
+Parameters
+  Stream - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.ItemPopup
+Summary
+  Provides access to each nodes popup menu.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.InvertSelection
+Summary
+  Inverts the selection in the list view.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.InsertMarkColor
+Summary
+  The color to use for the insert mark.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.HideInsertMark
+Summary
+  Hides the insert mark if any
+Description
+  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl
+  version 6 and upper.
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.HeaderImages
+Summary
+  Sets the images used for headers.
+Description
+  Assign an existing TImageList to this property to specify the images to draw on the column headers.
+  You also need to set the ImageIndex of individual column headers to display the images.
+  Note
+  Due to a limitation of the header control its height is fixed. Always use images that fit within
+  the fixed height of the header.
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.HeaderImagePosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.GroupView
+Summary
+  If set to True, the list view will display groups.
+Description
+  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl
+  version 6 and upper.
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.GroupsProperties
+Summary
+  The properties to use to render groups
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.Groups
+Summary
+  The groups to be shown when GroupView is set to True
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.GetInsertMarkPosition
 Summary
   The display properties for groups
 Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsProperties.BorderColor
-Summary
-  The colors to use to draw the border around the group header
-Description
-  Note that these values are ignored by the API under Windows XP.
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsProperties.BorderSize
-Summary
-  The size of the border around the group header.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsProperties.HeaderColor
-Summary
-  The color to use to draw the group header text
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsProperties.LoadFromList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl
+  version 6 and upper.
 Parameters
-  List - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  X         - The X position relative to the client area of the list view
+  Y         - The Y position relative to the client area of the list view
+  ItemIndex - The item index where to show the insert mark
+  Position  - The position relative to the Item where to show the insert mark
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGroupsProperties.OnChange
+@@TJvListView.ExtendedColumns
 Summary
-  Write here a summary (1 line)
+  This property contains a collection that allows to specify additional properties for each columns
+  (sort method for instance).
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  It can not be included in the Columns collection as the VCL does not offer a way to specify which
+  class to use for the items of the Columns collection. Note that this one (ExtendedColumns) is
+  populated automatically when a column is added or deleted. But because the VCL code for add starts
+  by deleting all columns to reinsert them after, you should not change the properties for any item of
+  ExtendedColumns in a loop that contains a call to the Add method of the Columns property.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderColors
+@@TJvListView.ColumnsOrder
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderColors.Bottom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderColors.Left
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderColors.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderColors.Right
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderColors.Top
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvGroupsPropertiesBorderRect
-Summary
-  Write here a summary (1 line)
+  Specifies the column order as a string.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHeaderImagePosition
-<TITLE TJvHeaderImagePosition type>
+@@TJvListView.AutoSelect
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control automatically selects the first item in the list.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Set AutoSelect to true to have the list view automatically select the first item in the list when
+  the list gains focus and no item is previously is selected.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHeaderImagePosition.hipLeft
-  Description for hipLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvHeaderImagePosition.hipRight
-  Description for hipRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvInsertMarkPosition
-<TITLE TJvInsertMarkPosition type>
+@@TJvListView.AutoClipboardCopy
 Summary
-  The position where the insert mark is to be displayed
+  Indicates whether the current selected item is automatically copied to the clipboard when the user
+  copies.
 Description
-  - impBefore Before the item - impAfter After the item
+  Set AutoClipboardCopy to true to have the selected item automatically copied to the clipboard when
+  the user presses the default copy shortcut (Ctrl+C).
 
 ----------------------------------------------------------------------------------------------------
-@@TJvInsertMarkPosition.impBefore
-  Description for impBefore
-
-----------------------------------------------------------------------------------------------------
-@@TJvInsertMarkPosition.impAfter
-  Description for impAfter
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumn
+@@TJvListView
+<TITLEIMG TJvListView>
+JVCLInfo
+  GROUP=JVCL.CommCtrl,JVCL.ListsAndTrees.Lists
+  FLAG=Component
 Summary
-  The class that holds extra properties for columns
+  Enhanced list view component.
 Description
-  TJvListView.ExtendedColumns
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumn.HeaderImagePosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumn.SortMethod
-Summary
-  Specifies the sort method to use for the column
-Description
-  If UseParentSortMethod is set to False, this value is used instead of the one from the TJvListView
-  when auto sorting the columns. This can be useful when every column needs a different sorting
-  algorithm.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumn.UseParentHeaderImagePosition
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumn.UseParentSortMethod
-Summary
-  If True, ignore the SortMethod property
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumns
-Summary
-  A collection of TJvListExtendedColumns
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListExtendedColumns.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvListItem
-Summary
-  A class deriving from TListItem to hold extra properties for items.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListItem.Brush
-Summary
-  Brush associated with the background of the item
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListItem.CreateEnh
-Summary
-  Extended constructor for TJvListItem
-Description
-  Write here a description
-Parameters
-  AOwner - Owner collection
-  Popup  - PopupMenu for the newly created item
+  Use TJvListView when you need a list view in your application and can benefit from the extended
+  capability of the JVCL implementation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListItem.Font
@@ -301,90 +232,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView
-<TITLEIMG TJvListView>
-JVCLInfo
-  GROUP=JVCL.CommCtrl,JVCL.ListsAndTrees.Lists
-  FLAG=Component
-Summary
-  Enhanced list view component.
-Description
-  Use TJvListView when you need a list view in your application and can benefit from the extended
-  capability of the JVCL implementation.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.AutoClipboardCopy
-Summary
-  Indicates whether the current selected item is automatically copied to the clipboard when the user
-  copies.
-Description
-  Set AutoClipboardCopy to true to have the selected item automatically copied to the clipboard when
-  the user presses the default copy shortcut (Ctrl+C).
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.AutoSelect
-Summary
-  Specifies whether the control automatically selects the first item in the list.
-Description
-  Set AutoSelect to true to have the list view automatically select the first item in the list when the
-  list gains focus and no item is previously is selected.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.ColumnsOrder
-Summary
-  Specifies the column order as a string.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.ExtendedColumns
-Summary
-  This property contains a collection that allows to specify additional properties for each columns
-  (sort method for instance).
-Description
-  It can not be included in the Columns collection as the VCL does not offer a way to specify which
-  class to use for the items of the Columns collection. Note that this one (ExtendedColumns) is
-  populated automatically when a column is added or deleted. But because the VCL code for add starts by
-  deleting all columns to reinsert them after, you should not change the properties for any item of
-  ExtendedColumns in a loop that contains a call to the Add method of the Columns property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.GetInsertMarkPosition
-Summary
-  The display properties for groups
-Description
-  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl version
-  6 and upper.
-Parameters
-  X         - The X position relative to the client area of the list view
-  Y         - The Y position relative to the client area of the list view
-  ItemIndex - The item index where to show the insert mark
-  Position  - The position relative to the Item where to show the insert mark
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.Groups
-Summary
-  The groups to be shown when GroupView is set to True
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.GroupsProperties
-Summary
-  The properties to use to render groups
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.GroupView
-Summary
-  If set to True, the list view will display groups.
-Description
-  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl version
-  6 and upper.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.HeaderImagePosition
+@@TJvListExtendedColumns.Items
 Summary
   Write here a summary (1 line)
 Description
@@ -394,82 +242,236 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.HeaderImages
+@@TJvListItem
 Summary
-  Sets the images used for headers.
-Description
-  Assign an existing TImageList to this property to specify the images to draw on the column headers.
-  You also need to set the ImageIndex of individual column headers to display the images.
-Note
-  Due to a limitation of the header control its height is fixed. Always use images that fit within the
-  fixed height of the header.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.HideInsertMark
-Summary
-  Hides the insert mark if any
-Description
-  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl version
-  6 and upper.
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.InsertMarkColor
-Summary
-  The color to use for the insert mark.
+  A class deriving from TListItem to hold extra properties for items.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.InvertSelection
+@@TJvListItem.Brush
 Summary
-  Inverts the selection in the list view.
+  Brush associated with the background of the item
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.ItemPopup
+@@TJvListItem.CreateEnh
 Summary
-  Provides access to each nodes popup menu.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvListView.LoadFromCSV
-Summary
-  Loads the listview content from a CSV file.
+  Extended constructor for TJvListItem
 Description
   Write here a description
 Parameters
-  FileName  - Description for this parameter
-  Separator - Description for this parameter
+  AOwner - Owner collection
+  Popup  - PopupMenu for the newly created item
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.LoadFromFile
+@@TJvListExtendedColumns
 Summary
-  Loads the listview content from a file.
+  A collection of TJvListExtendedColumns
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListExtendedColumn.UseParentSortMethod
+Summary
+  If True, ignore the SortMethod property
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListExtendedColumn.UseParentHeaderImagePosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvListExtendedColumn.SortMethod
+Summary
+  Specifies the sort method to use for the column
+Description
+  If UseParentSortMethod is set to False, this value is used instead of the one from the TJvListView
+  when auto sorting the columns. This can be useful when every column needs a different sorting
+  algorithm.
+
+----------------------------------------------------------------------------------------------------
+@@TJvInsertMarkPosition.impBefore
+Description for impBefore
+
+----------------------------------------------------------------------------------------------------
+@@TJvInsertMarkPosition.impAfter
+Description for impAfter
+
+----------------------------------------------------------------------------------------------------
+@@TJvListExtendedColumn
+Summary
+  The class that holds extra properties for columns
+Description
+  TJvListView.ExtendedColumns
+
+----------------------------------------------------------------------------------------------------
+@@TJvListExtendedColumn.HeaderImagePosition
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvHeaderImagePosition.hipLeft
+Description for hipLeft
+
+----------------------------------------------------------------------------------------------------
+@@TJvHeaderImagePosition.hipRight
+Description for hipRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvInsertMarkPosition
+<TITLE TJvInsertMarkPosition type>
+Summary
+  The position where the insert mark is to be displayed
+Description
+  - impBefore Before the item - impAfter After the item
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvHeaderImagePosition
+<TITLE TJvHeaderImagePosition type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderColors.Top
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderColors.Right
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderColors.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderColors.Left
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderColors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsPropertiesBorderColors.Bottom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsProperties.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsProperties.LoadFromList
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FileName - Description for this parameter
+  List - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.LoadFromStream
+@@TJvGroupsProperties.BorderSize
 Summary
-  Loads the listview content from a stream.
+  The size of the border around the group header.
 Description
   Write here a description
-Parameters
-  Stream - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
-@@TJvListView.LoadFromStrings
+@@TJvGroupsProperties.HeaderColor
 Summary
-  Loads the listview content from a string list.
+  The color to use to draw the group header text
 Description
   Write here a description
-Parameters
-  Strings   - The string list containing the content
-  Separator - The separator between the values and sub values
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsProperties.BorderColor
+Summary
+  The colors to use to draw the border around the group header
+Description
+  Note that these values are ignored by the API under Windows XP.
+
+----------------------------------------------------------------------------------------------------
+@@EJvListViewError
+<TITLE EJvListViewError type>
+Summary
+  Exception raised when an error occurs in the TJvListView code
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  EJVCLException; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@TJvGroupsProperties
+Summary
+  The display properties for groups
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.MoveDown
@@ -613,8 +615,8 @@ See Also
 Summary
   Selects the previous item in the list.
 Description
-  Call SelectPrevItem to select the previous item in the list view. If no item is selected, this method
-  does nothing.
+  Call SelectPrevItem to select the previous item in the list view. If no item is selected, this
+  method does nothing.
 Parameters
   Focus - Set to true to make the new item both selected (default) and focused.
 Return value
@@ -636,8 +638,8 @@ Parameters
 Summary
   Show the insert mark at the indicated location
 Description
-  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl version
-  6 and upper.
+  This is only working under Windows XP and higher, and with a Manifest file specifying ComCtl
+  version 6 and upper.
 Parameters
   ItemIndex - The item index where to show the insert mark
   Position  - The position relative to the Item where to show the insert mark
@@ -696,8 +698,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListViewCompareGroupEvent
-<TITLE TJvListViewCompareGroupEvent type>
-<COMBINE TJvListView.OnCompareGroups>
+<TITLE TJvListViewCompareGroupEvent type> <COMBINE TJvListView.OnCompareGroups>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListViewGroup
@@ -810,19 +811,19 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTileSizeKind.tskAutoSize
-  Description for tskAutoSize
+Description for tskAutoSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTileSizeKind.tskFixedWidth
-  Description for tskFixedWidth
+Description for tskFixedWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTileSizeKind.tskFixedHeight
-  Description for tskFixedHeight
+Description for tskFixedHeight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTileSizeKind.tskFixedSize
-  Description for tskFixedSize
+Description for tskFixedSize
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTileViewProperties
@@ -888,34 +889,33 @@ Summary
   The different view styles the list view supports
 Description
   - vsIcon - vsSmallIcon - vsList - vsReport - vsTile
-
+  
   vsTile is only working under Windows XP and higher, and with a Manifest file specifying ComCtl
   version 6 and upper.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvViewStyle.vsIcon
-  Description for vsIcon
+Description for vsIcon
 
 ----------------------------------------------------------------------------------------------------
 @@TJvViewStyle.vsSmallIcon
-  Description for vsSmallIcon
+Description for vsSmallIcon
 
 ----------------------------------------------------------------------------------------------------
 @@TJvViewStyle.vsList
-  Description for vsList
+Description for vsList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvViewStyle.vsReport
-  Description for vsReport
+Description for vsReport
 
 ----------------------------------------------------------------------------------------------------
 @@TJvViewStyle.vsTile
-  Description for vsTile
+Description for vsTile
 
 ----------------------------------------------------------------------------------------------------
 @@TJvViewStyles
-<TITLE TJvViewStyles type>
-<COMBINE TJvViewStyle>
+<TITLE TJvViewStyles type> <COMBINE TJvViewStyle>
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP
@@ -930,41 +930,41 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.cbSize
-  Description for cbSize
+Description for cbSize
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.mask
-  Description for mask
+Description for mask
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.pszHeader
-  Description for pszHeader
+Description for pszHeader
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.cchHeader
-  Description for cchHeader
+Description for cchHeader
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.pszFooter
-  Description for pszFooter
+Description for pszFooter
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.cchFooter
-  Description for cchFooter
+Description for cchFooter
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.iGroupId
-  Description for iGroupId
+Description for iGroupId
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.stateMask
-  Description for stateMask
+Description for stateMask
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.state
-  Description for state
+Description for state
 
 ----------------------------------------------------------------------------------------------------
 @@TLVGROUP.uAlign
-  Description for uAlign
+Description for uAlign
 

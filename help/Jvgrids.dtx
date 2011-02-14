@@ -3,70 +3,17 @@
 ----------------------------------------------------------------------------------------------------
 @@JvGrids.pas
 Summary
-  Contains the TJvGrids component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvGrids component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-
-----------------------------------------------------------------------------------------------------
-@@TAcceptKeyEvent
-<TITLE TAcceptKeyEvent type>
-<COMBINE TJvDrawGrid.OnAcceptEditKey>
-
-----------------------------------------------------------------------------------------------------
-@@TEditAlignEvent
-<TITLE TEditAlignEvent type>
-<COMBINE TJvDrawGrid.OnGetEditAlign>
-
-----------------------------------------------------------------------------------------------------
-@@TEditLimitEvent
-<TITLE TEditLimitEvent type>
-<COMBINE TJvDrawGrid.OnGetEditLimit>
-
-----------------------------------------------------------------------------------------------------
-@@TEditShowEvent
-<TITLE TEditShowEvent type>
-<COMBINE TJvDrawGrid.OnShowEditor>
-
-----------------------------------------------------------------------------------------------------
-@@TEditStyleEvent
-<TITLE TEditStyleEvent type>
-<COMBINE TJvDrawGrid.OnGetEditStyle>
-
-----------------------------------------------------------------------------------------------------
-@@TFixedCellCheckEvent
-<TITLE TFixedCellCheckEvent type>
-<COMBINE TJvDrawGrid.OnCheckButton>
-
-----------------------------------------------------------------------------------------------------
-@@TFixedCellClickEvent
-<TITLE TFixedCellClickEvent type>
-<COMBINE TJvDrawGrid.OnFixedCellClick>
-
-----------------------------------------------------------------------------------------------------
-@@TInplaceEditStyle
-<TITLE TInplaceEditStyle type>
-Summary
-  Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  TEditStyle; - for reference)
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid
-<TITLEIMG TJvDrawGrid>
-JVCLInfo
-  GROUP=JVCL.GridsAndContent.Grids
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.BeepOnError
+@@TJvDrawGrid.OnVerticalScroll
 Summary
   Write here a summary (1 line)
 Description
@@ -76,213 +23,94 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.DrawButtons
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.DrawMasked
+@@TJvDrawGrid.OnShowEditor
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ARect   - Description for this parameter
-  Graphic - Description for this parameter
+  Sender    - Description for this parameter
+  ACol      - Description for this parameter
+  ARow      - Description for this parameter
+  AllowEdit - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.DrawMultiline
+@@TJvDrawGrid.OnHorizontalScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.OnRowSized
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.OnGetPicklist
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ARect - Description for this parameter
-  S     - Description for this parameter
-  Align - Description for this parameter
+  Sender   - Description for this parameter
+  ACol     - Description for this parameter
+  ARow     - Description for this parameter
+  PickList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.DrawPicture
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ARect   - Description for this parameter
-  Graphic - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.DrawStr
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ARect - Description for this parameter
-  S     - Description for this parameter
-  Align - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.FixedButtons
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.IniStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.InvalidateCell
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACol - Description for this parameter
-  ARow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.InvalidateCol
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACol - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.InvalidateRow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ARow - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.Load
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.LoadFromAppStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AppStorage - Description for this parameter
-  Path       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnAcceptEditKey
+@@TJvDrawGrid.OnGetEditStyle
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Sender - Description for this parameter
-  Key    - Description for this parameter
+  ACol   - Description for this parameter
+  ARow   - Description for this parameter
+  Style  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnCancelEdit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnChangeFocus
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnCheckButton
+@@TJvDrawGrid.OnGetEditLimit
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender  - Description for this parameter
-  ACol    - Description for this parameter
-  ARow    - Description for this parameter
-  Enabled - Description for this parameter
+  Sender    - Description for this parameter
+  MaxLength - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnColumnSized
+@@TJvDrawGrid.OnGetEditAlign
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnEditButtonClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+Parameters
+  Sender    - Description for this parameter
+  ACol      - Description for this parameter
+  ARow      - Description for this parameter
+  Alignment - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -312,65 +140,88 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnGetEditAlign
+@@TJvDrawGrid.OnEditButtonClick
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender    - Description for this parameter
-  ACol      - Description for this parameter
-  ARow      - Description for this parameter
-  Alignment - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnGetEditLimit
+@@TJvDrawGrid.OnColumnSized
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender    - Description for this parameter
-  MaxLength - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnGetEditStyle
+@@TJvDrawGrid.OnCheckButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  ACol    - Description for this parameter
+  ARow    - Description for this parameter
+  Enabled - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.OnChangeFocus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.OnCancelEdit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.OnAcceptEditKey
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   Sender - Description for this parameter
-  ACol   - Description for this parameter
-  ARow   - Description for this parameter
-  Style  - Description for this parameter
+  Key    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnGetPicklist
+@@TJvDrawGrid.LoadFromAppStorage
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender   - Description for this parameter
-  ACol     - Description for this parameter
-  ARow     - Description for this parameter
-  PickList - Description for this parameter
+  AppStorage - Description for this parameter
+  Path       - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnHorizontalScroll
+@@TJvDrawGrid.Load
 Summary
   Write here a summary (1 line)
 Description
@@ -380,32 +231,44 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnRowSized
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnShowEditor
+@@TJvDrawGrid.InvalidateRow
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender    - Description for this parameter
-  ACol      - Description for this parameter
-  ARow      - Description for this parameter
-  AllowEdit - Description for this parameter
+  ARow - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDrawGrid.OnVerticalScroll
+@@TJvDrawGrid.InvalidateCol
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACol - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.InvalidateCell
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACol - Description for this parameter
+  ARow - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.IniStorage
 Summary
   Write here a summary (1 line)
 Description
@@ -413,6 +276,138 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.FixedButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.DrawStr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARect - Description for this parameter
+  S     - Description for this parameter
+  Align - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.DrawPicture
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARect   - Description for this parameter
+  Graphic - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.DrawMultiline
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARect - Description for this parameter
+  S     - Description for this parameter
+  Align - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.DrawMasked
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ARect   - Description for this parameter
+  Graphic - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.DrawButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid.BeepOnError
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawGrid
+<TITLEIMG TJvDrawGrid>
+JVCLInfo
+  GROUP=JVCL.GridsAndContent.Grids
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TFixedCellClickEvent
+<TITLE TFixedCellClickEvent type> <COMBINE TJvDrawGrid.OnFixedCellClick>
+
+----------------------------------------------------------------------------------------------------
+@@TInplaceEditStyle
+<TITLE TInplaceEditStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  TEditStyle; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@TFixedCellCheckEvent
+<TITLE TFixedCellCheckEvent type> <COMBINE TJvDrawGrid.OnCheckButton>
+
+----------------------------------------------------------------------------------------------------
+@@TEditStyleEvent
+<TITLE TEditStyleEvent type> <COMBINE TJvDrawGrid.OnGetEditStyle>
+
+----------------------------------------------------------------------------------------------------
+@@TEditShowEvent
+<TITLE TEditShowEvent type> <COMBINE TJvDrawGrid.OnShowEditor>
+
+----------------------------------------------------------------------------------------------------
+@@TEditLimitEvent
+<TITLE TEditLimitEvent type> <COMBINE TJvDrawGrid.OnGetEditLimit>
+
+----------------------------------------------------------------------------------------------------
+@@TEditAlignEvent
+<TITLE TEditAlignEvent type> <COMBINE TJvDrawGrid.OnGetEditAlign>
+
+----------------------------------------------------------------------------------------------------
+@@TAcceptKeyEvent
+<TITLE TAcceptKeyEvent type> <COMBINE TJvDrawGrid.OnAcceptEditKey>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawGrid.Save
@@ -439,6 +434,5 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TPicklistEvent
-<TITLE TPicklistEvent type>
-<COMBINE TJvDrawGrid.OnGetPicklist>
+<TITLE TPicklistEvent type> <COMBINE TJvDrawGrid.OnGetPicklist>
 

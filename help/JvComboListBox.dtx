@@ -3,143 +3,40 @@
 ----------------------------------------------------------------------------------------------------
 @@JvComboListBox.pas
 Summary
-  Contains the TJvComboListBox component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvComboListBox component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboListBox
-<TITLEIMG TJvComboListBox>
-JVCLInfo
-  GROUP=JVCL.ListsAndTrees.Lists
-  FLAG=Component
-Summary
-  A list box that displays a combo box overlaying the selected item.
-Description
-  TJvComboListBox is an owner-draw list box that displays a combo box overlaying the selected item. If
-  you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user clicks on
-  the combo box button. This component inherits from TJvCustomListBox and publishes many of its
-  properties and events as well as adding new ones like DropdownMenu, DrawStyle, OnDrawImage and
-  OnDrawText.
+@@TJvComboListBoxDrawStyle.dsOriginal
+Draw the image at original size. The image is clipped to the size of the drawing area. If the image is smaller than the display rect, it is centered accordingly.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.AddImage
+@@TJvComboListBoxDrawStyle
+<TITLE TJvComboListBoxDrawStyle type>
 Summary
-  Adds an image to the list box.
+  Defines the possible ways an image can be drawn in a TJvComboListBox.
 Description
-  Use AddImage to add a TPicture to the Items list. AddImage is a helper function that assures that the
-  image is copied to an internal TPicture and added to the Items.Objects list. You can also call
-  Items.AddObject directly if you prefer.
+  TJvComboListBoxDrawStyle defines the possible ways an image can be drawn in a TJvComboListBox. This
+  property does not affect items that contains text.
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.OnDropDown
+Summary
+  Occurs when the user tries to open the drop-down list by clicking the arrow at the right of the
+  control.
+Description
+  Write an OnDropDown event handler to conditionally prevent opening of a drop-down list.
 Parameters
-  P - The picture to add. A copy is created internally and added to the Items.Objects list.
-Return value
-  Returns the index of the item in the Items list.
-See Also
-  <DELPHILINK TCustomListBox.Items>
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.AddText
-Summary
-  Adds a string to the list box.
-Description
-  Use AddText to add a string to the Items list. AddText is a helper function and is equivalent to
-  calling Items.Add.
-Parameters
-  S - The string to add.
-Return value
-  Returns the index of the item in the Items list.
-See Also
-  <DELPHILINK TCustomListBox.Items>
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.ButtonWidth
-Summary
-  Defines the width of the combo box button.
-Description
-  Use ButtonWidth to set the width of the combo box button in the list. The default width is 26
-  pixels.
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.Delete
-Summary
-  Deletes an item from the Items list.
-Description
-  Delete is equivalent to Items.Delete but also makes sure that if the item deleted contains a
-  TPicture, the picture is freed.
-Parameters
-  Index - \Index of the item to delete.
-See Also
-  <DELPHILINK TCustomListBox.Items>
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.DrawStyle
-Summary
-  Determines how images are drawn in the list box.
-Description
-  Use DrawStyle to specify how images are drawn in the list box.
-See Also
-  TJvComboListBoxDrawStyle
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.DropdownMenu
-Summary
-  Determines the pop-up menu to display when the user clicks the combo box button.
-Description
-  Assign a TPopupMenu to the DropdownMenu to display it when the user clicks the combo box button in
-  the list box. DropdownMenu is separate from PopupMenu but can point to the same TPopupMenu if
-  necessary.
-See Also
-  <DELPHILINK TControl.PopupMenu>
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.HotTrackCombo
-Summary
-  Specifies whether a combo box is highlighted when the mouse passes over it.
-Description
-  Set HotTrackCombo to true to provide visual feedback about which combo box is under the mouse When
-  HotTrackCombo is false, there is no visual feedback when the mouse passes over items of the list
-  box.
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.InsertImage
-Summary
-  Inserts an image into the Items list.
-Description
-  Call InsertImage to insert an image at the specified location.
-Parameters
-  Index - The index where the image should be inserted.
-  P     - the image to insert.
-See Also
-  <DELPHILINK TCustomListBox.Items>
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.InsertText
-Summary
-  Inserts a string into the Items list.
-Description
-  Call InsertText to insert a string at the specified location.
-Parameters
-  Index - The index where the string should be inserted.
-  S     - the string to insert.
-See Also
-  <DELPHILINK TCustomListBox.Items>
-
-----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.OnDrawImage
-Summary
-  Occurs when an image is about to be drawn in the list.
-Description
-  Write a handler for this event when you want to take specific actions when an image is about to be
-  drawn.
-Parameters
-  Sender      - The component that called the event.
-  Index       - The index of the item in the Items list.
-  APicture    - The image that is about to be drawn
-  R           - The TRect of where the image is to be drawn.
-  DefaultDraw - Set this to false to prevent the component to draw the image.
-See Also
-  TJvComboListBox.OnDrawText
+  Sender    - The component that fired the event.
+  Index     - The index of the item in the Items list.
+  X         - Horizontal pixel coordinates of the mouse pointer in the client area of the Sender.
+  Y         - Vertical pixel coordinates of the mouse pointer in the client area of the Sender.
+  AllowDrop - Set to true if the drop-down attempt can proceed and false if the attempt to drop-down 
+              should be aborted.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBox.OnDrawText
@@ -158,54 +55,155 @@ See Also
   TJvComboListBox.OnDrawImage
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboListBox.OnDropDown
+@@TJvComboListBox.OnDrawImage
 Summary
-  Occurs when the user tries to open the drop-down list by clicking the arrow at the right of the
-  control.
+  Occurs when an image is about to be drawn in the list.
 Description
-  Write an OnDropDown event handler to conditionally prevent opening of a drop-down list.
+  Write a handler for this event when you want to take specific actions when an image is about to be
+  drawn.
 Parameters
-  Sender    - The component that fired the event.
-  Index     - The index of the item in the Items list.
-  X         - Horizontal pixel coordinates of the mouse pointer in the client area of the Sender.
-  Y         - Vertical pixel coordinates of the mouse pointer in the client area of the Sender.
-  AllowDrop - Set to true if the drop-down attempt can proceed and false if the attempt to drop-down
-               should be aborted.
+  Sender      - The component that called the event.
+  Index       - The index of the item in the Items list.
+  APicture    - The image that is about to be drawn
+  R           - The TRect of where the image is to be drawn.
+  DefaultDraw - Set this to false to prevent the component to draw the image.
+See Also
+  TJvComboListBox.OnDrawText
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboListBoxDrawStyle
-<TITLE TJvComboListBoxDrawStyle type>
+@@TJvComboListBox.InsertText
 Summary
-  Defines the possible ways an image can be drawn in a TJvComboListBox.
+  Inserts a string into the Items list.
 Description
-  TJvComboListBoxDrawStyle defines the possible ways an image can be drawn in a TJvComboListBox. This
-  property does not affect items that contains text.
+  Call InsertText to insert a string at the specified location.
+Parameters
+  Index - The index where the string should be inserted.
+  S     - the string to insert.
+See Also
+  <DELPHILINK TCustomListBox.Items>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboListBoxDrawStyle.dsOriginal
-  Draw the image at original size. The image is clipped to the size of the drawing area. If the image
-  is smaller than the display rect, it is centered accordingly.
+@@TJvComboListBox.InsertImage
+Summary
+  Inserts an image into the Items list.
+Description
+  Call InsertImage to insert an image at the specified location.
+Parameters
+  Index - The index where the image should be inserted.
+  P     - the image to insert.
+See Also
+  <DELPHILINK TCustomListBox.Items>
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.HotTrackCombo
+Summary
+  Specifies whether a combo box is highlighted when the mouse passes over it.
+Description
+  Set HotTrackCombo to true to provide visual feedback about which combo box is under the mouse When
+  HotTrackCombo is false, there is no visual feedback when the mouse passes over items of the list
+  box.
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.DropdownMenu
+Summary
+  Determines the pop-up menu to display when the user clicks the combo box button.
+Description
+  Assign a TPopupMenu to the DropdownMenu to display it when the user clicks the combo box button in
+  the list box. DropdownMenu is separate from PopupMenu but can point to the same TPopupMenu if
+  necessary.
+See Also
+  <DELPHILINK TControl.PopupMenu>
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.DrawStyle
+Summary
+  Determines how images are drawn in the list box.
+Description
+  Use DrawStyle to specify how images are drawn in the list box.
+See Also
+  TJvComboListBoxDrawStyle
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.Delete
+Summary
+  Deletes an item from the Items list.
+Description
+  Delete is equivalent to Items.Delete but also makes sure that if the item deleted contains a
+  TPicture, the picture is freed.
+Parameters
+  Index - \Index of the item to delete.
+See Also
+  <DELPHILINK TCustomListBox.Items>
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.ButtonWidth
+Summary
+  Defines the width of the combo box button.
+Description
+  Use ButtonWidth to set the width of the combo box button in the list. The default width is 26
+  pixels.
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.AddText
+Summary
+  Adds a string to the list box.
+Description
+  Use AddText to add a string to the Items list. AddText is a helper function and is equivalent to
+  calling Items.Add.
+Parameters
+  S - The string to add.
+Return value
+  Returns the index of the item in the Items list.
+See Also
+  <DELPHILINK TCustomListBox.Items>
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox.AddImage
+Summary
+  Adds an image to the list box.
+Description
+  Use AddImage to add a TPicture to the Items list. AddImage is a helper function that assures that
+  the image is copied to an internal TPicture and added to the Items.Objects list. You can also call
+  Items.AddObject directly if you prefer.
+Parameters
+  P - The picture to add. A copy is created internally and added to the Items.Objects list.
+Return value
+  Returns the index of the item in the Items list.
+See Also
+  <DELPHILINK TCustomListBox.Items>
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboListBox
+<TITLEIMG TJvComboListBox>
+JVCLInfo
+  GROUP=JVCL.ListsAndTrees.Lists
+  FLAG=Component
+Summary
+  A list box that displays a combo box overlaying the selected item.
+Description
+  TJvComboListBox is an owner-draw list box that displays a combo box overlaying the selected item.
+  If you assign a TPopupMenu to the DropdownMenu property, the menu is displayed when the user clicks
+  on the combo box button. This component inherits from TJvCustomListBox and publishes many of its
+  properties and events as well as adding new ones like DropdownMenu, DrawStyle, OnDrawImage and
+  OnDrawText.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle.dsStretch
-  The image is stretched to fill the entire drawing area.
+The image is stretched to fill the entire drawing area.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListBoxDrawStyle.dsProportional
-  The image is sized proportionally to the display area and centered.
+The image is sized proportionally to the display area and centered.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListDrawImageEvent
-<TITLE TJvComboListDrawImageEvent type>
-<COMBINE TJvComboListBox.OnDrawImage>
+<TITLE TJvComboListDrawImageEvent type> <COMBINE TJvComboListBox.OnDrawImage>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListDrawTextEvent
-<TITLE TJvComboListDrawTextEvent type>
-<COMBINE TJvComboListBox.OnDrawText>
+<TITLE TJvComboListDrawTextEvent type> <COMBINE TJvComboListBox.OnDrawText>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvComboListDropDownEvent
-<TITLE TJvComboListDropDownEvent type>
-<COMBINE TJvComboListBox.OnDropDown>
+<TITLE TJvComboListDropDownEvent type> <COMBINE TJvComboListBox.OnDropDown>
 

@@ -3,33 +3,23 @@
 ----------------------------------------------------------------------------------------------------
 @@JvLinkLabelTools.pas
 Summary
-  Contains various utility classes for TJvLinkLabel.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains various utility classes for TJvLinkLabel.
 Author
   David Polberger
-
-----------------------------------------------------------------------------------------------------
-@@EGenericToolsError
-Summary
-  Exception class used by the utility classes in JvLinkLabelTools.
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TConversionTools
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TConversionTools.BoolToStr
+@@TStringTools.Replace
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  B - Description for this parameter
+  OldSubstr - Description for this parameter
+  NewSubstr - Description for this parameter
+  S         - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -37,18 +27,103 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TConversionTools.BoolToYesNo
+@@TStringTools.RemoveCRLF
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  B - Description for this parameter
+  S - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringTools.EscapeBackslashes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringTools.EndsWith
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S    - Description for this parameter
+  SubS - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringTools.BeginsWith
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  S    - Description for this parameter
+  SubS - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStaticObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TStringTools
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TOwnerPointerList.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TOwnerPointerList.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TOwnerPointerList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TGraphicTools
@@ -73,55 +148,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TOwnerPointerList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TOwnerPointerList.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TOwnerPointerList.Count
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStaticObject
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TStringTools
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TStringTools.BeginsWith
+@@TConversionTools.BoolToYesNo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  S    - Description for this parameter
-  SubS - Description for this parameter
+  B - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -129,14 +162,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TStringTools.EndsWith
+@@TConversionTools.BoolToStr
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  S    - Description for this parameter
-  SubS - Description for this parameter
+  B - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -144,48 +176,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TStringTools.EscapeBackslashes
+@@EGenericToolsError
 Summary
-  Write here a summary (1 line)
+  Exception class used by the utility classes in JvLinkLabelTools.
 Description
   Write here a description
-Parameters
-  S - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TStringTools.RemoveCRLF
+@@TConversionTools
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  S - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringTools.Replace
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  OldSubstr - Description for this parameter
-  NewSubstr - Description for this parameter
-  S         - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TWebTools

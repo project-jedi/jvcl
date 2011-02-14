@@ -3,14 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvgGroupBox.pas
 Summary
-  Contains the TJvgGroupBox component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvgGroupBox component.
 Author
   Andrey V. Chudin
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TCaptionAlignment
-<TITLE TCaptionAlignment type>
+@@TJvgGroupBox.Options
 Summary
   Write here a summary (1 line)
 Description
@@ -20,42 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TCaptionAlignment.fcaNone
-  Description for fcaNone
-
-----------------------------------------------------------------------------------------------------
-@@TCaptionAlignment.fcaLeft
-  Description for fcaLeft
-
-----------------------------------------------------------------------------------------------------
-@@TCaptionAlignment.fcaRight
-  Description for fcaRight
-
-----------------------------------------------------------------------------------------------------
-@@TCaptionAlignment.fcaCenter
-  Description for fcaCenter
-
-----------------------------------------------------------------------------------------------------
-@@TCaptionAlignment.fcaWidth
-  Description for fcaWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox
-<TITLEIMG TJvgGroupBox>
-JVCLInfo
-  GROUP=JVCL.PanelsBevelsAndGroups.Groups
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.AfterPaint
+@@TJvgGroupBox.OnExpanded
 Summary
   Write here a summary (1 line)
 Description
@@ -65,7 +31,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Border
+@@TJvgGroupBox.OnCollapsed
 Summary
   Write here a summary (1 line)
 Description
@@ -75,7 +41,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Caption
+@@TJvgGroupBox.Illumination
 Summary
   Write here a summary (1 line)
 Description
@@ -85,7 +51,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.CaptionAlignment
+@@TJvgGroupBox.GroupIndex
 Summary
   Write here a summary (1 line)
 Description
@@ -95,7 +61,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.CaptionBorder
+@@TJvgGroupBox.Gradient
 Summary
   Write here a summary (1 line)
 Description
@@ -105,7 +71,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.CaptionGradient
+@@TJvgGroupBox.GlyphExpanded
 Summary
   Write here a summary (1 line)
 Description
@@ -115,39 +81,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.CaptionShift
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.CaptionTextStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Collapse
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  fCollapse - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Collapsed
+@@TJvgGroupBox.GlyphCollapsed
 Summary
   Write here a summary (1 line)
 Description
@@ -180,7 +114,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.GlyphCollapsed
+@@TJvgGroupBox.Collapsed
 Summary
   Write here a summary (1 line)
 Description
@@ -190,7 +124,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.GlyphExpanded
+@@TJvgGroupBox.Collapse
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  fCollapse - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGroupBox.CaptionTextStyle
 Summary
   Write here a summary (1 line)
 Description
@@ -200,7 +146,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Gradient
+@@TJvgGroupBox.CaptionShift
 Summary
   Write here a summary (1 line)
 Description
@@ -210,7 +156,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.GroupIndex
+@@TJvgGroupBox.CaptionGradient
 Summary
   Write here a summary (1 line)
 Description
@@ -220,7 +166,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Illumination
+@@TJvgGroupBox.CaptionBorder
 Summary
   Write here a summary (1 line)
 Description
@@ -230,7 +176,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.OnCollapsed
+@@TJvgGroupBox.CaptionAlignment
 Summary
   Write here a summary (1 line)
 Description
@@ -240,7 +186,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.OnExpanded
+@@TJvgGroupBox.Caption
 Summary
   Write here a summary (1 line)
 Description
@@ -250,7 +196,63 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvgGroupBox.Options
+@@TJvgGroupBox.Border
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGroupBox.AfterPaint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGroupBox.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TCaptionAlignment.fcaWidth
+Description for fcaWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvgGroupBox
+<TITLEIMG TJvgGroupBox>
+JVCLInfo
+  GROUP=JVCL.PanelsBevelsAndGroups.Groups
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TCaptionAlignment.fcaLeft
+Description for fcaLeft
+
+----------------------------------------------------------------------------------------------------
+@@TCaptionAlignment.fcaRight
+Description for fcaRight
+
+----------------------------------------------------------------------------------------------------
+@@TCaptionAlignment.fcaCenter
+Description for fcaCenter
+
+----------------------------------------------------------------------------------------------------
+@@TCaptionAlignment.fcaNone
+Description for fcaNone
+
+----------------------------------------------------------------------------------------------------
+@@TCaptionAlignment
+<TITLE TCaptionAlignment type>
 Summary
   Write here a summary (1 line)
 Description

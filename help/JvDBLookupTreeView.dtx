@@ -3,14 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBLookupTreeView.pas
 Summary
-  Contains the TJvDBLookupTreeView component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBLookupTreeView component.
 Author
   Andrei Prygounkov
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TDropDownAlign
-<TITLE TDropDownAlign type>
+@@TJvDBLookupTreeViewCombo.StartMasterValue
 Summary
   Write here a summary (1 line)
 Description
@@ -20,26 +21,23 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDropDownAlign.daLeft
-  Description for daLeft
-
-----------------------------------------------------------------------------------------------------
-@@TDropDownAlign.daRight
-  Description for daRight
-
-----------------------------------------------------------------------------------------------------
-@@TDropDownAlign.daCenter
-  Description for daCenter
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl
+@@TJvDBLookupTreeViewCombo.SetBounds
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  ALeft   - Description for this parameter
+  ATop    - Description for this parameter
+  AWidth  - Description for this parameter
+  AHeight - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.DataField
+@@TJvDBLookupTreeViewCombo.RowSelect
 Summary
   Write here a summary (1 line)
 Description
@@ -49,7 +47,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.DataSource
+@@TJvDBLookupTreeViewCombo.OnGetImageIndex
 Summary
   Write here a summary (1 line)
 Description
@@ -59,7 +57,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.Field
+@@TJvDBLookupTreeViewCombo.OnDropDown
 Summary
   Write here a summary (1 line)
 Description
@@ -69,7 +67,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.KeyField
+@@TJvDBLookupTreeViewCombo.OnCustomDrawItem
 Summary
   Write here a summary (1 line)
 Description
@@ -79,7 +77,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.KeyValue
+@@TJvDBLookupTreeViewCombo.OnCustomDraw
 Summary
   Write here a summary (1 line)
 Description
@@ -89,7 +87,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.ListField
+@@TJvDBLookupTreeViewCombo.OnCloseUp
 Summary
   Write here a summary (1 line)
 Description
@@ -99,7 +97,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.ListFieldIndex
+@@TJvDBLookupTreeViewCombo.MasterField
 Summary
   Write here a summary (1 line)
 Description
@@ -109,7 +107,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.ListSource
+@@TJvDBLookupTreeViewCombo.ListVisible
 Summary
   Write here a summary (1 line)
 Description
@@ -119,7 +117,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.ReadOnly
+@@TJvDBLookupTreeViewCombo.IconField
 Summary
   Write here a summary (1 line)
 Description
@@ -129,78 +127,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupControl.UseFilter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView
-<TITLEIMG TJvDBLookupTreeView>
-JVCLInfo
-  GROUP=JVCL.ListsAndTrees.Lists,JVCL.DBAware.GridsTreesLists.Lists
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.AutoExpand
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.BorderStyle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.ChangeDelay
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.DetailField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.HideSelection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.HotTrack
+@@TJvDBLookupTreeViewCombo.HotTrack
 Summary
   Specifies whether the <xxx> is highlighted when the mouse passes over it.
 Description
@@ -208,204 +135,11 @@ Description
   specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the <xxx> .
 See Also
-  TJvDBLookupTreeView.HotGlyph, TJvDBLookupTreeView.HotTrackFont, TJvDBLookupTreeView.OnMouseEnter,
-  TJvDBLookupTreeView.OnMouseLeave
+  TJvDBLookupTreeViewCombo.HotGlyph, TJvDBLookupTreeViewCombo.HotTrackFont,
+  TJvDBLookupTreeViewCombo.OnMouseEnter, TJvDBLookupTreeViewCombo.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.IconField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.Indent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.MasterField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.OnCustomDraw
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.OnCustomDrawItem
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.OnGetImageIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.ReadOnly
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.RightClickSelect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.RowSelect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.ShowButtons
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.ShowLines
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.ShowRoot
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.StartMasterValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeView.ToolTips
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo
-<TITLEIMG TJvDBLookupTreeViewCombo>
-JVCLInfo
-  GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos,JVCL.ListsAndTrees.Trees
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.AutoExpand
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.ChangeDelay
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.CloseUp
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Accept - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.DetailField
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.DropDown
+@@TJvDBLookupTreeViewCombo.FullExpand
 Summary
   Write here a summary (1 line)
 Description
@@ -445,7 +179,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.FullExpand
+@@TJvDBLookupTreeViewCombo.DropDown
 Summary
   Write here a summary (1 line)
 Description
@@ -455,7 +189,210 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.HotTrack
+@@TJvDBLookupTreeViewCombo.DetailField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeViewCombo.CloseUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Accept - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeViewCombo.ChangeDelay
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeViewCombo.AutoExpand
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeViewCombo
+<TITLEIMG TJvDBLookupTreeViewCombo>
+JVCLInfo
+  GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos,JVCL.ListsAndTrees.Trees
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.ToolTips
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.StartMasterValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.ShowRoot
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.ShowLines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.ShowButtons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.RowSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.RightClickSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.OnGetImageIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.OnCustomDrawItem
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.OnCustomDraw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.MasterField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.Indent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.IconField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.HideSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupTreeView.HotTrack
 Summary
   Specifies whether the <xxx> is highlighted when the mouse passes over it.
 Description
@@ -463,11 +400,11 @@ Description
   specified by HotTrackFont is used for the <xxx> text. When HotTrack is False, there is no visual
   feedback when the mouse passes over the <xxx> .
 See Also
-  TJvDBLookupTreeViewCombo.HotGlyph, TJvDBLookupTreeViewCombo.HotTrackFont,
-  TJvDBLookupTreeViewCombo.OnMouseEnter, TJvDBLookupTreeViewCombo.OnMouseLeave
+  TJvDBLookupTreeView.HotGlyph, TJvDBLookupTreeView.HotTrackFont, TJvDBLookupTreeView.OnMouseEnter,
+  TJvDBLookupTreeView.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.IconField
+@@TJvDBLookupTreeView.DetailField
 Summary
   Write here a summary (1 line)
 Description
@@ -477,7 +414,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.ListVisible
+@@TJvDBLookupTreeView.ChangeDelay
 Summary
   Write here a summary (1 line)
 Description
@@ -487,7 +424,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.MasterField
+@@TJvDBLookupTreeView.BorderStyle
 Summary
   Write here a summary (1 line)
 Description
@@ -497,7 +434,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.OnCloseUp
+@@TJvDBLookupTreeView.AutoExpand
 Summary
   Write here a summary (1 line)
 Description
@@ -507,7 +444,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.OnCustomDraw
+@@TJvDBLookupTreeView
+<TITLEIMG TJvDBLookupTreeView>
+JVCLInfo
+  GROUP=JVCL.ListsAndTrees.Lists,JVCL.DBAware.GridsTreesLists.Lists
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupControl.UseFilter
 Summary
   Write here a summary (1 line)
 Description
@@ -517,7 +465,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.OnCustomDrawItem
+@@TJvDBLookupControl.ReadOnly
 Summary
   Write here a summary (1 line)
 Description
@@ -527,7 +475,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.OnDropDown
+@@TJvDBLookupControl.ListSource
 Summary
   Write here a summary (1 line)
 Description
@@ -537,7 +485,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.OnGetImageIndex
+@@TJvDBLookupControl.ListFieldIndex
 Summary
   Write here a summary (1 line)
 Description
@@ -547,7 +495,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.RowSelect
+@@TJvDBLookupControl.KeyValue
 Summary
   Write here a summary (1 line)
 Description
@@ -557,23 +505,77 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.SetBounds
+@@TJvDBLookupControl.ListField
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ALeft   - Description for this parameter
-  ATop    - Description for this parameter
-  AWidth  - Description for this parameter
-  AHeight - Description for this parameter
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBLookupTreeViewCombo.StartMasterValue
+@@TJvDBLookupControl.KeyField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupControl.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupControl.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupControl.DataField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBLookupControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TDropDownAlign.daLeft
+Description for daLeft
+
+----------------------------------------------------------------------------------------------------
+@@TDropDownAlign.daRight
+Description for daRight
+
+----------------------------------------------------------------------------------------------------
+@@TDropDownAlign.daCenter
+Description for daCenter
+
+----------------------------------------------------------------------------------------------------
+@@TDropDownAlign
+<TITLE TDropDownAlign type>
 Summary
   Write here a summary (1 line)
 Description

@@ -3,28 +3,17 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBControls.pas
 Summary
-  Contains the TJvDBControls component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBControls component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-
-----------------------------------------------------------------------------------------------------
-@@TDataValueEvent
-<TITLE TDataValueEvent type>
-Summary
-  Write here a summary (1 line)
 Description
-  This type is used by (for reference): TJvDBStatusLabel.OnGetRecNo TJvDBStatusLabel.OnGetRecordCount
-Parameters
-  Sender  - Description for this parameter
-  DataSet - Description for this parameter
-  Value   - Description for this parameter
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TDBLabelOptions
-<TITLE TDBLabelOptions type>
+@@TJvDBStatusLabel.EditColor
 Summary
   Write here a summary (1 line)
 Description
@@ -34,20 +23,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDBLabelOptions.doCaption
-  Description for doCaption
-
-----------------------------------------------------------------------------------------------------
-@@TDBLabelOptions.doGlyph
-  Description for doGlyph
-
-----------------------------------------------------------------------------------------------------
-@@TDBLabelOptions.doBoth
-  Description for doBoth
-
-----------------------------------------------------------------------------------------------------
-@@TDBLabelStyle
-<TITLE TDBLabelStyle type>
+@@TJvDBStatusLabel.DataSource
 Summary
   Write here a summary (1 line)
 Description
@@ -57,50 +33,50 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDBLabelStyle.lsState
-  Description for lsState
-
-----------------------------------------------------------------------------------------------------
-@@TDBLabelStyle.lsRecordNo
-  Description for lsRecordNo
-
-----------------------------------------------------------------------------------------------------
-@@TDBLabelStyle.lsRecordSize
-  Description for lsRecordSize
-
-----------------------------------------------------------------------------------------------------
-@@TDBStatusKind
-<TITLE TDBStatusKind type>
+@@TJvDBStatusLabel.DatasetState
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  dsInactive..dsCalcFields; - for reference)
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TGetStringEvent
-<TITLE TGetStringEvent type>
-<COMBINE TJvDBStatusLabel.OnGetDataName>
-
-----------------------------------------------------------------------------------------------------
-@@TGlyphAlign
-<TITLE TGlyphAlign type>
+@@TJvDBStatusLabel.DataSetName
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  glGlyphLeft..glGlyphRight; - for reference)
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBAcceptValueEvent
-<TITLE TJvDBAcceptValueEvent type>
-<COMBINE TJvDBMaskEdit.OnAcceptNewValue>
+@@TJvDBStatusLabel.Captions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit
-<TITLEIMG TJvDBCalcEdit>
+@@TJvDBStatusLabel.CalcRecCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBStatusLabel
+<TITLEIMG TJvDBStatusLabel>
 JVCLInfo
-  GROUP=JVCL.DBAware.EditsMemosAndCombos.Edits
+  GROUP=JVCL.DBAware.LabelsAndStatic,JVCL.LabelsAndStatic
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -108,16 +84,465 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.DataField
+@@TJvDBNavigator
+<TITLEIMG TJvDBNavigator>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBNavigator.Transparent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.OnAcceptNewValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender   - Description for this parameter
+  OldValue - Description for this parameter
+  NewValue - Description for this parameter
+  Accept   - Description for this parameter
+  Post     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.EditMask
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.DataField
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBMaskEdit
+<TITLEIMG TJvDBMaskEdit>
+JVCLInfo
+  GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.UpdateMask
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.ReadOnly
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.DataField
 Summary
   Specifies the field from which the combo edit control displays data.
 Description
-  Set DataField to the field name of the field component that the calc combo edit represents:
-
-  Access by the TJvDBCalcEdit to the dataset in which the field is located is provided by a TDataSource
-  component, specified in the DataSource property.
+  Set DataField to the field name of the field component that the date combo edit represents:
+  
+  Access by the TJvDBDateEdit to the dataset in which the field is located is provided by a
+  TDataSource component, specified in the DataSource property.
 See Also
-  TJvDBCalcEdit.DataSource
+  TJvDBDateEdit.DataSource
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBDateEdit
+<TITLEIMG TJvDBDateEdit>
+JVCLInfo
+  GROUP=JVCL.DBAware.DateTime,JVCL.DateTime.EditsCombos
+  FLAG=Component
+Summary
+  A data aware edit with a button that drops down a calendar.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.ReadOnly
+Summary
+  Determines whether the user can use the database combo edit to change the value of the field in the
+  current record.
+Description
+  Set ReadOnly to true to prevent the user from changing the contents of the database field. When
+  ReadOnly is true, the combo edit is used only to display the contents of the field. If ReadOnly is
+  false, the user can change the field's value as long as the dataset is in edit mode.
+See Also
+  TJvDBComboEdit.Field
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.DataSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.DataField
+Summary
+  Specifies the field from which the combo edit control displays data.
+Description
+  Set DataField to the field name of the field component that the combo edit represents:
+  
+  Access by the TJvDBComboEdit to the dataset in which the field is located is provided by a
+  TDataSource component, specified in the DataSource property.
+See Also
+  TJvDBComboEdit.DataSource
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit.Canvas
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.ZeroEmpty
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBComboEdit
+<TITLEIMG TJvDBComboEdit>
+JVCLInfo
+  GROUP=JVCL.DBAware.EditsMemosAndCombos.Edits,JVCL.EditsMemosAndCombos.Combos
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.UpdateFieldParams
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.UseRightToLeftAlignment
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.UpdateAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.ReadOnly
+Summary
+  Determines whether the user can use the database combo edit to change the value of the field in the
+  current record.
+Description
+  Set ReadOnly to true to prevent the user from changing the contents of the database field. When
+  ReadOnly is true, the calc combo edit control is used only to display the contents of the field. If
+  ReadOnly is false, the user can change the field's value as long as the dataset is in edit mode.
+See Also
+  TJvDBCalcEdit.Field
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.Field
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBCalcEdit.ExecuteAction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Action - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBCalcEdit.DataSource
@@ -150,320 +575,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.ExecuteAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.Field
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.ReadOnly
-Summary
-  Determines whether the user can use the database combo edit to change the value of the field in the
-  current record.
-Description
-  Set ReadOnly to true to prevent the user from changing the contents of the database field. When
-  ReadOnly is true, the calc combo edit control is used only to display the contents of the field. If
-  ReadOnly is false, the user can change the field's value as long as the dataset is in edit mode.
-See Also
-  TJvDBCalcEdit.Field
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.UpdateAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.UpdateFieldParams
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.UseRightToLeftAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBCalcEdit.ZeroEmpty
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit
-<TITLEIMG TJvDBComboEdit>
-JVCLInfo
-  GROUP=JVCL.DBAware.EditsMemosAndCombos.Edits,JVCL.EditsMemosAndCombos.Combos
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.Canvas
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.DataField
+@@TJvDBCalcEdit.DataField
 Summary
   Specifies the field from which the combo edit control displays data.
 Description
-  Set DataField to the field name of the field component that the combo edit represents:
-
-  Access by the TJvDBComboEdit to the dataset in which the field is located is provided by a
+  Set DataField to the field name of the field component that the calc combo edit represents:
+  
+  Access by the TJvDBCalcEdit to the dataset in which the field is located is provided by a
   TDataSource component, specified in the DataSource property.
 See Also
-  TJvDBComboEdit.DataSource
+  TJvDBCalcEdit.DataSource
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.DataSource
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvDBAcceptValueEvent
+<TITLE TJvDBAcceptValueEvent type> <COMBINE TJvDBMaskEdit.OnAcceptNewValue>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.ExecuteAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.Field
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.ReadOnly
-Summary
-  Determines whether the user can use the database combo edit to change the value of the field in the
-  current record.
-Description
-  Set ReadOnly to true to prevent the user from changing the contents of the database field. When
-  ReadOnly is true, the combo edit is used only to display the contents of the field. If ReadOnly is
-  false, the user can change the field's value as long as the dataset is in edit mode.
-See Also
-  TJvDBComboEdit.Field
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.UpdateAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBComboEdit.UseRightToLeftAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit
-<TITLEIMG TJvDBDateEdit>
+@@TJvDBCalcEdit
+<TITLEIMG TJvDBCalcEdit>
 JVCLInfo
-  GROUP=JVCL.DBAware.DateTime,JVCL.DateTime.EditsCombos
-  FLAG=Component
-Summary
-  A data aware edit with a button that drops down a calendar.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.Canvas
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.DataField
-Summary
-  Specifies the field from which the combo edit control displays data.
-Description
-  Set DataField to the field name of the field component that the date combo edit represents:
-
-  Access by the TJvDBDateEdit to the dataset in which the field is located is provided by a TDataSource
-  component, specified in the DataSource property.
-See Also
-  TJvDBDateEdit.DataSource
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.DataSource
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.ExecuteAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.Field
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.ReadOnly
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.UpdateAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.UpdateMask
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBDateEdit.UseRightToLeftAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit
-<TITLEIMG TJvDBMaskEdit>
-JVCLInfo
-  GROUP=JVCL.DBAware.EditsMemosAndCombos.Combos
+  GROUP=JVCL.DBAware.EditsMemosAndCombos.Edits
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -471,7 +602,42 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.Canvas
+@@TGlyphAlign
+<TITLE TGlyphAlign type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  glGlyphLeft..glGlyphRight; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@TGetStringEvent
+<TITLE TGetStringEvent type> <COMBINE TJvDBStatusLabel.OnGetDataName>
+
+----------------------------------------------------------------------------------------------------
+@@TDBStatusKind
+<TITLE TDBStatusKind type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  dsInactive..dsCalcFields; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelStyle.lsRecordSize
+Description for lsRecordSize
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelStyle.lsRecordNo
+Description for lsRecordNo
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelStyle.lsState
+Description for lsState
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelStyle
+<TITLE TDBLabelStyle type>
 Summary
   Write here a summary (1 line)
 Description
@@ -481,7 +647,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.DataField
+@@TDBLabelOptions.doBoth
+Description for doBoth
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelOptions.doGlyph
+Description for doGlyph
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelOptions.doCaption
+Description for doCaption
+
+----------------------------------------------------------------------------------------------------
+@@TDBLabelOptions
+<TITLE TDBLabelOptions type>
 Summary
   Write here a summary (1 line)
 Description
@@ -491,195 +670,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.DataSource
+@@TDataValueEvent
+<TITLE TDataValueEvent type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.EditMask
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.ExecuteAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
+  This type is used by (for reference): TJvDBStatusLabel.OnGetRecNo TJvDBStatusLabel.OnGetRecordCount
 Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.Field
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.OnAcceptNewValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender   - Description for this parameter
-  OldValue - Description for this parameter
-  NewValue - Description for this parameter
-  Accept   - Description for this parameter
-  Post     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.ReadOnly
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.UpdateAction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Action - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBMaskEdit.UseRightToLeftAlignment
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBNavigator
-<TITLEIMG TJvDBNavigator>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBNavigator.Transparent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel
-<TITLEIMG TJvDBStatusLabel>
-JVCLInfo
-  GROUP=JVCL.DBAware.LabelsAndStatic,JVCL.LabelsAndStatic
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel.CalcRecCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel.Captions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel.DataSetName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel.DatasetState
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel.DataSource
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBStatusLabel.EditColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender  - Description for this parameter
+  DataSet - Description for this parameter
+  Value   - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBStatusLabel.GlyphAlign

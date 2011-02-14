@@ -3,84 +3,56 @@
 ----------------------------------------------------------------------------------------------------
 @@JvBmpAnimator.pas
 Summary
-  Contains all code for TJvBmpAnimator.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains all code for TJvBmpAnimator.
 Author
   Peter Thörnqvist
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimateDirection
-<TITLE TJvAnimateDirection type>
-Summary
-  Type used to determine the animation direction.
 Description
-  TJvAnimateDirection is the type used to specify the animation direction in the TJvBmpAnimator
-  component.
-See Also
-  TJvCustomBmpAnimator.Direction
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimateDirection.tdForward
-  Indicates that the images will be shown from the lowest index to the highest.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimateDirection.tdBack
-  Indicates that the images will be shown from the highest index to the lowest.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimateDirection.tdFwdBack
-  Indicates that the images will be shown from lowest index to the highest and back again.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimateDirection.tdBackFwd
-  Indicates that the images will be shown from highest index to the lowest and back again.
-
-----------------------------------------------------------------------------------------------------
-@@TJvBmpAnimator
-<TITLEIMG TJvBmpAnimator>
-JVCLInfo
-  GROUP=JVCL.Graphics.Animations
-  FLAG=Component
+@@TJvCustomBmpAnimator.Speed
 Summary
-  A component for playing a series of bitmaps.
+  Property to specify the speed of the animation.
 Description
-  TJvBmpAnimator is a component for showing .BMP files in sequence, like the explorer logo in Internet
-  Explorer. The animation runs in a loop. To use it you need an imagelist to hold the bitmaps, set the
-  speed and the direction, and set the active property to true.
+  Use this property to set the speed of the animation. The value indicates the number of frames per
+  second.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator
+@@TJvCustomBmpAnimator.Position
 Summary
-  A component for playing a series of bitmaps.
+  Property to specify the frame shown when the animation is stopped.
 Description
-  TJvCustomBmpAnimator is the base component for showing .BMP files in sequence, like the explorer logo
-  in Internet Explorer. The animation runs in a loop. To use it you need an imagelist to hold the
-  bitmaps, set the speed and the direction, and set the active property to true.
-
-  Do not use an instance of TJvCustomBmpAnimator directly but its descendant TJvBmpAnimator
+  Set this property to indicate which frame is shown when the animation is stopped.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Active
+@@TJvCustomBmpAnimator.NumFrames
 Summary
-  Indicates whether the animation is running.
+  Property to specify the number of frames.
 Description
-  Set this property to True to start the animation.
+  Use this property to specify the number of frames in the animation. A value of 0 will show all the
+  images.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.AutoSize
+@@TJvCustomBmpAnimator.Min
 Summary
-  Indicates whether the width and height of the imagelist should be used.
+  Property to indicate the first frame of the sequence.
 Description
-  Set this property to True to use the width and height of the imagelist component which holds the
-  images for the animation.
+  Use this property to set the first frame of the animation.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Centered
+@@TJvCustomBmpAnimator.Max
 Summary
-  Indicates whether the images should be painted in the center of the area of the component.
+  Property to indicate the last frame of the sequence.
 Description
-  Set this property to true if the images should be painted inside the area indicated by the component.
-  Useful if the area is larger than the images are.
+  Use this property to set the last frame of the animation.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBmpAnimator.Images
+Summary
+  Property of type TImageList, to hold the images.
+Description
+  Use this property to specify the TImageList component that holds the images for the animation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBmpAnimator.Direction
@@ -92,48 +64,79 @@ See Also
   TJvAnimateDirection
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Images
+@@TJvCustomBmpAnimator.Centered
 Summary
-  Property of type TImageList, to hold the images.
+  Indicates whether the images should be painted in the center of the area of the component.
 Description
-  Use this property to specify the TImageList component that holds the images for the animation.
+  Set this property to true if the images should be painted inside the area indicated by the
+  component.
+  Useful if the area is larger than the images are.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Max
+@@TJvCustomBmpAnimator.AutoSize
 Summary
-  Property to indicate the last frame of the sequence.
+  Indicates whether the width and height of the imagelist should be used.
 Description
-  Use this property to set the last frame of the animation.
+  Set this property to True to use the width and height of the imagelist component which holds the
+  images for the animation.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Min
+@@TJvCustomBmpAnimator.Active
 Summary
-  Property to indicate the first frame of the sequence.
+  Indicates whether the animation is running.
 Description
-  Use this property to set the first frame of the animation.
+  Set this property to True to start the animation.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.NumFrames
+@@TJvCustomBmpAnimator
 Summary
-  Property to specify the number of frames.
+  A component for playing a series of bitmaps.
 Description
-  Use this property to specify the number of frames in the animation. A value of 0 will show all the
-  images.
+  TJvCustomBmpAnimator is the base component for showing .BMP files in sequence, like the explorer
+  logo in Internet Explorer. The animation runs in a loop. To use it you need an imagelist to hold
+  the bitmaps, set the speed and the direction, and set the active property to true.
+  
+  Do not use an instance of TJvCustomBmpAnimator directly but its descendant TJvBmpAnimator
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Position
+@@TJvBmpAnimator
+<TITLEIMG TJvBmpAnimator>
+JVCLInfo
+  GROUP=JVCL.Graphics.Animations
+  FLAG=Component
 Summary
-  Property to specify the frame shown when the animation is stopped.
+  A component for playing a series of bitmaps.
 Description
-  Set this property to indicate which frame is shown when the animation is stopped.
+  TJvBmpAnimator is a component for showing .BMP files in sequence, like the explorer logo in Internet
+  Explorer. The animation runs in a loop. To use it you need an imagelist to hold the bitmaps, set
+  the speed and the direction, and set the active property to true.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomBmpAnimator.Speed
+@@TJvAnimateDirection.tdBackFwd
+Indicates that the images will be shown from highest index to the lowest and back again.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimateDirection.tdFwdBack
+Indicates that the images will be shown from lowest index to the highest and back again.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimateDirection.tdForward
+Indicates that the images will be shown from the lowest index to the highest.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimateDirection.tdBack
+Indicates that the images will be shown from the highest index to the lowest.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimateDirection
+<TITLE TJvAnimateDirection type>
 Summary
-  Property to specify the speed of the animation.
+  Type used to determine the animation direction.
 Description
-  Use this property to set the speed of the animation. The value indicates the number of frames per
-  second.
+  TJvAnimateDirection is the type used to specify the animation direction in the TJvBmpAnimator
+  component.
+See Also
+  TJvCustomBmpAnimator.Direction
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomBmpAnimator.Transparent

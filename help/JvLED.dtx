@@ -3,64 +3,31 @@
 ----------------------------------------------------------------------------------------------------
 @@JvLED.pas
 Summary
-  Contains the TJvLED component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvLED component.
 Author
   Thomas Hensle
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLED
+@@TJvLED
+<TITLEIMG TJvLED>
+JVCLInfo
+  GROUP=JVCL.Graphics.Static, JVCL.HMI.Indicators
+  FLAG=Component
 Summary
-  Displays a LED in various colors.
+  Component that displays a LED in any color.
 Description
-  Use a TJvCustomLED descendant to display LED's in various colors.
-
+  The TJvLED component represents a LED.
+  
   The LED component has the following capabilities:
-
+  
   * Display the LED in any color.
   * Emulates a reflective highlight.
   * Has separate <LINK TJvCustomLED.ColorOn, on> and <LINK TJvCustomLED.ColorOff, off> colors.
   * Can <LINK TJvCustomLED.Active, automatically blink> with a specified <LINK TJvCustomLED.Interval,
     interval>.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLED.Active
-Summary
-  Determines if blinking is enabled.
-Description
-  Active determines if blinking is enabled. Read Active to determine if blinking is enabled or set
-  Active to enable or disable blinking.
-
-  If Active is True, blinking is enabled.
-
-  If Active is False, blinking is not enabled.
-
-  Blinking will toggle the Status property at every Interval.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLED.Color
-Summary
-  Determines the color of the LED.
-Description
-  Color determines the color of the LED. This value can be one of the constants defined in the Graphics
-  unit (such as clBlue), or an explicit RGB integer value.
-
-  Note that the Color property changes to the color specified by ColorOn or ColorOff depending on the
-  value of Status.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLED.ColorOff
-Summary
-  \Color of the LED when it's dimmed.
-Description
-  ColorOff determines the color of the LED when Status is False.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLED.ColorOn
-Summary
-  \Color of the LED when it's lit.
-Description
-  ColorOn determines the color of the LED when Status is True.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLED.Interval
@@ -75,28 +42,63 @@ Description
 Summary
   Status of the LED.
 Description
-  Status determines if the LED is on or off. Read Status to retrieve the current status or set it to a
-  new value.
-
+  Status determines if the LED is on or off. Read Status to retrieve the current status or set it to
+  a new value.
+  
   If Status is set to True, the LED is on and rendered in the color specified by ColorOn.
-
+  
   If Status is set to False, the LED is off and rendered in the color specified by ColorOff.
-
+  
   If blinking is enabled (Active = True), Status will be toggled every Interval milliseconds.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLED
-<TITLEIMG TJvLED>
-JVCLInfo
-  GROUP=JVCL.Graphics.Static, JVCL.HMI.Indicators
-  FLAG=Component
+@@TJvCustomLED.ColorOn
 Summary
-  Component that displays a LED in any color.
+  \Color of the LED when it's lit.
 Description
-  The TJvLED component represents a LED.
+  ColorOn determines the color of the LED when Status is True.
 
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.ColorOff
+Summary
+  \Color of the LED when it's dimmed.
+Description
+  ColorOff determines the color of the LED when Status is False.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.Color
+Summary
+  Determines the color of the LED.
+Description
+  Color determines the color of the LED. This value can be one of the constants defined in the
+  Graphics unit (such as clBlue), or an explicit RGB integer value.
+  
+  Note that the Color property changes to the color specified by ColorOn or ColorOff depending on the
+  value of Status.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED.Active
+Summary
+  Determines if blinking is enabled.
+Description
+  Active determines if blinking is enabled. Read Active to determine if blinking is enabled or set
+  Active to enable or disable blinking.
+  
+  If Active is True, blinking is enabled.
+  
+  If Active is False, blinking is not enabled.
+  
+  Blinking will toggle the Status property at every Interval.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLED
+Summary
+  Displays a LED in various colors.
+Description
+  Use a TJvCustomLED descendant to display LED's in various colors.
+  
   The LED component has the following capabilities:
-
+  
   * Display the LED in any color.
   * Emulates a reflective highlight.
   * Has separate <LINK TJvCustomLED.ColorOn, on> and <LINK TJvCustomLED.ColorOff, off> colors.

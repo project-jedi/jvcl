@@ -3,33 +3,16 @@
 ----------------------------------------------------------------------------------------------------
 @@JvColorTrackbar.pas
 Summary
-  Contains the TJvColorTrackBar component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvColorTrackBar component.
 Author
   Stefano Pessina
-
-----------------------------------------------------------------------------------------------------
-@@TControlBorderStyle
-<TITLE TControlBorderStyle type>
-Summary
-  Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  bsNone..bsSingle; - for reference)
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar
-<TITLEIMG TJvColorTrackBar>
-JVCLInfo
-  GROUP=JVCL.Bars
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.ArrowColor
+@@TJvColorTrackBarIndicator
+<TITLE TJvColorTrackBarIndicator type>
 Summary
   Write here a summary (1 line)
 Description
@@ -39,7 +22,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.BorderStyle
+@@TJvColorTrackBar.WindowToPos
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  WindowCoord - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorTrackBar.UpdateGradient
 Summary
   Write here a summary (1 line)
 Description
@@ -49,7 +46,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.ColorFrom
+@@TJvColorTrackBar.ReadOnly
 Summary
   Write here a summary (1 line)
 Description
@@ -59,7 +56,32 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.ColorTo
+@@TJvColorTrackBar.Resize
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorTrackBar.PosToWindow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APos - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorTrackBar.Position
 Summary
   Write here a summary (1 line)
 Description
@@ -69,7 +91,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.FillDirection
+@@TJvColorTrackBar.OnPosChange
 Summary
   Write here a summary (1 line)
 Description
@@ -79,7 +101,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.Indicators
+@@TJvColorTrackBar.OnMinChange
 Summary
   Write here a summary (1 line)
 Description
@@ -89,7 +111,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.Max
+@@TJvColorTrackBar.OnMaxChange
 Summary
   Write here a summary (1 line)
 Description
@@ -99,17 +121,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.Min
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.MouseDown
+@@TJvColorTrackBar.MouseUp
 Summary
   Write here a summary (1 line)
 Description
@@ -140,7 +152,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.MouseUp
+@@TJvColorTrackBar.MouseDown
 Summary
   Write here a summary (1 line)
 Description
@@ -156,7 +168,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.OnMaxChange
+@@TJvColorTrackBar.Min
 Summary
   Write here a summary (1 line)
 Description
@@ -166,7 +178,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.OnMinChange
+@@TJvColorTrackBar.Max
 Summary
   Write here a summary (1 line)
 Description
@@ -176,7 +188,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.OnPosChange
+@@TJvColorTrackBar.Indicators
 Summary
   Write here a summary (1 line)
 Description
@@ -186,7 +198,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.Position
+@@TJvColorTrackBar.FillDirection
 Summary
   Write here a summary (1 line)
 Description
@@ -196,21 +208,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.PosToWindow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APos - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.ReadOnly
+@@TJvColorTrackBar.ColorTo
 Summary
   Write here a summary (1 line)
 Description
@@ -220,18 +218,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.Resize
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.UpdateGradient
+@@TJvColorTrackBar.ColorFrom
 Summary
   Write here a summary (1 line)
 Description
@@ -241,22 +228,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBar.WindowToPos
+@@TJvColorTrackBar.BorderStyle
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  WindowCoord - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorTrackBarIndicator
-<TITLE TJvColorTrackBarIndicator type>
+@@TJvColorTrackBar.ArrowColor
 Summary
   Write here a summary (1 line)
 Description
@@ -264,17 +246,36 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorTrackBar
+<TITLEIMG TJvColorTrackBar>
+JVCLInfo
+  GROUP=JVCL.Bars
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TControlBorderStyle
+<TITLE TControlBorderStyle type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  bsNone..bsSingle; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorTrackBarIndicator.tbiArrow
-  Description for tbiArrow
+Description for tbiArrow
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorTrackBarIndicator.tbiLine
-  Description for tbiLine
+Description for tbiLine
 
 ----------------------------------------------------------------------------------------------------
 @@TJvColorTrackBarIndicators
-<TITLE TJvColorTrackBarIndicators type>
-<COMBINE TJvColorTrackBarIndicator>
+<TITLE TJvColorTrackBarIndicators type> <COMBINE TJvColorTrackBarIndicator>
 

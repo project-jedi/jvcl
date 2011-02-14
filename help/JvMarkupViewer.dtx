@@ -3,30 +3,25 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMarkupViewer.pas
 Summary
-  Contains the TJvMarkupViewer component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMarkupViewer component.
 Author
   Jan Verhoeven
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarkupViewer
-<TITLEIMG TJvMarkupViewer>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvMarkupViewer.Text
 Summary
-  Implements a scrollable HTML-enabled viewer component.
+  HTML markup to render as the content of the control.
 Description
-  TJvMarkupViewer is a TJvCustomControl descendant that implements a scrollable HTML-enabled viewer
-  component.
-
-  TJvMarkupViewer provides the ability to parse and render HTML markup assigned to the Text property
-  for the control. TJvMarkupViewer uses a TBitmap instance to render the contents of the HTML markup in
-  the Text property, and to allow scrolling of the rendered content in the visible bounds of the
-  component.
-
-  TJvMarkupViewer recognizes the following HTML tags in the Text property:
-
+  Text is a TCaption property that specifies the HTML markup rendered as the content for the
+  HTML-enabled control. Values in the Text property are parsed into the HTML elements need to draw
+  the contents of the control using the Paint method. Changing the value in either the Text or Font
+  properties causes the control to be redrawn.
+  
+  Text can contain plain text and any of the following HTML tags:
+  
   <TABLE>
     Tag                  Description
     -------------------  ---------------------------------------------------------------------
@@ -40,9 +35,9 @@ Description
                            the start and end tags. Use the face, size, and color attributes
                            to specify the values to use for the font element.
   </TABLE>
-
+  
   The following attributes are recognized for HTML markup in the Text property:
-
+  
   <TABLE>
     Attribute  Description
     ---------  -------------------------------------------------------------------------------
@@ -53,24 +48,64 @@ Description
     color      Font color for the HTML element. Font may be expressed as a decimal value
                  (using #nnnnnn) or a color name (Red, Green, Blue, Lime, Maroon, etc).
   </TABLE>
-
+  
   Attributes attached to an HTML element must be enclosed in double quote characters ("). For
   instance:
-
+  
   <CODE>
-  <font face="Arial" size="14" color="Navy">Title</font><br>
-  </CODE>
-
-  TJvMarkupViewer uses internal instances of TJvHTMLElementStack during parsing and rendering of HTML
-  tags assigned to the Text property. TJvMarkupViewer implements overridden methods to handle Font and
-  Text assignments to properties in the control, and to perform painting of the rendered control.
-
-  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to the
-  rendered HTML content for the control.
-
-  Use TJvMarkupLabel to render HTML markup in a Label component.
+  <font face="Arial" size="14" color="Navy">Title</font><br> </CODE>
+  
+  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to
+  the rendered HTML content for the control using the Alignment property.
+  
+  Use BackColor to specify the default background color for HTML elements rendered in the control.
 See Also
-  TJvCustomControl, TJvMarkupLabel, TJvHTMLElementStack, TJvHTMLElement
+  TJvHTMLElementStack, TJvHTMLElement, TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginRight,
+  TJvMarkupViewer.MarginTop, TJvMarkupViewer.BackColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupViewer.MarginTop
+Summary
+  Specifies the top margin for content rendered in the HTML-enabled control.
+Description
+  MarginTop is an Integer property that specifies the top margin in pixels for content rendered in the
+  HTML-enabled control. The default value for MarginTop is 5.
+  
+  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
+  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge
+  boundaries for the Alignment and Align properties within the client area for the control.
+  
+  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
+  redrawn.
+See Also
+  TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginRight, TJvMarkupViewer.Text, TJvMarkupViewer.Paint
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupViewer.Paint
+Summary
+  Renders the HTML markup for the HTML-enabled control.
+Description
+  Paint is an overridden method in TJvMarkupViewer that implements rendering of the HTML markup in
+  Text for the HTML-enabled control.
+  
+  Rendering uses the Canvas for the control to recalculate the position for HTML elements found in the
+  Text property. HTML element positions are relative to the values specified in the MarginLeft,
+  MarginRight, and MarginTop properties. The value in MarginBottom is also added to the overall total
+  height of the rendered control. The right boundary for the control is adjusted to allow space for
+  drawing the ScrollBar for the control.
+  
+  BackColor is used to set the background and transparency colors for the rendered HTML elements.
+  
+  To provide scrollability, drawing HTML elements is performed on the Canvas for a TBitmap instance.
+  Changes to the position of the ScrollBar cause the visible portion of the bitmap to be repositioned
+  in the client area for the control.
+  
+  Internally, Paint uses TJvHTMLElementStack and TJvHTMLElement to calculate the flow and alignment
+  of the HTML elements in the client area of the control. This includes wrapping of HTML elements
+  that cannot be draw in their entirety on the current line.
+See Also
+  TJvMarkupViewer.Text, TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginRight,
+  TJvMarkupViewer.MarginTop, TJvMarkupViewer.BackColor, TJvHTMLElementStack, TJvHTMLElement
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMarkupViewer.BackColor
@@ -79,9 +114,9 @@ Summary
 Description
   BackColor is a TColor property that specifies the background color used when rendering the HTML
   markup in the Text property. BackColor is used when Paint is called to render the HTML markup. The
-  value in BackColor is assigned as both the Brush and Transparency colors for the Canvas used to draw
-  the control.
-
+  value in BackColor is assigned as both the Brush and Transparency colors for the Canvas used to
+  draw the control.
+  
   The default value for BackColor is clWhite, as assigned in the constructor for the component.
   Changing the value in BackColor or Text causes the control to be redrawn.
 See Also
@@ -92,13 +127,13 @@ See Also
 Summary
   Specifies the left-hand margin for content rendered in the HTML-enabled control.
 Description
-  MarginLeft is an Integer property that specifies the left-hand margin in pixels for content rendered
-  in the HTML-enabled control. The default value for MarginLeft is 5.
-
+  MarginLeft is an Integer property that specifies the left-hand margin in pixels for content
+  rendered in the HTML-enabled control. The default value for MarginLeft is 5.
+  
   MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
-  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge boundaries
-  for the Alignment and Align properties within the client area for the control.
-
+  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge
+  boundaries for the Alignment and Align properties within the client area for the control.
+  
   Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
   redrawn.
 See Also
@@ -111,72 +146,35 @@ Summary
 Description
   MarginRight is an Integer property that specifies the right-hand margin in pixels for content
   rendered in the HTML-enabled control. The default value for MarginRight is 5.
-
+  
   MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
-  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge boundaries
-  for the Alignment and Align properties within the client area for the control.
-
+  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge
+  boundaries for the Alignment and Align properties within the client area for the control.
+  
   Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
   redrawn.
 See Also
   TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginTop, TJvMarkupViewer.Text, TJvMarkupViewer.Paint
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMarkupViewer.MarginTop
+@@TJvMarkupViewer
+<TITLEIMG TJvMarkupViewer>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
-  Specifies the top margin for content rendered in the HTML-enabled control.
+  Implements a scrollable HTML-enabled viewer component.
 Description
-  MarginTop is an Integer property that specifies the top margin in pixels for content rendered in the
-  HTML-enabled control. The default value for MarginTop is 5.
-
-  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
-  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge boundaries
-  for the Alignment and Align properties within the client area for the control.
-
-  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
-  redrawn.
-See Also
-  TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginRight, TJvMarkupViewer.Text, TJvMarkupViewer.Paint
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupViewer.Paint
-Summary
-  Renders the HTML markup for the HTML-enabled control.
-Description
-  Paint is an overridden method in TJvMarkupViewer that implements rendering of the HTML markup in Text
-  for the HTML-enabled control.
-
-  Rendering uses the Canvas for the control to recalculate the position for HTML elements found in the
-  Text property. HTML element positions are relative to the values specified in the MarginLeft,
-  MarginRight, and MarginTop properties. The value in MarginBottom is also added to the overall total
-  height of the rendered control. The right boundary for the control is adjusted to allow space for
-  drawing the ScrollBar for the control.
-
-  BackColor is used to set the background and transparency colors for the rendered HTML elements.
-
-  To provide scrollability, drawing HTML elements is performed on the Canvas for a TBitmap instance.
-  Changes to the position of the ScrollBar cause the visible portion of the bitmap to be repositioned
-  in the client area for the control.
-
-  Internally, Paint uses TJvHTMLElementStack and TJvHTMLElement to calculate the flow and alignment of
-  the HTML elements in the client area of the control. This includes wrapping of HTML elements that
-  cannot be draw in their entirety on the current line.
-See Also
-  TJvMarkupViewer.Text, TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginRight,
-  TJvMarkupViewer.MarginTop, TJvMarkupViewer.BackColor, TJvHTMLElementStack, TJvHTMLElement
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupViewer.Text
-Summary
-  HTML markup to render as the content of the control.
-Description
-  Text is a TCaption property that specifies the HTML markup rendered as the content for the
-  HTML-enabled control. Values in the Text property are parsed into the HTML elements need to draw the
-  contents of the control using the Paint method. Changing the value in either the Text or Font
-  properties causes the control to be redrawn.
-
-  Text can contain plain text and any of the following HTML tags:
-
+  TJvMarkupViewer is a TJvCustomControl descendant that implements a scrollable HTML-enabled viewer
+  component.
+  
+  TJvMarkupViewer provides the ability to parse and render HTML markup assigned to the Text property
+  for the control. TJvMarkupViewer uses a TBitmap instance to render the contents of the HTML markup
+  in the Text property, and to allow scrolling of the rendered content in the visible bounds of the
+  component.
+  
+  TJvMarkupViewer recognizes the following HTML tags in the Text property:
+  
   <TABLE>
     Tag                  Description
     -------------------  ---------------------------------------------------------------------
@@ -190,9 +188,9 @@ Description
                            the start and end tags. Use the face, size, and color attributes
                            to specify the values to use for the font element.
   </TABLE>
-
+  
   The following attributes are recognized for HTML markup in the Text property:
-
+  
   <TABLE>
     Attribute  Description
     ---------  -------------------------------------------------------------------------------
@@ -203,19 +201,21 @@ Description
     color      Font color for the HTML element. Font may be expressed as a decimal value
                  (using #nnnnnn) or a color name (Red, Green, Blue, Lime, Maroon, etc).
   </TABLE>
-
+  
   Attributes attached to an HTML element must be enclosed in double quote characters ("). For
   instance:
-
+  
   <CODE>
-  <font face="Arial" size="14" color="Navy">Title</font><br>
-  </CODE>
-
-  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to the
-  rendered HTML content for the control using the Alignment property.
-
-  Use BackColor to specify the default background color for HTML elements rendered in the control.
+  <font face="Arial" size="14" color="Navy">Title</font><br> </CODE>
+  
+  TJvMarkupViewer uses internal instances of TJvHTMLElementStack during parsing and rendering of HTML
+  tags assigned to the Text property. TJvMarkupViewer implements overridden methods to handle Font and
+  Text assignments to properties in the control, and to perform painting of the rendered control.
+  
+  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to
+  the rendered HTML content for the control.
+  
+  Use TJvMarkupLabel to render HTML markup in a Label component.
 See Also
-  TJvHTMLElementStack, TJvHTMLElement, TJvMarkupViewer.MarginLeft, TJvMarkupViewer.MarginRight,
-  TJvMarkupViewer.MarginTop, TJvMarkupViewer.BackColor
+  TJvCustomControl, TJvMarkupLabel, TJvHTMLElementStack, TJvHTMLElement
 

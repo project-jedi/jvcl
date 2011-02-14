@@ -3,300 +3,70 @@
 ----------------------------------------------------------------------------------------------------
 @@JvFullColorDialogs.pas
 Summary
-  Contains the TJvFullColorCircleDialog and TJvFullColorDialog dialog boxes.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvFullColorCircleDialog and TJvFullColorDialog dialog boxes.
 Author
   Florent Ouchet
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAxisType
-<TITLE TJvAxisType type>
+@@TJvFullColorDialog.OnShow
 Summary
-  Write here a summary (1 line)
+  Event sent when the dialog box is shown.
 Description
-  Write here a description
+  This event is triggered when the dialog box is shown on the screen. You may customize its
+  appearance with the Form property. This event is valid only during the execution of the Execute
+  function.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvFullColorDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAxisType.atCommon
-  Description for atCommon
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisType.atRed
-  Description for atRed
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisType.atGreen
-  Description for atGreen
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisType.atBlue
-  Description for atBlue
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorCircleEvent
-<TITLE TJvColorCircleEvent type>
-<COMBINE TJvFullColorCircleDialog.OnApply>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog
-<TITLEIMG TJvFullColorCircleDialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Component
-Summary
-  Dialog box displaying a TJvFullColorCircle and its TJvFullColorTrackBar.
-Description
-  This dialog displays a dialog box to configure color rotations structures used in the
-  JvFullColorRotate.pas unit.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.BlueDelta
-Summary
-  Delta used for blue transformations.
-Description
-  This property gets and sets the delta for blue transformations.
-See Also
-  TJvFullColorCircleDialog.GreenDelta, TJvFullColorCircleDialog.RedDelta,
-  TJvFullColorCircleDialog.Delta
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.ColorID
-Summary
-  Identifier of the color space.
-Description
-  This is the identifier of the color space displayed in the dialog box.
-See Also
-  TJvFullColorCircleDialog.Delta
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.Delta
-Summary
-  Contains all data needed by a transformation.
-Description
-  This property contains all data needed to make a transformation: RedDelta, BlueDelta, GreenDelta and
-  ColorID. You can call RotateColor or RotateBitmap with this class as an argument.
-See Also
-  TJvFullColorCircleDialog.BlueDelta, TJvFullColorCircleDialog.GreenDelta,
-  TJvFullColorCircleDialog.RedDelta, TJvFullColorCircleDialog.ColorID, RotateColor, RotateBitmap
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.Execute
-Summary
-  Execute the dialog box.
-Description
-  The dialog box is initialized by the existing values of Delta, ColorID, GreenDelta, BlueDelta and
-  RedDelta and configured by the Options property. Execute the dialog box, modify the Delta, ColorID,
-  GreenDelta, BlueDelta, RedDelta properties according to changes made by the user. Even if the dialog
-  box is canceled, these properties are modified to reflect changes made by the user.
-Return value
-  Return true if the dialog box was closed using the "OK" button.
-See Also
-  TJvFullColorCircleDialog.BlueDelta, TJvFullColorCircleDialog.ColorID,
-  TJvFullColorCircleDialog.GreenDelta, TJvFullColorCircleDialog.RedDelta,
-  TJvFullColorCircleDialog.Delta, TJvFullColorCircleDialog.Options
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.Form
-Summary
-  Form displayed as a dialog box.
-Description
-  This property gives you direct access to the form used as a dialog box. You may customize its
-  appearance by using the OnShow, OnCloseQuery and OnApply events. This property is valid only during
-  the execution of the Execute function.
-See Also
-  TJvFullColorCircleDialog.OnShow, TJvFullColorCircleDialog.OnCloseQuery,
-  TJvFullColorCircleDialog.OnApply
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.GreenDelta
-Summary
-  Delta used for green transformations.
-Description
-  This property gets and sets the delta for green transformations.
-See Also
-  TJvFullColorCircleDialog.BlueDelta, TJvFullColorCircleDialog.RedDelta,
-  TJvFullColorCircleDialog.Delta
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.HelpContext
-Summary
-  Help context of the dialog box.
-Description
-  This property is the help context viewed when the user clicks on the "Help" button. The "Help" button
-  is only visible if coShowHelp is included in Options.
-See Also
-  TJvFullColorCircleDialog.Options
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.OnApply
-Summary
-  Event sent when the user clicks on the "Apply" button.
-Description
-  This event is triggered when the user clicks on the "Apply" button of the dialog box. This event is
-  valid only during the execution of the Execute function and if coShowApply is included in the Options
-  property.
-Parameters
-  Sender - Identifier of the TObject that sent the event. This is a TJvFullColorCircleDialog
-            instance.
-See Also
-  TJvFullColorCircleDialog.Options, TJvFullColorCircleDialog.Execute
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.OnCloseQuery
+@@TJvFullColorDialog.OnCloseQuery
 Summary
   Event sent when the dialog box need a confirmation to be closed.
 Description
   This event is triggered when the dialog box is about to be closed. This event is valid only during
   the execution of the Execute function.
 See Also
-  TJvFullColorCircleDialog.Execute
+  TJvFullColorDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.OnShow
+@@TJvFullColorDialog.OnApply
 Summary
-  Event sent when the dialog box is shown.
+  Event sent when the user clicks on the "Apply" button.
 Description
-  This event is triggered when the dialog box is shown on the screen. You may customize its appearance
-  with the Form property. This event is valid only during the execution of the Execute function.
+  This event is triggered when the user clicks on the "Apply" button of the dialog box. This event is
+  valid only during the execution of the Execute function and if coShowApply is included in the
+  Options property.
+Parameters
+  Sender     - Identifier of the TObject that sent the event. This is a TJvFullColorCircleDialog     
+           instance.
+  AFullColor - Color currently selected in the dialog box.
 See Also
-  TJvFullColorCircleDialog.Execute, TJvFullColorCircleDialog.Form
+  TJvFullColorDialog.Execute, TJvFullColorDialogOption.foShowApply, TJvFullColorDialog.Options
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.Options
+@@TJvFullColorDialog.OldColorSpace
 Summary
-  Options to configure the dialog box appearance.
+  Initial color space identifier when the dialog is shown.
 Description
-  This property sets the appearance of the dialog box displayed by the Execute function.
+  This is the identifier of the initial color space when the dialog box is shown. If
+  foConvertToOriginalSpace is included in Options, the FullColor is converted back in this color
+  space when the Execute function returns.
 See Also
-  TJvFullColorCircleDialogOptions, TJvFullColorCircleDialog.Execute
+  TJvFullColorDialogOption.foConvertToOriginalSpace, TJvFullColorDialog.Options,
+  TJvFullColorDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.RedDelta
+@@TJvFullColorDialog.HelpContext
 Summary
-  Delta used for red transformations.
+  Help context associated with the dialog box.
 Description
-  This property gets and sets the delta for red transformations.
+  Help context opened when the "Help" button is clicked. It is only used when Options contains
+  foShowHelp.
 See Also
-  TJvFullColorCircleDialog.GreenDelta, TJvFullColorCircleDialog.BlueDelta,
-  TJvFullColorCircleDialog.Delta
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialog.Title
-Summary
-  Title of the dialog box.
-Description
-  This property changes the title of the dialog box displayed. You may have more customization by using
-  the Form property during the OnShow event.
-See Also
-  TJvFullColorCircleDialog.OnShow, TJvFullColorCircleDialog.Form
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption
-<TITLE TJvFullColorCircleDialogOption type>
-Summary
-  Enum type of TJvFullColorCircleDialogOptions.
-Description
-  Enum type of TJvFullColorCircleDialogOptions.
-See Also
-  TJvFullColorCircleDialogOptions
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coFullOpen
-  The dialog box is initially opened.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coPreventExpand
-  Disable the expand/collapse button.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coShowHelp
-  Show the help button.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coAllowSpaceChange
-  Allow the user to change of color space using the combo box.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coShowNewPreview
-  Show the image showing transformations.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coShowOldPreview
-  Show the initial image.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coCommon
-  Allow changes of the blue, red and green transformations at the same time.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coRed
-  Allow changes of the red transformations.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coGreen
-  Allow changes of the green transformations.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coBlue
-  Allow changes of the blue transformations.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coShowSaturation
-  Show the checkbox to switch between saturation or loop ranges.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coDefaultRange
-  if Included, the default range will be loop.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOption.coShowApply
-  Show the apply button.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorCircleDialogOptions
-<TITLE TJvFullColorCircleDialogOptions type>
-<COMBINE TJvFullColorCircleDialogOption>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog
-<TITLEIMG TJvFullColorDialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Component
-Summary
-  A standard "Choose a color" dialog box
-Description
-  This component is a dialog box for the user to choose a color. All registered color spaces may be
-  used by this dialog (the standard dialog box only handle HLS and RGB).
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.Color
-Summary
-  Returns the selected color.
-Description
-  This property (read-only) returns the selected color converted into the RGB color space (and can be
-  directly assigned to a TColor).
-See Also
-  TJvFullColorDialog.FullColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.Execute
-Summary
-  Execute the dialog box.
-Description
-  This function show the dialog box using a ShowModal call. To customize the appearance of the dialog,
-  the event OnShow, OnApply and OnCloseQuery are triggered during this function. When the dialog box is
-  shown, the color (and the color space) is initialized by the FullColor property and is configured by
-  the Options property. When the dialog box is closed, the FullColor property is the latest color
-  selected by the user.
-Return value
-  Return True if the dialog box was closed with the "OK" button.
-See Also
-  TJvFullColorDialog.OnApply, TJvFullColorDialog.OnCloseQuery, TJvFullColorDialog.OnShow,
-  TJvFullColorDialog.Options, TJvFullColorDialog.FullColor
+  TJvFullColorDialog.Options, TJvFullColorDialogOption.foShowHelp
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialog.Form
@@ -320,61 +90,294 @@ See Also
   TJvFullColorDialog.Color
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.HelpContext
+@@TJvFullColorDialog.Execute
 Summary
-  Help context associated with the dialog box.
+  Execute the dialog box.
 Description
-  Help context opened when the "Help" button is clicked. It is only used when Options contains
-  foShowHelp.
+  This function show the dialog box using a ShowModal call. To customize the appearance of the dialog,
+  the event OnShow, OnApply and OnCloseQuery are triggered during this function. When the dialog box
+  is shown, the color (and the color space) is initialized by the FullColor property and is
+  configured by the Options property. When the dialog box is closed, the FullColor property is the
+  latest color selected by the user.
+Return value
+  Return True if the dialog box was closed with the "OK" button.
 See Also
-  TJvFullColorDialog.Options, TJvFullColorDialogOption.foShowHelp
+  TJvFullColorDialog.OnApply, TJvFullColorDialog.OnCloseQuery, TJvFullColorDialog.OnShow,
+  TJvFullColorDialog.Options, TJvFullColorDialog.FullColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.OldColorSpace
+@@TJvFullColorDialog.Color
 Summary
-  Initial color space identifier when the dialog is shown.
+  Returns the selected color.
 Description
-  This is the identifier of the initial color space when the dialog box is shown. If
-  foConvertToOriginalSpace is included in Options, the FullColor is converted back in this color space
-  when the Execute function returns.
+  This property (read-only) returns the selected color converted into the RGB color space (and can be
+  directly assigned to a TColor).
 See Also
-  TJvFullColorDialogOption.foConvertToOriginalSpace, TJvFullColorDialog.Options,
-  TJvFullColorDialog.Execute
+  TJvFullColorDialog.FullColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.OnApply
+@@TJvFullColorDialog
+<TITLEIMG TJvFullColorDialog>
+JVCLInfo
+  GROUP=JVCL.Dialogs.Custom
+  FLAG=Component
 Summary
-  Event sent when the user clicks on the "Apply" button.
+  A standard "Choose a color" dialog box
 Description
-  This event is triggered when the user clicks on the "Apply" button of the dialog box. This event is
-  valid only during the execution of the Execute function and if coShowApply is included in the Options
-  property.
-Parameters
-  Sender     - Identifier of the TObject that sent the event. This is a TJvFullColorCircleDialog
-                instance.
-  AFullColor - Color currently selected in the dialog box.
-See Also
-  TJvFullColorDialog.Execute, TJvFullColorDialogOption.foShowApply, TJvFullColorDialog.Options
+  This component is a dialog box for the user to choose a color. All registered color spaces may be
+  used by this dialog (the standard dialog box only handle HLS and RGB).
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.OnCloseQuery
+@@TJvFullColorCircleDialogOption.coCommon
+Allow changes of the blue, red and green transformations at the same time.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coRed
+Allow changes of the red transformations.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coGreen
+Allow changes of the green transformations.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coBlue
+Allow changes of the blue transformations.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coShowSaturation
+Show the checkbox to switch between saturation or loop ranges.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coDefaultRange
+if Included, the default range will be loop.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coShowApply
+Show the apply button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOptions
+<TITLE TJvFullColorCircleDialogOptions type> <COMBINE TJvFullColorCircleDialogOption>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coAllowSpaceChange
+Allow the user to change of color space using the combo box.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coShowNewPreview
+Show the image showing transformations.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coShowOldPreview
+Show the initial image.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coShowHelp
+Show the help button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coPreventExpand
+Disable the expand/collapse button.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption.coFullOpen
+The dialog box is initially opened.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialogOption
+<TITLE TJvFullColorCircleDialogOption type>
+Summary
+  Enum type of TJvFullColorCircleDialogOptions.
+Description
+  Enum type of TJvFullColorCircleDialogOptions.
+See Also
+  TJvFullColorCircleDialogOptions
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.Title
+Summary
+  Title of the dialog box.
+Description
+  This property changes the title of the dialog box displayed. You may have more customization by
+  using
+  the Form property during the OnShow event.
+See Also
+  TJvFullColorCircleDialog.OnShow, TJvFullColorCircleDialog.Form
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.RedDelta
+Summary
+  Delta used for red transformations.
+Description
+  This property gets and sets the delta for red transformations.
+See Also
+  TJvFullColorCircleDialog.GreenDelta, TJvFullColorCircleDialog.BlueDelta,
+  TJvFullColorCircleDialog.Delta
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.Options
+Summary
+  Options to configure the dialog box appearance.
+Description
+  This property sets the appearance of the dialog box displayed by the Execute function.
+See Also
+  TJvFullColorCircleDialogOptions, TJvFullColorCircleDialog.Execute
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.OnShow
+Summary
+  Event sent when the dialog box is shown.
+Description
+  This event is triggered when the dialog box is shown on the screen. You may customize its
+  appearance with the Form property. This event is valid only during the execution of the Execute
+  function.
+See Also
+  TJvFullColorCircleDialog.Execute, TJvFullColorCircleDialog.Form
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.OnCloseQuery
 Summary
   Event sent when the dialog box need a confirmation to be closed.
 Description
   This event is triggered when the dialog box is about to be closed. This event is valid only during
   the execution of the Execute function.
 See Also
-  TJvFullColorDialog.Execute
+  TJvFullColorCircleDialog.Execute
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColorDialog.OnShow
+@@TJvFullColorCircleDialog.OnApply
 Summary
-  Event sent when the dialog box is shown.
+  Event sent when the user clicks on the "Apply" button.
 Description
-  This event is triggered when the dialog box is shown on the screen. You may customize its appearance
-  with the Form property. This event is valid only during the execution of the Execute function.
+  This event is triggered when the user clicks on the "Apply" button of the dialog box. This event is
+  valid only during the execution of the Execute function and if coShowApply is included in the
+  Options property.
+Parameters
+  Sender - Identifier of the TObject that sent the event. This is a TJvFullColorCircleDialog         
+   instance.
 See Also
-  TJvFullColorDialog.Execute
+  TJvFullColorCircleDialog.Options, TJvFullColorCircleDialog.Execute
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.HelpContext
+Summary
+  Help context of the dialog box.
+Description
+  This property is the help context viewed when the user clicks on the "Help" button. The "Help"
+  button is only visible if coShowHelp is included in Options.
+See Also
+  TJvFullColorCircleDialog.Options
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.GreenDelta
+Summary
+  Delta used for green transformations.
+Description
+  This property gets and sets the delta for green transformations.
+See Also
+  TJvFullColorCircleDialog.BlueDelta, TJvFullColorCircleDialog.RedDelta,
+  TJvFullColorCircleDialog.Delta
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.Form
+Summary
+  Form displayed as a dialog box.
+Description
+  This property gives you direct access to the form used as a dialog box. You may customize its
+  appearance by using the OnShow, OnCloseQuery and OnApply events. This property is valid only during
+  the execution of the Execute function.
+See Also
+  TJvFullColorCircleDialog.OnShow, TJvFullColorCircleDialog.OnCloseQuery,
+  TJvFullColorCircleDialog.OnApply
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.Delta
+Summary
+  Contains all data needed by a transformation.
+Description
+  This property contains all data needed to make a transformation: RedDelta, BlueDelta, GreenDelta and
+  ColorID. You can call RotateColor or RotateBitmap with this class as an argument.
+See Also
+  TJvFullColorCircleDialog.BlueDelta, TJvFullColorCircleDialog.GreenDelta,
+  TJvFullColorCircleDialog.RedDelta, TJvFullColorCircleDialog.ColorID, RotateColor, RotateBitmap
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.Execute
+Summary
+  Execute the dialog box.
+Description
+  The dialog box is initialized by the existing values of Delta, ColorID, GreenDelta, BlueDelta and
+  RedDelta and configured by the Options property. Execute the dialog box, modify the Delta, ColorID,
+  GreenDelta, BlueDelta, RedDelta properties according to changes made by the user. Even if the
+  dialog box is canceled, these properties are modified to reflect changes made by the user.
+Return value
+  Return true if the dialog box was closed using the "OK" button.
+See Also
+  TJvFullColorCircleDialog.BlueDelta, TJvFullColorCircleDialog.ColorID,
+  TJvFullColorCircleDialog.GreenDelta, TJvFullColorCircleDialog.RedDelta,
+  TJvFullColorCircleDialog.Delta, TJvFullColorCircleDialog.Options
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.ColorID
+Summary
+  Identifier of the color space.
+Description
+  This is the identifier of the color space displayed in the dialog box.
+See Also
+  TJvFullColorCircleDialog.Delta
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog.BlueDelta
+Summary
+  Delta used for blue transformations.
+Description
+  This property gets and sets the delta for blue transformations.
+See Also
+  TJvFullColorCircleDialog.GreenDelta, TJvFullColorCircleDialog.RedDelta,
+  TJvFullColorCircleDialog.Delta
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisType.atBlue
+Description for atBlue
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorCircleEvent
+<TITLE TJvColorCircleEvent type> <COMBINE TJvFullColorCircleDialog.OnApply>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorCircleDialog
+<TITLEIMG TJvFullColorCircleDialog>
+JVCLInfo
+  GROUP=JVCL.Dialogs.Custom
+  FLAG=Component
+Summary
+  Dialog box displaying a TJvFullColorCircle and its TJvFullColorTrackBar.
+Description
+  This dialog displays a dialog box to configure color rotations structures used in the
+  JvFullColorRotate.pas unit.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisType.atCommon
+Description for atCommon
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisType.atRed
+Description for atRed
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisType.atGreen
+Description for atGreen
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisType
+<TITLE TJvAxisType type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialog.Options
@@ -390,7 +393,8 @@ See Also
 Summary
   Title of the dialog box.
 Description
-  This property changes the title of the dialog box displayed. You may have more customization by using
+  This property changes the title of the dialog box displayed. You may have more customization by
+  using
   the Form property during the OnShow event.
 See Also
   TJvFullColorDialog.OnShow, TJvFullColorDialog.Form
@@ -405,56 +409,53 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foFullOpen
-  The dialog box is initially expanded (the color panels are visible).
+The dialog box is initially expanded (the color panels are visible).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foPreventExpand
-  Disable the expand button.
+Disable the expand button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foShowHelp
-  Show the Help button.
+Show the Help button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foAllowSpaceChange
-  Allow the user to change the color space.
+Allow the user to change the color space.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foConvertToOriginalSpace
-  When the dialog box is closed, the color is converted back to the original color space.
+When the dialog box is closed, the color is converted back to the original color space.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foShowNewPreview
-  Show the preview of the new color.
+Show the preview of the new color.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foShowOldPreview
-  Show the preview of the old color.
+Show the preview of the old color.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foShowPredefined
-  Show the predefined combo box.
+Show the predefined combo box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foAllowVariable
-  Allow color space like predefined colors.
+Allow color space like predefined colors.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foNoneAndDefault
-  Allow the usage of clNone and clDefault in the predefined color space (only if foAllowVariable is
-  included).
+Allow the usage of clNone and clDefault in the predefined color space (only if foAllowVariable is included).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOption.foShowApply
-  Show the apply button.
+Show the apply button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorDialogOptions
-<TITLE TJvFullColorDialogOptions type>
-<COMBINE TJvFullColorDialogOption>
+<TITLE TJvFullColorDialogOptions type> <COMBINE TJvFullColorDialogOption>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFullColorEvent
-<TITLE TJvFullColorEvent type>
-<COMBINE TJvFullColorDialog.OnApply>
+<TITLE TJvFullColorEvent type> <COMBINE TJvFullColorDialog.OnApply>
 

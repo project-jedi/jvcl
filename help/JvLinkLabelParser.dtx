@@ -3,13 +3,20 @@
 ----------------------------------------------------------------------------------------------------
 @@JvLinkLabelParser.pas
 Summary
-  Contains parsing interfaces and default implementations used by TJvLinkLabel.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains parsing interfaces and default implementations used by TJvLinkLabel.
 Author
   David Polberger
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@IDynamicNodeHandler
+@@TElement.Text
+Description for Text
+
+----------------------------------------------------------------------------------------------------
+@@TElementKind
+<TITLE TElementKind type>
 Summary
   Write here a summary (1 line)
 Description
@@ -19,34 +26,122 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IDynamicNodeHandler.HandleDynamicNode
+@@TElement
+<TITLE TElement type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TElement.Kind
+Description for Kind
+
+----------------------------------------------------------------------------------------------------
+@@TDefaultParser.SetElementEnumerator
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Source - Description for this parameter
+  NewEnum - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDefaultParser.SetDynamicNodeHandler
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Handler - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDefaultParser.Parse@TStringList
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  List - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDefaultParser.Parse@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Text - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDefaultParser.AddSourceTreeToDynamicNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
   Node   - Description for this parameter
+  Source - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IElementEnumerator
+@@IParser.SetDynamicNodeHandler
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Handler - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IElementEnumerator.IsEndReached
+@@TDefaultParser
+Summary
+  The default parser used by the TJvLinkLabel component.
+Description
+  TDefaultParser is the default parser used by the TJvLinkLabel component. It implements the
+  IRenderer interface.
+
+----------------------------------------------------------------------------------------------------
+@@IParser.Parse@TStringList
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  List - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -54,23 +149,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IElementEnumerator.PeekNextElement
+@@IParser.Parse@string
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IElementEnumerator.PopNextElement
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Text - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -101,16 +189,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IParser.Parse@string
+@@IElementEnumerator.PopNextElement
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Text - Description for this parameter
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -118,16 +201,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IParser.Parse@TStringList
+@@IElementEnumerator.PeekNextElement
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  List - Description for this parameter
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -135,118 +213,42 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IParser.SetDynamicNodeHandler
+@@IElementEnumerator.IsEndReached
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Handler - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDefaultParser
+@@IElementEnumerator
 Summary
-  The default parser used by the TJvLinkLabel component.
+  Write here a summary (1 line)
 Description
-  TDefaultParser is the default parser used by the TJvLinkLabel component. It implements the IRenderer
-  interface.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDefaultParser.AddSourceTreeToDynamicNode
+@@IDynamicNodeHandler.HandleDynamicNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Node   - Description for this parameter
   Source - Description for this parameter
+  Node   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDefaultParser.Parse@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Text - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TDefaultParser.Parse@TStringList
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  List - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TDefaultParser.SetDynamicNodeHandler
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Handler - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TDefaultParser.SetElementEnumerator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NewEnum - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TElement
-<TITLE TElement type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TElement.Kind
-  Description for Kind
-
-----------------------------------------------------------------------------------------------------
-@@TElement.Text
-  Description for Text
-
-----------------------------------------------------------------------------------------------------
-@@TElementKind
-<TITLE TElementKind type>
+@@IDynamicNodeHandler
 Summary
   Write here a summary (1 line)
 Description
@@ -257,13 +259,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TElementKind.ekBeginTag
-  Description for ekBeginTag
+Description for ekBeginTag
 
 ----------------------------------------------------------------------------------------------------
 @@TElementKind.ekEndTag
-  Description for ekEndTag
+Description for ekEndTag
 
 ----------------------------------------------------------------------------------------------------
 @@TElementKind.ekString
-  Description for ekString
+Description for ekString
 

@@ -3,374 +3,115 @@
 ----------------------------------------------------------------------------------------------------
 @@JvHtmlParser.pas
 Summary
-  Contains the TJvHTMLParser component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvHTMLParser component.
 Author
   Sébastien Buysse
-
-----------------------------------------------------------------------------------------------------
-@@PTagInfo
-<TITLE PTagInfo type>
-<COMBINE TTagInfo>
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser
-<TITLEIMG TJvHTMLParser>
-JVCLInfo
-  GROUP=JVCL.Internet.ConvertersAndParsers.HTML
-  FLAG=Component
-Summary
-  Implements an HTML parser.
 Description
-  TJvHTMLParser is a TJvComponent descendant that implements an HTML parser. HTML Content can specified
-  using a string value or loaded from a specified file.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  TJvHTMLParser contains properties and methods needed to define HTML tags and conditional parsing
-  performed when analyzing the HTML Content passed to the parser.
 
-  Use AddCondition, ClearConditions, and RemoveCondition to maintain HTML tag definitions at run-time.
+----------------------------------------------------------------------------------------------------
+@@TTagInfo.EndContext
+Position or offset to the end of the context for an HTML tag.
 
-  Use Parser to specify the HTML tag definition(s) at design-time.
+----------------------------------------------------------------------------------------------------
+@@TTagInfo.Key
+Ordinal position of the HTML tag in the list of defined HTML tags.
 
-  Use OnKeyFound or OnKeyFoundEx to respond to event notifications that occur when an HTML is
-  encountered during parsing using the component.
+----------------------------------------------------------------------------------------------------
+@@TTagInfoList
+Summary
+  Stores offsets to HTML tags found using TJvHTMLParser.
+Description
+  TTagInfoList is a TList descendant used to store TTagInfo instances found during parsing of HTML
+  using the TJvHTMLParser component.
+  
+  TTagInfoList extends TList with methods needed to add and remove TTagInfo instances to the internal
+  storage for the list.
+  
+  TTagInfoList is used in the TJvHTMLParser.AnalyseString method to store offsets to the tags and
+  their content found when parsing the HTML for the component.
 See Also
-  TJvHTMLParser.Content, TJvHTMLParser.FileName, TJvHTMLParser.AnalyseString,
-  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AddCondition, TJvHTMLParser.ClearConditions,
-  TJvHTMLParser.RemoveCondition, TJvHTMLParser.OnKeyFound, TJvHTMLParser.OnKeyFoundEx,
-  TJvHTMLParser.Parser
+  TTagInfo, TJvHTMLParser.AnalyseString
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.AddCondition
+@@TTagInfo.BeginPos
+Position or offset to the beginning of an HTML tag.
+
+----------------------------------------------------------------------------------------------------
+@@TTagInfo.EndPos
+Position or offset to the end of an HTML tag.
+
+----------------------------------------------------------------------------------------------------
+@@TTagInfo.BeginContext
+Position or offset to the beginning of the context for an HTML tag.
+
+----------------------------------------------------------------------------------------------------
+@@TTagInfo
+<TITLE TTagInfo type>
 Summary
-  Adds an HTML tag definition with conditional parsing information to the HTML parser.
+  Represents information about HTML tags and attributes defined for use in the TJvHTMLParser
+  component.
 Description
-  AddCondition is a procedure used to define an HTML tag recognized by the parser component during
-  parsing operations in the AnalyseString method. AddCondition ensures that values passed in the
-  Keyword, StartTag, EndTag, and TextSelection arguments are used in the internal TJvParserInfo
-  instance created for the tag definition.
-
-  AddCondition is used to define HTML tags at run-time. Use the Parser property to define HTML tags
-  recognized by the parser at design-time.
-
-  Use RemoveCondition or ClearConditions to delete one or more HTML tag definitions recognized by the
-  parser.
-
-  Use ConditionsCount to determine the total number of HTML tags defined for the parser component.
-Parameters
-  Keyword       - Name associated with the HTML tag definition.
-  StartTag      - HTML that marks the start of the defined tag.
-  EndTag        - HTML that marls the end of the defined tag.
-  TextSelection - Conditional text parsing required for the HTML tag definition.
+  TTagInfo is a record type that represents information about HTML tags and attributes found in HTML
+  parsed using the TJvHTMLParser component. Member variables in TTagInfo are used to store both the
+  tag positions and context positions for an HTML tag with the specified key.
+  
+  Instances of TTagInfo are created and stored in the TTagInfoList list type used during parsing and
+  event notifications in the TJvHTMLParser.AnalyseString method.
 See Also
-  TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ClearConditions,
-  TJvHTMLParser.ConditionsCount
+  TTagInfoList, TJvHTMLParser.AnalyseString, TTagInfo.EndPos, TTagInfo.BeginPos, TTagInfo.EndContext,
+  TTagInfo.BeginContext
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.AnalyseFile
+@@TJvParserInfo.StartTag
 Summary
-  Loads and parses HTML content found in the file name for the parser.
+  HTML recognized as the start of a tag definition.
 Description
-  AnalyseFile is a procedure used to load an to parse the HTML content found in the file specified in
-  the FileName property. AnalyseFile stores the HTML in FileName in a string that is passed as an
-  argument to the AnalyseString method.
+  StartTag is a string member variable that indicates the HTML recognized as the start of a tag
+  definition in the TJvHTMLParser component.
+  
+  StartTag and EndTag are used to determine the boundaries of an HMTL tag set during parsing of HTML
+  in the AnalyseString method in TJvHTMLParser.
+  
+  Values in the StartTag and EndTag members are updated when an HTML tag definition is created using
+  the AddCondition method in TJvHTMLParser.
 See Also
-  TJvHTMLParser.AnalyseString, TJvHTMLParser.FileName
+  TJvParserInfo.EndTag, TJvHTMLParser.AnalyseString, TJvHTMLParser.AddCondition
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.AnalyseString
+@@TJvParserInfo.TakeText
 Summary
-  Parses the specified HTML content.
+  Indicates the text required for the HTML tag.
 Description
-  AnalyseString is a procedure used to specify the HTML Content to be parsed, and to generate a list
-  with information about tags detected during the method. The value in the Str argument is stored for
-  subsequent use in the Content property.
-
-  HTML tags recognized by the parser are defined using the AddCondition method or the Parser property.
-  Use AddCondition to define the HTML tags at run-time. Use the Parser property to define the HTML tags
-  at design-time. If no tags have been defined at run-time using AddCondition, any assigned values in
-  Parser are used to create the HTML tag definitions for the parser.
-
-  The TagList property is cleared proper to parsing, and updated to reflect HTML tags found matching
-  the their corresponding TJvParserInfo instance. All values in the Content property are examined for
-  recognized HTML tags during the parsing operation. When the parsing operation has been completed, the
-  values in TagList are sorted by their offset into the Content property.
-
-  Event notifications are performed using the OnKeyFound and OnKeyFoundEx event handlers for each HTML
-  tag stored in the TagList. When both the OnKeyFound and the OnKeyFoundEx events handlers are
-  assigned, both events are fired for each HTML tag. The OnKeyFoundEx event handler include any
-  attribute names and values found in the parsed HTML tags.
-
-  AnalyseString is called in the AnalyseFile method.
-Parameters
-  Str - HTML content to parse.
-See Also
-  TJvHTMLParser.Content, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser, TJvHTMLParser.TagList,
-  TJvHTMLParser.OnKeyFound, TJvHTMLParser.OnKeyFoundEx
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.ClearConditions
-Summary
-  Clears all HTML tag definitions.
-Description
-  ClearConditions is a procedure used to remove HTML tags defined using the Parser property or the
-  AddCondition method. ClearConditions removes all lines in the Parser property and clears the internal
-  list of TJvParserInfo instances used for tag definitions.
-
-  Use RemoveCondition to delete a single HTML tag definition recognized by the parser.
-
-  Use ConditionsCount to determine the total number of HTML tags defined for the parser component.
-See Also
-  TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ConditionsCount
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.ConditionsCount
-Summary
-  Number of HTML tags and conditional parsing definitions for the parser.
-Description
-  ConditionsCount is a read-only Integer property that indicates the total number of HTML tags defined
-  for use in the parser component. ConditionsCount is derived from the length of the internal list used
-  to store TJvParserInfo instances.
-See Also
-  TJvParserInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.Content
-Summary
-  HTML content to parse using the component.
-Description
-  Content is a read-only string property that represents the HTML content to examine when parsing HTML
-  tags and attributes in the AnalyseString method. Content is updated using the value passed as an
-  argument to the AnalyseString method.
-See Also
-  TJvHTMLParser.AnalyseString
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.FileName
-Summary
-  File name used to load the HTML content for the parser.
-Description
-  FileName is a TFileName property that specifies the file name used to load the HTML Content used
-  during parsing operation in the parser component.
-
-  At run-time, assigning a new value to the FileName property causes the AnalyseFile method to be
-  called. Assigning a FileName value at design-time has no effect other than updating the property
-  value.
-
-  Use AnalyseString to parse the HTML content specified using a string value.
-See Also
-  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AnalyseString
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.GetCondition@Integer@string@string@string
-Summary
-  Retrieves values for a tag definition by ordinal position.
-Description
-  GetCondition is an overloaded procedure used to access and store the information about an HTML tag
-  defined for use in the parser. GetCondition accesses internal TJvParserInfo instances stored for use
-  when parsing the HTML content in the parser.
-
-  Index indicates the ordinal position of the HTML tag and parsing conditions in the list of defined
-  tags. Use ConditionsCount to determine the total number of tags defined in the parser. Values in the
-  indicated TJvParserInfo instance are stored in the Keyword, StartTag, and EndTag variable arguments.
-
-  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
-  operations using the parser component.
-Parameters
-  Index    - Position of the HTML tag and parsing conditions in the list of defined tags.
-  Keyword  - Name associated with the HTML tag definition.
-  StartTag - HTML that marks the start of the defined tag.
-  EndTag   - HTML that marls the end of the defined tag.
-See Also
-  TJvParserInfo, TJvHTMLParser.ConditionsCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.GetCondition@Integer@string@string@string@Integer
-Summary
-  Retrieves values for a tag definition by ordinal position.
-Description
-  GetCondition is an overloaded procedure used to access and store the information about an HTML tag
-  defined for use in the parser. GetCondition accesses internal TJvParserInfo instances stored for use
-  when parsing the HTML content in the parser.
-
-  Index indicates the ordinal position of the HTML tag and parsing conditions in the list of defined
-  tags. Use ConditionsCount to determine the total number of tags defined in the parser. Values in the
-  indicated TJvParserInfo instance are stored in the Keyword, StartTag, EndTag, and TextSelection
-  variable arguments.
-
-  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
-  operations using the parser component.
-Parameters
-  Index         - Position of the HTML tag and parsing conditions in the list of defined tags.
-  Keyword       - Name associated with the HTML tag definition.
-  StartTag      - HTML that marks the start of the defined tag.
-  EndTag        - HTML that marls the end of the defined tag.
-  TextSelection - Position of the text matching the selected tag definition.
-See Also
-  TJvParserInfo, TJvHTMLParser.ConditionsCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.OnKeyFound
-Summary
-  Event handler signaled when a defined HTML tag is encountered during parsing.
-Description
-  OnKeyFound is a TJvKeyFoundEvent property that represents the event handler signaled when a defined
-  HTML tag is encountered during parsing.
-
-  OnKeyFound is signaled in the AnalyseString method after HTML tags have been parsed from the HTML
-  Content for the parser component. OnKeyFound is fired for each value stored in list of parsed tags in
-  TagList, and includes the arguments described in the list of Parameters.
-
-  Use the OnKeyFoundEx event handler to respond to tags that include attributes with values in the HTML
-  tag.
-
-  Applications must assign a procedure to the event handler to allow responding to the event
-  notifications. If an event handler is unassigned, the event notification is not performed. If both
-  event handlers are assigned, both events are fired for each HTML tag in the TagList.
-
-  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
-  operations using the parser component.
-Parameters
-  Sender       - Object generating the event notification.
-  Key          - Name associated with the HTML tag.
-  Results      - Textual context for the HTL tag.
-  OriginalLine - Line of text containing the HTML tag.
-See Also
-  TJvKeyFoundExEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList, TJvHTMLParser.Parser,
-  TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFoundEx
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.OnKeyFoundEx
-Summary
-  Event handler signaled when a defined HTML tag is encountered during parsing.
-Description
-  OnKeyFoundEx is a TJvKeyFoundExEvent property that represents the event handler signaled when a
-  defined HTML tag is encountered during parsing.
-
-  OnKeyFoundEx is signaled in the AnalyseString method after HTML tags have been parsed from the HTML
-  Content for the parser component. OnKeyFoundEx is fired for each value stored in list of parsed tags
-  in TagList, and includes the arguments described in the list of Parameters.
-
-  Use the OnKeyFound event handler to respond to tags that do not include attributes with values in the
-  HTML tag.
-
-  Applications must assign a procedure to the event handler to allow responding to the event
-  notifications. If an event handler is unassigned, the event notification is not performed. If both
-  event handlers are assigned, both events are fired for each HTML tag in the TagList.
-
-  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
-  operations using the parser component.
-Parameters
-  Sender       - Object generating the event notification.
-  Key          - Name associated with the HTML tag.
-  Results      - Textual context for the HTL tag.
-  OriginalLine - Line of text containing the HTML tag.
-  TagInfo      - Storage allocated for the HTML tag definition.
-  Attributes   - Attribute names and values found in the HTML start tag.
-See Also
-  TJvKeyFoundEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList, TJvHTMLParser.Parser,
-  TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFound
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.Parser
-Summary
-  Design-time HTML tag definitions for the HTML parser.
-Description
-  Parser is a TStrings property that represents HTML tag definitions created at design-time for the
-  HTML parser. Parser is used when the Delphi component streaming mechanism has completely loaded the
-  component. Values in Parser are used to create and store the HTML tag definitions maintained
-  internally in the parser.
-
-  Lines must be added to the Parser property in multiples of 5; in other words, 5 lines are required
-  for a single tag definition. The following table indicates the relative positions and uses of the
-  lines added to the Parser property:
-
-  <TABLE 20c%,80c%>
-    Position  Meaning
-    --------  --------------------------------------------------------------------------------
-    0         Keyword or Name associated with the tag definition.
-    1         HTML representing the start of the tag.
-    2         HTML representing the end of the tag.
-    3         Ordinal position of the tag definition in the resulting list of tags.
-    4         Conditional parsing required for the tag. See TJvParserInfo.MustBe for
-                acceptable values.
+  TakeText is an Integer member variable that indicates the conditional text parsing required for an
+  HTML tag defined for the TJvHTMLParser component. TakeText can contain the following values:
+  
+  <TABLE>
+    Value  Meaning
+    -----  ---------------------------------------------------------------------------------
+    0      Takes text following the HTML start tag, up to the beginning of the HTML end tag.
+    1      Takes all text prior to the HTML start tag.
+    2      Takes all text following the end of the HTML start tag.
+    3      Takes the entire line of test containing the HTML start tag.
   </TABLE>
-
-  Use AddCondition, ClearConditions, and RemoveCondition to maintain HTML tag definitions at run-time.
-
-  Use TagList to access the HTML tags encountered during parsing of the HTML content for the parser.
+  
+  TakeText is used in the AnalyseString method of TJvHTMLParser to derive the values for the
+  BeginContext and EndContext members in the TTagInfo instance for the parsed HTML tag.
 See Also
-  TJvHTMLParser.AddCondition, TJvHTMLParser.ClearConditions, TJvHTMLParser.RemoveCondition,
-  TJvHTMLParser.TagList, TJvParserInfo.MustBe
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.RemoveCondition
-Summary
-  Removes the tag and parsing conditions at the specified position.
-Description
-  RemoveCondition is a procedure used to remove the HTML tag definition at the position specified in
-  Index from the internal list in the HTML parser.
-
-  Use GetCondition to access values for the HTML tag definition at a specified position.
-
-  Use ClearConditions to remove all HTML tag definitions for the parser.
-Parameters
-  Index - Position to be removed from the list of defined tags and parsing conditions.
-See Also
-  TJvHTMLParser.GetCondition, TJvHTMLParser.ClearConditions
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLParser.TagList
-Summary
-  List of HTML tags parsed using tag definitions in the HTML Parser.
-Description
-  TagList is a protected TTagInfoList property that represents the HTML tags encountered when parsing
-  values in the HTML Content. TagList is maintained in the AnalyseString method when an HTML tag
-  defined using the Parser property or the AddCondition method is found.
-
-  TTagInfo instances are created and stored in TagList for HTML tags found the HTML Content. Values in
-  TagList are also used in the AnalyseString method to perform event notifications to the OnKeyFound
-  and OnKeyFoundEx event handlers.
-See Also
-  TTagInfoList, TJvHTMLParser.Content, TJvHTMLParser.AnalyseString, TJvHTMLParser.OnKeyFound,
-  TJvHTMLParser.OnKeyFoundEx
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyFoundEvent
-<TITLE TJvKeyFoundEvent type>
-<COMBINE TJvHTMLParser.OnKeyFound>
-
-----------------------------------------------------------------------------------------------------
-@@TJvKeyFoundExEvent
-<TITLE TJvKeyFoundExEvent type>
-<COMBINE TJvHTMLParser.OnKeyFoundEx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvParserInfo
-Summary
-  Represents an HTML tag definition and conditional parsing used by the TJvHTMLParser component.
-Description
-  TJvParserInfo is a TObject descendant that represents an HTML tag and the conditional parsing defined
-  for the TJvHTMLParser component. Member variables in TJvParserInfo indicate the HTML start and end
-  tags used by the parser, and the textual content required in the context of the HTML tag.
-
-  TJvParserInfo instances are created for use in TJvHTMLParser when the AddCondition method is called.
-  TJvParserInfo instances are also created when TJvParserInfo is loaded using the Delphi component
-  streaming mechanism and the Parser definition contains values set at design-time.
-See Also
-  TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
+  TJvHTMLParser.AnalyseString, TTagInfo.BeginContext, TTagInfo.EndContext
 
 ----------------------------------------------------------------------------------------------------
 @@TJvParserInfo.EndTag
 Summary
   HTML recognized as the end of a tag definition.
 Description
-  EndTag is a string member variable that indicates the HTML recognized as the end of a tag definition
-  in the TJvHTMLParser component.
-
-  StartTag and EndTag are used to determine the boundaries of an HMTL tag set during parsing of HTML in
-  the AnalyseString method in TJvHTMLParser.
-
+  EndTag is a string member variable that indicates the HTML recognized as the end of a tag
+  definition in the TJvHTMLParser component.
+  
+  StartTag and EndTag are used to determine the boundaries of an HMTL tag set during parsing of HTML
+  in the AnalyseString method in TJvHTMLParser.
+  
   Values in the StartTag and EndTag members are updated when an HTML tag definition is created using
   the AddCondition method in TJvHTMLParser.
 See Also
@@ -388,95 +129,357 @@ See Also
   TJvHTMLParser.Parser
 
 ----------------------------------------------------------------------------------------------------
-@@TJvParserInfo.StartTag
-Summary
-  HTML recognized as the start of a tag definition.
-Description
-  StartTag is a string member variable that indicates the HTML recognized as the start of a tag
-  definition in the TJvHTMLParser component.
-
-  StartTag and EndTag are used to determine the boundaries of an HMTL tag set during parsing of HTML in
-  the AnalyseString method in TJvHTMLParser.
-
-  Values in the StartTag and EndTag members are updated when an HTML tag definition is created using
-  the AddCondition method in TJvHTMLParser.
-See Also
-  TJvParserInfo.EndTag, TJvHTMLParser.AnalyseString, TJvHTMLParser.AddCondition
+@@TJvKeyFoundEvent
+<TITLE TJvKeyFoundEvent type> <COMBINE TJvHTMLParser.OnKeyFound>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvParserInfo.TakeText
-Summary
-  Indicates the text required for the HTML tag.
-Description
-  TakeText is an Integer member variable that indicates the conditional text parsing required for an
-  HTML tag defined for the TJvHTMLParser component. TakeText can contain the following values:
+@@TJvKeyFoundExEvent
+<TITLE TJvKeyFoundExEvent type> <COMBINE TJvHTMLParser.OnKeyFoundEx>
 
-  <TABLE>
-    Value  Meaning
-    -----  ---------------------------------------------------------------------------------
-    0      Takes text following the HTML start tag, up to the beginning of the HTML end tag.
-    1      Takes all text prior to the HTML start tag.
-    2      Takes all text following the end of the HTML start tag.
-    3      Takes the entire line of test containing the HTML start tag.
+----------------------------------------------------------------------------------------------------
+@@TJvParserInfo
+Summary
+  Represents an HTML tag definition and conditional parsing used by the TJvHTMLParser component.
+Description
+  TJvParserInfo is a TObject descendant that represents an HTML tag and the conditional parsing
+  defined for the TJvHTMLParser component. Member variables in TJvParserInfo indicate the HTML start
+  and end tags used by the parser, and the textual content required in the context of the HTML tag.
+  
+  TJvParserInfo instances are created for use in TJvHTMLParser when the AddCondition method is called.
+  TJvParserInfo instances are also created when TJvParserInfo is loaded using the Delphi component
+  streaming mechanism and the Parser definition contains values set at design-time.
+See Also
+  TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.RemoveCondition
+Summary
+  Removes the tag and parsing conditions at the specified position.
+Description
+  RemoveCondition is a procedure used to remove the HTML tag definition at the position specified in
+  Index from the internal list in the HTML parser.
+  
+  Use GetCondition to access values for the HTML tag definition at a specified position.
+  
+  Use ClearConditions to remove all HTML tag definitions for the parser.
+Parameters
+  Index - Position to be removed from the list of defined tags and parsing conditions.
+See Also
+  TJvHTMLParser.GetCondition, TJvHTMLParser.ClearConditions
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.TagList
+Summary
+  List of HTML tags parsed using tag definitions in the HTML Parser.
+Description
+  TagList is a protected TTagInfoList property that represents the HTML tags encountered when parsing
+  values in the HTML Content. TagList is maintained in the AnalyseString method when an HTML tag
+  defined using the Parser property or the AddCondition method is found.
+  
+  TTagInfo instances are created and stored in TagList for HTML tags found the HTML Content. Values in
+  TagList are also used in the AnalyseString method to perform event notifications to the OnKeyFound
+  and OnKeyFoundEx event handlers.
+See Also
+  TTagInfoList, TJvHTMLParser.Content, TJvHTMLParser.AnalyseString, TJvHTMLParser.OnKeyFound,
+  TJvHTMLParser.OnKeyFoundEx
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.Parser
+Summary
+  Design-time HTML tag definitions for the HTML parser.
+Description
+  Parser is a TStrings property that represents HTML tag definitions created at design-time for the
+  HTML parser. Parser is used when the Delphi component streaming mechanism has completely loaded the
+  component. Values in Parser are used to create and store the HTML tag definitions maintained
+  internally in the parser.
+  
+  Lines must be added to the Parser property in multiples of 5; in other words, 5 lines are required
+  for a single tag definition. The following table indicates the relative positions and uses of the
+  lines added to the Parser property:
+  
+  <TABLE 20c%,80c%>
+    Position  Meaning
+    --------  --------------------------------------------------------------------------------
+    0         Keyword or Name associated with the tag definition.
+    1         HTML representing the start of the tag.
+    2         HTML representing the end of the tag.
+    3         Ordinal position of the tag definition in the resulting list of tags.
+    4         Conditional parsing required for the tag. See TJvParserInfo.MustBe for
+                acceptable values.
   </TABLE>
-
-  TakeText is used in the AnalyseString method of TJvHTMLParser to derive the values for the
-  BeginContext and EndContext members in the TTagInfo instance for the parsed HTML tag.
+  
+  Use AddCondition, ClearConditions, and RemoveCondition to maintain HTML tag definitions at run-time.
+  
+  Use TagList to access the HTML tags encountered during parsing of the HTML content for the parser.
 See Also
-  TJvHTMLParser.AnalyseString, TTagInfo.BeginContext, TTagInfo.EndContext
+  TJvHTMLParser.AddCondition, TJvHTMLParser.ClearConditions, TJvHTMLParser.RemoveCondition,
+  TJvHTMLParser.TagList, TJvParserInfo.MustBe
 
 ----------------------------------------------------------------------------------------------------
-@@TTagInfo
-<TITLE TTagInfo type>
+@@TJvHTMLParser.OnKeyFoundEx
 Summary
-  Represents information about HTML tags and attributes defined for use in the TJvHTMLParser
-  component.
+  Event handler signaled when a defined HTML tag is encountered during parsing.
 Description
-  TTagInfo is a record type that represents information about HTML tags and attributes found in HTML
-  parsed using the TJvHTMLParser component. Member variables in TTagInfo are used to store both the tag
-  positions and context positions for an HTML tag with the specified key.
-
-  Instances of TTagInfo are created and stored in the TTagInfoList list type used during parsing and
-  event notifications in the TJvHTMLParser.AnalyseString method.
+  OnKeyFoundEx is a TJvKeyFoundExEvent property that represents the event handler signaled when a
+  defined HTML tag is encountered during parsing.
+  
+  OnKeyFoundEx is signaled in the AnalyseString method after HTML tags have been parsed from the HTML
+  Content for the parser component. OnKeyFoundEx is fired for each value stored in list of parsed
+  tags in TagList, and includes the arguments described in the list of Parameters.
+  
+  Use the OnKeyFound event handler to respond to tags that do not include attributes with values in
+  the
+  HTML tag.
+  
+  Applications must assign a procedure to the event handler to allow responding to the event
+  notifications. If an event handler is unassigned, the event notification is not performed. If both
+  event handlers are assigned, both events are fired for each HTML tag in the TagList.
+  
+  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
+  operations using the parser component.
+Parameters
+  Sender       - Object generating the event notification.
+  Key          - Name associated with the HTML tag.
+  Results      - Textual context for the HTL tag.
+  OriginalLine - Line of text containing the HTML tag.
+  TagInfo      - Storage allocated for the HTML tag definition.
+  Attributes   - Attribute names and values found in the HTML start tag.
 See Also
-  TTagInfoList, TJvHTMLParser.AnalyseString, TTagInfo.EndPos, TTagInfo.BeginPos, TTagInfo.EndContext,
-  TTagInfo.BeginContext
+  TJvKeyFoundEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList, TJvHTMLParser.Parser,
+  TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFound
 
 ----------------------------------------------------------------------------------------------------
-@@TTagInfo.BeginPos
-  Position or offset to the beginning of an HTML tag.
-
-----------------------------------------------------------------------------------------------------
-@@TTagInfo.EndPos
-  Position or offset to the end of an HTML tag.
-
-----------------------------------------------------------------------------------------------------
-@@TTagInfo.BeginContext
-  Position or offset to the beginning of the context for an HTML tag.
-
-----------------------------------------------------------------------------------------------------
-@@TTagInfo.EndContext
-  Position or offset to the end of the context for an HTML tag.
-
-----------------------------------------------------------------------------------------------------
-@@TTagInfo.Key
-  Ordinal position of the HTML tag in the list of defined HTML tags.
-
-----------------------------------------------------------------------------------------------------
-@@TTagInfoList
+@@TJvHTMLParser.OnKeyFound
 Summary
-  Stores offsets to HTML tags found using TJvHTMLParser.
+  Event handler signaled when a defined HTML tag is encountered during parsing.
 Description
-  TTagInfoList is a TList descendant used to store TTagInfo instances found during parsing of HTML
-  using the TJvHTMLParser component.
-
-  TTagInfoList extends TList with methods needed to add and remove TTagInfo instances to the internal
-  storage for the list.
-
-  TTagInfoList is used in the TJvHTMLParser.AnalyseString method to store offsets to the tags and their
-  content found when parsing the HTML for the component.
+  OnKeyFound is a TJvKeyFoundEvent property that represents the event handler signaled when a defined
+  HTML tag is encountered during parsing.
+  
+  OnKeyFound is signaled in the AnalyseString method after HTML tags have been parsed from the HTML
+  Content for the parser component. OnKeyFound is fired for each value stored in list of parsed tags
+  in
+  TagList, and includes the arguments described in the list of Parameters.
+  
+  Use the OnKeyFoundEx event handler to respond to tags that include attributes with values in the
+  HTML tag.
+  
+  Applications must assign a procedure to the event handler to allow responding to the event
+  notifications. If an event handler is unassigned, the event notification is not performed. If both
+  event handlers are assigned, both events are fired for each HTML tag in the TagList.
+  
+  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
+  operations using the parser component.
+Parameters
+  Sender       - Object generating the event notification.
+  Key          - Name associated with the HTML tag.
+  Results      - Textual context for the HTL tag.
+  OriginalLine - Line of text containing the HTML tag.
 See Also
-  TTagInfo, TJvHTMLParser.AnalyseString
+  TJvKeyFoundExEvent, TJvHTMLParser.AnalyseString, TJvHTMLParser.TagList, TJvHTMLParser.Parser,
+  TJvHTMLParser.AddCondition, TJvHTMLParser.OnKeyFoundEx
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.GetCondition@Integer@string@string@string@Integer
+Summary
+  Retrieves values for a tag definition by ordinal position.
+Description
+  GetCondition is an overloaded procedure used to access and store the information about an HTML tag
+  defined for use in the parser. GetCondition accesses internal TJvParserInfo instances stored for
+  use when parsing the HTML content in the parser.
+  
+  Index indicates the ordinal position of the HTML tag and parsing conditions in the list of defined
+  tags. Use ConditionsCount to determine the total number of tags defined in the parser. Values in
+  the indicated TJvParserInfo instance are stored in the Keyword, StartTag, EndTag, and TextSelection
+  variable arguments.
+  
+  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
+  operations using the parser component.
+Parameters
+  Index         - Position of the HTML tag and parsing conditions in the list of defined tags.
+  Keyword       - Name associated with the HTML tag definition.
+  StartTag      - HTML that marks the start of the defined tag.
+  EndTag        - HTML that marls the end of the defined tag.
+  TextSelection - Position of the text matching the selected tag definition.
+See Also
+  TJvParserInfo, TJvHTMLParser.ConditionsCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.GetCondition@Integer@string@string@string
+Summary
+  Retrieves values for a tag definition by ordinal position.
+Description
+  GetCondition is an overloaded procedure used to access and store the information about an HTML tag
+  defined for use in the parser. GetCondition accesses internal TJvParserInfo instances stored for
+  use when parsing the HTML content in the parser.
+  
+  Index indicates the ordinal position of the HTML tag and parsing conditions in the list of defined
+  tags. Use ConditionsCount to determine the total number of tags defined in the parser. Values in
+  the indicated TJvParserInfo instance are stored in the Keyword, StartTag, and EndTag variable
+  arguments.
+  
+  Use the Parser property or the AddCondition method to define HTML tags recognized during parsing
+  operations using the parser component.
+Parameters
+  Index    - Position of the HTML tag and parsing conditions in the list of defined tags.
+  Keyword  - Name associated with the HTML tag definition.
+  StartTag - HTML that marks the start of the defined tag.
+  EndTag   - HTML that marls the end of the defined tag.
+See Also
+  TJvParserInfo, TJvHTMLParser.ConditionsCount, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.FileName
+Summary
+  File name used to load the HTML content for the parser.
+Description
+  FileName is a TFileName property that specifies the file name used to load the HTML Content used
+  during parsing operation in the parser component.
+  
+  At run-time, assigning a new value to the FileName property causes the AnalyseFile method to be
+  called. Assigning a FileName value at design-time has no effect other than updating the property
+  value.
+  
+  Use AnalyseString to parse the HTML content specified using a string value.
+See Also
+  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AnalyseString
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.ConditionsCount
+Summary
+  Number of HTML tags and conditional parsing definitions for the parser.
+Description
+  ConditionsCount is a read-only Integer property that indicates the total number of HTML tags
+  defined for use in the parser component. ConditionsCount is derived from the length of the internal
+  list used to store TJvParserInfo instances.
+See Also
+  TJvParserInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.Content
+Summary
+  HTML content to parse using the component.
+Description
+  Content is a read-only string property that represents the HTML content to examine when parsing
+  HTML tags and attributes in the AnalyseString method. Content is updated using the value passed as
+  an argument to the AnalyseString method.
+See Also
+  TJvHTMLParser.AnalyseString
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.ClearConditions
+Summary
+  Clears all HTML tag definitions.
+Description
+  ClearConditions is a procedure used to remove HTML tags defined using the Parser property or the
+  AddCondition method. ClearConditions removes all lines in the Parser property and clears the
+  internal list of TJvParserInfo instances used for tag definitions.
+  
+  Use RemoveCondition to delete a single HTML tag definition recognized by the parser.
+  
+  Use ConditionsCount to determine the total number of HTML tags defined for the parser component.
+See Also
+  TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ConditionsCount
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.AnalyseString
+Summary
+  Parses the specified HTML content.
+Description
+  AnalyseString is a procedure used to specify the HTML Content to be parsed, and to generate a list
+  with information about tags detected during the method. The value in the Str argument is stored for
+  subsequent use in the Content property.
+  
+  HTML tags recognized by the parser are defined using the AddCondition method or the Parser property.
+  Use AddCondition to define the HTML tags at run-time. Use the Parser property to define the HTML
+  tags at design-time. If no tags have been defined at run-time using AddCondition, any assigned
+  values in
+  Parser are used to create the HTML tag definitions for the parser.
+  
+  The TagList property is cleared proper to parsing, and updated to reflect HTML tags found matching
+  the their corresponding TJvParserInfo instance. All values in the Content property are examined for
+  recognized HTML tags during the parsing operation. When the parsing operation has been completed,
+  the values in TagList are sorted by their offset into the Content property.
+  
+  Event notifications are performed using the OnKeyFound and OnKeyFoundEx event handlers for each
+  HTML tag stored in the TagList. When both the OnKeyFound and the OnKeyFoundEx events handlers are
+  assigned, both events are fired for each HTML tag. The OnKeyFoundEx event handler include any
+  attribute names and values found in the parsed HTML tags.
+  
+  AnalyseString is called in the AnalyseFile method.
+Parameters
+  Str - HTML content to parse.
+See Also
+  TJvHTMLParser.Content, TJvHTMLParser.AddCondition, TJvHTMLParser.Parser, TJvHTMLParser.TagList,
+  TJvHTMLParser.OnKeyFound, TJvHTMLParser.OnKeyFoundEx
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.AnalyseFile
+Summary
+  Loads and parses HTML content found in the file name for the parser.
+Description
+  AnalyseFile is a procedure used to load an to parse the HTML content found in the file specified in
+  the FileName property. AnalyseFile stores the HTML in FileName in a string that is passed as an
+  argument to the AnalyseString method.
+See Also
+  TJvHTMLParser.AnalyseString, TJvHTMLParser.FileName
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser.AddCondition
+Summary
+  Adds an HTML tag definition with conditional parsing information to the HTML parser.
+Description
+  AddCondition is a procedure used to define an HTML tag recognized by the parser component during
+  parsing operations in the AnalyseString method. AddCondition ensures that values passed in the
+  Keyword, StartTag, EndTag, and TextSelection arguments are used in the internal TJvParserInfo
+  instance created for the tag definition.
+  
+  AddCondition is used to define HTML tags at run-time. Use the Parser property to define HTML tags
+  recognized by the parser at design-time.
+  
+  Use RemoveCondition or ClearConditions to delete one or more HTML tag definitions recognized by the
+  parser.
+  
+  Use ConditionsCount to determine the total number of HTML tags defined for the parser component.
+Parameters
+  Keyword       - Name associated with the HTML tag definition.
+  StartTag      - HTML that marks the start of the defined tag.
+  EndTag        - HTML that marls the end of the defined tag.
+  TextSelection - Conditional text parsing required for the HTML tag definition.
+See Also
+  TJvParserInfo, TJvHTMLParser.RemoveCondition, TJvHTMLParser.ClearConditions,
+  TJvHTMLParser.ConditionsCount
+
+----------------------------------------------------------------------------------------------------
+@@PTagInfo
+<TITLE PTagInfo type> <COMBINE TTagInfo>
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLParser
+<TITLEIMG TJvHTMLParser>
+JVCLInfo
+  GROUP=JVCL.Internet.ConvertersAndParsers.HTML
+  FLAG=Component
+Summary
+  Implements an HTML parser.
+Description
+  TJvHTMLParser is a TJvComponent descendant that implements an HTML parser. HTML Content can
+  specified using a string value or loaded from a specified file.
+  
+  TJvHTMLParser contains properties and methods needed to define HTML tags and conditional parsing
+  performed when analyzing the HTML Content passed to the parser.
+  
+  Use AddCondition, ClearConditions, and RemoveCondition to maintain HTML tag definitions at run-time.
+  
+  Use Parser to specify the HTML tag definition(s) at design-time.
+  
+  Use OnKeyFound or OnKeyFoundEx to respond to event notifications that occur when an HTML is
+  encountered during parsing using the component.
+See Also
+  TJvHTMLParser.Content, TJvHTMLParser.FileName, TJvHTMLParser.AnalyseString,
+  TJvHTMLParser.AnalyseFile, TJvHTMLParser.AddCondition, TJvHTMLParser.ClearConditions,
+  TJvHTMLParser.RemoveCondition, TJvHTMLParser.OnKeyFound, TJvHTMLParser.OnKeyFoundEx,
+  TJvHTMLParser.Parser
 
 ----------------------------------------------------------------------------------------------------
 @@TTagInfoList.AddValue
@@ -484,12 +487,12 @@ Summary
   Initializes and updates storage for TTagInfo instances in the list.
 Description
   AddValue is a procedure used to add initialize memory storage and to add the TTagInfo instance in
-  Value to the internal storage for the list. AddValue uses PTagInfo to point to the TTagInfo instance,
-  and calls GetMem to allocate store for the tag information.
-
+  Value to the internal storage for the list. AddValue uses PTagInfo to point to the TTagInfo
+  instance, and calls GetMem to allocate store for the tag information.
+  
   AddValue calls the inherited Add method after initializing and storing the content for the TTagInfo
   instance in Value.
-
+  
   Use Delete or Clear to remove items stored in the list.
 Parameters
   Value - Tag information to add to the list.
@@ -504,7 +507,7 @@ Description
   Clear is an overridden procedure in TTagInfoList used to remove instances of TTagInfo allocated to
   the internal storage for the list. Clear ensures the memory allocated to any TTagInfo instances in
   AddValue is freed, and calls the inherited Clear method.
-
+  
   Use AddValue to create and allocate memory for TTagInfo instances in the list.
 See Also
   TTagInfoList.AddValue

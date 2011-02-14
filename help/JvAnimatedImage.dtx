@@ -1,15 +1,16 @@
 ##Package: MM
 ##Status: Completed, Needs review
-##Skip: TJvLockedBitmap
 ----------------------------------------------------------------------------------------------------
 @@JvAnimatedImage.pas
 Summary
-  Contains the TJvAnimatedImage component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAnimatedImage component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphOrientation
@@ -22,95 +23,44 @@ See Also
   TJvAnimatedImage.Glyph, TJvAnimatedImage.NumGlyphs
 
 ----------------------------------------------------------------------------------------------------
-@@TGlyphOrientation.goHorizontal
-  The Glyph will be cut horizontally
-
-----------------------------------------------------------------------------------------------------
-@@TGlyphOrientation.goVertical
-  The glyph will be cut vertically
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage
-<TITLEIMG TJvAnimatedImage>
-JVCLInfo
-  GROUP=JVCL.Graphics.Animations
-  FLAG=Component
+@@TJvAnimatedImage.Stretch
 Summary
-  A component that takes a glyph, cuts it along one direction to create frames to be displayed as an
-  animation.
-Description
-  The Glyph property is cut according to the NumGlyph property and each sub-glyph is considered as a
-  frame for the animation to be performed
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Active
-Summary
-  If true, the animation is being performed.
+  If true, the image is stretched to fit in the control size
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.AsyncDrawing
-Summary
-  Determines if the drawing thread is synchronized to the main VCL thread
-Description
-  If true, the drawing thread is not synchronized to the main VCL thread. This leads to a risk of
-  exception and should not be used.
-See Also
-  TJvTimer.SyncEvent
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Center
-Summary
-  Determines if the animation is drawn centered in the control
-Description
-  For Center to have an impact, you must set AutoSize and Stretch to False
 See Also
   <DELPHILINK TControl.AutoSize>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Glyph
+@@TJvAnimatedImage.Orientation
 Summary
-  The glyph to use for the animation
+  The orientation used to create the frames from Glyph
 Description
-  Depending on the value of Orientation, the glyph will be cut along its width or its height to
-  determine the frames to use for the animation.
+  If orientation is goHorizontal, the Glyph property will be cut along its width If orientation is
+  goVertical, the Glyph property will be cut along its height
 See Also
-  TJvAnimatedImage.GlyphNum, TJvAnimatedImage.NumGlyphs, TJvAnimatedImage.Orientation
+  TJvAnimatedImage.Glyph, TJvAnimatedImage.NumGlyphs
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.GlyphNum
+@@TJvImageControl
 Summary
-  Indicate which sub-glyph in Glyph is to be displayed at the start of the animation
-Description
-  At runtime, this value is updated to indicate which glyph is being displayed
-See Also
-  TJvAnimatedImage.Glyph, TJvAnimatedImage.InactiveGlyph, TJvAnimatedImage.NumGlyphs
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.InactiveGlyph
-Summary
-  The sub-glyph to display when the image is inactive
-Description
-  Write here a description
-See Also
-  TJvAnimatedImage.Active, TJvAnimatedImage.GlyphNum
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Interval
-Summary
-  The interval in milliseconds between each frame
+  This is a control that displays an image using buffered painting
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.NumGlyphs
+@@TJvAnimatedImage.Transparent
 Summary
-  The number of frames in the Glyph property
+  If True the background of the image is transparent.
 Description
-  The sub-glyphs (frames) will be cut according to the orientation
-See Also
-  TJvAnimatedImage.Glyph, TJvAnimatedImage.Orientation
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.TransparentColor
+Summary
+  Indicate which color is to be considered transparent in the glyph
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimatedImage.OnFrameChanged
@@ -138,42 +88,93 @@ See Also
   TJvAnimatedImage.OnStart
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Orientation
+@@TJvAnimatedImage.Interval
 Summary
-  The orientation used to create the frames from Glyph
-Description
-  If orientation is goHorizontal, the Glyph property will be cut along its width If orientation is
-  goVertical, the Glyph property will be cut along its height
-See Also
-  TJvAnimatedImage.Glyph, TJvAnimatedImage.NumGlyphs
-
-----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Stretch
-Summary
-  If true, the image is stretched to fit in the control size
+  The interval in milliseconds between each frame
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.NumGlyphs
+Summary
+  The number of frames in the Glyph property
+Description
+  The sub-glyphs (frames) will be cut according to the orientation
+See Also
+  TJvAnimatedImage.Glyph, TJvAnimatedImage.Orientation
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.AsyncDrawing
+Summary
+  Determines if the drawing thread is synchronized to the main VCL thread
+Description
+  If true, the drawing thread is not synchronized to the main VCL thread. This leads to a risk of
+  exception and should not be used.
+See Also
+  TJvTimer.SyncEvent
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.Center
+Summary
+  Determines if the animation is drawn centered in the control
+Description
+  For Center to have an impact, you must set AutoSize and Stretch to False
 See Also
   <DELPHILINK TControl.AutoSize>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.Transparent
+@@TJvAnimatedImage.GlyphNum
 Summary
-  If True the background of the image is transparent.
+  Indicate which sub-glyph in Glyph is to be displayed at the start of the animation
+Description
+  At runtime, this value is updated to indicate which glyph is being displayed
+See Also
+  TJvAnimatedImage.Glyph, TJvAnimatedImage.InactiveGlyph, TJvAnimatedImage.NumGlyphs
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.InactiveGlyph
+Summary
+  The sub-glyph to display when the image is inactive
+Description
+  Write here a description
+See Also
+  TJvAnimatedImage.Active, TJvAnimatedImage.GlyphNum
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.Glyph
+Summary
+  The glyph to use for the animation
+Description
+  Depending on the value of Orientation, the glyph will be cut along its width or its height to
+  determine the frames to use for the animation.
+See Also
+  TJvAnimatedImage.GlyphNum, TJvAnimatedImage.NumGlyphs, TJvAnimatedImage.Orientation
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage.Active
+Summary
+  If true, the animation is being performed.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAnimatedImage.TransparentColor
-Summary
-  Indicate which color is to be considered transparent in the glyph
-Description
-  Write here a description
+@@TGlyphOrientation.goHorizontal
+The Glyph will be cut horizontally
 
 ----------------------------------------------------------------------------------------------------
-@@TJvImageControl
+@@TGlyphOrientation.goVertical
+The glyph will be cut vertically
+
+----------------------------------------------------------------------------------------------------
+@@TJvAnimatedImage
+<TITLEIMG TJvAnimatedImage>
+JVCLInfo
+  GROUP=JVCL.Graphics.Animations
+  FLAG=Component
 Summary
-  This is a control that displays an image using buffered painting
+  A component that takes a glyph, cuts it along one direction to create frames to be displayed as an
+  animation.
 Description
-  Write here a description
+  The Glyph property is cut according to the NumGlyph property and each sub-glyph is considered as a
+  frame for the animation to be performed
 

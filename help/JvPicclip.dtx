@@ -3,61 +3,17 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPicClip.pas
 Summary
-  Contains the TJvPicClip component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPicClip component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-
-----------------------------------------------------------------------------------------------------
-@@TJvCellRange
-<TITLE TJvCellRange type>
-Summary
-  Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  1..MaxInt; - for reference)
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip
-<TITLEIMG TJvPicClip>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Cells
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Col - Description for this parameter
-  Row - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Cols
+@@TJvPicClip.Rows
 Summary
   Write here a summary (1 line)
 Description
@@ -67,7 +23,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Count
+@@TJvPicClip.Picture
 Summary
   Write here a summary (1 line)
 Description
@@ -77,63 +33,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Draw
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  X      - Description for this parameter
-  Y      - Description for this parameter
-  Index  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.DrawCenter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Canvas - Description for this parameter
-  Rect   - Description for this parameter
-  Index  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.GetIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Col - Description for this parameter
-  Row - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.GraphicCell
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Height
+@@TJvPicClip.OnChange
 Summary
   Write here a summary (1 line)
 Description
@@ -143,7 +43,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.IsEmpty
+@@TJvPicClip.Masked
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip.MaskColor
 Summary
   Write here a summary (1 line)
 Description
@@ -166,7 +76,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.MaskColor
+@@TJvPicClip.IsEmpty
 Summary
   Write here a summary (1 line)
 Description
@@ -176,7 +86,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Masked
+@@TJvPicClip.Height
 Summary
   Write here a summary (1 line)
 Description
@@ -186,7 +96,63 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.OnChange
+@@TJvPicClip.GraphicCell
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip.GetIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Col - Description for this parameter
+  Row - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip.DrawCenter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  Rect   - Description for this parameter
+  Index  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip.Draw
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Canvas - Description for this parameter
+  X      - Description for this parameter
+  Y      - Description for this parameter
+  Index  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip.Count
 Summary
   Write here a summary (1 line)
 Description
@@ -196,7 +162,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Picture
+@@TJvPicClip.Cols
 Summary
   Write here a summary (1 line)
 Description
@@ -206,14 +172,50 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPicClip.Rows
+@@TJvPicClip.Cells
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Col - Description for this parameter
+  Row - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPicClip
+<TITLEIMG TJvPicClip>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCellRange
+<TITLE TJvCellRange type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  1..MaxInt; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPicClip.Width

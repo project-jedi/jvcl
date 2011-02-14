@@ -3,52 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvUnicodeEditor.pas
 Summary
-  Contains the TJvUnicodeEditor component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvUnicodeEditor component.
 Author
   Andrei Prygounkov
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.ClipboardCopy
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.ClipboardPaste
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.Completion
+@@TJvWideCompletion.Identifiers
 Summary
   Write here a summary (1 line)
 Description
@@ -58,57 +21,73 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.DeleteSelected
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.GetSelText
+@@TJvWideCompletion.CRLF
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.GetWordOnCaret
+@@TJvWideCompletion.CaretChar
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.IndentColumns
+@@TJvGetLineAttrEventW
+<TITLE TJvGetLineAttrEventW type> <COMBINE TJvCustomWideEditor.OnGetLineAttr>
+
+----------------------------------------------------------------------------------------------------
+@@TJvWideCompletion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.SetTextStr
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
 Parameters
-  X    - Description for this parameter
-  BegY - Description for this parameter
-  EndY - Description for this parameter
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.InsertColumnText
+@@TJvEditorWideStrings.Internal
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.JvEditor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.InsertText
 Summary
   Write here a summary (1 line)
 Description
@@ -122,97 +101,107 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.InsertText
+@@TJvEditorWideStrings.InsertColumnText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
+  X    - Description for this parameter
+  Y    - Description for this parameter
   Text - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.Lines
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.OnCompletionApply
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender    - Description for this parameter
-  OldString - Description for this parameter
-  NewString - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.OnGetLineAttr
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  Line   - Description for this parameter
-  Index  - Description for this parameter
-  Attrs  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.ReplaceWord
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NewString - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.ReplaceWord2
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NewString - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.SelectWordOnCaret
+@@TJvEditorWideStrings.Insert
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
+Parameters
+  Index - Description for this parameter
+  S     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomWideEditor.SelText
+@@TJvEditorWideStrings.DeleteText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  BegX - Description for this parameter
+  BegY - Description for this parameter
+  EndX - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.DeleteColumnText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  BegX - Description for this parameter
+  BegY - Description for this parameter
+  EndX - Description for this parameter
+  EndY - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.AddStrings
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Strings - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditorWideStrings.Add
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  S - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -245,21 +234,121 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings
+@@TJvCustomWideEditor.SelText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.Add
+@@TJvCustomWideEditor.ReplaceWord2
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  NewString - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.SelectWordOnCaret
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.ReplaceWord
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  S - Description for this parameter
+  NewString - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.OnGetLineAttr
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Line   - Description for this parameter
+  Index  - Description for this parameter
+  Attrs  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.OnCompletionApply
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender    - Description for this parameter
+  OldString - Description for this parameter
+  NewString - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.InsertText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.Lines
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.InsertColumnText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  X    - Description for this parameter
+  Y    - Description for this parameter
+  Text - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.GetWordOnCaret
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -267,162 +356,77 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.AddStrings
+@@TJvCustomWideEditor.IndentColumns
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
 Parameters
-  Strings - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.DeleteColumnText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  BegX - Description for this parameter
+  X    - Description for this parameter
   BegY - Description for this parameter
-  EndX - Description for this parameter
   EndY - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.DeleteText
+@@TJvCustomWideEditor.GetSelText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  BegX - Description for this parameter
-  BegY - Description for this parameter
-  EndX - Description for this parameter
-  EndY - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.Insert
+@@TJvCustomWideEditor.Completion
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomWideEditor.DeleteSelected
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
-Parameters
-  Index - Description for this parameter
-  S     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.InsertColumnText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  X    - Description for this parameter
-  Y    - Description for this parameter
-  Text - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.InsertText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  X    - Description for this parameter
-  Y    - Description for this parameter
-  Text - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.Internal
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.JvEditor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditorWideStrings.SetTextStr
+@@TJvCustomWideEditor.ClipboardPaste
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
-Parameters
-  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGetLineAttrEventW
-<TITLE TJvGetLineAttrEventW type>
-<COMBINE TJvCustomWideEditor.OnGetLineAttr>
-
-----------------------------------------------------------------------------------------------------
-@@TJvWideCompletion
+@@TJvCustomWideEditor.ClipboardCopy
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvWideCompletion.CaretChar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvWideCompletion.CRLF
+@@TJvCustomWideEditor.Clear
 Summary
   Write here a summary (1 line)
 Description
@@ -432,14 +436,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvWideCompletion.Identifiers
+@@TJvCustomWideEditor
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvWideCompletion.Separator
@@ -474,6 +475,5 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TOnCompletionApplyW
-<TITLE TOnCompletionApplyW type>
-<COMBINE TJvCustomWideEditor.OnCompletionApply>
+<TITLE TOnCompletionApplyW type> <COMBINE TJvCustomWideEditor.OnCompletionApply>
 

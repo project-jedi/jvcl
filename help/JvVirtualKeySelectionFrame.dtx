@@ -1,40 +1,23 @@
 ##Package: MM
 ##Status: Completed (II)
-##Skip: TJvVirtualKeySelectionFrame.chkCtrl
-##Skip: TJvVirtualKeySelectionFrame.chkShift
-##Skip: TJvVirtualKeySelectionFrame.cmbVirtualKey
-##Skip: TJvVirtualKeySelectionFrame.lblModifiers
-##Skip: TJvVirtualKeySelectionFrame.lblVirtualKey
 ----------------------------------------------------------------------------------------------------
 @@JvVirtualKeySelectionFrame.pas
 Summary
-  Contains the TJvVirtualKeySelectionFrame component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvVirtualKeySelectionFrame component.
 Author
   Olivier Sannier
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvVirtualKeySelectionFrame
+@@TJvVirtualKeySelectionFrame.ShiftState
 Summary
-  Allows you to select a virtual key.
+  The shift state the user chose.
 Description
-  This frame was originally created to be used with a TJvAVICapture component to select the virtual key
-  that would cancel the capture session; however, you can use this frame to allow your user to select
-  any virtual key for any other use.
-
-----------------------------------------------------------------------------------------------------
-@@TJvVirtualKeySelectionFrame.CombinedKeyCode
-Summary
-  Returns a key code that contains the shift state.
-Description
-  The combined key code is the KeyCode combined with the shift state according to this formula:
-
-  <CODE>
-  if ssShift in ShiftState then Result := Result or $4000;
-  if ssCtrl in ShiftState then Result := Result or $4000;
-  </CODE>
+  The returned value is of type TShiftState to be used with standard Delphi events.
 See Also
-  TJvVirtualKeySelectionFrame.KeyCode, TJvVirtualKeySelectionFrame.ShiftState
+  TJvVirtualKeySelectionFrame.CombinedKeyCode, TJvVirtualKeySelectionFrame.KeyCode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVirtualKeySelectionFrame.KeyCode
@@ -46,11 +29,25 @@ See Also
   TJvVirtualKeySelectionFrame.CombinedKeyCode, TJvVirtualKeySelectionFrame.ShiftState
 
 ----------------------------------------------------------------------------------------------------
-@@TJvVirtualKeySelectionFrame.ShiftState
+@@TJvVirtualKeySelectionFrame.CombinedKeyCode
 Summary
-  The shift state the user chose.
+  Returns a key code that contains the shift state.
 Description
-  The returned value is of type TShiftState to be used with standard Delphi events.
+  The combined key code is the KeyCode combined with the shift state according to this formula:
+  
+  <CODE>
+  if ssShift in ShiftState then Result := Result or $4000;
+  if ssCtrl in ShiftState then Result := Result or $4000; </CODE>
 See Also
-  TJvVirtualKeySelectionFrame.CombinedKeyCode, TJvVirtualKeySelectionFrame.KeyCode
+  TJvVirtualKeySelectionFrame.KeyCode, TJvVirtualKeySelectionFrame.ShiftState
+
+----------------------------------------------------------------------------------------------------
+@@TJvVirtualKeySelectionFrame
+Summary
+  Allows you to select a virtual key.
+Description
+  This frame was originally created to be used with a TJvAVICapture component to select the virtual
+  key
+  that would cancel the capture session; however, you can use this frame to allow your user to select
+  any virtual key for any other use.
 

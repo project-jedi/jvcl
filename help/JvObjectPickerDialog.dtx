@@ -3,134 +3,56 @@
 ----------------------------------------------------------------------------------------------------
 @@JvObjectPickerDialog.pas
 Summary
-  Contains the TJvObjectPickerDialog component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvObjectPickerDialog component.
 Author
   Marcel van Brakel
-
-----------------------------------------------------------------------------------------------------
-@@EObjectPickerError
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter
-<TITLE TDownLevelFilter type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TScopeType.stUserEnteredDownLevelScope
+Description for stUserEnteredDownLevelScope
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlUsers
-  Description for dlUsers
+@@TScopeType.stUserEnteredUpLevelScope
+Description for stUserEnteredUpLevelScope
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlLocalGroups
-  Description for dlLocalGroups
+@@TScopeType.stWorkGroup
+Description for stWorkGroup
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlGlobalGroups
-  Description for dlGlobalGroups
+@@TScopeType.stExternalDownLevelDomain
+Description for stExternalDownLevelDomain
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlComputers
-  Description for dlComputers
+@@TScopeType.stExternalUpLevelDomain
+Description for stExternalUpLevelDomain
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlWorld
-  Description for dlWorld
+@@TScopeType.stGlobalCatalog
+Description for stGlobalCatalog
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlAuthenticatedUser
-  Description for dlAuthenticatedUser
+@@TScopeType.stEnterpriseDomain
+Description for stEnterpriseDomain
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlAnonymous
-  Description for dlAnonymous
+@@TScopeType.stDownLevelJoinedDomain
+Description for stDownLevelJoinedDomain
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlBatch
-  Description for dlBatch
+@@TScopeType.stUpLevelJoinedDomain
+Description for stUpLevelJoinedDomain
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlCreatorOwner
-  Description for dlCreatorOwner
+@@TScopeType.stTargetComputer
+Description for stTargetComputer
 
 ----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlCreatorGroup
-  Description for dlCreatorGroup
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlDialUp
-  Description for dlDialUp
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlInteractive
-  Description for dlInteractive
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlNetwork
-  Description for dlNetwork
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlService
-  Description for dlService
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlSystem
-  Description for dlSystem
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlExcludeBuiltinGroups
-  Description for dlExcludeBuiltinGroups
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlTerminalServer
-  Description for dlTerminalServer
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlAllWellKnownSids
-  Description for dlAllWellKnownSids
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlLocalService
-  Description for dlLocalService
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlNetworkService
-  Description for dlNetworkService
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilter.dlRemoteLogon
-  Description for dlRemoteLogon
-
-----------------------------------------------------------------------------------------------------
-@@TDownLevelFilters
-<TITLE TDownLevelFilters type>
-<COMBINE TDownLevelFilter>
-
-----------------------------------------------------------------------------------------------------
-@@TJvObjectPickerDialog
-<TITLEIMG TJvObjectPickerDialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Component
-Summary
-  Displays a modal object picker dialog box and returns the user selection.
-Description
-  The directory object picker dialog box enables a user to select one, or more, objects from the Active
-  Directory global catalog, a Microsoft Windows 2000 domain or computer, a Microsoft Windows NT 4.0
-  domain or computer, or a workgroup. The object types from which a user can select include user,
-  contact, group, and computer objects.
-
-----------------------------------------------------------------------------------------------------
-@@TJvObjectPickerDialog.Attributes
+@@TScopeType
+<TITLE TScopeType type>
 Summary
   Write here a summary (1 line)
 Description
@@ -140,12 +62,193 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvObjectPickerDialog.Execute
+@@TScopeFlags
+<TITLE TScopeFlags type> <COMBINE TScopeFlag>
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag.sfDownLevelBuiltInPath
+Description for sfDownLevelBuiltInPath
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag.sfSidPath
+Description for sfSidPath
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag.sfProviderGC
+Description for sfProviderGC
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag.sfProviderLDAP
+Description for sfProviderLDAP
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag.sfProviderWinNT
+Description for sfProviderWinNT
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag.sfStartingScope
+Description for sfStartingScope
+
+----------------------------------------------------------------------------------------------------
+@@TScopeFlag
+<TITLE TScopeFlag type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelections.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelections.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelections
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelections.AttributeCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.UPN
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.ScopeType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.ObjectClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.Name
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.Attributes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.AttributeCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection.AdsPath
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScopes.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScopes.Assign
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScopes.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -153,7 +256,147 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvObjectPickerDialog.Options
+@@TObjectPickerScope.UpLevelFilterNative
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScopes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.UpLevelFilterMixed
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.UpLevelFilterBoth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.ScopeTypes
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.ScopeFlags
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.Result
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.DownLevelFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.DcName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope.Assign
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Source - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerScope
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerOption.opSkipTargetComputerDCCheck
+Description for opSkipTargetComputerDCCheck
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerOptions
+<TITLE TObjectPickerOptions type> <COMBINE TObjectPickerOption>
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerOption.opAllowMultiSelect
+Description for opAllowMultiSelect
+
+----------------------------------------------------------------------------------------------------
+@@TObjectPickerOption
+<TITLE TObjectPickerOption type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvObjectPickerDialog.TargetComputer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvObjectPickerDialog.Selection
 Summary
   Write here a summary (1 line)
 Description
@@ -183,7 +426,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvObjectPickerDialog.Selection
+@@TJvObjectPickerDialog.Options
 Summary
   Write here a summary (1 line)
 Description
@@ -193,7 +436,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvObjectPickerDialog.TargetComputer
+@@TJvObjectPickerDialog.Attributes
 Summary
   Write here a summary (1 line)
 Description
@@ -203,142 +446,12 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerOption
-<TITLE TObjectPickerOption type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerOption.opAllowMultiSelect
-  Description for opAllowMultiSelect
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerOption.opSkipTargetComputerDCCheck
-  Description for opSkipTargetComputerDCCheck
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerOptions
-<TITLE TObjectPickerOptions type>
-<COMBINE TObjectPickerOption>
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.Assign
+@@TJvObjectPickerDialog.Execute
 Summary
   Write here a summary (1 line)
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.DcName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.DownLevelFilter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.Result
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.ScopeFlags
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.ScopeTypes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.UpLevelFilterBoth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.UpLevelFilterMixed
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScope.UpLevelFilterNative
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScopes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerScopes.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -346,118 +459,111 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerScopes.Assign
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlNetworkService
+Description for dlNetworkService
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerScopes.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlRemoteLogon
+Description for dlRemoteLogon
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+@@TDownLevelFilters
+<TITLE TDownLevelFilters type> <COMBINE TDownLevelFilter>
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.AdsPath
+@@TJvObjectPickerDialog
+<TITLEIMG TJvObjectPickerDialog>
+JVCLInfo
+  GROUP=JVCL.Dialogs.Common
+  FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Displays a modal object picker dialog box and returns the user selection.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The directory object picker dialog box enables a user to select one, or more, objects from the
+  Active
+  Directory global catalog, a Microsoft Windows 2000 domain or computer, a Microsoft Windows NT 4.0
+  domain or computer, or a workgroup. The object types from which a user can select include user,
+  contact, group, and computer objects.
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.AttributeCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlLocalService
+Description for dlLocalService
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.Attributes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlAllWellKnownSids
+Description for dlAllWellKnownSids
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.Name
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlTerminalServer
+Description for dlTerminalServer
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.ObjectClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlExcludeBuiltinGroups
+Description for dlExcludeBuiltinGroups
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.ScopeType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlSystem
+Description for dlSystem
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelection.UPN
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TDownLevelFilter.dlService
+Description for dlService
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelections
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+@@TDownLevelFilter.dlNetwork
+Description for dlNetwork
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelections.AttributeCount
+@@TDownLevelFilter.dlInteractive
+Description for dlInteractive
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlDialUp
+Description for dlDialUp
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlCreatorGroup
+Description for dlCreatorGroup
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlCreatorOwner
+Description for dlCreatorOwner
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlBatch
+Description for dlBatch
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlAnonymous
+Description for dlAnonymous
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlAuthenticatedUser
+Description for dlAuthenticatedUser
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlWorld
+Description for dlWorld
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlComputers
+Description for dlComputers
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlGlobalGroups
+Description for dlGlobalGroups
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlLocalGroups
+Description for dlLocalGroups
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter.dlUsers
+Description for dlUsers
+
+----------------------------------------------------------------------------------------------------
+@@TDownLevelFilter
+<TITLE TDownLevelFilter type>
 Summary
   Write here a summary (1 line)
 Description
@@ -467,122 +573,15 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelections.Count
+@@EObjectPickerError
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TObjectPickerSelections.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag
-<TITLE TScopeFlag type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag.sfStartingScope
-  Description for sfStartingScope
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag.sfProviderWinNT
-  Description for sfProviderWinNT
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag.sfProviderLDAP
-  Description for sfProviderLDAP
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag.sfProviderGC
-  Description for sfProviderGC
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag.sfSidPath
-  Description for sfSidPath
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlag.sfDownLevelBuiltInPath
-  Description for sfDownLevelBuiltInPath
-
-----------------------------------------------------------------------------------------------------
-@@TScopeFlags
-<TITLE TScopeFlags type>
-<COMBINE TScopeFlag>
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType
-<TITLE TScopeType type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stTargetComputer
-  Description for stTargetComputer
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stUpLevelJoinedDomain
-  Description for stUpLevelJoinedDomain
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stDownLevelJoinedDomain
-  Description for stDownLevelJoinedDomain
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stEnterpriseDomain
-  Description for stEnterpriseDomain
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stGlobalCatalog
-  Description for stGlobalCatalog
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stExternalUpLevelDomain
-  Description for stExternalUpLevelDomain
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stExternalDownLevelDomain
-  Description for stExternalDownLevelDomain
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stWorkGroup
-  Description for stWorkGroup
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stUserEnteredUpLevelScope
-  Description for stUserEnteredUpLevelScope
-
-----------------------------------------------------------------------------------------------------
-@@TScopeType.stUserEnteredDownLevelScope
-  Description for stUserEnteredDownLevelScope
 
 ----------------------------------------------------------------------------------------------------
 @@TScopeTypes
-<TITLE TScopeTypes type>
-<COMBINE TScopeType>
+<TITLE TScopeTypes type> <COMBINE TScopeType>
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter
@@ -597,54 +596,53 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulIncludeAdvancedView
-  Description for ulIncludeAdvancedView
+Description for ulIncludeAdvancedView
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulUsers
-  Description for ulUsers
+Description for ulUsers
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulBuiltInGroups
-  Description for ulBuiltInGroups
+Description for ulBuiltInGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulWellKnownPrincipals
-  Description for ulWellKnownPrincipals
+Description for ulWellKnownPrincipals
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulUniversalDistributionListGroups
-  Description for ulUniversalDistributionListGroups
+Description for ulUniversalDistributionListGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulUniversalSecurityGroups
-  Description for ulUniversalSecurityGroups
+Description for ulUniversalSecurityGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulGlobalDistributionListGroups
-  Description for ulGlobalDistributionListGroups
+Description for ulGlobalDistributionListGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulGlobalSecurityGroups
-  Description for ulGlobalSecurityGroups
+Description for ulGlobalSecurityGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulDomainLocalDistributionListGroups
-  Description for ulDomainLocalDistributionListGroups
+Description for ulDomainLocalDistributionListGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulDomainLocalSecurityGroups
-  Description for ulDomainLocalSecurityGroups
+Description for ulDomainLocalSecurityGroups
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulContacts
-  Description for ulContacts
+Description for ulContacts
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilter.ulComputers
-  Description for ulComputers
+Description for ulComputers
 
 ----------------------------------------------------------------------------------------------------
 @@TUpLevelFilters
-<TITLE TUpLevelFilters type>
-<COMBINE TUpLevelFilter>
+<TITLE TUpLevelFilters type> <COMBINE TUpLevelFilter>
 

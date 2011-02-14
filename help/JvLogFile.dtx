@@ -3,127 +3,77 @@
 ----------------------------------------------------------------------------------------------------
 @@JvLogFile.pas
 Summary
-  Contains the TJvLogFile component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvLogFile component.
 Author
   Sébastien Buysse
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile
-<TITLEIMG TJvLogFile>
-JVCLInfo
-  GROUP=JVCL.System.FilesAndFolders
-  FLAG=Component
-Summary
-  This component gives logging functionality.
 Description
-  This is a pretty simple yet powerfull component, excellent for using with experimental code or
-  try-exception-do blocks.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  If you want to use it just drop it on the form and at least set the log file's name (and maybe you
-  want to set the AutoSave attribute := true and the SizeLimit attribute), after that if you want to
-  log some event invoke the Add procedure like this: JvLogFile.Add('ERROR HEADER', 'ERROR DETAIL'); And
-  that's all, quick and clean.
-
-  If you want to clean the log file invoke the Clean() procedure If you want to open the log file
-  invoke the ShowLog('NAME OF LOG FILE') procedure, this will open the Jv Logging window from where you
-  can save it to a cvs file or print it.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Active
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Add@string@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Title       - Description for this parameter
-  Description - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Add@string@string@string
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Time        - Description for this parameter
-  Title       - Description for this parameter
-  Description - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.AutoSave
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Count
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Delete
+@@TJvLogFile.ShowLog
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  Title - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLogFile.Elements
+@@TJvLogFile.SaveToStream
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  Stream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.SaveToFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  FileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.OnShow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.OnClose
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.LoadFromStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Stream - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -151,72 +101,124 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLogFile.LoadFromStream
+@@TJvLogFile.Elements
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Stream - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLogFile.OnClose
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.OnShow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLogFile.SaveToFile
+@@TJvLogFile.Delete
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FileName - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLogFile.SaveToStream
+@@TJvLogFile.Count
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Stream - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvLogFile.ShowLog
+@@TJvLogFile.Clear
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Title - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.AutoSave
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.Add@string@string@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Time        - Description for this parameter
+  Title       - Description for this parameter
+  Description - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.Add@string@string
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Title       - Description for this parameter
+  Description - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile.Active
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLogFile
+<TITLEIMG TJvLogFile>
+JVCLInfo
+  GROUP=JVCL.System.FilesAndFolders
+  FLAG=Component
+Summary
+  This component gives logging functionality.
+Description
+  This is a pretty simple yet powerfull component, excellent for using with experimental code or
+  try-exception-do blocks.
+  
+  If you want to use it just drop it on the form and at least set the log file's name (and maybe you
+  want to set the AutoSave attribute := true and the SizeLimit attribute), after that if you want to
+  log some event invoke the Add procedure like this: JvLogFile.Add('ERROR HEADER', 'ERROR DETAIL');
+  And that's all, quick and clean.
+  
+  If you want to clean the log file invoke the Clean() procedure If you want to open the log file
+  invoke the ShowLog('NAME OF LOG FILE') procedure, this will open the Jv Logging window from where
+  you can save it to a cvs file or print it.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLogFile.SizeLimit

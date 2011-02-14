@@ -1,178 +1,487 @@
 ##Package: Core
 ##Status: Partially documented
-##Skip: CreateWMMessage@Integer@Integer@Longint
-##Skip: CreateWMMessage@Integer@Integer@TControl
-##Skip: DispatchIsDesignMsg
-##Skip: DlgCodesToDlgc
-##Skip: DlgcToDlgCodes
-##Skip: GetFocusedControl
-##Skip: GetHintColor
-##Skip: HandleDotNetHighlighting
-##Skip: ShiftStateToKeyData
-##Skip: SmallPointToLong
-##Skip: TStructPtrMessage
 ----------------------------------------------------------------------------------------------------
 @@JvExControls.pas
 Summary
-  Contains components that extend the components from Delphi's Controls.pas with generic properties and
-  CLX code.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains components that extend the components from Delphi's Controls.pas with generic properties
+  and
 Author
   Andreas Hausladen
+Description
+    CLX code.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@DrawDotNetControl
-<TITLE DrawDotNetControl procedure>
+@@TJvExWinControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.ParentBackground
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  TJvExWinControl.OnMouseEnter
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the control.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
+See Also
+  TJvExWinControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the control.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the control.
+See Also
+  TJvExWinControl.OnMouseEnter, TJvExWinControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.HintWindowClass
+Summary
+  Specifies the window class used to display help hints for the control.
+Description
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.DotNetHighlighting
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExWinControl
+Summary
+  Base class for extended controls.
+Description
+  TJvExWinControl is a base class for classes in the JVCL library that descend from TWinControl.
+  
+  Do not create instances of TJvExWinControl. Use a descendant of TJvExWinControl or create your own
+  descendant class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExPubGraphicControl
+Summary
+  Base class for extended controls.
+Description
+  TJvExPubGraphicControl is a base class for classes in the JVCL library that descend from
+  TGraphicControl.
+  
+  TJvExPubGraphicControl publishes properties inherited from TJvExGraphicControl, but does not
+  introduce any new behavior.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.ParentBackground
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the window.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  window.
+See Also
+  TJvExHintWindow.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the window.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  window. For example, you can use this event to undo changes that were made in an OnMouseEnter event
+  handler.
+See Also
+  TJvExHintWindow.OnMouseEnter
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the control.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the control.
+See Also
+  TJvExHintWindow.OnMouseEnter, TJvExHintWindow.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.HintWindowClass
+Summary
+  Specifies the window class used to display help hints for the control.
+Description
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow.DotNetHighlighting
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExHintWindow
+Summary
+  Base class for extended hint windows.
+Description
+  TJvExHintWindow is a base class for classes in the JVCL library that descend from THintWindow.
+  
+  Do not create instances of TJvExHintWindow. Use a descendant of TJvExHintWindow or create your own
+  descendant class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  TJvExGraphicControl.OnMouseEnter
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the control.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
+See Also
+  TJvExGraphicControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the control.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the control.
+See Also
+  TJvExGraphicControl.OnMouseEnter, TJvExGraphicControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.HintWindowClass
+Summary
+  Specifies the window class used to display help hints for the control.
+Description
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExGraphicControl
+Summary
+  Base class for extended controls.
+Description
+  TJvExGraphicControl is a base class for classes in the JVCL library that descend from
+  TGraphicControl.
+  
+  Do not create instances of TJvExGraphicControl. Use a descendant of TJvExGraphicControl or create
+  your own descendant class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.ParentBackground
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  TJvExCustomControl.OnMouseEnter
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the control.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
+See Also
+  TJvExCustomControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the control.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the control.
+See Also
+  TJvExCustomControl.OnMouseEnter, TJvExCustomControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.HintWindowClass
+Summary
+  Specifies the window class used to display help hints for the control.
+Description
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl.DotNetHighlighting
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomControl
+Summary
+  Base class for extended controls.
+Description
+  TJvExCustomControl is a base class for classes in the JVCL library that descend from TCustomControl.
+  
+  Do not create instances of TJvExCustomControl. Use a descendant of TJvExCustomControl or create
+  your own descendant class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  TJvExControl.OnMouseEnter
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.MouseOver
+Summary
+  Indicates whether the mouse pointer is over the control.
+Description
+  Read MouseOver to determine whether the mouse pointer is over the control.
+See Also
+  TJvExControl.OnMouseEnter, TJvExControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the control.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
+See Also
+  TJvExControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.HintWindowClass
+Summary
+  Specifies the window class used to display help hints for the control.
+Description
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcNative
+Description for dcNative
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCodes
+<TITLE TDlgCodes type> <COMBINE TDlgCode>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExControl
+Summary
+  Base class for extended controls.
+Description
+  TJvExControl is a base class for classes in the JVCL library that descend from TControl.
+  
+  Do not create instances of TJvExControl. Use a descendant of TJvExControl or create your own
+  descendant class.
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcButton
+Description for dcButton
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcHasSetSel
+Description for dcHasSetSel
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcWantTab
+Description for dcWantTab
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode
+<TITLE TDlgCode type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcWantAllKeys
+Description for dcWantAllKeys
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcWantArrows
+Description for dcWantArrows
+
+----------------------------------------------------------------------------------------------------
+@@TDlgCode.dcWantChars
+Description for dcWantChars
+
+----------------------------------------------------------------------------------------------------
+@@SetDotNetFrameColors
+<TITLE SetDotNetFrameColors procedure>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Control   - Description for this parameter
-  AColor    - Description for this parameter
-  InControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvDenySubClassing
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvExControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.GetHotTrack
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.GetHotTrackFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.GetHotTrackFontOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.GetHotTrackOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.HotTrack
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.HotTrackFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.HotTrackFontOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.HotTrackOptions
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.SetHotTrack
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IJvHotTrack.SetHotTrackFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
+  FocusedColor   - Description for this parameter
+  UnfocusedColor - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -202,22 +511,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@SetDotNetFrameColors
-<TITLE SetDotNetFrameColors procedure>
+@@IJvHotTrack.SetHotTrackFont
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  FocusedColor   - Description for this parameter
-  UnfocusedColor - Description for this parameter
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDlgCode
-<TITLE TDlgCode type>
+@@IJvHotTrack.HotTrackOptions
 Summary
   Write here a summary (1 line)
 Description
@@ -227,123 +533,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcWantAllKeys
-  Description for dcWantAllKeys
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcWantArrows
-  Description for dcWantArrows
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcWantChars
-  Description for dcWantChars
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcButton
-  Description for dcButton
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcHasSetSel
-  Description for dcHasSetSel
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcWantTab
-  Description for dcWantTab
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCode.dcNative
-  Description for dcNative
-
-----------------------------------------------------------------------------------------------------
-@@TDlgCodes
-<TITLE TDlgCodes type>
-<COMBINE TDlgCode>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl
+@@IJvHotTrack.SetHotTrack
 Summary
-  Base class for extended controls.
+  Write here a summary (1 line)
 Description
-  TJvExControl is a base class for classes in the JVCL library that descend from TControl.
-
-  Do not create instances of TJvExControl. Use a descendant of TJvExControl or create your own
-  descendant class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl.HintWindowClass
-Summary
-  Specifies the window class used to display help hints for the control.
-Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl.MouseOver
-Summary
-  Indicates whether the mouse pointer is over the control.
-Description
-  Read MouseOver to determine whether the mouse pointer is over the control.
+  Write here a description
+Parameters
+  Value - Description for this parameter
 See Also
-  TJvExControl.OnMouseEnter, TJvExControl.OnMouseLeave
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExControl.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the control.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  control.
-See Also
-  TJvExControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the control.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
-See Also
-  TJvExControl.OnMouseEnter
-
-----------------------------------------------------------------------------------------------------
-@@TJvExControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl
-Summary
-  Base class for extended controls.
-Description
-  TJvExCustomControl is a base class for classes in the JVCL library that descend from TCustomControl.
-
-  Do not create instances of TJvExCustomControl. Use a descendant of TJvExCustomControl or create your
-  own descendant class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.DotNetHighlighting
+@@IJvHotTrack.HotTrackFontOptions
 Summary
   Write here a summary (1 line)
 Description
@@ -353,62 +555,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.HintWindowClass
-Summary
-  Specifies the window class used to display help hints for the control.
-Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.MouseOver
-Summary
-  Indicates whether the mouse pointer is over the control.
-Description
-  Read MouseOver to determine whether the mouse pointer is over the control.
-See Also
-  TJvExCustomControl.OnMouseEnter, TJvExCustomControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the control.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  control.
-See Also
-  TJvExCustomControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the control.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
-See Also
-  TJvExCustomControl.OnMouseEnter
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomControl.ParentBackground
+@@IJvHotTrack.HotTrackFont
 Summary
   Write here a summary (1 line)
 Description
@@ -418,91 +565,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl
+@@IJvHotTrack.GetHotTrackOptions
 Summary
-  Base class for extended controls.
+  Write here a summary (1 line)
 Description
-  TJvExGraphicControl is a base class for classes in the JVCL library that descend from
-  TGraphicControl.
-
-  Do not create instances of TJvExGraphicControl. Use a descendant of TJvExGraphicControl or create
-  your own descendant class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.HintWindowClass
-Summary
-  Specifies the window class used to display help hints for the control.
-Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.MouseOver
-Summary
-  Indicates whether the mouse pointer is over the control.
-Description
-  Read MouseOver to determine whether the mouse pointer is over the control.
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
-  TJvExGraphicControl.OnMouseEnter, TJvExGraphicControl.OnMouseLeave
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the control.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  control.
-See Also
-  TJvExGraphicControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the control.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
-See Also
-  TJvExGraphicControl.OnMouseEnter
-
-----------------------------------------------------------------------------------------------------
-@@TJvExGraphicControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow
-Summary
-  Base class for extended hint windows.
-Description
-  TJvExHintWindow is a base class for classes in the JVCL library that descend from THintWindow.
-
-  Do not create instances of TJvExHintWindow. Use a descendant of TJvExHintWindow or create your own
-  descendant class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.DotNetHighlighting
+@@IJvHotTrack.HotTrack
 Summary
   Write here a summary (1 line)
 Description
@@ -512,62 +587,43 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.HintColor
+@@IJvHotTrack.GetHotTrackFontOptions
 Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
+  Write here a summary (1 line)
 Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.HintWindowClass
-Summary
-  Specifies the window class used to display help hints for the control.
-Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.MouseOver
-Summary
-  Indicates whether the mouse pointer is over the control.
-Description
-  Read MouseOver to determine whether the mouse pointer is over the control.
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
-  TJvExHintWindow.OnMouseEnter, TJvExHintWindow.OnMouseLeave
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.OnMouseEnter
+@@IJvHotTrack.GetHotTrackFont
 Summary
-  Occurs when the mouse pointer moves over the window.
+  Write here a summary (1 line)
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  window.
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
-  TJvExHintWindow.OnMouseLeave
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.OnMouseLeave
+@@IJvHotTrack.GetHotTrack
 Summary
-  Occurs when the mouse pointer moves off the window.
+  Write here a summary (1 line)
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  window. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
+  Write here a description
+Return value
+  Describe here what the function returns
 See Also
-  TJvExHintWindow.OnMouseEnter
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExHintWindow.ParentBackground
+@@IJvHotTrack
 Summary
   Write here a summary (1 line)
 Description
@@ -577,32 +633,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExPubGraphicControl
-Summary
-  Base class for extended controls.
-Description
-  TJvExPubGraphicControl is a base class for classes in the JVCL library that descend from
-  TGraphicControl.
-
-  TJvExPubGraphicControl publishes properties inherited from TJvExGraphicControl, but does not
-  introduce any new behavior.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl
-Summary
-  Base class for extended controls.
-Description
-  TJvExWinControl is a base class for classes in the JVCL library that descend from TWinControl.
-
-  Do not create instances of TJvExWinControl. Use a descendant of TJvExWinControl or create your own
-  descendant class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.DotNetHighlighting
+@@IJvExControl
 Summary
   Write here a summary (1 line)
 Description
@@ -612,66 +643,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.HintWindowClass
-Summary
-  Specifies the window class used to display help hints for the control.
-Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.MouseOver
-Summary
-  Indicates whether the mouse pointer is over the control.
-Description
-  Read MouseOver to determine whether the mouse pointer is over the control.
-See Also
-  TJvExWinControl.OnMouseEnter, TJvExWinControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.OnMouseEnter
-Summary
-  Occurs when the mouse pointer moves over the control.
-Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
-  control.
-See Also
-  TJvExWinControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.OnMouseLeave
-Summary
-  Occurs when the mouse pointer moves off the control.
-Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
-See Also
-  TJvExWinControl.OnMouseEnter
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExWinControl.ParentBackground
+@@IJvDenySubClassing
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DrawDotNetControl
+<TITLE DrawDotNetControl procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Control   - Description for this parameter
+  AColor    - Description for this parameter
+  InControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -689,8 +680,8 @@ Description
 Summary
   Indicates the color to use when the associated control is highlighted.
 Description
-  Use Color to set the background color to use for the control when the mouse hovers over it. Color is
-  not used unless Enabled is true.
+  Use Color to set the background color to use for the control when the mouse hovers over it. Color
+  is not used unless Enabled is true.
 See Also
   TJvHotTrackOptions.Enabled
 

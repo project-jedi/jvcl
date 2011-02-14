@@ -3,48 +3,16 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBGridExport.pas
 Summary
-  Contains the TJvDBGridExport component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBGridExport component.
 Author
   Lionel Reynaud
-
-----------------------------------------------------------------------------------------------------
-@@EJvExportDBGridException
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@GetWordGridFormatValues
-<TITLE GetWordGridFormatValues procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Proc - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IntToWordGridFormatIdent
-<TITLE IntToWordGridFormatIdent function>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-  Ident - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TExportDestination
-<TITLE TExportDestination type>
+@@TOleServerClose
+<TITLE TOleServerClose type>
 Summary
   Write here a summary (1 line)
 Description
@@ -54,16 +22,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TExportDestination.edFile
-  Description for edFile
-
-----------------------------------------------------------------------------------------------------
-@@TExportDestination.edClipboard
-  Description for edClipboard
-
-----------------------------------------------------------------------------------------------------
-@@TExportSeparator
-<TITLE TExportSeparator type>
+@@TJvWordGridFormat
+<TITLE TJvWordGridFormat type>
 Summary
   Write here a summary (1 line)
 Description
@@ -73,143 +33,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TExportSeparator.esTab
-  Description for esTab
-
-----------------------------------------------------------------------------------------------------
-@@TExportSeparator.esSemiColon
-  Description for esSemiColon
-
-----------------------------------------------------------------------------------------------------
-@@TExportSeparator.esComma
-  Description for esComma
-
-----------------------------------------------------------------------------------------------------
-@@TExportSeparator.esSpace
-  Description for esSpace
-
-----------------------------------------------------------------------------------------------------
-@@TExportSeparator.esPipe
-  Description for esPipe
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.Caption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.ExportGrid
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.FileName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.Grid
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.LastExceptionMessage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.OnException
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.OnProgress
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender    - Description for this parameter
-  Min       - Description for this parameter
-  Max       - Description for this parameter
-  Position  - Description for this parameter
-  AText     - Description for this parameter
-  AContinue - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.Silent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExport.UseFieldGetText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDBGridExportClass
-<TITLE TJvCustomDBGridExportClass type>
-Summary
-  Defines the metaclass for TJvCustomDBGridExport.
-Description
-  TJvCustomDBGridExportClass is the metaclass for TJvCustomDBGridExport. Its value is the class
-  reference for TJvCustomDBGridExport or for one of its descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridCSVExport
-<TITLEIMG TJvDBGridCSVExport>
+@@TJvDBGridXMLExport
+<TITLEIMG TJvDBGridXMLExport>
 JVCLInfo
   GROUP=JVCL.DBAware
   FLAG=Component
@@ -219,7 +44,11 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridCSVExport.Destination
+@@TJvExportProgressEvent
+<TITLE TJvExportProgressEvent type> <COMBINE TJvCustomDBGridExport.OnProgress>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridWordExport.WordFormat
 Summary
   Write here a summary (1 line)
 Description
@@ -229,7 +58,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridCSVExport.ExportSeparator
+@@TJvDBGridWordExport.Visible
 Summary
   Write here a summary (1 line)
 Description
@@ -239,129 +68,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridCSVExport.QuoteEveryTime
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridCSVExport.Separator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridCSVExport.ShowColumnName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridExcelExport
-<TITLEIMG TJvDBGridExcelExport>
-JVCLInfo
-  GROUP=JVCL.DBAware
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridExcelExport.AutoFit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridExcelExport.Close
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridExcelExport.Orientation
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridExcelExport.Visible
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridHTMLExport
-<TITLEIMG TJvDBGridHTMLExport>
-JVCLInfo
-  GROUP=JVCL.DBAware
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridHTMLExport.DocTitle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridHTMLExport.Footer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridHTMLExport.Header
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDBGridHTMLExport.IncludeColumnHeader
+@@TJvDBGridWordExport.Orientation
 Summary
   Write here a summary (1 line)
 Description
@@ -392,7 +99,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridWordExport.Orientation
+@@TJvDBGridHTMLExport.IncludeColumnHeader
 Summary
   Write here a summary (1 line)
 Description
@@ -402,7 +109,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridWordExport.Visible
+@@TJvDBGridHTMLExport.Header
 Summary
   Write here a summary (1 line)
 Description
@@ -412,7 +119,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridWordExport.WordFormat
+@@TJvDBGridHTMLExport.Footer
 Summary
   Write here a summary (1 line)
 Description
@@ -422,8 +129,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDBGridXMLExport
-<TITLEIMG TJvDBGridXMLExport>
+@@TJvDBGridHTMLExport.DocTitle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridHTMLExport
+<TITLEIMG TJvDBGridHTMLExport>
 JVCLInfo
   GROUP=JVCL.DBAware
   FLAG=Component
@@ -433,13 +150,7 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExportProgressEvent
-<TITLE TJvExportProgressEvent type>
-<COMBINE TJvCustomDBGridExport.OnProgress>
-
-----------------------------------------------------------------------------------------------------
-@@TJvWordGridFormat
-<TITLE TJvWordGridFormat type>
+@@TJvDBGridExcelExport.Visible
 Summary
   Write here a summary (1 line)
 Description
@@ -449,27 +160,337 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TOleServerClose
-<TITLE TOleServerClose type>
+@@TJvDBGridExcelExport.Orientation
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridExcelExport.Close
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridExcelExport.AutoFit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridExcelExport
+<TITLEIMG TJvDBGridExcelExport>
+JVCLInfo
+  GROUP=JVCL.DBAware
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Sample:
+    procedure ExportToMSExcel(DBGridExcelExport : TJvDBGridExcelExport; SaveDialog : TJvSaveDialog;
+  DBUltimGrid : TJvDBUltimGrid; ProgressDialog: TJvProgressDialog);
+    begin
+      SaveDialog.Title := 'Exportar a Microsoft Excel...';
+      SaveDialog.Filter := 'Microsoft Excel 97-2003 [*.xls]|*.xls|Microsoft Excel 2007
+  [*.xlsx]|*.xlsx|Todos los Archivos [*.*]|*.*';
+      SaveDialog.FilterIndex := 1;
+      SaveDialog.DefaultExt := '*.xls';
+      if SaveDialog.Execute Then
+      begin
+        DBGridExcelExport.FileName := SaveDialog.FileName;
+        //DBGridExcelExport.UseFieldGetText := true;
+        DBGridExcelExport.Grid := DBUltimGrid;
+        ProgressDialog.Position := 0;
+        ProgressDialog.Max := DBUltimGrid.DataSource.DataSet.RecordCount-1;
+        ProgressDialog.Show;
+        DBGridExcelExport.ExportGrid;
+        ProgressDialog.Hide;
+      end;
+    end;
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridCSVExport.ShowColumnName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridCSVExport.Separator
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridCSVExport.QuoteEveryTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridCSVExport.ExportSeparator
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridCSVExport.Destination
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDBGridCSVExport
+<TITLEIMG TJvDBGridCSVExport>
+JVCLInfo
+  GROUP=JVCL.DBAware
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExportClass
+<TITLE TJvCustomDBGridExportClass type>
+Summary
+  Defines the metaclass for TJvCustomDBGridExport.
+Description
+  TJvCustomDBGridExportClass is the metaclass for TJvCustomDBGridExport. Its value is the class
+  reference for TJvCustomDBGridExport or for one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.UseFieldGetText
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.Silent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.OnProgress
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender    - Description for this parameter
+  Min       - Description for this parameter
+  Max       - Description for this parameter
+  Position  - Description for this parameter
+  AText     - Description for this parameter
+  AContinue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.OnException
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.LastExceptionMessage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.Grid
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.FileName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.ExportGrid
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport.Caption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TExportSeparator.esPipe
+Description for esPipe
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDBGridExport
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TExportSeparator.esComma
+Description for esComma
+
+----------------------------------------------------------------------------------------------------
+@@TExportSeparator.esSpace
+Description for esSpace
+
+----------------------------------------------------------------------------------------------------
+@@TExportSeparator.esSemiColon
+Description for esSemiColon
+
+----------------------------------------------------------------------------------------------------
+@@TExportSeparator.esTab
+Description for esTab
+
+----------------------------------------------------------------------------------------------------
+@@TExportSeparator
+<TITLE TExportSeparator type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TExportDestination.edFile
+Description for edFile
+
+----------------------------------------------------------------------------------------------------
+@@TExportDestination.edClipboard
+Description for edClipboard
+
+----------------------------------------------------------------------------------------------------
+@@TExportDestination
+<TITLE TExportDestination type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IntToWordGridFormatIdent
+<TITLE IntToWordGridFormatIdent function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+  Ident - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@EJvExportDBGridException
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@GetWordGridFormatValues
+<TITLE GetWordGridFormatValues procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Proc - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TOleServerClose.scNever
-  Description for scNever
+Description for scNever
 
 ----------------------------------------------------------------------------------------------------
 @@TOleServerClose.scNewInstance
-  Description for scNewInstance
+Description for scNewInstance
 
 ----------------------------------------------------------------------------------------------------
 @@TOleServerClose.scAlways
-  Description for scAlways
+Description for scAlways
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordColumn
@@ -484,23 +505,23 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordColumn.Visible
-  Description for Visible
+Description for Visible
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordColumn.Exportable
-  Description for Exportable
+Description for Exportable
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordColumn.ColumnName
-  Description for ColumnName
+Description for ColumnName
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordColumn.Column
-  Description for Column
+Description for Column
 
 ----------------------------------------------------------------------------------------------------
 @@TRecordColumn.Field
-  Description for Field
+Description for Field
 
 ----------------------------------------------------------------------------------------------------
 @@TWordOrientation
@@ -515,11 +536,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TWordOrientation.woPortrait
-  Description for woPortrait
+Description for woPortrait
 
 ----------------------------------------------------------------------------------------------------
 @@TWordOrientation.woLandscape
-  Description for woLandscape
+Description for woLandscape
 
 ----------------------------------------------------------------------------------------------------
 @@WordGridFormatIdentToInt

@@ -3,169 +3,115 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPageListTreeView.pas
 Summary
-  Contains the the TJvPageListTreeView and TJvSettingsTreeView components.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the the TJvPageListTreeView and TJvSettingsTreeView components.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView
+@@TJvSettingsTreeImages.SelectedIndex
 Summary
-  Base class for tree view controls that has a PageList property of type IPageList.
+  Specifies which image is displayed when a node is in its selected state.
 Description
-  Use TJvCustomPageListTreeView as a base class when developing tree view controls that should have the
-  ability to be associated with an IPageList implementation.
-
-  TJvCustomPageListTreeView has the same functionality as a normal tree view but in addition it can
-  also automatically change the active page of an IPageList implementation when the selected node
-  changes. Internally, the TJvCustomPageListTreeView component creates its tree nodes as
-  TJvPageIndexNodes. A TJvPageIndexNode has a PageIndex property that specifies which page in the
-  PageList to active when the node is selected.
-
-  Since the nodes in the tree view is surfaced as normal TTreeNodes, you must typecast the TTreeNode to
-  TJvPageIndexNode in code to access the PageIndex property.
-
-  To put a PageList enabled tree view on a form, don't create instances of TJvCustomPageListTreeView.
-  Use the TJvPageListTreeView component instead. TJvPageListTreeView only publishes the properties of
-  TJvCustomPageListTreeView without adding any new functionality.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.Items
-Summary
-  Lists the individual nodes that appear in the tree view control.
-Description
-  Individual nodes in this tree view are TJvPageIndexNode objects but they are surfaced as standard
-  TTreeNode objects. To access the additional properties and methods of the TJvPageIndexNode class, you
-  must type cast the node to a TJvPageIndexNode. The individual nodes can be accessed by using the
-  Items property along with the item's index into the tree view. For example, to access the second item
-  in the tree view, you could use the following code.
-
-  <CODE>
-    (Delphi)
-      MyTreeNode := TreeView1.Items[1];
-    (C++Builder)
-      MyTreeNode = TreeView1->Items[1];
-  </CODE>
-
-  When setting this property at design-time in the Object Inspector the Tree View Items Editor appears.
-  Use the New Item and New SubItem buttons to add items to the tree view. Use the Text property to
-  modify what text is displayed in the label of the item.
-
-  At run-time nodes can be added and inserted by using the TTreeNodes methods AddChildFirst, AddChild,
-  AddChildObjectFirst, AddChildObject, AddFirst, Add, AddObjectFirst, AddObject, and Insert.
-Note
-  Accessing tree view items by index can be time-intensive, particularly when the tree view contains
-  many items. For optimal performance, try to design your application so that it has as few
-  dependencies on the tree view’s item index as possible.
+  Use the SelectedIndex property with the Images property of the tree view to specify the image for
+  the node in its selected state. If the node has children, use the ExpandedIndex and CollapsedIndex
+  properties instead.
 See Also
-  <DELPHILINK TTreeNodes.AddChildFirst>, <DELPHILINK TTreeNodes.AddChild>, <DELPHILINK
-  TTreeNodes.AddChildObjectFirst>, <DELPHILINK TTreeNodes.AddChildObject>, <DELPHILINK
-  TTreeNodes.AddFirst>, <DELPHILINK TTreeNodes.Add>, <DELPHILINK TTreeNodes.AddObjectFirst>,
-  <DELPHILINK TTreeNodes.AddObject>, <DELPHILINK TTreeNodes.Insert>
+  TJvSettingsTreeImages.CollapsedIndex, TJvSettingsTreeImages.ExpandedIndex,
+  TJvSettingsTreeImages.ImageIndex
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.PageDefault
+@@TJvSettingsTreeImages.ImageIndex
 Summary
-  Specifies the index of the default page.
+  Specifies which image is displayed when a node is in its normal state and is not currently selected.
 Description
-  Use DefaultPage to specify the value of the PageIndex property for new nodes. For example, settings
-  this property to 0 will set the PageIndex of new nodes to 0, setting it to 1 will set the PageIndex
-  to 1, etc.
+  Use the ImageIndex property with the Images property of the tree view to specify the image for the
+  node in its normal state. If the node has children, use the ExpandedIndex and CollapsedIndex
+  properties instead.
 See Also
-  TJvCustomPageListTreeView.PageLinks, TJvCustomPageListTreeView.PageList
+  TJvSettingsTreeImages.CollapsedIndex, TJvSettingsTreeImages.ExpandedIndex,
+  TJvSettingsTreeImages.SelectedIndex
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.PageLinks
+@@TJvSettingsTreeImages.ExpandedIndex
 Summary
-  Used at design-time to set up the association between tree nodes and pages in a PageList.
+  Specifies which image is displayed when a node with children is in its expanded state.
 Description
-  This property is only used at design-time to set up the association between a node and the page that
-  should be displayed y the IPageList implementation when that node is selected. To set up a page link
-  association at run-time, type cast the tree node to TJvPageIndexNode and set its PageIndex property.
-
-  \Example:
-  <CODE>
-    TJvPageIndexNode(JvCustomPageListTreeView1.Items[SomeIndex]).PageIndex := SomePageIndex;
-  </CODE>
-
-  The linking will only have effect if the PageList property has been assigned.
+  Use the ExpandedIndex property with the Images property of the tree view to specify the image for
+  the node in its expanded state. If the node doesn't have any children, use the ImageIndex and
+  SelectedIndex properties instead.
 See Also
-  TJvCustomPageListTreeView.PageList, TJvPageIndexNode.PageIndex
+  TJvSettingsTreeImages.CollapsedIndex, TJvSettingsTreeImages.ImageIndex,
+  TJvSettingsTreeImages.SelectedIndex
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPageListTreeView.PageList
+@@TJvSettingsTreeImages.CollapsedIndex
 Summary
-  Specifies the IPageList implementation.
+  Specifies which image is displayed when a node with children is in its collapsed state.
 Description
-  Use the PageList property to associate an IPageList implementation with the tree view. If a PageList
-  is assigned, the active page of the page list will change automatically when the user selects a new
-  node in the tree view. The page that is activated is determined by the value of the selected nodes
-  PageIndex property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomSettingsTreeView
-Summary
-  A tree view that behaves like the tree view in the Options Dialog in VS.net.
-Description
-  TJvCustomSettingsTreeView is a base class for tree view controls that behave like the tree view in
-  the Settings Dialog in Visual Studio: When a node in the tree view is selected, a new page of
-  settings is shown on a panel to the right.
-
-  Specifically, the following is true:
-
-  * The normal ImageIndex/SelectedIndex is ignored for nodes - use PageNodeImages instead. You still
-    need to assign a TImageList to the Images property
-  * When a node is expanded, it is assigned the expanded image until it is collapsed, regardless
-    whether it's selected or not
-  * When a parent folder is selected, the first non-folder child has its normal image set as the
-    selected image
-  * By default, AutoExpand and ReadOnly is true, ShowButtons and ShowLines are false
-
-  Other than that, it should work like a normal TreeView. Note that the tree view was designed with
-  AutoExpand = true in mind but should work with AutoExpand = false
-
-  To get the VS look, Images should contain:
-
-  * Image 0: Closed Folder
-  * Image 1: Open Folder
-  * Image 2: Right-pointing teal-colored arrow
-
-  PageNodeImages should then be set to (the defaults):
-
-  * ClosedFolder = 0;
-  * ImageIndex = -1; (no image)
-  * \OpenFolder = 1;
-  * SelectedIndex = 2;
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomSettingsTreeView.OnGetImageIndex
-Summary
-  Occurs when the tree view looks up the ImageIndex of a node.
-Description
-  Write an OnGetImageIndex event handler to change the image index for the particular node before it is
-  drawn. For example, the bitmap of a node can be changed to indicate a different state for the node.
+  Use the CollapsedIndex property with the Images property of the tree view to specify the image for
+  the node in its collapsed state. If the node doesn't have any children, use the ImageIndex and
+  SelectedIndex properties instead.
 See Also
-  <DELPHILINK TTreeNode.ImageIndex>, <DELPHILINK TCustomTreeView.Images>
+  TJvSettingsTreeImages.ExpandedIndex, TJvSettingsTreeImages.ImageIndex,
+  TJvSettingsTreeImages.SelectedIndex
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomSettingsTreeView.OnGetSelectedIndex
+@@TJvSettingsTreeImages
 Summary
-  Occurs when the tree view looks up the SelectedIndex of a node.
+  Property class for setting up usage of images from an image list.
 Description
-  Write an OnGetSelectedIndex event handler to change the selected image index of a node before it is
-  drawn.
-See Also
-  <DELPHILINK TCustomTreeView.Images>, <DELPHILINK TTreeNode.ImageIndex>
+  TJvSettingsTreeImages is a property class that describes the images used in a
+  TJvCustomSettingsTreeView as the usage of images in this control differs from a normal TreeView
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomSettingsTreeView.PageNodeImages
+@@TJvPageLinks.TreeView
 Summary
-  Specifies the images to use for the different states of the nodes.
+  Specifies the TreeView that is the "parent" of the TJvPageLinks instance.
 Description
-  Use PageNodeImages to specify what images to use for the different states a node can be in. The
-  recognized states are normal, selected, expanded and collapsed.
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageListTreeView
+<TITLEIMG TJvPageListTreeView>
+JVCLInfo
+  GROUP=JVCL.ListsAndTrees.Trees,JVCL.PagesAndTabs
+  FLAG=Component
+Summary
+  A tree view that can be associated with an IPageList implementation.
+Description
+  TJvPageListTreeView is derived from TJvCustomPageListTreeView and publishes most of its properties
+  but doesn't add any new functionality.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageLinks
+Summary
+  Class used to facilitate linking nodes to pages in a page list.
+Description
+  This class is only used at design-time and is provided to activate the design-time editor for
+  setting up links between tree nodes and the pages in an IPageList implementation. Do not try to use
+  this class or its methods as it isn't a "real" class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageIndexNodes
+Summary
+  Maintains a list of TJvPageIndexNode nodes in a tree view control.
+Description
+  The Items property of the TJvCustomPageListTreeView is a TJvPageIndexNodes object and maintains the
+  collection of nodes in the tree view. Nodes can be added, deleted, inserted, and moved within the
+  tree view. Access the nodes in the tree view through the Items property of the tree view.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageIndexNode.PageIndex
+Summary
+  Specifies the page index of the node.
+Description
+  Use PageIndex to specify which page in an associated IPageList implementation should be activated
+  when the node is selected.
 See Also
-  <DELPHILINK TCustomTreeView.Images>
+  TJvCustomPage.PageList
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPageIndexNode
@@ -188,107 +134,162 @@ See Also
   <DELPHILINK TPersistent.AssignTo>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageIndexNode.PageIndex
+@@TJvCustomSettingsTreeView.PageNodeImages
 Summary
-  Specifies the page index of the node.
+  Specifies the images to use for the different states of the nodes.
 Description
-  Use PageIndex to specify which page in an associated IPageList implementation should be activated
-  when the node is selected.
+  Use PageNodeImages to specify what images to use for the different states a node can be in. The
+  recognized states are normal, selected, expanded and collapsed.
 See Also
-  TJvCustomPage.PageList
+  <DELPHILINK TCustomTreeView.Images>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPageIndexNodes
+@@TJvCustomSettingsTreeView.OnGetSelectedIndex
 Summary
-  Maintains a list of TJvPageIndexNode nodes in a tree view control.
+  Occurs when the tree view looks up the SelectedIndex of a node.
 Description
-  The Items property of the TJvCustomPageListTreeView is a TJvPageIndexNodes object and maintains the
-  collection of nodes in the tree view. Nodes can be added, deleted, inserted, and moved within the
-  tree view. Access the nodes in the tree view through the Items property of the tree view.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageLinks
-Summary
-  Class used to facilitate linking nodes to pages in a page list.
-Description
-  This class is only used at design-time and is provided to activate the design-time editor for setting
-  up links between tree nodes and the pages in an IPageList implementation. Do not try to use this
-  class or its methods as it isn't a "real" class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageLinks.TreeView
-Summary
-  Specifies the TreeView that is the "parent" of the TJvPageLinks instance.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageListTreeView
-<TITLEIMG TJvPageListTreeView>
-JVCLInfo
-  GROUP=JVCL.ListsAndTrees.Trees,JVCL.PagesAndTabs
-  FLAG=Component
-Summary
-  A tree view that can be associated with an IPageList implementation.
-Description
-  TJvPageListTreeView is derived from TJvCustomPageListTreeView and publishes most of its properties
-  but doesn't add any new functionality.
-
-----------------------------------------------------------------------------------------------------
-@@TJvSettingsTreeImages
-Summary
-  Property class for setting up usage of images from an image list.
-Description
-  TJvSettingsTreeImages is a property class that describes the images used in a
-  TJvCustomSettingsTreeView as the usage of images in this control differs from a normal TreeView
-
-----------------------------------------------------------------------------------------------------
-@@TJvSettingsTreeImages.CollapsedIndex
-Summary
-  Specifies which image is displayed when a node with children is in its collapsed state.
-Description
-  Use the CollapsedIndex property with the Images property of the tree view to specify the image for
-  the node in its collapsed state. If the node doesn't have any children, use the ImageIndex and
-  SelectedIndex properties instead.
+  Write an OnGetSelectedIndex event handler to change the selected image index of a node before it is
+  drawn.
 See Also
-  TJvSettingsTreeImages.ExpandedIndex, TJvSettingsTreeImages.ImageIndex,
-  TJvSettingsTreeImages.SelectedIndex
+  <DELPHILINK TCustomTreeView.Images>, <DELPHILINK TTreeNode.ImageIndex>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSettingsTreeImages.ExpandedIndex
+@@TJvCustomSettingsTreeView.OnGetImageIndex
 Summary
-  Specifies which image is displayed when a node with children is in its expanded state.
+  Occurs when the tree view looks up the ImageIndex of a node.
 Description
-  Use the ExpandedIndex property with the Images property of the tree view to specify the image for the
-  node in its expanded state. If the node doesn't have any children, use the ImageIndex and
-  SelectedIndex properties instead.
+  Write an OnGetImageIndex event handler to change the image index for the particular node before it
+  is drawn. For example, the bitmap of a node can be changed to indicate a different state for the
+  node.
 See Also
-  TJvSettingsTreeImages.CollapsedIndex, TJvSettingsTreeImages.ImageIndex,
-  TJvSettingsTreeImages.SelectedIndex
+  <DELPHILINK TTreeNode.ImageIndex>, <DELPHILINK TCustomTreeView.Images>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSettingsTreeImages.ImageIndex
+@@TJvCustomSettingsTreeView
 Summary
-  Specifies which image is displayed when a node is in its normal state and is not currently selected.
+  A tree view that behaves like the tree view in the Options Dialog in VS.net.
 Description
-  Use the ImageIndex property with the Images property of the tree view to specify the image for the
-  node in its normal state. If the node has children, use the ExpandedIndex and CollapsedIndex
-  properties instead.
-See Also
-  TJvSettingsTreeImages.CollapsedIndex, TJvSettingsTreeImages.ExpandedIndex,
-  TJvSettingsTreeImages.SelectedIndex
+  TJvCustomSettingsTreeView is a base class for tree view controls that behave like the tree view in
+  the Settings Dialog in Visual Studio: When a node in the tree view is selected, a new page of
+  settings is shown on a panel to the right.
+  
+  Specifically, the following is true:
+  
+  * The normal ImageIndex/SelectedIndex is ignored for nodes - use PageNodeImages instead. You still   need to assign a TImageList to the Images property * When a node is expanded, it is assigned the expanded image until it is co
+  lapsed, regardless   whether it's selected or not * When a parent folder is selected, the first
+  non-folder child has its normal image set as the   selected image * By default, AutoExpand and
+  ReadOnly is true, ShowButtons and ShowLines are false
+  
+  Other than that, it should work like a normal TreeView. Note that the tree view was designed with
+  AutoExpand = true in mind but should work with AutoExpand = false
+  
+  To get the VS look, Images should contain:
+  
+  * Image 0: Closed Folder
+  * Image 1: Open Folder
+  * Image 2: Right-pointing teal-colored arrow
+  
+  PageNodeImages should then be set to (the defaults):
+  
+  * ClosedFolder = 0;
+  * ImageIndex = -1; (no image)
+  * \OpenFolder = 1;
+  * SelectedIndex = 2;
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSettingsTreeImages.SelectedIndex
+@@TJvCustomPageListTreeView.PageList
 Summary
-  Specifies which image is displayed when a node is in its selected state.
+  Specifies the IPageList implementation.
 Description
-  Use the SelectedIndex property with the Images property of the tree view to specify the image for the
-  node in its selected state. If the node has children, use the ExpandedIndex and CollapsedIndex
-  properties instead.
+  Use the PageList property to associate an IPageList implementation with the tree view. If a
+  PageList is assigned, the active page of the page list will change automatically when the user
+  selects a new node in the tree view. The page that is activated is determined by the value of the
+  selected nodes
+  PageIndex property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPageListTreeView.PageDefault
+Summary
+  Specifies the index of the default page.
+Description
+  Use DefaultPage to specify the value of the PageIndex property for new nodes. For example, settings
+  this property to 0 will set the PageIndex of new nodes to 0, setting it to 1 will set the PageIndex
+  to 1, etc.
 See Also
-  TJvSettingsTreeImages.CollapsedIndex, TJvSettingsTreeImages.ExpandedIndex,
-  TJvSettingsTreeImages.ImageIndex
+  TJvCustomPageListTreeView.PageLinks, TJvCustomPageListTreeView.PageList
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPageListTreeView.PageLinks
+Summary
+  Used at design-time to set up the association between tree nodes and pages in a PageList.
+Description
+  This property is only used at design-time to set up the association between a node and the page that should be displayed
+  y the IPageList implementation when that node is selected. To set up a page link association at
+  run-time, type cast the tree node to TJvPageIndexNode and set its PageIndex property.
+  
+  \Example:
+  <CODE>
+    TJvPageIndexNode(JvCustomPageListTreeView1.Items[SomeIndex]).PageIndex := SomePageIndex; </CODE>
+  
+  The linking will only have effect if the PageList property has been assigned.
+See Also
+  TJvCustomPageListTreeView.PageList, TJvPageIndexNode.PageIndex
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPageListTreeView
+Summary
+  Base class for tree view controls that has a PageList property of type IPageList.
+Description
+  Use TJvCustomPageListTreeView as a base class when developing tree view controls that should have
+  the ability to be associated with an IPageList implementation.
+  
+  TJvCustomPageListTreeView has the same functionality as a normal tree view but in addition it can
+  also automatically change the active page of an IPageList implementation when the selected node
+  changes. Internally, the TJvCustomPageListTreeView component creates its tree nodes as
+  TJvPageIndexNodes. A TJvPageIndexNode has a PageIndex property that specifies which page in the
+  PageList to active when the node is selected.
+  
+  Since the nodes in the tree view is surfaced as normal TTreeNodes, you must typecast the TTreeNode
+  to
+  TJvPageIndexNode in code to access the PageIndex property.
+  
+  To put a PageList enabled tree view on a form, don't create instances of TJvCustomPageListTreeView.
+  Use the TJvPageListTreeView component instead. TJvPageListTreeView only publishes the properties of
+  TJvCustomPageListTreeView without adding any new functionality.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPageListTreeView.Items
+Summary
+  Lists the individual nodes that appear in the tree view control.
+Description
+  Individual nodes in this tree view are TJvPageIndexNode objects but they are surfaced as standard
+  TTreeNode objects. To access the additional properties and methods of the TJvPageIndexNode class,
+  you must type cast the node to a TJvPageIndexNode. The individual nodes can be accessed by using the
+  Items property along with the item's index into the tree view. For example, to access the second
+  item in the tree view, you could use the following code.
+  
+  <CODE>
+    (Delphi)
+      MyTreeNode := TreeView1.Items[1];
+    (C++Builder)
+      MyTreeNode = TreeView1->Items[1]; </CODE>
+  
+  When setting this property at design-time in the Object Inspector the Tree View Items Editor
+  appears.
+  Use the New Item and New SubItem buttons to add items to the tree view. Use the Text property to
+  modify what text is displayed in the label of the item.
+  
+  At run-time nodes can be added and inserted by using the TTreeNodes methods AddChildFirst, AddChild,
+  AddChildObjectFirst, AddChildObject, AddFirst, Add, AddObjectFirst, AddObject, and Insert.
+  Note
+  Accessing tree view items by index can be time-intensive, particularly when the tree view contains
+  many items. For optimal performance, try to design your application so that it has as few
+  dependencies on the tree view’s item index as possible.
+See Also
+  <DELPHILINK TTreeNodes.AddChildFirst>, <DELPHILINK TTreeNodes.AddChild>, <DELPHILINK
+  TTreeNodes.AddChildObjectFirst>, <DELPHILINK TTreeNodes.AddChildObject>, <DELPHILINK
+  TTreeNodes.AddFirst>, <DELPHILINK TTreeNodes.Add>, <DELPHILINK TTreeNodes.AddObjectFirst>,
+  <DELPHILINK TTreeNodes.AddObject>, <DELPHILINK TTreeNodes.Insert>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSettingsTreeImages.TreeView

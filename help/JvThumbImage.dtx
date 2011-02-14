@@ -3,14 +3,53 @@
 ----------------------------------------------------------------------------------------------------
 @@JvThumbImage.pas
 Summary
-  Contains the TJvThumbImage component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvThumbImage component.
 Author
   John Kozikopulos
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TAngle
-<TITLE TAngle type>
+@@TJvThumbImage.ScaleDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MaxW - Description for this parameter
+  MaxH - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.SaveToStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AStream - Description for this parameter
+  AType   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.SaveToFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Save
 Summary
   Write here a summary (1 line)
 Description
@@ -20,60 +59,33 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TAngle.AT0
-  Description for AT0
-
-----------------------------------------------------------------------------------------------------
-@@TAngle.AT90
-  Description for AT90
-
-----------------------------------------------------------------------------------------------------
-@@TAngle.AT180
-  Description for AT180
-
-----------------------------------------------------------------------------------------------------
-@@TAngle.AT270
-  Description for AT270
-
-----------------------------------------------------------------------------------------------------
-@@TCurveArray
-<TITLE TCurveArray type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  array [0..255] of Byte; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TFilterArray
-<TITLE TFilterArray type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  array [1..9] of Byte; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TFilterEmpty
-<TITLE TFilterEmpty type>
-Summary
-  Write here a summary (1 line)
-Description
-  Nothing in this unit.
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage
-<TITLEIMG TJvThumbImage>
-JVCLInfo
-  GROUP=JVCL.Graphics
-  FLAG=Component
+@@TJvThumbImage.Rotate
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  AAngle - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Angle
+@@TJvThumbImage.OnRotate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter
+  Percent - Description for this parameter
+  Cancel  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.OnLoaded
 Summary
   Write here a summary (1 line)
 Description
@@ -83,11 +95,128 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.BitmapNeeded
+@@TJvThumbImage.OnInvalidImage
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Modified
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Mirror
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  MirrorType - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.LoadFromStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AStream - Description for this parameter
+  AType   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.LoadFromFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFile - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Lightness
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Percent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Invert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Grayscale
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.GetFilter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Contrast
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Percent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.ChangeRGBCurves
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  R - Description for this parameter
+  G - Description for this parameter
+  B - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -117,45 +246,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.ChangeRGBCurves
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  R - Description for this parameter
-  G - Description for this parameter
-  B - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Contrast
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Percent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.GetFilter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Grayscale
+@@TJvThumbImage.BitmapNeeded
 Summary
   Write here a summary (1 line)
 Description
@@ -165,7 +256,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Invert
+@@TJvThumbImage
+<TITLEIMG TJvThumbImage>
+JVCLInfo
+  GROUP=JVCL.Graphics
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvThumbImage.Angle
 Summary
   Write here a summary (1 line)
 Description
@@ -175,154 +277,54 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Lightness
+@@TFilterEmpty
+<TITLE TFilterEmpty type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-Parameters
-  Percent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Nothing in this unit.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.LoadFromFile
+@@TFilterArray
+<TITLE TFilterArray type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-Parameters
-  AFile - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  array [1..9] of Byte; - for reference)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AStream - Description for this parameter
-  AType   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TAngle.AT90
+Description for AT90
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Mirror
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MirrorType - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TAngle.AT180
+Description for AT180
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Modified
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TAngle.AT270
+Description for AT270
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.OnInvalidImage
+@@TCurveArray
+<TITLE TCurveArray type>
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  array [0..255] of Byte; - for reference)
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.OnLoaded
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TAngle.AT0
+Description for AT0
 
 ----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.OnRotate
+@@TAngle
+<TITLE TAngle type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender  - Description for this parameter
-  Percent - Description for this parameter
-  Cancel  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Rotate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AAngle - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.Save
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.SaveToFile
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFile - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AStream - Description for this parameter
-  AType   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvThumbImage.ScaleDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  MaxW - Description for this parameter
-  MaxH - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -350,18 +352,17 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TMirror.mtHorizontal
-  Description for mtHorizontal
+Description for mtHorizontal
 
 ----------------------------------------------------------------------------------------------------
 @@TMirror.mtVertical
-  Description for mtVertical
+Description for mtVertical
 
 ----------------------------------------------------------------------------------------------------
 @@TMirror.mtBoth
-  Description for mtBoth
+Description for mtBoth
 
 ----------------------------------------------------------------------------------------------------
 @@TRotateNotify
-<TITLE TRotateNotify type>
-<COMBINE TJvThumbImage.OnRotate>
+<TITLE TRotateNotify type> <COMBINE TJvThumbImage.OnRotate>
 

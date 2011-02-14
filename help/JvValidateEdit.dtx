@@ -1,261 +1,120 @@
 ##Package: Custom
 ##Status: Completed,Checked (peter3)
-##Skip: TJvCustomValidateEdit.Text
-##Skip: TJvValidateEditCriticalPoints.OnChange
 ----------------------------------------------------------------------------------------------------
 @@JvValidateEdit.pas
 Summary
-  Contains the TJvValidateEdit component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvValidateEdit component.
 Author
   Christopher Latta
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDecimalRoundingEvent
-<TITLE TJvCustomDecimalRoundingEvent type>
-<COMBINE TJvCustomValidateEdit.OnDecimalRounding>
+@@TJvValidateEditCriticalPoints.MinValueIncluded
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomIsValidEvent
-<TITLE TJvCustomIsValidEvent type>
-<COMBINE TJvCustomValidateEdit.OnIsValid>
+@@TJvValidateEditCriticalPoints.MinValue
+Summary
+  Indicates the minimum allowed value.
+Description
+  Set MinValue to indicate the minimum value allowed. To disable, set MinValue to 0.
+See Also
+  TJvValidateEditCriticalPoints.MaxValue
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomTextValidateEvent
-<TITLE TJvCustomTextValidateEvent type>
-<COMBINE TJvCustomValidateEdit.OnCustomValidate>
+@@TJvValidateEditCriticalPoints.MaxValueIncluded
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit
+@@TJvValidateEditCriticalPoints.MaxValue
+Summary
+  Indicates the maximum allowed value in Text.
+Description
+  Set MaxValue to indicate the maximum value allowed. To disable, set MaxValue to 0.
+See Also
+  TJvValidateEditCriticalPoints.MinValue
+
+----------------------------------------------------------------------------------------------------
+@@TJvValidateEditCriticalPoints.ColorBelow
+Summary
+  Indicates the color to use for values that are below the minimum allowed value.
+Description
+  Set ColorBelow to the color to use when the checked value is less than MinValue.
+See Also
+  TJvValidateEditCriticalPoints.ColorAbove, TJvValidateEditCriticalPoints.MaxValue,
+  TJvValidateEditCriticalPoints.MinValue
+
+----------------------------------------------------------------------------------------------------
+@@TJvValidateEditCriticalPoints.ColorAbove
+Summary
+  Indicates the color to use for values that are above the maximum allowed value.
+Description
+  Set ColorAbove to the color to use when the checked value is more than MaxValue.
+See Also
+  TJvValidateEditCriticalPoints.ColorBelow, TJvValidateEditCriticalPoints.MaxValue,
+  TJvValidateEditCriticalPoints.MinValue
+
+----------------------------------------------------------------------------------------------------
+@@TJvValidateEditCriticalPoints.CheckPoints
+Summary
+  Indicates if values are checked against MinValue, MaxValue or both.
+Description
+  Use CheckPoints to specify whether MinValue, MaxValue or both are used when checking the value in a
+  TJvValidateEdit.
+See Also
+  TJvValidateEdit, TJvValidateEditCriticalPoints.MaxValue, TJvValidateEditCriticalPoints.MinValue
+
+----------------------------------------------------------------------------------------------------
+@@TJvValidateEditCriticalPoints
+Summary
+  Used to check a value in TJvValidateEdit against a minimum and maximum value and mark invalid
+  values accordingly.
+Description
+  TJvValidateEditCriticalPoints is the type of the CriticalPoints property in a TJvValidateEdit
+  control and defines the properties used to check the value of the edit against a minimum value and
+  a maximum value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvValidateEdit
+<TITLEIMG TJvValidateEdit>
+JVCLInfo
+  GROUP=JVCL.EditsMemosAndCombos.Edits
+  FLAG=Component
 Summary
   Edit control that can restrict its content to only accept valid input.
 Description
-  TJvCustomValidateEdit is a base class for edit controls that can restrict user input and format its
-  content. To put a validating edit control on a form, don't use TJvCustomValidateEdit. Instead, use a
-  derived component like TJvValidateEdit.
+  Use a TJvValidateEdit when you need to restrict what the user can type into the control. A
+  TJvValidateEdit can both format the text in the control as well as restrict the allowable
+  characters the user can type into it. For example, to restrict the user to only type integer
+  values, set
+  DisplayFormat to dfInteger.
+  
+  TJvValidateEdit is derived from TJvCustomValidateEdit, publishes most of its properties but doesn't
+  add any new functionality.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.AllowEmpty
+@@TJvCustomValidateEdit.ZeroEmpty
 Summary
-  Write here a summary (1 line)
+  Specifies if an empty Text property should be interpreted as the value 0.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.AsCurrency
-Summary
-  Represents the Text property as a Currency value.
-Description
-  Use AsCurrency to read the value of the Text property into an object or variable of type Currency or
-  to assign a Currency value to the Text property.
-Note
-  If the current value of Text cannot be represented as a currency value, AsCurrency returns 0.
+  Use ZeroEmpty to indicate whether an empty Text or null Value should be interpreted as 0 or as an
+  empty string.
 See Also
   <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.AsFloat
-Summary
-  Represents the Text property as a Double value.
-Description
-  Use AsFloat to read the value of the Text property into an object or variable of type Double or to
-  assign a Double value to the Text property.
-Note
-  If the current value of Text cannot be represented as a Double value, AsFloat returns 0.
-See Also
-  <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.AsInteger
-Summary
-  Represents the text property as a 32-bit integer.
-Description
-  Use AsInteger to read the value of the Text property into an object or variable of type integer or to
-  assign a 32-bit integer value to the Text property.
-Note
-  If the current value of Text cannot be represented as an integer value, AsInteger returns 0.
-See Also
-  <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.Assign
-Summary
-  Copies the properties of another instance to this object.
-Description
-  Use Assign to copy the properties of another TJvCustomValidateEdit (or descendant) to this object.
-  The properties copied are CriticalPoints, DisplayFormat, DecimalPlaces, MinValue, MaxValue,
-  HasMinValue, HasMaxValue and ZeroEmpty.
-
-  If Source is not derived from TJvCustomValidateEdit, Assign calls inherited Assign.
-Parameters
-  Source - The object to copy from.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.AutoAlignment
-Summary
-  Specifies if alignment is changed automatically.
-Description
-  Use AutoAlignment to specify if the alignment of the text is automatically changed when the
-  DisplayFormat is changed. If AutoAlignment is True, DisplayFormat's that are numeric in nature are
-  right-justified and all others are left-justified. Set AutoAlignment to False to control the
-  Alignment manually.
-See Also
-  TJvCustomEdit.Alignment
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.CheckChars
-Summary
-  Specifies the character to check.
-Description
-  Use CheckChars to specify the characters to check in the control. When the value of DisplayFormat
-  changes, CheckChars also changes.
-See Also
-  <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.CriticalPoints
-Summary
-  Specifies the points to compare input values against.
-Description
-  Use CriticalPoints to set up how invalid values in the control are displayed. When an invalid value
-  is found the text in the control will be displayed using the colors of ColorAbove and ColorBelow in
-  CriticalPoints.
-See Also
-  TJvValidateEditCriticalPoints
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.DecimalPlaces
-Summary
-  Specifies the number of decimals to display.
-Description
-  Use DecimalPlaces to specify the number of decimals to display in the control. DecimalPlaces only has
-  effect when using floating type DisplayFormats.
-See Also
-  TJvCustomValidateEdit.DisplayFormat
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.DisplayFormat
-Summary
-  Specifies the format to use for display.
-Description
-  Use DisplayFormat to specify what characters are allowed in the control. Setting DisplayFormat may
-  also alter Alignment, DecimalPlaces, DisplaySuffix and DisplayPrefix.
-See Also
-  TJvCustomEdit.Alignment
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.DisplayPrefix
-Summary
-  Specifies a prefix to display when the edit doesn't have focus.
-Description
-  Use DisplayPrefix to set a set of characters to display to the right of the text in the control. Note
-  that some of the DisplayFormats sets this property automatically.
-See Also
-  TJvCustomValidateEdit.DisplaySuffix
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.DisplaySuffix
-Summary
-  Specifies a suffix to display when the edit doesn't have focus.
-Description
-  Use DisplaySuffix to set a set of characters to display to the left of the text in the control. Note
-  that some of the DisplayFormats sets this property automatically.
-See Also
-  TJvCustomValidateEdit.DisplayPrefix
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.EditText
-Summary
-  The current value of Text.
-Description
-  Use EditText as an equivalent to the Text property that also checks the new value against
-  DisplayFormat, MinValue and MaxValue.
-See Also
-  <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.HasMaxValue
-Summary
-  Specifies if the MaxValue property is used.
-Description
-  Set HasMaxValue to true to check the entered values in the control against the MaxValue property. If
-  the entered value is more than MaxValue, it will be forced to be no larger than MaxValue.
-See Also
-  <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.HasMinValue
-Summary
-  Specifies if the MinValue property is used.
-Description
-  Set HasMinValue to true to check the entered values in the control against the MinValue property. If
-  the entered value is less than MinValue, it will be forced to be at least MinValue.
-See Also
-  <DELPHILINK TControl.Text>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.IsValid
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.MaxValue
-Summary
-  Specifies the maximum allowed value.
-Description
-  Use MaxValue to set a maximum allowed value in the control. To disable MaxValue checking, set
-  HasMaxValue to false.
-See Also
-  TJvCustomValidateEdit.HasMaxValue, TJvCustomValidateEdit.MinValue, TJvCustomValidateEdit.Value
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.MinValue
-Summary
-  Specifies the minimum allowed value.
-Description
-  Use MinValue to set a minimum allowed value in the control. To disable MinValue checking, set
-  HasMinValue to false.
-See Also
-  TJvCustomValidateEdit.HasMinValue, TJvCustomValidateEdit.MaxValue, TJvCustomValidateEdit.Value
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.OnCustomValidate
-Summary
-  Occurs when the control needs to validate input and DisplayFormat is dfCustom.
-Description
-  Write a handler for this event when DisplayFormat is set to dfCustom. To allow a character to be
-  entered into the control, set IsValid to true. To prevent a character from being entered, set IsValid
-  to false.
-Parameters
-  Sender  - The TJvCustomValidateEdit that called the event.
-  Key     - The key that was pressed last.
-  AText   - The current text of the control.
-  Pos     - The current caret position in the text.
-  IsValid - Set to true to accept the text, false otherwise.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.OnDecimalRounding
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender              - Description for this parameter
-  DecimalRoundedValue - Description for this parameter
-  Value               - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.OnIsValid
@@ -300,109 +159,248 @@ See Also
   <DELPHILINK TControl.Text>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomValidateEdit.ZeroEmpty
+@@TJvCustomValidateEdit.OnDecimalRounding
 Summary
-  Specifies if an empty Text property should be interpreted as the value 0.
+  Write here a summary (1 line)
 Description
-  Use ZeroEmpty to indicate whether an empty Text or null Value should be interpreted as 0 or as an
-  empty string.
+  Write here a description
+Parameters
+  Sender              - Description for this parameter
+  DecimalRoundedValue - Description for this parameter
+  Value               - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.OnCustomValidate
+Summary
+  Occurs when the control needs to validate input and DisplayFormat is dfCustom.
+Description
+  Write a handler for this event when DisplayFormat is set to dfCustom. To allow a character to be
+  entered into the control, set IsValid to true. To prevent a character from being entered, set
+  IsValid to false.
+Parameters
+  Sender  - The TJvCustomValidateEdit that called the event.
+  Key     - The key that was pressed last.
+  AText   - The current text of the control.
+  Pos     - The current caret position in the text.
+  IsValid - Set to true to accept the text, false otherwise.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.MaxValue
+Summary
+  Specifies the maximum allowed value.
+Description
+  Use MaxValue to set a maximum allowed value in the control. To disable MaxValue checking, set
+  HasMaxValue to false.
+See Also
+  TJvCustomValidateEdit.HasMaxValue, TJvCustomValidateEdit.MinValue, TJvCustomValidateEdit.Value
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.MinValue
+Summary
+  Specifies the minimum allowed value.
+Description
+  Use MinValue to set a minimum allowed value in the control. To disable MinValue checking, set
+  HasMinValue to false.
+See Also
+  TJvCustomValidateEdit.HasMinValue, TJvCustomValidateEdit.MaxValue, TJvCustomValidateEdit.Value
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.IsValid
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.HasMinValue
+Summary
+  Specifies if the MinValue property is used.
+Description
+  Set HasMinValue to true to check the entered values in the control against the MinValue property.
+  If the entered value is less than MinValue, it will be forced to be at least MinValue.
 See Also
   <DELPHILINK TControl.Text>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvValidateEdit
-<TITLEIMG TJvValidateEdit>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Edits
-  FLAG=Component
+@@TJvCustomValidateEdit.HasMaxValue
+Summary
+  Specifies if the MaxValue property is used.
+Description
+  Set HasMaxValue to true to check the entered values in the control against the MaxValue property.
+  If the entered value is more than MaxValue, it will be forced to be no larger than MaxValue.
+See Also
+  <DELPHILINK TControl.Text>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.EditText
+Summary
+  The current value of Text.
+Description
+  Use EditText as an equivalent to the Text property that also checks the new value against
+  DisplayFormat, MinValue and MaxValue.
+See Also
+  <DELPHILINK TControl.Text>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.DisplaySuffix
+Summary
+  Specifies a suffix to display when the edit doesn't have focus.
+Description
+  Use DisplaySuffix to set a set of characters to display to the left of the text in the control.
+  Note that some of the DisplayFormats sets this property automatically.
+See Also
+  TJvCustomValidateEdit.DisplayPrefix
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.DisplayPrefix
+Summary
+  Specifies a prefix to display when the edit doesn't have focus.
+Description
+  Use DisplayPrefix to set a set of characters to display to the right of the text in the control.
+  Note that some of the DisplayFormats sets this property automatically.
+See Also
+  TJvCustomValidateEdit.DisplaySuffix
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.DisplayFormat
+Summary
+  Specifies the format to use for display.
+Description
+  Use DisplayFormat to specify what characters are allowed in the control. Setting DisplayFormat may
+  also alter Alignment, DecimalPlaces, DisplaySuffix and DisplayPrefix.
+See Also
+  TJvCustomEdit.Alignment
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.DecimalPlaces
+Summary
+  Specifies the number of decimals to display.
+Description
+  Use DecimalPlaces to specify the number of decimals to display in the control. DecimalPlaces only
+  has effect when using floating type DisplayFormats.
+See Also
+  TJvCustomValidateEdit.DisplayFormat
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.CriticalPoints
+Summary
+  Specifies the points to compare input values against.
+Description
+  Use CriticalPoints to set up how invalid values in the control are displayed. When an invalid value
+  is found the text in the control will be displayed using the colors of ColorAbove and ColorBelow in
+  CriticalPoints.
+See Also
+  TJvValidateEditCriticalPoints
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.CheckChars
+Summary
+  Specifies the character to check.
+Description
+  Use CheckChars to specify the characters to check in the control. When the value of DisplayFormat
+  changes, CheckChars also changes.
+See Also
+  <DELPHILINK TControl.Text>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.AutoAlignment
+Summary
+  Specifies if alignment is changed automatically.
+Description
+  Use AutoAlignment to specify if the alignment of the text is automatically changed when the
+  DisplayFormat is changed. If AutoAlignment is True, DisplayFormat's that are numeric in nature are
+  right-justified and all others are left-justified. Set AutoAlignment to False to control the
+  Alignment manually.
+See Also
+  TJvCustomEdit.Alignment
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.Assign
+Summary
+  Copies the properties of another instance to this object.
+Description
+  Use Assign to copy the properties of another TJvCustomValidateEdit (or descendant) to this object.
+  The properties copied are CriticalPoints, DisplayFormat, DecimalPlaces, MinValue, MaxValue,
+  HasMinValue, HasMaxValue and ZeroEmpty.
+  
+  If Source is not derived from TJvCustomValidateEdit, Assign calls inherited Assign.
+Parameters
+  Source - The object to copy from.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.AsInteger
+Summary
+  Represents the text property as a 32-bit integer.
+Description
+  Use AsInteger to read the value of the Text property into an object or variable of type integer or
+  to assign a 32-bit integer value to the Text property.
+  Note
+  If the current value of Text cannot be represented as an integer value, AsInteger returns 0.
+See Also
+  <DELPHILINK TControl.Text>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.AsFloat
+Summary
+  Represents the Text property as a Double value.
+Description
+  Use AsFloat to read the value of the Text property into an object or variable of type Double or to
+  assign a Double value to the Text property.
+  Note
+  If the current value of Text cannot be represented as a Double value, AsFloat returns 0.
+See Also
+  <DELPHILINK TControl.Text>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.AsCurrency
+Summary
+  Represents the Text property as a Currency value.
+Description
+  Use AsCurrency to read the value of the Text property into an object or variable of type Currency
+  or to assign a Currency value to the Text property.
+  Note
+  If the current value of Text cannot be represented as a currency value, AsCurrency returns 0.
+See Also
+  <DELPHILINK TControl.Text>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit.AllowEmpty
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomValidateEdit
 Summary
   Edit control that can restrict its content to only accept valid input.
 Description
-  Use a TJvValidateEdit when you need to restrict what the user can type into the control. A
-  TJvValidateEdit can both format the text in the control as well as restrict the allowable characters
-  the user can type into it. For example, to restrict the user to only type integer values, set
-  DisplayFormat to dfInteger.
-
-  TJvValidateEdit is derived from TJvCustomValidateEdit, publishes most of its properties but doesn't
-  add any new functionality.
+  TJvCustomValidateEdit is a base class for edit controls that can restrict user input and format its
+  content. To put a validating edit control on a form, don't use TJvCustomValidateEdit. Instead, use
+  a derived component like TJvValidateEdit.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints
-Summary
-  Used to check a value in TJvValidateEdit against a minimum and maximum value and mark invalid values
-  accordingly.
-Description
-  TJvValidateEditCriticalPoints is the type of the CriticalPoints property in a TJvValidateEdit control
-  and defines the properties used to check the value of the edit against a minimum value and a maximum
-  value.
+@@TJvCustomTextValidateEvent
+<TITLE TJvCustomTextValidateEvent type> <COMBINE TJvCustomValidateEdit.OnCustomValidate>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.CheckPoints
-Summary
-  Indicates if values are checked against MinValue, MaxValue or both.
-Description
-  Use CheckPoints to specify whether MinValue, MaxValue or both are used when checking the value in a
-  TJvValidateEdit.
-See Also
-  TJvValidateEdit, TJvValidateEditCriticalPoints.MaxValue, TJvValidateEditCriticalPoints.MinValue
+@@TJvCustomIsValidEvent
+<TITLE TJvCustomIsValidEvent type> <COMBINE TJvCustomValidateEdit.OnIsValid>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.ColorAbove
-Summary
-  Indicates the color to use for values that are above the maximum allowed value.
-Description
-  Set ColorAbove to the color to use when the checked value is more than MaxValue.
-See Also
-  TJvValidateEditCriticalPoints.ColorBelow, TJvValidateEditCriticalPoints.MaxValue,
-  TJvValidateEditCriticalPoints.MinValue
-
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.ColorBelow
-Summary
-  Indicates the color to use for values that are below the minimum allowed value.
-Description
-  Set ColorBelow to the color to use when the checked value is less than MinValue.
-See Also
-  TJvValidateEditCriticalPoints.ColorAbove, TJvValidateEditCriticalPoints.MaxValue,
-  TJvValidateEditCriticalPoints.MinValue
-
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.MaxValue
-Summary
-  Indicates the maximum allowed value in Text.
-Description
-  Set MaxValue to indicate the maximum value allowed. To disable, set MaxValue to 0.
-See Also
-  TJvValidateEditCriticalPoints.MinValue
-
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.MaxValueIncluded
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.MinValue
-Summary
-  Indicates the minimum allowed value.
-Description
-  Set MinValue to indicate the minimum value allowed. To disable, set MinValue to 0.
-See Also
-  TJvValidateEditCriticalPoints.MaxValue
-
-----------------------------------------------------------------------------------------------------
-@@TJvValidateEditCriticalPoints.MinValueIncluded
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvCustomDecimalRoundingEvent
+<TITLE TJvCustomDecimalRoundingEvent type> <COMBINE TJvCustomValidateEdit.OnDecimalRounding>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.SetDefaults
@@ -431,19 +429,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpNone
-  Don't use critical points.
+Don't use critical points.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpMinValue
-  Description for cpMinValue
+Description for cpMinValue
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpMaxValue
-  Check only the maximum value.
+Check only the maximum value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpBoth
-  Check both minimum and maximum value.
+Check both minimum and maximum value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDataConnector
@@ -479,74 +477,74 @@ Summary
   Defines available display formats.
 Description
   TJvValidateEditDisplayFormat is used as the type for the DisplayFormat property in TJvValidateEdit.
-  Changing DisplayFormat might change the Alignment of the text if AutoAlignment is true and the prefix
-  or suffix used when the control doesn't have focus.
+  Changing DisplayFormat might change the Alignment of the text if AutoAlignment is true and the
+  prefix or suffix used when the control doesn't have focus.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfAlphabetic
-  Only displays characters A-Z, a-z.
+Only displays characters A-Z, a-z.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfAlphaNumeric
-  Only displays characters A-Z, a-z, 0-9.
+Only displays characters A-Z, a-z, 0-9.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfBinary
-  Only displays binary characters (0,1).
+Only displays binary characters (0,1).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfCheckChars
-  Only displays characters in CheckCars.
+Only displays characters in CheckCars.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfCurrency
-  Only displays currency characters (0-9, decimal).
+Only displays currency characters (0-9, decimal).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfCustom
-  Only displays characters where OnCustomValidate sets IsValid to true.
+Only displays characters where OnCustomValidate sets IsValid to true.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfFloat
-  Only displays float characters (0-9, decimal).
+Only displays float characters (0-9, decimal).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfFloatGeneral
-  Description for dfFloatGeneral
+Description for dfFloatGeneral
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfHex
-  Only displays hexadecimal characters (0-9,A-F,a-f).
+Only displays hexadecimal characters (0-9,A-F,a-f).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfInteger
-  Only displays integer characters (0-9).
+Only displays integer characters (0-9).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfNonCheckChars
-  Only displays characters not in CheckCars.
+Only displays characters not in CheckCars.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfNone
-  Displays any character.
+Displays any character.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfOctal
-  Only displays octal characters (0-7).
+Only displays octal characters (0-7).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfPercent
-  Only displays percentage characters (0-9).
+Only displays percentage characters (0-9).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfScientific
-  Only displays integer characters (0-9, e, E).
+Only displays integer characters (0-9, e, E).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfYear
-  Only displays integer characters (0-9) and also sets max length to 4.
+Only displays integer characters (0-9) and also sets max length to 4.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfDecimal
-  Description for dfDecimal
+Description for dfDecimal
 

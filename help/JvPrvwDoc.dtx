@@ -3,408 +3,539 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPrvwDoc.pas
 Summary
-  Contains the TJvPreviewControl component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPreviewControl component.
 Author
   Peter Thörnqvist
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter
+@@TJvPreviewPageOptions.Rows
 Summary
-  Interface describing the commands that must be supported to be able to print a preview.
+  Indicates the number of pages to display horizontally in the visible part of the control.
 Description
-  IJvPrinter defines methods necessary to print a preview to a printing device. In order to send the
-  preview displayed by a TJvCustomPreviewControl to another output device (like a printer), a component
-  must implement the methods of IJvPrinter in order to call the TJvCustomPreviewControl.PrintRange
-  function. A default implementation of the IJvPrinter can be found in the TJvPreviewPrinter component.
-  This component implements the interface by sending all methods call to the global Printer object.
-
-  To output the preview to other devices (like PDF files), write a component that implements the
-  IJvPrinter interface.
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.Abort
-Summary
-  Aborts the print job.
-Description
-  Called when the print job should be aborted.
+  Use Rows to specify how many rows of pages should be displayed in the visible part of the preview
+  control (without scrolling). Setting Rows may have no effect, either because ScaleMode prohibits it
+  or because the number of Rows and Cols requested exceeds the available page count.
 See Also
-  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.NewPage
+  TJvPreviewPageOptions.Cols, TJvPreviewPageOptions.Scale, TJvPreviewPageOptions.ScaleMode
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.BeginDoc
+@@TJvPreviewPageOptions.OnScaleModeChange
 Summary
-  Starts a print job.
+  Occurs when the ScaleMode property changes
 Description
-  Called when the print job should be started.
+  Don't write a handler for this event. A handler is assigned internally by the control that created
+  the instance.
 See Also
-  IJvPrinter.EndDoc, IJvPrinter.NewPage, IJvPrinter.Abort
+  TJvPreviewPageOptions.OnChange
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.EndDoc
+@@TJvPreviewPageOptions.OnChange
 Summary
-  Ends a print job.
+  Occurs when any property value is changed.
 Description
-  Called when the print job is finished.
+  Don't write a handler for this event. A handler is assigned internally by the control that created
+  the instance.
 See Also
-  IJvPrinter.BeginDoc, IJvPrinter.NewPage
+  TJvPreviewPageOptions.OnScaleModeChange
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetAborted
+@@TJvPreviewPageOptions.HorzSpacing
 Summary
-  Should return true if the print job has been aborted.
+  Specifies the horizontal distance between pages in the preview.
 Description
-  Called when the caller needs to know if the print job has been aborted.
+  Use HorzSpacing to specify the number of pixels between the pages in a preview when the preview is
+  displaying more than one page. HorzSpacing is in pixels.
+See Also
+  TJvPreviewPageOptions.VertSpacing
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPageOptions.DrawMargins
+Summary
+  Indicates whether print margins are drawn in the preview.
+Description
+  Use DrawMargins to specify if the preview displays the print margins in the preview. If DrawMargins
+  is true, a dotted line is drawn on the preview pages to indicate the printable area.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPageOptions.Color
+Summary
+  Specifies the color of the preview pages.
+Description
+  Use Color to specify the background color for the preview pages.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPageOptions.Cols
+Summary
+  Indicates the number of pages to display vertically in the visible part of the control.
+Description
+  Use Cols to specify how many columns of pages should be displayed in the visible part of the
+  preview control (without scrolling). Setting Cols may have no effect, either because ScaleMode
+  prohibits it or because the number of Rows and Cols requested exceeds the available page count.
+See Also
+  TJvPreviewPageOptions.Rows, TJvPreviewPageOptions.Scale, TJvPreviewPageOptions.ScaleMode
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewPageOptions
+Summary
+  Represents the available options for the pages in the preview control.
+Description
+  A page in the preview is a visual object that simulates a physical paper page as it would look if
+  printed on a printer. The properties of TJvPreviewPageOptions controls the appearance of these
+  pages as well as properties pertaining to the relationship between pages in a preview.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageShadow.OnChange
+Summary
+  Occurs when any of the shadow's properties changes.
+Description
+  Don't write a handler for this event. A handler is automatically assigned by the component that
+  created the class.
+See Also
+  TJvPreviewControl
+
+----------------------------------------------------------------------------------------------------
+@@TJvPreviewControl
+<TITLEIMG TJvPreviewControl>
+JVCLInfo
+  GROUP=JVCL.Printing
+  FLAG=Component
+Summary
+  Control that can display a print preview.
+Description
+  TJvPreviewControl is derived from TJvCustomPreviewControl and publishes most of its properties but
+  does not add any new functionality.
+  
+  To use a print preview on a form, you must:
+  
+  * Drop a TJvPreviewControl on the form
+  * Drop one or more renderers derived from TJvCustomPreviewRenderer
+  * Connect the <LINK TJvCustomPreviewRenderer.PrintPreview, PrintPreview> with the TJvPreviewControl
+  * Set the properties of the preview control to your liking
+  * At runtime, call <LINK TJvCustomPreviewRenderer.CreatePreview, CreatePreview> to display the  
+  preview in the TJvPreviewControl.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageShadow.Color
+Summary
+  Specifies the color of the shadow.
+Description
+  Use Color to specify the color of the shadow.
+See Also
+  TJvPageShadow.Offset, TJvPageShadow.OnChange
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageShadow.Offset
+Summary
+  Specifies the position of the shadow in relation to the page.
+Description
+  Use Offset to specify where the shadow is located in relation to the page it is associated with.
+  Offset controls the number of pixels the shadow is shifted down and to the right compared to the
+  position of the page. For example, if Offset is 2, the shadow will appear 2 pixels below and to the
+  right of the page. If Offset is 0, no shadow is displayed. Offset can also be negative.
+See Also
+  TJvPageShadow.Color, TJvPageShadow.OnChange
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawPageEvent
+<TITLE TJvDrawPageEvent type> <COMBINE TJvCustomPreviewControl.OnAddPage>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDrawPreviewEvent
+<TITLE TJvDrawPreviewEvent type> <COMBINE TJvCustomPreviewControl.OnDrawPreviewPage>
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageShadow
+Summary
+  Maintains properties relating to the print preview page shadow.
+Description
+  TJvPageShadow is the class type of the Shadow property of a TJvPreviewControl.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.YPxToInch
+Summary
+  Converts a pixel value to a logical inch value.
+Description
+  Call YPxToInch to convert a pixel value to a logical inch. The conversion is done using the mapping
+  of the vertical extent in the current device context as specified by ReferenceHandle.
+  
+  This is the opposite of the InchToYPx function.
+Parameters
+  Pixels - Value to convert.
 Return value
-  Returns true if the print job has been aborted.
+  The converted value.
 See Also
-  IJvPrinter.Abort
+  TJvDeviceInfo.InchToYPx, TJvDeviceInfo.XPxToInch, TJvDeviceInfo.YPxToMM
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetCanvas
+@@TJvDeviceInfo.YPxToMM
 Summary
-  Return the canvas to draw on.
+  Converts a pixel value to a logical millimeter value.
 Description
-  Called when the caller needs the canvas to draw to.
+  Call YPxToMM to convert a pixel value to a millimeter value. The conversion is done using the
+  mapping of the vertical extent in the current device context as specified by ReferenceHandle.
+  
+  This is the opposite of the MMToYPx function.
+Parameters
+  Pixels - Value to convert.
 Return value
-  Returns the TCanvas that the drawing is performed on.
+  The converted value.
 See Also
-  IJvPrinter.GetPageWidth, IJvPrinter.GetPageHeight
+  TJvDeviceInfo.InchToYPx, TJvDeviceInfo.MMToYPx, TJvDeviceInfo.XPxToMM
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetHandle
+@@TJvDeviceInfo.XPxToMM
+Summary
+  Converts a pixel value to a logical millimeter value.
+Description
+  Call XPxToMM to convert a pixel value to a millimeter value. The conversion is done using the
+  mapping of the horizontal extent in the current device context as specified by ReferenceHandle.
+  
+  This is the opposite of the MMToXPx function.
+Parameters
+  Pixels - Value to convert.
+Return value
+  The converted value.
+See Also
+  TJvDeviceInfo.InchToXPx, TJvDeviceInfo.MMToXPx, TJvDeviceInfo.XPxToInch
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.XPxToInch
+Summary
+  Converts a pixel value to a logical inch value.
+Description
+  Call XPxToInch to convert a pixel value to a logical inch. The conversion is done using the mapping
+  of the horizontal extent in the current device context as specified by ReferenceHandle.
+  
+  This is the opposite of the InchToXPx function.
+Parameters
+  Pixels - Value to convert.
+Return value
+  The converted value.
+See Also
+  TJvDeviceInfo.InchToXPx, TJvDeviceInfo.XPxToMM, TJvDeviceInfo.YPxToInch
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.ReferenceHandle
+Summary
+  Handle to the device context that values are retrieved from.
+Description
+  Use ReferenceHandle to specify the HDC where the various property values of TJvDeviceInfo are
+  retrieved. For example, to retrieve property settings from the currently selected printer, assign
+  Printer.Handle to this property.
+  
+  If ReferenceHandle is 0, the values are retrieved from the desktop DC.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.PhysicalWidth
+Summary
+  Specifies the physical width of the page.
+Description
+  \Read PhysicalWidth to determine the width of the page in device units.
+  
+  When a new ReferenceHandle is set, TJvDeviceInfo calls \PhysicalWidth := \GetDeviceCaps(
+  ReferenceHandle, \PHYSICALWIDTH) to retrieve this value.
+See Also
+  TJvDeviceInfo.PhysicalHeight
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.PhysicalHeight
+Summary
+  Specifies the physical height of the page.
+Description
+  \Read PhysicalHeight to determine the height of the page in device units.
+  
+  When a new ReferenceHandle is set, TJvDeviceInfo calls \PhysicalHeight := \GetDeviceCaps(
+  ReferenceHandle, \PHYSICALHEIGHT) to retrieve this value.
+See Also
+  TJvDeviceInfo.PhysicalWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.PageWidth
+Summary
+  Specifies the physical height of the page.
+Description
+  \Read PageHeight to determine the physical height of the page in device units.
+  
+  When a new ReferenceHandle is set, TJvDeviceInfo calls \PageWidth := \GetDeviceCaps(
+  ReferenceHandle, \HORZRES) to retrieve this value.
+See Also
+  TJvDeviceInfo.PageHeight, TJvDeviceInfo.PhysicalHeight, TJvDeviceInfo.PhysicalWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.PageHeight
+Summary
+  Specifies the physical height of the page.
+Description
+  \Read PageHeight to determine the physical height of the page in device units.
+  
+  When a new ReferenceHandle is set, TJvDeviceInfo calls \PageHeight := \GetDeviceCaps(
+  ReferenceHandle, \VERTRES) to retrieve this value.
+See Also
+  TJvDeviceInfo.PageWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.OnChange
+Summary
+  Called when values are changed.
+Description
+  Don't write a handler for this event. A handler is assigned automatically by the component that
+  uses this class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.OffsetTop
+Summary
+  Specifies the number of device units between the top edge of the printable area and the top edge of
+  the page.
+Description
+  \Read OffsetTop to determine the size of the non-printable area at the top of the device context.
+  
+  When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps(\ReferenceHandle,
+  PHYSICALOFFSETY) to retrieve this value.
+See Also
+  TJvDeviceInfo.OffsetBottom, TJvDeviceInfo.OffsetLeft, TJvDeviceInfo.OffsetRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.OffsetRight
+Summary
+  Specifies the number of device units between the right edge of the printable area and the right
+  edge of the page.
+Description
+  \Read OffsetRight to determine the size of the non-printable area at the right side of the device
+  context.
+  
+  When a new ReferenceHandle is set, OffsetRight is calculated from:
+  <CODE>
+    OffsetRight := PhysicalWidth - PageWidth - OffsetLeft; </CODE>
+See Also
+  TJvDeviceInfo.OffsetBottom, TJvDeviceInfo.OffsetLeft, TJvDeviceInfo.OffsetTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.OffsetLeft
+Summary
+  Specifies the number of device units between the left edge of the printable area and the left edge
+  of the page.
+Description
+  \Read OffsetLeft to determine the size of the non-printable area at the left side of the device
+  context.
+  
+  When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps(\ReferenceHandle,
+  PHYSICALOFFSETX) to retrieve this value.
+See Also
+  TJvDeviceInfo.OffsetBottom, TJvDeviceInfo.OffsetRight, TJvDeviceInfo.OffsetTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.OffsetBottom
+Summary
+  Specifies the number of device units between the bottom of the printable area and the bottom of the
+  page.
+Description
+  \Read OffsetBottom to determine the size of the non-printable area at the lower edge of the device
+  context.
+  
+  When a new ReferenceHandle is set, OffsetBottom is calculated from:
+  <CODE>
+    OffsetBottom := PhysicalHeight - PageHeight - OffsetTop; </CODE>
+See Also
+  TJvDeviceInfo.OffsetLeft, TJvDeviceInfo.OffsetRight, TJvDeviceInfo.OffsetTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.MMToYPx
+Summary
+  Converts logical millimeters to pixels.
+Description
+  Call MMToYPx to convert a logical millimeter to a pixel value. The conversion is done using the
+  mapping of the vertical extent in the current device context as specified by ReferenceHandle.
+  
+  Calling this function is the same as InchToYPx(MM * 25.4).
+Parameters
+  MM - The value to convert.
+Return value
+  The corresponding pixel value.
+See Also
+  TJvDeviceInfo.MMToXPx, TJvDeviceInfo.YPxToMM
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.LogPixelsY
+Summary
+  Number of pixels per logical inch along the screen width.
+Description
+  \Read LogPixelsX to determine the number of pixels per logical inch for the currently selected
+  device. When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps( ReferenceHandle,
+  \LOGPIXELSY) to retrieve this value.
+See Also
+  TJvDeviceInfo.LogPixelsX, TJvDeviceInfo.ReferenceHandle
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.MMToXPx
+Summary
+  Converts logical millimeters to pixels.
+Description
+  Call MMToXPx to convert a logical millimeter to a pixel value. The conversion is done using the
+  mapping of the horizontal extent in the current device context as specified by ReferenceHandle.
+  
+  Calling this function is the same as InchToXPx(MM * 25.4).
+Parameters
+  MM - The value to convert.
+Return value
+  The corresponding pixel value.
+See Also
+  TJvDeviceInfo.MMToYPx, TJvDeviceInfo.XPxToMM
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.LogPixelsX
+Summary
+  Number of pixels per logical inch along the screen width.
+Description
+  \Read LogPixelsX to determine the number of pixels per logical inch for the currently selected
+  device. When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps( ReferenceHandle,
+  \LOGPIXELSX) to retrieve this value.
+See Also
+  TJvDeviceInfo.LogPixelsY, TJvDeviceInfo.ReferenceHandle
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.InchToYPx
+Summary
+  Converts logical inches to pixels.
+Description
+  Call InchToYPx to convert a logical inch to a pixel value. The conversion is done using the mapping
+  of the vertical extent in the current device context as specified by ReferenceHandle.
+Parameters
+  Inch - The value to convert.
+Return value
+  The corresponding pixel value.
+See Also
+  TJvDeviceInfo.InchToXPx, TJvDeviceInfo.YPxToInch
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo.InchToXPx
+Summary
+  Converts logical inches to pixels.
+Description
+  Call InchToYPx to convert a logical inch to a pixel value. The conversion is done using the mapping
+  of the horizontal extent in the current device context as specified by ReferenceHandle.
+Parameters
+  Inch - The value to convert.
+Return value
+  The corresponding pixel value.
+See Also
+  TJvDeviceInfo.InchToYPx, TJvDeviceInfo.XPxToInch
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.VisibleRows
+Summary
+  Indicates the total number of visible rows in the preview.
+Description
+  \Read VisibleRows to determine the total number of visible rows currently in the preview.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDeviceInfo
+Summary
+  Class used for the <LINK TJvCustomPreviewControl.DeviceInfo, DeviceInfo> property of
+  TJvCustomPreviewControl
+Description
+  TJvDeviceInfo maintains and updates the values of its properties when the ReferenceHandle changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.TotalRows
+Summary
+  Indicates the total number of rows in the preview.
+Description
+  \Read TotalRows to determine the total number of rows currently in the preview.
+See Also
+  TJvCustomPreviewControl.TotalCols
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.TotalCols
+Summary
+  Indicates the total number of columns in the preview.
+Description
+  \Read TotalCols to determine the total number of columns currently in the preview.
+See Also
+  TJvCustomPreviewControl.TotalRows
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.TopRow
+Summary
+  Specifies the current topmost visible row of pages.
+Description
+  Use TopRow to specify which row of pages to display at the top of the control. TopRow is
+  dynamically changed when the user scrolls the control using the scroll bars.
+  Note
+  TopRow acts on a row basis, that is, if Cols is 2 and you TopRow is 2, the topmost displayed pages
+  would be 4 and 5 (TopRow is 0-based) but if Cols is 1 and TopRow is 2, the top page would be 2 as
+  well.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Selection
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetPageHeight
+@@TJvCustomPreviewControl.SelectedPage
 Summary
-  Should return the height of the available print area.
+  Specifies the currently highlighted page.
 Description
-  Called when the caller needs to know the height of the print page.
-Return value
-  Returns the page height in logical coordinates.
-See Also
-  IJvPrinter.GetCanvas, IJvPrinter.GetPageWidth
+  Use SelectedPage to determine the currently selected page. Change SelectedPage to select another
+  page. When a page is selected, the page is highlighted with a blue frame.
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetPageWidth
+@@TJvCustomPreviewControl.Prior
 Summary
-  Should return the width of the available print area.
+  Select the previous page in the preview.
 Description
-  Called when the caller needs to know the size of the print page.
-Return value
-  Returns the page width in logical coordinates.
+  Call Prior to select the previous page in the preview.
 See Also
-  IJvPrinter.GetCanvas, IJvPrinter.GetPageHeight
+  TJvCustomPreviewControl.First, TJvCustomPreviewControl.Last, TJvCustomPreviewControl.Next
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetPrinting
+@@TJvCustomPreviewControl.ScrollBars
 Summary
-  Should return true if a print job is in progress.
+  Determines whether the control has scroll bars.
 Description
-  Called when the caller needs to know if a print job is in progress.
-Return value
-  Returns true if printing is in progress.
+  Use ScrollBars to give the control horizontal or vertical scroll bars.
 See Also
-  IJvPrinter.BeginDoc, IJvPrinter.Abort
+  TJvCustomPreviewControl.HideScrollBars
 
 ----------------------------------------------------------------------------------------------------
-@@IJvPrinter.GetTitle
+@@TJvCustomPreviewControl.PrintRange
 Summary
-  Returns the document title of the print job
+  Sends a range of pages to the IJvPrinter implementation.
 Description
-  Called to get the current document title.
-Return value
-  Returns the current document title.
-See Also
-  IJvPrinter.SetTitle
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.NewPage
-Summary
-  Starts a new page in a started print job.
-Description
-  Called when the caller needs a new page.
-See Also
-  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.Abort
-
-----------------------------------------------------------------------------------------------------
-@@IJvPrinter.SetTitle
-Summary
-  Sets the document title on the print job.
-Description
-  Called to set a new document title.
+  Call PrintRange to send the preview pages to an IJvPrinter implementer with options. Depending on
+  the implementer of IJvPrinter, the pages could be printed to any device like a printer but it could
+  also be sent to other devices, like PDF files etc.
+  
+  If you are using the TJvPreviewPrinter (it implements IJvPrinter), you do not need to call
+  PrintRange. Instead, set the properties of TJvPreviewPrinter and call its <LINK
+  TJvPreviewPrinter.Print, Print> method. \Print will call PrintRange with the correct parameters,
+  sending a pointer to itself in the APrinter parameter.
+  Note
+  TJvCustomPreviewControl implements its own routines for StartPage, EndPage, Copies and Collate so
+  the output device does not have to support this since it is handled internally.
 Parameters
-  Value - The new title.
+  APrinter  - The IJvPrinter implementer. If this parameter is nil, no printing is performed.
+  StartPage - The first page of the print job. 0-based.
+  EndPage   - The last page of the print job. 0-based.
+  Copies    - The number of copies to print
+  Collate   - Set to true to collate (sort) the pages, false otherwise.
 See Also
-  IJvPrinter.GetTitle
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl
-Summary
-  Control that can display a print preview window, simulating how a document would look if it was sent
-  to a printing device.
-Description
-  TJvCustomPreviewControl is the base class for controls that can display a print preview, zoom and
-  scroll between pages. TJvCustomPreviewControl implements the basic behavior and descendant classes
-  expose and extend it. Don't put a TJvCustomPreviewControl on a form. Instead, use one of the derived
-  classes that publishes many of the properties of TJvCustomPreviewControl, like TJvPreviewControl.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Add
-Summary
-  Adds a new page to the preview.
-Description
-  Call Add to add a new page to the preview. Add calls OnAddPage which in turn must be handled so it
-  draws the page content on the new page.
-
-  You don't need to call Add if you are using a renderer to create the preview. Only use Add when
-  creating custom previews.
-Return value
-  True if the page was added, false otherwise.
-See Also
-  TJvCustomPreviewControl.OnAddPage
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.BeginUpdate
-Summary
-  Suspends update processing.
-Description
-  Call BeginUpdate when making a series changes to the control's appearance or state. When all changes
-  have been made, call EndUpdate to resume processing. Bracketing control changes with BeginUpdate and
-  EndUpdate minimizes screen flicker and makes the application more efficient. Calls to BeginUpdate and
-  EndUpdate can be nested.
-See Also
-  TJvCustomPreviewControl.EndUpdate, TJvCustomPreviewControl.IsUpdating
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.BorderStyle
-Summary
-  Specifies if the control has a single line border or not.
-Description
-  Use BorderStyle to control the appearance of the control's border.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Clear
-Summary
-  Remove all pages in the preview.
-Description
-  Call Clear to delete all pages in the preview.
-See Also
-  TJvCustomPreviewControl.Delete
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Delete
-Summary
-  Deletes a page in the preview.
-Description
-  Call Delete to delete a single page.
-Parameters
-  Index - The index of the page to delete.
-See Also
-  TJvCustomPreviewControl.Clear
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.DeviceInfo
-Summary
-  Provides information about the output device the preview is simulating.
-Description
-  Use DeviceInfo to access information about the device that the preview is simulating. Change the
-  <LINK TJvDeviceInfo.ReferenceHandle, ReferenceHandle> property to change the device the preview is
-  simulating. For example, to preview how a document would look on the currently selected printer, you
-  could write:
-  <CODE>
-    JvPrintPreview1.DeviceInfo.ReferenceHandle := Printer.Handle;
-    // Update the rich edit preview
-    JvPreviewRenderRichEdit1.CreatePreview(false);
-  </CODE>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.EndUpdate
-Summary
-  Re-enables update processing.
-Description
-  EndUpdate terminates a sequence of control changes initiated by BeginUpdate.
-See Also
-  TJvCustomPreviewControl.BeginUpdate, TJvCustomPreviewControl.IsUpdating
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.First
-Summary
-  Moves to the first page in the preview.
-Description
-  Call First to move to the first page in the preview.
-See Also
-  TJvCustomPreviewControl.Prior, TJvCustomPreviewControl.Last, TJvCustomPreviewControl.Next
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.HideScrollBars
-Summary
-  Indicates if scrollbars are hidden when not used.
-Description
-  Use HideScrollBars to indicate whether scrollbars are hidden or disabled when not needed. If
-  HideScrollBars is true, the scroll bars are hidden when they are not used. If HideScrollBars is
-  false, the scrollbars are just disabled. Disabling scroll bars causes less flicker when the state of
-  the scroll bars changes often.
-See Also
-  TJvCustomPreviewControl.ScrollBars
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.IsUpdating
-Summary
-  Indicates if BeginUpdate has been called without a corresponding call to EndUpdate.
-Description
-  \Read IsUpdating to determine if BeginUpdate has been called without the matching call to EndUpdate.
-Return value
-  True if the control is in an update cycle.
-See Also
-  TJvCustomPreviewControl.BeginUpdate, TJvCustomPreviewControl.EndUpdate
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.ItemAtPos
-Summary
-  Returns the page at the specified position.
-Description
-  Use ItemAtPos to find the page that is located on a specific position.
-Parameters
-  Pos      - The position of the page in client coordinates.
-  Existing - Set to true to only return existing pages. Set to false to return the index of the page
-              that should have been at Pos if the preview contained that many pages
-Return value
-  The index of the page or -1 if not found.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Last
-Summary
-  Moves to the last page in the preview.
-Description
-  Call Last to move to the last page in the preview.
-See Also
-  TJvCustomPreviewControl.Prior, TJvCustomPreviewControl.First, TJvCustomPreviewControl.Next
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Next
-Summary
-  Select the next page in the preview.
-Description
-  Call Next to move to the next page in the preview.
-See Also
-  TJvCustomPreviewControl.Prior, TJvCustomPreviewControl.First, TJvCustomPreviewControl.Last
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnAddPage
-Summary
-  Occurs when Add is called.
-Description
-  Write a handler for the OnAddPage event to draw the content of a newly added page. If you don't
-  assign a handler to this event, nothing will be drawn on the page that was added by Add.
-Parameters
-  Sender        - The object that called the event.
-  PageIndex     - The index of the new page.
-  Canvas        - The canvas to draw to.
-  PageRect      - The coordinates of the entire page.
-  PrintRect     - The coordinates of the printable area of the page.
-  NeedMorePages - Set this to true to automatically add more pages (OnAddPage is called repeatedly
-                   until NeedMorePages is set to false).
-See Also
-  TJvCustomPreviewControl.Add, TJvCustomPreviewControl.OnDrawPreviewPage
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnAfterScroll
-Summary
-  Occurs after the preview has been scrolled,
-Description
-  Write a handler for the OnAfterScroll event to take specific actions after the preview has been
-  scrolled.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnChange
-Summary
-  Occurs when the content of the preview has changed.
-Description
-  Write a handler to take specific actions when the content of the preview has changed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnDeviceInfoChange
-Summary
-  Occurs when DeviceInfo has changed.
-Description
-  Write a handler for OnDeviceInfoChange to take specific actions when DeviceInfo changes. For example,
-  you can use this event to update the preview when the ReferenceHandle changes.
-See Also
-  TJvCustomPreviewControl.DeviceInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnDrawPreviewPage
-Summary
-  Occurs when a page is drawn in the preview.
-Description
-  Write a handler for the OnDrawPreviewPage to take specific actions when a page needs to be drawn in
-  the preview.
-Parameters
-  Sender    - The object that called the event.
-  PageIndex - The index of the new page.
-  Canvas    - The canvas to draw to.
-  PageRect  - The coordinates of the entire page.
-  PrintRect - The coordinates of the printable area of the page.
-See Also
-  TJvCustomPreviewControl.OnAddPage
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnHorzScroll
-Summary
-  Occurs when the user scrolls the preview horizontally.
-Description
-  Write a handler for the OnHorzScroll to take specific actions when the user scrolls the preview using
-  the horizontal scrollbar.
-See Also
-  TJvCustomPreviewControl.OnVertScroll
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnOptionsChange
-Summary
-  Occurs when Options changes.
-Description
-  Write a handler for the OnOptionsChange event to take specific actions when Options changes.
-See Also
-  TJvCustomPreviewControl.OnScaleModeChange, TJvCustomPreviewControl.Options
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnScaleModeChange
-Summary
-  Occurs when ScaleMode changes.
-Description
-  Write a handler for the OnScaleModeChange event to take specific actions when the ScaleMode in
-  Options changes.
-See Also
-  TJvCustomPreviewControl.OnOptionsChange, TJvCustomPreviewControl.Options
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.OnScrollHint
-Summary
-  Occurs when the control needs to update its scrollbar hint window content.
-Description
-  Write a handler for the OnScrollHint event to update the scrollbar hint.
-Parameters
-  Sender     - The object that called the event.
-  AScrollPos - The current scroll bar position.
-  AHint      - The Hint to display.
+  IJvPrinter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewControl.OnVertScroll
 Summary
   Occurs when the user scrolls the preview vertically.
 Description
-  Write a handler for the OnVertScroll to take specific actions when the user scrolls the preview using
-  the vertical scrollbar.
+  Write a handler for the OnVertScroll to take specific actions when the user scrolls the preview
+  using the vertical scrollbar.
 See Also
   TJvCustomPreviewControl.OnHorzScroll
 
@@ -436,527 +567,397 @@ See Also
   TJvCustomPreviewControl.PageCount
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.PrintRange
+@@TJvCustomPreviewControl.OnScrollHint
 Summary
-  Sends a range of pages to the IJvPrinter implementation.
+  Occurs when the control needs to update its scrollbar hint window content.
 Description
-  Call PrintRange to send the preview pages to an IJvPrinter implementer with options. Depending on the
-  implementer of IJvPrinter, the pages could be printed to any device like a printer but it could also
-  be sent to other devices, like PDF files etc.
-
-  If you are using the TJvPreviewPrinter (it implements IJvPrinter), you do not need to call
-  PrintRange. Instead, set the properties of TJvPreviewPrinter and call its <LINK
-  TJvPreviewPrinter.Print, Print> method. \Print will call PrintRange with the correct parameters,
-  sending a pointer to itself in the APrinter parameter.
-Note
-  TJvCustomPreviewControl implements its own routines for StartPage, EndPage, Copies and Collate so the
-  output device does not have to support this since it is handled internally.
+  Write a handler for the OnScrollHint event to update the scrollbar hint.
 Parameters
-  APrinter  - The IJvPrinter implementer. If this parameter is nil, no printing is performed.
-  StartPage - The first page of the print job. 0-based.
-  EndPage   - The last page of the print job. 0-based.
-  Copies    - The number of copies to print
-  Collate   - Set to true to collate (sort) the pages, false otherwise.
-See Also
-  IJvPrinter
+  Sender     - The object that called the event.
+  AScrollPos - The current scroll bar position.
+  AHint      - The Hint to display.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Prior
+@@TJvCustomPreviewControl.OnOptionsChange
 Summary
-  Select the previous page in the preview.
+  Occurs when Options changes.
 Description
-  Call Prior to select the previous page in the preview.
+  Write a handler for the OnOptionsChange event to take specific actions when Options changes.
 See Also
-  TJvCustomPreviewControl.First, TJvCustomPreviewControl.Last, TJvCustomPreviewControl.Next
+  TJvCustomPreviewControl.OnScaleModeChange, TJvCustomPreviewControl.Options
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.ScrollBars
+@@TJvCustomPreviewControl.OnScaleModeChange
 Summary
-  Determines whether the control has scroll bars.
+  Occurs when ScaleMode changes.
 Description
-  Use ScrollBars to give the control horizontal or vertical scroll bars.
+  Write a handler for the OnScaleModeChange event to take specific actions when the ScaleMode in
+  Options changes.
 See Also
-  TJvCustomPreviewControl.HideScrollBars
+  TJvCustomPreviewControl.OnOptionsChange, TJvCustomPreviewControl.Options
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.SelectedPage
+@@TJvCustomPreviewControl.OnHorzScroll
 Summary
-  Specifies the currently highlighted page.
+  Occurs when the user scrolls the preview horizontally.
 Description
-  Use SelectedPage to determine the currently selected page. Change SelectedPage to select another
-  page. When a page is selected, the page is highlighted with a blue frame.
+  Write a handler for the OnHorzScroll to take specific actions when the user scrolls the preview
+  using the horizontal scrollbar.
+See Also
+  TJvCustomPreviewControl.OnVertScroll
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.Selection
+@@TJvCustomPreviewControl.OnDrawPreviewPage
+Summary
+  Occurs when a page is drawn in the preview.
+Description
+  Write a handler for the OnDrawPreviewPage to take specific actions when a page needs to be drawn in
+  the preview.
+Parameters
+  Sender    - The object that called the event.
+  PageIndex - The index of the new page.
+  Canvas    - The canvas to draw to.
+  PageRect  - The coordinates of the entire page.
+  PrintRect - The coordinates of the printable area of the page.
+See Also
+  TJvCustomPreviewControl.OnAddPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.OnDeviceInfoChange
+Summary
+  Occurs when DeviceInfo has changed.
+Description
+  Write a handler for OnDeviceInfoChange to take specific actions when DeviceInfo changes. For
+  example, you can use this event to update the preview when the ReferenceHandle changes.
+See Also
+  TJvCustomPreviewControl.DeviceInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.OnChange
+Summary
+  Occurs when the content of the preview has changed.
+Description
+  Write a handler to take specific actions when the content of the preview has changed.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.OnAfterScroll
+Summary
+  Occurs after the preview has been scrolled,
+Description
+  Write a handler for the OnAfterScroll event to take specific actions after the preview has been
+  scrolled.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.OnAddPage
+Summary
+  Occurs when Add is called.
+Description
+  Write a handler for the OnAddPage event to draw the content of a newly added page. If you don't
+  assign a handler to this event, nothing will be drawn on the page that was added by Add.
+Parameters
+  Sender        - The object that called the event.
+  PageIndex     - The index of the new page.
+  Canvas        - The canvas to draw to.
+  PageRect      - The coordinates of the entire page.
+  PrintRect     - The coordinates of the printable area of the page.
+  NeedMorePages - Set this to true to automatically add more pages (OnAddPage is called repeatedly   
+                until NeedMorePages is set to false).
+See Also
+  TJvCustomPreviewControl.Add, TJvCustomPreviewControl.OnDrawPreviewPage
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Next
+Summary
+  Select the next page in the preview.
+Description
+  Call Next to move to the next page in the preview.
+See Also
+  TJvCustomPreviewControl.Prior, TJvCustomPreviewControl.First, TJvCustomPreviewControl.Last
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.ItemAtPos
+Summary
+  Returns the page at the specified position.
+Description
+  Use ItemAtPos to find the page that is located on a specific position.
+Parameters
+  Pos      - The position of the page in client coordinates.
+  Existing - Set to true to only return existing pages. Set to false to return the index of the page 
+             that should have been at Pos if the preview contained that many pages
+Return value
+  The index of the page or -1 if not found.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Last
+Summary
+  Moves to the last page in the preview.
+Description
+  Call Last to move to the last page in the preview.
+See Also
+  TJvCustomPreviewControl.Prior, TJvCustomPreviewControl.First, TJvCustomPreviewControl.Next
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.IsUpdating
+Summary
+  Indicates if BeginUpdate has been called without a corresponding call to EndUpdate.
+Description
+  \Read IsUpdating to determine if BeginUpdate has been called without the matching call to EndUpdate.
+Return value
+  True if the control is in an update cycle.
+See Also
+  TJvCustomPreviewControl.BeginUpdate, TJvCustomPreviewControl.EndUpdate
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.HideScrollBars
+Summary
+  Indicates if scrollbars are hidden when not used.
+Description
+  Use HideScrollBars to indicate whether scrollbars are hidden or disabled when not needed. If
+  HideScrollBars is true, the scroll bars are hidden when they are not used. If HideScrollBars is
+  false, the scrollbars are just disabled. Disabling scroll bars causes less flicker when the state
+  of the scroll bars changes often.
+See Also
+  TJvCustomPreviewControl.ScrollBars
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.First
+Summary
+  Moves to the first page in the preview.
+Description
+  Call First to move to the first page in the preview.
+See Also
+  TJvCustomPreviewControl.Prior, TJvCustomPreviewControl.Last, TJvCustomPreviewControl.Next
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.EndUpdate
+Summary
+  Re-enables update processing.
+Description
+  EndUpdate terminates a sequence of control changes initiated by BeginUpdate.
+See Also
+  TJvCustomPreviewControl.BeginUpdate, TJvCustomPreviewControl.IsUpdating
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.DeviceInfo
+Summary
+  Provides information about the output device the preview is simulating.
+Description
+  Use DeviceInfo to access information about the device that the preview is simulating. Change the
+  <LINK TJvDeviceInfo.ReferenceHandle, ReferenceHandle> property to change the device the preview is
+  simulating. For example, to preview how a document would look on the currently selected printer,
+  you could write:
+  <CODE>
+  JvPrintPreview1.DeviceInfo.ReferenceHandle := Printer.Handle;
+  // Update the rich edit preview
+  JvPreviewRenderRichEdit1.CreatePreview(false); </CODE>
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.BorderStyle
+Summary
+  Specifies if the control has a single line border or not.
+Description
+  Use BorderStyle to control the appearance of the control's border.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Clear
+Summary
+  Remove all pages in the preview.
+Description
+  Call Clear to delete all pages in the preview.
+See Also
+  TJvCustomPreviewControl.Delete
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Delete
+Summary
+  Deletes a page in the preview.
+Description
+  Call Delete to delete a single page.
+Parameters
+  Index - The index of the page to delete.
+See Also
+  TJvCustomPreviewControl.Clear
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.BeginUpdate
+Summary
+  Suspends update processing.
+Description
+  Call BeginUpdate when making a series changes to the control's appearance or state. When all
+  changes have been made, call EndUpdate to resume processing. Bracketing control changes with
+  BeginUpdate and
+  EndUpdate minimizes screen flicker and makes the application more efficient. Calls to BeginUpdate
+  and
+  EndUpdate can be nested.
+See Also
+  TJvCustomPreviewControl.EndUpdate, TJvCustomPreviewControl.IsUpdating
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl.Add
+Summary
+  Adds a new page to the preview.
+Description
+  Call Add to add a new page to the preview. Add calls OnAddPage which in turn must be handled so it
+  draws the page content on the new page.
+  
+  You don't need to call Add if you are using a renderer to create the preview. Only use Add when
+  creating custom previews.
+Return value
+  True if the page was added, false otherwise.
+See Also
+  TJvCustomPreviewControl.OnAddPage
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.NewPage
+Summary
+  Starts a new page in a started print job.
+Description
+  Called when the caller needs a new page.
+See Also
+  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.Abort
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.SetTitle
+Summary
+  Sets the document title on the print job.
+Description
+  Called to set a new document title.
+Parameters
+  Value - The new title.
+See Also
+  IJvPrinter.GetTitle
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPreviewControl
+Summary
+  Control that can display a print preview window, simulating how a document would look if it was
+  sent to a printing device.
+Description
+  TJvCustomPreviewControl is the base class for controls that can display a print preview, zoom and
+  scroll between pages. TJvCustomPreviewControl implements the basic behavior and descendant classes
+  expose and extend it. Don't put a TJvCustomPreviewControl on a form. Instead, use one of the
+  derived classes that publishes many of the properties of TJvCustomPreviewControl, like
+  TJvPreviewControl.
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetTitle
+Summary
+  Returns the document title of the print job
+Description
+  Called to get the current document title.
+Return value
+  Returns the current document title.
+See Also
+  IJvPrinter.SetTitle
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetPrinting
+Summary
+  Should return true if a print job is in progress.
+Description
+  Called when the caller needs to know if a print job is in progress.
+Return value
+  Returns true if printing is in progress.
+See Also
+  IJvPrinter.BeginDoc, IJvPrinter.Abort
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetPageWidth
+Summary
+  Should return the width of the available print area.
+Description
+  Called when the caller needs to know the size of the print page.
+Return value
+  Returns the page width in logical coordinates.
+See Also
+  IJvPrinter.GetCanvas, IJvPrinter.GetPageHeight
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetPageHeight
+Summary
+  Should return the height of the available print area.
+Description
+  Called when the caller needs to know the height of the print page.
+Return value
+  Returns the page height in logical coordinates.
+See Also
+  IJvPrinter.GetCanvas, IJvPrinter.GetPageWidth
+
+----------------------------------------------------------------------------------------------------
+@@IJvPrinter.GetHandle
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.TopRow
+@@IJvPrinter.GetCanvas
 Summary
-  Specifies the current topmost visible row of pages.
+  Return the canvas to draw on.
 Description
-  Use TopRow to specify which row of pages to display at the top of the control. TopRow is dynamically
-  changed when the user scrolls the control using the scroll bars.
-Note
-  TopRow acts on a row basis, that is, if Cols is 2 and you TopRow is 2, the topmost displayed pages
-  would be 4 and 5 (TopRow is 0-based) but if Cols is 1 and TopRow is 2, the top page would be 2 as
-  well.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.TotalCols
-Summary
-  Indicates the total number of columns in the preview.
-Description
-  \Read TotalCols to determine the total number of columns currently in the preview.
-See Also
-  TJvCustomPreviewControl.TotalRows
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.TotalRows
-Summary
-  Indicates the total number of rows in the preview.
-Description
-  \Read TotalRows to determine the total number of rows currently in the preview.
-See Also
-  TJvCustomPreviewControl.TotalCols
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPreviewControl.VisibleRows
-Summary
-  Indicates the total number of visible rows in the preview.
-Description
-  \Read VisibleRows to determine the total number of visible rows currently in the preview.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo
-Summary
-  Class used for the <LINK TJvCustomPreviewControl.DeviceInfo, DeviceInfo> property of
-  TJvCustomPreviewControl
-Description
-  TJvDeviceInfo maintains and updates the values of its properties when the ReferenceHandle changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.InchToXPx
-Summary
-  Converts logical inches to pixels.
-Description
-  Call InchToYPx to convert a logical inch to a pixel value. The conversion is done using the mapping
-  of the horizontal extent in the current device context as specified by ReferenceHandle.
-Parameters
-  Inch - The value to convert.
+  Called when the caller needs the canvas to draw to.
 Return value
-  The corresponding pixel value.
+  Returns the TCanvas that the drawing is performed on.
 See Also
-  TJvDeviceInfo.InchToYPx, TJvDeviceInfo.XPxToInch
+  IJvPrinter.GetPageWidth, IJvPrinter.GetPageHeight
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.InchToYPx
+@@IJvPrinter.GetAborted
 Summary
-  Converts logical inches to pixels.
+  Should return true if the print job has been aborted.
 Description
-  Call InchToYPx to convert a logical inch to a pixel value. The conversion is done using the mapping
-  of the vertical extent in the current device context as specified by ReferenceHandle.
-Parameters
-  Inch - The value to convert.
+  Called when the caller needs to know if the print job has been aborted.
 Return value
-  The corresponding pixel value.
+  Returns true if the print job has been aborted.
 See Also
-  TJvDeviceInfo.InchToXPx, TJvDeviceInfo.YPxToInch
+  IJvPrinter.Abort
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.LogPixelsX
+@@IJvPrinter.EndDoc
 Summary
-  Number of pixels per logical inch along the screen width.
+  Ends a print job.
 Description
-  \Read LogPixelsX to determine the number of pixels per logical inch for the currently selected
-  device. When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps( ReferenceHandle,
-  \LOGPIXELSX) to retrieve this value.
+  Called when the print job is finished.
 See Also
-  TJvDeviceInfo.LogPixelsY, TJvDeviceInfo.ReferenceHandle
+  IJvPrinter.BeginDoc, IJvPrinter.NewPage
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.LogPixelsY
+@@IJvPrinter.BeginDoc
 Summary
-  Number of pixels per logical inch along the screen width.
+  Starts a print job.
 Description
-  \Read LogPixelsX to determine the number of pixels per logical inch for the currently selected
-  device. When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps( ReferenceHandle,
-  \LOGPIXELSY) to retrieve this value.
+  Called when the print job should be started.
 See Also
-  TJvDeviceInfo.LogPixelsX, TJvDeviceInfo.ReferenceHandle
+  IJvPrinter.EndDoc, IJvPrinter.NewPage, IJvPrinter.Abort
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.MMToXPx
+@@IJvPrinter.Abort
 Summary
-  Converts logical millimeters to pixels.
+  Aborts the print job.
 Description
-  Call MMToXPx to convert a logical millimeter to a pixel value. The conversion is done using the
-  mapping of the horizontal extent in the current device context as specified by ReferenceHandle.
-
-  Calling this function is the same as InchToXPx(MM * 25.4).
-Parameters
-  MM - The value to convert.
-Return value
-  The corresponding pixel value.
+  Called when the print job should be aborted.
 See Also
-  TJvDeviceInfo.MMToYPx, TJvDeviceInfo.XPxToMM
+  IJvPrinter.BeginDoc, IJvPrinter.EndDoc, IJvPrinter.NewPage
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.MMToYPx
+@@IJvPrinter
 Summary
-  Converts logical millimeters to pixels.
+  Interface describing the commands that must be supported to be able to print a preview.
 Description
-  Call MMToYPx to convert a logical millimeter to a pixel value. The conversion is done using the
-  mapping of the vertical extent in the current device context as specified by ReferenceHandle.
-
-  Calling this function is the same as InchToYPx(MM * 25.4).
-Parameters
-  MM - The value to convert.
-Return value
-  The corresponding pixel value.
-See Also
-  TJvDeviceInfo.MMToXPx, TJvDeviceInfo.YPxToMM
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.OffsetBottom
-Summary
-  Specifies the number of device units between the bottom of the printable area and the bottom of the
-  page.
-Description
-  \Read OffsetBottom to determine the size of the non-printable area at the lower edge of the device
-  context.
-
-  When a new ReferenceHandle is set, OffsetBottom is calculated from:
-  <CODE>
-    OffsetBottom := PhysicalHeight - PageHeight - OffsetTop;
-  </CODE>
-See Also
-  TJvDeviceInfo.OffsetLeft, TJvDeviceInfo.OffsetRight, TJvDeviceInfo.OffsetTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.OffsetLeft
-Summary
-  Specifies the number of device units between the left edge of the printable area and the left edge of
-  the page.
-Description
-  \Read OffsetLeft to determine the size of the non-printable area at the left side of the device
-  context.
-
-  When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps(\ReferenceHandle,
-  PHYSICALOFFSETX) to retrieve this value.
-See Also
-  TJvDeviceInfo.OffsetBottom, TJvDeviceInfo.OffsetRight, TJvDeviceInfo.OffsetTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.OffsetRight
-Summary
-  Specifies the number of device units between the right edge of the printable area and the right edge
-  of the page.
-Description
-  \Read OffsetRight to determine the size of the non-printable area at the right side of the device
-  context.
-
-  When a new ReferenceHandle is set, OffsetRight is calculated from:
-  <CODE>
-    OffsetRight := PhysicalWidth - PageWidth - OffsetLeft;
-  </CODE>
-See Also
-  TJvDeviceInfo.OffsetBottom, TJvDeviceInfo.OffsetLeft, TJvDeviceInfo.OffsetTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.OffsetTop
-Summary
-  Specifies the number of device units between the top edge of the printable area and the top edge of
-  the page.
-Description
-  \Read OffsetTop to determine the size of the non-printable area at the top of the device context.
-
-  When a new ReferenceHandle is set, TJvDeviceInfo calls \GetDeviceCaps(\ReferenceHandle,
-  PHYSICALOFFSETY) to retrieve this value.
-See Also
-  TJvDeviceInfo.OffsetBottom, TJvDeviceInfo.OffsetLeft, TJvDeviceInfo.OffsetRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.OnChange
-Summary
-  Called when values are changed.
-Description
-  Don't write a handler for this event. A handler is assigned automatically by the component that uses
-  this class.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.PageHeight
-Summary
-  Specifies the physical height of the page.
-Description
-  \Read PageHeight to determine the physical height of the page in device units.
-
-  When a new ReferenceHandle is set, TJvDeviceInfo calls \PageHeight := \GetDeviceCaps(
-  ReferenceHandle, \VERTRES) to retrieve this value.
-See Also
-  TJvDeviceInfo.PageWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.PageWidth
-Summary
-  Specifies the physical height of the page.
-Description
-  \Read PageHeight to determine the physical height of the page in device units.
-
-  When a new ReferenceHandle is set, TJvDeviceInfo calls \PageWidth := \GetDeviceCaps( ReferenceHandle,
-  \HORZRES) to retrieve this value.
-See Also
-  TJvDeviceInfo.PageHeight, TJvDeviceInfo.PhysicalHeight, TJvDeviceInfo.PhysicalWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.PhysicalHeight
-Summary
-  Specifies the physical height of the page.
-Description
-  \Read PhysicalHeight to determine the height of the page in device units.
-
-  When a new ReferenceHandle is set, TJvDeviceInfo calls \PhysicalHeight := \GetDeviceCaps(
-  ReferenceHandle, \PHYSICALHEIGHT) to retrieve this value.
-See Also
-  TJvDeviceInfo.PhysicalWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.PhysicalWidth
-Summary
-  Specifies the physical width of the page.
-Description
-  \Read PhysicalWidth to determine the width of the page in device units.
-
-  When a new ReferenceHandle is set, TJvDeviceInfo calls \PhysicalWidth := \GetDeviceCaps(
-  ReferenceHandle, \PHYSICALWIDTH) to retrieve this value.
-See Also
-  TJvDeviceInfo.PhysicalHeight
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.ReferenceHandle
-Summary
-  Handle to the device context that values are retrieved from.
-Description
-  Use ReferenceHandle to specify the HDC where the various property values of TJvDeviceInfo are
-  retrieved. For example, to retrieve property settings from the currently selected printer, assign
-  Printer.Handle to this property.
-
-  If ReferenceHandle is 0, the values are retrieved from the desktop DC.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.XPxToInch
-Summary
-  Converts a pixel value to a logical inch value.
-Description
-  Call XPxToInch to convert a pixel value to a logical inch. The conversion is done using the mapping
-  of the horizontal extent in the current device context as specified by ReferenceHandle.
-
-  This is the opposite of the InchToXPx function.
-Parameters
-  Pixels - Value to convert.
-Return value
-  The converted value.
-See Also
-  TJvDeviceInfo.InchToXPx, TJvDeviceInfo.XPxToMM, TJvDeviceInfo.YPxToInch
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.XPxToMM
-Summary
-  Converts a pixel value to a logical millimeter value.
-Description
-  Call XPxToMM to convert a pixel value to a millimeter value. The conversion is done using the mapping
-  of the horizontal extent in the current device context as specified by ReferenceHandle.
-
-  This is the opposite of the MMToXPx function.
-Parameters
-  Pixels - Value to convert.
-Return value
-  The converted value.
-See Also
-  TJvDeviceInfo.InchToXPx, TJvDeviceInfo.MMToXPx, TJvDeviceInfo.XPxToInch
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.YPxToInch
-Summary
-  Converts a pixel value to a logical inch value.
-Description
-  Call YPxToInch to convert a pixel value to a logical inch. The conversion is done using the mapping
-  of the vertical extent in the current device context as specified by ReferenceHandle.
-
-  This is the opposite of the InchToYPx function.
-Parameters
-  Pixels - Value to convert.
-Return value
-  The converted value.
-See Also
-  TJvDeviceInfo.InchToYPx, TJvDeviceInfo.XPxToInch, TJvDeviceInfo.YPxToMM
-
-----------------------------------------------------------------------------------------------------
-@@TJvDeviceInfo.YPxToMM
-Summary
-  Converts a pixel value to a logical millimeter value.
-Description
-  Call YPxToMM to convert a pixel value to a millimeter value. The conversion is done using the mapping
-  of the vertical extent in the current device context as specified by ReferenceHandle.
-
-  This is the opposite of the MMToYPx function.
-Parameters
-  Pixels - Value to convert.
-Return value
-  The converted value.
-See Also
-  TJvDeviceInfo.InchToYPx, TJvDeviceInfo.MMToYPx, TJvDeviceInfo.XPxToMM
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawPageEvent
-<TITLE TJvDrawPageEvent type>
-<COMBINE TJvCustomPreviewControl.OnAddPage>
-
-----------------------------------------------------------------------------------------------------
-@@TJvDrawPreviewEvent
-<TITLE TJvDrawPreviewEvent type>
-<COMBINE TJvCustomPreviewControl.OnDrawPreviewPage>
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageShadow
-Summary
-  Maintains properties relating to the print preview page shadow.
-Description
-  TJvPageShadow is the class type of the Shadow property of a TJvPreviewControl.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageShadow.Color
-Summary
-  Specifies the color of the shadow.
-Description
-  Use Color to specify the color of the shadow.
-See Also
-  TJvPageShadow.Offset, TJvPageShadow.OnChange
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageShadow.Offset
-Summary
-  Specifies the position of the shadow in relation to the page.
-Description
-  Use Offset to specify where the shadow is located in relation to the page it is associated with.
-  Offset controls the number of pixels the shadow is shifted down and to the right compared to the
-  position of the page. For example, if Offset is 2, the shadow will appear 2 pixels below and to the
-  right of the page. If Offset is 0, no shadow is displayed. Offset can also be negative.
-See Also
-  TJvPageShadow.Color, TJvPageShadow.OnChange
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageShadow.OnChange
-Summary
-  Occurs when any of the shadow's properties changes.
-Description
-  Don't write a handler for this event. A handler is automatically assigned by the component that
-  created the class.
-See Also
-  TJvPreviewControl
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewControl
-<TITLEIMG TJvPreviewControl>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
-Summary
-  Control that can display a print preview.
-Description
-  TJvPreviewControl is derived from TJvCustomPreviewControl and publishes most of its properties but
-  does not add any new functionality.
-
-  To use a print preview on a form, you must:
-
-  * Drop a TJvPreviewControl on the form
-  * Drop one or more renderers derived from TJvCustomPreviewRenderer
-  * Connect the <LINK TJvCustomPreviewRenderer.PrintPreview, PrintPreview> with the TJvPreviewControl
-  * Set the properties of the preview control to your liking
-  * At runtime, call <LINK TJvCustomPreviewRenderer.CreatePreview, CreatePreview> to display the
-    preview in the TJvPreviewControl.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions
-Summary
-  Represents the available options for the pages in the preview control.
-Description
-  A page in the preview is a visual object that simulates a physical paper page as it would look if
-  printed on a printer. The properties of TJvPreviewPageOptions controls the appearance of these pages
-  as well as properties pertaining to the relationship between pages in a preview.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.Color
-Summary
-  Specifies the color of the preview pages.
-Description
-  Use Color to specify the background color for the preview pages.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.Cols
-Summary
-  Indicates the number of pages to display vertically in the visible part of the control.
-Description
-  Use Cols to specify how many columns of pages should be displayed in the visible part of the preview
-  control (without scrolling). Setting Cols may have no effect, either because ScaleMode prohibits it
-  or because the number of Rows and Cols requested exceeds the available page count.
-See Also
-  TJvPreviewPageOptions.Rows, TJvPreviewPageOptions.Scale, TJvPreviewPageOptions.ScaleMode
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.DrawMargins
-Summary
-  Indicates whether print margins are drawn in the preview.
-Description
-  Use DrawMargins to specify if the preview displays the print margins in the preview. If DrawMargins
-  is true, a dotted line is drawn on the preview pages to indicate the printable area.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.HorzSpacing
-Summary
-  Specifies the horizontal distance between pages in the preview.
-Description
-  Use HorzSpacing to specify the number of pixels between the pages in a preview when the preview is
-  displaying more than one page. HorzSpacing is in pixels.
-See Also
-  TJvPreviewPageOptions.VertSpacing
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.OnChange
-Summary
-  Occurs when any property value is changed.
-Description
-  Don't write a handler for this event. A handler is assigned internally by the control that created
-  the instance.
-See Also
-  TJvPreviewPageOptions.OnScaleModeChange
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.OnScaleModeChange
-Summary
-  Occurs when the ScaleMode property changes
-Description
-  Don't write a handler for this event. A handler is assigned internally by the control that created
-  the instance.
-See Also
-  TJvPreviewPageOptions.OnChange
-
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewPageOptions.Rows
-Summary
-  Indicates the number of pages to display horizontally in the visible part of the control.
-Description
-  Use Rows to specify how many rows of pages should be displayed in the visible part of the preview
-  control (without scrolling). Setting Rows may have no effect, either because ScaleMode prohibits it
-  or because the number of Rows and Cols requested exceeds the available page count.
-See Also
-  TJvPreviewPageOptions.Cols, TJvPreviewPageOptions.Scale, TJvPreviewPageOptions.ScaleMode
+  IJvPrinter defines methods necessary to print a preview to a printing device. In order to send the
+  preview displayed by a TJvCustomPreviewControl to another output device (like a printer), a
+  component must implement the methods of IJvPrinter in order to call the
+  TJvCustomPreviewControl.PrintRange function. A default implementation of the IJvPrinter can be
+  found in the TJvPreviewPrinter component.
+  This component implements the interface by sending all methods call to the global Printer object.
+  
+  To output the preview to other devices (like PDF files), write a component that implements the
+  IJvPrinter interface.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPageOptions.Scale
@@ -1006,27 +1007,24 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewScaleMode.smFullPage
-  Display a single page. The page is scaled to fit inside the client area of the control.
+Display a single page. The page is scaled to fit inside the client area of the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewScaleMode.smPageWidth
-  Display a page so that its width fills the entire client width of the control.
+Display a page so that its width fills the entire client width of the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewScaleMode.smScale
-  Use the <LINK TJvPreviewPageOptions.Scale, Scale> property to determine the size of the page(s) but
-  also use <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK TJvPreviewPageOptions.Rows, Rows>.
+Use the <LINK TJvPreviewPageOptions.Scale, Scale> property to determine the size of the page(s) but also use <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK TJvPreviewPageOptions.Rows, Rows>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewScaleMode.smAutoScale
-  Use the <LINK TJvPreviewPageOptions.Scale, Scale> property to determine the size of the page(s) and
-  change <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK TJvPreviewPageOptions.Rows, Rows> if
-  necessary.
+Use the <LINK TJvPreviewPageOptions.Scale, Scale> property to determine the size of the page(s) and change <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK TJvPreviewPageOptions.Rows, Rows> if necessary.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewScaleMode.smColsRows
-  Display as many pages as specified by <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK
-  TJvPreviewPageOptions.Rows, Rows> and change <LINK TJvPreviewPageOptions.Scale, Scale> as necessary.
+Display as many pages as specified by <LINK TJvPreviewPageOptions.Cols, Cols> and <LINK
+TJvPreviewPageOptions.Rows, Rows> and change <LINK TJvPreviewPageOptions.Scale, Scale> as necessary.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewSelection
@@ -1077,6 +1075,5 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollHintEvent
-<TITLE TJvScrollHintEvent type>
-<COMBINE TJvCustomPreviewControl.OnScrollHint>
+<TITLE TJvScrollHintEvent type> <COMBINE TJvCustomPreviewControl.OnScrollHint>
 

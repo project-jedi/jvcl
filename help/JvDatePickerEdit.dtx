@@ -3,29 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDatePickerEdit.pas
 Summary
-  Contains the TJvDatePickerEdit component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDatePickerEdit component.
 Author
   Oliver Giesen
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.AllowNoDate
-Summary
-  Specifies whether the control allows clearing the value altogether.
-Description
-  Write here a description
-See Also
-  TJvCustomDatePickerEdit.ShowCheckbox
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.AlwaysReturnEditDate
+@@TJvDropCalendar.OnCancel
 Summary
   Write here a summary (1 line)
 Description
@@ -35,154 +21,73 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.CalendarAppearance
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.Date
-Summary
-  Returns the value of the control as TDateTime
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.DateFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.DateSeparator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.Dropped
-Summary
-  Indicates at runtime whether the drop-down calendar is currently visible
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.EditMask
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.EnableValidation
-Summary
-  Enables "As-you-type" validation of entries
-Description
-  If True, ranges on day and month figures will be enforced while typing, i.e. given a date format of
-  "dd-MM-yyyy" an entry of "00-00-0000" would automatically be corrected to "01-01-0000" (enforcing of
-  year ranges is not implemented yet because of the added complexity of handling two-digit years) and
-  an entry of "99-99-9999" would automatically be corrected to "31-12-9999". The algorithm does not
-  validate whether a given day is valid for the given month though, i.e. it does not yet catch an entry
-  of "30-02-2005".
-See Also
-  TJvCustomDatePickerEdit.DateFormat
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.HasValidDate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.IsEmpty
-Summary
-  Indicates at runtime whether the control is currently empty, i.e. holds no date
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.NoDateShortcut
-Summary
-  Specifies the keyboard shortcut that will trigger the clearing of the control
-Description
-  Write here a description
-See Also
-  TJvCustomDatePickerEdit.ShowCheckbox
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.NoDateText
-Summary
-  Specifies the text that will be displayed at runtime when the control holds no date
-Description
-  Write here a description
-See Also
-  TJvCustomDatePickerEdit.ShowCheckbox
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.OnGetValidDateString
+@@TJvDropCalendar.CreateWithAppearance
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender   - Description for this parameter
-  DateText - Description for this parameter
+  AOwner      - Description for this parameter
+  AAppearance - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.StoreDate
+@@TJvDropCalendar
 Summary
-  Specifies whether the date set or displayed at design time will be restored at runtime
+  Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  TJvCustomDatePickerEdit.Date
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDatePickerEdit.StoreDateFormat
+@@TJvDatePickerEdit
+<TITLEIMG TJvDatePickerEdit>
+JVCLInfo
+  GROUP=JVCL.DateTime.EditsCombos,JVCL.EditsMemosAndCombos.Edits,JVCL.SelectAndChoose
+  FLAG=Component
+Summary
+  A replacement for TDateTimePicker that maintains its look but fixes its deficiencies concerning
+  keyboard entry.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigureInfo.Length
+Description for Length
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigureInfo.Index
+Description for Index
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigures
+<TITLE TJvDateFigures type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  array [0..2] of TJvDateFigureInfo; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigureInfo.Figure
+Description for Figure
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigureInfo.Start
+Description for Start
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigure.dfMonth
+Description for dfMonth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigure.dfDay
+Description for dfDay
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigureInfo
+<TITLE TJvDateFigureInfo type>
 Summary
   Write here a summary (1 line)
 Description
@@ -190,6 +95,14 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigure.dfYear
+Description for dfYear
+
+----------------------------------------------------------------------------------------------------
+@@TJvDateFigure.dfNone
+Description for dfNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDatePickerEdit.Text
@@ -213,24 +126,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDateFigure.dfNone
-  Description for dfNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigure.dfYear
-  Description for dfYear
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigure.dfMonth
-  Description for dfMonth
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigure.dfDay
-  Description for dfDay
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigureInfo
-<TITLE TJvDateFigureInfo type>
+@@TJvCustomDatePickerEdit.StoreDateFormat
 Summary
   Write here a summary (1 line)
 Description
@@ -240,64 +136,69 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDateFigureInfo.Figure
-  Description for Figure
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigureInfo.Start
-  Description for Start
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigureInfo.Length
-  Description for Length
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigureInfo.Index
-  Description for Index
-
-----------------------------------------------------------------------------------------------------
-@@TJvDateFigures
-<TITLE TJvDateFigures type>
+@@TJvCustomDatePickerEdit.StoreDate
 Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  array [0..2] of TJvDateFigureInfo; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatePickerEdit
-<TITLEIMG TJvDatePickerEdit>
-JVCLInfo
-  GROUP=JVCL.DateTime.EditsCombos,JVCL.EditsMemosAndCombos.Edits,JVCL.SelectAndChoose
-  FLAG=Component
-Summary
-  A replacement for TDateTimePicker that maintains its look but fixes its deficiencies concerning
-  keyboard entry.
+  Specifies whether the date set or displayed at design time will be restored at runtime
 Description
   Write here a description
+See Also
+  TJvCustomDatePickerEdit.Date
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDropCalendar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDropCalendar.CreateWithAppearance
+@@TJvCustomDatePickerEdit.OnGetValidDateString
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AOwner      - Description for this parameter
-  AAppearance - Description for this parameter
+  Sender   - Description for this parameter
+  DateText - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDropCalendar.OnCancel
+@@TJvCustomDatePickerEdit.NoDateText
+Summary
+  Specifies the text that will be displayed at runtime when the control holds no date
+Description
+  Write here a description
+See Also
+  TJvCustomDatePickerEdit.ShowCheckbox
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.NoDateShortcut
+Summary
+  Specifies the keyboard shortcut that will trigger the clearing of the control
+Description
+  Write here a description
+See Also
+  TJvCustomDatePickerEdit.ShowCheckbox
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.IsEmpty
+Summary
+  Indicates at runtime whether the control is currently empty, i.e. holds no date
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.HasValidDate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.EditMask
 Summary
   Write here a summary (1 line)
 Description
@@ -305,6 +206,104 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.EnableValidation
+Summary
+  Enables "As-you-type" validation of entries
+Description
+  If True, ranges on day and month figures will be enforced while typing, i.e. given a date format of "dd-MM-yyyy" an entry of "00-00-0000" would automatically be corrected to "01-01-0000" (enforcing of year ranges is not implemented yet because of the added complexity of handling two-digit years) and an entry of "99-99-9999" would automatically be corrected to "31-12-9999". The algorithm does not validate wh
+  ther a given day is valid for the given month though, i.e. it does not yet catch an entry of
+  "30-02-2005".
+See Also
+  TJvCustomDatePickerEdit.DateFormat
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.Dropped
+Summary
+  Indicates at runtime whether the drop-down calendar is currently visible
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.DateSeparator
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.DateFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.Date
+Summary
+  Returns the value of the control as TDateTime
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.CalendarAppearance
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.AlwaysReturnEditDate
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDatePickerEdit.AllowNoDate
+Summary
+  Specifies whether the control allows clearing the value altogether.
+Description
+  Write here a description
+See Also
+  TJvCustomDatePickerEdit.ShowCheckbox
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDropCalendar.OnChange
@@ -359,6 +358,5 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvGetValidDateStringEvent
-<TITLE TJvGetValidDateStringEvent type>
-<COMBINE TJvCustomDatePickerEdit.OnGetValidDateString>
+<TITLE TJvGetValidDateStringEvent type> <COMBINE TJvCustomDatePickerEdit.OnGetValidDateString>
 

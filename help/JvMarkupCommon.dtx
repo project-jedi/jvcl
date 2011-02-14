@@ -3,137 +3,167 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMarkupCommon.pas
 Summary
-  Contains classes used in components that can render HTML markup.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains classes used in components that can render HTML markup.
 Author
   Jan Verhoeven
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement
+@@TJvHTMLElementStack.Pop
 Summary
-  Represents text metrics and font settings for markup in an HTML-enabled control.
+  Removes the item stored at the top of the stack.
 Description
-  TJvHTMLElement is a TObject descendant that represents HTML tags or rendering elements for HTML
-  markup found in the content for controls like TJvMarkupViewer and TJvMarkupLabel.
-
-  TJvHTMLElement is the type used for items maintained in the TJvHTMLElementStack container.
-
-  Application do not normally create or use TJvHTMLElement or TJvHTMLElementStack instances; they are
-  created and maintained internally during parsing and rendering of TJvMarkupViewer and TJvMarkupLabel
-  controls.
-
-  TJvHTMLElement provides properties to identify the Text metrics and Font settings required for HTML
-  markup found in an HTML-enabled control. TJvHTMLElement also provides methods to ensure that rendered
-  content fits within the drawing area for the Canvas used in the HTML-enabled control.
+  Pop is a TJvHTMLElement function used to remove the TJvHTMLElement instance stored at the top of
+  the stack container. The return value for the method is the TJvHTMLElement instance stored at the
+  top of the stack, or Nil when the number of items in the stack is 0 (zero).
+  
+  Pop calls Delete method in TList to remove the TJvHTMLElement instance from the internal storage
+  for the stack container.
+  
+  Use Clear to remove all items stored in the stack.
+  
+  Use Peek to access (without removing) the TJvHTMLElement instance stored at the top of the stack.
+  
+  Use Push to add a TJvHTMLElement instance to the stack container.
+Return value
+  TJvHTMLElement - Item at the top of the stack, or Nil.
 See Also
-  TJvHTMLElementStack, TJvMarkupViewer, TJvMarkupLabel
+  TJvHTMLElementStack.Push, TJvHTMLElementStack.Peek, TJvHTMLElementStack.Clear
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.Ascent
+@@TJvHTMLElementStack.Peek
 Summary
-  Units above the baseline for the rendered HTML markup.
+  Provides access to the item stored at the top of the stack.
 Description
-  Ascent is an Integer property that represents the number of units above the baseline for Text
-  rendered using the Canvas for an HTML-enabled control. Ascent is updated when the dimensions for the
-  HTML tag or element are calculated using methods in TJvMarkupLabel or TJvMarkupViewer.
-
-  Ascent is based on text metrics derived using the values in FontName, FontSize, FontStyle, and
-  FontColor.
-
-  Use Height to determine the Height of Text rendered using the current Text metrics.
-
-  Use Width to determine the Width of Text rendered using the current Text metrics.
+  Peek is a TJvHTMLElement function used to access the item stored at the top of the stack container.
+  
+  The return value is the TJvHTMLElement instance that represents the item stored at the top of the
+  stack, or Nil when the number of items in the stack is 0 (zero).
+  
+  Use Push to add a TJvHTMLElement instance to the stack.
+  
+  Use Pop to remove the TJvHTMLElement instance at the top of the stack.
+Return value
+  TJvHTMLElement - Item at the top of the stack, or Nil.
 See Also
-  TJvHTMLElement.Height, TJvHTMLElement.Width, TJvHTMLElement.FontName, TJvHTMLElement.FontColor,
-  TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle, TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElement, TJvHTMLElementStack.Pop, TJvHTMLElementStack.Push
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.BreakLine
+@@TJvHTMLElementStack.Clear
 Summary
-  Indicates if the HTML element represents the HTML BR tag.
+  Removes all items stored in the container.
 Description
-  BreakLine is a Boolean property that indicates if the HTML element represents the HTML BR tag.
-  BreakLine is updated and used when parsing and rendering the HTML markup for the TJvMarkupLabel and
-  TJvMarkupViewer controls.
-
-  When BreakLine contains True, the current line for the drawing area of the control is incremented
-  after rendering the HTML element.
+  Clear is an overridden method used to remove all TJvHTMLElement instances stored in the stack-like
+  container using Push. Clear iterates over the items stored in the list, and frees each of the
+  TJvHTMLElement instances.
+  
+  Clear calls the inherited method prior to exit.
+  
+  Use Pop to remove the TJvHTMLElement instance stored at the top of the stack.
 See Also
-  TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElementStack.Push, TJvHTMLElementStack.Pop
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.Breakup
+@@TJvHTMLElementStack
 Summary
-  Updates the HTML element to match the drawing area for an HTML-enabled control.
+  Stack-like container for HTML markup.
 Description
-  Breakup is a method used to update an HTML element when rending the markup for an HTML-enabled
-  control. Breakup determines if the Text for the HTML element will fit in the drawing area represented
-  by the ACanvas and Available arguments.
-
-  ACanvas is the Canvas used to render the HTML-enabled control.
-
-  Available indicates the remaining drawing area left on the current line of the control canvas.
-
-  Values in the FontName, FontSize, FontStyle, and FontColor properties are assigned to ACanvas and
-  used to get the text metrics for the control canvas.
-
-  The Width for the value in Text is determined using the text metrics for the control canvas. When the
-  Width exceeds the value in Available, values in SolText and EolText are derived that allow rendering
-  in the visible bounds for the control canvas.
-Parameters
-  ACanvas   - Drawing canvas for an HTML-enabled control.
-  Available - Remaining portion of the drawing area for the current line.
+  TJvHTMLElementStack is a TList descendant that implements a stack-like container for HTML markup
+  found in the content for controls like TJvMarkupViewer and TJvMarkupLabel. TJvHTMLElementStack
+  stores
+  TJvHTMLElement instances created during parsing and rendering of HTML markup in the controls.
+  
+  TJvHTMLElementStack has Push, Pop, and Peek methods that implement the behaviors of a stack
+  container. The Push and Pop methods handle adding or removing a TJvHTMLElement instance for the
+  stack. Peek is used to access the top of the stack without removing the TJvHTMLElement instance.
+  
+  Use Clear to remove all TJvHTMLElement instances stored in the stack. Please note that
+  TJvHTMLElementStack does not have any concept of ownership; the calling routine is responsible for
+  freeing TJvHTMLElement instances stored in the stack.
 See Also
-  TJvHTMLElement.FontColor, TJvHTMLElement.FontName, TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle,
-  TJvHTMLElement.Text, TJvHTMLElement.SolText, TJvHTMLElement.EolText, TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElement, TJvMarkupViewer, TJvMarkupLabel
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.EolText
+@@TJvHTMLElement.Width
 Summary
-  Portion of the Text that does not fit in the drawing area for the HTML-enabled control.
+  Width of the rendered HTML markup.
 Description
-  EolText is a String property that represents the portion of the Text property that does not fit in
-  the drawing area for the HTML-enabled control.
+  Width is an Integer property that represents the width of the Text property when rendered using the
+  Canvas for an HTML-enabled control. Width is updated when the dimensions for the HTML tag or
+  element are calculated using methods in TJvMarkupLabel or TJvMarkupViewer.
+  
+  The value in Width is based on text metrics derived using the values in FontName, FontSize,
+  FontStyle, and FontColor.
+  
+  Use Height to determine the height of Text rendered using the current Text metrics.
+  
+  Use Ascent to determine the units above the base line for values rendered using the current Text
+  metrics.
+See Also
+  TJvHTMLElement.Height, TJvHTMLElement.FontName, TJvHTMLElement.FontColor, TJvHTMLElement.FontSize,
+  TJvHTMLElement.FontStyle, TJvMarkupLabel, TJvMarkupViewer
 
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLElement.Text
+Summary
+  Text rendered for HTML markup found in a control.
+Description
+  Text is a String property that represents the values rendered for HTML markup found in
+  TJvMarkupLabel or TJvMarkupViewer controls. Values in Text, SolText, and EolText are updated when
+  the dimensions of
+  HTML markup tags and content elements are calculated after changing parsing the HTML markup in the
+  Text for the associated control.
+  
+  SolText represents the text value rendered at the start of the line.
+  
+  EolText represents the text value at the end of the line that cannot be rendered in the Width of
+  the canvas for the control.
+  
+  Use TJvMarkupLabel.Text and TJvMarkupViewer.Text to update the control using HTML markup.
+See Also
+  TJvHTMLElement.SolText, TJvHTMLElement.EolText, TJvMarkupLabel.Text, TJvMarkupViewer.Text
+
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLElement.SolText
+Summary
+  Portion of the Text that fits in the drawing area for the HTML-enabled control.
+Description
+  SolText is a String property that represents the portion of the Text property that fits in the
+  drawing area for the HTML-enabled control.
+  
   SolText and EolText are updated and used when rendering the HTML markup for TJvMarkupLabel or
   TJvMarkupViewer controls. The values SolText and EolText are updated in the Breakup method during
   rendering of the control.
-
-  When the entire contents of the rendered markup fits on the current line for the drawing canvas, only
-  the SolText property contains a non-blank value. EolText contains any portion of the HTML element
+  
+  When the entire contents of the rendered markup fits on the current line for the drawing canvas,
+  only the SolText property contains a non-blank value. EolText contains any portion of the HTML
+  element
   that needs to be rendered on the next line using the text metrics for the HTML element.
 See Also
-  TJvHTMLElement.SolText, TJvHTMLElement.Breakup, TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElement.EolText, TJvHTMLElement.Breakup, TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.FontColor
+@@TJvHTMLElement.Height
 Summary
-  Font color used when rendering the Text for the HTML markup.
+  Height of the rendered HTML markup.
 Description
-  FontColor is a TColor property that represents the font color used when rendering the Text for the
-  HTML markup.
-
-  Values in FontName, FontSize, FontStyle, and FontColor are assigned to the Canvas used to render the
-  Text for TJvMarkupLabel and TJvMarkupViewer controls. The text metrics in the Height, Width, and
-  Ascent properties are updated after assignment of the font properties to the Canvas.
+  Height is an Integer property that represents the height of the Text property when rendered using
+  the
+  Canvas for an HTML-enabled control. Height is updated when the dimensions for the HTML tag or
+  element are calculated using methods in TJvMarkupLabel or TJvMarkupViewer.
+  
+  The value in Height is based on text metrics derived using the values in FontName, FontSize,
+  FontStyle, and FontColor.
+  
+  Use Width to determine the Width of Text rendered using the current Text metrics.
+  
+  Use Ascent to determine the units above the base line for values rendered using the current Text
+  metrics.
 See Also
-  TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle, TJvHTMLElement.FontName, TJvHTMLElement.Text,
-  TJvMarkupLabel, TJvMarkupViewer
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.FontName
-Summary
-  Font name used when rendering the Text for the HTML markup.
-Description
-  FontName is a String property that represents the font name used when rendering the Text for the HTML
-  markup.
-
-  Values in FontName, FontSize, FontStyle, and FontColor are assigned to the Canvas used to render the
-  Text for TJvMarkupLabel and TJvMarkupViewer controls. The text metrics in the Height, Width, and
-  Ascent properties are updated after assignment of the font properties to the Canvas.
-See Also
-  TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle, TJvHTMLElement.FontColor, TJvHTMLElement.Text,
-  TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElement.Width, TJvHTMLElement.FontName, TJvHTMLElement.FontColor, TJvHTMLElement.FontSize,
+  TJvHTMLElement.FontStyle, TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLElement.FontSize
@@ -142,7 +172,7 @@ Summary
 Description
   FontSize is an Integer property that represents the font size used when rendering the Text for the
   HTML markup.
-
+  
   Values in FontName, FontSize, FontStyle, and FontColor are assigned to the Canvas used to render the
   Text for TJvMarkupLabel and TJvMarkupViewer controls. The text metrics in the Height, Width, and
   Ascent properties are updated after assignment of the font properties to the Canvas.
@@ -157,7 +187,7 @@ Summary
 Description
   FontStyle is a TFontStyles property that represents the font style used when rendering the Text for
   the HTML markup.
-
+  
   Values in FontName, FontSize, FontStyle, and FontColor are assigned to the Canvas used to render the
   Text for TJvMarkupLabel and TJvMarkupViewer controls. The text metrics in the Height, Width, and
   Ascent properties are updated after assignment of the font properties to the Canvas.
@@ -166,169 +196,149 @@ See Also
   TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.Height
+@@TJvHTMLElement.FontName
 Summary
-  Height of the rendered HTML markup.
+  Font name used when rendering the Text for the HTML markup.
 Description
-  Height is an Integer property that represents the height of the Text property when rendered using the
-  Canvas for an HTML-enabled control. Height is updated when the dimensions for the HTML tag or element
-  are calculated using methods in TJvMarkupLabel or TJvMarkupViewer.
-
-  The value in Height is based on text metrics derived using the values in FontName, FontSize,
-  FontStyle, and FontColor.
-
-  Use Width to determine the Width of Text rendered using the current Text metrics.
-
-  Use Ascent to determine the units above the base line for values rendered using the current Text
-  metrics.
+  FontName is a String property that represents the font name used when rendering the Text for the
+  HTML markup.
+  
+  Values in FontName, FontSize, FontStyle, and FontColor are assigned to the Canvas used to render the
+  Text for TJvMarkupLabel and TJvMarkupViewer controls. The text metrics in the Height, Width, and
+  Ascent properties are updated after assignment of the font properties to the Canvas.
 See Also
-  TJvHTMLElement.Width, TJvHTMLElement.FontName, TJvHTMLElement.FontColor, TJvHTMLElement.FontSize,
-  TJvHTMLElement.FontStyle, TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle, TJvHTMLElement.FontColor, TJvHTMLElement.Text,
+  TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.SolText
+@@TJvHTMLElement.FontColor
 Summary
-  Portion of the Text that fits in the drawing area for the HTML-enabled control.
+  Font color used when rendering the Text for the HTML markup.
 Description
-  SolText is a String property that represents the portion of the Text property that fits in the
-  drawing area for the HTML-enabled control.
+  FontColor is a TColor property that represents the font color used when rendering the Text for the
+  HTML markup.
+  
+  Values in FontName, FontSize, FontStyle, and FontColor are assigned to the Canvas used to render the
+  Text for TJvMarkupLabel and TJvMarkupViewer controls. The text metrics in the Height, Width, and
+  Ascent properties are updated after assignment of the font properties to the Canvas.
+See Also
+  TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle, TJvHTMLElement.FontName, TJvHTMLElement.Text,
+  TJvMarkupLabel, TJvMarkupViewer
 
+----------------------------------------------------------------------------------------------------
+@@TJvHTMLElement.EolText
+Summary
+  Portion of the Text that does not fit in the drawing area for the HTML-enabled control.
+Description
+  EolText is a String property that represents the portion of the Text property that does not fit in
+  the drawing area for the HTML-enabled control.
+  
   SolText and EolText are updated and used when rendering the HTML markup for TJvMarkupLabel or
   TJvMarkupViewer controls. The values SolText and EolText are updated in the Breakup method during
   rendering of the control.
-
-  When the entire contents of the rendered markup fits on the current line for the drawing canvas, only
-  the SolText property contains a non-blank value. EolText contains any portion of the HTML element
+  
+  When the entire contents of the rendered markup fits on the current line for the drawing canvas,
+  only the SolText property contains a non-blank value. EolText contains any portion of the HTML
+  element
   that needs to be rendered on the next line using the text metrics for the HTML element.
 See Also
-  TJvHTMLElement.EolText, TJvHTMLElement.Breakup, TJvMarkupLabel, TJvMarkupViewer
+  TJvHTMLElement.SolText, TJvHTMLElement.Breakup, TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.Text
+@@TJvHTMLElement.Breakup
 Summary
-  Text rendered for HTML markup found in a control.
+  Updates the HTML element to match the drawing area for an HTML-enabled control.
 Description
-  Text is a String property that represents the values rendered for HTML markup found in TJvMarkupLabel
-  or TJvMarkupViewer controls. Values in Text, SolText, and EolText are updated when the dimensions of
-  HTML markup tags and content elements are calculated after changing parsing the HTML markup in the
-  Text for the associated control.
-
-  SolText represents the text value rendered at the start of the line.
-
-  EolText represents the text value at the end of the line that cannot be rendered in the Width of the
-  canvas for the control.
-
-  Use TJvMarkupLabel.Text and TJvMarkupViewer.Text to update the control using HTML markup.
+  Breakup is a method used to update an HTML element when rending the markup for an HTML-enabled
+  control. Breakup determines if the Text for the HTML element will fit in the drawing area
+  represented by the ACanvas and Available arguments.
+  
+  ACanvas is the Canvas used to render the HTML-enabled control.
+  
+  Available indicates the remaining drawing area left on the current line of the control canvas.
+  
+  Values in the FontName, FontSize, FontStyle, and FontColor properties are assigned to ACanvas and
+  used to get the text metrics for the control canvas.
+  
+  The Width for the value in Text is determined using the text metrics for the control canvas. When
+  the
+  Width exceeds the value in Available, values in SolText and EolText are derived that allow
+  rendering in the visible bounds for the control canvas.
+Parameters
+  ACanvas   - Drawing canvas for an HTML-enabled control.
+  Available - Remaining portion of the drawing area for the current line.
 See Also
-  TJvHTMLElement.SolText, TJvHTMLElement.EolText, TJvMarkupLabel.Text, TJvMarkupViewer.Text
+  TJvHTMLElement.FontColor, TJvHTMLElement.FontName, TJvHTMLElement.FontSize,
+  TJvHTMLElement.FontStyle,
+  TJvHTMLElement.Text, TJvHTMLElement.SolText, TJvHTMLElement.EolText, TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElement.Width
+@@TJvHTMLElement.BreakLine
 Summary
-  Width of the rendered HTML markup.
+  Indicates if the HTML element represents the HTML BR tag.
 Description
-  Width is an Integer property that represents the width of the Text property when rendered using the
-  Canvas for an HTML-enabled control. Width is updated when the dimensions for the HTML tag or element
-  are calculated using methods in TJvMarkupLabel or TJvMarkupViewer.
-
-  The value in Width is based on text metrics derived using the values in FontName, FontSize,
-  FontStyle, and FontColor.
-
-  Use Height to determine the height of Text rendered using the current Text metrics.
-
-  Use Ascent to determine the units above the base line for values rendered using the current Text
-  metrics.
+  BreakLine is a Boolean property that indicates if the HTML element represents the HTML BR tag.
+  BreakLine is updated and used when parsing and rendering the HTML markup for the TJvMarkupLabel and
+  TJvMarkupViewer controls.
+  
+  When BreakLine contains True, the current line for the drawing area of the control is incremented
+  after rendering the HTML element.
 See Also
-  TJvHTMLElement.Height, TJvHTMLElement.FontName, TJvHTMLElement.FontColor, TJvHTMLElement.FontSize,
-  TJvHTMLElement.FontStyle, TJvMarkupLabel, TJvMarkupViewer
+  TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElementStack
+@@TJvHTMLElement
 Summary
-  Stack-like container for HTML markup.
+  Represents text metrics and font settings for markup in an HTML-enabled control.
 Description
-  TJvHTMLElementStack is a TList descendant that implements a stack-like container for HTML markup
-  found in the content for controls like TJvMarkupViewer and TJvMarkupLabel. TJvHTMLElementStack stores
-  TJvHTMLElement instances created during parsing and rendering of HTML markup in the controls.
-
-  TJvHTMLElementStack has Push, Pop, and Peek methods that implement the behaviors of a stack
-  container. The Push and Pop methods handle adding or removing a TJvHTMLElement instance for the
-  stack. Peek is used to access the top of the stack without removing the TJvHTMLElement instance.
-
-  Use Clear to remove all TJvHTMLElement instances stored in the stack. Please note that
-  TJvHTMLElementStack does not have any concept of ownership; the calling routine is responsible for
-  freeing TJvHTMLElement instances stored in the stack.
+  TJvHTMLElement is a TObject descendant that represents HTML tags or rendering elements for HTML
+  markup found in the content for controls like TJvMarkupViewer and TJvMarkupLabel.
+  
+  TJvHTMLElement is the type used for items maintained in the TJvHTMLElementStack container.
+  
+  Application do not normally create or use TJvHTMLElement or TJvHTMLElementStack instances; they are
+  created and maintained internally during parsing and rendering of TJvMarkupViewer and
+  TJvMarkupLabel controls.
+  
+  TJvHTMLElement provides properties to identify the Text metrics and Font settings required for HTML markup found in an HTML-enabled control. TJvHTMLElement also provides 
+  ethods to ensure that rendered content fits within the drawing area for the Canvas used in the
+  HTML-enabled control.
 See Also
-  TJvHTMLElement, TJvMarkupViewer, TJvMarkupLabel
+  TJvHTMLElementStack, TJvMarkupViewer, TJvMarkupLabel
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHTMLElementStack.Clear
+@@TJvHTMLElement.Ascent
 Summary
-  Removes all items stored in the container.
+  Units above the baseline for the rendered HTML markup.
 Description
-  Clear is an overridden method used to remove all TJvHTMLElement instances stored in the stack-like
-  container using Push. Clear iterates over the items stored in the list, and frees each of the
-  TJvHTMLElement instances.
-
-  Clear calls the inherited method prior to exit.
-
-  Use Pop to remove the TJvHTMLElement instance stored at the top of the stack.
+  Ascent is an Integer property that represents the number of units above the baseline for Text
+  rendered using the Canvas for an HTML-enabled control. Ascent is updated when the dimensions for the
+  HTML tag or element are calculated using methods in TJvMarkupLabel or TJvMarkupViewer.
+  
+  Ascent is based on text metrics derived using the values in FontName, FontSize, FontStyle, and
+  FontColor.
+  
+  Use Height to determine the Height of Text rendered using the current Text metrics.
+  
+  Use Width to determine the Width of Text rendered using the current Text metrics.
 See Also
-  TJvHTMLElementStack.Push, TJvHTMLElementStack.Pop
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLElementStack.Peek
-Summary
-  Provides access to the item stored at the top of the stack.
-Description
-  Peek is a TJvHTMLElement function used to access the item stored at the top of the stack container.
-
-  The return value is the TJvHTMLElement instance that represents the item stored at the top of the
-  stack, or Nil when the number of items in the stack is 0 (zero).
-
-  Use Push to add a TJvHTMLElement instance to the stack.
-
-  Use Pop to remove the TJvHTMLElement instance at the top of the stack.
-Return value
-  TJvHTMLElement - Item at the top of the stack, or Nil.
-See Also
-  TJvHTMLElement, TJvHTMLElementStack.Pop, TJvHTMLElementStack.Push
-
-----------------------------------------------------------------------------------------------------
-@@TJvHTMLElementStack.Pop
-Summary
-  Removes the item stored at the top of the stack.
-Description
-  Pop is a TJvHTMLElement function used to remove the TJvHTMLElement instance stored at the top of the
-  stack container. The return value for the method is the TJvHTMLElement instance stored at the top of
-  the stack, or Nil when the number of items in the stack is 0 (zero).
-
-  Pop calls Delete method in TList to remove the TJvHTMLElement instance from the internal storage for
-  the stack container.
-
-  Use Clear to remove all items stored in the stack.
-
-  Use Peek to access (without removing) the TJvHTMLElement instance stored at the top of the stack.
-
-  Use Push to add a TJvHTMLElement instance to the stack container.
-Return value
-  TJvHTMLElement - Item at the top of the stack, or Nil.
-See Also
-  TJvHTMLElementStack.Push, TJvHTMLElementStack.Peek, TJvHTMLElementStack.Clear
+  TJvHTMLElement.Height, TJvHTMLElement.Width, TJvHTMLElement.FontName, TJvHTMLElement.FontColor,
+  TJvHTMLElement.FontSize, TJvHTMLElement.FontStyle, TJvMarkupLabel, TJvMarkupViewer
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHTMLElementStack.Push
 Summary
   Adds the specified item to the top of the stack container.
 Description
-  Push is a method used to add the TJvHTMLElement instance specified in Element to the internal storage
-  for the stack container. Push calls the inherited Add method to allocate storage for the item in
+  Push is a method used to add the TJvHTMLElement instance specified in Element to the internal
+  storage for the stack container. Push calls the inherited Add method to allocate storage for the
+  item in
   Element.
-
+  
   Use Pop to retrieve and remove the item stored at the top of the stack container.
-
+  
   Use Clear to remove all items stored in the stack.
-
+  
   Use Peek to access (without removing) the TJvHTMLElement instance stored at the top of the stack.
 Parameters
   Element - Item to add to the stack.

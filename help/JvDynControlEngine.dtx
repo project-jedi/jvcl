@@ -3,119 +3,24 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDynControlEngine.pas
 Summary
-  Contains the TJvDynControlEngine component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDynControlEngine component.
 Author
   Jens Fudickar
-
-----------------------------------------------------------------------------------------------------
-@@DefaultDynControlEngine
-<TITLE DefaultDynControlEngine function>
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@IntfCast@TObject@TGUID
-<TITLE IntfCast function>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Instance - Description for this parameter
-  Intf     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@IntfCast@TObject@TGUID@
-<TITLE IntfCast procedure>
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Instance - Description for this parameter
-  IID      - Description for this parameter
-  Intf     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@SetDefaultDynControlEngine
-<TITLE SetDefaultDynControlEngine procedure>
+@@TJvDynControlEngine.CreateRadioButton
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AEngine - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TControlClass
-<TITLE TControlClass type>
-Summary
-  Defines the metaclass for TControl.
-Description
-  TControlClass is the metaclass for TControl. Its value is the class reference for TControl or for one
-  of its descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAfterCreateControl
-<TITLE TJvAfterCreateControl type>
-<COMBINE TJvCustomDynControlEngine.OnAfterCreateControl>
-
-----------------------------------------------------------------------------------------------------
-@@TJvControlClassObject
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvControlClassObject.ControlClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.CreateControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControlType   - Description for this parameter
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
+  AOwner           - Description for this parameter
+  AParentControl   - Description for this parameter
+  ARadioButtonName - Description for this parameter
+  ACaption         - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -123,201 +28,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.CreateControlClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControlClass  - Description for this parameter
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.GetControlTextWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aControl - Description for this parameter
-  aFont    - Description for this parameter
-  aText    - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.GetRegisteredControlClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControlType - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.IsControlTypeRegistered
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ADynControlType - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.IsControlTypeValid
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ADynControlType - Description for this parameter
-  AControlClass   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.OnAfterCreateControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.RegisterControlType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ADynControlType - Description for this parameter
-  AControlClass   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.SetControlCaption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.SetControlOnClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.SetControlOnEnter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.SetControlOnExit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomDynControlEngine.SetControlTabOrder
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
-  Value    - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateButton
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AButtonName    - Description for this parameter
-  ACaption       - Description for this parameter
-  AHint          - Description for this parameter
-  AOnClick       - Description for this parameter
-  ADefault       - Description for this parameter
-  ACancel        - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateButtonEditControl
+@@TJvDynControlEngine.CreateProgressbarControl
 Summary
   Write here a summary (1 line)
 Description
@@ -326,7 +37,9 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
-  AOnButtonClick - Description for this parameter
+  AMin           - Description for this parameter
+  AMax           - Description for this parameter
+  AStep          - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -334,23 +47,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateCalculateControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateCheckboxControl
+@@TJvDynControlEngine.CreatePanelControl
 Summary
   Write here a summary (1 line)
 Description
@@ -360,6 +57,7 @@ Parameters
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
   ACaption       - Description for this parameter
+  AAlign         - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -367,7 +65,40 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateCheckListBoxControl
+@@TJvDynControlEngine.CreatePageControlControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+  APages         - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateMemoControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateListBoxControl
 Summary
   Write here a summary (1 line)
 Description
@@ -384,7 +115,27 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateColorComboboxControl
+@@TJvDynControlEngine.CreateLabelControlPanel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner             - Description for this parameter
+  AParentControl     - Description for this parameter
+  AControlName       - Description for this parameter
+  ACaption           - Description for this parameter
+  AFocusControl      - Description for this parameter
+  ALabelOnTop        - Description for this parameter
+  ALabelDefaultWidth - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateLabelControl
 Summary
   Write here a summary (1 line)
 Description
@@ -393,7 +144,8 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
-  ADefaultColor  - Description for this parameter
+  ACaption       - Description for this parameter
+  AFocusControl  - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -401,40 +153,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateComboBoxControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
-  AItems         - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateDateControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateDateTimeControl
+@@TJvDynControlEngine.CreateImageControl
 Summary
   Write here a summary (1 line)
 Description
@@ -450,7 +169,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateDirectoryControl
+@@TJvDynControlEngine.CreateGroupBoxControl
 Summary
   Write here a summary (1 line)
 Description
@@ -459,6 +178,22 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
+  ACaption       - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateForm
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ACaption - Description for this parameter
+  AHint    - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -498,39 +233,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateForm
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ACaption - Description for this parameter
-  AHint    - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateGroupBoxControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner         - Description for this parameter
-  AParentControl - Description for this parameter
-  AControlName   - Description for this parameter
-  ACaption       - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateImageControl
+@@TJvDynControlEngine.CreateDirectoryControl
 Summary
   Write here a summary (1 line)
 Description
@@ -546,7 +249,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateLabelControl
+@@TJvDynControlEngine.CreateDateTimeControl
 Summary
   Write here a summary (1 line)
 Description
@@ -555,8 +258,6 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
-  ACaption       - Description for this parameter
-  AFocusControl  - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -564,19 +265,15 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateLabelControlPanel
+@@TJvDynControlEngine.CreateDateControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AOwner             - Description for this parameter
-  AParentControl     - Description for this parameter
-  AControlName       - Description for this parameter
-  ACaption           - Description for this parameter
-  AFocusControl      - Description for this parameter
-  ALabelOnTop        - Description for this parameter
-  ALabelDefaultWidth - Description for this parameter
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -584,7 +281,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateListBoxControl
+@@TJvDynControlEngine.CreateComboBoxControl
 Summary
   Write here a summary (1 line)
 Description
@@ -601,7 +298,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateMemoControl
+@@TJvDynControlEngine.CreateColorComboboxControl
 Summary
   Write here a summary (1 line)
 Description
@@ -610,6 +307,7 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
+  ADefaultColor  - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -617,7 +315,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreatePageControlControl
+@@TJvDynControlEngine.CreateCheckListBoxControl
 Summary
   Write here a summary (1 line)
 Description
@@ -626,7 +324,7 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
-  APages         - Description for this parameter
+  AItems         - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -634,7 +332,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreatePanelControl
+@@TJvDynControlEngine.CreateCheckboxControl
 Summary
   Write here a summary (1 line)
 Description
@@ -644,7 +342,6 @@ Parameters
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
   ACaption       - Description for this parameter
-  AAlign         - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -652,7 +349,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateProgressbarControl
+@@TJvDynControlEngine.CreateCalculateControl
 Summary
   Write here a summary (1 line)
 Description
@@ -661,9 +358,6 @@ Parameters
   AOwner         - Description for this parameter
   AParentControl - Description for this parameter
   AControlName   - Description for this parameter
-  AMin           - Description for this parameter
-  AMax           - Description for this parameter
-  AStep          - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -671,18 +365,324 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDynControlEngine.CreateRadioButton
+@@TJvDynControlEngine.CreateButtonEditControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AOwner           - Description for this parameter
-  AParentControl   - Description for this parameter
-  ARadioButtonName - Description for this parameter
-  ACaption         - Description for this parameter
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+  AOnButtonClick - Description for this parameter
 Return value
   Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDynControlEngine.CreateButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AButtonName    - Description for this parameter
+  ACaption       - Description for this parameter
+  AHint          - Description for this parameter
+  AOnClick       - Description for this parameter
+  ADefault       - Description for this parameter
+  ACancel        - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlOnExit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlTabOrder
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlOnEnter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlCaption
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.SetControlOnClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+  Value    - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.RegisterControlType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ADynControlType - Description for this parameter
+  AControlClass   - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.OnAfterCreateControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.IsControlTypeValid
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ADynControlType - Description for this parameter
+  AControlClass   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.IsControlTypeRegistered
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ADynControlType - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.GetRegisteredControlClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControlType - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.GetControlTextWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aControl - Description for this parameter aFont    - Description for this parameter aText    -
+  Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.CreateControlClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControlClass  - Description for this parameter
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomDynControlEngine.CreateControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AControlType   - Description for this parameter
+  AOwner         - Description for this parameter
+  AParentControl - Description for this parameter
+  AControlName   - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlClassObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlClassObject.ControlClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvAfterCreateControl
+<TITLE TJvAfterCreateControl type> <COMBINE TJvCustomDynControlEngine.OnAfterCreateControl>
+
+----------------------------------------------------------------------------------------------------
+@@TControlClass
+<TITLE TControlClass type>
+Summary
+  Defines the metaclass for TControl.
+Description
+  TControlClass is the metaclass for TControl. Its value is the class reference for TControl or for
+  one of its descendants.
+
+----------------------------------------------------------------------------------------------------
+@@SetDefaultDynControlEngine
+<TITLE SetDefaultDynControlEngine procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AEngine - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IntfCast@TObject@TGUID@
+<TITLE IntfCast procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Instance - Description for this parameter
+  IID      - Description for this parameter
+  Intf     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@IntfCast@TObject@TGUID
+<TITLE IntfCast function>
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
+  same name.
+Parameters
+  Instance - Description for this parameter
+  Intf     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@DefaultDynControlEngine
+<TITLE DefaultDynControlEngine function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

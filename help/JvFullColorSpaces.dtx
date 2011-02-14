@@ -3,121 +3,37 @@
 ----------------------------------------------------------------------------------------------------
 @@JvFullColorSpaces.pas
 Summary
-  Contains the full color space classes.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the full color space classes.
 Author
   Florent Ouchet
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@ColorSpaceManager
-<TITLE ColorSpaceManager function>
+@@TJvYUVColorSpace.ConvertToColor
 Summary
-  Unique instance of a TJvColorSpaceManager.
+  Converts a color of the YUV color space to RGB.
 Description
-  Returns an unique instance of the TJvColorSpaceManager class. If this instance doesn't exist, it is
-  created.
-Return value
-  Returns this instance.
-
-----------------------------------------------------------------------------------------------------
-@@EJvColorSpaceError
-Summary
-  Exception raised if an error occurs during a full color conversion
-Description
-  This is the class of exceptions which are raised if an error happens during a full color space
-  conversion.
-
-----------------------------------------------------------------------------------------------------
-@@GetAxisValue
-<TITLE GetAxisValue function>
-Summary
-  Return the value of an indexed axis.
-Description
-  A TJvFullColor is an aggregation of 3 axis values and one color space identifier. This function
-  returns one of the axis values. To get all axis values, use SplitColorParts, to change one axis value
-  use SetAxisValue.
+  This function converts the color given as parameter to RGB.
 Parameters
-  AColor - TJvFullColor to get the axis value.
-  AAxis  - Index of the axis to get.
+  AColor - TJvFullColor to be converted.
 Return value
-  The axis value.
+  The RGB value that describes the same color.
+See Also
+  TJvYUVColorSpace.ConvertFromColor
 
 ----------------------------------------------------------------------------------------------------
-@@JoinColorParts
-<TITLE JoinColorParts function>
+@@TJvYUVColorSpace
 Summary
-  Join 3 axis values to create a TJvFullColor.
+  PC Video color space.
 Description
-  This function joins 3 axis values to create a TJvFullColor initialized with these values. The
-  Identifier of the TJvFullColor is not initialized. To split a TJvFullColor into 3 axis values, use
-  SplitColorParts. To set one axis value, use SetAxisValue.
-Parameters
-  Part1 - Value of the first axis.
-  Part2 - Value of the second axis.
-  Part3 - Value of the third axis.
-Return value
-  The TJvFullColor created.
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@SetAxisValue
-<TITLE SetAxisValue function>
+@@TJvYUVColorSpace.ConvertFromColor
 Summary
-  Change the value of an indexed axis.
-Description
-  This function change the value of one axis of a TJvFullColor. To change 3 axis values, use
-  JoinColorParts. To get one axis value, use GetAxisValue
-Parameters
-  AColor   - TJvFullColor to change one axis value.
-  AAxis    - Index of the axis.
-  NewValue - New value of this axis.
-Return value
-  The new TJvFullColor
-
-----------------------------------------------------------------------------------------------------
-@@SplitColorParts
-<TITLE SplitColorParts procedure>
-Summary
-  Get the 3 axis values of a TJvFullColor
-Description
-  This function splits a TJvFullColor and return its axis values. To join 3 axis values and create a
-  TJvFullColor, use JoinColorParts. To set one axis value, use SetAxisValue.
-Parameters
-  AColor - TJvFullColor to be split.
-  Part1  - Value of the first axis.
-  Part2  - Value of the second axis.
-  Part3  - Value of the third axis.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisIndex
-<TITLE TJvAxisIndex type>
-Summary
-  Index of a TJvFullColor axis.
-Description
-  This enumeration is the index of a TJvFullColor axis
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisIndex.axIndex0
-  Index of the first axis.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisIndex.axIndex1
-  Index of the second axis.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAxisIndex.axIndex2
-  Index of the third axis.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCMYColorSpace
-Summary
-  Cyan-Magenta-Yellow color space.
-Description
-  This is one of the most used color space: Yellow = 255 - Blue Magenta = 255 - Green Cyan = 255 - Red
-
-----------------------------------------------------------------------------------------------------
-@@TJvCMYColorSpace.ConvertFromColor
-Summary
-  Converts an RGB value to CMY color space.
+  Converts an RGB value to the YUV color space.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
@@ -126,12 +42,12 @@ Parameters
 Return value
   Describe here what the function returns
 See Also
-  TJvCMYColorSpace.ConvertToColor
+  TJvYUVColorSpace.ConvertToColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCMYColorSpace.ConvertToColor
+@@TJvYIQColorSpace.ConvertToColor
 Summary
-  Converts a color of the CMY color space to RGB.
+  Converts a color of the YIQ color space to RGB.
 Description
   This function converts the color given as parameter to RGB.
 Parameters
@@ -139,298 +55,33 @@ Parameters
 Return value
   The RGB value that describes the same color.
 See Also
-  TJvCMYColorSpace.ConvertFromColor
+  TJvYIQColorSpace.ConvertFromColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorSpace
+@@TJvYIQColorSpace
 Summary
-  Base class for all TJv*ColorSpace classes.
-Description
-  This is the ancestor of all TJv*FullColorSpace. It defines all functions needed to convert a color
-  and get the color space characteristics.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.AxisDefault
-Summary
-  Default value for an axis.
-Description
-  This indexed read-only property returns the default value of an axis (used in graphic rendering).
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.AxisMax
-Summary
-  Maximum value for an axis.
-Description
-  This indexed and read-only property returns the maximum value of an axis to be sure the conversions
-  are valid. Every conversion from RGB to this color space must give values that are below or equal
-  this property for each axes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.AxisMin
-Summary
-  Minimum value for an axis.
-Description
-  This indexed and read-only property returns the minimum value of an axis to be sure the conversions
-  are valid. Every conversion from RGB to this color space must give values that are above or equal
-  this property for each axes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.AxisName
-Summary
-  Name of an axis.
-Description
-  This indexed and read-only property returns the name of an axis.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.ConvertFromColor
-Summary
-  Converts an RGB value to this color space.
-Description
-  This function converts the color given as parameter from RGB to this color space. As implemented in
-  TJvColorSpace, ConvertFromColor does nothing, you have to use a valid color space to make
-  conversions.
-Parameters
-  AColor - RGB value to be converted.
-Return value
-  The same color in this color space.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.ConvertToColor
-Summary
-  Converts a color of this color space to RGB.
-Description
-  This function converts the color given as parameter to RGB. As implemented in TJvColorSpace,
-  ConvertToColor does nothing, you have to use a valid color space to make conversions.
-Parameters
-  AColor - TJvFullColor to be converted.
-Return value
-  The RGB value that describes the same color.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.ID
-Summary
-  Identifier of this color space.
-Description
-  This is the identifier of this color space. Identifier are statically allocated to avoid conflicts
-  depending of the registration order of color spaces.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.Name
-Summary
-  Name of the color space.
-Description
-  This read-only property returns the long name of the color space.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.NumberOfColors
-Summary
-  Number of colors in this color space.
-Description
-  This read-only property returns the numbers of different colors in this color space.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpace.ShortName
-Summary
-  Short name of this color space.
-Description
-  This read-only property returns the short name of this color space. A short name is typically 3
-  characters like RGB for Red-Green-Blue.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager
-Summary
-  Class of the manager of color spaces.
-Description
-  This class provides basic operations : - registration and unregistration of colorspaces. -
-  conversions from one color space to an other. - conversion from one full color to RGB. - conversion
-  from RGB to one full color. - enumeration of all registered color spaces.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.ColorSpace
-Summary
-  Retrieve a color space using its identifier.
-Description
-  This indexed and read-only property returns a color space given its identifier. The color space must
-  have been registered using the RegisterColorSpace procedure.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.ColorSpaceByIndex
-Summary
-  Enumeration of color space.
-Description
-  This indexed and read-only property gives a direct access to all registered color spaces.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.ConvertFromColor
-Summary
-  Convert an RGB value to a full color value.
-Description
-  If the RGB value is a system color (like clBtnFace), the result is the same color in the csDEF
-  colorspace, otherwise the result is the same color in the csRGB color space.
-Parameters
-  AColor - RGB value to be converted.
-Return value
-  The full color value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.ConvertToColor
-Summary
-  Convert a full color to an RGB value.
-Description
-  This function converts a TJvFullColor to a TColor value. If the AColor argument belongs to the csDEF
-  color space, then the result if a system color, otherwise the result is a standard RGB value.
-Parameters
-  AColor - TJvFullColor to be converted.
-Return value
-  The RGB value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.ConvertToID
-Summary
-  Change the color space of a full color.
-Description
-  This function converts the existing full color to an RGB value and converts it to the new color space
-  specified by its identifier.
-Parameters
-  AColor - TJvFullColor to be converted.
-  DestID - Identifier of the new color space.
-Return value
-  The same color in the new color space.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.Count
-Summary
-  Number of color spaces.
-Description
-  This read-only property returns the number of registered color spaces. To register a new color space
-  use RegisterColorSpace, to unregister a color space use UnRegisterColorSpace. To enumerate the color
-  spaces, use the ColorSpaceByIndex property in a for loop.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.GetColorSpaceID
-Summary
-  Write here a summary (1 line)
+  NTSC US television standard color space.
 Description
   Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvYIQColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to the YIQ color space.
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   AColor - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvYIQColorSpace.ConvertToColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.RegisterColorSpace
+@@TJvYCCColorSpace.ConvertToColor
 Summary
-  Register a new color space.
-Description
-  This function registers a new color space.
-Parameters
-  NewColorSpace - color space to be registered.
-
-----------------------------------------------------------------------------------------------------
-@@TJvColorSpaceManager.UnRegisterColorSpace
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AColorSpace - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace
-Summary
-  Delphi predefined colors color space.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.AddCustomColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AColor     - Description for this parameter
-  ShortName  - Description for this parameter
-  PrettyName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.AddDelphiColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.ColorCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.ColorName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.ColorPrettyName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.ColorValue
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.ConvertFromColor
-Summary
-  Converts an RGB value to xx color space.
-Description
-  Call ConvertFromColor to convert a RGB color value to xx.
-Parameters
-  AColor - RGB value to be converted.
-Return value
-  Describe here what the function returns
-See Also
-  TJvDEFColorSpace.ConvertToColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvDEFColorSpace.ConvertToColor
-Summary
-  Converts a color of the xx color space to RGB.
+  Converts a color of the YCC color space to RGB.
 Description
   This function converts the color given as parameter to RGB.
 Parameters
@@ -438,41 +89,19 @@ Parameters
 Return value
   The RGB value that describes the same color.
 See Also
-  TJvDEFColorSpace.ConvertFromColor
+  TJvYCCColorSpace.ConvertFromColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFullColor
-<TITLE TJvFullColor type>
+@@TJvYCCColorSpace
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvFullColorSpaceID
-<TITLE TJvFullColorSpaceID type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvHLSColorSpace
-Summary
-  Chromatic Vision color space.
+  YCrCb color space.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHLSColorSpace.ConvertFromColor
+@@TJvYCCColorSpace.ConvertFromColor
 Summary
-  Converts an RGB value to the HLS color space.
+  Converts an RGB value to the YCC color space.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
@@ -481,129 +110,7 @@ Parameters
 Return value
   Describe here what the function returns
 See Also
-  TJvHLSColorSpace.ConvertToColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvHLSColorSpace.ConvertToColor
-Summary
-  Converts a color of the HLS color space to RGB.
-Description
-  This function converts the color given as parameter to RGB.
-Parameters
-  AColor - TJvFullColor to be converted.
-Return value
-  The RGB value that describes the same color.
-See Also
-  TJvHLSColorSpace.ConvertFromColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvHSVColorSpace
-Summary
-  Rotation Vision color space.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvHSVColorSpace.ConvertFromColor
-Summary
-  Converts an RGB value to the HSV color space.
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  AColor - RGB color to be converted.
-Return value
-  Describe here what the function returns
-See Also
-  TJvHSVColorSpace.ConvertToColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvHSVColorSpace.ConvertToColor
-Summary
-  Converts a color of the HSV color space to RGB.
-Description
-  This function converts the color given as parameter to RGB.
-Parameters
-  AColor - TJvFullColor to be converted.
-Return value
-  The RGB value that describes the same color.
-See Also
-  TJvHSVColorSpace.ConvertFromColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvLABColorSpace
-Summary
-  CIE LAB color space.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvLABColorSpace.ConvertFromColor
-Summary
-  Converts an RGB value to the Lab color space.
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  AColor - RGB color to be converted.
-Return value
-  Describe here what the function returns
-See Also
-  TJvLABColorSpace.ConvertToColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvLABColorSpace.ConvertToColor
-Summary
-  Converts a color of the Lab color space to RGB.
-Description
-  This function converts the color given as parameter to RGB.
-Parameters
-  AColor - TJvFullColor to be converted.
-Return value
-  The RGB value that describes the same color.
-See Also
-  TJvLABColorSpace.ConvertFromColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvRGBColorSpace
-Summary
-  True Color color space.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvRGBColorSpace.ConvertFromColor
-Summary
-  Converts an RGB value to the RGB color space.
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  AColor - RGB color to be converted.
-Return value
-  Describe here what the function returns
-See Also
-  TJvRGBColorSpace.ConvertToColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvRGBColorSpace.ConvertToColor
-Summary
-  Converts a color of the RGB color space to RGB.
-Description
-  This function converts the color given as parameter to RGB.
-Parameters
-  AColor - TJvFullColor to be converted.
-Return value
-  The RGB value that describes the same color.
-See Also
-  TJvRGBColorSpace.ConvertFromColor
-
-----------------------------------------------------------------------------------------------------
-@@TJvXYZColorSpace
-Summary
-  CIE XYZ color space.
-Description
-  Write here a description
+  TJvYCCColorSpace.ConvertToColor
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXYZColorSpace.ConvertFromColor
@@ -633,16 +140,36 @@ See Also
   TJvXYZColorSpace.ConvertFromColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYCCColorSpace
+@@TJvXYZColorSpace
 Summary
-  YCrCb color space.
+  CIE XYZ color space.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYCCColorSpace.ConvertFromColor
+@@TJvRGBColorSpace.ConvertToColor
 Summary
-  Converts an RGB value to the YCC color space.
+  Converts a color of the RGB color space to RGB.
+Description
+  This function converts the color given as parameter to RGB.
+Parameters
+  AColor - TJvFullColor to be converted.
+Return value
+  The RGB value that describes the same color.
+See Also
+  TJvRGBColorSpace.ConvertFromColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvRGBColorSpace
+Summary
+  True Color color space.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvRGBColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to the RGB color space.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
@@ -651,12 +178,12 @@ Parameters
 Return value
   Describe here what the function returns
 See Also
-  TJvYCCColorSpace.ConvertToColor
+  TJvRGBColorSpace.ConvertToColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYCCColorSpace.ConvertToColor
+@@TJvLABColorSpace.ConvertToColor
 Summary
-  Converts a color of the YCC color space to RGB.
+  Converts a color of the Lab color space to RGB.
 Description
   This function converts the color given as parameter to RGB.
 Parameters
@@ -664,33 +191,414 @@ Parameters
 Return value
   The RGB value that describes the same color.
 See Also
-  TJvYCCColorSpace.ConvertFromColor
+  TJvLABColorSpace.ConvertFromColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYIQColorSpace
+@@TJvLABColorSpace
 Summary
-  NTSC US television standard color space.
+  CIE LAB color space.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYIQColorSpace.ConvertFromColor
+@@TJvLABColorSpace.ConvertFromColor
 Summary
-  Converts an RGB value to the YIQ color space.
+  Converts an RGB value to the Lab color space.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
+Parameters
+  AColor - RGB color to be converted.
+Return value
+  Describe here what the function returns
+See Also
+  TJvLABColorSpace.ConvertToColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvHSVColorSpace.ConvertToColor
+Summary
+  Converts a color of the HSV color space to RGB.
+Description
+  This function converts the color given as parameter to RGB.
+Parameters
+  AColor - TJvFullColor to be converted.
+Return value
+  The RGB value that describes the same color.
+See Also
+  TJvHSVColorSpace.ConvertFromColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvHSVColorSpace
+Summary
+  Rotation Vision color space.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvHSVColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to the HSV color space.
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  AColor - RGB color to be converted.
+Return value
+  Describe here what the function returns
+See Also
+  TJvHSVColorSpace.ConvertToColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvHLSColorSpace.ConvertToColor
+Summary
+  Converts a color of the HLS color space to RGB.
+Description
+  This function converts the color given as parameter to RGB.
+Parameters
+  AColor - TJvFullColor to be converted.
+Return value
+  The RGB value that describes the same color.
+See Also
+  TJvHLSColorSpace.ConvertFromColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvHLSColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to the HLS color space.
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  AColor - RGB color to be converted.
+Return value
+  Describe here what the function returns
+See Also
+  TJvHLSColorSpace.ConvertToColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvHLSColorSpace
+Summary
+  Chromatic Vision color space.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColor
+<TITLE TJvFullColor type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvFullColorSpaceID
+<TITLE TJvFullColorSpaceID type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.ConvertToColor
+Summary
+  Converts a color of the xx color space to RGB.
+Description
+  This function converts the color given as parameter to RGB.
+Parameters
+  AColor - TJvFullColor to be converted.
+Return value
+  The RGB value that describes the same color.
+See Also
+  TJvDEFColorSpace.ConvertFromColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.ColorValue
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to xx color space.
+Description
+  Call ConvertFromColor to convert a RGB color value to xx.
+Parameters
+  AColor - RGB value to be converted.
+Return value
+  Describe here what the function returns
+See Also
+  TJvDEFColorSpace.ConvertToColor
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.ColorName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.ColorPrettyName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.ColorCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.AddDelphiColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace.AddCustomColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AColor     - Description for this parameter
+  ShortName  - Description for this parameter
+  PrettyName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDEFColorSpace
+Summary
+  Delphi predefined colors color space.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.UnRegisterColorSpace
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AColorSpace - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.RegisterColorSpace
+Summary
+  Register a new color space.
+Description
+  This function registers a new color space.
+Parameters
+  NewColorSpace - color space to be registered.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.GetColorSpaceID
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
   AColor - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
-  TJvYIQColorSpace.ConvertToColor
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYIQColorSpace.ConvertToColor
+@@TJvColorSpaceManager.ConvertToID
 Summary
-  Converts a color of the YIQ color space to RGB.
+  Change the color space of a full color.
+Description
+  This function converts the existing full color to an RGB value and converts it to the new color
+  space specified by its identifier.
+Parameters
+  AColor - TJvFullColor to be converted.
+  DestID - Identifier of the new color space.
+Return value
+  The same color in the new color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.Count
+Summary
+  Number of color spaces.
+Description
+  This read-only property returns the number of registered color spaces. To register a new color
+  space use RegisterColorSpace, to unregister a color space use UnRegisterColorSpace. To enumerate
+  the color spaces, use the ColorSpaceByIndex property in a for loop.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.ConvertToColor
+Summary
+  Convert a full color to an RGB value.
+Description
+  This function converts a TJvFullColor to a TColor value. If the AColor argument belongs to the
+  csDEF color space, then the result if a system color, otherwise the result is a standard RGB value.
+Parameters
+  AColor - TJvFullColor to be converted.
+Return value
+  The RGB value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.ConvertFromColor
+Summary
+  Convert an RGB value to a full color value.
+Description
+  If the RGB value is a system color (like clBtnFace), the result is the same color in the csDEF
+  colorspace, otherwise the result is the same color in the csRGB color space.
+Parameters
+  AColor - RGB value to be converted.
+Return value
+  The full color value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.ColorSpaceByIndex
+Summary
+  Enumeration of color space.
+Description
+  This indexed and read-only property gives a direct access to all registered color spaces.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager.ColorSpace
+Summary
+  Retrieve a color space using its identifier.
+Description
+  This indexed and read-only property returns a color space given its identifier. The color space
+  must have been registered using the RegisterColorSpace procedure.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpaceManager
+Summary
+  Class of the manager of color spaces.
+Description
+  This class provides basic operations : - registration and unregistration of colorspaces. - conversions from one color s
+  ace to an other. - conversion from one full color to RGB. - conversion from RGB to one full color.
+  - enumeration of all registered color spaces.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.ShortName
+Summary
+  Short name of this color space.
+Description
+  This read-only property returns the short name of this color space. A short name is typically 3
+  characters like RGB for Red-Green-Blue.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.Name
+Summary
+  Name of the color space.
+Description
+  This read-only property returns the long name of the color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.NumberOfColors
+Summary
+  Number of colors in this color space.
+Description
+  This read-only property returns the numbers of different colors in this color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.ID
+Summary
+  Identifier of this color space.
+Description
+  This is the identifier of this color space. Identifier are statically allocated to avoid conflicts
+  depending of the registration order of color spaces.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.ConvertToColor
+Summary
+  Converts a color of this color space to RGB.
+Description
+  This function converts the color given as parameter to RGB. As implemented in TJvColorSpace,
+  ConvertToColor does nothing, you have to use a valid color space to make conversions.
+Parameters
+  AColor - TJvFullColor to be converted.
+Return value
+  The RGB value that describes the same color.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.AxisName
+Summary
+  Name of an axis.
+Description
+  This indexed and read-only property returns the name of an axis.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to this color space.
+Description
+  This function converts the color given as parameter from RGB to this color space. As implemented in
+  TJvColorSpace, ConvertFromColor does nothing, you have to use a valid color space to make
+  conversions.
+Parameters
+  AColor - RGB value to be converted.
+Return value
+  The same color in this color space.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.AxisMin
+Summary
+  Minimum value for an axis.
+Description
+  This indexed and read-only property returns the minimum value of an axis to be sure the conversions
+  are valid. Every conversion from RGB to this color space must give values that are above or equal
+  this property for each axes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.AxisDefault
+Summary
+  Default value for an axis.
+Description
+  This indexed read-only property returns the default value of an axis (used in graphic rendering).
+
+----------------------------------------------------------------------------------------------------
+@@TJvColorSpace.AxisMax
+Summary
+  Maximum value for an axis.
+Description
+  This indexed and read-only property returns the maximum value of an axis to be sure the conversions
+  are valid. Every conversion from RGB to this color space must give values that are below or equal
+  this property for each axes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCMYColorSpace.ConvertToColor
+Summary
+  Converts a color of the CMY color space to RGB.
 Description
   This function converts the color given as parameter to RGB.
 Parameters
@@ -698,19 +606,31 @@ Parameters
 Return value
   The RGB value that describes the same color.
 See Also
-  TJvYIQColorSpace.ConvertFromColor
+  TJvCMYColorSpace.ConvertFromColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYUVColorSpace
+@@TJvColorSpace
 Summary
-  PC Video color space.
+  Base class for all TJv*ColorSpace classes.
 Description
-  Write here a description
+  This is the ancestor of all TJv*FullColorSpace. It defines all functions needed to convert a color
+  and get the color space characteristics.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYUVColorSpace.ConvertFromColor
+@@TJvAxisIndex.axIndex2
+Index of the third axis.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCMYColorSpace
 Summary
-  Converts an RGB value to the YUV color space.
+  Cyan-Magenta-Yellow color space.
+Description
+  This is one of the most used color space: Yellow = 255 - Blue Magenta = 255 - Green Cyan = 255 - Red
+
+----------------------------------------------------------------------------------------------------
+@@TJvCMYColorSpace.ConvertFromColor
+Summary
+  Converts an RGB value to CMY color space.
 Description
   This is an overridden method, you don't have to describe these if it does the same as the inherited
   method
@@ -719,18 +639,100 @@ Parameters
 Return value
   Describe here what the function returns
 See Also
-  TJvYUVColorSpace.ConvertToColor
+  TJvCMYColorSpace.ConvertToColor
 
 ----------------------------------------------------------------------------------------------------
-@@TJvYUVColorSpace.ConvertToColor
+@@TJvAxisIndex
+<TITLE TJvAxisIndex type>
 Summary
-  Converts a color of the YUV color space to RGB.
+  Index of a TJvFullColor axis.
 Description
-  This function converts the color given as parameter to RGB.
+  This enumeration is the index of a TJvFullColor axis
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisIndex.axIndex0
+Index of the first axis.
+
+----------------------------------------------------------------------------------------------------
+@@TJvAxisIndex.axIndex1
+Index of the second axis.
+
+----------------------------------------------------------------------------------------------------
+@@SplitColorParts
+<TITLE SplitColorParts procedure>
+Summary
+  Get the 3 axis values of a TJvFullColor
+Description
+  This function splits a TJvFullColor and return its axis values. To join 3 axis values and create a
+  TJvFullColor, use JoinColorParts. To set one axis value, use SetAxisValue.
 Parameters
-  AColor - TJvFullColor to be converted.
+  AColor - TJvFullColor to be split.
+  Part1  - Value of the first axis.
+  Part2  - Value of the second axis.
+  Part3  - Value of the third axis.
+
+----------------------------------------------------------------------------------------------------
+@@SetAxisValue
+<TITLE SetAxisValue function>
+Summary
+  Change the value of an indexed axis.
+Description
+  This function change the value of one axis of a TJvFullColor. To change 3 axis values, use
+  JoinColorParts. To get one axis value, use GetAxisValue
+Parameters
+  AColor   - TJvFullColor to change one axis value.
+  AAxis    - Index of the axis.
+  NewValue - New value of this axis.
 Return value
-  The RGB value that describes the same color.
-See Also
-  TJvYUVColorSpace.ConvertFromColor
+  The new TJvFullColor
+
+----------------------------------------------------------------------------------------------------
+@@JoinColorParts
+<TITLE JoinColorParts function>
+Summary
+  Join 3 axis values to create a TJvFullColor.
+Description
+  This function joins 3 axis values to create a TJvFullColor initialized with these values. The
+  Identifier of the TJvFullColor is not initialized. To split a TJvFullColor into 3 axis values, use
+  SplitColorParts. To set one axis value, use SetAxisValue.
+Parameters
+  Part1 - Value of the first axis.
+  Part2 - Value of the second axis.
+  Part3 - Value of the third axis.
+Return value
+  The TJvFullColor created.
+
+----------------------------------------------------------------------------------------------------
+@@GetAxisValue
+<TITLE GetAxisValue function>
+Summary
+  Return the value of an indexed axis.
+Description
+  A TJvFullColor is an aggregation of 3 axis values and one color space identifier. This function
+  returns one of the axis values. To get all axis values, use SplitColorParts, to change one axis
+  value use SetAxisValue.
+Parameters
+  AColor - TJvFullColor to get the axis value.
+  AAxis  - Index of the axis to get.
+Return value
+  The axis value.
+
+----------------------------------------------------------------------------------------------------
+@@ColorSpaceManager
+<TITLE ColorSpaceManager function>
+Summary
+  Unique instance of a TJvColorSpaceManager.
+Description
+  Returns an unique instance of the TJvColorSpaceManager class. If this instance doesn't exist, it is
+  created.
+Return value
+  Returns this instance.
+
+----------------------------------------------------------------------------------------------------
+@@EJvColorSpaceError
+Summary
+  Exception raised if an error occurs during a full color conversion
+Description
+  This is the class of exceptions which are raised if an error happens during a full color space
+  conversion.
 

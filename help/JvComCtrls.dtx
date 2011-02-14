@@ -3,364 +3,87 @@
 ----------------------------------------------------------------------------------------------------
 @@JvComCtrls.pas
 Summary
-  Contains several enhanced Common Controls components.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains several enhanced Common Controls components.
 Author
   Petr Vones (petr dott v att mujmail dott cz)
   Sébastien Buysse (TJvTabControl)
-
-----------------------------------------------------------------------------------------------------
-@@TJvHintSource
-<TITLE TJvHintSource type>
-Summary
-  Defines the available hint sources for controls that can have multiple hints depending on the
-  location of the mouse.
 Description
-  TJvHintSource is used in TJvPageControl to determine the hint to display when the user moves the
-  mouse over the control.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvHintSource.hsDefault
-  Display the default hint.
-
-----------------------------------------------------------------------------------------------------
-@@TJvHintSource.hsForceMain
-  Always display the main hint. If no main hint is available, display nothing.
-
-----------------------------------------------------------------------------------------------------
-@@TJvHintSource.hsForceChildren
-  Always display a child hint. If no child hint is available, display nothing.
-
-----------------------------------------------------------------------------------------------------
-@@TJvHintSource.hsPreferMain
-  Display the main hint. If no main hint is available, display a child hint (if available).
-
-----------------------------------------------------------------------------------------------------
-@@TJvHintSource.hsPreferChildren
-  Display the child hint. If no child hint is available, display the main hint (if available).
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress
-<TITLEIMG TJvIPAddress>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Edits
-  FLAG=Component
+@@TJvTreeView.OnPageChanged
 Summary
-  An edit control that can display and edit IP values.
+  Occurs when the active tab of an associated page control is changed.
 Description
-  Use a TJvIPAddress when you need to display IP values to your users. TJvIPAddress has separate fields
-  for each part of the IP address as well as several properties, methods and events to limit the input
-  in each field.
+  Write a handler for this event to take specific action when clicking a node in the tree changes the
+  active tab of an associated page control. This event only occurs when a page control is assigned to
+  the PageControl property and a matching tab is found.
+Parameters
+  Sender - The control that triggered the event.
+  Item   - The selected node
+  Page   - The new active page in the page control.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.Address
-Summary
-  Indicates the IP address as an integer value
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.AddressValues
-Summary
-  Provides access to individual address values.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.ClearAddress
-Summary
-  Empties the control.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.DataConnector
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.IsBlank
-Summary
-  Returns true if the control is empty.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.OnFieldChange
+@@TJvTreeView.OnNodeCheckedChange
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender     - Description for this parameter
-  FieldIndex - Description for this parameter
-  FieldRange - Description for this parameter
-  Value      - Description for this parameter
+  Sender - Description for this parameter
+  Node   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.Range
+@@TJvTreeView.OnHorizontalScroll
 Summary
-  Write here a summary (1 line)
+  Occurs when the horizontal scrollbar is moved.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write a handler for this event to take specific action when the horizontal scrollbar is changed.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPAddress.TabThroughFields
+@@TJvTreeView.OnEditCancelled
 Summary
-  Allow the TAB key to browse though the IP fields
+  Occurs when the user is canceling the editing of a node text.
 Description
-  Set TabThroughFields to True if you want to allow the user to browse through the IP fields with the
-  TAB key.
+  Write a handler for this event to take specific actions when the user cancels the editing of a
+  node's text.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPAddressChanging
-<TITLE TJvIPAddressChanging type>
-<COMBINE TJvIPAddressValues.OnChanging>
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressDataConnector
+@@TJvTreeView.OnCustomDrawItem
 Summary
-  Write here a summary (1 line)
+  Occurs when the tree view needs to be drawn.
 Description
-  Write here a description
+  Assign a handler to this event to perform your own custom drawing of the tree view.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPAddressDataConnector.EditControl
+@@TJvTreeView.OnComparePage
 Summary
-  Write here a summary (1 line)
+  Occurs when the tree view needs to determine which page to activate in a page control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Assign a handler to this event to control which page is selected in a page control when a specific
+  node is clicked. This event is only triggered if PageControl is assigned.
+  
+  If no handler is assigned, TJvTreeView selects the first tab in the page control where the Caption
+  matches the Text of the selected node.
+Parameters
+  Sender  - The tree view that triggered the event.
+  Page    - The current page being compared.
+  Node    - The current node being compared.
+  Matches - Set this to true if Page is a match to Node.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPAddressMinMax
-<TITLE TJvIPAddressMinMax type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressMinMax.Min
-  Description for Min
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressMinMax.Max
-  Description for Max
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field1Max
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field1Min
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field2Max
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field2Min
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field3Max
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field3Min
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field4Max
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressRange.Field4Min
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.Address
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.OnChanging
+@@TJvTreeView.MoveDown
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender      - Description for this parameter
-  Index       - Description for this parameter
-  Value       - Description for this parameter
-  AllowChange - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.Value1
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.Value2
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.Value3
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPAddressValues.Value4
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIpAddrFieldChangeEvent
-<TITLE TJvIpAddrFieldChangeEvent type>
-<COMBINE TJvIPAddress.OnFieldChange>
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPEditControlHelper
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPEditControlHelper.Focused
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  AAbsoluteIndex - Description for this parameter
+  Focus          - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -368,514 +91,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvIPEditControlHelper.Handle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvIPEditControlHelper.SetFocus
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl
-<TITLEIMG TJvPageControl>
-JVCLInfo
-  GROUP=JVCL.CommCtrl,JVCL.PagesAndTabs
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.ClientBorderWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.HandleGlobalTab
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.HideAllTabs
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx> .
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.HintSource
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.ReduceMemoryUse
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.RightClickSelect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.TabPainter
-Summary
-  Supports custom drawing.
-Description
-  Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of
-  the control. Use the properties of the specific painter to adjust the appearance of the tabs. To
-  enable custom drawing, you must also set the OwnerDraw property to true.
-See Also
-  TJvPageControl.OwnerDraw
-
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.UpdateTabImages
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl
-<TITLEIMG TJvTabControl>
-JVCLInfo
-  GROUP=JVCL.CommCtrl,JVCL.PagesAndTabs
-  FLAG=Component
-Summary
-  Adds events that can be used for hot tracking as well as support for custom painters.
-Description
-  TJvTabControl is a tab control that supports extended features.
-
-  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavior, when the user moves
-  the mouse pointer over the control.
-
-  Use property HintColor to change the color of the hint boxes for the tab control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the tab control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the scroll bar changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.RightClickSelect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.TabPainter
-Summary
-  Supports custom drawing.
-Description
-  Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of
-  the control. Use the properties of the specific painter to adjust the appearance of the tabs. To
-  enable custom drawing, you must also set the OwnerDraw property to true.
-See Also
-  TJvTabControl.OwnerDraw
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabControlPainter
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter
-<TITLEIMG TJvTabDefaultPainter>
-JVCLInfo
-  GROUP=JVCL.PagesAndTabs
-  FLAG=Component
-Summary
-  Parametrized drawing of a TJvPageControl or a TJvTabControl
-Description
-  1. Drop a TJvTabDefaultPainter on a form or frame where a TJvPageControl or a TJvTabControl is
-  2. Set OwnerDraw of the TJvPageControl or a TJvTabControl to true
-  3. Assign your TJvTabDefaultPainter to the TabPainter property of your TJvPageControl or a
-     TJvTabControl
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.ActiveColorFrom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.ActiveColorTo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.ActiveFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.ActiveGradientDirection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.DisabledColorFrom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.DisabledColorTo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.DisabledFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.DisabledGradientDirection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.Divider
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.GlyphLayout
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.InactiveColorFrom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.InactiveColorTo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.InactiveFont
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.InactiveGradientDirection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTabDefaultPainter.ShowFocus
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar
-<TITLEIMG TJvTrackBar>
-JVCLInfo
-  GROUP=JVCL.CommCtrl,JVCL.Bars.SlideAndProgress.Sliders
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the <xxx> .
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.OnChanged
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.OnToolTip
+@@TJvTreeView.MoveUp
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender      - Description for this parameter
-  ToolTipText - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.ShowRange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.ToolTips
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackBar.ToolTipSide
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackToolTipEvent
-<TITLE TJvTrackToolTipEvent type>
-<COMBINE TJvTrackBar.OnToolTip>
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackToolTipSide
-<TITLE TJvTrackToolTipSide type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackToolTipSide.tsLeft
-  Description for tsLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackToolTipSide.tsTop
-  Description for tsTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackToolTipSide.tsRight
-  Description for tsRight
-
-----------------------------------------------------------------------------------------------------
-@@TJvTrackToolTipSide.tsBottom
-  Description for tsBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.Bold
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.Brush
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.Checked
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.CreateEnh
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AOwner - Description for this parameter
+  AAbsoluteIndex - Description for this parameter
+  Focus          - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -883,7 +106,39 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.Font
+@@TJvTreeView.MenuDblClick
+Summary
+  Specifies if the menu item is activated by single or double clicks.
+Description
+  Use MenuDblClick to specify whether the OnClick event of the menu item associated with a node is
+  called when single-clicking or when double-clicking the node.
+  
+  If MenuDblClick is false, the menu item's OnClick event is called when the item is selected, either
+  with the mouse or the keyboard. If MenuDblClick is true, the user must double-click the item with
+  the mouse or select it and press either SPACE or ENTER.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.Menu
+Summary
+  Specifies a menu that is used as the items of the tree view.
+Description
+  Assign a TMenu (or a descendant, like TMainMenu or TPopupMenu) to the Menu property of the control
+  to make the tree view use the menu's items for its structure.
+  
+  When a menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
+  item itself (see MenuDblClick for details).
+  
+  Only menu items with valid captions (all captions except '-' and '') are added to the tree view.
+  Note
+  TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the menu's structure. The original OnChange
+  vent is called automatically (if assigned). If you need to replace the menu's OnChange event at
+  run-time, you should first set Menu to nil, replace the OnChange event and reset the Menu property
+  to its previous value.
+  
+  Failing to do so can cause errors and even Access Violation exceptions in your program.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.ItemIndex
 Summary
   Write here a summary (1 line)
 Description
@@ -893,7 +148,15 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.OnCheckedChange
+@@TJvTreeView.LineColor
+Summary
+  Specifies the color to use for the node connection line.
+Description
+  Use LineColor to specify the color used for the line connecting nodes in the tree. ShowLines must
+  be true for this property to have any effect.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.MaxScrollTime
 Summary
   Write here a summary (1 line)
 Description
@@ -903,7 +166,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeNode.PopupMenu
+@@TJvTreeView.ItemHeight
+Summary
+  Specifies the height of the node items.
+Description
+  Use ItemHeight to specify the height of the node in the tree view.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.IsNodeSelected
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Node - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView.InvalidateSelectedItems
 Summary
   Write here a summary (1 line)
 Description
@@ -913,38 +197,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView
-<TITLEIMG TJvTreeView>
-JVCLInfo
-  GROUP=JVCL.CommCtrl,JVCL.ListsAndTrees.Trees
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.AutoDragScroll
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.Checkboxes
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.Checked
+@@TJvTreeView.InvalidateNodeIcon
 Summary
   Write here a summary (1 line)
 Description
@@ -1031,7 +284,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.InvalidateNodeIcon
+@@TJvTreeView.Checked
 Summary
   Write here a summary (1 line)
 Description
@@ -1043,7 +296,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.InvalidateSelectedItems
+@@TJvTreeView.Checkboxes
 Summary
   Write here a summary (1 line)
 Description
@@ -1053,13 +306,64 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.IsNodeSelected
+@@TJvTreeView.AutoDragScroll
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeView
+<TITLEIMG TJvTreeView>
+JVCLInfo
+  GROUP=JVCL.CommCtrl,JVCL.ListsAndTrees.Trees
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeNode.PopupMenu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeNode.Font
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeNode.OnCheckedChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTreeNode.CreateEnh
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Node - Description for this parameter
+  AOwner - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -1067,14 +371,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.ItemHeight
-Summary
-  Specifies the height of the node items.
-Description
-  Use ItemHeight to specify the height of the node in the tree view.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.ItemIndex
+@@TJvTreeNode.Checked
 Summary
   Write here a summary (1 line)
 Description
@@ -1084,15 +381,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.LineColor
-Summary
-  Specifies the color to use for the node connection line.
-Description
-  Use LineColor to specify the color used for the line connecting nodes in the tree. ShowLines must be
-  true for this property to have any effect.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.MaxScrollTime
+@@TJvTreeNode.Brush
 Summary
   Write here a summary (1 line)
 Description
@@ -1102,46 +391,491 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.Menu
-Summary
-  Specifies a menu that is used as the items of the tree view.
-Description
-  Assign a TMenu (or a descendant, like TMainMenu or TPopupMenu) to the Menu property of the control to
-  make the tree view use the menu's items for its structure.
-
-  When a menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
-  item itself (see MenuDblClick for details).
-
-  Only menu items with valid captions (all captions except '-' and '') are added to the tree view.
-Note
-  TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the
-  menu's structure. The original OnChange vent is called automatically (if assigned). If you need to
-  replace the menu's OnChange event at run-time, you should first set Menu to nil, replace the OnChange
-  event and reset the Menu property to its previous value.
-
-  Failing to do so can cause errors and even Access Violation exceptions in your program.
+@@TJvTrackToolTipSide.tsBottom
+Description for tsBottom
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.MenuDblClick
+@@TJvTreeNode
 Summary
-  Specifies if the menu item is activated by single or double clicks.
+  Write here a summary (1 line)
 Description
-  Use MenuDblClick to specify whether the OnClick event of the menu item associated with a node is
-  called when single-clicking or when double-clicking the node.
-
-  If MenuDblClick is false, the menu item's OnClick event is called when the item is selected, either
-  with the mouse or the keyboard. If MenuDblClick is true, the user must double-click the item with the
-  mouse or select it and press either SPACE or ENTER.
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.MoveDown
+@@TJvTreeNode.Bold
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackToolTipSide.tsLeft
+Description for tsLeft
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackToolTipSide.tsTop
+Description for tsTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackToolTipSide.tsRight
+Description for tsRight
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackToolTipEvent
+<TITLE TJvTrackToolTipEvent type> <COMBINE TJvTrackBar.OnToolTip>
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackToolTipSide
+<TITLE TJvTrackToolTipSide type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.ToolTipSide
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.ToolTips
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.ShowRange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.OnToolTip
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AAbsoluteIndex - Description for this parameter
-  Focus          - Description for this parameter
+  Sender      - Description for this parameter
+  ToolTipText - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.OnChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx> .
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTrackBar
+<TITLEIMG TJvTrackBar>
+JVCLInfo
+  GROUP=JVCL.CommCtrl,JVCL.Bars.SlideAndProgress.Sliders
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ShowFocus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveGradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.Divider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.GlyphLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledGradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveGradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabControlPainter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter
+<TITLEIMG TJvTabDefaultPainter>
+JVCLInfo
+  GROUP=JVCL.PagesAndTabs
+  FLAG=Component
+Summary
+  Parametrized drawing of a TJvPageControl or a TJvTabControl
+Description
+  1. Drop a TJvTabDefaultPainter on a form or frame where a TJvPageControl or a TJvTabControl is 2.
+  Set OwnerDraw of the TJvPageControl or a TJvTabControl to true 3. Assign your TJvTabDefaultPainter
+  to the TabPainter property of your TJvPageControl or a
+   TJvTabControl
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.TabPainter
+Summary
+  Supports custom drawing.
+Description
+  Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of
+  the control. Use the properties of the specific painter to adjust the appearance of the tabs. To
+  enable custom drawing, you must also set the OwnerDraw property to true.
+See Also
+  TJvTabControl.OwnerDraw
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.RightClickSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the scroll bar changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the tab control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.UpdateTabImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl
+<TITLEIMG TJvTabControl>
+JVCLInfo
+  GROUP=JVCL.CommCtrl,JVCL.PagesAndTabs
+  FLAG=Component
+Summary
+  Adds events that can be used for hot tracking as well as support for custom painters.
+Description
+  TJvTabControl is a tab control that supports extended features.
+  
+  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavior, when the user
+  moves the mouse pointer over the control.
+  
+  Use property HintColor to change the color of the hint boxes for the tab control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.TabPainter
+Summary
+  Supports custom drawing.
+Description
+  Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of
+  the control. Use the properties of the specific painter to adjust the appearance of the tabs. To
+  enable custom drawing, you must also set the OwnerDraw property to true.
+See Also
+  TJvPageControl.OwnerDraw
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.RightClickSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.ReduceMemoryUse
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.HintSource
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the <xxx> .
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.HideAllTabs
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.ClientBorderWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl.HandleGlobalTab
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPageControl
+<TITLEIMG TJvPageControl>
+JVCLInfo
+  GROUP=JVCL.CommCtrl,JVCL.PagesAndTabs
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper.SetFocus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper.Handle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper.Focused
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -1149,83 +883,348 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.MoveUp
+@@TJvIPEditControlHelper
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AAbsoluteIndex - Description for this parameter
-  Focus          - Description for this parameter
-Return value
-  Describe here what the function returns
+
+----------------------------------------------------------------------------------------------------
+@@TJvIpAddrFieldChangeEvent
+<TITLE TJvIpAddrFieldChangeEvent type> <COMBINE TJvIPAddress.OnFieldChange>
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressValues.Value4
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnComparePage
-Summary
-  Occurs when the tree view needs to determine which page to activate in a page control.
-Description
-  Assign a handler to this event to control which page is selected in a page control when a specific
-  node is clicked. This event is only triggered if PageControl is assigned.
-
-  If no handler is assigned, TJvTreeView selects the first tab in the page control where the Caption
-  matches the Text of the selected node.
-Parameters
-  Sender  - The tree view that triggered the event.
-  Page    - The current page being compared.
-  Node    - The current node being compared.
-  Matches - Set this to true if Page is a match to Node.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnCustomDrawItem
-Summary
-  Occurs when the tree view needs to be drawn.
-Description
-  Assign a handler to this event to perform your own custom drawing of the tree view.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnEditCancelled
-Summary
-  Occurs when the user is canceling the editing of a node text.
-Description
-  Write a handler for this event to take specific actions when the user cancels the editing of a node's
-  text.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnHorizontalScroll
-Summary
-  Occurs when the horizontal scrollbar is moved.
-Description
-  Write a handler for this event to take specific action when the horizontal scrollbar is changed.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnNodeCheckedChange
+@@TJvIPAddressValues.Value3
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Sender - Description for this parameter
-  Node   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTreeView.OnPageChanged
+@@TJvIPAddressValues.Value2
 Summary
-  Occurs when the active tab of an associated page control is changed.
+  Write here a summary (1 line)
 Description
-  Write a handler for this event to take specific action when clicking a node in the tree changes the
-  active tab of an associated page control. This event only occurs when a page control is assigned to
-  the PageControl property and a matching tab is found.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressValues.Value1
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressValues.OnChanging
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Parameters
-  Sender - The control that triggered the event.
-  Item   - The selected node
-  Page   - The new active page in the page control.
+  Sender      - Description for this parameter
+  Index       - Description for this parameter
+  Value       - Description for this parameter
+  AllowChange - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressValues.Address
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressValues.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressValues
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field4Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field4Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field3Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field3Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field2Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field2Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field1Min
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange.Field1Max
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressRange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressMinMax.Min
+Description for Min
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressMinMax.Max
+Description for Max
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressMinMax
+<TITLE TJvIPAddressMinMax type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressDataConnector.EditControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressChanging
+<TITLE TJvIPAddressChanging type> <COMBINE TJvIPAddressValues.OnChanging>
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddressDataConnector
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.TabThroughFields
+Summary
+  Allow the TAB key to browse though the IP fields
+Description
+  Set TabThroughFields to True if you want to allow the user to browse through the IP fields with the
+  TAB key.
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.Range
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.OnFieldChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender     - Description for this parameter
+  FieldIndex - Description for this parameter
+  FieldRange - Description for this parameter
+  Value      - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.IsBlank
+Summary
+  Returns true if the control is empty.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.DataConnector
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.ClearAddress
+Summary
+  Empties the control.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.AddressValues
+Summary
+  Provides access to individual address values.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress.Address
+Summary
+  Indicates the IP address as an integer value
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvIPAddress
+<TITLEIMG TJvIPAddress>
+JVCLInfo
+  GROUP=JVCL.EditsMemosAndCombos.Edits
+  FLAG=Component
+Summary
+  An edit control that can display and edit IP values.
+Description
+  Use a TJvIPAddress when you need to display IP values to your users. TJvIPAddress has separate
+  fields for each part of the IP address as well as several properties, methods and events to limit
+  the input in each field.
+
+----------------------------------------------------------------------------------------------------
+@@TJvHintSource.hsPreferChildren
+Display the child hint. If no child hint is available, display the main hint (if available).
+
+----------------------------------------------------------------------------------------------------
+@@TJvHintSource.hsPreferMain
+Display the main hint. If no main hint is available, display a child hint (if available).
+
+----------------------------------------------------------------------------------------------------
+@@TJvHintSource.hsForceChildren
+Always display a child hint. If no child hint is available, display nothing.
+
+----------------------------------------------------------------------------------------------------
+@@TJvHintSource.hsForceMain
+Always display the main hint. If no main hint is available, display nothing.
+
+----------------------------------------------------------------------------------------------------
+@@TJvHintSource.hsDefault
+Display the default hint.
+
+----------------------------------------------------------------------------------------------------
+@@TJvHintSource
+<TITLE TJvHintSource type>
+Summary
+  Defines the available hint sources for controls that can have multiple hints depending on the
+  location of the mouse.
+Description
+  TJvHintSource is used in TJvPageControl to determine the hint to display when the user moves the
+  mouse over the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnSelectionChange
@@ -1246,12 +1245,12 @@ Description
 Summary
   Specifies a page control to associate with the control.
 Description
-  Assign a TPageControl (or descendant) to this property to make the tree view automatically change the
-  active tab when a node is clicked in the tree view.
-
+  Assign a TPageControl (or descendant) to this property to make the tree view automatically change
+  the active tab when a node is clicked in the tree view.
+  
   By default, the tree view searches the tabs of the page control for a caption matching the text of
   the node. If no tab is found, the active tab is not changed.
-
+  
   To control what tab gets activated, write a handler for the OnComparePage event.
 
 ----------------------------------------------------------------------------------------------------
@@ -1360,16 +1359,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewComparePageEvent
-<TITLE TJvTreeViewComparePageEvent type>
-<COMBINE TJvTreeView.OnComparePage>
+<TITLE TJvTreeViewComparePageEvent type> <COMBINE TJvTreeView.OnComparePage>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeViewNodeCheckedChange
-<TITLE TJvTreeViewNodeCheckedChange type>
-<COMBINE TJvTreeView.OnNodeCheckedChange>
+<TITLE TJvTreeViewNodeCheckedChange type> <COMBINE TJvTreeView.OnNodeCheckedChange>
 
 ----------------------------------------------------------------------------------------------------
 @@TPageChangedEvent
-<TITLE TPageChangedEvent type>
-<COMBINE TJvTreeView.OnPageChanged>
+<TITLE TPageChangedEvent type> <COMBINE TJvTreeView.OnPageChanged>
 

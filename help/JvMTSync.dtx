@@ -3,20 +3,35 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMTSync.pas
 Summary
-  Contains the TJvMTSync component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMTSync component.
 Author
   Erwin Molendijk
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TMTCriticalSection
+@@TMTSynchroObject.Wait
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTCriticalSection.Release
+@@TMTSynchroObject.Signal
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTSynchroObject.Release
 Summary
   Write here a summary (1 line)
 Description
@@ -27,29 +42,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTCriticalSection.WaitFor
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Timeout - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTMutex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TMTMutex.Enter
+@@TMTSynchroObject.Name
 Summary
   Write here a summary (1 line)
 Description
@@ -59,7 +52,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTMutex.Leave
+@@TMTSynchroObject.LastError
 Summary
   Write here a summary (1 line)
 Description
@@ -69,32 +62,24 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSemaphore
+@@TMTSynchroObject.Handle
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TMTSemaphore.Release
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSimpleEvent
+@@TMTSynchroObject
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSimpleEvent.Release
+@@TMTSynchroObject.Acquire
 Summary
   Write here a summary (1 line)
 Description
@@ -125,14 +110,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject
+@@TMTSimpleEvent
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.Acquire
+@@TMTSimpleEvent.Release
 Summary
   Write here a summary (1 line)
 Description
@@ -143,37 +128,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.Handle
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.LastError
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.Name
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.Release
+@@TMTSemaphore.Release
 Summary
   Write here a summary (1 line)
 Description
@@ -184,7 +139,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.Signal
+@@TMTSemaphore
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TMTMutex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TMTMutex.Enter
 Summary
   Write here a summary (1 line)
 Description
@@ -194,11 +163,44 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTSynchroObject.Wait
+@@TMTMutex.Leave
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTCriticalSection.WaitFor
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Timeout - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTCriticalSection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TMTCriticalSection.Release
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

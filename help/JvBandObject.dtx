@@ -3,20 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvBandObject.pas
 Summary
-  Contains the TJvBandObject component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvBandObject component.
 Author
   Chiang Seng Chang
-
-----------------------------------------------------------------------------------------------------
-@@TzCatBandObjectFactory
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TzCatBandObjectFactory.UpdateRegistry
+@@TzExplorerBarObjectFactory.UpdateRegistry
 Summary
   Write here a summary (1 line)
 Description
@@ -29,28 +24,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCommBandObject
+@@TzExplorerBarObjectFactory
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzCommBandObjectFactory
+@@TzDeskBandObject
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzContextMenuBandObject
+@@TzDeskBandObjectFactory
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzContextMenuBandObject.FMenuItemLink
+@@TzCustomBandObjectFactory.ClassIDString
 Summary
   Write here a summary (1 line)
 Description
@@ -60,17 +55,31 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzContextMenuBandObject.GetCommandString
+@@TzCustomBandObjectFactory
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.ViewMode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.UIActivateIO
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  idCmd      - Description for this parameter
-  uType      - Description for this parameter
-  pwReserved - Description for this parameter
-  pszName    - Description for this parameter
-  cchMax     - Description for this parameter
+  Activate - Description for this parameter
+  Msg      - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -78,13 +87,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzContextMenuBandObject.InvokeCommand
+@@TzCustomBandObject.TranslateAcceleratorIO
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Ici - Description for this parameter
+  Msg - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -92,43 +101,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzContextMenuBandObject.QueryContextMenu
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AMenu      - Description for this parameter
-  IndexMenu  - Description for this parameter
-  idCmdFirst - Description for this parameter
-  idCmdLast  - Description for this parameter
-  uFlags     - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.AfterConstruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.BandID
+@@TzCustomBandObject.Site
 Summary
   Write here a summary (1 line)
 Description
@@ -138,7 +111,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.BandInfoChanged
+@@TzCustomBandObject.ShowMeOnly
 Summary
   Write here a summary (1 line)
 Description
@@ -150,24 +123,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.BeforeDestruction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.CloseDW
+@@TzCustomBandObject.ShowDW
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  dwReserved - Description for this parameter
+  AShow - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -175,13 +137,11 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.ContextSensitiveHelp
+@@TzCustomBandObject.ShowAllBands
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  EnterMode - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -189,43 +149,12 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.GetBandInfo
+@@TzCustomBandObject.SetSite
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  BandID   - Description for this parameter
-  ViewMode - Description for this parameter
-  Dbi      - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.GetClassID
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ClassID - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.GetSite
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Riid - Description for this parameter
   Site - Description for this parameter
 Return value
   Describe here what the function returns
@@ -234,105 +163,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.GetSizeMax
+@@TzCustomBandObject.Save
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Size - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.GetWindow
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Wnd - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.HasFocusIO
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.HideAllBands
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.IsDirty
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.Load
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Strm - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.Maximize
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.MsgHookProc
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  nCode  - Description for this parameter
-  wParam - Description for this parameter
-  lParam - Description for this parameter
+  Strm       - Description for this parameter
+  ClearDirty - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -366,14 +204,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.Save
+@@TzCustomBandObject.MsgHookProc
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Strm       - Description for this parameter
-  ClearDirty - Description for this parameter
+  nCode  - Description for this parameter wParam - Description for this parameter lParam -
+  Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -381,12 +219,103 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.SetSite
+@@TzCustomBandObject.Maximize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.Load
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
+  Strm - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.IsDirty
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.HideAllBands
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.HasFocusIO
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.GetWindow
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Wnd - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.GetSizeMax
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Size - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.GetSite
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Riid - Description for this parameter
   Site - Description for this parameter
 Return value
   Describe here what the function returns
@@ -395,25 +324,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.ShowAllBands
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.ShowDW
+@@TzCustomBandObject.GetClassID
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AShow - Description for this parameter
+  ClassID - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -421,35 +338,15 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.ShowMeOnly
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.Site
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.TranslateAcceleratorIO
+@@TzCustomBandObject.GetBandInfo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Msg - Description for this parameter
+  BandID   - Description for this parameter
+  ViewMode - Description for this parameter
+  Dbi      - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -457,14 +354,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.UIActivateIO
+@@TzCustomBandObject.ContextSensitiveHelp
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Activate - Description for this parameter
-  Msg      - Description for this parameter
+  EnterMode - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -472,7 +368,32 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObject.ViewMode
+@@TzCustomBandObject.CloseDW
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  dwReserved - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.BeforeDestruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.BandID
 Summary
   Write here a summary (1 line)
 Description
@@ -482,14 +403,90 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObjectFactory
+@@TzCustomBandObject.BandInfoChanged
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject.AfterConstruction
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzCustomBandObject
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzCustomBandObjectFactory.ClassIDString
+@@TzContextMenuBandObject.QueryContextMenu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AMenu      - Description for this parameter
+  IndexMenu  - Description for this parameter idCmdFirst - Description for this parameter
+  idCmdLast  - Description for this parameter uFlags     - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzContextMenuBandObject.InvokeCommand
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ici - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzContextMenuBandObject.GetCommandString
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  idCmd      - Description for this parameter uType      - Description for this parameter pwReserved
+  - Description for this parameter pszName    - Description for this parameter cchMax     -
+  Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TzContextMenuBandObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TzContextMenuBandObject.FMenuItemLink
 Summary
   Write here a summary (1 line)
 Description
@@ -499,28 +496,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TzDeskBandObject
+@@TzCommBandObjectFactory
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzDeskBandObjectFactory
+@@TzCommBandObject
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzExplorerBarObjectFactory
+@@TzCatBandObjectFactory
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TzExplorerBarObjectFactory.UpdateRegistry
+@@TzCatBandObjectFactory.UpdateRegistry
 Summary
   Write here a summary (1 line)
 Description

@@ -3,159 +3,71 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPropertyStorage.pas
 Summary
-  Contains the TJvPropertyStorage component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPropertyStorage component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@CreateStoredItem
-<TITLE CreateStoredItem function>
+@@TJvPropInfoList.Items
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  CompName - Description for this parameter
-  PropName - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ParseStoredItem
-<TITLE ParseStoredItem function>
+@@TJvPropInfoList.Intersect
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Item     - Description for this parameter
-  CompName - Description for this parameter
-  PropName - Description for this parameter
+  List - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.AObject
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.AppStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.AppStoragePath
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.LoadAnyProperty
+@@TJvPropInfoList.Find
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  PropInfo - Description for this parameter
+  AName - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.LoadObjectsProps
+@@TJvPropInfoList.Delete
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AComponent - Description for this parameter
-  StoredList - Description for this parameter
+  Index - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.LoadProperties
+@@TJvPropInfoList.Count
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  PropList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.Prefix
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.StoreAnyProperty
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  PropInfo - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.StoreObjectsProps
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AComponent - Description for this parameter
-  StoredList - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvPropertyStorage.StoreProperties
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  PropList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -182,7 +94,44 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropInfoList.Count
+@@TJvPropertyStorage.StoreProperties
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  PropList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.StoreObjectsProps
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AComponent - Description for this parameter
+  StoredList - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.StoreAnyProperty
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  PropInfo - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.Prefix
 Summary
   Write here a summary (1 line)
 Description
@@ -192,51 +141,104 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropInfoList.Delete
+@@TJvPropertyStorage.LoadProperties
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  PropList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropInfoList.Find
+@@TJvPropertyStorage.LoadObjectsProps
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AName - Description for this parameter
-Return value
-  Describe here what the function returns
+  AComponent - Description for this parameter
+  StoredList - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropInfoList.Intersect
+@@TJvPropertyStorage.LoadAnyProperty
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  List - Description for this parameter
+  PropInfo - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPropInfoList.Items
+@@TJvPropertyStorage.AppStoragePath
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.AppStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage.AObject
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvPropertyStorage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@ParseStoredItem
+<TITLE ParseStoredItem function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
+  Item     - Description for this parameter
+  CompName - Description for this parameter
+  PropName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@CreateStoredItem
+<TITLE CreateStoredItem function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  CompName - Description for this parameter
+  PropName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

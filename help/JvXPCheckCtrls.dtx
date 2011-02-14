@@ -3,42 +3,12 @@
 ----------------------------------------------------------------------------------------------------
 @@JvXPCheckCtrls.pas
 Summary
-  Contains the TJvXPCheckbox component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvXPCheckbox component.
 Author
   Marc Hoffman
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCheckbox
-<TITLEIMG TJvXPCheckbox>
-JVCLInfo
-  GROUP=JVCL.XPControls,JVCL.Buttons.Check
-  FLAG=Component
-Summary
-  Checkbox that draws itself in an XP style.
 Description
-  Use TJvXPCheckbox when you need to place a checkbox on your form that looks like checkboxes in
-  Windows XP. TJvXPCheckbox inherits from TJvXPCustomCheckControl and publishes most of its properties
-  and events but only overrides the DrawCheckSymbol to draw the different checkbox states.
+  <INCLUDE JVCL.UnitText.dtx>
 
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomCheckControl
-Summary
-  Base class for check style controls that draws themselves in an XP style.
-Description
-  Use TJvXPCustomCheckControl as a base class to implement a check style control (like a checkbox or
-  radio button). Most implementations need only override the DrawCheckSymbol method since this class
-  implements the logic needed to manage the Checked property.
-
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomCheckControl.AllowGrayed
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.BoundLines
@@ -56,12 +26,44 @@ Description
   toggled when the control is clicked
 
 ----------------------------------------------------------------------------------------------------
+@@TJvXPCustomCheckControl.AllowGrayed
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPCustomCheckControl
+Summary
+  Base class for check style controls that draws themselves in an XP style.
+Description
+  Use TJvXPCustomCheckControl as a base class to implement a check style control (like a checkbox or
+  radio button). Most implementations need only override the DrawCheckSymbol method since this class
+  implements the logic needed to manage the Checked property.
+
+----------------------------------------------------------------------------------------------------
+@@TJvXPCheckbox
+<TITLEIMG TJvXPCheckbox>
+JVCLInfo
+  GROUP=JVCL.XPControls,JVCL.Buttons.Check
+  FLAG=Component
+Summary
+  Checkbox that draws itself in an XP style.
+Description
+  Use TJvXPCheckbox when you need to place a checkbox on your form that looks like checkboxes in
+  Windows XP. TJvXPCheckbox inherits from TJvXPCustomCheckControl and publishes most of its
+  properties and events but only overrides the DrawCheckSymbol to draw the different checkbox states.
+
+----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.Spacing
 Summary
   Sets the distance between the checkbox and the text in the control.
 Description
-  Use Spacing to set the distance in pixels between the right edge of the checkbox symbol and the start
-  of the text.
+  Use Spacing to set the distance in pixels between the right edge of the checkbox symbol and the
+  start of the text.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomCheckControl.State

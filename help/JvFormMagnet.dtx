@@ -3,10 +3,37 @@
 ----------------------------------------------------------------------------------------------------
 @@JvFormMagnet.pas
 Summary
-  Contains the TJvFormMagnet component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvFormMagnet component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormMagnet.FormGlue
+Summary
+  If set, any other form will be attracted and then glued to the one with the magnet
+Description
+  If set any other form visible in the application will get attracted and then glued to the form with
+  the magnet, provided it is moved close enough to its borders. Once glued, a form will move with the
+  form where the magnet is located. To break the link, the form that does not have the magnet must be
+  moved at a distance outside the magnetism area.
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormMagnet.Area
+Summary
+  Defines the area within which the border of the window must be from the object of interest for the
+  magnet to work
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFormMagnet.Active
+Summary
+  If set, the magnet is working and will impact the form movements.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormMagnet
@@ -19,31 +46,6 @@ Summary
 Description
   When active, this component will monitor any movement of the form it is placed on and will align it
   with the screen and/or the main form if its borders are within a distance of the attracting object.
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormMagnet.Active
-Summary
-  If set, the magnet is working and will impact the form movements.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormMagnet.Area
-Summary
-  Defines the area within which the border of the window must be from the object of interest for the
-  magnet to work
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFormMagnet.FormGlue
-Summary
-  If set, any other form will be attracted and then glued to the one with the magnet
-Description
-  If set any other form visible in the application will get attracted and then glued to the form with
-  the magnet, provided it is moved close enough to its borders. Once glued, a form will move with the
-  form where the magnet is located. To break the link, the form that does not have the magnet must be
-  moved at a distance outside the magnetism area.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormMagnet.MainFormMagnet

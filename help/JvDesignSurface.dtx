@@ -3,121 +3,130 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDesignSurface.pas
 Summary
-  Contains the TJvDesignSurface component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDesignSurface component.
 Author
   Scott J Miles
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomController
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomController.DragRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomController.Shift
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomController.Surface
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomControllerClass
-<TITLE TJvDesignCustomControllerClass type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger.Container
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger.DesignChildren
+@@TJvDesignSurface.Select
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AContainer - Description for this parameter
-  ADesigning - Description for this parameter
+  AControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger.DesignComponent
+@@TJvDesignSurface.SaveToStream
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AComponent - Description for this parameter
-  ADesigning - Description for this parameter
+  AStream - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger.IsDesignMessage
+@@TJvDesignSurface.SaveToFile
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  ASender  - Description for this parameter
-  AMessage - Description for this parameter
+  AFileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.PasteComponents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.OnSelectionChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.OnGetAddClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.NudgeComponents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ANudgeLeft - Description for this parameter
+  ANudgeTop  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.MessengerClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Messenger
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.LoadFromStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AStream - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -125,7 +134,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessenger.OnDesignMessage
+@@TJvDesignSurface.LoadFromFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFileName - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.IsDesignMessage
 Summary
   Write here a summary (1 line)
 Description
@@ -134,68 +157,6 @@ Parameters
   ASender - Description for this parameter
   AMsg    - Description for this parameter
   APt     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomMessengerClass
-<TITLE TJvDesignCustomMessengerClass type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.AddToSelection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AValue - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.ClearSelection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.Count
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.GetClientControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -203,7 +164,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.GetCursor
+@@TJvDesignSurface.GrowComponents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AGrowWidth  - Description for this parameter
+  AGrowHeight - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.GetHitHandle
 Summary
   Write here a summary (1 line)
 Description
@@ -218,7 +192,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.GetHitHandle
+@@TJvDesignSurface.GetCursor
 Summary
   Write here a summary (1 line)
 Description
@@ -233,13 +207,24 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.IsSelected
+@@TJvDesignSurface.GetAddClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.FindControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AValue - Description for this parameter
+  AX - Description for this parameter
+  AY - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -247,19 +232,440 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.RemoveFromSelection
+@@TJvDesignSurface.DeleteComponents
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AValue - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.Selection
+@@TJvDesignSurface.CutComponents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.CopyComponents
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.ControllerClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Controller
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.ContainerToSelectedContainer
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  APt - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Container
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.ClearSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Change
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.AddComponent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.AddClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface
+<TITLEIMG TJvDesignSurface>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignSurface.Active
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignScrollBox
+<TITLEIMG TJvDesignScrollBox>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.Surface
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.SetDrawRules
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.SaveToStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AStream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.SaveToFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.Paint
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.OnSelectionChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.OnPaint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.OnGetAddClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.LoadFromStream
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AStream - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.LoadFromFile
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AFileName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.DrawRules
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel.Active
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignPanel
+<TITLEIMG TJvDesignPanel>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignObjectArray
+<TITLE TJvDesignObjectArray type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignMessageHook.Client
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhRightBottom
+Description for dhRightBottom
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignMessage
+<TITLE TJvDesignMessage type> <COMBINE TJvDesignCustomMessenger.OnDesignMessage>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignMessageHook
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhRightMiddle
+Description for dhRightMiddle
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhLeftBottom
+Description for dhLeftBottom
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhMiddleBottom
+Description for dhMiddleBottom
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhRightTop
+Description for dhRightTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhLeftMiddle
+Description for dhLeftMiddle
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhNone
+Description for dhNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhLeftTop
+Description for dhLeftTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId.dhMiddleTop
+Description for dhMiddleTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignHandleId
+<TITLE TJvDesignHandleId type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignGetAddClassEvent
+<TITLE TJvDesignGetAddClassEvent type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender  - Description for this parameter ioClass - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomSelectorClass
+<TITLE TJvDesignCustomSelectorClass type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomSelector.Update
 Summary
   Write here a summary (1 line)
 Description
@@ -291,7 +697,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelector.Update
+@@TJvDesignCustomSelector.Selection
 Summary
   Write here a summary (1 line)
 Description
@@ -301,340 +707,25 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignCustomSelectorClass
-<TITLE TJvDesignCustomSelectorClass type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignGetAddClassEvent
-<TITLE TJvDesignGetAddClassEvent type>
+@@TJvDesignCustomSelector.RemoveFromSelection
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Sender  - Description for this parameter
-  ioClass - Description for this parameter
+  AValue - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId
-<TITLE TJvDesignHandleId type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhNone
-  Description for dhNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhLeftTop
-  Description for dhLeftTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhMiddleTop
-  Description for dhMiddleTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhRightTop
-  Description for dhRightTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhLeftMiddle
-  Description for dhLeftMiddle
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhRightMiddle
-  Description for dhRightMiddle
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhLeftBottom
-  Description for dhLeftBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhMiddleBottom
-  Description for dhMiddleBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignHandleId.dhRightBottom
-  Description for dhRightBottom
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignMessage
-<TITLE TJvDesignMessage type>
-<COMBINE TJvDesignCustomMessenger.OnDesignMessage>
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignMessageHook
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignMessageHook.Client
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignObjectArray
-<TITLE TJvDesignObjectArray type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel
-<TITLEIMG TJvDesignPanel>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.Active
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.DrawRules
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.LoadFromFile
+@@TJvDesignCustomSelector.IsSelected
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AFileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.OnGetAddClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.OnPaint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.OnSelectionChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.Paint
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.SaveToFile
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AFileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.SetDrawRules
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignPanel.Surface
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignScrollBox
-<TITLEIMG TJvDesignScrollBox>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface
-<TITLEIMG TJvDesignSurface>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Active
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.AddClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.AddComponent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Change
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  AValue - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -642,101 +733,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.ClearSelection
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Container
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.ContainerToSelectedContainer
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  APt - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Controller
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.ControllerClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.CopyComponents
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Count
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.CutComponents
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.DeleteComponents
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.FindControl
+@@TJvDesignCustomSelector.GetHitHandle
 Summary
   Write here a summary (1 line)
 Description
@@ -751,17 +748,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.GetAddClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.GetCursor
+@@TJvDesignCustomSelector.GetCursor
 Summary
   Write here a summary (1 line)
 Description
@@ -776,14 +763,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.GetHitHandle
+@@TJvDesignCustomSelector.GetClientControl
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AX - Description for this parameter
-  AY - Description for this parameter
+  AControl - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -791,20 +777,57 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.GrowComponents
+@@TJvDesignCustomSelector.ClearSelection
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AGrowWidth  - Description for this parameter
-  AGrowHeight - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.IsDesignMessage
+@@TJvDesignCustomSelector.Count
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomSelector.AddToSelection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AValue - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomSelector
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomMessengerClass
+<TITLE TJvDesignCustomMessengerClass type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomMessenger.OnDesignMessage
 Summary
   Write here a summary (1 line)
 Description
@@ -813,6 +836,19 @@ Parameters
   ASender - Description for this parameter
   AMsg    - Description for this parameter
   APt     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomMessenger.IsDesignMessage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  ASender  - Description for this parameter
+  AMessage - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -820,35 +856,33 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.LoadFromFile
+@@TJvDesignCustomMessenger.DesignComponent
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AFileName - Description for this parameter
-Return value
-  Describe here what the function returns
+  AComponent - Description for this parameter
+  ADesigning - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.LoadFromStream
+@@TJvDesignCustomMessenger.DesignChildren
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AStream - Description for this parameter
-Return value
-  Describe here what the function returns
+  AContainer - Description for this parameter
+  ADesigning - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Messenger
+@@TJvDesignCustomMessenger.Container
 Summary
   Write here a summary (1 line)
 Description
@@ -858,7 +892,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.MessengerClass
+@@TJvDesignCustomMessenger
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDesignCustomMessenger.Clear
 Summary
   Write here a summary (1 line)
 Description
@@ -868,20 +909,8 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.NudgeComponents
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ANudgeLeft - Description for this parameter
-  ANudgeTop  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.OnChange
+@@TJvDesignCustomControllerClass
+<TITLE TJvDesignCustomControllerClass type>
 Summary
   Write here a summary (1 line)
 Description
@@ -891,7 +920,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.OnGetAddClass
+@@TJvDesignCustomController.Surface
 Summary
   Write here a summary (1 line)
 Description
@@ -901,7 +930,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.OnSelectionChange
+@@TJvDesignCustomController.Shift
 Summary
   Write here a summary (1 line)
 Description
@@ -911,47 +940,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.PasteComponents
+@@TJvDesignCustomController
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.SaveToFile
+@@TJvDesignCustomController.DragRect
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  AFileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AStream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDesignSurface.Select
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  AControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

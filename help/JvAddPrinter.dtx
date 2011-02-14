@@ -3,10 +3,21 @@
 ----------------------------------------------------------------------------------------------------
 @@JvAddPrinter.pas
 Summary
-  Contains the TJvAddPrinterDialog component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAddPrinterDialog component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
+
+----------------------------------------------------------------------------------------------------
+@@TJvAddPrinterDialog.Execute
+Summary
+  Displays the dialog.
+Description
+  Calling Execute will display the "Add Printer..." dialog.
+Return value
+  False if the dialog was canceled, otherwise true.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAddPrinterDialog
@@ -19,16 +30,7 @@ Summary
 Description
   TJvAddPrinterDialog is wrapper around the windows "Add Printer..." dialog. To use this dialog you
   should:
-
+  
   * Drop TJvAddPrinterDialog on a form or data module.
   * Call the Execute method at run-time.
-
-----------------------------------------------------------------------------------------------------
-@@TJvAddPrinterDialog.Execute
-Summary
-  Displays the dialog.
-Description
-  Calling Execute will display the "Add Printer..." dialog.
-Return value
-  False if the dialog was canceled, otherwise true.
 

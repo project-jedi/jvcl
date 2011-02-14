@@ -3,30 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvArrayButton.pas
 Summary
-  Contains the TJvArrayButton component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvArrayButton component.
 Author
   Jan Verhoeven
-
-----------------------------------------------------------------------------------------------------
-@@TArrayButtonClicked
-<TITLE TArrayButtonClicked type>
-<COMBINE TJvArrayButton.OnArrayButtonClicked>
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrayButton
-<TITLEIMG TJvArrayButton>
-JVCLInfo
-  GROUP=JVCL.Buttons.Push
-  FLAG=Component
-Summary
-  A grid of buttons
 Description
-  One design time rectangle that you can divide into rows and columns, each cell representing a single
-  button. OnClick event returns row and col of the clicked cell/button.
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Captions
+@@TJvArrayButton.Rows
 Summary
   Write here a summary (1 line)
 Description
@@ -36,51 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Colors
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Cols
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.DoShowHint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  HintStr  - Description for this parameter
-  CanShow  - Description for this parameter
-  HintInfo - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Enableds
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Hints
+@@TJvArrayButton.Themed
 Summary
   Write here a summary (1 line)
 Description
@@ -114,7 +55,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Rows
+@@TJvArrayButton.Hints
 Summary
   Write here a summary (1 line)
 Description
@@ -124,7 +65,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvArrayButton.Themed
+@@TJvArrayButton.DoShowHint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  HintStr  - Description for this parameter
+  CanShow  - Description for this parameter
+  HintInfo - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrayButton.Enableds
 Summary
   Write here a summary (1 line)
 Description
@@ -132,4 +87,50 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrayButton.Captions
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrayButton.Colors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrayButton.Cols
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TArrayButtonClicked
+<TITLE TArrayButtonClicked type> <COMBINE TJvArrayButton.OnArrayButtonClicked>
+
+----------------------------------------------------------------------------------------------------
+@@TJvArrayButton
+<TITLEIMG TJvArrayButton>
+JVCLInfo
+  GROUP=JVCL.Buttons.Push
+  FLAG=Component
+Summary
+  A grid of buttons
+Description
+  One design time rectangle that you can divide into rows and columns, each cell representing a
+  single button. OnClick event returns row and col of the clicked cell/button.
 

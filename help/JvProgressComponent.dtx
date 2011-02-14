@@ -3,58 +3,83 @@
 ----------------------------------------------------------------------------------------------------
 @@JvProgressComponent.pas
 Summary
-  Contains the TJvProgressComponent component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvProgressComponent component.
 Author
   Andrei Prygounkov
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent
-<TITLEIMG TJvProgressComponent>
-JVCLInfo
-  GROUP=JVCL.Bars.SlideAndProgress.Progress,JVCL.Dialogs.Custom
-  FLAG=Component
+@@TJvProgressComponent.ProgressStep
 Summary
-  A component that can display a progress dialog.
+  Specifies the amount that \ProgressPosition increases when the \ProgressStepIt method is called.
 Description
-  Use a TJvProgressComponent when you need to display a progress dialog in your application. Progress
-  dialogs are mostly used to provide feedback to the user when the application is performing a lengthy
-  process and the program needs to be disabled until finished.
-
-  To display the dialog, call the Execute method. While the dialog is visible, you can modify any of
-  its properties.
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.Cancel
-Summary
-  Specifies if the user clicked the Cancel button to close the dialog.
-Description
-  Read Cancel to determine if the dialog was closed because the user clicked the Cancel button. The
-  value of Cancel is always false while the dialog is displayed.
+  Set ProgressStep to specify the granularity of the progress bar. ProgressStep should reflect the
+  size of each step in the process tracked by the progress bar, in the logical units used by the
+  \ProgressMax and \ProgressMin properties.
+  
+  When a progress bar is created, \ProgressMin and \ProgressMax represent percentages, where
+  \ProgressMin is 0 (0% complete) and \ProgressMax is 100 (100% complete). If these values are not
+  changed, ProgressStep is the percentage of the process completed before the user is provided with
+  additional visual feedback.
+  
+  When the ProgressStepIt method is called, the value of \ProgressPosition increases by Step.
 See Also
-  TJvProgressComponent.Execute, TJvProgressComponent.OnShow
+  TJvProgressComponent.ProgressMax, TJvProgressComponent.ProgressMin,
+  TJvProgressComponent.ProgressPosition, TJvProgressComponent.ProgressStepIt
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.Caption
+@@TJvProgressComponent.ProgressPosition
 Summary
-  Specifies the text displayed on the dialogs caption.
+  Specifies the current position of the progress bar.
 Description
-  Use Caption to change the Caption of the dialog form. The value can be changed even when the dialog
-  is displayed.
+  Read ProgressPosition to determine how far the process tracked by the progress bar has advanced
+  from \ProgressMin toward \ProgressMax. Set ProgressPosition to cause the progress bar to display a
+  position between \ProgressMin and ProgressMax. For example, when the process tracked by the
+  progress bar completes, set ProgressPosition to ProgressMax so that it appears completely filled.
+  
+  When a progress bar is created, \ProgressMin and \ProgressMax represent percentages, where
+  \ProgressMin is 0 (0% complete) and \ProgressMax is 100 (100% complete). If these values are not
+  changed, ProgressPosition is the percentage of the process that has already been completed.
 See Also
-  TJvProgressComponent.InfoLabel
+  TJvProgressComponent.ProgressMax, TJvProgressComponent.ProgressMin,
+  TJvProgressComponent.ProgressStep, TJvProgressComponent.ProgressStepIt
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.Execute
+@@TJvProgressComponent.ProgressMin
 Summary
-  Displays the progress dialog.
+  Specifies the lower limit of the range of possible positions for the progress bar.
 Description
-  Call Execute to display the dialog. Before calling Execute, adjust the Caption, InfoLabel,
-  ProgressMax, ProgressMin and ProgressPosition properties to their initial values. While the dialog is
-  displayed, modify the properties of the component to update the values in the dialog.
+  Use \ProgressMax along with the ProgressMin property to establish the range of possible positions
+  for the progress bar. Optimally, when the process tracked by the progress bar is complete, the
+  value of \ProgressPosition should equal ProgressMax.
 See Also
-  TJvProgressComponent.Caption, TJvProgressComponent.InfoLabel, TJvProgressComponent.ProgressMax,
-  TJvProgressComponent.ProgressMin, TJvProgressComponent.ProgressPosition
+  TJvProgressComponent.ProgressMax, TJvProgressComponent.ProgressPosition,
+  TJvProgressComponent.ProgressStep, TJvProgressComponent.ProgressStepIt
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgressComponent.ProgressMax
+Summary
+  Specifies the upper limit of the range of possible positions for the progress bar.
+Description
+  Use ProgressMax along with the \ProgressMin property to establish the range of possible positions
+  for the progress bar. Optimally, when the process tracked by the progress bar is complete, the
+  value of \ProgressPosition should equal ProgressMax.
+See Also
+  TJvProgressComponent.ProgressMin, TJvProgressComponent.ProgressPosition,
+  TJvProgressComponent.ProgressStepIt
+
+----------------------------------------------------------------------------------------------------
+@@TJvProgressComponent.OnShow
+Summary
+  Occurs when the dialog is displayed.
+Description
+  Write a handler for the OnShow event to take specific action when the dialog is displayed. For
+  example, use this event to reset the dialogs properties to their initial values. OnShow is
+  triggered as a result of calling Execute.
+See Also
+  TJvProgressComponent.Execute
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.Hide
@@ -83,75 +108,52 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.OnShow
+@@TJvProgressComponent.Execute
 Summary
-  Occurs when the dialog is displayed.
+  Displays the progress dialog.
 Description
-  Write a handler for the OnShow event to take specific action when the dialog is displayed. For
-  example, use this event to reset the dialogs properties to their initial values. OnShow is triggered
-  as a result of calling Execute.
+  Call Execute to display the dialog. Before calling Execute, adjust the Caption, InfoLabel,
+  ProgressMax, ProgressMin and ProgressPosition properties to their initial values. While the dialog
+  is displayed, modify the properties of the component to update the values in the dialog.
 See Also
-  TJvProgressComponent.Execute
+  TJvProgressComponent.Caption, TJvProgressComponent.InfoLabel, TJvProgressComponent.ProgressMax,
+  TJvProgressComponent.ProgressMin, TJvProgressComponent.ProgressPosition
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.ProgressMax
+@@TJvProgressComponent.Cancel
 Summary
-  Specifies the upper limit of the range of possible positions for the progress bar.
+  Specifies if the user clicked the Cancel button to close the dialog.
 Description
-  Use ProgressMax along with the \ProgressMin property to establish the range of possible positions for
-  the progress bar. Optimally, when the process tracked by the progress bar is complete, the value of
-  \ProgressPosition should equal ProgressMax.
+  Read Cancel to determine if the dialog was closed because the user clicked the Cancel button. The
+  value of Cancel is always false while the dialog is displayed.
 See Also
-  TJvProgressComponent.ProgressMin, TJvProgressComponent.ProgressPosition,
-  TJvProgressComponent.ProgressStepIt
+  TJvProgressComponent.Execute, TJvProgressComponent.OnShow
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.ProgressMin
+@@TJvProgressComponent.Caption
 Summary
-  Specifies the lower limit of the range of possible positions for the progress bar.
+  Specifies the text displayed on the dialogs caption.
 Description
-  Use \ProgressMax along with the ProgressMin property to establish the range of possible positions for
-  the progress bar. Optimally, when the process tracked by the progress bar is complete, the value of
-  \ProgressPosition should equal ProgressMax.
+  Use Caption to change the Caption of the dialog form. The value can be changed even when the dialog
+  is displayed.
 See Also
-  TJvProgressComponent.ProgressMax, TJvProgressComponent.ProgressPosition,
-  TJvProgressComponent.ProgressStep, TJvProgressComponent.ProgressStepIt
+  TJvProgressComponent.InfoLabel
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.ProgressPosition
+@@TJvProgressComponent
+<TITLEIMG TJvProgressComponent>
+JVCLInfo
+  GROUP=JVCL.Bars.SlideAndProgress.Progress,JVCL.Dialogs.Custom
+  FLAG=Component
 Summary
-  Specifies the current position of the progress bar.
+  A component that can display a progress dialog.
 Description
-  Read ProgressPosition to determine how far the process tracked by the progress bar has advanced from
-  \ProgressMin toward \ProgressMax. Set ProgressPosition to cause the progress bar to display a
-  position between \ProgressMin and ProgressMax. For example, when the process tracked by the progress
-  bar completes, set ProgressPosition to ProgressMax so that it appears completely filled.
-
-  When a progress bar is created, \ProgressMin and \ProgressMax represent percentages, where
-  \ProgressMin is 0 (0% complete) and \ProgressMax is 100 (100% complete). If these values are not
-  changed, ProgressPosition is the percentage of the process that has already been completed.
-See Also
-  TJvProgressComponent.ProgressMax, TJvProgressComponent.ProgressMin,
-  TJvProgressComponent.ProgressStep, TJvProgressComponent.ProgressStepIt
-
-----------------------------------------------------------------------------------------------------
-@@TJvProgressComponent.ProgressStep
-Summary
-  Specifies the amount that \ProgressPosition increases when the \ProgressStepIt method is called.
-Description
-  Set ProgressStep to specify the granularity of the progress bar. ProgressStep should reflect the size
-  of each step in the process tracked by the progress bar, in the logical units used by the
-  \ProgressMax and \ProgressMin properties.
-
-  When a progress bar is created, \ProgressMin and \ProgressMax represent percentages, where
-  \ProgressMin is 0 (0% complete) and \ProgressMax is 100 (100% complete). If these values are not
-  changed, ProgressStep is the percentage of the process completed before the user is provided with
-  additional visual feedback.
-
-  When the ProgressStepIt method is called, the value of \ProgressPosition increases by Step.
-See Also
-  TJvProgressComponent.ProgressMax, TJvProgressComponent.ProgressMin,
-  TJvProgressComponent.ProgressPosition, TJvProgressComponent.ProgressStepIt
+  Use a TJvProgressComponent when you need to display a progress dialog in your application. Progress
+  dialogs are mostly used to provide feedback to the user when the application is performing a
+  lengthy process and the program needs to be disabled until finished.
+  
+  To display the dialog, call the Execute method. While the dialog is visible, you can modify any of
+  its properties.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.ProgressStepIt

@@ -3,47 +3,35 @@
 ----------------------------------------------------------------------------------------------------
 @@JvExMask.pas
 Summary
-  Contains components that extend the components from Delphi's Mask.pas with generic properties and CLX
-  code.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains components that extend the components from Delphi's Mask.pas with generic properties and
+  CLX
 Author
   Andreas Hausladen
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit
-Summary
-  Base class for extended masked edit controls.
 Description
-  TJvExCustomMaskEdit is a base class for classes in the JVCL library that descend from
-  TCustomMaskEdit.
+    code.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  Do not create instances of TJvExCustomMaskEdit. Use a descendant of TJvExCustomMaskEdit or create
-  your own descendant class.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.BeepOnError
+@@TJvExMaskEdit.HintWindowClass
 Summary
-  Specifies whether the edit control beeps when the user tries to enter text that does not match the
-  mask.
+  Specifies the window class used to display help hints for the control.
 Description
-  If BeepOnError is true (the default), the application beeps when a validation error occurs.
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.ClipboardCommands
+@@TJvExMaskEdit.HintColor
 Summary
-  Specifies the clipboard commands that are enabled for the control.
+  Determines the color of the hint boxes for the Help Hints for the control.
 Description
-  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
-
-  * ClipboardCommands can't be set to [].
-  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.DotNetHighlighting
+@@TJvExMaskEdit.DotNetHighlighting
 Summary
   Write here a summary (1 line)
 Description
@@ -53,22 +41,64 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.HintColor
+@@TJvExMaskEdit.ClipboardCommands
 Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+  
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.HintWindowClass
+@@TJvExMaskEdit.AboutJVCL
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+
+----------------------------------------------------------------------------------------------------
+@@TJvExMaskEdit.BeepOnError
 Summary
-  Specifies the window class used to display help hints for the control.
+  Specifies whether the edit control beeps when the user tries to enter text that does not match the
+  mask.
 Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
+  If BeepOnError is true (the default), the application beeps when a validation error occurs.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExMaskEdit
+Summary
+  Base class for extended masked edit controls.
+Description
+  TJvExMaskEdit is a base class for classes in the JVCL library that descend from TMaskEdit.
+  
+  Do not create instances of TJvExMaskEdit. Use a descendant of TJvExMaskEdit or create your own
+  descendant class.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomMaskEdit.ParentBackground
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomMaskEdit.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+
+----------------------------------------------------------------------------------------------------
+@@TJvExCustomMaskEdit.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  TJvExCustomMaskEdit.OnMouseEnter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.MouseOver
@@ -90,25 +120,16 @@ See Also
   TJvExCustomMaskEdit.OnMouseLeave
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.OnMouseLeave
+@@TJvExCustomMaskEdit.HintWindowClass
 Summary
-  Occurs when the mouse pointer moves off the control.
+  Specifies the window class used to display help hints for the control.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
-See Also
-  TJvExCustomMaskEdit.OnMouseEnter
+  When the application displays a Help Hint for this control, it creates an instance of
+  HintWindowClass to represent the window used for displaying the hint. Applications can customize
+  this window by creating a descendant of THintWindow and assigning it to this property.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the control changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExCustomMaskEdit.ParentBackground
+@@TJvExCustomMaskEdit.DotNetHighlighting
 Summary
   Write here a summary (1 line)
 Description
@@ -118,21 +139,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit
+@@TJvExCustomMaskEdit.HintColor
 Summary
-  Base class for extended masked edit controls.
+  Determines the color of the hint boxes for the Help Hints for the control.
 Description
-  TJvExMaskEdit is a base class for classes in the JVCL library that descend from TMaskEdit.
-
-  Do not create instances of TJvExMaskEdit. Use a descendant of TJvExMaskEdit or create your own
-  descendant class.
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit.AboutJVCL
+@@TJvExCustomMaskEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit.BeepOnError
+@@TJvExCustomMaskEdit.BeepOnError
 Summary
   Specifies whether the edit control beeps when the user tries to enter text that does not match the
   mask.
@@ -140,42 +160,25 @@ Description
   If BeepOnError is true (the default), the application beeps when a validation error occurs.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit.ClipboardCommands
+@@TJvExCustomMaskEdit.ClipboardCommands
 Summary
   Specifies the clipboard commands that are enabled for the control.
 Description
   Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
-
+  
   * ClipboardCommands can't be set to [].
   * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit.DotNetHighlighting
+@@TJvExCustomMaskEdit
 Summary
-  Write here a summary (1 line)
+  Base class for extended masked edit controls.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor assign
-  it a new TColor value.
-
-----------------------------------------------------------------------------------------------------
-@@TJvExMaskEdit.HintWindowClass
-Summary
-  Specifies the window class used to display help hints for the control.
-Description
-  When the application displays a Help Hint for this control, it creates an instance of HintWindowClass
-  to represent the window used for displaying the hint. Applications can customize this window by
-  creating a descendant of THintWindow and assigning it to this property.
+  TJvExCustomMaskEdit is a base class for classes in the JVCL library that descend from
+  TCustomMaskEdit.
+  
+  Do not create instances of TJvExCustomMaskEdit. Use a descendant of TJvExCustomMaskEdit or create
+  your own descendant class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.MouseOver
@@ -202,8 +205,8 @@ Summary
   Occurs when the mouse pointer moves off the control.
 Description
   Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  control. For example, you can use this event to undo changes that were made in an OnMouseEnter event
-  handler.
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
 See Also
   TJvExMaskEdit.OnMouseEnter
 

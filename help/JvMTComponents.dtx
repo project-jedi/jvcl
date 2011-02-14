@@ -3,199 +3,49 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMTComponents.pas
 Summary
-  Contains the Managed Thread components.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the Managed Thread components.
 Author
   Erwin Molendijk
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTAsyncBufferBase
-Summary
-  Base class for buffers that can be used for asynchronous communication between threads. Base class
-  for the data components
 Description
-  Derive a class from TJvMTAsyncBufferBase to pass objects between threads. TJvMTAsyncBufferBase
-  contains abstract methods and should not be directly instantiated.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  Descendant classes like TJvMTThreadToVCL and TJvMTVCLToThread override the protected CreateBuffer
-  method to [..]
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMTAsyncBufferBase.MaxBufferSize
-Summary
-  Specifies the desired maximum size of the buffer. Specifies the maximum number of objects allowed in
-  the buffer.
-Description
-  Set MaxBufferSize to the desired maximum size of the buffer. Descendants of TJvMTAsyncBufferBase can
-  use this property when allocating memory for the actual buffer.
-
-  You can <I>not</I> change MaxBufferSize after you called <LINK TJvMTAsyncBufferBase.Read, Read> or
-  <LINK TJvMTAsyncBufferBase.Write, Write>.
-See Also
-  TJvMTAsyncBufferBase.Read, TJvMTAsyncBufferBase.Write
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTAsyncBufferBase.Read
-Summary
-  Retrieves an object from the buffer.
-Description
-  Waits for an object to arrive in the buffer and returns it. The caller takes owner ship of the object
-  and is thus responsible for destroying it when needed. The function can return nil pointer if this
-  was put into the buffer using Write. Can raise EMTTerminate.
-
-  Call Read to remove and return the next item in the buffer.
-Return value
-  The item read from the buffer
-See Also
-  TJvMTAsyncBufferBase.Write
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTAsyncBufferBase.Write
-Summary
-  Adds an object to the buffer.
-Description
-  Waits for room in the buffer and writes the object into the buffer. After an call to Write the buffer
-  owns the object (even if the EMTTerminate is raised) Can raise EMTTerminate.
-
-  Call Write to add an object to the buffer. Typically you would add an object to the buffer in one
-  thread, and read the object from the buffer in another thread. This will be done asynchronous, thus
-  it involves a time interval between the writing and reading of the object.
-Parameters
-  AObject - The item to add.
-See Also
-  TJvMTAsyncBufferBase.Read
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTComponent
-Summary
-  The base class for Managed Threads components.
-Description
-  TJvMTComponent is the base class for Managed Threads components within the JEDI VCL. The class does
-  not add properties or methods.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTCountingSection
-<TITLEIMG TJvMTCountingSection>
-JVCLInfo
-  GROUP=JVCL.System.LibProcAndThread.Threads
-  FLAG=Component
-Summary
-  Implements a counting semaphore.
-Description
-  Allows a maximum amount of threads into the section. The section does not allow recursion (see
-  TJvMtSection).
-
-  A semaphore is a protected variable and is typically used to restrict access to shared resources in a
-  multi-threaded application.
-
-  The value of the semaphore is initialized to the number of equivalent shared resources it is
-  implemented to control.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTCountingSection.InitCount
-Summary
-  The initial count for the semaphore.
-Description
-  Specifies the number threads inside the section when the component is created at runtime. The threads
-  don't actually have to be inside.
-
-  Set InitCount to the initial count for the semaphore object. This value must be greater than or equal
-  to zero and less than or equal to MaxCount.
-
-  The count of the semaphore is increased by one whenever <LINK TJvMTSectionBase.Enter, Enter> is
-  called. The count is decreased by calling the <LINK TJvMTSectionBase.Leave, Leave> method.
-
-  A call to Enter will succeed immediately until the count of the semaphore is equal to MaxCount. Then
-  the semaphore is signaled and a call to Enter will be blocked until another thread calls Leave.
-
-  Example:
-
-  <CODE>
-  JvMTCountingSection1.MaxCount := 4;
-  JvMTCountingSection1.InitCount := 0;
-  JvMTCountingSection1.Enter;
-  JvMTCountingSection1.Enter;
-  JvMTCountingSection1.Enter;
-  JvMTCountingSection1.Enter;
-  // the following call will block indefinitely
-  JvMTCountingSection1.Enter;
-  </CODE>
-Note
-  You can <I>not</I> change InitCount after you called Enter or Leave.
-See Also
-  TJvMTCountingSection.MaxCount
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTCountingSection.MaxCount
-Summary
-  The maximum count for the semaphore object.
-Description
-  The maximum number call's to Enter before the section starts blocking.
-
-  Set MaxCount to the maximum count for the semaphore object. This value must be greater than zero.
-
-  Typically you would set this value to the number of equivalent shared resources that this compontent
-  should control.
-
-  For example, you have 3 printers that each can be accessed by 1 thread at time. Then you would set
-  MaxCount to 3 and whenever a thread wants to access a printer you call Enter.
-Note
-  You can <I>not</I> change MaxCount after you called Enter or Leave.
-See Also
-  TJvMTCountingSection.InitCount
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTManagedComponent
-Summary
-  The base class for components that have a thread manager. Base class for all components belonging to
-  a manager.
-Description
-  TJvMTComponent is the base class for components within the JEDI VCL. The class defines one published
-  property, Manager, that is the manager of component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTManagedComponent.Manager
-Summary
-  The manager of the component.
-Description
-  Design+Runtime. Set/Get the manager to which this component belongs.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTManager
-<TITLEIMG TJvMTManager>
+@@TJvMTMonitorSection
+<TITLEIMG TJvMTMonitorSection>
 JVCLInfo
   GROUP=JVCL.System.LibProcAndThread.Threads
   FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
+  This component represents a monitored section. Only one thread can be active inside a monitor, but
+  multiple threads can be suspended inside.
+  
+  A monitor has conditions. A thread can signal a condition or wait for a condition. The Signal and
+  Wait of a condition should not be confused with the Enter and Leave of a section, because they are
+  fundamentally different.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMTManager.AcquireNewThread
+@@TJvMTManager.WaitThreads
 Summary
-  Write here a summary (1 line)
+  Waits for all threads.
 Description
-  Returns a creates a new TJvMtSingleThread. And returns it in an acquired state. It should be released
-  by calling the Release of the MtSingleThread.
+  Call WaitThreads to wait for all threads to have gone into tsTerminated state or have been
+  destroyed.
+See Also
+  TJvMTManager.TerminateThreads
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMTManager.AcquireThread
+@@TJvMTManager.TerminateThreads
 Summary
-  Locates a thread and indicates whether a thread with that ticket already exists.
+  Terminates all threads.
 Description
-  Finds the MtSingleThread which has an corresponding Ticket. It then acquires the thread and returns
-  it. Return value is True if the function succeeded, False otherwise.
-Parameters
-  Ticket - The ticket of the thread to locate.
-  Thread - Returns the thread with ticket Ticket.
-
-----------------------------------------------------------------------------------------------------
-@@TJvMTManager.ActiveThreads
-Summary
-  Indicates wheter there is one or more active thread.
-Description
-  Returns True if there is one or more active JvMtSingleThread, False otherwise.
+  Call TerminateThreads to send the \terminate signal to all running threads. The function can return
+  before all threads have actually terminated. Thus, call WaitThreads after this function to make
+  sure that all threads have actually finished.
+See Also
+  TJvMTManager.WaitThreads
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMTManager.ReleaseThread
@@ -210,41 +60,192 @@ See Also
   TJvMTThread.Release
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMTManager.TerminateThreads
+@@TJvMTManager.ActiveThreads
 Summary
-  Terminates all threads.
+  Indicates wheter there is one or more active thread.
 Description
-  Call TerminateThreads to send the \terminate signal to all running threads. The function can return
-  before all threads have actually terminated. Thus, call WaitThreads after this function to make sure
-  that all threads have actually finished.
-See Also
-  TJvMTManager.WaitThreads
+  Returns True if there is one or more active JvMtSingleThread, False otherwise.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMTManager.WaitThreads
+@@TJvMTManager.AcquireThread
 Summary
-  Waits for all threads.
+  Locates a thread and indicates whether a thread with that ticket already exists.
 Description
-  Call WaitThreads to wait for all threads to have gone into tsTerminated state or have been
-  destroyed.
-See Also
-  TJvMTManager.TerminateThreads
+  Finds the MtSingleThread which has an corresponding Ticket. It then acquires the thread and returns
+  it. Return value is True if the function succeeded, False otherwise.
+Parameters
+  Ticket - The ticket of the thread to locate.
+  Thread - Returns the thread with ticket Ticket.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMTMonitorSection
-<TITLEIMG TJvMTMonitorSection>
+@@TJvMTManager.AcquireNewThread
+Summary
+  Write here a summary (1 line)
+Description
+  Returns a creates a new TJvMtSingleThread. And returns it in an acquired state. It should be
+  released by calling the Release of the MtSingleThread.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTManager
+<TITLEIMG TJvMTManager>
 JVCLInfo
   GROUP=JVCL.System.LibProcAndThread.Threads
   FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
-  This component represents a monitored section. Only one thread can be active inside a monitor, but
-  multiple threads can be suspended inside.
+  Write here a description
 
-  A monitor has conditions. A thread can signal a condition or wait for a condition. The Signal and
-  Wait of a condition should not be confused with the Enter and Leave of a section, because they are
-  fundamentally different.
+----------------------------------------------------------------------------------------------------
+@@TJvMTManagedComponent.Manager
+Summary
+  The manager of the component.
+Description
+  Design+Runtime. Set/Get the manager to which this component belongs.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTManagedComponent
+Summary
+  The base class for components that have a thread manager. Base class for all components belonging
+  to a manager.
+Description
+  TJvMTComponent is the base class for components within the JEDI VCL. The class defines one
+  published property, Manager, that is the manager of component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTCountingSection.MaxCount
+Summary
+  The maximum count for the semaphore object.
+Description
+  The maximum number call's to Enter before the section starts blocking.
+  
+  Set MaxCount to the maximum count for the semaphore object. This value must be greater than zero.
+  
+  Typically you would set this value to the number of equivalent shared resources that this
+  compontent should control.
+  
+  For example, you have 3 printers that each can be accessed by 1 thread at time. Then you would set
+  MaxCount to 3 and whenever a thread wants to access a printer you call Enter.
+  Note
+  You can <I>not</I> change MaxCount after you called Enter or Leave.
+See Also
+  TJvMTCountingSection.InitCount
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTCountingSection.InitCount
+Summary
+  The initial count for the semaphore.
+Description
+  Specifies the number threads inside the section when the component is created at runtime. The
+  threads don't actually have to be inside.
+  
+  Set InitCount to the initial count for the semaphore object. This value must be greater than or
+  equal to zero and less than or equal to MaxCount.
+  
+  The count of the semaphore is increased by one whenever <LINK TJvMTSectionBase.Enter, Enter> is
+  called. The count is decreased by calling the <LINK TJvMTSectionBase.Leave, Leave> method.
+  
+  A call to Enter will succeed immediately until the count of the semaphore is equal to MaxCount.
+  Then the semaphore is signaled and a call to Enter will be blocked until another thread calls Leave.
+  
+  Example:
+  
+  <CODE>
+  JvMTCountingSection1.MaxCount := 4;
+  JvMTCountingSection1.InitCount := 0;
+  JvMTCountingSection1.Enter;
+  JvMTCountingSection1.Enter;
+  JvMTCountingSection1.Enter;
+  JvMTCountingSection1.Enter;
+  // the following call will block indefinitely
+  JvMTCountingSection1.Enter; </CODE>
+  Note
+  You can <I>not</I> change InitCount after you called Enter or Leave.
+See Also
+  TJvMTCountingSection.MaxCount
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTCountingSection
+<TITLEIMG TJvMTCountingSection>
+JVCLInfo
+  GROUP=JVCL.System.LibProcAndThread.Threads
+  FLAG=Component
+Summary
+  Implements a counting semaphore.
+Description
+  Allows a maximum amount of threads into the section. The section does not allow recursion (see
+  TJvMtSection).
+  
+  A semaphore is a protected variable and is typically used to restrict access to shared resources in
+  a multi-threaded application.
+  
+  The value of the semaphore is initialized to the number of equivalent shared resources it is
+  implemented to control.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTComponent
+Summary
+  The base class for Managed Threads components.
+Description
+  TJvMTComponent is the base class for Managed Threads components within the JEDI VCL. The class does
+  not add properties or methods.
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTAsyncBufferBase.Write
+Summary
+  Adds an object to the buffer.
+Description
+  Waits for room in the buffer and writes the object into the buffer. After an call to Write the
+  buffer owns the object (even if the EMTTerminate is raised) Can raise EMTTerminate.
+  
+  Call Write to add an object to the buffer. Typically you would add an object to the buffer in one
+  thread, and read the object from the buffer in another thread. This will be done asynchronous, thus
+  it involves a time interval between the writing and reading of the object.
+Parameters
+  AObject - The item to add.
+See Also
+  TJvMTAsyncBufferBase.Read
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTAsyncBufferBase.Read
+Summary
+  Retrieves an object from the buffer.
+Description
+  Waits for an object to arrive in the buffer and returns it. The caller takes owner ship of the
+  object and is thus responsible for destroying it when needed. The function can return nil pointer
+  if this was put into the buffer using Write. Can raise EMTTerminate.
+  
+  Call Read to remove and return the next item in the buffer.
+Return value
+  The item read from the buffer
+See Also
+  TJvMTAsyncBufferBase.Write
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTAsyncBufferBase.MaxBufferSize
+Summary
+  Specifies the desired maximum size of the buffer. Specifies the maximum number of objects allowed
+  in the buffer.
+Description
+  Set MaxBufferSize to the desired maximum size of the buffer. Descendants of TJvMTAsyncBufferBase
+  can use this property when allocating memory for the actual buffer.
+  
+  You can <I>not</I> change MaxBufferSize after you called <LINK TJvMTAsyncBufferBase.Read, Read> or
+  <LINK TJvMTAsyncBufferBase.Write, Write>.
+See Also
+  TJvMTAsyncBufferBase.Read, TJvMTAsyncBufferBase.Write
+
+----------------------------------------------------------------------------------------------------
+@@TJvMTAsyncBufferBase
+Summary
+  Base class for buffers that can be used for asynchronous communication between threads. Base class
+  for the data components
+Description
+  Derive a class from TJvMTAsyncBufferBase to pass objects between threads. TJvMTAsyncBufferBase
+  contains abstract methods and should not be directly instantiated.
+  
+  Descendant classes like TJvMTThreadToVCL and TJvMTVCLToThread override the protected CreateBuffer
+  method to [..]
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMTMonitorSection.Condition
@@ -253,12 +254,12 @@ Summary
 Description
   Returns a condition associated with the specified ID. If the condition does not exist yet, it will
   automatically be created.
-
+  
   Example
   <CODE>
   const
     mcThereIsFire = 1
-
+  
   //thread1:
   Monitor.Enter;
   try
@@ -267,7 +268,7 @@ Description
   finally
     Monitor.Leave;
   end;
-
+  
   //thread2:
   Monitor.Enter;
   try
@@ -275,8 +276,7 @@ Description
     Monitor.Condition[mcThereIsFire].Signal;
   finally
     Monitor.Leave;
-  end;
-  </CODE>
+  end; </CODE>
 Parameters
   ID - Description for this parameter
 
@@ -314,24 +314,23 @@ Description
 Summary
   Specifies whether calls to Enter are allowed within a critical section.
 Description
-  When the Enter method is called multiple time by the same thread this option determines if a 2nd call
-  blocks or succeeds.
-
+  When the Enter method is called multiple time by the same thread this option determines if a 2nd
+  call blocks or succeeds.
+  
   If AllowRecursion is set to true, then an Enter call from a specific thread within the critical
   section will succeed immediately, otherwise it would block indefinitely.
-
+  
   <CODE>
   JvMTSection1.AllowRecursion := True;
   JvMTSection1.Enter;
   // begin of critical section
-
+  
   // next call will succeed immediately
   JvMTSection1.Enter;
   JvMTSection1.Leave;
-
+  
   // next call leaves the critical section
-  JvMTSection1.Leave;
-  </CODE>
+  JvMTSection1.Leave; </CODE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMTSection.InitEntered
@@ -353,9 +352,9 @@ Summary
   Indicates whether the internal synchronization object is created.
 Description
   Read only. Returns true if the section has been used at least once.
-
-  Read Active to determine whether the internal synchronization object is created. Typically a property
-  of the section component can't be changed when Active is true.
+  
+  Read Active to determine whether the internal synchronization object is created. Typically a
+  property of the section component can't be changed when Active is true.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMTSectionBase.Enter
@@ -364,8 +363,9 @@ Summary
 Description
   Call Enter to try to enter the section. The method will only return if the section has been entered.
   This method will raise a TMTTerminate exception if the thread has to \terminate.
-
-  Call Enter to block all other threads from entering code protected by this critical section until the
+  
+  Call Enter to block all other threads from entering code protected by this critical section until
+  the
   Leave method is called.
 See Also
   TJvMTSectionBase.Leave
@@ -376,11 +376,11 @@ Summary
   Tries to leave the section.
 Description
   Call Leave to try to leave the section. The method will only return if the section has been left.
-  This method will raise a TMTTerminate exception if the thread cannot leave immediately and has to
-  \terminate.
-
-  Call Leave at the end of a thread-sensitive section of code. Each call to Leave should be balanced by
-  a call to Enter at the beginning of the thread-sensitive section.
+  This method will raise a TMTTerminate exception if the thread cannot leave immediately and has to 
+  terminate.
+  
+  Call Leave at the end of a thread-sensitive section of code. Each call to Leave should be balanced
+  by a call to Enter at the beginning of the thread-sensitive section.
 See Also
   TJvMTSectionBase.Enter
 
@@ -402,15 +402,15 @@ Summary
 Description
   The TJvMTThread component is a wrapper for the VCL TThread class. The wrapper can spawn multiple MT
   thread's
-
-  You can drop a TJvMTThread component on a form and write an OnExecute handler that executes when the
-  thread is run.
-
+  
+  You can drop a TJvMTThread component on a form and write an OnExecute handler that executes when
+  the thread is run.
+  
   Start the thread automatically by setting the RunOnCreate property to True, or manually by calling
   its Run method.
-
+  
   Name of the thread. This name will be displayed in the Delphi Threads debug window.
-
+  
   You must associate a TJvMTManager component with the thread by setting its Manager property.
 
 ----------------------------------------------------------------------------------------------------
@@ -420,28 +420,27 @@ Summary
 Description
   This functions checks if the thread needs to \terminate. It will raise an EMTTerminate exception if
   the thread needs to \terminate.
-
-  Call CheckTerminate to check whether the thread has been asked to \terminate. If so, then the thread
-  will \terminate after the CheckTerminate call.
-
+  
+  Call CheckTerminate to check whether the thread has been asked to \terminate. If so, then the
+  thread will \terminate after the CheckTerminate call.
+  
   The thread's OnExecute handler and any methods that the handler calls should call CheckTerminate
   periodically. The Terminate method signals the thread that it should \terminate.
-
+  
   <CODE>
   procedure TJvMTThread1.OnExecute(Sender: TJvMtThread;
     MTThread: TJvMtSingleThread);
   begin
     while True do
-	begin
-	  CurrentMTThread.CheckTerminate;
-	  // or
-	  Sender.CheckTerminate;
-	
-	  { do something }
-	end;
+  begin
+  CurrentMTThread.CheckTerminate;
+  // or
+  Sender.CheckTerminate;
+  
+  { do something }
   end;
-  </CODE>
-Note
+  end; </CODE>
+  Note
   CheckTerminate should <I>only</I>be called in the context of the thread. Thus only call
   CheckTerminate of a specific TJvMTThread component in the OnExecute handler of that thread
   component.
@@ -454,15 +453,15 @@ Summary
   Occurs when the thread starts up.
 Description
   Run context: background thread Called when the thread enters tsRunning state.
-
+  
   Inserting the code that should execute when the thread is executed.
-
+  
   This is where you implement the thread. When the OnExecute event handler finishes, the thread
   terminates. Most OnExecute event handlers contain a loop that calls the Sleep method so that other
   threads are not locked out.
-
+  
   The handler should call CheckTerminate periodically.
-Note
+  Note
   Setting the OnExecute property will \terminate a running thread.
 See Also
   TJvMTThread.CheckTerminate
@@ -473,13 +472,13 @@ Summary
   Occurs when the thread has finished running.
 Description
   Run context: main VCL thread Called when a thread has finished.
-
-  Write an OnFinished event handler to take specific action just after the thread finished running. The
-  thread terminates immediately before OnFinished.
-
+  
+  Write an OnFinished event handler to take specific action just after the thread finished running.
+  The thread terminates immediately before OnFinished.
+  
   The OnFinished event handler is called in the context of the main thread, which means methods and
   properties can be called freely.
-Note
+  Note
   Setting the OnFinished property will \terminate a running thread.
 See Also
   TJvMTThread.OnTerminating, TJvMTThread.Terminate
@@ -490,15 +489,15 @@ Summary
   Occurs when the thread is about to \terminate.
 Description
   Run context: background thread
-
+  
   Always called after OnExecute. The thread has entered tsTerminating state. Warning You can NOT use
   the MT data components, and you can NOT use the MT Section components.
-
+  
   Write an OnTerminating event handler to take specific action just before the thread terminates. The
   thread terminates immediately after OnTerminating.
-
+  
   The OnTerminating event handler is called in the context of the thread.
-Note
+  Note
   Setting the OnTerminating property will \terminate a running thread.
 See Also
   TJvMTThread.OnFinished, TJvMTThread.Terminate, TJvMTThread.CheckTerminate
@@ -508,12 +507,12 @@ See Also
 Summary
   Starts the execution of a thread.
 Description
-  Activates the thread. The OnExecute event will fire during or after a call to Run. The thread status
-  should be stInitializing or stWaiting, any other state will raise an EMTThread exception.
-
-  Call Run to create and execute a thread. If the thread was suspended, then calling Run will cause the
-  suspended thread to start running again.
-Note
+  Activates the thread. The OnExecute event will fire during or after a call to Run. The thread
+  status should be stInitializing or stWaiting, any other state will raise an EMTThread exception.
+  
+  Call Run to create and execute a thread. If the thread was suspended, then calling Run will cause
+  the suspended thread to start running again.
+  Note
   Property Status must have value tsInitializing or tsWaiting. Otherwise, an exception is raised.
 See Also
   TJvMTThread.RunOnCreate, TJvMTThread.Terminate
@@ -524,11 +523,11 @@ Summary
   Starts the execution of another thread.
 Description
   Call RunCopy to release control of the currently running thread and start another thread.
-
+  
   The TJvMTThread component controls only one thread at a time. Thus if the thread component has
-  already started a thread, then the component will first release control of that running thread after
-  a call to RunCopy, before starting another thread. This running thread will continue to run after the
-  release of control.
+  already started a thread, then the component will first release control of that running thread
+  after a call to RunCopy, before starting another thread. This running thread will continue to run
+  after the release of control.
 See Also
   TJvMTThread.Run
 
@@ -538,9 +537,9 @@ Summary
   Specifies whether execution of the thread is started automatically after the component is loaded.
 Description
   If set to True the thread will be started as soon as the component is created at runtime.
-
-  Set RunOnCreate to true to start the execution of the thread automatically after the component's form
-  is loaded into memory.
+  
+  Set RunOnCreate to true to start the execution of the thread automatically after the component's
+  form is loaded into memory.
 See Also
   TJvMTThread.Run
 
@@ -550,7 +549,7 @@ Summary
   Indicates the current state of the thread.
 Description
   Status indicates the current state of the thread. It can have one of the following values:
-
+  
   <TABLE>
     Value                 Meaning
     --------------------  --------------------------------------------------------------------
@@ -574,9 +573,9 @@ Summary
 Description
   Runs method in the context of the main thread. This function will only return after the method has
   finished.
-Note
+  Note
   Should only be called from the context of the this thread.
-
+  
   See documentation of TThread.Synchonize.
 Parameters
   Method - The method to execute within the main thread.
@@ -607,7 +606,7 @@ Summary
   Waits for the thread to \terminate.
 Description
   Returns when the thread state becomes tsFinished.
-
+  
   Wait doesn't return until the thread terminates, so the thread must exit either by finishing the
   OnExecute handler or by calling CheckTerminate after Terminate has been called.
 See Also
@@ -621,10 +620,10 @@ Summary
 Description
   Managed thread event. The Sender is the component from which the MTThread was started with Run or
   RunCopy.
-
+  
   TJvMTThreadEvent specifies a method used for thread events. TJvMTThreadEvent is used to execute a
-  process that occurs typically during installation, uninstallation, or shutdown. It is also the event
-  type for the thread execution.
+  process that occurs typically during installation, uninstallation, or shutdown. It is also the
+  event type for the thread execution.
 Parameters
   Sender   - The TJvMTThread component.
   MTThread - The TJvMTSingleThread component
@@ -640,8 +639,8 @@ JVCLInfo
 Summary
   Buffer that can be used for asynchronous communication between MT threads.
 Description
-  Used for exchanging data between threads. All calls are blocking. See TJvMtAsyncBufferBase for method
-  description.
+  Used for exchanging data between threads. All calls are blocking. See TJvMtAsyncBufferBase for
+  method description.
 See Also
   TJvMTThreadToVCL, TJvMTVCLToThread
 
@@ -697,16 +696,16 @@ See Also
 Summary
   Occurs when at least one object can be read from the buffer.
 Description
-  Called in the context of the main VCL thread. At least one object can be read from the buffer during
-  this event. For each object in the buffer this event will fire exactly once.
-
+  Called in the context of the main VCL thread. At least one object can be read from the buffer
+  during this event. For each object in the buffer this event will fire exactly once.
+  
   The following example reads an TMsg object from the buffer and frees it after processing.
   <CODE>
   type
     TMsg = class
-	  Msg: string;
-	end;
-	
+  Msg: string;
+  end;
+  
   procedure TForm1.JvMTThreadToVCL1CanRead(Sender: TObject);
   var
     M: TMsg;
@@ -714,12 +713,11 @@ Description
     M := TMsg(JvMTThreadToVCL1.Read);
     try
       // Process message M
-	  ShowMessage(M.Msg);
+  ShowMessage(M.Msg);
     finally
       M.Free;
     end;
-  end;
-  </CODE>
+  end; </CODE>
 See Also
   TJvMTThreadToVCL.Read, TJvMTThreadToVCL.Write
 
@@ -741,7 +739,7 @@ See Also
 Summary
   Occurs when at least one object can be written to the buffer.
 Description
-  Called in the context of the main VCL thread. At least one object can be written to the buffer during
-  this event. This event will fire after a Write as soon as there is buffer space. This event will also
-  fire when the object is first created during runtime (and there is buffer space).
+  Called in the context of the main VCL thread. At least one object can be written to the buffer
+  during this event. This event will fire after a Write as soon as there is buffer space. This event
+  will also fire when the object is first created during runtime (and there is buffer space).
 

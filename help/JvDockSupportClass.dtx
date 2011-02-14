@@ -3,20 +3,24 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDockSupportClass.pas
 Summary
-  Contains the TJvDockSupportClass component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDockSupportClass component.
 Author
   Luxiaoban
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseGetFormEventComponent
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseGetFormEventComponent.ParentForm
+@@TJvDockScanZoneNotification.snNone
+Description for snNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockScanTreeZoneProc
+<TITLE TJvDockScanTreeZoneProc type> <COMBINE TJvDockBaseTree.ScanZoneProc>
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockScanZoneNotification
+<TITLE TJvDockScanZoneNotification type>
 Summary
   Write here a summary (1 line)
 Description
@@ -26,21 +30,41 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree
+@@TJvDockBaseZone.PrevSibling
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.AddChildZone
+@@TJvDockBaseZone.ParentZone
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  TreeZone - Description for this parameter
-  NewZone  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone.NextSibling
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone.GetParentZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 Return value
   Describe here what the function returns
 See Also
@@ -48,7 +72,162 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.AddNextSibling
+@@TJvDockBaseZone.GetChildZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone.GetChildCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone.CreateChildZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone.ChildZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone.BaseTree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.TreeZoneClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.TopTreeZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.ScanZoneProc
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TreeZone - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.RemovePrevSibling
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TreeZone - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.RemoveParentZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TreeZone - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.RemoveNextSibling
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TreeZone - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.RemoveChildZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  TreeZone - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.CurrTreeZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockBaseTree.AddPrevSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -78,7 +257,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.AddPrevSibling
+@@TJvDockBaseTree.AddNextSibling
 Summary
   Write here a summary (1 line)
 Description
@@ -93,128 +272,14 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.CurrTreeZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.RemoveChildZone
+@@TJvDockBaseTree.AddChildZone
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   TreeZone - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.RemoveNextSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  TreeZone - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.RemoveParentZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  TreeZone - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.RemovePrevSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  TreeZone - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.ScanZoneProc
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  TreeZone - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.TopTreeZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseTree.TreeZoneClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.BaseTree
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.ChildZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.CreateChildZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  NewZone  - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -222,45 +287,21 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.GetChildCount
+@@TJvDockBaseTree
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.GetChildZone
+@@TJvDockBaseGetFormEventComponent
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Index - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.GetParentZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.NextSibling
+@@TJvDockBaseGetFormEventComponent.ParentForm
 Summary
   Write here a summary (1 line)
 Description
@@ -268,58 +309,18 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.ParentZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockBaseZone.PrevSibling
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockScanTreeZoneProc
-<TITLE TJvDockScanTreeZoneProc type>
-<COMBINE TJvDockBaseTree.ScanZoneProc>
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockScanZoneNotification
-<TITLE TJvDockScanZoneNotification type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockScanZoneNotification.snNone
-  Description for snNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockScanZoneNotification.snAdded
-  Description for snAdded
+Description for snAdded
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockScanZoneNotification.snExtracted
-  Description for snExtracted
+Description for snExtracted
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockScanZoneNotification.snDeleted
-  Description for snDeleted
+Description for snDeleted
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockTreeZoneClass

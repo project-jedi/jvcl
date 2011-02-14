@@ -3,20 +3,20 @@
 ----------------------------------------------------------------------------------------------------
 @@JvAutoComplete.pas
 Summary
-  Contains the TJvAutoComplete component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvAutoComplete component.
 Author
   Andreas Hausladen
-
-----------------------------------------------------------------------------------------------------
-@@TJvBaseEditListAutoComplete
-Summary
-  Base class for auto complete support for Edit/TStrings pairs.
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseEditListAutoComplete.EditCtrl
+@@TJvLookupAutoCompleteKind.akListBox
+Description for akListBox
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoCompleteKind
+<TITLE TJvLookupAutoCompleteKind type>
 Summary
   Write here a summary (1 line)
 Description
@@ -26,7 +26,15 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseEditListAutoComplete.List
+@@TJvLookupAutoComplete.Strings
+Summary
+  Contains a list of all strings that will be used for autocompletion.
+Description
+  Each element should be one string for autocompletion. When user types in the letter, the first
+  string is then copied to appropriate TEdit or TListBox component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.OnValueChange
 Summary
   Write here a summary (1 line)
 Description
@@ -36,16 +44,157 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboBoxAutoComplete
+@@TJvLookupAutoComplete.OnValidateStrings
 Summary
-  TComboBoxAutoComplete implements autocomplete support for ComboBoxes.
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.OnDropDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.ListSearch
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.ListBox
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.ItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.Kind
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.Active
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete.Edit
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvGetSearchItemPrefixEvent
+<TITLE TJvGetSearchItemPrefixEvent type> <COMBINE TJvControlAutoComplete.OnGetSearchItemPrefix>
+
+----------------------------------------------------------------------------------------------------
+@@TJvLookupAutoComplete
+<TITLEIMG TJvLookupAutoComplete>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  This non-visual component is used along with TEdit or TListBox components. It provides a list of
+  strings which are automatically completed in associated component. You may control a list of the
+  autocompletion strings.
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListBoxAutoComplete.ListBox
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListAutoComplete.SetList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListBoxAutoComplete
+Summary
+  TEditListBoxAutoComplete implements autocomplete support for an Edit/ListBox pair.
 Description
   After you have created an instance of this class you must either assign the AutoCompleteEvent to the
   OnKeyPress event of the edit control or you must call the AutoComplete method from the KeyPress
   method.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvComboBoxAutoComplete.ComboBox
+@@TJvEditListAutoComplete.SetInternalItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListAutoComplete.OnValidateItemIndex
 Summary
   Write here a summary (1 line)
 Description
@@ -55,17 +204,111 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete
+@@TJvEditListAutoComplete.OnItemIndexChange
 Summary
-  Base class for auto complete support for controls.
+  Write here a summary (1 line)
 Description
-  TControlAutoComplete implements autocomplete support for controls and is an abstract base class.
-  After you have created an instance of a derived class you must either assign the AutoCompleteEvent to
-  the OnKeyPress event of the control or you must call the AutoComplete method from the controls
-  KeyPress method.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete.Active
+@@TJvEditListAutoComplete.List
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListAutoComplete.GetList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListAutoComplete.ItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListAutoComplete.FItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvEditListAutoComplete
+Summary
+  Provides auto complete support for Edit/TStrings pairs.
+Description
+  TEditListAutoComplete implements autocomplete support for an Edit/TStrings pair. After you have
+  created an instance of this class you must either assign the AutoCompleteEvent to the OnKeyPress
+  event of the edit control or you must call the AutoComplete method from the KeyPress method.
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlAutoComplete.OnValueChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlAutoComplete.OnValidateItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlAutoComplete.OnGetSearchItemPrefix
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Prefix - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlAutoComplete.OnChange
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvControlAutoComplete.OnDropDown
 Summary
   Write here a summary (1 line)
 Description
@@ -120,7 +363,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete.OnChange
+@@TJvControlAutoComplete.Active
 Summary
   Write here a summary (1 line)
 Description
@@ -130,7 +373,17 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete.OnDropDown
+@@TJvControlAutoComplete
+Summary
+  Base class for auto complete support for controls.
+Description
+  TControlAutoComplete implements autocomplete support for controls and is an abstract base class.
+  After you have created an instance of a derived class you must either assign the AutoCompleteEvent
+  to the OnKeyPress event of the control or you must call the AutoComplete method from the controls
+  KeyPress method.
+
+----------------------------------------------------------------------------------------------------
+@@TJvComboBoxAutoComplete.ComboBox
 Summary
   Write here a summary (1 line)
 Description
@@ -140,20 +393,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete.OnGetSearchItemPrefix
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  Prefix - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete.OnValidateItems
+@@TJvBaseEditListAutoComplete.List
 Summary
   Write here a summary (1 line)
 Description
@@ -163,121 +403,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlAutoComplete.OnValueChange
+@@TJvComboBoxAutoComplete
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete
-Summary
-  Provides auto complete support for Edit/TStrings pairs.
-Description
-  TEditListAutoComplete implements autocomplete support for an Edit/TStrings pair. After you have
-  created an instance of this class you must either assign the AutoCompleteEvent to the OnKeyPress
-  event of the edit control or you must call the AutoComplete method from the KeyPress method.
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.FItemIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.GetList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.ItemIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.List
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.OnItemIndexChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.OnValidateItemIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.SetInternalItemIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListAutoComplete.SetList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvEditListBoxAutoComplete
-Summary
-  TEditListBoxAutoComplete implements autocomplete support for an Edit/ListBox pair.
+  TComboBoxAutoComplete implements autocomplete support for ComboBoxes.
 Description
   After you have created an instance of this class you must either assign the AutoCompleteEvent to the
   OnKeyPress event of the edit control or you must call the AutoComplete method from the KeyPress
   method.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvEditListBoxAutoComplete.ListBox
+@@TJvBaseEditListAutoComplete.EditCtrl
 Summary
   Write here a summary (1 line)
 Description
@@ -287,147 +422,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGetSearchItemPrefixEvent
-<TITLE TJvGetSearchItemPrefixEvent type>
-<COMBINE TJvControlAutoComplete.OnGetSearchItemPrefix>
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete
-<TITLEIMG TJvLookupAutoComplete>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvBaseEditListAutoComplete
 Summary
-  Write here a summary (1 line)
-Description
-  This non-visual component is used along with TEdit or TListBox components. It provides a list of
-  strings which are automatically completed in associated component. You may control a list of the
-  autocompletion strings.
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.Active
-Summary
-  Write here a summary (1 line)
+  Base class for auto complete support for Edit/TStrings pairs.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.Edit
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.ItemIndex
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.Kind
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.ListBox
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.ListSearch
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.OnDropDown
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.OnValidateStrings
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.OnValueChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoComplete.Strings
-Summary
-  Contains a list of all strings that will be used for autocompletion.
-Description
-  Each element should be one string for autocompletion. When user types in the letter, the first string
-  is then copied to appropriate TEdit or TListBox component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoCompleteKind
-<TITLE TJvLookupAutoCompleteKind type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvLookupAutoCompleteKind.akListBox
-  Description for akListBox
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookupAutoCompleteKind.akStrings
-  Description for akStrings
+Description for akStrings
 

@@ -3,142 +3,720 @@
 ----------------------------------------------------------------------------------------------------
 @@JvLinkLabelTree.pas
 Summary
-  Contains enumerator and treebuilding interfaces and default implementations used by TJvLinkLabel.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains enumerator and treebuilding interfaces and default implementations used by TJvLinkLabel.
 Author
   David Polberger
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@ENodeError
+@@TStringNode.IsPointInNode
 Summary
-  Exception class used by the utility classes in JvLinkLabelTree.
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode.GetWordInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Pos - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode.FirstWordWidthRetrieved
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode.ClearWordInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode.ClearRects
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode.AddWordInfo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  SpaceInfo - Description for this parameter
+  Width     - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode.AddRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Rect - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TStringNode
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@INodeEnumerator
-Summary
-  Basic node enumerator.
-Description
-  INodeEnumerator is a basic unidirectional iterator for lists of TNode instances.
+@@TSpaceInfo.SpaceWidth
+Description for SpaceWidth
 
 ----------------------------------------------------------------------------------------------------
-@@INodeEnumerator.GetNext
+@@TSpaceInfo.LastWordEndsWithSpace
+Description for LastWordEndsWithSpace
+
+----------------------------------------------------------------------------------------------------
+@@TSpaceInfo
+<TITLE TSpaceInfo type>
 Summary
-  Returns the next node in the list.
+  Write here a summary (1 line)
 Description
-  Call GetNext to return the next node in the list of nodes. If there are no more nodes, GetNext raises
-  an ENodeError exception.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TRootNode.RetrieveRectsOfTLinkNodeChildren
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TRootNode.IsPointInNodeClass
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  P         - Description for this parameter
+  NodeClass - Description for this parameter
 Return value
-  The next node or nil.
+  Describe here what the function returns
 See Also
-  ENodeError, INodeEnumerator.HasNext
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@INodeEnumerator.HasNext
+@@TRootNode
 Summary
-  Checks whether more nodes are available.
+  Write here a summary (1 line)
 Description
-  Call HasNext to check whether the list contains any more nodes.
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TRectArray
+<TITLE TRectArray type>
+Summary
+  Write here a summary (1 line)
+Description
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  array of TRect; - for reference)
+
+----------------------------------------------------------------------------------------------------
+@@TParentNode.OwnsChildren
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TParentNode.IndexOfChild
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Node - Description for this parameter
 Return value
-  True if there are any more nodes, false otherwise.
+  Describe here what the function returns
 See Also
-  INodeEnumerator.GetNext
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@INodeEnumerator.Reset
+@@TParentNode.GetTopLevelNodeEnumerator
 Summary
-  Resets the enumerator to the start of the list.
+  Write here a summary (1 line)
 Description
-  Call Reset to reposition the enumerator to the start of the list.
-See Also
-  INodeEnumerator.GetNext, INodeEnumerator.HasNext
-
-----------------------------------------------------------------------------------------------------
-@@IRectEnumerator
-Summary
-  Basic rect enumerator.
-Description
-  IRectEnumerator is a basic unidirectional iterator for lists of TRects.
-
-----------------------------------------------------------------------------------------------------
-@@IRectEnumerator.GetNext
-Summary
-  Returns the next rect in the list.
-Description
-  Call GetNext to return the next rect in the list of rects. If there are no more rects, GetNext raises
-  an INodeError exception..
+  Write here a description
+Parameters
+  NodeClass - Description for this parameter
 Return value
-  The next rect in the list.
+  Describe here what the function returns
 See Also
-  IRectEnumerator.HasNext
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IRectEnumerator.HasNext
+@@TParentNode.GetSpecificNodeOfClass
 Summary
-  Checks whether more rects are available.
+  Write here a summary (1 line)
 Description
-  Call HasNext to check whether the list contains any more rects.
+  Write here a description
+Parameters
+  Index     - Description for this parameter
+  NodeClass - Description for this parameter
 Return value
-  True if there are any more rects, false otherwise.
+  Describe here what the function returns
 See Also
-  IRectEnumerator.GetNext
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IRectEnumerator.Reset
+@@TParentNode.GetFirstNodeOfClass
 Summary
-  Resets the enumerator to the start of the list.
+  Write here a summary (1 line)
 Description
-  Call Reset to reposition the enumerator to the start of the list.
+  Write here a description
+Parameters
+  NodeClass - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
-  IRectEnumerator.GetNext, IRectEnumerator.HasNext
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ResetNodeCount
-<TITLE ResetNodeCount procedure>
+@@TParentNode.DestroyChildren
 Summary
-  Resets the internal counters to 0.
+  Write here a summary (1 line)
 Description
-  Call ResetNodeCount to reset the internal list counters to 0.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TActionNode
+@@TParentNode.Children
 Summary
-  Defines a node type that performs an action.
+  Write here a summary (1 line)
 Description
-  TActionNode is a specialized TNode type that performs either a line break or a paragraph break.
-  TActionNode is the type returned by TNode.GetNodeType when the parser has found a line break or a
-  paragraph text in the TJvLinkLabel text content.
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TActionNode.Action
+@@TParentNode.AddChild
 Summary
-  Defines the action of the node type.
+  Write here a summary (1 line)
 Description
-  Use Action to define the node type this TActionNode represents.
+  Write here a description
+Parameters
+  ANode - Description for this parameter
+  ARoot - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TActionType
-<TITLE TActionType type>
+@@TParentNode
 Summary
-  Defines the available types for an action node in a TJvLinkLabel internal node structure.
+  Write here a summary (1 line)
 Description
-  TActionType defines the available action types for the Action property of TActionNode.
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TActionType.atLineBreak
-  The action is a line break.
+@@TNodeType.ntUnknownNode
+Description for ntUnknownNode
 
 ----------------------------------------------------------------------------------------------------
-@@TActionType.atParagraphBreak
-  The action is a paragraph break
+@@TNodeType.ntActionNode
+Description for ntActionNode
 
 ----------------------------------------------------------------------------------------------------
-@@TAreaNode
+@@TNodeType.ntStringNode
+Description for ntStringNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntRootNode
+Description for ntRootNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntDynamicNode
+Description for ntDynamicNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntStyleNode
+Description for ntStyleNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntColorNode
+Description for ntColorNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntLinkNode
+Description for ntLinkNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntParentNode
+Description for ntParentNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntAreaNode
+Description for ntAreaNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType
+<TITLE TNodeType type>
 Summary
-  Node class that keeps track of the screen area where the node properties are visible.
+  Write here a summary (1 line)
 Description
-  TAreaNode
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeType.ntNode
+Description for ntNode
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.Root
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.IsPointInTree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.IsPointInNodeClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P         - Description for this parameter
+  NodeClass - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.GetTopLevelNodeEnumerator
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  NodeClass - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.GetSpecificNodeOfClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index     - Description for this parameter
+  NodeClass - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.GetNodeAtPointOfClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P         - Description for this parameter
+  NodeClass - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TNodeTree.Clear
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeList.Remove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeList.Items
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeList.Insert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+  Item  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeList.IndexOf
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeList.Add
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Item - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNodeList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TNodeClass
+<TITLE TNodeClass type>
+Summary
+  Defines the metaclass for TNode.
+Description
+  TNodeClass is the metaclass for TNode. Its value is the class reference for TNode or for one of its
+  descendants.
+
+----------------------------------------------------------------------------------------------------
+@@TNode.Root
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNode.Parent
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TNode.GetNodeType
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TLinkState.lsHot
+Description for lsHot
+
+----------------------------------------------------------------------------------------------------
+@@TNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TLinkState.lsNormal
+Description for lsNormal
+
+----------------------------------------------------------------------------------------------------
+@@TLinkState.lsClicked
+Description for lsClicked
+
+----------------------------------------------------------------------------------------------------
+@@TLinkState
+<TITLE TLinkState type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TLinkNode.State
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TLinkNode.ResetCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TLinkNode.Param
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TLinkNode.Number
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TLinkNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TDynamicNode.ResetCount
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TDynamicNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TDynamicNode.Number
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TColorNode.Color
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TAreaNode.Text
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TColorNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TAreaNode.Styles
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TAreaNode.StartingPoint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TAreaNode.IsPointInNodeClass
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P         - Description for this parameter
+  NodeClass - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TAreaNode.IsPointInNode
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  P - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TAreaNode.Color
@@ -175,712 +753,136 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TAreaNode.IsPointInNode
+@@TAreaNode
 Summary
-  Write here a summary (1 line)
+  Node class that keeps track of the screen area where the node properties are visible.
 Description
-  Write here a description
-Parameters
-  P - Description for this parameter
+  TAreaNode
+
+----------------------------------------------------------------------------------------------------
+@@TActionType.atLineBreak
+The action is a line break.
+
+----------------------------------------------------------------------------------------------------
+@@TActionType.atParagraphBreak
+The action is a paragraph break
+
+----------------------------------------------------------------------------------------------------
+@@TActionType
+<TITLE TActionType type>
+Summary
+  Defines the available types for an action node in a TJvLinkLabel internal node structure.
+Description
+  TActionType defines the available action types for the Action property of TActionNode.
+
+----------------------------------------------------------------------------------------------------
+@@TActionNode.Action
+Summary
+  Defines the action of the node type.
+Description
+  Use Action to define the node type this TActionNode represents.
+
+----------------------------------------------------------------------------------------------------
+@@TActionNode
+Summary
+  Defines a node type that performs an action.
+Description
+  TActionNode is a specialized TNode type that performs either a line break or a paragraph break.
+  TActionNode is the type returned by TNode.GetNodeType when the parser has found a line break or a
+  paragraph text in the TJvLinkLabel text content.
+
+----------------------------------------------------------------------------------------------------
+@@ResetNodeCount
+<TITLE ResetNodeCount procedure>
+Summary
+  Resets the internal counters to 0.
+Description
+  Call ResetNodeCount to reset the internal list counters to 0.
+
+----------------------------------------------------------------------------------------------------
+@@IRectEnumerator.Reset
+Summary
+  Resets the enumerator to the start of the list.
+Description
+  Call Reset to reposition the enumerator to the start of the list.
+See Also
+  IRectEnumerator.GetNext, IRectEnumerator.HasNext
+
+----------------------------------------------------------------------------------------------------
+@@IRectEnumerator.HasNext
+Summary
+  Checks whether more rects are available.
+Description
+  Call HasNext to check whether the list contains any more rects.
 Return value
-  Describe here what the function returns
+  True if there are any more rects, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IRectEnumerator.GetNext
 
 ----------------------------------------------------------------------------------------------------
-@@TAreaNode.IsPointInNodeClass
+@@IRectEnumerator.GetNext
 Summary
-  Write here a summary (1 line)
+  Returns the next rect in the list.
 Description
-  Write here a description
-Parameters
-  P         - Description for this parameter
-  NodeClass - Description for this parameter
+  Call GetNext to return the next rect in the list of rects. If there are no more rects, GetNext
+  raises an INodeError exception..
 Return value
-  Describe here what the function returns
+  The next rect in the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IRectEnumerator.HasNext
 
 ----------------------------------------------------------------------------------------------------
-@@TAreaNode.StartingPoint
+@@IRectEnumerator
 Summary
-  Write here a summary (1 line)
+  Basic rect enumerator.
 Description
-  Write here a description
+  IRectEnumerator is a basic unidirectional iterator for lists of TRects.
+
+----------------------------------------------------------------------------------------------------
+@@INodeEnumerator.Reset
+Summary
+  Resets the enumerator to the start of the list.
+Description
+  Call Reset to reposition the enumerator to the start of the list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  INodeEnumerator.GetNext, INodeEnumerator.HasNext
 
 ----------------------------------------------------------------------------------------------------
-@@TAreaNode.Styles
+@@INodeEnumerator.HasNext
 Summary
-  Write here a summary (1 line)
+  Checks whether more nodes are available.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TAreaNode.Text
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TColorNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TColorNode.Color
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TDynamicNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TDynamicNode.Number
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TDynamicNode.ResetCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TLinkNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TLinkNode.Number
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TLinkNode.Param
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TLinkNode.ResetCount
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TLinkNode.State
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TLinkState
-<TITLE TLinkState type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TLinkState.lsNormal
-  Description for lsNormal
-
-----------------------------------------------------------------------------------------------------
-@@TLinkState.lsClicked
-  Description for lsClicked
-
-----------------------------------------------------------------------------------------------------
-@@TLinkState.lsHot
-  Description for lsHot
-
-----------------------------------------------------------------------------------------------------
-@@TNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TNode.GetNodeType
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Call HasNext to check whether the list contains any more nodes.
 Return value
-  Describe here what the function returns
+  True if there are any more nodes, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  INodeEnumerator.GetNext
 
 ----------------------------------------------------------------------------------------------------
-@@TNode.Parent
+@@INodeEnumerator.GetNext
 Summary
-  Write here a summary (1 line)
+  Returns the next node in the list.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNode.Root
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeClass
-<TITLE TNodeClass type>
-Summary
-  Defines the metaclass for TNode.
-Description
-  TNodeClass is the metaclass for TNode. Its value is the class reference for TNode or for one of its
-  descendants.
-
-----------------------------------------------------------------------------------------------------
-@@TNodeList
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TNodeList.Add
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item - Description for this parameter
+  Call GetNext to return the next node in the list of nodes. If there are no more nodes, GetNext
+  raises an ENodeError exception.
 Return value
-  Describe here what the function returns
+  The next node or nil.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ENodeError, INodeEnumerator.HasNext
 
 ----------------------------------------------------------------------------------------------------
-@@TNodeList.IndexOf
+@@ENodeError
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeList.Insert
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-  Item  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeList.Items
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeList.Remove
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Item - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree
-Summary
-  Write here a summary (1 line)
+  Exception class used by the utility classes in JvLinkLabelTree.
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TNodeTree.Clear
+@@INodeEnumerator
 Summary
-  Write here a summary (1 line)
+  Basic node enumerator.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree.GetNodeAtPointOfClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  P         - Description for this parameter
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree.GetSpecificNodeOfClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index     - Description for this parameter
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree.GetTopLevelNodeEnumerator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree.IsPointInNodeClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  P         - Description for this parameter
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree.IsPointInTree
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  P - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeTree.Root
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType
-<TITLE TNodeType type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntNode
-  Description for ntNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntParentNode
-  Description for ntParentNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntAreaNode
-  Description for ntAreaNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntStyleNode
-  Description for ntStyleNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntColorNode
-  Description for ntColorNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntLinkNode
-  Description for ntLinkNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntDynamicNode
-  Description for ntDynamicNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntRootNode
-  Description for ntRootNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntStringNode
-  Description for ntStringNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntActionNode
-  Description for ntActionNode
-
-----------------------------------------------------------------------------------------------------
-@@TNodeType.ntUnknownNode
-  Description for ntUnknownNode
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.AddChild
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  ANode - Description for this parameter
-  ARoot - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.Children
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.DestroyChildren
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.GetFirstNodeOfClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.GetSpecificNodeOfClass
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Index     - Description for this parameter
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.GetTopLevelNodeEnumerator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.IndexOfChild
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Node - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TParentNode.OwnsChildren
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TRectArray
-<TITLE TRectArray type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  array of TRect; - for reference)
-
-----------------------------------------------------------------------------------------------------
-@@TRootNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TRootNode.IsPointInNodeClass
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  P         - Description for this parameter
-  NodeClass - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TRootNode.RetrieveRectsOfTLinkNodeChildren
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TSpaceInfo
-<TITLE TSpaceInfo type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TSpaceInfo.LastWordEndsWithSpace
-  Description for LastWordEndsWithSpace
-
-----------------------------------------------------------------------------------------------------
-@@TSpaceInfo.SpaceWidth
-  Description for SpaceWidth
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.AddRect
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Rect - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.AddWordInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  SpaceInfo - Description for this parameter
-  Width     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.ClearRects
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.ClearWordInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.FirstWordWidthRetrieved
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.GetWordInfo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Pos - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TStringNode.IsPointInNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  P - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  INodeEnumerator is a basic unidirectional iterator for lists of TNode instances.
 
 ----------------------------------------------------------------------------------------------------
 @@TStringNode.IsWordInfoInArray
@@ -963,11 +965,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TWordInfo.SpaceInfo
-  Description for SpaceInfo
+Description for SpaceInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TWordInfo.Width
-  Description for Width
+Description for Width
 
 ----------------------------------------------------------------------------------------------------
 @@TWordInfoArray

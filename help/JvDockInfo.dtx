@@ -3,14 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDockInfo.pas
 Summary
-  Contains the TJvDockInfo component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDockInfo component.
 Author
   Luxiaoban
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockFormStyle
-<TITLE TJvDockFormStyle type>
+@@TJvDockInfoZone.UnDockTop
 Summary
   Write here a summary (1 line)
 Description
@@ -20,24 +21,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockFormStyle.dsNormal
-  Description for dsNormal
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockFormStyle.dsConjoin
-  Description for dsConjoin
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockFormStyle.dsTab
-  Description for dsTab
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockFormStyle.dsDockPanel
-  Description for dsDockPanel
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle
-<TITLE TJvDockInfoStyle type>
+@@TJvDockInfoZone.UnDockLeft
 Summary
   Write here a summary (1 line)
 Description
@@ -47,42 +31,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isNone
-  Description for isNone
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isJVCLReadInfo
-  Description for isJVCLReadInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isJVCLWriteInfo
-  Description for isJVCLWriteInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isReadFileInfo
-  Description for isReadFileInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isWriteFileInfo
-  Description for isWriteFileInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isReadRegInfo
-  Description for isReadRegInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoStyle.isWriteRegInfo
-  Description for isWriteRegInfo
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.AppStorage
+@@TJvDockInfoZone.UnDockHeight
 Summary
   Write here a summary (1 line)
 Description
@@ -92,7 +41,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.AppStoragePath
+@@TJvDockInfoZone.TopDocked
 Summary
   Write here a summary (1 line)
 Description
@@ -102,7 +51,29 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.CreateZoneAndAddInfoFromApp
+@@TJvDockInfoZone.TBDockHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.SetDockInfoFromNodeToDockControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  DockControl - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.SetDockInfoFromNodeToControl
 Summary
   Write here a summary (1 line)
 Description
@@ -114,98 +85,31 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.DockInfoIni
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.DockInfoReg
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.ReadInfoFromAppStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.ReadInfoFromIni
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.ReadInfoFromReg
+@@TJvDockInfoZone.SetDockInfoFromDockControlToNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  RegName - Description for this parameter
+  DockControl - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.WriteInfoToAppStorage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.WriteInfoToIni
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoTree.WriteInfoToReg
+@@TJvDockInfoZone.SetDockInfoFromControlToNode
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  RegName - Description for this parameter
+  Control - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.BorderStyle
+@@TJvDockInfoZone.RightDocked
 Summary
   Write here a summary (1 line)
 Description
@@ -215,7 +119,107 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.BottomDocked
+@@TJvDockInfoZone.ParentName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.LRDockWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.LeftDocked
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.LastDockSiteName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.FormStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.EachOtherDocked
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.DockRect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.DockFormStyle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.DockFormName
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.DockControl
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoZone.DockClientData
 Summary
   Write here a summary (1 line)
 Description
@@ -245,7 +249,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.DockClientData
+@@TJvDockInfoZone.BottomDocked
 Summary
   Write here a summary (1 line)
 Description
@@ -255,7 +259,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.DockControl
+@@TJvDockInfoZone.BorderStyle
 Summary
   Write here a summary (1 line)
 Description
@@ -265,7 +269,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.DockFormName
+@@TJvDockInfoZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoTree.WriteInfoToReg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RegName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoTree.WriteInfoToIni
 Summary
   Write here a summary (1 line)
 Description
@@ -275,7 +298,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.DockFormStyle
+@@TJvDockInfoTree.WriteInfoToAppStorage
 Summary
   Write here a summary (1 line)
 Description
@@ -285,7 +308,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.DockRect
+@@TJvDockInfoTree.ReadInfoFromReg
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  RegName - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoTree.ReadInfoFromIni
 Summary
   Write here a summary (1 line)
 Description
@@ -295,7 +330,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.EachOtherDocked
+@@TJvDockInfoTree.ReadInfoFromAppStorage
 Summary
   Write here a summary (1 line)
 Description
@@ -305,7 +340,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.FormStyle
+@@TJvDockInfoTree.DockInfoReg
 Summary
   Write here a summary (1 line)
 Description
@@ -315,7 +350,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.LastDockSiteName
+@@TJvDockInfoTree.DockInfoIni
 Summary
   Write here a summary (1 line)
 Description
@@ -325,47 +360,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.LeftDocked
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.LRDockWidth
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.ParentName
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.RightDocked
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.SetDockInfoFromControlToNode
+@@TJvDockInfoTree.CreateZoneAndAddInfoFromApp
 Summary
   Write here a summary (1 line)
 Description
@@ -377,43 +372,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.SetDockInfoFromDockControlToNode
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DockControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.SetDockInfoFromNodeToControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.SetDockInfoFromNodeToDockControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  DockControl - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.TBDockHeight
+@@TJvDockInfoTree.AppStoragePath
 Summary
   Write here a summary (1 line)
 Description
@@ -423,7 +382,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.TopDocked
+@@TJvDockInfoTree.AppStorage
 Summary
   Write here a summary (1 line)
 Description
@@ -433,7 +392,51 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.UnDockHeight
+@@TJvDockInfoTree
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isReadRegInfo
+Description for isReadRegInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isWriteRegInfo
+Description for isWriteRegInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isReadFileInfo
+Description for isReadFileInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isWriteFileInfo
+Description for isWriteFileInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isNone
+Description for isNone
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isJVCLReadInfo
+Description for isJVCLReadInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle.isJVCLWriteInfo
+Description for isJVCLWriteInfo
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockFormStyle.dsTab
+Description for dsTab
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockFormStyle.dsDockPanel
+Description for dsDockPanel
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockInfoStyle
+<TITLE TJvDockInfoStyle type>
 Summary
   Write here a summary (1 line)
 Description
@@ -443,17 +446,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.UnDockLeft
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+@@TJvDockFormStyle.dsNormal
+Description for dsNormal
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockInfoZone.UnDockTop
+@@TJvDockFormStyle.dsConjoin
+Description for dsConjoin
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockFormStyle
+<TITLE TJvDockFormStyle type>
 Summary
   Write here a summary (1 line)
 Description

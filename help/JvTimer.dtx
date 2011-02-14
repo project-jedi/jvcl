@@ -3,36 +3,17 @@
 ----------------------------------------------------------------------------------------------------
 @@JvTimer.pas
 Summary
-  Contains the TJvTimer component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvTimer component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-
-----------------------------------------------------------------------------------------------------
-@@TJvTimer
-<TITLEIMG TJvTimer>
-JVCLInfo
-  GROUP=JVCL.System.AlarmsAndTimers.Timers
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
 Description
-  Write here a description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTimer.Enabled
-Summary
-  Specifies if the timer is enabled or not
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTimer.Interval
+@@TJvTimer.ThreadPriority
 Summary
   Write here a summary (1 line)
 Description
@@ -42,21 +23,12 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTimer.OnTimer
+@@TJvTimer.Threaded
 Summary
   Write here a summary (1 line)
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvTimer.SyncEvent
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  default value=True
+  If Threaded is set to False a normal TTimer-component is used internally.
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -74,7 +46,20 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTimer.Threaded
+@@TJvTimer.SyncEvent
+Summary
+  Use "False" only when code is thread-safe
+Description
+  default=True
+  If SyncEvent=False then the OnTimer-Event is directly called from the Timer-thread, so that it's
+  not on the main application-thread.
+  Set to False only if you are sure that your code is thread-safe.
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTimer.OnTimer
 Summary
   Write here a summary (1 line)
 Description
@@ -84,9 +69,36 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvTimer.ThreadPriority
+@@TJvTimer.Interval
 Summary
   Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvTimer
+<TITLEIMG TJvTimer>
+JVCLInfo
+  GROUP=JVCL.System.AlarmsAndTimers.Timers
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  ATT: This component differs in it's behaviour from the standard TTimer-component:
+  
+  The property "EventTime"defaults to tetPre.
+  When EventTime is set to tetPost, the component behaves like a standard TTimer. (Set Enabled to
+  True, then there is a pause of the specified duration and then the event fires)
+  When EventTime=tetPre, the timer fires the first event directly after Enabled is set to true and
+  waits afterwards.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTimer.Enabled
+Summary
+  Specifies if the timer is enabled or not
 Description
   Write here a description
 See Also

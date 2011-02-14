@@ -3,171 +3,12 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMarkupLabel.pas
 Summary
-  Contains the TJvMarkupLabel component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMarkupLabel component.
 Author
   Jan Verhoeven
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupLabel
-<TITLEIMG TJvMarkupLabel>
-JVCLInfo
-  GROUP=JVCL.LabelsAndStatic
-  FLAG=Component
-Summary
-  Implements an HTML-enabled Label component.
 Description
-  TJvMarkupLabel is a TJvPubGraphicControl descendant that implements an HTML-enabled Label component.
-  TJvMarkupLabel provides the ability to parse and render HTML markup assigned to the Text property for
-  the control.
+  <INCLUDE JVCL.UnitText.dtx>
 
-  TJvMarkupLabel recognizes the following HTML tags in the Text property:
-
-  <TABLE>
-    Tag                 Description
-    ------------------  ----------------------------------------------------------------------
-    \<br\>              Break tag. Performs a newline or carriage return when rendering the
-                          HTML tag.
-    \<b\>\<\/b\>        Bold tag. Renders using the Bold attribute for the current font.
-    \<i\>\<\/i\>        Italic tag. Renders using the Italic attribute for the current font.
-    \<u\>\<\/u\>        Underline tag. Renders using the Underline attribute for the current
-                          font.
-    \<font\>\<\/font\>  Font tag. Allows defining the font used to render the values between
-                          the start and end tags. Use the face, size, and color attributes to
-                          specify the values to use for the font element.
-  </TABLE>
-
-  The following attributes are recognized for HTML markup in the Text property:
-
-  <TABLE>
-    Attribute  Description
-    ---------  -------------------------------------------------------------------------------
-    face       Font name to use for the HTML element. Must match the name for a font
-                 installed on the computer.
-    size       Font size for the HTML element. The unit measure for size is expressed in
-                 points (1/72 inch).
-    color      Font color for the HTML element. Font may be expressed as a decimal value
-                 (using #nnnnnn) or a color name (Red, Green, Blue, Lime, Maroon, etc).
-  </TABLE>
-
-  Attributes attached to an HTML element must be enclosed in double quote characters ("). For
-  instance:
-
-  <CODE>
-  \<font face="Arial" size="14" color="Navy">Title\</font>\<br>
-  </CODE>
-
-  TJvMarkupLabel uses internal instances of TJvHTMLElementStack during parsing and rendering of HTML
-  tags assigned to the Text property. TJvMarkupLabel implements overridden methods to handle Font and
-  Text assignments to properties in the control, and to perform painting and automatic resizing of the
-  rendered control.
-
-  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to the
-  rendered HTML content for the control.
-See Also
-  TJvPubGraphicControl, TJvHTMLElementStack, TJvHTMLElement, TJvMarkupLabel.Text, <DELPHILINK
-  TControl.Font>, TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginRight, TJvMarkupLabel.MarginTop
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupLabel.Alignment
-Summary
-  Horizontal alignment of values rendered for the control.
-Description
-  Alignment is a TAlignment property used to control horizontal alignment of the the values rendered
-  for the control.
-
-  Alignment is used when rendering HTML markup found in the Text property in the Paint method.
-  Alignment can contain one of the following values:
-
-  <TABLE>
-    Value             Meaning
-    ----------------  ------------------------------------------------------------------------
-    taLeftJustify     Text is rendered aligned to the left-hand margin (MarginLeft).
-    taRightJustify    Text is rendered aligned to the right-hand margin (MarginRight).
-    taCenter          Text is rendered center-aligned using the width of the rendered text
-                        relative to the left- and right-hand margins.
-  </TABLE>
-
-  The default value for Alignment is taLeftJustify.
-
-  Changing the value in the Alignment property causes the control to be redrawn.
-See Also
-  TJvMarkupLabel.Text, TJvMarkupLabel.Paint
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupLabel.MarginLeft
-Summary
-  Specifies the left-hand margin for content rendered in the HTML-enabled control.
-Description
-  MarginLeft is an Integer property that specifies the left-hand margin in pixels for content rendered
-  in the HTML-enabled control. The default value for MarginLeft is 5.
-
-  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
-  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge boundaries
-  for the Alignment and Align properties within the client area for the control.
-
-  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
-  redrawn.
-See Also
-  TJvMarkupLabel.MarginRight, TJvMarkupLabel.MarginTop, TJvMarkupLabel.Text, TJvMarkupLabel.Paint
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupLabel.MarginRight
-Summary
-  Specifies the right-hand margin for content rendered in the HTML-enabled control.
-Description
-  MarginRight is an Integer property that specifies the right-hand margin in pixels for content
-  rendered in the HTML-enabled control. The default value for MarginRight is 5.
-
-  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
-  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge boundaries
-  for the Alignment and Align properties within the client area for the control.
-
-  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
-  redrawn.
-See Also
-  TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginTop, TJvMarkupLabel.Text, TJvMarkupLabel.Paint
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupLabel.MarginTop
-Summary
-  Specifies the top margin for content rendered in the HTML-enabled control.
-Description
-  MarginTop is an Integer property that specifies the top margin in pixels for content rendered in the
-  HTML-enabled control. The default value for MarginTop is 5.
-
-  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
-  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge boundaries
-  for the Alignment and Align properties within the client area for the control.
-
-  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
-  redrawn.
-See Also
-  TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginRight, TJvMarkupLabel.Text, TJvMarkupLabel.Paint
-
-----------------------------------------------------------------------------------------------------
-@@TJvMarkupLabel.Paint
-Summary
-  Renders the HTML markup for the HTML-enabled control.
-Description
-  Paint is an overridden method in TJvMarkupLabel that implements rendering of the HTML markup in Text
-  for the HTML-enabled control.
-
-  Rendering uses the Canvas for the control to recalculate the position for HTML elements found in the
-  Text property. HTML element positions are relative to the values specified in the MarginLeft,
-  MarginRight, and MarginTop properties. The value in MarginBottom is also added to the overall total
-  height of the rendered control.
-
-  Internally, Paint uses TJvHTMLElementStack and TJvHTMLElement to calculate the flow and alignment of
-  the HTML elements in the client area of the control. This includes wrapping of HTML elements that
-  cannot be draw in their entirety on the current line.
-
-  When Autosize contains True, the control will be resized horizontally when additional space is needed
-  to render elements in the HTML markup. When Autosize contains False, the rendered content is drawn by
-  wrapping rendered elements (when needed) and uses the value in the Alignment property.
-See Also
-  TJvMarkupLabel.Text, TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginRight, TJvMarkupLabel.MarginTop,
-  <DELPHILINK TControl.Autosize>, TJvMarkupLabel.Alignment, TJvHTMLElementStack, TJvHTMLElement
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMarkupLabel.Text
@@ -175,12 +16,12 @@ Summary
   HTML markup to render as the content of the control.
 Description
   Text is a TCaption property that specifies the HTML markup rendered as the content for the
-  HTML-enabled control. Values in the Text property are parsed into the HTML elements need to draw the
-  contents of the control using the Paint method. Changing the value in either the Text or Font
+  HTML-enabled control. Values in the Text property are parsed into the HTML elements need to draw
+  the contents of the control using the Paint method. Changing the value in either the Text or Font
   properties causes the control to be redrawn.
-
+  
   Text can contain plain text and any of the following HTML tags:
-
+  
   <TABLE>
     Tag                  Description
     -------------------  ---------------------------------------------------------------------
@@ -194,9 +35,9 @@ Description
                            the start and end tags. Use the face, size, and color attributes
                            to specify the values to use for the font element.
   </TABLE>
-
+  
   The following attributes are recognized for HTML markup in the Text property:
-
+  
   <TABLE>
     Attribute  Description
     ---------  -------------------------------------------------------------------------------
@@ -207,17 +48,177 @@ Description
     color      Font color for the HTML element. Font may be expressed as a decimal value
                  (using #nnnnnn) or a color name (Red, Green, Blue, Lime, Maroon, etc).
   </TABLE>
-
+  
   Attributes attached to an HTML element must be enclosed in double quote characters ("). For
   instance:
-
+  
   <CODE>
-  \<font face="Arial" size="14" color="Navy">Title\</font>\<br>
-  </CODE>
-
-  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to the
-  rendered HTML content for the control using the Alignment property.
+  \<font face="Arial" size="14" color="Navy">Title\</font>\<br> </CODE>
+  
+  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to
+  the rendered HTML content for the control using the Alignment property.
 See Also
   TJvHTMLElementStack, TJvHTMLElement, <DELPHILINK TControl.Font>, TJvMarkupLabel.MarginLeft,
   TJvMarkupLabel.MarginRight, TJvMarkupLabel.MarginTop, TJvMarkupLabel.Alignment
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupLabel.MarginLeft
+Summary
+  Specifies the left-hand margin for content rendered in the HTML-enabled control.
+Description
+  MarginLeft is an Integer property that specifies the left-hand margin in pixels for content
+  rendered in the HTML-enabled control. The default value for MarginLeft is 5.
+  
+  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
+  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge
+  boundaries for the Alignment and Align properties within the client area for the control.
+  
+  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
+  redrawn.
+See Also
+  TJvMarkupLabel.MarginRight, TJvMarkupLabel.MarginTop, TJvMarkupLabel.Text, TJvMarkupLabel.Paint
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupLabel.MarginRight
+Summary
+  Specifies the right-hand margin for content rendered in the HTML-enabled control.
+Description
+  MarginRight is an Integer property that specifies the right-hand margin in pixels for content
+  rendered in the HTML-enabled control. The default value for MarginRight is 5.
+  
+  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
+  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge
+  boundaries for the Alignment and Align properties within the client area for the control.
+  
+  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
+  redrawn.
+See Also
+  TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginTop, TJvMarkupLabel.Text, TJvMarkupLabel.Paint
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupLabel.MarginTop
+Summary
+  Specifies the top margin for content rendered in the HTML-enabled control.
+Description
+  MarginTop is an Integer property that specifies the top margin in pixels for content rendered in the
+  HTML-enabled control. The default value for MarginTop is 5.
+  
+  MarginLeft, MarginRight, and MarginTop are used when rendering the HTML markup in the Text for the
+  control using the Paint method. MarginLeft, MarginRight, and MarginTop determine the edge
+  boundaries for the Alignment and Align properties within the client area for the control.
+  
+  Changing the value in the MarginLeft, MarginRight, or MarginTop properties causes the control to be
+  redrawn.
+See Also
+  TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginRight, TJvMarkupLabel.Text, TJvMarkupLabel.Paint
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupLabel.Paint
+Summary
+  Renders the HTML markup for the HTML-enabled control.
+Description
+  Paint is an overridden method in TJvMarkupLabel that implements rendering of the HTML markup in
+  Text for the HTML-enabled control.
+  
+  Rendering uses the Canvas for the control to recalculate the position for HTML elements found in the
+  Text property. HTML element positions are relative to the values specified in the MarginLeft,
+  MarginRight, and MarginTop properties. The value in MarginBottom is also added to the overall total
+  height of the rendered control.
+  
+  Internally, Paint uses TJvHTMLElementStack and TJvHTMLElement to calculate the flow and alignment
+  of the HTML elements in the client area of the control. This includes wrapping of HTML elements
+  that cannot be draw in their entirety on the current line.
+  
+  When Autosize contains True, the control will be resized horizontally when additional space is
+  needed to render elements in the HTML markup. When Autosize contains False, the rendered content is
+  drawn by wrapping rendered elements (when needed) and uses the value in the Alignment property.
+See Also
+  TJvMarkupLabel.Text, TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginRight,
+  TJvMarkupLabel.MarginTop, <DELPHILINK TControl.Autosize>, TJvMarkupLabel.Alignment,
+  TJvHTMLElementStack, TJvHTMLElement
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupLabel.Alignment
+Summary
+  Horizontal alignment of values rendered for the control.
+Description
+  Alignment is a TAlignment property used to control horizontal alignment of the the values rendered
+  for the control.
+  
+  Alignment is used when rendering HTML markup found in the Text property in the Paint method.
+  Alignment can contain one of the following values:
+  
+  <TABLE>
+    Value             Meaning
+    ----------------  ------------------------------------------------------------------------
+    taLeftJustify     Text is rendered aligned to the left-hand margin (MarginLeft).
+    taRightJustify    Text is rendered aligned to the right-hand margin (MarginRight).
+    taCenter          Text is rendered center-aligned using the width of the rendered text
+                        relative to the left- and right-hand margins.
+  </TABLE>
+  
+  The default value for Alignment is taLeftJustify.
+  
+  Changing the value in the Alignment property causes the control to be redrawn.
+See Also
+  TJvMarkupLabel.Text, TJvMarkupLabel.Paint
+
+----------------------------------------------------------------------------------------------------
+@@TJvMarkupLabel
+<TITLEIMG TJvMarkupLabel>
+JVCLInfo
+  GROUP=JVCL.LabelsAndStatic
+  FLAG=Component
+Summary
+  Implements an HTML-enabled Label component.
+Description
+  TJvMarkupLabel is a TJvPubGraphicControl descendant that implements an HTML-enabled Label component.
+  TJvMarkupLabel provides the ability to parse and render HTML markup assigned to the Text property
+  for the control.
+  
+  TJvMarkupLabel recognizes the following HTML tags in the Text property:
+  
+  <TABLE>
+    Tag                 Description
+    ------------------  ----------------------------------------------------------------------
+    \<br\>              Break tag. Performs a newline or carriage return when rendering the
+                          HTML tag.
+    \<b\>\<\/b\>        Bold tag. Renders using the Bold attribute for the current font.
+    \<i\>\<\/i\>        Italic tag. Renders using the Italic attribute for the current font.
+    \<u\>\<\/u\>        Underline tag. Renders using the Underline attribute for the current
+                          font.
+    \<font\>\<\/font\>  Font tag. Allows defining the font used to render the values between
+                          the start and end tags. Use the face, size, and color attributes to
+                          specify the values to use for the font element.
+  </TABLE>
+  
+  The following attributes are recognized for HTML markup in the Text property:
+  
+  <TABLE>
+    Attribute  Description
+    ---------  -------------------------------------------------------------------------------
+    face       Font name to use for the HTML element. Must match the name for a font
+                 installed on the computer.
+    size       Font size for the HTML element. The unit measure for size is expressed in
+                 points (1/72 inch).
+    color      Font color for the HTML element. Font may be expressed as a decimal value
+                 (using #nnnnnn) or a color name (Red, Green, Blue, Lime, Maroon, etc).
+  </TABLE>
+  
+  Attributes attached to an HTML element must be enclosed in double quote characters ("). For
+  instance:
+  
+  <CODE>
+  \<font face="Arial" size="14" color="Navy">Title\</font>\<br> </CODE>
+  
+  TJvMarkupLabel uses internal instances of TJvHTMLElementStack during parsing and rendering of HTML
+  tags assigned to the Text property. TJvMarkupLabel implements overridden methods to handle Font and
+  Text assignments to properties in the control, and to perform painting and automatic resizing of
+  the rendered control.
+  
+  Use the MarginLeft, MarginRight, and MarginTop properties to control the spacing needed prior to
+  the rendered HTML content for the control.
+See Also
+  TJvPubGraphicControl, TJvHTMLElementStack, TJvHTMLElement, TJvMarkupLabel.Text, <DELPHILINK
+  TControl.Font>, TJvMarkupLabel.MarginLeft, TJvMarkupLabel.MarginRight, TJvMarkupLabel.MarginTop
 

@@ -3,29 +3,53 @@
 ----------------------------------------------------------------------------------------------------
 @@JvClipboardViewer.pas
 Summary
-  Contains the TJvClipboardViewer component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvClipboardViewer component.
 Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@ClipboardFormatToView
-<TITLE ClipboardFormatToView function>
+@@TJvCustomClipboardViewer.ViewFormat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomClipboardViewer.OnText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Value - Description for this parameter
+  Sender - Description for this parameter
+  AText  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat
-<TITLE TClipboardViewFormat type>
+@@TJvCustomClipboardViewer.OnImage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Image  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomClipboardViewer.OnChange
 Summary
   Write here a summary (1 line)
 Description
@@ -35,59 +59,26 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvDefault
-  Description for cvDefault
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvEmpty
-  Description for cvEmpty
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvUnknown
-  Description for cvUnknown
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvText
-  Description for cvText
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvBitmap
-  Description for cvBitmap
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvMetafile
-  Description for cvMetafile
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvPalette
-  Description for cvPalette
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvOemText
-  Description for cvOemText
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvPicture
-  Description for cvPicture
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvComponent
-  Description for cvComponent
-
-----------------------------------------------------------------------------------------------------
-@@TClipboardViewFormat.cvIcon
-  Description for cvIcon
-
-----------------------------------------------------------------------------------------------------
-@@TJvClipboardViewer
-<TITLEIMG TJvClipboardViewer>
-JVCLInfo
-  GROUP=JVCL.System
-  FLAG=Component
+@@TJvCustomClipboardViewer.EmptyClipboard
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomClipboardViewer.ClipboardFormatNames
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Index - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomClipboardViewer
@@ -111,80 +102,89 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomClipboardViewer.ClipboardFormatNames
+@@TJvClipboardViewer
+<TITLEIMG TJvClipboardViewer>
+JVCLInfo
+  GROUP=JVCL.System
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvIcon
+Description for cvIcon
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvComponent
+Description for cvComponent
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvPicture
+Description for cvPicture
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvOemText
+Description for cvOemText
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvPalette
+Description for cvPalette
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvMetafile
+Description for cvMetafile
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvBitmap
+Description for cvBitmap
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvText
+Description for cvText
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvUnknown
+Description for cvUnknown
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvDefault
+Description for cvDefault
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat.cvEmpty
+Description for cvEmpty
+
+----------------------------------------------------------------------------------------------------
+@@TClipboardViewFormat
+<TITLE TClipboardViewFormat type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@ClipboardFormatToView
+<TITLE ClipboardFormatToView function>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomClipboardViewer.EmptyClipboard
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomClipboardViewer.OnChange
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomClipboardViewer.OnImage
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  Image  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomClipboardViewer.OnText
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Sender - Description for this parameter
-  AText  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomClipboardViewer.ViewFormat
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Value - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOnImageEvent
-<TITLE TJvOnImageEvent type>
-<COMBINE TJvCustomClipboardViewer.OnImage>
+<TITLE TJvOnImageEvent type> <COMBINE TJvCustomClipboardViewer.OnImage>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOnTextEvent
-<TITLE TJvOnTextEvent type>
-<COMBINE TJvCustomClipboardViewer.OnText>
+<TITLE TJvOnTextEvent type> <COMBINE TJvCustomClipboardViewer.OnText>
 

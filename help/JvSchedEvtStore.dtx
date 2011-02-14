@@ -3,13 +3,24 @@
 ----------------------------------------------------------------------------------------------------
 @@JvSchedEvtStore.pas
 Summary
-  Contains the TJvSchedEvtStore component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvSchedEvtStore component.
 Author
   Marcel Bestebroer
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore
+@@TSchedEvtStructKind.seskState
+Description for seskState
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtStoreAttributes
+<TITLE TSchedEvtStoreAttributes type> <COMBINE TSchedEvtStoreAttribute>
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtStructKind
+<TITLE TSchedEvtStructKind type>
 Summary
   Write here a summary (1 line)
 Description
@@ -19,7 +30,137 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore.LoadEventSettings
+@@TSchedEvtStoreAttribute.sesaIdentifiers
+Description for sesaIdentifiers
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtStoreAttribute.sesaStructured
+Description for sesaStructured
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleYearlyInterval
+Description for seikScheduleYearlyInterval
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtStoreAttribute
+<TITLE TSchedEvtStoreAttribute type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleYearlyIndex
+Description for seikScheduleYearlyIndex
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleYearlyIndexType
+Description for seikScheduleYearlyIndexType
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleYearlyMonth
+Description for seikScheduleYearlyMonth
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleYearlyDay
+Description for seikScheduleYearlyDay
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleMonthlyInterval
+Description for seikScheduleMonthlyInterval
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleMonthlyIndex
+Description for seikScheduleMonthlyIndex
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleMonthlyIndexType
+Description for seikScheduleMonthlyIndexType
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleMonthlyDay
+Description for seikScheduleMonthlyDay
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleWeeklyInterval
+Description for seikScheduleWeeklyInterval
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleWeeklyDays
+Description for seikScheduleWeeklyDays
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleDailyInterval
+Description for seikScheduleDailyInterval
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleDailyWeekdays
+Description for seikScheduleDailyWeekdays
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikFreqInterval
+Description for seikFreqInterval
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikFreqEnd
+Description for seikFreqEnd
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikFreqStart
+Description for seikFreqStart
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleEndDate
+Description for seikScheduleEndDate
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleEndCount
+Description for seikScheduleEndCount
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleEndType
+Description for seikScheduleEndType
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleStart
+Description for seikScheduleStart
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikScheduleRecurType
+Description for seikScheduleRecurType
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind.seikUnknown
+Description for seikUnknown
+
+----------------------------------------------------------------------------------------------------
+@@TSchedEvtItemKind
+<TITLE TSchedEvtItemKind type>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSchedEvtStore.UsesIdentifiers
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvSchedEvtStore.SaveState
 Summary
   Write here a summary (1 line)
 Description
@@ -31,7 +172,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore.LoadSchedule
+@@TJvSchedEvtStore.SaveSchedule
 Summary
   Write here a summary (1 line)
 Description
@@ -43,7 +184,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore.LoadState
+@@TJvSchedEvtStore.SaveEventSettings
 Summary
   Write here a summary (1 line)
 Description
@@ -55,7 +196,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore.SaveEventSettings
+@@TJvSchedEvtStore.LoadState
 Summary
   Write here a summary (1 line)
 Description
@@ -67,7 +208,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore.SaveSchedule
+@@TJvSchedEvtStore.LoadSchedule
 Summary
   Write here a summary (1 line)
 Description
@@ -79,7 +220,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@IJvScheduledEventsStore.SaveState
+@@TJvSchedEvtStore.LoadEventSettings
 Summary
   Write here a summary (1 line)
 Description
@@ -91,26 +232,16 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@ScheduledEventStore_Stream
-<TITLE ScheduledEventStore_Stream function>
+@@TJvSchedEvtStore.IsStructured
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  Stream     - Description for this parameter
-  Binary     - Description for this parameter
-  OwnsStream - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSchedEvtStore.Event
@@ -135,19 +266,29 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.IsStructured
+@@TJvSchedEvtStore
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Return value
-  Describe here what the function returns
+
+----------------------------------------------------------------------------------------------------
+@@ScheduledEventStore_Stream
+<TITLE ScheduledEventStore_Stream function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Stream     - Description for this parameter
+  Binary     - Description for this parameter
+  OwnsStream - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.LoadEventSettings
+@@IJvScheduledEventsStore.SaveState
 Summary
   Write here a summary (1 line)
 Description
@@ -159,7 +300,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.LoadSchedule
+@@IJvScheduledEventsStore.SaveSchedule
 Summary
   Write here a summary (1 line)
 Description
@@ -171,7 +312,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.LoadState
+@@IJvScheduledEventsStore.SaveEventSettings
 Summary
   Write here a summary (1 line)
 Description
@@ -183,7 +324,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.SaveEventSettings
+@@IJvScheduledEventsStore.LoadState
 Summary
   Write here a summary (1 line)
 Description
@@ -195,7 +336,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.SaveSchedule
+@@IJvScheduledEventsStore.LoadSchedule
 Summary
   Write here a summary (1 line)
 Description
@@ -207,7 +348,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.SaveState
+@@IJvScheduledEventsStore.LoadEventSettings
 Summary
   Write here a summary (1 line)
 Description
@@ -219,20 +360,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSchedEvtStore.UsesIdentifiers
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind
-<TITLE TSchedEvtItemKind type>
+@@IJvScheduledEventsStore
 Summary
   Write here a summary (1 line)
 Description
@@ -240,175 +368,48 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikUnknown
-  Description for seikUnknown
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleStart
-  Description for seikScheduleStart
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleRecurType
-  Description for seikScheduleRecurType
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleEndType
-  Description for seikScheduleEndType
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleEndCount
-  Description for seikScheduleEndCount
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleEndDate
-  Description for seikScheduleEndDate
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikFreqStart
-  Description for seikFreqStart
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikFreqEnd
-  Description for seikFreqEnd
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikFreqInterval
-  Description for seikFreqInterval
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleDailyWeekdays
-  Description for seikScheduleDailyWeekdays
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleDailyInterval
-  Description for seikScheduleDailyInterval
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleWeeklyDays
-  Description for seikScheduleWeeklyDays
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleWeeklyInterval
-  Description for seikScheduleWeeklyInterval
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleMonthlyDay
-  Description for seikScheduleMonthlyDay
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleMonthlyIndexType
-  Description for seikScheduleMonthlyIndexType
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleMonthlyIndex
-  Description for seikScheduleMonthlyIndex
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleMonthlyInterval
-  Description for seikScheduleMonthlyInterval
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleYearlyDay
-  Description for seikScheduleYearlyDay
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleYearlyMonth
-  Description for seikScheduleYearlyMonth
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleYearlyIndexType
-  Description for seikScheduleYearlyIndexType
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleYearlyIndex
-  Description for seikScheduleYearlyIndex
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtItemKind.seikScheduleYearlyInterval
-  Description for seikScheduleYearlyInterval
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtStoreAttribute
-<TITLE TSchedEvtStoreAttribute type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtStoreAttribute.sesaStructured
-  Description for sesaStructured
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtStoreAttribute.sesaIdentifiers
-  Description for sesaIdentifiers
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtStoreAttributes
-<TITLE TSchedEvtStoreAttributes type>
-<COMBINE TSchedEvtStoreAttribute>
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtStructKind
-<TITLE TSchedEvtStructKind type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TSchedEvtStructKind.seskState
-  Description for seskState
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskEvent
-  Description for seskEvent
+Description for seskEvent
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskSchedule
-  Description for seskSchedule
+Description for seskSchedule
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleRecurInfo
-  Description for seskScheduleRecurInfo
+Description for seskScheduleRecurInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleEndInfo
-  Description for seskScheduleEndInfo
+Description for seskScheduleEndInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleDayFreq
-  Description for seskScheduleDayFreq
+Description for seskScheduleDayFreq
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleDaily
-  Description for seskScheduleDaily
+Description for seskScheduleDaily
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleWeekly
-  Description for seskScheduleWeekly
+Description for seskScheduleWeekly
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleMonthly
-  Description for seskScheduleMonthly
+Description for seskScheduleMonthly
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleMonthlyIndex
-  Description for seskScheduleMonthlyIndex
+Description for seskScheduleMonthlyIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleYearly
-  Description for seskScheduleYearly
+Description for seskScheduleYearly
 
 ----------------------------------------------------------------------------------------------------
 @@TSchedEvtStructKind.seskScheduleYearlyIndex
-  Description for seskScheduleYearlyIndex
+Description for seskScheduleYearlyIndex
 

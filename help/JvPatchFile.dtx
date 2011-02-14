@@ -3,51 +3,141 @@
 ----------------------------------------------------------------------------------------------------
 @@JvPatchFile.pas
 Summary
-  Contains the TJvPatchFile component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvPatchFile component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPatchFile
-<TITLEIMG TJvPatchFile>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
+@@TJvPatchFile.StartFile
 Summary
-  Implements a file patching utility.
+  Original file to be patched with the component.
 Description
-  TJvPatchFile is a TJvComponent descendant that implements a file patching utility.
+  StartFile is a TFileName property that specifies the file with the original content to be patched
+  using the Patch method. Values in the Differences property are applied to the contents of the file
+  specified in StartFile using the Patch method to yield a file with the desired content.
+  
+  Use ChangeInFile to indicate if changes in the Differences property should be applied directly to
+  the content of the original file, or stored in the file specified in EndFile.
 
-  TJvPatchFile can be used to apply patches in the Differences property to the contents of an original
-  file in order to yield a file with the desired content. Values in the Differences property are in a
-  specific format required by the TJvPatchFile component.
+----------------------------------------------------------------------------------------------------
+@@TJvPatchFile.Patch
+Summary
+  Applies the specified patches to a file.
+Description
+  Patch is a Boolean function used to apply the patches in the Differences property to the contents
+  of the original file specified in StartFile. Patch returns True when the Differences are
+  successfully applied to the original file.
+  
+  Patch reads and decrypts the contents of the Differences property using the value specified in the
+  Password parameter. Password is the value used when creating the values in Differences using its'
+  design-time property editor. Using a Password argument that is different than the value used to
+  populate the Differences property will result in an unusable file after patches are applied.
+  
+  Use StartFile to specify the file name with the content to be patched using the values in
+  Differences.
+  
+  Use EndFile and ChangeInFile to indicate where the patched contents of the file indicated in
+  StartFile should be stored. When ChangeInFile contains False, the value in EndFile is used to
+  create a file the patch file content is stored. When ChangeInFile contains False, patches in the
+  Differences property overwrite the original contents of the file specified in StartFile.
+  
+  Assign values to the Differences property, or load the values from a file, to indicate the actions
+  to perform in the Patch method. Values in Differences must be in the specific format required by the
+  TJvPatchFile component.
+  
+  A design-time property editor is provided for the Differences property that can be used to create patches in the format required for use i
+   the component. Patches for the specified files are encrypted using the Password provided at
+  design-time.
+Parameters
+  Password - Password to use when encrypting patch file contents.
+Return value
+  Boolean - True when patches in the Differences property are applied to the original file content.
 
-  A design-time property editor is provided for the Differences property that can be used to create
-  patches in the format required for use in the component. Patches for the specified files are
-  encrypted using the Password provided at design-time.
+----------------------------------------------------------------------------------------------------
+@@TJvPatchFile.IsPatchable
+Summary
+  Indicates if the specified file appears to be patchable.
+Description
+  IsPatchable is a Boolean function used to indicate if the file specified in Filename can be patched
+  using the values in Differences. IsPatchable performs a rudimentary test to determine if the
+  specified file name can be patched; the file in Filename must exist and the file size for the
+  unpatched file stored in Differences must match the file size for the file in Filename.
+  
+  IsPatchable does not perform any in-depth comparison of the contents of the file in Filename.
+Parameters
+  FileName - File to check.
+Return value
+  Boolean - True when
 
-  Patches in the Differences property can be saved to a file for subsequent distribution and processing
-  using the TJvPatchFile component.
+----------------------------------------------------------------------------------------------------
+@@TJvPatchFile.IsPatched
+Summary
+  Checks a file to determine if it may have already been patched.
+Description
+  IsPatched is a Boolean function used to indicate if patches in the Differences property have
+  already been applied using the Patch method. IsPatched performs a rudimentary test for the file
+  specified in
+  Filename; the file must exist and its' size is examine to determine if it matches the size stored
+  in the Differences property. It does not perform any in-depth comparison of the contents with the
+  file specified in StartFile.
+  
+  IsPatched returns False when Filename cannot be located, Differences contains an invalid format, or
+  when the size of the file in Filename differs from the value for the patched file in Differences.
+Parameters
+  FileName - File to check for updated content.
+Return value
+  Boolean - True when the file appears to have been patched.
 
+----------------------------------------------------------------------------------------------------
+@@TJvPatchFile.EndFile
+Summary
+  File where patched file content can be stored.
+Description
+  EndFile is a TFileName property that specifies the file where the patched contents of the file
+  specified in StartFile should be stored.
+  
+  EndFile is used in the Patch method when ChangeInFile contains False. Patches from the Differences
+  property are applied to the original file content and stored in EndFile at the completion of the
+  patching process.
+  
+  When ChangeInFile contains True, the patches in Differences are applied directly to the contents of
+  the file specified in StartFile and the value EndFile is ignored.
+
+----------------------------------------------------------------------------------------------------
+@@TJvPatchFile.Differences
+Summary
+  Patches (or file differences) to apply to the original file.
+Description
+  Differences is a TStrings property that represents patches (or file differences) required to
+  convert the file specified in StartFile to the desired content using the Patch method.
+  
+  Values stored in Differences must be in the specific format required for the TJvPatchFile component.
+  A design-time property editor is provided for the Differences property that can be used to create patches in the format required for use
+  in the component. Patches for the specified files are encrypted using a Password provided at
+  design-time.
+  
+  Patches in the Differences property can be saved to a file for subsequent distribution and
+  processing using the TJvPatchFile component.
+  
   When patches are applied using the Patch method, the updated file content can be overwritten in the
   original file or stored in a new file with the updated content. Applying patches in the Differences
-  property requires the Password used when creating the list of file differences.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.ChangeInFile
-Summary
-  Indicates patches should be applied directly to the original file.
-Description
-  ChangeInFile is a Boolean property that indicates patches in the Differences property should be
-  applied directly to the original file. ChangeInFile is used in the Patch method when the content in
-  the Differences property is read and decrypted.
-
-  Use EndFile to specify the file name where the patched contents of StartFile should be stored when
-  ChangeInFile contains False.
-
-  When ChangeInFile contains True, the patches in Differences are applied directly to the contents of
-  the file specified in StartFile.
+  property requires the Password used when creating the list of file differences. Using a Password
+  argument that is different than the value used to populate the Differences property will result in
+  an unusable file after patches are applied.
+  
+  Use StartFile to specify the file name with the content to be patched using the values in
+  Differences.
+  
+  Use EndFile and ChangeInFile to indicate where the patched contents of the file indicated in
+  StartFile should be stored. When ChangeInFile contains False, the value in EndFile is used to
+  create a file the patch file content is stored. When ChangeInFile contains False, patches in the
+  Differences property overwrite the original contents of the file specified in StartFile.
+  
+  Assign values to the Differences property, or load the values from a file, to indicate the actions
+  to perform in the Patch method.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPatchFile.Destroy
@@ -60,130 +150,43 @@ See Also
   TJvPatchFile.Differences
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.Differences
+@@TJvPatchFile.ChangeInFile
 Summary
-  Patches (or file differences) to apply to the original file.
+  Indicates patches should be applied directly to the original file.
 Description
-  Differences is a TStrings property that represents patches (or file differences) required to convert
-  the file specified in StartFile to the desired content using the Patch method.
+  ChangeInFile is a Boolean property that indicates patches in the Differences property should be
+  applied directly to the original file. ChangeInFile is used in the Patch method when the content in
+  the Differences property is read and decrypted.
+  
+  Use EndFile to specify the file name where the patched contents of StartFile should be stored when
+  ChangeInFile contains False.
+  
+  When ChangeInFile contains True, the patches in Differences are applied directly to the contents of
+  the file specified in StartFile.
 
-  Values stored in Differences must be in the specific format required for the TJvPatchFile component.
-  A design-time property editor is provided for the Differences property that can be used to create
-  patches in the format required for use in the component. Patches for the specified files are
-  encrypted using a Password provided at design-time.
-
-  Patches in the Differences property can be saved to a file for subsequent distribution and processing
-  using the TJvPatchFile component.
-
+----------------------------------------------------------------------------------------------------
+@@TJvPatchFile
+<TITLEIMG TJvPatchFile>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Implements a file patching utility.
+Description
+  TJvPatchFile is a TJvComponent descendant that implements a file patching utility.
+  
+  TJvPatchFile can be used to apply patches in the Differences property to the contents of an
+  original file in order to yield a file with the desired content. Values in the Differences property
+  are in a specific format required by the TJvPatchFile component.
+  
+  A design-time property editor is provided for the Differences property that can be used to create patches in the format required for use i
+   the component. Patches for the specified files are encrypted using the Password provided at
+  design-time.
+  
+  Patches in the Differences property can be saved to a file for subsequent distribution and
+  processing using the TJvPatchFile component.
+  
   When patches are applied using the Patch method, the updated file content can be overwritten in the
   original file or stored in a new file with the updated content. Applying patches in the Differences
-  property requires the Password used when creating the list of file differences. Using a Password
-  argument that is different than the value used to populate the Differences property will result in an
-  unusable file after patches are applied.
-
-  Use StartFile to specify the file name with the content to be patched using the values in
-  Differences.
-
-  Use EndFile and ChangeInFile to indicate where the patched contents of the file indicated in
-  StartFile should be stored. When ChangeInFile contains False, the value in EndFile is used to create
-  a file the patch file content is stored. When ChangeInFile contains False, patches in the Differences
-  property overwrite the original contents of the file specified in StartFile.
-
-  Assign values to the Differences property, or load the values from a file, to indicate the actions to
-  perform in the Patch method.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.EndFile
-Summary
-  File where patched file content can be stored.
-Description
-  EndFile is a TFileName property that specifies the file where the patched contents of the file
-  specified in StartFile should be stored.
-
-  EndFile is used in the Patch method when ChangeInFile contains False. Patches from the Differences
-  property are applied to the original file content and stored in EndFile at the completion of the
-  patching process.
-
-  When ChangeInFile contains True, the patches in Differences are applied directly to the contents of
-  the file specified in StartFile and the value EndFile is ignored.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.IsPatchable
-Summary
-  Indicates if the specified file appears to be patchable.
-Description
-  IsPatchable is a Boolean function used to indicate if the file specified in Filename can be patched
-  using the values in Differences. IsPatchable performs a rudimentary test to determine if the
-  specified file name can be patched; the file in Filename must exist and the file size for the
-  unpatched file stored in Differences must match the file size for the file in Filename.
-
-  IsPatchable does not perform any in-depth comparison of the contents of the file in Filename.
-Parameters
-  FileName - File to check.
-Return value
-  Boolean - True when
-
-----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.IsPatched
-Summary
-  Checks a file to determine if it may have already been patched.
-Description
-  IsPatched is a Boolean function used to indicate if patches in the Differences property have already
-  been applied using the Patch method. IsPatched performs a rudimentary test for the file specified in
-  Filename; the file must exist and its' size is examine to determine if it matches the size stored in
-  the Differences property. It does not perform any in-depth comparison of the contents with the file
-  specified in StartFile.
-
-  IsPatched returns False when Filename cannot be located, Differences contains an invalid format, or
-  when the size of the file in Filename differs from the value for the patched file in Differences.
-Parameters
-  FileName - File to check for updated content.
-Return value
-  Boolean - True when the file appears to have been patched.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.Patch
-Summary
-  Applies the specified patches to a file.
-Description
-  Patch is a Boolean function used to apply the patches in the Differences property to the contents of
-  the original file specified in StartFile. Patch returns True when the Differences are successfully
-  applied to the original file.
-
-  Patch reads and decrypts the contents of the Differences property using the value specified in the
-  Password parameter. Password is the value used when creating the values in Differences using its'
-  design-time property editor. Using a Password argument that is different than the value used to
-  populate the Differences property will result in an unusable file after patches are applied.
-
-  Use StartFile to specify the file name with the content to be patched using the values in
-  Differences.
-
-  Use EndFile and ChangeInFile to indicate where the patched contents of the file indicated in
-  StartFile should be stored. When ChangeInFile contains False, the value in EndFile is used to create
-  a file the patch file content is stored. When ChangeInFile contains False, patches in the Differences
-  property overwrite the original contents of the file specified in StartFile.
-
-  Assign values to the Differences property, or load the values from a file, to indicate the actions to
-  perform in the Patch method. Values in Differences must be in the specific format required by the
-  TJvPatchFile component.
-
-  A design-time property editor is provided for the Differences property that can be used to create
-  patches in the format required for use in the component. Patches for the specified files are
-  encrypted using the Password provided at design-time.
-Parameters
-  Password - Password to use when encrypting patch file contents.
-Return value
-  Boolean - True when patches in the Differences property are applied to the original file content.
-
-----------------------------------------------------------------------------------------------------
-@@TJvPatchFile.StartFile
-Summary
-  Original file to be patched with the component.
-Description
-  StartFile is a TFileName property that specifies the file with the original content to be patched
-  using the Patch method. Values in the Differences property are applied to the contents of the file
-  specified in StartFile using the Patch method to yield a file with the desired content.
-
-  Use ChangeInFile to indicate if changes in the Differences property should be applied directly to the
-  content of the original file, or stored in the file specified in EndFile.
+  property requires the Password used when creating the list of file differences.
 

@@ -3,48 +3,24 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMTSyncMon.pas
 Summary
-  Contains the TJvMTSyncMon component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvMTSyncMon component.
 Author
   Erwin Molendijk
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TMTCondition
+@@TMTMonitor.Condition
 Summary
-  Condition belonging to a monitor section.
+  Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TMTCondition.ID
-Summary
-  Write here a summary (1 line)
-Description
-  Returns the ID which identifies the condition. This ID is unique within the monitor this condition
-  belongs to.
-
-----------------------------------------------------------------------------------------------------
-@@TMTCondition.Monitor
-Summary
-  Write here a summary (1 line)
-Description
-  Returns the monitor this condition belongs to.
-
-----------------------------------------------------------------------------------------------------
-@@TMTCondition.Signal
-Summary
-  Write here a summary (1 line)
-Description
-  Signal a condition. If there are other thread(s) waiting for this signal they will be resumed one at
-  a time before this thread continues. Can raise EMTTerminate
-
-----------------------------------------------------------------------------------------------------
-@@TMTCondition.Wait
-Summary
-  Write here a summary (1 line)
-Description
-  Wait for a condition. The thread will be suspended until the condition is signalled by another
-  thread. Can raise EMTTerminate
+Parameters
+  ID - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TMTMonitor
@@ -64,16 +40,42 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TMTMonitor.Condition
+@@TMTCondition.Wait
 Summary
   Write here a summary (1 line)
 Description
+  Wait for a condition. The thread will be suspended until the condition is signalled by another
+  thread. Can raise EMTTerminate
+
+----------------------------------------------------------------------------------------------------
+@@TMTCondition.Signal
+Summary
+  Write here a summary (1 line)
+Description
+  Signal a condition. If there are other thread(s) waiting for this signal they will be resumed one
+  at a time before this thread continues. Can raise EMTTerminate
+
+----------------------------------------------------------------------------------------------------
+@@TMTCondition.Monitor
+Summary
+  Write here a summary (1 line)
+Description
+  Returns the monitor this condition belongs to.
+
+----------------------------------------------------------------------------------------------------
+@@TMTCondition
+Summary
+  Condition belonging to a monitor section.
+Description
   Write here a description
-Parameters
-  ID - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TMTCondition.ID
+Summary
+  Write here a summary (1 line)
+Description
+  Returns the ID which identifies the condition. This ID is unique within the monitor this condition
+  belongs to.
 
 ----------------------------------------------------------------------------------------------------
 @@TMTMonitor.Enter

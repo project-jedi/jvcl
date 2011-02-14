@@ -3,318 +3,21 @@
 ----------------------------------------------------------------------------------------------------
 @@JvUrlGrabbers.pas
 Summary
-  Contains descendants of TJvCustomUrlGrabber for common URLs.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains descendants of TJvCustomUrlGrabber for common URLs.
 Author
   Olivier Sannier
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpDownloadMode
-<TITLE TJvFtpDownloadMode type>
-Summary
-  The mode in which to do the FTP transfers. For more details on what Mode means in the FTP context,
-  please refer to this website: http://slacksite.com/other/ftp.html
 Description
-  Either ASCII or Binary
-See Also
-  TJvFtpUrlGrabber.Mode
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFtpDownloadMode.hmBinary
-  FTP transfer in Binary mode
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpDownloadMode.hmAscii
-  FTP transfer in ASCII mode
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabber
-<TITLEIMG TJvFtpUrlGrabber>
-JVCLInfo
-  GROUP=JVCL.Internet
-  FLAG=Component
-Summary
-  This is the grabber for FTP URLs
-Description
-  This grabber handles FTP URLs, that is URLs that start with 'ftp://'
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabber.CanGrab
-Summary
-  Returns true if the URL is a FTP URL
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Url - The URL to test
-Return value
-  True if the URL is a FTP URL, that is it starts with 'ftp://'
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabber.GetDefaultPropertiesClass
-Summary
-  Returns the class to use to display default properties for this type of grabber
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Returns TJvFtpUrlGrabberDefaultProperties
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabber.Mode
-Summary
-  The mode in which the transfer will occur
-Description
-  Either Binary or ASCII
-See Also
-  TJvFtpUrlGrabber.Passive
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabber.Passive
-Summary
-  If true, the FTP transfer will be done in passive mode
-Description
-  There are two modes for a FTP transfer: Active or Passive. Use this property to indicate which one to
-  use
-See Also
-  TJvFtpUrlGrabber.Mode
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabberDefaultProperties
-Summary
-  A class that holds default properties for TJvFtpUrlGrabber
-Description
-  This class is used by TJvUrlGrabber to display the default properties of the TJvFtpUrlGrabber objects
-  it may create
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabberDefaultProperties.Mode
-<COMBINE TJvFtpUrlGrabber.Mode>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabberDefaultProperties.Passive
-<COMBINE TJvFtpUrlGrabber.Passive>
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabberThread
-Summary
-  The thread used to grab FTP URLs
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvFtpUrlGrabberThread.Grabber
-Summary
-  Provides an easy access to the grabber associated with the thread
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpsUrlGrabber
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpsUrlGrabberDefaultProperties
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabber
-<TITLEIMG TJvHttpUrlGrabber>
-JVCLInfo
-  GROUP=JVCL.Internet
-  FLAG=Component
-Summary
-  This a grabber for HTPP URLs
-Description
-  This grabber handles HTTP URLs, that is URLs that start with 'http://'
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabber.CanGrab
-Summary
-  Returns True if the URL is a HTTP URL
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Url - The URL to test
-Return value
-  True if the URL is a HTTP URL, that is it starts with 'http://'
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabber.GetDefaultPropertiesClass
-Summary
-  Returns the class to use to display default properties for this type of grabber
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Returns TJvHttpUrlGrabberDefaultProperties
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabber.Referer
-Summary
-  The URL to indicate as the referer to grab the current URL.
-Description
-  In the HTTP protocol, most navigators indicate the page the user was before moving to another page.
-  This is known as the Referer. Some web sites check that the Referer is set to a correct value and if
-  it is not a value they expect, they refuse to serve the page. By using this property, you can emulate
-  the correct behavior and get the page.
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabberDefaultProperties
-Summary
-  A class that holds default properties for TJvHttpUrlGrabber
-Description
-  This class is used by TJvUrlGrabber to display the default properties of the TJvHttpUrlGrabber
-  objects it may create
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabberDefaultProperties.Referer
-<COMBINE TJvHttpUrlGrabber.Referer>
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabberThread
-Summary
-  The thread used to grad HTTP URLs
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvHttpUrlGrabberThread.Grabber
-Summary
-  Provides an easy access to the grabber associated with the thread
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber
-<TITLEIMG TJvLocalFileUrlGrabber>
-JVCLInfo
-  GROUP=JVCL.Internet
-  FLAG=Component
-Summary
-  This a grabber for Local File URLs
-Description
-  This grabber handles Local File URLs, that is URLs that start with 'file://', '?:' or '\\' Local is
-  in opposition to Internet and refers to files on a computer as well as to files on the local
-  network.
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber.CanGrab
-Summary
-  Return true if the URL is a Local File URL
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  Url - The URL to test
-Return value
-  True if the URL is a Local File URL, that is it starts with 'file://', '?:', '\\' or the URL
-  indicates an existing file
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber.GetDefaultPropertiesClass
-Summary
-  Returns the class to use to display default properties for this type of grabber
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Return value
-  Returns TJvLocalFileUrlGrabberDefaultProperties
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber.ParseUrl@string@string
-Summary
-  Parses the URL to extract the local filename
-Description
-  As local file grabbers do not use protocol, host, user name, password and port specifications, this
-  method makes life easier by allowing to pass only two parameters
-Parameters
-  Url      - The Url to parse
-  FileName - The filename found in the Url
-  Host     - Description for this parameter
-  Password - Description for this parameter
-  Port     - Description for this parameter
-  Protocol - Description for this parameter
-  UserName - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber.ParseUrl@string@string@string@string@string@string@Cardinal
-<COMBINE TJvLocalFileUrlGrabber.ParseUrl@string@string>
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber.PreserveAttributes
-Summary
-  If True, the attributes of the source file will be copied to the destination file. Attributes are the
-  date, the read-only and hidden properties.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabberProperties
-Summary
-  A class that holds default properties for TJvLocalFileUrlGrabber
-Description
-  This class is used by TJvUrlGrabber to display the default properties of the TJvLocalFileUrlGrabber
-  objects it may create
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabberProperties.PreserveAttributes
-<COMBINE TJvLocalFileUrlGrabber.PreserveAttributes>
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabberThread
-Summary
-  The thread used to grab Local File URLs
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabberThread.Grabber
-Summary
-  Provides an easy access to the grabber associated with the thread
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvProxyingUrlGrabber
-Summary
-  Base class for URL grabbers than can route their requests through a proxy
-Description
-  Commonly known protocols that can use a proxy are FTP and HTTP
-
-----------------------------------------------------------------------------------------------------
-@@TJvProxyingUrlGrabber.ProxyAddresses
-Summary
-  Lists the proxy addresses to use for the various protocols
-Description
-  This is a list of space separated values, which has the format described at the "Listing Proxy
-  Servers" in the following page:
-
-  osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
-
-----------------------------------------------------------------------------------------------------
-@@TJvProxyingUrlGrabber.ProxyIgnoreList
+@@TJvProxyingUrlGrabberDefaultProperties.ProxyIgnoreList
 Summary
   List of space separated hosts for which the proxy is NOT to be used
 Description
   See the "Listing the Proxy Bypass" section of the following page for more details on the format:
-
+  
   osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
-
-----------------------------------------------------------------------------------------------------
-@@TJvProxyingUrlGrabber.ProxyMode
-Summary
-  The proxy mode to use for the connection
-Description
-  pmManual The values in ProxyAddresses are used pmSysConfig The values defined in the registry for
-  Internet Explorer are used pmNoProxy No proxy is used
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabber.ProxyPassword
@@ -344,17 +47,316 @@ Summary
 Description
   This is a list of space separated values, which has the format described at the "Listing Proxy
   Servers" in the following page:
-
+  
   osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProxyingUrlGrabberDefaultProperties.ProxyIgnoreList
+@@TJvProxyingUrlGrabber.ProxyMode
+Summary
+  The proxy mode to use for the connection
+Description
+  pmManual The values in ProxyAddresses are used pmSysConfig The values defined in the registry for
+  Internet Explorer are used pmNoProxy No proxy is used
+
+----------------------------------------------------------------------------------------------------
+@@TJvProxyingUrlGrabber.ProxyIgnoreList
 Summary
   List of space separated hosts for which the proxy is NOT to be used
 Description
   See the "Listing the Proxy Bypass" section of the following page for more details on the format:
-
+  
   osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
+
+----------------------------------------------------------------------------------------------------
+@@TJvProxyingUrlGrabber.ProxyAddresses
+Summary
+  Lists the proxy addresses to use for the various protocols
+Description
+  This is a list of space separated values, which has the format described at the "Listing Proxy
+  Servers" in the following page:
+  
+  osoft.com/library/default.asp?url=/library/en-us/wininet/wininet/enabling_internet_functionality.asp
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabberThread.Grabber
+Summary
+  Provides an easy access to the grabber associated with the thread
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvProxyingUrlGrabber
+Summary
+  Base class for URL grabbers than can route their requests through a proxy
+Description
+  Commonly known protocols that can use a proxy are FTP and HTTP
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabberProperties.PreserveAttributes
+<COMBINE TJvLocalFileUrlGrabber.PreserveAttributes>
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabberThread
+Summary
+  The thread used to grab Local File URLs
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabberProperties
+Summary
+  A class that holds default properties for TJvLocalFileUrlGrabber
+Description
+  This class is used by TJvUrlGrabber to display the default properties of the TJvLocalFileUrlGrabber
+  objects it may create
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabber.PreserveAttributes
+Summary
+  If True, the attributes of the source file will be copied to the destination file. Attributes are
+  the date, the read-only and hidden properties.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabber.ParseUrl@string@string@string@string@string@string@Cardinal
+<COMBINE TJvLocalFileUrlGrabber.ParseUrl@string@string>
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabber.ParseUrl@string@string
+Summary
+  Parses the URL to extract the local filename
+Description
+  As local file grabbers do not use protocol, host, user name, password and port specifications, this
+  method makes life easier by allowing to pass only two parameters
+Parameters
+  Url      - The Url to parse
+  FileName - The filename found in the Url
+  Host     - Description for this parameter
+  Password - Description for this parameter
+  Port     - Description for this parameter
+  Protocol - Description for this parameter
+  UserName - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabber.GetDefaultPropertiesClass
+Summary
+  Returns the class to use to display default properties for this type of grabber
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Returns TJvLocalFileUrlGrabberDefaultProperties
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabber.CanGrab
+Summary
+  Return true if the URL is a Local File URL
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Url - The URL to test
+Return value
+  True if the URL is a Local File URL, that is it starts with 'file://', '?:', '\' or the URL
+  indicates an existing file
+
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabber
+<TITLEIMG TJvLocalFileUrlGrabber>
+JVCLInfo
+  GROUP=JVCL.Internet
+  FLAG=Component
+Summary
+  This a grabber for Local File URLs
+Description
+  This grabber handles Local File URLs, that is URLs that start with 'file://', '?:' or '\' Local is
+  in opposition to Internet and refers to files on a computer as well as to files on the local
+  network.
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabberDefaultProperties.Referer
+<COMBINE TJvHttpUrlGrabber.Referer>
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabberThread
+Summary
+  The thread used to grad HTTP URLs
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabberThread.Grabber
+Summary
+  Provides an easy access to the grabber associated with the thread
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabberDefaultProperties
+Summary
+  A class that holds default properties for TJvHttpUrlGrabber
+Description
+  This class is used by TJvUrlGrabber to display the default properties of the TJvHttpUrlGrabber
+  objects it may create
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabber.Referer
+Summary
+  The URL to indicate as the referer to grab the current URL.
+Description
+  In the HTTP protocol, most navigators indicate the page the user was before moving to another page.
+  This is known as the Referer. Some web sites check that the Referer is set to a correct value and
+  if it is not a value they expect, they refuse to serve the page. By using this property, you can
+  emulate the correct behavior and get the page.
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabber.GetDefaultPropertiesClass
+Summary
+  Returns the class to use to display default properties for this type of grabber
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Returns TJvHttpUrlGrabberDefaultProperties
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabber
+<TITLEIMG TJvHttpUrlGrabber>
+JVCLInfo
+  GROUP=JVCL.Internet
+  FLAG=Component
+Summary
+  This a grabber for HTPP URLs
+Description
+  This grabber handles HTTP URLs, that is URLs that start with 'http://'
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpUrlGrabber.CanGrab
+Summary
+  Returns True if the URL is a HTTP URL
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Url - The URL to test
+Return value
+  True if the URL is a HTTP URL, that is it starts with 'http://'
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpsUrlGrabber
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvHttpsUrlGrabberDefaultProperties
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabberThread.Grabber
+Summary
+  Provides an easy access to the grabber associated with the thread
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabberThread
+Summary
+  The thread used to grab FTP URLs
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabberDefaultProperties.Passive
+<COMBINE TJvFtpUrlGrabber.Passive>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabberDefaultProperties.Mode
+<COMBINE TJvFtpUrlGrabber.Mode>
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabberDefaultProperties
+Summary
+  A class that holds default properties for TJvFtpUrlGrabber
+Description
+  This class is used by TJvUrlGrabber to display the default properties of the TJvFtpUrlGrabber
+  objects it may create
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabber.Passive
+Summary
+  If true, the FTP transfer will be done in passive mode
+Description
+  There are two modes for a FTP transfer: Active or Passive. Use this property to indicate which one
+  to use
+See Also
+  TJvFtpUrlGrabber.Mode
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabber.Mode
+Summary
+  The mode in which the transfer will occur
+Description
+  Either Binary or ASCII
+See Also
+  TJvFtpUrlGrabber.Passive
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabber.GetDefaultPropertiesClass
+Summary
+  Returns the class to use to display default properties for this type of grabber
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Return value
+  Returns TJvFtpUrlGrabberDefaultProperties
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabber.CanGrab
+Summary
+  Returns true if the URL is a FTP URL
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+Parameters
+  Url - The URL to test
+Return value
+  True if the URL is a FTP URL, that is it starts with 'ftp://'
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpDownloadMode.hmBinary
+FTP transfer in Binary mode
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpDownloadMode.hmAscii
+FTP transfer in ASCII mode
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpUrlGrabber
+<TITLEIMG TJvFtpUrlGrabber>
+JVCLInfo
+  GROUP=JVCL.Internet
+  FLAG=Component
+Summary
+  This is the grabber for FTP URLs
+Description
+  This grabber handles FTP URLs, that is URLs that start with 'ftp://'
+
+----------------------------------------------------------------------------------------------------
+@@TJvFtpDownloadMode
+<TITLE TJvFtpDownloadMode type>
+Summary
+  The mode in which to do the FTP transfers. For more details on what Mode means in the FTP context,
+  please refer to this website: http://slacksite.com/other/ftp.html
+Description
+  Either ASCII or Binary
+See Also
+  TJvFtpUrlGrabber.Mode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyingUrlGrabberDefaultProperties.ProxyMode
@@ -388,13 +390,13 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode.pmNoProxy
-  No proxy is ever used to connect
+No proxy is ever used to connect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode.pmSysConfig
-  Values read from Internet Explorer's parameters are used
+Values read from Internet Explorer's parameters are used
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProxyMode.pmManual
-  Manual connection to the proxy, the values from the various ProxyXXXX properties are used
+Manual connection to the proxy, the values from the various ProxyXXXX properties are used
 

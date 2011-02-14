@@ -3,44 +3,45 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDBActionsEngine.pas
 Summary
-  Contains the TJvDBActionsEngine component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvDBActionsEngine component.
 Author
   Jens Fudickar
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@RegisterDatabaseActionEngine
-<TITLE RegisterDatabaseActionEngine procedure>
+@@TJvDatabaseActionBaseControlEngine.FieldByName
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
-  AEngineClass - Description for this parameter
+  aActionComponent - Description for this parameter
+  FieldName        - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@RegisteredDatabaseActionEngineList
-<TITLE RegisteredDatabaseActionEngineList function>
+@@TJvDatabaseActionBaseControlEngine.FieldById
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  aActionComponent - Description for this parameter
+  FieldId          - Description for this parameter
+Return value
+  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.Bof
+@@TJvDatabaseActionBaseControlEngine.EOF
 Summary
   Write here a summary (1 line)
 Description
@@ -54,7 +55,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.CanDelete
+@@TJvDatabaseActionBaseControlEngine.EnableControls
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aActionComponent - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionBaseControlEngine.EditModeActive
 Summary
   Write here a summary (1 line)
 Description
@@ -68,77 +81,19 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.CanInsert
+@@TJvDatabaseActionBaseControlEngine.DisableControls
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   aActionComponent - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.CanNavigate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aActionComponent - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.CanRefresh
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aActionComponent - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.CanRefreshRecord
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aActionComponent - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.CanUpdate
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aActionComponent - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.ControlsDisabled
+@@TJvDatabaseActionBaseControlEngine.DataSource
 Summary
   Write here a summary (1 line)
 Description
@@ -166,7 +121,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.DataSource
+@@TJvDatabaseActionBaseControlEngine.ControlsDisabled
 Summary
   Write here a summary (1 line)
 Description
@@ -180,19 +135,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.DisableControls
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aActionComponent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.EditModeActive
+@@TJvDatabaseActionBaseControlEngine.CanUpdate
 Summary
   Write here a summary (1 line)
 Description
@@ -206,19 +149,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.EnableControls
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  aActionComponent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.EOF
+@@TJvDatabaseActionBaseControlEngine.CanRefreshRecord
 Summary
   Write here a summary (1 line)
 Description
@@ -232,14 +163,13 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.FieldById
+@@TJvDatabaseActionBaseControlEngine.CanRefresh
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   aActionComponent - Description for this parameter
-  FieldId          - Description for this parameter
 Return value
   Describe here what the function returns
 See Also
@@ -247,16 +177,88 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDatabaseActionBaseControlEngine.FieldByName
+@@TJvDatabaseActionBaseControlEngine.CanNavigate
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 Parameters
   aActionComponent - Description for this parameter
-  FieldName        - Description for this parameter
 Return value
   Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionBaseControlEngine.CanInsert
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aActionComponent - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionBaseControlEngine.CanDelete
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aActionComponent - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionBaseControlEngine
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDatabaseActionBaseControlEngine.Bof
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  aActionComponent - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RegisteredDatabaseActionEngineList
+<TITLE RegisteredDatabaseActionEngineList function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@RegisterDatabaseActionEngine
+<TITLE RegisterDatabaseActionEngine procedure>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  AEngineClass - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references

@@ -1,188 +1,251 @@
 ##Package: StdCtrls
 ##Status: Completed, Incomplete
-##Skip: CalculateAlignment
-##Skip: CalculateAngleInfo
-##Skip: DrawShadowText
-##Skip: FrameRounded
-##Skip: TAngleInfo
 ----------------------------------------------------------------------------------------------------
 @@JvLabel.pas
 Summary
-  Contains the TJvLabel component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvLabel component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel
+@@TShadowPosition.spRightBottom
+The lower right position.
+
+----------------------------------------------------------------------------------------------------
+@@TShadowPosition.spRightTop
+The upper right position.
+
+----------------------------------------------------------------------------------------------------
+@@TShadowPosition.spLeftBottom
+The lower left position.
+
+----------------------------------------------------------------------------------------------------
+@@TShadowPosition.spLeftTop
+The upper left position
+
+----------------------------------------------------------------------------------------------------
+@@TShadowPosition
+<TITLE TShadowPosition type>
+Summary
+  Enumerates positions of text shadow.
+Description
+  Use the TShadowPosition type to indicate a text shadow position.
+See Also
+  TJvCustomLabel.ShadowPos
+
+----------------------------------------------------------------------------------------------------
+@@TJvTextEllipsis.teNone
+Text is not replaced by ellipses.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTextEllipsis.teWordEllipsis
+Truncates any word that does not fit in the rectangle and adds ellipses.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTextEllipsis.tePathEllipsis
+Replaces characters in the middle of the string with ellipses so that the result fits in the specified rectangle.
+
+----------------------------------------------------------------------------------------------------
+@@TJvTextEllipsis.teEndEllipsis
+If the end of a string does not fit in the rectangle, it is truncated and ellipses are added. If a word that is not at the end of the string goes beyond the limits of the rectangle, it is truncated without ellipses.
+
+----------------------------------------------------------------------------------------------------
+@@TJvLabel
+<TITLEIMG TJvLabel>
+JVCLInfo
+  GROUP=JVCL.LabelsAndStatic
+  FLAG=Component
+Summary
+  Can simulate a clickable link and render text at a specific angle.
+Description
+  To simulate a clickable link, do the following:
+  
+  * Set AutoOpenURL to true.
+  * Set URL to a specific \URL or object, that will be opened when the user clicks the label.
+  * Set HotTrack to true, and change HotTrackFont so the user gets feedback when the mouse passes
+  over   the label.
+  
+  Use property Angle to display the label text at a specific angle.
+
+----------------------------------------------------------------------------------------------------
+@@TJvLabelRotateAngle
+<TITLE TJvLabelRotateAngle type>
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Alignment
-Summary
-  Controls the horizontal placement of the text within the label.
-Description
-  Set Alignment to specify how the text of the label is justified within the ClientRect of the label
-  control. The effect of the Alignment property is more obvious if the WordWrap property is true and
-  the label includes more than one line of text.
-
-  These are the possible values:
-
-  <TABLE>
-    Value           Meaning
-    --------------  -------------------------------------------------
-    taLeftJustify   Align text on the left side in the edit control.
-    taCenter        Center the text in the edit control.
-    taRightJustify  Align text on the right side in the edit control.
-  </TABLE>
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Angle
-Summary
-  Specifies the angle of the text.
-Description
-  Angle holds the angle at which the text is to be rendered. If set to 0, the text is rendered in the
-  usual way (ie. no rotation). Read Angle to determine the direction at which the text is rendered or
-  set it to a new direction.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.AutoOpenURL
-Summary
-  Specifies whether to automatically open the associated \URL when the user clicks the label.
-Description
-  Set AutoOpenURL to true to automatically open the \URL or object specified by property URL when the
-  user clicks the label.
 See Also
-  TJvCustomLabel.URL
+  TJvCustomLabel.Angle
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.AutoSize
+@@TJvTextEllipsis
+<TITLE TJvTextEllipsis type>
 Summary
-  Determines whether the size of the label automatically resizes to accommodate the text.
+  Enumerates methods to replace text by an ellipsis.
 Description
-  Use AutoSize to make the label adjust its size automatically so the client area accommodates the
-  height and width of the text. When AutoSize is false, the label is fixed in size. When AutoSize is
-  true, the size of the label readjusts whenever the text changes. The size of the label is also
-  readjusts when the Font property changes.
-
-  When WordWrap is true, the width of the label is fixed. If AutoSize is also true, changes to the text
-  cause the label to change in height. When AutoSize is true and WordWrap is false, the font determines
-  the height of the label, and changes to the text cause the label to change in width.
+  The TJvTextEllipsis type is used to indicate how text is replaced by an ellipsis.
+See Also
+  TJvCustomLabel.TextEllipsis
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.FocusControl
+@@TJvCustomLabel.WordWrap
 Summary
-  Designates a windowed control associated with the label.
+  Specifies whether the label text wraps when it is too long for the width of the label.
+Description
+  Set WordWrap to true to allow the label to display multiple line of text. When WordWrap is true,
+  text that is too wide for the label control wraps at the right margin and continues in additional
+  lines.
+  
+  Set WordWrap to false to limit the label to a single line. When WordWrap is false, text that is too
+  wide for the label appears truncated.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.URL
+Summary
+  Specifies a URL associated with the label.
+Description
+  Use URL to associate a URL, an executable file, a document file, or a folder with the label. If
+  AutoOpenURL is set to true and the user clicks on the label, then the object specified by URL is
+  opened.
+  
+  You might want to adjust property HotTrackFont to visually simulate a clickable link.
+  
+  Some examples:
+  <CODE>
+  { Executable file }
+  JvLabel1.URL := Application.ExeName;
+  
+  { Folder }
+  JvLabel1.URL := ExtractFilePath(Application.ExeName); </CODE>
+  Note
+  If AutoOpenURL is set to false, then URL is ignored.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.Transparent
+Summary
+  Specifies whether controls that sit below the label on a form can be seen through the label.
+Description
+  Set Transparent to true to prevent the label from obscuring other controls on the form. For
+  example, if the label is used to add text to a graphic, set Transparent to true so that the label
+  does not stand out as a separate object.
+  
+  Writing text so that the background is transparent is slower than writing text when Transparent is
+  false. If the label is not obscuring a complicated image, performance can be improved by setting
+  the background color of the label to match the object beneath it and setting Transparent to false.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.TextEllipsis
+Summary
+  Write here a summary (1 line)
 Description
   Write here a description
 See Also
-  TJvCustomLabel.ShowFocus
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.FrameColor
+@@TJvCustomLabel.Spacing
 Summary
-  Specifies the color to use to as a frame around the label.
+  Controls the separation between the label's icon and caption.
 Description
-  Set FrameColor to any color except clNone to draw a 1 pixel frame around the edge of the label. The
-  frame is drawn regardless of the value of the Transparent property. To remove the frame, set
-  FrameColor to clNone.
+  The value stored in Spacing is the number of pixels between the label's icon and caption. If either
+  is absent from the label, the value of Spacing becomes irrelevant.
 See Also
-  TJvCustomLabel.Transparent
+  TJvCustomLabel.MarginLeft
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.HotTrack
+@@TJvCustomLabel.ShowFocus
 Summary
-  Specifies whether the label is highlighted when the mouse passes over it.
+  Indicates whether to draw a focus rectangle around the label when FocusControl has input focus.
 Description
-  Set HotTrack to true to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the label text. When HotTrack is false, there is no visual
-  feedback when the mouse passes over the label.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.HotTrackFont
-Summary
-  Specifies the font used when the mouse passes over the label and HotTrack is true.
-Description
-  When the mouse passes over the label and HotTrack is set to true, HotTrackFont is used as the font
-  for the label text. To change to a new font, specify a new TFont object. To modify a font, change the
-  value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.HotTrackFontOptions
-Summary
-  Specifies how changes to the Font affects HotTrackFont.
-Description
-  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
-  changes in Font are copied to HotTrackFont except Color changes.
-
-  Note that hoFollowFont must be included for any properties to be copied at all.
-
-  To implement the HotTrackFontOptions property in a new control, you should perform the following
-  steps:
-
-  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-    value to be DefaultTrackFontOptions (defined in JvTypes).
-  * Set the default value in the constructor.
-  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-    JvJVCLUtils) after calling inherited.
-  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.HotTrackOptions
-Summary
-  Specifies the hot tracking options for the control.
-Description
-  Use HotTrackOptions to specify the whether and how the control is control is highlighted when the
-  mouse passes over it.
+  Write here a description
 See Also
-  TJvCustomLabel.HotTrackFontOptions
+  TJvCustomLabel.FocusControl
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.ImageIndex
+@@TJvCustomLabel.ShowAccelChar
 Summary
-  Indicates which image appears on the label.
+  Determines how an ampersand in the label text is displayed.
 Description
-  Set ImageIndex to designate an image that should appear on the label. ImageIndex specifies a
-  zero-offset index into the Images property.
-See Also
-  TJvCustomLabel.Images
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Images
+@@TJvCustomLabel.ShadowSize
 Summary
-  Lists the images that can appear on the label.
+  The size in pixels of the text shadow.
 Description
-  Images contains a list of images that can appear on the label. If Images is unassigned, no images are
-  displayed on the button.
+  Use ShadowSize to specify the size of the text shadow.
+  
+  Set ShadowSize to 0 to hide the text shadow.
 See Also
-  TJvCustomLabel.ImageIndex
+  TJvCustomLabel.ShadowColor, TJvCustomLabel.ShadowPos
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Layout
+@@TJvCustomLabel.ShadowPos
 Summary
-  Specifies the vertical placement of the text within the label.
+  The position of the text shadow.
 Description
-  Set Layout to specify how the text of the label is placed within the ClientRect of the label control.
-  Layout is the vertical analog to the Alignment property.
+  Use ShadowPos to specify the position of the text shadow. The default value is spRightBottom.
+  
+  Note that if ShadowSize equals 0 then no text shadow is displayed.
 See Also
-  TJvCustomLabel.Alignment
+  TJvCustomLabel.ShadowColor, TJvCustomLabel.ShadowSize
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Margin
+@@TJvCustomLabel.ShadowColor
 Summary
-  Can be used to set all margins at once.
+  The color of the text shadow.
 Description
-  Setting Margin will change MarginBottom, MarginLeft, MarginRight and MarginTop.
-
-  Reading Margin returns the value of property MarginLeft.
+  Use ShadowCOlor to specify the color of the text shadow.
+  
+  Note that if ShadowSize equals 0 then no text shadow is displayed.
 See Also
-  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight,
-  TJvCustomLabel.MarginTop
+  TJvCustomLabel.ShadowPos, TJvCustomLabel.ShadowSize
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.RoundedFrame
+Summary
+  Specifies whether to draw a rounded frame.
+Description
+  Set RoundedFrame to a non-zero value to draw a rounded frame. Set RoundedFrame to 0 to draw a
+  straight frame.
+  
+  Note that both HotTrackOptions.FrameVisible and HotTrackOptions.Enabled must be set to True to show
+  a frame.
+See Also
+  TJvHotTrackOptions.FrameVisible, TJvHotTrackOptions.Enabled
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.NeedsResize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.Provider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.MarginTop
+Summary
+  Specifies the top margin.
+Description
+  Write here a description
+See Also
+  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginBottom
@@ -212,242 +275,174 @@ See Also
   TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginTop
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.MarginTop
+@@TJvCustomLabel.ImageIndex
 Summary
-  Specifies the top margin.
+  Indicates which image appears on the label.
+Description
+  Set ImageIndex to designate an image that should appear on the label. ImageIndex specifies a
+  zero-offset index into the Images property.
+See Also
+  TJvCustomLabel.Images
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.Images
+Summary
+  Lists the images that can appear on the label.
+Description
+  Images contains a list of images that can appear on the label. If Images is unassigned, no images
+  are displayed on the button.
+See Also
+  TJvCustomLabel.ImageIndex
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.Layout
+Summary
+  Specifies the vertical placement of the text within the label.
+Description
+  Set Layout to specify how the text of the label is placed within the ClientRect of the label
+  control.
+  Layout is the vertical analog to the Alignment property.
+See Also
+  TJvCustomLabel.Alignment
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.Margin
+Summary
+  Can be used to set all margins at once.
+Description
+  Setting Margin will change MarginBottom, MarginLeft, MarginRight and MarginTop.
+  
+  Reading Margin returns the value of property MarginLeft.
+See Also
+  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight,
+  TJvCustomLabel.MarginTop
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.HotTrackOptions
+Summary
+  Specifies the hot tracking options for the control.
+Description
+  Use HotTrackOptions to specify the whether and how the control is control is highlighted when the
+  mouse passes over it.
+See Also
+  TJvCustomLabel.HotTrackFontOptions
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.HotTrackFont
+Summary
+  Specifies the font used when the mouse passes over the label and HotTrack is true.
+Description
+  When the mouse passes over the label and HotTrack is set to true, HotTrackFont is used as the font
+  for the label text. To change to a new font, specify a new TFont object. To modify a font, change
+  the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.HotTrackFontOptions
+Summary
+  Specifies how changes to the Font affects HotTrackFont.
+Description
+  HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
+  property changes in Font are copied to HotTrackFont except Color changes.
+  
+  Note that hoFollowFont must be included for any properties to be copied at all.
+  
+  To implement the HotTrackFontOptions property in a new control, you should perform the following
+  steps:
+  
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default  
+  value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+  JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.HotTrack
+Summary
+  Specifies whether the label is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to true to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the label text. When HotTrack is false, there is no visual
+  feedback when the mouse passes over the label.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.FrameColor
+Summary
+  Specifies the color to use to as a frame around the label.
+Description
+  Set FrameColor to any color except clNone to draw a 1 pixel frame around the edge of the label. The
+  frame is drawn regardless of the value of the Transparent property. To remove the frame, set
+  FrameColor to clNone.
+See Also
+  TJvCustomLabel.Transparent
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.FocusControl
+Summary
+  Designates a windowed control associated with the label.
 Description
   Write here a description
 See Also
-  TJvCustomLabel.MarginBottom, TJvCustomLabel.MarginLeft, TJvCustomLabel.MarginRight
+  TJvCustomLabel.ShowFocus
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.NeedsResize
+@@TJvCustomLabel.AutoSize
+Summary
+  Determines whether the size of the label automatically resizes to accommodate the text.
+Description
+  Use AutoSize to make the label adjust its size automatically so the client area accommodates the
+  height and width of the text. When AutoSize is false, the label is fixed in size. When AutoSize is
+  true, the size of the label readjusts whenever the text changes. The size of the label is also
+  readjusts when the Font property changes.
+  
+  When WordWrap is true, the width of the label is fixed. If AutoSize is also true, changes to the
+  text cause the label to change in height. When AutoSize is true and WordWrap is false, the font
+  determines the height of the label, and changes to the text cause the label to change in width.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.AutoOpenURL
+Summary
+  Specifies whether to automatically open the associated \URL when the user clicks the label.
+Description
+  Set AutoOpenURL to true to automatically open the \URL or object specified by property URL when the
+  user clicks the label.
+See Also
+  TJvCustomLabel.URL
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel.Angle
+Summary
+  Specifies the angle of the text.
+Description
+  Angle holds the angle at which the text is to be rendered. If set to 0, the text is rendered in the
+  usual way (ie. no rotation). Read Angle to determine the direction at which the text is rendered or
+  set it to a new direction.
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomLabel
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Provider
+@@TJvCustomLabel.Alignment
 Summary
-  Write here a summary (1 line)
+  Controls the horizontal placement of the text within the label.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.RoundedFrame
-Summary
-  Specifies whether to draw a rounded frame.
-Description
-  Set RoundedFrame to a non-zero value to draw a rounded frame. Set RoundedFrame to 0 to draw a
-  straight frame.
-
-  Note that both HotTrackOptions.FrameVisible and HotTrackOptions.Enabled must be set to True to show a
-  frame.
-See Also
-  TJvHotTrackOptions.FrameVisible, TJvHotTrackOptions.Enabled
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.ShadowColor
-Summary
-  The color of the text shadow.
-Description
-  Use ShadowCOlor to specify the color of the text shadow.
-
-  Note that if ShadowSize equals 0 then no text shadow is displayed.
-See Also
-  TJvCustomLabel.ShadowPos, TJvCustomLabel.ShadowSize
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.ShadowPos
-Summary
-  The position of the text shadow.
-Description
-  Use ShadowPos to specify the position of the text shadow. The default value is spRightBottom.
-
-  Note that if ShadowSize equals 0 then no text shadow is displayed.
-See Also
-  TJvCustomLabel.ShadowColor, TJvCustomLabel.ShadowSize
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.ShadowSize
-Summary
-  The size in pixels of the text shadow.
-Description
-  Use ShadowSize to specify the size of the text shadow.
-
-  Set ShadowSize to 0 to hide the text shadow.
-See Also
-  TJvCustomLabel.ShadowColor, TJvCustomLabel.ShadowPos
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.ShowAccelChar
-Summary
-  Determines how an ampersand in the label text is displayed.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.ShowFocus
-Summary
-  Indicates whether to draw a focus rectangle around the label when FocusControl has input focus.
-Description
-  Write here a description
-See Also
-  TJvCustomLabel.FocusControl
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Spacing
-Summary
-  Controls the separation between the label's icon and caption.
-Description
-  The value stored in Spacing is the number of pixels between the label's icon and caption. If either
-  is absent from the label, the value of Spacing becomes irrelevant.
-See Also
-  TJvCustomLabel.MarginLeft
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.TextEllipsis
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.Transparent
-Summary
-  Specifies whether controls that sit below the label on a form can be seen through the label.
-Description
-  Set Transparent to true to prevent the label from obscuring other controls on the form. For example,
-  if the label is used to add text to a graphic, set Transparent to true so that the label does not
-  stand out as a separate object.
-
-  Writing text so that the background is transparent is slower than writing text when Transparent is
-  false. If the label is not obscuring a complicated image, performance can be improved by setting the
-  background color of the label to match the object beneath it and setting Transparent to false.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.URL
-Summary
-  Specifies a URL associated with the label.
-Description
-  Use URL to associate a URL, an executable file, a document file, or a folder with the label. If
-  AutoOpenURL is set to true and the user clicks on the label, then the object specified by URL is
-  opened.
-
-  You might want to adjust property HotTrackFont to visually simulate a clickable link.
-
-  Some examples:
-  <CODE>
-  { Executable file }
-  JvLabel1.URL := Application.ExeName;
-
-  { Folder }
-  JvLabel1.URL := ExtractFilePath(Application.ExeName);
-  </CODE>
-Note
-  If AutoOpenURL is set to false, then URL is ignored.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomLabel.WordWrap
-Summary
-  Specifies whether the label text wraps when it is too long for the width of the label.
-Description
-  Set WordWrap to true to allow the label to display multiple line of text. When WordWrap is true, text
-  that is too wide for the label control wraps at the right margin and continues in additional lines.
-
-  Set WordWrap to false to limit the label to a single line. When WordWrap is false, text that is too
-  wide for the label appears truncated.
-
-----------------------------------------------------------------------------------------------------
-@@TJvLabel
-<TITLEIMG TJvLabel>
-JVCLInfo
-  GROUP=JVCL.LabelsAndStatic
-  FLAG=Component
-Summary
-  Can simulate a clickable link and render text at a specific angle.
-Description
-  To simulate a clickable link, do the following:
-
-  * Set AutoOpenURL to true.
-  * Set URL to a specific \URL or object, that will be opened when the user clicks the label.
-  * Set HotTrack to true, and change HotTrackFont so the user gets feedback when the mouse passes over
-    the label.
-
-  Use property Angle to display the label text at a specific angle.
-
-----------------------------------------------------------------------------------------------------
-@@TJvLabelRotateAngle
-<TITLE TJvLabelRotateAngle type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  TJvCustomLabel.Angle
-
-----------------------------------------------------------------------------------------------------
-@@TJvTextEllipsis
-<TITLE TJvTextEllipsis type>
-Summary
-  Enumerates methods to replace text by an ellipsis.
-Description
-  The TJvTextEllipsis type is used to indicate how text is replaced by an ellipsis.
-See Also
-  TJvCustomLabel.TextEllipsis
-
-----------------------------------------------------------------------------------------------------
-@@TJvTextEllipsis.teNone
-  Text is not replaced by ellipses.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTextEllipsis.teWordEllipsis
-  Truncates any word that does not fit in the rectangle and adds ellipses.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTextEllipsis.tePathEllipsis
-  Replaces characters in the middle of the string with ellipses so that the result fits in the
-  specified rectangle.
-
-----------------------------------------------------------------------------------------------------
-@@TJvTextEllipsis.teEndEllipsis
-  If the end of a string does not fit in the rectangle, it is truncated and ellipses are added. If a
-  word that is not at the end of the string goes beyond the limits of the rectangle, it is truncated
-  without ellipses.
-
-----------------------------------------------------------------------------------------------------
-@@TShadowPosition
-<TITLE TShadowPosition type>
-Summary
-  Enumerates positions of text shadow.
-Description
-  Use the TShadowPosition type to indicate a text shadow position.
-See Also
-  TJvCustomLabel.ShadowPos
-
-----------------------------------------------------------------------------------------------------
-@@TShadowPosition.spLeftTop
-  The upper left position
-
-----------------------------------------------------------------------------------------------------
-@@TShadowPosition.spLeftBottom
-  The lower left position.
-
-----------------------------------------------------------------------------------------------------
-@@TShadowPosition.spRightBottom
-  The lower right position.
-
-----------------------------------------------------------------------------------------------------
-@@TShadowPosition.spRightTop
-  The upper right position.
+  Set Alignment to specify how the text of the label is justified within the ClientRect of the label
+  control. The effect of the Alignment property is more obvious if the WordWrap property is true and
+  the label includes more than one line of text.
+  
+  These are the possible values:
+  
+  <TABLE>
+  Value           Meaning
+  --------------  -------------------------------------------------
+  taLeftJustify   Align text on the left side in the edit control.
+  taCenter        Center the text in the edit control.
+  taRightJustify  Align text on the right side in the edit control.
+  </TABLE>
 

@@ -3,57 +3,44 @@
 ----------------------------------------------------------------------------------------------------
 @@JvProgressBar.pas
 Summary
-  Contains the TJvProgressBar component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvProgressBar component.
 Author
   Sébastien Buysse
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseGradientProgressBar
+@@TJvProgressBar
+<TITLEIMG TJvProgressBar>
+JVCLInfo
+  GROUP=JVCL.CommCtrl,JVCL.Bars.SlideAndProgress.Progress
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseGradientProgressBar.BarColorFrom
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvBaseGradientProgressBar.BarColorTo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar
+@@TJvGradientProgressBar
+<TITLEIMG TJvGradientProgressBar>
+JVCLInfo
+  GROUP=JVCL.Bars.SlideAndProgress.Progress
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.BarColor
+@@TJvCustomGradientProgressBar
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.BlockSize
+@@TJvBaseProgressBar.Steps
 Summary
   Write here a summary (1 line)
 Description
@@ -63,7 +50,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.Max
+@@TJvBaseProgressBar.StepIt
 Summary
   Write here a summary (1 line)
 Description
@@ -73,17 +60,27 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.Min
+@@TJvBaseProgressBar.StepBy
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+Parameters
+  Delta - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.OnChange
+@@TJvBaseProgressBar.Smooth
+Summary
+  Indicates whether or not the bar is made of one block
+Description
+  When set to True, the progress bar is drawn as one single block. When set to False, the progress
+  bar displays multiple small blocks.
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseProgressBar.Position
 Summary
   Write here a summary (1 line)
 Description
@@ -103,7 +100,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.Position
+@@TJvBaseProgressBar.OnChange
 Summary
   Write here a summary (1 line)
 Description
@@ -113,27 +110,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.Smooth
-Summary
-  Indicates whether or not the bar is made of one block
-Description
-  When set to True, the progress bar is drawn as one single block. When set to False, the progress bar
-  displays multiple small blocks.
-
-----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.StepBy
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Parameters
-  Delta - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-
-----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.StepIt
+@@TJvBaseProgressBar.Min
 Summary
   Write here a summary (1 line)
 Description
@@ -143,7 +120,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBaseProgressBar.Steps
+@@TJvBaseProgressBar.Max
 Summary
   Write here a summary (1 line)
 Description
@@ -153,33 +130,58 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomGradientProgressBar
+@@TJvBaseProgressBar.BlockSize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseProgressBar.BarColor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseProgressBar
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvGradientProgressBar
-<TITLEIMG TJvGradientProgressBar>
-JVCLInfo
-  GROUP=JVCL.Bars.SlideAndProgress.Progress
-  FLAG=Component
+@@TJvBaseGradientProgressBar.BarColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBaseGradientProgressBar
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvProgressBar
-<TITLEIMG TJvProgressBar>
-JVCLInfo
-  GROUP=JVCL.CommCtrl,JVCL.Bars.SlideAndProgress.Progress
-  FLAG=Component
+@@TJvBaseGradientProgressBar.BarColorFrom
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressBar.FillColor
@@ -254,13 +256,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressBarState.pbsNormal
-  Description for pbsNormal
+Description for pbsNormal
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressBarState.pbsError
-  Description for pbsError
+Description for pbsError
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressBarState.pbsPaused
-  Description for pbsPaused
+Description for pbsPaused
 

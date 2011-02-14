@@ -3,80 +3,92 @@
 ----------------------------------------------------------------------------------------------------
 @@JvDockVCStyle.pas
 Summary
-  Contains components for Visual C++ style docking.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains components for Visual C++ style docking.
 Author
   Luxiaoban
+Description
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockVCConjoinPanel
+@@TJvDockVCZone.ExpandButtonDown
 Summary
-  A conjoin docking panel.
+  Defines an expand button for the dock zone.
 Description
-  TJvDockVCConjoinPanel is used by the TJvDockVCStyle to define the behavior for conjoin panels when
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCZone.ZoneSizeStyle
+Summary
+  Defines the style of the zone size.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCZone
+Summary
+  A docking zone implementation.
+Description
+  TJvDockVCZone is used by the TJvDockVCStyle to define the behavior for dock zones when using Visual
+  C++ style docking.
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCTree
+Summary
+  A docking tree.
+Description
+  TJvDockVCTree is used by the TJvDockVCStyle to define the behavior for dock trees when using Visual
+  C++ style docking.
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCTabServerOption
+Summary
+  Defines options for a drag and dock tab server.
+Description
+  Use the properties of TJvDockVCTabServerOption to define the behavior of tab sheets when using
+  Visual
+  C++ style docking.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCTabPageControl
+Summary
+  A docking tab control.
+Description
+  TJvDockVCTabPageControl is used by the TJvDockVCStyle to define the behavior for docking tab sheets
+  when using Visual C++ style docking.
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCStyle
+<TITLEIMG TJvDockVCStyle>
+JVCLInfo
+  GROUP=JVCL.Docking
+  FLAG=Component
+Summary
+  Defines standard Visual C++ docking behavior.
+Description
+  Drop a TJvDockVCStyle on a form when you want the form to dock in the same way as in Visual C++. To
+  activate the docking, drop a TJvDockServer or TJvDockClient on the same form and set its DockStyle
+  property to point to the TJvDockVCStyle component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCSplitter
+Summary
+  A docking splitter.
+Description
+  TJvDockVCSplitter is used by the TJvDockVCStyle to define the behavior for docking splitters when
   using Visual C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCConjoinServerOption
-Summary
-  Defines options for a conjoin server.
-Description
-  TJvDockVCConjoinServerOption defines the options available for a TJvDockVCStyle component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCConjoinServerOption.BorderWidth
-Summary
-  Sets the border width of a conjoin server.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCDragDockObject
-Summary
-  A drag object used for docking.
-Description
-  TJvDockVCDragDockObject is used by the TJvDockVCStyle to define the behavior for drag and dock
-  operations when using Visual C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCDragDockObject.CurrentState
-Summary
-  Defines the current state of the drag and dock operation.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCDragDockObject.DockOverBrush
-Summary
-  Defines the brush to use when a docking form is over another form.
-Description
-  Use DOckOverBrush to define the brush to use when a docking form is over another form.
-See Also
-  TJvDockVCDragDockObject.DockOverFrameWidth
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCDragDockObject.DockOverFrameWidth
-Summary
-  Defines the frame width when a docking form is over another form.
-Description
-  Use DockOverFrameWidth to define the frame size when the docking form is over another form.
-See Also
-  TJvDockVCDragDockObject.DockOverBrush
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCDragDockObject.PreviousState
-Summary
-  Stores the previous state of the docking form.
-Description
-  Use PreviousState to access the previous state of the drag and dock object.
-See Also
-  TJvDockVCDragDockObject.PreviousTarget
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVCDragDockObject.PreviousTarget
@@ -94,88 +106,79 @@ Summary
 Description
   TJvDockVCPanel is used by the TJvDockVCStyle to define the behavior for docking panels when using
   Visual C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockVCSplitter
+@@TJvDockVCDragDockObject.PreviousState
 Summary
-  A docking splitter.
+  Stores the previous state of the docking form.
 Description
-  TJvDockVCSplitter is used by the TJvDockVCStyle to define the behavior for docking splitters when
+  Use PreviousState to access the previous state of the drag and dock object.
+See Also
+  TJvDockVCDragDockObject.PreviousTarget
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCDragDockObject.DockOverFrameWidth
+Summary
+  Defines the frame width when a docking form is over another form.
+Description
+  Use DockOverFrameWidth to define the frame size when the docking form is over another form.
+See Also
+  TJvDockVCDragDockObject.DockOverBrush
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCDragDockObject.DockOverBrush
+Summary
+  Defines the brush to use when a docking form is over another form.
+Description
+  Use DOckOverBrush to define the brush to use when a docking form is over another form.
+See Also
+  TJvDockVCDragDockObject.DockOverFrameWidth
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCDragDockObject.CurrentState
+Summary
+  Defines the current state of the drag and dock operation.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCDragDockObject
+Summary
+  A drag object used for docking.
+Description
+  TJvDockVCDragDockObject is used by the TJvDockVCStyle to define the behavior for drag and dock
+  operations when using Visual C++ style docking.
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCConjoinServerOption.BorderWidth
+Summary
+  Sets the border width of a conjoin server.
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCConjoinServerOption
+Summary
+  Defines options for a conjoin server.
+Description
+  TJvDockVCConjoinServerOption defines the options available for a TJvDockVCStyle component.
+
+----------------------------------------------------------------------------------------------------
+@@TJvDockVCConjoinPanel
+Summary
+  A conjoin docking panel.
+Description
+  TJvDockVCConjoinPanel is used by the TJvDockVCStyle to define the behavior for conjoin panels when
   using Visual C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCStyle
-<TITLEIMG TJvDockVCStyle>
-JVCLInfo
-  GROUP=JVCL.Docking
-  FLAG=Component
-Summary
-  Defines standard Visual C++ docking behavior.
-Description
-  Drop a TJvDockVCStyle on a form when you want the form to dock in the same way as in Visual C++. To
-  activate the docking, drop a TJvDockServer or TJvDockClient on the same form and set its DockStyle
-  property to point to the TJvDockVCStyle component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCTabPageControl
-Summary
-  A docking tab control.
-Description
-  TJvDockVCTabPageControl is used by the TJvDockVCStyle to define the behavior for docking tab sheets
-  when using Visual C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCTabServerOption
-Summary
-  Defines options for a drag and dock tab server.
-Description
-  Use the properties of TJvDockVCTabServerOption to define the behavior of tab sheets when using Visual
-  C++ style docking.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCTree
-Summary
-  A docking tree.
-Description
-  TJvDockVCTree is used by the TJvDockVCStyle to define the behavior for dock trees when using Visual
-  C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCZone
-Summary
-  A docking zone implementation.
-Description
-  TJvDockVCZone is used by the TJvDockVCStyle to define the behavior for dock zones when using Visual
-  C++ style docking.
-
-  You do not need to create this component yourself. It is handled automatically by the TJvDockVCStyle
-  component.
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCZone.ExpandButtonDown
-Summary
-  Defines an expand button for the dock zone.
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVCZone.ZoneSizeStyle
-Summary
-  Defines the style of the zone size.
-Description
-  Write here a description
+  
+  You do not need to create this component yourself. It is handled automatically by the
+  TJvDockVCStyle component.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZoneSizeStyle
@@ -190,13 +193,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZoneSizeStyle.zssMinimum
-  Description for zssMinimum
+Description for zssMinimum
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZoneSizeStyle.zssNormal
-  Description for zssNormal
+Description for zssNormal
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockZoneSizeStyle.zssMaximum
-  Description for zssMaximum
+Description for zssMaximum
 

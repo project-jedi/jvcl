@@ -3,33 +3,15 @@
 ----------------------------------------------------------------------------------------------------
 @@JvBitmapButton.pas
 Summary
-  Contains the TJvBitmapButton component.
-<INCLUDE JVCL.UnitText.dtx>
+    Contains the TJvBitmapButton component.
 Author
   Jan Verhoeven
-
-----------------------------------------------------------------------------------------------------
-@@PJvRGBTriple
-<TITLE PJvRGBTriple type>
-Summary
-  Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets, pointers to records etc. (Value =
-  ^TJvRGBTriple; - for reference)
+  <INCLUDE JVCL.UnitText.dtx>
+
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton
-<TITLEIMG TJvBitmapButton>
-JVCLInfo
-  GROUP=JVCL.Buttons.Push
-  FLAG=Component
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.Bitmap
+@@TJvBitmapButton.LighterFontColor
 Summary
   Write here a summary (1 line)
 Description
@@ -39,7 +21,18 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.Caption
+@@TJvBitmapButton.Paint
+Summary
+  Write here a summary (1 line)
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBitmapButton.Latching
 Summary
   Write here a summary (1 line)
 Description
@@ -49,7 +42,28 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.CaptionLeft
+@@TJvBitmapButton.HotTrack
+Summary
+  Specifies whether the button is highlighted when the mouse passes over it.
+Description
+  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
+  specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
+  feedback when the mouse passes over the button.
+See Also
+  TJvExGraphicControl.OnMouseEnter, TJvExGraphicControl.OnMouseLeave
+
+----------------------------------------------------------------------------------------------------
+@@TJvBitmapButton.Font
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
+@@TJvBitmapButton.Down
 Summary
   Write here a summary (1 line)
 Description
@@ -79,7 +93,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.Down
+@@TJvBitmapButton.CaptionLeft
 Summary
   Write here a summary (1 line)
 Description
@@ -89,7 +103,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.Font
+@@TJvBitmapButton.Caption
 Summary
   Write here a summary (1 line)
 Description
@@ -99,18 +113,7 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.HotTrack
-Summary
-  Specifies whether the button is highlighted when the mouse passes over it.
-Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the button text. When HotTrack is False, there is no visual
-  feedback when the mouse passes over the button.
-See Also
-  TJvExGraphicControl.OnMouseEnter, TJvExGraphicControl.OnMouseLeave
-
-----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.Latching
+@@TJvBitmapButton.Bitmap
 Summary
   Write here a summary (1 line)
 Description
@@ -120,25 +123,24 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.LighterFontColor
+@@TJvBitmapButton
+<TITLEIMG TJvBitmapButton>
+JVCLInfo
+  GROUP=JVCL.Buttons.Push
+  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvBitmapButton.Paint
+@@PJvRGBTriple
+<TITLE PJvRGBTriple type>
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  ^TJvRGBTriple; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TPixelTransform
