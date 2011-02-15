@@ -1941,10 +1941,7 @@ begin
           FCustomColorDrawer.Down := True;
       end
       else
-      begin
-
         SelectedColor := TJvColorSpeedButton(Sender).DrawColor;
-      end;
     end;
   finally
     FNeedReDrawDownState := True;
@@ -2011,17 +2008,26 @@ begin
 end;
 
 procedure TJvCustomOfficeColorPanel.SetSelectedColor(const Value: TColor);
+
+  function FindColorButton(Buttons: TList; ValidColCount: Integer): TJvColorSpeedButton;
+  var
+    I: Integer;
+  begin
+    for I := 0 to ValidColCount - 1 do
+    begin
+      Result := TJvColorSpeedButton(Buttons[I]);
+      if Result.DrawColor = Value then
+        Exit;
+    end;
+    Result := nil;
+  end;
+
 var
-  I: Integer;
   Button: TJvColorSpeedButton;
-  ValidColCount: Integer;
-  lOut: Boolean; // (ahuser) find a better name
 begin
   if FSelectedColor <> Value then
   begin
-    Button := nil;
     FSelectedColor := Value;
-    lOut := False;
     if FNeedReDrawDownState then
     begin
       if FButtonDefaultColor.DrawColor = Value then
@@ -2033,43 +2039,21 @@ begin
       else
       begin
         FButtonDefaultColor.Down := False;
-        ValidColCount := Min(FStandardColorDrawers.Count, MaxSectColorCount);
-        for I := 0 to ValidColCount - 1 do
+        Button := FindColorButton(FStandardColorDrawers, Min(FStandardColorDrawers.Count, MaxSectColorCount));
+        if Button <> nil then
+          Button.Down := True // all other buttons automatically switch to False due to their GroupIndex
+        else
         begin
-          Button := TJvColorSpeedButton(FStandardColorDrawers[I]);
-          Button.Down := Button.DrawColor = Value;
-          if Button.Down then
+          Button := FindColorButton(FSystemColorDrawers, Min(FSystemColorDrawers.Count, MaxSectColorCount));
+          if Button <> nil then
+            Button.Down := True // all other buttons automatically switch to False due to their GroupIndex
+          else
           begin
-            lOut := True;
-            Break;
+            Button := FindColorButton(FUserColorDrawers, Min(FUserColorDrawers.Count, MaxSectColorCount));
+            if Button <> nil then
+              Button.Down := True // all other buttons automatically switch to False due to their GroupIndex
           end;
         end;
-        if not lOut then
-        begin
-          ValidColCount := Min(FSystemColorDrawers.Count, MaxSectColorCount);
-          for I := 0 to ValidColCount - 1 do
-          begin
-            Button := TJvColorSpeedButton(FSystemColorDrawers[I]);
-            Button.Down := Button.DrawColor = Value;
-            if Button.Down then
-            begin
-              lOut := True;
-              Break;
-            end;
-          end;
-        end;
-        if not lOut then
-        begin
-          ValidColCount := Min(FUserColorDrawers.Count, MaxSectColorCount);
-          for I := 0 to ValidColCount - 1 do
-          begin
-            Button := TJvColorSpeedButton(FUserColorDrawers[I]);
-            Button.Down := Button.DrawColor = Value;
-            if Button.Down then
-              Break;
-          end;
-        end;
-
         if (FPriorCheckedButton = nil) and (Button <> nil) then
           FPriorCheckedButton := Button;
       end;
