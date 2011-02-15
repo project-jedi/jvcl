@@ -618,6 +618,7 @@ var
   ItemIndex: Integer;
   CompilerDefines, Properties: TStringList;
   Replacements: array of string;
+  TmpName: string;
 begin
   Result := '';
 
@@ -718,9 +719,15 @@ begin
     // prefetch replacements
     Properties.CaseSensitive := True;
     for i := 0 to FProjectProperties.Count - 1 do
-      AddProperty(Properties,UpperCase(FProjectProperties.Names[i]), FProjectProperties.ValueFromIndex[i]);
+    begin
+      TmpName := FProjectProperties.Names[i]; 
+      AddProperty(Properties, UpperCase(TmpName), FProjectProperties.Values[TmpName]);
+    end;
     for i := 0 to xml.Properties.Count - 1 do
-      AddProperty(Properties, UpperCase(xml.Properties.Names[i]), xml.Properties.ValueFromIndex[i]);
+    begin 
+      TmpName := xml.Properties.Names[i];
+      AddProperty(Properties, UpperCase(TmpName), xml.Properties.Values[TmpName]);
+    end;
     // add custom properties (with backward compatibility)
     AddProperty(Properties, 'NAME', PathExtractFileNameNoExt(OutFileName));
     AddProperty(Properties, 'XMLNAME', ExtractFileName(xmlName));
@@ -757,8 +764,9 @@ begin
     SetLength(Replacements, Properties.Count * 2);
     for i := 0 to Properties.Count - 1 do
     begin
-      Replacements[2*i] := Properties.Names[i] + '%';
-      Replacements[2*i+1] := Properties.ValueFromIndex[i];
+      TmpName := Properties.Names[i]; 
+      Replacements[2*i] := TmpName + '%';
+      Replacements[2*i+1] := Properties.Values[TmpName];
     end;
 
     // The time stamp hasn't been found yet
