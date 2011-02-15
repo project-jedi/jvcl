@@ -2269,6 +2269,19 @@ begin
 end;
 
 procedure TJvMemoryData.CreateIndexList(const FieldNames: WideString);
+type
+  TFieldTypeSet = set of TFieldType;
+
+  function GetSetFieldNames(const FieldTypeSet: TFieldTypeSet): string;
+  var
+    FieldType: TFieldType;
+  begin
+    for FieldType := Low(TFieldType) to High(TFieldType) do
+      if FieldType in FieldTypeSet then
+        Result := Result + FieldTypeNames[FieldType] + ', ';
+    Result := Copy(Result, 1, Length(Result) - 2);
+  end;
+
 var
   Pos: Integer;
   F: TField;
@@ -2284,7 +2297,8 @@ begin
     if {(F.FieldKind = fkData) and }(F.DataType in ftSupported - ftBlobTypes) then
       FIndexList.Add(F)
     else
-      ErrorFmt(SFieldTypeMismatch, [F.DisplayName]);
+      ErrorFmt(SFieldTypeMismatch, [F.DisplayName, GetSetFieldNames(ftSupported - ftBlobTypes),
+        FieldTypeNames[F.DataType]]);
   end;
 end;
 
