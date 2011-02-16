@@ -129,7 +129,7 @@ type
     FOnCustomValidate: TJvCustomTextValidateEvent;
     FOnValueChanged: TNotifyEvent;
     FZeroEmpty: Boolean;
-    EnterText: string;
+    FEnterText: string;
     FDisplayPrefix: string;
     FDisplaySuffix: string;
     FCriticalPoints: TJvValidateEditCriticalPoints;
@@ -450,7 +450,7 @@ begin
   FCheckChars := '01234567890';
   Alignment := taRightJustify;
   FEditText := '';
-  Text := '';
+  Text := ''; // doesn't trigger OnChange because FEnterText = ''. That's what we want.
   AutoSize := True;
   FMinValue := 0;
   FMaxValue := 0;
@@ -495,7 +495,6 @@ end;
 
 procedure TJvCustomValidateEdit.Loaded;
 begin
-  inherited Loaded;
   // (obones) Why is this necessary? It overrides DecimalPlaces set to 0 by the user
 {  if DisplayFormat = dfCurrency then
     if FDecimalPlaces = 0 then
@@ -506,6 +505,7 @@ begin
   finally
     DataConnector.Active := True;
   end;
+  inherited Loaded;
 end;
 
 function TJvCustomValidateEdit.CreateDataConnector: TJvFieldDataConnector;
@@ -1040,7 +1040,7 @@ begin
   if Key = VK_ESCAPE then
   begin
     Key := 0;
-    EditText := EnterText;
+    EditText := FEnterText;
     SelStart := 0;
     SelLength := Length(FEditText);
   end;
@@ -1257,10 +1257,10 @@ end;
 procedure TJvCustomValidateEdit.DoValueChanged;
 begin
   try
-    if Assigned(FOnValueChanged) and (EnterText <> FEditText) then
+    if Assigned(FOnValueChanged) and not (csLoading in ComponentState) and (FEnterText <> FEditText) then
       FOnValueChanged(Self);
   finally
-    EnterText := FEditText;
+    FEnterText := FEditText;
   end;
 end;
 
