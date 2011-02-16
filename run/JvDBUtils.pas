@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -473,10 +473,10 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
 var
   FieldCount: Integer;
   Fields: TObjectList;
-  Fld: TField;                    {BG}   //else BAD mem leak on 'Field.asString'
+  Fld: TField;  //else BAD mem leak on 'Field.AsString'
   Bookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
 
-  function CompareField(var Field: TField; Value: Variant): Boolean; {BG}
+  function CompareField(var Field: TField; Value: Variant): Boolean;
   var
     S: string;
   begin
@@ -503,19 +503,11 @@ var
   var
     I: Integer;
   begin
-    if FieldCount = 1 then
+    Result := True;
+    for I := 0 to FieldCount - 1 do
     begin
-      Fld := TField(Fields.First);      {BG}
-      Result := CompareField(Fld, KeyValues)  {BG}
-    end
-    else
-    begin
-      Result := True;
-      for I := 0 to FieldCount - 1 do
-      begin
-        Fld := TField(Fields[I]);                  {BG}
-        Result := Result and CompareField(Fld, KeyValues[I]);  {BG}
-      end;
+      Fld := TField(Fields[I]);
+      Result := Result and CompareField(Fld, KeyValues[I]);
     end;
   end;
 
