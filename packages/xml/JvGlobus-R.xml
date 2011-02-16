@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvGlobus" Design="0">
   <Description>JVCL Globus Components Runtime Package</Description>
   <GUID>{3C82E074-2C1F-4E95-8837-729014E7AB08}</GUID>
@@ -33,7 +33,7 @@
     <File Name="..\..\run\JvgTabComm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="DB" Formname="" Condition="INTERNET_COMPONENTS"/>
+    <File Name="..\..\run\JvgWebDocumentIterator.pas" Targets="DB,help" Formname="" Condition="INTERNET_COMPONENTS"/>
     <File Name="..\..\run\Jvg3DColors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAlignFunction.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgAskListBox.pas" Targets="all" Formname="" Condition=""/>
@@ -41,26 +41,64 @@
     <File Name="..\..\run\JvgCaption.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCheckBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgCommClasses.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgCrossTable.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgCrossTable.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDigits.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgDrawTab.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgExport.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgExportComponents.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgExport.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvgExportComponents.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvgFileIterator.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgGroupBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHint.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgHoleShape.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="DB" Formname="" Condition="INTERNET_COMPONENTS"/>
+    <File Name="..\..\run\JvgHTTPVersionInfo.pas" Targets="DB,help" Formname="" Condition="INTERNET_COMPONENTS"/>
     <File Name="..\..\run\JvgImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLabel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgListBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgLogics.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgPage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgProgress.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="DB" Formname="JvgPrintPreview" Condition="JVCL_UseQuickReport"/>
-    <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="DB" Formname="JvgPrintSetup" Condition="JVCL_UseQuickReport"/>
-    <File Name="..\..\run\JvgQRLabel.pas" Targets="DB" Formname="" Condition="JVCL_UseQuickReport"/>
+    <File Name="..\..\run\JvgQPrintPreviewForm.pas" Targets="DB,help" Formname="JvgPrintPreview" Condition="JVCL_UseQuickReport"/>
+    <File Name="..\..\run\JvgQPrintSetupForm.pas" Targets="DB,help" Formname="JvgPrintSetup" Condition="JVCL_UseQuickReport"/>
+    <File Name="..\..\run\JvgQRLabel.pas" Targets="DB,help" Formname="" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgReport.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgXMLSerializer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgReportParamsEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgShade.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgShadow.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgSpeedButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgStringGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgTab.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgTabComm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgTypes.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgWebDocumentIterator.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Jvg3DColors.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgAlignFunction.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgAskListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgCaption.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgCheckBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgCommClasses.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgCrossTable.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgDigits.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgDrawTab.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgExport.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgExportComponents.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgFileIterator.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgGroupBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgHint.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgHoleShape.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgHTTPVersionInfo.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgLogics.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgPage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgProgress.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgQPrintPreviewForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgQPrintSetupForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgQRLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgReport.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvgXMLSerializer.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

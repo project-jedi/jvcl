@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvBands" Design="0">
   <Description>JVCL Band Objects Runtime Package</Description>
   <GUID>{DD2CB040-B066-4061-B05C-1F1CD0FD0D5D}</GUID>
@@ -15,5 +15,7 @@
   <Contains>
     <File Name="..\..\run\JvBandForms.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBandObject.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBandForms.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBandObject.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvStdCtrls" Design="0">
   <Description>JVCL Standard Controls Runtime Package</Description>
   <GUID>{1C1476C2-A01A-44DE-A7D5-34E47E811C5B}</GUID>
@@ -86,5 +86,72 @@
     <File Name="..\..\run\JvImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDynControlEngineJVCL.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvItemsSearchs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvListView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMaskEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMemo.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMenus.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMonthCalendar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPickDate.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvProgressBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRadioButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRecentMenuButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRichEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSecretPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvShape.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpeedButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpin.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStartMenuButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStaticText.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStatusBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvStringGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSystemPopup.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTextListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvToolBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvToolEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUpDown.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvxCheckListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvxSlider.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseEdits.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBevel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBitBtn.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBoxProcs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBrowseFolder.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvButtonPersistent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCalc.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCalendar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCheckBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCheckedMaskEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCheckListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCheckTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorCombo.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCombobox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvComCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlPanelButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCoolBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDatePickerEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDateTimePicker.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDropDownForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFavoritesButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFixedEditPopUp.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGrids.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGroupBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHeaderControl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHints.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHotKey.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRadioGroup.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkedControls.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

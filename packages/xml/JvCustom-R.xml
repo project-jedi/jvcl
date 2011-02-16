@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvCustom" Design="0">
   <Description>JVCL Custom Controls Runtime Package</Description>
   <GUID>{4A50AFAA-822C-4884-9143-3B7A7963E7CB}</GUID>
@@ -56,5 +56,42 @@
     <File Name="..\..\run\JvOwnerDrawViewer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTabBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTabBarXPPainter.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvChart.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDiagramShape.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGammaPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEditorCommon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUnicodeEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUnicodeHLEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHLEditor.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHLEditorPropertyForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHLParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelDebug.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelParser.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelRenderer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelTextHandler.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelTools.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLinkLabelTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLookOut.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOutlookBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSchedEvtStore.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScheduledEvents.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThumbImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThumbnails.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvThumbViews.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTMTimeLine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTrayIcon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUnicodeCanvas.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvValidateEdit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBalloonHint.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBaseThumbnail.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTimeLine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCustomItemViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImagesViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImagelistViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOwnerDrawViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTabBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTabBarXPPainter.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

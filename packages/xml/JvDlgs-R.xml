@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvDlgs" Design="0">
   <Description>JVCL Dialog Components Runtime Package</Description>
   <GUID>{90931326-1139-46A4-98CF-F0BE28BEEAFF}</GUID>
@@ -51,5 +51,37 @@
     <File Name="..\..\run\JvDialogActns.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesktopAlert.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesktopAlertForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDualListForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExceptionForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFindFiles.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFindReplace.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageDlg.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvLoginForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvObjectPickerDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageSetup.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageSetupTitled.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvParameterList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvParameterListTools.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvParameterListParameter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvProgressComponent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvProgressDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvProgressForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRenameError.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSelectDirectory.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTipOfDay.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWinDialogs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAddPrinter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCommonDialogD.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCommonExecDlg.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvConnectNetwork.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCopyError.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDeleteError.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDialogs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDiskPrompt.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDSADialogs.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDualList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDialogActns.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDesktopAlert.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDesktopAlertForm.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

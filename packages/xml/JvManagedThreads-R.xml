@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvManagedThreads" Design="0">
   <Description>JVCL Managed Threads Runtime Package</Description>
   <GUID>{B20F7784-CED8-4792-9E5F-A304AC4711F4}</GUID>
@@ -18,5 +18,11 @@
     <File Name="..\..\run\JvMTSync.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMTSyncMon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMTThreading.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTComponents.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTConsts.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTData.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTSync.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTSyncMon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMTThreading.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

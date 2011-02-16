@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvDotNetCtrls" Design="0">
   <Description>JVCL DotNet Controls Runtime Package</Description>
   <GUID>{FEA976CC-DA02-4817-AA17-5B1CD552B39C}</GUID>
@@ -19,7 +19,10 @@
   </Requires>
   <Contains>
     <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDBDotNetControls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDotNetUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDotNetControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDBDotNetControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDotNetUtils.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

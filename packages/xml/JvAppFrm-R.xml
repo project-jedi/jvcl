@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvAppFrm" Design="0">
   <Description>JVCL Application and Form Components Runtime Package</Description>
   <GUID>{E00CE13F-DE42-43C5-AEC9-57C655403758}</GUID>
@@ -29,5 +29,17 @@
     <File Name="..\..\run\JvFormTransparent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGradientCaption.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAnimTitle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppAnimatedIcon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppEvent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAppHotKey.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormAnimatedIcon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormAnimation.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormAutoSize.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormMagnet.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormTransparent.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFormWallpaper.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvEmbeddedForms.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

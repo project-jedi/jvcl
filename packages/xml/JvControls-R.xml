@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvControls" Design="0">
   <Description>JVCL Visual Controls Runtime Package</Description>
   <GUID>{FA36E6EE-9969-480E-B60D-09412CA9B183}</GUID>
@@ -74,5 +74,61 @@
     <File Name="..\..\run\JvVersionControlActions.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionControlActionsEngine.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionControlActionsEngineFileListBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActions.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActionsEngineStringGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvControlActionsEngineTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCharMap.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvClock.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvColorForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvComboListBox.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvComponentPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvContentScroller.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDice.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDriveCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvFooter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGroupHeader.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHint.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvHtControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvImageDrawThread.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInstallLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvItemsPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvListComb.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMovableBevel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageScroller.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPlaylist.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRegistryTreeview.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRollOut.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollMax.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvScrollText.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpacer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpeedbar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSpeedbarSetupForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSplit.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSplitter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSwitch.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSyncSplitter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTransparentButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvUninstallControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvWinampLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvZoom.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvArrowButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvaScrollText.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBehaviorLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvButtons.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCaptionButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCaptionPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOfficeColorButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOfficeColorPanel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvOfficeColorForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvNetscapeSplitter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvRuler.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVersionControlActions.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVersionControlActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvVersionControlActionsEngineFileListBox.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvPrintPreview" Design="0">
   <Description>JVCL Print Preview Components Runtime Package</Description>
   <GUID>{08661E45-2C90-4301-A95E-77C50EE00CAF}</GUID>
@@ -16,5 +16,7 @@
   <Contains>
     <File Name="..\..\run\JvPrvwRender.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPrvwDoc.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPrvwRender.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPrvwDoc.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

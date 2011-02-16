@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvPageComps" Design="0">
   <Description>JVCL Page Style Components Runtime Package</Description>
   <GUID>{395E4777-D95E-4AB0-8290-0BA981C01E14}</GUID>
@@ -19,5 +19,8 @@
     <File Name="..\..\run\JvPageListTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNavigationPane.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageListTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPageList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvNavigationPane.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>
