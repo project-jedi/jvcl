@@ -2629,8 +2629,13 @@ procedure TJvTreeView.InternalCustomDrawItem(Sender: TCustomTreeView;
 begin
   if (State = []) or (State = [cdsDefault]) or (State = [cdsSelected]) then
   begin
-    Canvas.Font := TJvTreeNode(Node).Font;
-    Canvas.Brush := TJvTreeNode(Node).Brush;
+    // Mantis #5450: If HideSelection is false the node is painted as it wouldn't be
+    // selected because State = [].
+    if not (not HideSelection and Node.Selected and not Focused) then
+    begin
+      Canvas.Font := TJvTreeNode(Node).Font;
+      Canvas.Brush := TJvTreeNode(Node).Brush;
+    end;
   end;
   if Assigned(FOnCustomDrawItem) then
     FOnCustomDrawItem(Self, Node, State, DefaultDraw);
