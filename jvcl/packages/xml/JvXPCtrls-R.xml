@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvXPCtrls" Design="0">
   <Description>JVCL XP Controls Runtime Package</Description>
   <GUID>{CFE6ED76-BD93-4A2E-BE82-A8C22E686277}</GUID>
@@ -25,5 +25,14 @@
     <File Name="..\..\run\JvXPProgressBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExplorerBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExplorerBarItems.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPContainer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPCore.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPCoreUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPButtons.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPCheckCtrls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXPProgressBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExplorerBar.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvExplorerBarItems.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

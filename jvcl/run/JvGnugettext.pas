@@ -134,15 +134,19 @@ type
 
 // Main GNU gettext functions. See documentation for instructions on how to use them.
 {$ifdef DELPHI5OROLDER}
+//DOM-IGNORE-BEGIN
 function _(const szMsgId: UnicodeString): UnicodeString;
+//DOM-IGNORE-END
 function gettext(const szMsgId: UnicodeString): UnicodeString;
 function dgettext(const szDomain: string; const szMsgId: UnicodeString): UnicodeString;
 function dngettext(const szDomain: string; const singular, plural: UnicodeString; Number: Longint): UnicodeString;
 function ngettext(const singular, plural: UnicodeString; Number: Longint): UnicodeString;
 {$endif}
 {$ifndef DELPHI5OROLDER}
+//DOM-IGNORE-BEGIN
 function _(const szMsgId: AnsiString): UnicodeString; overload;
 function _(const szMsgId: UnicodeString): UnicodeString; overload;
+//DOM-IGNORE-END
 function gettext(const szMsgId: AnsiString): UnicodeString; overload;
 function gettext(const szMsgId: UnicodeString): UnicodeString; overload;
 function dgettext(const szDomain: string; const szMsgId: AnsiString): UnicodeString; overload;

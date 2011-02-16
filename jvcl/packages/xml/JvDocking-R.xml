@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvDocking" Design="0">
   <Description>JVCL Docking Components Runtime Package</Description>
   <GUID>{45F663F1-EF6E-436F-AE8A-85B96C6EE41E}</GUID>
@@ -27,5 +27,19 @@
     <File Name="..\..\run\JvDockVIDStyle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVIDVCStyle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVSNetStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockControlForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockDelphiStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockGlobals.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockHashTable.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockInfo.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockSupportClass.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockSupportControl.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockSupportProc.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockAdvTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVCStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVIDStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVIDVCStyle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDockVSNetStyle.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

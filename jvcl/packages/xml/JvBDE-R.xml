@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvBDE" Design="0">
   <Description>JVCL BDE Components Runtime Package</Description>
   <GUID>{9189FAE4-7284-4821-8E3F-0F17EA23C445}</GUID>
@@ -20,19 +20,33 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvBDELoginDialog.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEMemTable.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEMove.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEProgress.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEQBE.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEQuery.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDESecurity.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDESQLScript.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBdeUtils.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDECheckPasswordForm.pas" Targets="DB" Formname="JvChPswdForm" Condition=""/>
-    <File Name="..\..\run\JvBDEExceptionForm.pas" Targets="DB" Formname="JvBdeErrorDlg" Condition=""/>
-    <File Name="..\..\run\JvBDEFilter.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDEIndex.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBDELists.pas" Targets="DB" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDELoginDialog.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEMemTable.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEMove.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEProgress.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEQBE.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEQuery.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDESecurity.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDESQLScript.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBdeUtils.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDECheckPasswordForm.pas" Targets="DB,help" Formname="JvChPswdForm" Condition=""/>
+    <File Name="..\..\run\JvBDEExceptionForm.pas" Targets="DB,help" Formname="JvBdeErrorDlg" Condition=""/>
+    <File Name="..\..\run\JvBDEFilter.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDEIndex.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBDELists.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDELoginDialog.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEMemTable.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEMove.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEProgress.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEQBE.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEQuery.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDESecurity.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDESQLScript.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBdeUtils.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDECheckPasswordForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEExceptionForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEFilter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDEIndex.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBDELists.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

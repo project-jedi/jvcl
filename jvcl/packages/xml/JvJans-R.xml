@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvJans" Design="0">
   <Description>JVCL Jans Components Runtime Package</Description>
   <GUID>{EB0CF9B5-CDAB-44C6-857C-0447D6CAC391}</GUID>
@@ -49,5 +49,39 @@
     <File Name="..\..\run\JvGridPrinter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJanTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimIndicator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMarkupCommon.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMarkupLabel.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvMarkupViewer.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPainterEffectsForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPainterQBForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvPaintFX.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvQuickPreviewForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvResample.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSAL.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSALCore.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSALHashList.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSALMath.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvShapedButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSimLogic.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSimPID.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSimPIDLinker.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSimScope.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSticker.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTracker.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvTurtle.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvXmlTree.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvYearGrid.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvYearGridEditForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvAirBrush.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvArrayButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvBitmapButton.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCSVBaseControls.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvDrawImage.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvForth.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGridFilter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGridPreviewForm.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGridPrinter.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvJanTreeView.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSimIndicator.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>

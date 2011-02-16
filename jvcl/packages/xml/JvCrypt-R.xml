@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <Package Name="JvCrypt" Design="0">
   <Description>JVCL Encryption and Compression Runtime Package</Description>
   <GUID>{B20B4140-780B-4ABF-B260-6BDF60F83EB3}</GUID>
@@ -19,5 +19,10 @@
     <File Name="..\..\run\JvCipher.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSerialMaker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvZlibMultiple.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCabFile.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCipher.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvGenetic.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvSerialMaker.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>
 </Package>
