@@ -472,11 +472,10 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 var
   FieldCount: Integer;
-  Fields: TObjectList;
-  Fld: TField;  //else BAD mem leak on 'Field.AsString'
+  Fields: TList;
   Bookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
 
-  function CompareField(var Field: TField; Value: Variant): Boolean;
+  function CompareField(Field: TField; const Value: Variant): Boolean;
   var
     S: string;
   begin
@@ -503,11 +502,14 @@ var
   var
     I: Integer;
   begin
-    Result := True;
-    for I := 0 to FieldCount - 1 do
+    // Works with the KeyValues variant like TCustomClientDataSet.LocateRecord
+    if (FieldCount = 1) and not VarIsArray(KeyValues) then
+      Result := CompareField(TField(Fields[0]), KeyValues)
+    else
     begin
-      Fld := TField(Fields[I]);
-      Result := Result and CompareField(Fld, KeyValues[I]);
+      Result := True;
+      for I := 0 to FieldCount - 1 do
+        Result := Result and CompareField(TField(Fields[I]), KeyValues[I]);
     end;
   end;
 
@@ -519,7 +521,7 @@ begin
     if IsEmpty then
       Exit;
   end;
-  Fields := TObjectList.Create(False);
+  Fields := TList.Create;
   try
     DataSet.GetFieldList(Fields, KeyFields);
     FieldCount := Fields.Count;
