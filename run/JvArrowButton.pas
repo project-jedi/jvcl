@@ -1009,7 +1009,7 @@ begin
 
   OffsetRect(PaintRect, Offset.X, Offset.Y);
 
-  if not SplittedButton then
+  if not SplittedButton and (not Flat or (FMouseInControl and Enabled)) then
   begin
     { Draw vertical 'bar' }
     Canvas.Pen.Color := clBtnShadow;
