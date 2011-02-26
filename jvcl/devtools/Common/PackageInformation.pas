@@ -1210,7 +1210,7 @@ var
 begin
   xml := TJclSimpleXML.Create;
   try
-    xml.LoadFromString(LoadUtf8File(Filename));
+    xml.LoadFromFile(Filename);
 
     for i := 0 to xml.Root.Items.Count - 1 do
     begin
