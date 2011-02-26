@@ -125,6 +125,9 @@
         <value>*.hpp</value>
         <value>__history</value>
       </property>
+      <property name="svn:externals">
+        <value>jedi https://projectjedi.svn.sourceforge.net:443/svnroot/projectjedi/trunk/shared/include</value>
+      </property>
     </setting>
 
     <setting path="dcu" mask="" recurse="no" dironly="yes">
@@ -177,6 +180,12 @@
       </property>
     </setting>
 
+    <setting path="include" mask="*" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.hpp</value>
+      </property>
+    </setting>
+
     <setting path="lib" mask="*" recurse="yes" dironly="yes">
       <property name="svn:ignore">
         <value>*.dcpil</value>
@@ -202,7 +211,7 @@
       </property>
     </setting>
 
-    <setting path="packages" mask="*" recurse="yes" dironly="yes">
+    <setting path="packages" mask="c? c?per d? d?per d?? d??per" recurse="yes" dironly="yes">
       <property name="svn:ignore">
         <value>*.cfg</value>
         <value>*.ddp</value>
@@ -213,6 +222,13 @@
         <value>*.hpp</value>
         <value>*.local</value>
         <value>*.identcache</value>
+        <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="packages" mask="help" recurse="yes" dironly="yes">
+      <property name="svn:ignore">
+        <value>*.doxdb</value>
         <value>__history</value>
       </property>
     </setting>
@@ -236,6 +252,13 @@
         <value>*.~*</value>
         <value>*.hpp</value>
         <value>__history</value>
+      </property>
+    </setting>
+
+    <setting path="install/ISS" mask="" recurse="no" dironly="yes">
+      <property name="svn:ignore">
+        <value>Output</value>
+        <value>setupbuild</value>
       </property>
     </setting>
 
