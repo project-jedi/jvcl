@@ -170,7 +170,7 @@ var
 
 function IsWin2kOrAbove: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and  (Win32MajorVersion >= 5);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and  CheckWin32Version(5, 0);
 end;
 
 procedure UninstallW2kFix;

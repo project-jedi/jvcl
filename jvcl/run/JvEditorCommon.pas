@@ -3226,7 +3226,7 @@ begin
           @RUpdate // address of structure for update rectangle
           );
         // (ahuser) WinNT seams to have problems with ScrollDC in vertical direction. (Mantis #2528)
-        if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion < 5) then
+        if (Win32Platform = VER_PLATFORM_WIN32_NT) and not CheckWin32Version(5, 0) then
           Dec(RUpdate.Top, CellRect.Height);
         Inc(RUpdate.Bottom, CellRect.Height);
         Windows.InvalidateRect(Handle, @RUpdate, False);

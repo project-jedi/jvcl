@@ -888,9 +888,7 @@ var
 
 function IsWinXP_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
-    ((Win32MajorVersion > 5) or
-    (Win32MajorVersion = 5) and (Win32MinorVersion >= 1));
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 1);
 end;
 
 procedure ApplyShowingChanged;

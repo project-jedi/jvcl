@@ -3099,7 +3099,7 @@ var
   Details: TThemedElementDetails;
 begin
   if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) and
-     (Win32MajorVersion < 6) then // Vista draws the border animated and not with teEditTextNormal
+     not CheckWin32Version(6, 0) then // Vista draws the border animated and not with teEditTextNormal
   begin
     DC := GetWindowDC(Handle);
     try

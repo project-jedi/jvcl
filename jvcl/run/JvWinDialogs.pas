@@ -1677,7 +1677,7 @@ end;
 
 function TJvOpenDialog2000.Execute: Boolean;
 begin
-  if (Win32MajorVersion >= 5) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  if CheckWin32Version(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Result := DoExecute(@OpenInterceptor)
   else
     Result := inherited Execute;
@@ -1687,7 +1687,7 @@ end;
 
 function TJvSaveDialog2000.Execute: Boolean;
 begin
-  if (Win32MajorVersion >= 5) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  if CheckWin32Version(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Result := DoExecute(@SaveInterceptor)
   else
     Result := inherited Execute;
