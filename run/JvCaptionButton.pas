@@ -429,8 +429,7 @@ var
 
 function IsVistaOrNewer: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and
-            (Win32MajorVersion >= 6);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 0);
 end;
 
 function GlobalXPData: TGlobalXPData;

@@ -484,10 +484,9 @@ const
   cInitRepeatPause = 400;
   cRepeatPause = 100;
 
-
 function IsVista:Boolean;
 begin
-  result := (Win32MajorVersion>=6);
+  Result := CheckWin32Version(6, 0);
 end;
 
 function MethodsEqual(const Method1, Method2: TMethod): Boolean;

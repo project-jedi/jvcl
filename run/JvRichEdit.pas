@@ -4540,7 +4540,7 @@ procedure TJvCustomRichEdit.WMRButtonUp(var Msg: TMessage);
 begin
   { RichEd20 does not pass the WM_RBUTTONUP message to defwndproc, }
   { so we get no WM_CONTEXTMENU message. Simulate message here.    }
-  if ((RichEditVersion <> 1) or (Win32MajorVersion < 5)) and AllowObjects then
+  if ((RichEditVersion <> 1) or not CheckWin32Version(5, 0)) and AllowObjects then
     Perform(WM_CONTEXTMENU, Handle, LPARAM(PointToSmallPoint(
       ClientToScreen(SmallPointToPoint(TWMMouse(Msg).Pos)))));
   inherited;

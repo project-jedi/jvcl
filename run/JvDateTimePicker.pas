@@ -249,7 +249,7 @@ end;
 
 function IsWinVista_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 6);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 0);
 end;
 
 procedure TJvDateTimePicker.UpdateCalendar(CalHandle: THandle);

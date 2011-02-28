@@ -2133,7 +2133,7 @@ begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
     begin
-      if Win32MajorVersion >= 6 then
+      if CheckWin32Version(6, 0) then
         SetBkMode(Canvas.Handle, TRANSPARENT);
       Canvas.Brush := TJvListItem(Item).Brush;
     end;
