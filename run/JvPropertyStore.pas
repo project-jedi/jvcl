@@ -87,8 +87,7 @@ type
     function GetPropertyCount: Integer;
     function GetPropertyName(Index: Integer): string;
     //1 Returns the given property as TJvCustomPropertyStore or returns nil
-    function GetPropertyJvCustomPropertyStore(PropName: string):
-        TJvCustomPropertyStore;
+    function GetPropertyJvCustomPropertyStore(PropName: string): TJvCustomPropertyStore;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -416,9 +415,15 @@ begin
   FDeleteBeforeStore := False;
   FAutoLoad := False;
   FIntIgnoreProperties := TStringList.Create;
+  FIntIgnoreProperties.Sorted := True;
+  FIntIgnoreProperties.Duplicates := dupIgnore;
   FIgnoreProperties := TJvIgnorePropertiesStringList.Create;
+  FIgnoreProperties.Sorted := True;
+  FIgnoreProperties.Duplicates := dupIgnore;
   FIgnoreLastLoadTime := False;
   FCombinedIgnoreProperties := TCombinedStrings.Create;
+  FCombinedIgnoreProperties.Sorted := True;
+  FCombinedIgnoreProperties.Duplicates := dupIgnore;
   for I := Low(IgnorePropertyList) to High(IgnorePropertyList) do
     FIntIgnoreProperties.Add(IgnorePropertyList[I]);
   FSynchronizeStoreProperties := False;
@@ -780,8 +785,7 @@ begin
   Result := GetPropCount(self);
 end;
 
-function TJvCustomPropertyStore.GetPropertyJvCustomPropertyStore(PropName:
-    string): TJvCustomPropertyStore;
+function TJvCustomPropertyStore.GetPropertyJvCustomPropertyStore(PropName: string): TJvCustomPropertyStore;
 begin
   if (PropType(Self, PropName) = tkClass) and
      (TPersistent(GetObjectProp(Self, PropName)) is TJvCustomPropertyStore) then
@@ -798,8 +802,8 @@ end;
 function TJvCustomPropertyStore.IgnoreProperty(const PropertyName: string):
   Boolean;
 begin
-  Result := (IgnoreProperties.IndexOf(PropertyName) >= 0) or
-    (FIntIgnoreProperties.IndexOf(PropertyName) >= 0);
+  Result := (FIntIgnoreProperties.IndexOf(PropertyName) >= 0) or
+    (IgnoreProperties.IndexOf(PropertyName) >= 0);
 end;
 
 procedure TJvCustomPropertyStore.LoadProperties;
@@ -958,8 +962,8 @@ begin
     if not IgnoreProperty(PropName) then
     begin
       PropertyStore := GetPropertyJvCustomPropertyStore(PropName);
-      if Assigned(PropertyStore) and (PropertyStore is TJvCustomPropertyStore) then
-        Result := Result and TJvCustomPropertyStore(PropertyStore).ValidateData;
+      if Assigned(PropertyStore) then
+        Result := Result and PropertyStore.ValidateData;
     end;
   end;
 end;
