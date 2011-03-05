@@ -698,15 +698,17 @@ begin
     for Index := 0 to GetPropCount(Self) - 1 do
     begin
       PropName := GetPropName(Self, Index);
-      PropertyStore := GetPropertyJvCustomPropertyStore (PropName);
-      if Assigned(PropertyStore) and not IgnoreProperty(PropName) then
+      if not IgnoreProperty(PropName) then
       begin
-        VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
-        if (PropertyStore.AppStoragePath = AppStorage.ConcatPaths([OldPath,
-          VisPropName])) or
-          (PropertyStore.AppStoragePath = '') then
-          PropertyStore.AppStoragePath :=
-            AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
+        PropertyStore := GetPropertyJvCustomPropertyStore (PropName);
+        if Assigned(PropertyStore) then
+        begin
+          VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
+          if (PropertyStore.AppStoragePath = AppStorage.ConcatPaths([OldPath,
+            VisPropName])) or (PropertyStore.AppStoragePath = '') then
+            PropertyStore.AppStoragePath :=
+              AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
+        end;
       end;
     end;
   end;
