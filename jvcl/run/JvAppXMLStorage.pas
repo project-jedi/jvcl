@@ -42,7 +42,7 @@ uses
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
   JclBase,
-  JvAppStorage, JvPropertyStore, JvSimpleXml, JvTypes;
+  JvAppStorage, JvPropertyStore, JvSimpleXml, JvTypes, JclStreams;
 
 type
   TJvCustomAppXMLStorage = class;
@@ -52,6 +52,8 @@ type
     FAutoEncodeEntity: Boolean;
     FAutoEncodeValue: Boolean;
     FAutoIndent: Boolean;
+    FCodePage: Word;
+    FEncoding: TJclStringEncoding;
     FInvalidCharReplacement: string;
     FWhiteSpaceReplacement: string;
     FStorage: TJvCustomAppXMLStorage;
@@ -71,12 +73,11 @@ type
     //Flag to determine if a stringlist should be stored as single string and not as list of string items
     property StoreStringListAsSingleString;
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
-    property AutoEncodeValue: Boolean read GetAutoEncodeValue write
-        SetAutoEncodeValue default True;
-    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write
-        SetAutoEncodeEntity default True;
-    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent default
-        True;
+    property AutoEncodeValue: Boolean read GetAutoEncodeValue write SetAutoEncodeValue default True;
+    property AutoEncodeEntity: Boolean read GetAutoEncodeEntity write SetAutoEncodeEntity default True;
+    property AutoIndent: Boolean read GetAutoIndent write SetAutoIndent default True;
+    property CodePage: Word read FCodePage write FCodePage default CP_ACP;
+    property Encoding: TJclStringEncoding read FEncoding write FEncoding default seAuto;
     property InvalidCharReplacement: string read FInvalidCharReplacement write SetInvalidCharReplacement;
   end;
 
@@ -116,10 +117,8 @@ type
     function GetNodeFromPath(Path: string; StartNode: TJvSimpleXmlElem = nil): TJvSimpleXmlElem;
     // Reads the \ separated Key string and returns the last created node
     function CreateAndSetNode(Key: string): TJvSimpleXmlElem;
-    procedure EnumFolders(const Path: string; const Strings: TStrings;
-      const ReportListAsValue: Boolean = True); override;
-    procedure EnumValues(const Path: string; const Strings: TStrings;
-      const ReportListAsValue: Boolean = True); override;
+    procedure EnumFolders(const Path: string; const Strings: TStrings; const ReportListAsValue: Boolean = True); override;
+    procedure EnumValues(const Path: string; const Strings: TStrings; const ReportListAsValue: Boolean = True); override;
     function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
     function PathExistsInt(const Path: string): Boolean; override;
@@ -136,17 +135,12 @@ type
     procedure DoWriteString(const Path: string; const Value: string); override;
     function DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf: TJvBytes; BufSize: Integer); override;
-    function GetValueElementFromNode(Node: TJvSimpleXMLElem; ValueName: string):
-        TJvSimpleXMLElem;
+    function GetValueElementFromNode(Node: TJvSimpleXMLElem; ValueName: string): TJvSimpleXMLElem;
     { Determines if the specified list is stored (ignores sub stores) }
-    function ListStoredInt(const Path: string; const ItemName: string = cItem):
-        Boolean; override;
-    function ReadListItemCount(const Path: string; const ItemName: string = cItem):
-        Integer; override;
-    function SplitNodeNameIndex(var sNodeName : String; var sIndex : Integer):
-        Boolean;
-    procedure WriteListItemCount(const Path: string; const ItemCount: Integer;
-        const ItemName: string = cItem); override;
+    function ListStoredInt(const Path: string; const ItemName: string = cItem): Boolean; override;
+    function ReadListItemCount(const Path: string; const ItemName: string = cItem): Integer; override;
+    function SplitNodeNameIndex(var sNodeName : String; var sIndex : Integer): Boolean;
+    procedure WriteListItemCount(const Path: string; const ItemCount: Integer; const ItemName: string = cItem); override;
 
     property Xml: TJvSimpleXML read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
@@ -188,12 +182,10 @@ type
     property SynchronizeFlushReload;
   end;
 
-procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
-    const AFileName: string; const AAppStoragePath: string = '';
-    AStorageOptions: TJvCustomAppStorageOptions = nil);
-procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
-    const AFileName: string; const AAppStoragePath: string = '';
-    AStorageOptions: TJvCustomAppStorageOptions = nil);
+procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore; const AFileName: string; const
+    AAppStoragePath: string = ''; AStorageOptions: TJvCustomAppStorageOptions = nil);
+procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore; const AFileName: string; const
+    AAppStoragePath: string = ''; AStorageOptions: TJvCustomAppStorageOptions = nil);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -228,6 +220,8 @@ begin
   FAutoEncodeEntity := True;
   FAutoEncodeValue := True;
   FAutoIndent := True;
+  FEncoding := seAuto;
+  FCodePage := CP_ACP;
 end;
 
 procedure TJvAppXMLStorageOptions.Assign(Source: TPersistent);
@@ -350,8 +344,7 @@ begin
   FXml.Free;
 end;
 
-function TJvCustomAppXMLStorage.GetValueElementFromNode(Node: TJvSimpleXMLElem;
-    ValueName: string): TJvSimpleXMLElem;
+function TJvCustomAppXMLStorage.GetValueElementFromNode(Node: TJvSimpleXMLElem; ValueName: string): TJvSimpleXMLElem;
 var
   Index: Integer;
 begin
@@ -676,8 +669,8 @@ begin
   FlushIfNeeded;
 end;
 
-procedure TJvCustomAppXMLStorage.EnumFolders(const Path: string;
-  const Strings: TStrings; const ReportListAsValue: Boolean);
+procedure TJvCustomAppXMLStorage.EnumFolders(const Path: string; const Strings: TStrings; const ReportListAsValue:
+    Boolean = True);
 var
   RefPath: string;
   I: Integer;
@@ -706,8 +699,8 @@ begin
 //    raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
 end;
 
-procedure TJvCustomAppXMLStorage.EnumValues(const Path: string;
-  const Strings: TStrings; const ReportListAsValue: Boolean);
+procedure TJvCustomAppXMLStorage.EnumValues(const Path: string; const Strings: TStrings; const ReportListAsValue:
+    Boolean = True);
 var
   PathIsList: Boolean;
   RefPath: string;
@@ -951,8 +944,7 @@ begin
   Result := TJvAppXMLStorageOptions(inherited StorageOptions);
 end;
 
-function TJvCustomAppXMLStorage.ListStoredInt(const Path: string; const
-    ItemName: string = cItem): Boolean;
+function TJvCustomAppXMLStorage.ListStoredInt(const Path: string; const ItemName: string = cItem): Boolean;
 begin
   if StorageOptions.UseOldItemNameFormat then
     Result := Inherited ListStoredInt(Path, ItemName)
@@ -960,8 +952,7 @@ begin
     Result := ReadListItemCount (Path, ItemName) > 0;
 end;
 
-function TJvCustomAppXMLStorage.ReadListItemCount(const Path: string; const
-    ItemName: string = cItem): Integer;
+function TJvCustomAppXMLStorage.ReadListItemCount(const Path: string; const ItemName: string = cItem): Integer;
 var
   Node: TJvSimpleXmlElem;
 begin
@@ -982,8 +973,7 @@ begin
   (Inherited StorageOptions).Assign(Value);
 end;
 
-function TJvCustomAppXMLStorage.SplitNodeNameIndex(var sNodeName : String; var
-    sIndex : Integer): Boolean;
+function TJvCustomAppXMLStorage.SplitNodeNameIndex(var sNodeName : String; var sIndex : Integer): Boolean;
 var sh : string;
   p: Integer;
 begin
@@ -1014,8 +1004,8 @@ begin
   Result := sIndex >= 0;
 end;
 
-procedure TJvCustomAppXMLStorage.WriteListItemCount(const Path: string; const
-    ItemCount: Integer; const ItemName: string = cItem);
+procedure TJvCustomAppXMLStorage.WriteListItemCount(const Path: string; const ItemCount: Integer; const ItemName:
+    string = cItem);
 begin
   if StorageOptions.UseOldItemNameFormat then
     Inherited WriteListItemCount(Path, ItemCount, ItemName)
@@ -1048,7 +1038,7 @@ end;
 
 procedure TJvAppXMLFileStorage.FlushInternal;
 begin
-  Xml.SaveToFile(FullFileName);
+  Xml.SaveToFile(FullFileName, StorageOptions.Encoding, StorageOptions.CodePage);
 end;
 
 procedure TJvAppXMLFileStorage.Reload;
@@ -1068,14 +1058,13 @@ end;
 
 procedure TJvAppXMLFileStorage.ReloadInternal;
 begin
-  Xml.LoadFromFile(FullFileName);
+  Xml.LoadFromFile(FullFileName, StorageOptions.Encoding, StorageOptions.CodePage);
 end;
 
 //=== { Common procedures } ==================================================
 
-procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore;
-    const AFileName: string; const AAppStoragePath: string = '';
-    AStorageOptions: TJvCustomAppStorageOptions = nil);
+procedure StorePropertyStoreToXmlFile(APropertyStore: TJvCustomPropertyStore; const AFileName: string; const
+    AAppStoragePath: string = ''; AStorageOptions: TJvCustomAppStorageOptions = nil);
 var
   AppStorage: TJvAppXMLFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
@@ -1106,9 +1095,8 @@ begin
   end;
 end;
 
-procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore;
-    const AFileName: string; const AAppStoragePath: string = '';
-    AStorageOptions: TJvCustomAppStorageOptions = nil);
+procedure LoadPropertyStoreFromXmlFile(APropertyStore: TJvCustomPropertyStore; const AFileName: string; const
+    AAppStoragePath: string = ''; AStorageOptions: TJvCustomAppStorageOptions = nil);
 var
   AppStorage: TJvAppXMLFileStorage;
   SaveAppStorage: TJvCustomAppStorage;
