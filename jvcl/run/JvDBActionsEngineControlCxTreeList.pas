@@ -92,8 +92,7 @@ begin
   Name := 'TJvDatabaseActionDevExpCxTreeListControlEngine';
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.DataSource(
-  AActionComponent: TComponent): TDataSource;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.DataSource(AActionComponent: TComponent): TDataSource;
 begin
   if Assigned(DBDataController(AActionComponent)) then
     Result := DBDataController(AActionComponent).DataSource
@@ -101,14 +100,12 @@ begin
     Result := inherited DataSource(AActionComponent)
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.SupportsComponent(
-  AActionComponent: TComponent): Boolean;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.SupportsComponent(AActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(DBTreeList(AActionComponent));
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.Bof(AActionComponent:
-  TComponent): Boolean;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.Bof(AActionComponent: TComponent): Boolean;
 begin
   if Assigned(DBTreeList(AActionComponent)) then
     Result := DBTreeList(AActionComponent).DataController.FocusedRowIndex = 0
@@ -116,52 +113,45 @@ begin
     Result := inherited Bof(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.RecNo(AActionComponent:
-  TComponent): Integer;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.RecNo(AActionComponent: TComponent): Integer;
 begin
-  if Assigned(DBTreeList(AActionComponent)) then
-    if DBTreeList(AActionComponent).DataController.IsGridMode then
-      Result := inherited RecNo(AActionComponent)
+  if Assigned(TreeList(AActionComponent)) then
+    if Assigned(TreeList(AActionComponent).FocusedNode) then
+      Result := TreeList(AActionComponent).FocusedNode.AbsoluteIndex+1
     else
-      Result := DBTreeList(AActionComponent).DataController.FocusedRowIndex + 1
+      Result := inherited RecNo(AActionComponent)
   else
     Result := inherited RecNo(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.RecordCount(
-  AActionComponent: TComponent): Integer;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.RecordCount(AActionComponent: TComponent): Integer;
 begin
-  if Assigned(DBTreeList(AActionComponent)) then
-    if DBTreeList(AActionComponent).DataController.IsGridMode then
-      Result := inherited RecordCount(AActionComponent)
+  if Assigned(TreeList(AActionComponent)) then
+    if Assigned(TreeList(AActionComponent).FocusedNode) then
+      Result := TreeList(AActionComponent).AbsoluteCount
     else
-      Result := DBTreeList(AActionComponent).DataController.FilteredRecordCount
+      Result := inherited RecordCount(AActionComponent)
   else
     Result := inherited RecordCount(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.CanInsert(AActionComponent:
-  TComponent): Boolean;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.CanInsert(AActionComponent: TComponent): Boolean;
 begin
   if Assigned(DBTreeList(AActionComponent)) then
-    Result := DBTreeList(AActionComponent).OptionsData.Inserting and inherited
-      CanInsert(AActionComponent)
+    Result := DBTreeList(AActionComponent).OptionsData.Inserting and inherited CanInsert(AActionComponent)
   else
     Result := inherited CanInsert(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.CanUpdate(AActionComponent:
-  TComponent): Boolean;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.CanUpdate(AActionComponent: TComponent): Boolean;
 begin
   if Assigned(DBTreeList(AActionComponent)) then
-    Result := DBTreeList(AActionComponent).OptionsData.Editing and inherited
-      CanUpdate(AActionComponent)
+    Result := DBTreeList(AActionComponent).OptionsData.Editing and inherited CanUpdate(AActionComponent)
   else
     Result := inherited CanUpdate(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.CanDelete(AActionComponent:
-  TComponent): Boolean;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.CanDelete(AActionComponent: TComponent): Boolean;
 begin
   if Assigned(DBTreeList(AActionComponent)) then
     Result := DBTreeList(AActionComponent).OptionsData.Deleting and inherited CanDelete(AActionComponent)
@@ -169,14 +159,12 @@ begin
     Result := inherited CanDelete(AActionComponent);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.CanNavigate(
-  AActionComponent: TComponent): Boolean;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.CanNavigate(AActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(DBTreeList(AActionComponent));
 end;
 
-procedure TJvDatabaseActionDevExpCxTreeListControlEngine.First(AActionComponent:
-  TComponent);
+procedure TJvDatabaseActionDevExpCxTreeListControlEngine.First(AActionComponent: TComponent);
 begin
   if Assigned(DBTreeList(AActionComponent)) then
     DBTreeList(AActionComponent).DataController.GotoFirst
@@ -210,8 +198,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvDatabaseActionDevExpCxTreeListControlEngine.Last(AActionComponent:
-  TComponent);
+procedure TJvDatabaseActionDevExpCxTreeListControlEngine.Last(AActionComponent: TComponent);
 begin
   if Assigned(DBTreeList(AActionComponent)) then
     DBTreeList(AActionComponent).DataController.GotoLast
@@ -219,8 +206,7 @@ begin
     inherited Last(AActionComponent);
 end;
 
-procedure TJvDatabaseActionDevExpCxTreeListControlEngine.MoveBy(AActionComponent:
-  TComponent; Distance: Integer);
+procedure TJvDatabaseActionDevExpCxTreeListControlEngine.MoveBy(AActionComponent: TComponent; Distance: Integer);
 begin
   if Assigned(DBTreeList(AActionComponent)) then
     DBTreeList(AActionComponent).DataController.MoveBy(Distance)
@@ -228,8 +214,7 @@ begin
     inherited MoveBy(AActionComponent, Distance);
 end;
 
-function TJvDatabaseActionDevExpCxTreeListControlEngine.SelectedField(
-  AActionComponent: TComponent): TField;
+function TJvDatabaseActionDevExpCxTreeListControlEngine.SelectedField(AActionComponent: TComponent): TField;
 var Column : TcxTreeListColumn;
 begin
   Result := nil;
