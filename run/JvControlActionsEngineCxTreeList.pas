@@ -47,8 +47,8 @@ type
     function GetSupportedOperations: TJvControlActionOperations; override;
     function GetTreeList(AActionComponent: TComponent): TcxCustomTreeList;
   public
-    function ExecuteOperation(const aOperation: TJvControlActionOperation; const
-        aActionControl: TControl): Boolean; override;
+    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean;
+        override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
   end;
 
@@ -75,8 +75,8 @@ uses
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 
-function TJvControlActioncxTreeListEngine.ExecuteOperation(const aOperation:
-    TJvControlActionOperation; const aActionControl: TControl): Boolean;
+function TJvControlActioncxTreeListEngine.ExecuteOperation(const aOperation: TJvControlActionOperation; const
+    aActionControl: TControl): Boolean;
 begin
   Result := false;
   if Assigned(GetTreeList(aActionControl)) then

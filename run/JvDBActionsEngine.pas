@@ -117,33 +117,26 @@ type
     function EditModeActive(aActionComponent: TComponent): Boolean; virtual;
     procedure EnableControls(aActionComponent: TComponent); virtual;
     function EOF(aActionComponent: TComponent): Boolean; virtual;
-    function FieldById(aActionComponent: TComponent; const FieldId: Integer):
-        TField; virtual;
-    function FieldByName(aActionComponent: TComponent; const FieldName: string):
-        TField; virtual;
+    function FieldById(aActionComponent: TComponent; const FieldId: Integer): TField; virtual;
+    function FieldByName(aActionComponent: TComponent; const FieldName: string): TField; virtual;
     function FieldCount(aActionComponent: TComponent): Integer; virtual;
-    procedure FillFieldList(aActionComponent: TComponent; var AFieldList: TStrings;
-        const AOnlyVisible: Boolean); virtual;
+    procedure FillFieldList(aActionComponent: TComponent; var AFieldList: TStrings; const AOnlyVisible: Boolean); virtual;
     procedure First(aActionComponent: TComponent); virtual;
     function DataSet(aActionComponent: TComponent): TDataSet; virtual;
     function DataSource(aActionComponent: TComponent): TDataSource; virtual;
-    function GotoSelectedRow(aActionComponent: TComponent;const ASelectedRow:
-        Integer): Boolean; virtual;
+    function GotoSelectedRow(aActionComponent: TComponent;const ASelectedRow: Integer): Boolean; virtual;
     function HasData(aActionComponent: TComponent): Boolean; virtual;
     function IsActive(aActionComponent: TComponent): Boolean; virtual;
-    function IsFieldReadOnly(aActionComponent: TComponent;const AFieldName:
-        string): Boolean; virtual;
-    function IsFieldVisible(aActionComponent: TComponent; const AFieldName:
-        string): Boolean; virtual;
+    function IsFieldReadOnly(aActionComponent: TComponent;const AFieldName: string): Boolean; virtual;
+    function IsFieldVisible(aActionComponent: TComponent; const AFieldName: string): Boolean; virtual;
     procedure Last(aActionComponent: TComponent); virtual;
     procedure MoveBy(aActionComponent: TComponent; Distance: Integer); virtual;
     function RecNo(aActionComponent: TComponent): Integer; virtual;
     function RecordCount(aActionComponent: TComponent): Integer; virtual;
     function SelectedField(aActionComponent: TComponent): TField; virtual;
     function SelectedRowsCount(aActionComponent: TComponent): Integer; virtual;
-    procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
-        TJvShowSingleRecordWindowOptions; ACreateDataControlsEvent:
-        TJvDataSourceEditDialogCreateDataControlsEvent = nil; AOnFormShowEvent:
+    procedure ShowSingleRecordWindow(aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions;
+        ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil; AOnFormShowEvent:
         TJvDataSourceEditDialogOnFormShowEvent = nil); virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
@@ -211,8 +204,7 @@ begin
   inherited Create(AOwner);
 end;
 
-function TJvDatabaseActionBaseControlEngine.Bof(aActionComponent: TComponent):
-    Boolean;
+function TJvDatabaseActionBaseControlEngine.Bof(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).Bof
@@ -220,8 +212,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.CanDelete(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.CanDelete(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).CanModify
@@ -229,8 +220,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.CanInsert(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.CanInsert(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).CanModify
@@ -238,26 +228,22 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.CanNavigate(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.CanNavigate(aActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(DataSet(aActionComponent));
 end;
 
-function TJvDatabaseActionBaseControlEngine.CanRefresh(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.CanRefresh(aActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(DataSet(aActionComponent));
 end;
 
-function TJvDatabaseActionBaseControlEngine.CanRefreshRecord(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.CanRefreshRecord(aActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(DataSet(aActionComponent));
 end;
 
-function TJvDatabaseActionBaseControlEngine.CanUpdate(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.CanUpdate(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).CanModify
@@ -265,8 +251,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.ControlsDisabled(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.ControlsDisabled(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).ControlsDisabled
@@ -274,15 +259,13 @@ begin
     Result := False;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.DisableControls(aActionComponent:
-    TComponent);
+procedure TJvDatabaseActionBaseControlEngine.DisableControls(aActionComponent: TComponent);
 begin
   if Assigned(DataSet(aActionComponent)) then
     DataSet(aActionComponent).DisableControls;
 end;
 
-function TJvDatabaseActionBaseControlEngine.EditModeActive(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.EditModeActive(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).State in [dsInsert, dsEdit]
@@ -290,15 +273,13 @@ begin
     Result := False;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.EnableControls(aActionComponent:
-    TComponent);
+procedure TJvDatabaseActionBaseControlEngine.EnableControls(aActionComponent: TComponent);
 begin
   if Assigned(DataSet(aActionComponent)) then
     DataSet(aActionComponent).EnableControls;
 end;
 
-function TJvDatabaseActionBaseControlEngine.EOF(aActionComponent: TComponent):
-    Boolean;
+function TJvDatabaseActionBaseControlEngine.EOF(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).EOF
@@ -306,8 +287,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.FieldById(aActionComponent:
-    TComponent; const FieldId: Integer): TField;
+function TJvDatabaseActionBaseControlEngine.FieldById(aActionComponent: TComponent; const FieldId: Integer): TField;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).Fields[FieldId]
@@ -315,8 +295,7 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.FieldByName(aActionComponent:
-    TComponent; const FieldName: string): TField;
+function TJvDatabaseActionBaseControlEngine.FieldByName(aActionComponent: TComponent; const FieldName: string): TField;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).FieldByName(FieldName)
@@ -324,8 +303,7 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.FieldCount(aActionComponent:
-    TComponent): Integer;
+function TJvDatabaseActionBaseControlEngine.FieldCount(aActionComponent: TComponent): Integer;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).FieldCount
@@ -333,8 +311,8 @@ begin
     Result := -1;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.FillFieldList(aActionComponent:
-    TComponent; var AFieldList: TStrings; const AOnlyVisible: Boolean);
+procedure TJvDatabaseActionBaseControlEngine.FillFieldList(aActionComponent: TComponent; var AFieldList: TStrings;
+    const AOnlyVisible: Boolean);
 var
   I: Integer;
   ds : TDataset;
@@ -349,15 +327,13 @@ begin
   end;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.First(aActionComponent:
-    TComponent);
+procedure TJvDatabaseActionBaseControlEngine.First(aActionComponent: TComponent);
 begin
   if Assigned(DataSet(aActionComponent)) then
     DataSet(aActionComponent).First;
 end;
 
-function TJvDatabaseActionBaseControlEngine.DataSet(aActionComponent:
-    TComponent): TDataSet;
+function TJvDatabaseActionBaseControlEngine.DataSet(aActionComponent: TComponent): TDataSet;
 begin
   if Assigned(DataSource(aActionComponent)) then
     Result := DataSource(aActionComponent).DataSet
@@ -367,8 +343,7 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.DataSource(aActionComponent:
-    TComponent): TDataSource;
+function TJvDatabaseActionBaseControlEngine.DataSource(aActionComponent: TComponent): TDataSource;
 begin
   if Assigned(aActionComponent) and (aActionComponent is TDataSource) then
     Result := TDataSource(aActionComponent)
@@ -376,14 +351,13 @@ begin
     Result := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.GotoSelectedRow(aActionComponent:
-    TComponent;const ASelectedRow: Integer): Boolean;
+function TJvDatabaseActionBaseControlEngine.GotoSelectedRow(aActionComponent: TComponent;const ASelectedRow: Integer):
+    Boolean;
 begin
   Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.HasData(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.HasData(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).RecordCount > 0
@@ -391,8 +365,7 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.IsActive(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.IsActive(aActionComponent: TComponent): Boolean;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).Active
@@ -400,8 +373,8 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.IsFieldReadOnly(aActionComponent:
-    TComponent;const AFieldName: string): Boolean;
+function TJvDatabaseActionBaseControlEngine.IsFieldReadOnly(aActionComponent: TComponent;const AFieldName: string):
+    Boolean;
 var
   Field: TField;
 begin
@@ -412,8 +385,8 @@ begin
     Result := False;
 end;
 
-function TJvDatabaseActionBaseControlEngine.IsFieldVisible(aActionComponent:
-    TComponent; const AFieldName: string): Boolean;
+function TJvDatabaseActionBaseControlEngine.IsFieldVisible(aActionComponent: TComponent; const AFieldName: string):
+    Boolean;
 var
   Field: TField;
 begin
@@ -430,15 +403,13 @@ begin
     DataSet(aActionComponent).Last;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.MoveBy(aActionComponent:
-    TComponent; Distance: Integer);
+procedure TJvDatabaseActionBaseControlEngine.MoveBy(aActionComponent: TComponent; Distance: Integer);
 begin
   if Assigned(DataSet(aActionComponent)) then
     DataSet(aActionComponent).MoveBy(Distance);
 end;
 
-function TJvDatabaseActionBaseControlEngine.RecNo(aActionComponent:
-    TComponent): Integer;
+function TJvDatabaseActionBaseControlEngine.RecNo(aActionComponent: TComponent): Integer;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).RecNo
@@ -446,8 +417,7 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseControlEngine.RecordCount(aActionComponent:
-    TComponent): Integer;
+function TJvDatabaseActionBaseControlEngine.RecordCount(aActionComponent: TComponent): Integer;
 begin
   if Assigned(DataSet(aActionComponent)) then
     Result := DataSet(aActionComponent).RecordCount
@@ -455,22 +425,19 @@ begin
     Result := -1;
 end;
 
-function TJvDatabaseActionBaseControlEngine.SelectedField(aActionComponent:
-    TComponent): TField;
+function TJvDatabaseActionBaseControlEngine.SelectedField(aActionComponent: TComponent): TField;
 begin
   Result := nil;
 end;
 
-function TJvDatabaseActionBaseControlEngine.SelectedRowsCount(aActionComponent:
-    TComponent): Integer;
+function TJvDatabaseActionBaseControlEngine.SelectedRowsCount(aActionComponent: TComponent): Integer;
 begin
   Result := 0;
 end;
 
-procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(
-    aActionComponent: TComponent; AOptions: TJvShowSingleRecordWindowOptions;
-    ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent =
-    nil; AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil);
+procedure TJvDatabaseActionBaseControlEngine.ShowSingleRecordWindow(aActionComponent: TComponent; AOptions:
+    TJvShowSingleRecordWindowOptions; ACreateDataControlsEvent: TJvDataSourceEditDialogCreateDataControlsEvent = nil;
+    AOnFormShowEvent: TJvDataSourceEditDialogOnFormShowEvent = nil);
 var
   Dialog: TJvDynControlDataSourceEditDialog;
 begin
@@ -490,14 +457,12 @@ begin
   end;
 end;
 
-function TJvDatabaseActionBaseControlEngine.SupportsAction(AAction:
-    TJvActionEngineBaseAction): Boolean;
+function TJvDatabaseActionBaseControlEngine.SupportsAction(AAction: TJvActionEngineBaseAction): Boolean;
 begin
   Result := (AAction is TJvDatabaseBaseAction) ;
 end;
 
-function TJvDatabaseActionBaseControlEngine.SupportsComponent(aActionComponent:
-    TComponent): Boolean;
+function TJvDatabaseActionBaseControlEngine.SupportsComponent(aActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(aActionComponent) and (aActionComponent is TDataSource);
 end;
