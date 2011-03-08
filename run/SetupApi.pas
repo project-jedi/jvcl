@@ -4363,7 +4363,7 @@ function SetupDiInstallInterfaceDevices(DeviceInfoSet: HDEVINFO;
 {$EXTERNALSYM SetupDiInstallInterfaceDevices}
 
 {$IFDEF WINXP_UP}
-function SetupDiSetDeviceInterfaceDefault(DeviceInfoSet: HDEVINFO
+function SetupDiSetDeviceInterfaceDefault(DeviceInfoSet: HDEVINFO;
   var DeviceInterfaceData: TSPDeviceInterfaceData; Flags: DWORD;
   Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceInterfaceDefault}
