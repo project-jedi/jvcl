@@ -1359,7 +1359,7 @@ type
     Str: string;
   end;
 
-function SysUtilsEnumStringModules(Instance: Longint; Data: Pointer): Boolean;
+function SysUtilsEnumStringModules(Instance: HINST; Data: Pointer): Boolean;
 {$ifdef MSWINDOWS}
 var
   Buffer: array[0..1023] of Char;

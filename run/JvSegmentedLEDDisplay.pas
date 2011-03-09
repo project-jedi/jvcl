@@ -2213,7 +2213,7 @@ end;
 
 //=== { initialization and support routines } =================================
 
-procedure ModuleUnload(Instance: Longint);
+procedure ModuleUnload(Instance: HINST);
 begin
   UnregisterModuleSegmentedLEDDigitClasses(HMODULE(Instance));
 end;
