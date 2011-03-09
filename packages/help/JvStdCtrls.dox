@@ -25,12 +25,13 @@ ContentFile=JvStdCtrlscontents.html
 IndexFile=JvStdCtrlsidx.html
 
 [Project Database Files]
-Count=5
+Count=6
 File0=JvSystem.doxdb
 File1=JvCore.doxdb
 File2=Jcl.doxdb
 File3=JclVcl.doxdb
-File4=vcl.doxdb
+File4=JEDI.doxdb
+File5=vcl.doxdb
 
 [Source Files]
 Count=134
@@ -168,3 +169,11 @@ File130=..\..\..\help\JvHotKey.dtx
 File131=..\..\..\help\JvImage.dtx
 File132=..\..\..\help\JvRadioGroup.dtx
 File133=..\..\..\help\JvLinkedControls.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Standard Controls Runtime Package
+Title=JVCL Standard Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

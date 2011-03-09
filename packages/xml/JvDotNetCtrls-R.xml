@@ -11,6 +11,7 @@
     <Package Name="JvDB-R" Targets="DB" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
     <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="rtl" Targets="C,D" Condition=""/>
     <Package Name="vclx" Targets="C,D" Condition=""/>

@@ -13,6 +13,7 @@
     <Package Name="JvControls-R" Targets="all" Condition=""/>
     <Package Name="Jcl" Targets="all" Condition=""/>
     <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
     <Package Name="rtl" Targets="C,D" Condition=""/>
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="dbrtl" Targets="DB" Condition=""/>
@@ -110,8 +111,8 @@
     <File Name="..\..\run\JvDBActions.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA"/>
-    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_ODAC"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_ODAC || HELP"/>
     <File Name="..\..\run\JvDBCombobox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBControls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB,help" Formname="" Condition=""/>
@@ -122,11 +123,11 @@
     <File Name="..\..\run\JvBaseDBDialog.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBPasswordDialog.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBLogonDialog.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBLogonDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA"/>
-    <File Name="..\..\run\JvDBLogonDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <File Name="..\..\run\JvDBLogonDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
     <File Name="..\..\run\JvDBLookupTreeView.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDBPasswordDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA"/>
-    <File Name="..\..\run\JvDBPasswordDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <File Name="..\..\run\JvDBPasswordDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBPasswordDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
     <File Name="..\..\run\JvDBProgressBar.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBQueryParamsForm.pas" Targets="DB,help" Formname="JvQueryParamsDialog" Condition=""/>
     <File Name="..\..\run\JvDBRadioPanel.pas" Targets="DB,help" Formname="" Condition=""/>
@@ -153,8 +154,8 @@
     <File Name="..\..\run\JvDynControlEngineDBIntf.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\run\JvOracleDataset.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA"/>
-    <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <File Name="..\..\run\JvOracleDataset.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAppStoragePropertyEngineDB.dtx" Targets="help" Formname="" Condition=""/>

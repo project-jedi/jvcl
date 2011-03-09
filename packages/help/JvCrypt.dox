@@ -25,11 +25,12 @@ ContentFile=JvCryptcontents.html
 IndexFile=JvCryptidx.html
 
 [Project Database Files]
-Count=4
+Count=5
 File0=JvCore.doxdb
 File1=JvSystem.doxdb
 File2=Jcl.doxdb
-File3=vcl.doxdb
+File3=JEDI.doxdb
+File4=vcl.doxdb
 
 [Source Files]
 Count=10
@@ -43,3 +44,11 @@ File6=..\..\..\help\JvCabFile.dtx
 File7=..\..\..\help\JvCipher.dtx
 File8=..\..\..\help\JvGenetic.dtx
 File9=..\..\..\help\JvSerialMaker.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Encryption and Compression Runtime Package
+Title=JVCL Encryption and Compression Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

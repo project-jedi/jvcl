@@ -25,10 +25,11 @@ ContentFile=JvSystemcontents.html
 IndexFile=JvSystemidx.html
 
 [Project Database Files]
-Count=3
+Count=4
 File0=JvCore.doxdb
 File1=Jcl.doxdb
-File2=vcl.doxdb
+File2=JEDI.doxdb
+File3=vcl.doxdb
 
 [Source Files]
 Count=82
@@ -114,3 +115,11 @@ File78=..\..\..\help\JvAppCommand.dtx
 File79=..\..\..\help\JvScreenSaveSuppress.dtx
 File80=..\..\..\help\JvSysRequirements.dtx
 File81=..\..\..\help\JvMailSlots.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL System Components Runtime Package
+Title=JVCL System Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

@@ -25,13 +25,14 @@ ContentFile=JvAppFrmcontents.html
 IndexFile=JvAppFrmidx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvSystem.doxdb
 File2=JvControls.doxdb
 File3=Jcl.doxdb
 File4=JclVcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=24
@@ -59,3 +60,11 @@ File20=..\..\..\help\JvFormMagnet.dtx
 File21=..\..\..\help\JvFormTransparent.dtx
 File22=..\..\..\help\JvFormWallpaper.dtx
 File23=..\..\..\help\JvEmbeddedForms.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Application and Form Components Runtime Package
+Title=JVCL Application and Form Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

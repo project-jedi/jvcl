@@ -25,13 +25,14 @@ ContentFile=JvPascalInterpretercontents.html
 IndexFile=JvPascalInterpreteridx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvCustom.doxdb
 File2=JvSystem.doxdb
 File3=JvStdCtrls.doxdb
 File4=Jcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=60
@@ -93,3 +94,11 @@ File56=..\..\..\help\JvInterpreter_Types.dtx
 File57=..\..\..\help\JvInterpreter_Windows.dtx
 File58=..\..\..\help\JvInterpreterConst.dtx
 File59=..\..\..\help\JvInterpreterFm.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Interpreter Components Runtime Package
+Title=JVCL Interpreter Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

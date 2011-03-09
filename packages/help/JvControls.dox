@@ -25,13 +25,14 @@ ContentFile=JvControlscontents.html
 IndexFile=JvControlsidx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=JvSystem.doxdb
 File3=Jcl.doxdb
 File4=JclVcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=112
@@ -147,3 +148,11 @@ File108=..\..\..\help\JvRuler.dtx
 File109=..\..\..\help\JvVersionControlActions.dtx
 File110=..\..\..\help\JvVersionControlActionsEngine.dtx
 File111=..\..\..\help\JvVersionControlActionsEngineFileListBox.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Visual Controls Runtime Package
+Title=JVCL Visual Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

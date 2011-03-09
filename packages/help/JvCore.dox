@@ -25,10 +25,11 @@ ContentFile=JvCorecontents.html
 IndexFile=JvCoreidx.html
 
 [Project Database Files]
-Count=3
+Count=4
 File0=Jcl.doxdb
 File1=JclVcl.doxdb
-File2=vcl.doxdb
+File2=JEDI.doxdb
+File3=vcl.doxdb
 
 [Source Files]
 Count=113
@@ -145,3 +146,11 @@ File109=..\..\..\help\JvHotTrackPersistent.dtx
 File110=..\..\..\help\JvStdEditActions.dtx
 File111=..\..\..\help\JvValidators.dtx
 File112=..\..\..\help\JvErrorIndicator.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Core Components Runtime Package
+Title=JVCL Core Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

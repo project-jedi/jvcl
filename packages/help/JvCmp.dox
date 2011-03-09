@@ -25,11 +25,12 @@ ContentFile=JvCmpcontents.html
 IndexFile=JvCmpidx.html
 
 [Project Database Files]
-Count=4
+Count=5
 File0=JvCore.doxdb
 File1=JvSystem.doxdb
 File2=Jcl.doxdb
-File3=vcl.doxdb
+File3=JEDI.doxdb
+File4=vcl.doxdb
 
 [Source Files]
 Count=46
@@ -79,3 +80,11 @@ File42=..\..\..\help\JvControlComponent.dtx
 File43=..\..\..\help\JvSpellChecker.dtx
 File44=..\..\..\help\JvSpellerForm.dtx
 File45=..\..\..\help\JvSpellIntf.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Non-Visual Components Runtime Package
+Title=JVCL Non-Visual Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

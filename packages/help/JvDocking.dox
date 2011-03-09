@@ -25,10 +25,11 @@ ContentFile=JvDockingcontents.html
 IndexFile=JvDockingidx.html
 
 [Project Database Files]
-Count=3
+Count=4
 File0=JvCore.doxdb
 File1=Jcl.doxdb
-File2=vcl.doxdb
+File2=JEDI.doxdb
+File3=vcl.doxdb
 
 [Source Files]
 Count=28
@@ -60,3 +61,11 @@ File24=..\..\..\help\JvDockVCStyle.dtx
 File25=..\..\..\help\JvDockVIDStyle.dtx
 File26=..\..\..\help\JvDockVIDVCStyle.dtx
 File27=..\..\..\help\JvDockVSNetStyle.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Docking Components Runtime Package
+Title=JVCL Docking Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

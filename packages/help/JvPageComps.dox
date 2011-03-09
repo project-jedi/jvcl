@@ -25,11 +25,12 @@ ContentFile=JvPageCompscontents.html
 IndexFile=JvPageCompsidx.html
 
 [Project Database Files]
-Count=4
+Count=5
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=Jcl.doxdb
-File3=vcl.doxdb
+File3=JEDI.doxdb
+File4=vcl.doxdb
 
 [Source Files]
 Count=6
@@ -39,3 +40,11 @@ File2=..\..\run\JvNavigationPane.pas
 File3=..\..\..\help\JvPageListTreeView.dtx
 File4=..\..\..\help\JvPageList.dtx
 File5=..\..\..\help\JvNavigationPane.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Page Style Components Runtime Package
+Title=JVCL Page Style Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

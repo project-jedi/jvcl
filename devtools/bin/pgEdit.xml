@@ -70,7 +70,7 @@
         <target name="d12"/>
         <target name="d14"/>
         <target name="d15"/>
-        <target name="help"/>
+        <target name="help" defines="HELP"/>
       </targets>
       <aliases>
         <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15"/>

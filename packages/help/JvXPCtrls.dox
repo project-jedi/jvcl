@@ -25,12 +25,13 @@ ContentFile=JvXPCtrlscontents.html
 IndexFile=JvXPCtrlsidx.html
 
 [Project Database Files]
-Count=5
+Count=6
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=Jcl.doxdb
 File3=JclVcl.doxdb
-File4=vcl.doxdb
+File4=JEDI.doxdb
+File5=vcl.doxdb
 
 [Source Files]
 Count=18
@@ -52,3 +53,11 @@ File14=..\..\..\help\JvXPCheckCtrls.dtx
 File15=..\..\..\help\JvXPProgressBar.dtx
 File16=..\..\..\help\JvExplorerBar.dtx
 File17=..\..\..\help\JvExplorerBarItems.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL XP Controls Runtime Package
+Title=JVCL XP Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

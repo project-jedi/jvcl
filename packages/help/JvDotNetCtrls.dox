@@ -25,12 +25,13 @@ ContentFile=JvDotNetCtrlscontents.html
 IndexFile=JvDotNetCtrlsidx.html
 
 [Project Database Files]
-Count=5
+Count=6
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=Jcl.doxdb
 File3=JclVcl.doxdb
-File4=vcl.doxdb
+File4=JEDI.doxdb
+File5=vcl.doxdb
 
 [Source Files]
 Count=6
@@ -40,3 +41,11 @@ File2=..\..\run\JvDotNetUtils.pas
 File3=..\..\..\help\JvDotNetControls.dtx
 File4=..\..\..\help\JvDBDotNetControls.dtx
 File5=..\..\..\help\JvDotNetUtils.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL DotNet Controls Runtime Package
+Title=JVCL DotNet Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41
