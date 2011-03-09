@@ -4,13 +4,9 @@
 @@JvCsvData.pas
 Summary
     The unit JvCsvData contains TJvCsvDataSet (and its ancestor TJvCustomCsvDataSet), an in-memory
+    TDataSet component similar to TTable.
 Author
   Warren Postma
-Description
-    TDataSet component similar to TTable.
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSet.Sort
 Summary
@@ -867,7 +863,7 @@ Return value
   Pointer to a row object.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCsvRows.GetRowStr
+@@TJvCsvRows.GetRowAnsiStr
 Summary
   Get a row as a csv string.
 Description
@@ -991,7 +987,7 @@ Description
   A TList of TJvCsvRow objects.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCsvRow.Text
+@@TJvCsvRow._Text
 The raw CSV row text.
 
 ----------------------------------------------------------------------------------------------------
@@ -1003,7 +999,7 @@ The bookmark object for this row.
 Description for Filtered
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCsvRow.WordField
+@@TJvCsvRowWordFields.WordField
 Array of indexes to the beginning of each csv column.
 
 ----------------------------------------------------------------------------------------------------
@@ -1137,9 +1133,9 @@ Return value
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvDataSet
 <TITLEIMG TJvCsvDataSet>
-JVCLInfo
-  GROUP=JVCL.DBAware.Providers.Datasets
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.DBAware.Providers.Datasets>
+<FLAG Component>
 Summary
   In-memory TDataSet component similar to TTable.
 Description
@@ -1234,8 +1230,8 @@ Description
   A bookmark object (pointer type) used by Data Set Bookmark operations
 
 ----------------------------------------------------------------------------------------------------
-@@TimeTHexToDateTime
-<TITLE TimeTHexToDateTime function>
+@@JvTimeTHexToDateTime
+<TITLE JvTimeTHexToDateTime function>
 Summary
   Decode hex string to date Time.
 Description
@@ -1245,11 +1241,11 @@ Parameters
   HexStr             - A hex value.
   TimeZoneCorrection - Incoming timezone correction. Usually 0 if all data is in UTC.
 See Also
-  DateTimeToTimeTHex
+  JvDateTimeToTimeTHex
 
 ----------------------------------------------------------------------------------------------------
-@@StringToCsvRow
-<TITLE StringToCsvRow procedure>
+@@JvStringToCsvRow
+<TITLE JvStringToCsvRow procedure>
 Summary
   Internal Helper.
 Description
@@ -1461,8 +1457,8 @@ Description
   end; </CODE>
 
 ----------------------------------------------------------------------------------------------------
-@@CsvRowToString
-<TITLE CsvRowToString procedure>
+@@JvCsvRowToString
+<TITLE JvCsvRowToString procedure>
 Summary
   Internal Helper Function.
 Description
@@ -1472,8 +1468,8 @@ Parameters
   RowString - String out (buffer)
 
 ----------------------------------------------------------------------------------------------------
-@@DateTimeToTimeTHex
-<TITLE DateTimeToTimeTHex function>
+@@JvDateTimeToTimeTHex
+<TITLE JvDateTimeToTimeTHex function>
 Summary
   Encodes Date/Time as Hex string.
 Description
@@ -1641,15 +1637,6 @@ Summary
   Checks if first row of CSV file is valid.
 Description
   Checks if first row of CSV file is valid.
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCsvDataSet._ClearFilter
-Summary
-  Internal Use Only.
-Description
-  Internal Use Only.
-See Also
-  TJvCustomCsvDataSet.ClearFilter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCsvDataSetFilterFunction

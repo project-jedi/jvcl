@@ -6,10 +6,6 @@ Summary
     Contains the TJvComboBox component.
 Author
   Sébastien Buysse
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboBox.SearchPrefix
 Summary
@@ -53,9 +49,40 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboBox.Provider
 Summary
-  <INCLUDE JVCL.Provider.Summary.dtx>
+  Used to select a provider as the control's source of data.
 Description
-  <INCLUDE JVCL.Provider.Description.dtx>
+  The Provider property is used to link a <LINK IJvDataProvider, data provider> to the
+  control.
+
+  Although you can select a provider directly in the Object Inspector, in code you should use the
+  methods and/or properties provided by the <LINK TJvDataConsumer, consumer service> the Provider
+  property actually refers to.
+
+  If the selected provider (in combination with the attributes that apply for control) generates
+  consumer services extensions (such as the IJvDataConsumerViewList but also provider specific
+  settings for the control), any published properties for those will be added as sub properties of
+  the Provider property in the Object Inspector. In code you should query for the extensions
+  interface:
+  <AUTOLINK OFF>
+  <CODE>
+  <B>if</B> Supports(Provider <B>as</B> IJvDataConsumer, <I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
+  <B>begin</B>
+    ...
+  <B>end</B>;
+  </CODE>
+  <AUTOLINK ON>
+  or:
+  <AUTOLINK OFF>
+  <CODE>
+  <B>if</B> Provider.GetInterface(<I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
+  <B>begin</B>
+    ...
+  <B>end</B>;
+  </CODE>
+  <AUTOLINK ON>
+  You should first declare a variable of the type of interface you will request. Within the
+  begin/end block you can then use that variable which will contain a reference to the interface
+  requested.
   
   When a provider has been selected, the Items property will retain its list of strings. Once you
   manipulate them (i.e. add or delete strings) the provider will be deselected automatically. Note
@@ -180,7 +207,43 @@ Description
   TJvCustomComboBox provides the following additional features compared to the Borland
   TCustomComboBox:
   
-  <INCLUDE JvCombobox_Features.inc.dtx>
+  * <LINK TJvCustomComboBox.AutoComplete, Automatic completion> of entered text (only for Delphi 5,
+    Delphi 6 and above already provides this feature).
+  * Making the control <LINK TJvCustomComboBox.ReadOnly, read-only>.
+  * Searching for items by <LINK TJvCustomComboBox.SearchPrefix, prefix>,
+    <LINK TJvCustomComboBox.SearchSubString, sub-string> or by
+    <LINK TJvCustomComboBox.SearchExactString, exact match>, optionally case-sensitive.
+  * <LINK TJvCustomComboBox.MeasureStyle, Delayed OnMeasureItem calling> (see below).
+  * <LINK TJvCustomComboBox.HintColor, Hint color> can be specified.
+  * Additional events added to react to mouse
+    <LINK TJvCustomComboBox.OnMouseEnter, enter>/<LINK TJvCustomComboBox.OnMouseLeave, leave>,
+    <LINK TJvCustomComboBox.OnParentColorChange, parent color changes> or
+    <LINK TJvCustomComboBox.OnCtl3DChanged, Ctl3D changes>.
+  * <LINK TJvCustomComboBox.Provider, \Provider-aware>.
+
+* Item measuring *
+  The way TComboBox handles item measuring for owner-draw combo boxes is nearly useless: the
+  OnMeasureItem event is called <B>before</B> the Canvas of the combo box can be used. As a result
+  you can not really measure an item based on the Font of the control.
+
+  TJvComboBox publishes a new property <LINK TJvCustomComboBox.MeasureStyle, MeasureStyle> that can
+  be used to specify the timing of the event. Using this event you can choose if the OnMeasureItem
+  should be triggered as usual (cmsStandard), after the control is created (cmsAfterCreate) or
+  before each item is rendered (cmsBeforeDraw).
+
+* \Provider awareness *
+  \Provider-awareness for this control is done in the same way as for other provider-aware controls:
+  a <LINK TJvCustomComboBox.Provider, Provider> property is added.
+
+  When a provider is selected, the component behaves slightly different from the normal case:
+
+  * Item measuring will never occur before the Canvas is usable (i.e. \MeasureStyle set to
+    \cmsStandard behaves the same as \cmsAfterCreate).
+  * If the \Style property is not set to an owner draw style, the combo box is created as a
+    variable height combo box (i.e. only csOwnerDrawFixed results in a fixed height combo box).
+  * If the \Style property is set to an owner draw style and the \OnMeasureItem or \OnDrawItem events
+    are assigned, these events will execute in favor of the provider based measuring/rendering. In
+    all other cases, the provider based measuring/rendering will be used.
   
   Do not create instances of TJvCustomComboBox. To put a combo box in a form, use a descendant of
   TJvCustomComboBox, such as TJvComboBox.
@@ -406,16 +469,52 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvComboBox
 <TITLEIMG TJvComboBox>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Combos
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.EditsMemosAndCombos.Combos>
+<FLAG Component>
 Summary
   \Provider-aware TComboBox.
 Description
   TJvComboBox is a provider-aware TComboBox descendant. TJvComboBox provides the following additional
   features compared to the standard TComboBox:
   
-  <INCLUDE JvCombobox_Features.inc.dtx>
+  * <LINK TJvCustomComboBox.AutoComplete, Automatic completion> of entered text (only for Delphi 5,
+    Delphi 6 and above already provides this feature).
+  * Making the control <LINK TJvCustomComboBox.ReadOnly, read-only>.
+  * Searching for items by <LINK TJvCustomComboBox.SearchPrefix, prefix>,
+    <LINK TJvCustomComboBox.SearchSubString, sub-string> or by
+    <LINK TJvCustomComboBox.SearchExactString, exact match>, optionally case-sensitive.
+  * <LINK TJvCustomComboBox.MeasureStyle, Delayed OnMeasureItem calling> (see below).
+  * <LINK TJvCustomComboBox.HintColor, Hint color> can be specified.
+  * Additional events added to react to mouse
+    <LINK TJvCustomComboBox.OnMouseEnter, enter>/<LINK TJvCustomComboBox.OnMouseLeave, leave>,
+    <LINK TJvCustomComboBox.OnParentColorChange, parent color changes> or
+    <LINK TJvCustomComboBox.OnCtl3DChanged, Ctl3D changes>.
+  * <LINK TJvCustomComboBox.Provider, \Provider-aware>.
+
+* Item measuring *
+  The way TComboBox handles item measuring for owner-draw combo boxes is nearly useless: the
+  OnMeasureItem event is called <B>before</B> the Canvas of the combo box can be used. As a result
+  you can not really measure an item based on the Font of the control.
+
+  TJvComboBox publishes a new property <LINK TJvCustomComboBox.MeasureStyle, MeasureStyle> that can
+  be used to specify the timing of the event. Using this event you can choose if the OnMeasureItem
+  should be triggered as usual (cmsStandard), after the control is created (cmsAfterCreate) or
+  before each item is rendered (cmsBeforeDraw).
+
+* \Provider awareness *
+  \Provider-awareness for this control is done in the same way as for other provider-aware controls:
+  a <LINK TJvCustomComboBox.Provider, Provider> property is added.
+
+  When a provider is selected, the component behaves slightly different from the normal case:
+
+  * Item measuring will never occur before the Canvas is usable (i.e. \MeasureStyle set to
+    \cmsStandard behaves the same as \cmsAfterCreate).
+  * If the \Style property is not set to an owner draw style, the combo box is created as a
+    variable height combo box (i.e. only csOwnerDrawFixed results in a fixed height combo box).
+  * If the \Style property is set to an owner draw style and the \OnMeasureItem or \OnDrawItem events
+    are assigned, these events will execute in favor of the provider based measuring/rendering. In
+    all other cases, the provider based measuring/rendering will be used.
   
   TJvComboBox publishes most of the protected properties and events of both TCustomComboBox as well as
   TJvCustomComboBox.
@@ -515,9 +614,9 @@ Description for qsDouble
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckedComboBox
 <TITLEIMG TJvCheckedComboBox>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Combos
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.EditsMemosAndCombos.Combos>
+<FLAG Component>
 Summary
   Write here a summary (1 line)
 Description

@@ -6,10 +6,6 @@ Summary
     Contains the TJvCustomListBox component.
 Author
   Sébastien Buysse
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvListBoxBackground.Image
 Summary
@@ -46,9 +42,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListBox
 <TITLEIMG TJvListBox>
-JVCLInfo
-  GROUP=JVCL.ListsAndTrees.Lists
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.ListsAndTrees.Lists>
+<FLAG Component>
 Summary
   Write here a summary (1 line)
 Description
@@ -199,9 +195,40 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.Provider
 Summary
-  <INCLUDE JVCL.Provider.Summary.dtx>
+  Used to select a provider as the control's source of data.
 Description
-  <INCLUDE JVCL.Provider.Description.dtx>
+  The Provider property is used to link a <LINK IJvDataProvider, data provider> to the
+  control.
+
+  Although you can select a provider directly in the Object Inspector, in code you should use the
+  methods and/or properties provided by the <LINK TJvDataConsumer, consumer service> the Provider
+  property actually refers to.
+
+  If the selected provider (in combination with the attributes that apply for control) generates
+  consumer services extensions (such as the IJvDataConsumerViewList but also provider specific
+  settings for the control), any published properties for those will be added as sub properties of
+  the Provider property in the Object Inspector. In code you should query for the extensions
+  interface:
+  <AUTOLINK OFF>
+  <CODE>
+  <B>if</B> Supports(Provider <B>as</B> IJvDataConsumer, <I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
+  <B>begin</B>
+    ...
+  <B>end</B>;
+  </CODE>
+  <AUTOLINK ON>
+  or:
+  <AUTOLINK OFF>
+  <CODE>
+  <B>if</B> Provider.GetInterface(<I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
+  <B>begin</B>
+    ...
+  <B>end</B>;
+  </CODE>
+  <AUTOLINK ON>
+  You should first declare a variable of the type of interface you will request. Within the
+  begin/end block you can then use that variable which will contain a reference to the interface
+  requested.
   
   When a provider has been selected, the Items property will retain its list of strings. Once you
   manipulate them (i.e. add or delete strings) the provider will be deselected automatically. Note
@@ -657,7 +684,30 @@ Description
   TJvCustomListBox encapsulates new behavior common to all enhanced list boxes by introducing methods
   and properties that provide ability to:
   
-  <INCLUDE JvListBox_Features.inc.dtx>
+  * <LINK TJvCustomListBox.Alignment, Align> the strings in the list box.
+  * Display a string on <LINK TJvCustomListBox.MultiLine, more than one row>.
+  * Searching for items by <LINK TJvCustomListBox.SearchPrefix, prefix>,
+    <LINK TJvCustomListBox.SearchSubString, sub-string> or by
+    <LINK TJvCustomListBox.SearchExactString, exact match>, optionally case-sensitive.
+  * Alter the selection in various ways.
+  * Specify the <LINK TJvCustomListBox.MaxWidth, horizontally scrollable width> of the list box.
+  * Respond when the user scrolls the list box 
+  	<LINK TJvCustomListBox.OnHorizontalScroll, horizontally> or 
+  	<LINK TJvCustomListBox.OnVerticalScroll, vertically>.
+  * Display a <LINK TJvCustomListBox.Background, background image>.
+  * <LINK TJvCustomListBox.Provider, \Provider-aware>.
+
+* \Provider awareness *
+  \Provider-awareness for this control is done in the same way as for other provider-aware controls:
+  a <LINK TJvCustomListBox.Provider, Provider> property is added.
+
+  When a provider is selected, the component behaves slightly different from the normal case:
+
+  * If the \Style property is not set to an owner draw style, the list box is created as a
+    variable height list box (i.e. only lbOwnerDrawFixed results in a fixed height list box).
+  * If the \Style property is set to an owner draw style and the \OnMeasureItem or \OnDrawItem events
+    are assigned, these events will execute in favor of the provider based measuring/rendering. In
+    all other cases, the provider based measuring/rendering will be used.
   
   Do not create instances of TJvCustomListBox. Use TJvCustomListBox as a base class when declaring
   list boxes, that will use the new behavior introduced in TJvCustomListBox.

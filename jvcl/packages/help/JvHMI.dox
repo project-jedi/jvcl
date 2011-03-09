@@ -25,11 +25,12 @@ ContentFile=JvHMIcontents.html
 IndexFile=JvHMIidx.html
 
 [Project Database Files]
-Count=4
+Count=5
 File0=JvCore.doxdb
 File1=Jcl.doxdb
 File2=JclVcl.doxdb
-File3=vcl.doxdb
+File3=JEDI.doxdb
+File4=vcl.doxdb
 
 [Source Files]
 Count=10
@@ -43,3 +44,11 @@ File6=..\..\..\help\JvDialButton.dtx
 File7=..\..\..\help\JvLED.dtx
 File8=..\..\..\help\JvSegmentedLEDDisplay.dtx
 File9=..\..\..\help\JvSegmentedLEDDisplayMapperFrame.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL HMI Controls Runtime Package
+Title=JVCL HMI Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

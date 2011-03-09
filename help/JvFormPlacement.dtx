@@ -8,10 +8,6 @@ Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvWinMinMaxInfo.MaxTrackHeight
 Summary
@@ -399,46 +395,7 @@ Description
   Write here a description
 
 ----------------------------------------------------------------------------------------------------
-@@TJvFormStorage_StoredProps_Editor
-<TITLE StoredProps editor> <HASTOCENTRY OFF>
-Summary
-  <B>Description</B> Use the StoredProps editor to define which properties to store and retrieve by
-  the
-  TJvFormStorage component.
-  
-  To open the StoredProps editor:
-  
-  1. Place a TJvFormStorage component on the form.
-  2. Double-click that component to invoke the StoredProps editor.
-  
-  <B>Form Properties</B>
-  
-  \Check the "Active Control" control to let the storage component store on closing of the form and
-  retrieve and restore on showing of the form, the control that has focus on the form.
-  
-  \Check "Form Position" to indicate that the component should store and retrieve the placement of
-  the form: the form's normal, minimized and maximized size and position and its minimum and maximum
-  tracking size.
-  
-  \Check the "Window State" control to indicate that the way how the form appears on the screen -
-  minimized, maximized, or in a normal state - should be stored and retrieved by the component.
-  
-  <B>Stored Properties</B>
-  
-  To add a property of a component to the storage component:
-  
-  1. Select the component where from a property to add in the Components list.
-  2. Select the property of the component to add in the Properties list.
-  3. Choose Add.
-  
-  The selected component and its property are displayed in the Stored Properties list box. For
-  example,
-  <CODE>
-  CheckBox1.Checked </CODE>
-See Also
-  TJvFormStorage.StoredProps
 
-----------------------------------------------------------------------------------------------------
 @@TJvFormStorage.StoredPropsPath
 Summary
   The path to add before the name of any item of StoredProps
@@ -550,9 +507,9 @@ Description for fpvcCheckEqual
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage
 <TITLEIMG TJvFormStorage>
-JVCLInfo
-  GROUP=JVCL.FormsAndApp.Forms.Sizing,JVCL.Storage
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.FormsAndApp.Forms.Sizing,JVCL.Storage>
+<FLAG Component>
 Summary
   General storage component.
 Description

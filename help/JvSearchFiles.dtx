@@ -7,10 +7,6 @@ Summary
 Author
   Peter Thörnqvist
   Remko Bonte
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchParams.LastChangeBefore
 Summary
@@ -208,64 +204,7 @@ Description
 <TITLE TJvSearchFilesError type> <COMBINE TJvSearchFiles.OnError>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvSearchFiles_Example
-<TITLE TJvSearchFiles Examples> <HASTOCENTRY OFF>
-JVCLInfo
-  GROUP=TJvSearchFiles
-Description
-  To \search for files whose names starts with 'Jv' in the directory 'C:\Source\' and its
-  sub-directories, do the following:
-  
-  * \Include soSearchFiles in <LINK TJvSearchFiles.Options, Options>. \Exclude soSearchDirs from <LINK
-  TJvSearchFiles.Options, Options>.
-  * Set <LINK TJvSearchFiles.DirOption, DirOption> to doIncludeSubDirs.
-  * Add 'Jv*' to the mask list <LINK TJvSearchParams.FileMasks, FileMasks> of <LINK
-  TJvSearchFiles.FileParams, FileParams>.
-  * \Include stFileMask in <LINK TJvSearchParams.SearchTypes, FileParams.SearchTypes>.
-  * Set <LINK TJvSearchFiles.RootDirectory, RootDirectory> to 'C:\Source\'.
-  * Call <LINK TJvSearchFiles.Search, Search>.
-  
-  To \search for all read-only directories, created after '1-1-2000' on drive C, do the following:
-  
-  * \Include soSearchDirs in <LINK TJvSearchFiles.Options, Options>. \Exclude soSearchFiles from <LINK
-  TJvSearchFiles.Options, Options>.
-  * Set <LINK TJvSearchFiles.DirOption, DirOption> to doIncludeSubDirs.
-  * Set <LINK TJvSearchAttributes.ReadOnly, DirParams.Attributes.ReadOnly> to tsMustBeSet.
-  * Set <LINK TJvSearchParams.LastChangeAfter, DirParams.LastChangeAfter> to '1-1-2000'.
-  * \Include stAttribute and stLastChangeAfter in <LINK TJvSearchParams.SearchTypes,
-  DirParams.SearchTypes>.
-  * Set <LINK TJvSearchFiles.RootDirectory, RootDirectory> to 'C:\'.
-  * Call <LINK TJvSearchFiles.Search, Search>.
-  
-  To \search for all temporary or archive files with a minimal file size of 1,000,000 bytes in the
-  encrypted sub-directories of 'C:\temp\dir\', with directory name 'test' or 'dummy', do the
-  following:
-  
-  * \Include soSearchFiles in <LINK TJvSearchFiles.Options, Options>. \Exclude soSearchDirs from <LINK
-  TJvSearchFiles.Options, Options>.
-  * Set <LINK TJvSearchFiles.DirOption, DirOption> to doExcludeInvalidDirs.
-  * Set <LINK TJvSearchAttributes.Encrypted, DirParams.Attributes.Encrypted> to tsMustBeSet.
-  * Add 'test' and 'dummy' to the mask list <LINK TJvSearchParams.FileMasks, FileMasks> of <LINK
-  TJvSearchFiles.DirParams, DirParams>.
-  * \Include stAttribute and stFileMask in <LINK TJvSearchParams.SearchTypes, DirParams.SearchTypes>.
-  * Set the <LINK TJvSearchAttributes.ReadOnly, ReadOnly>, <LINK TJvSearchAttributes.Hidden, Hidden>,
-    <LINK TJvSearchAttributes.System, System>, <LINK TJvSearchAttributes.Normal, Normal>, <LINK
-  TJvSearchAttributes.SparseFile, SparseFile>, <LINK TJvSearchAttributes.ReparsePoint, ReparsePoint>,
-  <LINK TJvSearchAttributes.Compressed, Compressed>, <LINK TJvSearchAttributes.OffLine, OffLine>,
-  <LINK TJvSearchAttributes.NotContentIndexed, NotContentIndexed> and <LINK
-  TJvSearchAttributes.Encrypted, Encrypted> properties of <LINK TJvSearchAttributes,
-  FileParams.Attributes> to tsMustBeUnSet and set <LINK TJvSearchAttributes.Archive, Archive> and
-  <LINK TJvSearchAttributes.Temporary, Temporary> to tsDontCare. Or alternatively set <LINK
-  TJvSearchAttributes.ExcludeAttr, FileParams.Attributes.ExcludeAttr> to 'not
-  (FILE_ATTRIBUTE_TEMPORARY or FILE_ATTRIBUTE_ARCHIVE)', and <LINK TJvSearchAttributes.IncludeAttr,
-  FileParams.Attributes.IncludeAttr> to 0.
-  * Set <LINK TJvSearchParams.MinSize, FileParams.MinSize> to 1,000,000.
-  * \Include stAttribute and stMinSize in <LINK TJvSearchParams.SearchTypes, FileParams.SearchTypes>.
-  * Set <LINK TJvSearchFiles.RootDirectory, RootDirectory> to 'C:\temp\dir\'.
-  * \Include soExcludeFilesInRootDir in <LINK TJvSearchFiles.Options, Options>.
-  * Call <LINK TJvSearchFiles.Search, Search>.
 
-----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.TotalFileSize
 Summary
   Indicates the total size of the files and directories found in bytes.
@@ -605,9 +544,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles
 <TITLEIMG TJvSearchFiles>
-JVCLInfo
-  GROUP=JVCL.System.FilesAndFolders
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.FilesAndFolders>
+<FLAG Component>
 Summary
   Enables you to \search for files and directories.
 Description

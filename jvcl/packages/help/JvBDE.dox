@@ -25,13 +25,14 @@ ContentFile=JvBDEcontents.html
 IndexFile=JvBDEidx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvSystem.doxdb
 File2=JvDlgs.doxdb
 File3=JvStdCtrls.doxdb
 File4=Jcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=28
@@ -63,3 +64,11 @@ File24=..\..\..\help\JvBDEExceptionForm.dtx
 File25=..\..\..\help\JvBDEFilter.dtx
 File26=..\..\..\help\JvBDEIndex.dtx
 File27=..\..\..\help\JvBDELists.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL BDE Components Runtime Package
+Title=JVCL BDE Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

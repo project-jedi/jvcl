@@ -25,13 +25,14 @@ ContentFile=JvDlgscontents.html
 IndexFile=JvDlgsidx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=JvSystem.doxdb
 File3=JvCustom.doxdb
 File4=Jcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=65
@@ -100,3 +101,11 @@ File61=..\..\..\help\JvDualList.dtx
 File62=..\..\..\help\JvDialogActns.dtx
 File63=..\..\..\help\JvDesktopAlert.dtx
 File64=..\..\..\help\JvDesktopAlertForm.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Dialog Components Runtime Package
+Title=JVCL Dialog Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

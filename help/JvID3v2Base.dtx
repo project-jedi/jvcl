@@ -6,10 +6,6 @@ Summary
     Contains components and code to read ID3 v2 tags.
 Author
   Remko Bonte
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvID3URLUserFrame.Find
 Summary
@@ -31,18 +27,12 @@ See Also
   TJvID3URLUserFrame.FindOrCreate
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3URLUserFrame.DescriptionW
-<COMBINE TJvID3URLUserFrame.Description>
-
-----------------------------------------------------------------------------------------------------
 @@TJvID3URLUserFrame.Description
 Summary
   Specifies a description for the \URL.
 Description
-  Use Description or DescriptionW to specify a string for the description field in the user defined
+  Use Description to specify a string for the description field in the user defined
   URL link frame.
-  
-  Use Encoding to specify whether to use Description or DescriptionW.
 See Also
   TJvID3Frame.Encoding, TJvID3URLUserFrame.URL
 
@@ -247,15 +237,9 @@ See Also
 Summary
   Specifies the text for the frame.
 Description
-  Use Text or TextW to specify text for the frame.
-  
-  Use Encoding to specify whether to use Text or TextW.
+  Use Text to specify text for the frame.
 See Also
   TJvID3Frame.Encoding
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3TextFrame.TextW
-<COMBINE TJvID3TextFrame.Text>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3TimestampFrame
@@ -300,10 +284,10 @@ Summary
 Description
   Use TJvID3SimpleListFrame to represent a list frame in a tag.
   
-  Use the List or ListW property to access the individual values of the list.
-  
+  Use the List property to access the individual values of the list.
+
   There may only be one text information frame of its kind in a tag.
-  
+
   The following <LINK TJvID3FrameID, frame identifiers> are supported by TJvID3SimpleListFrame.
   
   <TABLE>
@@ -389,15 +373,9 @@ See Also
 Summary
   Contains the strings from the list frame.
 Description
-  Use List or ListW to add, insert, delete and move values in the list frame.
-  
-  Use Encoding to specify whether to use List or ListW.
+  Use List to add, insert, delete and move values in the list frame.
 See Also
   TJvID3Frame.Encoding
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3SimpleListFrame.ListW
-<COMBINE TJvID3SimpleListFrame.List>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3SimpleListFrame.Separator
@@ -405,16 +383,12 @@ Summary
   Indicates the Separator used to separate items in the list.
 Description
   The items in the list frame are stored in the tag as one string with the items separated by the
-  separator specified by Separator or SeperatorW.
+  separator specified by Separator.
   
   Frames that contains items with a fixed character length, do not use a separator. Separator returns
-  #0 in these cases. (SeparatorW returns #0#0).
+  #0 in these cases.
 See Also
   TJvID3SimpleListFrame.FixedStringLength
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3SimpleListFrame.SeparatorW
-<COMBINE TJvID3SimpleListFrame.Separator>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3SkipFrame
@@ -478,28 +452,20 @@ See Also
 Summary
   Specifies the language identifier for this frame.
 Description
-  Use Language to specify the language identifier for the content of the frame (as specified by Text
-  or
-  TextW). The value of Language must be in ISO-639-2 format.
+  Use Language to specify the language identifier for the content of the frame (as specified by Text). The value of Language must be in ISO-639-2 format.
 See Also
-  TJvID3TermsOfUseFrame.Text, TJvID3TermsOfUseFrame.TextW
+  TJvID3TermsOfUseFrame.Text
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3TermsOfUseFrame.Text
 Summary
   Specifies the content of the frame.
 Description
-  Use the Text or TextW property to read or specify the content for the frame.
+  Use the Text property to read or specify the content for the frame.
   
   Newline characters are allowed in the content text string.
-  
-  Use Encoding to specify whether Text or TextW is valid for the frame.
 See Also
   TJvID3Frame.Encoding, TJvID3TermsOfUseFrame.Language
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3TermsOfUseFrame.TextW
-<COMBINE TJvID3TermsOfUseFrame.Text>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3TextFrame
@@ -509,13 +475,13 @@ Description
   The text information frames are the most important frames, containing information like artist,
   album and more. There may only be one text information frame of its kind in a tag.
   
-  Use the Text or TextW property to specify the value of the frame, for example:
+  Use the Text property to specify the value of the frame, for example:
   <CODE>
   { Sets the value of the Album frame  }
   with TJvID3TextFrame.FindOrCreate(MyTagController, fiAlbum) do
   begin
     Encoding := ienUTF_16;
-    TextW := 'The White Album';
+    Text := 'The White Album';
   end; </CODE>
   
   There may only be one text information frame of its kind in a tag.
@@ -648,11 +614,11 @@ See Also
   TJvID3PopularimeterFrame.Counter, TJvID3PopularimeterFrame.EMailAddress
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3PopularimeterFrame.FindOrCreate@TJvID3Controller@string
+@@TJvID3PopularimeterFrame.FindOrCreate@TJvID3Controller@AnsiString
 <COMBINE TJvID3PopularimeterFrame.FindOrCreate@TJvID3Controller>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3PopularimeterFrame.Find@TJvID3Controller@string
+@@TJvID3PopularimeterFrame.Find@TJvID3Controller@AnsiString
 <COMBINE TJvID3PopularimeterFrame.Find@TJvID3Controller>
 
 ----------------------------------------------------------------------------------------------------
@@ -858,10 +824,6 @@ See Also
   TJvID3PictureFrame.Find, TJvID3PictureFrame.PictureType
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3PictureFrame.DescriptionW
-<COMBINE TJvID3PictureFrame.Description>
-
-----------------------------------------------------------------------------------------------------
 @@TJvID3PictureFrame.Find
 Summary
   Returns a TJvID3PictureFrame frame with a specific picture type.
@@ -883,16 +845,10 @@ See Also
 Summary
   Specifies a short description of the picture.
 Description
-  Use Description or DescriptionW to specify a short description for the picture contained in this
+  Use Description to specify a short description for the picture contained in this
   TJvID3PictureFrame. The description has a maximum length of 64 characters, but may be empty.
-  
-  Use Encoding to specify whether to use Description or DescriptionW.
 See Also
   TJvID3Frame.Encoding
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3OwnershipFrame.SellerW
-<COMBINE TJvID3OwnershipFrame.Seller>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PictureFrame
@@ -942,9 +898,7 @@ Description
 Summary
   Specifies the name of the seller.
 Description
-  Use Seller or SellerW to specify the name of the seller.
-  
-  Use Encoding to specify whether to use Seller or SellerW.
+  Use Seller to specify the name of the seller.
 See Also
   TJvID3Frame.Encoding, TJvID3OwnershipFrame.DateOfPurch, TJvID3OwnershipFrame.PricePayed
 
@@ -1161,7 +1115,7 @@ See Also
   TJvID3Controller.ExtendedHeader
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3GeneralObjFrame.Find@TJvID3Controller@string
+@@TJvID3GeneralObjFrame.Find@TJvID3Controller@WideString
 <COMBINE TJvID3GeneralObjFrame.Find@TJvID3Controller>
 
 ----------------------------------------------------------------------------------------------------
@@ -1184,16 +1138,8 @@ See Also
   TJvID3GeneralObjFrame.Find
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3GeneralObjFrame.FindOrCreate@TJvID3Controller@string
+@@TJvID3GeneralObjFrame.FindOrCreate@TJvID3Controller@WideString
 <COMBINE TJvID3GeneralObjFrame.FindOrCreate@TJvID3Controller>
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3GeneralObjFrame.FindOrCreateW
-<COMBINE TJvID3GeneralObjFrame.FindOrCreate@TJvID3Controller>
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3GeneralObjFrame.FindW
-<COMBINE TJvID3GeneralObjFrame.Find@TJvID3Controller>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3GeneralObjFrame.MIMEType
@@ -1246,16 +1192,12 @@ Description
 Summary
   Specifies the name of the file.
 Description
-  Use FileName or FileNameW to specify a string for the filename field in the general encapsulated
+  Use FileName to specify a string for the filename field in the general encapsulated
   object frame.
   
   May be omitted.
 See Also
   TJvID3GeneralObjFrame.ContentDescription
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3GeneralObjFrame.FileNameW
-<COMBINE TJvID3GeneralObjFrame.FileName>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3GeneralObjFrame.Find@TJvID3Controller
@@ -1274,10 +1216,6 @@ Return value
   controller specified by the AController parameter. Otherwise returns nil.
 See Also
   TJvID3GeneralObjFrame.FindOrCreate
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3GeneralObjFrame.ContentDescriptionW
-<COMBINE TJvID3GeneralObjFrame.ContentDescription>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3GeneralObjFrame.ContentDescription
@@ -1312,7 +1250,7 @@ Summary
 Description
   Call RemoveEmptyFrames to remove all empty frames from the Frames array. The <LINK
   TJvID3Frame.IsEmpty, IsEmpty> property of a frame indicates whether the frame is empty. For example
-  a text information frame is empty if the Text or TextW is set to an empty string.
+  a text information frame is empty if the Text is set to an empty string.
 See Also
   TJvID3Frame.IsEmpty
 
@@ -1406,7 +1344,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.FindFrame@TJvID3FrameID
-<COMBINE TJvID3Frames.FindFrame@string>
+<COMBINE TJvID3Frames.FindFrame@AnsiString>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.FrameByID
@@ -1427,7 +1365,7 @@ See Also
   TJvID3Frames.FindFrame
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3Frames.FindFrame@string
+@@TJvID3Frames.FindFrame@AnsiString
 Summary
   Returns a frame given its frame name.
 Description
@@ -1776,13 +1714,6 @@ Description
   encoding of a frame. Frames that do not have fields that allow different types of text encoding,
   ignore the value of Encoding.
   
-  Fields that allow different types of text encoding are typically accessible via two properties. One
-  that has the name of the field as name, and can be used to access the ISO-8859-1 encoding of the
-  field. The other has the name of the field postfixed with 'W' as name, and can be used to access
-  the unicode encoding of the field. Examples are <LINK TJvID3PictureFrame.Description, Description>
-  and <LINK TJvID3PictureFrame.DescriptionW, DescriptionW>, <LINK TJvID3GeneralObjFrame.FileName,
-  FileName> and <LINK TJvID3GeneralObjFrame.FileNameW, FileNameW> etc.
-  
   You can use the <LINK TJvID3Controller.ReadEncodingAs, ReadEncodingAs> property of a tag controller
   to specify the encoding of <I>all</I> frames after a tag has been read. Use the <LINK
   TJvID3Controller.WriteEncodingAs, WriteEncodingAs> property to specify with which encoding
@@ -2130,38 +2061,22 @@ Description
   TJvID3Header.Flags, Flags> property of <LINK TJvID3Controller.Header, Header>.
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3DoubleListFrame.NamesW
-<COMBINE TJvID3DoubleListFrame.Names>
-
-----------------------------------------------------------------------------------------------------
 @@TJvID3DoubleListFrame.Values
 Summary
   Represents the value part of a string associated with a given index.
 Description
-  Read Values or ValuesW to access the name part of a string. Values (ValuesW) is the value part of
+  Read Values to access the name part of a string. Values is the value part of
   the string at Index, where 0 is the first string, 1 is the second string, and so on.
-  
-  Use Encoding to determine whether to use Values or ValuesW.
 See Also
   TJvID3DoubleListFrame.List, TJvID3DoubleListFrame.Names, TJvID3Frame.Encoding
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3DoubleListFrame.ValuesW
-<COMBINE TJvID3DoubleListFrame.Values>
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3DoubleListFrame.ListW
-<COMBINE TJvID3DoubleListFrame.List>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3DoubleListFrame.Names
 Summary
   Represents the name part of a string associated with a given index.
 Description
-  Read Names or NamesW to access the name part of a string. Names (NamesW) is the name part of the
+  Read Names to access the name part of a string. Names is the name part of the
   string at Index, where 0 is the first string, 1 is the second string, and so on.
-  
-  Use Encoding to determine whether to use Names or NamesW.
 See Also
   TJvID3DoubleListFrame.List, TJvID3DoubleListFrame.Values, TJvID3Frame.Encoding
 
@@ -2170,7 +2085,7 @@ See Also
 Summary
   Contains the strings from the list frame.
 Description
-  Use List or ListW to add, insert, delete and move values in the list frame.
+  Use List to add, insert, delete and move values in the list frame.
   
   If you add a string to the list, the string should have the name-value format:
   
@@ -2178,7 +2093,6 @@ Description
   Sam Williams=Horns
   John Cornfield=Percussion
   Some guy=Mixer </PRE>
-  Use Encoding to specify whether to use List or ListW.
 See Also
   TJvID3DoubleListFrame.Names, TJvID3DoubleListFrame.Values, TJvID3Frame.Encoding
 
@@ -2941,10 +2855,6 @@ See Also
   TJvID3Controller.CanAddFrame, TJvID3Frames.FrameByID
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3ContentFrame.TextW
-<COMBINE TJvID3ContentFrame.Text>
-
-----------------------------------------------------------------------------------------------------
 @@TJvID3Controller
 Summary
   Gives access to a file's ID3 v2 tag.
@@ -2965,13 +2875,11 @@ Description
 Summary
   Specifies the content of the frame.
 Description
-  Use the Text or TextW property to read or specify the content for the frame.
-  
+  Use the Text property to read or specify the content for the frame.
+
   Newline characters are allowed in the content text string.
-  
-  Use Encoding to specify whether Text or TextW is valid for the frame.
 See Also
-  TJvID3ContentFrame.Description, TJvID3ContentFrame.DescriptionW, TJvID3ContentFrame.Language,
+  TJvID3ContentFrame.Description, TJvID3ContentFrame.Language,
   TJvID3Frame.Encoding
 
 ----------------------------------------------------------------------------------------------------
@@ -2979,11 +2887,9 @@ See Also
 Summary
   Specifies the language identifier for this frame.
 Description
-  Use Language to specify the language identifier for the content of the frame (as specified by Text
-  or
-  TextW). The value of Language must be in ISO-639-2 format.
+  Use Language to specify the language identifier for the content of the frame (as specified by Text). The value of Language must be in ISO-639-2 format.
 See Also
-  TJvID3ContentFrame.Text, TJvID3ContentFrame.TextW
+  TJvID3ContentFrame.Text
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ContentFrame.FindOrCreate
@@ -3008,16 +2914,10 @@ See Also
 Summary
   Specifies the content descriptor for this frame.
 Description
-  Use the Description or DescriptionW property to read or specify a short content description for the
+  Use the Description property to read or specify a short content description for the
   frame.
-  
-  Use Encoding to specify whether to use Description or DescriptionW.
 See Also
-  TJvID3ContentFrame.Text, TJvID3ContentFrame.TextW, TJvID3Frame.Encoding
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3ContentFrame.DescriptionW
-<COMBINE TJvID3ContentFrame.Description>
+  TJvID3ContentFrame.Text, TJvID3Frame.Encoding
 
 ----------------------------------------------------------------------------------------------------
 @@TJvID3ContentFrame.Find
@@ -3572,10 +3472,6 @@ See Also
   TJvID3Frame.Encoding, TJvID3UserFrame.Value
 
 ----------------------------------------------------------------------------------------------------
-@@TJvID3UserFrame.DescriptionW
-<COMBINE TJvID3UserFrame.Description>
-
-----------------------------------------------------------------------------------------------------
 @@TJvID3UserFrame.Find
 Summary
   Returns a TJvID3UserFrame frame with a specific index.
@@ -3621,10 +3517,6 @@ Description
   Use Value to specify the information text field in the user defined text information frame.
 See Also
   TJvID3Frame.Encoding, TJvID3UserFrame.Description
-
-----------------------------------------------------------------------------------------------------
-@@TJvID3UserFrame.ValueW
-<COMBINE TJvID3UserFrame.Value>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMPEGBit

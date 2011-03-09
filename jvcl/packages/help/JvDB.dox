@@ -25,7 +25,7 @@ ContentFile=JvDBcontents.html
 IndexFile=JvDBidx.html
 
 [Project Database Files]
-Count=8
+Count=9
 File0=JvCore.doxdb
 File1=JvDlgs.doxdb
 File2=JvStdCtrls.doxdb
@@ -33,7 +33,8 @@ File3=JvSystem.doxdb
 File4=JvControls.doxdb
 File5=Jcl.doxdb
 File6=JclVcl.doxdb
-File7=vcl.doxdb
+File7=JEDI.doxdb
+File8=vcl.doxdb
 
 [Source Files]
 Count=110
@@ -45,6 +46,8 @@ File4=..\..\run\JvCsvParse.pas
 File5=..\..\run\JvDBActions.pas
 File6=..\..\run\JvDBActionsEngine.pas
 File7=..\..\run\JvDBActionsEngineDatasetCSVDataset.pas
+File8=..\..\run\JvDBActionsEngineDatasetDoa.pas
+File9=..\..\run\JvDBActionsEngineDatasetOdac.pas
 File10=..\..\run\JvDBCombobox.pas
 File11=..\..\run\JvDBControls.pas
 File12=..\..\run\JvDBDatePickerEdit.pas
@@ -55,7 +58,11 @@ File16=..\..\run\JvBaseDBThreadedDataset.pas
 File17=..\..\run\JvBaseDBDialog.pas
 File18=..\..\run\JvBaseDBPasswordDialog.pas
 File19=..\..\run\JvBaseDBLogonDialog.pas
+File20=..\..\run\JvDBLogonDialogDoa.pas
+File21=..\..\run\JvDBLogonDialogOdac.pas
 File22=..\..\run\JvDBLookupTreeView.pas
+File23=..\..\run\JvDBPasswordDialogDoa.pas
+File24=..\..\run\JvDBPasswordDialogOdac.pas
 File25=..\..\run\JvDBProgressBar.pas
 File26=..\..\run\JvDBQueryParamsForm.pas
 File27=..\..\run\JvDBRadioPanel.pas
@@ -82,6 +89,8 @@ File47=..\..\run\JvDynControlEngineDB.pas
 File48=..\..\run\JvDynControlEngineDBIntf.pas
 File49=..\..\run\JvDynControlEngineVCLDB.pas
 File50=..\..\run\JvDynControlEngineJVCLDB.pas
+File51=..\..\run\JvOracleDataset.pas
+File52=..\..\run\JvOdacSmartQuery.pas
 File53=..\..\run\JvDBCheckBox.pas
 File54=..\..\run\JvDBFilterExpr.pas
 File55=..\..\..\help\JvAppStoragePropertyEngineDB.dtx
@@ -139,3 +148,11 @@ File106=..\..\..\help\JvOracleDataset.dtx
 File107=..\..\..\help\JvOdacSmartQuery.dtx
 File108=..\..\..\help\JvDBCheckBox.dtx
 File109=..\..\..\help\JvDBFilterExpr.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Database Components Runtime Package
+Title=JVCL Database Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

@@ -6,10 +6,6 @@ Summary
     Provides code and a component to manage and create DSA (Don't Show Again) dialogs.
 Author
   Marcel Bestebroer
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog.OnUpdateKeys
 Summary
@@ -212,9 +208,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDSADialog
 <TITLEIMG TJvDSADialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Component>
 Summary
   Converts a form into a "Don't Show Again" dialog.
 Description
@@ -750,9 +746,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@ShowMessageFmt
 <TITLE ShowMessageFmt procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Display a message box.
 Description
@@ -771,9 +767,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@SetDSAState
 <TITLE SetDSAState procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Sets DSA state.
 Description
@@ -804,9 +800,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@ShowMessage
 <TITLE ShowMessage procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Display a message box.
 Description
@@ -824,9 +820,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSACheckMarkText
 <TITLE RegisterDSACheckMarkText procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Register a check mark text.
 Description
@@ -849,9 +845,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@RegisterDSA
 <TITLE RegisterDSA procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Register a DSA dialog.
 Description
@@ -884,9 +880,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@MessageDlgEx@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE MessageDlgEx function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   \MessageDlg extension with additional settings.
 Description
@@ -926,9 +922,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@MessageDlg@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE MessageDlg function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   \MessageDlg replacement with additional settings.
 Description
@@ -999,9 +995,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@LocateDSAReg
 <TITLE LocateDSAReg function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Locates and returns the DSA registration info for a given dialog.
 Description
@@ -1015,9 +1011,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@GetDSAState@Integer
 <TITLE GetDSAState function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Retrieves DSA state.
 Description
@@ -1043,9 +1039,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@GetDSACheckMarkText
 <TITLE GetDSACheckMarkText function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Retrieves the check mark text for the given ID.
 Description
@@ -1063,23 +1059,23 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@DSARegStore
 <TITLE DSARegStore function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Retrieves a reference to the default registry storage.
 Description
   DSARegStore retrieves a reference to internally create registry storage. The storage is initialized
-  to use <B>HKCU\Software\<I>Application.Title</I>\DSA</B> as its storage.
+  to use <B>'HKCU\Software\'<I>Application.Title</I>'\DSA'</B> as its storage.
 See Also
   TDSARegStorage
 
 ----------------------------------------------------------------------------------------------------
 @@DSAShowMessage
 <TITLE DSAShowMessage procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Display a message box.
 Description
@@ -1098,9 +1094,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@DSAShowMessageFmt
 <TITLE DSAShowMessageFmt procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Display a message box.
 Description
@@ -1132,9 +1128,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlgEx@Integer@string@string@TGraphic@array of string@array of Integer@Longint@TDlgCenterKind@Integer@Integer@Integer@Integer@TJvDynControlEngine
 <TITLE DSAMessageDlgEx function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   \MessageDlg replacement with additional settings and "Don't show again" capabilities.
 Description
@@ -1173,9 +1169,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@DSAItem
 <TITLE DSAItem function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Retrieves a DSA registration item.
 Description
@@ -1189,9 +1185,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@DSAMessageDlg@Integer@string@string@TGraphic@TMsgDlgButtons@Longint@TDlgCenterKind@Integer@TMsgDlgBtn@TMsgDlgBtn@TMsgDlgBtn@TJvDynControlEngine
 <TITLE DSAMessageDlg function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   \MessageDlg replacement with additional settings and "Don't show again" capabilities.
 Description
@@ -1250,9 +1246,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@DSACount
 <TITLE DSACount function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Returns the number of DSA dialogs registered.
 Description
@@ -1343,9 +1339,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@UnregisterDSA
 <TITLE UnregisterDSA procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Remove a DSA dialog from the system.
 Description
@@ -1362,9 +1358,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@UnregisterDSACheckMarkText
 <TITLE UnregisterDSACheckMarkText procedure>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Custom>
+<FLAG Routine,NotInParentList>
 Summary
   Unregister a check mark text.
 Description

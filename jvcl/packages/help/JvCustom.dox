@@ -25,12 +25,13 @@ ContentFile=JvCustomcontents.html
 IndexFile=JvCustomidx.html
 
 [Project Database Files]
-Count=5
+Count=6
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=JvSystem.doxdb
 File3=Jcl.doxdb
-File4=vcl.doxdb
+File4=JEDI.doxdb
+File5=vcl.doxdb
 
 [Source Files]
 Count=74
@@ -108,3 +109,11 @@ File70=..\..\..\help\JvImagelistViewer.dtx
 File71=..\..\..\help\JvOwnerDrawViewer.dtx
 File72=..\..\..\help\JvTabBar.dtx
 File73=..\..\..\help\JvTabBarXPPainter.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Custom Controls Runtime Package
+Title=JVCL Custom Controls Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

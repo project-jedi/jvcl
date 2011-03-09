@@ -25,13 +25,14 @@ ContentFile=JvMMcontents.html
 IndexFile=JvMMidx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvControls.doxdb
 File2=JvSystem.doxdb
 File3=JvStdCtrls.doxdb
 File4=Jcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=73
@@ -108,3 +109,11 @@ File69=..\..\..\help\JvFullColorDialogs.dtx
 File70=..\..\..\help\JvFullColorRotate.dtx
 File71=..\..\..\help\JvFullColorForm.dtx
 File72=..\..\..\help\JvFullColorCircleForm.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Multimedia and Image Components Runtime Package
+Title=JVCL Multimedia and Image Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

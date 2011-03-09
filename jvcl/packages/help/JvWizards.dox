@@ -25,10 +25,11 @@ ContentFile=JvWizardscontents.html
 IndexFile=JvWizardsidx.html
 
 [Project Database Files]
-Count=3
+Count=4
 File0=JvCore.doxdb
 File1=Jcl.doxdb
-File2=vcl.doxdb
+File2=JEDI.doxdb
+File3=vcl.doxdb
 
 [Source Files]
 Count=10
@@ -42,3 +43,11 @@ File6=..\..\..\help\JvWizardRouteMapNodes.dtx
 File7=..\..\..\help\JvWizardRouteMapSteps.dtx
 File8=..\..\..\help\JvWizardRouteMapList.dtx
 File9=..\..\..\help\JvWizard.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Wizard Runtime Package
+Title=JVCL Wizard Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

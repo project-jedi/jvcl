@@ -9,9 +9,6 @@ Author
 Description
     without having to write the validation code yourself. Instead, most of the validation is set up by
     using specific validation components and setting their properties to appropriate values.
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators.Items
 Summary
@@ -82,9 +79,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvValidators
 <TITLEIMG TJvValidators>
-JVCLInfo
-  GROUP=JVCL.Miscel
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Miscel>
+<FLAG Component>
 Summary
   Maintains a list of TJvBaseValidator or descendants.
 Description
@@ -115,9 +112,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvValidationSummary
 <TITLEIMG TJvValidationSummary>
-JVCLInfo
-  GROUP=JVCL.Miscel
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Miscel>
+<FLAG Component>
 Summary
   Component that can collect the error messages from failed validations into a single data structure.
   This component implements the IJvValidationSummary interface.
@@ -281,16 +278,7 @@ See Also
   TJvValidators.Validate
 
 ----------------------------------------------------------------------------------------------------
-@@TJvControlsCompareValidator.Operator
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
-----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEvent
 <TITLE TJvCustomValidateEvent type> <COMBINE TJvCustomValidator.OnValidate>
 
@@ -360,17 +348,7 @@ See Also
   TJvBaseValidator.PropertyToValidate, TJvCompareValidator.Operator
 
 ----------------------------------------------------------------------------------------------------
-@@TJvCompareValidator.Operator
-Summary
-  The operator to use when comparing.
-Description
-  This property determines the type of comparison done when Validate is called and whether the
-  validation succeeds or not. <LINK TJvBaseValidator.PropertyToValidate, PropertyToValidate> is
-  always the left operand and ValueToCompare the right operand.
-See Also
-  TJvCompareValidator.ValueToCompare
 
-----------------------------------------------------------------------------------------------------
 @@TJvBaseValidatorClass
 <TITLE TJvBaseValidatorClass type>
 Summary

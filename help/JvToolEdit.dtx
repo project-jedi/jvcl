@@ -8,10 +8,6 @@ Author
   Fedor Koshevnikov
   Igor Pavluk
   Serge Korolev
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFilenameEdit.Dialog
 Summary
@@ -57,9 +53,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvFilenameEdit
 <TITLEIMG TJvFilenameEdit>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push>
+<FLAG Component>
 Summary
   Edit control with a button that displays a file selection dialog.
 Description
@@ -157,7 +153,7 @@ Description
   Read LocalizedName to retrieve the localized name of the file or directory displayed in the combo
   edit control. The localized name of the file or directory can be different than the name of the
   file or directory, depending on the user interface language on windows Vista systems. For example,
-  LocalizedName will return <I>C:\Programme</I> for the directory <I>C:\Program Files</I> when the
+  LocalizedName will return 'C:\Programme' for the directory 'C:\Program Files' when the
   language is German.
 See Also
   TJvDirectoryEdit.DisplayLocalizedName, TJvFilenameEdit.DisplayLocalizedName
@@ -223,7 +219,7 @@ Description
   The localized name of a directory can be different than the actual name of the directory depending
   on
   the user interface language on windows Vista systems. For example, LocalizedName will return
-  <I>C:\Programme</I> for the directory <I>C:\Program Files</I> when the language is German.
+  'C:\Programme' for the directory 'C:\Program Files' when the language is German.
 See Also
   TJvFileDirEdit.LocalizedName
 
@@ -266,9 +262,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryEdit
 <TITLEIMG TJvDirectoryEdit>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push>
+<FLAG Component>
 Summary
   Edit control with a button that displays a directory selection dialog.
 Description
@@ -292,9 +288,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDateEdit
 <TITLEIMG TJvDateEdit>
-JVCLInfo
-  GROUP=JVCL.DateTime.EditsCombos,JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.DateTime.EditsCombos,JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push>
+<FLAG Component>
 Summary
   Edit control with a button that displays a calendar.
 Description
@@ -1058,9 +1054,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvComboEdit
 <TITLEIMG TJvComboEdit>
-JVCLInfo
-  GROUP=JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.EditsMemosAndCombos.Combos,JVCL.Buttons.Push>
+<FLAG Component>
 Summary
   Edit control with a button.
 Description
@@ -1393,7 +1389,7 @@ Description
   
   The localized name of a file can be different than the actual name of the file depending on the
   user interface language on windows Vista systems. For example, LocalizedName will return
-  <I>C:\Programme\c.txt</I> for the file <I>C:\Program Files\c.txt</I> when the language is
+  'C:\Programme\c.txt' for the file 'C:\Program Files\c.txt' when the language is
   German.
 See Also
   TJvFileDirEdit.LocalizedName
@@ -1422,11 +1418,11 @@ Description
   <TABLE>
     Text entered in edit box               FileName returns
     -------------------------------------  -----------------------------------
-    C:\Temp\MyProgram Param1 Param2      C:\Temp\MyProgram
-    C:\Program Files\MyExe.exe           C:\Program
-    "C:\Program Files\MyExe.exe"         C:\Program Files\MyExe.exe
-    "C:\Program Files\MyExe.exe" Param1  C:\Program Files\MyExe.exe
-    "C:\Program Files\MyExe.exe Param1"  C:\Program Files\MyExe.exe Param1 </TABLE>
+    'C:\Temp\MyProgram' Param1 Param2      'C:\Temp\MyProgram'
+    'C:\Program Files\MyExe.exe'           'C:\Program'
+    'C:\Program Files\MyExe.exe'           'C:\Program Files\MyExe.exe'
+    'C:\Program Files\MyExe.exe' Param1    'C:\Program Files\MyExe.exe'
+    'C:\Program Files\MyExe.exe' Param1    'C:\Program Files\MyExe.exe' Param1 </TABLE>
   
   Use AddQuotes to automatically add quotes to file names with spaces in their name.
   Note

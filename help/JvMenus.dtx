@@ -9,10 +9,6 @@ Author
   Igor Pavluk
   Serge Korolev
   Olivier Sannier
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu.ImageSize
 <ALIAS TJvMainMenu.ImageSize>
@@ -50,15 +46,11 @@ Description
 <ALIAS TJvMainMenu.ActiveItemPainter>
 
 ----------------------------------------------------------------------------------------------------
-@@TJvPopupMenu.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
 @@TJvPopupMenu
 <TITLEIMG TJvPopupMenu>
-JVCLInfo
-  GROUP=JVCL.System.Menus
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.Menus>
+<FLAG Component>
 Summary
   This is the popup menu from the JVCL.
 Description
@@ -68,9 +60,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawMenuItemPainter
 <TITLEIMG TJvOwnerDrawMenuItemPainter>
-JVCLInfo
-  GROUP=JVCL.System.Menus
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.Menus> 
+<FLAG Component>
 Summary
   This is the painter for the msOwnerDraw style
 Description
@@ -79,9 +71,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvOfficeMenuItemPainter
 <TITLEIMG TJvOfficeMenuItemPainter>
-JVCLInfo
-  GROUP=JVCL.XPControls,JVCL.System.Menus
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.XPControls,JVCL.System.Menus>
+<FLAG Component>
 Summary
   The painter for the msOffice style
 Description
@@ -450,10 +442,6 @@ Description
   This property should only be used when rendering a menu item
 
 ----------------------------------------------------------------------------------------------------
-@@TJvMainMenu.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
-
-----------------------------------------------------------------------------------------------------
 @@TJvMainMenu.ActiveItemPainter
 Summary
   The item painter being used by the menu
@@ -484,9 +472,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvMainMenu
 <TITLEIMG TJvMainMenu>
-JVCLInfo
-  GROUP=JVCL.System.Menus,JVCL.Bars.MenusAndTools
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.Menus,JVCL.Bars.MenusAndTools>
+<FLAG Component>
 Summary
   This is the main menu from the JVCL
 Description
@@ -822,9 +810,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvBtnMenuItemPainter
 <TITLEIMG TJvBtnMenuItemPainter>
-JVCLInfo
-  GROUP=JVCL.System.Menus
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.Menus>
+<FLAG Component>
 Summary
   This painter draws an item as a raised or lowered button
 Description
@@ -971,9 +959,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardMenuItemPainter
 <TITLEIMG TJvStandardMenuItemPainter>
-JVCLInfo
-  GROUP=JVCL.System.Menus
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.Menus>
+<FLAG Component>
 Summary
   This painter draws the items without any special effects, apart from drawing the image
 Description
@@ -1002,9 +990,9 @@ The text is aligned on the bottom of the menu item
 ----------------------------------------------------------------------------------------------------
 @@TJvXPMenuItemPainter
 <TITLEIMG TJvXPMenuItemPainter>
-JVCLInfo
-  GROUP=JVCL.XPControls,JVCL.System.Menus
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.XPControls,JVCL.System.Menus>
+<FLAG Component>
 Summary
   This painter draws the menu items so that they look like the XP menus without requiring to run under
   XP.

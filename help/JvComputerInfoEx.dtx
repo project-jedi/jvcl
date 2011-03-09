@@ -6,10 +6,6 @@ Summary
     Contains the TJvComputerInfoEx component.
 Author
   Peter Thörnqvist
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemColorsInfo.ColorHighlightText
 Summary
@@ -3820,9 +3816,9 @@ The computer was booted in "Fail Safe" mode with networking enabled.
 ----------------------------------------------------------------------------------------------------
 @@TJvComputerInfoEx
 <TITLEIMG TJvComputerInfoEx>
-JVCLInfo
-  GROUP=JVCL.System
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System>
+<FLAG Component>
 Summary
   Contains subclasses and properties with various information about the computer and its subsystems,
   settings and status.
@@ -4271,7 +4267,7 @@ Summary
 Description
   <CODE>
   CSIDL_APPDATA </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Application Data.
+  A typical path is 'C:\Documents and Settings\username\Application Data'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonAppData
@@ -4280,7 +4276,7 @@ Summary
 Description
   <CODE>
   CSIDL_COMMON_APPDATA </CODE>
-  A typical path is C:\Documents and Settings\All Users\Application Data.
+  A typical path is 'C:\Documents and Settings\All Users\Application Data'.
   Note
   Version 5.0.
 
@@ -4291,7 +4287,7 @@ Summary
 Description
   <CODE>
   CSIDL_COMMON_DESKTOPDIRECTORY </CODE>
-  A typical path is C:\Documents and Settings\All Users\Desktop. Valid only for Windows NT systems.
+  A typical path is 'C:\Documents and Settings\All Users\Desktop'. Valid only for Windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonFavorites
@@ -4319,7 +4315,7 @@ Summary
 Description
   <CODE>
   CSIDL_COMMON_PROGRAMS </CODE>
-  A typical path is C:\Documents and Settings\All Users\Start Menu\Programs. Valid only for Windows
+  A typical path is 'C:\Documents and Settings\All Users\Start Menu\Programs'. Valid only for Windows
   NT systems.
 
 ----------------------------------------------------------------------------------------------------
@@ -4329,7 +4325,7 @@ Summary
 Description
   <CODE>
   CSIDL_COMMON_STARTMENU </CODE>
-  A typical path is C:\Documents and Settings\All Users\Start Menu. Valid only for Windows NT systems.
+  A typical path is 'C:\Documents and Settings\All Users\Start Menu'. Valid only for Windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.CommonStartup
@@ -4338,7 +4334,7 @@ Summary
 Description
   <CODE>
   CSIDL_COMMON_STARTUP </CODE>
-  A typical path is C:\Documents and Settings\All Users\Start Menu\Programs\Startup. Valid only for
+  A typical path is 'C:\Documents and Settings\All Users\Start Menu\Programs\Startup'. Valid only for
   Windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
@@ -4348,7 +4344,7 @@ Summary
 Description
   <CODE>
   CSIDL_COOKIES </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Cookies.
+  A typical path is 'C:\Documents and Settings\username\Cookies'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Current
@@ -4374,7 +4370,7 @@ Summary
 Description
   <CODE>
   CSIDL_DESKTOPDIRECTORY </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Desktop.
+  A typical path is 'C:\Documents and Settings\username\Desktop'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Favorites
@@ -4383,7 +4379,7 @@ Summary
 Description
   <CODE>
   CSIDL_FAVORITES </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Favorites.
+  A typical path is 'C:\Documents and Settings\username\Favorites'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Fonts
@@ -4392,7 +4388,7 @@ Summary
 Description
   <CODE>
   CSIDL_FONTS </CODE>
-  A typical path is C:\Windows\Fonts.
+  A typical path is 'C:\Windows\Fonts'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.History
@@ -4409,7 +4405,7 @@ Summary
 Description
   <CODE>
   CSIDL_INTERNET_CACHE </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Local Settings\Temporary Internet
+  A typical path is 'C:\Documents and Settings\username\Local Settings\Temporary Internet'
   Files.
   Note
   Version 4.72.
@@ -4421,7 +4417,7 @@ Summary
 Description
   <CODE>
   CSIDL_NETHOOD </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\NetHood.
+  A typical path is 'C:\Documents and Settings\username\NetHood'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Personal
@@ -4431,8 +4427,7 @@ Description
   <CODE>
   CSIDL_PERSONAL </CODE>
   Previous to Version 6.0: The file system directory used to physically store a user's common
-  repository of documents. A typical path is C:\Documents and Settings\<I>username</I>\My
-  Documents.
+  repository of documents. A typical path is 'C:\Documents and Settings\username\My Documents'.
   Note
   Version 6.0.
 
@@ -4443,7 +4438,7 @@ Summary
 Description
   <CODE>
   CSIDL_PRINTHOOD </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\PrintHood.
+  A typical path is 'C:\Documents and Settings\username\PrintHood'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Profile
@@ -4452,7 +4447,7 @@ Summary
 Description
   <CODE>
   CSIDL_PROFILE </CODE>
-  A typical path is C:\Documents and Settings\username.
+  A typical path is 'C:\Documents and Settings\username'.
   Note
   Version 5.0.
 
@@ -4463,7 +4458,7 @@ Summary
 Description
   <CODE>
   CSIDL_PROGRAM_FILES </CODE>
-  A typical path is C:\Program Files.
+  A typical path is 'C:\Program Files'.
   Note
   Version 5.0.
 
@@ -4474,7 +4469,7 @@ Summary
 Description
   <CODE>
   CSIDL_PROGRAMS </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Start Menu\Programs.
+  A typical path is 'C:\Documents and Settings\username\Start Menu\Programs'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Recent
@@ -4483,7 +4478,7 @@ Summary
 Description
   <CODE>
   CSIDL_RECENT </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\My Recent Documents.
+  A typical path is 'C:\Documents and Settings\username\My Recent Documents'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.SendTo
@@ -4492,7 +4487,7 @@ Summary
 Description
   <CODE>
   CSIDL_SENDTO </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\SendTo.
+  A typical path is 'C:\Documents and Settings\username\SendTo'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.StartMenu
@@ -4501,7 +4496,7 @@ Summary
 Description
   <CODE>
   CSIDL_STARTMENU </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Start Menu.
+  A typical path is 'C:\Documents and Settings\username\Start Menu'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.Startup
@@ -4511,7 +4506,7 @@ Description
   <CODE>
   CSIDL_STARTUP </CODE>
   The system starts these programs whenever any user logs onto Windows NT or starts Windows 95. A
-  typical path is C:\Documents and Settings\<I>username</I>\Start Menu\Programs\Startup.
+  typical path is 'C:\Documents and Settings\username\Start Menu\Programs\Startup'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.System
@@ -4520,7 +4515,7 @@ Summary
 Description
   <CODE>
   CSIDL_SYSTEM </CODE>
-  A typical path is C:\Windows\System32.
+  A typical path is 'C:\Windows\System32'.
   Note
   Version 5.0.
 
@@ -4541,7 +4536,7 @@ Summary
 Description
   <CODE>
   CSIDL_TEMPLATES </CODE>
-  A typical path is C:\Documents and Settings\<I>username</I>\Templates.
+  A typical path is 'C:\Documents and Settings\username\Templates'.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemFolders.TrailingPathDelimiter
@@ -4561,7 +4556,7 @@ Description
   <CODE>
   CSIDL_WINDOWS </CODE>
   This corresponds to the \%windir\% or \%SYSTEMROOT\% environment variables. A typical path is
-  C:\Windows.
+  'C:\Windows'.
   Note
   Version 5.0.
 

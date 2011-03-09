@@ -6,20 +6,8 @@ Summary
     Contains the TJvEnterTab component.
 Author
   Peter Thörnqvist
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
-@@TJvEnterAsTab.SetBounds
-Summary
-  Sets the size of the control.
-Description
-  TJvEnterAsTab overrides the SetBounds method to restrict the size for the component so it appears
-  to be a non-visual component. Specifically, width and height are never allowed to change from the
-  default 28 by 28 pixels.
 
-----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab.OnHandleEnter
 Summary
   Write here a summary (1 line)
@@ -55,9 +43,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvEnterAsTab
 <TITLEIMG TJvEnterAsTab>
-JVCLInfo
-  GROUP=JVCL.Miscel
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Miscel>
+<FLAG Component>
 Summary
   A component to redirect all Enter keys to Tab keys.
 Description

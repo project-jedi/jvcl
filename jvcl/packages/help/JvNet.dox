@@ -25,13 +25,14 @@ ContentFile=JvNetcontents.html
 IndexFile=JvNetidx.html
 
 [Project Database Files]
-Count=6
+Count=7
 File0=JvCore.doxdb
 File1=JvStdCtrls.doxdb
 File2=JvDlgs.doxdb
 File3=JvSystem.doxdb
 File4=Jcl.doxdb
-File5=vcl.doxdb
+File5=JEDI.doxdb
+File6=vcl.doxdb
 
 [Source Files]
 Count=20
@@ -55,3 +56,11 @@ File16=..\..\..\help\JvStringListToHtml.dtx
 File17=..\..\..\help\JvStrToHtml.dtx
 File18=..\..\..\help\JvUrlGrabbers.dtx
 File19=..\..\..\help\JvUrlListGrabber.dtx
+
+[General]
+Copyright=Copyright (C) 1999, 2011 Project JEDI
+Summary=Documentation of the JVCL Network Components Runtime Package
+Title=JVCL Network Components Runtime Package
+VersionBuild=0
+VersionMajor=3
+VersionMinor=41

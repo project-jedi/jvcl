@@ -6,10 +6,6 @@ Summary
     Contains the TJvXMLDatabase component.
 Author
   Sébastien Buysse
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator
 <TITLE TJvXMLSQLOperator type>
@@ -475,7 +471,7 @@ Description
   Use TablePath to specify the path to the data (XML) files. This path is used in conjunction with
   filenames in the SQL statement sent in Query to determine what file or files to read from. For
   example, if TablePath is set to 'C:\temp\tables' and Query contains 'SELECT * FROM data1.xml', the
-  component will look for the file C:\temp\tables\data1.xml.
+  component will look for the file 'C:\temp\tables\data1.xml'.
 See Also
   TJvXMLDatabase.Query
 
@@ -507,9 +503,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLDatabase
 <TITLEIMG TJvXMLDatabase>
-JVCLInfo
-  GROUP=JVCL.Internet.ConvertersAndParsers.XML,JVCL.DBAware
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Internet.ConvertersAndParsers.XML,JVCL.DBAware>
+<FLAG Component>
 Summary
   A component to access the content of an XML file using SQL like syntax.
 Description

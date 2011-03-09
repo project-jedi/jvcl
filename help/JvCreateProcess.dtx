@@ -6,10 +6,6 @@ Summary
     Contains the TJvCreateProcess, TJvProcessEntry and TJvCPSStartupInfo components.
 Author
   Petr Vones
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvProcessEntry.LargeIconIndex
 Summary
@@ -549,13 +545,13 @@ Description
   first white space-delimited token in the string specified by CommandLine. If you are using a long
   file name that contains a space, use quoted strings to indicate where the file name ends and the
   arguments begin; otherwise, the file name is ambiguous. For example, consider the string
-  "c:\program files\sub dir\program name". This string can be interpreted in a number of ways. The
+  'c:\program files\sub dir\program name'. This string can be interpreted in a number of ways. The
   system tries to interpret the possibilities in the following order:
   
-  * <B>c:\program.exe</B> files\sub dir\program name
-  * <B>c:\program files\sub.exe</B> dir\program name
-  * <B>c:\program files\sub dir\program.exe</B> name
-  * <B>c:\program files\sub dir\program name.exe</B>
+  * <B>'c:\program.exe'</B> files\sub dir\program name
+  * <B>'c:\program files\sub.exe'</B> dir\program name
+  * <B>'c:\program files\sub dir\program.exe'</B> name
+  * <B>'c:\program files\sub dir\program name.exe'</B>
 See Also
   TJvCreateProcess.CommandLine, TJvCreateProcess.Run
 
@@ -641,9 +637,9 @@ StopWaiting> must be called to stop waiting for the process to end.
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess
 <TITLEIMG TJvCreateProcess>
-JVCLInfo
-  GROUP=JVCL.System.LibProcAndThread.Processes
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.System.LibProcAndThread.Processes>
+<FLAG Component>
 Summary
   Enables you to create processes and wait for them to end.
 Description

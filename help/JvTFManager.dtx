@@ -7,10 +7,6 @@ Summary
 Author
   Mike Kolter
   Unlimited Intelligence Limited
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManagerCache
 Summary
@@ -852,9 +848,9 @@ Load data in batches. A call to ProcessBatches is required to load the data.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFScheduleManager
 <TITLEIMG TJvTFScheduleManager>
-JVCLInfo
-  GROUP=JVCL.DateTime.Other
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.DateTime.Other>
+<FLAG Component>
 Summary
   Manages multiple schedules, appointments and associated controls and components.
 Description
@@ -1451,7 +1447,7 @@ Summary
 Description
   Use this method to save each of the page images as separate emf files. Printer will append an
   underscore "_" and the page number, along with the emf extension to each file it saves. For
-  example, if there are three pages and you set BaseFileName to "c:\simpl\schedule" the following
+  example, if there are three pages and you set BaseFileName to 'c:\simpl\schedule' the following
   files will be produced:
   <CODE>
         c:\simpl\schedule_1.emf
@@ -3467,9 +3463,9 @@ End time of the range. Must be greater than StartTime.
 ----------------------------------------------------------------------------------------------------
 @@TJvTFUniversalPrinter
 <TITLEIMG TJvTFUniversalPrinter>
-JVCLInfo
-  GROUP=JVCL.Printing
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Printing>
+<FLAG Component>
 Summary
   The TJvTFUniversalPrinter component is a general purpose printing component that allows you to
   easily produce documents with specific margins, bodies, and headers and footers.

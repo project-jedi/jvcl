@@ -4,19 +4,13 @@
 @@JvCsvParse.pas
 Summary
     The Unit JvCsvParse is a library of Pascal PChar buffer, and Pascal String handling functions.
-  They
+    They are used by TJvCsvDataSet. They are also generally useful to any component which needs to parse
+    semantic information in a file, and are useful for parsing CSV, XML, or any other structured
+    textual file format which you may encounter.
+See also
+     TJvCsvDataSet.
 Author
   Warren Postma
-Description
-    are used by TJvCsvDataSet. They are also generally useful to any component which needs to parse
-    semantic information in a file, and are useful for parsing CSV, XML, or any other structured
-  textual
-    file format which you may encounter.
-  
-    See also TJvCsvDataSet.
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@ValidNumericLiteral
 <TITLE ValidNumericLiteral function>
@@ -28,7 +22,7 @@ Description
 Parameters
   S1 - buffer to be checked.
 See Also
-  ValidHexLiteral, ValidIdentifier, ValidIntLiteral, ValidStringLiteral
+  ValidHexLiteral, JvValidIdentifier, ValidIntLiteral, ValidStringLiteral
 
 ----------------------------------------------------------------------------------------------------
 @@ValidIntLiteral
@@ -41,11 +35,11 @@ Description
 Parameters
   S1 - buffer to be checked
 See Also
-  ValidHexLiteral, ValidIdentifier, ValidNumericLiteral, ValidStringLiteral
+  ValidHexLiteral, JvValidIdentifier, ValidNumericLiteral, ValidStringLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@ValidIdentifier
-<TITLE ValidIdentifier function>
+@@JvValidIdentifier
+<TITLE JvValidIdentifier function>
 Summary
   Write here a summary (1 line)
 Description
@@ -56,8 +50,8 @@ See Also
   ValidIntLiteral, ValidNumericLiteral, ValidStringLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@StrStrip
-<TITLE StrStrip function>
+@@JvStrStrip
+<TITLE JvStrStrip function>
 Summary
   Strip leading and trailing whitespace, carriage returns and line feeds from a string.
 Description
@@ -81,8 +75,8 @@ See Also
   ValidIntLiteral, ValidNumericLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@StrSplitStrings
-<TITLE StrSplitStrings function>
+@@JvAnsiStrSplitStrings
+<TITLE JvAnsiStrSplitStrings function>
 Summary
   Get a TStrings from a string spliting on a split char
 Description
@@ -94,8 +88,8 @@ Parameters
   OutStrings - TStrings resulting
 
 ----------------------------------------------------------------------------------------------------
-@@StrSplit
-<TITLE StrSplit function>
+@@JvStrSplit
+<TITLE JvStrSplit function>
 Summary
   Split a string into an array of strings. Result is stored in a standard Pascal String Array (Array
   of
@@ -144,7 +138,7 @@ Summary
 Description
   Reset token counter.
 See Also
-  GetTokenCount, GetToken
+  GetTokenCount, JvGetToken
 
 ----------------------------------------------------------------------------------------------------
 @@StrEatWhiteSpace
@@ -157,11 +151,11 @@ Description
 Parameters
   S - original string. not modified. new string is Returned as a new object.
 See Also
-  StrStrip
+  JvStrStrip
 
 ----------------------------------------------------------------------------------------------------
-@@PCharEatWhiteChars
-<TITLE PCharEatWhiteChars procedure>
+@@JvEatWhitespaceChars
+<TITLE JvEatWhitespaceChars procedure>
 Summary
   Eat whitespace from a PChar buffer.
 Description
@@ -229,8 +223,8 @@ Parameters
   S1 - The hexadecimal string.
 
 ----------------------------------------------------------------------------------------------------
-@@GetVarReference
-<TITLE GetVarReference procedure>
+@@JvGetVarReference
+<TITLE JvGetVarReference procedure>
 Summary
   Parse a variable or label reference.
 Description
@@ -239,43 +233,21 @@ Parameters
   S1   - Source String.
   S2   - Contains a variable name part of the string
   SIdx - Contains an array index or null if the variable is not an array reference
-
-----------------------------------------------------------------------------------------------------
-@@GetValueFromResultString
-<TITLE GetValueFromResultString function>
-Summary
-  TStringList helper function. Finds and returns variable name/value pairs in a TStringList.
-Description
-  TStringList helper function. Finds and returns variable name/value pairs in a TStringList. Retrieve
-  an integer value from a result string, Formats that are valid include:
-  <TABLE>
-    Value                 Meaning
-    --------------------  --------------------------------
-    VariableName : Value  usual format for status results
-    VariableName = Value  usual format in ini files
-    Label Name = Value    labels names can contain spaces.
-  </TABLE>
-Parameters
-  VarName       - The variable name you want to read.
-  ResultStrings - The TStringList to search for that variable name.
-See Also
-  GetIntValueFromResultString
-
 ----------------------------------------------------------------------------------------------------
 @@GetTokenCount
 <TITLE GetTokenCount function>
 Summary
   Debugging helper function for parsers.
 Description
-  Returns a count of the number of times GetToken has returned a token.
+  Returns a count of the number of times JvGetToken has returned a token.
 See Also
-  ResetTokenCount, GetToken
+  ResetTokenCount, JvGetToken
 
 ----------------------------------------------------------------------------------------------------
-@@GetToken
-<TITLE GetToken procedure>
+@@JvGetToken
+<TITLE JvGetToken procedure>
 Summary
-  Tokenize a string according to a fixed set of tokenization characters (see EndChar for a list)
+  Tokenize a string according to a fixed set of tokenization characters (see JvEndChar for a list)
 Description
   Pass in buffer in s1, and returns one token into s2, deletes that token from s1. Call repeatedly to
   parse a large string buffer. The buffer s1 is modified (the token is removed from the buffer).
@@ -283,7 +255,7 @@ Parameters
   S1 - Source buffer (modified by this function!)
   S2 - Destination buffer (result returned here)
 See Also
-  EndChar
+  JvEndChar
 
 ----------------------------------------------------------------------------------------------------
 @@GetString
@@ -310,30 +282,8 @@ Parameters
   S2 - Output string without parenthesis.
 
 ----------------------------------------------------------------------------------------------------
-@@GetIntValueFromResultString
-<TITLE GetIntValueFromResultString function>
-Summary
-  Finds and returns variable name/value pairs in a TStringList.
-Description
-  TStringList helper function. Finds and returns variable name/value pairs in a TStringList. Retrieve
-  an integer value from a result string, Formats that are valid include:
-  <TABLE>
-    Value                 Meaning
-    --------------------  --------------------------------
-    VariableName : Value  usual format for status results
-    VariableName = Value  usual format in ini files
-    Label Name = Value    labels names can contain spaces.
-  </TABLE>
-Parameters
-  VarName       - The variable name you want to read.
-  ResultStrings - The TStringList to search for that variable name.
-  DefVal        - The default value to return if the variable is not found.
-See Also
-  GetValueFromResultString
-
-----------------------------------------------------------------------------------------------------
-@@EndChar
-<TITLE EndChar function>
+@@JvEndChar
+<TITLE JvEndChar function>
 Summary
   A parsing function used by TJvCsvDataSet for breaking up lines in a CSV file.
 Description
@@ -378,11 +328,11 @@ Description
 Parameters
   S1 - buffer to be checked.
 See Also
-  ValidHexLiteral, ValidIdentifier, ValidIntLiteral, ValidNumericLiteral
+  ValidHexLiteral, JvValidIdentifier, ValidIntLiteral, ValidNumericLiteral
 
 ----------------------------------------------------------------------------------------------------
-@@ValidVarReference
-<TITLE ValidVarReference function>
+@@JvValidVarReference
+<TITLE JvValidVarReference function>
 Summary
   Check for valid variable reference.
 Description
@@ -390,5 +340,5 @@ Description
 Parameters
   S1 - buffer to be checked.
 See Also
-  ValidHexLiteral, ValidIdentifier, ValidIntLiteral, ValidNumericLiteral
+  ValidHexLiteral, JvValidIdentifier, ValidIntLiteral, ValidNumericLiteral
 

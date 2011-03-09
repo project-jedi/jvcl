@@ -6,10 +6,6 @@ Summary
     Contains the TJvBrowseForFolderDialog component.
 Author
   Sébastien Buysse
-Description
-  <INCLUDE JVCL.UnitText.dtx>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TOptionsDir
 <TITLE TOptionsDir type> <COMBINE TOptionsDirectory>
@@ -250,8 +246,8 @@ Description
   the dialog box.
   
   Property RootDirectory can be used to specify a specific folder which may not have the same name or
-  location on any given system. For example, the system folder may be "C:\Windows" on one system and
-  "C:\Winnt" on another.
+  location on any given system. For example, the system folder may be 'C:\Windows' on one system and
+  'C:\Winnt' on another.
   
   Setting RootDirectory to fdNoSpecialFolder specifies that RootDirectoryPath should be used as root
   folder for the dialog.
@@ -455,9 +451,9 @@ The caller is looking for remote shares.
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseForFolderDialog
 <TITLEIMG TJvBrowseForFolderDialog>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Component
+#JVCLInfo
+<GROUP JVCL.Dialogs.Common>
+<FLAG Component>
 Summary
   Displays a dialog box enabling the user to select a Shell folder.
 Description
@@ -527,20 +523,20 @@ The folder containing links to OEM specific applications for all users.
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdResourcesLocalized
 The windows localized system resource directory. A typical path is
-C:\Windows\Resources\<I>langid</I>.
+'C:\Windows\Resources\langid'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdResources
-The windows system resource directory. A typical path is C:\Windows\Resources.
+The windows system resource directory. A typical path is 'C:\Windows\Resources'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProfiles
 <B>Version 6.0.</B> The file system directory containing user profile folders. A typical path is
-C:\Documents and Settings.
+'C:\Documents and Settings'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyVideo
-<B>Version 6.0.</B> The file system directory that serves as a common repository for video files. A typical path is C:\Documents and Settings\<I>username</I>\My Documents\My Videos.
+<B>Version 6.0.</B> The file system directory that serves as a common repository for video files. A typical path is 'C:\Documents and Settings\username\My Documents\My Videos'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyDocuments
@@ -548,55 +544,54 @@ C:\Documents and Settings.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonVideo
-<B>Version 6.0.</B> The file system directory that serves as a repository for video files common to all users. A typical path is C:\Documents and Settings\All Users\Documents\My Videos.
+<B>Version 6.0.</B> The file system directory that serves as a repository for video files common to all users. A typical path is 'C:\Documents and Settings\All Users\Documents\My Videos'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonMusic
-<B>Version 6.0.</B> The file system directory that serves as a repository for music files common to all users. A typical path is C:\Documents and Settings\All Users\Documents\My Music.
+<B>Version 6.0.</B> The file system directory that serves as a repository for music files common to all users. A typical path is 'C:\Documents and Settings\All Users\Documents\My Music'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonPictures
-<B>Version 6.0.</B> The file system directory that serves as a repository for image files common to all users. A typical path is C:\Documents and Settings\All Users\Documents\My Pictures.
+<B>Version 6.0.</B> The file system directory that serves as a repository for image files common to all users. A typical path is 'C:\Documents and Settings\All Users\Documents\My Pictures'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCDBurnArea
-<B>Version 6.0.</B> The file system directory acting as a staging area for files waiting to be written to CD. A typical path is C:\Documents and Settings\<I>username</I>\Local
+<B>Version 6.0.</B> The file system directory acting as a staging area for files waiting to be written to CD. A typical path is 'C:\Documents and Settings\username\Local'
 Settings\\Application \Data\Microsoft\CD Burning.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdWindows
-<B>Version 5.0.</B> The windows directory or SYSROOT. This corresponds to the \%windir\% or \%SYSTEMROOT\% environment variables. A typical path is C:\Windows.
+<B>Version 5.0.</B> The windows directory or SYSROOT. This corresponds to the \%windir\% or \%SYSTEMROOT\% environment variables. A typical path is 'C:\Windows'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdSystem
-<B>Version 5.0.</B> The windows \System folder. A typical path is C:\Windows\System32.
+<B>Version 5.0.</B> The windows \System folder. A typical path is 'C:\Windows\System32'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProgramFiles
-<B>Version 5.0.</B> The Program Files folder. A typical path is C:\Program Files.
+<B>Version 5.0.</B> The Program Files folder. A typical path is 'C:\Program Files'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProgramFilesCommon
 <B>Version 5.0.</B> A folder for components that are shared across applications. A typical path is
-C:\Program Files\Common. Valid only for windows NT, 2000 and XP systems. Not valid for windows Me.
+'C:\Program Files\Common'. Valid only for windows NT, 2000 and XP systems. Not valid for windows Me.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdProfile
-<B>Version 5.0.</B> The user's profile folder. A typical path is C:\Documents and
-Settings\<I>username</I>. Applications should not create files or folders at this level; they should put their data under the locations referred to by fdAppData or fdLocalAppData.
+<B>Version 5.0.</B> The user's profile folder. A typical path is 'C:\Documents and
+Settings\username'. Applications should not create files or folders at this level; they should put their data under the locations referred to by fdAppData or fdLocalAppData.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyPictures
-<B>Version 5.0.</B> The file system directory that serves as a common repository for image files. A typical path is C:\Documents and Settings\<I>username</I>\My Documents\My Pictures.
+<B>Version 5.0.</B> The file system directory that serves as a common repository for image files. A typical path is 'C:\Documents and Settings\username\My Documents\My Pictures'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdLocalAppData
-<B>Version 5.0.</B> The file system directory that serves as a data repository for local (nonroaming) applications. A typical path is C:\Documents and Settings\<I>username</I>\Local
-Settings\\Application \Data.
+<B>Version 5.0.</B> The file system directory that serves as a data repository for local (nonroaming) applications. A typical path is 'C:\Documents and Settings\username\Local Settings\Application Data'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonAppData
-<B>Version 5.0.</B> The file system directory containing application data for all users. A typical path is C:\Documents and Settings\All Users\\Application \Data.
+<B>Version 5.0.</B> The file system directory containing application data for all users. A typical path is 'C:\Documents and Settings\All Users\Application Data'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonAdminTools
@@ -609,8 +604,7 @@ Settings\\Application \Data.
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdInternetCache
 <B>Version 4.72.</B> The file system directory that serves as a common repository for temporary
-Internet files. A typical path is C:\Documents and Settings\<I>username</I>\Local
-Settings\Temporary Internet Files.
+Internet files. A typical path is 'C:\Documents and Settings\username\Local Settings\Temporary Internet Files'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdConnections
@@ -618,17 +612,16 @@ A virtual folder that contains network and dial-up connections.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdAppData
-<B>Version 4.71.</B> The file system directory that serves as a common repository for application-specific data. A typical path is C:\Documents and
-Settings\<I>username</I>\\Application \Data.
+<B>Version 4.71.</B> The file system directory that serves as a common repository for application-specific data. A typical path is 'C:\Documents and Settings\username\Application Data'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPrinthood
-The file system directory that contains the link objects that can exist in the \Printers virtual folder. A typical path is C:\Documents and Settings\<I>username</I>\PrintHood.
+The file system directory that contains the link objects that can exist in the \Printers virtual folder. A typical path is 'C:\Documents and Settings\username\PrintHood'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyMusic
 The file system directory that serves as a common repository for music files. A typical path is
-C:\Documents and Settings\User\My Documents\My Music.
+'C:\Documents and Settings\User\My Documents\My Music'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdHistory
@@ -640,27 +633,26 @@ A virtual folder representing the Internet.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdFavorites
-The file system directory that serves as a common repository for the user's favorite items. A typical path is C:\Documents and Settings\<I>username</I>\Favorites.
+The file system directory that serves as a common repository for the user's favorite items. A typical path is 'C:\Documents and Settings\username\Favorites'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCookies
 The file system directory that serves as a common repository for Internet cookies. A typical path is
-C:\Documents and Settings\<I>username</I>\Cookies.
+'C:\Documents and Settings\username\Cookies'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonTemplates
-The file system directory that contains the templates that are available to all users. A typical path is C:\Documents and Settings\All Users\Templates. Valid only for windows NT systems.
+The file system directory that contains the templates that are available to all users. A typical path is 'C:\Documents and Settings\All Users\Templates'. Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonStartUp
 The file system directory that contains the programs that appear in the Startup folder for all users.
-A typical path is C:\Documents and Settings\All Users\Start Menu\Programs\Startup. Valid only for windows NT systems.
+A typical path is 'C:\Documents and Settings\All Users\Start Menu\Programs\Startup'. Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonPrograms
 The file system directory that contains the directories for the common program groups that appear on
-the Start menu for all users. A typical path is C:\Documents and Settings\All Users\Start
-Menu\Programs. Valid only for windows NT systems.
+the Start menu for all users. A typical path is 'C:\Documents and Settings\All Users\Start Menu\Programs'. Valid only for windows NT systems.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonFavorites
@@ -670,7 +662,7 @@ Valid only for windows NT systems.
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonDocuments
 The file system directory that contains documents that are common to all users. A typical paths is
-C:\Documents and Settings\All Users\Documents. Valid for windows NT systems, and windows 95 and 98 systems with Shfolder.dll installed.
+'C:\Documents and Settings\All Users\Documents'. Valid for windows NT systems, and windows 95 and 98 systems with Shfolder.dll installed.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdCommonStartUpNonLocalized
@@ -683,31 +675,29 @@ The file system directory that corresponds to the user's nonlocalized Startup pr
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdTemplates
-The file system directory that serves as a common repository for document templates. A typical path is C:\Documents and Settings\<I>username</I>\Templates.
+The file system directory that serves as a common repository for document templates. A typical path is 'C:\Documents and Settings\username\Templates'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdStartup
 The file system directory that corresponds to the user's Startup program group. The system starts
 these programs whenever any user logs onto windows NT or starts windows 95. A typical path is
-C:\Documents and Settings\<I>username</I>\Start Menu\Programs\Startup.
+'C:\Documents and Settings\username\Start Menu\Programs\Startup'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdStartMenu
-The file system directory containing Start menu items. A typical path is C:\Documents and
-Settings\<I>username</I>\Start Menu.
+The file system directory containing Start menu items. A typical path is 'C:\Documents and Settings\username\Start Menu'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdSendTo
-The file system directory that contains Send To menu items. A typical path is C:\Documents and
-Settings\<I>username</I>\SendTo.
+The file system directory that contains Send To menu items. A typical path is 'C:\Documents and Settings\username\SendTo'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdRecent
-The file system directory that contains shortcuts to the user's most recently used documents. A typical path is C:\Documents and Settings\<I>username</I>\My Recent Documents.
+The file system directory that contains shortcuts to the user's most recently used documents. A typical path is 'C:\Documents and Settings\username\My Recent Documents'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPrograms
-The file system directory that contains the user's program groups (which are themselves file system directories). A typical path is C:\Documents and Settings\<I>username</I>\Start Menu\Programs.
+The file system directory that contains the user's program groups (which are themselves file system directories). A typical path is 'C:\Documents and Settings\username\Start Menu\Programs'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPrinters
@@ -719,15 +709,15 @@ A virtual folder representing Network Neighborhood, the root of the network name
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdPersonal
-The file system directory used to physically store a user's common repository of documents. A typical path is C:\Documents and Settings\<I>username</I>\My Documents. This should be distinguished from the virtual My Documents folder in the namespace, identified by fdMyDocuments.
+The file system directory used to physically store a user's common repository of documents. A typical path is 'C:\Documents and Settings\username\My Documents'. This should be distinguished from the virtual My Documents folder in the namespace, identified by fdMyDocuments.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdNetHood
-A file system directory containing the link objects that may exist in the My Network Places virtual folder. It is not the same as fdNetwork, which represents the network namespace root. A typical path is C:\Documents and Settings\<I>username</I>\NetHood.
+A file system directory containing the link objects that may exist in the My Network Places virtual folder. It is not the same as fdNetwork, which represents the network namespace root. A typical path is 'C:\Documents and Settings\username\NetHood'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdFonts
-A virtual folder containing fonts. A typical path is C:\Windows\Fonts.
+A virtual folder containing fonts. A typical path is 'C:\Windows\Fonts'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdMyComputer
@@ -735,8 +725,7 @@ The virtual folder representing My Computer, containing everything on the local 
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdDesktopDirectory
-The file system directory used to physically store file objects on the desktop (not to be confused with the desktop folder itself). A typical path is C:\Documents and
-Settings\<I>username</I>\Desktop.
+The file system directory used to physically store file objects on the desktop (not to be confused with the desktop folder itself). A typical path is 'C:\Documents and Settings\username\Desktop'.
 
 ----------------------------------------------------------------------------------------------------
 @@TFromDirectory.fdControlPanel
@@ -777,9 +766,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@BrowseForFolder
 <TITLE BrowseForFolder function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Common>
+<FLAG Routine,NotInParentList> 
 Summary
   Brings up a dialog to allow the user to enter a directory name.
 Description
@@ -795,9 +784,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@BrowseForComputer
 <TITLE BrowseForComputer function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Common>
+<FLAG Routine,NotInParentList>
 Summary
   Brings up a dialog to allow the user to enter a computer name.
 Description
@@ -813,9 +802,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@BrowseDirectory
 <TITLE BrowseDirectory function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Common>
+<FLAG Routine,NotInParentList>
 Summary
   Brings up a dialog to allow the user to enter a directory name.
 Description
@@ -830,9 +819,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@BrowseComputer
 <TITLE BrowseComputer function>
-JVCLInfo
-  GROUP=JVCL.Dialogs.Common
-  FLAG=Routine,NotInParentList
+#JVCLInfo
+<GROUP JVCL.Dialogs.Common>
+<FLAG Routine,NotInParentList>
 Summary
   Brings up a dialog to allow the user to enter a computer name.
 Description

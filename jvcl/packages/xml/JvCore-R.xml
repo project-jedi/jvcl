@@ -8,6 +8,7 @@
   <Requires>
     <Package Name="Jcl" Targets="all" Condition=""/>
     <Package Name="JclVcl" Targets="all" Condition=""/>
+    <Package Name="JEDI" Targets="help" Condition=""/>
     <Package Name="ThemeManagerD6" Targets="D6,D6p" Condition="JVCLThemesEnabled"/>
     <Package Name="ThemeManagerC6" Targets="C6,C6p" Condition="JVCLThemesEnabled"/>
     <Package Name="vclx" Targets="C,D" Condition=""/>
