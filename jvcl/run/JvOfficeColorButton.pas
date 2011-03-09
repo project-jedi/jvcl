@@ -169,7 +169,7 @@ type
     procedure CMPopupCloseUp(var Msg: TMessage); message CM_POPUPCLOSEUP;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure PopupCloseUp; virtual;
-    procedure FocusKilled(NextWnd: Cardinal); override;
+    procedure FocusKilled(NextWnd: THandle); override;
 
     procedure AdjustColorForm(X: Integer = 0; Y: Integer = 0); //Screen position
     procedure ShowColorForm(X: Integer = 0; Y: Integer = 0); virtual; //Screen position
@@ -896,7 +896,7 @@ begin
   end;
 end;}
 
-procedure TJvCustomOfficeColorButton.FocusKilled(NextWnd: Cardinal);
+procedure TJvCustomOfficeColorButton.FocusKilled(NextWnd: THandle);
 var
   Sender: TWinControl;
   Focused: Boolean;

@@ -94,7 +94,7 @@ begin
   Result := nil;
 end;
 
-function ModuleEnumProc(HInstance: Integer; Data: Pointer): Boolean;
+function ModuleEnumProc(HInstance: HINST; Data: Pointer): Boolean;
 var
   StandardActionsClass: TComponentClass;
 begin
