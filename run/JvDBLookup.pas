@@ -672,7 +672,7 @@ implementation
 
 uses
   VDBConsts, StrUtils, DBConsts, SysUtils, Math, MultiMon,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources, JclSysUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
   { AFormat is passed to a Format function, but the only allowed
@@ -898,7 +898,7 @@ end;
 
 procedure TJvLookupControl.SetKeyValue(const Value: Variant);
 begin
-  if VarIsNull(Value) then
+  if VarIsNullEmpty(Value) then
     Self.Value := FEmptyValue
   else
     Self.Value := Value;
@@ -3846,7 +3846,7 @@ end;
 
 procedure TJvDBLookupEdit.SetPopupValue(const Value: Variant);
 begin
-  if VarIsNull(Value) or VarIsEmpty(Value) then
+  if VarIsNullEmpty(Value) then
     TJvPopupDataWindow(FPopup).Value := TJvPopupDataWindow(FPopup).EmptyValue
   else
     TJvPopupDataWindow(FPopup).DisplayValue := Value;

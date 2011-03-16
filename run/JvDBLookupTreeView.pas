@@ -460,7 +460,7 @@ uses
   Types,  // to allow inline expansion
   {$ENDIF COMPILER10_UP}
   CommCtrl, Graphics, DBConsts,
-  JvThemes;
+  JvThemes, JclSysUtils;
 
 //=== { TJvLookupDataSourceLink } ============================================
 
@@ -684,7 +684,7 @@ function TJvDBLookupControl.LocateKey: Boolean;
 begin
   Result := False;
   try
-    if not VarIsNull(FKeyValue) and
+    if not VarIsNullEmpty(FKeyValue) and
       FListLink.DataSet.Locate(FKeyFieldName, FKeyValue, []) then
       Result := True;
   except

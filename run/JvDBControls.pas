@@ -1624,7 +1624,7 @@ end;
 
 procedure TJvDBDateEdit.AcceptValue(const Value: Variant);
 begin
-  if VarIsNull(Value) or VarIsEmpty(Value) then
+  if VarIsNullEmpty(Value) then
     FDataLink.Field.Clear
   else
     FDataLink.Field.AsDateTime :=
@@ -2086,7 +2086,7 @@ end;
 
 procedure TJvDBCalcEdit.AcceptValue(const Value: Variant);
 begin
-  if VarIsNull(Value) or VarIsEmpty(Value) then
+  if VarIsNullEmpty(Value) then
     FDataLink.Field.Clear
   else
     FDataLink.Field.Value := CheckValue(Value, False);

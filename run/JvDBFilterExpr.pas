@@ -50,7 +50,7 @@ type
 implementation
 
 uses
-  SqlTimSt, DateUtils, JvResources;
+  SqlTimSt, DateUtils, JvResources, JclSysUtils;
 
 var
   FieldTypeMapInitialized: Boolean = False;
@@ -418,49 +418,49 @@ begin
       else
       if CompareText(N.FData, 'YEAR') = 0 then
       begin
-        if VarIsNull(V) then Result := -1 else
+        if VarIsNullEmpty(V) then Result := -1 else
           Result := YearOf(V);
       end
       else
       if CompareText(N.FData, 'MONTH') = 0 then
       begin
-        if VarIsNull(V) then Result := -1 else
+        if VarIsNullEmpty(V) then Result := -1 else
           Result := MonthOf(V);
       end
       else
       if CompareText(N.FData, 'DAY') = 0 then
       begin
-        if VarIsNull(V) then Result := -1 else
+        if VarIsNullEmpty(V) then Result := -1 else
           Result := DayOf(V);
       end
       else
       if CompareText(N.FData, 'HOUR') = 0 then
       begin
-        if VarIsNull(V) then Result := -1 else
+        if VarIsNullEmpty(V) then Result := -1 else
           Result := HourOf(V);
       end
       else
       if CompareText(N.FData, 'MINUTE') = 0 then
       begin
-        if VarIsNull(V) then Result := -1 else
+        if VarIsNullEmpty(V) then Result := -1 else
           Result := MinuteOf(V);
       end
       else
       if CompareText(N.FData, 'SECOND') = 0 then
       begin
-        if VarIsNull(V) then Result := -1 else
+        if VarIsNullEmpty(V) then Result := -1 else
           Result := SecondOf(V);
       end
       else
       if CompareText(N.FData, 'TIME') = 0 then
       begin
-        if VarIsNull(V) then Result := NULL else
+        if VarIsNullEmpty(V) then Result := NULL else
           Result := VarSQLTimeStampCreate(TimeOf(V));
       end
       else
       if CompareText(N.FData, 'DATE') = 0 then
       begin
-        if VarIsNull(V) then Result := NULL else
+        if VarIsNullEmpty(V) then Result := NULL else
           Result := VarSQLTimeStampCreate(DateOf(V));
       end
       else
