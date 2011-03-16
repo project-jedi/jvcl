@@ -492,7 +492,7 @@ implementation
 
 uses
   JclStrings,
-  JvParameterListParameter, JvResources, JvJVCLUtils;
+  JvParameterListParameter, JvResources, JvJVCLUtils, JclSysUtils;
 
 const
   cFalse = 'FALSE';
@@ -815,7 +815,7 @@ end;
 
 function TJvBaseParameter.GetAsString: string;
 begin
-  if VarIsNull(AsVariant) then
+  if VarIsNullEmpty(AsVariant) then
     Result := ''
   else
     Result := AsVariant;
@@ -841,7 +841,7 @@ end;
 
 function TJvBaseParameter.GetAsInteger: Integer;
 begin
-  if VarIsNull(AsVariant) then
+  if VarIsNullEmpty(AsVariant) then
     Result := 0
   else
     Result := AsVariant;
@@ -859,7 +859,7 @@ function TJvBaseParameter.GetAsBoolean: Boolean;
 var
   S: string;
 begin
-  if VarIsNull(FValue) then
+  if VarIsNullEmpty(FValue) then
     Result := False
   else
   begin
@@ -875,7 +875,7 @@ end;
 
 function TJvBaseParameter.GetAsDate: TDateTime;
 begin
-  if VarIsNull(FValue) then
+  if VarIsNullEmpty(FValue) then
     Result := 0
   else
     Result := VarToDateTime(FValue);
@@ -1693,7 +1693,7 @@ begin
       Reason := TJvParameterListEnableDisableReason(AEnableReasons.Objects[J]);
       if not Assigned(Reason) then
         Continue;
-      if VarIsNull(Reason.AsVariant) then
+      if VarIsNullEmpty(Reason.AsVariant) then
         Continue;
       SearchParameter := ParameterByName(Reason.RemoteParameterName);
       if not Assigned(SearchParameter) then
@@ -1721,7 +1721,7 @@ begin
       Reason := TJvParameterListEnableDisableReason(ADisableReasons.Objects[J]);
       if not Assigned(Reason) then
         Continue;
-      if VarIsNull(Reason.AsVariant) then
+      if VarIsNullEmpty(Reason.AsVariant) then
         Continue;
       SearchParameter := ParameterByName(Reason.RemoteParameterName);
       if not Assigned(SearchParameter) then
@@ -1729,9 +1729,9 @@ begin
       if not Assigned(SearchParameter.WinControl) then
         Continue;
       Data := SearchParameter.GetWinControlData;
-      if (VarIsEmpty(Data) or (VarToStr(Data) = '')) and Reason.IsEmpty then
+      if VarIsNullEmptyBlank(Data) and Reason.IsEmpty then
         IEnable := -1;
-      if (not (VarIsEmpty(Data) or (VarToStr(Data) = ''))) and Reason.IsNotEmpty then
+      if not VarIsNullEmptyBlank(Data) and Reason.IsNotEmpty then
         IEnable := -1;
       try
         if VarCompareValue(Reason.AsVariant, Data) = vrEqual then

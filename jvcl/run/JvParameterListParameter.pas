@@ -661,7 +661,7 @@ const
 implementation
 
 uses
-  JvResources, JvJVCLUtils;
+  JvResources, JvJVCLUtils, JclSysUtils;
 
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
@@ -1465,7 +1465,7 @@ end;
 
 procedure TJvListParameter.SetAsVariant(Value: Variant);
 begin
-  if VarIsNull(Value) then
+  if VarIsNullEmpty(Value) then
     ItemIndex := -1
   else if VariantAsItemIndex then
     if VarType(Value) in [varSmallInt, varInteger, varByte, varShortInt, varWord, varLongWord] then

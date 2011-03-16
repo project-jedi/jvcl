@@ -94,22 +94,16 @@ type
     procedure SetBeforeThreadExecution(const Value: TJvThreadedDatasetThreadEvent);
     procedure SetDatasetFetchAllRecords(const Value: Boolean);
     procedure SetDialogOptions(Value: TJvThreadedDatasetDialogOptions);
-    procedure SetOnThreadException(const Value:
-        TJvThreadedDatasetThreadExceptionEvent);
+    procedure SetOnThreadException(const Value: TJvThreadedDatasetThreadExceptionEvent);
     procedure SetThreadOptions(const Value: TJvThreadedDatasetThreadOptions);
-    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
-        GetAfterThreadExecution write SetAfterThreadExecution;
-    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
-        GetBeforeThreadExecution write SetBeforeThreadExecution;
-    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
-        GetOnThreadException write SetOnThreadException;
-    property AfterOpenFetch: TDataSetNotifyEvent read GetAfterOpenFetch write
-        SetAfterOpenFetch;
+    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read GetAfterThreadExecution write SetAfterThreadExecution;
+    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read GetBeforeThreadExecution write
+        SetBeforeThreadExecution;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read GetOnThreadException write SetOnThreadException;
+    property AfterOpenFetch: TDataSetNotifyEvent read GetAfterOpenFetch write SetAfterOpenFetch;
     property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
-    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions
-        write SetDialogOptions;
-    property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions
-        write SetThreadOptions;
+    property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
+    property ThreadOptions: TJvThreadedDatasetThreadOptions read GetThreadOptions write SetThreadOptions;
   end;
 
   TJvThreadedDatasetDialogOptions = class(TJvCustomThreadDialogOptions)
@@ -197,22 +191,19 @@ type
     procedure SetRefreshAsOpenClose(Value: Boolean);
     procedure SetRefreshLastPosition(const Value: Boolean);
   protected
-    function CreateAllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
-      virtual;
+    function CreateAllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions; virtual;
   public
     constructor Create; virtual;
     destructor Destroy; override;
   published
     property AllowedContinueRecordFetchOptions: TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions read
-      FAllowedContinueRecordFetchOptions write FAllowedContinueRecordFetchOptions;
-    property CapitalizeLabelOptions: TJvThreadedDatasetCapitalizeLabelOptions read
-      FCapitalizeLabelOptions write SetCapitalizeLabelOptions;
+        FAllowedContinueRecordFetchOptions write FAllowedContinueRecordFetchOptions;
+    property CapitalizeLabelOptions: TJvThreadedDatasetCapitalizeLabelOptions read FCapitalizeLabelOptions write
+        SetCapitalizeLabelOptions;
     property FetchRowsCheck: Integer read FFetchRowsCheck write SetFetchRowsCheck default 2000;
     property FetchRowsFirst: Integer read FFetchRowsFirst write SetFetchRowsFirst default 1000;
-    property RefreshAsOpenClose: Boolean read FRefreshAsOpenClose
-      write SetRefreshAsOpenClose default False;
-    property RefreshLastPosition: Boolean read FRefreshLastPosition
-      write SetRefreshLastPosition default False;
+    property RefreshAsOpenClose: Boolean read FRefreshAsOpenClose write SetRefreshAsOpenClose default False;
+    property RefreshLastPosition: Boolean read FRefreshLastPosition write SetRefreshLastPosition default False;
   end;
 
   TJvDatasetThreadDialogForm = class(TJvDynControlEngineThreadDialogForm)
@@ -271,8 +262,8 @@ type
     property ConnectedDataset: TDataSet read FConnectedDataset;
   public
     procedure CancelExecute; override;
-    property ConnectedDatasetThreadHandler: TJvBaseDatasetThreadHandler read
-      FConnectedDatasetThreadHandler write SetConnectedDatasetThreadHandler;
+    property ConnectedDatasetThreadHandler: TJvBaseDatasetThreadHandler read FConnectedDatasetThreadHandler write
+        SetConnectedDatasetThreadHandler;
   end;
 
   TJvBaseDatasetThreadHandler = class(TComponent)
@@ -338,17 +329,12 @@ type
     procedure SynchContinueFetchMessageDlg;
     procedure SynchErrorMessageDlg;
     procedure SynchOnThreadException;
-    property IntCurrentOperationStart: TDateTime read FIntCurrentOperationStart
-        write SetIntCurrentOperationStart;
+    property IntCurrentOperationStart: TDateTime read FIntCurrentOperationStart write SetIntCurrentOperationStart;
     property DatasetFetchAllRecords: Boolean read GetDatasetFetchAllRecords write SetDatasetFetchAllRecords;
-    property IntCurrentAction: TJvThreadedDatasetAction read GetIntCurrentAction
-        write SetIntCurrentAction;
-    property IntCurrentFetchDuration: TDateTime read GetIntCurrentFetchDuration
-        write SetIntCurrentFetchDuration;
-    property IntCurrentOpenDuration: TDateTime read GetIntCurrentOpenDuration write
-        SetIntCurrentOpenDuration;
-    property IntCurrentOperation: TJvThreadedDatasetOperation read
-        GetIntCurrentOperation write SetIntCurrentOperation;
+    property IntCurrentAction: TJvThreadedDatasetAction read GetIntCurrentAction write SetIntCurrentAction;
+    property IntCurrentFetchDuration: TDateTime read GetIntCurrentFetchDuration write SetIntCurrentFetchDuration;
+    property IntCurrentOpenDuration: TDateTime read GetIntCurrentOpenDuration write SetIntCurrentOpenDuration;
+    property IntCurrentOperation: TJvThreadedDatasetOperation read GetIntCurrentOperation write SetIntCurrentOperation;
     property OperationWasHandledInThread: Boolean read FOperationWasHandledInThread
       write FOperationWasHandledInThread;
   protected
@@ -366,8 +352,7 @@ type
     procedure IntAfterThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
     procedure IntAfterOpenFetch(DataSet: TDataSet);
     procedure IntBeforeThreadExecution(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation);
-    procedure IntOnThreadException(DataSet: TDataSet; Operation:
-        TJvThreadedDatasetOperation; E: Exception);
+    procedure IntOnThreadException(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation; E: Exception);
     procedure IntSynchAfterOpen;
     procedure IntSynchAfterRefresh;
     procedure IntSynchBeforeOpen;
@@ -409,18 +394,13 @@ type
     property ErrorException: Exception read FErrorException;
     property ErrorMessage: string read FErrorMessage;
   published
-    property AfterOpenFetch: TDataSetNotifyEvent read FAfterOpenFetch write
-        FAfterOpenFetch;
+    property AfterOpenFetch: TDataSetNotifyEvent read FAfterOpenFetch write FAfterOpenFetch;
     property DialogOptions: TJvThreadedDatasetDialogOptions read GetDialogOptions write SetDialogOptions;
-    property EnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions read
-      FEnhancedOptions write SetEnhancedOptions;
+    property EnhancedOptions: TJvBaseThreadedDatasetEnhancedOptions read FEnhancedOptions write SetEnhancedOptions;
     property ThreadOptions: TJvThreadedDatasetThreadOptions read FThreadOptions write SetThreadOptions;
-    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read
-      FAfterThreadExecution write FAfterThreadExecution;
-    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read
-      FBeforeThreadExecution write FBeforeThreadExecution;
-    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
-        FOnThreadException write FOnThreadException;
+    property AfterThreadExecution: TJvThreadedDatasetThreadEvent read FAfterThreadExecution write FAfterThreadExecution;
+    property BeforeThreadExecution: TJvThreadedDatasetThreadEvent read FBeforeThreadExecution write FBeforeThreadExecution;
+    property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read FOnThreadException write FOnThreadException;
   end;
 
 
@@ -773,15 +753,14 @@ begin
   inherited Destroy;
 end;
 
-function
-  TJvBaseThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
+function TJvBaseThreadedDatasetEnhancedOptions.CreateAllowedContinueRecordFetchOptions:
     TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions;
 begin
   Result := TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions.Create;
 end;
 
-procedure TJvBaseThreadedDatasetEnhancedOptions.SetCapitalizeLabelOptions(
-  const Value: TJvThreadedDatasetCapitalizeLabelOptions);
+procedure TJvBaseThreadedDatasetEnhancedOptions.SetCapitalizeLabelOptions(const Value:
+    TJvThreadedDatasetCapitalizeLabelOptions);
 begin
   FCapitalizeLabelOptions.Assign(Value);
 end;
@@ -1074,8 +1053,7 @@ begin
   Result := IntCurrentOpenDuration;
 end;
 
-function TJvBaseDatasetThreadHandler.GetIntCurrentAction:
-    TJvThreadedDatasetAction;
+function TJvBaseDatasetThreadHandler.GetIntCurrentAction: TJvThreadedDatasetAction;
 begin
   Result := FIntCurrentAction;
 end;
@@ -1108,8 +1086,7 @@ begin
   Result := IntCurrentOperation;
 end;
 
-function TJvBaseDatasetThreadHandler.GetIntCurrentOperation:
-    TJvThreadedDatasetOperation;
+function TJvBaseDatasetThreadHandler.GetIntCurrentOperation: TJvThreadedDatasetOperation;
 begin
   Result := FIntCurrentOperation;
 end;
@@ -1263,8 +1240,8 @@ begin
     FBeforeThreadExecution(DataSet, Operation);
 end;
 
-procedure TJvBaseDatasetThreadHandler.IntOnThreadException(DataSet: TDataSet;
-    Operation: TJvThreadedDatasetOperation; E: Exception);
+procedure TJvBaseDatasetThreadHandler.IntOnThreadException(DataSet: TDataSet; Operation: TJvThreadedDatasetOperation;
+    E: Exception);
 begin
   if Assigned(FOnThreadException) then
     FOnThreadException(DataSet, Operation, E);
@@ -1390,26 +1367,22 @@ begin
   end;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetIntCurrentAction(const Value:
-    TJvThreadedDatasetAction);
+procedure TJvBaseDatasetThreadHandler.SetIntCurrentAction(const Value: TJvThreadedDatasetAction);
 begin
   FIntCurrentAction := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetIntCurrentFetchDuration(const Value:
-    TDateTime);
+procedure TJvBaseDatasetThreadHandler.SetIntCurrentFetchDuration(const Value: TDateTime);
 begin
   FIntCurrentFetchDuration := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetIntCurrentOpenDuration(const Value:
-    TDateTime);
+procedure TJvBaseDatasetThreadHandler.SetIntCurrentOpenDuration(const Value: TDateTime);
 begin
   FIntCurrentOpenDuration := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetIntCurrentOperationStart(const Value:
-    TDateTime);
+procedure TJvBaseDatasetThreadHandler.SetIntCurrentOperationStart(const Value: TDateTime);
 begin
   FIntCurrentOperationStart := Value;
 end;
@@ -1442,8 +1415,7 @@ begin
   FFetchMode := Value;
 end;
 
-procedure TJvBaseDatasetThreadHandler.SetIntCurrentOperation(const Value:
-    TJvThreadedDatasetOperation);
+procedure TJvBaseDatasetThreadHandler.SetIntCurrentOperation(const Value: TJvThreadedDatasetOperation);
 begin
   FIntCurrentOperation := Value;
 end;

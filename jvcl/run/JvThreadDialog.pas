@@ -305,8 +305,7 @@ var
 begin
   if DialogOptions.ShowDialog then
   begin
-    ThreadDialogForm := TJvThreadSimpleDialogForm.CreateNewFormStyle(ConnectedThread,
-      DialogOptions.FormStyle);
+    ThreadDialogForm := TJvThreadSimpleDialogForm.CreateNewFormStyle(ConnectedThread, DialogOptions.FormStyle);
     ThreadDialogForm.DialogOptions := DialogOptions;
     ThreadDialogForm.OnPressCancel := OnPressCancel;
     ThreadDialogForm.ChangeThreadDialogOptions := ChangeThreadDialogOptions;
@@ -761,8 +760,8 @@ procedure TJvThreadBaseDialogForm.SetFormInfoText;
 begin
   if (csDestroying in ComponentState) or not FormIsShown then
     Exit;
-  if Assigned(IInfoTextControlCaption) then
-    if IInfoTextControlCaption.ControlGetCaption<>DialogOptions.FInfoText then
+  if Assigned(IInfoTextControlCaption) and Assigned(DialogOptions) then
+    if IInfoTextControlCaption.ControlGetCaption<>DialogOptions.InfoText then
     begin
       IInfoTextControlCaption.ControlSetCaption(DialogOptions.FInfoText);
       if Assigned(IInfoTextControlAutoSize) then

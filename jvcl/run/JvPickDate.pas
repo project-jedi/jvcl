@@ -1218,7 +1218,7 @@ begin
   begin
     try
       if (Trim(ReplaceStr(VarToStr(Value), JclFormatSettings.DateSeparator, '')) = '') or
-        VarIsNull(Value) or VarIsEmpty(Value) then
+        VarIsNullEmpty(Value) then
         FCalendar.CalendarDate := VarToDateTime(SysUtils.Date)
       else
         FCalendar.CalendarDate := VarToDateTime(Value);

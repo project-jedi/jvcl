@@ -1217,7 +1217,7 @@ begin
     with FCalcPanel do
     begin
       try
-        if VarIsNull(Value) or VarIsEmpty(Value) then
+        if VarIsNullEmpty(Value) then
           DisplayValue := 0
         else
           DisplayValue := Value;

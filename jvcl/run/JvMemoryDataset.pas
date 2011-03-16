@@ -364,7 +364,7 @@ uses
   JvJCLUtils,
   {$ENDIF ~UNICODE}
   JvJVCLUtils,
-  JvResources;
+  JvResources, JclSysUtils;
 
 const
   ftBlobTypes = [ftBlob, ftMemo, ftGraphic, ftFmtMemo, ftParadoxOle,
@@ -1086,7 +1086,7 @@ begin
               VarData := PVariant(Buffer)^
             else
               VarData := EmptyParam;
-            Data^ := Ord((Buffer <> nil) and not (VarIsNull(VarData) or VarIsEmpty(VarData)));
+            Data^ := Ord((Buffer <> nil) and not (VarIsNullEmpty(VarData)));
             if Data^ <> 0 then
             begin
               Inc(Data);

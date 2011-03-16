@@ -3350,7 +3350,7 @@ begin
   Result := True;
   if Assigned(FOnAcceptDate) then
   begin
-    if VarIsNull(Value) or VarIsEmpty(Value) then
+    if VarIsNullEmpty(Value) then
       D := NullDate
     else
     try
