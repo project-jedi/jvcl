@@ -767,17 +767,22 @@ procedure TJvFormPlacement.SaveFormPlacement;
 begin
   if Assigned(AppStorage) then
   begin
-    ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
+    AppStorage.BeginUpdate;
+    try
+      ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
 
-    if Assigned(FBeforeSavePlacement) then
-      FBeforeSavePlacement(Self);
-    if VersionCheck <> fpvcNocheck then
-      WriteInteger(siVersion, FVersion);
-    Save;
-    SavePlacement;
-    if Assigned(FAfterSavePlacement) then
-      FAfterSavePlacement(Self);
-    FSaved := True;
+      if Assigned(FBeforeSavePlacement) then
+        FBeforeSavePlacement(Self);
+      if VersionCheck <> fpvcNocheck then
+        WriteInteger(siVersion, FVersion);
+      Save;
+      SavePlacement;
+      if Assigned(FAfterSavePlacement) then
+        FAfterSavePlacement(Self);
+      FSaved := True;
+    finally
+      AppStorage.EndUpdate;
+    end;
   end;
 end;
 
@@ -791,36 +796,41 @@ begin
   begin
     ResolveAppStoragePath; //need to resolve if not resolved yet (for Frames)
 
-    FSaved := False;
-    ReadVersion := ReadInteger(siVersion, 0);
-    case VersionCheck of
-      fpvcNocheck:
-        ContinueRestore := True;
-      fpvcCheckGreaterEqual:
-        ContinueRestore := ReadVersion >= FVersion;
-      fpvcCheckEqual:
-        ContinueRestore := ReadVersion = FVersion;
-    else
-      ContinueRestore := False;
-    end;
-    if ContinueRestore then
-    begin
-      if Assigned(FBeforeRestorePlacement) then
-        FBeforeRestorePlacement(Self);
-      RestorePlacement;
-      FRestored := True;
-      Restore;
-      if (fpActiveControl in Options) and (Owner is TCustomForm) then
-      begin
-        ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
-        if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
-          TWinControl(ActiveCtl).CanFocus then
-          Form.ActiveControl := TWinControl(ActiveCtl);
+    AppStorage.BeginUpdate;
+    try
+      FSaved := False;
+      ReadVersion := ReadInteger(siVersion, 0);
+      case VersionCheck of
+        fpvcNocheck:
+          ContinueRestore := True;
+        fpvcCheckGreaterEqual:
+          ContinueRestore := ReadVersion >= FVersion;
+        fpvcCheckEqual:
+          ContinueRestore := ReadVersion = FVersion;
+      else
+        ContinueRestore := False;
       end;
-      if Assigned(FAfterRestorePlacement) then
-        FAfterRestorePlacement(Self);
+      if ContinueRestore then
+      begin
+        if Assigned(FBeforeRestorePlacement) then
+          FBeforeRestorePlacement(Self);
+        RestorePlacement;
+        FRestored := True;
+        Restore;
+        if (fpActiveControl in Options) and (Owner is TCustomForm) then
+        begin
+          ActiveCtl := Form.FindComponent(AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath, siActiveCtrl]), ''));
+          if (ActiveCtl <> nil) and (ActiveCtl is TWinControl) and
+            TWinControl(ActiveCtl).CanFocus then
+            Form.ActiveControl := TWinControl(ActiveCtl);
+        end;
+        if Assigned(FAfterRestorePlacement) then
+          FAfterRestorePlacement(Self);
+      end;
+      FRestored := True;
+    finally
+      AppStorage.EndUpdate;
     end;
-    FRestored := True;
   end;
   UpdatePlacement;
 end;
