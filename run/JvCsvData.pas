@@ -445,6 +445,8 @@ type
     function GetBackslashCrLf: Boolean;
     procedure SetBackslashCrLf(const Value: Boolean);
     function GetDecimalSeparator: Char;
+    // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
+    function LocateRecord(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions): Boolean;
     procedure SetDecimalSeparator(const Value: Char);
 
     function _CsvFloatToStr(Value: Double): string;
@@ -649,10 +651,7 @@ type
 
     procedure CustomFilter(FilterCallback: TJvCustomCsvDataSetFilterFunction); {NEW:APRIL 2004-WP}
 
-    // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
-    function Locate(const KeyFields: string; const KeyValues: Variant;
-      Options: TLocateOptions): Boolean; override;
-
+    function Locate(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions): Boolean; override;
     //------------
 
     /// procedure FilteredDeletion(Inverted: Boolean); /// XXX TODO?
@@ -735,7 +734,6 @@ type
     procedure LoadFromFile(const FileName: string);
 
     procedure DeleteCsvColumn(const AFieldName: string); // must be done when not Active! [NEW 2007!]
-
      {These are made protected so that you can write another derived component which has access to various protected fields }
   protected
     property InternalData: TJvCsvRows read FData write FData;
@@ -2070,8 +2068,8 @@ end;
 
 
 // XXX TODO: REMOVE HARD CODED LIMIT OF 20 FIELDS SEARCHABLE!!!
-function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Variant;
-  Options: TLocateOptions): Boolean; // override;
+function TJvCustomCsvDataSet.LocateRecord(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions):
+    Boolean;
   // Options is    [loCaseInsensitive]
   //              or [loPartialKey]
   //              or [loPartialKey,loCaseInsensitive]
@@ -5712,6 +5710,18 @@ begin
     FData.Clear;
   finally
     FreeMem(PTempRow);
+  end;
+end;
+
+function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions):
+    Boolean;
+begin
+  DoBeforeScroll;
+  Result := LocateRecord(KeyFields, KeyValues, Options);
+  if Result then
+  begin
+    Resync([rmExact, rmCenter]);
+    DoAfterScroll;
   end;
 end;
 
