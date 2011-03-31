@@ -2105,25 +2105,32 @@ var
   I: Integer;
 begin
   if Assigned(AppStorage) And Assigned(ParameterList) then
-    for I := 0 to ParameterList.Count - 1 do
-      if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
-        if ParameterList.Parameters[I].StoreValueToAppStorage then
-        begin
-          if ParameterList.Parameters[I].StoreValueCrypted then
-            AppStorage.EnablePropertyValueCrypt;
-          if (ParameterList.Parameters[I] is TJvListParameter)
-              and (TJvListParameter(ParameterList.Parameters[I]).VariantAsItemIndex) then
-            TJvListParameter(ParameterList.Parameters[I]).ItemIndex :=
-              AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath,
-                  ParameterList.Parameters[I].SearchName]),
-                  TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
-          else
-            ParameterList.Parameters[I].AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath,
-              ParameterList.Parameters[I].SearchName]),
-              ParameterList.Parameters[I].AsString);
-          if ParameterList.Parameters[I].StoreValueCrypted then
-            AppStorage.DisablePropertyValueCrypt;
-        end;
+  begin
+    AppStorage.BeginUpdate;
+    try
+      for I := 0 to ParameterList.Count - 1 do
+        if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
+          if ParameterList.Parameters[I].StoreValueToAppStorage then
+          begin
+            if ParameterList.Parameters[I].StoreValueCrypted then
+              AppStorage.EnablePropertyValueCrypt;
+            if (ParameterList.Parameters[I] is TJvListParameter)
+                and (TJvListParameter(ParameterList.Parameters[I]).VariantAsItemIndex) then
+              TJvListParameter(ParameterList.Parameters[I]).ItemIndex :=
+                AppStorage.ReadInteger(AppStorage.ConcatPaths([AppStoragePath,
+                    ParameterList.Parameters[I].SearchName]),
+                    TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
+            else
+              ParameterList.Parameters[I].AsString := AppStorage.ReadString(AppStorage.ConcatPaths([AppStoragePath,
+                ParameterList.Parameters[I].SearchName]),
+                ParameterList.Parameters[I].AsString);
+            if ParameterList.Parameters[I].StoreValueCrypted then
+              AppStorage.DisablePropertyValueCrypt;
+          end;
+    finally
+      AppStorage.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TJvParameterListPropertyStore.Notification(AComponent: TComponent; Operation: TOperation);
@@ -2142,23 +2149,30 @@ procedure TJvParameterListPropertyStore.StoreData;
 var
   I: Integer;
 begin
-  if Assigned(AppStorage) then
-    for I := 0 to ParameterList.Count - 1 do
-      if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
-        if ParameterList.Parameters[I].StoreValueToAppStorage then
-        begin
-          if ParameterList.Parameters[I].StoreValueCrypted then
-            AppStorage.EnablePropertyValueCrypt;
-          if (ParameterList.Parameters[I] is TJvListParameter)
-             and (TJvListParameter(ParameterList.Parameters[I]).VariantAsItemIndex) then
-            AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
-              TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
-          else
-            AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
-              ParameterList.Parameters[I].AsString);
-          if ParameterList.Parameters[I].StoreValueCrypted then
-            AppStorage.DisablePropertyValueCrypt;
-        end;
+  if Assigned(AppStorage) And Assigned(ParameterList) then
+  begin
+    AppStorage.BeginUpdate;
+    try
+      for I := 0 to ParameterList.Count - 1 do
+        if not (ParameterList.Parameters[I] is TJvNoDataParameter) then
+          if ParameterList.Parameters[I].StoreValueToAppStorage then
+          begin
+            if ParameterList.Parameters[I].StoreValueCrypted then
+              AppStorage.EnablePropertyValueCrypt;
+            if (ParameterList.Parameters[I] is TJvListParameter)
+               and (TJvListParameter(ParameterList.Parameters[I]).VariantAsItemIndex) then
+              AppStorage.WriteInteger(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
+                TJvListParameter(ParameterList.Parameters[I]).ItemIndex)
+            else
+              AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, ParameterList.Parameters[I].SearchName]),
+                ParameterList.Parameters[I].AsString);
+            if ParameterList.Parameters[I].StoreValueCrypted then
+              AppStorage.DisablePropertyValueCrypt;
+          end;
+    finally
+      AppStorage.EndUpdate;
+    end;
+  end;
 end;
 
 //=== { TJvParameterListSelectList } =========================================

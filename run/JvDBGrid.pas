@@ -3228,8 +3228,7 @@ var
       try
         Canvas.FillRect(ButtonRect);
         InflateRect(ButtonRect, -1, -1);
-        with ButtonRect do
-          IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
+        IntersectClipRect(Canvas.Handle, ButtonRect.Left, ButtonRect.Top, ButtonRect.Right, ButtonRect.Bottom);
         InflateRect(ButtonRect, 1, 1);
         { DrawFrameControl doesn't draw properly when orientation has changed.
           It draws as ExtTextOut does. }
@@ -3581,11 +3580,15 @@ begin
     SectionName := GetDefaultSection(Self);
   if Assigned(AppStorage) then
   begin
+    AppStorage.BeginUpdate;
+    try
     AppStorage.DeleteSubTree(SectionName);
-    with Columns do
-      for I := 0 to Count - 1 do
-        AppStorage.WriteString(AppStorage.ConcatPaths([SectionName, Format('%s.%s', [Name, Items[I].FieldName])]),
-          Format('%d,%d', [Items[I].Index, Items[I].Width]));
+      for I := 0 to Columns.Count - 1 do
+        AppStorage.WriteString(AppStorage.ConcatPaths([SectionName, Format('%s.%s', [Name, Columns.Items[I].FieldName])]),
+          Format('%d,%d', [Columns.Items[I].Index, Columns.Items[I].Width]));
+    finally
+      AppStorage.EndUpdate;
+    end;
   end;
 end;
 
@@ -3609,31 +3612,36 @@ begin
   else
     SectionName := GetDefaultSection(Self);
   if Assigned(AppStorage) then
-    with Columns do
+  begin
+    AppStorage.BeginUpdate;
+    try
+    SetLength(ColumnArray, Columns.Count);
+    for I := 0 to Columns.Count - 1 do
     begin
-      SetLength(ColumnArray, Count);
-      for I := 0 to Count - 1 do
+      S := AppStorage.ReadString(AppStorage.ConcatPaths([SectionName,
+        Format('%s.%s', [Name, Columns.Items[I].FieldName])]));
+      ColumnArray[I].Column := Columns.Items[I];
+      ColumnArray[I].EndIndex := Columns.Items[I].Index;
+      if S <> '' then
       begin
-        S := AppStorage.ReadString(AppStorage.ConcatPaths([SectionName,
-          Format('%s.%s', [Name, Items[I].FieldName])]));
-        ColumnArray[I].Column := Items[I];
-        ColumnArray[I].EndIndex := Items[I].Index;
-        if S <> '' then
-        begin
-          ColumnArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims), ColumnArray[I].EndIndex);
-          S := ExtractWord(2, S, Delims);
-          Items[I].Width := StrToIntDef(S, Items[I].Width);
-          Items[I].Visible := (S <> '-1');
-        end;
+        ColumnArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims), ColumnArray[I].EndIndex);
+        S := ExtractWord(2, S, Delims);
+        Columns.Items[I].Width := StrToIntDef(S, Columns.Items[I].Width);
+        Columns.Items[I].Visible := (S <> '-1');
       end;
-      for I := 0 to Count - 1 do
-        for J := 0 to Count - 1 do
-          if ColumnArray[J].EndIndex = I then
-          begin
-            ColumnArray[J].Column.Index := ColumnArray[J].EndIndex;
-            Break;
-          end;
     end;
+    for I := 0 to Columns.Count - 1 do
+      for J := 0 to Columns.Count - 1 do
+        if ColumnArray[J].EndIndex = I then
+        begin
+          ColumnArray[J].Column.Index := ColumnArray[J].EndIndex;
+          Break;
+        end;
+    finally
+      AppStorage.EndUpdate;
+    end;
+
+  end;
 end;
 
 procedure TJvDBGrid.LoadFromAppStore(const AppStorage: TJvCustomAppStorage; const Path: string);
