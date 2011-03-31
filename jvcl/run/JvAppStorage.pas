@@ -2162,10 +2162,15 @@ var
   I: Integer;
   ItemCount: Integer;
 begin
-  ItemCount := ReadListItemCount (Path, ItemName);
-  for I := 0 to ItemCount - 1 do
-    OnReadItem(Self, Path, List, I, ItemName);
-  Result := ItemCount;
+  BeginUpdate;
+  try
+    ItemCount := ReadListItemCount (Path, ItemName);
+    for I := 0 to ItemCount - 1 do
+      OnReadItem(Self, Path, List, I, ItemName);
+    Result := ItemCount;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TJvCustomAppStorage.WriteList(const Path: string; const List: TObject;
@@ -2180,12 +2185,17 @@ begin
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath); // Only Needed for ReadOnly
   if not TargetStore.ReadOnly then
   begin
-    PrevListCount := ReadListItemCount (Path, ItemName);
-    for I := 0 to ItemCount - 1 do
-      OnWriteItem(Self, Path, List, I, ItemName);
-    if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
-      OnDeleteItems(Self, Path, List, ItemCount, PrevListCount - 1, ItemName);
-    WriteListItemCount (Path, ItemCount, ItemName);
+    TargetStore.BeginUpdate;
+    try
+      PrevListCount := ReadListItemCount (Path, ItemName);
+      for I := 0 to ItemCount - 1 do
+        OnWriteItem(Self, Path, List, I, ItemName);
+      if (PrevListCount > ItemCount) and Assigned(OnDeleteItems) then
+        OnDeleteItems(Self, Path, List, ItemCount, PrevListCount - 1, ItemName);
+      WriteListItemCount (Path, ItemCount, ItemName);
+    finally
+      TargetStore.EndUpdate;
+    end;
   end;
 end;
 
@@ -2253,39 +2263,46 @@ end;
 function TJvCustomAppStorage.ReadStringList(const Path: string; const SL: TStrings;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
 begin
-  if ClearFirst then
-    SL.Clear;
-  if not ListStored(Path, ItemName) then
-  begin
-    if ValueStored(Path) then
-      Sl.Text := ReadString(Path);
-    Result := SL.Count
-  end
-  else
-  begin
-    SL.BeginUpdate;
-    try
+  BeginUpdate;
+  SL.BeginUpdate;
+  try
+    if ClearFirst then
+      SL.Clear;
+    if not ListStored(Path, ItemName) then
+    begin
+      if ValueStored(Path) then
+        Sl.Text := ReadString(Path);
+      Result := SL.Count
+    end
+    else
+    begin
       ReadPersistent(Path,SL,True,False);
       Result := ReadList(Path, SL, ReadStringListItem, ItemName);
-    finally
-      SL.EndUpdate;
     end;
+  finally
+    SL.EndUpdate;
+    EndUpdate;
   end;
 end;
 
 procedure TJvCustomAppStorage.WriteStringList(const Path: string;
   const SL: TStrings; const ItemName: string = cItem);
 begin
-  if StorageOptions.StoreStringListAsSingleString then
-  begin
-    if ListStored(Path, ItemName) then
-      DeleteSubTree(Path);
-    WriteString(Path, SL.Text);
-  end
-  else
-  begin
-    WriteList(Path, SL, SL.Count, WriteStringListItem, DeleteStringListItem, ItemName);
-    WritePersistent(Path,SL);
+  BeginUpdate;
+  try
+    if StorageOptions.StoreStringListAsSingleString then
+    begin
+      if ListStored(Path, ItemName) then
+        DeleteSubTree(Path);
+      WriteString(Path, SL.Text);
+    end
+    else
+    begin
+      WriteList(Path, SL, SL.Count, WriteStringListItem, DeleteStringListItem, ItemName);
+      WritePersistent(Path,SL);
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -2293,27 +2310,37 @@ end;
 function TJvCustomAppStorage.ReadWideStringList(const Path: string; const SL: WideStrings.TWideStrings;
   const ClearFirst: Boolean = True; const ItemName: string = cItem): Integer;
 begin
-  if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
-    Result := SL.Count
-  else
-  begin
-    SL.BeginUpdate;
-    try
-      if ClearFirst then
-        SL.Clear;
-      ReadPersistent(Path,SL,True,False);
-      Result := ReadList(Path, SL, ReadWideStringListItem, ItemName);
-    finally
-      SL.EndUpdate;
+  BeginUpdate;
+  try
+    if not ListStored(Path) and StorageOptions.DefaultIfValueNotExists then
+      Result := SL.Count
+    else
+    begin
+      SL.BeginUpdate;
+      try
+        if ClearFirst then
+          SL.Clear;
+        ReadPersistent(Path,SL,True,False);
+        Result := ReadList(Path, SL, ReadWideStringListItem, ItemName);
+      finally
+        SL.EndUpdate;
+      end;
     end;
+  finally
+    EndUpdate;
   end;
 end;
 
 procedure TJvCustomAppStorage.WriteWideStringList(const Path: string;
   const SL: WideStrings.TWideStrings; const ItemName: string = cItem);
 begin
-  WriteList(Path, SL, SL.Count, WriteWideStringListItem, DeleteWideStringListItem, ItemName);
-  WritePersistent(Path,SL);
+  BeginUpdate;
+  try
+    WriteList(Path, SL, SL.Count, WriteWideStringListItem, DeleteWideStringListItem, ItemName);
+    WritePersistent(Path,SL);
+  finally
+    EndUpdate;
+  end;
 end;
 {$ENDIF}
 

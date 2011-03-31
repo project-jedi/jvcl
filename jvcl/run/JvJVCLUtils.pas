@@ -3941,14 +3941,19 @@ var
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
     raise EInvalidOperation.CreateRes(@SNoMDIForm);
-  AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
-  if MainForm.MDIChildCount > 0 then
-  begin
-    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
-      siListCount]), MainForm.MDIChildCount);
-    for I := 0 to MainForm.MDIChildCount - 1 do
-      AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
-        Format(siItem, [I])]), MainForm.MDIChildren[I].ClassName);
+  AppStorage.BeginUpdate;
+  try
+    AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
+    if MainForm.MDIChildCount > 0 then
+    begin
+      AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
+        siListCount]), MainForm.MDIChildCount);
+      for I := 0 to MainForm.MDIChildCount - 1 do
+        AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
+          Format(siItem, [I])]), MainForm.MDIChildren[I].ClassName);
+    end;
+  finally
+    AppStorage.EndUpdate;
   end;
 end;
 
@@ -3961,23 +3966,28 @@ var
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
     raise EInvalidOperation.CreateRes(@SNoMDIForm);
-  StartWait;
+  AppStorage.BeginUpdate;
   try
-    Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
-      siListCount]), 0);
-    if Count > 0 then
-    begin
-      for I := Count - 1 downto 0 do
+    StartWait;
+    try
+      Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
+        siListCount]), 0);
+      if Count > 0 then
       begin
-        FormClass :=
-          TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
-          siMDIChild, Format(siItem, [I])]), '')));
-        if FormClass <> nil then
-          InternalFindShowForm(FormClass, '', False);
+        for I := Count - 1 downto 0 do
+        begin
+          FormClass :=
+            TFormClass(GetClass(AppStorage.ReadString(AppStorage.ConcatPaths([StorePath,
+            siMDIChild, Format(siItem, [I])]), '')));
+          if FormClass <> nil then
+            InternalFindShowForm(FormClass, '', False);
+        end;
       end;
+    finally
+      StopWait;
     end;
   finally
-    StopWait;
+    AppStorage.EndUpdate;
   end;
 end;
 

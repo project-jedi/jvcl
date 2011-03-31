@@ -147,16 +147,12 @@ type
     property PreventResize: Boolean read FPreventResize write SetPreventResize default False;
     property Version: Integer read FVersion write FVersion default 0;
     property VersionCheck: TJvFormPlacementVersionCheck read FVersionCheck write FVersionCheck default fpvcCheckGreaterEqual;
-    property BeforeSavePlacement: TNotifyEvent read FBeforeSavePlacement
-      write FBeforeSavePlacement;
+    property BeforeSavePlacement: TNotifyEvent read FBeforeSavePlacement write FBeforeSavePlacement;
     property OnSavePlacement: TNotifyEvent read FOnSavePlacement write FOnSavePlacement;
-    property AfterSavePlacement: TNotifyEvent read FAfterSavePlacement
-      write FAfterSavePlacement;
-    property BeforeRestorePlacement: TNotifyEvent read FBeforeRestorePlacement
-      write FBeforeRestorePlacement;
+    property AfterSavePlacement: TNotifyEvent read FAfterSavePlacement write FAfterSavePlacement;
+    property BeforeRestorePlacement: TNotifyEvent read FBeforeRestorePlacement write FBeforeRestorePlacement;
     property OnRestorePlacement: TNotifyEvent read FOnRestorePlacement write FOnRestorePlacement;
-    property AfterRestorePlacement: TNotifyEvent read FAfterRestorePlacement
-      write FAfterRestorePlacement;
+    property AfterRestorePlacement: TNotifyEvent read FAfterRestorePlacement write FAfterRestorePlacement;
   end;
 
   TJvStoredValues = class;

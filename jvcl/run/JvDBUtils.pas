@@ -262,14 +262,13 @@ end;
 function SetToBookmark(ADataSet: TDataSet; ABookmark: TBookmark): Boolean;
 begin
   Result := False;
-  with ADataSet do
-    if Active and (ABookmark <> nil) and not (Bof and Eof) and
-      BookmarkValid(ABookmark) then
-    try
-      ADataSet.GotoBookmark(ABookmark);
-      Result := True;
-    except
-    end;
+  if ADataSet.Active and (ABookmark <> nil) and not (ADataSet.Bof and ADataSet.Eof) and
+    ADataSet.BookmarkValid(ABookmark) then
+  try
+    ADataSet.GotoBookmark(ABookmark);
+    Result := True;
+  except
+  end;
 end;
 
 { Refresh Query procedure }
@@ -278,25 +277,22 @@ procedure RefreshQuery(Query: TDataSet);
 var
   BookMk: TBookmark;
 begin
-  with Query do
-  begin
-    DisableControls;
+  Query.DisableControls;
+  try
+    if Query.Active then
+      BookMk := Query.GetBookmark
+    else
+      BookMk := nil;
     try
-      if Active then
-        BookMk := GetBookmark
-      else
-        BookMk := nil;
-      try
-        Close;
-        Open;
-        SetToBookmark(Query, BookMk);
-      finally
-        if BookMk <> nil then
-          FreeBookmark(BookMk);
-      end;
+      Query.Close;
+      Query.Open;
+      SetToBookmark(Query, BookMk);
     finally
-      EnableControls;
+      if BookMk <> nil then
+        Query.FreeBookmark(BookMk);
     end;
+  finally
+    Query.EnableControls;
   end;
 end;
 
@@ -309,18 +305,15 @@ end;
 function TJvLocateObject.LocateFull: Boolean;
 begin
   Result := False;
-  with DataSet do
+  DataSet.First;
+  while not DataSet.Eof do
   begin
-    First;
-    while not Eof do
+    if MatchesLookup(FLookupField) then
     begin
-      if MatchesLookup(FLookupField) then
-      begin
-        Result := True;
-        Break;
-      end;
-      Next;
+      Result := True;
+      Break;
     end;
+    DataSet.Next;
   end;
 end;
 
@@ -515,12 +508,9 @@ var
 
 begin
   Result := False;
-  with DataSet do
-  begin
-    CheckBrowseMode;
-    if IsEmpty then
-      Exit;
-  end;
+  DataSet.CheckBrowseMode;
+  if DataSet.IsEmpty then
+    Exit;
   Fields := TList.Create;
   try
     DataSet.GetFieldList(Fields, KeyFields);
@@ -532,16 +522,13 @@ begin
     try
       Bookmark := DataSet.Bookmark;
       try
-        with DataSet do
+        DataSet.First;
+        while not DataSet.Eof do
         begin
-          First;
-          while not Eof do
-          begin
-            Result := CompareRecord;
-            if Result then
-              Break;
-            Next;
-          end;
+          Result := CompareRecord;
+          if Result then
+            Break;
+          DataSet.Next;
         end;
       finally
         if not Result and DataSet.BookmarkValid(TBookmark(Bookmark)) then
@@ -645,11 +632,10 @@ end;
 
 function DataSetSectionName(DataSet: TDataSet): string;
 begin
-  with DataSet do
-    if (Owner <> nil) and (Owner is TCustomForm) then
-      Result := GetDefaultSection(Owner as TCustomForm)
+  if (DataSet.Owner <> nil) and (DataSet.Owner is TCustomForm) then
+    Result := GetDefaultSection(DataSet.Owner as TCustomForm)
     else
-      Result := Name;
+      Result := DataSet.Name;
 end;
 
 function CheckSection(DataSet: TDataSet; const Section: string): string;
@@ -662,16 +648,19 @@ end;
 procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStorage; const Path: string);
 var
   I: Integer;
+  Field: TField;
 begin
-  with DataSet do
-  begin
-    for I := 0 to FieldCount - 1 do
+  AppStorage.BeginUpdate;
+  try
+    for I := 0 to DataSet.FieldCount - 1 do
     begin
+      Field := DataSet.Fields[i];
       AppStorage.WriteString(AppStorage.ConcatPaths([CheckSection(DataSet, Path),
-        Name + Fields[I].FieldName]),
-        Format('%d,%d,%d', [Fields[I].Index, Fields[I].DisplayWidth,
-          Integer(Fields[I].Visible)]));
+        DataSet.Name + Field.FieldName]),
+        Format('%d,%d,%d', [Field.Index, Field.DisplayWidth, Integer(Field.Visible)]));
     end;
+  finally
+    AppStorage.EndUpdate;
   end;
 end;
 
@@ -690,41 +679,40 @@ var
   S: string;
   FieldArray: TFieldArray;
 begin
-  with DataSet do
-  begin
-    SetLength(FieldArray, FieldCount);
-    try
-      for I := 0 to FieldCount - 1 do
+  SetLength(FieldArray, DataSet.FieldCount);
+  AppStorage.BeginUpdate;
+  try
+    for I := 0 to DataSet.FieldCount - 1 do
+    begin
+      S := AppStorage.ReadString(AppStorage.ConcatPaths([CheckSection(DataSet, Path),
+        DataSet.Name + DataSet.Fields[I].FieldName]), '');
+      FieldArray[I].Field := DataSet.Fields[I];
+      FieldArray[I].EndIndex := DataSet.Fields[I].Index;
+      if S <> '' then
       begin
-        S := AppStorage.ReadString(AppStorage.ConcatPaths([CheckSection(DataSet, Path),
-          Name + Fields[I].FieldName]), '');
-        FieldArray[I].Field := Fields[I];
-        FieldArray[I].EndIndex := Fields[I].Index;
-        if S <> '' then
-        begin
-          FieldArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
-            FieldArray[I].EndIndex);
-          Fields[I].DisplayWidth := StrToIntDef(ExtractWord(2, S, Delims),
-            Fields[I].DisplayWidth);
-          if RestoreVisible then
-            Fields[I].Visible := Boolean(StrToIntDef(ExtractWord(3, S, Delims),
-              Integer(Fields[I].Visible)));
-        end;
+        FieldArray[I].EndIndex := StrToIntDef(ExtractWord(1, S, Delims),
+          FieldArray[I].EndIndex);
+        DataSet.Fields[I].DisplayWidth := StrToIntDef(ExtractWord(2, S, Delims),
+          DataSet.Fields[I].DisplayWidth);
+        if RestoreVisible then
+          DataSet.Fields[I].Visible := Boolean(StrToIntDef(ExtractWord(3, S, Delims),
+            Integer(DataSet.Fields[I].Visible)));
       end;
-      for I := 0 to FieldCount - 1 do
-      begin
-        for J := 0 to FieldCount - 1 do
-        begin
-          if FieldArray[J].EndIndex = I then
-          begin
-            FieldArray[J].Field.Index := FieldArray[J].EndIndex;
-            Break;
-          end;
-        end;
-      end;
-    finally
-      FieldArray := nil;
     end;
+    for I := 0 to DataSet.FieldCount - 1 do
+    begin
+      for J := 0 to DataSet.FieldCount - 1 do
+      begin
+        if FieldArray[J].EndIndex = I then
+        begin
+          FieldArray[J].Field.Index := FieldArray[J].EndIndex;
+          Break;
+        end;
+      end;
+    end;
+  finally
+    AppStorage.EndUpdate;
+    FieldArray := nil;
   end;
 end;
 
@@ -748,8 +736,7 @@ end;
 
 function IsDataSetEmpty(DataSet: TDataSet): Boolean;
 begin
-  with DataSet do
-    Result := (not Active) or (Eof and Bof);
+  Result := (not DataSet.Active) or (DataSet.Eof and DataSet.Bof);
 end;
 
 { SQL expressions }
@@ -910,12 +897,11 @@ end;
 
 procedure CheckRequiredField(Field: TField);
 begin
-  with Field do
-    if not ReadOnly and not Calculated and IsNull then
-    begin
-      FocusControl;
-      DatabaseErrorFmt(SFieldRequired, [DisplayName]);
-    end;
+  if not Field.ReadOnly and not Field.Calculated and Field.IsNull then
+  begin
+    Field.FocusControl;
+    DatabaseErrorFmt(SFieldRequired, [Field.DisplayName]);
+  end;
 end;
 
 procedure CheckRequiredFields(const Fields: array of TField);

@@ -359,11 +359,16 @@ var
 begin
   if Assigned(AppStorage) then
   begin
-    AppStorage.ReadStringList(GetStoragePath, FSelectList, True);
-    if CheckEntries then
-      for I := FSelectList.Count - 1 downto 0 do
-        if not AppStorage.PathExists(AppStorage.ConcatPaths ([GetStoragePath,FSelectList[I]])) then
-          FSelectList.Delete(I);
+    AppStorage.BeginUpdate;
+    try
+      AppStorage.ReadStringList(GetStoragePath, FSelectList, True);
+      if CheckEntries then
+        for I := FSelectList.Count - 1 downto 0 do
+          if not AppStorage.PathExists(AppStorage.ConcatPaths ([GetStoragePath,FSelectList[I]])) then
+            FSelectList.Delete(I);
+    finally
+      AppStorage.EndUpdate;
+    end;
   end;
 end;
 
