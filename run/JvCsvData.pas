@@ -2441,6 +2441,8 @@ begin
     if AnsiChar(PDestination[0]) <> #0 then
       Move(Buffer^, PDestination[1], Field.DataSize);
     //Result := True; {there is no return value, oops}
+    // Notify controls of a field change:
+    DataEvent(deFieldChange, Longint(Field));
     Exit;
   end;
 
