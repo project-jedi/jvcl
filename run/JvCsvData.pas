@@ -728,6 +728,7 @@ type
     function GetColumnsAsString: string; virtual;
     { Row Append one string }
     procedure AppendRowString(const RowAsString: string);    // Along with GetRowAsString, easy way to copy a dataset to another dataset!
+    procedure CreateFields; override;
 
     function IsKeyUnique: Boolean; // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
     procedure SaveToFile(const FileName: string);
@@ -3712,11 +3713,12 @@ begin
   else
     FOpenFileName := '';
 
-  InternalInitFieldDefs; // initialize FieldDef objects.
-
     // Create TField components when no persistent fields have been created
   if DefaultFields then
-    CreateFields;
+    CreateFields  // InternalInitFieldDefs is called inside
+  else
+    InternalInitFieldDefs; // initialize FieldDef objects.
+
   BindFields(True); // bind FieldDefs to actual Data
 
   if FCsvColumns.Count > 1 then
@@ -5605,6 +5607,12 @@ begin
     DataSet.Next;
     Inc(Result);
   end;
+end;
+
+procedure TJvCustomCsvDataSet.CreateFields;
+begin
+  InternalInitFieldDefs;
+  inherited CreateFields;
 end;
 
 //-------------------------------------------------------------------------
