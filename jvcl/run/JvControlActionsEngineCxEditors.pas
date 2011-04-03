@@ -47,8 +47,7 @@ type
   protected
     function GetSupportedOperations: TJvControlActionOperations; override;
   public
-    function ExecuteOperation(const aOperation: TJvControlActionOperation; const
-        aActionControl: TControl): Boolean; override;
+    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
   end;
 {$ENDIF}
@@ -75,8 +74,8 @@ begin
   RegisterControlActionEngine (TJvControlActioncxTreeViewEngine);
 end;
 
-function TJvControlActioncxTreeViewEngine.ExecuteOperation(const aOperation:
-    TJvControlActionOperation; const aActionControl: TControl): Boolean;
+function TJvControlActioncxTreeViewEngine.ExecuteOperation(const aOperation: TJvControlActionOperation; const
+    aActionControl: TControl): Boolean;
 begin
   Result := true;
   if Assigned(aActionControl) and (aActionControl is TcxCustomTreeView) then

@@ -52,8 +52,7 @@ type
     property EngineList: TJvActionEngineList read GetEngineList;
   public
     constructor Create(AOwner: TComponent); override;
-    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean;
-        virtual;
+    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean; virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
     property SupportedOperations: TJvControlActionOperations read GetSupportedOperations;
   end;

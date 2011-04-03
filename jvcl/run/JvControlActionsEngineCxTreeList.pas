@@ -37,19 +37,20 @@ uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
   cxTL,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
-  JvControlActionsEngine;
+  JvControlActionsEngine, JvActionsEngine;
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 type
   TJvControlActioncxTreeListEngine = class(TJvControlActionEngine)
   private
   protected
+    procedure ExportTreeList(aTreeList: TcxCustomTreeList);
     function GetSupportedOperations: TJvControlActionOperations; override;
     function GetTreeList(AActionComponent: TComponent): TcxCustomTreeList;
   public
-    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean;
-        override;
+    function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
+    procedure UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent); override;
   end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
@@ -68,8 +69,9 @@ implementation
 
 uses
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+  cxTLExportLink,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
-  Variants, SysUtils, Grids;
+  Variants, SysUtils, Grids, Dialogs, JvControlActions;
 
 //=== { TJvDatabaseActionDevExpcxTreeListControlEngine } =========================
 
@@ -84,31 +86,65 @@ begin
       caoCollapse : GetTreeList(aActionControl).FullCollapse;
       caoExpand : GetTreeList(aActionControl).FullExpand;
       caoOptimizeColumns : GetTreeList(aActionControl).ApplyBestFit;
+      caoCustomizeColumns : GetTreeList(aActionControl).Customizing.Visible := not GetTreeList(aActionControl).Customizing.Visible;
+      caoExport : ExportTreeList(GetTreeList(aActionControl));
     End;
 end;
 
-function TJvControlActioncxTreeListEngine.GetSupportedOperations:
-    TJvControlActionOperations;
+procedure TJvControlActioncxTreeListEngine.ExportTreeList(aTreeList: TcxCustomTreeList);
+var
+  SaveDialog: TSaveDialog;
 begin
-  Result := [caoCollapse, caoExpand, caoOptimizeColumns];
+  if not Assigned(aTreeList) then
+    Exit;
+  SaveDialog := TSaveDialog.Create(Self);
+  try
+    SaveDialog.Name    := 'SaveDialog';
+    SaveDialog.DefaultExt := 'XLS';
+    SaveDialog.Filter  := 'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
+    SaveDialog.Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
+    if SaveDialog.Execute then
+      if SaveDialog.FileName <> '' then
+      begin
+        if (Pos('.XLS', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) then
+          cxExportTLToExcel(SaveDialog.FileName, aTreeList)
+        else if (Pos('.XML', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) then
+          cxExportTLToXML(SaveDialog.FileName, aTreeList)
+        else if ((Pos('.HTM', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) or
+          (Pos('.HTML', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 4)) then
+          cxExportTLToHTML(SaveDialog.FileName, aTreeList)
+        else
+          cxExportTLToText(SaveDialog.FileName, aTreeList);
+      end;
+  finally
+    SaveDialog.Free;
+  end;
 end;
 
-function TJvControlActioncxTreeListEngine.GetTreeList(AActionComponent:
-    TComponent): TcxCustomTreeList;
+function TJvControlActioncxTreeListEngine.GetSupportedOperations: TJvControlActionOperations;
 begin
-  if Assigned(AActionComponent) then
-    if AActionComponent is TcxCustomTreeList then
-      Result := TcxCustomTreeList(AActionComponent)
-    else
-      Result := nil
+  Result := [caoExport, caoCollapse, caoExpand, caoOptimizeColumns, caoCustomizeColumns];
+end;
+
+function TJvControlActioncxTreeListEngine.GetTreeList(AActionComponent: TComponent): TcxCustomTreeList;
+begin
+  if Assigned(AActionComponent) and (AActionComponent is TcxCustomTreeList) then
+    Result := TcxCustomTreeList(AActionComponent)
   else
     Result := nil;
 end;
 
-function TJvControlActioncxTreeListEngine.SupportsComponent(aActionComponent:
-    TComponent): Boolean;
+function TJvControlActioncxTreeListEngine.SupportsComponent(aActionComponent: TComponent): Boolean;
 begin
   Result := Assigned(GetTreeList(AActionComponent));
+end;
+
+procedure TJvControlActioncxTreeListEngine.UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent);
+begin
+  if Assigned(GetTreeList(AComponent)) and Assigned(AAction) and
+    (AAction is TJvControlBaseAction) and (TJvControlBaseAction(Aaction).ControlOperation = caoCustomizeColumns) then
+    TJvControlBaseAction(Aaction).SetChecked(GetTreeList(AComponent).Customizing.Visible);
+
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}

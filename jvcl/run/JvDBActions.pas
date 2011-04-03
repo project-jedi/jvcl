@@ -49,8 +49,7 @@ uses
 
 type
 
-  TJvChangeDataComponent = procedure(DataComponent: TComponent) of object;
-  TJvDatabaseActionList = class(TActionList)
+  TJvDatabaseActionList = class(TJvActionBaseActionList)
   //The idea of the Action Classes is to work with any databased enabled control.
   //But not all of this controls already have a dataset or datasource control.
   //
@@ -73,15 +72,13 @@ type
   //   gets the datacomponent assigned also.
   //2. Using the active control, like the normal action handling.
   private
-    FDataComponent: TComponent;
-    FOnChangeDataComponent: TJvChangeDataComponent;
-  protected
+    function GetDataComponent: TComponent;
+    function GetOnChangeDataComponent: TJvChangeActionComponent;
+    procedure SetOnChangeDataComponent(const Value: TJvChangeActionComponent);
     procedure SetDataComponent(Value: TComponent);
-  public
-    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    property DataComponent: TComponent read FDataComponent write SetDataComponent;
-    property OnChangeDataComponent: TJvChangeDataComponent read FOnChangeDataComponent write FOnChangeDataComponent;
+    property DataComponent: TComponent read GetDataComponent write SetDataComponent;
+    property OnChangeDataComponent: TJvChangeActionComponent read GetOnChangeDataComponent write SetOnChangeDataComponent;
   end;
 
   TJvDatabaseActionBaseEngineClass = class of TJvDatabaseActionBaseControlEngine;
@@ -105,8 +102,9 @@ type
     fAfterExecute: TJvDatabaseExecuteEvent;
     FBeforeExecute: TJvDatabaseBeforeExecuteEvent;
     FDatasetEngine: TJvDatabaseActionBaseDatasetEngine;
-    FOnChangeDataComponent: TJvChangeDataComponent;
     FOnCheckEnabled: TJvDatabaseActionCheckEnabledEvent;
+    function GetOnChangeDataComponent: TJvChangeActionComponent;
+    procedure SetOnChangeDataComponent(const Value: TJvChangeActionComponent);
   protected
     //1 This Procedure is called when the ActionComponent is changed
     procedure ChangeActionComponent(const AActionComponent: TComponent); override;
@@ -143,7 +141,7 @@ type
     property DataSource: TDataSource read GetDataSource;
     property DataSet: TDataSet read GetDataSet;
   published
-    property OnChangeDataComponent: TJvChangeDataComponent read FOnChangeDataComponent write FOnChangeDataComponent;
+    property OnChangeDataComponent: TJvChangeActionComponent read GetOnChangeDataComponent write SetOnChangeDataComponent;
     property OnCheckEnabled: TJvDatabaseActionCheckEnabledEvent read FOnCheckEnabled write FOnCheckEnabled;
     property OnExecute: TJvDatabaseExecuteEvent read FOnExecute write FOnExecute;
     property AfterExecute: TJvDatabaseExecuteEvent read FAfterExecute write FAfterExecute;
@@ -541,28 +539,26 @@ uses
   JvDSADialogs,
   Variants, Dialogs, StdCtrls, Clipbrd, JvJVCLUtils, JclFileUtils;
 
+function TJvDatabaseActionList.GetDataComponent: TComponent;
+begin
+  Result := ActionComponent;
+end;
+
+function TJvDatabaseActionList.GetOnChangeDataComponent: TJvChangeActionComponent;
+begin
+  Result := OnChangeActionComponent;
+end;
+
 //=== { TJvDatabaseActionList } ==============================================
 
 procedure TJvDatabaseActionList.SetDataComponent(Value: TComponent);
-var
-  I: Integer;
 begin
-  if ReplaceComponentReference(Self, Value, FDataComponent) then
-  begin
-    for I := 0 to ActionCount - 1 do
-      if Actions[I] is TJvDatabaseBaseAction then
-        TJvDatabaseBaseAction(Actions[I]).DataComponent := Value;
-    if Assigned(OnChangeDataComponent) then
-      OnChangeDataComponent(Value);
-  end;
+  ActionComponent := Value;
 end;
 
-procedure TJvDatabaseActionList.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TJvDatabaseActionList.SetOnChangeDataComponent(const Value: TJvChangeActionComponent);
 begin
-  inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
-    if AComponent = FDataComponent then
-      DataComponent := nil;
+  OnChangeActionComponent := Value;
 end;
 
 //=== { TJvDatabaseBaseAction } ==============================================
@@ -801,6 +797,16 @@ end;
 function TJvDatabaseBaseAction.GetEngineList: TJvActionEngineList;
 begin
   Result := RegisteredDatabaseActionEngineList;
+end;
+
+function TJvDatabaseBaseAction.GetOnChangeDataComponent: TJvChangeActionComponent;
+begin
+  Result := OnChangeActionComponent;
+end;
+
+procedure TJvDatabaseBaseAction.SetOnChangeDataComponent(const Value: TJvChangeActionComponent);
+begin
+  OnChangeActionComponent := Value;
 end;
 
 //=== { TJvDatabaseSimpleAction } ============================================
