@@ -53,6 +53,7 @@ type
     constructor Create(AOwner: TComponent); override;
     function SupportsComponent(AComponent: TComponent): Boolean; virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; virtual;
+    procedure UpdateAction(AAction: TJvActionEngineBaseAction;AComponent: TComponent); virtual;
   published
   end;
 
@@ -64,10 +65,8 @@ type
   public
     destructor Destroy; override;
     procedure RegisterEngine(AEngineClass: TJvActionBaseEngineClass);
-    function GetControlEngine(AComponent: TComponent; AAction:
-        TJvActionEngineBaseAction): TJvActionBaseEngine; virtual;
-    function Supports(AComponent: TComponent; AAction: TJvActionEngineBaseAction =
-        nil): Boolean;
+    function GetControlEngine(AComponent: TComponent; AAction: TJvActionEngineBaseAction): TJvActionBaseEngine; virtual;
+    function Supports(AComponent: TComponent; AAction: TJvActionEngineBaseAction = nil): Boolean;
     property Engine[Index: Integer]: TJvActionBaseEngine read GetEngine;
   end;
 
@@ -78,28 +77,58 @@ type
     FLastTarget: TComponent;
     FOnChangeActionComponent: TJvChangeActionComponent;
   protected
+    //1 This Procedure is called when the ActionComponent is changed
+    procedure ChangeActionComponent(const AActionComponent: TComponent); virtual;
+    procedure CheckChecked(var AChecked: Boolean); virtual;
+    procedure CheckEnabled(var AEnabled: Boolean); virtual;
+    procedure CheckVisible(var AVisible: Boolean); virtual;
     function DetectControlEngine(aActionComponent: TComponent): Boolean; virtual;
     function GetEngineList: TJvActionEngineList; virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetActionComponent(const Value: TComponent); virtual;
-    //1 This Procedure is called when the ActionComponent is changed
-    procedure ChangeActionComponent(const AActionComponent: TComponent); virtual;
-    procedure CheckEnabled(var AEnabled: Boolean); virtual;
-    procedure CheckVisible(var AVisible: Boolean); virtual;
-    procedure SetEnabled(Value: Boolean);
-    procedure SetVisible(Value: Boolean);
-    procedure SetImageIndex(Value: Integer);
     property ControlEngine: TJvActionBaseEngine read FControlEngine;
     property EngineList: TJvActionEngineList read GetEngineList;
-    property ActionComponent: TComponent read FActionComponent write
-        SetActionComponent;
     property LastTarget: TComponent read FLastTarget;
     //1 Use this event to check the Enabled Flag depending on properties of the ActionComponent
-    property OnChangeActionComponent: TJvChangeActionComponent read
-        FOnChangeActionComponent write FOnChangeActionComponent;
+    property OnChangeActionComponent: TJvChangeActionComponent read FOnChangeActionComponent write FOnChangeActionComponent;
   public
     constructor Create(AOwner: TComponent); override;
     function HandlesTarget(Target: TObject): Boolean; override;
+    procedure SetChecked(Value: Boolean);
+    procedure SetEnabled(Value: Boolean);
+    procedure SetImageIndex(Value: Integer);
+    procedure SetVisible(Value: Boolean);
+    procedure UpdateTarget(Target: TObject); override;
+    property ActionComponent: TComponent read FActionComponent write SetActionComponent;
+  end;
+
+type
+  TJvActionBaseActionList = class(TActionList)
+  //The idea of the Action Classes is to work different type of controls.
+  //
+  //Then we have a list of ActionEngines which have the availability to
+  //validate find for a Component if it is supported or not.
+  //For each new type of controls with specific need of handles a new Engine
+  //must be created and registered. An example for these engines can be found
+  //in "JvDBActionsEngineControlCxGrid.pas".
+  //
+  //When a ActionComponent is assigned the action tries to find the correct
+  //engine based on the component and uses the engine for all further operations.
+  //
+  //There are two ways to assign a ActionComponent:
+  //1. Assigning the component to the action list, then all actions in
+  //   this list (which are based on TJvActionEngineBaseAction class)
+  //   gets the ActionComponent assigned also.
+  //2. Using the active control, like the normal action handling.
+  private
+    FActionComponent: TComponent;
+    FOnChangeActionComponent: TJvChangeActionComponent;
+  protected
+    procedure SetActionComponent(Value: TComponent);
+    property ActionComponent: TComponent read FActionComponent write SetActionComponent;
+    property OnChangeActionComponent: TJvChangeActionComponent read FOnChangeActionComponent write FOnChangeActionComponent;
+  public
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   end;
 
   {$IFDEF UNITVERSIONING}
@@ -139,8 +168,8 @@ begin
   Add(AEngineClass.Create(nil));
 end;
 
-function TJvActionEngineList.GetControlEngine(AComponent: TComponent; AAction:
-    TJvActionEngineBaseAction): TJvActionBaseEngine;
+function TJvActionEngineList.GetControlEngine(AComponent: TComponent; AAction: TJvActionEngineBaseAction):
+    TJvActionBaseEngine;
 var
   Ind: Integer;
 begin
@@ -159,8 +188,7 @@ begin
   Result := TJvActionBaseEngine(Items[Index]);
 end;
 
-function TJvActionEngineList.Supports(AComponent: TComponent; AAction:
-    TJvActionEngineBaseAction = nil): Boolean;
+function TJvActionEngineList.Supports(AComponent: TComponent; AAction: TJvActionEngineBaseAction = nil): Boolean;
 begin
   Result := Assigned(GetControlEngine(AComponent, AAction));
 end;
@@ -175,10 +203,14 @@ begin
   Result := False;
 end;
 
-function TJvActionBaseEngine.SupportsAction(AAction:
-    TJvActionEngineBaseAction): Boolean;
+function TJvActionBaseEngine.SupportsAction(AAction: TJvActionEngineBaseAction): Boolean;
 begin
   Result := False;
+end;
+
+procedure TJvActionBaseEngine.UpdateAction(AAction: TJvActionEngineBaseAction;AComponent: TComponent);
+begin
+
 end;
 
 constructor TJvActionEngineBaseAction.Create(AOwner: TComponent);
@@ -187,6 +219,25 @@ begin
   FLastTarget := nil;
   FControlEngine := nil;
   FActionComponent := nil;
+end;
+
+procedure TJvActionEngineBaseAction.ChangeActionComponent(const
+    AActionComponent: TComponent);
+begin
+  if Assigned(OnChangeActionComponent) then
+    OnChangeActionComponent(AActionComponent);
+end;
+
+procedure TJvActionEngineBaseAction.CheckChecked(var AChecked: Boolean);
+begin
+end;
+
+procedure TJvActionEngineBaseAction.CheckEnabled(var AEnabled: Boolean);
+begin
+end;
+
+procedure TJvActionEngineBaseAction.CheckVisible(var AVisible: Boolean);
+begin
 end;
 
 function TJvActionEngineBaseAction.DetectControlEngine(aActionComponent:
@@ -239,19 +290,11 @@ begin
   end;
 end;
 
-procedure TJvActionEngineBaseAction.ChangeActionComponent(const
-    AActionComponent: TComponent);
+procedure TJvActionEngineBaseAction.SetChecked(Value: Boolean);
 begin
-  if Assigned(OnChangeActionComponent) then
-    OnChangeActionComponent(AActionComponent);
-end;
-
-procedure TJvActionEngineBaseAction.CheckEnabled(var AEnabled: Boolean);
-begin
-end;
-
-procedure TJvActionEngineBaseAction.CheckVisible(var AVisible: Boolean);
-begin
+  CheckChecked (Value);
+  if Checked <> Value then
+    Checked := Value;
 end;
 
 procedure TJvActionEngineBaseAction.SetEnabled(Value: Boolean);
@@ -261,6 +304,12 @@ begin
     Enabled := Value;
 end;
 
+procedure TJvActionEngineBaseAction.SetImageIndex(Value: Integer);
+begin
+  if ImageIndex <> Value then
+    ImageIndex := Value;
+end;
+
 procedure TJvActionEngineBaseAction.SetVisible(Value: Boolean);
 begin
   CheckVisible(Value);
@@ -268,11 +317,38 @@ begin
     Visible := Value;
 end;
 
-procedure TJvActionEngineBaseAction.SetImageIndex(Value: Integer);
+procedure TJvActionEngineBaseAction.UpdateTarget(Target: TObject);
 begin
-  if ImageIndex <> Value then
-    ImageIndex := Value;
+  if Assigned(ControlEngine) then
+    ControlEngine.UpdateAction(self, ActionComponent)
+  else
+    inherited UpdateTarget(Target);
 end;
+
+//=== { TJvDatabaseActionList } ==============================================
+
+procedure TJvActionBaseActionList.SetActionComponent(Value: TComponent);
+var
+  I: Integer;
+begin
+  if ReplaceComponentReference(Self, Value, FActionComponent) then
+  begin
+    for I := 0 to ActionCount - 1 do
+      if Actions[I] is TJvActionEngineBaseAction then
+        TJvActionEngineBaseAction(Actions[I]).ActionComponent := Value;
+    if Assigned(OnChangeActionComponent) then
+      OnChangeActionComponent(Value);
+  end;
+end;
+
+procedure TJvActionBaseActionList.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FActionComponent then
+      ActionComponent := nil;
+end;
+
 
 initialization
   {$IFDEF UNITVERSIONING}
