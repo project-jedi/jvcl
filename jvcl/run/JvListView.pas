@@ -76,6 +76,7 @@ type
 
   //  TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvOnProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
+  TListViewItemClickNotifyEvent = procedure(Sender: TObject; Item: TListItem; SubItemIndex: Integer; X, Y: Integer) of object;
   {$IFNDEF RTL200_UP}
   TJvListViewCompareGroupEvent = procedure(Sender: TObject; Group1, Group2: TJvListViewGroup; var Compare: Integer) of object;
   {$ENDIF !RTL200_UP}
@@ -356,6 +357,9 @@ type
     FInsertMarkColor: TColor;
     FSettingJvViewStyle: Boolean;
     FSettingHeaderImagePosition: Boolean;
+    FReturnKeyTriggersItemDblClick: Boolean;
+    FOnItemClick: TListViewItemClickNotifyEvent;
+    FOnItemDblClick: TListViewItemClickNotifyEvent;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     {$IFNDEF RTL200_UP}
@@ -383,6 +387,7 @@ type
     function CreateListItems: TListItems; override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
+    procedure KeyPress(var Key: Char); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function GetColumnsOrder: string;
@@ -393,6 +398,8 @@ type
     procedure Loaded; override;
     procedure SetViewStyle(Value: TViewStyle); override;
     procedure SetJvViewStyle(Value: TJvViewStyle); virtual;
+    procedure ItemClick(AItem: TListItem; SubItemIndex: Integer; X, Y: Integer); virtual;
+    procedure ItemDblClick(AItem: TListItem; SubItemIndex: Integer; X, Y: Integer); virtual;
 
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -448,6 +455,7 @@ type
     property SortOnClick: Boolean read FSortOnClick write FSortOnClick default True;
     property SmallImages write SetSmallImages;
     property AutoClipboardCopy: Boolean read FAutoClipboardCopy write FAutoClipboardCopy default True;
+    property ReturnKeyTriggersItemDblClick: Boolean read FReturnKeyTriggersItemDblClick write FReturnKeyTriggersItemDblClick default True;
     {$IFNDEF RTL200_UP}
     property GroupView: Boolean read FGroupView write SetGroupView default False;
     property Groups: TJvListViewGroups read FGroups write SetGroups;
@@ -470,6 +478,8 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+    property OnItemClick: TListViewItemClickNotifyEvent read FOnItemClick write FOnItemClick;
+    property OnItemDblClick: TListViewItemClickNotifyEvent read FOnItemDblClick write FOnItemDblClick;
 
     // This property contains a collection that allows to specify additional
     // properties for each columns (sort method for instance). It can not be
@@ -970,6 +980,7 @@ begin
   FLast := -1;
   FInsertMarkColor := clBlack;
   FAutoClipboardCopy := True;
+  FReturnKeyTriggersItemDblClick := True;
   FHeaderImagePosition := hipLeft;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := DoHeaderImagesChange;
@@ -1667,9 +1678,16 @@ begin
   end;
 end;
 
+procedure TJvListView.KeyPress(var Key: Char);
+begin
+  inherited KeyPress(Key);
+  if ReturnKeyTriggersItemDblClick and (Key = #13) and (Selected <> nil) and (SelCount = 1) then
+    ItemDblClick(Selected, -1, -1, -1);
+end;
+
 procedure TJvListView.KeyUp(var Key: Word; Shift: TShiftState);
 var
-  st: string;
+  S: string;
   I, J: Integer;
 begin
   inherited KeyUp(Key, Shift);
@@ -1677,18 +1695,18 @@ begin
     if (Key in [Ord('c'), Ord('C')]) and (ssCtrl in Shift) then
     begin
       for I := 0 to Columns.Count - 1 do
-        st := st + Columns[I].Caption + Tab;
-      if st <> '' then
-        st := st + sLineBreak;
+        S := S + Columns[I].Caption + Tab;
+      if S <> '' then
+        S := S + sLineBreak;
       for I := 0 to Items.Count - 1 do
         if (SelCount = 0) or Items[I].Selected then
         begin
-          st := st + Items[I].Caption;
+          S := S + Items[I].Caption;
           for J := 0 to Items[I].SubItems.Count - 1 do
-            st := st + Tab + Items[I].SubItems[J];
-          st := st + sLineBreak;
+            S := S + Tab + Items[I].SubItems[J];
+          S := S + sLineBreak;
         end;
-      Clipboard.SetTextBuf(PChar(st));
+      Clipboard.SetTextBuf(PChar(S));
     end;
 end;
 
@@ -2145,34 +2163,66 @@ end;
 
 
 procedure TJvListView.CNNotify(var Message: TWMNotify);
+var
+  HitTestInfo: TLVHitTestInfo;
 begin
   with Message do
   begin
-    if NMHdr^.code = NM_CUSTOMDRAW then
-    begin
-      with PNMCustomDraw(NMHdr)^ do
-      begin
-        if (dwDrawStage and CDDS_SUBITEM <> 0) and
-           (PNMLVCustomDraw(NMHdr)^.iSubItem = 0) then
+    case NMHdr^.code of
+      NM_CUSTOMDRAW:
+        with PNMCustomDraw(NMHdr)^ do
         begin
-          // Mantis 3908: For some reason, the inherited handler will not call
-          // the CustomDrawSubItem if iSubItem is equal to zero. But not calling
-          // it has the consequence to trigger wrong rendering if the order of
-          // columns is modified and the list item has a non standard font.
-          // Calling it ourselves here is not enough as the inherited handler
-          // does some very specific management with the canvas. So we must
-          // trick it by changing the value to a recognizable value used
-          // in our CustomDrawSubItem handler.
-          PNMLVCustomDraw(NMHdr)^.iSubItem := -1;
-          inherited;
-          PNMLVCustomDraw(NMHdr)^.iSubItem := 0;
-          Exit;
+          if (dwDrawStage and CDDS_SUBITEM <> 0) and
+             (PNMLVCustomDraw(NMHdr)^.iSubItem = 0) then
+          begin
+            // Mantis 3908: For some reason, the inherited handler will not call
+            // the CustomDrawSubItem if iSubItem is equal to zero. But not calling
+            // it has the consequence to trigger wrong rendering if the order of
+            // columns is modified and the list item has a non standard font.
+            // Calling it ourselves here is not enough as the inherited handler
+            // does some very specific management with the canvas. So we must
+            // trick it by changing the value to a recognizable value used
+            // in our CustomDrawSubItem handler.
+            PNMLVCustomDraw(NMHdr)^.iSubItem := -1;
+            inherited;
+            PNMLVCustomDraw(NMHdr)^.iSubItem := 0;
+            Exit;
+          end;
         end;
-      end;
+
+      NM_CLICK, NM_DBLCLK:
+        with PNMListView(NMHdr)^ do
+        begin
+          HitTestInfo.iItem := iItem;
+          if HitTestInfo.iItem = -1 then
+          begin
+            HitTestInfo.pt := ptAction;
+            ListView_SubItemHitTest(Handle, @HitTestInfo);
+          end;
+          if HitTestInfo.iItem <> -1 then
+          begin
+            if NMHdr^.code = NM_CLICK then
+              ItemClick(Items[HitTestInfo.iItem], iSubItem - 1, ptAction.X, ptAction.Y)
+            else
+              ItemDblClick(Items[HitTestInfo.iItem], iSubItem - 1, ptAction.X, ptAction.Y);
+          end;
+        end;
     end;
   end;
 
   inherited;
+end;
+
+procedure TJvListView.ItemClick(AItem: TListItem; SubItemIndex: Integer; X, Y: Integer);
+begin
+  if Assigned(FOnItemClick) then
+    FOnItemClick(Self, AItem, SubItemIndex, X, Y);
+end;
+
+procedure TJvListView.ItemDblClick(AItem: TListItem; SubItemIndex: Integer; X, Y: Integer);
+begin
+  if Assigned(FOnItemDblClick) then
+    FOnItemDblClick(Self, AItem, SubItemIndex, X, Y);
 end;
 
 function TJvListView.CustomDrawSubItem(Item: TListItem; SubItem: Integer;
