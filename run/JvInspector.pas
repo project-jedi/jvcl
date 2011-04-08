@@ -2470,7 +2470,7 @@ begin
     if Items[I] <> Instance then
       raise EJvInspectorData.CreateRes(@RsEInspectorInternalError);
     if I < High(FInstanceList) then
-      Move(FInstanceList[I + 1], FInstanceList[I], (Length(FInstanceList) - I) * SizeOf(TJvCustomInspectorData));
+      Move(FInstanceList[I + 1], FInstanceList[I], (High(FInstanceList) - I) * SizeOf(TJvCustomInspectorData));
     SetLength(FInstanceList, High(FInstanceList));
     if not FClearing then
     begin
@@ -10167,8 +10167,8 @@ begin
   end;
   if I >= 0 then
   begin
-    if I <> High(FItems) then
-      Move(FItems[I + 1], FItems[I], (Length(FItems) - I) * SizeOf(TJvCustomInspectorItem));
+    if I < High(FItems) then
+      Move(FItems[I + 1], FItems[I], (High(FItems) - I) * SizeOf(TJvCustomInspectorItem));
     SetLength(FItems, High(FItems));
   end;
   if Length(FItems) = 0 then
