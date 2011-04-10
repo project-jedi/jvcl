@@ -735,7 +735,7 @@ type
     procedure LoadFromFile(const FileName: string);
 
     procedure DeleteCsvColumn(const AFieldName: string); // must be done when not Active! [NEW 2007!]
-    function Lookup(const KeyFields: string; const KeyValues: Variant; const ResultFields: string): Variant;
+    function Lookup(const KeyFields: string; const KeyValues: Variant; const ResultFields: string): Variant; override;
      {These are made protected so that you can write another derived component which has access to various protected fields }
   protected
     property InternalData: TJvCsvRows read FData write FData;
