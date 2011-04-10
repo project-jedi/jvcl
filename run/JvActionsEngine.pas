@@ -53,7 +53,6 @@ type
     constructor Create(AOwner: TComponent); override;
     function SupportsComponent(AComponent: TComponent): Boolean; virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; virtual;
-    procedure UpdateAction(AAction: TJvActionEngineBaseAction;AComponent: TComponent); virtual;
   published
   end;
 
@@ -208,11 +207,6 @@ begin
   Result := False;
 end;
 
-procedure TJvActionBaseEngine.UpdateAction(AAction: TJvActionEngineBaseAction;AComponent: TComponent);
-begin
-
-end;
-
 constructor TJvActionEngineBaseAction.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -320,7 +314,7 @@ end;
 procedure TJvActionEngineBaseAction.UpdateTarget(Target: TObject);
 begin
   if Assigned(ControlEngine) then
-    ControlEngine.UpdateAction(self, ActionComponent)
+    ControlEngine.UpdateAction(self)
   else
     inherited UpdateTarget(Target);
 end;

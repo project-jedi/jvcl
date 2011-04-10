@@ -50,7 +50,7 @@ type
   public
     function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
-    procedure UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent); override;
+    function UpdateAction(Action: TBasicAction): boolean; override;
   end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
@@ -151,12 +151,11 @@ begin
   Result := Assigned(GetPivotGrid(AActionComponent));
 end;
 
-procedure TJvControlActioncxPivotGridEngine.UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent);
+function TJvControlActioncxPivotGridEngine.UpdateAction(Action: TBasicAction): boolean;
 begin
-  if Assigned(GetPivotGrid(AComponent)) and Assigned(AAction) and
-    (AAction is TJvControlBaseAction) and (TJvControlBaseAction(Aaction).ControlOperation = caoCustomizeColumns) then
-    TJvControlBaseAction(Aaction).SetChecked(GetPivotGrid(AComponent).Customization.Visible);
-
+  if Assigned(Action) and (Action is TJvControlBaseAction) and
+    Assigned(GetPivotGrid(TJvControlBaseAction(action).ActionComponent)) and (TJvControlBaseAction(action).ControlOperation = caoCustomizeColumns) then
+    TJvControlBaseAction(action).SetChecked(GetPivotGrid(TJvControlBaseAction(action).ActionComponent).Customization.Visible);
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
