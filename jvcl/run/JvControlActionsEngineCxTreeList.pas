@@ -50,7 +50,7 @@ type
   public
     function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
-    procedure UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent); override;
+    function UpdateAction(Action: TBasicAction): boolean; override;
   end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
@@ -139,11 +139,11 @@ begin
   Result := Assigned(GetTreeList(AActionComponent));
 end;
 
-procedure TJvControlActioncxTreeListEngine.UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent);
+function TJvControlActioncxTreeListEngine.UpdateAction(Action: TBasicAction): boolean;
 begin
-  if Assigned(GetTreeList(AComponent)) and Assigned(AAction) and
-    (AAction is TJvControlBaseAction) and (TJvControlBaseAction(Aaction).ControlOperation = caoCustomizeColumns) then
-    TJvControlBaseAction(Aaction).SetChecked(GetTreeList(AComponent).Customizing.Visible);
+  if Assigned(Action) and (Action is TJvControlBaseAction) and
+    Assigned(GetTreeList(TJvControlBaseAction(Action).ActionComponent)) and (TJvControlBaseAction(Action).ControlOperation = caoCustomizeColumns) then
+    TJvControlBaseAction(Action).SetChecked(GetTreeList(TJvControlBaseAction(Action).ActionComponent).Customizing.Visible);
 
 end;
 

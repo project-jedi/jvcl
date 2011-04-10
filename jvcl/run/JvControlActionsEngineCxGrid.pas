@@ -53,7 +53,7 @@ type
   public
     function ExecuteOperation(const aOperation: TJvControlActionOperation; const aActionControl: TControl): Boolean; override;
     function SupportsComponent(aActionComponent: TComponent): Boolean; override;
-    procedure UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent); override;
+    function UpdateAction(Action: TBasicAction): boolean; override;
   end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
@@ -249,12 +249,11 @@ begin
   Result := Assigned(GetGridView(AActionComponent));
 end;
 
-procedure TJvControlActioncxGridEngine.UpdateAction(AAction: TJvActionEngineBaseAction; AComponent: TComponent);
+function TJvControlActioncxGridEngine.UpdateAction(Action: TBasicAction): boolean;
 begin
-  if Assigned(GetGridView(AComponent)) and Assigned(AAction) and
-    (AAction is TJvControlBaseAction) and (TJvControlBaseAction(Aaction).ControlOperation = caoCustomizeColumns) then
-    TJvControlBaseAction(Aaction).SetChecked(GetGridView(AComponent).Controller.Customization);
-
+  if Assigned(Action) and (Action is TJvControlBaseAction) and
+    Assigned(GetGridView(TJvControlBaseAction(Action).ActionComponent)) and (TJvControlBaseAction(Action).ControlOperation = caoCustomizeColumns) then
+    TJvControlBaseAction(Action).SetChecked(GetGridView(TJvControlBaseAction(Action).ActionComponent).Controller.Customization);
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
