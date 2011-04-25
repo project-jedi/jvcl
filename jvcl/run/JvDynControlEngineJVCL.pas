@@ -914,7 +914,7 @@ end;
 
 procedure TJvDynControlJVCLMaskEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLMaskEdit.ControlGetValue: Variant;
@@ -1004,7 +1004,7 @@ end;
 
 procedure TJvDynControlJVCLButtonEdit.ControlSetValue(Value: Variant);
 begin
-  FEditControl.Text := Value;
+  FEditControl.Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLButtonEdit.ControlGetValue: Variant;
@@ -1106,7 +1106,7 @@ end;
 
 procedure TJvDynControlJVCLCalcEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLCalcEdit.ControlGetValue: Variant;
@@ -1162,7 +1162,7 @@ end;
 
 procedure TJvDynControlJVCLSpinEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLSpinEdit.ControlGetValue: Variant;
@@ -1248,7 +1248,7 @@ end;
 
 procedure TJvDynControlJVCLFileNameEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLFileNameEdit.ControlGetValue: Variant;
@@ -1348,7 +1348,7 @@ end;
 
 procedure TJvDynControlJVCLDirectoryEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLDirectoryEdit.ControlGetValue: Variant;
@@ -1762,7 +1762,7 @@ end;
 
 procedure TJvDynControlJVCLMemo.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLMemo.ControlGetValue: Variant;
@@ -1867,7 +1867,7 @@ end;
 
 procedure TJvDynControlJVCLRichEdit.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLRichEdit.ControlGetValue: Variant;
@@ -2341,7 +2341,7 @@ begin
   if (Style = csDropDownList) and VarIsInt(Value) then
     ItemIndex := Items.IndexOf(Value)
   else
-    Text := Value;
+    Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLComboBox.ControlGetValue: Variant;
@@ -3524,7 +3524,7 @@ end;
 
 procedure TJvDynControlJVCLCheckedComboBox.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlJVCLCheckedComboBox.ControlGetValue: Variant;

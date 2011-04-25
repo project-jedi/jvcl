@@ -2134,7 +2134,7 @@ end;
 
 procedure TJvDynControlCxMemo.ControlSetValue(Value: Variant);
 begin
-  Text := Value;
+  Text := VarToStr(Value);
 end;
 
 function TJvDynControlCxMemo.ControlGetValue: Variant;
