@@ -18,6 +18,7 @@
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="dbrtl" Targets="DB" Condition=""/>
     <Package Name="vcldb" Targets="DB" Condition=""/>
+    <Package Name="adortl" Targets="DB" Condition=""/>
     <Package Name="vclx" Targets="C,D" Condition=""/>
     <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
     <Package Name="SMExportC6" Targets="c6" Condition="USE_3RDPARTY_SMEXPORT"/>
@@ -103,7 +104,7 @@
     <Package Name="cxPivotGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="allv10up,DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvMemoryDataset.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvExprParser.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvData.pas" Targets="DB,help" Formname="" Condition=""/>
@@ -158,6 +159,7 @@
     <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvADOQuery.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAppStoragePropertyEngineDB.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMemoryDataset.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvExprParser.dtx" Targets="help" Formname="" Condition=""/>

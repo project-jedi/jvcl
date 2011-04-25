@@ -171,10 +171,9 @@ type
   protected
     property Pause: Boolean read FPause write FPause default False;
     property Cancel: Boolean read FCancel write FCancel default False;
+    property All: Boolean read FAll write FAll default False;
   public
     constructor Create; virtual;
-  published
-    property All: Boolean read FAll write FAll default False;
   end;
 
   TJvBaseThreadedDatasetEnhancedOptions = class(TPersistent)
