@@ -104,7 +104,7 @@
     <Package Name="cxPivotGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="allv10up,DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvMemoryDataset.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvExprParser.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvData.pas" Targets="DB,help" Formname="" Condition=""/>
