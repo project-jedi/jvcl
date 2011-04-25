@@ -50,6 +50,7 @@ uses
   JvDBLogonDialogOdac,
   JvOdacSmartQuery,
   {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+  JvADOQuery,
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBUltimGrid, JvDBGridFooter,
@@ -88,6 +89,7 @@ begin
     TJvDBOdacConnectDialog, TJvDBOdacPasswordDialog, TjvOdacSmartQuery,
     TjvOdacOraTable, TjvOdacOraQuery,
     {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+    TJvADOQuery, TJvADODataSet,
     TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
     TJvDBGridCSVExport, TJvDBGridXMLExport, TJvDatabaseActionList]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,

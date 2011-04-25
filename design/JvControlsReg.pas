@@ -81,7 +81,7 @@ begin
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
   RegisterComponents(RsPaletteVisual, [TJvClock, TJvCharMap, TJvZoom, TJvDice]);
-  RegisterComponents(RsPaletteNonVisual, [TJvHint]);
+  RegisterComponents(RsPaletteNonVisual, [TJvHint, TJvControlActionList]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   RegisterPropertyEditor(TypeInfo(TJvLabelBehaviorName), TJvBehaviorLabel, 'Behavior', TJvLabelBehaviorProperty);
