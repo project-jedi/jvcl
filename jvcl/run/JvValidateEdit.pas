@@ -810,14 +810,17 @@ end;
 
 procedure TJvCustomValidateEdit.SetValue(NewValue: Variant);
 begin
-  case FDisplayFormat of
-    dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfIdentifier, dfNone, dfCustom:
-      EditText := NewValue;
-    dfBinary, dfHex, dfInteger, dfOctal, dfYear:
-      SetAsInteger(NewValue);
-    dfCurrency, dfFloat, dfDecimal, dfFloatGeneral, dfPercent, dfScientific, dfFloatFixed:
-      SetAsFloat(NewValue);
-  end;
+  if AllowEmpty and (VarIsNull(NewValue) or VarIsEmpty(NewValue)) then
+    Clear
+  else
+    case FDisplayFormat of
+      dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfNonCheckChars, dfIdentifier, dfNone, dfCustom:
+        EditText := NewValue;
+      dfBinary, dfHex, dfInteger, dfOctal, dfYear:
+        SetAsInteger(NewValue);
+      dfCurrency, dfFloat, dfDecimal, dfFloatGeneral, dfPercent, dfScientific, dfFloatFixed:
+        SetAsFloat(NewValue);
+    end;
 end;
 
 procedure TJvCustomValidateEdit.SetCheckChars(const NewValue: string);
