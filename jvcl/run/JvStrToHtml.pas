@@ -404,7 +404,7 @@ begin
     if Ch = ' ' then
     begin
       if (I > 1) and (Value[I - 1] = ' ') then
-        Inc(AddLen, 6 {Length(Nbsp)});
+        Inc(AddLen, 5 {Length(Nbsp) - 1});
     end
     else
     if (Ch >= #128) or not (AnsiChar(Ch) in ['A'..'Z', 'a'..'z', '0'..'9', '_']) then
