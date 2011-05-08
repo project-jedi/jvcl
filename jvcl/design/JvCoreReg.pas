@@ -177,7 +177,7 @@ begin
   RegisterComponents(RsPaletteVisual, [TJvPoweredByJCL, TJvPoweredByJVCL]);
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
-    TJvAppIniFileStorage, TJvAppStorageSelectList]);
+    TJvAppIniFileStorage, TJvAppStorageSelectList, TJvAppStorageSelectListEasyDialog]);
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
 
   RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete, TJvTranslateString]);
