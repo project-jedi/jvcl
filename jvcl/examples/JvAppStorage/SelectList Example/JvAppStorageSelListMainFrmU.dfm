@@ -243,9 +243,8 @@ object JvAppStorageSelListMainFrm: TJvAppStorageSelListMainFrm
     Top = 56
   end
   object JvFormStorageSelectList1: TJvFormStorageSelectList
-    AppStorage = JvAppFileStorage
-    SelectPath = 'something'
     FormStorage = JvFormStorage1
+    SelectPath = 'something'
     Left = 49
     Top = 74
   end
