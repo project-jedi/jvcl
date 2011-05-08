@@ -1,10 +1,9 @@
 object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
   Left = 321
   Top = 227
-  BorderStyle = bsDialog
   Caption = 'App Storage Demo'
-  ClientHeight = 361
-  ClientWidth = 376
+  ClientHeight = 351
+  ClientWidth = 366
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,27 +15,32 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 342
-    Width = 376
+    Top = 332
+    Width = 366
     Height = 19
     Panels = <>
+    ExplicitTop = 342
+    ExplicitWidth = 376
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 376
-    Height = 342
+    Width = 366
+    Height = 332
     Align = alClient
     TabOrder = 1
+    ExplicitWidth = 376
+    ExplicitHeight = 342
     object Panel2: TPanel
       Left = 1
       Top = 1
-      Width = 374
+      Width = 364
       Height = 137
       Align = alTop
       BevelInner = bvLowered
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitWidth = 374
       object Label1: TLabel
         Left = 8
         Top = 12
@@ -125,16 +129,18 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
     object Panel3: TPanel
       Left = 1
       Top = 138
-      Width = 374
-      Height = 203
+      Width = 364
+      Height = 193
       Align = alClient
       BevelOuter = bvSpace
       Caption = 'Panel3'
       TabOrder = 1
+      ExplicitWidth = 374
+      ExplicitHeight = 203
       object Label2: TLabel
         Left = 1
         Top = 1
-        Width = 372
+        Width = 362
         Height = 13
         Align = alTop
         Caption = 'Stored Memo:'
@@ -143,8 +149,8 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
       object Memo2: TMemo
         Left = 1
         Top = 14
-        Width = 372
-        Height = 188
+        Width = 362
+        Height = 178
         Align = alClient
         Color = clInfoBk
         Lines.Strings = (
@@ -162,6 +168,8 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
           ' dialogs and per-user settings between sessions. (such'
           ' as storing the directory of the last opened file) ')
         TabOrder = 0
+        ExplicitWidth = 372
+        ExplicitHeight = 188
       end
     end
   end

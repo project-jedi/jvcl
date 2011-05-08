@@ -79,6 +79,10 @@ var
 
 implementation
 
+uses
+  JvParameterList;
+
+
 {$R *.dfm}
 
 procedure TJvAppStorageSelListMainFrm.FormCreate(Sender: TObject);
