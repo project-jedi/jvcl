@@ -32,7 +32,7 @@ uses
   JvAppStorage, JvFormPlacement, JvAppStorageSelectList;
 
 type
-  TJvFormStorageSelectList = class (TJvAppStorageSelectList)
+  TJvFormStorageSelectList = class (TJvBaseAppStorageSelectList)
   private
     FFormStorage: TJvFormStorage;
   protected
@@ -45,7 +45,10 @@ type
     function RestoreFormStorage(const ACaption: string = ''): Boolean;
     function SaveFormStorage(const ACaption: string = ''): Boolean;
   published
+    property CheckEntries;
     property FormStorage: TJvFormStorage read FFormStorage write SetFormStorage;
+    property SelectListDialog;
+    property SelectPath;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -104,11 +107,14 @@ begin
   if Assigned(FormStorage) then
   begin
     OldPath := FormStorage.AppStoragePath;
-    FormStorage.AppStoragePath := GetSelectListPath(sloLoad, ACaption);
-    Result := FormStorage.AppStoragePath <> '';
-    if Result then
-      FormStorage.RestoreFormPlacement;
-    FormStorage.AppStoragePath := OldPath;
+    try
+      FormStorage.AppStoragePath := GetSelectListPath(sloLoad, ACaption);
+      Result := FormStorage.AppStoragePath <> '';
+      if Result then
+        FormStorage.RestoreFormPlacement;
+    finally
+      FormStorage.AppStoragePath := OldPath;
+    end;
   end
   else
     Result := False;
@@ -121,11 +127,14 @@ begin
   if Assigned(FormStorage) then
   begin
     OldPath := FormStorage.AppStoragePath;
-    FormStorage.AppStoragePath := GetSelectListPath(sloStore, ACaption);
-    Result := FormStorage.AppStoragePath <> '';
-    if Result then
-      FormStorage.SaveFormPlacement;
-    FormStorage.AppStoragePath := OldPath;
+    try
+      FormStorage.AppStoragePath := GetSelectListPath(sloStore, ACaption);
+      Result := FormStorage.AppStoragePath <> '';
+      if Result then
+        FormStorage.SaveFormPlacement;
+    finally
+      FormStorage.AppStoragePath := OldPath;
+    end;
   end
   else
     Result := False;

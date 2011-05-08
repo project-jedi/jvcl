@@ -449,20 +449,25 @@ type
     property OnExitParameter: TNotifyEvent read FOnExitParameter write FOnExitParameter;
   end;
 
-  TJvParameterListSelectList = class(TJvAppStorageSelectList)
+  TJvParameterListSelectList = class(TJvBaseAppStorageSelectList)
   private
     FParameterList: TJvParameterList;
   protected
-    function GetDynControlEngine: TJvDynControlEngine; override;
+    function CreateSelectListDialogInstance(AOwner: TComponent;AOperation: TJvAppStorageSelectListOperation; ACaption:
+        string = ''): TJvBaseAppStorageSelectListDialogInstance; override;
     procedure SetParameterList(Value: TJvParameterList); virtual;
     function GetAppStorage: TJvCustomAppStorage; override;
+    function GetStoragePath: string; override;
     procedure SetAppStorage(Value: TJvCustomAppStorage); override;
   public
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure RestoreParameterList(const ACaption: string = '');
     procedure SaveParameterList(const ACaption: string = '');
   published
+    property CheckEntries;
     property ParameterList: TJvParameterList read FParameterList write SetParameterList;
+    property SelectListDialog;
+    property SelectPath;
   end;
 
   TJvParameterListPropertyStore = class(TJvCustomPropertyStore)
@@ -2175,11 +2180,12 @@ begin
   end;
 end;
 
-//=== { TJvParameterListSelectList } =========================================
-
-function TJvParameterListSelectList.GetDynControlEngine: TJvDynControlEngine;
+function TJvParameterListSelectList.CreateSelectListDialogInstance(AOwner: TComponent;AOperation:
+    TJvAppStorageSelectListOperation; ACaption: string = ''): TJvBaseAppStorageSelectListDialogInstance;
 begin
-  Result := FParameterList.DynControlEngine;
+  Result := inherited CreateSelectListDialogInstance(AOwner, AOperation, ACaption);
+  if not Assigned(SelectListDialog) then
+    Result.DynControlEngine := FParameterList.DynControlEngine;
 end;
 
 procedure TJvParameterListSelectList.SetParameterList(Value: TJvParameterList);
@@ -2193,6 +2199,14 @@ begin
     Result := FParameterList.AppStorage
   else
     Result := nil;
+end;
+
+function TJvParameterListSelectList.GetStoragePath: string;
+begin
+  if Assigned(AppStorage) then
+    Result := AppStorage.ConcatPaths([ParameterList.AppStoragePath, SelectPath])
+  else
+    Result := ParameterList.AppStoragePath + PathDelim + SelectPath;
 end;
 
 procedure TJvParameterListSelectList.SetAppStorage(Value: TJvCustomAppStorage);
