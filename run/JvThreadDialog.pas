@@ -240,7 +240,7 @@ implementation
 
 uses
   Dialogs, Graphics,
-  JvResources;
+  JvResources, ShellAnimations;
 
 function Max(a, b: Integer): Integer;
 begin
