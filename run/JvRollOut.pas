@@ -559,7 +559,7 @@ begin
   FButtonFont.Name := 'Verdana';
   FButtonFont.Size := 7;
   FButtonFont.Style := [fsBold];
-  FButtonFont.Color := clWhite;
+  FButtonFont.Color := clWindowText;
   FButtonFont.OnChange := DoButtonFontChange;
 
   // SmartExpand / SmartShow
@@ -1014,7 +1014,7 @@ begin
   Result := (FButtonFont.Name <> 'Verdana') or
             (FButtonFont.Size <> 7) or
             (FButtonFont.Style <> [fsBold]) or
-            (FButtonFont.Color <> clWhite);
+            (FButtonFont.Color <> clWindowText);
 end;
 
 procedure TJvCustomRollOut.MouseEnter(Control: TControl);
