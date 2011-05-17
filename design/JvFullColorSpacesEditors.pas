@@ -700,7 +700,7 @@ begin
   end;
 end;}
 
-procedure InitFullColorSpaceEditorList;
+procedure InitFullColorSpaceEditorArray;
 var
   ACount: Integer;
   Index: Integer;
@@ -711,19 +711,17 @@ begin
     GFullColorSpaceEditorArray[Index] := nil;
 end;
 
-function FullColorSpaceEditorList: TList;
-begin
-  if GFullColorSpaceEditorArray = nil then
-  begin
-    InitFullColorSpaceEditorList;
-    RegisterFullColorSpaceEditor(csDEF, TJvDEFColorSpaceProperty);
-  end;
-end;
-
 procedure RegisterFullColorSpaceEditor(AColorSpaceID: TJvFullColorSpaceID;
   AEditorClass: TJvFullColorSpacePropertyClass);
 begin
-  FullColorSpaceEditorList[AColorSpaceID shr 2] := AEditorClass;
+  if GFullColorSpaceEditorArray = nil then
+  begin
+    InitFullColorSpaceEditorArray;
+    //RegisterFullColorSpaceEditor(csDEF, TJvDEFColorSpaceProperty);
+    GFullColorSpaceEditorArray[csDEF shr 2] := TJvDEFColorSpaceProperty;
+  end;
+
+  GFullColorSpaceEditorArray[AColorSpaceID shr 2] := AEditorClass;
   // todo (outchy) notification for changing
 end;
 
