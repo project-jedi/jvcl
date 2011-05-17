@@ -240,7 +240,10 @@ implementation
 
 uses
   Dialogs, Graphics,
-  JvResources, ShellAnimations;
+  {$IFDEF COMPILER11_UP} // Delphi 2007 introduced ShellAnimations
+  ShellAnimations,
+  {$ENDIF COMPILER11_UP}
+  JvResources;
 
 function Max(a, b: Integer): Integer;
 begin
