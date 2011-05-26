@@ -2145,9 +2145,13 @@ end;
 
 function TJvListView.CustomDrawItem(Item: TListItem;
   State: TCustomDrawState; Stage: TCustomDrawStage): Boolean;
+var
+  TextColor: TColorRef;
 begin
+  TextColor := 0; // silence the compiler
   if (Stage = cdPrePaint) and Assigned(Item) then
   begin
+    TextColor := GetTextColor(Canvas.Handle);
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
     begin
@@ -2159,6 +2163,10 @@ begin
   end;
 
   Result := inherited CustomDrawItem(Item, State, Stage);
+
+  // Restore the text color to allow the ListView to paint the focus rectangle correctly.
+  if (Stage = cdPrePaint) and Assigned(Item) then
+    SetTextColor(Canvas.Handle, TextColor);
 end;
 
 
