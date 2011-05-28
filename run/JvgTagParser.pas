@@ -36,8 +36,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils,
   HTTPApp, HTTPProd;
-  HTTPApp;
-  {$ENDIF COMPILER6_UP}
 
 type
   TJvgTagParser = class(TObject)
