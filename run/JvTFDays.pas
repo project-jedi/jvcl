@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -6792,17 +6792,17 @@ begin
       while (FirstHourRow < BottomRow) and (ExtractMins(RowToTime(FirstHourRow)) <> 0) do
         Inc(FirstHourRow);
       if RowTime = 0 then
-        Result := 'am'
+        Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString
       else
       if RowTime = 0.50 then
-        Result := 'pm'
+        Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString
       else
       if (RowNum = FirstHourRow) and (ExtractMins(RowTime) = 0) then
       begin
         if RowTime < 0.50 then
-          Result := 'am'
+          Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimeAMString
         else
-          Result := 'pm';
+          Result := {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}TimePMString;
       end
       else
         Result := FormatDateTime(TimeFmt, RowTime);
