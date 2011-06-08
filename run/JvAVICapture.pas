@@ -69,11 +69,13 @@ type
   public
     constructor Create; // Create the video format
     procedure Update;   // Update from the AVICap window
-    property Width: Cardinal read FWidth;
-    property Height: Cardinal read FHeight;
-    property BitDepth: Cardinal read FBitDepth;
+    function Apply: Boolean; // apply the format to the window, returns True if successfull
+
+    property Width: Cardinal read FWidth write FWidth;
+    property Height: Cardinal read FHeight write FHeight;
+    property BitDepth: Cardinal read FBitDepth write FBitDepth;
     property PixelFormat: TPixelFormat read FPixelFormat;
-    property Compression: Integer read FCompression;
+    property Compression: Integer read FCompression write FCompression;
   end;
 
   // The audio format used by the device
@@ -732,6 +734,22 @@ begin
 end;
 
 //=== { TJvVideoFormat } =====================================================
+
+function TJvVideoFormat.Apply: Boolean;
+var
+  BmpInfo: BITMAPINFOHEADER;
+begin
+  Result := False;
+  if FHWnd <> 0 then
+  begin
+    BmpInfo.biWidth := FWidth;
+    BmpInfo.biHeight := FHeight;
+    BmpInfo.biBitCount := FBitDepth;
+    BmpInfo.biCompression := FCompression;
+
+    Result := capSetVideoFormat(FHWnd, @BmpInfo, SizeOf(BmpInfo));
+  end;
+end;
 
 constructor TJvVideoFormat.Create;
 begin
