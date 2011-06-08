@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -118,26 +118,33 @@ end;
 
 function TJvWizardRouteMapSteps.DetectPage(const Pt: TPoint): TJvWizardCustomPage;
 begin
-  // Ignore all disabled pages at run time.
-  if PtInRect(GetPreviousArrowRect, Pt) then
+  if FShowNavigators then
   begin
-    if (PageIndex < Wizard.PageCount) and (PageIndex > 0) and
-      not ((csDesigning in ComponentState) or (bkBack in Wizard.WizardPages[PageIndex].EnabledButtons)) then
-      Result := nil
-    else
-      Result := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
-  end
-  else
-    if PtInRect(GetNextArrowRect, Pt) then
+    // Ignore all disabled pages at run time.
+    if PtInRect(GetPreviousArrowRect, Pt) then
     begin
       if (PageIndex < Wizard.PageCount) and (PageIndex > 0) and
-        not ((csDesigning in ComponentState) or (bkNext in Wizard.WizardPages[PageIndex].EnabledButtons)) then
+        not ((csDesigning in ComponentState) or (bkBack in Wizard.WizardPages[PageIndex].EnabledButtons)) then
         Result := nil
       else
-        Result := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
+        Result := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
     end
     else
-      Result := nil;
+      if PtInRect(GetNextArrowRect, Pt) then
+      begin
+        if (PageIndex < Wizard.PageCount) and (PageIndex > 0) and
+          not ((csDesigning in ComponentState) or (bkNext in Wizard.WizardPages[PageIndex].EnabledButtons)) then
+          Result := nil
+        else
+          Result := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
+      end
+      else
+        Result := nil;
+  end
+  else
+  begin
+    Result := nil;
+  end;
 end;
 
 function TJvWizardRouteMapSteps.GetActiveStepRect: TRect;
