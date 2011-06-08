@@ -449,7 +449,7 @@ var
 begin
   if Assigned(AppStorage) then
   begin
-    if (PropType(PersObj, string(PropName)) = tkClass) and (GetObjectProp(PersObj, string(PropName)) is TComponent) then
+    if (PropType(PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName)) = tkClass) and (GetObjectProp(PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName)) is TComponent) then
     begin
       SearchCompName := AppStorage.ReadString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]));
       SearchOwner := fOwner;
@@ -458,7 +458,7 @@ begin
         for I := 0 to SearchOwner.ComponentCount - 1 do
           if SearchOwner.Components[i].Name = SearchCompName then
           begin
-            SetObjectProp(PersObj, string(PropName), SearchOwner.Components[i]);
+            SetObjectProp(PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName), SearchOwner.Components[i]);
             Exit;
           end;
         SearchOwner := SearchOwner.Owner;
@@ -468,7 +468,7 @@ begin
     begin
       NPath := AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, True)]);
       if AppStorage.ValueStored(NPath) or AppStorage.IsFolder(NPath, False) then
-        AppStorage.ReadProperty(NPath, PersObj, string(PropName), True, True);
+        AppStorage.ReadProperty(NPath, PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName), True, True);
     end;
   end;
 end;
@@ -476,10 +476,10 @@ end;
 procedure TJvPropertyStorage.WriteProperty(const APath, AStorageName: string; const PersObj: TPersistent; const PropName: {$IFDEF RTL200_UP}ShortString{$ELSE}string{$ENDIF RTL200_UP});
 begin
   if Assigned(AppStorage) then
-    if (PropType(PersObj, string(PropName)) = tkClass) and (GetObjectProp(PersObj, string(PropName)) is TComponent) then
-      AppStorage.WriteString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), TComponent(GetObjectProp(PersObj, string(PropName))).Name)
+    if (PropType(PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName)) = tkClass) and (GetObjectProp(PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName)) is TComponent) then
+      AppStorage.WriteString(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), TComponent(GetObjectProp(PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName))).Name)
     else
-      AppStorage.WriteProperty(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, string(PropName), True);
+      AppStorage.WriteProperty(AppStorage.ConcatPaths([APath, AppStorage.TranslatePropertyName(PersObj, AStorageName, False)]), PersObj, {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropName), True);
 end;
 
 {$IFDEF UNITVERSIONING}
