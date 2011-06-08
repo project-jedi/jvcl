@@ -1441,6 +1441,7 @@ var
   DeviceVersion: array [0..MAX_PATH] of Char;
 begin
   // no more than 10 drivers in the system (cf Win32 API)
+  Drivers.Clear;
   for I := 0 to 9 do
     if capGetDriverDescription(I, DeviceName, SizeOf(DeviceName), DeviceVersion, SizeOf(DeviceVersion)) then
       Drivers.Add(DeviceName);
