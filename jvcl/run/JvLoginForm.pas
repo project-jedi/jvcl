@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -185,6 +185,8 @@ type
     FOnFormShow: TNotifyEvent;
     FOnOkClick: TNotifyEvent;
     FOnGetPassword: TJvOnGetPassword;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     AttemptNumber: Integer;
     property Attempt: Integer read FAttempt;
@@ -576,6 +578,14 @@ begin
 end;
 
 //=== { TJvLoginForm } =======================================================
+
+procedure TJvLoginForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  // required for latest versions of Delphi to cooperate nicely with latest versions of Windows
+  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+end;
 
 procedure TJvLoginForm.FormCreate(Sender: TObject);
 begin
