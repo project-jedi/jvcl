@@ -63,6 +63,7 @@
 			<DCCReference Include="vcl.dcp"/>
 			<DCCReference Include="dbrtl.dcp"/>
 			<DCCReference Include="vcldb.dcp"/>
+			<DCCReference Include="adortl.dcp"/>
 			<DCCReference Include="vclx.dcp"/>
 			<DCCReference Include="vclimg.dcp"/>
 			<BuildConfiguration Include="Base">
