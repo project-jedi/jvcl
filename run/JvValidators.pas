@@ -135,8 +135,12 @@ type
   end;
 
   TJvRequiredFieldValidator = class(TJvBaseValidator)
+  private
+    FAllowBlank: Boolean;
   protected
     procedure Validate; override;
+  published
+    property AllowBlank: Boolean read FAllowBlank write FAllowBlank default true;
   end;
 
   TJvValidateCompareOperator = (vcoLessThan, vcoLessOrEqual, vcoEqual, vcoGreaterOrEqual, vcoGreaterThan, vcoNotEqual);
@@ -544,7 +548,10 @@ begin
     varByte:
       ; // nothing to do because all values are valid
   else
-    Valid := VarCompareValue(R, '') <> vrEqual;
+    if FAllowBlank then
+      Valid := VarCompareValue(R, '') <> vrEqual
+    else
+      Valid := Trim(VarToStr(R)) <> '';
   end;
 end;
 
