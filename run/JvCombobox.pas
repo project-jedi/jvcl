@@ -851,21 +851,27 @@ procedure TJvCustomCheckedComboBox.SetInvertAll(Sender: TObject);
 var
   I: Integer;
   S: string;
+  NewCheckedCount: Integer;
 begin
   S := '';
+  NewCheckedCount := 0;
   for I := 0 to FListBox.Items.Count - 1 do
   begin
     FListBox.Checked[I] := not FListBox.Checked[I];
 
-    if FListBox.Checked[I] then begin
-       if S = '' then         
-         S := FListBox.Items[I]
-       else
-         S := S + Delimiter + FListBox.Items[I];
+    if FListBox.Checked[I] then
+    begin
+      Inc(NewCheckedCount);
+
+      if S = '' then
+        S := FListBox.Items[I]
+      else
+        S := S + Delimiter + FListBox.Items[I];
     end;
   end;
   ChangeText(S);
-  FCheckedCount := FListBox.Items.Count;
+
+  FCheckedCount := NewCheckedCount;
   Repaint;
   Change;
 end;
