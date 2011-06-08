@@ -770,7 +770,7 @@ end;
 
 function TJvID3Text.GetBPM: Cardinal;
 begin
-  Result := Trunc(StrToFloat(StringReplace(BPMStr, '.', JclFormatSettings.DecimalSeparator, [])));
+  Result := Trunc(StrToFloatDef(StringReplace(BPMStr, '.', JclFormatSettings.DecimalSeparator, []), 0));
 end;
 
 procedure TJvID3Text.SetBPM(const Value: Cardinal);
