@@ -641,6 +641,9 @@ type
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     function GetPopupMenu: TPopupMenu; override;
+    {$IFDEF RTL220_UP}
+    procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); override;
+    {$ENDIF RTL220_UP}
     procedure TextNotFound(Dialog: TFindDialog); virtual;
     procedure RequestSize(const Rect: TRect); virtual;
     procedure SelectionChange; dynamic;
@@ -3257,6 +3260,18 @@ begin
   if (Result = nil) and UseFixedPopup then
     Result := FixedDefaultEditPopUp(Self);
 end;
+
+{$IFDEF RTL220_UP}
+procedure TJvCustomRichEdit.DoContextPopup(MousePos: TPoint; var Handled: Boolean);
+begin
+  if not Assigned(PopupMenu) then
+  begin
+    MousePos := ClientToScreen(MousePos);
+    FixedDefaultEditPopUp(Self).Popup(MousePos.X, MousePos.Y);
+    Handled := True;
+  end;
+end;
+{$ENDIF RTL220_UP}
 
 function TJvCustomRichEdit.GetRedoName: TUndoName;
 begin
