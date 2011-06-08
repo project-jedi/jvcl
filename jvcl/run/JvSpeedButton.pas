@@ -500,6 +500,7 @@ const
 implementation
 
 uses
+  JvThemes,
   Math, JvJCLUtils, JvJVCLUtils;
 
 type
