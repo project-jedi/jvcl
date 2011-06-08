@@ -229,6 +229,10 @@ type
     procedure StartThread;
     procedure StopThread;
     // Constructor is hidden! Only a TJvHidDeviceController can create a TJvHidDevice object.
+    // APnPInfo becomes the property of this class, do not try to free it yourself,
+    // even if this call raises an exception.
+    // The destructor of this class will take care of the cleanup even when an exception
+    // is raised (as specified by the Delphi language)
     constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
       const Controller: TJvHidDeviceController);
   protected
@@ -1695,13 +1699,8 @@ var
             // fill in PnPInfo of device
             PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
             // create HID device object and add it to the device list
-            try
-              HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
-              NewList.Add(HidDev);
-            except
-              // ignore device if unreadable but still free used memory
-              PnPInfo.Free;
-            end;
+            HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
+            NewList.Add(HidDev);
             Inc(Devn);
           end;
           FreeMem(FunctionClassDeviceData);
