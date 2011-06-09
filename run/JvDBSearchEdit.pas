@@ -264,7 +264,7 @@ end;
 function TJvDBCustomSearchEdit.GetResult: Variant;
 begin
   Result := Null;
-  if Assigned(FDataLink.DataSet) and (DataResult <> '') then
+  if Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active and (DataResult <> '') then
     Result := FDataLink.DataSet.Lookup(DataField, Text, DataResult);
 end;
 
@@ -279,7 +279,7 @@ procedure TJvDBCustomSearchEdit.DoExit;
 begin
   inherited DoExit;
   // On replace le texte sur l'enregistrement en cours
-  if Assigned(FDataLink.DataSet) then
+  if Assigned(FDataLink.DataSet) and FDataLink.DataSet.Active then
     Text := FDataLink.DataSet.FieldByName(DataField).AsString;
 end;
 
