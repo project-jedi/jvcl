@@ -49,6 +49,7 @@ type
     FSearchOptions: TLocateOptions;
     FClearOnEnter: Boolean;
     FDataResult: string;
+    FRaiseLocateException: Boolean;
     procedure DataChange(Sender: TObject);
     function GetDataSource: TDataSource;
     function GetDataField: string;
@@ -73,6 +74,8 @@ type
     property DataField: string read GetDataField write SetDataField;
     property TabStop default True;
     property ClearOnEnter: Boolean read FClearOnEnter write FClearOnEnter default True;
+    //1 Property to raise/hide any exception inside the Dataset.Locate call
+    property RaiseLocateException: Boolean read FRaiseLocateException write FRaiseLocateException default true;
   end;
 
   TJvDBSearchEdit = class(TJvDBCustomSearchEdit)
@@ -150,7 +153,7 @@ uses
 
 //=== { TJvDBCustomSearchEdit } ==============================================
 
-constructor TJvDBCustomSearchEdit.Create;
+constructor TJvDBCustomSearchEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TFieldDataLink.Create;
@@ -159,6 +162,7 @@ begin
   FSearchOptions := [loCaseInsensitive, loPartialKey];
   FClearOnEnter := True;
   Text := '';
+  FRaiseLocateException := True;
 end;
 
 destructor TJvDBCustomSearchEdit.Destroy;
@@ -204,17 +208,19 @@ begin
   if (not ((csDesigning in ComponentState) and
     (csLoading in ComponentState))) and
     Assigned(FDataLink.DataSet) then
-    with FDataLink do
-    begin
-      if (Screen.ActiveControl = Self) and Active then
-        if DataSet.Locate(FieldName, Text, FSearchOptions) then
+    if (Screen.ActiveControl = Self) and FDataLink.Active then
+      try
+        if FDataLink.DataSet.Locate(FDataLink.FieldName, Text, FSearchOptions) then
         begin
           LText := Text;
-          Text := DataSet.FieldByName(DataField).AsString;
+          Text := FDataLink.DataSet.FieldByName(DataField).AsString;
           SelStart := Length(LText);
           SelLength := Length(Text) - SelStart;
         end;
-    end;
+      except
+        if RaiseLocateException then
+          raise;
+      end;
 end;
 
 procedure TJvDBCustomSearchEdit.KeyPress(var Key: Char);
