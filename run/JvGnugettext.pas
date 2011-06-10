@@ -3558,25 +3558,22 @@ initialization
    {$endif}
   {$endif}
   {$endif}
-  if IsLibrary then
+  // Get DLL/shared object Filename
+  SetLength(ExecutableFilename, 300); // MAX_PATH ?
+  {$ifdef MSWINDOWS}
+  SetLength(ExecutableFilename, GetModuleFileName(HInstance,
+    PChar(ExecutableFilename), Length(ExecutableFilename)));
+  {$endif}
+  {$ifdef LINUX}
+  if ModuleIsLib or ModuleIsPackage then
   begin
-    // Get DLL/shared object Filename
-    SetLength(ExecutableFilename, 300);
-    {$ifdef MSWINDOWS}
-    SetLength(ExecutableFilename, GetModuleFileName(HInstance,
-      PChar(ExecutableFilename), Length(ExecutableFilename)));
-    {$endif}
-    {$ifdef LINUX}
     // This line has not been tested on Linux, yet, but should work.
     SetLength(ExecutableFilename, GetModuleFileName(0, PChar(ExecutableFilename),
       Length(ExecutableFilename)));
-    {$endif}
-    {$ifdef CLR}
-    ExecutableFilename := System.Diagnostics.Process.GetCurrentProcess.MainModule.FileName;
-    {$endif}
   end
   else
     ExecutableFilename := ParamStr(0);
+  {$endif}
   FileLocator := TFileLocator.Create;
   FileLocator.Analyze;
   ResourceStringDomainList := TStringList.Create;
