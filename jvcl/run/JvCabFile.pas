@@ -96,7 +96,7 @@ const
 implementation
 
 uses
-  SetupApi, WinConvTypes,
+  SetupApi, WinConvTypes, StrUtils,
   JvConsts, JvResources;
 
 constructor TJvCABFile.Create(AOwner: TComponent);
@@ -211,7 +211,7 @@ begin
       else
       begin
         // Extract specific file
-        if UpperCase(ExtractFileName(Sender.FDestPath)) = UpperCase(StrPas(CAB^.NameInCabinet)) then
+        if EndsText(StrPas(CAB^.NameInCabinet), Sender.FDestPath) then
         begin
           Path := Sender.FDestPath;
           for I := 1 to Length(Path) do
