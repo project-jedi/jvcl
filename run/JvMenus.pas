@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -3202,6 +3202,13 @@ var
   ShowingItemsParent: TMenuItem;
   LocalWRect: TRect;
 begin
+  // Sometimes, for reasons yet to be understood, the Handle is not allocated and
+  // allocating it would trigger an exception telling us the canvas is not ready.
+  // So we simply ignore the issue and hope that another message will ask for
+  // redrawing later on.
+  if not ACanvas.HandleAllocated then
+    Exit;
+
   // Local value, just in case FItem is nil, which could theoretically happen
   // as DrawBorder is called from the replacement window procedure.
   RightToLeft := Menu.BiDiMode <> bdLeftToRight;
