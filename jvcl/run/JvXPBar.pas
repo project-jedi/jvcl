@@ -407,6 +407,9 @@ type
     procedure EndUpdate; override;
     procedure WMAfterXPBarCollapse(var Msg: TMessage); message WM_XPBARAFTERCOLLAPSE;
     procedure WMAfterXPBarExpand(var Msg: TMessage); message WM_XPBARAFTEREXPAND;
+    procedure WMWindowposchanging(var Msg: TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
+    procedure Loaded; override;
+    procedure CreateWnd; override;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Colors: TJvXPBarColors read FColors write SetColors;
     property RollImages: TCustomImageList read FRollImages write SetRollImages;
@@ -1581,7 +1584,7 @@ var
   NewHeight: Integer;
 begin
   { TODO: Check this!!! }
-  if IsLocked then
+  if IsLocked or (csLoading in ComponentState) then
     Exit;
   NewHeight := FC_HEADER_MARGIN + HeaderHeight + FVisibleItems.Count * FRollOffset + FC_ITEM_MARGIN + 1;
   { full collapsing }
@@ -1590,6 +1593,23 @@ begin
     Dec(NewHeight, FC_ITEM_MARGIN);
 //  if Height <> NewHeight then
   Height := NewHeight - 5 + FTopSpace;
+end;
+
+procedure TJvXPCustomWinXPBar.WMWindowposchanging(var Msg: TWMWindowPosChanging);
+var
+  NewHeight: Integer;
+begin
+  if Msg.WindowPos.flags and SWP_NOSIZE = 0 then
+  begin
+    NewHeight := FC_HEADER_MARGIN + HeaderHeight + FVisibleItems.Count * FRollOffset + FC_ITEM_MARGIN + 1;
+    { full collapsing }
+    if ((FRolling and not FCollapsed) or (not FRolling and FCollapsed) or
+      (FVisibleItems.Count = 0)) then
+      Dec(NewHeight, FC_ITEM_MARGIN);
+
+    Msg.WindowPos.cy := NewHeight - 5 + FTopSpace;
+  end;
+  inherited;
 end;
 
 function TJvXPCustomWinXPBar.GetHitTestAt(X, Y: Integer): TJvXPBarHitTest;
@@ -1657,6 +1677,18 @@ begin
     FVisibleItems.Add(Item)
   else
     FVisibleItems.Delete(Item);
+end;
+
+procedure TJvXPCustomWinXPBar.Loaded;
+begin
+  inherited Loaded;
+  ResizeToMaxHeight;
+end;
+
+procedure TJvXPCustomWinXPBar.CreateWnd;
+begin
+  inherited CreateWnd; // sends WM_SIZE but no WM_WINDOWPOSCHANGING
+  ResizeToMaxHeight;
 end;
 
 procedure TJvXPCustomWinXPBar.HookMouseDown;
@@ -1797,7 +1829,7 @@ begin
   end;
 
   // resize to maximum height
-  ResizeToMaxHeight;
+  //ResizeToMaxHeight;   done in WM_WINDOWPOSCHANGING
   inherited HookResized;
 end;
 
@@ -1891,7 +1923,9 @@ begin
   begin
     FItemHeight := Value;
     if not FCollapsed then
-      RollOffset := FItemHeight;
+      RollOffset := FItemHeight
+    else
+      ResizeToMaxHeight;
   end;
 end;
 
