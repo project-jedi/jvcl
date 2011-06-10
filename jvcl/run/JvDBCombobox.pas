@@ -495,7 +495,7 @@ begin
     Esc:
       begin
         FDataLink.Reset;
-        if UpdateFieldImmediatelly and (FDataLink.Field <> nil) then
+        if UpdateFieldImmediatelly and (FDataLink.Field <> nil) and FDataLink.Editing then
           FDataLink.Field.Value := FDataLink.Field.OldValue;
         SelectAll;
       end;
