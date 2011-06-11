@@ -4630,8 +4630,14 @@ begin
           if EscapeKey then
           begin
             CloseControl;
-            if Assigned(SelectedField) and (SelectedField.OldValue <> SelectedField.Value) then
-              SelectedField.Value := SelectedField.OldValue;
+            if Assigned(SelectedField) then
+            begin
+              // OldValue is only available when State=dsEdit, otherwise it can throw an AV.
+              if (SelectedField.DataSet.State = dsEdit) and (SelectedField.OldValue <> SelectedField.Value) then
+                SelectedField.Value := SelectedField.OldValue
+              else if (SelectedField.DataSet.State = dsInsert) and not SelectedField.IsNull then
+                SelectedField.Clear;
+            end;
           end;
         end;
       end;
