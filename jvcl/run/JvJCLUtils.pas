@@ -1669,12 +1669,12 @@ begin
     if StartIndex > LenS then
       Exit;
   end;
-  I := PosIdx(Separator, S, StartIndex + 1);
+  I := PosIdx(Separator, S, StartIndex);
   if I = 0 then
     I := LenS + 1;
   Result := Copy(S, StartIndex, I - StartIndex);
-  if CompareText(Result, Separator) = 0 then
-    Result := '';
+  //if CompareText(Result, Separator) = 0 then
+  //  Result := '';
 end;
 
 function SubStrBySeparatorW(const S: WideString; const Index: Integer; const Separator: WideString; StartIndex: Integer): WideString;
@@ -1701,12 +1701,12 @@ begin
     if StartIndex > LenS then
       Exit;
   end;
-  I := PosIdx(Separator, S, StartIndex + 1);
+  I := PosIdx(Separator, S, StartIndex);
   if I = 0 then
     I := LenS + 1;
   Result := Copy(S, StartIndex, I - StartIndex);
-  if WideCompareText(Result, Separator) = 0 then
-    Result := '';
+  //if WideCompareText(Result, Separator) = 0 then
+  //  Result := '';
 end;
 
 function SubWord(P: PChar; var P2: PChar): string;
