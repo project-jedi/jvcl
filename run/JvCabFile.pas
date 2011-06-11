@@ -211,7 +211,7 @@ begin
       else
       begin
         // Extract specific file
-        if EndsText(StrPas(CAB^.NameInCabinet), Sender.FDestPath) then
+        if AnsiEndsText(StrPas(CAB^.NameInCabinet), Sender.FDestPath) then
         begin
           Path := Sender.FDestPath;
           for I := 1 to Length(Path) do
