@@ -2773,6 +2773,7 @@ procedure TJvDBLookupCombo.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Delta: Integer;
 begin
+  inherited KeyDown(Key, Shift); // Let the user override the behavior
   if FListActive and ((Key = VK_UP) or (Key = VK_DOWN)) then
   begin
     if ssAlt in Shift then
@@ -2812,11 +2813,11 @@ begin
 
   if (Key <> 0) and FListVisible then
     FDataList.KeyDown(Key, Shift);
-  inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvDBLookupCombo.KeyPress(var Key: Char);
 begin
+  inherited KeyPress(Key);
   if FListVisible then
   begin
     if TabSelects and IsDropDown and (Key = Tab) then
@@ -2849,7 +2850,6 @@ begin
       end;
     end;
   end;
-  inherited KeyPress(Key);
   if CharInSet(Key, [Cr, Esc]) then
     GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
 end;
