@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -23,6 +23,15 @@ Known Issues:
   When Position 0 you can not click on the far left of the button to move.
   When Position 100 you can not click on the far Right of the button to move.
 
+Change: (Lionel Reynaud, 2009-2011)
+  - TrackColor property become TrackColorStart
+  - Added TrackColorEnd property : now you can have a track color from TrackColorStart to TrackColorEnd
+  - Added Step property : now track can go step by step
+  - Added the action of the keyboard arrow
+  - Added some inherited properties
+  - bug corrected : add font property to the draw canvas
+  - Add draw min, max values and introduce event property OnShowMinMaxValue
+
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -42,6 +51,7 @@ uses
 
 type
   TOnChangedValue = procedure(Sender: TObject; NewValue: Integer) of object;
+  TOnShowMinMaxValue = procedure(Sender: TObject; var aMin, aMax: string) of object;
 
   TjtbOrientation = (jtbHorizontal, jtbVertical);
 
@@ -56,7 +66,8 @@ type
     FValue: Integer;
     FMinimum: Integer;
     FMaximum: Integer;
-    FTrackColor: TColor;
+    FTrackColorStart: TColor;
+    FTrackColorEnd: TColor;
     FThumbColor: TColor;
     FBackColor: TColor;
     FThumbWidth: Integer;
@@ -72,14 +83,19 @@ type
     FOrientation: TjtbOrientation;
     FBackBitmap: TBitmap;
     { Added By Steve Childs, 18/4/00 }
-    FClickWasInRect: Boolean;
+    FClickWasInRect: Boolean; // Was the original mouse click in the Track Rect ?
     FBorderColor: TColor;
-    FTrackPositionColored: Boolean; // Was the original mouse click in the Track Rect ?
+    FTrackPositionColored: Boolean;
+    FTrackR, FTrackG, FTrackB: Integer;
+    DTrackR, DTrackG, DTrackB: Integer;
+    FStep: Integer;
+    FOnShowMinMaxValue: TOnShowMinMaxValue;
+    FShowMinMax: Boolean;
     procedure SetMaximum(const Value: Integer);
     procedure SetMinimum(const Value: Integer);
     procedure SetValue(const Value: Integer);
     procedure SetBackColor(const Value: TColor);
-    procedure SetTrackColor(const Value: TColor);
+    procedure SetTrackColor(Index: Integer; const Value: TColor);
     procedure SetThumbColor(const Value: TColor);
     procedure SetThumbWidth(const Value: Integer);
     procedure SetTrackRect;
@@ -102,6 +118,10 @@ type
     { Added By Steve Childs, 18/4/00 }
     procedure SetBorderColor(const Value: TColor);
     procedure SetTrackPositionColored(const Value: Boolean);
+    procedure CalculateTrackColor;
+    procedure CNKeyDown(var Message: TWMKeyDown); message CN_KEYDOWN;
+    procedure SetShowMinMax(const Value: Boolean);
+    procedure ReadTrackColor(Reader: TReader);
   protected
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoChangedValue(NewValue: Integer);
@@ -111,6 +131,7 @@ type
     { Added By Steve Childs, 18/4/00 }
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure BoundsChanged; override;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -118,13 +139,15 @@ type
   published
     property Minimum: Integer read FMinimum write SetMinimum default 0;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
+    property Step: Integer read FStep write FStep default 1;
     property Value: Integer read FValue write SetValue default 0;
     property Orientation: TjtbOrientation read FOrientation write SetOrientation default jtbHorizontal;
     property BackBitmap: TBitmap read FBackBitmap write SetBackBitmap;
-    property BackColor: TColor read FBackColor write SetBackColor default clSilver;
+    property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
     property BackBorder: Boolean read FBackBorder write SetBackBorder default False;
-    property TrackColor: TColor read FTrackColor write SetTrackColor default clGray;
-    property TrackPositionColored: Boolean read FTrackPositionColored write SetTrackPositionColored;
+    property TrackColorStart: TColor index 0 read FTrackColorStart write SetTrackColor default clGray;
+    property TrackColorEnd: TColor index 1 read FTrackColorEnd write SetTrackColor default clGray;
+    property TrackPositionColored: Boolean read FTrackPositionColored write SetTrackPositionColored default False;
     property TrackBorder: Boolean read FTrackBorder write SetTrackBorder default True;
     property BorderColor: TColor read FBorderColor write SetBorderColor default clBlack;
     {
@@ -140,7 +163,9 @@ type
     property ShowCaption: Boolean read FShowCaption write SetShowCaption default True;
     property CaptionColor: TColor read FCaptionColor write SetCaptionColor default clBlack;
     property CaptionBold: Boolean read FCaptionBold write SetCaptionBold default False;
+    property ShowMinMax: Boolean read FShowMinMax write SetShowMinMax default False;
     property OnChangedValue: TOnChangedValue read FOnChangedValue write SetOnChangedValue;
+    property OnShowMinMaxValue: TOnShowMinMaxValue read FOnShowMinMaxValue write FOnShowMinMaxValue;
 
     { inherited properties }
     property Align;
@@ -197,20 +222,35 @@ begin
   FThumbWidth := 20;
   FThumbHeight := 16;
   FThumbBorder := False;
-  FBackColor := clSilver;
-  FTrackColor := clGray;
+  FBackColor := clBtnFace;
+  TrackColorStart := clGray;
+  TrackColorEnd := clGray;
   FTrackBorder := True;
   FBorderColor := clBlack;
   FThumbColor := clSilver;
   FCaptionColor := clBlack;
   FShowCaption := True;
+  FShowMinMax := False;
   FMinimum := 0;
   FMaximum := 100;
   FValue := 0;
+  FStep := 1;
   FCaptionBold := False;
   FBackBorder := False;
   FBackBitmap := TBitmap.Create;
   FBackBitmap.OnChange := BackBitmapChanged;
+end;
+
+procedure TJvTracker.ReadTrackColor(Reader: TReader);
+begin
+  TrackColorStart := Reader.ReadInteger;
+end;
+
+procedure TJvTracker.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  // backward compatibility TrackColor was renamed to TrackColotStart (2011-06-11)
+  Filer.DefineProperty('TrackColor', ReadTrackColor, nil, False);
 end;
 
 destructor TJvTracker.Destroy;
@@ -224,29 +264,8 @@ procedure TJvTracker.UpdateValue;
 begin
   FValue := Round(FMinimum +
     (FThumbPosition - FThumbMin) / (FThumbMax - FThumbMin) * (FMaximum - FMinimum));
-end;
-
-procedure TJvTracker.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if ssLeft in Shift then
-    if PtInRect(FHitRect, Point(X, Y)) then
-    begin
-      {
-       Added By Steve Childs 18/04/00 - Set Flag To Tell MouseMove event that
-       the mouse was originally clicked in the Track Rect
-      }
-      FClickWasInRect := True;
-      case Orientation of
-        jtbHorizontal:
-          FThumbPosition := X;
-        jtbVertical:
-          FThumbPosition := Y;
-      end;
-      UpdateValue;
-      SetThumbRect;
-      Invalidate;
-      DoChangedValue(FValue);
-    end;
+  if FStep <> 1 then
+    FValue := (FValue div FStep) * FStep;
 end;
 
 procedure TJvTracker.SetThumbMinMax;
@@ -309,12 +328,8 @@ end;
 
 procedure TJvTracker.Paint;
 var
-  S: string;
   {Added By Steve Childs 18/04/00 - Double Buffer Bitmap}
   Buffer: TBitmap;
-  LColor: TColor;
-  R, G, B: Byte;
-  Factor: Double;
 
   procedure DrawBackBitmap;
   var
@@ -354,19 +369,29 @@ var
   end;
 
   procedure DrawTrack;
+  var
+    Factor: Integer;
+    LColor: TColor;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
-    if FTrackPositionColored then
+    if FTrackPositionColored and (Maximum - Minimum > 0) then
     begin // 2-jul-2000 Jan Verhoeven
+{ old colde
       Factor := Value / (Maximum - Minimum);
-      R := GetRValue(FTrackColor);
-      G := GetGValue(FTrackColor);
-      B := GetBValue(FTrackColor);
+      R := GetRValue(FTrackColorStart);
+      G := GetGValue(FTrackColorStart);
+      B := GetBValue(FTrackColorStart);
       LColor := RGB(Trunc(Factor * R), Trunc(Factor * G), Trunc(Factor * B));
+}
+      Factor :=  Round((Value - Minimum) * 255 / (Maximum - Minimum));
+      LColor := RGB(FTrackR + MulDiv(Factor, DTrackR, 255),
+                    FTrackG + MulDiv(Factor, DTrackG, 255),
+                    FTrackB + MulDiv(Factor, DTrackB, 255));
+
       Buffer.Canvas.Brush.Color := LColor;
     end
     else
-      Buffer.Canvas.Brush.Color := FTrackColor;
+      Buffer.Canvas.Brush.Color := FTrackColorStart;
     Buffer.Canvas.FillRect(FTrackRect);
     Buffer.Canvas.Pen.Style := psSolid;
     if FTrackBorder then
@@ -374,6 +399,8 @@ var
   end;
 
   procedure DrawCaption;
+  var
+    S: string;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
     S := IntToStr(FValue);
@@ -396,6 +423,41 @@ var
     Frame3D(Buffer.Canvas, FThumbRect, clBtnHighlight, clBlack, 1);
   end;
 
+  procedure DrawMinMax;
+  var
+    lMin, lMax: string;
+    lRect: TRect;
+  begin
+    lMin := IntToStr(Minimum);
+    lMax := IntToStr(Maximum);
+    if Assigned(FOnShowMinMaxValue) then
+      FOnShowMinMaxValue(Self,lMin,lMax);
+    lRect := FTrackRect;
+    Buffer.Canvas.Brush.Style := bsClear;
+    Buffer.Canvas.Font.Size := Buffer.Canvas.Font.Size - 2; // Reduce size
+
+    case Orientation of
+      jtbHorizontal:
+        begin
+          lRect.Top := lRect.Top + TrackHeight;
+          lRect.Bottom := lRect.Bottom + TrackHeight + 4;
+          DrawText(Buffer.Canvas.Handle, PChar(lMin), -1, lRect,
+            DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS);
+          DrawText(Buffer.Canvas.Handle, PChar(lMax), -1, lRect,
+            DT_RIGHT or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS);
+        end;
+      jtbVertical:
+        begin
+          lRect.Left := lRect.Left + TrackHeight;
+          lRect.Right := lRect.Right + TrackHeight + ThumbWidth;
+          DrawText(Buffer.Canvas.Handle, PChar(lMin), -1, lRect,
+            DT_LEFT or DT_TOP or DT_SINGLELINE or DT_END_ELLIPSIS);
+          DrawText(Buffer.Canvas.Handle, PChar(lMax), -1, lRect,
+            DT_LEFT or DT_BOTTOM or DT_SINGLELINE or DT_END_ELLIPSIS);
+        end;
+    end;
+  end;
+
 begin
   { Added By Steve Childs 18/04/00 - Added Double Buffering}
   Buffer := TBitmap.Create;
@@ -403,6 +465,7 @@ begin
     { Added By Steve Childs 18/04/00 - Setup DoubleBuffer Bitmap}
     Buffer.Width := ClientWidth;
     Buffer.Height := ClientHeight;
+    Buffer.Canvas.Font := Font;
 
     SetThumbMinMax;
     SetThumbRect;
@@ -415,6 +478,8 @@ begin
     DrawThumb;
     if ShowCaption then
       DrawCaption;
+    if ShowMinMax then
+      DrawMinMax;
   finally
     { Added By Steve Childs 18/04/00 - Finally, Draw the Buffer onto Main Canvas}
     Canvas.Draw(0, 0, Buffer);
@@ -463,12 +528,33 @@ begin
   Invalidate;
 end;
 
-procedure TJvTracker.SetTrackColor(const Value: TColor);
+procedure TJvTracker.CalculateTrackColor;
 begin
-  if FTrackColor <> Value then
-  begin
-    FTrackColor := Value;
-    Invalidate;
+  FTrackR := FTrackColorStart  and $000000FF;
+  FTrackG := (FTrackColorStart shr 8) and $000000FF;
+  FTrackB := (FTrackColorStart shr 16) and $000000FF;
+  DTrackR := (FTrackColorEnd   and $000000FF) - FTrackR;
+  DTrackG := ((FTrackColorEnd  shr 8) and $000000FF) - FTrackG;
+  DTrackB := ((FTrackColorEnd  shr 16) and $000000FF) - FTrackB;
+end;
+
+procedure TJvTracker.SetTrackColor(Index: Integer; const Value: TColor);
+begin
+  case Index of
+    0:
+      if FTrackColorStart <> Value then
+      begin
+        FTrackColorStart := Value;
+        CalculateTrackColor;
+        Invalidate;
+      end;
+    1:
+      if FTrackColorEnd <> Value then
+      begin
+        FTrackColorEnd := Value;
+        CalculateTrackColor;
+        Invalidate;
+      end;
   end;
 end;
 
@@ -485,7 +571,7 @@ procedure TJvTracker.SetValue(const Value: Integer);
 begin
   if (Value <> FValue) and (Value >= FMinimum) and (Value <= FMaximum) then
   begin
-    FValue := Value;
+    FValue := (Value div FStep) * FStep;
     UpdatePosition;
     Invalidate;
   end;
@@ -572,6 +658,15 @@ begin
   end;
 end;
 
+procedure TJvTracker.SetShowMinMax(const Value: Boolean);
+begin
+  if FShowMinMax <> Value then
+  begin
+    FShowMinMax := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvTracker.SetBackBorder(const Value: Boolean);
 begin
   if FBackBorder <> Value then
@@ -642,6 +737,30 @@ function TJvTracker.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   { Added By Steve Childs 18/04/00 - Tell Windows that we have cleared background }
   Result := True;
+end;
+
+procedure TJvTracker.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  Self.SetFocus;
+  if ssLeft in Shift then
+    if PtInRect(FHitRect, Point(X, Y)) then
+    begin
+      {
+       Added By Steve Childs 18/04/00 - Set Flag To Tell MouseMove event that
+       the mouse was originally clicked in the Track Rect
+      }
+      FClickWasInRect := True;
+      case Orientation of
+        jtbHorizontal:
+          FThumbPosition := X;
+        jtbVertical:
+          FThumbPosition := Y;
+      end;
+      UpdateValue;
+      SetThumbRect;
+      Invalidate;
+      DoChangedValue(FValue);
+    end;
 end;
 
 procedure TJvTracker.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -727,6 +846,16 @@ begin
   begin
     FTrackPositionColored := Value;
     Invalidate;
+  end;
+end;
+
+procedure TJvTracker.CNKeyDown(var Message: TWMKeyDown);
+begin
+  case Message.CharCode of
+    VK_LEFT, VK_UP:
+      Value := Value - FStep;
+    VK_RIGHT, VK_DOWN:
+      Value := Value + FStep;
   end;
 end;
 
