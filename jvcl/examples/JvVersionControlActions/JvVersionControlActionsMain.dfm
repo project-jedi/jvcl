@@ -2,8 +2,8 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Test'
-  ClientHeight = 339
-  ClientWidth = 828
+  ClientHeight = 380
+  ClientWidth = 827
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,56 +13,9 @@ object Form1: TForm1
   Menu = MainMenu1
   OldCreateOrder = False
   Visible = True
-  DesignSize = (
-    828
-    339)
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 15
-    Top = 295
-    Width = 31
-    Height = 13
-    Caption = 'Label1'
-  end
-  object DirectoryListBox1: TDirectoryListBox
-    Left = 8
-    Top = 35
-    Width = 313
-    Height = 97
-    ItemHeight = 16
-    TabOrder = 0
-    OnChange = DirectoryListBox1Change
-  end
-  object FileListBox1: TFileListBox
-    Left = 8
-    Top = 138
-    Width = 313
-    Height = 97
-    ItemHeight = 13
-    TabOrder = 1
-    OnChange = FileListBox1Change
-  end
-  object DriveComboBox1: TDriveComboBox
-    Left = 8
-    Top = 10
-    Width = 313
-    Height = 19
-    TabOrder = 2
-    OnChange = DriveComboBox1Change
-  end
-  object Memo1: TMemo
-    Left = 327
-    Top = 66
-    Width = 493
-    Height = 169
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Lines.Strings = (
-      'Memo1')
-    ScrollBars = ssBoth
-    TabOrder = 7
-    WordWrap = False
-  end
   object CommitButton: TBitBtn
     Left = 350
     Top = 8
@@ -70,7 +23,7 @@ object Form1: TForm1
     Height = 25
     Action = JvVersionControlCommitAction1
     Caption = 'Co&mmit'
-    TabOrder = 3
+    TabOrder = 0
   end
   object CommitSandboxButton: TBitBtn
     Left = 431
@@ -79,7 +32,7 @@ object Form1: TForm1
     Height = 25
     Action = JvVersionControlCommitSandboxAction1
     Caption = 'Commit ...'
-    TabOrder = 4
+    TabOrder = 1
   end
   object UpdateButton: TBitBtn
     Left = 350
@@ -88,7 +41,7 @@ object Form1: TForm1
     Height = 25
     Action = JvVersionControlUpdateAction1
     Caption = 'U&pdate'
-    TabOrder = 5
+    TabOrder = 2
   end
   object UpdateSandboxButton: TBitBtn
     Left = 431
@@ -97,7 +50,94 @@ object Form1: TForm1
     Height = 25
     Action = JvVersionControlUpdateSandboxAction1
     Caption = 'Update ...'
-    TabOrder = 6
+    TabOrder = 3
+  end
+  object ButtonPanel: TJvPanel
+    Left = 0
+    Top = 0
+    Width = 827
+    Height = 98
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'Tahoma'
+    HotTrackFont.Style = []
+    ArrangeSettings.AutoSize = asHeight
+    ArrangeSettings.AutoArrange = True
+    Align = alTop
+    Caption = 'ButtonPanel'
+    TabOrder = 4
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 98
+    Width = 827
+    Height = 282
+    Align = alClient
+    Caption = 'Panel1'
+    TabOrder = 5
+    DesignSize = (
+      827
+      282)
+    object Label1: TLabel
+      Left = 15
+      Top = 257
+      Width = 31
+      Height = 13
+      Caption = 'Label1'
+    end
+    object FileListBox1: TFileListBox
+      Left = 8
+      Top = 163
+      Width = 313
+      Height = 88
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ItemHeight = 13
+      TabOrder = 2
+      OnChange = FileListBox1Change
+    end
+    object JvDirectoryEdit: TJvDirectoryEdit
+      Left = 8
+      Top = 8
+      Width = 313
+      Height = 21
+      DialogKind = dkWin32
+      TabOrder = 3
+      Text = 'JvDirectoryEdit'
+      OnChange = JvDirectoryEditChange
+    end
+    object Memo1: TMemo
+      Left = 327
+      Top = 6
+      Width = 492
+      Height = 263
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Lines.Strings = (
+        'Memo1')
+      ScrollBars = ssBoth
+      TabOrder = 4
+      WordWrap = False
+    end
+    object DirectoryListBox1: TJvDirectoryListBox
+      Left = 8
+      Top = 60
+      Width = 313
+      Height = 97
+      Directory = 'e:\Delphi\Components\jcl\source\vcl'
+      ItemHeight = 17
+      TabOrder = 1
+      OnChange = DirectoryListBox1Change
+    end
+    object DriveComboBox1: TJvDriveCombo
+      Left = 8
+      Top = 35
+      Width = 313
+      Height = 22
+      DriveTypes = [dtFixed, dtRemote, dtCDROM]
+      Offset = 4
+      TabOrder = 0
+      OnChange = DriveComboBox1Change
+    end
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
@@ -230,7 +270,7 @@ object Form1: TForm1
     Left = 385
     Top = 275
     Bitmap = {
-      494C010117001C00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010117001C00180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001002000000000000060
       0000000000000000000000000000000000000000000000000000000000009F5F
       3FFF9F5F3FFFBFBF9FFF00000000000000000000000000000000000000000000
@@ -1031,8 +1071,8 @@ object Form1: TForm1
   end
   object JvVersionControlActionList: TJvVersionControlActionList
     Images = ImageList1
-    Left = 525
-    Top = 255
+    Left = 520
+    Top = 270
     object JvVersionControlAddAction1: TJvVersionControlAddAction
       Category = 'JVCL-Version-Control'
       Caption = '&Add'
