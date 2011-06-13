@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, FileCtrl, JvVersionControlActions, ActnList,
-  JvVersionControlActionsEngine, Menus, Buttons, ImgList, JvActionsEngine;
+  JvVersionControlActionsEngine, Menus, Buttons, ImgList, JvActionsEngine, Mask, JvExMask, JvToolEdit, ExtCtrls,
+  JvExExtCtrls, JvExtComponent, JvPanel, JvExStdCtrls, JvCombobox, JvDriveCtrls, JvListBox;
 
 type
   TjvVersionControlActionMemoEngine = class(TjvVersionControlActionEngine)
@@ -17,11 +18,6 @@ type
     function SupportsGetFileName(aActionComponent: TComponent): Boolean; override;
   end;
   TForm1 = class(TForm)
-    DirectoryListBox1: TDirectoryListBox;
-    FileListBox1: TFileListBox;
-    DriveComboBox1: TDriveComboBox;
-    Memo1: TMemo;
-    Label1: TLabel;
     MainMenu1: TMainMenu;
     VersionControl1: TMenuItem;
     UpdateMenu: TMenuItem;
@@ -105,13 +101,24 @@ type
     CommitSandboxButton: TBitBtn;
     UpdateButton: TBitBtn;
     UpdateSandboxButton: TBitBtn;
+    ButtonPanel: TJvPanel;
+    Panel1: TPanel;
+    JvDirectoryEdit: TJvDirectoryEdit;
+    Memo1: TMemo;
+    DirectoryListBox1: TJvDirectoryListBox;
+    DriveComboBox1: TJvDriveCombo;
+    Label1: TLabel;
+    FileListBox1: TFileListBox;
     procedure DirectoryListBox1Change(Sender: TObject);
     procedure DriveComboBox1Change(Sender: TObject);
     procedure FileListBox1Change(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure JvDirectoryEditChange(Sender: TObject);
   private
     { Private declarations }
   protected
   public
+    procedure CreateButtons;
     { Public declarations }
   end;
 
@@ -121,22 +128,39 @@ var
 
 implementation
 
-uses JclVersionControl,JclVersionCtrlSVNImpl,
+uses JclVersionControl,
+  JclVersionCtrlSVNImpl,
   JclVersionCtrlcvsImpl,
+  JclVersionCtrlGITImpl,
   JvVersionControlActionsEngineFileListBox;
 
 {$R *.dfm}
 
+procedure TForm1.CreateButtons;
+var
+  Btn: TButton;
+  I: Integer;
+begin
+  for I := 0 to JvVersionControlActionList.ActionCount-1 do
+  begin
+    Btn := TButton.Create(self);
+    Btn.Parent := ButtonPanel;
+    Btn.Action := JvVersionControlActionList.Actions[i];
+  end;
+end;
+
 procedure TForm1.DirectoryListBox1Change(Sender: TObject);
 begin
   FileListBox1.Directory := DirectoryListBox1.Directory;
+  JvDirectoryEdit.Directory := DirectoryListBox1.Directory;
 end;
 
 procedure TForm1.DriveComboBox1Change(Sender: TObject);
 begin
-  DirectoryListBox1.Drive := DriveComboBox1.Drive;
-  FileListBox1.Drive := DriveComboBox1.Drive;
-  FileListBox1.Directory := DirectoryListBox1.Directory;
+//  DirectoryListBox1.Drive := DriveComboBox1.Drive;
+//  FileListBox1.Drive := DriveComboBox1.Drive;
+//FileListBox1.Directory := DirectoryListBox1.Directory;
+//JvDirectoryEdit.Directory := DirectoryListBox1.Directory;
 end;
 
 procedure TForm1.FileListBox1Change(Sender: TObject);
@@ -145,10 +169,21 @@ begin
     Memo1.Lines.LoadFromFile(FileListBox1.FileName)
   else
     Memo1.Clear;
-  if Assigned(JvVersionControlActionList) and Assigned(JvVersionControlActionList.Images) then
-    Label1.Caption := 'Count : '+Inttostr(JvVersionControlActionList.Images.Count)
+  if Assigned(JvVersionControlActionList) and Assigned(JvVersionControlActionList.Images) and Assigned(JvVersionControlExploreSandboxAction1.CurrentPlugin) then
+    Label1.Caption := JvVersionControlExploreSandboxAction1.CurrentPlugin.Name+' Repository - Action Count : '+Inttostr(JvVersionControlActionList.Images.Count)
   else
-    Label1.Caption := 'Not Assigned';
+    Label1.Caption := 'No Version Control System Assigned';
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  CreateButtons;
+  DirectoryListBox1Change(nil);
+end;
+
+procedure TForm1.JvDirectoryEditChange(Sender: TObject);
+begin
+  DirectoryListBox1.Directory := JvDirectoryEdit.Directory;
 end;
 
 function TjvVersionControlActionMemoEngine.SupportsComponent(aActionComponent:
