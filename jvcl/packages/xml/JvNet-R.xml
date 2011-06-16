@@ -41,6 +41,7 @@
     <File Name="..\..\run\JvStrToHtml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUrlGrabbers.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvUrlListGrabber.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvFormToHtml.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvHtmlParser.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMail.dtx" Targets="help" Formname="" Condition=""/>

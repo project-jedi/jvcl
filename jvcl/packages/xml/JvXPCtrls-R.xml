@@ -26,6 +26,7 @@
     <File Name="..\..\run\JvXPProgressBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExplorerBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvExplorerBarItems.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvXPBar.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvXPContainer.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvXPCore.dtx" Targets="help" Formname="" Condition=""/>

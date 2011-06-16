@@ -32,7 +32,7 @@ File2=JEDI.doxdb
 File3=vcl.doxdb
 
 [Source Files]
-Count=20
+Count=21
 File0=..\..\run\JvTFSparseMatrix.pas
 File1=..\..\run\JvTFUtils.pas
 File2=..\..\run\JvTFWeeks.pas
@@ -43,16 +43,17 @@ File6=..\..\run\JvTFGlance.pas
 File7=..\..\run\JvTFGlanceTextViewer.pas
 File8=..\..\run\JvTFManager.pas
 File9=..\..\run\JvTFMonths.pas
-File10=..\..\..\help\JvTFSparseMatrix.dtx
-File11=..\..\..\help\JvTFUtils.dtx
-File12=..\..\..\help\JvTFWeeks.dtx
-File13=..\..\..\help\JvTFAlarm.dtx
-File14=..\..\..\help\JvTFDays.dtx
-File15=..\..\..\help\JvTFGantt.dtx
-File16=..\..\..\help\JvTFGlance.dtx
-File17=..\..\..\help\JvTFGlanceTextViewer.dtx
-File18=..\..\..\help\JvTFManager.dtx
-File19=..\..\..\help\JvTFMonths.dtx
+File10=..\..\..\help\Common.dtx
+File11=..\..\..\help\JvTFSparseMatrix.dtx
+File12=..\..\..\help\JvTFUtils.dtx
+File13=..\..\..\help\JvTFWeeks.dtx
+File14=..\..\..\help\JvTFAlarm.dtx
+File15=..\..\..\help\JvTFDays.dtx
+File16=..\..\..\help\JvTFGantt.dtx
+File17=..\..\..\help\JvTFGlance.dtx
+File18=..\..\..\help\JvTFGlanceTextViewer.dtx
+File19=..\..\..\help\JvTFManager.dtx
+File20=..\..\..\help\JvTFMonths.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

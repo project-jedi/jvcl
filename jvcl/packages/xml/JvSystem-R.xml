@@ -61,6 +61,7 @@
     <File Name="..\..\run\JvScreenSaveSuppress.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSysRequirements.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMailSlots.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvXmlDatabase.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAppInst.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvChangeNotify.dtx" Targets="help" Formname="" Condition=""/>

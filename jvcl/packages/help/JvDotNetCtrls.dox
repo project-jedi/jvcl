@@ -34,13 +34,14 @@ File4=JEDI.doxdb
 File5=vcl.doxdb
 
 [Source Files]
-Count=6
+Count=7
 File0=..\..\run\JvDotNetControls.pas
 File1=..\..\run\JvDBDotNetControls.pas
 File2=..\..\run\JvDotNetUtils.pas
-File3=..\..\..\help\JvDotNetControls.dtx
-File4=..\..\..\help\JvDBDotNetControls.dtx
-File5=..\..\..\help\JvDotNetUtils.dtx
+File3=..\..\..\help\Common.dtx
+File4=..\..\..\help\JvDotNetControls.dtx
+File5=..\..\..\help\JvDBDotNetControls.dtx
+File6=..\..\..\help\JvDotNetUtils.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

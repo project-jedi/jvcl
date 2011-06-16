@@ -160,6 +160,7 @@
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvADOQuery.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAppStoragePropertyEngineDB.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMemoryDataset.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvExprParser.dtx" Targets="help" Formname="" Condition=""/>

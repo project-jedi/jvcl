@@ -35,7 +35,7 @@ File5=JEDI.doxdb
 File6=vcl.doxdb
 
 [Source Files]
-Count=20
+Count=21
 File0=..\..\run\JvFormToHtml.pas
 File1=..\..\run\JvHtmlParser.pas
 File2=..\..\run\JvMail.pas
@@ -46,16 +46,17 @@ File6=..\..\run\JvStringListToHtml.pas
 File7=..\..\run\JvStrToHtml.pas
 File8=..\..\run\JvUrlGrabbers.pas
 File9=..\..\run\JvUrlListGrabber.pas
-File10=..\..\..\help\JvFormToHtml.dtx
-File11=..\..\..\help\JvHtmlParser.dtx
-File12=..\..\..\help\JvMail.dtx
-File13=..\..\..\help\JvProgramVersionCheck.dtx
-File14=..\..\..\help\JvRgbToHtml.dtx
-File15=..\..\..\help\JvRichEditToHtml.dtx
-File16=..\..\..\help\JvStringListToHtml.dtx
-File17=..\..\..\help\JvStrToHtml.dtx
-File18=..\..\..\help\JvUrlGrabbers.dtx
-File19=..\..\..\help\JvUrlListGrabber.dtx
+File10=..\..\..\help\Common.dtx
+File11=..\..\..\help\JvFormToHtml.dtx
+File12=..\..\..\help\JvHtmlParser.dtx
+File13=..\..\..\help\JvMail.dtx
+File14=..\..\..\help\JvProgramVersionCheck.dtx
+File15=..\..\..\help\JvRgbToHtml.dtx
+File16=..\..\..\help\JvRichEditToHtml.dtx
+File17=..\..\..\help\JvStringListToHtml.dtx
+File18=..\..\..\help\JvStrToHtml.dtx
+File19=..\..\..\help\JvUrlGrabbers.dtx
+File20=..\..\..\help\JvUrlListGrabber.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

@@ -52,6 +52,7 @@
     <File Name="..\..\run\JvDialogActns.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesktopAlert.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesktopAlertForm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDualListForm.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvExceptionForm.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvFindFiles.dtx" Targets="help" Formname="" Condition=""/>

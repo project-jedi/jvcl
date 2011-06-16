@@ -87,6 +87,7 @@
     <File Name="..\..\run\JvImage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRadioGroup.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDynControlEngineJVCL.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvImageList.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvItemsSearchs.dtx" Targets="help" Formname="" Condition=""/>

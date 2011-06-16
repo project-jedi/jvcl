@@ -33,13 +33,14 @@ File3=JEDI.doxdb
 File4=vcl.doxdb
 
 [Source Files]
-Count=6
+Count=7
 File0=..\..\run\JvPageListTreeView.pas
 File1=..\..\run\JvPageList.pas
 File2=..\..\run\JvNavigationPane.pas
-File3=..\..\..\help\JvPageListTreeView.dtx
-File4=..\..\..\help\JvPageList.dtx
-File5=..\..\..\help\JvNavigationPane.dtx
+File3=..\..\..\help\Common.dtx
+File4=..\..\..\help\JvPageListTreeView.dtx
+File5=..\..\..\help\JvPageList.dtx
+File6=..\..\..\help\JvNavigationPane.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

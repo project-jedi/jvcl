@@ -32,19 +32,20 @@ File2=JEDI.doxdb
 File3=vcl.doxdb
 
 [Source Files]
-Count=12
+Count=13
 File0=..\..\run\JvMTComponents.pas
 File1=..\..\run\JvMTConsts.pas
 File2=..\..\run\JvMTData.pas
 File3=..\..\run\JvMTSync.pas
 File4=..\..\run\JvMTSyncMon.pas
 File5=..\..\run\JvMTThreading.pas
-File6=..\..\..\help\JvMTComponents.dtx
-File7=..\..\..\help\JvMTConsts.dtx
-File8=..\..\..\help\JvMTData.dtx
-File9=..\..\..\help\JvMTSync.dtx
-File10=..\..\..\help\JvMTSyncMon.dtx
-File11=..\..\..\help\JvMTThreading.dtx
+File6=..\..\..\help\Common.dtx
+File7=..\..\..\help\JvMTComponents.dtx
+File8=..\..\..\help\JvMTConsts.dtx
+File9=..\..\..\help\JvMTData.dtx
+File10=..\..\..\help\JvMTSync.dtx
+File11=..\..\..\help\JvMTSyncMon.dtx
+File12=..\..\..\help\JvMTThreading.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

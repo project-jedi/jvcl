@@ -35,7 +35,7 @@ File5=JEDI.doxdb
 File6=vcl.doxdb
 
 [Source Files]
-Count=28
+Count=29
 File0=..\..\run\JvBDELoginDialog.pas
 File1=..\..\run\JvBDEMemTable.pas
 File2=..\..\run\JvBDEMove.pas
@@ -50,20 +50,21 @@ File10=..\..\run\JvBDEExceptionForm.pas
 File11=..\..\run\JvBDEFilter.pas
 File12=..\..\run\JvBDEIndex.pas
 File13=..\..\run\JvBDELists.pas
-File14=..\..\..\help\JvBDELoginDialog.dtx
-File15=..\..\..\help\JvBDEMemTable.dtx
-File16=..\..\..\help\JvBDEMove.dtx
-File17=..\..\..\help\JvBDEProgress.dtx
-File18=..\..\..\help\JvBDEQBE.dtx
-File19=..\..\..\help\JvBDEQuery.dtx
-File20=..\..\..\help\JvBDESecurity.dtx
-File21=..\..\..\help\JvBDESQLScript.dtx
-File22=..\..\..\help\JvBdeUtils.dtx
-File23=..\..\..\help\JvBDECheckPasswordForm.dtx
-File24=..\..\..\help\JvBDEExceptionForm.dtx
-File25=..\..\..\help\JvBDEFilter.dtx
-File26=..\..\..\help\JvBDEIndex.dtx
-File27=..\..\..\help\JvBDELists.dtx
+File14=..\..\..\help\Common.dtx
+File15=..\..\..\help\JvBDELoginDialog.dtx
+File16=..\..\..\help\JvBDEMemTable.dtx
+File17=..\..\..\help\JvBDEMove.dtx
+File18=..\..\..\help\JvBDEProgress.dtx
+File19=..\..\..\help\JvBDEQBE.dtx
+File20=..\..\..\help\JvBDEQuery.dtx
+File21=..\..\..\help\JvBDESecurity.dtx
+File22=..\..\..\help\JvBDESQLScript.dtx
+File23=..\..\..\help\JvBdeUtils.dtx
+File24=..\..\..\help\JvBDECheckPasswordForm.dtx
+File25=..\..\..\help\JvBDEExceptionForm.dtx
+File26=..\..\..\help\JvBDEFilter.dtx
+File27=..\..\..\help\JvBDEIndex.dtx
+File28=..\..\..\help\JvBDELists.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

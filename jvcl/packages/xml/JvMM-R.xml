@@ -54,6 +54,7 @@
     <File Name="..\..\run\JvFullColorForm.pas" Targets="all" Formname="JvFullColorFrm" Condition=""/>
     <File Name="..\..\run\JvFullColorCircleForm.pas" Targets="all" Formname="JvFullColorCircleFrm" Condition=""/>
     <File Name="..\..\run\VFW.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAVICapture.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvBmpAnimator.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvGIF.dtx" Targets="help" Formname="" Condition=""/>

@@ -32,7 +32,7 @@ File2=JEDI.doxdb
 File3=vcl.doxdb
 
 [Source Files]
-Count=28
+Count=29
 File0=..\..\run\JvDockControlForm.pas
 File1=..\..\run\JvDockDelphiStyle.pas
 File2=..\..\run\JvDockGlobals.pas
@@ -47,20 +47,21 @@ File10=..\..\run\JvDockVCStyle.pas
 File11=..\..\run\JvDockVIDStyle.pas
 File12=..\..\run\JvDockVIDVCStyle.pas
 File13=..\..\run\JvDockVSNetStyle.pas
-File14=..\..\..\help\JvDockControlForm.dtx
-File15=..\..\..\help\JvDockDelphiStyle.dtx
-File16=..\..\..\help\JvDockGlobals.dtx
-File17=..\..\..\help\JvDockHashTable.dtx
-File18=..\..\..\help\JvDockInfo.dtx
-File19=..\..\..\help\JvDockSupportClass.dtx
-File20=..\..\..\help\JvDockSupportControl.dtx
-File21=..\..\..\help\JvDockSupportProc.dtx
-File22=..\..\..\help\JvDockTree.dtx
-File23=..\..\..\help\JvDockAdvTree.dtx
-File24=..\..\..\help\JvDockVCStyle.dtx
-File25=..\..\..\help\JvDockVIDStyle.dtx
-File26=..\..\..\help\JvDockVIDVCStyle.dtx
-File27=..\..\..\help\JvDockVSNetStyle.dtx
+File14=..\..\..\help\Common.dtx
+File15=..\..\..\help\JvDockControlForm.dtx
+File16=..\..\..\help\JvDockDelphiStyle.dtx
+File17=..\..\..\help\JvDockGlobals.dtx
+File18=..\..\..\help\JvDockHashTable.dtx
+File19=..\..\..\help\JvDockInfo.dtx
+File20=..\..\..\help\JvDockSupportClass.dtx
+File21=..\..\..\help\JvDockSupportControl.dtx
+File22=..\..\..\help\JvDockSupportProc.dtx
+File23=..\..\..\help\JvDockTree.dtx
+File24=..\..\..\help\JvDockAdvTree.dtx
+File25=..\..\..\help\JvDockVCStyle.dtx
+File26=..\..\..\help\JvDockVIDStyle.dtx
+File27=..\..\..\help\JvDockVIDVCStyle.dtx
+File28=..\..\..\help\JvDockVSNetStyle.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

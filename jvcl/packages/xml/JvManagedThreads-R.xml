@@ -19,6 +19,7 @@
     <File Name="..\..\run\JvMTSync.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMTSyncMon.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMTThreading.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMTComponents.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMTConsts.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMTData.dtx" Targets="help" Formname="" Condition=""/>

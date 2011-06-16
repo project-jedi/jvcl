@@ -34,7 +34,7 @@ File4=JEDI.doxdb
 File5=vcl.doxdb
 
 [Source Files]
-Count=18
+Count=19
 File0=..\..\run\JvXPBar.pas
 File1=..\..\run\JvXPContainer.pas
 File2=..\..\run\JvXPCore.pas
@@ -44,15 +44,16 @@ File5=..\..\run\JvXPCheckCtrls.pas
 File6=..\..\run\JvXPProgressBar.pas
 File7=..\..\run\JvExplorerBar.pas
 File8=..\..\run\JvExplorerBarItems.pas
-File9=..\..\..\help\JvXPBar.dtx
-File10=..\..\..\help\JvXPContainer.dtx
-File11=..\..\..\help\JvXPCore.dtx
-File12=..\..\..\help\JvXPCoreUtils.dtx
-File13=..\..\..\help\JvXPButtons.dtx
-File14=..\..\..\help\JvXPCheckCtrls.dtx
-File15=..\..\..\help\JvXPProgressBar.dtx
-File16=..\..\..\help\JvExplorerBar.dtx
-File17=..\..\..\help\JvExplorerBarItems.dtx
+File9=..\..\..\help\Common.dtx
+File10=..\..\..\help\JvXPBar.dtx
+File11=..\..\..\help\JvXPContainer.dtx
+File12=..\..\..\help\JvXPCore.dtx
+File13=..\..\..\help\JvXPCoreUtils.dtx
+File14=..\..\..\help\JvXPButtons.dtx
+File15=..\..\..\help\JvXPCheckCtrls.dtx
+File16=..\..\..\help\JvXPProgressBar.dtx
+File17=..\..\..\help\JvExplorerBar.dtx
+File18=..\..\..\help\JvExplorerBarItems.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

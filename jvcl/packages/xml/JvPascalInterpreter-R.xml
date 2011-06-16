@@ -57,6 +57,7 @@
     <File Name="..\..\run\JvInterpreter_Windows.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreterConst.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreterFm.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreterParser.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreter.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreter_all.dtx" Targets="help" Formname="" Condition=""/>

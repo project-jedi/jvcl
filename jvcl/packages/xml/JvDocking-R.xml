@@ -28,6 +28,7 @@
     <File Name="..\..\run\JvDockVIDStyle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVIDVCStyle.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDockVSNetStyle.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDockControlForm.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDockDelphiStyle.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDockGlobals.dtx" Targets="help" Formname="" Condition=""/>

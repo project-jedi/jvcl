@@ -20,6 +20,7 @@
     <File Name="..\..\run\JvCipher.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSerialMaker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvZlibMultiple.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvCabFile.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvCipher.dtx" Targets="help" Formname="" Condition=""/>

@@ -76,6 +76,7 @@
     <File Name="..\..\run\JvStdEditActions.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvValidators.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvErrorIndicator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvGnugettext.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvExButtons.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvExCheckLst.dtx" Targets="help" Formname="" Condition=""/>

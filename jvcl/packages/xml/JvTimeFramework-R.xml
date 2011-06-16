@@ -24,6 +24,7 @@
     <File Name="..\..\run\JvTFGlanceTextViewer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTFManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTFMonths.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvTFSparseMatrix.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvTFUtils.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvTFWeeks.dtx" Targets="help" Formname="" Condition=""/>
