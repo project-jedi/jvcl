@@ -50,6 +50,7 @@
     <File Name="..\..\run\JvGridPrinter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJanTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSimIndicator.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMarkupCommon.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMarkupLabel.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMarkupViewer.dtx" Targets="help" Formname="" Condition=""/>

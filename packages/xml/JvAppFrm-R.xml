@@ -30,6 +30,7 @@
     <File Name="..\..\run\JvFormTransparent.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormWallpaper.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEmbeddedForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvGradientCaption.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAnimTitle.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAppAnimatedIcon.dtx" Targets="help" Formname="" Condition=""/>

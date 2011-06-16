@@ -33,11 +33,12 @@ File3=JEDI.doxdb
 File4=vcl.doxdb
 
 [Source Files]
-Count=4
+Count=5
 File0=..\..\run\JvPrvwRender.pas
 File1=..\..\run\JvPrvwDoc.pas
-File2=..\..\..\help\JvPrvwRender.dtx
-File3=..\..\..\help\JvPrvwDoc.dtx
+File2=..\..\..\help\Common.dtx
+File3=..\..\..\help\JvPrvwRender.dtx
+File4=..\..\..\help\JvPrvwDoc.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

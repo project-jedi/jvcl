@@ -33,17 +33,18 @@ File3=JEDI.doxdb
 File4=vcl.doxdb
 
 [Source Files]
-Count=10
+Count=11
 File0=..\..\run\JvZlibMultiple.pas
 File1=..\..\run\JvCabFile.pas
 File2=..\..\run\JvCipher.pas
 File3=..\..\run\JvGenetic.pas
 File4=..\..\run\JvSerialMaker.pas
-File5=..\..\..\help\JvZlibMultiple.dtx
-File6=..\..\..\help\JvCabFile.dtx
-File7=..\..\..\help\JvCipher.dtx
-File8=..\..\..\help\JvGenetic.dtx
-File9=..\..\..\help\JvSerialMaker.dtx
+File5=..\..\..\help\Common.dtx
+File6=..\..\..\help\JvZlibMultiple.dtx
+File7=..\..\..\help\JvCabFile.dtx
+File8=..\..\..\help\JvCipher.dtx
+File9=..\..\..\help\JvGenetic.dtx
+File10=..\..\..\help\JvSerialMaker.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

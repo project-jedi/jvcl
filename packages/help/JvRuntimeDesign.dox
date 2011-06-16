@@ -33,7 +33,7 @@ File3=JEDI.doxdb
 File4=vcl.doxdb
 
 [Source Files]
-Count=18
+Count=19
 File0=..\..\run\JvInspDB.pas
 File1=..\..\run\JvInspector.pas
 File2=..\..\run\JvDynControlEngineJVCLInspector.pas
@@ -43,15 +43,16 @@ File5=..\..\run\JvDesignSurface.pas
 File6=..\..\run\JvDesignUtils.pas
 File7=..\..\run\JvDesignImp.pas
 File8=..\..\run\JvPropertyStoreEditor.pas
-File9=..\..\..\help\JvInspDB.dtx
-File10=..\..\..\help\JvInspector.dtx
-File11=..\..\..\help\JvDynControlEngineJVCLInspector.dtx
-File12=..\..\..\help\JvInspExtraEditors.dtx
-File13=..\..\..\help\JvDesignClip.dtx
-File14=..\..\..\help\JvDesignSurface.dtx
-File15=..\..\..\help\JvDesignUtils.dtx
-File16=..\..\..\help\JvDesignImp.dtx
-File17=..\..\..\help\JvPropertyStoreEditor.dtx
+File9=..\..\..\help\Common.dtx
+File10=..\..\..\help\JvInspDB.dtx
+File11=..\..\..\help\JvInspector.dtx
+File12=..\..\..\help\JvDynControlEngineJVCLInspector.dtx
+File13=..\..\..\help\JvInspExtraEditors.dtx
+File14=..\..\..\help\JvDesignClip.dtx
+File15=..\..\..\help\JvDesignSurface.dtx
+File16=..\..\..\help\JvDesignUtils.dtx
+File17=..\..\..\help\JvDesignImp.dtx
+File18=..\..\..\help\JvPropertyStoreEditor.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

@@ -16,6 +16,7 @@
   <Contains>
     <File Name="..\..\run\JvPluginManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPlugin.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPluginManager.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPlugin.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>

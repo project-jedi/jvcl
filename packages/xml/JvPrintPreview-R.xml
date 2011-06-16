@@ -17,6 +17,7 @@
   <Contains>
     <File Name="..\..\run\JvPrvwRender.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPrvwDoc.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPrvwRender.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPrvwDoc.dtx" Targets="help" Formname="" Condition=""/>
   </Contains>

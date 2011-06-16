@@ -32,17 +32,18 @@ File2=JEDI.doxdb
 File3=vcl.doxdb
 
 [Source Files]
-Count=10
+Count=11
 File0=..\..\run\JvWizardCommon.pas
 File1=..\..\run\JvWizardRouteMapNodes.pas
 File2=..\..\run\JvWizardRouteMapSteps.pas
 File3=..\..\run\JvWizardRouteMapList.pas
 File4=..\..\run\JvWizard.pas
-File5=..\..\..\help\JvWizardCommon.dtx
-File6=..\..\..\help\JvWizardRouteMapNodes.dtx
-File7=..\..\..\help\JvWizardRouteMapSteps.dtx
-File8=..\..\..\help\JvWizardRouteMapList.dtx
-File9=..\..\..\help\JvWizard.dtx
+File5=..\..\..\help\Common.dtx
+File6=..\..\..\help\JvWizardCommon.dtx
+File7=..\..\..\help\JvWizardRouteMapNodes.dtx
+File8=..\..\..\help\JvWizardRouteMapSteps.dtx
+File9=..\..\..\help\JvWizardRouteMapList.dtx
+File10=..\..\..\help\JvWizard.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

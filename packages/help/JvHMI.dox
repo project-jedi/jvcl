@@ -33,17 +33,18 @@ File3=JEDI.doxdb
 File4=vcl.doxdb
 
 [Source Files]
-Count=10
+Count=11
 File0=..\..\run\JvSLDMappingEditorDialog.pas
 File1=..\..\run\JvDialButton.pas
 File2=..\..\run\JvLED.pas
 File3=..\..\run\JvSegmentedLEDDisplay.pas
 File4=..\..\run\JvSegmentedLEDDisplayMapperFrame.pas
-File5=..\..\..\help\JvSLDMappingEditorDialog.dtx
-File6=..\..\..\help\JvDialButton.dtx
-File7=..\..\..\help\JvLED.dtx
-File8=..\..\..\help\JvSegmentedLEDDisplay.dtx
-File9=..\..\..\help\JvSegmentedLEDDisplayMapperFrame.dtx
+File5=..\..\..\help\Common.dtx
+File6=..\..\..\help\JvSLDMappingEditorDialog.dtx
+File7=..\..\..\help\JvDialButton.dtx
+File8=..\..\..\help\JvLED.dtx
+File9=..\..\..\help\JvSegmentedLEDDisplay.dtx
+File10=..\..\..\help\JvSegmentedLEDDisplayMapperFrame.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

@@ -19,6 +19,7 @@
     <File Name="..\..\run\JvWizardRouteMapSteps.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWizardRouteMapList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWizard.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvWizardCommon.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvWizardRouteMapNodes.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvWizardRouteMapSteps.dtx" Targets="help" Formname="" Condition=""/>

@@ -20,6 +20,7 @@
     <File Name="..\..\run\JvPageListTreeView.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNavigationPane.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPageListTreeView.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPageList.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvNavigationPane.dtx" Targets="help" Formname="" Condition=""/>

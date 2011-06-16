@@ -35,7 +35,7 @@ File5=JEDI.doxdb
 File6=vcl.doxdb
 
 [Source Files]
-Count=24
+Count=25
 File0=..\..\run\JvGradientCaption.pas
 File1=..\..\run\JvAnimTitle.pas
 File2=..\..\run\JvAppAnimatedIcon.pas
@@ -48,18 +48,19 @@ File8=..\..\run\JvFormMagnet.pas
 File9=..\..\run\JvFormTransparent.pas
 File10=..\..\run\JvFormWallpaper.pas
 File11=..\..\run\JvEmbeddedForms.pas
-File12=..\..\..\help\JvGradientCaption.dtx
-File13=..\..\..\help\JvAnimTitle.dtx
-File14=..\..\..\help\JvAppAnimatedIcon.dtx
-File15=..\..\..\help\JvAppEvent.dtx
-File16=..\..\..\help\JvAppHotKey.dtx
-File17=..\..\..\help\JvFormAnimatedIcon.dtx
-File18=..\..\..\help\JvFormAnimation.dtx
-File19=..\..\..\help\JvFormAutoSize.dtx
-File20=..\..\..\help\JvFormMagnet.dtx
-File21=..\..\..\help\JvFormTransparent.dtx
-File22=..\..\..\help\JvFormWallpaper.dtx
-File23=..\..\..\help\JvEmbeddedForms.dtx
+File12=..\..\..\help\Common.dtx
+File13=..\..\..\help\JvGradientCaption.dtx
+File14=..\..\..\help\JvAnimTitle.dtx
+File15=..\..\..\help\JvAppAnimatedIcon.dtx
+File16=..\..\..\help\JvAppEvent.dtx
+File17=..\..\..\help\JvAppHotKey.dtx
+File18=..\..\..\help\JvFormAnimatedIcon.dtx
+File19=..\..\..\help\JvFormAnimation.dtx
+File20=..\..\..\help\JvFormAutoSize.dtx
+File21=..\..\..\help\JvFormMagnet.dtx
+File22=..\..\..\help\JvFormTransparent.dtx
+File23=..\..\..\help\JvFormWallpaper.dtx
+File24=..\..\..\help\JvEmbeddedForms.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI

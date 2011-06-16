@@ -63,6 +63,7 @@
     <File Name="..\..\run\JvgQRLabel.pas" Targets="DB,help" Formname="" Condition="JVCL_UseQuickReport"/>
     <File Name="..\..\run\JvgReport.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvgXMLSerializer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvgReportParamsEditor.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvgShade.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvgShadow.dtx" Targets="help" Formname="" Condition=""/>

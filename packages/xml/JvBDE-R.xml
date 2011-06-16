@@ -35,6 +35,7 @@
     <File Name="..\..\run\JvBDEFilter.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvBDEIndex.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvBDELists.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvBDELoginDialog.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvBDEMemTable.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvBDEMove.dtx" Targets="help" Formname="" Condition=""/>

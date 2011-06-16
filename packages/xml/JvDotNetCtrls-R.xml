@@ -22,6 +22,7 @@
     <File Name="..\..\run\JvDotNetControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDotNetControls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDotNetUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDotNetControls.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDBDotNetControls.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDotNetUtils.dtx" Targets="help" Formname="" Condition=""/>

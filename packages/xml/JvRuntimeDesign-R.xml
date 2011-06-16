@@ -26,6 +26,7 @@
     <File Name="..\..\run\JvDesignUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDesignImp.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPropertyStoreEditor.pas" Targets="all" Formname="JvPropertyStoreEditorForm" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInspDB.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInspector.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDynControlEngineJVCLInspector.dtx" Targets="help" Formname="" Condition=""/>

@@ -38,6 +38,7 @@
     <File Name="..\..\run\JvSpellChecker.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpellerForm.pas" Targets="all" Formname="JvSpellerForm" Condition=""/>
     <File Name="..\..\run\JvSpellIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvMouseGesture.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPageManager.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPatchFile.dtx" Targets="help" Formname="" Condition=""/>

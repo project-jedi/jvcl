@@ -32,11 +32,12 @@ File2=JEDI.doxdb
 File3=vcl.doxdb
 
 [Source Files]
-Count=4
+Count=5
 File0=..\..\run\JvBandForms.pas
 File1=..\..\run\JvBandObject.pas
-File2=..\..\..\help\JvBandForms.dtx
-File3=..\..\..\help\JvBandObject.dtx
+File2=..\..\..\help\Common.dtx
+File3=..\..\..\help\JvBandForms.dtx
+File4=..\..\..\help\JvBandObject.dtx
 
 [General]
 Copyright=Copyright (C) 1999, 2011 Project JEDI
