@@ -198,12 +198,14 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.StartMasterValue
 Summary
-  Write here a summary (1 line)
+  Start level for the treeview
 Description
   StartMasterValue is a String property.
-  
-  TODO: Can anyone come up with a coherent description for this?
 
+  This is the begining level to start build the TreeView. When it is set to either 0 or nil, the
+  treeview starts from the root items. When set to 1, the treeview starts from the second level,
+  and so on.
+  
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.SelectNode
 Summary
@@ -340,9 +342,9 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.MasterField
 Summary
-  Set Masterfield to the item_id
+  Equivalent to the absoluteIndex of the treeView
 Description
-  Set Masterfield to the item_id of the table
+  Set Masterfield to the item_id of the table for a unique ID for each treeNode in the table
   
   eg: masterfield = table1.item_id
 
@@ -365,16 +367,17 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.ItemField
 Summary
-  Set ItemField to the description field
+  Field that contain the display name or the caption of a treeNode
 Description
   Set ItemField to the description field of the table. (This will be displayed)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.IconField
 Summary
-  Write here a summary (1 line)
+  Integer field for image index
 Description
-  TODO: To be added.
+  This is a integer field that point to a image index on a TImageList object that contains the icons
+  for the treeView.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.FindNextNode
@@ -438,9 +441,11 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.DetailField
 Summary
-  Set DetailField to the parent_id
+  Hierachical link to the parent item
 Description
-  Set DetailField to the parent_id
+  This is a foreing key to the master field in a self relation table.
+
+  Set DetailField to the parent_id.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDBTreeView.DragDrop
