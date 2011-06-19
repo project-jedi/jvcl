@@ -38,9 +38,8 @@ Uses
 
 type
   TJvChangeVersionControlComponent = procedure(VersionControlComponent: TComponent) of object;
-  TJvVersionControlActionCheckEnabledEvent = procedure(aDataComponent : TComponent;
-      aDatabaseControlEngine: TjvVersionControlActionEngine; var aEnabled : Boolean)
-      of object;
+  TJvVersionControlActionCheckEnabledEvent = procedure(aDataComponent : TComponent; aDatabaseControlEngine:
+      TjvVersionControlActionEngine; var aEnabled : Boolean) of object;
   TJvVersionControlActionExecuteEvent = procedure(Sender: TObject; ControlEngine: TjvVersionControlActionEngine;
     DataComponent: TComponent) of object;
   TJvVersionControlActionList = class(TActionList)
@@ -61,16 +60,13 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
-    property DisableActions: Boolean read FDisableActions write SetDisableActions
-        default true;
-    property HideActions: Boolean read FHideActions write SetHideActions default
-        false;
+    property DisableActions: Boolean read FDisableActions write SetDisableActions default true;
+    property HideActions: Boolean read FHideActions write SetHideActions default false;
     property IconType: Integer read FIconType write SetIconType default -1;
     property VersionControlComponent: TComponent read FVersionControlComponent write SetVersionControlComponent;
-    property VersionControlFilename: string read FVersionControlFilename write
-        SetVersionControlFilename;
-    property OnChangeVersionControlComponent: TJvChangeVersionControlComponent read
-      FOnChangeVersionControlComponent write FOnChangeVersionControlComponent;
+    property VersionControlFilename: string read FVersionControlFilename write SetVersionControlFilename;
+    property OnChangeVersionControlComponent: TJvChangeVersionControlComponent read FOnChangeVersionControlComponent
+        write FOnChangeVersionControlComponent;
   end;
 
 type
@@ -97,37 +93,29 @@ type
     function GetEngineList: TJvActionEngineList; override;
     function GetVersionControlComponent: TComponent;
     procedure SetVersionControlComponent(Value: TComponent);
-    property ActionType: TJclVersionControlActionType read FActionType write
-        SetActionType;
-    property VersionControlActionEngine: TjvVersionControlActionEngine read
-        FVersionControlActionEngine;
+    property ActionType: TJclVersionControlActionType read FActionType write SetActionType;
+    property VersionControlActionEngine: TjvVersionControlActionEngine read FVersionControlActionEngine;
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
     procedure ExecuteTarget(Target: TObject); override;
     function HandlesTarget(Target: TObject): Boolean; override;
+    procedure SetParentComponent(AParent: TComponent); override;
     procedure UpdateTarget(Target: TObject); override;
     property CurrentCache: TJclVersionControlCache read GetCurrentCache;
     property CurrentPlugin: TJclVersionControlPlugin read GetCurrentPlugin;
-    property CurrentVersionControlFilename: string read
-        GetCurrentVersionControlFilename;
-    property DisableAction: Boolean read FDisableAction write FDisableAction
-        default true;
+    property CurrentVersionControlFilename: string read GetCurrentVersionControlFilename;
+    property DisableAction: Boolean read FDisableAction write FDisableAction default true;
     property HideAction: Boolean read FHideAction write FHideAction default false;
-    property VersionControlFilename: string read FVersionControlFilename write
-        FVersionControlFilename;
+    property VersionControlFilename: string read FVersionControlFilename write FVersionControlFilename;
   published
     property IconType: Integer read FIconType write FIconType default -1;
-    property VersionControlComponent: TComponent read GetVersionControlComponent
-        write SetVersionControlComponent;
-    property AfterExecute: TJvVersionControlActionExecuteEvent read FAfterExecute
-        write FAfterExecute;
-    property OnChangeVersionControlComponent: TJvChangeVersionControlComponent read
-        FOnChangeVersionControlComponent write FOnChangeVersionControlComponent;
-    property OnCheckEnabled: TJvVersionControlActionCheckEnabledEvent read
-        FOnCheckEnabled write FOnCheckEnabled;
-    property OnExecute: TJvVersionControlActionExecuteEvent read FOnExecute write
-        FOnExecute;
+    property VersionControlComponent: TComponent read GetVersionControlComponent write SetVersionControlComponent;
+    property AfterExecute: TJvVersionControlActionExecuteEvent read FAfterExecute write FAfterExecute;
+    property OnChangeVersionControlComponent: TJvChangeVersionControlComponent read FOnChangeVersionControlComponent
+        write FOnChangeVersionControlComponent;
+    property OnCheckEnabled: TJvVersionControlActionCheckEnabledEvent read FOnCheckEnabled write FOnCheckEnabled;
+    property OnExecute: TJvVersionControlActionExecuteEvent read FOnExecute write FOnExecute;
   end;
 
   TJvVersionControlCommonAction = class(TJvVersionControlBaseAction)
@@ -430,8 +418,7 @@ begin
   end;
 end;
 
-procedure TJvVersionControlActionList.SetVersionControlFilename(const Value:
-    string);
+procedure TJvVersionControlActionList.SetVersionControlFilename(const Value: string);
 var
   I: Integer;
 begin
@@ -633,8 +620,7 @@ begin
     Result := Inherited HandlesTarget(Target);
 end;
 
-procedure TJvVersionControlBaseAction.SetActionType(const Value:
-    TJclVersionControlActionType);
+procedure TJvVersionControlBaseAction.SetActionType(const Value: TJclVersionControlActionType);
 begin
   FActionType := Value;
   if Caption = '' then
@@ -643,8 +629,18 @@ begin
     Name := VersionControlActionInfo(Value).ActionName;
 end;
 
-procedure TJvVersionControlBaseAction.SetVersionControlComponent(Value:
-    TComponent);
+procedure TJvVersionControlBaseAction.SetParentComponent(AParent: TComponent);
+begin
+  Inherited SetParentComponent(AParent);
+  if AParent is TJvVersionControlActionList then
+  begin
+    FDisableAction := TJvVersionControlActionList(AParent).DisableActions;
+    FHideAction := TJvVersionControlActionList(AParent).HideActions;
+    FIconType := TJvVersionControlActionList(AParent).IconType;
+  end;
+end;
+
+procedure TJvVersionControlBaseAction.SetVersionControlComponent(Value: TComponent);
 begin
   ActionComponent := Value;
 end;
