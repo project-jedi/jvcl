@@ -96,6 +96,7 @@ type
     procedure SetChecked(Value: Boolean);
     procedure SetEnabled(Value: Boolean);
     procedure SetImageIndex(Value: Integer);
+    procedure SetParentComponent(AParent: TComponent); override;
     procedure SetVisible(Value: Boolean);
     procedure UpdateTarget(Target: TObject); override;
     property ActionComponent: TComponent read FActionComponent write SetActionComponent;
@@ -212,7 +213,10 @@ begin
   inherited Create(AOwner);
   FLastTarget := nil;
   FControlEngine := nil;
-  FActionComponent := nil;
+  if Assigned(AOwner) and (AOwner is TJvActionBaseActionList) then
+    ActionComponent := TJvActionBaseActionList(AOwner).ActionComponent
+  else
+    FActionComponent := nil;
 end;
 
 procedure TJvActionEngineBaseAction.ChangeActionComponent(const
@@ -302,6 +306,13 @@ procedure TJvActionEngineBaseAction.SetImageIndex(Value: Integer);
 begin
   if ImageIndex <> Value then
     ImageIndex := Value;
+end;
+
+procedure TJvActionEngineBaseAction.SetParentComponent(AParent: TComponent);
+begin
+  Inherited SetParentComponent(AParent);
+  if AParent is TJvActionBaseActionList then
+    ActionComponent := TJvActionBaseActionList(AParent).ActionComponent;
 end;
 
 procedure TJvActionEngineBaseAction.SetVisible(Value: Boolean);

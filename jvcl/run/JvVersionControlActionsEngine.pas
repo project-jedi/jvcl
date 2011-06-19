@@ -46,15 +46,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     function GetFilename(aActionComponent: TComponent): string; virtual;
-    function SaveFile(aActionComponent: TComponent;const aFilename: string):
-        Boolean; virtual;
+    function SaveFile(aActionComponent: TComponent;const aFilename: string): Boolean; virtual;
     function NeedsSaveFile(aActionComponent: TComponent): Boolean; virtual;
     function SupportsAction(AAction: TJvActionEngineBaseAction): Boolean; override;
     function SupportsGetFileName(aActionComponent: TComponent): Boolean; virtual;
     function SupportsSaveFile(aActionComponent: TComponent): Boolean; virtual;
     function SupportsNeedsSaveFile(aActionComponent: TComponent): Boolean; virtual;
-    property OnChangeActionComponent: TJvChangeActionComponent read
-        FOnChangeActionComponent write FOnChangeActionComponent;
+    property OnChangeActionComponent: TJvChangeActionComponent read FOnChangeActionComponent write FOnChangeActionComponent;
   end;
 
   TjvVersionControlActionEngineClass = class of TjvVersionControlActionEngine;
@@ -63,11 +61,9 @@ type
     procedure RegisterEngine(AEngineClass: TjvVersionControlActionEngineClass);
   end;
 
-procedure RegisterVersionControlActionEngine(AEngineClass:
-    TjvVersionControlActionEngineClass);
+procedure RegisterVersionControlActionEngine(AEngineClass: TjvVersionControlActionEngineClass);
 
-function RegisteredVersionControlActionEngineList:
-    TjvVersionControlActionEngineList;
+function RegisteredVersionControlActionEngineList: TjvVersionControlActionEngineList;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -90,15 +86,13 @@ uses
 var
   IntRegisteredActionEngineList: TjvVersionControlActionEngineList;
 
-procedure RegisterVersionControlActionEngine(AEngineClass:
-    TjvVersionControlActionEngineClass);
+procedure RegisterVersionControlActionEngine(AEngineClass: TjvVersionControlActionEngineClass);
 begin
   if Assigned(IntRegisteredActionEngineList) then
     IntRegisteredActionEngineList.RegisterEngine(AEngineClass);
 end;
 
-function RegisteredVersionControlActionEngineList:
-    TjvVersionControlActionEngineList;
+function RegisteredVersionControlActionEngineList: TjvVersionControlActionEngineList;
 begin
   Result := IntRegisteredActionEngineList;
 end;
@@ -130,38 +124,32 @@ begin
   Result := '';
 end;
 
-function TjvVersionControlActionEngine.SaveFile(aActionComponent: TComponent;
-    const aFilename: string): Boolean;
+function TjvVersionControlActionEngine.SaveFile(aActionComponent: TComponent;const aFilename: string): Boolean;
 begin
   Result := True;
 end;
 
-function TjvVersionControlActionEngine.NeedsSaveFile(aActionComponent:
-    TComponent): Boolean;
+function TjvVersionControlActionEngine.NeedsSaveFile(aActionComponent: TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TjvVersionControlActionEngine.SupportsAction(AAction:
-    TJvActionEngineBaseAction): Boolean;
+function TjvVersionControlActionEngine.SupportsAction(AAction: TJvActionEngineBaseAction): Boolean;
 begin
-  Result := (AAction is TJvVersionCOntrolBaseAction) ;
+  Result := (AAction is TJvVersionControlBaseAction) ;
 end;
 
-function TjvVersionControlActionEngine.SupportsGetFileName(aActionComponent:
-    TComponent): Boolean;
+function TjvVersionControlActionEngine.SupportsGetFileName(aActionComponent: TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TjvVersionControlActionEngine.SupportsSaveFile(aActionComponent:
-    TComponent): Boolean;
+function TjvVersionControlActionEngine.SupportsSaveFile(aActionComponent: TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TjvVersionControlActionEngine.SupportsNeedsSaveFile(aActionComponent:
-    TComponent): Boolean;
+function TjvVersionControlActionEngine.SupportsNeedsSaveFile(aActionComponent: TComponent): Boolean;
 begin
   Result := False;
 end;
