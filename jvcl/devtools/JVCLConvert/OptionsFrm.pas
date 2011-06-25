@@ -26,6 +26,8 @@ type
     Label3: TLabel;
     edMask: TEdit;
     btnAddMask: TButton;
+    chkIgnoreInsideStrings: TCheckBox;
+    chkIgnoreInsideComments: TCheckBox;
     procedure ActionList1Update(Action: TBasicAction;
       var Handled: boolean);
     procedure acDeleteMaskExecute(Sender: TObject);
@@ -77,6 +79,8 @@ begin
     chkWholeWords.Checked := Options.WholeWords;
     chkReplaceFilenames.Checked := Options.ReplaceFilenames;
     chkSimulate.Checked := Options.Simulate;
+    chkIgnoreInsideStrings.Checked := Options.IgnoreInsideStrings;
+    chkIgnoreInsideComments.Checked := Options.IgnoreInsideComments;
     cbFileMasks.Items.Text := Options.Filemasks;
     S := Format('Current (%s)',[Options.FileMask]);
     cbFileMasks.ItemIndex := cbFileMasks.Items.Add(S);
@@ -92,6 +96,8 @@ begin
       Options.Simulate := chkSimulate.Checked;
       Options.Filemasks := cbFileMasks.Items.Text;
       Options.FileMask := ExtractFilemask(cbFileMasks.Text,Options.FileMask);
+      Options.IgnoreInsideStrings := chkIgnoreInsideStrings.Checked;
+      Options.IgnoreInsideComments := chkIgnoreInsideComments.Checked;
     end;
   finally
     Free;

@@ -4,8 +4,8 @@ object frmOptions: TfrmOptions
   ActiveControl = chkBackup
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 399
-  ClientWidth = 456
+  ClientHeight = 442
+  ClientWidth = 459
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,41 +13,44 @@ object frmOptions: TfrmOptions
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    459
+    442)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 18
-    Top = 102
+    Top = 127
     Width = 49
     Height = 13
     Caption = '&Filemasks:'
   end
   object btnOK: TButton
-    Left = 279
-    Top = 355
+    Left = 281
+    Top = 411
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = '&OK'
     Default = True
     ModalResult = 1
-    TabOrder = 7
+    TabOrder = 8
   end
   object btnCancel: TButton
-    Left = 359
-    Top = 355
+    Left = 361
+    Top = 411
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 8
+    TabOrder = 9
   end
   object chkBackup: TCheckBox
     Left = 18
-    Top = 18
-    Width = 422
+    Top = 13
+    Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Backup in *.BAK'
@@ -55,8 +58,8 @@ object frmOptions: TfrmOptions
   end
   object chkWholeWords: TCheckBox
     Left = 18
-    Top = 36
-    Width = 422
+    Top = 32
+    Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Replace whole words only'
@@ -64,8 +67,8 @@ object frmOptions: TfrmOptions
   end
   object chkReplaceFilenames: TCheckBox
     Left = 18
-    Top = 54
-    Width = 422
+    Top = 51
+    Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Replace in filenames'
@@ -73,8 +76,8 @@ object frmOptions: TfrmOptions
   end
   object chkSimulate: TCheckBox
     Left = 18
-    Top = 72
-    Width = 422
+    Top = 70
+    Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Simulate (report result)'
@@ -82,35 +85,37 @@ object frmOptions: TfrmOptions
   end
   object cbFileMasks: TComboBox
     Left = 18
-    Top = 120
-    Width = 422
+    Top = 145
+    Width = 425
     Height = 21
     Style = csDropDownList
     Anchors = [akLeft, akTop, akRight]
-    ItemHeight = 13
     ItemIndex = 0
-    TabOrder = 4
+    TabOrder = 5
     Text = '(none)'
     Items.Strings = (
       '(none)')
   end
   object btnDelete: TButton
-    Left = 358
-    Top = 149
+    Left = 361
+    Top = 174
     Width = 75
     Height = 25
     Action = acDeleteMask
     Anchors = [akTop, akRight]
-    TabOrder = 5
+    TabOrder = 6
   end
   object GroupBox1: TGroupBox
     Left = 18
-    Top = 177
-    Width = 427
-    Height = 160
+    Top = 202
+    Width = 430
+    Height = 203
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = ' New Filemask: '
-    TabOrder = 6
+    TabOrder = 7
+    DesignSize = (
+      430
+      203)
     object Label2: TLabel
       Left = 12
       Top = 22
@@ -128,21 +133,23 @@ object frmOptions: TfrmOptions
     object edMaskName: TEdit
       Left = 11
       Top = 38
-      Width = 404
+      Width = 407
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
+      ExplicitWidth = 404
     end
     object edMask: TEdit
       Left = 11
       Top = 86
-      Width = 404
+      Width = 407
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
+      ExplicitWidth = 404
     end
     object btnAddMask: TButton
-      Left = 334
+      Left = 343
       Top = 119
       Width = 75
       Height = 25
@@ -151,10 +158,30 @@ object frmOptions: TfrmOptions
       TabOrder = 2
     end
   end
+  object chkIgnoreInsideStrings: TCheckBox
+    Left = 18
+    Top = 89
+    Width = 425
+    Height = 17
+    Hint = 'Ignore any words inside string definitions'
+    Anchors = [akLeft, akTop, akRight]
+    Caption = 'Ignore Inside Strings'
+    TabOrder = 4
+  end
+  object chkIgnoreInsideComments: TCheckBox
+    Left = 18
+    Top = 109
+    Width = 425
+    Height = 17
+    Hint = 'Ignore any words inside comments '
+    Anchors = [akLeft, akTop, akRight]
+    Caption = 'Ignore Comments'
+    TabOrder = 10
+  end
   object ActionList1: TActionList
     OnUpdate = ActionList1Update
     Left = 126
-    Top = 282
+    Top = 297
     object acDeleteMask: TAction
       Caption = '&Delete'
       OnExecute = acDeleteMaskExecute
