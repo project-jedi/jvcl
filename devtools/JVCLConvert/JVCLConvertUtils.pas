@@ -7,33 +7,37 @@ uses
 type
   TAppOptions = class(TJvCustomPropertyStore)
   private
-    FFilename:string;
-    FWholeWords: boolean;
-    FSimulate: boolean;
-    FReplaceFilenames: boolean;
-    FBackup: boolean;
-    FFileMasks: string;
-    FRootDirectory: string;
-    FFileMask: string;
+    FBackup: Boolean;
     FDATFile: string;
+    FFileMask: string;
+    FFileMasks: string;
+    FFilename:string;
+    FIgnoreInsideStrings: Boolean;
+    FIgnoreInsideComments: Boolean;
+    FReplaceFilenames: Boolean;
+    FRootDirectory: string;
+    FSimulate: Boolean;
+    FWholeWords: Boolean;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   published
-    property RootDirectory:string read FRootDirectory write FRootDirectory;
+    property Backup: Boolean read FBackup write FBackup default True;
+    property DATFile:String read FDATFile write FDATFile;
     property FileMask:string read FFileMask write FFileMask;
     property FileMasks:string read FFileMasks write FFileMasks;
-    property DATFile:String read FDATFile write FDATFile;
-    property Backup:boolean read FBackup write FBackup;
-    property WholeWords:boolean read FWholeWords write FWholeWords;
-    property ReplaceFilenames:boolean read FReplaceFilenames write FReplaceFilenames;
-    property Simulate:boolean read FSimulate write FSimulate;
+    property IgnoreInsideStrings: Boolean read FIgnoreInsideStrings write FIgnoreInsideStrings default True;
+    property IgnoreInsideComments: Boolean read FIgnoreInsideComments write FIgnoreInsideComments default True;
+    property ReplaceFilenames: Boolean read FReplaceFilenames write FReplaceFilenames default True;
+    property RootDirectory:string read FRootDirectory write FRootDirectory;
+    property Simulate: Boolean read FSimulate write FSimulate default False;
+    property WholeWords: Boolean read FWholeWords write FWholeWords default True;
   end;
 
 implementation
 
 { TAppOptions }
 
-constructor TAppOptions.Create(AOwner : TComponent);
+constructor TAppOptions.Create(AOwner: TComponent);
 begin
   inherited create (AOwner);
   RootDirectory :=  '';
@@ -44,7 +48,8 @@ begin
   ReplaceFileNames := true;
   Simulate := false;
   FileMasks := 'Delphi files (*.dpr;*.dpk;*.pas;*.dfm)'#27'BCB files (*.dpr;*.bpk;*.pas;*.dfm;*.cpp;*.h;*.hpp)'#27'All files (*.*)';
+  FIgnoreInsideComments := True;
+  FIgnoreInsideStrings := True;
 end;
-
 
 end.
