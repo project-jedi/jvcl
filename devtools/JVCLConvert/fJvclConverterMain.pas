@@ -467,14 +467,12 @@ procedure TfrmMain.btnRemoveClick(Sender: TObject);
 var
   Idx: Integer;
 begin
-  with sbStatus do
-    SetStatus(['Removing files...', Panels[1].Text, Panels[2].Text]);
+  SetStatus(['Removing files...', sbStatus.Panels[1].Text, sbStatus.Panels[2].Text]);
   // this is faster...
   for Idx := SearchList.Items.Count - 1 downto 0 do
     if SearchList.Items[Idx].Selected then
       SearchList.Items.Delete(Idx);
-  with sbStatus do
-    SetStatus(['Ready', Panels[1].Text, Panels[2].Text]);
+  SetStatus(['Ready', sbStatus.Panels[1].Text, sbStatus.Panels[2].Text]);
 end;
 
 procedure TfrmMain.btnStartClick(Sender: TObject);
@@ -484,8 +482,7 @@ var
   ReplaceTime, TotalTime: TLargeInteger;
 begin
   Screen.Cursor := crHourglass;
-  with sbStatus do
-    SetStatus(['Scanning...', Panels[1].Text, Panels[2].Text]);
+  SetStatus(['Scanning...', sbStatus.Panels[1].Text, sbStatus.Panels[2].Text]);
   TotalTime := 0;
   try
     // Reset all items
@@ -518,8 +515,7 @@ begin
     end;
   finally // wrap up
     Screen.Cursor := crDefault;
-    with sbStatus do
-      SetStatus(['Ready', Panels[1].Text, Format('Total: %f secs', [TotalTime / 1000000])]);
+    SetStatus(['Ready', sbStatus.Panels[1].Text, Format('Total: %f secs', [TotalTime / 1000000])]);
   end; // try/finally
 end;
 
@@ -600,9 +596,8 @@ end;
 
 procedure TfrmMain.btnDeleteClick(Sender: TObject);
 begin
-  with vleUnits do
-    if Strings.Count > 0 then
-      DeleteRow(Row);
+  if vleUnits.Strings.Count > 0 then
+    vleUnits.DeleteRow(vleUnits.Row);
 end;
 
 procedure TfrmMain.AboutMeExecute(Sender: TObject);
@@ -748,28 +743,21 @@ end;
 
 procedure TfrmMain.LoadSettings;
 begin
-  with FAppOptions do
-  begin
-    LoadProperties;
-    JvSearchFiles1.RootDirectory := RootDirectory;
-    JvSearchFiles1.FileParams.FileMask := FileMask;
-    fCurrentDataFile := DATFile;
-  end;
-  with sbStatus do
-    SetStatus(['Ready', JvSearchFiles1.FileParams.FileMask, '']);
+  FAppOptions.LoadProperties;
+  JvSearchFiles1.RootDirectory := FAppOptions.RootDirectory;
+  JvSearchFiles1.FileParams.FileMask := FAppOptions.FileMask;
+  fCurrentDataFile := FAppOptions.DATFile;
+  SetStatus(['Ready', JvSearchFiles1.FileParams.FileMask, '']);
   LoadDATFile(fCurrentDataFile);
   Caption := 'JVCL Convert:  ' + ExtractFileName(fCurrentDataFile);
 end;
 
 procedure TfrmMain.SaveSettings;
 begin
-  with FAppOptions do
-  begin
-    RootDirectory := JvSearchFiles1.RootDirectory;
-    FileMask := JvSearchFiles1.FileParams.FileMask;
-    DATFile := fCurrentDataFile;
-    StoreProperties;
-  end;
+  FAppOptions.RootDirectory := JvSearchFiles1.RootDirectory;
+  FAppOptions.FileMask := JvSearchFiles1.FileParams.FileMask;
+  FAppOptions.DATFile := fCurrentDataFile;
+  FAppOptions.StoreProperties;
 end;
 
 procedure TfrmMain.ActionList1Update(Action: TBasicAction;
@@ -844,8 +832,7 @@ begin
   S := JvSearchFiles1.FileParams.FileMask;
   if InputQuery('File Mask', 'Set new file mask:', S) and (S <> '') then
     JvSearchFiles1.FileParams.FileMask := S;
-  with sbStatus do
-    SetStatus([Panels[0].Text, JvSearchFiles1.FileParams.FileMask]);
+  SetStatus([sbStatus.Panels[0].Text, JvSearchFiles1.FileParams.FileMask]);
 end;
 
 initialization

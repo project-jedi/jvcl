@@ -25,11 +25,9 @@ object frmMain: TfrmMain
     ActivePage = tbsFiles
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 463
     object tbsFiles: TTabSheet
       BorderWidth = 2
       Caption = 'Select Files'
-      ExplicitWidth = 455
       object SearchList: TListView
         Left = 0
         Top = 0
@@ -66,7 +64,6 @@ object frmMain: TfrmMain
         OnColumnClick = SearchListColumnClick
         OnDblClick = SearchListDblClick
         OnKeyUp = SearchListKeyUp
-        ExplicitWidth = 451
       end
     end
     object tbsStrings: TTabSheet
@@ -103,7 +100,6 @@ object frmMain: TfrmMain
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
-    ExplicitWidth = 463
     object btnIterateDir: TToolButton
       Left = 0
       Top = 0
@@ -164,6 +160,7 @@ object frmMain: TfrmMain
       Left = 200
       Top = 0
       Action = SaveData
+      OnClick = btnSaveClick
     end
     object btnConvert: TToolButton
       Left = 223
@@ -200,7 +197,6 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
-    ExplicitWidth = 463
   end
   object OpenDialog: TJvOpenDialog
     DefaultExt = 'pas'
@@ -344,7 +340,6 @@ object frmMain: TfrmMain
       Hint = 'Save Conversion Data'
       ImageIndex = 3
       ShortCut = 16467
-      OnExecute = btnSaveClick
     end
     object DeleteLine: TAction
       Category = 'Conversion'
@@ -406,7 +401,7 @@ object frmMain: TfrmMain
     Left = 104
     Top = 88
     Bitmap = {
-      494C01010F008000840010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010F008000880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -952,7 +947,7 @@ object frmMain: TfrmMain
     Left = 104
     Top = 136
     Bitmap = {
-      494C010103000400080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030004000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
