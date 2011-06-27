@@ -32,7 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, Controls, DB, DBTables, Bde,
+  Windows, Classes, Controls, DB, DBTables, BDE,
   {$IFDEF COMPILER10_UP}
   DBCommonTypes,
   {$ENDIF COMPILER10_UP}

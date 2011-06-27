@@ -25,7 +25,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvID3v2Types;
+unit JvId3v2Types;
 
 {$I jvcl.inc}
 

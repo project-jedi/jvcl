@@ -247,7 +247,7 @@ uses
   Consts, TypInfo,
   ActiveX,
   JclSysUtils,
-  JvJclUtils, // SameFileName() for Delphi 5
+  JvJCLUtils, // SameFileName() for Delphi 5
   JvJVCLUtils, JvResources;
 
 resourcestring

@@ -3271,7 +3271,7 @@ var
   dcurve: array [0..3] of TPoint;
   rgn: HRGN;
   R1, G1, B1, R2, G2, B2: Byte;
-  r, g, b, dr, dg, db: Extended;
+  r, g, b, dr, dg, DB: Extended;
   AColor, pcolor: TColor;
   pw: Integer;
 begin
@@ -3690,14 +3690,14 @@ begin
       B2 := GetBlue(AColor);
       dr := (R1 - R2) / (pw / 3);
       dg := (G1 - G2) / (pw / 3);
-      db := (B1 - B2) / (pw / 3);
+      DB := (B1 - B2) / (pw / 3);
       if pw < 30 then
         Pen.Width := 30;
       for i := 1 to Pen.Width div 3 do
       begin
         r := r - dr;
         g := g - dg;
-        b := b - db;
+        b := b - DB;
         Pen.Color := rgb(Round(r), Round(g), Round(b));
         MoveTo(myorigin.X, myorigin.Y);
         LineTo(X, Y);
@@ -3731,7 +3731,7 @@ begin
       B2 := GetBlue(AColor);
       dr := (R1 - R2) / (pw / 3);
       dg := (G1 - G2) / (pw / 3);
-      db := (B1 - B2) / (pw / 3);
+      DB := (B1 - B2) / (pw / 3);
       if pw < 30 then
         Pen.Width := 30;
       for i := 1 to Pen.Width div 3 do
@@ -3739,7 +3739,7 @@ begin
         Pen.Width := Pen.Width - 2;
         r := r - dr;
         g := g - dg;
-        b := b - db;
+        b := b - DB;
         Pen.Color := rgb(Round(r), Round(g), Round(b));
         Ellipse(myorigin.X, myorigin.Y, X, Y);
       end;

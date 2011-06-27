@@ -1187,16 +1187,16 @@ end;
 
 procedure TJvScrollMax.MouseClasses(AControlClasses: array of TControlClass);
 var
-  I, iB, iC: Integer;
+  I, IB, iC: Integer;
 begin
   for I := Low(AControlClasses) to High(AControlClasses) do
-    for iB := 0 to BandCount - 1 do
-      for iC := 0 to Bands[iB].ControlCount - 1 do
-        if Bands[iB].Controls[iC] is AControlClasses[I] then
+    for IB := 0 to BandCount - 1 do
+      for iC := 0 to Bands[IB].ControlCount - 1 do
+        if Bands[IB].Controls[iC] is AControlClasses[I] then
         begin
-          TJvScrollMax(Bands[iB].Controls[iC]).OnMouseDown := BandMouseDown;
-          TJvScrollMax(Bands[iB].Controls[iC]).OnMouseMove := BandMouseMove;
-          TJvScrollMax(Bands[iB].Controls[iC]).OnMouseUp := BandMouseUp;
+          TJvScrollMax(Bands[IB].Controls[iC]).OnMouseDown := BandMouseDown;
+          TJvScrollMax(Bands[IB].Controls[iC]).OnMouseMove := BandMouseMove;
+          TJvScrollMax(Bands[IB].Controls[iC]).OnMouseUp := BandMouseUp;
         end;
 end;
 

@@ -58,7 +58,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Top = 11
     Width = 96
     Height = 13
-    Caption = '&Available buttons:    '
+    Caption = '&Available Buttons:    '
     FocusControl = ButtonsList
   end
   object CategoriesLabel: TLabel
@@ -75,8 +75,8 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Height = 29
     AutoSize = False
     Caption =
-      'To add command buttons, drag and drop buttons onto the JvSpeedba' +
-      'r. To remove command buttons, drag them off of the JvSpeedbar.'
+      'To add command Buttons, drag and drop Buttons onto the JvSpeedba' +
+      'r. To remove command Buttons, drag them off of the JvSpeedbar.'
     WordWrap = True
   end
   object ButtonsList: TDrawGrid

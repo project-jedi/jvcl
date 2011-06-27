@@ -44,7 +44,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, ExtCtrls, StdCtrls, ImgList,
-  JvJCLUtils, JvComboBox,
+  JvJCLUtils, JvCombobox,
   JvComponent, JvExControls, JvExStdCtrls;
 
 type

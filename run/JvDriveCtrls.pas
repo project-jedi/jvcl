@@ -40,7 +40,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, StdCtrls,
   FileCtrl,
-  JvComboBox, JvListBox, JvSearchFiles, JvTypes, JVCLVer;
+  JvCombobox, JvListBox, JvSearchFiles, JvTypes, JVCLVer;
 
 type
   // redclare so user don't have to add JvTypes to uses manually

@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, ExtCtrls,
   JvDockControlForm, JvDockSupportControl, JvDockTree, JvDockVIDStyle,
-  JvDockGlobals, ContNrs;
+  JvDockGlobals, Contnrs;
 
 type
   TJvDockVSNETConjoinServerOption = class(TJvDockVIDConjoinServerOption)

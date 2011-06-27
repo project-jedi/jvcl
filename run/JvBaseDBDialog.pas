@@ -78,7 +78,7 @@ const
 implementation
 
 uses 
-  Sysutils, Types, ExtCtrls, ComCtrls, StdCtrls, 
+  SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, 
   JvJVCLUtils;
 
 function TJvBaseDBDialog.CreateForm: TForm;

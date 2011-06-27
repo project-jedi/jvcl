@@ -94,7 +94,7 @@ const
 implementation
 
 uses
-  BDEConst, DBConsts, Math,
+  bdeconst, DBConsts, Math,
   JvDBUtils, JvBdeUtils;
 
 const

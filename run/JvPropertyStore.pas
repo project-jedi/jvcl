@@ -206,8 +206,7 @@ type
     property Items: TStringList read GetItems;
     property Count: Integer read GetCount;
     { Defines if the Items.Objects- Objects will be freed inside the clear procedure }
-    property FreeObjects: Boolean read FFreeObjects write FFreeObjects default
-      True;
+    property FreeObjects: Boolean read FFreeObjects write FFreeObjects default True;
     { Defines if new List entries will be created if there are stored entries, which
       are not in the current object }
     property CreateListEntries: Boolean read FCreateListEntries write

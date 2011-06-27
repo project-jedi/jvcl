@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DB, DBTables, Bde;
+  Classes, DB, DBTables, BDE;
 
 const
   DefQBEStartParam = '#';
@@ -131,7 +131,7 @@ const
 implementation
 
 uses
-  SysUtils, DBConsts, BDEConst,
+  SysUtils, DBConsts, bdeconst,
   JvDBUtils;
 
 constructor TJvQBEQuery.Create(AOwner: TComponent);

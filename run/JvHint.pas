@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Controls, Forms, ExtCtrls,
-  JvHTControls, JvTypes;
+  JvHtControls, JvTypes;
 
 type
   TJvHintWindow = class(THintWindow)

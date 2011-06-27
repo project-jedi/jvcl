@@ -57,7 +57,7 @@ const
 implementation
 
 uses
-  AdoDb;
+  ADODB;
 
 function TJvDatabaseActionAdoDatasetEngine.GetSQL(AActionComponent :
     TComponent): string;

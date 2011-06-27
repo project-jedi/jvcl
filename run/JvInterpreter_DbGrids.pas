@@ -52,7 +52,7 @@ const
 implementation
 
 uses
-  Classes, Graphics, Menus, Grids, Db, DbGrids,
+  Classes, Graphics, Menus, Grids, DB, DBGrids,
   JvInterpreter_Windows;
 
 { TColumnTitle }

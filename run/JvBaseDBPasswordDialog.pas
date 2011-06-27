@@ -115,7 +115,7 @@ const
 implementation
 
 uses 
-  Sysutils, Types, ExtCtrls, ComCtrls, StdCtrls, JvResources, JvdsADialogs,
+  SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, JvResources, JvDSADialogs,
   Dialogs;
 
 
@@ -159,27 +159,27 @@ begin
         AfterTransferPasswordFromSession(SessionPassword);
       if not (OldPassword = SessionPassword) then
       begin
-        JVDsaDialogs.MessageDlg(RsOldPasswordsMismatch, mtError, [mbok], 0, dckScreen,
+        JvDSADialogs.MessageDlg(RsOldPasswordsMismatch, mtError, [mbok], 0, dckScreen,
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
         exit;
       end;
     end;
     if not (NewPassword = NewPasswordRetype) then
     begin
-      JVDsaDialogs.MessageDlg(RsPasswordsMismatch, mtError, [mbok], 0, dckScreen,
+      JvDSADialogs.MessageDlg(RsPasswordsMismatch, mtError, [mbok], 0, dckScreen,
         0, mbDefault, mbDefault, mbDefault, DynControlEngine);
       Exit;
     end;
     if (Length(NewPassword) < Options.MinPasswordLength) then
     begin
-      JVDsaDialogs.MessageDlg(Format(RsPasswordLengthToShort, [Options.MinPasswordLength]), mtError, [mbok], 0,
+      JvDSADialogs.MessageDlg(Format(RsPasswordLengthToShort, [Options.MinPasswordLength]), mtError, [mbok], 0,
         dckScreen,
         0, mbDefault, mbDefault, mbDefault, DynControlEngine);
       exit;
     end;
     if not CheckAllowedCharacters(NewPassword) then
     begin
-      JVDsaDialogs.MessageDlg(Format(RsPasswordNotAllowedCharacters, [Options.MinPasswordLength]), mtError, [mbok], 0,
+      JvDSADialogs.MessageDlg(Format(RsPasswordNotAllowedCharacters, [Options.MinPasswordLength]), mtError, [mbok], 0,
         dckScreen,
         0, mbDefault, mbDefault, mbDefault, DynControlEngine);
       exit;
@@ -189,14 +189,14 @@ begin
       BeforeTransferPasswordToSession(SessionPassword);
     Result := ChangePasswordInSession(NewPassword);
     if Result then
-      JVDsaDialogs.MessageDlg(RsPasswordChanged, mtInformation, [mbOK], 0, dckScreen,
+      JvDSADialogs.MessageDlg(RsPasswordChanged, mtInformation, [mbOK], 0, dckScreen,
         0, mbDefault, mbDefault, mbDefault, DynControlEngine)
     else
-      JVDsaDialogs.MessageDlg(RsPasswordNotChanged, mtInformation, [mbOK], 0, dckScreen,
+      JvDSADialogs.MessageDlg(RsPasswordNotChanged, mtInformation, [mbOK], 0, dckScreen,
         0, mbDefault, mbDefault, mbDefault, DynControlEngine);
   except
     on E: Exception do
-      JVDsaDialogs.MessageDlg(E.Message, mtError, [mbOK], 0, dckScreen,
+      JvDSADialogs.MessageDlg(E.Message, mtError, [mbOK], 0, dckScreen,
         0, mbDefault, mbDefault, mbDefault, DynControlEngine);
   end;
 end;

@@ -38,7 +38,7 @@ uses
   Buttons, Dialogs, FileCtrl,
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
   JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
-  JvScrollBox, JvStaticText, JvComboBox, JvImage, JvSpin, JvCheckListBox,
+  JvScrollBox, JvStaticText, JvCombobox, JvImage, JvSpin, JvCheckListBox,
   JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox, JvComCtrls,
   JvProgressBar;
 

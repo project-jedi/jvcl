@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvCABFile;
+unit JvCabFile;
 
 {$I jvcl.inc}
 {$I windowsonly.inc}

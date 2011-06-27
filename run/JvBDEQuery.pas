@@ -32,7 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, DB, DBTables, Bde,
+  SysUtils, Classes, DB, DBTables, BDE,
   JvComponentBase, JVCLVer, JvTypes;
 
 const
@@ -193,7 +193,7 @@ const
 implementation
 
 uses
-  RTLConsts, Forms, Consts, BDEConst,
+  RTLConsts, Forms, Consts, bdeconst,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}

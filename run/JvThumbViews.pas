@@ -36,7 +36,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, Forms, ExtCtrls,
   FileCtrl, StdCtrls, SysUtils, Messages, Graphics,
-  JvThumbNails, JvBaseThumbnail, JvExControls;
+  JvThumbnails, JvBaseThumbnail, JvExControls;
 
 type
   // (rom) already in JvBaseThumbnail

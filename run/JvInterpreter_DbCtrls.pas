@@ -52,7 +52,7 @@ const
 implementation
 
 uses
-  Classes, Graphics, Db, DbCtrls;
+  Classes, Graphics, DB, DBCtrls;
 
 { TDBEdit }
 

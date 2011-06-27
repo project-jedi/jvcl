@@ -36,7 +36,7 @@ uses
   SysUtils, Classes, IniFiles,
   Forms, ComCtrls, Menus, Dialogs,
   JvSimpleXml, JvComponentBase,
-  JclSimpleXML;
+  JclSimpleXml;
 
 type
   TJvTranslator = class(TJvComponent)

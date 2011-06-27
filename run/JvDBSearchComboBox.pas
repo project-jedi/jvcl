@@ -45,7 +45,7 @@ uses
   Generics.Collections,
   {$ENDIF SUPPORTS_GENERICS}
   Windows, Classes, Controls, DB,
-  JvComboBox;
+  JvCombobox;
 
 type
   TJvDBCustomSearchComboBox = class;

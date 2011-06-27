@@ -133,7 +133,7 @@ implementation
 
 uses
   Variants, SysUtils, BDE,
-  JvBDEUtils, JvResources;
+  JvBdeUtils, JvResources;
 
 const
   cTable = 'Table';

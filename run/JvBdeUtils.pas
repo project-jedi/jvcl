@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Bde, Classes, DB, DBTables,
+  Windows, BDE, Classes, DB, DBTables,
   JvDBUtils;
 
 type
@@ -235,7 +235,7 @@ implementation
 
 uses
   SysUtils, Registry, Forms, Controls, Dialogs, Consts, Math,
-  IniFiles, DBConsts, BDEConst, DBCommon, Variants, RTLConsts,
+  IniFiles, DBConsts, bdeconst, DBCommon, Variants, RTLConsts,
   JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes, JvResources;
 
 { Utility routines }
@@ -2201,11 +2201,11 @@ end;
 
 procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 var
-  I, iB: Integer;
+  I, IB: Integer;
 begin
   X := -1;
   Y := -1;
-  iB := 0;
+  IB := 0;
   if (Length(S) >= Pos) and (Pos >= 0) then
   begin
     I := 1;
@@ -2215,11 +2215,11 @@ begin
       if S[I] = Cr then
       begin
         Inc(Y);
-        iB := I + 1
+        IB := I + 1
       end;
       Inc(I);
     end;
-    X := Pos - iB;
+    X := Pos - IB;
   end;
 end;
 {####################### from JvStrUtil unit #######################}

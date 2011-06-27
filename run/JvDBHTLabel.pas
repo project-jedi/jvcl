@@ -39,7 +39,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, DB, DBCtrls, Messages, Controls,
   VDBConsts,
-  JvHTControls;
+  JvHtControls;
 
 type
   TJvDBHTLabel = class(TJvCustomHTLabel)

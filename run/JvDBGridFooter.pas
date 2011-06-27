@@ -47,7 +47,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // inline
   {$ENDIF MSWINDOWS}
-  Variants, Sysutils, Classes, ComCtrls,
+  Variants, SysUtils, Classes, ComCtrls,
   DB, DBGrids, Grids, JvDBGrid;
 
 type

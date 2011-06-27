@@ -76,7 +76,7 @@ const
 implementation
 
 uses
-  JvBDEUtils;
+  JvBdeUtils;
 
 constructor TJvBDESQLScript.Create(AOwner: TComponent);
 begin

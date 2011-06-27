@@ -26,7 +26,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvRegistryTreeView;
+unit JvRegistryTreeview;
 
 {$I jvcl.inc}
 
