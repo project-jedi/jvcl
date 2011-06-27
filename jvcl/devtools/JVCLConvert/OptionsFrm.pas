@@ -28,8 +28,7 @@ type
     btnAddMask: TButton;
     chkIgnoreInsideStrings: TCheckBox;
     chkIgnoreInsideComments: TCheckBox;
-    procedure ActionList1Update(Action: TBasicAction;
-      var Handled: boolean);
+    procedure ActionList1Update(Action: TBasicAction; var Handled: Boolean);
     procedure acDeleteMaskExecute(Sender: TObject);
     procedure acAddMaskExecute(Sender: TObject);
   private
@@ -38,7 +37,7 @@ type
     function ExtractFilemask(const S, default: string): string;
   public
     { Public declarations }
-    class function Edit(Options: TAppOptions): boolean;
+    class function Edit(Options: TAppOptions): Boolean;
   end;
 
 implementation
@@ -46,8 +45,7 @@ implementation
 {$R *.dfm}
 
 
-procedure TfrmOptions.ActionList1Update(Action: TBasicAction;
-  var Handled: boolean);
+procedure TfrmOptions.ActionList1Update(Action: TBasicAction; var Handled: Boolean);
 begin
   acDeleteMask.Enabled := cbFileMasks.ItemIndex >= 0;
   acAddMask.Enabled := (edMaskName.Text <> '') and (edMask.Text <> '');
@@ -64,7 +62,7 @@ begin
     cbFileMasks.ItemIndex := i - 1;
 end;
 
-class function TfrmOptions.Edit(Options: TAppOptions): boolean;
+class function TfrmOptions.Edit(Options: TAppOptions): Boolean;
 var
   frmOptions: TfrmOptions;
   S: string;
@@ -121,7 +119,7 @@ end;
 procedure TfrmOptions.acAddMaskExecute(Sender: TObject);
 begin
   cbFileMasks.ItemIndex := cbFileMasks.Items.Add(
-      Format('%s (%s)', [edMaskName.Text, StringReplace(edMask.Text, ',', ';', [rfReplaceAll])]));
+    Format('%s (%s)', [edMaskName.Text, StringReplace(edMask.Text, ',', ';', [rfReplaceAll])]));
 end;
 
 end.
