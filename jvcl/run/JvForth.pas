@@ -39,7 +39,7 @@ uses
   ShellAPI,
   {$ENDIF MSWINDOWS}
   Windows, Messages, Forms, Dialogs, FileCtrl, Variants,
-  JvXMLTree, JvComponentBase, JvStrings, JvTypes;
+  JvXmlTree, JvComponentBase, JvStrings, JvTypes;
 
 const
   StackMax = 1000;

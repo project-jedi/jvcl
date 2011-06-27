@@ -1076,7 +1076,7 @@ uses
   {$ENDIF}
   cxTextEdit, cxControls,
   JvDynControlEngineVCL,
-  JvJclUtils, JvBrowseFolder, JvDynControlEngineTools,
+  JvJCLUtils, JvBrowseFolder, JvDynControlEngineTools,
   cxLookAndFeelPainters, TypInfo;
 
 var

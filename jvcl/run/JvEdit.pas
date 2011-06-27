@@ -275,7 +275,7 @@ implementation
 
 uses
   SysUtils, Math, Forms,
-  JvFixedEditPopup, JvToolEdit;
+  JvFixedEditPopUp, JvToolEdit;
 
 //=== Local procedures =======================================================
 

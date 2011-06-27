@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvID3v1;
+unit JvId3v1;
 
 {$I jvcl.inc}
 
@@ -113,7 +113,7 @@ implementation
 
 uses
   Math,
-  JvID3v2Types, JvTypes, JvResources;
+  JvId3v2Types, JvTypes, JvResources;
 
 const
   CID3v1Tag: array [0..2] of AnsiChar = AnsiString('TAG');  { do not change case }

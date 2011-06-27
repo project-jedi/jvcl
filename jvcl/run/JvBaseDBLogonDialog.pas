@@ -1528,7 +1528,7 @@ begin
       TmpConnectionList.LoadProperties;
       if TmpConnectionList.Count <= 0 then
       begin
-        JVDsaDialogs.MessageDlg(RsNoConnectionEntriesFound, mtError, [mbok], 0, dckScreen,
+        JvDSADialogs.MessageDlg(RsNoConnectionEntriesFound, mtError, [mbok], 0, dckScreen,
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
         exit;
       end;
@@ -1541,7 +1541,7 @@ begin
         Results[0] := Integer(mrYes);
         Results[1] := Integer(mrNo);
         Results[2] := Integer(mrCancel);
-        case JVDsaDialogs.MessageDlgEx(RsConnectionListImportAppendOverwriteExistingEntries,
+        case JvDSADialogs.MessageDlgEx(RsConnectionListImportAppendOverwriteExistingEntries,
           mtConfirmation, Buttons, Results, 0, dckScreen, 0,
           0, 2, -1, DynControlEngine) of
           mrYes:

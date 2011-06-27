@@ -2813,7 +2813,7 @@ begin
       else
       if FieldKind = fkData then
       begin
-        if DataType in [db.ftFloat{$IFDEF COMPILER12_UP},db.ftExtended{$ENDIF COMPILER12_UP}] then
+        if DataType in [DB.ftFloat{$IFDEF COMPILER12_UP},DB.ftExtended{$ENDIF COMPILER12_UP}] then
           if CharInSet(Key, ['.', ',']) then
             Key := JclFormatSettings.DecimalSeparator;
 

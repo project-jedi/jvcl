@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvID3v2;
+unit JvId3v2;
 
 {$I jvcl.inc}
 
@@ -37,7 +37,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JclUnicode,
   {$ENDIF ~COMPILER12_UP}
-  JvID3v2Types, JvID3v2Base;
+  JvId3v2Types, JvID3v2Base;
 
 type
   TJvID3Persistent = class(TPersistent)

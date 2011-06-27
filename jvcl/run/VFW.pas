@@ -2165,7 +2165,7 @@ function    MCIWndGetFileName(hwnd: HWND; lp: LPSTR; len: UINT): DWORD;
 function    MCIWndGetDevice(hwnd: HWND; lp: LPSTR; len: UINT): DWORD;
 
 function    MCIWndGetStyles(hwnd: HWND): UINT;
-function    MCIWndChangeStyles(hwnd: HWND; mask: UINT; value: DWORD): DWORD;
+function    MCIWndChangeStyles(hwnd: HWND; Mask: UINT; value: DWORD): DWORD;
 
 type
     PUnknown    = ^IUnknown;
@@ -3841,9 +3841,9 @@ begin
     Result  := MCIWndSM(hwnd, MCIWNDM_GETSTYLES, 0, 0);
 end;
 
-function    MCIWndChangeStyles(hwnd: HWND; mask: UINT; value: DWORD): DWORD;
+function    MCIWndChangeStyles(hwnd: HWND; Mask: UINT; value: DWORD): DWORD;
 begin
-    Result  := MCIWndSM(hwnd, MCIWNDM_CHANGESTYLES, mask, value);
+    Result  := MCIWndSM(hwnd, MCIWNDM_CHANGESTYLES, Mask, value);
 end;
 
 function    MCIWndOpenInterface(hwnd: HWND; pUnk: PUNKNOWN): DWORD;

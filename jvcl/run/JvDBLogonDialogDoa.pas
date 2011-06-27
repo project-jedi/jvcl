@@ -124,7 +124,7 @@ begin
       if (E.ErrorCode = 28001) or (E.ErrorCode = 28002) or (E.ErrorCode = 28011) then
         HandleExpiredPassword(E.Message)
       else
-        JVDsaDialogs.MessageDlg(E.Message, mtError, [mbok], 0, dckScreen,
+        JvDSADialogs.MessageDlg(E.Message, mtError, [mbok], 0, dckScreen,
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
     end;
   end;
@@ -169,7 +169,7 @@ end;
 procedure TJvDBDoaLogonDialog.HandleExpiredPassword(const ErrorMessage:
   string);
 begin
-  if JVDsaDialogs.MessageDlg(ErrorMessage + #13#10 + RsDoYouWantToChangePassword,
+  if JvDSADialogs.MessageDlg(ErrorMessage + #13#10 + RsDoYouWantToChangePassword,
     mtInformation, [mbYes, mbNo], 0, dckScreen,
     0, mbDefault, mbDefault, mbDefault, DynControlEngine) = mrYes then
     if ChangePassword then

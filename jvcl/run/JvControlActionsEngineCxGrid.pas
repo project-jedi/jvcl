@@ -76,7 +76,7 @@ uses
   cxGridDBDataDefinitions, cxControls,
   cxCustomData, cxGridExportLink,
   {$IFDEF DELPHI12_UP}
-  PngImage, Jpeg,
+  pngimage, jpeg,
   {$ENDIf}
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   Graphics, Variants, SysUtils, Dialogs, JvControlActions;

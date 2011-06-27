@@ -1336,11 +1336,11 @@ end;
 
 procedure GetXYByPos(const S: string; const Pos: Integer; var X, Y: Integer);
 var
-  I, iB: Integer;
+  I, IB: Integer;
 begin
   X := -1;
   Y := -1;
-  iB := 0;
+  IB := 0;
   if (Length(S) >= Pos) and (Pos >= 0) then
   begin
     I := 1;
@@ -1350,21 +1350,21 @@ begin
       if S[I] = #10 then
       begin
         Inc(Y);
-        iB := I + 1;
+        IB := I + 1;
       end;
       Inc(I);
     end;
-    X := Pos - iB;
+    X := Pos - IB;
   end;
 end;
 
 procedure GetXYByPosW(const S: WideString; const Pos: Integer; var X, Y: Integer);
 var
-  I, iB: Integer;
+  I, IB: Integer;
 begin
   X := -1;
   Y := -1;
-  iB := 0;
+  IB := 0;
   if (Length(S) >= Pos) and (Pos >= 0) then
   begin
     I := 1;
@@ -1374,11 +1374,11 @@ begin
       if S[I] = #10 then
       begin
         Inc(Y);
-        iB := I + 1;
+        IB := I + 1;
       end;
       Inc(I);
     end;
-    X := Pos - iB;
+    X := Pos - IB;
   end;
 end;
 
@@ -6607,13 +6607,13 @@ end;
 begin
   // ignores Visibility
   { TODO : Untested }
-  if Libc.system(PChar(Format('kfmclient exec "%s"', [CommandLine]))) = -1 then
+  if Libc.System(PChar(Format('kfmclient exec "%s"', [CommandLine]))) = -1 then
   begin
     if WorkingDirectory = '' then
-      Result := Libc.system(PChar(Format('cd "%s" ; %s',
+      Result := Libc.System(PChar(Format('cd "%s" ; %s',
         [GetCurrentDir, CommandLine])))
     else
-      Result := Libc.system(PChar(Format('cd "%s" ; %s',
+      Result := Libc.System(PChar(Format('cd "%s" ; %s',
         [WorkingDirectory, CommandLine])));
   end;
 end;

@@ -207,7 +207,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls,
   Forms, StdCtrls, ExtCtrls, Menus, ActnList,
-  JvConsts, JvFixedEditPopup, JvStdEditActions, JvUnicodeCanvas, JvComponent,
+  JvConsts, JvFixedEditPopUp, JvStdEditActions, JvUnicodeCanvas, JvComponent,
   JvExControls;
 
 const

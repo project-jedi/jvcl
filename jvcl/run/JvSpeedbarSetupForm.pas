@@ -35,7 +35,7 @@ uses
   SysUtils,  Classes,
   Windows, Messages,
   Graphics, Controls, Forms, StdCtrls, Grids, ExtCtrls,
-  JvConsts, JvSpeedBar, JvSpeedButton, JvComponent;
+  JvConsts, JvSpeedbar, JvSpeedButton, JvComponent;
 
 type
   TJvSpeedbarSetupWindow = class(TJvForm)

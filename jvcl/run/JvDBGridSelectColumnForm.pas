@@ -81,7 +81,7 @@ implementation
 
 uses
   SysUtils,
-  JvJclUtils, JvConsts;
+  JvJCLUtils, JvConsts;
 
 {$R *.dfm}
 

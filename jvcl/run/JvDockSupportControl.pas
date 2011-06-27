@@ -1652,7 +1652,7 @@ var
   I: Integer;
   TCItem: TTCItem;
 begin
-  TCItem.mask := TCIF_IMAGE;
+  TCItem.Mask := TCIF_IMAGE;
   for I := 0 to FTabs.Count - 1 do
   begin
     TCItem.iImage := GetImageIndex(I);
@@ -3523,7 +3523,7 @@ var
   TCItem: TTCItem;
   Buffer: array [0..4095] of Char;
 begin
-  TCItem.mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading];
+  TCItem.Mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading];
   TCItem.pszText := Buffer;
   TCItem.cchTextMax := SizeOf(Buffer);
   if SendMessage(FTabControl.Handle, TCM_GETITEM, Index, LPARAM(@TCItem)) = 0 then
@@ -3540,7 +3540,7 @@ function TJvDockTabStrings.GetObject(Index: Integer): TObject;
 var
   TCItem: TTCItem;
 begin
-  TCItem.mask := TCIF_PARAM;
+  TCItem.Mask := TCIF_PARAM;
   if SendMessage(FTabControl.Handle, TCM_GETITEM, Index, LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailGetObject, [Index]));
   Result := TObject(TCItem.lParam);
@@ -3552,7 +3552,7 @@ const
 var
   TCItem: TTCItem;
 begin
-  TCItem.mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading] or
+  TCItem.Mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading] or
     TCIF_IMAGE;
   TCItem.pszText := PChar(S);
   TCItem.iImage := FTabControl.GetImageIndex(Index);
@@ -3567,7 +3567,7 @@ const
 var
   TCItem: TTCItem;
 begin
-  TCItem.mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading] or
+  TCItem.Mask := TCIF_TEXT or RTL[FTabControl.UseRightToLeftReading] or
     TCIF_IMAGE;
   TCItem.pszText := PChar(S);
   TCItem.iImage := FTabControl.GetImageIndex(Index);
@@ -3580,7 +3580,7 @@ procedure TJvDockTabStrings.PutObject(Index: Integer; AObject: TObject);
 var
   TCItem: TTCItem;
 begin
-  TCItem.mask := TCIF_PARAM;
+  TCItem.Mask := TCIF_PARAM;
   TCItem.lParam := Longint(AObject);
   if SendMessage(FTabControl.Handle, TCM_SETITEM, Index, LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailSetObject, [Index]));

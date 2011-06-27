@@ -55,7 +55,7 @@ const
 implementation
 
 uses
-  BDE, Classes, Db, DbTables;
+  BDE, Classes, DB, DBTables;
 
 { EDBEngineError }
 

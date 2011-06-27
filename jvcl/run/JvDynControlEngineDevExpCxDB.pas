@@ -31,7 +31,7 @@ interface
 
 {$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning, JvDynControlEngineDevExpcx, JvDynControlEngineIntf;
+  JclUnitVersioning, JvDynControlEngineDevExpCx, JvDynControlEngineIntf;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}

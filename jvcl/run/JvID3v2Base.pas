@@ -42,7 +42,7 @@ uses
   {$ENDIF MSWINDOWS}
   Classes, SysUtils,
   JclUnicode,
-  JvComponentBase, JvID3v2Types, JvID3v1;
+  JvComponentBase, JvId3v2Types, JvId3v1;
 
 const
   { Only v2.2, v2.3 and v2.4 are supported }
@@ -1194,7 +1194,7 @@ uses
   {$IFDEF HAS_UNIT_ANSISTRINGS}
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
-  JvJclUtils,
+  JvJCLUtils,
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JclStringConversions, JclWideStrings,
   JvConsts, JvResources;

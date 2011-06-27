@@ -52,7 +52,7 @@ const
 implementation
 
 uses
-  Classes, Variants, Db;
+  Classes, Variants, DB;
 
 { EDatabaseError }
 

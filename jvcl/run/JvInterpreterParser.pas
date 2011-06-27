@@ -267,7 +267,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvInterpreter, JvInterpreterConst, JvConsts, windows;
+  JvInterpreter, JvInterpreterConst, JvConsts, Windows;
 
 const
   K = '''';

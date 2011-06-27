@@ -53,7 +53,7 @@ const
 implementation
 
 uses
-  SysUtils, Classes, Controls, Forms, Graphics, Db,
+  SysUtils, Classes, Controls, Forms, Graphics, DB,
   {$IFDEF JVCL_UseQuickReport}
   QrPrntr, Quickrpt, QrCtrls,
   {$ELSE}

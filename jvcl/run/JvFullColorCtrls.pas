@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
   ComCtrls, StdCtrls, ExtCtrls, Types,
-  JvJCLUtils, JvTypes, JvComboBox, JvFullColorSpaces, JvFullColorRotate;
+  JvJCLUtils, JvTypes, JvCombobox, JvFullColorSpaces, JvFullColorRotate;
 
 type
   TJvFullColorAxisConfig = (acXYZ, acXZY, acYXZ, acYZX, acZXY, acZYX);

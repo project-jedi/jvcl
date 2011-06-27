@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, SysUtils,
   JvComponentBase,
-  DBT, SetupApi, HID, JvTypes;
+  DBT, SetupApi, Hid, JvTypes;
 
 const
   // a version string for the component

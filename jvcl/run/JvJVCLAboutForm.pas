@@ -39,7 +39,7 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles, Messages, Controls, Forms, StdCtrls, ExtCtrls,
   Dialogs, Buttons,
-  Jpeg,
+  jpeg,
   JclSysInfo,
   JVCLVer, JvBaseDlg, JvComponent;
 

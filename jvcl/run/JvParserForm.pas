@@ -82,7 +82,7 @@ const
 implementation
 
 uses
-  Dialogs, JvHTMLParser, JvResources;
+  Dialogs, JvHtmlParser, JvResources;
 
 {$R *.dfm}
 

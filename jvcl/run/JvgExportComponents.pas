@@ -211,7 +211,7 @@ implementation
 uses
   ComObj, FileCtrl,
   JvResources,
-  JvConsts, JvSimpleXML,
+  JvConsts, JvSimpleXml,
   JvgUtils;
 
 function DeleteFileEx(const FileName: string): Boolean;

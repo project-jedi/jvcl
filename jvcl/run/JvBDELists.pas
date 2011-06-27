@@ -210,7 +210,7 @@ const
 implementation
 
 uses
-  BDEConst, DBConsts,
+  bdeconst, DBConsts,
   JvDBUtils, JvResources;
 
 //=== Utility routines =======================================================

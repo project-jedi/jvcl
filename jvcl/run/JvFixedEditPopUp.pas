@@ -136,7 +136,7 @@ const
 implementation
 
 uses
-  JvJclUtils, JvResources, JvJVCLUtils;
+  JvJCLUtils, JvResources, JvJVCLUtils;
 
 type
   THiddenPopupObject = class(TComponent)

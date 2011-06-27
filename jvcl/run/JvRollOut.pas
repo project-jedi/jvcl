@@ -55,7 +55,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Forms, Messages, Controls, Graphics, ImgList, ExtCtrls, ACtnList,
+  Windows, Forms, Messages, Controls, Graphics, ImgList, ExtCtrls, ActnList,
   JvExtComponent, JvThemes;
 
 const
