@@ -2,8 +2,8 @@ object frmMain: TfrmMain
   Left = 335
   Top = 178
   Caption = 'JVCL Conversion Utility'
-  ClientHeight = 322
-  ClientWidth = 621
+  ClientHeight = 518
+  ClientWidth = 1022
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clBlack
@@ -20,19 +20,23 @@ object frmMain: TfrmMain
   object JvPageControl: TPageControl
     Left = 0
     Top = 26
-    Width = 621
-    Height = 277
-    ActivePage = tbsFiles
+    Width = 1022
+    Height = 473
+    ActivePage = tbsStrings
     Align = alClient
     TabOrder = 0
     object tbsFiles: TTabSheet
       BorderWidth = 2
       Caption = 'Select Files'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object SearchList: TListView
         Left = 0
         Top = 0
-        Width = 609
-        Height = 245
+        Width = 1010
+        Height = 441
         Align = alClient
         Columns = <
           item
@@ -40,6 +44,7 @@ object frmMain: TfrmMain
             Caption = 'Filename'
           end
           item
+            Alignment = taRightJustify
             Caption = 'Replacements'
             Width = 100
           end
@@ -48,8 +53,13 @@ object frmMain: TfrmMain
             Width = 53
           end
           item
+            Alignment = taRightJustify
             Caption = 'Microseconds'
             Width = 100
+          end
+          item
+            Alignment = taRightJustify
+            Caption = 'Lines'
           end
           item
             AutoSize = True
@@ -70,28 +80,42 @@ object frmMain: TfrmMain
       BorderWidth = 2
       Caption = 'Strings'
       ImageIndex = 1
-      object vleUnits: TValueListEditor
+      object ReplaceListGrid: TJvStringGrid
         Left = 0
         Top = 0
-        Width = 609
-        Height = 245
+        Width = 1010
+        Height = 441
         Align = alClient
-        KeyOptions = [keyEdit, keyAdd]
+        ColCount = 6
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goTabs]
         TabOrder = 0
-        TitleCaptions.Strings = (
-          'Text to Find'
-          'Replace With')
-        OnStringsChange = vleUnitsStringsChange
+        OnSetEditText = ReplaceListGridSetEditText
+        Alignment = taLeftJustify
+        FixedFont.Charset = DEFAULT_CHARSET
+        FixedFont.Color = clWindowText
+        FixedFont.Height = -11
+        FixedFont.Name = 'Tahoma'
+        FixedFont.Style = []
         ColWidths = (
-          283
-          320)
+          58
+          365
+          233
+          105
+          111
+          108)
+        RowHeights = (
+          24
+          24
+          19
+          20
+          24)
       end
     end
   end
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 621
+    Width = 1022
     Height = 26
     AutoSize = True
     Caption = 'ToolBar1'
@@ -160,7 +184,6 @@ object frmMain: TfrmMain
       Left = 200
       Top = 0
       Action = SaveData
-      OnClick = btnSaveClick
     end
     object btnConvert: TToolButton
       Left = 223
@@ -183,8 +206,8 @@ object frmMain: TfrmMain
   end
   object sbStatus: TStatusBar
     Left = 0
-    Top = 303
-    Width = 621
+    Top = 499
+    Width = 1022
     Height = 19
     Panels = <
       item
@@ -289,7 +312,7 @@ object frmMain: TfrmMain
     object FileExit: TFileExit
       Category = 'File'
       Caption = 'E&xit'
-      Hint = 'Exit|Quits the application'
+      Hint = 'Exit|Quits the Application'
       ImageIndex = 10
       ShortCut = 32883
     end
@@ -336,10 +359,11 @@ object frmMain: TfrmMain
     object SaveData: TAction
       Category = 'Conversion'
       Caption = 'Save Conversion Data'
-      Enabled = False
       Hint = 'Save Conversion Data'
       ImageIndex = 3
       ShortCut = 16467
+      OnExecute = btnSaveClick
+      OnUpdate = SaveDataUpdate
     end
     object DeleteLine: TAction
       Category = 'Conversion'
@@ -357,7 +381,7 @@ object frmMain: TfrmMain
       Enabled = False
       Hint = 'Insert a new line'
       ImageIndex = 12
-      ShortCut = 16462
+      ShortCut = 16429
       OnExecute = btnAddLineClick
       OnUpdate = NewLineUpdate
     end
@@ -401,7 +425,7 @@ object frmMain: TfrmMain
     Left = 104
     Top = 88
     Bitmap = {
-      494C01010F008000880010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010F008000980010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -947,7 +971,7 @@ object frmMain: TfrmMain
     Left = 104
     Top = 136
     Bitmap = {
-      494C0101030004000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101030004001C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1095,8 +1119,8 @@ object frmMain: TfrmMain
     Top = 88
   end
   object JvAppIniFileStorage: TJvAppIniFileStorage
-    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.BooleanStringTrueValues = 'True, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'False, NO, N'
     SubStorages = <>
     Left = 120
     Top = 220

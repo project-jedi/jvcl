@@ -1,5 +1,13 @@
 JVCL Convert changes:
 =====================
+
+ver. 1.30 (2011-06-28)
+- added : Simulated files will be written TO *.SIM
+- added : Options to ignore inside strings and inside comments
+- added : Definitions could now additionally be stored in xml files
+- added : in xml files the definition of "whole word", "ignore inside comments" and "ignore inside strings" could be changed for each single replacement
+- Different improvements of the gui
+
 ver. 1.23 (2003-01-10)
 - added *.dfm to file mask
 - added file name to form's caption on load

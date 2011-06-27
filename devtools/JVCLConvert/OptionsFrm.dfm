@@ -49,7 +49,7 @@ object frmOptions: TfrmOptions
   end
   object chkBackup: TCheckBox
     Left = 18
-    Top = 13
+    Top = 9
     Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
@@ -58,7 +58,7 @@ object frmOptions: TfrmOptions
   end
   object chkWholeWords: TCheckBox
     Left = 18
-    Top = 32
+    Top = 28
     Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
@@ -67,7 +67,7 @@ object frmOptions: TfrmOptions
   end
   object chkReplaceFilenames: TCheckBox
     Left = 18
-    Top = 51
+    Top = 47
     Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
@@ -76,11 +76,11 @@ object frmOptions: TfrmOptions
   end
   object chkSimulate: TCheckBox
     Left = 18
-    Top = 70
+    Top = 66
     Width = 425
     Height = 17
     Anchors = [akLeft, akTop, akRight]
-    Caption = 'Simulate (report result)'
+    Caption = 'Simulate (Create *.SIM files)'
     TabOrder = 3
   end
   object cbFileMasks: TComboBox
@@ -137,7 +137,6 @@ object frmOptions: TfrmOptions
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
-      ExplicitWidth = 404
     end
     object edMask: TEdit
       Left = 11
@@ -146,7 +145,6 @@ object frmOptions: TfrmOptions
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
-      ExplicitWidth = 404
     end
     object btnAddMask: TButton
       Left = 343
@@ -160,7 +158,7 @@ object frmOptions: TfrmOptions
   end
   object chkIgnoreInsideStrings: TCheckBox
     Left = 18
-    Top = 89
+    Top = 85
     Width = 425
     Height = 17
     Hint = 'Ignore any words inside string definitions'
@@ -170,7 +168,7 @@ object frmOptions: TfrmOptions
   end
   object chkIgnoreInsideComments: TCheckBox
     Left = 18
-    Top = 109
+    Top = 105
     Width = 425
     Height = 17
     Hint = 'Ignore any words inside comments '

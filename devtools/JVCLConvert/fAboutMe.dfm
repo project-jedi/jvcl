@@ -1,9 +1,9 @@
 object frmAboutMe: TfrmAboutMe
   Left = 569
   Top = 209
-  ClientWidth = 229
-  ClientHeight = 347
   Caption = 'About Me'
+  ClientHeight = 367
+  ClientWidth = 229
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object frmAboutMe: TfrmAboutMe
     Left = 8
     Top = 8
     Width = 209
-    Height = 305
+    Height = 320
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ParentColor = True
@@ -26,9 +26,9 @@ object frmAboutMe: TfrmAboutMe
     object Version: TLabel
       Left = 16
       Top = 136
-      Width = 67
+      Width = 58
       Height = 13
-      Caption = 'Version: 1.23 '
+      Caption = 'Version: 1.3'
       IsControl = True
     end
     object Comments: TLabel
@@ -36,7 +36,7 @@ object frmAboutMe: TfrmAboutMe
       Top = 136
       Width = 56
       Height = 13
-      Caption = '2003-01-10'
+      Caption = '2011-06-28'
       WordWrap = True
       IsControl = True
     end
@@ -379,12 +379,12 @@ object frmAboutMe: TfrmAboutMe
       IsControl = True
     end
     object Label3: TLabel
-      Left = 5
-      Top = 285
+      Left = 8
+      Top = 302
       Width = 156
       Height = 13
       AutoSize = False
-      Caption = 'Copyright: (c) 2003 '
+      Caption = 'Copyright: (c) 2011'
       WordWrap = True
       IsControl = True
     end
@@ -403,8 +403,8 @@ object frmAboutMe: TfrmAboutMe
       IsControl = True
     end
     object JvHotLink1: TJvLabel
-      Left = 104
-      Top = 285
+      Left = 109
+      Top = 302
       Width = 61
       Height = 13
       Cursor = crHandPoint
@@ -418,7 +418,7 @@ object frmAboutMe: TfrmAboutMe
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      AutoOpenURL = True
+      Transparent = True
       HotTrack = True
       HotTrackFont.Charset = ANSI_CHARSET
       HotTrackFont.Color = clBlue
@@ -444,7 +444,7 @@ object frmAboutMe: TfrmAboutMe
       ParentFont = False
       ParentShowHint = False
       ShowHint = True
-      AutoOpenURL = True
+      Transparent = True
       HotTrack = True
       HotTrackFont.Charset = ANSI_CHARSET
       HotTrackFont.Color = clBlue
@@ -457,7 +457,7 @@ object frmAboutMe: TfrmAboutMe
       Left = 8
       Top = 176
       Width = 193
-      Height = 105
+      Height = 120
       BorderStyle = bsNone
       Color = clBtnFace
       Lines.Strings = (
@@ -467,14 +467,15 @@ object frmAboutMe: TfrmAboutMe
         #9'              Dave Jewell '
         #9'              Martin Waldenburg'
         ''
-        'Contributors:     Peter Thörnqvist'
-        #9'          Arioch')
+        'Contributors:     Peter Th'#246'rnqvist'
+        #9'          Arioch'
+        '                          Jens Fudickar ')
       TabOrder = 0
     end
   end
   object OKButton: TButton
     Left = 71
-    Top = 320
+    Top = 334
     Width = 75
     Height = 25
     Caption = 'OK'
