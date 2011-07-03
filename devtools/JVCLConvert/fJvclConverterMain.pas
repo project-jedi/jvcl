@@ -422,18 +422,18 @@ end;
 { TfrmMain }
 
 function TfrmMain.FileStringReplace(const FullFileName: string; Backup, Simulate, WholeWord, IgnoreInsideString,
-  IgnoreInsideComments: boolean; var ReplaceTime: TLargeInteger): Integer;
+  IgnoreInsideComments: Boolean; var ReplaceTime: TLargeInteger): Integer;
 var
   OldLine, NewLine, HiLine, BackupName: string;
   FromStr, ToStr: string;
   FromStrLength: Integer;
   OldLineLength: Integer;
-  UpperCaseReplace: boolean;
+  UpperCaseReplace: Boolean;
   i: Integer;
   InputStream: TFileStream;
   OutputStream: TMemoryStream;
-  PSFound, PLFound: boolean; // Optimisation Variables to remember if the PS or PL is found once inside the line
-  intWholeWord, intIgnoreInsideString, intIgnoreInsideComments: boolean;
+  PSFound, PLFound: Boolean; // Optimisation Variables to remember if the PS or PL is found once inside the line
+  intWholeWord, intIgnoreInsideString, intIgnoreInsideComments: Boolean;
   Def: TConvertDefinition;
   LineComment: string;
   Comment1Start,
@@ -448,8 +448,8 @@ var
   function SearchReplace: Integer;
   var
     LineNum, P, PS, PL, PC1, PC2: Integer;
-    Comment1Active: boolean;
-    Comment2Active: boolean;
+    Comment1Active: Boolean;
+    Comment2Active: Boolean;
 
     procedure GetPositions;
     begin
@@ -641,45 +641,57 @@ begin
     Comment1End := '}';
     Comment2Start := '(*';
     Comment2End := '*)';
-    Comment1Length := 2;
+    Comment1Length := 1;
     Comment2Length := 2;
     StringBeginEnd := '''';
   end
   else
-    if (FileExt = '.C') or (FileExt = '.CS') or (FileExt = '.CPP') or (FileExt = '.H') or (FileExt = '.HPP') then
+    if FileExt = '.DFM' then
     begin
-      LineComment := '//';
-      Comment1Start := '/*';
-      Comment1End := '*/';
+      LineComment := '';
+      Comment1Start := '{';
+      Comment1End := '}';
       Comment2Start := '';
       Comment2End := '';
-      Comment1Length := 2;
+      Comment1Length := 1;
       Comment2Length := 0;
-      StringBeginEnd := '"';
+      StringBeginEnd := '''';
     end
     else
-      if FileExt = '.SQL' then
+      if (FileExt = '.C') or (FileExt = '.CS') or (FileExt = '.CPP') or (FileExt = '.H') or (FileExt = '.HPP') then
       begin
-        LineComment := '--';
+        LineComment := '//';
         Comment1Start := '/*';
         Comment1End := '*/';
         Comment2Start := '';
         Comment2End := '';
         Comment1Length := 2;
         Comment2Length := 0;
-        StringBeginEnd := '''';
+        StringBeginEnd := '"';
       end
       else
-      begin
-        LineComment := '';
-        Comment1Start := '';
-        Comment1End := '';
-        Comment2Start := '';
-        Comment2End := '';
-        Comment1Length := 0;
-        Comment2Length := 0;
-        StringBeginEnd := '';
-      end;
+        if FileExt = '.SQL' then
+        begin
+          LineComment := '--';
+          Comment1Start := '/*';
+          Comment1End := '*/';
+          Comment2Start := '';
+          Comment2End := '';
+          Comment1Length := 2;
+          Comment2Length := 0;
+          StringBeginEnd := '''';
+        end
+        else
+        begin
+          LineComment := '';
+          Comment1Start := '';
+          Comment1End := '';
+          Comment2Start := '';
+          Comment2End := '';
+          Comment1Length := 0;
+          Comment2Length := 0;
+          StringBeginEnd := '';
+        end;
 
   // For each line in the file...
   FastTimer.Start;
@@ -981,7 +993,7 @@ end;
 procedure TfrmMain.SortListColumn(LV: TListView; Column: TListColumn);
 var
   i: Integer;
-  FDescending: boolean;
+  FDescending: Boolean;
   SortFunc: TLVCompare;
 begin
   FDescending := (Column.ImageIndex <= 1);
