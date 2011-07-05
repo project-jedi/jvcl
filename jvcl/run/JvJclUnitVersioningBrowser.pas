@@ -1,27 +1,27 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{ -----------------------------------------------------------------------------
+  The contents of this file are subject to the Mozilla Public License
+  Version 1.1 (the "License"); you may not use this file except in compliance
+  with the License. You may obtain a copy of the License at
+  http://www.mozilla.org/MPL/MPL-1.1.html
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
+  Software distributed under the License is distributed on an "AS IS" basis,
+  WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+  the specific language governing rights and limitations under the License.
 
-The Original Code is: JvJclUnitVersioningBrowser.pas, released on 2009-03-09.
+  The Original Code is: JvJclUnitVersioningBrowser.pas, released on 2009-03-09.
 
-The Initial Developers of the Original Code is: Jens Fudickar
-All Rights Reserved.
+  The Initial Developers of the Original Code is: Jens Fudickar
+  All Rights Reserved.
 
-Contributor(s):
+  Contributor(s):
   Jens Fudickar
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.delphi-jedi.org
+  You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+  located at http://jvcl.delphi-jedi.org
 
-Known Issues:
+  Known Issues:
 
------------------------------------------------------------------------------}
+  ----------------------------------------------------------------------------- }
 // $Id$
 
 unit JvJclUnitVersioningBrowser;
@@ -32,26 +32,26 @@ unit JvJclUnitVersioningBrowser;
 interface
 
 uses
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
   Classes, ComCtrls, Controls, Forms, JvDynControlEngine;
 
 type
   TJvJclUnitVersioningBrowser = class(TPersistent)
   private
     RCSFilePanel, RevisionPanel, DatePanel, ExtraPanel, PathPanel, LabelControl,
-    RCSFileEdit, RevisionEdit, DateEdit, ExtraEdit, PathEdit: TWinControl;
+      RCSFileEdit, RevisionEdit, DateEdit, ExtraEdit, PathEdit: TWinControl;
     { Private-Deklarationen }
     UnitVersionForm: TCustomForm;
     procedure CloseButtonOnClick(Sender: TObject);
+    procedure ExportButtonOnClick(Sender: TObject);
     procedure TreeViewOnChange(Sender: TObject; Node: TTreeNode);
   public
     procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
   end;
 
-procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine =
-    nil);
+procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine = nil);
 
 {$IFDEF UNITVERSIONING}
 const
@@ -60,19 +60,18 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 {$ENDIF UNITVERSIONING}
 
 implementation
 
 uses
   StdCtrls, SysUtils, JclStrings, JvDynControlEngineIntf, ExtCtrls,
-  JclFileUtils;
+  JclFileUtils, Dialogs;
 
-procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine =
-    nil);
+procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine = nil);
 var
-  JvJclUnitVersioningBrowser : TJvJclUnitVersioningBrowser;
+  JvJclUnitVersioningBrowser: TJvJclUnitVersioningBrowser;
 begin
   JvJclUnitVersioningBrowser := TJvJclUnitVersioningBrowser.Create;
   try
@@ -88,10 +87,25 @@ begin
     UnitVersionForm.ModalResult := mrOk;
 end;
 
-procedure TJvJclUnitVersioningBrowser.ShowUnitVersioning(const
-    aDynControlEngine: tJvDynControlEngine);
+procedure TJvJclUnitVersioningBrowser.ExportButtonOnClick(Sender: TObject);
 var
-  DynEngine: TJvDynControlEngine;
+  SaveDialog: TSaveDialog;
+begin
+  SaveDialog := TSaveDialog.Create(nil);
+  try
+    SaveDialog.DefaultExt := 'lst';
+    SaveDialog.Filter := '*.lst|Versionlist (*.lst)';
+    SaveDialog.Options := [ofHideReadOnly, ofPathMustExist, ofNoReadOnlyReturn, ofEnableSizing];
+    if SaveDialog.Execute then
+      ExportUnitVersioningToFile(SaveDialog.FileName);
+  finally
+    SaveDialog.Free;
+  end;
+end;
+
+procedure TJvJclUnitVersioningBrowser.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
+var
+  DynEngine: tJvDynControlEngine;
   MainPanel, ButtonPanel: TWinControl;
   TopBox, BottomBox: TWinControl;
   Button: TButton;
@@ -101,11 +115,10 @@ var
   I: Integer;
   MainNode: TTreeNode;
   Nodes: TTreeNodes;
-  {$IFDEF UNITVERSIONING}
-  Item : TUnitVersion;
-  {$ENDIF UNITVERSIONING}
-
-  function FindMasterNode(iNodes: TTreeNodes; iNode: TTreeNode; const iPath: string): tTreeNode;
+{$IFDEF UNITVERSIONING}
+  Item: TUnitVersion;
+{$ENDIF UNITVERSIONING}
+  function FindMasterNode(iNodes: TTreeNodes; iNode: TTreeNode; const iPath: string): TTreeNode;
   var
     Part1, Part2: string;
     I: Integer;
@@ -153,10 +166,12 @@ begin
     MainPanel := DynEngine.CreatePanelControl(UnitVersionForm, UnitVersionForm, 'MainPanel', '', alClient);
     if MainPanel is TPanel then
       TPanel(MainPanel).borderWidth := 3;
-    Button := DynEngine.CreateButton(UnitVersionForm, ButtonPanel, 'CloseBtn', 'Close', '', CloseButtonOnClick, True,
-      True);
+    Button := DynEngine.CreateButton(UnitVersionForm, ButtonPanel, 'CloseBtn', 'Close', '', CloseButtonOnClick, True, True);
     Button.Left := Round((UnitVersionForm.Width - Button.Width) / 2);
     ButtonPanel.Height := Button.Height + 6;
+    Button.Top := Round((ButtonPanel.Height - Button.Height) / 2);
+    Button := DynEngine.CreateButton(UnitVersionForm, ButtonPanel, 'ExportBtn', 'Export', '', ExportButtonOnClick, True, True);
+    Button.Left := 10;
     Button.Top := Round((ButtonPanel.Height - Button.Height) / 2);
     BottomBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'BottomBox', 'Details');
     BottomBox.Align := alBottom;
@@ -195,19 +210,17 @@ begin
     PathPanel.Align := alTop;
     PathEdit := DynEngine.CreateEditControl(UnitVersionForm, PathPanel, 'PathEdit');
     PathEdit.Width := 380;
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, PathPanel, 'PathLabel', 'Path', PathEdit, False,
-      80);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, PathPanel, 'PathLabel', 'Path', PathEdit, False, 80);
     if Supports(PathEdit, IJvDynControlReadOnly, IJvReadOnly) then
       IJvReadOnly.ControlSetReadOnly(True);
     PathPanel.Height := PathEdit.Height + 1;
     ExtraPanel := DynEngine.CreatePanelControl(UnitVersionForm, BottomBox, 'ExtraPanel', '', alTop);
     ExtraPanel.Align := alTop;
     ExtraEdit := DynEngine.CreateMemoControl(UnitVersionForm, ExtraPanel, 'ExtraEdit');
-//    if Supports(ExtraEdit, IJvDynControlReadOnly, IJvReadOnly) then
-//      IJvReadOnly.ControlSetReadOnly(True);
+    // if Supports(ExtraEdit, IJvDynControlReadOnly, IJvReadOnly) then
+    // IJvReadOnly.ControlSetReadOnly(True);
     ExtraEdit.Width := 400;
-    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, ExtraPanel, 'ExtraLabel', 'Extra', ExtraEdit,
-      True, 80);
+    LabelControl := DynEngine.CreateLabelControlPanel(UnitVersionForm, ExtraPanel, 'ExtraLabel', 'Extra', ExtraEdit, True, 80);
     LabelControl.Width := 80 + PathEdit.Width;
     ExtraPanel.Height := LabelControl.Height;
 
@@ -222,14 +235,14 @@ begin
       Nodes.Clear;
       IJvTreeView.ControlSetOnChange(TreeViewOnChange);
       MainNode := Nodes.AddChild(nil, ExtractFileName(ParamStr(0)) + ' ' + VersionFixedFileInfoString(ParamStr(0)));
-      {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
       for I := 0 to GetUnitVersioning.Count - 1 do
       begin
         Item := GetUnitVersioning.Items[I];
         Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Item.LogPath),
-         StrRestOf(Item.RCSfile, StrLastPos('/', Item.RCSfile)+1) + ' - ' + Item.Revision, Item);
+          StrRestOf(Item.RCSfile, StrLastPos('/', Item.RCSfile) + 1) + ' - ' + Item.Revision, Item);
       end;
-      {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
       IJvTreeView.ControlSetSortType(stText);
       if TreeView is TTreeView then
         TTreeView(TreeView).FullExpand;
@@ -243,7 +256,7 @@ begin
 end;
 
 procedure TJvJclUnitVersioningBrowser.TreeViewOnChange(Sender: TObject; Node:
-    TTreeNode);
+  TTreeNode);
 var
   IJvData: IJvDynControlData;
 begin
@@ -252,7 +265,7 @@ begin
   begin
     if Supports(RCSFileEdit, IJvDynControlData, IJvData) then
     begin
-      IJvData.ControlValue := TUnitVersion(Node.Data).RCSFile;
+      IJvData.ControlValue := TUnitVersion(Node.Data).RCSfile;
       RCSFilePanel.Visible := True;
     end
     else
@@ -298,11 +311,15 @@ begin
 end;
 
 initialization
-  {$IFDEF UNITVERSIONING}
+
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
+
 finalization
-  {$IFDEF UNITVERSIONING}
+
+{$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
+
 end.
