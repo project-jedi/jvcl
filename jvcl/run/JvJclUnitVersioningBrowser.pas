@@ -32,9 +32,7 @@ unit JvJclUnitVersioningBrowser;
 interface
 
 uses
-{$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
   Classes, ComCtrls, Controls, Forms, JvDynControlEngine;
 
 type
@@ -115,9 +113,7 @@ var
   I: Integer;
   MainNode: TTreeNode;
   Nodes: TTreeNodes;
-{$IFDEF UNITVERSIONING}
   Item: TUnitVersion;
-{$ENDIF UNITVERSIONING}
   function FindMasterNode(iNodes: TTreeNodes; iNode: TTreeNode; const iPath: string): TTreeNode;
   var
     Part1, Part2: string;
@@ -235,14 +231,12 @@ begin
       Nodes.Clear;
       IJvTreeView.ControlSetOnChange(TreeViewOnChange);
       MainNode := Nodes.AddChild(nil, ExtractFileName(ParamStr(0)) + ' ' + VersionFixedFileInfoString(ParamStr(0)));
-{$IFDEF UNITVERSIONING}
       for I := 0 to GetUnitVersioning.Count - 1 do
       begin
         Item := GetUnitVersioning.Items[I];
         Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Item.LogPath),
           StrRestOf(Item.RCSfile, StrLastPos('/', Item.RCSfile) + 1) + ' - ' + Item.Revision, Item);
       end;
-{$ENDIF UNITVERSIONING}
       IJvTreeView.ControlSetSortType(stText);
       if TreeView is TTreeView then
         TTreeView(TreeView).FullExpand;
@@ -255,8 +249,7 @@ begin
   end;
 end;
 
-procedure TJvJclUnitVersioningBrowser.TreeViewOnChange(Sender: TObject; Node:
-  TTreeNode);
+procedure TJvJclUnitVersioningBrowser.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
 var
   IJvData: IJvDynControlData;
 begin
