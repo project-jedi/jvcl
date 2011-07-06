@@ -6607,13 +6607,13 @@ end;
 begin
   // ignores Visibility
   { TODO : Untested }
-  if Libc.System(PChar(Format('kfmclient exec "%s"', [CommandLine]))) = -1 then
+  if Libc.system(PChar(Format('kfmclient exec "%s"', [CommandLine]))) = -1 then
   begin
     if WorkingDirectory = '' then
-      Result := Libc.System(PChar(Format('cd "%s" ; %s',
+      Result := Libc.system(PChar(Format('cd "%s" ; %s',
         [GetCurrentDir, CommandLine])))
     else
-      Result := Libc.System(PChar(Format('cd "%s" ; %s',
+      Result := Libc.system(PChar(Format('cd "%s" ; %s',
         [WorkingDirectory, CommandLine])));
   end;
 end;

@@ -266,7 +266,7 @@ begin
           if GlyphID = -1 then
             Exit;
           TTCItem(Pointer(Mesg.LParam)^).iImage := GlyphID;
-          TTCItem(Pointer(Mesg.LParam)^).Mask := TCIF_IMAGE;
+          TTCItem(Pointer(Mesg.LParam)^).mask := TCIF_IMAGE;
           SendMessage(Handle, TCM_SETITEM, WParam, LParam);
         end;
       TCM_DELETEITEM:
@@ -408,7 +408,7 @@ var
   Item: TTCItem;
 begin
   Item.iImage := ImgIndex;
-  Item.Mask := TCIF_IMAGE;
+  Item.mask := TCIF_IMAGE;
   SendMessage(Handle, TCM_SETITEM, Index, LPARAM(@Item));
   SendMessage(Handle, TCM_GETITEMRECT, Index, LPARAM(@R));
   InvalidateRect(Handle, @R, True);
@@ -420,7 +420,7 @@ var
 begin
   if Assigned(FGlyphs) then
   begin
-    ImgItem.Mask := TCIF_IMAGE;
+    ImgItem.mask := TCIF_IMAGE;
     SendMessage(Handle, TCM_GETITEM, Index, LPARAM(@ImgItem));
     Result := ImgItem.iImage;
   end
@@ -530,7 +530,7 @@ begin
   if not SuppressDraw then
   begin
     //  Repaint;
-    TCItem.Mask := TCIF_TEXT;
+    TCItem.mask := TCIF_TEXT;
     TCItem.pszText := PChar(Tabs[Index]);
     SendMessage(Handle, TCM_SETITEM, Index, LPARAM(@TCItem));
   end;

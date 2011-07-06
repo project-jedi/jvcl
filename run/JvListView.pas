@@ -63,7 +63,7 @@ type
   // Mantis 980: new type for Groups
   TLVGROUP = record
     cbSize: UINT;
-    Mask: UINT;
+    mask: UINT;
     pszHeader: LPWSTR;
     cchHeader: Integer;
     pszFooter: LPWSTR;
@@ -517,7 +517,7 @@ uses
 type
   // Mantis 980: New types for group/tile/insert mark handling
   tagLVITEMA = packed record
-    Mask: UINT;
+    mask: UINT;
     iItem: Integer;
     iSubItem: Integer;
     state: UINT;
@@ -575,7 +575,7 @@ type
 
   tagLVGROUPMETRICS = packed record
     cbSize: UINT;
-    Mask: UINT;
+    mask: UINT;
     Left: UINT;
     Top: UINT;
     Right: UINT;
@@ -722,7 +722,7 @@ begin
     if Assigned(List) then
     begin
       ZeroMemory(@Infos, sizeof(Infos));
-      Infos.Mask := LVIF_GROUPID;
+      Infos.mask := LVIF_GROUPID;
       Infos.iItem := Index;
       Infos.iGroupId := FGroupId;
 
@@ -2335,7 +2335,7 @@ begin
     begin
       if ExtendedColumns[i].GetHeaderImagePosition = hipRight then
       begin
-        Column.Mask := LVCF_FMT;
+        Column.mask := LVCF_FMT;
         ListView_GetColumn(Handle, i, Column);
         if Column.fmt and LVCFMT_IMAGE <> 0 then
         begin
@@ -2440,7 +2440,7 @@ begin
     ZeroMemory(@Infos, SizeOf(Infos));
 
     Infos.cbSize := SizeOf(Infos);
-    Infos.Mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
+    Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
     Infos.Top := GroupsProperties.BorderSize.Top;
     Infos.Left := GroupsProperties.BorderSize.Left;
     Infos.Bottom := GroupsProperties.BorderSize.Bottom;
@@ -2534,7 +2534,7 @@ begin
   ZeroMemory(@GroupInfo, sizeof(GroupInfo));
 
   GroupInfo.cbSize := sizeof(GroupInfo);
-  GroupInfo.Mask := LVGF_HEADER or LVGF_ALIGN or LVGF_GROUPID;
+  GroupInfo.mask := LVGF_HEADER or LVGF_ALIGN or LVGF_GROUPID;
   GroupInfo.iGroupId := FGroupId;
   GroupInfo.pszHeader := PWideChar(FHeader);
   GroupInfo.cchHeader := Length(FHeader);
@@ -2836,7 +2836,7 @@ begin
     ZeroMemory(@Infos, SizeOf(Infos));
 
     Infos.cbSize := SizeOf(Infos);
-    Infos.Mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
+    Infos.mask := LVGMF_BORDERSIZE or LVGMF_BORDERCOLOR or LVGMF_TEXTCOLOR;
     SendMessage(List.Handle, LVM_GETGROUPMETRICS, 0, LPARAM(@Infos));
 
     FLoading := True;
