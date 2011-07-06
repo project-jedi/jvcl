@@ -2349,7 +2349,7 @@ var
 begin
   with Item do
   begin
-    Mask := TVIF_STATE;
+    mask := TVIF_STATE;
     hItem := ItemId;
     if TreeView_GetItem(Handle, Item) then
       Result := ((Item.State and TVIS_BOLD) = TVIS_BOLD)
@@ -2364,7 +2364,7 @@ var
 begin
   with Item do
   begin
-    Mask := TVIF_STATE;
+    mask := TVIF_STATE;
     hItem := ItemId;
     if TreeView_GetItem(Handle, Item) then
       Result := ((Item.State and TVIS_CHECKED) = TVIS_CHECKED)
@@ -2383,7 +2383,7 @@ begin
     FillChar(Item, SizeOf(Item), 0);
     with Item do
     begin
-      Mask := TVIF_STATE;
+      mask := TVIF_STATE;
       hItem := ItemId;
       StateMask := TVIS_BOLD;
       if Value then
@@ -2406,7 +2406,7 @@ begin
     with Item do
     begin
       hItem := ItemId;
-      Mask := TVIF_STATE;
+      mask := TVIF_STATE;
       StateMask := TVIS_STATEIMAGEMASK;
       if Value then
         Item.State := TVIS_CHECKED
@@ -2431,14 +2431,14 @@ begin
   // it in the future.
   FillChar(SaveItem, SizeOf(SaveItem), 0);
   SaveItem.hItem := ItemId;
-  SaveItem.Mask := TVIF_STATE;
+  SaveItem.mask := TVIF_STATE;
   TreeView_GetItem(Handle, SaveItem);
 
   inherited MoveTo(Destination, Mode);
 
   FillChar(Item, SizeOf(Item), 0);
   Item.hItem := ItemId;
-  Item.Mask := TVIF_STATE;
+  Item.mask := TVIF_STATE;
   Item.stateMask := TVIS_STATEIMAGEMASK;
   Item.state := SaveItem.state;
   TreeView_SetItem(Handle, Item);
