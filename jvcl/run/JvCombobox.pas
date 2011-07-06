@@ -115,6 +115,7 @@ type
     procedure SetFlat(const Value: Boolean);
     procedure SetParentFlat(const Value: Boolean);
     procedure SetDropDownWidth(Value: Integer);
+    function IsItemHeightStored: Boolean;
   protected
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); reintroduce; virtual;
@@ -152,6 +153,7 @@ type
     property Flat: Boolean read GetFlat write SetFlat default False;
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
     property DropDownWidth: Integer read FDropDownWidth write SetDropDownWidth default 0;
+    property ItemHeight stored IsItemHeightStored;
 
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DestroyWnd; override;
@@ -863,10 +865,10 @@ begin
     begin
       Inc(NewCheckedCount);
 
-      if S = '' then
-        S := FListBox.Items[I]
-      else
-        S := S + Delimiter + FListBox.Items[I];
+       if S = '' then         
+         S := FListBox.Items[I]
+       else
+         S := S + Delimiter + FListBox.Items[I];
     end;
   end;
   ChangeText(S);
@@ -1641,6 +1643,14 @@ begin
   end
   else
     Result := -1;
+end;
+
+function TJvCustomComboBox.IsItemHeightStored: Boolean;
+var
+  Value: Integer;
+begin
+  Value := ItemHeight;
+  Result := (Value <> 16) and (Value <> 0);
 end;
 
 function TJvCustomComboBox.IsProviderSelected: Boolean;
