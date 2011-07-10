@@ -1124,12 +1124,14 @@ end;
 
 procedure TJvDBGrid.RegisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
 begin
-  FChangeLinks.Add(Link);
+  if not (csDestroying in ComponentState) then
+    FChangeLinks.Add(Link);
 end;
 
 procedure TJvDBGrid.UnregisterLayoutChangeLink(Link: TJvDBGridLayoutChangeLink);
 begin
-  FChangeLinks.Remove(Link);
+  if not (csDestroying in ComponentState) then
+    FChangeLinks.Remove(Link);
 end;
 
 function TJvDBGrid.EditWithBoolBox(Field: TField): Boolean;
@@ -1871,7 +1873,8 @@ end;
 
 procedure TJvDBGrid.SetStorage(Value: TJvFormPlacement);
 begin
-  FIniLink.Storage := Value;
+  if not (csDestroying in ComponentState) then
+    FIniLink.Storage := Value;
 end;
 
 function TJvDBGrid.AcquireFocus: Boolean;
