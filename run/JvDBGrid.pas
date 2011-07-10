@@ -106,6 +106,8 @@ type
   {$ENDIF DELPHI10_UP}
   {$ENDIF BCB}
 
+  TJvDBGridColumnResize = (gcrNone, gcrGrid, gcrDataSet);
+
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
     Field: TField) of object;
@@ -291,6 +293,14 @@ type
     FTitleRowHeight: Integer;
     FCanDelete: Boolean;
 
+    { Cancel edited record on mouse wheel or when resize column (double-click)}
+    FCancelOnMouse: Boolean;
+
+    { Resize column using mouse double clicking }
+    FCanResizeColumn: Boolean;
+    FResizeColumnIndex: Longint;
+    FColumnResize: TJvDBGridColumnResize;
+
     // XP Theming
     {$IFNDEF COMPILER14_UP}
     FUseXPThemes: Boolean;
@@ -350,7 +360,6 @@ type
     procedure WMRButtonUp(var Msg: TWMMouse); message WM_RBUTTONUP;
     procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
     procedure SetTitleArrow(const Value: Boolean);
-    procedure ShowSelectColumnClick;
     procedure SetAlternateRowColor(const Value: TColor);
     procedure ReadAlternateRowColor(Reader: TReader);
     procedure SetAlternateRowFontColor(const Value: TColor);
@@ -389,6 +398,10 @@ type
     function ValidCell(ACell: TGridCoord): Boolean;
     {$ENDIF JVCLThemesEnabled}
     {$ENDIF ~COMPILER14_UP}
+
+    function GetMaxDisplayText: string;
+    function GetColumnMaxWidth: Integer;
+
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -398,6 +411,7 @@ type
     function CreateEditor: TInplaceEdit; override;
     procedure DblClick; override;
     function DoTitleBtnDblClick: Boolean; dynamic;
+    procedure ShowSelectColumnClick; dynamic;
 
     procedure DoTitleClick(ACol: Longint; AField: TField); dynamic;
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
@@ -580,6 +594,11 @@ type
     { Allows user to delete things using the "del" key }
     property CanDelete: Boolean read FCanDelete write FCanDelete default True;
 
+    { CancelOnMouse: cancel current record when using mouse wheel or on column resizing using double-click }
+    property CancelOnMouse: Boolean read FCancelOnMouse write FCancelOnMouse default False;
+    { ColumnResize: columns can be resized on max Field.DisplayText using mouse double clicking }
+    property ColumnResize: TJvDBGridColumnResize read FColumnResize write FColumnResize default gcrGrid;
+
     { EditControls: list of controls used to edit data }
     property EditControls: TJvDBGridControls read FControls write SetControls;
     { AutoSizeRows: are rows resized automatically ? }
@@ -633,8 +652,7 @@ const
 implementation
 
 uses
-  Variants, SysUtils, Math, TypInfo, Dialogs, DBConsts,
-  StrUtils,
+  Variants, SysUtils, Math, TypInfo, Dialogs, DBConsts, StrUtils,
   JvDBLookup,
   JvConsts, JvResources, JvThemes, JvJCLUtils, JvJVCLUtils,
   {$IFDEF COMPILER7_UP}
@@ -917,7 +935,7 @@ begin
   if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
     DataLink.DataSet.Cancel;
 
-  // Ideally we would transmit the action to the DatalList but
+  // Ideally we would transmit the action to the DataList but
   // DoMouseWheel is protected
   //  Result := FDataList.DoMouseWheel(Shift, WheelDelta, MousePos);
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
@@ -1069,6 +1087,8 @@ begin
   FCanDelete := True;
 
   FReadOnlyCellColor := clDefault;
+
+  FColumnResize := gcrGrid;
 
   // XP Theming
   {$IFNDEF COMPILER14_UP}
@@ -1231,7 +1251,7 @@ end;
 
 procedure TJvDBGrid.SelectAll;
 var
-  ABookmark: TBookmark;
+  LBookmark: TBookmark;
 begin
   if MultiSelect and DataLink.Active then
   begin
@@ -1241,7 +1261,7 @@ begin
         Exit;
       DisableControls;
       try
-        ABookmark := GetBookmark;
+        LBookmark := GetBookmark;
         try
           First;
           while not Eof do
@@ -1251,10 +1271,10 @@ begin
           end;
         finally
           try
-            GotoBookmark(ABookmark);
+            GotoBookmark(LBookmark);
           except
           end;
-          FreeBookmark(ABookmark);
+          FreeBookmark(LBookmark);
         end;
       finally
         EnableControls;
@@ -2310,8 +2330,7 @@ begin
   end;
 end;
 
-procedure TJvDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Cell, LastCell: TGridCoord;
   MouseDownEvent: TMouseEvent;
@@ -3728,6 +3747,10 @@ begin
   if not (dgColumnResize in Options) and not (csDesigning in ComponentState) then
     Exit;
 
+
+  FCanResizeColumn := State = gsColSizing; //  If true, mouse double clicking can resize column.
+  FResizeColumnIndex := Index - 1;// Store the column index to resize.
+
   if (State = gsNormal) and (Y <= RowHeights[0]) then
   begin
     Coord := MouseCoord(X, Y);
@@ -3855,9 +3878,12 @@ end;
 function TJvDBGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
 begin
-  // Do not validate a record by error
-  if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
-    DataLink.DataSet.Cancel;
+  if FCancelOnMouse then
+  begin
+    // Do not validate a record by error
+    if DataLink.Active and (DataLink.DataSet.State <> dsBrowse) then
+      DataLink.DataSet.Cancel;
+  end;
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
 
@@ -4241,8 +4267,139 @@ begin
   Result := -1;
 end;
 
+function TJvDBGrid.GetMaxDisplayText: string;
+
+  procedure CheckText;
+  var
+    S: string;
+  begin
+    // if IsMemoField use AsString property
+    if FShowMemos and IsMemoField(Columns[FResizeColumnIndex].Field) then
+    begin
+      S := Columns[FResizeColumnIndex].Field.AsString;
+      if Length(Result) < Length(S) then
+        Result := S;
+    end
+    else
+    begin
+      S := Columns[FResizeColumnIndex].Field.DisplayText;
+      if Length(Result) < Length(S) then
+        Result := S;
+    end;
+  end;
+
+const
+  MaxRecords = 100; { value between 100 - 1000, or maybe calculated, or user input }
+var
+  DSet: TDataSet;
+  LBookmark: TBookmark;
+  I, ActiveRec: Integer;
+  LastCursor: TCursor;
+begin
+  Result := '';
+
+  DSet := DataSource.DataSet;
+
+  if (DSet.State in dsEditModes) and not FCancelOnMouse then
+    DSet.CheckBrowseMode;
+
+  // Start location
+  LBookmark := DSet.GetBookmark;
+  ActiveRec := DataLink.ActiveRecord;
+  DSet.DisableControls;
+  LastCursor := Screen.Cursor;
+  try
+    Screen.Cursor := crHourGlass;
+
+  // The iteration begins...
+    if (FColumnResize = gcrDataSet) and (DSet.RecordCount <= MaxRecords) then
+    begin
+      { Iterate all records in dataset. *** Very slow for thousands of records. *** }
+      DSet.First;
+      while not DSet.Eof do
+      begin
+        CheckText;
+        DSet.Next;
+      end;
+    end
+    else
+    begin
+      { Iterate only the rows shown by the grid. *** This is the faster approach. ***}
+      for I := 0 to DataLink.RecordCount{BufferCount} - 1 do
+      begin
+        DataLink.ActiveRecord := I;
+        CheckText;
+      end;
+    end;
+  finally
+    // ActiveRecord must be set BEFORE GotoBookmark
+    DataLink.ActiveRecord := ActiveRec;
+    try
+      GotoBookmarkEx(DSet, LBookmark, [rmExact], False); // Do not center current record
+    except
+    end;
+    DSet.FreeBookmark(LBookmark);
+
+    DSet.EnableControls;
+    Screen.Cursor := LastCursor;
+  end;
+end;
+
+function TJvDBGrid.GetColumnMaxWidth: Integer;
+const
+  Space = 7; // Some space needed to distinguish field data between columns.
+var
+  S: string;
+  RestoreCanvas: Boolean;
+  TempDC: HDC;
+  TM: TTextMetric;
+begin
+  if Columns[FResizeColumnIndex].Field <> nil then
+  begin
+    { Iterate through the recordset }
+    S := GetMaxDisplayText;
+    if S <> '' then
+    begin
+      RestoreCanvas := not HandleAllocated;
+      if RestoreCanvas then
+        Canvas.Handle := GetDC(0);
+      try
+        Canvas.Font := Font;
+        GetTextMetrics(Canvas.Handle, TM);
+        Result := Canvas.TextWidth(S) + TM.tmOverhang + 4 + Space;
+        if Result < DefaultColWidth then
+          Result := DefaultColWidth;
+      finally
+        if RestoreCanvas then
+        begin
+          TempDC := Canvas.Handle;
+          Canvas.Handle := 0;
+          ReleaseDC(0, TempDc);
+        end;
+      end;
+    end
+    else
+    begin
+      { Column cells are empty }
+      if Width > DefaultColWidth then
+        Result := DefaultColWidth
+      else
+        Result := Columns[FResizeColumnIndex].Width;
+    end;
+  end
+  else { Field is not assigned }
+    Result := DefaultColWidth;
+end;
+
 procedure TJvDBGrid.DblClick;
 begin
+  { Resize column (double-click) }
+  if FCanResizeColumn then
+  begin
+    if FColumnResize <> gcrNone then
+      Columns[FResizeColumnIndex].Width := GetColumnMaxWidth;
+  end
+  else // When resize column (double-click) DO NOT trigger title DblClick event.
   if not DoTitleBtnDblClick then
     inherited DblClick;
   FTitleColumn := nil;
@@ -4257,6 +4414,10 @@ end;
 
 procedure TJvDBGrid.TitleClick(Column: TColumn);
 begin
+  { When resize DO NOT trigger title click event }
+  if FCanResizeColumn then
+    Exit;
+  
   FTitleColumn := Column;
   inherited TitleClick(Column);
   if AllowTitleClick then

@@ -133,6 +133,7 @@ function ConfirmDelete: Boolean;
 procedure ConfirmDataSetCancel(DataSet: TDataSet);
 procedure CheckRequiredField(Field: TField);
 procedure CheckRequiredFields(const Fields: array of TField);
+procedure GotoBookmarkEx(DataSet: TDataSet; const Bookmark: TBookmark; Mode: TResyncMode = [rmExact, rmCenter]; ForceScrollEvents: Boolean = False);
 
 { SQL expressions }
 
@@ -910,6 +911,24 @@ var
 begin
   for I := Low(Fields) to High(Fields) do
     CheckRequiredField(Fields[I]);
+end;
+
+type
+  TDataSetAccess = class(TDataSet);
+
+procedure GotoBookmarkEx(DataSet: TDataSet; const Bookmark: TBookmark; Mode: TResyncMode; ForceScrollEvents: Boolean);
+var
+  DS: TDataSetAccess;
+begin
+	if (DataSet <> nil) and (Bookmark <> nil) then
+	begin
+    DS := TDataSetAccess(DataSet);
+		DS.CheckBrowseMode;
+		if ForceScrollEvents or (rmCenter in Mode) then DS.DoBeforeScroll;
+		DS.InternalGotoBookmark(Pointer(Bookmark));
+		DS.Resync(Mode);
+		if ForceScrollEvents or (rmCenter in Mode) then DS.DoAfterScroll;
+	end;
 end;
 
 procedure AssignRecord(Source, Dest: TDataSet; ByName: Boolean);
