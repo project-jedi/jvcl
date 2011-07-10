@@ -621,17 +621,18 @@ type
       The value is stored as string TRUE/FALSE. }
     procedure WriteBoolean(const Path: string; Value: Boolean);
     { Retrieves an Property. If the value is not found, the Property is not changed. }
-    procedure ReadProperty(const Path: string; const PersObj: TPersistent;
-      const PropName: string; const Recursive, ClearFirst: Boolean);
+    procedure ReadProperty(const Path: string; const PersObj: TPersistent; const PropName: string; const Recursive, ClearFirst:
+      Boolean; const IgnoreProperties: TStrings = nil);
     { Stores an Property }
-    procedure WriteProperty(const Path: string; const PersObj: TPersistent; const PropName: string; const Recursive: Boolean);
+    procedure WriteProperty(const Path: string; const PersObj: TPersistent; const PropName: string; const Recursive: Boolean; const
+      IgnoreProperties: TStrings = nil);
     { Retrieves a set. If the value is not found, the Default will be returned. }
     { Retrieves a TPersistent-Object with all of its published properties }
     procedure ReadPersistent(const Path: string; const PersObj: TPersistent;
       const Recursive: Boolean = True; const ClearFirst: Boolean = True; const IgnoreProperties: TStrings = nil);
     { Stores a TPersistent-Object with all of its published properties}
-    procedure WritePersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: Boolean = True; const IgnoreProperties: TStrings = nil);
+    procedure WritePersistent(const Path: string; const PersObj: TPersistent; const Recursive: Boolean = True; const
+      IgnoreProperties: TStrings = nil);
 
     { Translates a Char value to a (valid) key name. Used by the set storage methods. }
     function GetCharName(Ch: Char): string; virtual;
@@ -917,10 +918,10 @@ type
   public
     constructor Create; virtual;
     function Supports(AObject: TObject; AProperty: TObject): Boolean; virtual;
-    procedure ReadProperty(AStorage: TJvCustomAppStorage; const APath: string;
-      AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean); virtual;
-    procedure WriteProperty(AStorage: TJvCustomAppStorage; const APath: string;
-      AObject: TObject; AProperty: TObject; const Recursive: Boolean); virtual;
+    procedure ReadProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject; AProperty: TObject; const Recursive,
+      ClearFirst: Boolean; const IgnoreProperties: TStrings = nil); virtual;
+    procedure WriteProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject; AProperty: TObject; const
+      Recursive: Boolean; const IgnoreProperties: TStrings = nil); virtual;
   end;
 
   TJvAppStoragePropertyBaseEngineClass = class of TJvAppStoragePropertyBaseEngine;
@@ -958,10 +959,10 @@ type
     procedure RegisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
     procedure UnregisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
     function GetEngine(AObject: TObject; AProperty: TObject): TJvAppStoragePropertyBaseEngine;
-    function ReadProperty(AStorage: TJvCustomAppStorage; const APath: string;
-      AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean): Boolean;
-    function WriteProperty(AStorage: TJvCustomAppStorage; const APath: string;
-      AObject: TObject; AProperty: TObject; const Recursive: Boolean): Boolean;
+    function ReadProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject; AProperty: TObject; const Recursive,
+      ClearFirst: Boolean; const IgnoreProperties: TStrings = nil): Boolean;
+    function WriteProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject; AProperty: TObject; const Recursive:
+      Boolean; const IgnoreProperties: TStrings = nil): Boolean;
   end;
 
 var
@@ -2638,8 +2639,8 @@ begin
     TargetStore.WriteSetInt(TargetPath, ATypeInfo, Value);
 end;
 
-procedure TJvCustomAppStorage.ReadProperty(const Path: string;
-  const PersObj: TPersistent; const PropName: string; const Recursive, ClearFirst: Boolean);
+procedure TJvCustomAppStorage.ReadProperty(const Path: string; const PersObj: TPersistent; const PropName: string; const
+  Recursive, ClearFirst: Boolean; const IgnoreProperties: TStrings = nil);
 var
   //Index: Integer;
   TmpValue: Integer;
@@ -2690,7 +2691,7 @@ begin
         SubObj := GetObjectProp(PersObj, PropName);
         if (RegisteredAppStoragePropertyEngineList <> nil) and
           Recursive and
-          RegisteredAppStoragePropertyEngineList.ReadProperty(Self, Path, PersObj, SubObj, Recursive, ClearFirst) then
+          RegisteredAppStoragePropertyEngineList.ReadProperty(Self, Path, PersObj, SubObj, Recursive, ClearFirst, IgnoreProperties) then
           // Do nothing else, the handling is done in the ReadProperty procedure
         else
           if SubObj is TStrings then
@@ -2707,13 +2708,13 @@ begin
                 if SubObj is TCollection then
                   ReadCollection(Path, TCollection(SubObj), ClearFirst)
                 else
-                  ReadPersistent(Path, TPersistent(SubObj), True, ClearFirst);
+                  ReadPersistent(Path, TPersistent(SubObj), True, ClearFirst, IgnoreProperties);
       end;
   end;
 end;
 
-procedure TJvCustomAppStorage.WriteProperty(const Path: string; const PersObj: TPersistent; const PropName: string;
-    const Recursive: Boolean);
+procedure TJvCustomAppStorage.WriteProperty(const Path: string; const PersObj: TPersistent; const PropName: string; const
+  Recursive: Boolean; const IgnoreProperties: TStrings = nil);
 var
   TmpValue: Integer;
   SubObj: TObject;
@@ -2829,7 +2830,7 @@ begin
         SubObj := GetObjectProp(PersObj, PropName);
         if (RegisteredAppStoragePropertyEngineList <> nil) and
           Recursive and
-          RegisteredAppStoragePropertyEngineList.WriteProperty(Self, Path, PersObj, SubObj, Recursive) then
+          RegisteredAppStoragePropertyEngineList.WriteProperty(Self, Path, PersObj, SubObj, Recursive, IgnoreProperties) then
         begin
           // Do nothing else, the handling is done in the WriteProperty procedure
         end
@@ -2854,7 +2855,7 @@ begin
                 if SubObj is TCollection then
                   WriteCollection(Path, TCollection(SubObj))
                 else
-                  WritePersistent(Path, TPersistent(SubObj), Recursive, nil);
+                  WritePersistent(Path, TPersistent(SubObj), Recursive, IgnoreProperties);
               end;
             end;
           end;
@@ -2884,12 +2885,12 @@ begin
       KeyName := TranslatePropertyName(PersObj, PropName, False);
       PropPath := ConcatPaths([Path, KeyName]);
       if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
-        ReadProperty(PropPath, PersObj, PropName, Recursive, ClearFirst);
+        ReadProperty(PropPath, PersObj, PropName, Recursive, ClearFirst, IgnoreProperties);
     end;
 end;
 
-procedure TJvCustomAppStorage.WritePersistent(const Path: string;
-  const PersObj: TPersistent; const Recursive: Boolean; const IgnoreProperties: TStrings);
+procedure TJvCustomAppStorage.WritePersistent(const Path: string; const PersObj: TPersistent; const Recursive: Boolean = True;
+  const IgnoreProperties: TStrings = nil);
 var
   Index: Integer;
   PropName: string;
@@ -2908,7 +2909,7 @@ begin
       KeyName := TranslatePropertyName(PersObj, PropName, False);
       PropPath := ConcatPaths([Path, KeyName]);
       if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
-        WriteProperty(PropPath, PersObj, PropName, Recursive);
+        WriteProperty(PropPath, PersObj, PropName, Recursive, IgnoreProperties);
     end;
 end;
 
@@ -3664,13 +3665,13 @@ begin
   Result := False;
 end;
 
-procedure TJvAppStoragePropertyBaseEngine.ReadProperty(AStorage: TJvCustomAppStorage;
-  const APath: string; AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean);
+procedure TJvAppStoragePropertyBaseEngine.ReadProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject;
+  AProperty: TObject; const Recursive, ClearFirst: Boolean; const IgnoreProperties: TStrings = nil);
 begin
 end;
 
-procedure TJvAppStoragePropertyBaseEngine.WriteProperty(AStorage: TJvCustomAppStorage;
-  const APath: string; AObject: TObject; AProperty: TObject; const Recursive: Boolean);
+procedure TJvAppStoragePropertyBaseEngine.WriteProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject;
+  AProperty: TObject; const Recursive: Boolean; const IgnoreProperties: TStrings = nil);
 begin
 end;
 
@@ -3726,26 +3727,26 @@ begin
     end;
 end;
 
-function TJvAppStoragePropertyEngineList.ReadProperty(AStorage: TJvCustomAppStorage; const APath: string;
-  AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean): Boolean;
+function TJvAppStoragePropertyEngineList.ReadProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject;
+  AProperty: TObject; const Recursive, ClearFirst: Boolean; const IgnoreProperties: TStrings = nil): Boolean;
 var
   Engine: TJvAppStoragePropertyBaseEngine;
 begin
   Engine := GetEngine(AObject, AProperty);
   Result := Assigned(Engine);
   if Result then
-    Engine.ReadProperty(AStorage, APath, AObject, AProperty, Recursive, ClearFirst);
+    Engine.ReadProperty(AStorage, APath, AObject, AProperty, Recursive, ClearFirst, IgnoreProperties);
 end;
 
-function TJvAppStoragePropertyEngineList.WriteProperty(AStorage: TJvCustomAppStorage;
-  const APath: string; AObject: TObject; AProperty: TObject; const Recursive: Boolean): Boolean;
+function TJvAppStoragePropertyEngineList.WriteProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject;
+  AProperty: TObject; const Recursive: Boolean; const IgnoreProperties: TStrings = nil): Boolean;
 var
   Engine: TJvAppStoragePropertyBaseEngine;
 begin
   Engine := GetEngine(AObject, AProperty);
   Result := Assigned(Engine);
   if Result then
-    Engine.WriteProperty(AStorage, APath, AObject, AProperty, Recursive);
+    Engine.WriteProperty(AStorage, APath, AObject, AProperty, Recursive, IgnoreProperties);
 end;
 
 initialization
