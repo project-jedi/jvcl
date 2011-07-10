@@ -115,8 +115,8 @@ type
     procedure SetFlat(const Value: Boolean);
     procedure SetParentFlat(const Value: Boolean);
     procedure SetDropDownWidth(Value: Integer);
-    function IsItemHeightStored: Boolean;
   protected
+    function IsItemHeightStored: Boolean; {$IFDEF COMPILER14_UP} override; {$ENDIF}
     function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); reintroduce; virtual;
     procedure DoEnter; override;
