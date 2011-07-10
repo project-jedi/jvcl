@@ -59,10 +59,10 @@ type
   TJvAppStoragePropertyDBGridColumnsEngine = class(TJvAppStoragePropertyBaseEngine)
   public
     function Supports(AObject: TObject; AProperty: TObject): Boolean; override;
-    procedure ReadProperty(AStorage: TJvCustomAppStorage; const APath: string;
-      AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean); override;
-    procedure WriteProperty(AStorage: TJvCustomAppStorage; const APath: string;
-      AObject: TObject; AProperty: TObject; const Recursive: Boolean); override;
+    procedure ReadProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject; AProperty: TObject; const Recursive,
+      ClearFirst: Boolean; const IgnoreProperties: TStrings = nil); override;
+    procedure WriteProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject: TObject; AProperty: TObject; const
+      Recursive: Boolean; const IgnoreProperties: TStrings = nil); override;
   end;
 
 //=== { TJvAppStoragePropertyDBGridColumnsEngine } ===========================
@@ -75,8 +75,8 @@ end;
 type
   TAccessCustomDBGrid = class(TCustomDBGrid);
 
-procedure TJvAppStoragePropertyDBGridColumnsEngine.ReadProperty(AStorage: TJvCustomAppStorage;
-  const APath: string; AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean);
+procedure TJvAppStoragePropertyDBGridColumnsEngine.ReadProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject:
+  TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean; const IgnoreProperties: TStrings = nil);
 begin
   if Assigned(AObject) and (AObject is TCustomDBGrid) then
     TAccessCustomDBGrid(AObject).BeginLayout;
@@ -89,8 +89,8 @@ begin
   end;
 end;
 
-procedure TJvAppStoragePropertyDBGridColumnsEngine.WriteProperty(AStorage: TJvCustomAppStorage;
-  const APath: string; AObject: TObject; AProperty: TObject; const Recursive: Boolean);
+procedure TJvAppStoragePropertyDBGridColumnsEngine.WriteProperty(AStorage: TJvCustomAppStorage; const APath: string; AObject:
+  TObject; AProperty: TObject; const Recursive: Boolean; const IgnoreProperties: TStrings = nil);
 begin
   if Assigned(AProperty) and (AProperty is TDBGridColumns) then
     AStorage.WriteCollection(APath, TCollection(AProperty));
