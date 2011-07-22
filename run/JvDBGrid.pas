@@ -4382,13 +4382,7 @@ begin
       end;
     end
     else
-    begin
-      { Column cells are empty }
-      if Width > DefaultColWidth then
-        Result := DefaultColWidth
-      else
-        Result := Columns[FResizeColumnIndex].Width;
-    end;
+      Result := DefaultColWidth;
   end
   else { Field is not assigned }
     Result := DefaultColWidth;
