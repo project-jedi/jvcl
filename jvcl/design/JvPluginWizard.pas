@@ -799,6 +799,15 @@ begin
       {$IFDEF COMPILER11}
       Project.AddFile('JvCoreD11R.bpi', False)
       {$ENDIF COMPILER11}
+      {$IFDEF COMPILER12}
+      Project.AddFile('JvCoreD12R.bpi', False)
+      {$ENDIF COMPILER12}
+      {$IFDEF COMPILER14}
+      Project.AddFile('JvCoreD14R.bpi', False)
+      {$ENDIF COMPILER14}
+      {$IFDEF COMPILER15}
+      Project.AddFile('JvCoreD15R.bpi', False)
+      {$ENDIF COMPILER15}
     end
   end
   else
@@ -821,6 +830,15 @@ begin
       {$IFDEF COMPILER11}
       Project.AddFile('JvCoreD11R.dcp', False);
       {$ENDIF COMPILER11}
+      {$IFDEF COMPILER12}
+      Project.AddFile('JvCoreD12R.dcp', False);
+      {$ENDIF COMPILER12}
+      {$IFDEF COMPILER14}
+      Project.AddFile('JvCoreD14R.dcp', False);
+      {$ENDIF COMPILER14}
+      {$IFDEF COMPILER15}
+      Project.AddFile('JvCoreD15R.dcp', False);
+      {$ENDIF COMPILER15}
     end
   end;
 
