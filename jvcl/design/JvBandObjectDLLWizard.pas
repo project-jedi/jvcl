@@ -33,6 +33,8 @@ uses
   Windows, ToolsAPI;
 
 type
+  TJvBandType = (zbtInfoBand, zbtCommBand, zbtToolBand, zbtDeskBand);
+
   TJvBandObjectDLLWizard = class(TInterfacedObject,
     IOTANotifier, IOTAWizard, IOTARepositoryWizard, IOTAProjectWizard)
   public
@@ -54,8 +56,16 @@ type
   end;
 
   TJvBandObjectProjectCreator = class(TInterfacedObject,
-    IOTACreator, IOTAProjectCreator)
+    IOTACreator, IOTAProjectCreator, IOTAProjectCreator50
+    {$IFDEF COMPILER8_UP}, IOTAProjectCreator80{$ENDIF COMPILER8_UP})
+  private
+    FOwner: IOTAProjectGroup;
+    FBandName: string;
+    FBandDesc: string;
+    FBandType: TJvBandType;
   public
+    constructor Create(const AOwner: IOTAProjectGroup; const ABandName: string;
+      const ABandDesc: string; ABandType: TJvBandType);
     // IOTACreator
     function GetCreatorType: string;
     function GetExisting: Boolean;
@@ -70,6 +80,12 @@ type
     function NewOptionSource(const ProjectName: string): IOTAFile;
     procedure NewProjectResource(const Project: IOTAProject);
     function NewProjectSource(const ProjectName: string): IOTAFile;
+    // IOTAProjectCreator50
+    procedure NewDefaultProjectModule(const Project: IOTAProject);
+    {$IFDEF COMPILER8_UP}
+    // IOTAProjectCreator80
+    function GetProjectPersonality: string;
+    {$ENDIF COMPILER8_UP}
   end;
 
   TJvBandObjectProjectSource = class(TInterfacedObject, IOTAFile)
@@ -82,16 +98,15 @@ type
     function GetAge: TDateTime;
   end;
 
-  TJvBandType = (zbtInfoBand, zbtCommBand, zbtToolBand, zbtDeskBand);
-
   TJvBandObjectModuleCreator = class(TInterfacedObject,
     IOTACreator, IOTAModuleCreator)
   private
+    FOwner: IOTAProject;
     FBandName: string;
     FBandDesc: string;
     FBandType: TJvBandType;
   public
-    constructor Create(const BandName, BandDesc: string;
+    constructor Create(const AOwner: IOTAProject; const BandName, BandDesc: string;
       const BandType: TJvBandType);
     // IOTACreator
     function GetCreatorType: string;
@@ -141,9 +156,6 @@ const
   CrLf2 = #13#10#13#10;
   BAND_TYPE_DESC: array [0..3] of PChar = ('Info', 'Comm', 'Tool', 'Desk');
 
-var
-  ProjectModule: IOTAModule;
-
 //=== { TJvBandObjectDLLWizard } =============================================
 
 procedure TJvBandObjectDLLWizard.AfterSave;
@@ -158,20 +170,33 @@ procedure TJvBandObjectDLLWizard.Destroyed;
 begin
 end;
 
-procedure TJvBandObjectDLLWizard.Execute;
+function GetActiveProjectGroup(const ModuleServices: IOTAModuleServices): IOTAProjectGroup;
+var
+  I: Integer;
 begin
-  with TzWizardForm.Create(Application) do
+  Result := nil;
+  for I := 0 to ModuleServices.ModuleCount - 1 do
+    if Supports(ModuleServices.Modules[I], IOTAProjectGroup, Result) then
+      Break;
+end;
+
+procedure TJvBandObjectDLLWizard.Execute;
+var
+  WizardForm: TzWizardForm;
+  ModuleServices: IOTAModuleServices;
+  ProjectGroup: IOTAProjectGroup;
+begin
+  WizardForm := TzWizardForm.Create(Application);
   try
-    if ShowModal <> mrOk then
+    if WizardForm.ShowModal <> mrOk then
       Exit;
-    with BorlandIDEServices as IOTAModuleServices do
-    begin
-      ProjectModule := CreateModule(TJvBandObjectProjectCreator.Create);
-      CreateModule(TJvBandObjectModuleCreator.Create(EditBandName.Text,
-        EditBandDesc.Text, TJvBandType(RgBandType.ItemIndex)));
-    end;
+    ModuleServices := BorlandIDEServices as IOTAModuleServices;
+    ProjectGroup := GetActiveProjectGroup(ModuleServices);
+    ModuleServices.CreateModule(TJvBandObjectProjectCreator.Create(ProjectGroup,
+      WizardForm.EditBandName.Text, WizardForm.EditBandDesc.Text,
+      TJvBandType(WizardForm.RgBandType.ItemIndex)));
   finally
-    Free;
+    WizardForm.Free;
   end;
 end;
 
@@ -216,9 +241,19 @@ end;
 
 //=== { TJvBandObjectProjectCreator } ========================================
 
+constructor TJvBandObjectProjectCreator.Create(const AOwner: IOTAProjectGroup;
+  const ABandName: string; const ABandDesc: string; ABandType: TJvBandType);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FBandName := ABandName;
+  FBandDesc := ABandDesc;
+  FBandType := ABandType;
+end;
+
 function TJvBandObjectProjectCreator.GetCreatorType: string;
 begin
-  Result := '';
+  Result := sLibrary;
 end;
 
 function TJvBandObjectProjectCreator.GetExisting: Boolean;
@@ -243,8 +278,15 @@ end;
 
 function TJvBandObjectProjectCreator.GetOwner: IOTAModule;
 begin
-  Result := nil;
+  Result := FOwner;
 end;
+
+{$IFDEF COMPILER8_UP}
+function TJvBandObjectProjectCreator.GetProjectPersonality: string;
+begin
+  Result := sDelphiPersonality;
+end;
+{$ENDIF COMPILER8_UP}
 
 function TJvBandObjectProjectCreator.GetShowSource: Boolean;
 begin
@@ -258,6 +300,15 @@ end;
 
 procedure TJvBandObjectProjectCreator.NewDefaultModule;
 begin
+end;
+
+procedure TJvBandObjectProjectCreator.NewDefaultProjectModule(
+  const Project: IOTAProject);
+var
+  ModuleServices: IOTAModuleServices;
+begin
+  ModuleServices := BorlandIDEServices as IOTAModuleServices;
+  ModuleServices.CreateModule(TJvBandObjectModuleCreator.Create(Project, FBandName, FBandDesc, FBandType));
 end;
 
 function TJvBandObjectProjectCreator.NewOptionSource(const ProjectName: string): IOTAFile;
@@ -309,10 +360,11 @@ end;
 
 //=== { TJvBandObjectModuleCreator } =========================================
 
-constructor TJvBandObjectModuleCreator.Create(const BandName, BandDesc: string;
-  const BandType: TJvBandType);
+constructor TJvBandObjectModuleCreator.Create(const AOwner: IOTAProject;
+  const BandName, BandDesc: string; const BandType: TJvBandType);
 begin
   inherited Create;
+  FOwner := AOwner;
   FBandName := BandName;
   FBandDesc := BandDesc;
   FBandType := BandType;
@@ -364,7 +416,7 @@ end;
 
 function TJvBandObjectModuleCreator.GetOwner: IOTAModule;
 begin
-  Result := ProjectModule;
+  Result := FOwner;
 end;
 
 function TJvBandObjectModuleCreator.GetShowForm: Boolean;
