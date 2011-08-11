@@ -92,7 +92,6 @@ type
     function GetImplCatID: TGUID; override;
   end;
 
-  {$M+}
   TzCustomBandObject = class(TComObject, IDeskBand, IObjectWithSite, IPersist, IPersistStream, IInputObject)
   private
     FBandForm: TJvBandForm;
@@ -102,7 +101,6 @@ type
     FOleCommandTarget: IOleCommandTarget;
     FSavedWndProc: TWndMethod;
     FHasFocus: Boolean;
-    FHook: HHook;
   protected
     function CreateBandForm(const ParentWnd: THandle): TJvBandForm; virtual; abstract;
     procedure BandWndProc(var Msg: TMessage);
@@ -140,10 +138,7 @@ type
     function UIActivateIO(Activate: BOOL; var Msg: TMsg): HRESULT; virtual; stdcall;
     function HasFocusIO: HRESULT; virtual; stdcall;
     function TranslateAcceleratorIO(var Msg: TMsg): HRESULT; virtual; stdcall;
-  published
-    function MsgHookProc(nCode, wParam, lParam: Integer): Integer; stdcall;
   end;
-  {$M-}
 
   TzToolBandObject = class(TzCustomBandObject)
   end;
@@ -216,40 +211,6 @@ begin
 end;
 
 //=== { TzToolBandObjectFactory } ============================================
-
-function MethodToProcedure(Self: TObject; MethodAddr: Pointer): Pointer;
-type
-  TMethodToProc = packed record
-    PopEAX: Byte;        // $58      pop EAX
-    PushSelf: record     //          push Self
-      Opcode: Byte;      // $B8
-      Self: Pointer;     // Self
-    end;
-    PushEAX: Byte;       // $50      push EAX
-    Jump: record         //          jmp [Target]
-      Opcode: Byte;      // $FF
-      ModRm: Byte;       // $25
-      PTarget: ^Pointer; // @Target
-      Target: Pointer;   //          @MethodAddr
-    end;
-  end;
-var
-  Mtp: ^TMethodToProc;
-begin
-  New(Mtp);
-  Result := Mtp;
-  with Mtp^ do
-  begin
-    PopEAX          := $58;
-    PushSelf.Opcode := $68;
-    PushSelf.Self   := Self;
-    PushEAX         := $50;
-    Jump.Opcode     := $FF;
-    Jump.ModRm      := $25;
-    Jump.PTarget    := @Jump.Target;
-    Jump.Target     := MethodAddr;
-  end;
-end;
 
 procedure TzToolBandObjectFactory.UpdateRegistry(Reg: Boolean);
 var
@@ -637,11 +598,6 @@ begin
         Exit;
       ShowDW(False);
       FBandForm.Free;
-      if FHook <> 0 then
-      begin
-        UnhookWindowsHookEx(FHook);
-        FHook := 0;
-      end;
     finally
       FBandForm := nil;
     end;
@@ -728,9 +684,6 @@ begin
 
       FSavedWndProc := FBandForm.WindowProc;
       FBandForm.WindowProc := BandWndProc;
-
-      FHook := SetWindowsHookEx(WH_GETMESSAGE,
-        MethodToProcedure(Self, Self.MethodAddress('MsgHookProc')), HInstance, GetCurrentThreadID);
     end;
     if Site.QueryInterface(IInputObjectSite, FSite) <> S_OK then // implicit FSite.AddRef;
     begin
@@ -876,31 +829,6 @@ begin
     if Supports(FBandForm, IUnknown, Obj) then
       Site.OnFocusChangeIS(Obj, HasFocus);
   end;
-end;
-
-function TzCustomBandObject.MsgHookProc(nCode, wParam, lParam: Integer): Integer;
-var
-  lOk: Boolean;
-  Msg: PMsg;
-begin
-  try
-    if FBandForm <> nil then
-    begin
-      lOk := False;
-      Msg := PMsg(Pointer(lParam));
-      if (((Msg^.message = WM_KEYDOWN) or (Msg^.message = WM_KEYUP)) and
-        ((Msg^.wParam = VK_BACK))) then
-        lOk := True
-      else
-      if Msg^.message = WM_MOUSEMOVE then //Enable Flat effects!
-        Application.HandleMessage;
-      if lOk then
-        if IsDialogMessage(FBandForm.Handle, Msg^) then
-          Msg^.message := WM_NULL;
-    end;
-  except
-  end;
-  Result := CallNextHookEx(FHook, nCode, wParam, lParam);
 end;
 
 //=== { TzContextMenuBandObject } ============================================
