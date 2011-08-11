@@ -83,6 +83,9 @@ type
       Operation: TOperation); override;
     property _BandObject: TComObject read FBandObject;
   public
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     {:Band form constructor.
@@ -303,6 +306,24 @@ implementation
 uses
   JvJCLUtils, JvJVCLUtils;
 
+var
+  GlobalBandFormMessageHook: HHook;
+  GlobalBandForms: TList;
+
+//=== { TJvBandForm } ========================================================
+
+procedure TJvBandForm.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  GlobalBandForms.Add(Self);
+end;
+
+procedure TJvBandForm.BeforeDestruction;
+begin
+  GlobalBandForms.Remove(Self);
+  inherited BeforeDestruction;
+end;
+
 constructor TJvBandForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -394,13 +415,52 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
+function MsgHookProc(nCode, wParam, lParam: Integer): Integer; stdcall;
+var
+  lOk: Boolean;
+  I: Integer;
+  Msg: PMsg;
+begin
+  try
+    lOk := False;
+    Msg := PMsg(Pointer(lParam));
+    if (((Msg^.message = WM_KEYDOWN) or (Msg^.message = WM_KEYUP)) and
+      ((Msg^.wParam = VK_BACK))) then
+      lOk := True
+    else
+    if Msg^.message = WM_MOUSEMOVE then //Enable Flat effects!
+      Application.HandleMessage;
+    if lOk then
+    begin
+      for I := 0 to GlobalBandForms.Count - 1 do
+        if IsDialogMessage(TJvBandForm(GlobalBandForms.Items[I]).Handle, Msg^) then
+        begin
+          Msg^.message := WM_NULL;
+          Break;
+        end;
+    end;
+  except
+  end;
+  Result := CallNextHookEx(GlobalBandFormMessageHook, nCode, wParam, lParam);
+end;
+
 initialization
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  GlobalBandForms := TList.Create;
+  GlobalBandFormMessageHook := SetWindowsHookEx(WH_GETMESSAGE, MsgHookProc, HInstance, GetCurrentThreadID);
 
 finalization
+  if GlobalBandFormMessageHook <> 0 then
+  begin
+    UnhookWindowsHookEx(GlobalBandFormMessageHook);
+    GlobalBandFormMessageHook := 0;
+  end;
+  GlobalBandForms.Free;
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 
