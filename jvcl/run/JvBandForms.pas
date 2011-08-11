@@ -350,8 +350,7 @@ begin
   if Assigned(FOnGetMinSize) then
     Result := FOnGetMinSize(Self)
   else
-    with Constraints do
-      Result := PointL(MinWidth, MinHeight);
+    Result := PointL(Constraints.MinWidth, Constraints.MinHeight);
 end;
 
 function TJvBandForm.GetMaxSize: TPointL;
@@ -359,9 +358,8 @@ begin
   if Assigned(FOnGetMaxSize) then
     Result := FOnGetMaxSize(Self)
   else
-    with Constraints do
-      Result := PointL(iif(MaxWidth = 0, -1, MaxWidth),
-        iif(MaxHeight = 0, -1, MaxHeight));
+    Result := PointL(iif(Constraints.MaxWidth = 0, -1, Constraints.MaxWidth),
+      iif(Constraints.MaxHeight = 0, -1, Constraints.MaxHeight));
 end;
 
 function TJvBandForm.GetIntegral: TPointL;
