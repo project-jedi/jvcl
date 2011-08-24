@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -25,11 +25,12 @@ ContentFile=JvBandscontents.html
 IndexFile=JvBandsidx.html
 
 [Project Database Files]
-Count=4
+Count=5
 File0=JvCore.doxdb
 File1=Jcl.doxdb
-File2=JEDI.doxdb
-File3=vcl.doxdb
+File2=JclDeveloperTools.doxdb
+File3=JEDI.doxdb
+File4=vcl.doxdb
 
 [Source Files]
 Count=5

@@ -304,7 +304,7 @@ const
 implementation
 
 uses
-  JvJCLUtils, JvJVCLUtils;
+  SysUtils, JclIDEUtils, JvJCLUtils, JvJVCLUtils;
 
 var
   GlobalBandFormMessageHook: HHook;
@@ -444,19 +444,63 @@ begin
   Result := CallNextHookEx(GlobalBandFormMessageHook, nCode, wParam, lParam);
 end;
 
-initialization
-  {$IFDEF UNITVERSIONING}
-  RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
-  GlobalBandForms := TList.Create;
-  GlobalBandFormMessageHook := SetWindowsHookEx(WH_GETMESSAGE, MsgHookProc, HInstance, GetCurrentThreadID);
+procedure InstallHook;
+var
+  Installations: TJclBorRADToolInstallations;
+  DelphiVersion: Integer;
+  RunningInIDE: Boolean;
+begin
+  RunningInIDE := False;
 
-finalization
+  Installations := TJclBorRADToolInstallations.Create;
+  try
+    if CompilerVersion = 22 then
+      DelphiVersion := 15
+    else if CompilerVersion = 21 then
+      DelphiVersion := 14
+    else if CompilerVersion = 20 then
+      DelphiVersion := 12
+    else if CompilerVersion = 18.5 then
+      DelphiVersion := 11
+    else if CompilerVersion = 18 then
+      DelphiVersion := 10
+    else if CompilerVersion = 17 then
+      DelphiVersion := 9
+    else if CompilerVersion = 16 then
+      DelphiVersion := 8
+    else if CompilerVersion = 15 then
+      DelphiVersion := 7
+    else if CompilerVersion = 14 then
+      DelphiVersion := 6;
+
+    RunningInIDE := SameText(ParamStr(0), Installations.DelphiInstallationFromVersion[DelphiVersion].IdeExeFileName);
+  finally
+    Installations.Free;
+  end;
+
+  // Only install hook if not in IDE so as not to introduce glitches in the IDE
+  if not RunningInIDE then
+    GlobalBandFormMessageHook := SetWindowsHookEx(WH_GETMESSAGE, MsgHookProc, HInstance, GetCurrentThreadID);
+end;
+
+procedure UninstallHook;
+begin
   if GlobalBandFormMessageHook <> 0 then
   begin
     UnhookWindowsHookEx(GlobalBandFormMessageHook);
     GlobalBandFormMessageHook := 0;
   end;
+end;
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+  GlobalBandForms := TList.Create;
+  InstallHook;
+
+finalization
+  UninstallHook;
   GlobalBandForms.Free;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
