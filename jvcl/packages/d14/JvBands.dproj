@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{DD2CB040-B066-4061-B05C-1F1CD0FD0D5D}</ProjectGuid>
 			<MainSource>JvBands.dpk</MainSource>
@@ -54,6 +54,7 @@
 			</DelphiCompile>
 			<DCCReference Include="JvCore.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="JclDeveloperTools.dcp"/>
 			<DCCReference Include="vcl.dcp"/>
 			<DCCReference Include="vclx.dcp"/>
 			<DCCReference Include="rtl.dcp"/>

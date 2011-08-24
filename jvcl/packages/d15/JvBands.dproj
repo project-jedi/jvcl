@@ -54,6 +54,7 @@
 			</DelphiCompile>
 			<DCCReference Include="JvCore.dcp"/>
 			<DCCReference Include="Jcl.dcp"/>
+			<DCCReference Include="JclDeveloperTools.dcp"/>
 			<DCCReference Include="vcl.dcp"/>
 			<DCCReference Include="vclx.dcp"/>
 			<DCCReference Include="rtl.dcp"/>
