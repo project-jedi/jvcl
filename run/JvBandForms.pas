@@ -454,24 +454,12 @@ begin
 
   Installations := TJclBorRADToolInstallations.Create;
   try
-    if CompilerVersion = 22 then
-      DelphiVersion := 15
-    else if CompilerVersion = 21 then
-      DelphiVersion := 14
-    else if CompilerVersion = 20 then
-      DelphiVersion := 12
+    if CompilerVersion >= 21 then
+      DelphiVersion := Trunc(CompilerVersion - 7)
     else if CompilerVersion = 18.5 then
       DelphiVersion := 11
-    else if CompilerVersion = 18 then
-      DelphiVersion := 10
-    else if CompilerVersion = 17 then
-      DelphiVersion := 9
-    else if CompilerVersion = 16 then
-      DelphiVersion := 8
-    else if CompilerVersion = 15 then
-      DelphiVersion := 7
-    else if CompilerVersion = 14 then
-      DelphiVersion := 6;
+    else
+      DelphiVersion := Trunc(CompilerVersion - 8);
 
     RunningInIDE := SameText(ParamStr(0), Installations.DelphiInstallationFromVersion[DelphiVersion].IdeExeFileName);
   finally
