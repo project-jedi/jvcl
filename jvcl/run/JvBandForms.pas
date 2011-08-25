@@ -450,8 +450,6 @@ var
   DelphiVersion: Integer;
   RunningInIDE: Boolean;
 begin
-  RunningInIDE := False;
-
   Installations := TJclBorRADToolInstallations.Create;
   try
     if CompilerVersion >= 21 then
