@@ -141,10 +141,10 @@ end;
 
 function TJvControlActioncxTreeListEngine.UpdateAction(Action: TBasicAction): boolean;
 begin
+  Result := Inherited UpdateAction(Action);
   if Assigned(Action) and (Action is TJvControlBaseAction) and
     Assigned(GetTreeList(TJvControlBaseAction(Action).ActionComponent)) and (TJvControlBaseAction(Action).ControlOperation = caoCustomizeColumns) then
     TJvControlBaseAction(Action).SetChecked(GetTreeList(TJvControlBaseAction(Action).ActionComponent).Customizing.Visible);
-
 end;
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
