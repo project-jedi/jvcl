@@ -251,6 +251,7 @@ end;
 
 function TJvControlActioncxGridEngine.UpdateAction(Action: TBasicAction): boolean;
 begin
+  Result := Inherited UpdateAction(Action);
   if Assigned(Action) and (Action is TJvControlBaseAction) and
     Assigned(GetGridView(TJvControlBaseAction(Action).ActionComponent)) and (TJvControlBaseAction(Action).ControlOperation = caoCustomizeColumns) then
     TJvControlBaseAction(Action).SetChecked(GetGridView(TJvControlBaseAction(Action).ActionComponent).Controller.Customization);

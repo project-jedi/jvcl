@@ -153,6 +153,7 @@ end;
 
 function TJvControlActioncxPivotGridEngine.UpdateAction(Action: TBasicAction): boolean;
 begin
+  Result := Inherited UpdateAction(Action);
   if Assigned(Action) and (Action is TJvControlBaseAction) and
     Assigned(GetPivotGrid(TJvControlBaseAction(action).ActionComponent)) and (TJvControlBaseAction(action).ControlOperation = caoCustomizeColumns) then
     TJvControlBaseAction(action).SetChecked(GetPivotGrid(TJvControlBaseAction(action).ActionComponent).Customization.Visible);
