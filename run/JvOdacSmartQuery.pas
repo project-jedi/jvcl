@@ -31,17 +31,17 @@ unit JvOdacSmartQuery;
 
 interface
 
+{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
   DB,
   OraSmart, Ora, DBaccess,
   JvThread, JvThreadDialog, JvDynControlEngine,
-  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvBaseDBThreadedDataset;
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 type
@@ -310,7 +310,6 @@ type
     property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read
         GetOnThreadException write SetOnThreadException;
   end;
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -321,6 +320,7 @@ const
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 implementation
 
@@ -1374,7 +1374,6 @@ begin
   else
     Result := False;
 end;
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 
 
 {$IFDEF UNITVERSIONING}
@@ -1384,5 +1383,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 end.
 
