@@ -504,7 +504,6 @@ end;
 {$IFDEF MSWINDOWS}
 var
   I: Integer;
-  M: TMemoryBasicInformation;
 begin
   with DigitClassList.LockList do
   try
