@@ -2224,10 +2224,6 @@ end;
 function GetShowModalVMTOffset: Integer;
 asm
   MOV EAX, VMTOFFSET TCustomForm.ShowModal
-  {$IFDEF CPUX64}
-  {$MESSAGE WARN 'Remove the "SHL EAX, 1" after VMTOFFSET is fixed in the dcc64 compiler'}
-  SHL EAX, 1
-  {$ENDIF CPUX64}
 end;
 
 function GetShowModalVMTIndex: Integer; //  Locate the VMT index of ShowModal
