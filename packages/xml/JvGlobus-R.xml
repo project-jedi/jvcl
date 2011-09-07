@@ -21,7 +21,7 @@
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund2006" Targets="D10" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="vclie" Targets="DB" Condition="INTERNET_COMPONENTS"/>
-    <Package Name="bdertl" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="BDE" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>

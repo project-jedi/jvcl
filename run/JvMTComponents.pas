@@ -46,6 +46,9 @@ type
   TJvMTThreadEvent = procedure (Sender: TJvMTThread;
     MTThread: TJvMTSingleThread) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTManager = class(TJvMTComponent)
   private
     FManager: TMTManager;
@@ -75,6 +78,9 @@ type
     property Manager: TJvMTManager read FManager write SetManager;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTThread = class(TJvMTManagedComponent)
   private
     FOnExecute: TJvMTThreadEvent;
@@ -135,6 +141,9 @@ type
     property Active: Boolean read GetActive;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTSection = class(TJvMTSectionBase)
   private
     FAllowRecursion: Boolean;
@@ -152,6 +161,9 @@ type
       default False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTCountingSection = class(TJvMTSectionBase)
   private
     FInitCount: Integer;
@@ -187,6 +199,9 @@ type
       default MTDefaultBufferSize;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTThreadToVCL = class(TJvMTAsyncBufferBase)
   private
     FOnCanRead: TNotifyEvent;
@@ -197,6 +212,9 @@ type
     property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTVCLToThread = class(TJvMTAsyncBufferBase)
   private
     FOnCanWrite: TNotifyEvent;
@@ -208,6 +226,9 @@ type
     property OnCanWrite: TNotifyEvent read FOnCanWrite write FOnCanWrite;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTThreadToThread = class(TJvMTComponent)
   private
     FHooking: TCriticalSection;
@@ -225,6 +246,9 @@ type
       default MTDefaultBufferSize;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMTMonitorSection = class(TJvMTComponent)
   private
     FMonitor: TMTMonitor;

@@ -41,6 +41,9 @@ type
   TJvRulerUnit = (ruCentimeters, ruInches, ruPixels);
   TJvRulerOrientation = (roHorizontal, roVertical);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvRuler = class(TJvGraphicControl)
   private
     FUseUnit: TJvRulerUnit;

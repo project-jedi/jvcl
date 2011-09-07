@@ -269,6 +269,9 @@ type
 
   TJvDockVSChannelClass = class of TJvDockVSChannel;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDockVSNetStyle = class(TJvDockVIDStyle)
   private
     FTimer: TTimer;
@@ -3369,16 +3372,16 @@ end;
 
 procedure TJvDockVSPopupPanelSplitter.DrawLine;
 var
-  P: TPoint;
+  X, Y: Integer;
 begin
   FLineVisible := not FLineVisible;
-  P := Point(Left, Top);
+  X := Left;
+  Y := Top;
   if VSChannelAlign in [alLeft, alRight] then
-    P.X := Left + FSplit
+    X := Left + FSplit
   else
-    P.Y := Top + FSplit;
-  with P do
-    PatBlt(FLineDC, X, Y, Width, Height, PATINVERT);
+    Y := Top + FSplit;
+  PatBlt(FLineDC, X, Y, Width, Height, PATINVERT);
 end;
 
 function TJvDockVSPopupPanelSplitter.FindControl: TControl;

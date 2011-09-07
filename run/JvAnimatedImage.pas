@@ -71,6 +71,9 @@ type
 
   TGlyphOrientation = (goHorizontal, goVertical);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAnimatedImage = class(TJvImageControl)
   private
     FActive: Boolean;
@@ -653,9 +656,8 @@ begin
         (ClientHeight - FImageHeight) div 2, FImageWidth, FImageHeight)
     else
       DstRect := Rect(0, 0, FImageWidth, FImageHeight);
-    with DstRect do
-      StretchBitmapRectTransparent(Canvas, Left, Top, Right - Left,
-        Bottom - Top, SrcRect, FGlyph, FTransparentColor);
+    StretchBitmapRectTransparent(Canvas, DstRect.Left, DstRect.Top, DstRect.Right - DstRect.Left,
+      DstRect.Bottom - DstRect.Top, SrcRect, FGlyph, FTransparentColor);
   end;
 end;
 

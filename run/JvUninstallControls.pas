@@ -41,6 +41,9 @@ type
   TJvUCBDisplayMode = (hkCurrentUser, hkLocalMachine); // subset of TJvRegKey
   TJvUCBDisplayModes = set of TJvUCBDisplayMode;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvUninstallComboBox = class(TCustomComboBox)
   private
     FDisplayMode: TJvUCBDisplayModes;
@@ -119,6 +122,9 @@ type
     property Constraints;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvUninstallListBox = class(TCustomListBox)
   private
     FShowAll: Boolean;
@@ -214,7 +220,7 @@ const
   cUninstallString = 'UninstallString';
   cDisplayName = 'DisplayName';
 
-  FKey: array [TJvUCBDisplayMode] of DWORD =
+  FKey: array [TJvUCBDisplayMode] of HKEY =
     (HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE);
 
 type

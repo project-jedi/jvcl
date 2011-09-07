@@ -43,6 +43,9 @@ type
   TJvFormHistory = class;
   TFormHistoryCommand = (hcNone, hcAdd, hcBack, hcForward, hcGoto);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvMergeManager = class(TJvComponent)
   private
     FMergeFrame: TWinControl;

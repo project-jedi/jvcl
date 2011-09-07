@@ -180,6 +180,9 @@ type
     State: TMenuOwnerDrawState; var ImageIndex: Integer) of object;
 
   // the main menu class
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMainMenu = class(TMainMenu)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -297,6 +300,9 @@ type
 
   // The Popup counterpart of TJvMainMenu
   // does basically the same thing, but in a popup menu
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPopupMenu = class(TPopupMenu)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -614,6 +620,9 @@ type
   { TJvOfficeMenuItemPainter }
 
   // This painter draws an item using the office style
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOfficeMenuItemPainter = class(TJvCustomMenuItemPainter)
   private
     FCurrentItem: TMenuItem;
@@ -639,6 +648,9 @@ type
   end;
 
   // this painter draws an item as a lowered or raised button
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvBtnMenuItemPainter = class(TJvCustomMenuItemPainter)
   private
     FLowered: Boolean;
@@ -658,6 +670,9 @@ type
 
   // this painter is the standard one and as such doesn't do anything
   // more than the ancestor class except publishing properties
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvStandardMenuItemPainter = class(TJvCustomMenuItemPainter)
   protected
     procedure DrawCheckedImageBack(ARect: TRect); override;
@@ -672,6 +687,9 @@ type
   end;
 
   // this painter calls the user supplied events to render the item
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOwnerDrawMenuItemPainter = class(TJvCustomMenuItemPainter)
   public
     procedure Measure(Item: TMenuItem; var Width, Height: Integer); override;
@@ -680,6 +698,9 @@ type
 
   // this painter draws an item using the XP style (white menus,
   // shadows below images...)
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPMenuItemPainter = class(TJvCustomMenuItemPainter)
   private
     // property fields
@@ -1241,8 +1262,7 @@ begin
             Canvas.Brush.Color := clHighlight;
             Canvas.Font.Color := clHighlightText;
           end;
-          with rcItem do
-            IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
+          IntersectClipRect(Canvas.Handle, rcItem.Left, rcItem.Top, rcItem.Right, rcItem.Bottom);
           DrawItem(Item, rcItem, State);
           Canvas.Handle := 0;
         finally
@@ -1825,8 +1845,7 @@ begin
             Canvas.Brush.Color := clHighlight;
             Canvas.Font.Color := clHighlightText;
           end;
-          with rcItem do
-            IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
+          IntersectClipRect(Canvas.Handle, rcItem.Left, rcItem.Top, rcItem.Right, rcItem.Bottom);
           DrawItem(Item, rcItem, State);
           Canvas.Handle := 0;
         finally
@@ -2893,19 +2912,16 @@ procedure TJvCustomMenuItemPainter.DefaultDrawLeftMargin(ARect: TRect;
 var
   R: Integer;
 begin
-  with ARect do
-  begin
-    R := Right - 3;
+  R := ARect.Right - 3;
 
-    // Draw the gradient
-    GradientFillRect(Canvas, Rect(Left, Top, R, Bottom), StartColor,
-      EndColor, fdTopToBottom, 32);
+  // Draw the gradient
+  GradientFillRect(Canvas, Rect(ARect.Left, ARect.Top, R, ARect.Bottom), StartColor,
+    EndColor, fdTopToBottom, 32);
 
-    // Draw the separating line
-    MenuLine(Canvas, clBtnFace, Right - 3, Top, Right - 3, Bottom);
-    MenuLine(Canvas, clBtnShadow, Right - 2, Top, Right - 2, Bottom);
-    MenuLine(Canvas, clBtnHighlight, Right - 1, Top, Right - 1, Bottom);
-  end;
+  // Draw the separating line
+  MenuLine(Canvas, clBtnFace, ARect.Right - 3, ARect.Top, ARect.Right - 3, ARect.Bottom);
+  MenuLine(Canvas, clBtnShadow, ARect.Right - 2, ARect.Top, ARect.Right - 2, ARect.Bottom);
+  MenuLine(Canvas, clBtnHighlight, ARect.Right - 1, ARect.Top, ARect.Right - 1, ARect.Bottom);
 end;
 
 procedure TJvCustomMenuItemPainter.DrawLeftMargin(ARect: TRect);

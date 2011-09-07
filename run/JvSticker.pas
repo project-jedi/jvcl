@@ -56,6 +56,9 @@ type
     procedure SizerControlExit(Sender: TObject);
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSticker = class(TJvGraphicControl)
   private
     FStickColor: TColor;

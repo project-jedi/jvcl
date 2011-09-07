@@ -42,6 +42,9 @@ const
   WM_DELAYED_DO_ENDED = WM_APP + 246;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWaitingProgress = class(TJvWinControl)
   private
     FActive: Boolean;

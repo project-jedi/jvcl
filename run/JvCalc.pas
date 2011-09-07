@@ -45,6 +45,9 @@ type
   TJvCalcState = (csFirst, csValid, csError);
   TJvCalculatorForm = class;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvCalculator = class(TJvCommonDialogF)
   private
     FValue: Double;
@@ -281,12 +284,11 @@ begin
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, NonClientMetrics.cbSize, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
-    with AFont do
-    begin
-      Color := clWindowText;
-      Name := 'MS Sans Serif';
-      Size := 8;
-    end;
+  begin
+    AFont.Color := clWindowText;
+    AFont.Name := 'MS Sans Serif';
+    AFont.Size := 8;
+  end;
   AFont.Style := [fsBold];
   {
   if Layout = clDialog then

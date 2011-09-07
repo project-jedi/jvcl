@@ -49,7 +49,7 @@ type
   private
     FOnReload: TNotifyEvent;
   protected
-    procedure DataEvent(Event: TDataEvent; Info: Integer); override;
+    procedure DataEvent(Event: TDataEvent; Info: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF}); override;
   public
     property OnReload: TNotifyEvent read FOnReload write FOnReload;
   end;
@@ -180,6 +180,9 @@ type
     property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBComboBox = class(TJvCustomDBComboBox)
   private
     { The "AutoSize" property was published what it never should have been. TComboBox doesn't
@@ -590,7 +593,7 @@ end;
 
 procedure TJvCustomDBComboBox.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Longint(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 function TJvCustomDBComboBox.GetDataLink: TDataLink;
@@ -860,7 +863,7 @@ end;
 
 { TJvDBComboBoxListDataLink }
 
-procedure TJvDBComboBoxListDataLink.DataEvent(Event: TDataEvent; Info: Integer);
+procedure TJvDBComboBoxListDataLink.DataEvent(Event: TDataEvent; Info: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF});
 begin
   inherited DataEvent(Event, Info);
   if Assigned(FOnReload) then

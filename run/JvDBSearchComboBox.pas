@@ -124,6 +124,9 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBSearchComboBox = class(TJvDBCustomSearchComboBox)
   published
     property Align;

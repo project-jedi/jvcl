@@ -42,6 +42,9 @@ type
       TjvVersionControlActionEngine; var aEnabled : Boolean) of object;
   TJvVersionControlActionExecuteEvent = procedure(Sender: TObject; ControlEngine: TjvVersionControlActionEngine;
     DataComponent: TComponent) of object;
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvVersionControlActionList = class(TActionList)
   private
     FDisableActions: Boolean;

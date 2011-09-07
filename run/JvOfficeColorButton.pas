@@ -236,6 +236,9 @@ type
     property OnShowOwnerColorDialog: TNotifyEvent read FOnShowOwnerColorDialog write FOnShowOwnerColorDialog;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOfficeColorButton = class(TJvCustomOfficeColorButton)
   private
     FFilerTag: string;
@@ -396,7 +399,7 @@ begin
   { calculate were to put arrow part }
   PaintRect := Rect(3, 0, Width - 3, Height);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     Dec(PaintRect.Left);
   {$ENDIF JVCLThemesEnabled}
 

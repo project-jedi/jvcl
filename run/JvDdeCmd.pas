@@ -48,6 +48,9 @@ type
 
   TJvADCMacroEvent = procedure(Sender: TObject; const CommandStr: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAppDdeCmd = class(TJvComponent)
   private
     FCorrectParams: Boolean;

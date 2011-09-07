@@ -25,15 +25,15 @@
     <Package Name="dclstd" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="DB" Formname="JvSelectDataSetForm" Condition=""/>
-    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCsvDataForm.pas" Targets="DB" Formname="JvCsvDefStrDialog" Condition=""/>
-    <File Name="..\..\design\JvDBActnResForm.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBReg.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBEditors.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridEditors.pas" Targets="DB" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDBGridControlsEditorForm.pas" Targets="DB" Formname="frmJvDBGridControlsEditor" Condition=""/>
+    <File Name="..\..\design\JvSelectDataSetForm.pas" Targets="DB_win32" Formname="JvSelectDataSetForm" Condition=""/>
+    <File Name="..\..\design\JvCsvDataEditor.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCsvDataForm.pas" Targets="DB_win32" Formname="JvCsvDefStrDialog" Condition=""/>
+    <File Name="..\..\design\JvDBActnResForm.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBMemDatasetEditor.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBReg.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBEditors.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridExportEditors.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridEditors.pas" Targets="DB_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDBGridControlsEditorForm.pas" Targets="DB_win32" Formname="frmJvDBGridControlsEditor" Condition=""/>
   </Contains>
 </Package>

@@ -56,6 +56,9 @@ type
 
   TJvDicIndexArray = array [1..26] of Integer;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvSpeller = class(TComponent)
   private
     FSourceText: string;
@@ -107,10 +110,20 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
+  {$IFDEF DELPHI64_TEMPORARY}
+  StrUtils,
+  {$ENDIF DELPHI64_TEMPORARY}
   JvConsts, JvResources, JvTypes;
 
 {$R *.dfm}
 
+{$IFDEF DELPHI64_TEMPORARY}
+{$MESSAGE HINT 'Is there at all still a need for Q_PosEx or could always PosEx used?'}
+function Q_PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
+begin
+  Result := PosEx(FindString, SourceString, StartPos);
+end;
+{$ELSE ~DELPHI64_TEMPORARY}
 function Q_PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm
         PUSH    ESI
@@ -187,6 +200,7 @@ asm
         POP     EDI
         POP     ESI
 end;
+{$ENDIF ~DELPHI64_TEMPORARY}
 
 procedure SaveAnsiFileFromString(const AFile, AText: string);
 var

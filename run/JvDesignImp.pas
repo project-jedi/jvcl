@@ -115,11 +115,9 @@ type
   protected
     FDragRect: TRect;
   public
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); virtual; abstract;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual; abstract;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer);  virtual; abstract;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);  virtual; abstract;
     property DragRect: TRect read FDragRect write FDragRect;
   end;
 
@@ -169,11 +167,9 @@ type
     procedure PaintDragRects;
   public
     constructor Create(AOwner: TJvDesignSurface); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   end;
 
   TJvDesignBander = class(TJvDesignMouseTool)
@@ -183,11 +179,9 @@ type
     procedure CalcDragRect; virtual;
     procedure PaintDragRect; virtual;
   public
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   end;
 
   TJvDesignSizer = class(TJvDesignBander)
@@ -546,13 +540,10 @@ var
   W: Integer;
 begin
   W := HandleWidth;
-  with ARect do
-  begin
-    Handles[0].BoundsRect := Rect(Left - W, Top - W, Right + W, Top);
-    Handles[1].BoundsRect := Rect(Left - W, Top, Left, Bottom);
-    Handles[2].BoundsRect := Rect(Right, Top, Right + W, Bottom);
-    Handles[3].BoundsRect := Rect(Left - W, Bottom, Right + W, Bottom + W);
-  end;
+  Handles[0].BoundsRect := Rect(ARect.Left - W, ARect.Top - W, ARect.Right + W, ARect.Top);
+  Handles[1].BoundsRect := Rect(ARect.Left - W, ARect.Top, ARect.Left, ARect.Bottom);
+  Handles[2].BoundsRect := Rect(ARect.Right, ARect.Top, ARect.Right + W, ARect.Bottom);
+  Handles[3].BoundsRect := Rect(ARect.Left - W, ARect.Bottom, ARect.Right + W, ARect.Bottom + W);
 end;
 
 //=== { TJvDesignSelector } ==================================================
@@ -1021,13 +1012,10 @@ const
   GridX = 4;
   GridY = 4;
 begin
-  with Result do
-  begin
-    X := FMouseLast.X - FMouseStart.X;
-    Dec(X, X mod GridX);
-    Y := FMouseLast.Y - FMouseStart.Y;
-    Dec(Y, Y mod GridY);
-  end;
+  Result.X := FMouseLast.X - FMouseStart.X;
+  Dec(Result.X, Result.X mod GridX);
+  Result.Y := FMouseLast.Y - FMouseStart.Y;
+  Dec(Result.Y, Result.Y mod GridY);
 end;
 
 //=== { TJvDesignMover } =====================================================
@@ -1055,12 +1043,15 @@ end;
 procedure TJvDesignMover.CalcPaintRects;
 var
   I: Integer;
+  Pt: TPoint;
 begin
   CalcDragRects;
   for I := 0 to Surface.Count - 1 do
     with Surface.Selection[I] do
-      with Parent.ClientToScreen(Point(0, 0)) do
-        OffsetRect(FDragRects[I], X, Y);
+    begin
+      Pt := Parent.ClientToScreen(Point(0, 0));
+      OffsetRect(FDragRects[I], Pt.X, Pt.Y);
+    end;
 end;
 
 procedure TJvDesignMover.PaintDragRects;
@@ -1112,12 +1103,12 @@ end;
 //=== { TJvDesignBander } ====================================================
 
 procedure TJvDesignBander.CalcDragRect;
+var
+  Pt: TPoint;
 begin
-  with GetMouseDelta do
-  begin
-    DragRect := Rect(0, 0, X, Y);
-    OffsetRect(FDragRect, FMouseStart.X, FMouseStart.Y);
-  end;
+  Pt := GetMouseDelta;
+  FDragRect := Rect(0, 0, Pt.X, Pt.Y);
+  OffsetRect(FDragRect, FMouseStart.X, FMouseStart.Y);
 end;
 
 function TJvDesignBander.GetClient: TControl;
@@ -1126,10 +1117,12 @@ begin
 end;
 
 function TJvDesignBander.GetPaintRect: TRect;
+var
+  Pt: TPoint;
 begin
   Result := FDragRect;
-  with GetClient.ClientToScreen(Point(0, 0)) do
-    OffsetRect(Result, X, Y);
+  Pt := GetClient.ClientToScreen(Point(0, 0));
+  OffsetRect(Result, Pt.X, Pt.Y);
 end;
 
 procedure TJvDesignBander.PaintDragRect;
@@ -1186,10 +1179,12 @@ begin
 end;
 
 procedure TJvDesignSizer.CalcDragRect;
+var
+  Pt: TPoint;
 begin
   FDragRect := Surface.Selection[0].BoundsRect;
-  with GetMouseDelta do
-    ApplyMouseDelta(X, Y);
+  Pt := GetMouseDelta;
+  ApplyMouseDelta(Pt.X, Pt.Y);
   FDragRect := DesignValidateRect(FDragRect);
 end;
 

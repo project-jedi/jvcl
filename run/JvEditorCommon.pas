@@ -852,7 +852,7 @@ type
     procedure DoCut; virtual;
     procedure CursorChanged; override;
     procedure FontChanged; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
 
     { IFixedPopupIntf method assignment }
     procedure IFixedPopupIntf.Cut = ClipboardCut;
@@ -3600,7 +3600,7 @@ begin
     UpdateEditorSize;
 end;
 
-function TJvCustomEditorBase.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEditorBase.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   Result := False; // no background erase
 end;

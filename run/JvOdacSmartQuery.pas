@@ -85,6 +85,9 @@ type
     procedure SaveRefreshKeyFields;
   End;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOdacSmartQuery = class(TSmartQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
     procedure BringThreadDialogToFront;
@@ -156,6 +159,9 @@ type
         GetOnThreadException write SetOnThreadException;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOdacOraQuery = class(TOraQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
     procedure BringThreadDialogToFront;
@@ -231,6 +237,9 @@ type
   end;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOdacOraTable = class(TOraTable, IJvThreadedDatasetInterface)
     procedure BreakExecution;
     procedure BringThreadDialogToFront;

@@ -137,6 +137,9 @@ type
     function GetDynamicTagContents(Number: Integer): string;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvLinkLabel = class(TJvCustomLinkLabel)
   published
     property Caption;

@@ -38,6 +38,9 @@ uses
   JvSAL, JvTypes;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSALCore = class(TComponent)
   private
     FSal: TJvSAL;

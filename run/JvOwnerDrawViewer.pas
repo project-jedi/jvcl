@@ -55,6 +55,9 @@ type
     property Width;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOwnerDrawViewer = class(TJvCustomItemViewer)
   private
     function GetOptions: TJvOwnerDrawViewerOptions;

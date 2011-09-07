@@ -214,6 +214,9 @@ type
     property Clients[Index: Integer]: TWinControl read GetClient; default;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvBackground = class(TComponent)
   private
     FClients: TJvBackgroundClients;
@@ -523,7 +526,7 @@ begin
   if Result then
   begin
     if not IsIconic(AClient.Handle) then
-      if not TWinControlAccessProtected(AClient).FDoubleBuffered or (Msg.wParam = Msg.lParam) then
+      if not TWinControlAccessProtected(AClient).FDoubleBuffered or (Msg.wParam = WPARAM(Msg.lParam)) then
         DoEraseBackground(AClient,
           TWMEraseBkgnd(Msg).DC);
     Msg.Result := 1;
@@ -569,23 +572,22 @@ var
   FirstVisibleRow, S, OddShift: Integer;
   Left, Top, Width, Height: Integer;
   HorzOffset, VertOffset: Integer;
+  R: TRect;
 begin
-  with GetClientRect(AClient) do
-  begin
-    Width := Right;
-    Height := Bottom;
-  end;
+  R := GetClientRect(AClient);
+  Width := R.Right;
+  Height := R.Bottom;
   if IsMDIForm(AClient) then
   begin
     HorzOffset := FHorzOffset;
     VertOffset := FVertOffset;
   end
   else
-    with GetVirtualClientRect(AClient) do
-    begin
-      HorzOffset := Left;
-      VertOffset := Top;
-    end;
+  begin
+    R := GetVirtualClientRect(AClient);
+    HorzOffset := R.Left;
+    VertOffset := R.Top;
+  end;
   if FShiftMode = smRows then
   begin
     FirstVisibleRow := -VertOffset div FTileHeight;

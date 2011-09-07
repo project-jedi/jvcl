@@ -33,6 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  Windows, // inline
   SysUtils, Classes, Controls, Forms, StdCtrls,
   JvTypes, JvComponent;
 

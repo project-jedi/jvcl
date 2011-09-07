@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Windows, Messages, Types, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls,
   JvThemes, JvExControls, JvExStdCtrls;
 
@@ -42,6 +42,9 @@ type
     jvSPar, jvSDiamond, jvSTriangleUp, jvSTriangleDown, jvSTriangleLeft,
     jvSTriangleRight, jvSPentagon, jvSRevPentagon, jvSRing);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvShapedButton = class(TJvExButton, IJvDenySubClassing)
   private
     FBmp: TBitmap;
@@ -96,7 +99,7 @@ type
     procedure SetRegionPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRevPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRing(ALeft, ATop, AWidth, AHeight: Integer);
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure MouseLeave(Control: TControl); override;
     procedure MouseEnter(Control: TControl); override;
     procedure FontChanged; override;
@@ -269,7 +272,7 @@ end;
 
 procedure TJvShapedButton.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
-  Perform(WM_LBUTTONDOWN, Msg.Keys, LPARAM(Msg.Pos));
+  Perform(WM_LBUTTONDOWN, Msg.Keys, {$IFDEF RTL230_UP}PointToLParam{$ELSE}LPARAM{$ENDIF RTL230_UP}(Msg.Pos));
 end;
 
 procedure TJvShapedButton.SetButtonStyle(ADefault: Boolean);
@@ -2741,7 +2744,7 @@ begin
   end;
 end;
 
-function TJvShapedButton.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvShapedButton.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle, False);
   Result := True;

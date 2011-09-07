@@ -171,6 +171,9 @@ type
     function DeleteExactString(const Value: string; All: Boolean; CaseSensitive: Boolean = True): Integer;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvComboBox = class(TJvCustomComboBox)
   published
     property Align;
@@ -321,6 +324,9 @@ type
     property OrderedText: Boolean read FOrderedText write SetOrderedText default False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCheckedComboBox = class(TJvCustomCheckedComboBox)
   published
     property Items;

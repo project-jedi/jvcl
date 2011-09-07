@@ -91,7 +91,7 @@ type
     procedure SortProject(Group: TProjectGroup; List: TList; Project: TPackageTarget; var ProjectIndex: Integer);
     procedure SortProjectGroup(Group: TProjectGroup; List: TList);
   protected
-    function Dcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+    function Dcc(TargetConfig: ITargetConfig; Project: TPackageTarget;
       const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings): Integer;
     function Bcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
       const BccOpt: string; DebugUnits: Boolean; Files: TStrings; ObjFiles: TStrings): Integer;
@@ -106,7 +106,7 @@ type
     function CompileDelphiPackage(TargetConfig: ITargetConfig; Project: TPackageTarget;
       const DccOpt: string; DebugUnits: Boolean; var FilesCompiled: Boolean): Integer;
 
-    function WriteDcc32Cfg(const Directory: string; TargetConfig: ITargetConfig;
+    function WriteDccCfg(const Directory: string; TargetConfig: ITargetConfig;
       const DccOpt: string; DebugUnits: Boolean): string; // returns the dcc32.cfg filename
     procedure DoIdle(Sender: TObject);
 
@@ -476,9 +476,9 @@ begin
 end;*)
 
 /// <summary>
-/// WriteDcc32Cfg() writes the dcc32.cfg file to the directory
+/// WriteDccCfg() writes the dcc32.cfg or dcc64.cfg file to the directory
 /// </summary>
-function TCompiler.WriteDcc32Cfg(const Directory: string; TargetConfig: ITargetConfig;
+function TCompiler.WriteDccCfg(const Directory: string; TargetConfig: ITargetConfig;
   const DccOpt: string; DebugUnits: Boolean): string;
 var
   Lines: TStrings;
@@ -544,8 +544,13 @@ begin
       Lines.Add('-Q');
     if TargetConfig.Target.IsPersonal then
       Lines.Add('-DDelphiPersonalEdition');
+    if TargetConfig.Target.IsBDS and (TargetConfig.Target.Version >= 16) then
+      Lines.Add('-nsSystem;System.Win;WinAPI;Vcl;Vcl.Imaging;Data;Data.Win;BDE');
 
-    Result := Directory + '\dcc32.cfg';
+    if TargetConfig.Target.Platform = ctpWin64 then
+      Result := Directory + '\dcc64.cfg'
+    else
+      Result := Directory + '\dcc32.cfg';
     Lines.SaveToFile(Result);
   finally
     Lines.Free;
@@ -553,16 +558,16 @@ begin
 end;
 
 /// <summary>
-/// Dcc32() compiles a Delphi.Win32 package. If the command could not be
+/// Dcc() compiles a Delphi.Win32 or Win64 package. If the command could not be
 /// executed a message dialog is shown with the complete command line. Returns
 /// the ExitCode of the last/failed command.
 /// </summary>
-function TCompiler.Dcc32(TargetConfig: ITargetConfig; Project: TPackageTarget;
+function TCompiler.Dcc(TargetConfig: ITargetConfig; Project: TPackageTarget;
   const DccOpt: string; DebugUnits: Boolean; Files, ObjFiles: TStrings): Integer;
 const
   MaxCmdLineLength = 2048 - 1;
 var
-  Dcc32Cfg, PrjFilename: string;
+  DccCfg, PrjFilename, DccBinary: string;
   BplFilename, BplBakFilename, Filename, Args, CmdLine, S: string;
   OutDirs: TOutputDirs;
   ExistingBplRenamed: Boolean;
@@ -570,7 +575,7 @@ begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
   if Files.Count > 0 then
-    Dcc32Cfg := WriteDcc32Cfg(ExtractFileDir(PrjFilename), TargetConfig, DccOpt, DebugUnits);
+    DccCfg := WriteDccCfg(ExtractFileDir(PrjFilename), TargetConfig, DccOpt, DebugUnits);
 
   CmdLine := '';
   Result := 0;
@@ -587,7 +592,11 @@ begin
       else
         S := ' ' + Filename;
       Files.Delete(0);
-      CmdLine := '"' + TargetConfig.Target.Dcc32 + '"' + S;
+      if TargetConfig.Target.Platform = ctpWin64 then
+        DccBinary := TargetConfig.Target.Dcc64
+      else
+        DccBinary := TargetConfig.Target.Dcc32;
+      CmdLine := '"' + DccBinary + '"' + S;
       Args := S;
 
       while Files.Count > 0 do
@@ -627,11 +636,11 @@ begin
       try
         { Compile the project }
         if TargetConfig.Target.Version <= 9 then
-          Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+          Result := CaptureExecute('"' + DccBinary + '"', Args,
                                    ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
                                    False, TargetConfig.GetPathEnvVar, Dcc32SpeedInjection)
         else
-          Result := CaptureExecute('"' + TargetConfig.Target.Dcc32 + '"', Args,
+          Result := CaptureExecute('"' + DccBinary + '"', Args,
                                    ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
                                    False, TargetConfig.GetPathEnvVar, nil);
       finally
@@ -653,7 +662,7 @@ begin
     end;
   finally
     if not CmdOptions.KeepFiles then
-      DeleteFile(Dcc32Cfg);
+      DeleteFile(DccCfg);
   end;
 
   if Result < 0 then // command not found
@@ -1176,7 +1185,7 @@ begin
     Files := TStringList.Create;
     try
       Files.Add(ExtractFileName(ChangeFileExt(Project.SourceName, '.dpk'))); // force .dpk
-      Result := Dcc32(TargetConfig, Project, DccOpt, DebugUnits, Files, nil);
+      Result := Dcc(TargetConfig, Project, DccOpt, DebugUnits, Files, nil);
       if Result = 0 then
         FilesCompiled := True;
     finally
@@ -1762,7 +1771,8 @@ begin
     TargetConfig := ProjectGroup.TargetConfig;
 
     { remove current JVCL but keep the "Installation tag" valid }
-    TargetConfig.DeinstallJVCL(nil, nil, {RealUninstall:=}False);
+    if not TargetConfig.CompileOnly then
+      TargetConfig.DeinstallJVCL(nil, nil, {RealUninstall:=}False);
 
     // obtain information for progress bar
     FPkgCount := 0;
@@ -1916,9 +1926,13 @@ begin
 
     if not FAborted then
     begin
-      if TargetConfig.CleanPalettes then
-        TargetConfig.CleanJVCLPalette(False);
-      TargetConfig.RegisterToIDE;
+      TargetConfig.AddPathsToIDE;
+      if not TargetConfig.CompileOnly then
+      begin
+        if TargetConfig.CleanPalettes then
+          TargetConfig.CleanJVCLPalette(False);
+        TargetConfig.RegisterToIDE;
+      end;
     end;
   finally
 {**}DoProjectProgress(RsFinished, ProjectMaxProgress, ProjectMaxProgress);

@@ -45,7 +45,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Messages, Classes, Controls, DB, DBCtrls,
+  Windows, Messages, Classes, Controls, DB, DBCtrls,
   JvDatePickerEdit;
 
 type
@@ -97,6 +97,9 @@ type
     property Field: TField read GetField;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBDatePickerEdit = class(TJvCustomDBDatePickerEdit)
   public
     property Checked;
@@ -228,7 +231,7 @@ end;
 
 procedure TJvCustomDBDatePickerEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 constructor TJvCustomDBDatePickerEdit.Create(AOwner: TComponent);

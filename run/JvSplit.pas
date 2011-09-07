@@ -42,6 +42,9 @@ type
   TSplitterMoveEvent = procedure(Sender: TObject; X, Y: Integer;
     var AllowChange: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvxSplitter = class(TJvCustomPanel)
   private
     FControlFirst: TControl;
@@ -393,46 +396,43 @@ end;
 
 procedure TJvxSplitter.ShowInverseRect(X, Y: Integer; Mode: TInverseMode);
 var
-  P: TPoint;
+  Pt: TPoint;
   MaxRect: TRect;
   Horiz: Boolean;
 begin
-  P := Point(0, 0);
+  Pt := Point(0, 0);
   if FStyle in [spHorizontalFirst, spHorizontalSecond] then
   begin
-    P.Y := Y;
+    Pt.Y := Y;
     Horiz := True;
   end
   else
   begin
-    P.X := X;
+    Pt.X := X;
     Horiz := False;
   end;
   MaxRect := Parent.ClientRect;
-  P := ClientToScreen(P);
-  with P, MaxRect do
-  begin
-    TopLeft := Parent.ClientToScreen(TopLeft);
-    BottomRight := Parent.ClientToScreen(BottomRight);
-    if X < Left then
-      X := Left;
-    if X > Right then
-      X := Right;
-    if Y < Top then
-      Y := Top;
-    if Y > Bottom then
-      Y := Bottom;
-  end;
+  Pt := ClientToScreen(Pt);
+  MaxRect.TopLeft := Parent.ClientToScreen(MaxRect.TopLeft);
+  MaxRect.BottomRight := Parent.ClientToScreen(MaxRect.BottomRight);
+  if Pt.X < MaxRect.Left then
+    Pt.X := MaxRect.Left;
+  if Pt.X > MaxRect.Right then
+    Pt.X := MaxRect.Right;
+  if Pt.Y < MaxRect.Top then
+    Pt.Y := MaxRect.Top;
+  if Pt.Y > MaxRect.Bottom then
+    Pt.Y := MaxRect.Bottom;
   if Mode = imMove then
-    if ((P.X = FPrevOrg.X) and not Horiz) or
-      ((P.Y = FPrevOrg.Y) and Horiz) then
+    if ((Pt.X = FPrevOrg.X) and not Horiz) or
+      ((Pt.Y = FPrevOrg.Y) and Horiz) then
       Exit;
   if Mode in [imClear, imMove] then
     DrawSizingLine(FPrevOrg);
   if Mode in [imNew, imMove] then
   begin
-    DrawSizingLine(P);
-    FPrevOrg := P;
+    DrawSizingLine(Pt);
+    FPrevOrg := Pt;
   end;
 end;
 

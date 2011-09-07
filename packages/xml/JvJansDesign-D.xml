@@ -14,7 +14,7 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvJansReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCsvBaseEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvJansReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCsvBaseEditor.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

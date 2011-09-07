@@ -148,6 +148,10 @@ asm
 end;
 
 {$IFDEF MSWINDOWS}
+{$IFNDEF RTL230_UP}
+type
+  INT_PTR = Integer;
+{$ENDIF ~RTL230_UP}
 procedure TJvErrorDialog.ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
 var
   Info: TMemoryBasicInformation;
@@ -161,7 +165,7 @@ begin
     LogicalAddress := ConvertAddr(LogicalAddress);
   end
   else
-    Cardinal(LogicalAddress) := Cardinal(LogicalAddress) - Cardinal(Info.AllocationBase);
+    INT_PTR(LogicalAddress) := INT_PTR(LogicalAddress) - INT_PTR(Info.AllocationBase);
   StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, SizeOf(ModName) - 1);
   ModuleName := StrPas(ModName);
 end;

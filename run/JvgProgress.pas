@@ -342,7 +342,7 @@ begin
   Canvas.Draw(0, 0, FImage);
   {$IFDEF JVCLThemesEnabled}
   if BevelBold and ((BevelInner <> bvNone) or (BevelOuter <> bvNone)) and
-    ThemeServices.ThemesEnabled then
+    ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     DrawThemedBorder(Self);
   {$ENDIF JVCLThemesEnabled}
 end;

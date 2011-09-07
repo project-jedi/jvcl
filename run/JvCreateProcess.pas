@@ -141,6 +141,9 @@ type
   end;
   {$M-}
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvCreateProcess = class(TJvComponent)
   private
     FApplicationName: string;

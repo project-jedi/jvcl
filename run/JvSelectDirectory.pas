@@ -40,6 +40,9 @@ uses
 
 type
   { TODO -opeter3 : Rewrite to not depend on FileCtrl? }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSelectDirectory = class(TJvCommonDialog)
   private
     FDirectory: string;

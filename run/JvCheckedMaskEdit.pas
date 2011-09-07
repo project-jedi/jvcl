@@ -77,6 +77,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCheckedMaskEdit = class(TJvCustomCheckedMaskEdit)
   published
     property Action;
@@ -283,7 +286,7 @@ begin
     ALeft := FCheck.Left + FCheck.Width;
     // ensure the text starts 2 points from the checkbox edge
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       ALeft := ALeft + 1;
     {$ENDIF JVCLThemesEnabled}
     if BorderStyle = bsNone then
@@ -325,22 +328,19 @@ begin
     if AValue then
     begin
       FCheck := TCheckBox.Create(Self);
-      with FCheck do
-      begin
-        Parent := Self;
-        // Align := alLeft;
-        if HotTrack then
-          Left := 1;
-        Top := 1;
-        Height := Self.ClientHeight - 2;
-        Width := 15;
-        Anchors := [akLeft, akTop, akBottom];
-        Alignment := taLeftJustify;
-        TabStop := False;
-        OnClick := CheckClick;
-        Visible := True;
-        Enabled := Self.Enabled;
-      end;
+      FCheck.Parent := Self;
+      // FCheck.Align := alLeft;
+      if HotTrack then
+        FCheck.Left := 1;
+      FCheck.Top := 1;
+      FCheck.Height := ClientHeight - 2;
+      FCheck.Width := 15;
+      FCheck.Anchors := [akLeft, akTop, akBottom];
+      FCheck.Alignment := taLeftJustify;
+      FCheck.TabStop := False;
+      FCheck.OnClick := CheckClick;
+      FCheck.Visible := True;
+      FCheck.Enabled := Enabled;
     end
     else
       FreeAndNil(FCheck);

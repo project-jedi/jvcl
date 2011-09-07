@@ -45,6 +45,9 @@ type
   TStack = array of Integer;
   TNStack = array of Integer;
   
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTurtle = class(TComponent)
   private
     FPosition: TPoint;
@@ -1059,8 +1062,7 @@ var
 begin
   X := Position.X;
   Y := Position.Y;
-  with Area do
-    Canvas.CopyRect(Rect(X, Y, X + Right - Left, Y + Bottom - Top), Canvas, Area);
+  Canvas.CopyRect(Rect(X, Y, X + Area.Right - Area.Left, Y + Area.Bottom - Area.Top), Canvas, Area);
   Result := '';
 end;
 

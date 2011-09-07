@@ -104,6 +104,9 @@ type
     property Mode: TJvFtpDownloadMode read FMode write FMode default hmBinary;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFtpUrlGrabber = class(TJvProxyingUrlGrabber)
   protected
     FPassive: Boolean;
@@ -160,6 +163,9 @@ type
   end;
 
   // A grabber for HTTP URLs
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHttpUrlGrabber = class(TJvProxyingUrlGrabber)
   private
     FReferer: string;
@@ -253,6 +259,9 @@ type
   end;
 
   // A grabber for local and UNC files
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvLocalFileUrlGrabber = class(TJvCustomUrlGrabber)
   private
     FPreserveAttributes: Boolean;

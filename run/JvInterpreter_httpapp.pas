@@ -87,7 +87,7 @@ end;
 
 procedure TWebRequest_WriteString(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TWebRequest(Args.Obj).WriteString(Args.Values[0]);
+  Value := TWebRequest(Args.Obj).WriteString(AnsiString(string(Args.Values[0])));
 end;
 
 { procedure ExtractContentFields(Strings: TStrings); }
@@ -115,7 +115,7 @@ end;
 
 procedure TWebRequest_GetFieldByName(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TWebRequest(Args.Obj).GetFieldByName(Args.Values[0]);
+  Value := TWebRequest(Args.Obj).GetFieldByName(AnsiString(string(Args.Values[0])));
 end;
 
 { property Read MethodType: TMethodType }
@@ -376,7 +376,7 @@ end;
 
 procedure TCookie_Write_Name(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TCookie(Args.Obj).Name := Value;
+  TCookie(Args.Obj).Name := AnsiString(string(Value));
 end;
 
 { property Read Value: string }
@@ -390,7 +390,7 @@ end;
 
 procedure TCookie_Write_Value(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TCookie(Args.Obj).Value := Value;
+  TCookie(Args.Obj).Value := AnsiString(string(Value));
 end;
 
 { property Read Domain: string }
@@ -404,7 +404,7 @@ end;
 
 procedure TCookie_Write_Domain(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TCookie(Args.Obj).Domain := Value;
+  TCookie(Args.Obj).Domain := AnsiString(string(Value));
 end;
 
 { property Read Path: string }
@@ -418,7 +418,7 @@ end;
 
 procedure TCookie_Write_Path(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TCookie(Args.Obj).Path := Value;
+  TCookie(Args.Obj).Path := AnsiString(string(Value));
 end;
 
 { property Read Expires: TDateTime }
@@ -476,7 +476,7 @@ end;
 
 procedure TWebResponse_SendRedirect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).SendRedirect(Args.Values[0]);
+  TWebResponse(Args.Obj).SendRedirect(AnsiString(string(Args.Values[0])));
 end;
 
 { procedure SendStream(AStream: TStream); }
@@ -497,7 +497,7 @@ end;
 
 procedure TWebResponse_SetCookieField(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).SetCookieField(V2O(Args.Values[0]) as TStrings, Args.Values[1], Args.Values[2],
+  TWebResponse(Args.Obj).SetCookieField(V2O(Args.Values[0]) as TStrings, AnsiString(string(Args.Values[1])), AnsiString(string(Args.Values[2])),
     Args.Values[3], Args.Values[4]);
 end;
 
@@ -533,7 +533,7 @@ end;
 
 procedure TWebResponse_Write_Version(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).Version := Value;
+  TWebResponse(Args.Obj).Version := AnsiString(string(Value));
 end;
 
 { property Read ReasonString: string }
@@ -547,7 +547,7 @@ end;
 
 procedure TWebResponse_Write_ReasonString(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).ReasonString := Value;
+  TWebResponse(Args.Obj).ReasonString := AnsiString(string(Value));
 end;
 
 { property Read Server: string }
@@ -561,7 +561,7 @@ end;
 
 procedure TWebResponse_Write_Server(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).Server := Value;
+  TWebResponse(Args.Obj).Server := AnsiString(string(Value));
 end;
 
 { property Read WWWAuthenticate: string }
@@ -575,7 +575,7 @@ end;
 
 procedure TWebResponse_Write_WWWAuthenticate(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).WWWAuthenticate := Value;
+  TWebResponse(Args.Obj).WWWAuthenticate := AnsiString(string(Value));
 end;
 
 { property Read Realm: string }
@@ -589,7 +589,7 @@ end;
 
 procedure TWebResponse_Write_Realm(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).Realm := Value;
+  TWebResponse(Args.Obj).Realm := AnsiString(string(Value));
 end;
 
 { property Read Allow: string }
@@ -603,7 +603,7 @@ end;
 
 procedure TWebResponse_Write_Allow(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).Allow := Value;
+  TWebResponse(Args.Obj).Allow := AnsiString(string(Value));
 end;
 
 { property Read Location: string }
@@ -617,7 +617,7 @@ end;
 
 procedure TWebResponse_Write_Location(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).Location := Value;
+  TWebResponse(Args.Obj).Location := AnsiString(string(Value));
 end;
 
 { property Read ContentEncoding: string }
@@ -631,7 +631,7 @@ end;
 
 procedure TWebResponse_Write_ContentEncoding(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).ContentEncoding := Value;
+  TWebResponse(Args.Obj).ContentEncoding := AnsiString(string(Value));
 end;
 
 { property Read ContentType: string }
@@ -645,7 +645,7 @@ end;
 
 procedure TWebResponse_Write_ContentType(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).ContentType := Value;
+  TWebResponse(Args.Obj).ContentType := AnsiString(string(Value));
 end;
 
 { property Read ContentVersion: string }
@@ -659,7 +659,7 @@ end;
 
 procedure TWebResponse_Write_ContentVersion(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).ContentVersion := Value;
+  TWebResponse(Args.Obj).ContentVersion := AnsiString(string(Value));
 end;
 
 { property Read DerivedFrom: string }
@@ -673,7 +673,7 @@ end;
 
 procedure TWebResponse_Write_DerivedFrom(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).DerivedFrom := Value;
+  TWebResponse(Args.Obj).DerivedFrom := AnsiString(string(Value));
 end;
 
 { property Read Title: string }
@@ -687,7 +687,7 @@ end;
 
 procedure TWebResponse_Write_Title(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TWebResponse(Args.Obj).Title := Value;
+  TWebResponse(Args.Obj).Title := AnsiString(string(Value));
 end;
 
 { property Read StatusCode: Integer }
@@ -929,14 +929,14 @@ end;
 
 procedure JvInterpreter_HTTPDecode(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := HTTPDecode(Args.Values[0]);
+  Value := HTTPDecode(AnsiString(string(Args.Values[0])));
 end;
 
 { function HTTPEncode(const AStr: String): string; }
 
 procedure JvInterpreter_HTTPEncode(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := HTTPEncode(Args.Values[0]);
+  Value := HTTPEncode(AnsiString(string(Args.Values[0])));
 end;
 
 { function ParseDate(const DateStr: string): TDateTime; }

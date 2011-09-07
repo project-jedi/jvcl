@@ -70,6 +70,9 @@ type
   TDays = array [1..12] of Integer;
   TYearDatas = array [0..37, 0..12] of TYearData;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   {$IFDEF USECUSTOMGRID}
   TJvYearGrid = class(TCustomDrawGrid)
   {$ELSE}

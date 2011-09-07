@@ -129,6 +129,9 @@ type
 
     TJvMouseGestureHook
   }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvMouseGesture = class(TJvComponent)
   private
     FActive: Boolean;
@@ -308,6 +311,9 @@ type
     See Also
     TJvMouseGesture
   }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvMouseGestureHook = class(TJvComponent)
   private
     { Description

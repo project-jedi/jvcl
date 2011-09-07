@@ -15,7 +15,7 @@
     <Package Name="rtl" Targets="C,D" Condition=""/>
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="dbrtl" Targets="DB" Condition=""/>
-    <Package Name="bdertl" Targets="DB" Condition=""/>
+    <Package Name="bdertl" Targets="BDE" Condition=""/>
     <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
@@ -38,7 +38,7 @@
     <File Name="..\..\run\JvInterpreter_Db.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="BDE,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Dialogs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_ExtCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Forms.pas" Targets="all" Formname="" Condition=""/>

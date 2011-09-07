@@ -91,7 +91,7 @@ type
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure FontChanged; override;
     procedure TextChanged; override;
     procedure AdjustBounds; dynamic;
@@ -116,6 +116,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvStaticText = class(TJvCustomStaticText)
   published
     property Align;
@@ -354,8 +357,7 @@ begin
   end;
 end;
 
-function TJvCustomStaticText.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvCustomStaticText.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
   Result := (FFocusControl <> nil) and Enabled and ShowAccelChar and
     IsAccel(Key, Caption) and (ssAlt in Shift);

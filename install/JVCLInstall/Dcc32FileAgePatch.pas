@@ -146,7 +146,7 @@ var
   CFileAge: PCFileAgeRec;
   Count: Integer;
   P, Buffer, EndAddr: PByte;
-  ReadBytes: Cardinal;
+  ReadBytes: {$IFDEF RTL230_UP}NativeUInt{$ELSE}Cardinal{$ENDIF};
   LastBufferSize: Cardinal;
   Base: Cardinal;
 begin

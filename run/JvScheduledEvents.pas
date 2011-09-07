@@ -144,6 +144,9 @@ type
     procedure PauseAll;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScheduledEvents = class(TJvCustomScheduledEvents)
   published
     property AppStorage;

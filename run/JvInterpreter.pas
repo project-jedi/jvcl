@@ -1008,6 +1008,9 @@ type
   end;
 
   { main JvInterpreter component }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvInterpreterProgram = class(TJvInterpreterUnit)
   private
     FPas: TStringList;
@@ -1834,23 +1837,35 @@ begin
             varInteger, { ttByte,} varBoolean:
               begin
                 AInt := Args.Values[I];
+                {$IFNDEF CPU64}
                 asm
                   push AInt
                 end;
+                {$ELSE}
+                {$MESSAGE WARN 'Needs review for x64'}
+                {$ENDIF ~CPU64}
               end;
             varSmallint:
               begin
                 AWord := Word(Args.Values[I]);
+                {$IFNDEF CPU64}
                 asm
                   push AWord
                 end;
+                {$ELSE}
+                {$MESSAGE WARN 'Needs review for x64'}
+                {$ENDIF ~CPU64}
               end;
             varString:
               begin
                 APointer := PChar(string(Args.Values[I]));
+                {$IFNDEF CPU64}
                 asm
                   push APointer
                 end;
+                {$ELSE}
+                {$MESSAGE WARN 'Needs review for x64'}
+                {$ENDIF ~CPU64}
               end;
           else
             JvInterpreterErrorN(ieDllInvalidArgument, -1, FuncName);
@@ -1860,16 +1875,24 @@ begin
             varInteger, { ttByte,} varBoolean:
               begin
                 APointer := @TVarData(Args.Values[I]).VInteger;
+                {$IFNDEF CPU64}
                 asm
                   push APointer
                 end;
+                {$ELSE}
+                {$MESSAGE WARN 'Needs review for x64'}
+                {$ENDIF ~CPU64}
               end;
             varSmallint:
               begin
                 APointer := @TVarData(Args.Values[I]).vSmallInt;
+                {$IFNDEF CPU64}
                 asm
                   push APointer
                 end;
+                {$ELSE}
+                {$MESSAGE WARN 'Needs review for x64'}
+                {$ENDIF ~CPU64}
               end;
           else
             JvInterpreterErrorN(ieDllInvalidArgument, -1, FuncName);
@@ -3805,17 +3828,25 @@ var
               (JvInterpreterMethod.ParamTypes[J] = varBoolean) {?} then
             begin
               AInt := Args.Values[J];
+              {$IFNDEF CPU64}
               asm
                 push AInt
               end;
+              {$ELSE}
+              {$MESSAGE WARN 'Needs review for x64'}
+              {$ENDIF ~CPU64}
             end
             else
             if JvInterpreterMethod.ParamTypes[J] = varSmallint then
             begin
               AWord := Word(Args.Values[J]);
+              {$IFNDEF CPU64}
               asm
                 push AWord
               end;
+              {$ELSE}
+              {$MESSAGE WARN 'Needs review for x64'}
+              {$ENDIF ~CPU64}
             end
             else
               JvInterpreterErrorN(ieDirectInvalidArgument, -1, Identifier);
@@ -3849,6 +3880,7 @@ var
             (JvInterpreterMethod.ResTyp = varEmpty) or
             (JvInterpreterMethod.ResTyp = varObject) or
             (JvInterpreterMethod.ResTyp = varPointer) then
+              {$IFNDEF CPU64}
             asm
               mov      EAX, RegEAX
               mov      EDX, RegEDX
@@ -3856,6 +3888,11 @@ var
               call     Func
               mov      iRes, EAX
             end
+            {$ELSE}
+            begin
+            end
+            {$MESSAGE WARN 'Needs review for x64'}
+            {$ENDIF ~CPU64}
           else
             JvInterpreterErrorN(ieDirectInvalidResult, -1, Identifier);
 

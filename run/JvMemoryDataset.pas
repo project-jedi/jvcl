@@ -100,6 +100,9 @@ type
   PJvMemBuffer = PAnsiChar;
   {$ENDIF UNICODE}
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMemoryData = class(TDataSet)
   private
     FSaveLoadState: TSaveLoadState;

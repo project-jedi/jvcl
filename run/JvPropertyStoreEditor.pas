@@ -40,6 +40,9 @@ uses
   JvPropertyStoreEditorIntf, JvDynControlEngineIntf, ActnList, Menus;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPropertyStoreEditorControl = class(TJvCustomControl)
     procedure JvInspectorAfterItemCreate(Sender: TObject; Item:
         TJvCustomInspectorItem);

@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry;
 
 const
-  BDSVersions: array[1..8] of record
+  BDSVersions: array[1..9] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -50,7 +50,8 @@ const
     (Name: 'CodeGear RAD Studio'; VersionStr: '2007'; Version: 11; CIV: '100'; Supported: True),
     (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE'; Version: 15; CIV: '150'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE'; Version: 15; CIV: '150'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE2'; Version: 16; CIV: '160'; Supported: True)
   );
 
 type
@@ -82,12 +83,15 @@ type
     property Items[Index: Integer]: TCompileTarget read GetItems; default;
   end;
 
+  TCompileTargetPlatform = (ctpWin32, ctpWin64);
+
   TCompileTarget = class(TObject)
   private
     FIsValid: Boolean;
     FIsEvaluation: Boolean;
     FName: string;
     FIDEName: string;
+    FPlatform: TCompileTargetPlatform;
     FLatestRTLPatch: Integer;
     FLatestUpdate: Integer;
     FIDEVersion: Integer;
@@ -126,6 +130,7 @@ type
     function GetCommonProjectsDir: string;
     procedure LoadFromRegistry;
     function GetEnvOptionsFileName: string; // Delphi 2007
+    function GetPlatformStr: string;
     function ReadBDSProjectsDir: string;
     function ReadCommonProjectsDir: string;
     procedure LoadPackagesFromRegistry(APackageList: TDelphiPackageList;
@@ -136,6 +141,7 @@ type
     procedure GetBDSVersion(out Name: string; out Version: Integer; out VersionStr: string);
     function GetMake: string;
     function GetDcc32: string;
+    function GetDcc64: string;
     function GetDccil: string;
     function GetBcc32: string;
     function GetIlink32: string;
@@ -148,7 +154,7 @@ type
     property DCPOutputDir: string read FDCPOutputDir; // with macros, could contain double backslashes when resolving the macro
     property BPLOutputDir: string read FBPLOutputDir; // with macros, could contain double backslashes when resolving the macro
   public
-    constructor Create(const AName, AVersion, ARegSubKey: string);
+    constructor Create(const AName, AVersion, ARegSubKey: string; APlatform: TCompileTargetPlatform);
     destructor Destroy; override;
 
     function IsBDS: Boolean;
@@ -198,6 +204,7 @@ type
 
     property Make: string read GetMake;
     property Dcc32: string read GetDcc32;
+    property Dcc64: string read GetDcc64;
     property Dccil: string read GetDccil;
     property Bcc32: string read GetBcc32;
     property Ilink32: string read GetIlink32;
@@ -207,6 +214,8 @@ type
     property Version: Integer read FVersion;  // 1, 7, 10
     property VersionStr: string read FVersionStr; // '1.0', '7.0', '2006'
     property IDEName: string read FIDEName;
+    property Platform: TCompileTargetPlatform read FPlatform;
+    property PlatformName: string read GetPlatformStr;
     property IDEVersion: Integer read FIDEVersion; // 1, 7, 4
     property IDEVersionStr: string read FIDEVersionStr;
     property ProductVersion: string read FProductVersion;
@@ -437,11 +446,20 @@ begin
               begin
                 if HKCUReg.KeyExists(RootKey + HKCUSubKey + '\' + KeyName) then
                 begin
-                  Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey);
+                  Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey, ctpWin32);
                   if Target.IsValid then // only valid targets are allowed
                     Add(Target)
                   else
                     Target.Free;
+
+                  if (SubKey = 'BDS') and (KeyName[1] = '9') then
+                  begin
+                    Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey, ctpWin64);
+                    if Target.IsValid then // only valid targets are allowed
+                      Add(Target)
+                    else
+                      Target.Free;
+                  end;
                 end;
               end;
             end;
@@ -468,11 +486,12 @@ end;
 
 { TCompileTarget }
 
-constructor TCompileTarget.Create(const AName, AVersion, ARegSubKey: string);
+constructor TCompileTarget.Create(const AName, AVersion, ARegSubKey: string; APlatform: TCompileTargetPlatform);
 begin
   inherited Create;
   FInstalledPersonalities := TStringList.Create;
   FIDEName := AName;
+  FPlatform := APlatform;
   FIDEVersionStr := AVersion;
   FIDEVersion := StrToIntDef(Copy(FIDEVersionStr, 1, Pos('.', FIDEVersionStr) - 1), 0);
   if not IsBDS then
@@ -552,7 +571,10 @@ end;
 
 function TCompileTarget.DisplayName: string;
 begin
-  Result := Format('%s %s (%s)', [Name, VersionStr, Edition]); // do not localize
+  if IsBDS and (IDEVersion >= 9) then
+    Result := Format('%s %s %s (%s)', [Name, VersionStr, GetPlatformStr, Edition]) // do not localize
+  else
+    Result := Format('%s %s (%s)', [Name, VersionStr, Edition]); // do not localize
 end;
 
 function TCompileTarget.ExpandDirMacros(const Dir: string): string;
@@ -579,6 +601,8 @@ begin
         NewS := BDSProjectsDir
       else if IsBDS and (IDEVersion >= 5) and (S = 'bdscommondir') then
         NewS := CommonProjectsDir
+      else if IsBDS and (IDEVersion >= 9) and (S = 'platform') then
+        NewS := GetPlatformStr
       else
       begin
         if EnvVars.IndexOfName(S) >= 0 then
@@ -757,7 +781,9 @@ var
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode, PropertyNode: TJclSimpleXMLElem;
+  ConditionProperty: TJclSimpleXMLProp;
   ForceEnvOptionsUpdate: Boolean;
+  LibraryKey: string;
 begin
   Reg := TRegistry.Create;
   try
@@ -857,7 +883,22 @@ begin
         EnvOptions.Options := EnvOptions.Options - [sxoAutoCreate];
         EnvOptions.Options := EnvOptions.Options + [sxoDoNotSaveProlog];
 
-        PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
+        if IDEVersion >= 9 then
+        begin
+          PropertyGroupNode := nil;
+          for I := 0 to EnvOptions.Root.Items.Count - 1 do
+          begin
+            ConditionProperty := EnvOptions.Root.Items[I].Properties.ItemNamed['Condition'];
+            if Assigned(ConditionProperty) and
+              (ConditionProperty.Value = Format('''$(Platform)''==''%s''', [GetPlatformStr])) then
+            begin
+              PropertyGroupNode := EnvOptions.Root.Items[I];
+              Break;
+            end;
+          end;
+        end
+        else
+          PropertyGroupNode := EnvOptions.Root.Items.ItemNamed['PropertyGroup']; // do not localize
         if Assigned(PropertyGroupNode) then
         begin
           if IDEVersion >= 8 then
@@ -925,7 +966,10 @@ begin
 
     { for BDS >= 5.0 this is the failsafe code
       for BDS <= 4.0 this it the normal way }
-    if Reg.OpenKeyReadOnly(RegistryKey + '\Library') then // do not localize
+    LibraryKey := RegistryKey + '\Library';
+    if IDEVersion >= 9 then
+      LibraryKey := LibraryKey + '\' + PlatformName;
+    if Reg.OpenKeyReadOnly(LibraryKey) then // do not localize
     begin
       if FBPLOutputDir = '' then
         FBPLOutputDir := ExcludeTrailingPathDelimiter(Reg.ReadString('Package DPL Output')); // do not localize
@@ -1099,7 +1143,7 @@ end;
 procedure TCompileTarget.SavePaths;
 var
   Reg: TRegistry;
-  S, Value: string;
+  S, Value, PlatformStr: string;
   i: Integer;
   EnvOptions: TJclSimpleXml;
   PropertyGroupNode: TJclSimpleXMLElem;
@@ -1144,7 +1188,11 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKey(RegistryKey + '\Library', False) then // do not localize
+    if IsBDS and (IDEVersion >= 9) then
+      PlatformStr := '\' + GetPlatformStr
+    else
+      PlatformStr := '';
+    if Reg.OpenKey(RegistryKey + '\Library' + PlatformStr, False) then // do not localize
     begin
       Reg.WriteString('Browsing Path', ConvertPathList(FBrowsingPaths)); // do not localize
       Reg.WriteString('Search Path', ConvertPathList(FSearchPaths)); // do not localize
@@ -1232,6 +1280,9 @@ begin
     Result := SupportedPersonalities = Personalities
   else
     Result := SupportedPersonalities * Personalities = Personalities;
+  // there is no C++ Win64 personality yet
+  if (Personalities = [persBCB]) and IsBDS and (IDEVersion = 9) and (FPlatform = ctpWin64) then
+    Result := False;
 end;
 
 function TCompileTarget.TargetType: string;
@@ -1269,6 +1320,11 @@ end;
 function TCompileTarget.GetDcc32: string;
 begin
   Result := RootDir + '\Bin\dcc32.exe'; // do not localize
+end;
+
+function TCompileTarget.GetDcc64: string;
+begin
+  Result := RootDir + '\Bin\dcc64.exe'; // do not localize
 end;
 
 function TCompileTarget.GetDccil: string;
@@ -1411,6 +1467,16 @@ begin
     Result := ChangeFileExt(Filename, '') + '100' + ExtractFileExt(Filename)
   else
     Result := VersionedBPL(Filename);
+end;
+
+function TCompileTarget.GetPlatformStr: string;
+begin
+  Result := '';
+  if IsBDS and (IDEVersion >= 9) then
+    case FPlatform of
+      ctpWin32: Result := 'Win32'; // do not localize
+      ctpWin64: Result := 'Win64'; // do not localize
+    end;
 end;
 
 function TCompileTarget.GetProjectDir: string;

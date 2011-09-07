@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -65,7 +65,7 @@ type
     procedure AssignError;
     function GetValue(Index: Integer): Integer;
     procedure SetValue(Index: Integer; Value: Integer);
-    procedure SetRect(Value: TRect);
+    procedure SetRect(const Value: TRect);
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -85,6 +85,9 @@ type
     PageSetupRec: TPageSetupDlg; PaintWhat: TJvPSPaintWhat; Canvas: TCanvas;
     Rect: TRect; var NoDefaultPaint: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPageSetupDialog = class(TJvCommonDialog)
   private
     FOptions: TJvPageOptions;
@@ -205,29 +208,42 @@ begin
   end;
 end;
 
-procedure TJvMarginSize.SetRect(Value: TRect);
+procedure TJvMarginSize.SetRect(const Value: TRect);
 begin
-  with Value do
-    if (Left < 0) or (Top < 0) or (Right < 0) or (Bottom < 0) then
-      AssignError;
+  if (Value.Left < 0) or (Value.Top < 0) or (Value.Right < 0) or (Value.Bottom < 0) then
+    AssignError;
   FMargin := Value;
 end;
 
 { Private globals - some routines copied from dialogs.pas }
 
 type
+  {$IFDEF COMPILER12_UP}
   THackCommonDialog = class(TComponent)
-  private
-    {$HINTS OFF}
+  public
     FCtl3D: Boolean;
-    {$HINTS ON}
-    FDefWndProc: Pointer;
-    {$HINTS OFF}
     FHelpContext: THelpContext;
-    {$HINTS ON}
     FHandle: HWND;
+    FRedirector: TWinControl;
+    FTemplateModule: HINST;
+    FOnClose: TNotifyEvent;
+    FOnShow: TNotifyEvent;
+    FDefWndProc: Pointer;
     FObjectInstance: Pointer;
   end;
+  {$ELSE}
+  THackCommonDialog = class(TComponent)
+  public
+    FCtl3D: Boolean;
+    FDefWndProc: Pointer;
+    FHelpContext: THelpContext;
+    FHandle: HWND;
+    {$IFDEF COMPILER9_UP} // Delphi 2005+
+    FRedirector: TWinControl;
+    {$ENDIF COMPILER9_UP}
+    FObjectInstance: Pointer;
+  end;
+  {$ENDIF COMPILER12_UP}
 
 var
   CreationControl: TCommonDialog = nil;
@@ -254,7 +270,12 @@ end;
 // Generic dialog hook. Centers the dialog on the screen in response to
 // the WM_INITDIALOG message
 
-function DialogHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): UINT; stdcall;
+{$IFNDEF RTL230_UP}
+type
+  LONG_PTR = LongInt;
+{$ENDIF ~RTL230_UP}
+
+function DialogHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 begin
   Result := 0;
   if Msg = WM_INITDIALOG then
@@ -262,15 +283,15 @@ begin
     CenterWindow(Wnd);
     THackCommonDialog(CreationControl).FHandle := Wnd;
     THackCommonDialog(CreationControl).FDefWndProc :=
-      Pointer(SetWindowLong(Wnd, GWL_WNDPROC,
-      Longint(THackCommonDialog(CreationControl).FObjectInstance)));
+      Pointer({$IFDEF RTL230_UP}SetWindowLongPtr{$ELSE}SetWindowLong{$ENDIF RTL230_UP}(Wnd, GWL_WNDPROC,
+      LONG_PTR(THackCommonDialog(CreationControl).FObjectInstance)));
     CallWindowProc(THackCommonDialog(CreationControl).FObjectInstance, Wnd,
       Msg, AWParam, ALParam);
     CreationControl := nil;
   end;
 end;
 
-function PageDrawHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): UINT; stdcall;
+function PageDrawHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 const
   PagePaintWhat: array [WM_PSD_FULLPAGERECT..WM_PSD_YAFULLPAGERECT] of TJvPSPaintWhat =
    (pwFullPage, pwMinimumMargins, pwMargins,
@@ -301,18 +322,18 @@ begin
   Printer.GetPrinter(Device, Driver, Port, DeviceMode);
   if DeviceMode <> 0 then
   begin
-    DeviceNames := GlobalAlloc(GHND, SizeOf(TDevNames) +
-      StrLen(Device) + StrLen(Driver) + StrLen(Port) + 3);
+    DeviceNames := GlobalAlloc(GHND, SizeOf(Char) * (SizeOf(TDevNames) +
+      StrLen(Device) + StrLen(Driver) + StrLen(Port) + 3));
     DevNames := PDevNames(GlobalLock(DeviceNames));
     try
       Offset := PChar(DevNames) + SizeOf(TDevNames);
       with DevNames^ do
       begin
-        wDriverOffset := Longint(Offset) - Longint(DevNames);
+        wDriverOffset := LONG_PTR(Offset) - LONG_PTR(DevNames);
         Offset := StrECopy(Offset, Driver) + 1;
-        wDeviceOffset := Longint(Offset) - Longint(DevNames);
+        wDeviceOffset := LONG_PTR(Offset) - LONG_PTR(DevNames);
         Offset := StrECopy(Offset, Device) + 1;
-        wOutputOffset := Longint(Offset) - Longint(DevNames);
+        wOutputOffset := LONG_PTR(Offset) - LONG_PTR(DevNames);
         StrCopy(Offset, Port);
       end;
     finally
@@ -332,8 +353,8 @@ begin
   try
     with DevNames^ do
       Printer.SetPrinter(PChar(DevNames) + wDeviceOffset,
-        PChar(DevNames) + wDriverOffset,
-        PChar(DevNames) + wOutputOffset, DeviceMode);
+        PChar(LONG_PTR(DevNames) + wDriverOffset),
+        PChar(LONG_PTR(DevNames) + wOutputOffset), DeviceMode);
   finally
     GlobalUnlock(DeviceNames);
     GlobalFree(DeviceNames);
@@ -535,26 +556,32 @@ type
 var
   ActiveWindow: HWND;
   WindowList: Pointer;
+  {$IFNDEF DELPHI64_TEMPORARY}
   FPUControlWord: Word;
+  {$ENDIF ~DELPHI64_TEMPORARY}
 begin
   ActiveWindow := GetActiveWindow;
   WindowList := DisableTaskWindows(0);
   try
     Application.HookMainWindow(MessageHook);
+    {$IFNDEF DELPHI64_TEMPORARY}
     asm
       // Avoid FPU control word change in NETRAP.dll, NETAPI32.dll, etc
       FNSTCW  FPUControlWord
     end;
+    {$ENDIF ~DELPHI64_TEMPORARY}
     try
       CreationControl := Self;
       PageSetupControl := Self;
       Result := TDialogFunc(DialogFunc)(DialogData);
     finally
       PageSetupControl := nil;
+      {$IFNDEF DELPHI64_TEMPORARY}
       asm
         FNCLEX
         FLDCW FPUControlWord
       end;
+      {$ENDIF ~DELPHI64_TEMPORARY}
       Application.UnhookMainWindow(MessageHook);
     end;
   finally

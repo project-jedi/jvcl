@@ -1595,7 +1595,7 @@ end;
 
 procedure TJvDockTree._ParentQuery(LevelsLeft: Integer; AParent: TWinControl; FoundItems: TList );
 var
- DockServer: TJvDockServer;
+// DockServer: TJvDockServer;
  LClassName, LName: string;
 begin
   if Assigned(AParent) then
@@ -1607,7 +1607,7 @@ begin
     //Write(Indent + '        <name>' + LName + '@' + IntToHex(Integer(AParent), 8) + '</name>');
     if AParent is TJvDockPanel then
     begin
-      DockServer := TJvDockPanel(AParent).DockServer;
+      (*DockServer := TJvDockPanel(AParent).DockServer;
       if Assigned(DockServer) then
       begin
         //Write(Indent + '        <dockserver>' + DockServer.Name + '</dockserver>');
@@ -1615,7 +1615,7 @@ begin
       else
       begin
         //Write(Indent + '        <error>TJvDockPanel has no DockServer</name>');
-      end;
+      end;*)
     end;
     // recurse down:
     if LevelsLeft > 0 then
@@ -2194,15 +2194,12 @@ var
     for I := FDockSite.ControlCount - 1 downto 0 do
     begin
       Result := FDockSite.Controls[I];
-      with Result do
-      begin
-        if not Result.Visible or
-          ((Result is TWinControl) and not TWinControl(Result).Showing) then
-          Continue;
-        P := Point(Pos.X - Left, Pos.Y - Top);
-        if PtInRect(ClientRect, P) then
-          Exit;
-      end;
+      if not Result.Visible or
+        ((Result is TWinControl) and not TWinControl(Result).Showing) then
+        Continue;
+      P := Point(Pos.X - Result.Left, Pos.Y - Result.Top);
+      if PtInRect(Result.ClientRect, P) then
+        Exit;
     end;
     Result := nil;
   end;
@@ -2272,17 +2269,16 @@ begin
     DockRect := Rect(0, 0, FDockSite.ClientWidth, FDockSite.ClientHeight);
 
     if VisibleClients > 0 then
-      with DockRect do
-        case DropAlign of
-          alLeft:
-            Right := Right div 2;
-          alRight:
-            Left := Right div 2;
-          alTop:
-            Bottom := Bottom div 2;
-          alBottom:
-            Top := Bottom div 2;
-        end;
+      case DropAlign of
+        alLeft:
+          DockRect.Right := DockRect.Right div 2;
+        alRight:
+          DockRect.Left := DockRect.Right div 2;
+        alTop:
+          DockRect.Bottom := DockRect.Bottom div 2;
+        alBottom:
+          DockRect.Top := DockRect.Bottom div 2;
+      end;
   end
   else
   begin
@@ -2673,24 +2669,22 @@ var
 begin
   if FSizingZone <> nil then
   begin
-    with R do
-      if FSizingZone.ParentZone.Orientation = doHorizontal then
-      begin
-        Left := FSizingZone.Left;
-        Top := FSizePos.Y - (SplitterWidth div 2);
-        Right := Left + FSizingZone.Width;
-        Bottom := Top + SplitterWidth;
-      end
-      else
-      begin
-        Left := FSizePos.X - (SplitterWidth div 2);
-        Top := FSizingZone.Top;
-        Right := Left + SplitterWidth;
-        Bottom := Top + FSizingZone.Height;
-      end;
+    if FSizingZone.ParentZone.Orientation = doHorizontal then
+    begin
+      R.Left := FSizingZone.Left;
+      R.Top := FSizePos.Y - (SplitterWidth div 2);
+      R.Right := R.Left + FSizingZone.Width;
+      R.Bottom := R.Top + SplitterWidth;
+    end
+    else
+    begin
+      R.Left := FSizePos.X - (SplitterWidth div 2);
+      R.Top := FSizingZone.Top;
+      R.Right := R.Left + SplitterWidth;
+      R.Bottom := R.Top + FSizingZone.Height;
+    end;
     PrevBrush := SelectObject(FSizingDC, FBrush.Handle);
-    with R do
-      PatBlt(FSizingDC, Left, Top, Right - Left, Bottom - Top, PATINVERT);
+    PatBlt(FSizingDC, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, PATINVERT);
     SelectObject(FSizingDC, PrevBrush);
   end;
 end;
@@ -3926,7 +3920,7 @@ procedure TJvDockTree.DrawDockGrabber(Control: TWinControl;
       Exit;
     // MF
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       if GrabberSize < 14 then
         CurrentThemeType := twSmallCloseButtonNormal
@@ -3945,89 +3939,85 @@ procedure TJvDockTree.DrawDockGrabber(Control: TWinControl;
 
   procedure DrawGrabberLine(Left, Top, Right, Bottom: Integer);
   begin
-    with Canvas do
-    begin
-      Pen.Color := clBtnHighlight;
-      MoveTo(Right, Top);
-      LineTo(Left, Top);
-      LineTo(Left, Bottom);
-      Pen.Color := clBtnShadow;
-      LineTo(Right, Bottom);
-      LineTo(Right, Top - 1);
-    end;
+    Canvas.Pen.Color := clBtnHighlight;
+    Canvas.MoveTo(Right, Top);
+    Canvas.LineTo(Left, Top);
+    Canvas.LineTo(Left, Bottom);
+    Canvas.Pen.Color := clBtnShadow;
+    Canvas.LineTo(Right, Bottom);
+    Canvas.LineTo(Right, Top - 1);
   end;
 
 begin
-  with ARect do
-    case GrabbersPosition of
-      gpLeft:
-        begin
-          if FGrabberBgColor <> clNone then
-          begin { draw only if color is given }
-            Canvas.Brush.Color := FGrabberBgColor;
-            Canvas.Brush.Style := bsSolid;
-            if FGrabberBottomEdgeColor<>clNone then
-            begin
-              Canvas.Pen.Color :=  FGrabberBottomEdgeColor;
-              Canvas.Pen.Style := psSolid;
-            end
-            else
-              Canvas.Pen.Style := psClear;
-
-            Canvas.Rectangle(Left, Top, Left+GrabberSize, Bottom);
-          end;
-
-          DrawCloseButton(Left + BorderWidth + BorderWidth + 1, Top + BorderWidth + BorderWidth + 1);
-          if FGrabberShowLines then
+  case GrabbersPosition of
+    gpLeft:
+      begin
+        if FGrabberBgColor <> clNone then
+        begin { draw only if color is given }
+          Canvas.Brush.Color := FGrabberBgColor;
+          Canvas.Brush.Style := bsSolid;
+          if FGrabberBottomEdgeColor <> clNone then
           begin
-            DrawGrabberLine(Left + BorderWidth + 3, Top + GrabberSize + BorderWidth + 1,
-              Left + BorderWidth + 5, Bottom + BorderWidth - 2);
-            DrawGrabberLine(Left + BorderWidth + 6, Top + GrabberSize + BorderWidth + 1,
-              Left + BorderWidth + 8, Bottom + BorderWidth - 2);
-          end;
-
-          if FGrabberBottomEdgeColor<>clNone then
-          begin
-            Canvas.Pen.Color := FGrabberBottomEdgeColor;
+            Canvas.Pen.Color :=  FGrabberBottomEdgeColor;
             Canvas.Pen.Style := psSolid;
-            Canvas.MoveTo(Left + GrabberSize, Top);
-            Canvas.LineTo(Left + GrabberSize, Bottom);
-          end;
+          end
+          else
+            Canvas.Pen.Style := psClear;
+
+          Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Left + GrabberSize, ARect.Bottom);
         end;
-      gpTop:
+
+        DrawCloseButton(ARect.Left + BorderWidth + BorderWidth + 1, ARect.Top + BorderWidth + BorderWidth + 1);
+        if FGrabberShowLines then
         begin
-          if FGrabberBgColor <> clNone then
-          begin { draw only if color is given }
-            Canvas.Brush.Color := FGrabberBgColor;
-            Canvas.Brush.Style := bsSolid;
-            if FGrabberBottomEdgeColor <> clNone then
-            begin
-              Canvas.Pen.Color := FGrabberBottomEdgeColor;
-              Canvas.Pen.Style := psSolid;
-            end
-            else
-              Canvas.Pen.Style := psClear;
-            Canvas.Rectangle(Left, Top, Right, Top + GrabberSize + 2);
-          end;
+          DrawGrabberLine(ARect.Left + BorderWidth + 3, ARect.Top + GrabberSize + BorderWidth + 1,
+            ARect.Left + BorderWidth + 5, ARect.Bottom + BorderWidth - 2);
+          DrawGrabberLine(ARect.Left + BorderWidth + 6, ARect.Top + GrabberSize + BorderWidth + 1,
+            ARect.Left + BorderWidth + 8, ARect.Bottom + BorderWidth - 2);
+        end;
 
-          DrawCloseButton(Right - GrabberSize + BorderWidth + 1, Top + BorderWidth + 1);
-          if FGrabberShowLines then
-          begin
-            DrawGrabberLine(Left + BorderWidth + 4, Top + BorderWidth + BorderWidth + 3,
-              Right - GrabberSize + BorderWidth - 4, Top + BorderWidth + 5);
-            DrawGrabberLine(Left + BorderWidth + 4, Top + BorderWidth + BorderWidth + 6,
-              Right - GrabberSize + BorderWidth - 4, Top + BorderWidth + 8);
-          end;
-
+        if FGrabberBottomEdgeColor<>clNone then
+        begin
+          Canvas.Pen.Color := FGrabberBottomEdgeColor;
+          Canvas.Pen.Style := psSolid;
+          Canvas.MoveTo(ARect.Left + GrabberSize, ARect.Top);
+          Canvas.LineTo(ARect.Left + GrabberSize, ARect.Bottom);
+        end;
+      end;
+    gpTop:
+      begin
+        if FGrabberBgColor <> clNone then
+        begin { draw only if color is given }
+          Canvas.Brush.Color := FGrabberBgColor;
+          Canvas.Brush.Style := bsSolid;
           if FGrabberBottomEdgeColor <> clNone then
           begin
             Canvas.Pen.Color := FGrabberBottomEdgeColor;
             Canvas.Pen.Style := psSolid;
-            Canvas.MoveTo(Left, Top + GrabberSize - 1);
-            Canvas.LineTo(Right, Top + GrabberSize - 1);
-          end;
+          end
+          else
+            Canvas.Pen.Style := psClear;
+          Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Top + GrabberSize + 2);
         end;
-    end;
+
+        DrawCloseButton(ARect.Right - GrabberSize + BorderWidth + 1, ARect.Top + BorderWidth + 1);
+        if FGrabberShowLines then
+        begin
+          DrawGrabberLine(ARect.Left + BorderWidth + 4, ARect.Top + BorderWidth + BorderWidth + 3,
+            ARect.Right - GrabberSize + BorderWidth - 4, ARect.Top + BorderWidth + 5);
+          DrawGrabberLine(ARect.Left + BorderWidth + 4, ARect.Top + BorderWidth + BorderWidth + 6,
+            ARect.Right - GrabberSize + BorderWidth - 4, ARect.Top + BorderWidth + 8);
+        end;
+
+        if FGrabberBottomEdgeColor <> clNone then
+        begin
+          Canvas.Pen.Color := FGrabberBottomEdgeColor;
+          Canvas.Pen.Style := psSolid;
+          Canvas.MoveTo(ARect.Left, ARect.Top + GrabberSize - 1);
+          Canvas.LineTo(ARect.Right, ARect.Top + GrabberSize - 1);
+        end;
+      end;
+  end;
 end;
 
 procedure TJvDockTree.DrawSplitterRect(const ARect: TRect);

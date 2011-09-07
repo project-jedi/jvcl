@@ -42,6 +42,9 @@ type
     ttTurnLeft, ttTurnRight, ttTurnUp, ttTurnDown,
     ttWipeDownRight, ttWipeDownLeft, ttWipeUpRight, ttWipeUpLeft);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageTransform = class(TJvGraphicControl)
   private
     FPicture1: TPicture;

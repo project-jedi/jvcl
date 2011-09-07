@@ -59,6 +59,9 @@ type
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: Integer;
     const APicture: TPicture; R: TRect; var DefaultDraw: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvComboListBox = class(TJvCustomListBox)
   private
     FMouseOver: Boolean;
@@ -275,13 +278,10 @@ begin
     end;
   end;
 
-  with Result do
-  begin
-    Left := 0;
-    Top := 0;
-    Right := W;
-    Bottom := H;
-  end;
+  Result.Left := 0;
+  Result.Top := 0;
+  Result.Right := W;
+  Result.Bottom := H;
 
   OffsetRect(Result, (CW - W) div 2, (CH - H) div 2);
 end;

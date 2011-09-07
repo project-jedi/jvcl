@@ -72,11 +72,14 @@ type
 
   // used in JvSpeedButton, JvArrowButton, JvButton CM_JVBUTTONPRESSED
   // asn: can also be used with CM_BUTTONPRESSED
-  TCMButtonPressed = packed record
+  TCMButtonPressed = record
     Msg: Cardinal;
-    Index: Integer;     { clx has Index and Control switched }
+    Index: Integer;
+    {$IFDEF COMPILER16_UP}
+	WParamFiller: TDWordFiller;
+    {$ENDIF COMPILER16_UP}
     Control: TControl;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
   THintString = string;
@@ -373,7 +376,7 @@ const
   SysColCount = 30;
   {$IFDEF COMPILER6}
    {$IF not declared(clHotLight)}
-    {$MESSAGE ERROR 'You do not have installed Delphi 6 Runtime Library Update 2. Please install this before installing the JVCL. http://downloads.codegear.com/default.aspx?productid=300'}
+    {$MESSAGE ERROR 'You do not have Delphi 6 Runtime Library Update 2 installed. Please install it before installing the JVCL. http://downloads.codegear.com/default.aspx?productid=300'}
    {$IFEND}
   {$ENDIF COMPILER6}
 
@@ -483,158 +486,6 @@ const
   );
 
 type
-  TJvSizeRect = packed record
-    Top: Integer;
-    Left: Integer;
-    Width: Integer;
-    Height: Integer;
-  end;
-
-  TJvMessage = packed record
-    Msg: Integer;
-    case Integer of
-    0:
-     (
-      WParam: Integer;
-      LParam: Integer;
-      Result: Integer;
-     );
-    1:
-     (
-      WParamLo: Word;
-      WParamHi: Word;
-      LParamLo: Word;
-      LParamHi: Word;
-      ResultLo: Word;
-      ResultHi: Word;
-     );
-    2:
-     ( // WM_NOPARAMS
-      Unused: array[0..3] of Word;
-      Handled: LongBool;  // "Result"
-     );
-    3:
-     ( // WM_SCROLL
-      Pos: Integer;         // WParam
-      ScrollCode: Integer;  // LParam
-     );
-    4:
-     ( // WM_TIMER
-      TimerID: Integer;     // WParam
-      TimerProc: TTimerProc;// LParam
-     );
-    5:
-     ( // WM_MOUSEACTIVATE
-      TopLevel: HWND;       // WParam
-      HitTestCode: Word;    // LParamLo
-      MouseMsg: Word;       // LParamHi
-     );
-    6:
-     ( // WM_MOUSE(WHEEL) | WM_MOVE
-      case Integer of
-      0:
-       ( // WM_MOUSE
-        Keys: Integer;     // WParam
-        // LParam: Pos | (XPos, YPos)
-        case Integer of
-        0:
-         (
-          Position: TSmallPoint;
-         );
-        1:
-         (
-          XPos: Smallint;
-          YPos: Smallint;
-         )
-       );
-      1:
-       ( // WM_MOUSEWHEEL
-        WheelDelta: Integer; // WParam
-       );
-     );
-    7:
-     ( // WM_ACTIVATE
-      Active: Word; { WA_INACTIVE, WA_ACTIVE, WA_CLICKACTIVE } // WParamLo
-      Minimized: WordBool;  // WParamHi
-      ActiveWindow: HWND;   // LParam
-     );
-
-    8:
-     ( // WM_COMMAND
-      ItemID: Word;         // WParamLo
-      NotifyCode: Word;     // WParamHi
-      Ctl: HWND;            // LParam
-     );
-    9:
-     ( // WM_GETICON
-      BigIcon: LongBool;
-     );
-    10:
-     ( // CM_(FOCUS|CONTROL)CHANGED  | CM_HINTSHOW
-      Reserved: Integer;      // WParam
-      case Integer of
-        0:
-         ( // CM_(CONTROL)CHANGED
-          Child: TControl;    // LParam
-         );
-        1:
-         ( // CM_FOCUSCHANGED | CM_FORCESIZE }
-          Sender: TControl;   // LParam
-         );
-        2:
-         ( //CM_HINTSHOW
-          HintInfo: PHintInfo;
-         )
-     );
-    11:
-     ( // CM_CONTROLLISTCHANGE | CM_(CONTROL)CHANGED (| CM_BUTTONPRESSED for clx)
-      Control: TControl;    // WParam
-      case Integer of
-        0:
-         ( // CM_(CONTROL)CHANGED
-          Inserting: LongBool;    // LParam
-         );
-        1: // CM_BUTTONPRESSED (clx)
-         (
-          Index: Integer;
-         )
-     );
-    12:
-     ( // CM_HINTSHOWPAUSE
-      WasActive: LongBool;
-      Pause: PInteger;
-     );
-    13:
-     ( // WM_KEY
-      CharCode: Word;
-      NotUsed: Word;
-      KeyData: Integer;
-     );
-    14:
-     ( // WM_GETTEXT
-      TextMax: Integer;
-      Text: PChar
-     );
-    15:
-     ( // WM_ERASEBKGND | WM_PAINT
-      DC: HDC;
-     );
-    16:
-     ( // WM_KILLFOCUS
-      FocusedWnd: HWND;
-     );
-    17:
-     (
-      NewSize: TSmallPoint; //CM_FORCESIZE wParam
-     );
-    18:
-     ( { alternative naming for VCL CM_BUTTONPRESSED }
-      GroupIndex: Integer;
-      Button: TControl;
-     );
-  end;
-
-type
   TJvCustomThread = class(TThread)
   private
     FThreadName: String;
@@ -651,7 +502,7 @@ type
     property ThreadName: String read GetThreadName write SetThreadName;
   end;
 
-// Using this variable you can enhance the NameThread Procedure system wide by inserting a procedure
+// Using this variable you can enhance the NameThread procedure system wide by inserting a procedure
 // which executes for example a MadExcept TraceOut to enhance the MadExcept call stack results.
 // The procedure for MadExcept could look like:
 //
@@ -665,7 +516,8 @@ type
 //     initialization
 //       JvTypes.JvCustomThreadNamingProc := NameThreadMadExcept;
 //
-var JvCustomThreadNamingProc : procedure (AThreadName: AnsiString; AThreadID: LongWord);
+var
+  JvCustomThreadNamingProc: procedure (AThreadName: AnsiString; AThreadID: LongWord);
 
 {$IFDEF UNITVERSIONING}
 const

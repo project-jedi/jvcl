@@ -17,10 +17,10 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPageManagerForm.pas" Targets="all" Formname="JvProxyEditor" Condition=""/>
-    <File Name="..\..\design\JvPatcherEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCmpReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataEmbeddedEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPatchForm.pas" Targets="all" Formname="FoPatch" Condition=""/>
+    <File Name="..\..\design\JvPageManagerForm.pas" Targets="all_win32" Formname="JvProxyEditor" Condition=""/>
+    <File Name="..\..\design\JvPatcherEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCmpReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataEmbeddedEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPatchForm.pas" Targets="all_win32" Formname="FoPatch" Condition=""/>
   </Contains>
 </Package>

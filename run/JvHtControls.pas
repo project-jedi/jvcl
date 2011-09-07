@@ -172,6 +172,9 @@ type
     property DataConnector: TJvCustomListBoxDataConnector read FDataConnector write SetDataConnector;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHTListBox = class(TJvCustomHTListBox)
   published
     property HideSel;
@@ -260,6 +263,9 @@ type
     property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHTComboBox = class(TJvCustomHTComboBox)
   published
     property Anchors;
@@ -340,6 +346,9 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHTLabel = class(TJvCustomHTLabel)
   private
     procedure IgnoreWordWrap(Reader: TReader);
@@ -525,7 +534,7 @@ end;
 
 procedure TJvCustomListBoxDataConnector.Populate;
 var
-  Index: Integer;
+  Index: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF};
 begin
   FMap.Clear;
   FRecNoMap.Clear;
@@ -557,7 +566,7 @@ end;
 
 procedure TJvCustomListBoxDataConnector.RecordChanged;
 var
-  Index: Integer;
+  Index: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF};
 begin
   if Field.IsValid then
   begin

@@ -53,6 +53,9 @@ type
   TOnNeedNewCabinet = procedure(Sender: TObject; var Cont: Boolean; CABInfo: TCABInfo;
     var NewPath: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCABFile = class(TJvComponent)
   private
     FFileName: TFileName;

@@ -41,6 +41,9 @@ uses
   JvTypes, JvButton, JvComputerInfoEx;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvControlPanelButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;

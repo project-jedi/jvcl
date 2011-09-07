@@ -88,6 +88,9 @@ type
   TFileEvent = procedure(Sender: TObject; const FileName: string) of object;
   TProgressEvent = procedure(Sender: TObject; Position, Total: Integer) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvZlibMultiple = class(TJvComponent)
   private
     FStorePaths: Boolean;

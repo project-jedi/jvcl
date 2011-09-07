@@ -75,6 +75,9 @@ type
   TJvFullColorDialog = class;
   TJvFullColorCircleDialog = class;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorDialog = class(TComponent)
   private
     FOptions: TJvFullColorDialogOptions;
@@ -112,6 +115,9 @@ type
     property OnCloseQuery: TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorCircleDialog = class(TComponent)
   private
     FTitle: string;

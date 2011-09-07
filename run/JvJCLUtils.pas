@@ -922,7 +922,10 @@ function AllocMemo(Size: Longint): Pointer;
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 procedure FreeMemo(var fpBlock: Pointer);
 function GetMemoSize(fpBlock: Pointer): Longint;
+{$IFDEF CPU32}
+{$MESSAGE HINT 'Is this CompareMem function at all necessary?'}
 function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean;
+{$ENDIF CPU32}
 
 { Manipulate huge pointers routines }
 
@@ -1789,8 +1792,7 @@ end;
 
 function TrueInflateRect(const R: TRect; const I: Integer): TRect;
 begin
-  with R do
-    SetRect(Result, Left - I, Top - I, Right + I, Bottom + I);
+  SetRect(Result, R.Left - I, R.Top - I, R.Right + I, R.Bottom + I);
 end;
 
 function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean;
@@ -2425,6 +2427,10 @@ type
     //ExceptionRecord: PExceptionRecord;
   end;
 begin
+  {$IFDEF DELPHI64_TEMPORARY}
+  System.Error(rePlatformNotImplemented);
+  Result := E;
+  {$ELSE ~DELPHI64_TEMPORARY}
   { C++ Builder 3 Warning !}
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
@@ -2449,6 +2455,7 @@ begin
   Writeln(ErrOutput, 'ChangeTopException');
   Result := E;
   {$ENDIF UNIX}
+  {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 
 function KeyPressed(VK: Integer): Boolean;
@@ -2996,18 +3003,15 @@ procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColo
   var
     TopRight, BottomLeft: TPoint;
   begin
-    with Canvas, Rect do
-    begin
-      TopRight.X := Right;
-      TopRight.Y := Top;
-      BottomLeft.X := Left;
-      BottomLeft.Y := Bottom;
-      Pen.Color := TopColor;
-      PolyLine([BottomLeft, TopLeft, TopRight]);
-      Pen.Color := BottomColor;
-      Dec(BottomLeft.X);
-      PolyLine([TopRight, BottomRight, BottomLeft]);
-    end;
+    TopRight.X := Rect.Right;
+    TopRight.Y := Rect.Top;
+    BottomLeft.X := Rect.Left;
+    BottomLeft.Y := Rect.Bottom;
+    Canvas.Pen.Color := TopColor;
+    Canvas.PolyLine([BottomLeft, Rect.TopLeft, TopRight]);
+    Canvas.Pen.Color := BottomColor;
+    Dec(BottomLeft.X);
+    Canvas.PolyLine([TopRight, Rect.BottomRight, BottomLeft]);
   end;
 
 begin
@@ -3616,12 +3620,9 @@ begin
     try
       Result.Width := W;
       Result.Height := H;
-      with Result.Canvas do
-      begin
-        Brush.Color := BackColor;
-        FillRect(Rect(0, 0, W, H));
-        DrawIconEx(Handle, 0, 0, Ico, W, H, 0, 0, DI_NORMAL);
-      end;
+      Result.Canvas.Brush.Color := BackColor;
+      Result.Canvas.FillRect(Rect(0, 0, W, H));
+      DrawIconEx(Result.Canvas.Handle, 0, 0, Ico, W, H, 0, 0, DI_NORMAL);
     except
       Result.Free;
       raise;
@@ -3853,7 +3854,7 @@ begin
     end;
     with BI do
     begin
-      Inc(Longint(Bits), biSizeImage);
+      Inc(INT_PTR(Bits), biSizeImage);
       biBitCount := 1;
       biSizeImage := WidthBytes(Longint(biWidth) * biBitCount) * biHeight;
       biClrUsed := 2;
@@ -4547,7 +4548,6 @@ begin
     end;
     Exit;
   end;
-  Result := DefaultDateOrder; { default }
 end;
 
 function CurrentMonth: Word;
@@ -6772,7 +6772,7 @@ var
   Dummy: DWORD;
 begin
   SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS,
-    LPARAM(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
+    LPARAM(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, {$IFDEF RTL230_UP}@{$ENDIF}Dummy);
 end;
 
 procedure AssociateFileExtension(const IconPath, ProgramName, Path, Extension: string);
@@ -7548,8 +7548,13 @@ procedure ResourceNotFound(ResID: PChar);
 var
   S: string;
 begin
+  {$IFDEF DELPHI64_TEMPORARY}
+  if INT_PTR(ResID) <= $FFFF then
+    S := IntToStr(INT_PTR(ResID))
+  {$ELSE ~DELPHI64_TEMPORARY}
   if LongRec(ResID).Hi = 0 then
     S := IntToStr(LongRec(ResID).Lo)
+  {$ENDIF ~DELPHI64_TEMPORARY}
   else
     S := StrPas(ResID);
   raise EResNotFound.CreateResFmt(@SResNotFound, [S]);
@@ -7771,6 +7776,7 @@ begin
   end;
 end;
 
+{$IFDEF CPU32}
 function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean; assembler;
 asm
         PUSH    ESI
@@ -7791,6 +7797,7 @@ asm
 @@2:    POP     EDI
         POP     ESI
 end;
+{$ENDIF CPU32}
 
 { Manipulate huge pointers routines by Ray Lischner, The Waite Group, Inc. }
 
@@ -8097,32 +8104,29 @@ var
 begin
   X := GetSystemMetrics(SM_CXSCREEN);
   Y := GetSystemMetrics(SM_CYSCREEN);
-  with Rect do
+  if Rect.Right > X then
   begin
-    if Right > X then
-    begin
-      Delta := Right - Left;
-      Right := X;
-      Left := Right - Delta;
-    end;
-    if Left < 0 then
-    begin
-      Delta := Right - Left;
-      Left := 0;
-      Right := Left + Delta;
-    end;
-    if Bottom > Y then
-    begin
-      Delta := Bottom - Top;
-      Bottom := Y;
-      Top := Bottom - Delta;
-    end;
-    if Top < 0 then
-    begin
-      Delta := Bottom - Top;
-      Top := 0;
-      Bottom := Top + Delta;
-    end;
+    Delta := Rect.Right - Rect.Left;
+    Rect.Right := X;
+    Rect.Left := Rect.Right - Delta;
+  end;
+  if Rect.Left < 0 then
+  begin
+    Delta := Rect.Right - Rect.Left;
+    Rect.Left := 0;
+    Rect.Right := Rect.Left + Delta;
+  end;
+  if Rect.Bottom > Y then
+  begin
+    Delta := Rect.Bottom - Rect.Top;
+    Rect.Bottom := Y;
+    Rect.Top := Rect.Bottom - Delta;
+  end;
+  if Rect.Top < 0 then
+  begin
+    Delta := Rect.Bottom - Rect.Top;
+    Rect.Top := 0;
+    Rect.Bottom := Rect.Top + Delta;
   end;
 end;
 
@@ -8305,8 +8309,8 @@ begin
         Bits, TBitmapInfo(Header^),
         DIB_RGB_COLORS, ACanvas.CopyMode);
     finally
-      VirtualFree(Bits, 0, MEM_FREE);
-      VirtualFree(Header, 0, MEM_FREE);
+      VirtualFree(Bits, 0, MEM_RELEASE);
+      VirtualFree(Header, 0, MEM_RELEASE);
     end;
   finally
     if Bmp <> nil then

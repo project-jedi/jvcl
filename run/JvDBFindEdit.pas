@@ -42,6 +42,9 @@ type
   TJvEditFindStyle = (fsNavigate, fsFilter);
   TJvEditFindMode = (fmFirstPos, fmAnyPos);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBFindEdit = class(TJvMaskEdit)
   private
     FTimer: TTimer;

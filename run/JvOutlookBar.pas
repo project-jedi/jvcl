@@ -331,7 +331,7 @@ type
     procedure SetDisabledFontColor2(const Value: TColor);
     procedure SetThemed(const Value: Boolean);
   protected
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure FontChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     function GetButtonHeight(PageIndex: Integer): Integer;
@@ -401,6 +401,9 @@ type
     property ActivePage: TJvOutlookBarPage read GetActivePage;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOutlookBar = class(TJvCustomOutlookBar)
   public
     property PopUpObject;
@@ -1358,7 +1361,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  if {Themed}ThemeServices.ThemesEnabled and (not Flat) then
+  if {Themed}ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and (not Flat) then
   begin
     if not Enabled then
       Button := tsArrowBtnUpDisabled
@@ -1400,7 +1403,7 @@ begin
   FPageBtnProps := TJvPageBtnProps.Create(self);
   DoubleBuffered := True;
   {$IFDEF JVCLThemesEnabled}
-  FThemed := ThemeServices.ThemesEnabled;
+  FThemed := ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP};
   {$endif}
 
   ControlStyle := ControlStyle - [csAcceptsControls] + [csOpaque];
@@ -2322,7 +2325,7 @@ end;
 procedure TJvCustomOutlookBar.SetThemed(const Value: Boolean);
 begin
   {$IFDEF JVCLThemesEnabled}
-  if Value and (not ThemeServices.ThemesEnabled) then  { Warren added ability to theme/detheme this component for yourself instead of just checking if XP is themed.}
+  if Value and (not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) then  { Warren added ability to theme/detheme this component for yourself instead of just checking if XP is themed.}
       exit;
   FThemed := Value;
   {$ELSE}
@@ -2569,7 +2572,7 @@ begin
   Inc(Result, 4);
 end;
 
-function TJvCustomOutlookBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomOutlookBar.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   // don't redraw background: we always fill it anyway
   Result := True;

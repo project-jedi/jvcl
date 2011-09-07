@@ -184,7 +184,8 @@ end;
 constructor TProjectGroup.Create(ATargetConfig: ITargetConfig; const AFilename: string);
 begin
   FTargetConfig := ATargetConfig;
-  inherited Create(AFilename, ATargetConfig.JVCLPackagesXmlDir, ATargetConfig.TargetSymbol);
+
+  inherited Create(AFilename, ATargetConfig.JVCLPackagesXmlDir, ATargetConfig.TargetSymbol, ATargetConfig.Target.Platform);
 end;
 
 procedure TProjectGroup.DoInstallChange;

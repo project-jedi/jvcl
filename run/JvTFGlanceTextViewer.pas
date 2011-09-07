@@ -196,6 +196,9 @@ type
 
   TJvTFGlTxtVwEditorAlign = (eaLine, eaCell);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTFGlanceTextViewer = class(TJvTFGlanceViewer)
   private
     FViewControl: TJvTFGVTextControl;

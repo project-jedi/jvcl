@@ -67,6 +67,9 @@ type
   TJvImageListViewerCaptionEvent = procedure(Sender: TObject;
     ImageIndex: Integer; var ACaption: WideString) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageListViewer = class(TJvCustomItemViewer)
   private
     FChangeLink: TChangeLink;

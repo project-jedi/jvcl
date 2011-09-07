@@ -594,6 +594,16 @@ const
       ( StartLine:'<%%% BEGIN LIBRARYONLY %%%>'; EndLine:'<%%% END LIBRARYONLY %%%>'; ProjectType:ptLibrary),
       ( StartLine:'<%%% BEGIN DESIGNONLY %%%>'; EndLine:'<%%% END DESIGNONLY %%%>'; ProjectType:ptPackageDesign),
       ( StartLine:'<%%% BEGIN RUNONLY %%%>'; EndLine:'<%%% END RUNONLY %%%>'; ProjectType:ptPackageRun) );
+type
+  TPlatformConditional = record
+    StartLine: string;
+    EndLine: string;
+    PlatformType: TPlatformType;
+  end;
+const
+  ProjectPlatforms: array [0..1] of TPlatformConditional =
+    ( ( StartLine:'<%%% START PLATFORM WIN32 %%%>'; EndLine:'<%%% END PLATFORM WIN32 %%%>'; PlatformType: pftWin32),
+      ( StartLine:'<%%% START PLATFORM WIN64 %%%>'; EndLine:'<%%% END PLATFORM WIN64 %%%>'; PlatformType: pftWin64) );
 var
   OutFileName : string;
   oneLetterType : string;
@@ -619,6 +629,7 @@ var
   CompilerDefines, Properties: TStringList;
   Replacements: array of string;
   TmpName: string;
+  ProjectPlatformIdx: Integer;
 begin
   Result := '';
 
@@ -761,6 +772,8 @@ begin
     AddProperty(Properties, 'FORMCOUNT', IntToStr(FormCount));
     AddProperty(Properties, 'LIBCOUNT', IntToStr(LibCount));
     AddProperty(Properties, 'DEFINECOUNT', IntToStr(DefineCount));
+    AddProperty(Properties, 'WIN32ENABLED', Iff(pftWin32 in XML.PlatformTypes, 'True', 'False'));
+    AddProperty(Properties, 'WIN64ENABLED', Iff(pftWin64 in XML.PlatformTypes, 'True', 'False'));
     SetLength(Replacements, Properties.Count * 2);
     for i := 0 to Properties.Count - 1 do
     begin
@@ -982,6 +995,30 @@ begin
         end
         else if curLine = '<%%% DO NOT GENERATE %%%>' then
           Exit
+        else if Pos('<%%% START PLATFORM ', curLine) = 1 then
+        begin
+          ProjectPlatformIdx := -1;
+          for J := Low(ProjectPlatforms) to High(ProjectPlatforms) do
+            if curLine = ProjectPlatforms[J].StartLine then
+            begin
+              ProjectPlatformIdx := J;
+              Break;
+            end;
+          if ProjectPlatformIdx <> -1 then
+          begin
+            Inc(i);
+            repeatLines.Clear;
+            while (i < Count) and
+                  not IsTrimmedString(template[i], ProjectPlatforms[ProjectPlatformIdx].EndLine) do
+            begin
+              repeatLines.Add(template[i]);
+              Inc(i);
+            end;
+
+            if ProjectPlatforms[ProjectPlatformIdx].PlatformType in xml.PlatformTypes then
+              outFile.AddStrings(repeatLines);
+          end;
+        end
         else for j := Low(ProjectConditionals) to High(ProjectConditionals) do
         begin
           if curLine = ProjectConditionals[j].StartLine then

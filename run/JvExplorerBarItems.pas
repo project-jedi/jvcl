@@ -651,19 +651,19 @@ begin
   DrawRect.Bottom := DrawRect.Top + Item.Height;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if {$IFDEF RTL230_UP}StyleServices.Enabled{$ELSE}ThemeServices.ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     case AState of
       cbChecked:
-        Element := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+        Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbCheckBoxCheckedNormal);
       cbUnchecked:
-        Element := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
+        Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbCheckBoxUncheckedNormal);
     else
-      Element := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
+      Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbCheckBoxUncheckedNormal);
     end;
     if not AEnabled then
-      Element := ThemeServices.GetElementDetails(tbCheckBoxUncheckedDisabled);
-    ThemeServices.DrawElement(Canvas.Handle, Element, R);
+      Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbCheckBoxUncheckedDisabled);
+    {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Canvas.Handle, Element, R);
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -726,17 +726,17 @@ begin
   DrawRect.Bottom := R.Bottom;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if {$IFDEF RTL230_UP}StyleServices.Enabled{$ELSE}ThemeServices.ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if not AEnabled then
-      element := ThemeServices.GetElementDetails(tbPushButtonDisabled)
+      element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbPushButtonDisabled)
     else if aPushed then
-      element := ThemeServices.GetElementDetails(tbPushButtonPressed)
+      element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbPushButtonPressed)
     else if aHot then
-      element := ThemeServices.GetElementDetails(tbPushButtonHot)
+      element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbPushButtonHot)
     else
-      element := ThemeServices.GetElementDetails(tbPushButtonNormal);
-    ThemeServices.DrawElement(Canvas.Handle, element, DrawRect);
+      element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbPushButtonNormal);
+    {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Canvas.Handle, element, DrawRect);
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -1002,16 +1002,16 @@ begin
     R := Rect(X + JvExplorerConstXOffset, Y, X + Width - JvExplorerConstXOffset, Y + Item.Height);
 
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if {$IFDEF RTL230_UP}StyleServices.Enabled{$ELSE}ThemeServices.ThemesEnabled{$ENDIF RTL230_UP} then
     begin
-      element := ThemeServices.GetElementDetails(tpBar);
-      ThemeServices.DrawElement(Handle, element, R);
+      element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tpBar);
+      {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Handle, element, R);
       if (aItem.Position > 0) and (aItem.Max > 0) then
         R := Rect(X + JvExplorerConstXOffset + 2, Y + 2, X + JvExplorerConstXOffset + 2 +
           Round((Width - 2 * JvExplorerConstXOffset - 4) * (aItem.Position - aItem.Min) /
           (aItem.Max - aItem.Min)), Y + Item.Height - 2);
-      element := ThemeServices.GetElementDetails(tpChunk);
-      ThemeServices.DrawElement(Handle, element, R);
+      element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tpChunk);
+      {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Handle, element, R);
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -1355,19 +1355,19 @@ begin
   DrawRect.Bottom := DrawRect.Top + Item.Height;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if {$IFDEF RTL230_UP}StyleServices.Enabled{$ELSE}ThemeServices.ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     case AState of
       cbChecked:
-        Element := ThemeServices.GetElementDetails(tbRadioButtonCheckedNormal);
+        Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbRadioButtonCheckedNormal);
       cbUnchecked:
-        Element := ThemeServices.GetElementDetails(tbRadioButtonUncheckedNormal);
+        Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbRadioButtonUncheckedNormal);
     else
-      Element := ThemeServices.GetElementDetails(tbRadioButtonUncheckedNormal);
+      Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbRadioButtonUncheckedNormal);
     end;
     if not AEnabled then
-      Element := ThemeServices.GetElementDetails(tbRadioButtonUncheckedDisabled);
-    ThemeServices.DrawElement(Canvas.Handle, Element, R);
+      Element := {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tbRadioButtonUncheckedDisabled);
+    {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Canvas.Handle, Element, R);
   end
   else
   {$ENDIF JVCLThemesEnabled}

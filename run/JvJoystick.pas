@@ -115,6 +115,9 @@ type
     property OemVxD: string read FOEMVxD write FDummyS stored False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvJoystick = class(TJvComponent)
   private
     FJoyDummy: Boolean;

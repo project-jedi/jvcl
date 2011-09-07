@@ -28,6 +28,8 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
   Position = poScreenCenter
   OnDestroy = FormDestroy
   OnShow = FormShow
+  ExplicitWidth = 320
+  ExplicitHeight = 240
   PixelsPerInch = 96
   TextHeight = 13
   object MainPanel: TPanel
@@ -339,7 +341,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       object imgStarfield: TImage
         Left = 1
         Top = 1
-        Width = 137
+        Width = 139
         Height = 249
         Align = alClient
         AutoSize = True
@@ -636,6 +638,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
           C383C1C62B2174AB86419B6981FF0070D7F537450D5C14ACF547F2C0DA65DAB6
           3ECD31F7119A5FECDBAFF9F59BFEFD9AFEA7A8AB8CB97A12F53FFFD9}
         OnMouseDown = Panel1MouseDown
+        ExplicitWidth = 137
       end
       object imgProjectJEDI: TImage
         Left = 13

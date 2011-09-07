@@ -220,7 +220,7 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure SelectCancel(var Msg: TMessage); message LBN_SELCANCEL;
@@ -304,6 +304,9 @@ type
     property ParentFlat: Boolean read GetParentFlat write SetParentFlat default True;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvListBox = class(TJvCustomListBox)
   public
     property Count;
@@ -1415,7 +1418,7 @@ procedure TJvCustomListBox.LBGetText(var Msg: TMessage);
 begin
   if IsProviderSelected then
   begin
-    if (Msg.WParam >= 0) and (Msg.WParam < ConsumerStrings.Count) then
+    if (LPARAM(Msg.WParam) >= 0) and (Msg.WParam < WPARAM(ConsumerStrings.Count)) then
     begin
       StrCopy(PChar(Msg.LParam), PChar(ConsumerStrings[Msg.WParam]));
       Msg.Result := StrLen(PChar(Msg.LParam));
@@ -1431,7 +1434,7 @@ procedure TJvCustomListBox.LBGetTextLen(var Msg: TMessage);
 begin
   if IsProviderSelected then
   begin
-    if (Msg.WParam >= 0) and (Msg.WParam < ConsumerStrings.Count) then
+    if (LPARAM(Msg.WParam) >= 0) and (Msg.WParam < WPARAM(ConsumerStrings.Count)) then
       Msg.Result := Length(ConsumerStrings[Msg.WParam])
     else
       Msg.Result := LB_ERR;
@@ -1504,7 +1507,7 @@ begin
   InheritedCalled := False;
   if not LimitToClientWidth then
   begin
-    if Msg.WParam < ItemsShowing.Count then
+    if Msg.WParam < WPARAM(ItemsShowing.Count) then
       MeasureString(ItemsShowing[Msg.WParam], 0, LSize)
     else
       LSize.cx := FMaxWidth;
@@ -1515,7 +1518,7 @@ begin
       RemeasureAll;
     end;
   end;
-  if (Msg.WParam < ItemsShowing.Count) and Assigned(FOnDeleteString) then
+  if (Msg.WParam < WPARAM(ItemsShowing.Count)) and Assigned(FOnDeleteString) then
     FOnDeleteString(Self, ItemsShowing.Strings[Msg.WParam]);
   if not InheritedCalled then
     inherited;
@@ -2001,7 +2004,7 @@ begin
   end;
 end;
 
-function TJvCustomListBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomListBox.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   if not Background.DoDraw then
     Result := inherited DoEraseBackground(Canvas, Param)
@@ -2119,7 +2122,7 @@ begin
       end;
     LB_DELETESTRING:
       begin
-        if Msg.WParam < ItemsShowing.Count then
+        if Msg.WParam < WPARAM(ItemsShowing.Count) then
           ItemWidth := Canvas.TextWidth(ItemsShowing[Msg.WParam] + ' ')
         else
           ItemWidth := FMaxWidth;

@@ -42,6 +42,9 @@ type
   TCursorChangedEvent = procedure(Sender: TObject; NameValues: TStrings;
     FieldCount: Integer) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCSVBase = class(TJvComponent)
   private
     FDBOpen: Boolean;
@@ -84,6 +87,9 @@ type
     property OnCursorChanged: TCursorChangedEvent read FOnCursorChanged write FOnCursorChanged;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCSVEdit = class(TEdit)
   private
     FCSVDataBase: TJvCSVBase;
@@ -97,6 +103,9 @@ type
     property CSVField: string read FCSVField write SetCSVField;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCSVComboBox = class(TComboBox)
   private
     FCSVField: string;
@@ -110,6 +119,9 @@ type
     property CSVField: string read FCSVField write SetCSVField;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCSVCheckBox = class(TCheckBox)
   private
     FCSVField: string;
@@ -123,6 +135,9 @@ type
     property CSVField: string read FCSVField write SetCSVField;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCSVNavigator = class(TJvCustomControl)
   private
     FBtnFirst: TSpeedButton;

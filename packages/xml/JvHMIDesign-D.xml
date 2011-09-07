@@ -17,8 +17,8 @@
     <Package Name="rtl" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="all" Formname="frmJvSLDMappingEditor" Condition=""/>
-    <File Name="..\..\design\JvHMIReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvSegmentedLEDDisplayEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="all_win32" Formname="frmJvSLDMappingEditor" Condition=""/>
+    <File Name="..\..\design\JvHMIReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSegmentedLEDDisplayEditors.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

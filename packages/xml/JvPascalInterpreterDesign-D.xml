@@ -25,6 +25,6 @@
     <Package Name="bdertl" Targets="DB" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPascalInterpreterReg.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

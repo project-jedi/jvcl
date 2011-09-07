@@ -42,6 +42,8 @@
 
 unit DBT;
 
+{$I jvcl.inc}
+
 {$WEAKPACKAGEUNIT ON}
 
 interface
@@ -570,9 +572,9 @@ type
 type
   TWMDeviceChange = record
    Msg:    Cardinal;
-   Event:  UINT;
+   Event:  {$IFDEF DELPHI64_TEMPORARY}WPARAM{$ELSE}UINT{$ENDIF};
    dwData: Pointer;
-   Result: LongInt;
+   Result: LRESULT;
   end;
 
 implementation

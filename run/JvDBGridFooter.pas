@@ -121,6 +121,9 @@ type
   TDisplayTextEvent = procedure(Sender: TJvDBGridFooter; Column: TFooterColumn;
     const Value: Variant; var Text: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGridFooter = class(TStatusBar)
   private
     FColumns: TFooterColumns;

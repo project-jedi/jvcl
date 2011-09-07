@@ -217,6 +217,9 @@ type
 
   TJvValidateFailEvent = procedure(Sender: TObject; BaseValidator: TJvBaseValidator; var Continue: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvValidators = class(TJvComponent)
   private
     FOnValidateFailed: TJvValidateFailEvent;
@@ -247,6 +250,9 @@ type
     property OnValidateFailed: TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvValidationSummary = class(TJvComponent, IUnknown, IJvValidationSummary)
   private
     FUpdateCount: Integer;

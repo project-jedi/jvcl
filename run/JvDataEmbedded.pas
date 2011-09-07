@@ -91,6 +91,9 @@ type
     procedure LoadFromStream(Stream: TStream); virtual;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvDataEmbedded = class(TJvComponentEmbedded)
   private
     FAboutJVCL: TJVCLAboutInfo; // (ahuser) removed JvComponent dependency for easy CLX usage

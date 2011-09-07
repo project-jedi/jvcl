@@ -66,6 +66,9 @@ type
     property PicDisabled:TPicture read FPicDisabled write SetPicDisabled;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImage = class(TJvExImage)
   private
     FOnStateChanged: TNotifyEvent;

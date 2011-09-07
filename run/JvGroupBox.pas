@@ -39,6 +39,9 @@ uses
   JvThemes, JvExControls, JvExStdCtrls, JvCheckBox, JvJCLUtils, JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGroupBox = class(TJvExGroupBox, IJvDenySubClassing)
   private
     FCheckBox: TJvCheckBox;
@@ -55,8 +58,7 @@ type
     function StoredCheckable: Boolean;
     procedure CheckBoxClick(Sender: TObject);
   protected
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure EnabledChanged; override;
     procedure DoHotKey; dynamic;
     procedure Paint; override;
@@ -117,7 +119,7 @@ var
   LastBkMode: Integer;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     {$IFDEF COMPILER7_UP}
     inherited Paint;
@@ -189,9 +191,9 @@ begin
   end;
 end;
 
-function TJvGroupBox.WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean;
+function TJvGroupBox.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
-  Result := inherited WantKey(Key, Shift, KeyText);
+  Result := inherited WantKey(Key, Shift);
   if Result then
     DoHotKey;
 end;

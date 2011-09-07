@@ -37,6 +37,9 @@ uses
   JvBaseDBPasswordDialog;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBDoaPasswordDialog = class(TJvBaseDBPasswordDialog)
   private
     function GetSession: TOracleSession;

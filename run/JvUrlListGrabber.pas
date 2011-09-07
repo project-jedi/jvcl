@@ -79,6 +79,9 @@ type
   // grabbed and then start grabbing. All the grab operations will be done
   // in parallel in the background, leaving the user's application free
   // to continue its operations
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvUrlListGrabber = class(TJvComponent)
   private
     FOnDoneFile: TJvGrabberDoneFileEvent;

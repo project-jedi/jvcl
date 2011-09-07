@@ -90,6 +90,9 @@ type
     tisWaitingForDoubleClick, tisAppHiddenButNotMinimized, tisClicked);
   TJvTrayIconStates = set of TJvTrayIconState;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTrayIcon = class(TJvComponent)
   private
     FCurrentIcon: TIcon;
@@ -278,7 +281,7 @@ type
     destructor Destroy; override;
     function MoveNext: Boolean;
 
-    function ReadProcessMemory(const Address: Pointer; Count: DWORD; var Buffer): Boolean;
+    function ReadProcessMemory(const Address: Pointer; Count: {$IFDEF RTL230_UP}NativeUInt{$ELSE}DWORD{$ENDIF}; var Buffer): Boolean;
 
     property CurrentButton: TTBButton read FButton;
     property CurrentWnd: THandle read FExtraData.Wnd;
@@ -1619,9 +1622,9 @@ begin
 end;
 
 function TTrayIconEnumerator.ReadProcessMemory(const Address: Pointer;
-  Count: DWORD; var Buffer): Boolean;
+  Count: {$IFDEF RTL230_UP}NativeUInt{$ELSE}DWORD{$ENDIF}; var Buffer): Boolean;
 var
-  BytesRead: DWORD;
+  BytesRead: {$IFDEF RTL230_UP}NativeUInt{$ELSE}DWORD{$ENDIF};
 begin
   Result := Windows.ReadProcessMemory(FProcess, Address, @Buffer, Count, BytesRead) and
     (BytesRead = Count);

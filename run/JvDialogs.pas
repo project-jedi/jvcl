@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -45,6 +45,9 @@ type
   TJvOpenDialogAC = (acEdit, acListView);
   TJvOpenDialogAS = (asSmallIcon, asReport);
   TDialogErrorEvent = procedure(Sender: TObject; ErrorCode:Cardinal) of object;
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOpenDialog = class(TOpenDialog)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -102,12 +105,18 @@ type
     property OnShareViolation: TCloseQueryEvent read FOnShareViolation write FOnShareViolation;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSaveDialog = class(TJvOpenDialog)
     function TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool; override;
   end;
 
   TJvCDQueryEvent = procedure(Sender: TObject; SelectedColor: TColor; var Accept: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvColorDialog = class(TColorDialog)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -152,18 +161,6 @@ uses
 const
   btnOk = 1;
   btnCancel = 2;
-
-type
-  POpenFileName2000 = ^TOpenFileName2000;
-  TOpenFileName2000 = packed record
-    OpenFileName: TOpenFileName;
-    pvReserved: Pointer;
-    dwReserved: DWORD;
-    FlagsEx: DWORD;
-  end;
-
-const
-  OFN_EX_NOPLACESBAR = 1;
 
 var
   W2kFixMsAcmLibrary: THandle = 0;
@@ -594,7 +591,7 @@ var
   GlobalColorDialog: TJvColorDialog = nil;
   OldColorDialogHookProc: Pointer = nil;
 
-function ColorDialogHook(Wnd: HWND; Msg: UINT; WParam: WPARAM; LParam: LPARAM): UINT; stdcall;
+function ColorDialogHook(Wnd: HWND; Msg: UINT; WParam: WPARAM; LParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 begin
   if Assigned(GlobalColorDialog) and (Msg = GlobalColorDialog.FColorOkMessage) then
     Result := Integer(not GlobalColorDialog.DoQueryColor(TColor(PChooseColor(LParam)^.rgbResult)))

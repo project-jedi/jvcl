@@ -148,6 +148,9 @@ type
     constructor Create(AEditControl: TJvIPAddress);
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvIPAddress = class(TJvCustomControl)
   private
     FEditControls: array [0..3] of TJvIPEditControlHelper;
@@ -186,7 +189,7 @@ type
     procedure EnabledChanged; override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure AdjustHeight;
     function GetControlExtents: TRect; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -287,6 +290,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTabDefaultPainter = class(TJvTabControlPainter)
   private
     FActiveFont: TFont;
@@ -348,6 +354,9 @@ type
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTabControl = class(TJvExTabControl)
   private
     FTabPainter: TJvTabControlPainter;
@@ -370,6 +379,9 @@ type
     property Color;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPageControl = class(TJvExPageControl)
   private
     FClientBorderWidth: TBorderWidth;
@@ -387,8 +399,7 @@ type
     procedure SetTabPainter(const Value: TJvTabControlPainter);
   protected
     function HintShow(var HintInfo: {$IFDEF RTL200_UP}Controls.{$ENDIF RTL200_UP}THintInfo): Boolean; override;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
 
     procedure Loaded; override;
     function CanChange: Boolean; override;
@@ -418,6 +429,9 @@ type
   TJvTrackToolTipSide = (tsLeft, tsTop, tsRight, tsBottom);
   TJvTrackToolTipEvent = procedure(Sender: TObject; var ToolTipText: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTrackBar = class(TJvExTrackBar)
   private
     FOnChanged: TNotifyEvent;
@@ -499,6 +513,9 @@ type
     Node: TTreeNode; var Matches: Boolean) of object;
   TJvTreeViewNodeCheckedChange = procedure(Sender: TObject; Node: TJvTreeNode) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTreeView = class(TJvExTreeView)
   private
     FAutoDragScroll: Boolean;
@@ -801,7 +818,7 @@ begin
       else
       begin
         {$IFDEF JVCLThemesEnabled}
-        if not FIPAddress.Enabled and ThemeServices.ThemesEnabled then
+        if not FIPAddress.Enabled and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
         begin
           EnableWindow(Handle, True);
           Exit;
@@ -1033,7 +1050,7 @@ begin
     inherited;
 end;
 
-function TJvIPAddress.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvIPAddress.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(ClientRect);
@@ -1908,8 +1925,7 @@ begin
     Result := False;
 end;
 
-function TJvPageControl.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvPageControl.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 var
   ThisTab, Tab: TTabSheet;
   Forwrd: Boolean;
@@ -1935,7 +1951,7 @@ begin
       Exit;
     end;
   end;
-  Result := inherited WantKey(Key, Shift, KeyText);
+  Result := inherited WantKey(Key, Shift);
 end;
 
 procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean);
@@ -2882,7 +2898,7 @@ var
 begin
   Node := Items.GetNode(HTREEITEM(Msg.LParam));
   if Node <> nil then
-    if Ord(TJvTreeNode(Node).Checked) <> Msg.WParam then // do not trigger if nothing was changed
+    if WPARAM(Ord(TJvTreeNode(Node).Checked)) <> Msg.WParam then // do not trigger if nothing was changed
       TJvTreeNode(Node).DoCheckedChange;
 end;
 

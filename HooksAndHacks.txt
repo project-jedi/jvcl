@@ -1,0 +1,18 @@
+JvGnugettext:
+  * Redirect System.LoadResString
+  * Redirect System.LoadStr
+  * Redirect System.FmtLoadStr
+
+JvThemes:
+  * Delphi 6-2010: Redirect TWinControl.WMPrintClient
+  * Delphi 6: Redirect TWinControl.WMEraseBackground
+
+JvImageList:
+  * Delphi 6-2007: Redirect TCustomImageList.HandleNeeded
+
+JvDSADialog:
+  * Replaces TCustomForm.ShowModal VMT entry in Owner-Form
+
+JvBandObject:
+  * MakeMsgHookInstance creates a helper function in memory that injects the hidden Self parameter (x64 ready)
+

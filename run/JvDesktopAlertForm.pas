@@ -793,8 +793,7 @@ procedure TJvCustomFormDesktopAlert.WMNCHitTest(var Msg: TWMNCHitTest);
 var
   P: TPoint;
 begin
-  with Msg do
-    P := ScreenToClient(Point(XPos, YPos));
+  P := ScreenToClient(Point(Msg.XPos, Msg.YPos));
   if ((P.Y <= cCaptionHeight) and Moveable) or (MoveAnywhere and (ControlAtPos(P, False) = nil)) then
   begin
     TJvCustomDesktopAlert(Owner).StyleHandler.AbortAnimation;

@@ -59,6 +59,9 @@ type
   TEditStyleEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     var Style: TInplaceEditStyle) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDrawGrid = class(TJvExDrawGrid)
   private
     FNoUpdateData: Boolean;
@@ -204,7 +207,7 @@ uses
   JvJCLUtils, JvJVCLUtils;
 
 const
-  MaxCustomExtents = MaxListSize;
+  MaxCustomExtents = {$IFDEF RTL230_UP}Maxint div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP};
   MaxShortInt = High(ShortInt);
 
 type
@@ -444,7 +447,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, LPARAM(MousePos));
+        SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, {$IFDEF RTL230_UP}PointToLParam{$ELSE}LPARAM{$ENDIF RTL230_UP}(MousePos));
         Exit;
       end;
     end;

@@ -46,6 +46,9 @@ type
     property PasswordDialogOptions;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBDoaLogonDialog = class(TJvBaseDBOracleLogonDialog)
   private
     function GetOptions: TJvDBDoaLogonDialogOptions;

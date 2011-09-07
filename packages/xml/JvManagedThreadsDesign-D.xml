@@ -13,6 +13,6 @@
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvManagedThreadsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvManagedThreadsReg.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

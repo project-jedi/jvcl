@@ -1476,11 +1476,7 @@ var
             while CurrChar = ' ' do
               NextChar;
             if CurrChar <> ')' then
-            begin
-              raise Exception.CreateRes(@RsERightBracketsNotFound);
-              CalcResult := False;
-              Result := 0;
-            end
+              raise Exception.CreateRes(@RsERightBracketsNotFound)
             else
               NextChar;
           end;

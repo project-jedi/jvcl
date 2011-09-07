@@ -14,7 +14,7 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvDockingReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDockPropertyEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDockingReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDockPropertyEditors.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

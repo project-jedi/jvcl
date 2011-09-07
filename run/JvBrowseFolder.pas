@@ -172,6 +172,9 @@ const
   DefaultJvBrowseFolderDialogOptions = [odStatusAvailable, odNewDialogStyle];
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
   private
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }

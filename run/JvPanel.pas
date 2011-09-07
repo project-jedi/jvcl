@@ -192,7 +192,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMExitSizeMove(var Msg: TMessage); message WM_EXITSIZEMOVE;
@@ -244,6 +244,9 @@ type
     property OnChangedHeight: TJvPanelChangedSizeEvent read FOnChangedHeight write FOnChangedHeight;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPanel = class(TJvCustomArrangePanel)
   private
     FFilerTag: string;
@@ -737,8 +740,8 @@ begin
   if Sizeable then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
-      ThemeServices.DrawElement(Canvas.Handle, ThemeServices.GetElementDetails(tsGripper),
+    if {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Canvas.Handle, {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tsGripper),
         Rect(ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2,
           ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2,
           ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2))
@@ -942,7 +945,7 @@ begin
   end;
 end;
 
-function TJvCustomArrangePanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomArrangePanel.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   // Mantis 3624: Draw our parent's image first if we are transparent.
   // This might not seem useful at first as we have removed the csOpaque

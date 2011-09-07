@@ -195,6 +195,9 @@ type
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScrollMax = class(TJvCustomPanel)
   private
     FPnlEdit: TJvScrollMaxBands;

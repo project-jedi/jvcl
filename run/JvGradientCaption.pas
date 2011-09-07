@@ -41,6 +41,9 @@ type
   TJvCaption = class;
   TJvCaptionList = class;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvGradientCaption = class(TComponent)
   private
     FActive: Boolean;
@@ -202,8 +205,7 @@ uses
   SysUtils,
   JvConsts, JvCaptionButton;
 
-function GradientFormCaption(AForm: TCustomForm; AStartColor, AEndColor: TColor):
-  TJvGradientCaption;
+function GradientFormCaption(AForm: TCustomForm; AStartColor, AEndColor: TColor): TJvGradientCaption;
 begin
   Result := TJvGradientCaption.Create(AForm);
   with Result do

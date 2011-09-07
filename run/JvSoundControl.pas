@@ -73,6 +73,9 @@ type
     property Balance: TBalance read GetBalance write SetBalance stored False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSoundControl = class(TJvComponent)
   private
     FMidi: TJvSoundValue;

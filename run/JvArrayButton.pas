@@ -39,6 +39,9 @@ uses
 type
   TArrayButtonClicked = procedure(ACol, ARow: Integer) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvArrayButton = class(TJvGraphicControl)
   private
     FPtDown: TPoint;
@@ -279,7 +282,7 @@ var
   procedure DrawUp;
   begin
     {$IFDEF JVCLThemesEnabled}
-    if Themed and ThemeServices.ThemesEnabled then
+    if Themed and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, False, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));
@@ -298,7 +301,7 @@ var
   procedure DrawDown;
   begin
     {$IFDEF JVCLThemesEnabled}
-    if Themed and ThemeServices.ThemesEnabled then
+    if Themed and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, True, False,
         PtInRect(R, ScreenToClient(Mouse.CursorPos)));

@@ -94,6 +94,9 @@ type
 
   TJvCaptionButtonActionLinkClass = class of TJvCaptionButtonActionLink;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCaptionButton = class(TJvComponent)
   private
     { Properties }
@@ -709,12 +712,16 @@ begin
   if not GTriedLoadMsimg32Dll then
     LoadMsimg32Dll;
   Result := Assigned(_AlphaBlend);
+  {$IFDEF DELPHI64_TEMPORARY}
+  System.Error(rePlatformNotImplemented);
+  {$ELSE ~DELPHI64_TEMPORARY}
   if Result then
     asm
       mov esp, ebp
       pop ebp
       jmp [_AlphaBlend]
     end;
+  {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 
 function TransparentBlt;
@@ -722,12 +729,16 @@ begin
   if not GTriedLoadMsimg32Dll then
     LoadMsimg32Dll;
   Result := Assigned(_TransparentBlt);
+  {$IFDEF DELPHI64_TEMPORARY}
+  System.Error(rePlatformNotImplemented);
+  {$ELSE ~DELPHI64_TEMPORARY}
   if Result then
     asm
       mov esp, ebp
       pop ebp
       jmp [_TransparentBlt]
     end;
+  {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -1136,8 +1147,7 @@ begin
   ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
 
   { 1b. Draw the inner bit as a normal button }
-  with DrawRect do
-    DrawRgn := CreateRectRgn(Left + 1, Top + 1, Right - 1, Bottom - 1);
+  DrawRgn := CreateRectRgn(DrawRect.Left + 1, DrawRect.Top + 1, DrawRect.Right - 1, DrawRect.Bottom - 1);
   try
     Details := ThemeServices.GetElementDetails(cNormalButton[State]);
     SelectClipRgn(ACanvas.Handle, DrawRgn);
@@ -1161,7 +1171,7 @@ end;
 
 procedure TGlobalXPData.Update;
 begin
-  FIsThemed := ThemeServices.ThemesAvailable and IsThemeActive and IsAppThemed;
+  FIsThemed := ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and IsThemeActive and IsAppThemed;
   if not FIsThemed then
     Exit;
 
@@ -1565,11 +1575,8 @@ begin
 
     UpdateButtonRect(ParentFormHandle);
 
-    with FButtonRect do
-    begin
-      FBuffer.Width := Right - Left;
-      FBuffer.Height := Bottom - Top;
-    end;
+    FBuffer.Width := FButtonRect.Right - FButtonRect.Left;
+    FBuffer.Height := FButtonRect.Bottom - FButtonRect.Top;
 
     {$IFDEF JVCLThemesEnabled}
     DrawButtonBackground(FBuffer.Canvas);
@@ -1614,8 +1621,7 @@ begin
   CaptionRect.Bottom := FCaptionHeight + 4;
   { Offset it so the place where the button is, is at (0, 0) }
   OffsetRect(CaptionRect, -FButtonRect.Left, -FButtonRect.Top);
-  with FButtonRect do
-    ClipRect := Rect(0, 0, Right - Left, Bottom - Top);
+  ClipRect := Rect(0, 0, FButtonRect.Right - FButtonRect.Left, FButtonRect.Bottom - FButtonRect.Top);
 
   Details := ThemeServices.GetElementDetails(CCaption[FHasSmallCaption, FCaptionActive]);
   ThemeServices.DrawElement(ACanvas.Handle, Details, CaptionRect, @ClipRect);
@@ -1626,9 +1632,8 @@ procedure TJvCaptionButton.DrawButtonImage(ACanvas: TCanvas; ImageBounds: TRect)
 begin
   if csDestroying in ComponentState then
     Exit;
-  with ImageBounds do
-    if IsImageVisible then
-      Images.Draw(ACanvas, Left, Top, ImageIndex, Enabled);
+  if IsImageVisible then
+    Images.Draw(ACanvas, ImageBounds.Left, ImageBounds.Top, ImageIndex, Enabled);
 end;
 
 procedure TJvCaptionButton.DrawButtonText(ACanvas: TCanvas; TextBounds: TRect);
@@ -1680,8 +1685,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  with FButtonRect do
-    DrawRect := Rect(0, 0, Right - Left, Bottom - Top);
+  DrawRect := Rect(0, 0, FButtonRect.Right - FButtonRect.Left, FButtonRect.Bottom - FButtonRect.Top);
 
   {$IFDEF JVCLThemesEnabled}
   // Satisfy the compiler
@@ -1717,8 +1721,7 @@ begin
   if IsThemed then
   begin
     { 2a. If themed, only draw in the inner bit of the button using a clip region }
-    with DrawRect do
-      DrawRgn := CreateRectRgn(Left + 2, Top + 2, Right - 2, Bottom - 2);
+    DrawRgn := CreateRectRgn(DrawRect.Left + 2, DrawRect.Top + 2, DrawRect.Right - 2, DrawRect.Bottom - 2);
 
     SelectClipRgn(ACanvas.Handle, DrawRgn);
   end;
@@ -1768,8 +1771,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  with FButtonRect do
-    DrawRect := Rect(0, 0, Right - Left, Bottom - Top);
+  DrawRect := Rect(0, 0, FButtonRect.Right - FButtonRect.Left, FButtonRect.Bottom - FButtonRect.Top);
 
   {$IFDEF JVCLThemesEnabled}
   if IsThemed then
@@ -1801,20 +1803,14 @@ begin
   begin
     DrawButtonFace(ACanvas, DrawRect, 1, bsAutoDetect, False, FDown, False);
     if Enabled then
-    begin
-      ACanvas.Brush.Color := clWindowText;
-      with DrawRect do
-        ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
-    end
+      ACanvas.Brush.Color := clWindowText
     else
     begin
       ACanvas.Brush.Color := clBtnHighlight;
-      with DrawRect do
-        ACanvas.FillRect(Rect(Right - 6, Bottom - 4, Right - 3, Bottom - 2));
+      ACanvas.FillRect(Rect(DrawRect.Right - 6, DrawRect.Bottom - 4, DrawRect.Right - 3, DrawRect.Bottom - 2));
       ACanvas.Brush.Color := clBtnShadow;
-      with DrawRect do
-        ACanvas.FillRect(Rect(Right - 7, Bottom - 5, Right - 4, Bottom - 3));
     end;
+    ACanvas.FillRect(Rect(DrawRect.Right - 7, DrawRect.Bottom - 5, DrawRect.Right - 4, DrawRect.Bottom - 3));
   end
   else
     DrawFrameControl(ACanvas.Handle, DrawRect, DFC_CAPTION, {DFCS_ADJUSTRECT or}
@@ -1995,7 +1991,7 @@ begin
       Redraw(rkIndirect);
   end;
   // (p3) don't handle mouse move here: it is triggered even if the mouse is outside the button
-  //  with TWmMouseMove(Msg) do
+  //  with TWMMouseMove(Msg) do
   //    MouseMove(KeysToShiftState(Keys), XPos, YPos);
 end;
 
@@ -2090,8 +2086,7 @@ begin
     {$ENDIF JVCLThemesEnabled}
     { ..If so remove the button rectangle from the region (otherwise the caption
       background would be drawn over the button, which causes flicker) }
-    with LButtonRect do
-      DrawRgn := CreateRectRgn(Left, Top, Right, Bottom);
+    DrawRgn := CreateRectRgn(LButtonRect.Left, LButtonRect.Top, LButtonRect.Right, LButtonRect.Bottom);
     try
       Msg.RGN := CreateRectRgn(0, 0, 1, 1);
       FRgnChanged := True;
@@ -2620,8 +2615,7 @@ begin
   {$ENDIF JVCLThemesEnabled}
 
   { Click rect is a bit bigger }
-  with FButtonRect do
-    FClickRect := Rect(Left - 2, Top - 2, Right + 1, Bottom + 2);
+  FClickRect := Rect(FButtonRect.Left - 2, FButtonRect.Top - 2, FButtonRect.Right + 1, FButtonRect.Bottom + 2);
 end;
 
 function TJvCaptionButton.WndProcAfter(var Msg: TMessage): Boolean;
@@ -2652,7 +2646,7 @@ begin
         { force theme data refresh, needed when
 
           * Non-themed application and switching system font size }
-        if not ThemeServices.ThemesEnabled then
+        if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
           ThemeServices.UpdateThemes;
         {$ENDIF JVCLThemesEnabled}
       end;

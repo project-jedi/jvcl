@@ -277,7 +277,7 @@ begin
           if FSingleGlyph then
             GlyphID := 0
           else
-          if WParam < FGlyphs.Count then
+          if WParam < Windows.WPARAM(FGlyphs.Count) then
             GlyphID := WParam;
           if GlyphID = -1 then
             Exit;

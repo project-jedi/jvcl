@@ -96,6 +96,9 @@ type
 
   TJvMailErrorEvent = procedure(Sender: TJvMail; ErrorCode: ULONG) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMail = class(TJvComponent)
   private
     FAttachment: TStrings;

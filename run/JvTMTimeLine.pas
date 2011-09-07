@@ -225,6 +225,9 @@ type
     property Objects[ADate: TDate]: TObject read GetObjects write SetObjects;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTMTimeline = class(TJvCustomTMTimeline)
   public
     property RightButton;

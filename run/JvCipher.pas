@@ -69,18 +69,27 @@ type
     property IsStored: Boolean read GetIsStored write FIsStored default True;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvCaesarCipher = class(TJvCustomCipher)
   public
     procedure Decode(const Key: AnsiString; Buf: PAnsiChar; Size: Cardinal); override;
     procedure Encode(const Key: AnsiString; Buf: PAnsiChar; Size: Cardinal); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvXORCipher = class(TJvCustomCipher)
   public
     procedure Decode(const Key: AnsiString; Buf: PAnsiChar; Size: Cardinal); override;
     procedure Encode(const Key: AnsiString; Buf: PAnsiChar; Size: Cardinal); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvVigenereCipher = class(TJvCustomCipher)
   private
     function Trans(Ch: AnsiChar; K: Byte): AnsiChar;

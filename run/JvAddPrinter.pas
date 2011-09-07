@@ -32,12 +32,16 @@ unit JvAddPrinter;
 interface
 
 uses
+  Classes,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   JvBaseDlg;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAddPrinterDialog = class(TJvCommonDialogF)
   published
     function Execute: Boolean; override;
@@ -56,7 +60,7 @@ const
 implementation
 
 uses
-  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes;
+  Windows, ActiveX, ShlObj, ShellAPI, SysUtils;
 
 // (rom) move to JCL
 

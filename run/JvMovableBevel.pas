@@ -42,6 +42,9 @@ type
     tdRightToLeft, tdTopLeftToBottomRight, tdTopRightToBottomLeft,
     tdBottomLeftToTopRight, tdBottomRightToTopLeft);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMovableBevel = class(TJvExBevel)
   private
     FStartX: Integer;

@@ -54,6 +54,9 @@ const
   DefHintHidePause = DefHintPause * 5;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAppEvents = class(TJvComponent)
   private
     FChained: Boolean;
@@ -217,7 +220,7 @@ type
     procedure DoHint(Sender: TObject);
     procedure DoMinimize(Sender: TObject);
     procedure DoRestore(Sender: TObject);
-    function DoHelp(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean;
+    function DoHelp(Command: Word; Data: {$IFDEF RTL230_UP}THelpEventData{$ELSE}Longint{$ENDIF}; var CallHelp: Boolean): Boolean;
     procedure DoMessage(var Msg: TMsg; var Handled: Boolean);
     procedure DoShortCut(var Msg: TWMKey; var Handled: Boolean);
     procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean; var HintInfo: THintInfo);
@@ -391,7 +394,7 @@ begin
   end;
 end;
 
-function TJvAppEventList.DoHelp(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean;
+function TJvAppEventList.DoHelp(Command: Word; Data: {$IFDEF RTL230_UP}THelpEventData{$ELSE}Longint{$ENDIF}; var CallHelp: Boolean): Boolean;
 var
   I: Integer;
 begin

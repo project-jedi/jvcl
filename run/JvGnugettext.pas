@@ -32,6 +32,8 @@ unit JvGnugettext;
 
 interface
 
+{$I jedi\jedi.inc}
+
 // If the conditional define DXGETTEXTDEBUG is defined, debugging log is activated.
 // Use DefaultInstance.DebugLogToFile() to write the log to a file.
 { $define DXGETTEXTDEBUG}
@@ -101,6 +103,10 @@ interface
 {$endif}
 {$ifdef VER220}
   // Delphi 2011
+  {$DEFINE DELPHI2009OROLDER}
+{$endif}
+{$ifdef VER230}
+  // Delphi XE2
   {$DEFINE DELPHI2009OROLDER}
 {$endif}
 {$IFDEF CONDITIONALEXPRESSION}
@@ -1112,7 +1118,7 @@ const
   IDTraditionalChinese = $0404;  
   IDCroatian = $041A;
   IDCzech = $0405;
-  IDDanish = $0406; 
+  IDDanish = $0406;
   IDBelgianDutch = $0813;  
   IDDutch = $0413; 
   IDEnglishAUS = $0C09;  
@@ -1145,7 +1151,7 @@ const
   IDSwissFrench = $100C; 
   IDFrenchWestIndies = $1C0C;  
   IDFrenchZaire = $240C; 
-  IDFrisianNetherlands = $0462;  
+  IDFrisianNetherlands = $0462;
   IDGaelicIreland = $083C; 
   IDGaelicScotland = $043C;
   IDGalician = $0456;
@@ -1178,7 +1184,7 @@ const
   IDMacedonian = $042F;  
   IDMalaysian = $043E; 
   IDMalayBruneiDarussalam = $083E;  
-  IDMalayalam = $044C; 
+  IDMalayalam = $044C;
   IDMaltese = $043A;  
   IDManipuri = $0458; 
   IDMarathi = $044E;  
@@ -1211,7 +1217,7 @@ const
   IDSpanishColombia = $240A; 
   IDSpanishCostaRica = $140A;  
   IDSpanishDominicanRepublic = $1C0A; 
-  IDSpanishEcuador = $300A;  
+  IDSpanishEcuador = $300A;
   IDSpanishElSalvador = $440A; 
   IDSpanishGuatemala = $100A;  
   IDSpanishHonduras = $480A; 
@@ -1244,7 +1250,7 @@ const
   IDUzbekCyrillic = $0843;  
   IDUzbekLatin = $0443; 
   IDVenda = $0433;  
-  IDVietnamese = $042A; 
+  IDVietnamese = $042A;
   IDWelsh = $0452;  
   IDXhosa = $0434; 
   IDZulu = $0435; 
@@ -1442,7 +1448,7 @@ begin
   if moFile <> nil then 
     FileLocator.ReleaseMoFile(moFile);
   OpenHasFailedBefore := False;
-end; 
+end;
 
 destructor TDomain.Destroy; 
 begin
@@ -1574,7 +1580,7 @@ begin
   vDirectory := IncludeTrailingPathDelimiter(Value);
   SpecificFilename := ''; 
   CloseMoFile; 
-end; 
+end;
 
 procedure AddDomainForResourceString(const domain: string);
 begin
@@ -1640,7 +1646,7 @@ begin
   if (Number mod 10 = 1) and (Number mod 100 <> 11) then
     Result := 0
   else if Number <> 0 then Result := 1
-  else 
+  else
     Result := 2; 
 end; 
 
@@ -1673,7 +1679,7 @@ var
 begin
   Number := abs(Number); 
   n1 := Number mod 10; 
-  n2 := Number mod 100; 
+  n2 := Number mod 100;
   if n1 = 1 then Result := 0
   else if (n1 >= 2) and (n1 <= 4) and ((n2 < 10) or (n2 >= 20)) then Result := 1
   else 
@@ -1904,7 +1910,7 @@ begin
   else 
   begin
     Result := Utf8Decode(LF2LineBreakA(getdomain(szDomain, DefaultDomainDirectory,
-      CurLang).gettext(StripCR(Utf8Encode(szMsgId))))); 
+      CurLang).gettext(StripCR(Utf8Encode(szMsgId)))));
     {$ifdef DXGETTEXTDEBUG}
     if (szMsgId <> '') and (Result = '') then
       DebugWriteln(Format('Error: Translation of %s was an empty string. This may never occur.',
@@ -2630,7 +2636,7 @@ end;
 
 procedure TGnuGettextInstance.DebugLogPause(PauseEnabled: Boolean); 
 begin
-  DebugLogOutputPaused := PauseEnabled; 
+  DebugLogOutputPaused := PauseEnabled;
 end; 
 
 procedure TGnuGettextInstance.DebugLogToFile(const Filename: string; append: Boolean = False); 
@@ -2696,7 +2702,7 @@ begin
         'Specify a Filename to store the debug log in or disable debug loggin in gnugettext.pas.' +
         sLineBreak + sLineBreak + sLineBreak + sLineBreak + sLineBreak; 
       DebugLogOutputPaused := True; 
-    end; 
+    end;
     DebugLog.Write(Line[1], Length(Line));
   finally
     DebugLogCS.EndWrite; 
@@ -2828,7 +2834,7 @@ begin
   end 
   else 
   begin
-    if Comp.LastLanguage <> curlang then 
+    if Comp.LastLanguage <> curlang then
     begin
       {$ifdef DXGETTEXTDEBUG}
       DebugWriteln('The retranslator is being executed.'); 
@@ -3274,7 +3280,11 @@ constructor THook.Create(OldProcedure, NewProcedure: Pointer; FollowJump: Boolea
 begin
   inherited Create;
   {$ifndef CPU386}
+  {$IFDEF DELPHI64_TEMPORARY}
+  System.Error(rePlatformNotImplemented);
+  {$ELSE ~DELPHI64_TEMPORARY}
     'This procedure only works on Intel i386 compatible processors.'
+  {$ENDIF ~DELPHI64_TEMPORARY}
   {$endif}
 
   OldProc := OldProcedure;
@@ -3328,7 +3338,7 @@ begin
   begin
     // This finds the correct procedure if a virtual jump has been inserted
     // at the procedure address
-    Inc(Integer(PatchPosition), 2); // skip the jump
+    Inc({$IFDEF RTL230_UP}INT_PTR{$ELSE}Integer{$ENDIF RTL230_UP}(PatchPosition), 2); // skip the jump
     PatchPosition := PAnsiChar(Pointer(Pointer(PatchPosition)^)^);
   end;
   Offset := PAnsiChar(NewProc) - PatchPosition - 5;

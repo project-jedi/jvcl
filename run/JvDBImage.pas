@@ -56,6 +56,9 @@ uses
   JvJVCLUtils;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBImage = class(TDBImage)
   private
     FAutoDisplay: Boolean;
@@ -263,14 +266,7 @@ begin
     end;
   end;
 
-  with Result do
-  begin
-    Left := 0;
-    Top := 0;
-    Right := W;
-    Bottom := H;
-  end;
-
+  Result := Rect(0, 0, W, H);
   if Center then
     OffsetRect(Result, (CW - W) div 2, (CH - H) div 2);
 end;

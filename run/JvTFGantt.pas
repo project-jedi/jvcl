@@ -353,23 +353,19 @@ var
 begin
   with Canvas do
   begin
-    with SourceRect do
-    begin
-      if NumGlyphsPerBitmap = 0 then
-        NumGlyphsPerBitmap := 1;
-      LocalImageWidth := SomeBitmap.Width div NumGlyphsPerBitmap;
-      Left := ImageIndex * LocalImageWidth;
-      Top := 0;
-      Right := Left + LocalImageWidth;
-      Bottom := Top + SomeBitmap.Height;
-    end;
-    with DestRect do
-    begin
-      Left := TargetLeft;
-      Top := TargetTop;
-      Right := Left + LocalImageWidth;
-      Bottom := Top + SomeBitmap.Height;
-    end;
+    if NumGlyphsPerBitmap = 0 then
+      NumGlyphsPerBitmap := 1;
+    LocalImageWidth := SomeBitmap.Width div NumGlyphsPerBitmap;
+
+    SourceRect.Left := ImageIndex * LocalImageWidth;
+    SourceRect.Top := 0;
+    SourceRect.Right := SourceRect.Left + LocalImageWidth;
+    SourceRect.Bottom := SourceRect.Top + SomeBitmap.Height;
+
+    DestRect.Left := TargetLeft;
+    DestRect.Top := TargetTop;
+    DestRect.Right := DestRect.Left + LocalImageWidth;
+    DestRect.Bottom := DestRect.Top + SomeBitmap.Height;
     CopyRect(DestRect, SomeBitmap.Canvas, SourceRect);
   end;
 end;

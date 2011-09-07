@@ -39,6 +39,9 @@ uses
   JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvaScrollText = class(TJvCustomControl)
   private
     FForeImage: TImage;

@@ -17,11 +17,11 @@
     <Package Name="dclstd" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all" Formname="frmJvTreeViewLinksEditor" Condition=""/>
-    <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all" Formname="frmTreeViewItems" Condition=""/>
-    <File Name="..\..\design\JvPageListEditorForm.pas" Targets="all" Formname="frmPageListEditor" Condition=""/>
-    <File Name="..\..\design\JvPageListEditors.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvNavPaneEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all_win32" Formname="frmJvTreeViewLinksEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all_win32" Formname="frmTreeViewItems" Condition=""/>
+    <File Name="..\..\design\JvPageListEditorForm.pas" Targets="all_win32" Formname="frmPageListEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListEditors.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvNavPaneEditors.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

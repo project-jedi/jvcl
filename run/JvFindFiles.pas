@@ -47,6 +47,9 @@ type
      sfMyComputer, sfFonts, sfNetHood, sfNetwork, sfPersonal, sfPrinters,
      sfPrograms, sfRecent, sfSendTo, sfStartMenu, stStartUp, sfTemplates);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFindFilesDialog = class(TJvCommonDialogF)
   private
     FUseSpecialFolder: Boolean;

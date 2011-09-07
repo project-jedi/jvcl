@@ -200,6 +200,9 @@ type
   end;
 
   { Location Class for Local Network Location }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionNetworkLocation = class(TJvCustomProgramVersionFileBasedLocation)
   protected
     function LoadFileFromRemoteInt(const ARemotePath, ARemoteFileName, ALocalPath, ALocalFileName: string;
@@ -250,6 +253,9 @@ type
 
   { Simple HTTP location class with no http logic.
   The logic must be implemented manually in the OnLoadFileFromRemote event }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocation = class(TJvCustomProgramVersionInternetLocation)
   private
     FOnLoadFileFromRemote: TJvLoadFileFromRemoteHTTPEvent;
@@ -268,6 +274,9 @@ type
   end;
 
   {$IFDEF USE_3RDPARTY_INDY}
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocationIndy = class(TJvProgramVersionHTTPLocation)
   private
     FIdHttp: TIdHttp;
@@ -291,6 +300,9 @@ type
   {$ENDIF USE_3RDPARTY_INDY}
 
   {$IFDEF USE_3RDPARTY_ICS}
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionHTTPLocationICS = class(TJvProgramVersionHTTPLocation)
   private
     FHttpCli: THttpCli;
@@ -319,6 +331,9 @@ type
 
   { Simple FTP location class with no http logic.
   The logic must be implemented manually in the OnLoadFileFromRemote event }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionFTPLocation = class(TJvCustomProgramVersionInternetLocation)
   private
     FOnLoadFileFromRemote: TJvLoadFileFromRemoteFTPEvent;
@@ -383,6 +398,9 @@ type
   { Simple Database location class with no http logic.
     The logic must be implemented manually in the OnLoadFileFromRemote event }
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionDatabaseLocation = class(TJvCustomProgramVersionLocation)
   private
     FServerName: string;
@@ -437,6 +455,9 @@ type
     property XMLOptions: TJvAppXMLStorageOptions read FXMLOptions write SetXMLOptions;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgramVersionCheck = class(TJvCustomPropertyStore)
   private
     FAllowedReleaseType: TJvProgramReleaseType;

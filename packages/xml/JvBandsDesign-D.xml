@@ -16,8 +16,8 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvBandsReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBandObjectDLLWizard.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBandObjectDLLWizardForm.pas" Targets="all" Formname="zWizardForm" Condition=""/>
+    <File Name="..\..\design\JvBandsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBandObjectDLLWizard.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBandObjectDLLWizardForm.pas" Targets="all_win32" Formname="zWizardForm" Condition=""/>
   </Contains>
 </Package>

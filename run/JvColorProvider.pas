@@ -122,6 +122,9 @@ type
     property NameMapping: TJvColorProviderNameMapping read Get_NameMapping;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvColorProvider = class(TJvCustomDataProvider, IJvColorProvider)
   private
     FColorList: TColorItems;                // all colors the provider knows about
@@ -435,6 +438,9 @@ type
   end;
 
   { Provider containing the available name mappings of a color provider. }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvColorMappingProvider = class(TJvCustomDataProvider, IJvColorMappingProvider)
     function IJvColorMappingProvider.Get_ClientProvider = GetColorProviderIntf;
     procedure IJvColorMappingProvider.Set_ClientProvider = SetColorProviderIntf;

@@ -154,6 +154,9 @@ type
       out SegmentIndex: Integer): TSLDHitInfo; overload;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSegmentedLEDDisplay = class(TJvCustomSegmentedLEDDisplay)
   public
     property DigitClass;

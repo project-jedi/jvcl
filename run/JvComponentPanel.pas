@@ -44,6 +44,9 @@ uses
 type
   TButtonClick = procedure(Sender: TObject; Button: Integer) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvComponentPanel = class(TJvCustomPanel)
   private
     FButtonWidth: Integer;

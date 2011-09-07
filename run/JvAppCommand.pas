@@ -113,6 +113,9 @@ type
     Cmd: WORD; Device: TJvAppCommandDevice; KeyState: WORD;
     var Handled: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAppCommand = class(TJvComponent)
   private
     FActive: Boolean;

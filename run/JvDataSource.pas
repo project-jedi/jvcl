@@ -34,6 +34,9 @@ uses
   SysUtils, Classes, JvDataSourceIntf, DB, DBConsts;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDataSource = class(TDataSource, IJvDataSource, IJvDataSourceConnectorHandler)
   private
     FDataLink: TDataLink;

@@ -143,8 +143,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure VisibleChanged; override;
 
     property FillColor: TColor read FFillColor write SetFillColor default clNone;
@@ -172,6 +171,9 @@ type
     procedure EditCaption;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvLookOutButton = class(TJvCustomLookOutButton)
   public
     property Data;
@@ -217,6 +219,9 @@ type
     property OnStartDrag;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvExpressButton = class(TJvCustomLookOutButton)
   public
     constructor Create(AOwner: TComponent); override;
@@ -309,8 +314,7 @@ type
     procedure CMTextChanged(var Msg:TMessage); message CM_TEXTCHANGED;
     procedure TileBitmap;
   protected
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure MouseLeave(Control: TControl); override;
     procedure EnabledChanged; override;
     procedure DoOnEdited(var Caption: string); virtual;
@@ -383,6 +387,9 @@ type
     property OnStartDrag;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvLookOut = class(TJvCustomControl)
   private
     FAutoSize: Boolean;
@@ -447,6 +454,9 @@ type
     property OnStartDrag;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvExpress = class(TJvLookOutPage, IJvDenySubClassing)
   private
     FBorderStyle: TBorderStyle;
@@ -669,7 +679,7 @@ begin
   if not MouseOver then
   begin
     inherited MouseEnter(Control);
-    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
+    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} {$ENDIF} then
       Invalidate;
   end;
 end;
@@ -680,7 +690,7 @@ begin
   begin
     inherited MouseLeave(Control);
     //  FDown := False;
-    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
+    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} {$ENDIF} then
       Invalidate;
   end;
 end;
@@ -1053,15 +1063,14 @@ begin
     inherited Assign(Source);
 end;
 
-function TJvCustomLookOutButton.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvCustomLookOutButton.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
   Result := IsAccel(Key, Caption) and Enabled and
     Visible and ParentVisible and (ssAlt in Shift);
   if Result then
     Click
   else
-    Result := inherited WantKey(Key, Shift, KeyText);
+    Result := inherited WantKey(Key, Shift);
 end;
 
 function TJvCustomLookOutButton.ParentVisible: Boolean;
@@ -1812,14 +1821,13 @@ begin
     Caption := ACaption;
 end;
 
-function TJvLookOutPage.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvLookOutPage.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
   Result := IsAccel(Key, Caption) and Enabled and (ssAlt in Shift);
   if Result then
     Click
   else
-    Result := inherited WantKey(Key, Shift, KeyText);
+    Result := inherited WantKey(Key, Shift);
 end;
 
 procedure TJvLookOutPage.SetActiveButton(Value: TJvCustomLookOutButton);
@@ -2708,7 +2716,7 @@ begin
     if FBorderStyle = bsSingle then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
+      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
         DrawThemedBorder(Self)
       else
       {$ENDIF JVCLThemesEnabled}
@@ -2914,7 +2922,7 @@ begin
     if FBorderStyle = bsSingle then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
+      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
         DrawThemedBorder(Self)
       else
       {$ENDIF JVCLThemesEnabled}

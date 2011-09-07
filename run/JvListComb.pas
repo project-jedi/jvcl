@@ -157,6 +157,9 @@ type
     property Objects[Index: Integer]: TObject read GetObjects write SetObjects;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageComboBox = class(TJvCustomComboBox, IUnknown, IJvResetItemHeight)
   private
     FItems: TJvImageItems;
@@ -297,6 +300,9 @@ type
     property Items: TJvImageItems read FItems write SetItems; // must be declared after OnMeasureItem
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageListBox = class(TJvExCustomListBox, IUnknown, IJvResetItemHeight)
   private
     FImageList: TCustomImageList;

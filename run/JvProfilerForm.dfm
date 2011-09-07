@@ -1,11 +1,11 @@
 object ProfReport: TProfReport
   Left = 200
   Top = 114
-  ClientWidth = 445
-  ClientHeight = 264
   ActiveControl = lvReport
   BorderIcons = [biSystemMenu]
   Caption = 'Profiler Report'
+  ClientHeight = 264
+  ClientWidth = 445
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clBlack
@@ -45,12 +45,16 @@ object ProfReport: TProfReport
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 233
+    Top = 231
     Width = 445
     Height = 33
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 233
+    DesignSize = (
+      445
+      33)
     object SaveBtn: TButton
       Left = 8
       Top = 5
@@ -70,6 +74,9 @@ object ProfReport: TProfReport
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 1
+      DesignSize = (
+        175
+        33)
       object OKBtn: TButton
         Left = 60
         Top = 6
@@ -101,7 +108,7 @@ object ProfReport: TProfReport
     Left = 0
     Top = 0
     Width = 445
-    Height = 233
+    Height = 231
     Hint = 'Click the top column to sort the items'
     Align = alClient
     BorderStyle = bsNone
@@ -133,9 +140,9 @@ object ProfReport: TProfReport
     GridLines = True
     MultiSelect = True
     RowSelect = True
-    Sorted = True
     TabOrder = 1
     ViewStyle = vsReport
     OnColumnClick = lvReportColumnClick
+    ExplicitHeight = 233
   end
 end

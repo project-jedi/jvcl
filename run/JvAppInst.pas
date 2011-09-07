@@ -53,6 +53,9 @@ type
     initialization section of a unit or before the forms are created (OnCreate
     is too late).
     This class is not thread safe. }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAppInstances = class(TComponent)
   private
     FHandle: THandle;

@@ -315,43 +315,38 @@ begin
     DrawRect := ClientRect;
     if ValidPicture(Pic) then
     begin
-      with DrawRect do
-        if (Pic.Width > Right - Left) or (Pic.Height > Bottom - Top) then
+      if (Pic.Width > DrawRect.Right - DrawRect.Left) or (Pic.Height > DrawRect.Bottom - DrawRect.Top) then
+      begin
+        if Pic.Width > Pic.Height then
+          DrawRect.Bottom := DrawRect.Top + MulDiv(Pic.Height, DrawRect.Right - DrawRect.Left, Pic.Width)
+        else
+          DrawRect.Right := DrawRect.Left + MulDiv(Pic.Width, DrawRect.Bottom - DrawRect.Top, Pic.Height);
+        Canvas.StretchDraw(DrawRect, Pic.Graphic);
+      end
+      else
+      begin
+        if Pic.Graphic is TIcon then
         begin
-          if Pic.Width > Pic.Height then
-            Bottom := Top + MulDiv(Pic.Height, Right - Left, Pic.Width)
-          else
-            Right := Left + MulDiv(Pic.Width, Bottom - Top, Pic.Height);
-          Canvas.StretchDraw(DrawRect, Pic.Graphic);
+          Ico := CreateRealSizeIcon(Pic.Icon);
+          try
+            GetIconSize(Ico, W, H);
+            DrawIconEx(Canvas.Handle, (DrawRect.Left + DrawRect.Right - W) div 2,
+              (DrawRect.Top + DrawRect.Bottom - H) div 2, Ico, W, H, 0, 0, DI_NORMAL);
+          finally
+            DestroyIcon(Ico);
+          end;
         end
         else
-        begin
-          with DrawRect do
-          begin
-            if Pic.Graphic is TIcon then
-            begin
-              Ico := CreateRealSizeIcon(Pic.Icon);
-              try
-                GetIconSize(Ico, W, H);
-                DrawIconEx(Canvas.Handle, (Left + Right - W) div 2,
-                  (Top + Bottom - H) div 2, Ico, W, H, 0, 0, DI_NORMAL);
-              finally
-                DestroyIcon(Ico);
-              end;
-            end
-            else
-              Canvas.Draw((Right + Left - Pic.Width) div 2,
-                (Bottom + Top - Pic.Height) div 2, Pic.Graphic);
-          end;
-        end;
+          Canvas.Draw((DrawRect.Right + DrawRect.Left - Pic.Width) div 2,
+            (DrawRect.Bottom + DrawRect.Top - Pic.Height) div 2, Pic.Graphic);
+      end;
     end
     else
-      with DrawRect, Canvas do
-      begin
-        None := srNone;
-        TextOut(Left + (Right - Left - TextWidth(None)) div 2, Top + (Bottom -
-          Top - TextHeight(None)) div 2, None);
-      end;
+    begin
+      None := srNone;
+      Canvas.TextOut(DrawRect.Left + (DrawRect.Right - DrawRect.Left - Canvas.TextWidth(None)) div 2,
+        Top + (DrawRect.Bottom - DrawRect.Top - Canvas.TextHeight(None)) div 2, None);
+    end;
   end;
 end;
 

@@ -43,6 +43,9 @@ uses
   JvComponentBase;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgressComponent = class(TJvComponent)
   private
     FForm: TForm;
@@ -101,11 +104,14 @@ uses
   JvConsts, JvResources, JvJCLUtils, JvComponent;
 
 type
-  TCMShowEvent = packed record
-    Msg: Integer;
-    Unused: Integer;
+  TCMShowEvent = record
+    Msg: Cardinal;
+    {$IFDEF COMPILER16_UP}
+	MsgFiller: TDWordFiller;
+    {$ENDIF COMPILER16_UP}
+    Unused: WPARAM;
     Instance: TJvProgressComponent;
-    Result: Integer;
+    Result: LRESULT;
   end;
 
   TJvProgressForm = class(TJvForm)

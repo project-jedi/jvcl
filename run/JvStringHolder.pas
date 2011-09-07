@@ -88,6 +88,9 @@ type
     property MacroValues[const MacroName: string]: Variant read GetMacroValue write SetMacroValue;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvStrHolder = class(TComponent)
   private
     FStrings: TStringList;
@@ -176,6 +179,9 @@ type
     function Insert(Index: Integer): TJvMultiStringHolderCollectionItem;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvMultiStringHolder = class(TComponent)
   private
     FMultipleStrings: TJvMultiStringHolderCollection;
