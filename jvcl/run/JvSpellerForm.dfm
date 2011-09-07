@@ -25,6 +25,8 @@ object JvSpellerForm: TJvSpellerForm
     ParentShowHint = False
     ShowHint = True
     WordWrap = True
+    ExplicitWidth = 50
+    ExplicitHeight = 13
   end
   object TextPanel: TPanel
     Left = 0

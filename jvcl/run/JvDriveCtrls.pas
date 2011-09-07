@@ -53,6 +53,9 @@ const
 type
   TJvDirectoryListBox = class;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDriveCombo = class(TJvCustomComboBox)
   private
     FDrives: TStringList;
@@ -139,6 +142,9 @@ type
     property OnStartDock;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDriveList = class(TJvCustomListBox)
   private
     FDrives: TStringList;
@@ -234,6 +240,9 @@ type
     property OnStartDock;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFileListBox = class(TFileListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -272,6 +281,9 @@ type
 
   TJvDriveChangeError = procedure(Sender: TObject; var NewDrive: Char) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDirectoryListBox = class(TJvCustomListBox)
   private
     FFileList: TJvFileListBox;

@@ -349,6 +349,9 @@ type
 
   // controller class to manage all HID devices
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHidDeviceController = class(TJvComponent)
   private
     // internal properties part
@@ -1792,7 +1795,7 @@ begin
   if Size > 0 then
   begin
     SetLength(Buf, Size);
-    GetFileVersionInfo(HidModuleName, INVALID_HANDLE_VALUE, Size, @Buf[0]);
+    GetFileVersionInfo(HidModuleName, DWORD(INVALID_HANDLE_VALUE), Size, @Buf[0]);
     if VerQueryValue(@Buf[0], 'StringFileInfo\040904E4\FileVersion', Pointer(Value), Size) then
       Result := Value;
   end;

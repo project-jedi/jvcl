@@ -14,6 +14,6 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

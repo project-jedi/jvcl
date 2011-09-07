@@ -222,6 +222,9 @@ type
     property Leaving: Boolean read FLeaving;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMonthCalendar2 = class(TJvCustomMonthCalendar)
   public
     property MinSize;
@@ -324,8 +327,7 @@ end;
 
 function IsBlankDate(ST: TSystemTime): Boolean;
 begin
-  with ST do
-    Result := (wMonth = 0) and (wDay = 0);
+  Result := (ST.wMonth = 0) and (ST.wDay = 0);
 end;
 
 function StringToDayStates(const S: string): TMonthDayState;
@@ -354,7 +356,7 @@ end;
 
 type
   // (p3) from ShLwAPI
-  TDLLVersionInfo = packed record
+  TDLLVersionInfo = record
     cbSize: DWORD;
     dwMajorVersion: DWORD;
     dwMinorVersion: DWORD;
@@ -1207,11 +1209,8 @@ begin
   if HandleAllocated then
   begin
     MonthCal_GetMinReqRect(Handle, R);
-    with R do
-    begin
-      CtlMinHeight := Bottom - Top;
-      CtlMinWidth := Right - Left;
-    end;
+    CtlMinHeight := R.Bottom - R.Top;
+    CtlMinWidth := R.Right - R.Left;
     if MinHeight < CtlMinHeight then
       MinHeight := CtlMinHeight;
     if MinWidth < CtlMinWidth then
@@ -1228,11 +1227,8 @@ begin
   begin
     Result := True;
     R := MinSize;
-    with R do
-    begin
-      NewWidth := Right - Left + Ord(BorderStyle = bsSingle) * 2;
-      NewHeight := Bottom - Top + Ord(BorderStyle = bsSingle) * 2;
-    end;
+    NewWidth := R.Right - R.Left + Ord(BorderStyle = bsSingle) * 2;
+    NewHeight := R.Bottom - R.Top + Ord(BorderStyle = bsSingle) * 2;
   end
   else
     Result := False;

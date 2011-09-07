@@ -17,8 +17,8 @@
     <Package Name="designide" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPluginSystemReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPluginWizard.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPluginParamsForm.pas" Targets="all" Formname="frmPluginParams" Condition=""/>
+    <File Name="..\..\design\JvPluginSystemReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPluginWizard.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPluginParamsForm.pas" Targets="all_win32" Formname="frmPluginParams" Condition=""/>
   </Contains>
 </Package>

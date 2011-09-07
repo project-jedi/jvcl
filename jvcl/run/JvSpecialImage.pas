@@ -39,6 +39,9 @@ uses
 type
   TJvBright = 0..200;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSpecialImage = class(TJvExImage)
   private
     FInverted: Boolean;

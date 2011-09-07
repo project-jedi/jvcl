@@ -38,6 +38,9 @@ uses
   JvTypes, JvComponentBase;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScreenSaver = class(TJvComponent)
   private
     FOnStart: TNotifyEvent;

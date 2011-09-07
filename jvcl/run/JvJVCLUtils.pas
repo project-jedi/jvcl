@@ -1329,28 +1329,28 @@ type
   TCPLApplet = function(hwndCPl: THandle; uMsg: UINT;
     lParam1, lParam2: LPARAM): Longint; stdcall;
 
-  TCPLInfo = packed record
+  TCPLInfo = record
     idIcon: Integer;
     idName: Integer;
     idInfo: Integer;
-    lData: Longint;
+    lData: LONG_PTR;
   end;
 
-  TNewCPLInfoA = packed record
+  TNewCPLInfoA = record
     dwSize: DWORD;
     dwFlags: DWORD;
     dwHelpContext: DWORD;
-    lData: Longint;
+    lData: LONG_PTR;
     HICON: HICON;
     szName: array [0..31] of AnsiChar;
     szInfo: array [0..63] of AnsiChar;
     szHelpFile: array [0..127] of AnsiChar;
   end;
-  TNewCPLInfoW = packed record
+  TNewCPLInfoW = record
     dwSize: DWORD;
     dwFlags: DWORD;
     dwHelpContext: DWORD;
-    lData: Longint;
+    lData: LONG_PTR;
     HICON: HICON;
     szName: array [0..31] of WideChar;
     szInfo: array [0..63] of WideChar;
@@ -1636,8 +1636,13 @@ begin
   try
     if Module <> 0 then
     begin
+      {$IFDEF DELPHI64_TEMPORARY}
+      if INT_PTR(ResID) <= $FFFF then
+        Result.LoadFromResourceID(Module, INT_PTR(ResID))
+      {$ELSE ~DELPHI64_TEMPORARY}
       if LongRec(ResID).Hi = 0 then
         Result.LoadFromResourceID(Module, LongRec(ResID).Lo)
+      {$ENDIF ~DELPHI64_TEMPORARY}
       else
         Result.LoadFromResourceName(Module, StrPas(ResID));
     end
@@ -2555,7 +2560,7 @@ var
   Res: THandle;
   Data: Pointer;
 begin
-  Integer(Result) := 0;
+  Result := 0;
   RSrc := FindResource(Instance, ResID, RT_ANICURSOR);
   if RSrc <> 0 then
   begin
@@ -4379,7 +4384,7 @@ type
   TQColorArray = array [0..MAX_COLORS - 1] of TQColor;
 
   PQColorList = ^TQColorList;
-  TQColorList = array [0..MaxListSize - 1] of PQColor;
+  TQColorList = array [0..{$IFDEF RTL230_UP}Maxint div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP} - 1] of PQColor;
 
   PNewColor = ^TNewColor;
   TNewColor = record

@@ -144,6 +144,9 @@ type
 
   TJvDockSystemInfoChange = procedure(Value: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDockVIDStyle = class(TJvDockAdvStyle)
   private
     FAlwaysShowGrabber: Boolean;
@@ -649,14 +652,11 @@ begin
           begin
             Brush.Color := RGB(R1 + Round(DR * X), G1 + Round(DG * X),
               B1 + Round(DB * X));
-            with ARect do
-            begin
-              if Right <= Left + Round((X + 1) * DH) then
-                W := Right
-              else
-                W := Left + Round((X + 1) * DH);
-              FillRect(Rect(Left + Round(X * DH), Top, W, Bottom));
-            end;
+            if ARect.Right <= ARect.Left + Round((X + 1) * DH) then
+              W := ARect.Right
+            else
+              W := ARect.Left + Round((X + 1) * DH);
+            FillRect(Rect(ARect.Left + Round(X * DH), ARect.Top, W, ARect.Bottom));
           end;
         end
         else
@@ -666,14 +666,11 @@ begin
           begin
             Brush.Color := RGB(R1 + Round(DR * Y), G1 + Round(DG * Y),
               B1 + Round(DB * Y));
-            with ARect do
-            begin
-              if Bottom <= Top + Round((Y + 1) * DW) then
-                H := Bottom
-              else
-                H := Top + Round((Y + 1) * DW);
-              FillRect(Rect(Left, Top + Round(Y * DW), Right, H));
-            end;
+            if ARect.Bottom <= ARect.Top + Round((Y + 1) * DW) then
+              H := ARect.Bottom
+            else
+              H := ARect.Top + Round((Y + 1) * DW);
+            FillRect(Rect(ARect.Left, ARect.Top + Round(Y * DW), ARect.Right, H));
           end;
         end;
       end
@@ -1693,39 +1690,38 @@ begin
 
   case GrabbersPosition of
     gpTop:
-      with ARect do
-        if Assigned(DockStyle) and (DockStyle.ConjoinServerOption is TJvDockVIDConjoinServerOption) then
-        begin
-          Option := TJvDockVIDConjoinServerOption(DockStyle.ConjoinServerOption);
+      if Assigned(DockStyle) and (DockStyle.ConjoinServerOption is TJvDockVIDConjoinServerOption) then
+      begin
+        Option := TJvDockVIDConjoinServerOption(DockStyle.ConjoinServerOption);
 
-          IsActive := Assigned(Screen.ActiveControl) and Screen.ActiveControl.Focused and
-            Control.ContainsControl(Screen.ActiveControl);
-          DrawRect := ARect;
+        IsActive := Assigned(Screen.ActiveControl) and Screen.ActiveControl.Focused and
+          Control.ContainsControl(Screen.ActiveControl);
+        DrawRect := ARect;
 
-          Inc(DrawRect.Top, 2);
-          DrawRect.Bottom := DrawRect.Top + GrabberSize - 3;
-          if IsActive then
-            PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor,
-              Option.ActiveTitleEndColor, Option.ActiveTitleVerticalGradient)
-          else
-            PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor,
-              Option.InactiveTitleEndColor, Option.InactiveTitleVerticalGradient);
-          Canvas.Brush.Style := bsClear; // body already painted
-          PaintDockGrabberRect(Canvas, Control, DrawRect, Option.ActiveDockGrabber);
+        Inc(DrawRect.Top, 2);
+        DrawRect.Bottom := DrawRect.Top + GrabberSize - 3;
+        if IsActive then
+          PaintGradientBackground(Canvas, DrawRect, Option.ActiveTitleStartColor,
+            Option.ActiveTitleEndColor, Option.ActiveTitleVerticalGradient)
+        else
+          PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor,
+            Option.InactiveTitleEndColor, Option.InactiveTitleVerticalGradient);
+        Canvas.Brush.Style := bsClear; // body already painted
+        PaintDockGrabberRect(Canvas, Control, DrawRect, Option.ActiveDockGrabber);
 
-          if IsActive then
-            Canvas.Font.Assign(Option.ActiveFont)
-          else
-            Canvas.Font.Assign(Option.InactiveFont);
-          Canvas.Brush.Style := bsClear;
-          GetCaptionRect(DrawRect);
-          uFormat := DT_VCENTER or DT_SINGLELINE or
-            (Cardinal(Ord(Option.TextEllipsis)) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
-          { DIRTY cast }
-          DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
-          if ShowCloseButtonOnGrabber or not (Control is TJvDockTabHostForm) then
-            DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
-        end;
+        if IsActive then
+          Canvas.Font.Assign(Option.ActiveFont)
+        else
+          Canvas.Font.Assign(Option.InactiveFont);
+        Canvas.Brush.Style := bsClear;
+        GetCaptionRect(DrawRect);
+        uFormat := DT_VCENTER or DT_SINGLELINE or
+          (Cardinal(Ord(Option.TextEllipsis)) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
+        { DIRTY cast }
+        DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
+        if ShowCloseButtonOnGrabber or not (Control is TJvDockTabHostForm) then
+          DrawCloseButton(Canvas, FindControlZone(Control), ARect.Right - RightOffset - ButtonWidth, ARect.Top + TopOffset);
+      end;
     {$IFDEF JVDOCK_DEBUG}
     gpBottom:
       OutputDebugString('GrabbersPosition = gpBottom - Not supported');
@@ -2011,17 +2007,16 @@ begin
       DockRect := Rect(0, 0, DockSite.ClientWidth, DockSite.ClientHeight);
 
       if VisibleClients > 0 then
-        with DockRect do
-          case DropAlign of
-            alLeft:
-              Right := Right div 2;
-            alRight:
-              Left := Right div 2;
-            alTop:
-              Bottom := Bottom div 2;
-            alBottom:
-              Top := Bottom div 2;
-          end;
+        case DropAlign of
+          alLeft:
+            DockRect.Right := DockRect.Right div 2;
+          alRight:
+            DockRect.Left := DockRect.Right div 2;
+          alTop:
+            DockRect.Bottom := DockRect.Bottom div 2;
+          alBottom:
+            DockRect.Top := DockRect.Bottom div 2;
+        end;
     end;
   end
   else
@@ -2282,7 +2277,7 @@ begin
     if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
       Exit;
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       if GrabberSize <= 18 then
       begin
@@ -4002,42 +3997,42 @@ var
   MaxTabWidth: Integer;
 
   procedure DoDrawDefaultImage;
+  var
+    R: PRect;
   begin
-    with DrawRect do
-    begin
-      PatBlt(DC, Left + PenSize, Top, Right - Left - PenSize, PenSize, PATINVERT);
-      PatBlt(DC, Right - PenSize, Top + PenSize, PenSize, Bottom - Top - PenSize, PATINVERT);
-      PatBlt(DC, Left, Bottom - PenSize, Right - Left - PenSize, PenSize, PATINVERT);
-      PatBlt(DC, Left, Top, PenSize, Bottom - Top - PenSize, PATINVERT);
-    end;
+    R := @DrawRect;
+    PatBlt(DC, R.Left + PenSize, R.Top, R.Right - R.Left - PenSize, PenSize, PATINVERT);
+    PatBlt(DC, R.Right - PenSize, R.Top + PenSize, PenSize, R.Bottom - R.Top - PenSize, PATINVERT);
+    PatBlt(DC, R.Left, R.Bottom - PenSize, R.Right - R.Left - PenSize, PenSize, PATINVERT);
+    PatBlt(DC, R.Left, R.Top, PenSize, R.Bottom - R.Top - PenSize, PATINVERT);
   end;
 
   procedure DoDrawTabImage;
+  var
+    R: PRect;
   begin
-    with DrawRect do
-    begin
-      ButtomOffset := 15;
-      MaxTabWidth := 30;
+    R := @DrawRect;
+    ButtomOffset := 15;
+    MaxTabWidth := 30;
 
-      PatBlt(DC, Left + PenSize, Top, Right - Left - PenSize, PenSize, PATINVERT);
-      PatBlt(DC, Right - PenSize, Top + PenSize, PenSize, Bottom - Top - 2 * PenSize - ButtomOffset, PATINVERT);
+    PatBlt(DC, R.Left + PenSize, R.Top, R.Right - R.Left - PenSize, PenSize, PATINVERT);
+    PatBlt(DC, R.Right - PenSize, R.Top + PenSize, PenSize, R.Bottom - R.Top - 2 * PenSize - ButtomOffset, PATINVERT);
 
-      if DrawRect.Right - DrawRect.Left - 2 * PenSize < LeftOffset + 2 * PenSize + 2 * MaxTabWidth then
-        MaxTabWidth := (DrawRect.Right - DrawRect.Left - 4 * PenSize - LeftOffset) div 2;
+    if R.Right - R.Left - 2 * PenSize < LeftOffset + 2 * PenSize + 2 * MaxTabWidth then
+      MaxTabWidth := (R.Right - R.Left - 4 * PenSize - LeftOffset) div 2;
 
-      if DrawRect.Bottom - DrawRect.Top - 2 * PenSize < 2 * ButtomOffset then
-        ButtomOffset := Max((DrawRect.Bottom - DrawRect.Top - 2 * PenSize) div 2, 0);
+    if R.Bottom - R.Top - 2 * PenSize < 2 * ButtomOffset then
+      ButtomOffset := Max((R.Bottom - R.Top - 2 * PenSize) div 2, 0);
 
-      PatBlt(DC, Left, Bottom - PenSize - ButtomOffset, 2 * PenSize + LeftOffset, PenSize, PATINVERT);
-      PatBlt(DC, Left + PenSize + LeftOffset, Bottom - ButtomOffset, PenSize, ButtomOffset, PATINVERT);
-      PatBlt(DC, Left + 2 * PenSize + LeftOffset, Bottom - PenSize, MaxTabWidth, PenSize, PATINVERT);
-      PatBlt(DC, Left + 2 * PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, PenSize, PenSize +
-        ButtomOffset, PATINVERT);
-      PatBlt(DC, Left + 3 * PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, Right - Left - 3 *
-        PenSize - LeftOffset - MaxTabWidth, PenSize, PATINVERT);
+    PatBlt(DC, R.Left, R.Bottom - PenSize - ButtomOffset, 2 * PenSize + LeftOffset, PenSize, PATINVERT);
+    PatBlt(DC, R.Left + PenSize + LeftOffset, R.Bottom - ButtomOffset, PenSize, ButtomOffset, PATINVERT);
+    PatBlt(DC, R.Left + 2 * PenSize + LeftOffset, R.Bottom - PenSize, MaxTabWidth, PenSize, PATINVERT);
+    PatBlt(DC, R.Left + 2 * PenSize + LeftOffset + MaxTabWidth, R.Bottom - PenSize - ButtomOffset, PenSize, PenSize +
+      ButtomOffset, PATINVERT);
+    PatBlt(DC, R.Left + 3 * PenSize + LeftOffset + MaxTabWidth, R.Bottom - PenSize - ButtomOffset, R.Right - R.Left - 3 *
+      PenSize - LeftOffset - MaxTabWidth, PenSize, PATINVERT);
 
-      PatBlt(DC, Left, Top, PenSize, Bottom - Top - PenSize - ButtomOffset, PATINVERT);
-    end;
+    PatBlt(DC, R.Left, R.Top, PenSize, R.Bottom - R.Top - PenSize - ButtomOffset, PATINVERT);
   end;
 
 begin

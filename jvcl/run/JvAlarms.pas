@@ -73,6 +73,9 @@ type
     property Items[Index: Integer]: TJvAlarmItem read GetItems write SetItems; default;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAlarms = class(TJvComponent)
   private
     FActive: Boolean;

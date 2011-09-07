@@ -136,6 +136,9 @@ type
     property ValueZ: Byte read FValueZ write SetValueZ stored IsValueZStored default 0;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorPanel = class(TJvFullColorComponent2D)
   private
     FReverseAxisY: Boolean;
@@ -180,6 +183,9 @@ type
 
   TJvFullColorCircleStyles = set of TJvFullColorCircleStyle;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorCircle = class(TJvFullColorComponent2D)
   private
     FStyles: TJvFullColorCircleStyles;
@@ -272,6 +278,9 @@ type
 
   TJvCursorPoints = array [0..2] of TPoint;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorTrackBar = class(TJvFullColorComponent)
   private
     FArrowPosition: TJvArrowPosition;
@@ -332,6 +341,9 @@ type
 
   TJvShapePosition = (spLeft, spRight, spTop, spBottom);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorLabel = class(TGraphicControl)
   private
     FBrush: TBrush;
@@ -420,6 +432,9 @@ type
   TJvFullColorSpaceFormatEvent = procedure(Sender: TObject; AColorSpace: TJvColorSpace;
     out ACaption: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorSpaceCombo = class(TJvCustomComboBox)
   private
     FAllowVariable: Boolean;
@@ -499,6 +514,9 @@ type
   TJvFullColorAxisFormatEvent = procedure(Sender: TObject; AAxisConfig: TJvFullColorAxisConfig;
     out ACaption: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorAxisCombo = class(TJvCustomComboBox)
   private
     FItemFormat: TJvFullColorAxisConfigFormat;
@@ -571,7 +589,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
+  TJvFullColorArray = array [0..{$IFDEF RTL230_UP}Maxint div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP} - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
   TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
@@ -627,6 +645,9 @@ type
   TJvFormatHintEvent = procedure(Sender: TObject; HintColor: TJvFullColor;
     var HintText: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFullColorGroup = class(TCustomControl)
   private
     FItems: TJvFullColorList;
@@ -1164,45 +1185,46 @@ begin
     Result.Y := 0;
   end
   else
-    with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
+    with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)] do
     begin
       AxisX := GetIndexAxisX(AxisConfig);
       MinAxis := AxisMin[AxisX];
       MaxAxis := AxisMax[AxisX];
-      X := GetAxisValue(FullColor, AxisX);
+      Result.X := GetAxisValue(FullColor, AxisX);
       if ReverseAxisX then
-        X := MaxAxis - X
+        Result.X := MaxAxis - Result.X
       else
-        X := X - MinAxis;
-      X := ((X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
+        Result.X := Result.X - MinAxis;
+      Result.X := ((Result.X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
 
       AxisY := GetIndexAxisY(AxisConfig);
       MinAxis := AxisMin[AxisY];
       MaxAxis := AxisMax[AxisY];
-      Y := GetAxisValue(FullColor, AxisY);
+      Result.Y := GetAxisValue(FullColor, AxisY);
       if ReverseAxisY then
-        Y := MaxAxis - Y
+        Result.Y := MaxAxis - Result.Y
       else
-        Y := Y - MinAxis;
-      Y := ((Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
+        Result.Y := Result.Y - MinAxis;
+      Result.Y := ((Result.Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
     end;
 end;
 
 procedure TJvFullColorPanel.InvalidateCursor;
 var
   ARect: TRect;
+  Pt: TPoint;
 begin
-  with GetCursorPosition do
-  begin
-    ARect.Left := X - 1 - CrossSize - CrossStyle.Width;
-    ARect.Right := X + 1 + CrossSize + CrossStyle.Width;
-    ARect.Top := Y - 1 - CrossSize - CrossStyle.Width;
-    ARect.Bottom := Y + 1 + CrossSize + CrossStyle.Width;
-  end;
+  Pt := GetCursorPosition;
+  ARect.Left := Pt.X - 1 - CrossSize - CrossStyle.Width;
+  ARect.Right := Pt.X + 1 + CrossSize + CrossStyle.Width;
+  ARect.Top := Pt.Y - 1 - CrossSize - CrossStyle.Width;
+  ARect.Bottom := Pt.Y + 1 + CrossSize + CrossStyle.Width;
   Windows.InvalidateRect(Handle, @ARect, False);
 end;
 
 procedure TJvFullColorPanel.Paint;
+var
+  Pt: TPoint;
 begin
   inherited Paint;
 
@@ -1213,18 +1235,16 @@ begin
     Draw(CrossSize, CrossSize, FBuffer);
     Pen := CrossStyle;
 
-    with GetCursorPosition do
-    begin
-      MoveTo(X - CrossSize, Y);
-      LineTo(X - CrossCenter, Y);
-      MoveTo(X + CrossCenter, Y);
-      LineTo(X + CrossSize, Y);
+    Pt := GetCursorPosition;
+    MoveTo(Pt.X - CrossSize, Pt.Y);
+    LineTo(Pt.X - CrossCenter, Pt.Y);
+    MoveTo(Pt.X + CrossCenter, Pt.Y);
+    LineTo(Pt.X + CrossSize, Pt.Y);
 
-      MoveTo(X, Y - CrossSize);
-      LineTo(X, Y - CrossCenter);
-      MoveTo(X, Y + CrossCenter);
-      LineTo(X, Y + CrossSize);
-    end;
+    MoveTo(Pt.X, Pt.Y - CrossSize);
+    LineTo(Pt.X, Pt.Y - CrossCenter);
+    MoveTo(Pt.X, Pt.Y + CrossCenter);
+    LineTo(Pt.X, Pt.Y + CrossSize);
   end;
   DrawFocus;
 end;
@@ -1663,8 +1683,8 @@ begin
     Angle := Angle - AngleMin;
 
   FullAngle := (2 * Pi * Angle) / (AngleMax - AngleMin) - Pi;
-  Result.X := Round(Radius * Cos(FullAngle) * FBuffer.Width / (Radius1 * 2) + (FBuffer.Width / 2.0)) + CrossSize;
-  Result.Y := Round(Radius * Sin(FullAngle) * FBuffer.Height / (Radius1 * 2) + (FBuffer.Height / 2.0)) + CrossSize;
+  Result.X := Round(Radius * JclMath.Cos(FullAngle) * FBuffer.Width / (Radius1 * 2) + (FBuffer.Width / 2.0)) + CrossSize;
+  Result.Y := Round(Radius * JclMath.Sin(FullAngle) * FBuffer.Height / (Radius1 * 2) + (FBuffer.Height / 2.0)) + CrossSize;
 end;
 
 function TJvFullColorCircle.PositionToFullColor(APoint: TPoint): TJvFullColor;
@@ -3483,20 +3503,20 @@ begin
   CalcRects(XPos, YPos, XInc, YInc);
 
   Sum := YPos;
-  with AHintInfo^, CursorPos, CursorRect do
+  with AHintInfo^ do
     for Index := 0 to RowCount - 1 do
     begin
-      if Y < Sum then
+      if CursorPos.Y < Sum then
       begin
-        Top := Max(0, Sum - YInc);
-        Bottom := Sum;
+        CursorRect.Top := Max(0, Sum - YInc);
+        CursorRect.Bottom := Sum;
         Break;
       end
       else
-      if (Y >= Sum) and (Y < Sum + FSquareSize) then
+      if (CursorPos.Y >= Sum) and (CursorPos.Y < Sum + FSquareSize) then
       begin
-        Top := Sum;
-        Bottom := Sum + FSquareSize;
+        CursorRect.Top := Sum;
+        CursorRect.Bottom := Sum + FSquareSize;
         ColorIndex := Index * ColCount;
         Break;
       end;
@@ -3504,22 +3524,22 @@ begin
     end;
 
   Sum := XPos;
-  with AHintInfo^, CursorPos, CursorRect do
+  with AHintInfo^ do
     for Index := 0 to ColCount do
       // not -1 because of last space after the colcount - 1
     begin
-      if X < Sum then
+      if CursorPos.X < Sum then
       begin
-        Left := Max(0, Sum - XInc);
-        Right := Sum;
+        CursorRect.Left := Max(0, Sum - XInc);
+        CursorRect.Right := Sum;
         ColorIndex := -1;
         Break;
       end
       else
-      if (X >= Sum) and (X < Sum + FSquareSize) then
+      if (CursorPos.X >= Sum) and (CursorPos.X < Sum + FSquareSize) then
       begin
-        Left := Sum;
-        Right := Sum + FSquareSize;
+        CursorRect.Left := Sum;
+        CursorRect.Right := Sum + FSquareSize;
         if ColorIndex <> -1 then
           ColorIndex := ColorIndex + Index;
         Break;

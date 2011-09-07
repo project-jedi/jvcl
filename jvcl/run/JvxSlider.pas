@@ -179,6 +179,9 @@ type
     property Value: Longint read FValue write SetValue default 0;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvxSlider = class(TJvCustomSlider)
   published
     property Align;

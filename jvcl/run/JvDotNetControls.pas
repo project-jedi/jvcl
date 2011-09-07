@@ -41,6 +41,9 @@ uses
   StdCtrls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetCheckListBox = class(TJvCheckListBox)
   private
     FHighlighted: Boolean;
@@ -51,6 +54,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetEdit = class(TJvEdit)
   private
     FHighlighted: Boolean;
@@ -61,6 +67,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetHotKey = class(TJvHotKey)
   private
     FHighlighted: Boolean;
@@ -71,6 +80,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetListBox = class(TJvListBox)
   private
     FHighlighted: Boolean;
@@ -81,6 +93,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetListView = class(TJvListView)
   private
     FHighlighted: Boolean;
@@ -91,6 +106,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetMaskEdit = class(TJvMaskEdit)
   private
     FHighlighted: Boolean;
@@ -101,6 +119,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetMemo = class(TJvMemo)
   private
     FHighlighted: Boolean;
@@ -111,6 +132,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetRichEdit = class(TJvRichEdit)
   private
     FHighlighted: Boolean;
@@ -121,6 +145,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetScrollBox = class(TJvScrollBox)
   private
     FHighlighted: Boolean;
@@ -131,6 +158,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetTreeView = class(TJvTreeView)
   private
     FHighlighted: Boolean;
@@ -141,6 +171,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetFilenameEdit = class(TJvFilenameEdit)
   private
     FHighlighted: Boolean;
@@ -151,6 +184,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetDirectoryEdit = class(TJvDirectoryEdit)
   private
     FHighlighted: Boolean;
@@ -161,6 +197,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDotNetButton = class(TButton)
   private
     FHighlighted: Boolean;

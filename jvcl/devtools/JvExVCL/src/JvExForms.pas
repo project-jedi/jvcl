@@ -56,8 +56,11 @@ type
   protected
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+    procedure InitializeNewForm; {$IFDEF COMPILER12_UP}override;{$ELSE}dynamic;{$ENDIF}
+  {$IFNDEF COMPILER12_UP}
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+  {$ENDIF ~COMPILER12_UP}
   end;
 
   TJvExForm = class(TForm, IJvExControl)
@@ -65,8 +68,11 @@ type
   protected
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+    procedure InitializeNewForm; {$IFDEF COMPILER12_UP}override;{$ELSE}dynamic;{$ENDIF}
+  {$IFNDEF COMPILER12_UP}
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+  {$ENDIF ~COMPILER12_UP}
   end;
 
   TJvExCustomDockForm = class(TCustomDockForm, IJvExControl)
@@ -74,8 +80,11 @@ type
   protected
     procedure CMShowingChanged(var Msg: TMessage); message CM_SHOWINGCHANGED;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+    procedure InitializeNewForm; {$IFDEF COMPILER12_UP}override;{$ELSE}dynamic;{$ENDIF}
+  {$IFNDEF COMPILER12_UP}
   public
     constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+  {$ENDIF ~COMPILER12_UP}
   end;
 
 
@@ -110,9 +119,19 @@ WINCONTROL_IMPL_DEFAULT(ToolWindow)
 
 WINCONTROL_IMPL_DEFAULT(CustomForm)
 
+{$IFNDEF COMPILER12_UP}
 constructor TJvExCustomForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
+  InitializeNewForm;
+end;
+{$ENDIF ~COMPILER12_UP}
+
+procedure TJvExCustomForm.InitializeNewForm;
+begin
+  {$IFDEF COMPILER12_UP}
+  inherited InitializeNewForm;
+  {$ENDIF COMPILER12_UP}
   FHintColor := clDefault;
 end;
 
@@ -136,9 +155,19 @@ end;
 
 WINCONTROL_IMPL_DEFAULT(Form)
 
+{$IFNDEF COMPILER12_UP}
 constructor TJvExForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
+  InitializeNewForm;
+end;
+{$ENDIF ~COMPILER12_UP}
+
+procedure TJvExForm.InitializeNewForm;
+begin
+  {$IFDEF COMPILER12_UP}
+  inherited InitializeNewForm;
+  {$ENDIF COMPILER12_UP}
   FHintColor := clDefault;
 end;
 
@@ -162,9 +191,19 @@ end;
 
 WINCONTROL_IMPL_DEFAULT(CustomDockForm)
 
+{$IFNDEF COMPILER12_UP}
 constructor TJvExCustomDockForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
+  InitializeNewForm;
+end;
+{$ENDIF ~COMPILER12_UP}
+
+procedure TJvExCustomDockForm.InitializeNewForm;
+begin
+  {$IFDEF COMPILER12_UP}
+  inherited InitializeNewForm;
+  {$ENDIF COMPILER12_UP}
   FHintColor := clDefault;
 end;
 

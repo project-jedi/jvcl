@@ -121,6 +121,9 @@ type
     function GetFieldValue(const Field: TField): Variant; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGridWordExport = class(TJvCustomDBGridOleExport)
   private
     FWord: OleVariant;
@@ -147,6 +150,9 @@ type
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGridExcelExport = class(TJvCustomDBGridOleExport)
   private
     FExcel: OleVariant;
@@ -185,6 +191,9 @@ type
     {$ENDIF UNICODE}
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGridHTMLExport = class(TJvCustomDBGridTextExport)
   private
     FDocument: TStrings;
@@ -215,6 +224,9 @@ type
     property DocTitle: string read FDocTitle write FDocTitle;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGridCSVExport = class(TJvCustomDBGridTextExport)
   private
     FDocument: TStrings;
@@ -247,6 +259,9 @@ type
     property QuoteEveryTime: Boolean read FQuoteEveryTime write FQuoteEveryTime default True;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGridXMLExport = class(TJvCustomDBGridTextExport)
   private
     FXML: TJvSimpleXML;
@@ -835,7 +850,7 @@ var
      ('SOFTWARE\Microsoft\Windows\CurrentVersion\FontSubstitutes',
       'SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes');
   begin
-    Result := RegReadStringDef(HKEY_LOCAL_MACHINE,
+    Result := RegReadStringDef(HKLM,
       cFontKey[Win32Platform = VER_PLATFORM_WIN32_NT], Name, Name);
   end;
 

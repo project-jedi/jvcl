@@ -66,6 +66,9 @@ type
   TFilterEmpty = function: Byte;
   TFilterArray = array [1..9] of Byte;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvThumbImage = class(TJvBaseThumbImage)
   private
     FAngle: TAngle;
@@ -856,6 +859,7 @@ var
   RotateBmp: Graphics.TBitmap;
   I, J: Longint;
   Brake: Boolean;
+  R: TRect;
 begin
   //Procedure to rotate the image at 180d cw or ccw is the same
 
@@ -876,25 +880,24 @@ begin
       MemBmp.Palette := Picture.Graphic.Palette;
       RotateBmp := Graphics.TBitmap.Create;
       RotateBmp.Assign(MemBmp);
-      with MemBmp.Canvas.ClipRect do
-        for I := Left to Right do
-          for J := Top to Bottom do
+      R :=  MemBmp.Canvas.ClipRect;
+      for I := Left to R.Right do
+        for J := Top to R.Bottom do
+        begin
+          RotateBmp.Canvas.Pixels[R.Right - I - 1, R.Bottom - J - 1] :=
+            MemBmp.Canvas.Pixels[I, J];
+          if Assigned(FOnRotate) then
           begin
-            RotateBmp.Canvas.Pixels[Right - I - 1, Bottom - J - 1] :=
-              MemBmp.Canvas.Pixels[I, J];
-            if Assigned(FOnRotate) then
+            Brake := False;
+            FOnRotate(Self, Trunc(((I * J) / (R.Right * R.Bottom)) * 100), Brake);
+            if Brake then
             begin
-              Brake := False;
-              FOnRotate(Self, Trunc(((I * J) / (Right * Bottom)) * 100), Brake);
-              if Brake then
-              begin
-                RotateBmp.Free;
-                MemBmp.Free;
-                // (rom) AAAAHHHRRRGGG Exit was missing
-                Exit;
-              end;
+              RotateBmp.Free;
+              MemBmp.Free;
+              Exit;
             end;
           end;
+        end;
       Picture.Bitmap.Assign(RotateBmp);
       Invalidate;
       RotateBmp.Free;

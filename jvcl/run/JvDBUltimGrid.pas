@@ -147,6 +147,9 @@ type
 
   TSortWith = (swIndex, swFields, swUserFunc, swWhere);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBUltimGrid = class(TJvDBGrid)
   private
     FSortedFields: TSortFields;

@@ -461,6 +461,9 @@ type
     procedure InitiateAction; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPBar = class(TJvXPCustomWinXPBar)
   published
     property Caption;
@@ -1345,7 +1348,7 @@ begin
   FCheckedFrameColor := dxColor_CheckedFrameColorXP;
   FFocusedFrameColor := dxColor_FocusedFrameColorXP;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
     with Details do
@@ -2394,24 +2397,21 @@ end;
 procedure RoundedFrame(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 begin
   // Draw Frame with round edges
-  with Canvas, ARect do
-  begin
-    Pen.Color := AColor;
-    Dec(Right);
-    Dec(Bottom);
-    Polygon(
-     [Point(Left + R, Top),
-      Point(Right - R, Top),
-      Point(Right, Top + R),
-      Point(Right, Bottom - R),
-      Point(Right - R, Bottom),
-      Point(Left + R, Bottom),
-      Point(Left, Bottom - R),
-      Point(Left, Top + R),
-      Point(Left + R, Top)]);
-    Inc(Right);
-    Inc(Bottom);
-  end;
+  Canvas.Pen.Color := AColor;
+  Dec(ARect.Right);
+  Dec(ARect.Bottom);
+  Canvas.Polygon(
+   [Point(ARect.Left + R, ARect.Top),
+    Point(ARect.Right - R, ARect.Top),
+    Point(ARect.Right, ARect.Top + R),
+    Point(ARect.Right, ARect.Bottom - R),
+    Point(ARect.Right - R, ARect.Bottom),
+    Point(ARect.Left + R, ARect.Bottom),
+    Point(ARect.Left, ARect.Bottom - R),
+    Point(ARect.Left, ARect.Top + R),
+    Point(ARect.Left + R, ARect.Top)]);
+  Inc(ARect.Right);
+  Inc(ARect.Bottom);
 end;
 
 procedure TJvXPCustomWinXPBar.SetHeaderRounded(const Value: Boolean);

@@ -39,6 +39,9 @@ uses
 type
   TJvOffsetMode = (omRows, omColumns);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvFormWallpaper = class(TJvGraphicControl)
   private
     FImage: TPicture;

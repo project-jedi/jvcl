@@ -32,7 +32,9 @@ unit JvJclUnitVersioningBrowser;
 interface
 
 uses
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Classes, ComCtrls, Controls, Forms, JvDynControlEngine;
 
 type
@@ -102,18 +104,7 @@ begin
 end;
 
 procedure TJvJclUnitVersioningBrowser.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
-var
-  DynEngine: tJvDynControlEngine;
-  MainPanel, ButtonPanel: TWinControl;
-  TopBox, BottomBox: TWinControl;
-  Button: TButton;
-  TreeView: TWinControl;
-  IJvReadOnly: IJvDynControlReadOnly;
-  IJvTreeView: IJvDynControlTreeView;
-  I: Integer;
-  MainNode: TTreeNode;
-  Nodes: TTreeNodes;
-  Item: TUnitVersion;
+
   function FindMasterNode(iNodes: TTreeNodes; iNode: TTreeNode; const iPath: string): TTreeNode;
   var
     Part1, Part2: string;
@@ -147,6 +138,20 @@ var
       Result := iNode;
   end;
 
+var
+  DynEngine: tJvDynControlEngine;
+  MainPanel, ButtonPanel: TWinControl;
+  TopBox, BottomBox: TWinControl;
+  Button: TButton;
+  TreeView: TWinControl;
+  IJvReadOnly: IJvDynControlReadOnly;
+  IJvTreeView: IJvDynControlTreeView;
+  MainNode: TTreeNode;
+  Nodes: TTreeNodes;
+  {$IFDEF UNITVERSIONING}
+  I: Integer;
+  Item: TUnitVersion;
+  {$ENDIF UNITVERSIONING}
 begin
   if Assigned(aDynControlEngine) then
     DynEngine := aDynControlEngine
@@ -231,12 +236,14 @@ begin
       Nodes.Clear;
       IJvTreeView.ControlSetOnChange(TreeViewOnChange);
       MainNode := Nodes.AddChild(nil, ExtractFileName(ParamStr(0)) + ' ' + VersionFixedFileInfoString(ParamStr(0)));
+      {$IFDEF UNITVERSIONING}
       for I := 0 to GetUnitVersioning.Count - 1 do
       begin
         Item := GetUnitVersioning.Items[I];
         Nodes.AddChildObject(FindMasterNode(Nodes, MainNode, Item.LogPath),
           StrRestOf(Item.RCSfile, StrLastPos('/', Item.RCSfile) + 1) + ' - ' + Item.Revision, Item);
       end;
+      {$ENDIF UNITVERSIONING}
       IJvTreeView.ControlSetSortType(stText);
       if TreeView is TTreeView then
         TTreeView(TreeView).FullExpand;
@@ -250,9 +257,12 @@ begin
 end;
 
 procedure TJvJclUnitVersioningBrowser.TreeViewOnChange(Sender: TObject; Node: TTreeNode);
+{$IFDEF UNITVERSIONING}
 var
   IJvData: IJvDynControlData;
+{$ENDIF UNITVERSIONING}
 begin
+  {$IFDEF UNITVERSIONING}
   if Assigned(Node) and Assigned(Node.Data) and
     (TObject(Node.Data) is TUnitVersion) then
   begin
@@ -294,6 +304,7 @@ begin
       PathPanel.Visible := False;
   end
   else
+  {$ENDIF UNITVERSIONING}
   begin
     RCSFilePanel.Visible := False;
     RevisionPanel.Visible := False;
@@ -304,15 +315,11 @@ begin
 end;
 
 initialization
-
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
-
+  {$ENDIF UNITVERSIONING}
 finalization
-
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
-
+  {$ENDIF UNITVERSIONING}
 end.

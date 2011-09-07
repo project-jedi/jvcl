@@ -306,7 +306,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure BoundsChanged; override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure DoScrollHint(NewPos: Integer);
     procedure CreateParams(var Params: TCreateParams); override;
@@ -359,6 +359,9 @@ type
     property PageCount: Integer read GetPageCount;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewControl = class(TJvCustomPreviewControl)
   published
     property TopRow;
@@ -1269,7 +1272,7 @@ begin
   FOptions.Assign(Value);
 end;
 
-function TJvCustomPreviewControl.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomPreviewControl.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   //  inherited DoEraseBackground(Canvas, Param);
   Result := True;
@@ -1598,13 +1601,10 @@ begin
 
     FPreviewRect := Rect(0, 0, FPageWidth, FPageHeight);
     FPrintRect := FPreviewRect;
-    with FPrintRect do
-    begin
-      Inc(Left, FOffsetLeft);
-      Inc(Top, FOffsetTop);
-      Dec(Right, FOffsetRight);
-      Dec(Bottom, FOffsetBottom);
-    end;
+    Inc(FPrintRect.Left, FOffsetLeft);
+    Inc(FPrintRect.Top, FOffsetTop);
+    Dec(FPrintRect.Right, FOffsetRight);
+    Dec(FPrintRect.Bottom, FOffsetBottom);
 
     if (Options.ScaleMode in [smFullPage, smPageWidth]) or
       (FPageWidth >= ClientWidth) or (FPageHeight >= ClientHeight) and

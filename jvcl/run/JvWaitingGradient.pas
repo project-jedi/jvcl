@@ -38,6 +38,9 @@ uses
   JvImageDrawThread, JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWaitingGradient = class(TJvGraphicControl)
   private
     FFromLeftToRight: Boolean; { Indicates direction }

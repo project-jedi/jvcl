@@ -819,6 +819,9 @@ type
   end;
 
   // TJvCsvDataSet is just a TJvCustomCsvDataSet with all properties and events exposed:
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCsvDataSet = class(TJvCustomCsvDataSet)
   public
     property TableName;
@@ -4061,7 +4064,7 @@ procedure TJvCustomCsvDataSet.QuickSort(AList: TList; const SortColumns: TArrayO
   ACount: Integer; const SortAscending: array of Boolean);
 begin
   if (AList <> nil) and (AList.Count > 1) then
-    InternalQuickSort(AList.List, 0, AList.Count - 1, SortColumns, ACount, SortAscending);
+    InternalQuickSort({$IFDEF RTL230_UP}@{$ENDIF RTL230_UP}AList.List, 0, AList.Count - 1, SortColumns, ACount, SortAscending);
 end;
 
 procedure TJvCustomCsvDataSet.Sort(const SortFields: string; Ascending: Boolean);
@@ -4327,7 +4330,7 @@ var
 begin
   if (RowIndex >= 0) and (RowIndex < Count) then
   begin
-    if PCsvRow(List^[RowIndex]).Filtered then
+    if PCsvRow(List{$IFNDEF RTL230_UP}^{$ENDIF !RTL230_UP}[RowIndex]).Filtered then
       Dec(FFilteredCount);
     P := Items[RowIndex];
     if P <> nil then
@@ -5734,12 +5737,12 @@ begin
   end;
 end;
 
-function TJvCustomCsvDataSet.Lookup(const KeyFields: string; const KeyValues: Variant; const ResultFields: string):
-    Variant;
+function TJvCustomCsvDataSet.Lookup(const KeyFields: string; const KeyValues: Variant;
+  const ResultFields: string): Variant;
 begin
   Result := Null;
   if LocateRecord(KeyFields, KeyValues, []) then
-      Result := FieldValues[ResultFields];
+    Result := FieldValues[ResultFields];
 end;
 
 {$IFDEF UNITVERSIONING}

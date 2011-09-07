@@ -49,6 +49,9 @@ type
 
   TJvHookOrder = (hoBeforeMsg, hoAfterMsg);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWindowHook = class(TJvComponent)
   private
     FActive: Boolean;
@@ -110,7 +113,7 @@ type
   end;
 
   PHookInfoList = ^THookInfoList;
-  THookInfoList = array [0..MaxInt div 4 - 1] of PJvHookInfo;
+  THookInfoList = array [0..MaxInt div SizeOf(Pointer) - 1] of PJvHookInfo;
 
   TJvWndProcHook = class;
 

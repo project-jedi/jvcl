@@ -77,6 +77,9 @@ type
     property StoreStringListAsSingleString;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAppRegistryStorage = class(TJvCustomAppStorage)
   private
     FRegHKEY: HKEY;

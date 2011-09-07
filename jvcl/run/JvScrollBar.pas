@@ -37,6 +37,9 @@ uses
   JvExStdCtrls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScrollBar = class(TJvExScrollBar)
   private
     FHotTrack: Boolean;

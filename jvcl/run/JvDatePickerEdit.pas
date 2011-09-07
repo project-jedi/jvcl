@@ -230,6 +230,9 @@ type
     property Text: TCaption read GetText write SetText;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDatePickerEdit = class(TJvCustomDatePickerEdit)
   public
     property Dropped;
@@ -351,6 +354,9 @@ implementation
 
 uses
   Variants, SysUtils, Menus,
+  {$IFDEF HAS_UNIT_CHARACTER}
+  Character, // for inline
+  {$ENDIF HAS_UNIT_CHARACTER}
   JclStrings,
   JvConsts, JvTypes, JvResources, JclSysUtils;
 

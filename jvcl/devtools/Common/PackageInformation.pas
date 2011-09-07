@@ -32,7 +32,8 @@ interface
 
 uses
   SysUtils, Classes, Contnrs,
-  JclSimpleXml;
+  JclSimpleXml,
+  DelphiData;
   
 type
   { xml Package files }
@@ -89,6 +90,18 @@ type
     property FormName: string read FFormName;
   end;
 
+  TPlatformType = (pftWin32, pftWin64);
+  TPlatformTypes = set of TPlatformType;
+
+  TPlatform = class(TPackageXmlInfoItem)
+  private
+    FPlatformType: TPlatformType;
+  public
+    constructor Create(const AName, ATargets, ACondition: string);
+    function IsSupportedByTarget(const TargetSymbol: string): Boolean;
+    property PlatformType: TPlatformType read FPlatformType;
+  end;
+
   /// <summary>
   /// TProjectType specifies the type of project defined in the package
   /// </summary>
@@ -107,6 +120,7 @@ type
     FClxDescription: string;
     FRequires: TObjectList;
     FContains: TObjectList;
+    FPlatforms: TObjectList;
     FRequiresDB: Boolean;
     FProjectType: TProjectType;
     FIsXPlatform: Boolean;
@@ -119,6 +133,9 @@ type
     function GetContains(Index: Integer): TContainedFile;
     function GetRequireCount: Integer;
     function GetRequires(Index: Integer): TRequiredPackage;
+    function GetPlatformCount: Integer;
+    function GetPlatforms(Index: Integer): TPlatform;
+    function GetPlatformTypes: TPlatformTypes;
 
     procedure LoadFromFile(const Filename: string);
     function GetBuildNumber: string;
@@ -142,6 +159,9 @@ type
     property Requires[Index: Integer]: TRequiredPackage read GetRequires;
     property ContainCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainedFile read GetContains;
+    property PlatformCount: Integer read GetPlatformCount;
+    property Platforms[Index: Integer]: TPlatform read GetPlatforms;
+    property PlatformTypes: TPlatformTypes read GetPlatformTypes;
     property RequiresDB: Boolean read FRequiresDB;
     property ProjectType: TProjectType read FProjectType;
     property IsXPlaform: Boolean read FIsXPlatform;
@@ -176,17 +196,21 @@ type
     FInfo: TPackageInfo;
     FRequireList: TList;
     FContaineList: TList;
+    FPlatformList: TList;
     FAutoDeleteUserData: Boolean;
 
     function GetRelSourceDir: string;
     function GetSourceDir: string;
     function GetContainCount: Integer;
     function GetContains(Index: Integer): TContainedFile;
+    function GetPlatformCount: Integer;
+    function GetPlatforms(Index: Integer): TPlatform;
     function GetRequireCount: Integer;
     function GetRequires(Index: Integer): TRequiredPackage;
   protected
     procedure UpdateContainList; virtual;
     procedure UpdateRequireList; virtual;
+    procedure UpdatePlatformList; virtual;
     procedure GetDependencies; virtual; // is called after alle package targets are created
   public
     constructor Create(AOwner: TPackageGroup; const ATargetName, ASourceName: string); virtual;
@@ -207,6 +231,8 @@ type
     property Requires[Index: Integer]: TRequiredPackage read GetRequires;
     property ContainCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainedFile read GetContains;
+    property PlatformCount: Integer read GetPlatformCount;
+    property Platforms[Index: Integer]: TPlatform read GetPlatforms;
 
     property Owner: TPackageGroup read FOwner;
     property UserData: TObject read FUserData write FUserData;
@@ -224,6 +250,7 @@ type
     FFilename: string;
     FPackagesXmlDir: string;
     FTargetSymbol: string;
+    FTargetPlatform: TCompileTargetPlatform;
 
     function GetCount: Integer;
     function GetPackages(Index: Integer): TBpgPackageTarget;
@@ -237,7 +264,7 @@ type
     function GetPackageTargetClass: TBpgPackageTargetClass; virtual;
     procedure LoadFile;
   public
-    constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string);
+    constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
       { Set AFilename to '' if you want a PackageGroup instance that does not
         own the TBpgPackageTarget objects. }
     destructor Destroy; override;
@@ -271,6 +298,8 @@ type
     function GetRequires(Index: Integer): TRequiredPackage;
     function GetContainCount: Integer;
     function GetContains(Index: Integer): TContainedFile;
+    function GetPlatformCount: Integer;
+    function GetPlatforms(Index: Integer): TPlatform;
     function GetBplName: string;
     function GetDescription: string;
     function GetDisplayName: string;
@@ -290,6 +319,8 @@ type
     property Requires[Index: Integer]: TRequiredPackage read GetRequires;
     property ContainCount: Integer read GetContainCount;
     property Contains[Index: Integer]: TContainedFile read GetContains;
+    property PlatformCount: Integer read GetPlatformCount;
+    property Platforms[Index: Integer]: TPlatform read GetPlatforms;
     property ProjectType: TProjectType read GetProjectType;
 
     property XmlInfo: TPackageXmlInfo read GetXmlInfo;
@@ -370,6 +401,8 @@ function ProjectTypeToProjectName(ProjectType: TProjectType): string;
   // Clear the cache of XML package files
   // </summary>
 procedure ClearXmlFileCache;
+
+function PlatformNameToPlatformType(const APlatformName: string): TPlatformType;
 
 const
   C6PFlagsKnownPackageProperty           = 'C6PFlags';
@@ -713,6 +746,17 @@ begin
   end;
 end;
 
+function PlatformNameToPlatformType(const APlatformName: string): TPlatformType;
+begin
+  if APlatformName = 'Win32' then
+    Result := pftWin32
+  else
+  if APlatformName = 'Win64' then
+    Result := pftWin64
+  else
+    raise Exception.Create('Invalid platform type');
+end;
+
 { TPackageXmlInfoItem }
 
 constructor TPackageXmlInfoItem.Create(const AName, ATargets, ACondition: string);
@@ -769,6 +813,19 @@ begin
   Result := IsIncluded(TargetSymbol);
 end;
 
+{ TPlatform }
+
+constructor TPlatform.Create(const AName, ATargets, ACondition: string);
+begin
+  inherited Create(AName, ATargets, ACondition);
+  FPlatformType := PlatformNameToPlatformType(AName);
+end;
+
+function TPlatform.IsSupportedByTarget(const TargetSymbol: string): Boolean;
+begin
+  Result := IsIncluded(TargetSymbol);
+end;
+
 { TPackageXmlInfo }
 
 constructor TPackageXmlInfo.Create(const AFilename: string);
@@ -778,6 +835,7 @@ begin
   FName := ChangeFileExt(ExtractFileName(FFilename), '');
   FRequires := TObjectList.Create;
   FContains := TObjectList.Create;
+  FPlatforms := TObjectList.Create;
   // FProjectType is updated in LoadFromFile
   try
     if (Length(Name) > 1) and (Name[Length(Name)-1] = '-') then  // do not localize
@@ -800,6 +858,7 @@ begin
   FProperties.Free;
   FRequires.Free;
   FContains.Free;
+  FPlatforms.Free;
   inherited Destroy;
 end;
 
@@ -848,6 +907,25 @@ begin
   Result := FProperties.Values[ImageBaseKnownPackageProperty];
 end;
 
+function TPackageXmlInfo.GetPlatformCount: Integer;
+begin
+  Result := FPlatforms.Count;
+end;
+
+function TPackageXmlInfo.GetPlatforms(Index: Integer): TPlatform;
+begin
+  Result := TPlatform(FPlatforms[Index]);
+end;
+
+function TPackageXmlInfo.GetPlatformTypes: TPlatformTypes;
+var
+  I: Integer;
+begin
+  Result := [];
+  for I := 0 to PlatformCount - 1 do
+    Include(Result, Platforms[I].PlatformType);
+end;
+
 function TPackageXmlInfo.GetReleaseNumber: string;
 begin
   Result := FProperties.Values[ReleaseNumberKnownPackageProperty];
@@ -877,7 +955,7 @@ procedure TPackageXmlInfo.LoadFromFile(const Filename: string);
 var
   i: Integer;
   RequirePkgName, RequireTarget,
-  ContainsFileName, FormName, Condition: string;
+  ContainsFileName, FormName, Condition, PlatformName: string;
   xml: TJclSimpleXML;
   RootNode : TJclSimpleXmlElemClassic;
   PropertiesNode, PropertyNode: TJclSimpleXmlElem;
@@ -885,10 +963,12 @@ var
   PackageNode: TJclSimpleXmlElem;
   ContainsNode: TJclSimpleXmlElem;
   FileNode: TJclSimpleXmlElem;
+  PlatformsNode, PlatformNode: TJclSimpleXmlElem;
 begin
   FRequires.Clear;
   FRequiresDB := False;
   FContains.Clear;
+  FPlatforms.Clear;
 
   xml := TJclSimpleXML.Create;
   try
@@ -911,6 +991,7 @@ begin
 
     RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
     ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
+    PlatformsNode := RootNode.Items.ItemNamed['Platforms'];             // do not localize
 
     FDisplayName := RootNode.Properties.Value('Name');                  // do not localize
 
@@ -963,6 +1044,23 @@ begin
      // add new require item
       FContains.Add(TContainedFile.Create(ContainsFileName, RequireTarget, FormName, Condition));
     end;
+
+   // platforms
+    if Assigned(PlatformsNode) then
+      for I := 0 to PlatformsNode.Items.Count - 1 do
+      begin
+        PlatformNode := PlatformsNode.Items[I];
+        PlatformName := PlatformNode.Properties.ItemNamed['Name'].Value;  // do not localize
+
+        RequireTarget := PlatformNode.Properties.Value('Targets');        // do not localize
+        if RequireTarget = '' then
+          RequireTarget := 'all';                                         // do not localize
+
+        Condition := PlatformNode.Properties.Value('Condition');          // do not localize
+
+       // add new platform item
+        FPlatforms.Add(TPlatform.Create(PlatformName, RequireTarget, Condition));
+      end;
   finally
     xml.Free;
   end;
@@ -970,7 +1068,7 @@ end;
 
 { TPackageGroup }
 
-constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string);
+constructor TPackageGroup.Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
 begin
   inherited Create;
 
@@ -979,6 +1077,7 @@ begin
     Delete(FPackagesXmlDir, Length(FPackagesXmlDir), 1);
 
   FTargetSymbol := ATargetSymbol;
+  FTargetPlatform := ATargetPlatform;
   FFilename := AFilename;
   FPackages := TObjectList.Create(Filename <> '');
   if Filename <> '' then
@@ -1000,7 +1099,11 @@ begin
   if FileExists(GenericPrefix + '-R.xml') or FileExists(GenericPrefix + '-D.xml') then // do not localize
   begin
     try
-      Result := GetPackageTargetClass.Create(Self, TargetName, SourceName)
+      Result := GetPackageTargetClass.Create(Self, TargetName, SourceName);
+
+      // IDE is only Win32 so there can't be any design package if it's not Win32
+      if (FTargetPlatform <> ctpWin32) and ProjectTypeIsDesign(Result.Info.ProjectType) then
+        FreeAndNil(Result);
     except
       on E: EFOpenError do
         FreeAndNil(Result);
@@ -1268,6 +1371,7 @@ begin
   FInfo := TPackageInfo.Create(Self, AOwner.PackagesXmlDir);
   FRequireList := TList.Create;
   FContaineList := TList.Create;
+  FPlatformList := TList.Create;
 end;
 
 destructor TBpgPackageTarget.Destroy;
@@ -1276,6 +1380,7 @@ begin
     FUserData.Free;
   FRequireList.Free;
   FContaineList.Free;
+  FPlatformList.Free;
   FInfo.Free;
   inherited Destroy;
 end;
@@ -1300,6 +1405,18 @@ end;
 procedure TBpgPackageTarget.GetDependencies;
 begin
   // do nothing by default
+end;
+
+function TBpgPackageTarget.GetPlatformCount: Integer;
+begin
+  UpdatePlatformList;
+  Result := FPlatformList.Count;
+end;
+
+function TBpgPackageTarget.GetPlatforms(Index: Integer): TPlatform;
+begin
+  UpdatePlatformList;
+  Result := TPlatform(FPlatformList[Index]);
 end;
 
 function TBpgPackageTarget.GetRelSourceDir: string;
@@ -1334,6 +1451,16 @@ begin
       if Info.Contains[i].IsUsedByTarget(Owner.TargetSymbol) then
         FContaineList.Add(Info.Contains[i]);
   end;
+end;
+
+procedure TBpgPackageTarget.UpdatePlatformList;
+var
+  I: Integer;
+begin
+  if FPlatformList.Count = 0 then
+    for I := 0 to Info. PlatformCount - 1 do
+      if Info.Platforms[I].IsSupportedByTarget(Owner.TargetSymbol) then
+        FPlatformList.Add(Info.Platforms[I]);
 end;
 
 procedure TBpgPackageTarget.UpdateRequireList;
@@ -1390,6 +1517,16 @@ end;
 function TPackageInfo.GetDisplayName: string;
 begin
   Result := XmlInfo.DisplayName;
+end;
+
+function TPackageInfo.GetPlatformCount: Integer;
+begin
+  Result := XmlInfo.PlatformCount;
+end;
+
+function TPackageInfo.GetPlatforms(Index: Integer): TPlatform;
+begin
+  Result := XmlInfo.Platforms[Index];
 end;
 
 function TPackageInfo.GetProjectType: TProjectType;

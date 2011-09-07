@@ -40,6 +40,9 @@ uses
 
 {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBOdacPasswordDialog = class(TJvBaseDBPasswordDialog)
   private
     function GetSession: TCustomDAConnection;

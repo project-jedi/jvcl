@@ -392,6 +392,9 @@ type
   end;
 
   { a complete bar }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvExplorerBar = class(TScrollingWinControl)
   private
     FAnimStep: Integer;

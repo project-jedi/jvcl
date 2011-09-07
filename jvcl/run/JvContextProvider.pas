@@ -62,6 +62,9 @@ type
     function GetContext: IJvDataContext;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvContextProvider = class(TJvCustomDataProvider, IJvDataContextProvider)
     function IJvDataContextProvider.Get_ClientProvider = GetProviderIntf;
     procedure IJvDataContextProvider.Set_ClientProvider = SetProviderIntf;

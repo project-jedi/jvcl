@@ -140,6 +140,9 @@ type
     property Height default 35;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScrollingWindow = class(TJvCustomScrollPanel)
   public
     constructor Create(AComponent: TComponent); override;

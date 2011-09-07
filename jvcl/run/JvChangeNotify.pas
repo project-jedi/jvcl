@@ -125,6 +125,9 @@ type
     property OnChangeNotify: TJvThreadNotifyEvent read FNotify write FNotify;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvChangeNotify = class(TJvComponent)
   private
     FThread: TJvChangeThread;

@@ -40,6 +40,9 @@ uses
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScrollText = class(TJvCustomControl)
   private
     FText: TJvStaticText;

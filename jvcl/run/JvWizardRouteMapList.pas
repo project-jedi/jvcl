@@ -47,6 +47,9 @@ type
     ARect: TRect; MousePos: TPoint; PageIndex: Integer; var DefaultDraw: Boolean) of object;
   TRouteMapListItemText = (itNone, itCaption, itTitle, itSubtitle);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWizardRouteMapList = class(TJvWizardRouteMapControl)
   private
     FItemHeight: Integer;
@@ -378,8 +381,7 @@ begin
         ACanvas.Pen.Color := HotTrackFont.Color;
         ACanvas.Pen.Width := HotTrackBorder;
         if Rounded then
-          with AOrigRect do
-            ACanvas.RoundRect(Left, Top, Right, Bottom, Curvature, Curvature)
+          ACanvas.RoundRect(AOrigRect.Left, AOrigRect.Top, AOrigRect.Right, AOrigRect.Bottom, Curvature, Curvature)
         else
           ACanvas.Rectangle(AOrigRect);
         ACanvas.Brush.Style := bsSolid;

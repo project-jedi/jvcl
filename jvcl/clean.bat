@@ -38,6 +38,12 @@ del /S lib\d14\debug\*.dcp lib\d14\debug\*.bpl lib\d14\debug\*.dfm lib\d14\debug
 del /S lib\d15\*.dcp lib\d15\*.bpl lib\d15\*.dfm lib\d15\*.obj lib\d15\*.bpi lib\d15\*.lib >NUL
 del /S lib\d15\debug\*.dcp lib\d15\debug\*.bpl lib\d15\debug\*.dfm lib\d15\debug\*.obj lib\d15\debug\*.bpi lib\d15\debug\*.lib >NUL
 
+del /S lib\d16\win32\*.dcp lib\d16\win32\*.bpl lib\d16\win32\*.dfm lib\d16\win32\*.obj lib\d16\win32\*.bpi lib\d16\win32\*.lib >NUL
+del /S lib\d16\win32\debug\*.dcp lib\d16\win32\debug\*.bpl lib\d16\win32\debug\*.dfm lib\d16\win32\debug\*.obj lib\d16\win32\debug\*.bpi lib\d16\win32\debug\*.lib >NUL
+
+del /S lib\d16\win64\*.dcp lib\d16\win64\*.bpl lib\d16\win64\*.dfm lib\d16\win64\*.obj lib\d16\win64\*.bpi lib\d16\win64\*.lib >NUL
+del /S lib\d16\win64\debug\*.dcp lib\d16\win64\debug\*.bpl lib\d16\win64\debug\*.dfm lib\d16\win64\debug\*.obj lib\d16\win64\debug\*.bpi lib\d16\win64\debug\*.lib >NUL
+
 del /S run\*.hpp >NUL
 del /S design\*.hpp >NUL
 del /S common\*.hpp >NUL

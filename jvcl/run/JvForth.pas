@@ -173,6 +173,9 @@ type
   TVStack = array [0..StackMax] of Variant;
   TPStack = array [0..StackMax] of TToken;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvForthScript = class(TJvComponent)
   private
     FScript: string;

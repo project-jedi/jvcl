@@ -44,6 +44,9 @@ type
     mbHor, mbTop, mbBottom, mbDiamond, mbWaste, mbRound,
     mbRound2, mbSplitRound, mbSplitWaste);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPaintFX = class(TComponent)
   public
     class procedure Solarize(const Src: TBitmap; var Dst: TBitmap; Amount: Integer);
@@ -1124,11 +1127,11 @@ type
 var
   Top,
     Bottom,
-    Left,
-    Right,
+//    Left,
+//    Right,
     eww, nsw,
     fx, fy,
-    wx, wy: Single;
+//    wx, wy: Single;
   cAngle,
     sAngle: Double;
   xDiff,
@@ -1694,7 +1697,7 @@ var
   RGB: TRGB;
   Color: TColorRGB;
   SourceLine, DestLine: PRGBList;
-  SourcePixel, DestPixel: PColorRGB;
+  (*SourcePixel, *)DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
 
@@ -2000,7 +2003,7 @@ begin
         else
           Color.B := Round(RGB.B);
         DestPixel^ := Color;
-        Inc(Integer(DestPixel), DestDelta);
+        Inc({$IFDEF RTL230_UP}INT_PTR{$ELSE}Integer{$ENDIF RTL230_UP}(DestPixel), DestDelta);
       end;
       Inc(SourceLine, 1);
       Inc(DestLine, 1);

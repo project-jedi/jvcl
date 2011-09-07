@@ -332,6 +332,9 @@ type
 
   // the main component. Just drop it on a form or a frame, set the driver property, set previewing to
   // True and you should see the video coming through (even in design mode !)
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAVICapture = class(TWinControl)
   protected
     FCaptureSettings: TJvCaptureSettings; // the capture settings

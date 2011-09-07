@@ -40,12 +40,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Graphics, StdCtrls,
+  Windows, Messages, Graphics, StdCtrls, Classes,
   JvExStdCtrls;
 
 type
   TPositiveInt = 1..MaxInt;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTextListBox = class(TJvExCustomListBox)
   private
     FMaxWidth: Integer;

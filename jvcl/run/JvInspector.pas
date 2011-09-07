@@ -535,6 +535,9 @@ type
     property ActivePainter: TJvInspectorPainter read GetActivePainter;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvInspector = class(TJvCustomInspector)
   public
     property LockCount;
@@ -723,6 +726,9 @@ type
     property CategoryColor default clBtnFace;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvInspectorBorlandPainter = class(TJvInspectorBorlandNETBasePainter)
   private
     FDividerLightColor: TColor;
@@ -744,6 +750,9 @@ type
     property OnSetItemColors: TOnJvInspectorSetItemColors read FOnSetItemColors write FOnSetItemColors;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvInspectorDotNETPainter = class(TJvInspectorBorlandNETBasePainter)
   private
     FHideSelectColor: TColor;
@@ -6299,7 +6308,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, LPARAM(MousePos));
+        SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, {$IFDEF RTL230_UP}PointToLParam{$ELSE}LPARAM{$ENDIF RTL230_UP}(MousePos));
         Exit;
       end;
     end;
@@ -6819,7 +6828,7 @@ begin
         if Pressed then
           BFlags := BF_FLAT;
         {$IFDEF JVCLThemesEnabled}
-        if ThemeServices.ThemesEnabled then
+        if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
           DrawThemedButtonFace(Inspector, ACanvas, R, 0, bsNew, False, Pressed, False, False)
         else
         {$ENDIF JVCLThemesEnabled}
@@ -8933,8 +8942,7 @@ begin
     { Clip all outside of the item rectangle }
     IntersectRect(ClipRect, ARect, Rects[iprValue]);
     FCheckRect := ClipRect;
-    with ClipRect do
-      Rgn := CreateRectRgn(Left, Top, Right, Bottom);
+    Rgn := CreateRectRgn(ClipRect.Left, ClipRect.Top, ClipRect.Right, ClipRect.Bottom);
     SelectClipRgn(ACanvas.Handle, Rgn);
     DeleteObject(Rgn);
     try

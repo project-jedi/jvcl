@@ -40,9 +40,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils,
-  Forms, Graphics,
-  Classes;
+  Types, SysUtils, Classes, Forms, Graphics;
 
 type
   TPluginMessageEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;

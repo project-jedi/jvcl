@@ -38,6 +38,9 @@ uses
   JvExComCtrls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCoolBar = class(TJvExCoolBar)
   public
     constructor Create(AOwner: TComponent); override;

@@ -44,6 +44,9 @@ type
   TJvBevelShape = (bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine,
     bsRightLine, bsSpacer, bsCustomShape);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvBevel = class(TJvExBevel)
   private
     FStyle: TJvBevelStyle;

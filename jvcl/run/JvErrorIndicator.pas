@@ -111,6 +111,9 @@ type
     property Height default 16;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvErrorIndicator = class(TJvComponent, IUnknown, IJvErrorIndicator)
   private
     FUpdateCount: Integer;

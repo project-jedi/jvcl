@@ -1921,6 +1921,7 @@ begin
   c2D := c2T - c2F;
   c3D := c3T - c3F;
 
+  OldBMP := 0;
   if BufferedDraw then
   begin
     BufferDC := CreateCompatibleDC(DC);

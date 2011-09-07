@@ -34,15 +34,21 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
+  Windows, Classes,
   JvBaseDlg;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvConnectNetwork = class(TJvCommonDialog)
   published
     function Execute: Boolean; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDisconnectNetwork = class(TJvCommonDialog)
   published
     function Execute: Boolean; override;

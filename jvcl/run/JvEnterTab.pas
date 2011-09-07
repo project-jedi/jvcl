@@ -41,6 +41,9 @@ uses
 type
   TJvEnterAsTabEvent = procedure (Sender: TObject; AControl: TWinControl; var Handled: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvEnterAsTab = class(TJvComponent)
   private
     FEnterAsTab: Boolean;

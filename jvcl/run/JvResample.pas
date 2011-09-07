@@ -106,7 +106,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Graphics, SysUtils, Classes;
+  Windows, Graphics, SysUtils, Classes;
 
 type
   // Type of a filter for use with Stretch()
@@ -358,7 +358,7 @@ var
   Rgb: TRGB;
   Color: TColorRGB;
   SourceLine, DestLine: PRGBList;
-  SourcePixel, DestPixel: PColorRGB;
+  (*SourcePixel, *)DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
 
@@ -654,7 +654,7 @@ begin
         else
           Color.B := Round(Rgb.B);
         DestPixel^ := Color;
-        Inc(Integer(DestPixel), DestDelta);
+        Inc({$IFDEF RTL230_UP}INT_PTR{$ELSE}Integer{$ENDIF RTL230_UP}(DestPixel), DestDelta);
       end;
       Inc(SourceLine, 1);
       Inc(DestLine, 1);

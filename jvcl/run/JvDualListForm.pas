@@ -32,7 +32,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
+  Windows, Types, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   JvListBox, JvCtrls,
   JvComponent, JvExStdCtrls;
 

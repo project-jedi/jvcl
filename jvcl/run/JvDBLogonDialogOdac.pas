@@ -74,6 +74,9 @@ type
     property ShowOracleHome: Boolean read FShowOracleHome write FShowOracleHome default False;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBOdacLogonDialog = class(TJvBaseDBOracleLogonDialog)
   private
     FOraSession: TOraSession;

@@ -37,6 +37,9 @@ uses
   JvImageDrawThread, JVCLVer, JvExExtCtrls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageRotate = class(TJvExImage)
   private
     FRotated: TBitmap;

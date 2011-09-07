@@ -36,11 +36,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
-  {$IFDEF MSWINDOWS}
-  CommCtrl,
-  {$ENDIF MSWINDOWS}
-  SysUtils, Classes, Graphics, Controls, ImgList;
+  Windows, CommCtrl, SysUtils, Classes, Graphics, Controls, ImgList;
 
 type
   TJvImageListMode = (imClassic, imPicture, imResourceIds, imItemList);
@@ -93,6 +89,9 @@ type
     property Items[AIndex: Integer]: TJvImageListItem read GetItem write SetItem; default;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageList = class(TCustomImageList)
   private
     FUpdateLock: Integer;
@@ -103,7 +102,9 @@ type
     FTransparentColor: TColor;
     FPicture: TPicture;
     FFileName: TFileName;
+    {$IFNDEF COMPILER12_UP}
     FPixelFormat: TPixelFormat;
+    {$ENDIF ~COMPILER12_UP}
     FResourceIds: TStrings;
     FMode: TJvImageListMode;
 
@@ -116,6 +117,7 @@ type
     procedure SetInternalHandle(Value: THandle);
     procedure SetResourceIds(Value: TStrings);
     procedure SetMode(const Value: TJvImageListMode);
+    function GetPixelFormat: TPixelFormat;
 
     procedure SlicePictureToImageList;
     procedure ResourceIdsToImageList;
@@ -128,8 +130,10 @@ type
     procedure Change; override;
     procedure DataChanged(Sender: TObject); virtual;
     procedure UpdateImageList;
-    procedure HandleNeeded; virtual;
-    procedure CreateImageList; virtual;
+    {$IFNDEF COMPILER12_UP}
+    procedure HandleNeeded;
+    procedure CreateImageList;
+    {$ENDIF ~COMPILER12_UP}
     procedure Loaded; override;
     property FHandle: THandle write SetInternalHandle;
   public
@@ -179,7 +183,7 @@ type
       //   imResourceIds: load the images by ResourceIds
       //   imItemList: the AddItem, DeleteItem, ClearItems and GetItemInfoStr methods are available
 
-    property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
+    property PixelFormat: TPixelFormat read GetPixelFormat write SetPixelFormat default pfDevice;
       // PixelFormat is the color resolution of the image list. pf1bit and
       // pfCustom are not supported.
       // WARNING: pf32bit works under Windows XP only.
@@ -244,10 +248,8 @@ const
 implementation
 
 uses
-  Consts, TypInfo,
-  ActiveX,
+  Consts, TypInfo, ActiveX,
   JclSysUtils,
-  JvJCLUtils, // SameFileName() for Delphi 5
   JvJVCLUtils, JvResources;
 
 resourcestring
@@ -255,6 +257,7 @@ resourcestring
   //       hopefully ikMappedResourceBitmap will be supported soon
   RsENotSupportedItemKind = 'The item kind %s is not supported so far.';
 
+{$IFNDEF COMPILER12_UP} // Delphi 2009 introduced "property ColorDepth: TColorDepth"
 {------------------------------------------------------------------------------}
 { Here we inject a jump to our HandleNeededHook into the static
   TCustomImageList.HandleNeeded method. }
@@ -334,7 +337,7 @@ begin
         HandleNeededHookInstalled := True;
   end;
 end;
-
+{$ENDIF ~COMPILER12_UP}
 {------------------------------------------------------------------------------}
 
 function CreateImageListHandle(Width, Height: Integer; PixelFormat: TPixelFormat;
@@ -694,15 +697,19 @@ procedure TJvImageList.InitializeImageList;
 begin
   FModified := False;
 
+  {$IFNDEF COMPILER12_UP}
   if not (csDesigning in ComponentState) and not HandleNeededHookInstalled then
     InstallHandleNeededHook;
+  {$ENDIF ~COMPILER12_UP}
 
   FUpdateLock := 0;
 
   FMode := imPicture;
   FTransparentMode := tmColor;
   FTransparentColor := clFuchsia;
+  {$IFNDEF COMPILER12_UP}
   FPixelFormat := pfDevice;
+  {$ENDIF ~COMPILER12_UP}
 
   FFileName := '';
   FPicture := TPicture.Create;
@@ -735,7 +742,7 @@ begin
       // Do not assign FileName here.
       TransparentMode := ImageList.TransparentMode;
       TransparentColor := ImageList.TransparentColor;
-      PixelFormat := ImageList.FPixelFormat;
+      PixelFormat := ImageList.PixelFormat;
     end;
 
     inherited Assign(Source);
@@ -951,9 +958,20 @@ begin
 end;
 
 procedure TJvImageList.SetPixelFormat(const Value: TPixelFormat);
+{$IFDEF COMPILER12_UP}
+const
+  PixelFormatToColorDepth: array[TPixelFormat] of TColorDepth = (
+    cdDeviceDependent, cdDeviceDependent, cd4Bit, cd8Bit, cd16Bit, cd16Bit, cd24Bit, cd32Bit, cdDeviceDependent
+  );
+{$ELSE}
 var
   ImgList: TJvImageList;
+{$ENDIF COMPILER12_UP}
 begin
+  {$IFDEF COMPILER12_UP}
+  if not (Value in [pf1bit, pfCustom]) then
+    ColorDepth := PixelFormatToColorDepth[Value];
+  {$ELSE}
   if (Value <> FPixelFormat) and not (Value in [pf1bit, pfCustom]) then
   begin
     if HandleAllocated then
@@ -977,6 +995,22 @@ begin
     else
       FPixelFormat := Value;
   end;
+  {$ENDIF COMPILER12_UP}
+end;
+
+function TJvImageList.GetPixelFormat: TPixelFormat;
+{$IFDEF COMPILER12_UP}
+const
+  ColorDepthToPixelFormat: array[TColorDepth] of TPixelFormat = (
+    pfDevice, pfDevice, pf4bit, pf8bit, pf16bit, pf24bit, pf32bit
+  );
+{$ENDIF COMPILER12_UP}
+begin
+  {$IFDEF COMPILER12_UP}
+  Result := ColorDepthToPixelFormat[ColorDepth];
+  {$ELSE}
+  Result := FPixelFormat;
+  {$ENDIF COMPILER12_UP}
 end;
 
 procedure TJvImageList.SetItems(AItems: TJvImageListItems);
@@ -1081,6 +1115,7 @@ begin
   end;
 end;
 
+{$IFNDEF COMPILER12_UP}
 procedure TJvImageList.HandleNeeded;
 begin
   if not HandleAllocated then
@@ -1095,6 +1130,7 @@ begin
   if BkColor <> clNone then
     BkColor := BkColor;
 end;
+{$ENDIF ~COMPILER12_UP}
 
 procedure TJvImageList.DrawIndirect(ImageListDrawParams: TImageListDrawParams);
 begin
@@ -1197,7 +1233,9 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  {$IFNDEF COMPILER12_UP}
   UninstallHandleNeededHook;
+  {$ENDIF ~COMPILER12_UP}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}

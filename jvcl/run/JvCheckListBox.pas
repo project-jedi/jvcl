@@ -76,6 +76,9 @@ type
     property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked stored IsValueUncheckedStored;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCheckListBox = class(TJvExCheckListBox)
   private
     FHotTrack: Boolean;
@@ -234,7 +237,8 @@ procedure TJvCheckListBoxDataConnector.Popuplate;
 var
   IsChecked: TList;
   ListKeyName, KeyName: TDataFieldString;
-  I, Index: Integer;
+  I: Integer;
+  Index: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF};
 begin
   FMap.Clear;
   FRecNumMap.Clear;
@@ -310,7 +314,7 @@ end;
 
 procedure TJvCheckListBoxDataConnector.RecordChanged;
 var
-  Index: Integer;
+  Index: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF};
 begin
   if IsValid then
   begin

@@ -42,6 +42,9 @@ type
 
   TJvScrollBoxFillMode = (sfmTile, sfmStretch, sfmNone);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvScrollBox = class(TJvExScrollBox)
   private
     FHotTrack: Boolean;
@@ -69,7 +72,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure PaintWindow(DC: HDC); override;
     procedure Paint; virtual;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure PaintBackground;
   public
     constructor Create(AOwner: TComponent); override;
@@ -273,7 +276,7 @@ begin
   ControlState := ControlState - [csCustomPaint];
 end;
 
-function TJvScrollBox.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvScrollBox.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   Result := False;
   if Assigned(FOnEraseBackground) then

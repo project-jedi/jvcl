@@ -34,6 +34,9 @@ uses
   Windows, SysUtils, Classes, Graphics, JvTabBar;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTabBarXPPainter = class(TJvTabBarModernPainter)
   private
     FFixedTabSize: Integer;
@@ -66,7 +69,7 @@ procedure TJvTabBarXPPainter.DrawBackground(Canvas: TCanvas;
 var
   Details: TThemedElementDetails;
 begin
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     Details := ThemeServices.GetElementDetails(ttTabRoot);
     ThemeServices.DrawElement(Canvas.Handle, Details, R);
@@ -77,14 +80,14 @@ end;
 
 procedure TJvTabBarXPPainter.DrawDivider(Canvas: TCanvas; LeftTab: TJvTabBarItem; R: TRect);
 begin
-  if not ThemeServices.ThemesEnabled then
+  if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     inherited DrawDivider(Canvas, LeftTab, R);
 end;
 
 procedure TJvTabBarXPPainter.DrawMoveDivider(Canvas: TCanvas; Tab: TJvTabBarItem;
   MoveLeft: Boolean);
 begin
-  if not ThemeServices.ThemesEnabled then
+  if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     inherited DrawMoveDivider(Canvas, Tab, MoveLeft);
 end;
 
@@ -94,7 +97,7 @@ var
   TabDetails, ButtonDetails: TThemedElementDetails;
   CloseRect, TextRect: TRect;
 begin
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if Tab.Selected then
     begin
@@ -132,7 +135,11 @@ begin
     end
     else
       Dec(TextRect.Right, 3);
+    {$IFDEF COMPILER16_UP}
+    ThemeServices.DrawText(Canvas.Handle, TabDetails, Tab.Caption, TextRect, [tfSingleLine, tfVerticalCenter, tfWordEllipsis]);
+    {$ELSE}
     ThemeServices.DrawText(Canvas.Handle, TabDetails, Tab.Caption, TextRect, DT_SINGLELINE or DT_VCENTER or DT_WORD_ELLIPSIS, 0);
+    {$ENDIF COMPILER16_UP}
 
     if Tab.TabBar.CloseButton then
       ThemeServices.DrawElement(Canvas.Handle, ButtonDetails, CloseRect);
@@ -144,7 +151,7 @@ end;
 function TJvTabBarXPPainter.GetCloseRect(Canvas: TCanvas; Tab: TJvTabBarItem;
   R: TRect): TRect;
 begin
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     Result.Right := R.Right - 5;
     Result.Top := R.Top + ((R.Bottom div 2) - 8);
@@ -157,7 +164,7 @@ end;
 
 function TJvTabBarXPPainter.GetDividerWidth(Canvas: TCanvas; LeftTab: TJvTabBarItem): Integer;
 begin
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     Result := 1
   else
     Result := inherited GetDividerWidth(Canvas, LeftTab);
@@ -167,14 +174,14 @@ function TJvTabBarXPPainter.GetTabSize(Canvas: TCanvas; Tab: TJvTabBarItem): TSi
 begin
   if FixedTabSize > 0 then
   begin
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       Result.cx := FixedTabSize
     else
       Result.cx := Min(FixedTabSize + 40, Canvas.TextWidth(Tab.Caption) + 26);
   end
   else
   begin
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       Result.cx := Canvas.TextWidth(Tab.Caption) + 16;
       if (Tab.ImageIndex <> -1) and (Tab.GetImages <> nil) then

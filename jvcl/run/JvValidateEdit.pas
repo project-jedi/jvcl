@@ -248,6 +248,9 @@ type
     property ForceDecimalSeparatorInput: Boolean read FForceDecimalSeparatorInput write FForceDecimalSeparatorInput;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvValidateEdit = class(TJvCustomValidateEdit)
   published
     property AllowEmpty default False;

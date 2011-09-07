@@ -94,6 +94,16 @@ ALERT_jedi_inc_incompatible
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF DELPHI15}
 {-----------------------------------------------------------------------------}
+{$IFDEF DELPHI16}
+ {$IFDEF CPUX86}
+ {$I jvcld16win32.inc}
+ {$ENDIF CPUX86}
+ {$IFDEF CPUX64}
+ {$I jvcld16win64.inc}
+ {$ENDIF CPUX64}
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF DELPHI16}
+{-----------------------------------------------------------------------------}
 { C++Builder                                                                  }
 {-----------------------------------------------------------------------------}
 {$IFDEF BCB6}
@@ -125,6 +135,16 @@ ALERT_jedi_inc_incompatible
  {$I jvcld15.inc}   // same include file for BDS based C++
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF BCB15}
+{-----------------------------------------------------------------------------}
+{$IFDEF BCB16}
+ {$IFDEF CPUX86}
+ {$I jvcld16win32.inc} // same include file for BDS based C++
+ {$ENDIF CPUX86}
+ {$IFDEF CPUX64}
+ //there is no 64-bit C++Builder
+ {$ENDIF CPUX64}
+ {$DEFINE JVCL_CONFIGURED}
+{$ENDIF BCB16}
 
 {$ENDIF DEFAULT_JVCL_INC}
 {-----------------------------------------------------------------------------}

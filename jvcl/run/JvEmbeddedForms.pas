@@ -37,6 +37,9 @@ uses
   JvComponentBase, JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvEmbeddedFormLink = class(TJvComponent)
   public
     constructor Create(AOwner: TComponent); override;
@@ -44,6 +47,9 @@ type
 
   TJvEmbeddedPaintProcedure = procedure of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvEmbeddedFormPanel = class(TJvCustomControl)
   private
     FLink: TJvEmbeddedFormLink;
@@ -123,6 +129,9 @@ type
     property UseDockManager;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvEmbeddedInstanceFormPanel = class(TJvEmbeddedFormPanel)
   private
     FFormClass: TFormClass;

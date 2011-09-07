@@ -57,6 +57,9 @@ uses
 {$IFDEF JV_MIDAS}
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBRemoteLogin = class(TJvCustomLogin)
   private
     FRemoteServer: TCustomRemoteServer;

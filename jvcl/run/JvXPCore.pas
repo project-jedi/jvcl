@@ -255,6 +255,9 @@ type
     property UseStyleManager: Boolean read FUseStyleManager write SetUseStyleManager default True;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPStyleManager = class(TJvXPCustomComponent)
   private
     FControls: TList;

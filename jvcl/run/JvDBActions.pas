@@ -49,6 +49,9 @@ uses
 
 type
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDatabaseActionList = class(TJvActionBaseActionList)
   //The idea of the Action Classes is to work with any databased enabled control.
   //But not all of this controls already have a dataset or datasource control.

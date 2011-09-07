@@ -77,6 +77,9 @@ type
     property Mode: TRecentMode read FMode write FMode;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMRUManager = class(TJvComponent)
   private
     FStrings: TJvRecentStrings;

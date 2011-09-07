@@ -326,6 +326,9 @@ type
 
   TJvInsertMarkPosition = (impBefore, impAfter);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvListView = class(TJvExListView)
   private
     FAutoClipboardCopy: Boolean;
@@ -516,7 +519,7 @@ uses
 
 type
   // Mantis 980: New types for group/tile/insert mark handling
-  tagLVITEMA = packed record
+  tagLVITEMA = record
     mask: UINT;
     iItem: Integer;
     iSubItem: Integer;
@@ -525,7 +528,7 @@ type
     pszText: PAnsiChar;
     cchTextMax: Integer;
     iImage: Integer;
-    lParam: lParam;
+    lParam: LPARAM;
     iIndent: Integer;
     iGroupId: Integer;
     cColumns: UINT;
@@ -536,7 +539,7 @@ type
   TFNLVGROUPCOMPARE = function (Group1_ID: Integer; Group2_ID: Integer; pvData: Pointer): Integer; stdcall;
   PFNLVGROUPCOMPARE = ^TFNLVGROUPCOMPARE;
 
-  tagLVINSERTGROUPSORTED = packed record
+  tagLVINSERTGROUPSORTED = record
     pfnGroupCompare: PFNLVGROUPCOMPARE;
     pvData: Pointer;
     lvGroup: TLVGROUP;
@@ -544,7 +547,7 @@ type
   TLVINSERTGROUPSORTED = tagLVINSERTGROUPSORTED;
   PLVINSERTGROUPSORTED = ^TLVINSERTGROUPSORTED;
 
-  tagLVTILEVIEWINFO = packed record
+  tagLVTILEVIEWINFO = record
     cbSize: UINT;
     dwMask: DWORD;
     dwFlags: DWORD;
@@ -555,7 +558,7 @@ type
   TLVTILEVIEWINFO = tagLVTILEVIEWINFO;
   PLVTILEVIEWINFO = ^TLVTILEVIEWINFO;
 
-  tagLVTILEINFO = packed record
+  tagLVTILEINFO = record
     cbSize: UINT;
     iItem: Integer;
     cColumns: UINT;
@@ -564,7 +567,7 @@ type
   TLVTILEINFO = tagLVTILEINFO;
   PLVTILEINFO = ^TLVTILEINFO;
 
-  tagLVINSERTMARK = packed record
+  tagLVINSERTMARK = record
     cbSize: UINT;
     dwFlags: DWORD;
     iItem: Integer;
@@ -573,7 +576,7 @@ type
   TLVINSERTMARK = tagLVINSERTMARK;
   PLVINSERTMARK = ^TLVINSERTMARK;
 
-  tagLVGROUPMETRICS = packed record
+  tagLVGROUPMETRICS = record
     cbSize: UINT;
     mask: UINT;
     Left: UINT;
@@ -2312,7 +2315,7 @@ begin
   // This may happen at design time, especially when migrating
   // a project that uses an old version of TJvListView that did
   // not have the ExtendedColumns
-  if Msg.WParam < FExtendedColumns.Count then
+  if Msg.WParam < WPARAM(FExtendedColumns.Count) then
     FExtendedColumns.Delete(Msg.WParam);
 end;
 

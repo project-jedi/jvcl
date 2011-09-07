@@ -75,6 +75,7 @@ type
     function VersionedJVCLXmlBpl(const Name: string): string;
     procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
       DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
+    procedure AddPathsToIDE;
     function RegisterToIDE: Boolean;
     procedure GetPackageBinariesForDeletion(List: TStrings);
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);

@@ -189,6 +189,9 @@ type
     property LastId: Integer read FLastId;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvXMLDatabase = class(TJvComponent)
   private
     FTablesPath: string;

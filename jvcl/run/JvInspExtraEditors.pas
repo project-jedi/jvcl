@@ -264,7 +264,7 @@ end;
 procedure TJvInspectorAlignItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   NewAlign: TAlign;
-  ValueRect: TRect;
+  R: TRect;
 begin
   if Editing and (Shift = [ssLeft]) then
   begin
@@ -272,48 +272,45 @@ begin
       NewAlign := TAlign(Data.AsOrdinal)
     else
       NewAlign := alNone;
-    ValueRect := Rects[iprValueArea];
-    with ValueRect do
+    R := Rects[iprValueArea];
+    if PtInRect(Rect(R.Left + 5, R.Top, R.Right - 5, R.Top + 5), Point(X, Y)) then
     begin
-      if PtInRect(Rect(Left + 5, Top, Right - 5, Top + 5), Point(X, Y)) then
-      begin
-        if NewAlign = alTop then
-          NewAlign := alNone
-        else
-          NewAlign := alTop;
-      end
+      if NewAlign = alTop then
+        NewAlign := alNone
       else
-      if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
-      begin
-        if NewAlign = alRight then
-          NewAlign := alNone
-        else
-          NewAlign := alRight;
-      end
+        NewAlign := alTop;
+    end
+    else
+    if PtInRect(Rect(R.Right - 5, R.Top + 5, R.Right, R.Bottom - 5), Point(X, Y)) then
+    begin
+      if NewAlign = alRight then
+        NewAlign := alNone
       else
-      if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
-      begin
-        if NewAlign = alBottom then
-          NewAlign := alNone
-        else
-          NewAlign := alBottom;
-      end
+        NewAlign := alRight;
+    end
+    else
+    if PtInRect(Rect(R.Left + 5, R.Bottom - 5, R.Right - 5, R.Bottom), Point(X, Y)) then
+    begin
+      if NewAlign = alBottom then
+        NewAlign := alNone
       else
-      if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
-      begin
-        if NewAlign = alLeft then
-          NewAlign := alNone
-        else
-          NewAlign := alLeft;
-      end
+        NewAlign := alBottom;
+    end
+    else
+    if PtInRect(Rect(R.Left, R.Top + 5, R.Left + 5, R.Bottom - 5), Point(X, Y)) then
+    begin
+      if NewAlign = alLeft then
+        NewAlign := alNone
       else
-      if PtInRect(ValueRect, Point(X, Y)) then
-      begin
-        if NewAlign = alClient then
-          NewAlign := alNone
-        else
-          NewAlign := alClient;
-      end;
+        NewAlign := alLeft;
+    end
+    else
+    if PtInRect(R, Point(X, Y)) then
+    begin
+      if NewAlign = alClient then
+        NewAlign := alNone
+      else
+        NewAlign := alClient;
     end;
     Data.AsOrdinal := Ord(NewAlign);
   end;
@@ -493,16 +490,20 @@ end;
 
 procedure TJvInspectorColorItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
   var Height: Integer);
+var
+  R: TRect;
 begin
-  with Rects[iprValueArea] do
-    Height := Bottom - Top + 2;
+  R := Rects[iprValueArea];
+  Height := R.Bottom - R.Top + 2;
 end;
 
 procedure TJvInspectorColorItem.DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
   var Width: Integer);
+var
+  R: TRect;
 begin
-  with Rects[iprValueArea] do
-    Width := Width + Bottom - Top + 2;
+  R := Rects[iprValueArea];
+  Width := Width + R.Bottom - R.Top + 2;
 end;
 
 function TJvInspectorColorItem.GetDisplayValue: string;
@@ -700,7 +701,7 @@ procedure TJvInspectorAnchorsItem.MouseDown(Button: TMouseButton; Shift: TShiftS
 var
   NewAnchors: TAnchors;
   OrgAnchors: TAnchors;
-  ValueRect: TRect;
+  R: TRect;
 
   procedure Toggle(const Side: TAnchorKind);
   begin
@@ -718,28 +719,25 @@ begin
     else
       NewAnchors := [];
     OrgAnchors := NewAnchors;
-    ValueRect := Rects[iprValueArea];
-    with ValueRect do
+    R := Rects[iprValueArea];
+    if PtInRect(Rect(R.Left + 5, R.Top, R.Right - 5, R.Top + 5), Point(X, Y)) then
+      Toggle(akTop)
+    else
+    if PtInRect(Rect(R.Right - 5, R.Top + 5, R.Right, R.Bottom - 5), Point(X, Y)) then
+      Toggle(akRight)
+    else
+    if PtInRect(Rect(R.Left + 5, R.Bottom - 5, R.Right - 5, R.Bottom), Point(X, Y)) then
+      Toggle(akBottom)
+    else
+    if PtInRect(Rect(R.Left, R.Top + 5, R.Left + 5, R.Bottom - 5), Point(X, Y)) then
+      Toggle(akLeft)
+    else
+    if PtInRect(R, Point(X, Y)) then
     begin
-      if PtInRect(Rect(Left + 5, Top, Right - 5, Top + 5), Point(X, Y)) then
-        Toggle(akTop)
+      if NewAnchors <> [] then
+        NewAnchors := []
       else
-      if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
-        Toggle(akRight)
-      else
-      if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
-        Toggle(akBottom)
-      else
-      if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
-        Toggle(akLeft)
-      else
-      if PtInRect(ValueRect, Point(X, Y)) then
-      begin
-        if NewAnchors <> [] then
-          NewAnchors := []
-        else
-          NewAnchors := [akLeft, akTop, akRight, akBottom];
-      end;
+        NewAnchors := [akLeft, akTop, akRight, akBottom];
     end;
     if OrgAnchors <> NewAnchors then
       Data.SetAsSet(NewAnchors);
@@ -875,16 +873,20 @@ end;
 
 procedure TJvInspectorTImageIndexItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
   var Height: Integer);
+var
+  R: TRect;
 begin
-  with Rects[iprValueArea] do
-    Height := Bottom - Top + 2;
+  R := Rects[iprValueArea];
+  Height := R.Bottom - R.Top + 2;
 end;
 
 procedure TJvInspectorTImageIndexItem.DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
   var Width: Integer);
+var
+  R: TRect;
 begin
-  with Rects[iprValueArea] do
-    Width := Width + Bottom - Top + 2;
+  R := Rects[iprValueArea];
+    Width := Width + R.Bottom - R.Top + 2;
 end;
 
 function TJvInspectorTImageIndexItem.GetDisplayValue: string;

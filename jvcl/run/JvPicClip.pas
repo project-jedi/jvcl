@@ -38,6 +38,9 @@ uses
 type
   TJvCellRange = 1..MaxInt;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPicClip = class(TJvComponent)
   private
     FPicture: TPicture;

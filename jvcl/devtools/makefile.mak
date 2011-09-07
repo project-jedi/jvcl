@@ -144,7 +144,7 @@ pg.exe: PackagesGenerator\pg.dpr \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\FileUtils.pas \
 		PackagesGenerator\GenerateUtils.pas
-  @$(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile >NUL
+  REM $(MAKE) -DCFG=PackagesGenerator\pg.cfg configfile
   @cd PackagesGenerator
   $(DCCex) pg.dpr
   -@IF EXIST pg.cfg  del /q pg.cfg >NUL

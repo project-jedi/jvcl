@@ -713,9 +713,16 @@ end;
 { procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle; var APalette: HPALETTE); }
 
 procedure TGraphic_SaveToClipboardFormat(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  AFormat: Word;
+  AData: THandle;
+  APalette: HPALETTE;
 begin
-  TGraphic(Args.Obj).SaveToClipboardFormat(Word(TVarData(Args.Values[0]).VSmallInt),
-    THandle(TVarData(Args.Values[1]).VInteger), HPALETTE(TVarData(Args.Values[2]).VInteger));
+  AFormat := Word(TVarData(Args.Values[0]).VSmallInt);
+  AData := THandle(TVarData(Args.Values[1]).VInteger);
+  APalette := HPALETTE(TVarData(Args.Values[2]).VInteger);
+
+  TGraphic(Args.Obj).SaveToClipboardFormat(AFormat, AData, APalette);
 end;
 
 
@@ -852,9 +859,16 @@ end;
 { procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle; var APalette: HPALETTE); }
 
 procedure TPicture_SaveToClipboardFormat(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  AFormat: Word;
+  AData: THandle;
+  APalette: HPALETTE;
 begin
-  TPicture(Args.Obj).SaveToClipboardFormat(Word(TVarData(Args.Values[0]).VSmallInt),
-    THandle(TVarData(Args.Values[1]).VInteger), HPALETTE(TVarData(Args.Values[2]).VInteger));
+  AFormat := Word(TVarData(Args.Values[0]).VSmallInt);
+  AData := THandle(TVarData(Args.Values[1]).VInteger);
+  APalette := HPALETTE(TVarData(Args.Values[2]).VInteger);
+
+  TPicture(Args.Obj).SaveToClipboardFormat(AFormat, AData, APalette);
 end;
 
 { function SupportsClipboardFormat(AFormat: Word): Boolean; }
@@ -1016,9 +1030,16 @@ end;
 { procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle; var APalette: HPALETTE); }
 
 procedure TMetafile_SaveToClipboardFormat(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  AFormat: Word;
+  AData: THandle;
+  APalette: HPALETTE;
 begin
-  TMetafile(Args.Obj).SaveToClipboardFormat(Word(TVarData(Args.Values[0]).VSmallInt),
-    THandle(TVarData(Args.Values[1]).VInteger), HPALETTE(TVarData(Args.Values[2]).VInteger));
+  AFormat := Word(TVarData(Args.Values[0]).VSmallInt);
+  AData := THandle(TVarData(Args.Values[1]).VInteger);
+  APalette := HPALETTE(TVarData(Args.Values[2]).VInteger);
+
+  TMetafile(Args.Obj).SaveToClipboardFormat(AFormat, AData, APalette);
 end;
 
 { procedure Assign(Source: TPersistent); }
@@ -1219,9 +1240,16 @@ end;
 { procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); }
 
 procedure TBitmap_SaveToClipboardFormat(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  AFormat: Word;
+  AData: THandle;
+  APalette: HPALETTE;
 begin
-  TBitmap(Args.Obj).SaveToClipboardFormat(Word(TVarData(Args.Values[0]).VSmallInt),
-    THandle(TVarData(Args.Values[1]).VInteger), HPALETTE(TVarData(Args.Values[2]).VInteger));
+  AFormat := Word(TVarData(Args.Values[0]).VSmallInt);
+  AData := THandle(TVarData(Args.Values[1]).VInteger);
+  APalette := HPALETTE(TVarData(Args.Values[2]).VInteger);
+
+  TBitmap(Args.Obj).SaveToClipboardFormat(AFormat, AData, APalette);
 end;
 
 

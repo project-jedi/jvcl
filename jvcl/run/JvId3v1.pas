@@ -47,6 +47,9 @@ type
     Genre: Byte;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvID3v1 = class(TJvComponent)
   private
     FSongName: AnsiString;

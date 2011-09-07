@@ -47,6 +47,9 @@ uses
 type
   TOnNewMessage = procedure(Sender: TObject; MessageText: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMailSlotServer = class(TJvComponent)
   private
     FMailSlotName: string;
@@ -77,6 +80,9 @@ type
     property OnError: TNotifyEvent read FOnError write FOnError;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMailSlotClient = class(TJvComponent)
   private
     FMailSlotName: string;

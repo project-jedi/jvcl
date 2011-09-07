@@ -15,7 +15,7 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvWizardEditorForm.pas" Targets="all" Formname="JvWizardPageListEditor" Condition=""/>
-    <File Name="..\..\design\JvWizardsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvWizardEditorForm.pas" Targets="all_win32" Formname="JvWizardPageListEditor" Condition=""/>
+    <File Name="..\..\design\JvWizardsReg.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

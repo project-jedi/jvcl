@@ -44,6 +44,9 @@ type
   TNotifyChangeEventLog = class;
   TJvNTEventLogRecord = class;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNTEventLog = class(TJvComponent)
   private
     FLogHandle: THandle;
@@ -153,7 +156,7 @@ const
 
 type
   PEventLogRecord = ^TEventLogRecord;
-  TEventLogRecord = packed record
+  TEventLogRecord = record
     Length: DWORD; // Length of full record
     Reserved: DWORD; // Used by the service
     RecordNumber: DWORD; // Absolute record number

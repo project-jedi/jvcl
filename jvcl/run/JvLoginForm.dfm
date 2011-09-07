@@ -142,7 +142,6 @@ object JvLoginForm: TJvLoginForm
     Width = 169
     Height = 21
     Style = csDropDownList
-    ItemHeight = 13
     Sorted = True
     TabOrder = 2
   end

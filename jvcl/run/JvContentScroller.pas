@@ -43,6 +43,9 @@ type
   TJvContentScrollDirection = (sdUp, sdDown, sdLeft, sdRight);
   TJvScrollAmount = 1..MaxInt;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvContentScroller = class(TJvCustomPanel)
   private
     FTimer: TTimer;

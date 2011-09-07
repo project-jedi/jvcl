@@ -42,6 +42,9 @@ uses
   JvBaseDBThreadedDataset;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvADOQuery = class(TADOQuery, IJvThreadedDatasetInterface)
     procedure BreakExecution;
     procedure BringThreadDialogToFront;
@@ -109,6 +112,9 @@ type
   end;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvADODataSet = class(TADODataSet, IJvThreadedDatasetInterface)
     procedure BreakExecution;
     procedure BringThreadDialogToFront;

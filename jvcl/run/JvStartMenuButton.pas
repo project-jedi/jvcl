@@ -45,6 +45,9 @@ const
   smAllUsers = smCommon;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvStartMenuButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
@@ -88,21 +91,18 @@ uses
 
 constructor TJvStartMenuButton.Create(AOwner: TComponent);
 var
-  It: TMenuItem;
+  MenuItem: TMenuItem;
 begin
   inherited Create(AOwner);
   FDirs := TJvSystemFolders.Create;
   FOptions := [smCurrentUser..smAllUsers];
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
-  It := TMenuItem.Create(FPopup);
-  with It do
-  begin
-    Enabled := False;
-    Caption := RsEmptyItem;
-    Tag := 1;
-  end;
-  FPopup.Items.Add(It);
+  MenuItem := TMenuItem.Create(FPopup);
+  MenuItem.Enabled := False;
+  MenuItem.Caption := RsEmptyItem;
+  MenuItem.Tag := 1;
+  FPopup.Items.Add(MenuItem);
   FPopup.OnPopup := PopupCreate;
 
   //Create Images
@@ -184,7 +184,7 @@ procedure TJvStartMenuButton.DynBuild(Item: TMenuItem; Directory: string);
 var
   Res, FolderIndex: Integer;
   SearchRec: TSearchRec;
-  It, It2: TMenuItem;
+  MenuItem, SubMenuItem: TMenuItem;
   First: Boolean;
   Bmp: TBitmap;
 
@@ -194,7 +194,7 @@ var
   begin
     SHGetFileInfo(PChar(APath), 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON or SHGFI_SMALLICON);
     Result := IconToBitmap2(FileInfo.hIcon, 16, clMenu);
-//  Result := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(It.Hint), w),16,clMenu);
+//  Result := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(MenuItem.Hint), w),16,clMenu);
   end;
 
 begin
@@ -212,32 +212,29 @@ begin
         Item.Items[0].Visible := False;
       if (SearchRec.Attr and faDirectory) = faDirectory then
       begin
-        It := TMenuItem.Create(Item);
-        It.Caption := SearchRec.Name;
-        It.Hint := Directory + SearchRec.Name;
-        It.OnClick := DirectoryClick;
-        It.ImageIndex := 0;
-        Item.Insert(FolderIndex, It);
+        MenuItem := TMenuItem.Create(Item);
+        MenuItem.Caption := SearchRec.Name;
+        MenuItem.Hint := Directory + SearchRec.Name;
+        MenuItem.OnClick := DirectoryClick;
+        MenuItem.ImageIndex := 0;
+        Item.Insert(FolderIndex, MenuItem);
         Inc(FolderIndex);
-        It2 := TMenuItem.Create(It);
-        with It2 do
-        begin
-          Caption := RsEmptyItem;
-          Enabled := False;
-          Tag := 1;
-        end;
-        It.Add(It2);
+        SubMenuItem := TMenuItem.Create(MenuItem);
+        SubMenuItem.Caption := RsEmptyItem;
+        SubMenuItem.Enabled := False;
+        SubMenuItem.Tag := 1;
+        MenuItem.Add(SubMenuItem);
       end
       else
       begin
-        It := TMenuItem.Create(Item);
-        It.Caption := ChangeFileExt(SearchRec.Name, '');
-        It.OnClick := UrlClick;
-        It.Hint := Directory + SearchRec.Name;
-        Bmp := GetPathImage(It.Hint);
-        It.Bitmap.Assign(Bmp);
+        MenuItem := TMenuItem.Create(Item);
+        MenuItem.Caption := ChangeFileExt(SearchRec.Name, '');
+        MenuItem.OnClick := UrlClick;
+        MenuItem.Hint := Directory + SearchRec.Name;
+        Bmp := GetPathImage(MenuItem.Hint);
+        MenuItem.Bitmap.Assign(Bmp);
         Bmp.Free;
-        Item.Add(It);
+        Item.Add(MenuItem);
       end;
     end;
     Res := FindNext(SearchRec);

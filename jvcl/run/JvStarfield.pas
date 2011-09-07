@@ -45,6 +45,9 @@ type
     Speed: Integer;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvStarfield = class(TJvGraphicControl)
   private
     FStarfield: array of TJvStars;

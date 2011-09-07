@@ -44,6 +44,9 @@ type
     tfmLayeredWindow             // Use Mask (32bit with alpha channel) for the layered window (Windows 2000 or newer)
   );
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvTransparentForm = class(TJvComponent)
   private
     FMask: TBitmap;

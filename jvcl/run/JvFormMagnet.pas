@@ -37,6 +37,9 @@ uses
   JvComponentBase, MultiMon;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvFormMagnet = class(TJvComponent)
   private
     FForm: TForm;

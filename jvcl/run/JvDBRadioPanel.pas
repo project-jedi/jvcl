@@ -43,6 +43,9 @@ uses
   JvExtComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBRadioPanel = class(TJvCustomPanel)
   private
     FButtons: TList;
@@ -376,7 +379,7 @@ end;
 
 procedure TJvDBRadioPanel.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 procedure TJvDBRadioPanel.DataChange(Sender: TObject);

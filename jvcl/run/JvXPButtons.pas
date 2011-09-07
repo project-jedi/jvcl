@@ -110,6 +110,9 @@ type
     procedure Click; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPButton = class(TJvXPCustomButton)
   published
     // common properties.
@@ -219,6 +222,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPToolButton = class(TJvXPCustomToolButton)
   published
     property Enabled;

@@ -69,6 +69,9 @@ type
   TJvKeyFoundExEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string;
     TagInfo: TTagInfo; Attributes: TStrings) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvHTMLParser = class(TJvComponent)
   private
     FParser: TStringList;

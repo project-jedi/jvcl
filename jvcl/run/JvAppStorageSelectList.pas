@@ -72,6 +72,9 @@ type
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write FDynControlEngine;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAppStorageSelectListEasyDialog = class(TJvBaseAppStorageSelectListDialog)
   protected
     function DialogInstanceClass: TJvBaseAppStorageSelectListDialogInstanceClass; override;
@@ -132,6 +135,9 @@ type
     property SelectPath: string read FSelectPath write SetSelectPath;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAppStorageSelectList = class(TJvBaseAppStorageSelectList)
   published
     property AppStorage;

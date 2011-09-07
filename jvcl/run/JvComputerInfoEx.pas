@@ -163,9 +163,9 @@ type
 
   TWMDeviceChange = record
     Msg: Cardinal;
-    Event: UINT;
+    Event: {$IFDEF DELPHI64_TEMPORARY}WPARAM{$ELSE}UINT{$ENDIF};
     dwData: Pointer;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
   // TJvReadOnlyInfo doesn't have any writeable properties
@@ -1330,6 +1330,9 @@ type
   TJvSpoolerChangeEvent = procedure(Sender: TObject; JobStatus, JobsLeft: Integer) of object;
   TJvPaletteChangeEvent = procedure(Sender: TObject; Wnd: THandle) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvComputerInfoEx = class(TJvComponent)
   private
     FAPMInfo: TJvAPMInfo;
@@ -1717,12 +1720,12 @@ end;
 
 function TJvOSVersionInfo.GetWinProductID: string;
 begin
-  Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'ProductID', '');
+  Result := RegNativeReadStringDef(HKLM, REG_CURRENT_VERSION, 'ProductID', '');
 end;
 
 function TJvOSVersionInfo.GetWinProductName: string;
 begin
-  Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'ProductName', '');
+  Result := RegNativeReadStringDef(HKLM, REG_CURRENT_VERSION, 'ProductName', '');
 end;
 
 function TJvOSVersionInfo.GetWinServicePackVersion: DWORD;
@@ -2496,9 +2499,9 @@ function TJvIdentification.GetComment: string;
 begin
   if IsWinNT then
     // (p3) should return empty string on unsupported NT OS's
-    Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, cCommentRegPathNT, 'srvcomment', '')
+    Result := RegNativeReadStringDef(HKLM, cCommentRegPathNT, 'srvcomment', '')
   else
-    Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, cCommentRegPath, 'Comment', '')
+    Result := RegNativeReadStringDef(HKLM, cCommentRegPath, 'Comment', '')
 end;
 
 function TJvIdentification.GetDomainName: string;
@@ -2588,7 +2591,7 @@ function TJvIdentification.GetLocalWorkgroup: string;
 var
   LanInfo: PWkstaInfo100;
 begin
-  Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, 'System\CurrentControlSet\Services\Vxd\VNETSUP', 'Workgroup', '');
+  Result := RegNativeReadStringDef(HKLM, 'System\CurrentControlSet\Services\Vxd\VNETSUP', 'Workgroup', '');
   if (Result = '') and IsWinNT then
   begin
     LanInfo := nil;
@@ -2639,11 +2642,11 @@ begin
     // Currently, only allow to write if known to be supported and raise error if not supported,
     // but maybe that's a bad idea?
     if IsWinXP then // "srvcomment" property only supported on WinXP AFAIK
-      RegNativeWriteString(HKEY_LOCAL_MACHINE, cCommentRegPathNT, 'srvcomment', Value)
+      RegNativeWriteString(HKLM, cCommentRegPathNT, 'srvcomment', Value)
     else
     if not IsWinNT then
       // Win95/98 both support Comment
-      RegWriteString(HKEY_LOCAL_MACHINE, cCommentRegPath, 'Comment', Value)
+      RegWriteString(HKLM, cCommentRegPath, 'Comment', Value)
     else
       RaiseReadOnly; // ?? - or just let it pass unnoticed?
   end
@@ -2685,7 +2688,7 @@ end;
 procedure TJvIdentification.SetRegisteredCompany(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegNativeWriteString(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOrganization', Value)
+    RegNativeWriteString(HKLM, REG_CURRENT_VERSION, 'RegisteredOrganization', Value)
   else
     RaiseReadOnly;
 end;
@@ -2693,7 +2696,7 @@ end;
 procedure TJvIdentification.SetRegisteredOwner(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegNativeWriteString(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'RegisteredOwner', Value)
+    RegNativeWriteString(HKLM, REG_CURRENT_VERSION, 'RegisteredOwner', Value)
   else
     RaiseReadOnly;
 end;
@@ -2909,12 +2912,12 @@ end;
 
 function TJvAppVersions.GetADOVersion: string;
 begin
-  Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, '\SOFTWARE\Microsoft\DataAccess', 'Version', '');
+  Result := RegNativeReadStringDef(HKLM, '\SOFTWARE\Microsoft\DataAccess', 'Version', '');
 end;
 
 function TJvAppVersions.GetBDELocation: string;
 begin
-  Result := ExcludeTrailingPathDelimiter(RegReadStringDef(HKEY_LOCAL_MACHINE,
+  Result := ExcludeTrailingPathDelimiter(RegReadStringDef(HKLM,
     '\SOFTWARE\Borland\Database Engine', 'DLLPATH', ''));
 end;
 
@@ -2939,7 +2942,7 @@ end;
 
 function TJvAppVersions.GetIEVersion: string;
 begin
-  Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, '\SOFTWARE\Microsoft\Internet Explorer', 'Version', '');
+  Result := RegNativeReadStringDef(HKLM, '\SOFTWARE\Microsoft\Internet Explorer', 'Version', '');
 end;
 
 function TJvAppVersions.GetOpenGLVersion: string;
@@ -2955,7 +2958,7 @@ end;
 
 function TJvAppVersions.GetDirectXVersion: string;
 begin
-  Result := RegNativeReadStringDef(HKEY_LOCAL_MACHINE, '\SOFTWARE\Microsoft\DirectX', 'Version', '');
+  Result := RegNativeReadStringDef(HKLM, '\SOFTWARE\Microsoft\DirectX', 'Version', '');
 end;
 
 procedure TJvAppVersions.SetADOVersion(const Value: string);
@@ -3149,16 +3152,18 @@ begin
 end;
 
 function TJvMiscInfo.GetColorSchemes: TStrings;
+var
+  Reg: TRegistry;
 begin
   if FColorSchemes = nil then
     FColorSchemes := TStringlist.Create;
   FColorSchemes.Clear;
-  with TRegistry.Create(KEY_READ) do
+  Reg := TRegistry.Create(KEY_READ);
   try
-    if OpenKeyReadOnly('\Control Panel\Appearance\Schemes') then
-      GetValueNames(FColorSchemes);
+    if Reg.OpenKeyReadOnly('\Control Panel\Appearance\Schemes') then
+      Reg.GetValueNames(FColorSchemes);
   finally
-    Free;
+    Reg.Free;
   end;
   TStringlist(FColorSchemes).Sort;
   Result := FColorSchemes;
@@ -3166,12 +3171,12 @@ end;
 
 function TJvMiscInfo.GetCurrentColorScheme: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, '\Control Panel\Current', 'Color Schemes', '');
+  Result := RegReadStringDef(HKCU, '\Control Panel\Current', 'Color Schemes', '');
 end;
 
 function TJvMiscInfo.GetDVDRegion: Integer;
 begin
-  Result := RegNativeReadIntegerDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'DVD_Region', -1);
+  Result := RegNativeReadIntegerDef(HKLM, REG_CURRENT_VERSION, 'DVD_Region', -1);
 end;
 
 function TJvMiscInfo.GetHardwareProfile: TJvHardwareProfile;
@@ -3236,12 +3241,12 @@ end;
 
 function TJvMiscInfo.GetPattern: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Pattern', '');
+  Result := RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'Pattern', '');
 end;
 
 function TJvMiscInfo.GetScreenSaver: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'SCRNSAVE.EXE', '');
+  Result := RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'SCRNSAVE.EXE', '');
   if Result <> '' then
     // screen saver is usually returned in 8.3 format
     Result := PathGetLongName(Result);
@@ -3285,17 +3290,17 @@ end;
 
 function TJvMiscInfo.GetWallpaper: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Wallpaper', '');
+  Result := RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'Wallpaper', '');
 end;
 
 function TJvMiscInfo.GetWallpaperStyle: TJvWallpaperStyle;
 begin
-  Result := TJvWallpaperStyle(StrToInt(RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', '0')));
+  Result := TJvWallpaperStyle(StrToInt(RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', '0')));
 end;
 
 function TJvMiscInfo.GetWallpaperTiled: Boolean;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', '0') <> '0';
+  Result := RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', '0') <> '0';
 end;
 
 procedure TJvMiscInfo.SetColorSchemes(const Value: TStrings);
@@ -3306,7 +3311,7 @@ end;
 procedure TJvMiscInfo.SetCurrentColorScheme(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, '\Control Panel\Current', 'Color Schemes', Value)
+    RegWriteString(HKCU, '\Control Panel\Current', 'Color Schemes', Value)
   else
     RaiseReadOnly;
 end;
@@ -3334,7 +3339,7 @@ end;
 procedure TJvMiscInfo.SetPattern(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Pattern', Value)
+    RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'Pattern', Value)
   else
     RaiseReadOnly;
 end;
@@ -3342,7 +3347,7 @@ end;
 procedure TJvMiscInfo.SetScreenSaver(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'SCRSAVE.EXE', Value)
+    RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'SCRSAVE.EXE', Value)
   else
     RaiseReadOnly;
 end;
@@ -3365,7 +3370,7 @@ end;
 procedure TJvMiscInfo.SetWallpaper(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Wallpaper', Value)
+    RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'Wallpaper', Value)
   else
     RaiseReadOnly;
 end;
@@ -3375,7 +3380,7 @@ begin
   if not IsDesigning and not ReadOnly then
   begin
     if Value <> wsUnused then
-      RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', IntToStr(Ord(Value)));
+      RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', IntToStr(Ord(Value)));
   end
   else
     RaiseReadOnly;
@@ -3384,7 +3389,7 @@ end;
 procedure TJvMiscInfo.SetWallpaperTiled(const Value: Boolean);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', IntToStr(Ord(Value)))
+    RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', IntToStr(Ord(Value)))
   else
     RaiseReadOnly;
 end;
@@ -6147,10 +6152,10 @@ begin
         with TWMSpoolerStatus(Message) do
           DoSpoolerStatus(JobStatus, JobsLeft);
       WM_PALETTEISCHANGING:
-        with TWmPaletteIsChanging(Message) do
+        with TWMPaletteIsChanging(Message) do
           DoPaletteChanging(Realize);
       WM_PALETTECHANGED:
-        with TWmPaletteChanged(Message) do
+        with TWMPaletteChanged(Message) do
           DoPaletteChanged(PalChg);
     end;
     Result := DefWindowProc(FDeviceHandle, Msg, wParam, lParam);
@@ -6245,13 +6250,13 @@ var
 begin
   //  Result := SystemParametersInfo(SPI_SETICONS, 0, nil, SPIF_SENDCHANGE);
     // I stole the idea for this from the TortoiseCVS guys (thanks!)
-  DefaultValue := StrToIntDef(RegReadStringDef(HKEY_CURRENT_USER, HKCU_WINDOWMETRICS, cShellIconSize, '0'), 0);
+  DefaultValue := StrToIntDef(RegReadStringDef(HKCU, HKCU_WINDOWMETRICS, cShellIconSize, '0'), 0);
   Result := DefaultValue <> 0;
   if Result then
   begin
-    RegWriteString(HKEY_CURRENT_USER, HKCU_WINDOWMETRICS, cShellIconSize, IntToStr(Succ(DefaultValue)));
+    RegWriteString(HKCU, HKCU_WINDOWMETRICS, cShellIconSize, IntToStr(Succ(DefaultValue)));
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
-    RegWriteString(HKEY_CURRENT_USER, HKCU_WINDOWMETRICS, cShellIconSize, IntToStr(DefaultValue));
+    RegWriteString(HKCU, HKCU_WINDOWMETRICS, cShellIconSize, IntToStr(DefaultValue));
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
   end;
 end;

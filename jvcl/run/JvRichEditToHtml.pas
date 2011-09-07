@@ -36,6 +36,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_CHARACTER}
+  Character, // inline
+  {$ENDIF HAS_UNIT_CHARACTER}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   SysUtils, Classes, Graphics, Forms, ComCtrls,
   JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponentBase, JclStrings;
 
@@ -72,6 +78,9 @@ type
     property Name: TFontDataName read FFontData.Name write FFontData.Name;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvRichEditToHtml = class(TJvComponent)
   private
     FCToH: TJvRgbToHtml;

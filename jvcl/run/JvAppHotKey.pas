@@ -48,6 +48,9 @@ uses
 type
   TJvHotKeyRegisterFailed = procedure(Sender: TObject; var HotKey: TShortCut) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvApplicationHotKey = class(TJvComponent)
   protected
     FActive: Boolean;
@@ -243,7 +246,7 @@ end;
 
 function TJvApplicationHotKey.WndProc(var Msg: TMessage): Boolean;
 begin
-  if (Msg.Msg = WM_HOTKEY) and (FID = Msg.WParam) then
+  if (Msg.Msg = WM_HOTKEY) and (WPARAM(FID) = Msg.WParam) then
     DoHotKey;
   Result := False;
 end;

@@ -1420,31 +1420,30 @@ begin
   Result.Y := 0;
   if Shape = nil then
     Exit;
-  with Result do
-    case Side of
-      csLeft:
-        begin
-          X := Shape.Left;
-          Y := Shape.Top + Offset;
-        end;
-      csRight:
-        begin
-          X := Shape.Left + Shape.Width - 1;
-          Y := Shape.Top + Offset;
-        end;
-      csTop:
-        begin
-          X := Shape.Left + Offset;
-          Y := Shape.Top;
-        end;
-      csBottom:
-        begin
-          X := Shape.Left + Offset;
-          Y := Shape.Top + Shape.Height - 1;
-        end;
-    else
-      X := 0;
-      Y := 0;
+  case Side of
+    csLeft:
+      begin
+        Result.X := Shape.Left;
+        Result.Y := Shape.Top + Self.Offset;
+      end;
+    csRight:
+      begin
+        Result.X := Shape.Left + Shape.Width - 1;
+        Result.Y := Shape.Top + Self.Offset;
+      end;
+    csTop:
+      begin
+        Result.X := Shape.Left + Self.Offset;
+        Result.Y := Shape.Top;
+      end;
+    csBottom:
+      begin
+        Result.X := Shape.Left + Self.Offset;
+        Result.Y := Shape.Top + Shape.Height - 1;
+      end;
+  else
+    Result.X := 0;
+    Result.Y := 0;
   end;
 end;
 
@@ -1914,13 +1913,10 @@ begin
     Exit;
   ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
   TermPt := Convert(FStartConn.TermPoint(StartTermRect));
-  with Canvas do
-  begin
-    // Draw a line connecting the Conn and Term points
-    Pen.Color := FLineColor;
-    PenPos := ConnPt;
-    LineTo(TermPt.X, TermPt.Y);
-  end;
+  // Draw a line connecting the Conn and Term points
+  Canvas.Pen.Color := FLineColor;
+  Canvas.PenPos := ConnPt;
+  Canvas.LineTo(TermPt.X, TermPt.Y);
 end;
 
 //=== { TJvBluntSingleHeadArrow } ============================================
@@ -1940,13 +1936,10 @@ begin
     Exit;
   ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
   TermPt := Convert(FStartConn.TermPoint(StartTermRect));
-  with Canvas do
-  begin
-    // Draw a line connecting the Conn and Term points
-    Pen.Color := FLineColor;
-    PenPos := ConnPt;
-    LineTo(TermPt.X, TermPt.Y);
-  end;
+  // Draw a line connecting the Conn and Term points
+  Canvas.Pen.Color := FLineColor;
+  Canvas.PenPos := ConnPt;
+  Canvas.LineTo(TermPt.X, TermPt.Y);
 end;
 
 //=== { TJvSubCaseArrow } ====================================================
@@ -2037,13 +2030,10 @@ begin
     Exit;
   ConnPt := Convert(FStartConn.ConnPoint(StartTermRect));
   TermPt := Convert(FStartConn.TermPoint(StartTermRect));
-  with Canvas do
-  begin
-    // Draw a line connecting the Conn and Term points
-    Pen.Color := FLineColor;
-    PenPos := ConnPt;
-    LineTo(TermPt.X, TermPt.Y);
-  end;
+  // Draw a line connecting the Conn and Term points
+  Canvas.Pen.Color := FLineColor;
+  Canvas.PenPos := ConnPt;
+  Canvas.LineTo(TermPt.X, TermPt.Y);
 end;
 
 //=== { TJvDoubleHeadArrow } =================================================

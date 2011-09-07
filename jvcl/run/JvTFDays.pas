@@ -5006,17 +5006,14 @@ Var
   IsPrimeTimeCell: Boolean;
 begin
   // Calc the cell rect
-  With ARect do
-   begin
-    Left := RowHdrWidth;
-    For I := LeftCol to ColIndex - 1 do
-      Inc(Left, Cols[I].Width);
-    Right := Left + Cols[ColIndex].Width;
+  ARect.Left := RowHdrWidth;
+  For I := LeftCol to ColIndex - 1 do
+    Inc(ARect.Left, Cols[I].Width);
+  ARect.Right := ARect.Left + Cols[ColIndex].Width;
 
-    //group Top := ColHdrHeight + (RowIndex - TopRow) * RowHeight;
-    Top := CalcGroupColHdrsHeight + (RowIndex - TopRow) * RowHeight;
-    Bottom := Top + RowHeight;
-   end;
+  //group Top := ColHdrHeight + (RowIndex - TopRow) * RowHeight;
+  ARect.Top := CalcGroupColHdrsHeight + (RowIndex - TopRow) * RowHeight;
+  ARect.Bottom := ARect.Top + RowHeight;
 
   PrimeStartRow := TimeToRow(PrimeTime.StartTime);
   PrimeEndRow := TimeToRow(AdjustEndTime(PrimeTime.EndTime));
@@ -5190,18 +5187,15 @@ var
   // col buffer end
 begin
   // Calc the cell rect
-  with Rect do
-  begin
-    //block Left := RowHdrWidth;
-    Left := CalcBlockRowHdrsWidth;
-    for I := LeftCol to ColIndex - 1 do
-      Inc(Left, Cols[I].Width);
-    Right := Left + Cols[ColIndex].Width;
+  //block Left := RowHdrWidth;
+  Rect.Left := CalcBlockRowHdrsWidth;
+  for I := LeftCol to ColIndex - 1 do
+    Inc(Rect.Left, Cols[I].Width);
+  Rect.Right := Rect.Left + Cols[ColIndex].Width;
 
-    //group Top := ColHdrHeight + (RowIndex - TopRow) * RowHeight;
-    Top := CalcGroupColHdrsHeight + (RowIndex - TopRow) * RowHeight;
-    Bottom := Top + RowHeight;
-  end;
+  //group Top := ColHdrHeight + (RowIndex - TopRow) * RowHeight;
+  Rect.Top := CalcGroupColHdrsHeight + (RowIndex - TopRow) * RowHeight;
+  Rect.Bottom := Top + RowHeight;
 
   PrimeStartRow := TimeToRow(PrimeTime.StartTime);
   PrimeEndRow := TimeToRow(AdjustEndTime(PrimeTime.EndTime));
@@ -5443,29 +5437,23 @@ procedure TJvTFDays.DrawEmptyColHdr(ACanvas: TCanvas);
 var
   Rect: TRect;
 begin
-  with Rect do
-  begin
-    {$IFDEF Jv_TIMEBLOCKS}
-    // ok
-    Left := CalcBlockRowHdrsWidth;
-    {$ELSE}
-    // remove
-    //Left := RowHdrWidth;
-    {$ENDIF Jv_TIMEBLOCKS}
-    Top := 0;
-    Right := Left + GetDataWidth;
-    //group Bottom := ColHdrHeight;
-    Bottom := CalcGroupColHdrsHeight;
-  end;
+  {$IFDEF Jv_TIMEBLOCKS}
+  // ok
+  Rect.Left := CalcBlockRowHdrsWidth;
+  {$ELSE}
+  // remove
+  //Left := RowHdrWidth;
+  {$ENDIF Jv_TIMEBLOCKS}
+  Rect.Top := 0;
+  Rect.Right := Rect.Left + GetDataWidth;
+  //group Bottom := ColHdrHeight;
+  Rect.Bottom := CalcGroupColHdrsHeight;
 
-  with ACanvas do
-  begin
-    Brush.Color := HdrAttr.Color;
-    FillRect(Rect);
-    Pen.Color := clGray;
-    MoveTo(Rect.Left, Rect.Bottom - 1);
-    LineTo(Rect.Right, Rect.Bottom - 1);
-  end;
+  ACanvas.Brush.Color := HdrAttr.Color;
+  ACanvas.FillRect(Rect);
+  ACanvas.Pen.Color := clGray;
+  ACanvas.MoveTo(Rect.Left, Rect.Bottom - 1);
+  ACanvas.LineTo(Rect.Right, Rect.Bottom - 1);
 end;
 
 procedure TJvTFDays.DrawAppt(ACanvas: TCanvas; Col: Integer;
@@ -5677,14 +5665,11 @@ begin
       Inc(TheFrameRect.Bottom);
     end;
 
-    with TheFrameRect do
-    begin
-      MoveTo(Left, Top);
-      LineTo(Right - 1, Top);
-      LineTo(Right - 1, Bottom - 1);
-      LineTo(Left, Bottom - 1);
-      LineTo(Left, Top);
-    end;
+    MoveTo(TheFrameRect.Left, TheFrameRect.Top);
+    LineTo(TheFrameRect.Right - 1, TheFrameRect.Top);
+    LineTo(TheFrameRect.Right - 1, TheFrameRect.Bottom - 1);
+    LineTo(TheFrameRect.Left, TheFrameRect.Bottom - 1);
+    LineTo(TheFrameRect.Left, TheFrameRect.Top);
 
     // Only go through the following work if all details must be drawn
 //    if (RectHeight(ARect) > Thresholds.DetailHeight) and
@@ -6178,29 +6163,26 @@ var
   UseAttr: TJvTFDaysHdrAttr;
   Txt: string;
 begin
-  with Rect do
-  begin
-    {$IFDEF Jv_TIMEBLOCKS}
-    // ok
-    Left := CalcBlockHdrWidth;
-    {$ELSE}
-    // remove
-    //Left := 0;
-    {$ENDIF Jv_TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
+  // ok
+  Rect.Left := CalcBlockHdrWidth;
+  {$ELSE}
+  // remove
+  //Rect.Left := 0;
+  {$ENDIF Jv_TIMEBLOCKS}
 
-    //group Top := ColHdrHeight + (Index - TopRow) * RowHeight;
-    Top := CalcGroupColHdrsHeight + (Index - TopRow) * RowHeight;
+  //group Rect.Top := ColHdrHeight + (Index - TopRow) * RowHeight;
+  Rect.Top := CalcGroupColHdrsHeight + (Index - TopRow) * RowHeight;
 
-    {$IFDEF Jv_TIMEBLOCKS}
-    // ok
-    Right := Left + RowHdrWidth;
-    {$ELSE}
-    // remove
-    //Right := RowHdrWidth;
-    {$ENDIF Jv_TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
+  // ok
+  Rect.Right := Rect.Left + RowHdrWidth;
+  {$ELSE}
+  // remove
+  //Rect.Right := RowHdrWidth;
+  {$ENDIF Jv_TIMEBLOCKS}
 
-    Bottom := Top + RowHeight;
-  end;
+  Rect.Bottom := Rect.Top + RowHeight;
 
   Txt := FormatDateTime(TimeFormat, RowToTime(Index));
 
@@ -6384,31 +6366,28 @@ procedure TJvTFDays.DrawFrame(ACanvas: TCanvas; ARect: TRect; Draw3D: Boolean);
 var
   OldPenColor: TColor;
 begin
-  With ACanvas, ARect do
-   begin
-    OldPenColor := Pen.Color;
+  OldPenColor := ACanvas.Pen.Color;
 
-    if Draw3D then
-      Pen.Color := clBtnShadow
-    else
-      Pen.Color := GridLineColor;
+  if Draw3D then
+    ACanvas.Pen.Color := clBtnShadow
+  else
+    ACanvas.Pen.Color := GridLineColor;
 
-    MoveTo(Right - 1, Top);
-    LineTo(Right - 1, Bottom);
-    MoveTo(Left, Bottom - 1);
-    LineTo(Right, Bottom - 1);
+  ACanvas.MoveTo(ARect.Right - 1, ARect.Top);
+  ACanvas.LineTo(ARect.Right - 1, ARect.Bottom);
+  ACanvas.MoveTo(ARect.Left, ARect.Bottom - 1);
+  ACanvas.LineTo(ARect.Right, ARect.Bottom - 1);
 
-    if Draw3D then
-      begin
-       Pen.Color := clBtnHighlight;
-       MoveTo(Left, Top);
-       LineTo(Right, Top);
-       MoveTo(Left, Top);
-       LineTo(Left, Bottom);
-      end;
+  if Draw3D then
+  begin
+    ACanvas.Pen.Color := clBtnHighlight;
+    ACanvas.MoveTo(ARect.Left, ARect.Top);
+    ACanvas.LineTo(ARect.Right, ARect.Top);
+    ACanvas.MoveTo(ARect.Left, ARect.Top);
+    ACanvas.LineTo(ARect.Left, ARect.Bottom);
+  end;
 
-    Pen.Color := OldPenColor;
-   end;
+  ACanvas.Pen.Color := OldPenColor;
 end;
 }
 {$ENDIF !Jv_TIMEBLOCKS}
@@ -6622,27 +6601,24 @@ begin
     begin
       if I <> TopRow + 1 then
       begin
-        with LRect do
-        begin
-          {$IFDEF Jv_TIMEBLOCKS}
-            // ok
-          Left := CalcBlockHdrWidth;
-          Right := Left + RowHdrWidth - MinorTickLength;
-          {$ELSE}
-            // remove
-            //Left := 0;
-            //Right := RowHdrWidth - MinorTickLength;
-          {$ENDIF Jv_TIMEBLOCKS}
+        {$IFDEF Jv_TIMEBLOCKS}
+          // ok
+        LRect.Left := CalcBlockHdrWidth;
+        LRect.Right := LRect.Left + RowHdrWidth - MinorTickLength;
+        {$ELSE}
+          // remove
+          //LRect.Left := 0;
+          //LRect.Right := RowHdrWidth - MinorTickLength;
+        {$ENDIF Jv_TIMEBLOCKS}
 
-          Top := VirtualCellRect(-1, HourStartRow(PrevHour)).Top;
-            //group if Top < ColHdrHeight then
-              //group Top := ColHdrHeight;
-          if Top < CalcGroupColHdrsHeight then
-            Top := CalcGroupColHdrsHeight;
-          Bottom := VirtualCellRect(-1, HourEndRow(PrevHour)).Bottom - 1;
-          if Bottom > ClientHeight then
-            Bottom := ClientHeight;
-        end;
+        LRect.Top := VirtualCellRect(-1, HourStartRow(PrevHour)).Top;
+          //group if LRect.Top < ColHdrHeight then
+            //group LRect.Top := ColHdrHeight;
+        if LRect.Top < CalcGroupColHdrsHeight then
+          LRect.Top := CalcGroupColHdrsHeight;
+        LRect.Bottom := VirtualCellRect(-1, HourEndRow(PrevHour)).Bottom - 1;
+        if LRect.Bottom > ClientHeight then
+          LRect.Bottom := ClientHeight;
 
         if FancyRowHdrAttr.Hr2400 then
           Lbl := IntToStr(PrevHour)
@@ -6938,7 +6914,7 @@ begin
   Coord := PtToCell(Msg.Pos.X, Msg.Pos.Y);
 
   TempState := CanDragWhat(Coord);
-  Msg.Result := Longint(TempState <> agsNormal);
+  Msg.Result := LRESULT(Ord(TempState <> agsNormal));
 end;
 
 procedure TJvTFDays.CNRequestRefresh(var Msg: TCNRequestRefresh);
@@ -7484,14 +7460,11 @@ var
 
   procedure DrawFrame(ARect: TRect);
   begin
-    with ARect, Canvas do
-    begin
-      MoveTo(Left, Top);
-      LineTo(Right - 2, Top);
-      LineTo(Right - 2, Bottom - 2);
-      LineTo(Left, Bottom - 2);
-      LineTo(Left, Top);
-    end;
+    Canvas.MoveTo(ARect.Left, ARect.Top);
+    Canvas.LineTo(ARect.Right - 2, ARect.Top);
+    Canvas.LineTo(ARect.Right - 2, ARect.Bottom - 2);
+    Canvas.LineTo(ARect.Left, ARect.Bottom - 2);
+    Canvas.LineTo(ARect.Left, ARect.Top);
   end;
 
 begin
@@ -9023,14 +8996,13 @@ begin
     else
     if (Row >= TopRow) and (Row <= BottomRow) then
       // Row Hdr for visible data row
-      With Result do
-       begin
-        Left := 0;
-        //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
-        Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
-        Right := RowHdrWidth;
-        Bottom := Top + RowHeight;
-       end
+    begin
+      Result.Left := 0;
+      //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
+      Result.Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
+      Result.Right := RowHdrWidth;
+      Result.Bottom := Result.Top + RowHeight;
+    end
     else
       // Row Hdr for non-visible data row
       Result := EmptyRect
@@ -9039,30 +9011,28 @@ begin
   if (Col >= LeftCol) and (Col <= RightCol) then // visible data col
     if Row < 0 then
       // Col hdr for visible data col
-      With Result do
-       begin
-        Left := RowHdrWidth;
-        For I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-        //group Top := 0;
-        Top := CalcGroupHdrHeight;
-        //group Bottom := ColHdrHeight;
-        Bottom := CalcGroupColHdrsHeight;
-       end
+    begin
+      Result.Left := RowHdrWidth;
+      For I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+      //group Top := 0;
+      Result.Top := CalcGroupHdrHeight;
+      //group Bottom := ColHdrHeight;
+      Result.Bottom := CalcGroupColHdrsHeight;
+    end
     else
     if (Row >= TopRow) and (Row <= BottomRow) then
       // visible data cell
-      With Result do
-       begin
-        Left := RowHdrWidth;
-        For I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-        //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
-        Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
-        Bottom := Top + RowHeight;
-       end
+    begin
+      Result.Left := RowHdrWidth;
+      For I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+      //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
+      Result.Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
+      Result.Bottom := Result.Top + RowHeight;
+    end
     else
       // non-visible data cell (visible col, but non-visible row)
       Result := EmptyRect
@@ -9104,16 +9074,15 @@ begin
     else
     if (Row >= TopRow) and (Row <= BottomRow) then
       // Row Hdr for visible data row
-      with Result do
-      begin
-        //block Left := 0;
-        Left := CalcBlockHdrWidth;
-        //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
-        Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
-        //block Right := RowHdrWidth;
-        Right := Left + RowHdrWidth;
-        Bottom := Top + RowHeight;
-      end
+    begin
+      //block Left := 0;
+      Result.Left := CalcBlockHdrWidth;
+      //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
+      Result.Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
+      //block Right := RowHdrWidth;
+      Result.Right := Result.Left + RowHdrWidth;
+      Result.Bottom := Result.Top + RowHeight;
+    end
     else
       // Row Hdr for non-visible data row
       Result := EmptyRect
@@ -9121,32 +9090,30 @@ begin
   if (Col >= LeftCol) and (Col <= RightCol) then // visible data col
     if Row < 0 then
       // Col hdr for visible data col
-      with Result do
-      begin
-        //block Left := RowHdrWidth;
-        Left := CalcBlockRowHdrsWidth;
-        for I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-        //group Top := 0;
-        Top := CalcGroupHdrHeight;
-        //group Bottom := ColHdrHeight;
-        Bottom := CalcGroupColHdrsHeight;
-      end
+    begin
+      //block Result.Left := RowHdrWidth;
+      Result.Left := CalcBlockRowHdrsWidth;
+      for I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+      //group Result.Top := 0;
+      Result.Top := CalcGroupHdrHeight;
+      //group Result.Bottom := ColHdrHeight;
+      Result.Bottom := CalcGroupColHdrsHeight;
+    end
     else
     if (Row >= TopRow) and (Row <= BottomRow) then
       // visible data cell
-      with Result do
-      begin
-        //block Left := RowHdrWidth;
-        Left := CalcBlockRowHdrsWidth;
-        for I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-        //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
-        Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
-        Bottom := Top + RowHeight;
-      end
+    begin
+      //block Result.Left := RowHdrWidth;
+      Result.Left := CalcBlockRowHdrsWidth;
+      for I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+      //group Result.Top := ColHdrHeight + (Row - TopRow) * RowHeight;
+      Result.Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
+      Result.Bottom := Result.Top + RowHeight;
+    end
     else
       // non-visible data cell (visible col, but non-visible row)
       Result := EmptyRect
@@ -9166,39 +9133,38 @@ begin
   if Row = gcGroupHdr then
    Result := VirtualGroupHdrRect(Col)
   else
-   With Result do
+  begin
+    if Col > -1 then
     begin
-      if Col > -1 then
-       begin
-        Left := RowHdrWidth;
-        // At most, only one of the following For loops will execute
-        // depending on whether Col is to the left or to the right of LeftCol
-        For I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
+      Result.Left := RowHdrWidth;
+      // At most, only one of the following For loops will execute
+      // depending on whether Col is to the left or to the right of LeftCol
+      For I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
 
-        For I := LeftCol - 1 downto Col do
-          Dec(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-       end
-      else
-       begin
-        Left := 0;
-        Right := RowHdrWidth;
-       end;
-
-      if Row > -1 then
-       begin
-        //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
-        Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
-        Bottom := Top + RowHeight;
-       end
-      else
-       begin
-        //group Top := 0;
-        Top := CalcGroupHdrHeight;
-        Bottom := Top + ColHdrHeight;
-       end;
+      For I := LeftCol - 1 downto Col do
+        Dec(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+    end
+    else
+    begin
+      Result.Left := 0;
+      Result.Right := RowHdrWidth;
     end;
+
+    if Row > -1 then
+    begin
+      //group Result.Top := ColHdrHeight + (Row - TopRow) * RowHeight;
+      Result.Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
+      Result.Bottom := Result.Top + RowHeight;
+    end
+    else
+    begin
+      //group Result.Top := 0;
+      Result.Top := CalcGroupHdrHeight;
+      Result.Bottom := Result.Top + ColHdrHeight;
+    end;
+  end;
 end;
 }
 {$ENDIF !Jv_TIMEBLOCKS}
@@ -9215,42 +9181,41 @@ begin
   if (Row = gcGroupHdr) and (Col > gcHdr) then
     Result := VirtualGroupHdrRect(Col)
   else
-    with Result do
+  begin
+    if Col > -1 then
     begin
-      if Col > -1 then
-      begin
-        //block Left := RowHdrWidth;
-        Left := CalcBlockRowHdrsWidth;
-        // At most, only one of the following For loops will execute
-        // depending on whether Col is to the left or to the right of LeftCol
-        for I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
+      //block Result.Left := RowHdrWidth;
+      Result.Left := CalcBlockRowHdrsWidth;
+      // At most, only one of the following For loops will execute
+      // depending on whether Col is to the Result.Left or to the Result.Right of LeftCol
+      for I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
 
-        for I := LeftCol - 1 downto Col do
-          Dec(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-      end
-      else
-      begin
-        //block Left := 0;
-        Left := CalcBlockHdrWidth;
-        //block Right := RowHdrWidth;
-        Right := Left + RowHdrWidth;
-      end;
-
-      if Row > -1 then
-      begin
-        //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
-        Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
-        Bottom := Top + RowHeight;
-      end
-      else
-      begin
-        //group Top := 0;
-        Top := CalcGroupHdrHeight;
-        Bottom := Top + ColHdrHeight;
-      end;
+      for I := LeftCol - 1 downto Col do
+        Dec(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+    end
+    else
+    begin
+      //block Result.Left := 0;
+      Result.Left := CalcBlockHdrWidth;
+      //block Result.Right := RowHdrWidth;
+      Result.Right := Result.Left + RowHdrWidth;
     end;
+
+    if Row > -1 then
+    begin
+      //group Result.Top := ColHdrHeight + (Row - TopRow) * RowHeight;
+      Result.Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
+      Result.Bottom := Result.Top + RowHeight;
+    end
+    else
+    begin
+      //group Result.Top := 0;
+      Result.Top := CalcGroupHdrHeight;
+      Result.Bottom := Result.Top + ColHdrHeight;
+    end;
+  end;
 end;
 {$ENDIF Jv_TIMEBLOCKS}
 
@@ -9292,46 +9257,43 @@ begin
   end;
 
   // Col guaranteed to be partially visible
-  with Result do
-  begin
-    VirtCellRect := VirtualCellRect(Col, StartRow);
-    GridColWidth := RectWidth(VirtCellRect);
+  VirtCellRect := VirtualCellRect(Col, StartRow);
+  GridColWidth := RectWidth(VirtCellRect);
 
-    // The Base* and MakeUp* code that follows calcs the appt width and left
-    // and takes into account a total width that isn't evenly divisible by
-    // the map col count. If there is a discrepancy then that discrepancy
-    // is divided up among the cols working left to right.
-    //
-    //  Example:  Total width = 113, col count = 5
-    //    col 1 = 23
-    //    col 2 = 23
-    //    col 3 = 23
-    //    col 4 = 22
-    //    col 5 = 22
-    //    Total  = 113
-    //
-    //  As opposed to:
-    //    width of all cols = Total div colcount = 22
-    //      ==> Total = 22 * 5 = 110 [110 <> 113]
-    Base := GridColWidth div MapColCount;
-    MakeUp := GridColWidth mod MapColCount;
+  // The Base* and MakeUp* code that follows calcs the appt width and Result.Left
+  // and takes into account a total width that isn't evenly divisible by
+  // the map col count. If there is a discrepancy then that discrepancy
+  // is divided up among the cols working Result.Left to Result.Right.
+  //
+  //  Example:  Total width = 113, col count = 5
+  //    col 1 = 23
+  //    col 2 = 23
+  //    col 3 = 23
+  //    col 4 = 22
+  //    col 5 = 22
+  //    Total  = 113
+  //
+  //  As opposed to:
+  //    width of all cols = Total div colcount = 22
+  //      ==> Total = 22 * 5 = 110 [110 <> 113]
+  Base := GridColWidth div MapColCount;
+  MakeUp := GridColWidth mod MapColCount;
 
-    MakeUpWidth := Lesser(MapCol - 1, MakeUp) * (Base + 1);
-    BaseCount := MapCol - 1 - MakeUp;
-    if BaseCount > 0 then
-      BaseWidth := BaseCount * Base
-    else
-      BaseWidth := 0;
+  MakeUpWidth := Lesser(MapCol - 1, MakeUp) * (Base + 1);
+  BaseCount := MapCol - 1 - MakeUp;
+  if BaseCount > 0 then
+    BaseWidth := BaseCount * Base
+  else
+    BaseWidth := 0;
 
-    ApptWidth := Base;
-    if MapCol <= MakeUp then
-      Inc(ApptWidth);
+  ApptWidth := Base;
+  if MapCol <= MakeUp then
+    Inc(ApptWidth);
 
-    Left := VirtCellRect.Left + MakeUpWidth + BaseWidth;
-    Right := Left + ApptWidth - ApptBuffer;
-    Top := VirtCellRect.Top;
-    Bottom := VirtualCellRect(Col, EndRow).Bottom;
-  end;
+  Result.Left := VirtCellRect.Left + MakeUpWidth + BaseWidth;
+  Result.Right := Result.Left + ApptWidth - ApptBuffer;
+  Result.Top := VirtCellRect.Top;
+  Result.Bottom := VirtualCellRect(Col, EndRow).Bottom;
 end;
 
 function TJvTFDays.LocateDivCol(X, TotalWidth, SegCount: Integer): Integer;
@@ -12044,19 +12006,18 @@ begin
     else
     if (Row >= PageInfo.StartRow) and (Row <= PageInfo.EndRow) then
       // Row Hdr for visible data row
-      if PageInfo.ShowRowHdr then
-        with Result do
-        begin
-          Left := 0;
-          if PageInfo.ShowColHdr then
-           //group Top := ColHdrHeight
-            Top := CalcGroupColHdrsHeight
-          else
-            Top := 0;
-          Top := Top + (Row - PageInfo.StartRow) * PageInfo.RowHeight;
-          Right := RowHdrWidth;
-          Bottom := Top + PageInfo.RowHeight;
-        end
+    if PageInfo.ShowRowHdr then
+      begin
+        Result.Left := 0;
+        if PageInfo.ShowColHdr then
+         //group Result.Top := ColHdrHeight
+          Result.Top := CalcGroupColHdrsHeight
+        else
+          Result.Top := 0;
+        Result.Top := Result.Top + (Row - PageInfo.StartRow) * PageInfo.RowHeight;
+        Result.Right := RowHdrWidth;
+        Result.Bottom := Result.Top + PageInfo.RowHeight;
+      end
       else
         Result := EmptyRect
     else
@@ -12068,54 +12029,52 @@ begin
     if Row < 0 then
       // Col hdr for visible data col
       if PageInfo.ShowColHdr then
-        with Result do
-        begin
-          if PageInfo.ShowRowHdr then
-            Left := RowHdrWidth
-          else
-            Left := 0;
-          Inc(Left, PageInfo.ColWidth * (Col - PageInfo.StartCol));
-          Right := Left + PageInfo.ColWidth;
+      begin
+        if PageInfo.ShowRowHdr then
+          Result.Left := RowHdrWidth
+        else
+          Result.Left := 0;
+        Inc(Result.Left, PageInfo.ColWidth * (Col - PageInfo.StartCol));
+        Result.Right := Result.Left + PageInfo.ColWidth;
 
-          { variable width columns, leave for future reference
-          For I := LeftCol to Col - 1 do
-           Inc(Left, Cols[I].Width);
-          Right := Left + Cols[Col].Width;
-          }
+        { variable width columns, leave for future reference
+        For I := LeftCol to Col - 1 do
+         Inc(Result.Left, Cols[I].Width);
+        Result.Right := Result.Left + Cols[Col].Width;
+        }
 
-          //group Top := 0;
-          Top := CalcGroupHdrHeight;
-          //group Bottom := ColHdrHeight;
-          Bottom := Top + ColHdrHeight;
-        end
+        //group Result.Top := 0;
+        Result.Top := CalcGroupHdrHeight;
+        //group Result.Bottom := ColHdrHeight;
+        Result.Bottom := Result.Top + ColHdrHeight;
+      end
       else
         Result := EmptyRect
     else
     if (Row >= PageInfo.StartRow) and (Row <= PageInfo.EndRow) then
       // visible data cell
-      with Result do
-      begin
-        if PageInfo.ShowRowHdr then
-          Left := RowHdrWidth
-        else
-          Left := 0;
-        Inc(Left, PageInfo.ColWidth * (Col - PageInfo.StartCol));
-        Right := Left + PageInfo.ColWidth;
+    begin
+      if PageInfo.ShowRowHdr then
+        Result.Left := RowHdrWidth
+      else
+        Result.Left := 0;
+      Inc(Result.Left, PageInfo.ColWidth * (Col - PageInfo.StartCol));
+      Result.Right := Result.Left + PageInfo.ColWidth;
 
-        { variable width cols, leave for future reference
-        For I := LeftCol to Col - 1 do
-          Inc(Left, Cols[I].Width);
-        Right := Left + Cols[Col].Width;
-        }
+      { variable width cols, leave for future reference
+      For I := LeftCol to Col - 1 do
+        Inc(Result.Left, Cols[I].Width);
+      Result.Right := Result.Left + Cols[Col].Width;
+      }
 
-        if PageInfo.ShowColHdr then
-          //group Top := ColHdrHeight
-          Top := CalcGroupColHdrsHeight
-        else
-          Top := 0;
-        Inc(Top, (Row - PageInfo.StartRow) * PageInfo.RowHeight);
-        Bottom := Top + PageInfo.RowHeight;
-      end
+      if PageInfo.ShowColHdr then
+        //group Result.Top := ColHdrHeight
+        Result.Top := CalcGroupColHdrsHeight
+      else
+        Result.Top := 0;
+      Inc(Result.Top, (Row - PageInfo.StartRow) * PageInfo.RowHeight);
+      Result.Bottom := Result.Top + PageInfo.RowHeight;
+    end
     else
       // non-visible data cell (visible col, but non-visible row)
       Result := EmptyRect
@@ -12659,14 +12618,11 @@ begin
       Inc(TheFrameRect.Bottom);
     end;
 
-    with TheFrameRect do
-    begin
-      MoveTo(Left, Top);
-      LineTo(Right - 1, Top);
-      LineTo(Right - 1, Bottom - 1);
-      LineTo(Left, Bottom - 1);
-      LineTo(Left, Top);
-    end;
+    MoveTo(TheFrameRect.Left, TheFrameRect.Top);
+    LineTo(TheFrameRect.Right - 1, TheFrameRect.Top);
+    LineTo(TheFrameRect.Right - 1, TheFrameRect.Bottom - 1);
+    LineTo(TheFrameRect.Left, TheFrameRect.Bottom - 1);
+    LineTo(TheFrameRect.Left, TheFrameRect.Top);
 
     // Only go through the following work if all details must be drawn
     if (RectHeight(ARect) > Thresholds.DetailHeight) and
@@ -12969,31 +12925,28 @@ var
   CellColor: TColor;
 begin
   // Calc the cell rect
-  with ARect do
-  begin
-    if PageInfo.ShowRowHdr then
-      Left := RowHdrWidth
-    else
-      Left := 0;
+  if PageInfo.ShowRowHdr then
+    ARect.Left := RowHdrWidth
+  else
+    ARect.Left := 0;
 
-    Left := Left + (ColIndex - PageInfo.StartCol) * PageInfo.ColWidth;
-    Right := Left + PageInfo.ColWidth;
+  ARect.Left := ARect.Left + (ColIndex - PageInfo.StartCol) * PageInfo.ColWidth;
+  ARect.Right := ARect.Left + PageInfo.ColWidth;
 
-    { variable col widths, leave for future reference
-    For I := LeftCol to ColIndex - 1 do
-      Inc(Left, Cols[I].Width);
-    Right := Left + Cols[ColIndex].Width;
-    }
+  { variable col widths, leave for future reference
+  For I := LeftCol to ColIndex - 1 do
+    Inc(ARect.Left, Cols[I].Width);
+  ARect.Right := ARect.Left + Cols[ColIndex].Width;
+  }
 
-    if PageInfo.ShowColHdr then
-      //group Top := ColHdrHeight
-      Top := CalcGroupColHdrsHeight
-    else
-      Top := 0;
+  if PageInfo.ShowColHdr then
+    //group ARect.Top := ColHdrHeight
+    ARect.Top := CalcGroupColHdrsHeight
+  else
+    ARect.Top := 0;
 
-    Top := Top + (RowIndex - PageInfo.StartRow) * PageInfo.RowHeight;
-    Bottom := Top + PageInfo.RowHeight;
-  end;
+  ARect.Top := ARect.Top + (RowIndex - PageInfo.StartRow) * PageInfo.RowHeight;
+  ARect.Bottom := ARect.Top + PageInfo.RowHeight;
 
   PrimeStartRow := TimeToRow(PrimeTime.StartTime);
   PrimeEndRow := TimeToRow(AdjustEndTime(PrimeTime.EndTime));
@@ -13007,13 +12960,12 @@ begin
     FOnShadeCell(Self, ColIndex, RowIndex, CellColor);
 
   if CellColor <> Color then
-    with ACanvas do
-    begin
-      Brush.Color := CellColor;
-      FillRect(ARect);
-    end;
+  begin
+    ACanvas.Brush.Color := CellColor;
+    ACanvas.FillRect(ARect);
+  end;
 
-  // Draw a line across the bottom and down the right side
+  // Draw a line across the ARect.Bottom and down the ARect.Right side
   with ACanvas do
   begin
     Pen.Color := GridLineColor;
@@ -13034,14 +12986,11 @@ procedure TJvTFDaysPrinter.DrawEmptyColHdr(ACanvas: TCanvas;
 var
   ARect: TRect;
 begin
-  with ARect do
-  begin
-    Left := RowHdrWidth;
-    Top := 0;
-    Right := Left + GetDataWidth(PageInfo.ShowRowHdr);
-    //group Bottom := ColHdrHeight;
-    Bottom := CalcGroupColHdrsHeight;
-  end;
+  ARect.Left := RowHdrWidth;
+  ARect.Top := 0;
+  ARect.Right := ARect.Left + GetDataWidth(PageInfo.ShowRowHdr);
+  //group ARect.Bottom := ColHdrHeight;
+  ARect.Bottom := CalcGroupColHdrsHeight;
 
   with ACanvas do
   begin
@@ -13087,24 +13036,21 @@ begin
     begin
       if I <> PageInfo.StartRow + 1 then
       begin
-        with ARect do
-        begin
-          Left := 1;  // Allow for a small margin on left side
-          Right := RowHdrWidth; // No "cutting" before the end of the cell.
-          Top := CellRect(-1, HourStartRow(PrevHour), PageInfo).Top;
+        ARect.Left := 1;  // Allow for a small margin on ARect.Left side
+        ARect.Right := RowHdrWidth; // No "cutting" before the end of the cell.
+        ARect.Top := CellRect(-1, HourStartRow(PrevHour), PageInfo).Top;
 
-            //group if Top < ColHdrHeight then
-              //group Top := ColHdrHeight;
-          if Top < CalcGroupColHdrsHeight then
-            Top := CalcGroupColHdrsHeight;
-          Bottom := CellRect(-1, HourEndRow(PrevHour), PageInfo).Bottom - 1;
+          //group if ARect.Top < ColHdrHeight then
+            //group ARect.Top := ColHdrHeight;
+        if ARect.Top < CalcGroupColHdrsHeight then
+          ARect.Top := CalcGroupColHdrsHeight;
+        ARect.Bottom := CellRect(-1, HourEndRow(PrevHour), PageInfo).Bottom - 1;
 
-          // No need to check for Bottom to be outside the page, CellRect
-          // calculates it so that it does not happen. And using GetDataHeight
-          // is not a good idea as it removes the column header height, which
-          // is NOT what we want here as we want the page's integral height.
-          // If we wer to use it, we would trigger Mantis 2340.
-        end;
+        // No need to check for ARect.Bottom to be outside the page, CellRect
+        // calculates it so that it does not happen. And using GetDataHeight
+        // is not a good idea as it removes the column header height, which
+        // is NOT what we want here as we want the page's integral height.
+        // If we wer to use it, we would trigger Mantis 2340.
 
         if FancyRowHdrAttr.Hr2400 then
           Lbl := IntToStr(PrevHour)
@@ -13147,7 +13093,7 @@ procedure TJvTFDaysPrinter.DrawFrame(ACanvas: TCanvas; ARect: TRect;
 var
   OldPenColor: TColor;
 begin
-  with ACanvas, ARect do
+  with ACanvas do
   begin
     OldPenColor := Pen.Color;
 
@@ -13155,18 +13101,18 @@ begin
       Pen.Color := clBtnShadow
     else
       Pen.Color := GridLineColor;
-    MoveTo(Right - 1, Top);
-    LineTo(Right - 1, Bottom);
-    MoveTo(Left, Bottom - 1);
-    LineTo(Right, Bottom - 1);
+    MoveTo(ARect.Right - 1, ARect.Top);
+    LineTo(ARect.Right - 1, ARect.Bottom);
+    MoveTo(ARect.Left, ARect.Bottom - 1);
+    LineTo(ARect.Right, ARect.Bottom - 1);
 
     if Draw3D then
     begin
       Pen.Color := clBtnHighlight;
-      MoveTo(Left, Top);
-      LineTo(Right, Top);
-      MoveTo(Left, Top);
-      LineTo(Left, Bottom);
+      MoveTo(ARect.Left, ARect.Top);
+      LineTo(ARect.Right, ARect.Top);
+      MoveTo(ARect.Left, ARect.Top);
+      LineTo(ARect.Left, ARect.Bottom);
     end;
 
     Pen.Color := OldPenColor;
@@ -13192,15 +13138,12 @@ begin
       Pic.Canvas.FillRect(Rect(0, 0, Pic.Width, Pic.Height));
       with DrawInfo do
         ImageList.Draw(Pic.Canvas, 0, 0, ImageIndex);
-      with DestRect do
-      begin
-        Left := DrawInfo.PicLeft;
-        Top := DrawInfo.PicTop;
-        Right := DrawInfo.PicLeft +
-          ScreenToPrinter(DrawInfo.ImageList.Width + 2, True);
-        Bottom := DrawInfo.PicTop +
-          ScreenToPrinter(DrawInfo.ImageList.Height + 2, False);
-      end;
+      DestRect.Left := DrawInfo.PicLeft;
+      DestRect.Top := DrawInfo.PicTop;
+      DestRect.Right := DrawInfo.PicLeft +
+        ScreenToPrinter(DrawInfo.ImageList.Width + 2, True);
+      DestRect.Bottom := DrawInfo.PicTop +
+        ScreenToPrinter(DrawInfo.ImageList.Height + 2, False);
       PrintBitmap(ACanvas, Rect(0, 0, Pic.Width, Pic.Height), DestRect, Pic);
     end;
   finally
@@ -13254,18 +13197,15 @@ var
   ARect: TRect;
   Txt: string;
 begin
-  with ARect do
-  begin
-    Left := 0;
-    if PageInfo.ShowColHdr then
-      //group Top := ColHdrHeight
-      Top := CalcGroupColHdrsHeight
-    else
-      Top := 0;
-    Top := Top + (Index - PageInfo.StartRow) * PageInfo.RowHeight;
-    Right := RowHdrWidth;
-    Bottom := Top + PageInfo.RowHeight;
-  end;
+  ARect.Left := 0;
+  if PageInfo.ShowColHdr then
+    //group Top := ColHdrHeight
+    ARect.Top := CalcGroupColHdrsHeight
+  else
+    ARect.Top := 0;
+  ARect.Top := ARect.Top + (Index - PageInfo.StartRow) * PageInfo.RowHeight;
+  ARect.Right := RowHdrWidth;
+  ARect.Bottom := ARect.Top + PageInfo.RowHeight;
 
   Txt := FormatDateTime(TimeFormat, RowToTime(Index));
 
@@ -13396,60 +13336,56 @@ begin
   end;
 
   // Col guaranteed to be partially visible
-  with Result do
-  begin
-    // Printer bug start, fixed
-    WorkLeft := CellRect(Col, Greater(StartRow, PageInfo.StartRow),
-      PageInfo).Left;
-    if StartRow < PageInfo.StartRow then
-      WorkTop := CellRect(Col, PageInfo.StartRow, PageInfo).Top -
-        PageInfo.RowHeight * (PageInfo.StartRow - StartRow)
-    else
-      WorkTop := CellRect(Col, StartRow, PageInfo).Top;
-    // Printer bug end, fixed
+  // Printer bug start, fixed
+  WorkLeft := CellRect(Col, Greater(StartRow, PageInfo.StartRow), PageInfo).Left;
+  if StartRow < PageInfo.StartRow then
+    WorkTop := CellRect(Col, PageInfo.StartRow, PageInfo).Top -
+      PageInfo.RowHeight * (PageInfo.StartRow - StartRow)
+  else
+    WorkTop := CellRect(Col, StartRow, PageInfo).Top;
+  // Printer bug end, fixed
 
-    GridColWidth := PageInfo.ColWidth;
+  GridColWidth := PageInfo.ColWidth;
 
-    // The Base* and MakeUp* code that follows calc's the appt width and left
-    // and takes into account a total width that isn't evenly divisible by
-    // the map col count.  if there is a discrepency then that discrepency
-    // is divvied up amoung the cols working left to right.
-    //
-    //  Example:  Total width = 113, col count = 5
-    //    col 1 = 23
-    //    col 2 = 23
-    //    col 3 = 23
-    //    col 4 = 22
-    //    col 5 = 22
-    //    Total  = 113
-    //
-    //  As opposed to:
-    //    width of all cols = Total div colcount = 22
-    //      ==> Total = 22 * 5 = 110 [110 <> 113]
-    Base := GridColWidth div MapColCount;
-    MakeUp := GridColWidth mod MapColCount;
+  // The Base* and MakeUp* code that follows calc's the appt width and left
+  // and takes into account a total width that isn't evenly divisible by
+  // the map col count.  if there is a discrepency then that discrepency
+  // is divvied up amoung the cols working Result.Left to Result.Right.
+  //
+  //  Example:  Total width = 113, col count = 5
+  //    col 1 = 23
+  //    col 2 = 23
+  //    col 3 = 23
+  //    col 4 = 22
+  //    col 5 = 22
+  //    Total  = 113
+  //
+  //  As opposed to:
+  //    width of all cols = Total div colcount = 22
+  //      ==> Total = 22 * 5 = 110 [110 <> 113]
+  Base := GridColWidth div MapColCount;
+  MakeUp := GridColWidth mod MapColCount;
 
-    MakeUpWidth := Lesser(MapCol - 1, MakeUp) * (Base + 1);
-    BaseCount := MapCol - 1 - MakeUp;
-    if BaseCount > 0 then
-      BaseWidth := BaseCount * Base
-    else
-      BaseWidth := 0;
+  MakeUpWidth := Lesser(MapCol - 1, MakeUp) * (Base + 1);
+  BaseCount := MapCol - 1 - MakeUp;
+  if BaseCount > 0 then
+    BaseWidth := BaseCount * Base
+  else
+    BaseWidth := 0;
 
-    ApptWidth := Base;
-    if MapCol <= MakeUp then
-      Inc(ApptWidth);
+  ApptWidth := Base;
+  if MapCol <= MakeUp then
+    Inc(ApptWidth);
 
-    // Printer bug, fixed
-    Left := WorkLeft + MakeUpWidth + BaseWidth;
+  // Printer bug, fixed
+  Result.Left := WorkLeft + MakeUpWidth + BaseWidth;
 
-    Right := Left + ApptWidth - ApptBuffer;
+  Result.Right := Result.Left + ApptWidth - ApptBuffer;
 
-    // Printer bug, fixed
-    Top := WorkTop;
+  // Printer bug, fixed
+  Result.Top := WorkTop;
 
-    Bottom := CellRect(Col, EndRow, PageInfo).Bottom;
-  end;
+  Result.Bottom := CellRect(Col, EndRow, PageInfo).Bottom;
 end;
 
 function TJvTFDaysPrinter.GetDataHeight(ShowColHdr: Boolean): Integer;

@@ -38,6 +38,9 @@ uses
 type
   TJvDBCheckBoxChangingEvent = procedure(Sender: TObject; var Allow: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBCheckBox = class(TDBCheckBox)
   private
     FDirectEdit: Boolean;

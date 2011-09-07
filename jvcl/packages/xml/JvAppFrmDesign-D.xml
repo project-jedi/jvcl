@@ -19,9 +19,9 @@
     <Package Name="vclx" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="all" Formname="GradCaptionsEditor" Condition=""/>
-    <File Name="..\..\design\JvAppFrmReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvFormWallpaperEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvWallpaperEditForm.pas" Targets="all" Formname="FoWallpaperChooser" Condition=""/>
+    <File Name="..\..\design\JvGradientCaptionForm.pas" Targets="all_win32" Formname="GradCaptionsEditor" Condition=""/>
+    <File Name="..\..\design\JvAppFrmReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFormWallpaperEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\run\JvWallpaperEditForm.pas" Targets="all_win32" Formname="FoWallpaperChooser" Condition=""/>
   </Contains>
 </Package>

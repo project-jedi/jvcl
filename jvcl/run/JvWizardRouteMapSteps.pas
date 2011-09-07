@@ -37,11 +37,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms,
+  Windows, Messages, Types, SysUtils, Classes, Graphics, Controls, Forms,
   JvWizard;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWizardRouteMapSteps = class(TJvWizardRouteMapControl)
   private
     FIndent: Integer;
@@ -103,7 +105,6 @@ const
 implementation
 
 uses
-  Types,
   JvResources;
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);

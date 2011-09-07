@@ -105,6 +105,9 @@ type
     property RadioCheckedIndex: Integer index 3 read GetImageIndex write SetImageIndex default 4;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCheckTreeView = class(TJvTreeView)
   private
     FCheckBoxOptions: TJvTreeViewCheckBoxOptions;

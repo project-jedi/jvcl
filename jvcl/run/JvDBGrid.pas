@@ -213,6 +213,9 @@ type
     ColMoving: Boolean; // currently moving a column
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBGrid = class(TJvExDBGrid, IJvDataControl)
   private
     FAutoSort: Boolean;
@@ -452,7 +455,7 @@ type
     procedure DrawColumnCell(const Rect: TRect; DataCol: Integer;
       Column: TColumn; State: TGridDrawState); override;
     procedure ColWidthsChanged; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure Paint; override;
     procedure CalcSizingState(X, Y: Integer; var State: TGridState;
       var Index: Longint; var SizingPos, SizingOfs: Integer;
@@ -1802,7 +1805,7 @@ begin
   SetMultiSelect(dgMultiSelect in Value);
 end;
 
-function TJvDBGrid.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvDBGrid.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 var
   R: TRect;
   Size: TSize;
@@ -2942,7 +2945,7 @@ var
       if WordWrap then
         DrawOptions := DrawOptions or DT_WORDBREAK;
       {$IFDEF JVCLThemesEnabled}
-      if not FixCell or not (UseXPThemes and ThemeServices.ThemesEnabled) then
+      if not FixCell or not (UseXPThemes and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) then
       {$ENDIF JVCLThemesEnabled}
         {$IFDEF COMPILER14_UP}
         if not FixCell or (DrawingStyle in [gdsClassic, gdsThemed]) then
@@ -2960,7 +2963,7 @@ var
 begin
   if ReduceFlicker
      {$IFDEF COMPILER14_UP} and not FixCell {$ENDIF}
-     {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and ThemeServices.ThemesEnabled) {$ENDIF} then
+     {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) {$ENDIF} then
   begin
     // Use offscreen bitmap to eliminate flicker and
     // brush origin tics in painting / scrolling.
@@ -2968,19 +2971,14 @@ begin
     try
       DrawBitmap.Canvas.Lock;
       try
-        with DrawBitmap, ARect do
-        begin
-          Width := Max(Width, Right - Left);
-          Height := Max(Height, Bottom - Top);
-          R := Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
-          B := Rect(0, 0, Right - Left, Bottom - Top);
-        end;
-        with DrawBitmap.Canvas do
-        begin
-          Font := Canvas.Font;
-          Font.Color := Canvas.Font.Color;
-          Brush := Canvas.Brush;
-        end;
+        DrawBitmap.Width := Max(DrawBitmap.Width, ARect.Right - ARect.Left);
+        DrawBitmap.Height := Max(DrawBitmap.Height, ARect.Bottom - ARect.Top);
+        R := Rect(DX, DY, ARect.Right - ARect.Left - 1, ARect.Bottom - ARect.Top - 1);
+        B := Rect(0, 0, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+        DrawBitmap.Canvas.Font := Canvas.Font;
+        DrawBitmap.Canvas.Font.Color := Canvas.Font.Color;
+        DrawBitmap.Canvas.Brush := Canvas.Brush;
+
         DrawAText(DrawBitmap.Canvas);
         if Canvas.CanvasOrientation = coRightToLeft then
         begin
@@ -3000,11 +2998,9 @@ begin
   begin
     // No offscreen bitmap - The display is faster but flickers
     if IsRightToLeft then
-      with ARect do
-        R := Rect(Left, Top, Right - 1 - DX, Bottom - DY - 1)
+      R := Rect(ARect.Left, ARect.Top, ARect.Right - 1 - DX, ARect.Bottom - DY - 1)
     else
-      with ARect do
-        R := Rect(Left + DX, Top + DY, Right - 1, Bottom - 1);
+      R := Rect(ARect.Left + DX, ARect.Top + DY, ARect.Right - 1, ARect.Bottom - 1);
     B := ARect;
     DrawAText(Canvas);
   end;
@@ -3277,14 +3273,13 @@ begin
   end;
 
   DoDrawCell(ACol, ARow, ARect, AState);
-  with ARect do
-    if FTitleArrow and (ARow = 0) and (ACol = 0) and
-      (dgIndicator in Options) and (dgTitles in Options) then
-    begin
-      Bmp := GetGridBitmap(gpPopup);
-      DrawBitmapTransparent(Canvas, (ARect.Left + ARect.Right - Bmp.Width) div 2,
-        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clWhite);
-    end;
+  if FTitleArrow and (ARow = 0) and (ACol = 0) and
+    (dgIndicator in Options) and (dgTitles in Options) then
+  begin
+    Bmp := GetGridBitmap(gpPopup);
+    DrawBitmapTransparent(Canvas, (ARect.Left + ARect.Right - Bmp.Width) div 2,
+      (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clWhite);
+  end;
 
   InBiDiMode := Canvas.CanvasOrientation = coRightToLeft;
   if (dgIndicator in Options) and (ACol = 0) and (ARow - TitleOffset >= 0) and
@@ -3367,7 +3362,7 @@ begin
       if FTitleButtons or ([dgRowLines, dgColLines] * Options = [dgRowLines, dgColLines]) then
       begin
         {$IFDEF JVCLThemesEnabled}
-        if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+        if not (UseXPThemes and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) then
         {$ENDIF JVCLThemesEnabled}
         begin
           DrawEdge(Canvas.Handle, TitleRect, EdgeFlag[Down], BF_BOTTOMRIGHT);
@@ -3474,7 +3469,7 @@ begin
         WriteCellText(ARect, MinOffs, MinOffs, '', taLeftJustify, False, IsRightToLeft);
       {$IFDEF COMPILER14_UP}
       if ([dgRowLines, dgColLines] * Options = [dgRowLines, dgColLines]) and
-         ((DrawingStyle = gdsClassic) or ((DrawingStyle = gdsThemed) and not ThemeServices.ThemesEnabled)) and
+         ((DrawingStyle = gdsClassic) or ((DrawingStyle = gdsThemed) and not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP})) and
          not (gdPressed in AState) then
       begin
         InflateRect(TitleRect, 1, 1);

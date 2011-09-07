@@ -61,6 +61,9 @@ type
   // In a sense this component is silly :-). By using it the JVCL gets used.
   // Therefore it gets an exception from the MPL rule of mentioning the JVCL if using a JVCL component.
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvPoweredByJCL = class(TJvPoweredBy)
   public
     constructor Create(AOwner: TComponent); override;
@@ -95,6 +98,9 @@ type
     property OnStartDrag;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvPoweredByJVCL = class(TJvPoweredBy)
   public
     constructor Create(AOwner: TComponent); override;

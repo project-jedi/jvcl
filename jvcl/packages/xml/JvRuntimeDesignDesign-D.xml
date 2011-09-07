@@ -11,6 +11,6 @@
     <Package Name="rtl" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvRuntimeDesignReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvRuntimeDesignReg.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

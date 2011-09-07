@@ -81,6 +81,9 @@ type
     property ClipboardFormatNames[Index: Integer]: string read GetClipboardFormatNames;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvClipboardViewer = class(TJvCustomClipboardViewer)
   published
     property Anchors;
@@ -382,8 +385,7 @@ var
   SavePal: HPALETTE;
 begin
   Canvas.Pen.Color := clBtnFace;
-  with CellRect do
-    Canvas.Rectangle(Left, Top, Right, Bottom);
+  Canvas.Rectangle(CellRect.Left, CellRect.Top, CellRect.Right, CellRect.Bottom);
   InflateRect(CellRect, -1, -1);
   Frame3D(Canvas, CellRect, clBtnShadow, clBtnHighlight, 2);
   SavePal := 0;
@@ -395,8 +397,7 @@ begin
   try
     Canvas.Brush.Color := CellColor;
     Canvas.Pen.Color := CellColor;
-    with CellRect do
-      Canvas.Rectangle(Left, Top, Right, Bottom);
+    Canvas.Rectangle(CellRect.Left, CellRect.Top, CellRect.Right, CellRect.Bottom);
   finally
     if FPalette <> 0 then
       SelectPalette(Canvas.Handle, SavePal, True);

@@ -38,6 +38,9 @@ uses
   JvExExtCtrls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSplitter = class(TJvExSplitter)
   {$IFDEF JVCLThemesEnabled}
   protected
@@ -80,7 +83,7 @@ var
   Bmp: TBitmap;
   DC: THandle;
 begin
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
 //    DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
     DC := Canvas.Handle;

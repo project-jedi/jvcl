@@ -51,9 +51,9 @@ type
     FTimer: TTimer;
     FCountdown: IJvDynControlCaption;
     FMsg: string;
-    FDefaultButton : {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF};
+    FDefaultButton: {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF};
   protected
-    property DefaultButton : {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} read FDefaultButton write FDefaultButton ;
+    property DefaultButton: {$IFDEF DELPHI12}TCustomButton{$ELSE}TButton{$ENDIF} read FDefaultButton write FDefaultButton ;
     procedure CustomKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CustomMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure CustomShow(Sender: TObject);
@@ -68,7 +68,6 @@ type
     function IsDSAChecked: Boolean;
     property Msg: string read FMsg write FMsg;
     property Timeout: Integer read FTimeout write FTimeout;
-
   end;
 
 //----------------------------------------------------------------------------
@@ -376,6 +375,9 @@ type
   TJvDSADataEvent = procedure(Sender: TObject; const DSAInfo: TDSARegItem; const Storage: TDSAStorage) of object;
   TJvDSAAutoCloseEvent = procedure(Sender: TObject; var Handled: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDSADialog = class(TJvComponent)
   private
     FCheckControl: TWinControl;
@@ -543,10 +545,8 @@ end;
 //=== { TDSAMessageForm } ====================================================
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
-
 var
   NonClientMetrics: TNonClientMetrics;
-
 begin
   inherited CreateNew(AOwner, Dummy);
   {$IFDEF RTL210_UP}
@@ -757,10 +757,9 @@ var
   ButtonHeight, ButtonSpacing, ButtonCount, ButtonGroupWidth: Integer;
   IconWidth, IconHeight,
   TextWidth, TextHeight,
-  X, ALeft: Integer;
+  X: Integer;
   ChkTextWidth: Integer;
   TimeoutTextWidth: Integer;
-  IconID: PChar;
   TempRect, TextRect: TRect;
   I: Integer;
   CenterParent: TComponent;
@@ -770,7 +769,6 @@ var
   Image: TWinControl;
   DynControlImage: IJvDynControlImage;
   DynControlLabel: IJvDynControlLabel;
-  DynControlAlign: IJvDynControlAlign;
   MessagePanel: TWinControl;
   BottomPanel: TWinControl;
   ResultForm : TDSAMessageForm;
@@ -2223,36 +2221,18 @@ end;
 
 { ShowModal patch }
 
-procedure CallShowModal(const Frm: TCustomForm); // Helper to get the VMT index of ShowModal
-begin
-  Frm.ShowModal;
+function GetShowModalVMTOffset: Integer;
+asm
+  MOV EAX, VMTOFFSET TCustomForm.ShowModal
+  {$IFDEF CPUX64}
+  {$MESSAGE WARN 'Remove the "SHL EAX, 1" after VMTOFFSET is fixed in the dcc64 compiler'}
+  SHL EAX, 1
+  {$ENDIF CPUX64}
 end;
 
-function FindShowModalVMT: Integer; //  Locate the VMT index of ShowModal
-var
-  Ptr: Pointer;
+function GetShowModalVMTIndex: Integer; //  Locate the VMT index of ShowModal
 begin
-  Ptr := @CallShowModal;
-  if Ptr = nil then
-  begin
-    Result := -1;
-    Exit;
-  end
-  else
-  begin
-    Inc(Integer(Ptr), 4);
-    Result := PInteger(Ptr)^ div 4;
-  end;
-end;
-
-// Set the virtual method pointer for an instance, nice addition for JCL?
-
-procedure SetVirtualMethodInstance(Instance: TObject; const VMTIdx: Integer;
-  const MethodPtr: Pointer);
-var
-  WrittenBytes: Cardinal;
-begin
-  WriteProtectedMemory(Pointer(PInteger(Instance)^ + VMTIdx * SizeOf(Pointer)), @MethodPtr, SizeOf(Pointer), WrittenBytes);
+  Result := GetShowModalVMTOffset div SizeOf(Pointer);
 end;
 
 //=== { TPatchedForm } =======================================================
@@ -2426,10 +2406,10 @@ procedure TJvDSADialog.FormPatch;
 var
   VMTIdx: Integer;
 begin
-  VMTIdx := FindShowModalVMT;
+  VMTIdx := GetShowModalVMTIndex;
   SetOrgShowModalPtr(GetVirtualMethod(Owner.ClassType, VMTIdx));
   SetOrgOwner(Owner);
-  SetVirtualMethodInstance(Owner, VMTIdx, @TPatchedForm.ShowModal);
+  SetVirtualMethod(Owner.ClassType, VMTIdx, @TPatchedForm.ShowModal);
 end;
 
 procedure TJvDSADialog.FormUnPatch;
@@ -2438,8 +2418,8 @@ var
 begin
   if GetOrgShowModalPtr <> nil then
   begin
-    VMTIdx := FindShowModalVMT;
-    SetVirtualMethodInstance(GetOrgOwner, VMTIdx, GetOrgShowModalPtr);
+    VMTIdx := GetShowModalVMTIndex;
+    SetVirtualMethod(GetOrgOwner.ClassType, VMTIdx, GetOrgShowModalPtr);
     SetOrgShowModalPtr(nil);
   end;
 end;

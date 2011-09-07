@@ -51,6 +51,9 @@ type
   TJvGetTimeEvent = procedure(Sender: TObject; var ATime: TDateTime) of object;
   TJvGetDateEvent = TJvGetTimeEvent;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvClock = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FTimer: TJvTimer;
@@ -515,8 +518,7 @@ procedure TJvClock.GetTime(var T: TJvClockTime);
 var
   MSec: Word;
 begin
-  with T do
-    DecodeTime(GetSystemTime, Hour, Minute, Second, MSec);
+  DecodeTime(GetSystemTime, T.Hour, T.Minute, T.Second, MSec);
 end;
 
 procedure TJvClock.UpdateClock;
@@ -587,8 +589,7 @@ begin
   if BevelInner <> bvNone then
     Inc(InflateWidth, BevelWidth);
   InflateRect(FClockRect, -InflateWidth, -InflateWidth);
-  with FClockRect do
-    CircleClock(Right - Left, Bottom - Top);
+  CircleClock(FClockRect.Right - FClockRect.Left, FClockRect.Bottom - FClockRect.Top);
   if AutoSize then
     ResizeFont(Rect);
 end;
@@ -1163,13 +1164,10 @@ begin
     FullWidth := TextWidth(SAmPm) + (L * FontWidth);
     if ShowDate then
       FullWidth := FullWidth + (Length(DateFormat) + 1) * FontWidth;
-    with Rect do
-    begin
-      Left := ((Right + Left) - FullWidth) div 2;
-      Right := Left + FullWidth;
-      Top := ((Bottom + Top) - FontHeight) div 2;
-      Bottom := Top + FontHeight;
-    end;
+    Rect.Left := ((Rect.Right + Rect.Left) - FullWidth) div 2;
+    Rect.Right := Rect.Left + FullWidth;
+    Rect.Top := ((Rect.Bottom + Rect.Top) - FontHeight) div 2;
+    Rect.Bottom := Rect.Top + FontHeight;
     Brush.Color := Color;
     if ShowDate then
     begin

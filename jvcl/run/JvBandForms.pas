@@ -415,7 +415,11 @@ begin
   end;
 end;
 
+{$IFDEF RTL230_UP}
+function MsgHookProc(nCode: Integer; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
+{$ELSE}
 function MsgHookProc(nCode, wParam, lParam: Integer): Integer; stdcall;
+{$ENDIF RTL230_UP}
 var
   lOk: Boolean;
   I: Integer;

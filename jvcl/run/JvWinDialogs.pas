@@ -102,7 +102,7 @@ const
   OPF_PATHNAME = $02;
 
 type
-  TOpenFileNameExA = packed record
+  TOpenFileNameExA = record
     lStructSize: DWORD; // Size of the structure in bytes.
     hWndOwner: HWND; // Handle that is the parent of the dialog.
     hInstance: HINST; // Application instance handle.
@@ -130,7 +130,7 @@ type
     FlagsEx: DWORD; // Extended Flags.
   end;
 
-  TOpenFileNameExW = packed record
+  TOpenFileNameExW = record
     lStructSize: DWORD; // Size of the structure in bytes.
     hWndOwner: HWND; // Handle that is the parent of the dialog.
     hInstance: HINST; // Application instance handle.
@@ -172,6 +172,9 @@ type
   TJvFormatDriveError = (errParams, errSysError, errAborted, errCannotFormat, errOther);
   TJvFormatDriveErrorEvent = procedure(Sender: TObject; Error: TJvFormatDriveError) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFormatDriveDialog = class(TJvCommonDialogF)
   private
     FDrive: Char;
@@ -192,6 +195,9 @@ type
     property OnError: TJvFormatDriveErrorEvent read FOnError write FOnError;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOrganizeFavoritesDialog = class(TJvCommonDialog)
   public
     function Execute: Boolean; override;
@@ -208,6 +214,9 @@ type
   TCplApplet = function(hwndCPl: THandle; uMsg: UINT; lParam1, lParam2: LPARAM): Longint; stdcall;
 
   // (rom) largely reimplemented
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAppletDialog = class(TJvCommonDialogF)
   private
     FAppletName: string;
@@ -234,6 +243,9 @@ type
     property AppletIndex: Integer read FAppletIndex write FAppletIndex default 0;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvComputerNameDialog = class(TJvCommonDialog)
   private
     FComputerName: string;
@@ -247,6 +259,9 @@ type
   end;
 
   // (p3) could be removed - a more complete implementation is in JvBrowseFolder
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvBrowseFolderDialog = class(TJvCommonDialog)
   private
     FFolderName: string;
@@ -259,6 +274,9 @@ type
     property Caption: string read FCaption write FCaption;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOutOfMemoryDialog = class(TJvCommonDialog)
   private
     FCaption: string;
@@ -269,6 +287,9 @@ type
   end;
 
   // (rom) changed to new TJvCommonDialogF to get better Execute
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvChangeIconDialog = class(TJvCommonDialogF)
   private
     FIconIndex: Integer;
@@ -280,6 +301,9 @@ type
     property FileName: TFileName read FFileName write FFileName;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvShellAboutDialog = class(TJvCommonDialog)
   private
     FCaption: string;
@@ -300,6 +324,9 @@ type
     property Product: string read FProduct write FProduct;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvRunDialog = class(TJvCommonDialogP)
   private
     FCaption: string;
@@ -316,6 +343,9 @@ type
     property Icon: TIcon read FIcon write SetIcon;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvObjectPropertiesDialog = class(TJvCommonDialogF)
   private
     FObjectName: TFileName;
@@ -329,6 +359,9 @@ type
     property InitialTab: string read FInitialTab write FInitialTab;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNewLinkDialog = class(TJvCommonDialogP)
   private
     FDestinationFolder: string;
@@ -338,11 +371,17 @@ type
     property DestinationFolder: string read FDestinationFolder write FDestinationFolder;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAddHardwareDialog = class(TJvCommonDialogP)
   public
     function Execute: Boolean; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOpenWithDialog = class(TJvCommonDialogP)
   private
     FFileName: TFileName;
@@ -352,6 +391,9 @@ type
     property FileName: TFileName read FFileName write FFileName;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDiskFullDialog = class(TJvCommonDialogF)
   private
     FDriveChar: Char;
@@ -370,6 +412,9 @@ type
     ekVistaShutdown = 2    // Vista Shutdown without dialog
   );
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvExitWindowsDialog = class(TJvCommonDialogP)
   private
     FKind: TJvExitWindowsKind;
@@ -848,14 +893,12 @@ const
 
 type
   PCPLInfo = ^TCplInfo;
-  TCplInfo = packed record
+  TCplInfo = record
     idIcon: Integer;
     idName: Integer;
     idInfo: Integer;
     lData: Longint;
   end;
-
-
 
 constructor TJvAppletDialog.Create(AOwner: TComponent);
 begin
@@ -1172,11 +1215,17 @@ function ExecuteShellMessageBox(MethodPtr: Pointer; Instance: THandle;
   Parameters: array of Pointer): Integer;
 type
   PPointer = ^Pointer;
+{$IFNDEF DELPHI64_TEMPORARY}
 var
   ParamCount: Integer;
   ParamBuffer: PChar;
   BufferIndex: Integer;
+{$ENDIF ~DELPHI64_TEMPORARY}
 begin
+  {$IFDEF DELPHI64_TEMPORARY}
+  System.Error(rePlatformNotImplemented);
+  Result := MaxInt; // to remove the warning
+  {$ELSE ~DELPHI64_TEMPORARY}
   ParamCount := High(Parameters) + 1;
   GetMem(ParamBuffer, ParamCount * SizeOf(Pointer));
   try
@@ -1207,6 +1256,7 @@ begin
   finally
     FreeMem(ParamBuffer);
   end;
+  {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 
 function ShellMessageBox(Instance: THandle; Owner: THandle; Text: PChar;

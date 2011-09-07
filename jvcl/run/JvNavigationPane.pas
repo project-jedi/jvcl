@@ -49,6 +49,9 @@ type
     Result: Longint;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavPanelHeader = class(TJvCustomControl)
   private
     FColorFrom: TColor;
@@ -126,6 +129,9 @@ type
     property OnStartDrag;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavPanelDivider = class(TJvExSplitter)
   private
     FColorFrom: TColor;
@@ -173,6 +179,9 @@ type
     property Width default 125;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOutlookSplitter = class(TJvExSplitter)
   private
     FColorTo: TColor;
@@ -360,6 +369,9 @@ type
 
   TJvNavIconButtonType = (nibDropDown, nibImage, nibDropArrow, nibClose);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavIconButton = class(TJvCustomGraphicButton)
   private
     FChangeLink: TChangeLink;
@@ -462,6 +474,9 @@ type
     property Caption;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavPanelButton = class(TJvCustomGraphicButton)
   private
     FImageIndex: TImageIndex;
@@ -811,6 +826,9 @@ type
     property OnDropDownMenu: TContextPopupEvent read FOnDropDownMenu write FOnDropDownMenu;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavPaneToolPanel = class(TJvCustomNavPaneToolPanel)
   published
     property Align;
@@ -1004,6 +1022,9 @@ type
     property OnSplitterMouseUp: TMouseEvent read GetSplitterMouseUp write SetSplitterMouseUp;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavigationPane = class(TJvCustomNavigationPane)
   public
     property NavPages;
@@ -1102,6 +1123,9 @@ type
   end;
 
   TJvNavPanelTheme = (nptStandard, nptXPBlue, nptXPSilver, nptXPOlive, nptCustom);
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNavPaneStyleManager = class(TJvComponent)
   private
     FColors: TJvNavPanelColors;
@@ -4953,14 +4977,7 @@ begin
     end;
   end;
 
-  with Result do
-  begin
-    Left := ADestRect.Left;
-    Top := ADestRect.Top;
-    Right := ADestRect.Left + W;
-    Bottom := ADestRect.Top + H;
-  end;
-
+  Result := Rect(ADestRect.Left, ADestRect.Top, ADestRect.Left + W, ADestRect.Top + H);
   if Center then
     OffsetRect(Result, (CW - W) div 2, (CH - H) div 2);
 end;

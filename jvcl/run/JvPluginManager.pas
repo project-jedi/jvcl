@@ -123,6 +123,9 @@ type
     PlugIn: TJvPlugIn;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPluginManager = class(TJvComponent)
   private
     FExtension: string;

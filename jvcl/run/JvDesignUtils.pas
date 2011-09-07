@@ -113,28 +113,25 @@ end;
 
 function DesignValidateRect(const ARect: TRect): TRect;
 begin
-  with Result do
+  if ARect.Right < ARect.Left then
   begin
-    if ARect.Right < ARect.Left then
-    begin
-      Left := ARect.Right;
-      Right := ARect.Left;
-    end
-    else
-    begin
-      Left := ARect.Left;
-      Right := ARect.Right;
-    end;
-    if ARect.Bottom < ARect.Top then
-    begin
-      Top := ARect.Bottom;
-      Bottom := ARect.Top;
-    end
-    else
-    begin
-      Top := ARect.Top;
-      Bottom := ARect.Bottom;
-    end;
+    Result.Left := ARect.Right;
+    Result.Right := ARect.Left;
+  end
+  else
+  begin
+    Result.Left := ARect.Left;
+    Result.Right := ARect.Right;
+  end;
+  if ARect.Bottom < ARect.Top then
+  begin
+    Result.Top := ARect.Bottom;
+    Result.Bottom := ARect.Top;
+  end
+  else
+  begin
+    Result.Top := ARect.Top;
+    Result.Bottom := ARect.Bottom;
   end;
 end;
 
@@ -178,14 +175,13 @@ begin
   DC := GetDCEx(DesktopWindow, 0, DCX_CACHE or DCX_LOCKWINDOWUPDATE);
   try
     C := TCanvas.Create;
-    with C do
     try
-      Handle := DC;
-      Pen.Style := APenStyle;
-      Pen.Color := clWhite;
-      Pen.Mode := pmXor;
-      Brush.Style := bsClear;
-      Rectangle(ARect);
+      C.Handle := DC;
+      C.Pen.Style := APenStyle;
+      C.Pen.Color := clWhite;
+      C.Pen.Mode := pmXor;
+      C.Brush.Style := bsClear;
+      C.Rectangle(ARect);
     finally
       C.Free;
     end;

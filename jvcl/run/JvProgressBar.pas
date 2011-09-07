@@ -94,6 +94,9 @@ type
   TJvProgressBarState = (pbsNormal, pbsError, pbsPaused);
 
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgressBar = class(TJvExProgressBar)
   private
     FFillColor: TColor;
@@ -156,6 +159,9 @@ type
     constructor Create(AOwner: TComponent); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGradientProgressBar = class(TJvCustomGradientProgressBar)
   published
     property BarColorFrom default clWhite;

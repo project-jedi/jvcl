@@ -198,10 +198,10 @@ type
 
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure ParentColorChanged; override;
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -262,6 +262,9 @@ type
     property LinkCheckedToCollapsed: Boolean read FLinkCheckedToCollapsed write SetLinkCheckedToCollapsed;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvRollOut = class(TJvCustomRollOut)
   published
     property Action;
@@ -349,23 +352,20 @@ procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColo
   var
     TopRight, BottomLeft: TPoint;
   begin
-    with Canvas, Rect do
+    TopRight.X := Rect.Right;
+    TopRight.Y := Rect.Top;
+    BottomLeft.X := Rect.Left;
+    BottomLeft.Y := Rect.Bottom;
+    if TopColor <> clNone then
     begin
-      TopRight.X := Right;
-      TopRight.Y := Top;
-      BottomLeft.X := Left;
-      BottomLeft.Y := Bottom;
-      if TopColor <> clNone then
-      begin
-        Pen.Color := TopColor;
-        PolyLine([BottomLeft, TopLeft, TopRight]);
-      end;
-      if BottomColor <> clNone then
-      begin
-        Pen.Color := BottomColor;
-        Dec(BottomLeft.X);
-        PolyLine([TopRight, BottomRight, BottomLeft]);
-      end;
+      Canvas.Pen.Color := TopColor;
+      Canvas.PolyLine([BottomLeft, Rect.TopLeft, TopRight]);
+    end;
+    if BottomColor <> clNone then
+    begin
+      Canvas.Pen.Color := BottomColor;
+      Dec(BottomLeft.X);
+      Canvas.PolyLine([TopRight, Rect.BottomRight, BottomLeft]);
     end;
   end;
 
@@ -1038,7 +1038,7 @@ begin
   RedrawControl(False);
 end;
 
-function TJvCustomRollOut.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomRollOut.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   //  inherited DoEraseBackground(Canvas, Param);
   Result := False;
@@ -1189,7 +1189,7 @@ procedure TJvCustomRollOut.CMExpanded(var Msg: TMessage);
 var
   Sender: TJvCustomRollOut;
 begin
-  if Msg.WParam = FGroupIndex then
+  if Msg.WParam = WPARAM(FGroupIndex) then
   begin
     Sender := TJvCustomRollOut(Msg.LParam);
     if (Sender <> Self) then
@@ -1212,8 +1212,7 @@ begin
 end;
 *)
 
-function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
   Result := Enabled and (IsAccel(Key, Caption) and (ssAlt in Shift)) or ((Key = VK_SPACE) and Focused);
   if Result then
@@ -1223,7 +1222,7 @@ begin
       SetFocus;
   end
   else
-    Result := inherited WantKey(Key, Shift, KeyText);
+    Result := inherited WantKey(Key, Shift);
 end;
 
 procedure TJvCustomRollOut.DoColorsChange(Sender: TObject);

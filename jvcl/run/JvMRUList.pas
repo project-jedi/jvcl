@@ -81,6 +81,9 @@ type
   PJvMruReturnData = ^TJvMruReturnData;
   TMruCount = 0..29;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMruList = class(TJvComponent)
   private
     FUnicodeAvailable: Boolean;
@@ -204,7 +207,7 @@ type
   MruCompareStringW = function(lpszString1, lpszString2: PWideChar): Integer;
 
   PMruRec = ^TMruRec;
-  TMruRec = packed record
+  TMruRec = record
     cbSize: DWORD;
     nMaxItems: DWORD;
     dwFlags: DWORD;

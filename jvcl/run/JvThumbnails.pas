@@ -66,6 +66,9 @@ type
   TTitleNotify = procedure(Sender: TObject; FileName: string;
     var ThumbnailTitle: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvThumbnail = class(TJvBaseThumbnail)
   private
     FTitle: string;

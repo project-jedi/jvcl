@@ -41,6 +41,9 @@ type
     AIndex: Integer; const AItem: string; var AHeight:Integer) of object;
   TJvPrintDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     ARect: TRect; AIndex: Integer; const AItem: string) of object;
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvPrint = class(TJvComponent)
   private
     FOnBeginPrint: TNotifyEvent;
