@@ -189,7 +189,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
-  StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, DBTables, Printers,
+  StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, Printers,
   JvComponentBase, JvJVCLUtils,
   JvgTypes, JvgCommClasses, JvgUtils;
 

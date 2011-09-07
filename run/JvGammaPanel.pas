@@ -37,11 +37,14 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Windows, Messages, Graphics, Controls, Dialogs,
+  Types, SysUtils, Classes, Windows, Messages, Graphics, Controls, Dialogs,
   ExtCtrls, StdCtrls,
   JvTypes, JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGammaPanel = class(TJvWinControl)
   private
     FForegroundColor: TColor;

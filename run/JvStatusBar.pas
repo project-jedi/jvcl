@@ -59,6 +59,9 @@ type
     property MarginTop: Integer read FMarginTop write SetMarginTop default 3;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvStatusBar = class(TJvExStatusBar)
   private
     FAutoHintShown: Boolean;
@@ -121,7 +124,7 @@ procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   {$IFDEF JVCLThemesEnabled}
-  if not ThemeServices.ThemesEnabled then
+  if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   {$ENDIF JVCLThemesEnabled}
     with Params do
       WindowClass.Style := WindowClass.Style and not CS_HREDRAW;

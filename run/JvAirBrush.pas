@@ -33,13 +33,16 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Windows, Graphics,
+  Classes, Windows, Types, Graphics,
   JvComponentBase;
 
 type
   TJvAirBrushShape = (absRound, absSquare, absLeftSlash, absRightSlash,
     absHorizontal, absVertical, absSpray);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAirBrush = class(TJvComponent)
   private
     FBitmap: TBitmap;

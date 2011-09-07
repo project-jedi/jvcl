@@ -142,7 +142,7 @@ type
     procedure DoEmptyValueExit; virtual;
     procedure FocusSet(PrevWnd: THandle); override;
     procedure FocusKilled(NextWnd: THandle); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure MouseEnter(AControl: TControl); override;
@@ -181,6 +181,9 @@ type
     property DataConnector: TJvFieldDataConnector read FDataConnector write SetDataConnector;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvEdit = class(TJvCustomEdit)
   published
     property BevelEdges;
@@ -539,7 +542,7 @@ begin
   inherited FocusKilled(NextWnd);
 end;
 
-function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEdit.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 var
   R: TRect;
 begin

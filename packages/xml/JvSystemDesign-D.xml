@@ -19,11 +19,11 @@
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvMinMaxForm.pas" Targets="all" Formname="MinMaxInfoEditDialog" Condition=""/>
-    <File Name="..\..\design\JvPerfStatEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvSystemReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTimerListEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="all" Formname="JvFormPropsDlg" Condition=""/>
+    <File Name="..\..\design\JvMinMaxForm.pas" Targets="all_win32" Formname="MinMaxInfoEditDialog" Condition=""/>
+    <File Name="..\..\design\JvPerfStatEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvSystemReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTimerListEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="all_win32" Formname="JvFormPropsDlg" Condition=""/>
   </Contains>
 </Package>

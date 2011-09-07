@@ -182,6 +182,9 @@ type
     property Center: TPoint read GetCenter;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDialButton = class(TJvCustomDialButton)
   published
     // properties
@@ -812,8 +815,7 @@ begin
           Inner.Y - DotRadius,
           Inner.X + DotRadius,
           Inner.Y + DotRadius);
-        with FPointerRect do
-          Canvas.Ellipse(Left, Top, Right, Bottom);
+        Canvas.Ellipse(FPointerRect.Left, FPointerRect.Top, FPointerRect.Right, FPointerRect.Bottom);
       end;
     psOwnerDraw:
       if Assigned(FOnDrawPointer) then
@@ -831,8 +833,8 @@ begin
 
         // Create a clipping region to protect the area outside the button
         // face.
-        with FPointerRect do
-          Region := CreateEllipticRgn(Left - 1, Top - 1, Right + 1, Bottom + 1);
+        Region := CreateEllipticRgn(FPointerRect.Left - 1, FPointerRect.Top - 1,
+            FPointerRect.Right + 1, FPointerRect.Bottom + 1);
         SelectClipRgn(Canvas.Handle, Region);
         try
           FOnDrawPointer(Self, FPointerRect);
@@ -854,7 +856,7 @@ begin
     FBitmapInvalid := True;
   end;
   {$IFDEF JVCLThemesEnabled}
-  if FBitmapInvalid or ThemeServices.ThemesEnabled then
+  if FBitmapInvalid or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   {$ELSE}
   if FBitmapInvalid then
   {$ENDIF JVCLThemesEnabled}
@@ -867,7 +869,7 @@ begin
     end;
 
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       FBitmap.Canvas.CopyRect(FBitmapRect, Canvas, FBitmapRect);
     {$ENDIF JVCLThemesEnabled}
 
@@ -909,7 +911,7 @@ begin
     Canvas.Brush.Color := Parent.Brush.Color;
     Canvas.Brush.Style := bsSolid;
     {$IFDEF JVCLThemesEnabled}
-    if not ThemeServices.ThemesEnabled then
+    if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     {$ENDIF JVCLThemesEnabled}
       Canvas.FillRect(FBitmapRect);
     SetViewportOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
@@ -972,7 +974,7 @@ begin
   InflateRect(ARect, -1, -1);
   Canvas.Brush.Style := bsClear;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     BitmapNeeded;
     Canvas.Pen.Color := FBitmap.Canvas.Pixels[0, 0]
@@ -1111,11 +1113,8 @@ end;
 
 function TJvCustomDialButton.GetCenter: TPoint;
 begin
-  with Result do
-  begin
-    X := FSize div 2;
-    Y := X;
-  end;
+  Result.X := FSize div 2;
+  Result.Y := Result.X;
 end;
 
 procedure TJvCustomDialButton.ClearTicks;

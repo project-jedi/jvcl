@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
+  Windows, Types,
   JvInterpreter;
 
 function Point2Var(const Point: TPoint): Variant;

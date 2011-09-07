@@ -37,6 +37,9 @@ uses
   JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageSquare = class(TJvGraphicControl)
   private
     FHiColor: TColor;
@@ -165,7 +168,7 @@ begin
   end
   else
   {$IFDEF JVCLThemesEnabled}
-  if (FBorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
+  if (FBorderStyle = bsSingle) and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     DrawThemedBorder(Self)
   else
   {$ENDIF JVCLThemesEnabled}

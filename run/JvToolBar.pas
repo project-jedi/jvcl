@@ -42,6 +42,9 @@ uses
   JvTypes, JvMenus, JvExComCtrls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvToolBar = class(TJvExToolBar)
   private
     FChangeLink: TJvMenuChangeLink;

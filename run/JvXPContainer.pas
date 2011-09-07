@@ -106,6 +106,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPContainer = class(TJvXPCustomContainer)
   published
     property Alignment;

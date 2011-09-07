@@ -39,6 +39,9 @@ uses
   JvBaseDlg, JvComponent, JvTypes;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImageDialog = class(TJvCommonDialogP)
   private
     FPicture: TPicture;

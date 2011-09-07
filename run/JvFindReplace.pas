@@ -54,6 +54,9 @@ type
   // internal type to handle different component ancestry trees
   TJvFindReplaceEditKind = (etEmpty, etCustomEdit, etJvCustomEditor);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFindReplace = class(TJvComponent)
   private
     FOnFind: TNotifyEvent;

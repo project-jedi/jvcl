@@ -133,6 +133,9 @@ type
   end;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvControlActionList = class(TJvActionBaseActionList)
   //The idea of the Action Classes is to work different type of controls.
   //

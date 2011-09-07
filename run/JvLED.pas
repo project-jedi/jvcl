@@ -75,6 +75,9 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvLED = class(TJvCustomLED)
   published
     property Active;

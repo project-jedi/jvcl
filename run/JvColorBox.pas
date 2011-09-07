@@ -404,7 +404,7 @@ procedure TJvCustomDropButton.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and Enabled and not (csDesigning in ComponentState) then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Enabled and not (csDesigning in ComponentState) then
     Invalidate;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -413,7 +413,7 @@ procedure TJvCustomDropButton.MouseLeave(Control: TControl);
 begin
   inherited MouseLeave(Control);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and Enabled and not (csDesigning in ComponentState) then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Enabled and not (csDesigning in ComponentState) then
     Invalidate;
   {$ENDIF JVCLThemesEnabled}
 end;

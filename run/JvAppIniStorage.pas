@@ -125,6 +125,9 @@ type
   // This class handles the flushing into a disk file
   // and publishes a few properties for them to be
   // used by the user in the IDE
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvAppIniFileStorage = class(TJvCustomAppIniStorage)
   private
     procedure FlushInternal;

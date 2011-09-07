@@ -44,6 +44,9 @@ const
 type
   TJvDiceValue = 1..6;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDice = class(TJvCustomControl) // , IJvDenySubClassing
   private
     FActive: Boolean;
@@ -66,7 +69,7 @@ type
     procedure NewRandomValue;
   protected
     procedure FocusChanged(AControl: TWinControl); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure SetAutoSize(Value: Boolean);  override;
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
@@ -225,7 +228,7 @@ begin
   inherited FocusChanged(AControl);
 end;
 
-function TJvDice.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvDice.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   Result := True; // Paint clears the background
 end;

@@ -176,6 +176,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvModernTabBarPainter = class(TJvTabBarPainter)
   private
     FFont: TFont;
@@ -423,6 +426,9 @@ type
     property OnLeftTabChange: TNotifyEvent read FOnLeftTabChange write FOnLeftTabChange;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTabBar = class(TJvCustomTabBar)
   published
     property Align default alTop;
@@ -2024,7 +2030,7 @@ const
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     DrawThemedFrameControl(Canvas.Handle, R, DFC_SCROLL, ScrollTypes[Button] or States[State])
   else
   {$ENDIF JVCLThemesEnabled}

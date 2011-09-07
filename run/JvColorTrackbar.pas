@@ -33,9 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows,
-  Messages,
-  Classes, Controls, Graphics, Forms,
+  Windows, Messages, Types, Classes, Controls, Graphics, Forms,
   JvComponent, JvJVCLUtils;
 
 type
@@ -43,6 +41,9 @@ type
   TJvColorTrackBarIndicator = (tbiArrow, tbiLine);
   TJvColorTrackBarIndicators = set of TJvColorTrackBarIndicator;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvColorTrackBar = class(TJvGraphicControl)
   private
     //FShowValue: Boolean;

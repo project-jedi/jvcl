@@ -53,6 +53,9 @@ type
 
   TJvSpinButtonStyle = (sbsDefault, sbsClassic);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSpinButton = class(TJvGraphicControl)
   private
     FDown: TSpinButtonState;
@@ -269,6 +272,9 @@ type
     property OnTopClick: TNotifyEvent read FOnTopClick write FOnTopClick;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSpinEdit = class(TJvCustomSpinEdit)
   protected
     procedure SetValue(NewValue: Extended); override;
@@ -406,6 +412,9 @@ type
     property Time: TDateTime read GetTime write SetTime;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTimeEdit = class(TJvCustomTimeEdit)
   published
     property ButtonKind default bkDiagonal;
@@ -1221,8 +1230,7 @@ begin
         R.Right := Height;
       end;
     end;
-    with R do
-      FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
+    FBtnWindow.SetBounds(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
 end;
@@ -1577,7 +1585,7 @@ begin
       FMouseInBottomBtn := True
     else
       FMouseInTopBtn := True;
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       Repaint;
     inherited MouseEnter(Control);
   end;
@@ -1586,10 +1594,9 @@ end;
 
 function TJvSpinButton.MouseInBottomBtn(const P: TPoint): Boolean;
 begin
-  with P do
-    Result :=
-      ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
-      ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
+  Result :=
+    ((FButtonStyle = sbsDefault)) and (P.Y > (-(Width / Height) * P.X + Height)) or
+    ((FButtonStyle = sbsClassic) and (P.Y > (Height div 2)));
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -1601,7 +1608,7 @@ begin
   begin
     FMouseInTopBtn := False;
     FMouseInBottomBtn := False;
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       Repaint;
     inherited MouseLeave(Control);
   end;
@@ -1652,7 +1659,7 @@ begin
   end
   {$IFDEF JVCLThemesEnabled}
   else
-  if (FMouseInTopBtn or FMouseInBottomBtn) and ThemeServices.ThemesEnabled then
+  if (FMouseInTopBtn or FMouseInBottomBtn) and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if MouseInBottomBtn(Point(X, Y)) then
     begin
@@ -2021,7 +2028,7 @@ end;
 procedure TSpinButtonBitmaps.DrawAllBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  FIsThemed := ThemeServices.ThemesEnabled;
+  FIsThemed := ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP};
   if FIsThemed then
   begin
     if FStyle = sbsClassic then
@@ -2095,16 +2102,10 @@ begin
 
   { Construct the regions (needed because the up & down buttons overlap
     each other) }
-  with TopRect do
-  begin
-    TopRegion_TopAbove := CreateRectRgn(Left, Top, Right, Bottom + 1);
-    TopRegion_BottomAbove := CreateRectRgn(Left, Top, Right, Bottom);
-  end;
-  with BottomRect do
-  begin
-    BottomRegion_TopAbove := CreateRectRgn(Left, Top + 1, Right, Bottom);
-    BottomRegion_BottomAbove := CreateRectRgn(Left, Top, Right, Bottom);
-  end;
+  TopRegion_TopAbove := CreateRectRgn(TopRect.Left, TopRect.Top, TopRect.Right, TopRect.Bottom + 1);
+  TopRegion_BottomAbove := CreateRectRgn(TopRect.Left, TopRect.Top, TopRect.Right, TopRect.Bottom);
+  BottomRegion_TopAbove := CreateRectRgn(BottomRect.Left, BottomRect.Top + 1, BottomRect.Right, BottomRect.Bottom);
+  BottomRegion_BottomAbove := CreateRectRgn(BottomRect.Left, BottomRect.Top, BottomRect.Right, BottomRect.Bottom);
   try
     { Draw the buttons }
     ConstructThemedButton(FTopDownBtn, bpsPressed, bpsNormal);
@@ -2413,16 +2414,12 @@ begin
   begin
     { Draw up arraw }
     if Enabled then
-    begin
-      with UpArrowPos do
-        Draw(X, Y, AUpArrow)
-    end
+      Draw(UpArrowPos.X, UpArrowPos.Y, AUpArrow)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
       try
-        with UpArrowPos do
-          Draw(X, Y, DisabledBitmap);
+        Draw(UpArrowPos.X, UpArrowPos.Y, DisabledBitmap);
       finally
         DisabledBitmap.Free;
       end;
@@ -2430,14 +2427,12 @@ begin
 
     { Draw bottom arrow }
     if Enabled then
-      with DownArrowPos do
-        Draw(X, Y, ADownArrow)
+      Draw(DownArrowPos.X, DownArrowPos.Y, ADownArrow)
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
       try
-        with DownArrowPos do
-          Draw(X, Y, DisabledBitmap);
+        Draw(DownArrowPos.X, DownArrowPos.Y, DisabledBitmap);
       finally
         DisabledBitmap.Free;
       end;

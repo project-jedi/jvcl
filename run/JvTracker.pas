@@ -55,6 +55,9 @@ type
 
   TjtbOrientation = (jtbHorizontal, jtbVertical);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTracker = class(TJvCustomControl)
   private
     FHitRect: TRect;
@@ -123,7 +126,7 @@ type
     procedure SetShowMinMax(const Value: Boolean);
     procedure ReadTrackColor(Reader: TReader);
   protected
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure DoChangedValue(NewValue: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
@@ -730,7 +733,7 @@ begin
   Invalidate;
 end;
 
-function TJvTracker.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvTracker.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 { Added By Steve Childs 18/04/00
   This elimates the flickering background when the thumb is updated
 }

@@ -157,7 +157,7 @@ type
     procedure DoFormOnCreate(Sender: TObject); virtual;
     procedure DoFormOnDeactivate(Sender: TObject); virtual;
     procedure DoFormOnDestroy(Sender: TObject); virtual;
-    function DoFormOnHelp(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean;
+    function DoFormOnHelp(Command: Word; Data: {$IFDEF RTL230_UP}THelpEventData{$ELSE}Longint{$ENDIF}; var CallHelp: Boolean): Boolean;
     procedure DoFormOnHide(Sender: TObject); virtual;
     procedure DoFormOnPaint(Sender: TObject); virtual;
     procedure DoFormOnShortCut(var Msg: TWMKey; var Handled: Boolean); virtual;
@@ -794,7 +794,7 @@ begin
 end;
 
 function TJvDockBaseGetFormEventComponent.DoFormOnHelp(Command: Word;
-  Data: Integer; var CallHelp: Boolean): Boolean;
+  Data: {$IFDEF RTL230_UP}THelpEventData{$ELSE}Longint{$ENDIF}; var CallHelp: Boolean): Boolean;
 begin
   Result := False;
   if Assigned(FOldOnHelp) then

@@ -75,7 +75,7 @@ type
     FData: TObject;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
     procedure SetPageList(Value: TJvCustomPageList);virtual;
@@ -224,6 +224,9 @@ type
     {$ENDIF JVCLThemesEnabled}
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPageList = class(TJvCustomPageList)
   protected
     function InternalGetPageClass: TJvCustomPageClass; override;
@@ -475,14 +478,14 @@ begin
   end;
 end;
 
-function TJvCustomPage.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomPage.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   if DoubleBuffered then
     Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       DrawThemedBackground(Self, Canvas, ClientRect, Color, ParentBackground);
     {$ENDIF JVCLThemesEnabled}
     Result := True;

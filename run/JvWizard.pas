@@ -757,6 +757,9 @@ type
   end;
 
   { JvWizard Control }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWizard = class(TJvCustomControl)
   private
     FPages: TJvWizardPageList;

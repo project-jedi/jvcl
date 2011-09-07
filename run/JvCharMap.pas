@@ -261,7 +261,7 @@ type
     procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -273,6 +273,9 @@ type
       AWidth: Integer; AHeight: Integer); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCharMap = class(TJvCustomCharMap)
   public
     property Character;
@@ -1025,7 +1028,7 @@ begin
     PanelVisible := True;
 end;
 
-function TJvCustomCharMap.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomCharMap.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   Result := True;
 end;

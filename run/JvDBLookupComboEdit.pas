@@ -54,6 +54,9 @@ uses
   JvDBLookup;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBLookupComboEdit = class(TJvDBLookupEdit)
   private
     FDataLink: TFieldDataLink;
@@ -533,7 +536,7 @@ end;
 
 procedure TJvDBLookupComboEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 function TJvDBLookupComboEdit.GetTextMargins: TPoint;

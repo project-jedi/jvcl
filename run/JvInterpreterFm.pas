@@ -93,6 +93,9 @@ type
     property JvInterpreterFm: TJvInterpreterFm read FJvInterpreterFm write FJvInterpreterFm;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvInterpreterFm = class(TJvInterpreterProgram)
   private
     FForm: TJvInterpreterForm;

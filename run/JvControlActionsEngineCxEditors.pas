@@ -39,11 +39,9 @@ uses
   {$ENDIF}
   JvControlActionsEngine;
 
-type
-
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+type
   TJvControlActioncxTreeViewEngine = class(TJvControlActionEngine)
-  private
   protected
     function GetSupportedOperations: TJvControlActionOperations; override;
   public
@@ -66,7 +64,6 @@ implementation
 
 uses
   SysUtils, Grids, TypInfo, StrUtils, Variants, Dialogs, StdCtrls, Clipbrd;
-
 
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 procedure InitActionEngineList;
@@ -102,17 +99,17 @@ begin
 end;
 {$ENDIF}
 
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   InitActionEngineList;
-  {$ENDIF}
 
 finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
+{$ENDIF}
 
 end.

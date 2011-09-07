@@ -112,6 +112,9 @@ type
     property Items[Index: Integer]: TJvPerfStatItem read GetItem write SetItem; default;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPerfStat95 = class(TJvComponent)
   private
     FCategories: array of TJvPerfStatCategory;

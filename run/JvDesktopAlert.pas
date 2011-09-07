@@ -192,6 +192,9 @@ type
     property StyleOptions: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDesktopAlert = class(TJvCustomDesktopAlert)
   private
     FImages: TCustomImageList;
@@ -304,6 +307,9 @@ type
     property StyleOptions;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDesktopAlertStack = class(TJvComponent)
   private
     FItems: TList;

@@ -39,6 +39,9 @@ uses
 type
   TJvSymFunc = (sfPid, sfAdd, sfCompare, sfRamp, sfMul);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSimPID = class(TJvGraphicControl)
   private
     FMV: Extended;
@@ -201,44 +204,41 @@ begin
 end;
 
 procedure TJvSimPID.Paint;
-var
-  bw: Integer;
-  DrawRect: TRect;
 
   procedure DrawValue(Left, Right: Integer; Value: Extended; AColor: TColor);
   var
-    R: TRect;
+    DrawRect: TRect;
   begin
-    R.Left := Left;
-    R.Right := Right;
-    R.Top := DrawRect.Top + Round((100 - Value) *
+    DrawRect.Left := Left;
+    DrawRect.Right := Right;
+    DrawRect.Top := DrawRect.Top + Round((100 - Value) *
       (DrawRect.Bottom - DrawRect.Top) / 100);
-    R.Bottom := DrawRect.Bottom;
+    DrawRect.Bottom := DrawRect.Bottom;
     Canvas.Brush.Color := AColor;
-    Canvas.FillRect(R);
+    Canvas.FillRect(DrawRect);
     Canvas.Brush.Color := Color;
-    R.Bottom := R.Top;
-    R.Top := DrawRect.Top;
-    Canvas.FillRect(R);
+    DrawRect.Bottom := DrawRect.Top;
+    DrawRect.Top := DrawRect.Top;
+    Canvas.FillRect(DrawRect);
   end;
 
+var
+  bw: Integer;
+  DrawRect: TRect;
 begin
   DrawRect := ClientRect;
-  with Canvas, DrawRect do
-  begin
-    Pen.Color := clGray;
-    Pen.Width := 1;
-    Rectangle(Left, Top, Right, Bottom);
-    InflateRect(DrawRect, -1, -1);
+  Canvas.Pen.Color := clGray;
+  Canvas.Pen.Width := 1;
+  Canvas.Rectangle(DrawRect.Left, DrawRect.Top, DrawRect.Right, DrawRect.Bottom);
+  InflateRect(DrawRect, -1, -1);
 
-    bw := (Right - Left) div 3;
-    // first draw the Measured Value
-    DrawValue(Left + bw, Right - bw, SP, SPColor);
-    // and now the SetPoint
-    DrawValue(Left, Left + bw, MV, MVColor);
-    // draw the Corrective Value (CV)
-    DrawValue(Right - bw, Right, CV, CVColor);
-  end;
+  bw := (DrawRect.Right - DrawRect.Left) div 3;
+  // first draw the Measured Value
+  DrawValue(DrawRect.Left + bw, DrawRect.Right - bw, SP, SPColor);
+  // and now the SetPoint
+  DrawValue(DrawRect.Left, DrawRect.Left + bw, MV, MVColor);
+  // draw the Corrective Value (CV)
+  DrawValue(DrawRect.Right - bw, DrawRect.Right, CV, CVColor);
 end;
 
 procedure TJvSimPID.SetSP(const Value: Extended);

@@ -55,6 +55,9 @@ type
     var NewValue: string; var Accept, Post: Boolean) of object;
 
   {NEW IN JVCL3.0 - Enhanced DBEdit/DBMaskEdit }
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBMaskEdit = class(TJvCustomMaskEdit) // same base as TJvMaskEdit, plus data aware.
   private
     {Standard data-aware crap}
@@ -180,6 +183,9 @@ type
     property OnAcceptNewValue: TJvDBAcceptValueEvent read FOnAcceptNewValue write FOnAcceptNewValue;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBComboEdit = class(TJvCustomComboEdit)
   private
     FDataLink: TFieldDataLink;
@@ -298,6 +304,9 @@ type
     (* -- RDB -- *)
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBDateEdit = class(TJvCustomDateEdit)
   private
     FInReset: Boolean; // Polaris
@@ -434,6 +443,9 @@ type
     property OnKeyDown; // RDB
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBCalcEdit = class(TJvCalcEdit)
   private
     FDataLink: TFieldDataLink;
@@ -583,6 +595,9 @@ type
   TDBStatusKind = dsInactive..dsCalcFields;
   TDBLabelOptions = (doCaption, doGlyph, doBoth);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBStatusLabel = class(TJvCustomLabel)
   private
     FDataSetName: string;
@@ -681,6 +696,9 @@ type
     property OnStartDock;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBNavigator = class(TDBNavigator)
   private
     FTransparent: Boolean;
@@ -1038,7 +1056,7 @@ end;
 
 procedure TJvDBMaskEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 function TJvDBMaskEdit.ExecuteAction(Action: TBasicAction): Boolean;
@@ -1323,7 +1341,7 @@ end;
 
 procedure TJvDBComboEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 function TJvDBComboEdit.UseRightToLeftAlignment: Boolean;
@@ -1596,7 +1614,7 @@ end;
 
 procedure TJvDBDateEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 procedure TJvDBDateEdit.WMPaint(var Msg: TWMPaint);
@@ -2081,7 +2099,7 @@ end;
 
 procedure TJvDBCalcEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 procedure TJvDBCalcEdit.AcceptValue(const Value: Variant);

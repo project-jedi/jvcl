@@ -78,6 +78,9 @@ type
     property RaiseLocateException: Boolean read FRaiseLocateException write FRaiseLocateException default true;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBSearchEdit = class(TJvDBCustomSearchEdit)
   published
     property SearchOptions default [loCaseInsensitive, loPartialKey];

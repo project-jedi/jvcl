@@ -38,6 +38,9 @@ uses
   JvSpin, JvConsts;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBSpinEdit = class(TJvSpinEdit)
   private
     FDataLink: TFieldDataLink;
@@ -139,7 +142,7 @@ end;
 
 procedure TJvDBSpinEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Longint(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 procedure TJvDBSpinEdit.DataChange(Sender: TObject);

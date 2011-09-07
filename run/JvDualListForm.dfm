@@ -31,6 +31,9 @@ object JvDualListForm: TJvDualListForm
   OnCreate = FormCreate
   OnResize = FormResize
   OnShow = ListClick
+  DesignSize = (
+    398
+    286)
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
@@ -164,6 +167,9 @@ object JvDualListForm: TJvDualListForm
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 6
+    DesignSize = (
+      398
+      38)
     object OkBtn: TButton
       Left = 130
       Top = 5

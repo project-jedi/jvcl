@@ -86,7 +86,7 @@ type
     procedure CaretChange(Sender: TObject); dynamic;
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure KeyPress(var Key: Char); override;
@@ -116,6 +116,9 @@ type
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvMemo = class(TJvCustomMemo)
   published
     property AutoSize default False; // TCustomMemo.Create sets AutoSize:=False
@@ -294,7 +297,7 @@ end;
 
 function TJvCustomMemo.GetCurrentLine: Integer;
 begin
-  Result := Perform(EM_LINEFROMCHAR, -1, 0);
+  Result := Perform(EM_LINEFROMCHAR, WPARAM(-1), 0);
 end;
 
 function TJvCustomMemo.GetFlat: Boolean;
@@ -513,7 +516,7 @@ begin
   inherited;
 end;
 
-function TJvCustomMemo.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomMemo.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   if not Transparent then
     Result := inherited DoEraseBackground(Canvas, Param)

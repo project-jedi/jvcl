@@ -306,7 +306,7 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DoCtl3DChanged; virtual;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     { Repositions the child controls; checkbox }
     procedure UpdateControls; virtual;
     { Updates the margins of the edit box }
@@ -411,6 +411,9 @@ type
     property Ctl3D;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvComboEdit = class(TJvCustomComboEdit)
   public
     property Button;
@@ -572,6 +575,9 @@ type
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvFilenameEdit = class(TJvFileDirEdit)
   private
     FDialog: TOpenDialog;
@@ -708,6 +714,9 @@ type
 
   TDirDialogKind = (dkVCL, dkWin32);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDirectoryEdit = class(TJvFileDirEdit)
   private
     FOptions: TSelectDirOpts;
@@ -961,6 +970,9 @@ type
     property MaxDate: TDateTime read FMaxDate write SetMaxDate stored StoreMaxDate;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDateEdit = class(TJvCustomDateEdit)
   protected
     procedure SetDate(Value: TDateTime); override;
@@ -2054,7 +2066,7 @@ begin
   end;
 end;
 
-function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   Result := True;
   if csDestroying in ComponentState then
@@ -2436,6 +2448,13 @@ begin
 end;
 
 procedure TJvCustomComboEdit.PopupDropDown(DisableEdit: Boolean);
+type
+  TJvSizeRect = record
+    Top: Integer;
+    Left: Integer;
+    Width: Integer;
+    Height: Integer;
+  end;
 var
   P: TPoint;
   Y: Integer;
@@ -2572,7 +2591,7 @@ begin
           can't use that default dropdown button (because we then use toolbar buttons,
           and there is no themed dropdown toolbar button) }
         FButton.FDrawThemedDropDownBtn :=
-          ThemeServices.ThemesEnabled and not ButtonFlat;
+          ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and not ButtonFlat;
         if FButton.FDrawThemedDropDownBtn then
         begin
           FButton.ButtonGlyph.Glyph := nil;
@@ -2641,7 +2660,7 @@ begin
     the glyph is the default themed dropdown button. When ButtonFlat = True, we
     can't use that default dropdown button, so we have to recreate the glyph
     in this special case }
-  if ThemeServices.ThemesEnabled and (ImageKind = ikDropDown) then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and (ImageKind = ikDropDown) then
     RecreateGlyph;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -2924,7 +2943,7 @@ var
   BtnRect: TRect;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if BorderStyle = bsSingle then
     begin
@@ -3020,7 +3039,7 @@ begin
   { If flat and themes are enabled, move the left edge of the edit rectangle
     to the right, otherwise the theme edge paints over the border }
   { (rb) This was for a specific font/language; check if this is still necessary }
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if BorderStyle = bsSingle then
     begin
@@ -3033,7 +3052,7 @@ begin
       end;
     end;
   end;
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
   if BorderStyle = bsSingle then
     if Ctl3D then
@@ -3068,7 +3087,7 @@ end;
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
-  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Ctl3D and (BorderStyle = bsSingle) then
   begin
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
@@ -3098,15 +3117,14 @@ var
   DrawRect: TRect;
   Details: TThemedElementDetails;
 begin
-  if ThemeServices.ThemesEnabled and Ctl3D and (BorderStyle = bsSingle) and
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Ctl3D and (BorderStyle = bsSingle) and
      not CheckWin32Version(6, 0) then // Vista draws the border animated and not with teEditTextNormal
   begin
     DC := GetWindowDC(Handle);
     try
       GetWindowRect(Handle, DrawRect);
       OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
-      with DrawRect do
-        ExcludeClipRect(DC, Left + 1, Top + 1, Right - 1, Bottom - 1);
+      ExcludeClipRect(DC, DrawRect.Left + 1, DrawRect.Top + 1, DrawRect.Right - 1, DrawRect.Bottom - 1);
 
       Details := ThemeServices.GetElementDetails(teEditTextNormal);
       ThemeServices.DrawElement(DC, Details, DrawRect);
@@ -3973,7 +3991,7 @@ var
   Bmp: TBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if GDirImageIndexXP < 0 then
     begin
@@ -4279,7 +4297,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if FDrawThemedDropDownBtn then
     begin
@@ -4642,7 +4660,7 @@ var
   Bmp: TBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if GFileImageIndexXP < 0 then
     begin

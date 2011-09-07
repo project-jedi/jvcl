@@ -107,6 +107,9 @@ type
   TJvImageViewerLoadProgress = procedure(Sender: TObject; Item: TJvPictureItem; Stage: TProgressStage;
     PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvImagesViewer = class(TJvCustomItemViewer)
   private
     FFileMask: WideString;
@@ -520,8 +523,9 @@ begin
     if (RectWidth(ImageRect) > 0) and (RectHeight(ImageRect) > 0) then
       if AItem.Picture.Graphic is TIcon then
         //        and (RectWidth(ImageRect) < RectWidth(R)) and (RectHeight(ImageRect) < RectHeight(R))  then
-        with ImageRect do // TIcon doesn't scale it's content
-          DrawIconEx(Canvas.Handle, Left, Top, AItem.Picture.Icon.Handle, Right - Left, Bottom - Top, 0, 0, DI_NORMAL)
+        // TIcon doesn't scale it's content
+        DrawIconEx(Canvas.Handle, ImageRect.Left, ImageRect.Top, AItem.Picture.Icon.Handle,
+          ImageRect.Right - ImageRect.Left, ImageRect.Bottom - ImageRect.Top, 0, 0, DI_NORMAL)
       else
         Canvas.StretchDraw(ImageRect, AItem.Picture.Graphic);
   end;

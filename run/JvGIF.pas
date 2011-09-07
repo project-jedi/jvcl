@@ -275,7 +275,12 @@ procedure GifError(const Msg: string);
   end;
 
 asm
+  {$IFDEF CPU32}
   pop edx
+  {$ENDIF CPU32}
+  {$IFDEF CPU64}
+  pop rdx
+  {$ENDIF CPU64}
   jmp ThrowException
 end;
 
@@ -1897,10 +1902,9 @@ procedure TJvGIFFrame.Draw(ACanvas: TCanvas; const ARect: TRect;
 begin
   if (FTransparentColor <> clNone) and Transparent then
   begin
-    with ARect do
-      StretchBitmapRectTransparent(ACanvas, Left, Top, Right - Left,
-        Bottom - Top, Bounds(0, 0, Bitmap.Width, Bitmap.Height), Bitmap,
-        FTransparentColor);
+    StretchBitmapRectTransparent(ACanvas, ARect.Left, ARect.Top, ARect.Right - ARect.Left,
+      ARect.Bottom - ARect.Top, Bounds(0, 0, Bitmap.Width, Bitmap.Height), Bitmap,
+      FTransparentColor);
   end
   else
     ACanvas.StretchDraw(ARect, Bitmap);

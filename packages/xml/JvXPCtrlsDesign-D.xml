@@ -15,7 +15,7 @@
     <Package Name="designide" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvXPPropertyEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvXPCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvXPPropertyEditors.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

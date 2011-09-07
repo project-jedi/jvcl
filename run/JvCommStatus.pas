@@ -50,6 +50,9 @@ type
     procedure Execute; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvCommStatus = class(TJvComponent)
   private
     FClearToSend: Boolean;

@@ -101,7 +101,7 @@ type
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
       TextBounds: TRect; State: TButtonState); virtual;
     procedure CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
-      const Offset: TPoint; const Caption: string; Layout: TButtonLayout;
+      const AOffset: TPoint; const Caption: string; Layout: TButtonLayout;
       Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
   protected
     FOriginal: TBitmap;
@@ -258,6 +258,9 @@ type
     property OnPaint: TPaintButtonEvent read FOnPaint write FOnPaint;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHTButton = class(TJvaColorButton)
   public
     constructor Create(AOwner: TComponent); override;
@@ -368,9 +371,8 @@ begin
   for I := FGlyphLists.Count - 1 downto 0 do
   begin
     Result := FGlyphLists[I];
-    with Result do
-      if (AWidth = Width) and (AHeight = Height) then
-        Exit;
+    if (AWidth = Result.Width) and (AHeight = Result.Height) then
+      Exit;
   end;
   Result := TJvGlyphList.CreateSize(AWidth, AHeight);
   FGlyphLists.Add(Result);
@@ -674,13 +676,12 @@ begin
   if (FOriginal.Width = 0) or (FOriginal.Height = 0) then
     Exit;
   Index := CreateButtonGlyph(State);
-  with GlyphPos do
-    if Transparent or (State = bsExclusive) then
-      ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
-        clNone, clNone, ILD_Transparent)
-    else
-      ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, X, Y, 0, 0,
-        ColorToRGB(Color {clBtnFace}), clNone, ILD_Normal);
+  if Transparent or (State = bsExclusive) then
+    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, GlyphPos.X, GlyphPos.Y, 0, 0,
+      clNone, clNone, ILD_Transparent)
+  else
+    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, GlyphPos.X, GlyphPos.Y, 0, 0,
+      ColorToRGB(Color {clBtnFace}), clNone, ILD_Normal);
 end;
 
 procedure TJvButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -710,7 +711,7 @@ begin
 end;
 
 procedure TJvButtonGlyph.CalcButtonLayout(Canvas: TCanvas; const Client: TRect;
-  const Offset: TPoint; const Caption: string; Layout: TButtonLayout; Margin,
+  const AOffset: TPoint; const Caption: string; Layout: TButtonLayout; Margin,
   Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect);
 var
   TextPos: TPoint;
@@ -812,13 +813,10 @@ begin
   end;
 
   { fixup the result variables }
-  with GlyphPos do
-  begin
-    Inc(X, Client.Left + Offset.X);
-    Inc(Y, Client.Top + Offset.Y);
-  end;
-  OffsetRect(TextBounds, TextPos.X + Client.Left + Offset.X,
-    TextPos.Y + Client.Top + Offset.Y);
+  Inc(GlyphPos.X, Client.Left + AOffset.X);
+  Inc(GlyphPos.Y, Client.Top + AOffset.Y);
+  OffsetRect(TextBounds, TextPos.X + Client.Left + AOffset.X,
+    TextPos.Y + Client.Top + AOffset.Y);
 end;
 
 function TJvButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
@@ -1527,7 +1525,7 @@ begin
     Flags := Flags or DFCS_INACTIVE;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     if IsFocused or IsDefault then
       Flags := Flags or DFCS_MONO; // mis-used
@@ -1585,7 +1583,7 @@ begin
     Spacing, State, False {True});
 
   {$IFDEF JVCLThemesEnabled}
-  if not ThemeServices.ThemesEnabled then
+  if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   {$ENDIF JVCLThemesEnabled}
     if IsFocused and IsDefault then
     begin

@@ -331,6 +331,9 @@ type
     property UseEffectText: Boolean read FUseEffectText write SetUseEffectText;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
   published
     property BiDiMode;

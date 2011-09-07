@@ -49,6 +49,9 @@ uses
 type
   TJvPositionInMenu = (pmTop, pmBottom);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSystemPopup = class(TJvComponent)
   private
     FPopup: TPopupMenu;

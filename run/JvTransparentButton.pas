@@ -110,6 +110,9 @@ type
     property HotIndex: TImageIndex read FHotIndex write SetHotIndex default -1;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTransparentButton = class(TJvCustomGraphicButton)
   private
     FTextAlign: TJvTextAlign;

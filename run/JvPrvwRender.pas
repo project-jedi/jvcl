@@ -59,6 +59,9 @@ type
     function CreatePreview(Append: Boolean): Boolean; virtual;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewRenderRichEdit = class(TJvCustomPreviewRenderer)
   private
     FFinished: Boolean;
@@ -76,6 +79,9 @@ type
     property RichEdit: TCustomRichEdit read FRichEdit write SetRichEdit;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewRenderJvRichEdit = class(TJvCustomPreviewRenderer)
   private
     FFinished: Boolean;
@@ -93,6 +99,9 @@ type
     property RichEdit: TJvCustomRichEdit read FRichEdit write SetRichEdit;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewRenderStrings = class(TJvCustomPreviewRenderer)
   private
     FFinished: Boolean;
@@ -147,6 +156,9 @@ type
     property Items[Index: Integer]: TJvPreviewGraphicItem read GetItems write SetItems; default;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewRenderGraphics = class(TJvCustomPreviewRenderer)
   private
     FImages: TJvPreviewGraphicItems;
@@ -166,6 +178,9 @@ type
   end;
 
   // preview a TControl descendant
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewRenderControl = class(TJvCustomPreviewRenderer)
   private
     FControl: TControl;
@@ -193,6 +208,9 @@ type
   TJvNewPageEvent = procedure(Sender: TObject; PageIndex: Integer) of object;
 
   // a class that implements the IJvPrinter interface
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvPreviewPrinter = class(TJvComponent, IUnknown, IJvPrinter)
   private
     FPrinter: TPrinter;
@@ -321,14 +339,7 @@ begin
     end;
   end;
 
-  with Result do
-  begin
-    Left := 0;
-    Top := 0;
-    Right := w;
-    Bottom := h;
-  end;
-
+  Result := Rect(0, 0, w, h);
   if Center then
     OffsetRect(Result, (cw - w) div 2, (ch - h) div 2);
   OffsetRect(Result, DstRect.Left, DstRect.Top);

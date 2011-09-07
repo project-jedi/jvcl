@@ -78,6 +78,9 @@ type
   TBStack = array [0..StackLimit] of Boolean;
   TRStack = array [0..StackLimit] of Integer;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSAL = class(TJvComponent)
   private
     FStop: Boolean;

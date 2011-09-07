@@ -40,6 +40,9 @@ uses
 type
   TJvGradientPaintEvent = procedure(Sender: TObject; Canvas: TCanvas) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGradient = class(TJvGraphicControl)
   private
     FStyle: TJvGradientStyle;

@@ -36,6 +36,9 @@ uses
   JvAnimatedImage, JvGIF, JvTimer;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGIFAnimator = class(TJvImageControl)
   private
     FAnimate: Boolean;

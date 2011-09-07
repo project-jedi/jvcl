@@ -79,6 +79,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvResources;
 
 const
@@ -122,31 +125,31 @@ const
 function JvWizardDrawEdges(ACanvas: TCanvas; ABounds: TRect;
   ULColor, LRColor: TColor; AEdges: TBevelEdges): TRect;
 begin
-  with ACanvas, ABounds do
+  with ACanvas do
   begin
     Pen.Style := psSolid;
     Pen.Mode := pmCopy;
     Pen.Color := ULColor;
     if beLeft in AEdges then
     begin
-      MoveTo(Left, Top);
-      LineTo(Left, Bottom);
+      MoveTo(ABounds.Left, ABounds.Top);
+      LineTo(ABounds.Left, ABounds.Bottom);
     end;
     if beTop in AEdges then
     begin
-      MoveTo(Left, Top);
-      LineTo(Right, Top);
+      MoveTo(ABounds.Left, ABounds.Top);
+      LineTo(ABounds.Right, ABounds.Top);
     end;
     Pen.Color := LRColor;
     if beRight in AEdges then
     begin
-      MoveTo(Right - 1, Top);
-      LineTo(Right - 1, Bottom);
+      MoveTo(ABounds.Right - 1, ABounds.Top);
+      LineTo(ABounds.Right - 1, ABounds.Bottom);
     end;
     if beBottom in AEdges then
     begin
-      MoveTo(Left, Bottom - 1);
-      LineTo(Right, Bottom - 1);
+      MoveTo(ABounds.Left, ABounds.Bottom - 1);
+      LineTo(ABounds.Right, ABounds.Bottom - 1);
     end;
   end;
   if beLeft in AEdges then

@@ -40,6 +40,9 @@ uses
 // (rom) best separate out a TJvRecentPopupMenu
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvRecentMenuButton = class(TJvCustomButton)
   private
     FPopup: TPopupMenu;
@@ -83,21 +86,18 @@ const
 
 constructor TJvRecentMenuButton.Create(AOwner: TComponent);
 var
-  It: TMenuItem;
+  MenuItem: TMenuItem;
 begin
   inherited Create(AOwner);
   FDirs := TJvSystemFolders.Create;
 
   //Create Popup
   FPopup := TPopupMenu.Create(Self);
-  It := TMenuItem.Create(FPopup);
-  with It do
-  begin
-    Enabled := False;
-    Caption := RsEmptyItem;
-    Tag := 1;
-  end;
-  FPopup.Items.Add(It);
+  MenuItem := TMenuItem.Create(FPopup);
+  MenuItem.Enabled := False;
+  MenuItem.Caption := RsEmptyItem;
+  MenuItem.Tag := 1;
+  FPopup.Items.Add(MenuItem);
   FPopup.OnPopup := CreatePopup;
 end;
 

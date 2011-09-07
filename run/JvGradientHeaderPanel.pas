@@ -38,6 +38,9 @@ uses
   JvGradient, JvTypes, JvComponent;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGradientHeaderPanel = class(TJvCustomControl)
   private
     FGradient: TJvGradient;
@@ -77,7 +80,7 @@ type
     procedure AdjustLabelWidth;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
-//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+//    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -420,7 +423,7 @@ begin
 end;
 
 (*
-function TJvGradientHeaderPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvGradientHeaderPanel.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   { Reduce flickering FGradient completely fills the TJvGradientHeaderPanel }
   Result := True;

@@ -106,9 +106,9 @@ type
 // overwrite values in these structures.
 //
   PInfContext = ^TInfContext;
-  INFCONTEXT = packed record
-    Inf: Pointer;
-    CurrentInf: Pointer;
+  INFCONTEXT = record
+    Inf: HINF;
+    CurrentInf: HINF;
     Section: UINT;
     Line: UINT;
   end;
@@ -119,7 +119,7 @@ type
 // Inf file information structure.
 //
   PSPInfInformation = ^TSPInfInformation;
-  SP_INF_INFORMATION = packed record
+  SP_INF_INFORMATION = record
     InfStyle: DWORD;
     InfCount: DWORD;
     VersionData: array [0..ANYSIZE_ARRAY - 1] of Byte;
@@ -132,7 +132,7 @@ type
 // SetupSetFileQueueAlternatePlatform and SetupQueryInfOriginalFileInformation.
 //
   PSPAltPlatformInfoV2 = ^SP_ALTPLATFORM_INFO_V2;
-  SP_ALTPLATFORM_INFO_V2 = packed record
+  SP_ALTPLATFORM_INFO_V2 = record
     cbSize: DWORD;
     //
     // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
@@ -180,7 +180,7 @@ type
   TSPAltPlatformInfoV2 = SP_ALTPLATFORM_INFO_V2;
 
   PSPAltPlatformInfoV1 = ^TSPAltPlatformInfoV1;
-  SP_ALTPLATFORM_INFO_V1 = packed record
+  SP_ALTPLATFORM_INFO_V1 = record
     cbSize: DWORD;
     //
     // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
@@ -225,13 +225,13 @@ const
 type
   PSPOriginalFileInfoA = ^TSPOriginalFileInfoA;
   PSPOriginalFileInfoW = ^TSPOriginalFileInfoW;
-  SP_ORIGINAL_FILE_INFO_A = packed record
+  SP_ORIGINAL_FILE_INFO_A = record
     cbSize: DWORD;
     OriginalInfName: array [0..MAX_PATH - 1] of AnsiChar;
     OriginalCatalogName: array [0..MAX_PATH - 1] of AnsiChar;
   end;
   {$EXTERNALSYM SP_ORIGINAL_FILE_INFO_A}
-  SP_ORIGINAL_FILE_INFO_W = packed record
+  SP_ORIGINAL_FILE_INFO_W = record
     cbSize: DWORD;
     OriginalInfName: array [0..MAX_PATH - 1] of WideChar;
     OriginalCatalogName: array [0..MAX_PATH - 1] of WideChar;

@@ -219,11 +219,11 @@ begin
     else if Sender = CheckBoxDebugUnits then
       Installer.Data.DebugUnits := Integer(CheckBoxDebugUnits.Checked)
     else if Sender = CheckBoxCleanPalettes then
-      Installer.Data.CleanPalettes := Integer(CheckBoxCleanPalettes.Checked)
+      Installer.Data.CleanPalettes := Integer(CheckBoxCleanPalettes.Visible and CheckBoxCleanPalettes.Checked)
     else if Sender = CheckBoxBuild then
       Installer.Data.Build := Integer(CheckBoxBuild.Checked)
     else if Sender = CheckBoxIDERegister then
-      Installer.Data.CompileOnly := Integer(not CheckBoxIDERegister.Checked)
+      Installer.Data.CompileOnly := Integer(not (CheckBoxIDERegister.Visible and CheckBoxIDERegister.Checked))
     else if Sender = CheckBoxGenerateMapFiles then
       Installer.Data.GenerateMapFiles := Integer(CheckBoxGenerateMapFiles.Checked)
     else if Sender = CheckBoxLinkMapFiles then
@@ -242,11 +242,11 @@ begin
     else if Sender = CheckBoxDebugUnits then
       TargetConfig.DebugUnits := CheckBoxDebugUnits.Checked
     else if Sender = CheckBoxCleanPalettes then
-      TargetConfig.CleanPalettes := CheckBoxCleanPalettes.Checked
+      TargetConfig.CleanPalettes := CheckBoxCleanPalettes.Visible and CheckBoxCleanPalettes.Checked
     else if Sender = CheckBoxBuild then
       TargetConfig.Build := CheckBoxBuild.Checked
     else if Sender = CheckBoxIDERegister then
-      TargetConfig.CompileOnly := not CheckBoxIDERegister.Checked
+      TargetConfig.CompileOnly := not (CheckBoxIDERegister.Visible and CheckBoxIDERegister.Checked)
     else if Sender = CheckBoxGenerateMapFiles then
       TargetConfig.GenerateMapFiles := CheckBoxGenerateMapFiles.Checked
     else if Sender = CheckBoxLinkMapFiles then
@@ -481,7 +481,7 @@ begin
     begin
       // for selected
       TargetConfig := SelTargetConfig;
-      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [LowerCase(TargetConfig.Target.TargetType), TargetConfig.Target.Version]);
+      BtnEditJvclInc.Caption := Format(RsEditJvclInc, [ExtractFileName(TargetConfig.JVCLConfig.Filename)]);
 
       CheckBoxDeveloperInstall.Checked := TargetConfig.DeveloperInstall;
       CheckBoxDebugUnits.Checked := TargetConfig.DebugUnits;
@@ -500,6 +500,8 @@ begin
       CheckBoxAddBplDirToPath.Checked := TargetConfig.AddBplDirToPath;
     end;
 
+    CheckBoxIDERegister.Visible := (ItemIndex = 0) or (SelTargetConfig.Target.Platform <> ctpWin64);
+    CheckBoxCleanPalettes.Visible := CheckBoxIDERegister.Visible;
     CheckBoxCleanPalettes.Enabled := CheckBoxIDERegister.Checked;
     CheckBoxDebugUnits.Enabled := not CheckBoxDeveloperInstall.Checked;
     CheckBoxLinkMapFiles.Enabled := CheckBoxGenerateMapFiles.Checked;
@@ -545,6 +547,8 @@ begin
 end;
 
 procedure TFrameConfigPage.BtnEditJvclIncClick(Sender: TObject);
+var
+  S: string;
 begin
   if SelTargetConfig = nil then
   begin
@@ -556,7 +560,10 @@ begin
     FormJvclIncConfig.imgProjectJEDI.Picture.Assign(FormMain.ImageLogo.Picture);
 
   FormJvclIncConfig.Config.Assign(SelTargetConfig.JVCLConfig);
-  if FormJvclIncConfig.Execute(SelTargetConfig.Target.Name + ' ' + SelTargetConfig.Target.VersionStr) then
+  S := SelTargetConfig.Target.PlatformName;
+  if S <> '' then
+    S := ' ' + S;
+  if FormJvclIncConfig.Execute(SelTargetConfig.Target.Name + ' ' + SelTargetConfig.Target.VersionStr + S) then
   begin
     if FormJvclIncConfig.Config.Modified then
     begin
@@ -591,7 +598,8 @@ begin
   Dir := FrameDirEditBrowseBPL.EditDirectory.Text;
   if (SelTargetConfig <> nil) {and DirectoryExists(Dir)} then
   begin
-    if not SelTargetConfig.Target.IsInEnvPath(Dir) then
+    //there is no need to check the env path for the 64-bit target, because there is no 64-bit IDE yet
+    if (not SelTargetConfig.Target.IsInEnvPath(Dir)) and (SelTargetConfig.Target.Platform <> ctpWin64) then
     begin
       if DirectoryExists(Dir) then
         FrameDirEditBrowseBPL.EditDirectory.Font.Color := clBlue;

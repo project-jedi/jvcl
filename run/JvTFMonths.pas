@@ -40,6 +40,9 @@ uses
 type
   TJvTFMonthsScrollSize = (mssMonth, mssWeek);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTFMonths = class(TJvTFCustomGlance)
   private
     FDisplayDate: TDate;

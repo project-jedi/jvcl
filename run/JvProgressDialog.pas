@@ -97,6 +97,9 @@ uses
 type
   TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvProgressDialog = class(TJvCommonDialogF)
   private
     FIMin: Integer;

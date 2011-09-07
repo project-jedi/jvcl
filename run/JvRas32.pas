@@ -41,6 +41,9 @@ uses
   JvComponentBase, JvTypes;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvRas32 = class(TJvComponent)
   private
     FPhoneBookPath: TFileName;

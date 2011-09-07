@@ -114,6 +114,9 @@ type
       ACaretX, ACaretY: Integer; const Text: string): Boolean; virtual; abstract;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvHLEditor = class(TJvEditor, IJvHLEditor)
   private
     Parser: TJvIParser;

@@ -117,7 +117,7 @@ type
     function DoCanResize(var NewSize: Integer): Boolean; override;
     procedure Loaded; override;
     procedure PaintButton(Highlight: Boolean); dynamic;
-    function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; Offset: Integer;
+    function DrawArrow(ACanvas: TCanvas; AvailableRect: TRect; AOffset: Integer;
       ArrowSize: Integer; Color: TColor): Integer; dynamic;
     function WindowButtonHitTest(X, Y: Integer): TJvWindowsButton; dynamic;
     function ButtonHitTest(X, Y: Integer): Boolean; dynamic;
@@ -167,6 +167,9 @@ type
     property OnParentColorChange;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvNetscapeSplitter = class(TJvCustomNetscapeSplitter)
   published
     property Maximized;
@@ -309,7 +312,7 @@ begin
   try
     // Exclude button rect from update region here for less flicker.
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       // DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
       DC := Canvas.Handle;
@@ -412,7 +415,7 @@ begin
 end;
 
 function TJvCustomNetscapeSplitter.DrawArrow(ACanvas: TCanvas; AvailableRect: TRect;
-  Offset, ArrowSize: Integer; Color: TColor): Integer;
+  AOffset, ArrowSize: Integer; Color: TColor): Integer;
 var
   X, Y, Q, I, J: Integer;
   ArrowAlign: TAlign;
@@ -443,67 +446,64 @@ begin
   Q := ArrowSize * 2 - 1;
   Result := Q;
   ACanvas.Pen.Color := Color;
-  with AvailableRect do
-  begin
-    case ArrowAlign of
-      alLeft:
-        begin
-          X := Left + ((Right - Left - ArrowSize) div 2) + 1;
-          if Offset < 0 then
-            Y := Bottom + Offset - Q
-          else
-            Y := Top + Offset;
-          for J := X + ArrowSize - 1 downto X do
-          begin
-            for I := Y to Y + Q - 1 do
-              ACanvas.Pixels[J, I] := Color;
-            Inc(Y);
-            Dec(Q, 2);
-          end;
-        end;
-      alRight:
-        begin
-          X := Left + ((Right - Left - ArrowSize) div 2) + 1;
-          if Offset < 0 then
-            Y := Bottom + Offset - Q
-          else
-            Y := Top + Offset;
-          for J := X to X + ArrowSize - 1 do
-          begin
-            for I := Y to Y + Q - 1 do
-              ACanvas.Pixels[J, I] := Color;
-            Inc(Y);
-            Dec(Q, 2);
-          end;
-        end;
-      alTop:
-        begin
-          if Offset < 0 then
-            X := Right + Offset - Q
-          else
-            X := Left + Offset;
-          Y := Top + ((Bottom - Top - ArrowSize) div 2) + 1;
-          for I := Y + ArrowSize - 1 downto Y do
-          begin
-            for J := X to X + Q - 1 do
-              ACanvas.Pixels[J, I] := Color;
-            Inc(X);
-            Dec(Q, 2);
-          end;
-        end;
-    else // alBottom
-      if Offset < 0 then
-        X := Right + Offset - Q
-      else
-        X := Left + Offset;
-      Y := Top + ((Bottom - Top - ArrowSize) div 2) + 1;
-      for I := Y to Y + ArrowSize - 1 do
+  case ArrowAlign of
+    alLeft:
       begin
-        for J := X to X + Q - 1 do
-          ACanvas.Pixels[J, I] := Color;
-        Inc(X);
-        Dec(Q, 2);
+        X := AvailableRect.Left + ((AvailableRect.Right - AvailableRect.Left - ArrowSize) div 2) + 1;
+        if AOffset < 0 then
+          Y := AvailableRect.Bottom + AOffset - Q
+        else
+          Y := AvailableRect.Top + AOffset;
+        for J := X + ArrowSize - 1 downto X do
+        begin
+          for I := Y to Y + Q - 1 do
+            ACanvas.Pixels[J, I] := Color;
+          Inc(Y);
+          Dec(Q, 2);
+        end;
       end;
+    alRight:
+      begin
+        X := AvailableRect.Left + ((AvailableRect.Right - AvailableRect.Left - ArrowSize) div 2) + 1;
+        if AOffset < 0 then
+          Y := AvailableRect.Bottom + AOffset - Q
+        else
+          Y := AvailableRect.Top + AOffset;
+        for J := X to X + ArrowSize - 1 do
+        begin
+          for I := Y to Y + Q - 1 do
+            ACanvas.Pixels[J, I] := Color;
+          Inc(Y);
+          Dec(Q, 2);
+        end;
+      end;
+    alTop:
+      begin
+        if AOffset < 0 then
+          X := AvailableRect.Right + AOffset - Q
+        else
+          X := AvailableRect.Left + AOffset;
+        Y := AvailableRect.Top + ((AvailableRect.Bottom - AvailableRect.Top - ArrowSize) div 2) + 1;
+        for I := Y + ArrowSize - 1 downto Y do
+        begin
+          for J := X to X + Q - 1 do
+            ACanvas.Pixels[J, I] := Color;
+          Inc(X);
+          Dec(Q, 2);
+        end;
+      end;
+  else // alBottom
+    if AOffset < 0 then
+      X := AvailableRect.Right + AOffset - Q
+    else
+      X := AvailableRect.Left + AOffset;
+    Y := AvailableRect.Top + ((AvailableRect.Bottom - AvailableRect.Top - ArrowSize) div 2) + 1;
+    for I := Y to Y + ArrowSize - 1 do
+    begin
+      for J := X to X + Q - 1 do
+        ACanvas.Pixels[J, I] := Color;
+      Inc(X);
+      Dec(Q, 2);
     end;
   end;
 end;
@@ -769,13 +769,11 @@ begin
       InflateRect(BtnRect, -1, -1);
 
       OffscreenBmp.Canvas.Pen.Color := clWhite;
-      with BtnRect, OffscreenBmp.Canvas do
-      begin
-        // This is not going to work with the STB bug.  Have to find workaround.
-        MoveTo(Left, Bottom - 1);
-        LineTo(Left, Top);
-        LineTo(Right, Top);
-      end;
+      // This is not going to work with the STB bug.  Have to find workaround.
+      OffscreenBmp.Canvas.MoveTo(BtnRect.Left, BtnRect.Bottom - 1);
+      OffscreenBmp.Canvas.LineTo(BtnRect.Left, BtnRect.Top);
+      OffscreenBmp.Canvas.LineTo(BtnRect.Right, BtnRect.Top);
+
       Inc(BtnRect.Left);
       Inc(BtnRect.Top);
 
@@ -789,68 +787,65 @@ begin
       Dec(BtnRect.Bottom);
 
       // Draw the insides of the button
-      with BtnRect do
+      // Draw the arrows
+      if Align in [alLeft, alRight] then
       begin
-        // Draw the arrows
-        if Align in [alLeft, alRight] then
-        begin
-          InflateRect(BtnRect, 0, -4);
-          BW := BtnRect.Right - BtnRect.Left;
-          DrawArrow(OffscreenBmp.Canvas, BtnRect, 1, BW, ArrowColor);
-          BW := DrawArrow(OffscreenBmp.Canvas, BtnRect, -1, BW, ArrowColor);
-          InflateRect(BtnRect, 0, -(BW + 4));
-        end
-        else
-        begin
-          InflateRect(BtnRect, -4, 0);
-          BW := BtnRect.Bottom - BtnRect.Top;
-          DrawArrow(OffscreenBmp.Canvas, BtnRect, 1, BW, ArrowColor);
-          BW := DrawArrow(OffscreenBmp.Canvas, BtnRect, -1, BW, ArrowColor);
-          InflateRect(BtnRect, -(BW + 4), 0);
-        end;
+        InflateRect(BtnRect, 0, -4);
+        BW := BtnRect.Right - BtnRect.Left;
+        DrawArrow(OffscreenBmp.Canvas, BtnRect, 1, BW, ArrowColor);
+        BW := DrawArrow(OffscreenBmp.Canvas, BtnRect, -1, BW, ArrowColor);
+        InflateRect(BtnRect, 0, -(BW + 4));
+      end
+      else
+      begin
+        InflateRect(BtnRect, -4, 0);
+        BW := BtnRect.Bottom - BtnRect.Top;
+        DrawArrow(OffscreenBmp.Canvas, BtnRect, 1, BW, ArrowColor);
+        BW := DrawArrow(OffscreenBmp.Canvas, BtnRect, -1, BW, ArrowColor);
+        InflateRect(BtnRect, -(BW + 4), 0);
+      end;
 
-        // Draw the texture
-        // Note: This is so complex because I'm trying to make as much like the
-        //       Netscape splitter as possible.  They use a 3x3 texture pattern, and
-        //       that's harder to tile.  If the had used an 8x8 (or smaller
-        //       divisibly, i.e. 2x2 or 4x4), I could have used Brush.Bitmap and
-        //       FillRect and they whole thing would have been about half the size,
-        //       twice as fast, and 1/10th as complex.
-        RW := BtnRect.Right - BtnRect.Left;
-        RH := BtnRect.Bottom - BtnRect.Top;
-        if (RW >= TEXTURE_SIZE) and (RH >= TEXTURE_SIZE) then
-        begin
-          TextureBmp := TBitmap.Create;
-          try
-            with TextureBmp do
-            begin
-              Width := RW;
-              Height := RH;
-              // Draw first square
-              Canvas.Brush.Color := OffscreenBmp.Canvas.Brush.Color;
-              Canvas.FillRect(Rect(0, 0, RW + 1, RH + 1));
-              Canvas.Pixels[1, 1] := TextureColor1;
-              Canvas.Pixels[2, 2] := TextureColor2;
+      // Draw the texture
+      // Note: This is so complex because I'm trying to make as much like the
+      //       Netscape splitter as possible.  They use a 3x3 texture pattern, and
+      //       that's harder to tile.  If the had used an 8x8 (or smaller
+      //       divisibly, i.e. 2x2 or 4x4), I could have used Brush.Bitmap and
+      //       FillRect and they whole thing would have been about half the size,
+      //       twice as fast, and 1/10th as complex.
+      RW := BtnRect.Right - BtnRect.Left;
+      RH := BtnRect.Bottom - BtnRect.Top;
+      if (RW >= TEXTURE_SIZE) and (RH >= TEXTURE_SIZE) then
+      begin
+        TextureBmp := TBitmap.Create;
+        try
+          with TextureBmp do
+          begin
+            Width := RW;
+            Height := RH;
+            // Draw first square
+            Canvas.Brush.Color := OffscreenBmp.Canvas.Brush.Color;
+            Canvas.FillRect(Rect(0, 0, RW + 1, RH + 1));
+            Canvas.Pixels[1, 1] := TextureColor1;
+            Canvas.Pixels[2, 2] := TextureColor2;
 
-              // Tile first square all the way across
-              for X := 1 to ((RW div TEXTURE_SIZE) + ord(RW mod TEXTURE_SIZE > 0)) do
-                Canvas.CopyRect(Bounds(X * TEXTURE_SIZE, 0, TEXTURE_SIZE,
-                  TEXTURE_SIZE), Canvas, Rect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE));
+            // Tile first square all the way across
+            for X := 1 to ((RW div TEXTURE_SIZE) + ord(RW mod TEXTURE_SIZE > 0)) do
+              Canvas.CopyRect(Bounds(X * TEXTURE_SIZE, 0, TEXTURE_SIZE,
+                TEXTURE_SIZE), Canvas, Rect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE));
 
-              // Tile first row all the way down
-              for Y := 1 to ((RH div TEXTURE_SIZE) + ord(RH mod TEXTURE_SIZE > 0)) do
-                Canvas.CopyRect(Bounds(0, Y * TEXTURE_SIZE, RW, TEXTURE_SIZE),
-                  Canvas, Rect(0, 0, RW, TEXTURE_SIZE));
+            // Tile first row all the way down
+            for Y := 1 to ((RH div TEXTURE_SIZE) + ord(RH mod TEXTURE_SIZE > 0)) do
+              Canvas.CopyRect(Bounds(0, Y * TEXTURE_SIZE, RW, TEXTURE_SIZE),
+                Canvas, Rect(0, 0, RW, TEXTURE_SIZE));
 
-              // Above could be better if it reversed process when splitter was
-              // taller than it was wider.  Optimized only for horizontal right now.
-            end;
-            // Copy texture bitmap to the screen.
-            OffscreenBmp.Canvas.CopyRect(BtnRect, TextureBmp.Canvas,
-              Rect(0, 0, RW, RH));
-          finally
-            TextureBmp.Free;
+            // Above could be better if it reversed process when splitter was
+            // taller than it was wider.  Optimized only for horizontal right now.
           end;
+          // Copy texture bitmap to the screen.
+          OffscreenBmp.Canvas.CopyRect(BtnRect, TextureBmp.Canvas,
+            Rect(0, 0, RW, RH));
+        finally
+          TextureBmp.Free;
         end;
       end;
     end;

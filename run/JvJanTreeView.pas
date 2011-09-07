@@ -152,6 +152,9 @@ type
     property CloseTree: TShortCut read FCloseTree write SetCloseTree;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvJanTreeView = class(TTreeView)
   private
     FParser: TJvMathParser;

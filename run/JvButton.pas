@@ -87,8 +87,7 @@ type
     procedure PaintFrame(Canvas: TCanvas); virtual;
     function InsideBtn(X, Y: Integer): Boolean; virtual;
 
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
     procedure RepaintBackground; virtual;
@@ -269,14 +268,13 @@ end;
 
 { Handle speedkeys (Alt + key) }
 
-function TJvCustomGraphicButton.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvCustomGraphicButton.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
   Result := IsAccel(Key, Caption) and Enabled and (Shift * KeyboardShiftStates = [ssAlt]);
   if Result then
     Click
   else
-    Result := inherited WantKey(Key, Shift, KeyText);
+    Result := inherited WantKey(Key, Shift);
 end;
 
 procedure TJvCustomGraphicButton.EnabledChanged;

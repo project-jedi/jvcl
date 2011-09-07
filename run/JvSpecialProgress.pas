@@ -42,6 +42,9 @@ uses
 type
   TJvTextOption = (toCaption, toFormat, toNoText, toPercent);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSpecialProgress = class(TJvGraphicControl)
   private
     FBorderStyle: TBorderStyle;

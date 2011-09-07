@@ -73,6 +73,9 @@ type
     property Disabled: TColor read FDisabled write SetDisabled default clBtnFace;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWizardRouteMapNodes = class(TJvWizardRouteMapControl)
   private
     FItemHeight: Integer;

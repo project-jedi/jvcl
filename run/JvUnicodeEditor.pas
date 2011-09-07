@@ -163,6 +163,9 @@ type
     property OnCompletionApply: TOnCompletionApplyW read FOnCompletionApply write FOnCompletionApply;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvWideEditor = class(TJvCustomWideEditor)
   published
     property BeepOnError;
@@ -2246,7 +2249,7 @@ procedure TJvOverwriteUndo.Undo;
 var
   OldText, NewText: WideString;
   EndX, EndY: Integer;
-  du: TJvOverwriteUndo;
+  OverwriteUndo: TJvOverwriteUndo;
 begin
   OldText := '';
   NewText := '';
@@ -2261,11 +2264,11 @@ begin
         Break;
     end;
     Inc(FPtr);
-    du := TJvOverwriteUndo(Items[FPtr]);
+    OverwriteUndo := TJvOverwriteUndo(Items[FPtr]);
   end;
-  with du do
+  with OverwriteUndo do
   begin
-    GetEndPosCaretW(NewText, du.CaretX, du.CaretY, EndX, EndY); // get end caret position
+    GetEndPosCaretW(NewText, CaretX, CaretY, EndX, EndY); // get end caret position
     GetEditor.FLines.DeleteText(CaretX, CaretY, EndX, EndY);
     GetEditor.FLines.InsertText(CaretX, CaretY, OldText);
     GetEditor.TextModified(CaretX, CaretY, maReplace, OldText);

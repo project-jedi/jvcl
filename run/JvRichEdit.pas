@@ -788,6 +788,9 @@ type
     property SelectionType: TRichSelectionType read GetSelectionType;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvRichEdit = class(TJvCustomRichEdit)
   published
     property AdvancedTypography;
@@ -2570,12 +2573,9 @@ var
 begin
   if Dialog.Handle = 0 then
     Exit;
-  with TextRect do
-  begin
-    TopLeft := ClientToScreen(GetCharPos(SelStart));
-    BottomRight := ClientToScreen(GetCharPos(SelStart + SelLength));
-    Inc(Bottom, 20);
-  end;
+  TextRect.TopLeft := ClientToScreen(GetCharPos(SelStart));
+  TextRect.BottomRight := ClientToScreen(GetCharPos(SelStart + SelLength));
+  Inc(TextRect.Bottom, 20);
   with Dialog do
   begin
     GetWindowRect(Handle, R);
@@ -4532,8 +4532,8 @@ begin
   begin
     if GetUpdateRect(Handle, R, True) then
     begin
-      with ClientRect do
-        R1 := Rect(Right - 3, Top, Right, Bottom);
+      R1 := ClientRect;
+      R1.Left := R.Right - 3;
       if IntersectRect(R, R, R1) then
         InvalidateRect(Handle, @R1, True);
     end;
@@ -4556,7 +4556,7 @@ begin
   { RichEd20 does not pass the WM_RBUTTONUP message to defwndproc, }
   { so we get no WM_CONTEXTMENU message. Simulate message here.    }
   if ((RichEditVersion <> 1) or not CheckWin32Version(5, 0)) and AllowObjects then
-    Perform(WM_CONTEXTMENU, Handle, LPARAM(PointToSmallPoint(
+    Perform(WM_CONTEXTMENU, Handle, {$IFDEF RTL230_UP}PointToLParam{$ELSE}LPARAM{$ENDIF RTL230_UP}(PointToSmallPoint(
       ClientToScreen(SmallPointToPoint(TWMMouse(Msg).Pos)))));
   inherited;
 end;
@@ -7228,7 +7228,7 @@ end;
 function TOleUILinkInfo.GetNextLink(dwLink: Longint): Longint;
 begin
   if dwLink = 0 then
-    Result := Longint(FRichEdit)
+    Result := 1
   else
     Result := 0;
 end;

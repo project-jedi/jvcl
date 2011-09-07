@@ -50,6 +50,9 @@ uses
   JvDateTimePicker;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBDateTimePicker = class(TJvDateTimePicker)
   private
     FDataLink: TFieldDataLink;
@@ -211,7 +214,7 @@ end;
 
 procedure TJvDBDateTimePicker.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 ///////////////////////////////////////////////////////////////////////////

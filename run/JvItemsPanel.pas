@@ -44,6 +44,9 @@ type
   TJvPanelItemClickEvent = procedure(Sender: TObject; ItemIndex: Integer) of object;
   TJvPanelOrientation = (poHorizontal, poVertical);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvItemsPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FItems: TStringList;
@@ -254,7 +257,7 @@ begin
   if FHotTrack and HighLight then
     Canvas.Font.Color := FHotTrackColor;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     SetBkMode(Canvas.Handle, TRANSPARENT);
   {$ENDIF JVCLThemesEnabled}
   DrawText(Canvas, Items[Index], -1, R, Flags);

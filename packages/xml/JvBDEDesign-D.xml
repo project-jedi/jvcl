@@ -26,9 +26,9 @@
     <Package Name="dclstd" Targets="C,D" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEEditors.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBDEReg.pas" Targets="DB,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDESecurityEditor.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEEditors.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEMemTableEditor.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBDEReg.pas" Targets="BDE,help" Formname="" Condition=""/>
   </Contains>
 </Package>

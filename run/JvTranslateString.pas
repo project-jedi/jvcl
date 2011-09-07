@@ -58,6 +58,9 @@ type
   TProcessCommandEvent = procedure(Sender: TObject; const Command: string;
     var CommandResult: string; var Changed: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvTranslateString = class(TJvComponent)
   private
     FAppNameHandled: Boolean;

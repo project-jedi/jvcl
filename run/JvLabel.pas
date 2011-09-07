@@ -67,7 +67,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
+  Windows, Messages, Types, Classes, Graphics, Controls, StdCtrls, ImgList,
   JvTypes, JvComponent, JvDataProvider, JvExControls, JvHotTrackPersistent;
 
 type
@@ -166,8 +166,7 @@ type
     procedure FocusChanged(AControl: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
     procedure EnabledChanged; override;
 
     procedure DoDrawText(var Rect: TRect; Flags: Integer); virtual;
@@ -239,6 +238,9 @@ type
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer; AHeight: Integer); override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvLabel = class(TJvCustomLabel)
   published
     property Action;
@@ -415,11 +417,8 @@ begin
     TotalHeight := (TextHeight + TextGapHeight);
   end;
   // Calculate draw position of text
-  with Rect do
-  begin
-    X := (Right - Left) / 2;
-    Y := (Bottom - Top) / 2;
-  end;
+  X := (Rect.Right - Rect.Left) / 2;
+  Y := (Rect.Bottom - Rect.Top) / 2;
   // Calculate Layout and Alignment Position
   //SetTextAlign(Canvas.Handle, TA_LEFT);
   Origin := CalculateAlignment(Alignment, Angle, X, Y, Info);
@@ -499,7 +498,7 @@ begin
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     ControlStyle := ControlStyle - [csOpaque];
   {$ENDIF JVCLThemesEnabled}
 
@@ -1066,7 +1065,7 @@ begin
   if Transparent <> Value then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       Value := True; // themes aware Labels are always transparent
     {$ENDIF JVCLThemesEnabled}
     if Value then
@@ -1170,8 +1169,7 @@ begin
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
 end;
 
-function TJvCustomLabel.WantKey(Key: Integer; Shift: TShiftState;
-  const KeyText: WideString): Boolean;
+function TJvCustomLabel.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
   Result := (FFocusControl <> nil) and Enabled and ShowAccelChar and
     IsAccel(Key, GetLabelCaption) and (ssAlt in Shift);
@@ -1200,7 +1198,7 @@ begin
     NeedRepaint := not Transparent and
       (
       {$IFDEF JVCLThemesEnabled}
-      ThemeServices.ThemesEnabled or
+      ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} or
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack and not (FDragging or OtherDragging)));
 
@@ -1227,7 +1225,7 @@ begin
     NeedRepaint := not Transparent and
       (
       {$IFDEF JVCLThemesEnabled}
-      ThemeServices.ThemesEnabled or
+      ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} or
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack and (FDragging or not OtherDragging)));
 
@@ -1462,24 +1460,21 @@ end;
 procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
 begin
   // Draw Frame with round corners
-  with Canvas, ARect do
-  begin
-    Pen.Color := AColor;
-    Dec(Right);
-    Dec(Bottom);
-    Polygon(
-     [Point(Left + R, Top),
-      Point(Right - R, Top),
-      Point(Right, Top + R),
-      Point(Right, Bottom - R),
-      Point(Right - R, Bottom),
-      Point(Left + R, Bottom),
-      Point(Left, Bottom - R),
-      Point(Left, Top + R),
-      Point(Left + R, Top)]);
-    Inc(Right);
-    Inc(Bottom);
-  end;
+  Canvas.Pen.Color := AColor;
+  Dec(ARect.Right);
+  Dec(ARect.Bottom);
+  Canvas.Polygon(
+   [Point(ARect.Left  + R, ARect.Top       ),
+    Point(ARect.Right - R, ARect.Top       ),
+    Point(ARect.Right    , ARect.Top    + R),
+    Point(ARect.Right    , ARect.Bottom - R),
+    Point(ARect.Right - R, ARect.Bottom    ),
+    Point(ARect.Left  + R, ARect.Bottom    ),
+    Point(ARect.Left     , ARect.Bottom - R),
+    Point(ARect.Left     , ARect.Top    + R),
+    Point(ARect.Left  + R, ARect.Top       )]);
+  Inc(ARect.Right);
+  Inc(ARect.Bottom);
 end;
 
 function TJvCustomLabel.IsValidImage: Boolean;

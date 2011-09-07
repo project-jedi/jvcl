@@ -51,6 +51,9 @@ type
   TJvDragLeaveEvent = procedure(Sender: TJvDropTarget) of object;
   TJvDragAcceptEvent = procedure(Sender: TJvDropTarget; var Accept: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDropTarget = class(TJvComponent, IDropTarget)
   private
     FDataObject: IDataObject;
@@ -107,6 +110,9 @@ type
     property OnDragLeave: TJvDragLeaveEvent read FOnDragLeave write FOnDragLeave;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDragDrop = class(TJvComponent)
   private
     FAcceptDrag: Boolean;

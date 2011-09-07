@@ -37,11 +37,14 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DB, DBCtrls, Messages, Controls,
+  Windows, Messages, Classes, DB, DBCtrls, Controls,
   VDBConsts,
   JvHtControls;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBHTLabel = class(TJvCustomHTLabel)
   private
     FDataLink: TFieldDataLink;
@@ -185,7 +188,7 @@ end;
 
 procedure TJvDBHTLabel.CMGetDataLink(var Message: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Message.Result := LRESULT(FDataLink);
 end;
 
 constructor TJvDBHTLabel.Create(AOwner: TComponent);

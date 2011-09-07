@@ -46,11 +46,20 @@ const
   GM_ACTIVATECELL = WM_USER + 123;
 
 type
-  TGMActivateCell = packed record
+  TGMActivateCell = record
     Msg: Cardinal;
+    {$IFDEF COMPILER16_UP}
+	MsgFiller: TDWordFiller;
+    {$ENDIF COMPILER16_UP}
     Column: Integer;
+    {$IFDEF COMPILER16_UP}
+	WParamFiller: TDWordFiller;
+    {$ENDIF COMPILER16_UP}
     Row: Integer;
-    Result: Integer;
+    {$IFDEF COMPILER16_UP}
+	LParamFiller: TDWordFiller;
+    {$ENDIF COMPILER16_UP}
+    Result: LRESULT;
   end;
 
   TJvStringGrid = class;
@@ -66,6 +75,9 @@ type
 
   TJvOnGetEditStyleEvent = procedure(Sender: TJvStringGrid; AColumn, ARow: Integer; PickListStrings: TStrings; var EditStyle: TEditStyle) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvStringGrid = class(TJvExStringGrid)
   private
     FAlignment: TAlignment;

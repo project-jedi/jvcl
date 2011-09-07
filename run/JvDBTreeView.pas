@@ -190,6 +190,9 @@ type
     property MasterValue: Variant read FMasterValue;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBTreeView = class(TJvCustomDBTreeView)
   published
     property BevelEdges;
@@ -535,7 +538,7 @@ end;
 
 procedure TJvCustomDBTreeView.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Integer(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 procedure TJvCustomDBTreeView.Notification(Component: TComponent; Operation: TOperation);

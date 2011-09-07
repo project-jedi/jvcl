@@ -65,7 +65,7 @@ var
   WallpaperOption: TglWallpaperOption;
   Size: TSIZE;
   OldFont: Windows.HFont;
-  GrFromColor, GrToColor: TColor;
+//  GrFromColor, GrToColor: TColor;
 begin
   if not Assigned(DrawTabStr.lpDrawItemStr) then
     Exit;

@@ -71,6 +71,9 @@ type
     property EnhancedOptions: TJvDoaThreadedDatasetEnhancedOptions read GetEnhancedOptions write SetEnhancedOptions;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvOracleDataset = class(TOracleDataset, IJvThreadedDatasetInterface)
     procedure BreakExecution;
     procedure BringThreadDialogToFront;

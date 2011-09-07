@@ -41,6 +41,9 @@ uses
 type
   TJvTFDispOrder = (doLeftRight, doTopBottom);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvTFWeeks = class(TJvTFCustomGlance)
   private
     FWeekCount: Integer;

@@ -36,6 +36,9 @@ uses
   JvRichEdit;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDBRichEdit = class(TJvCustomRichEdit)
   private
     FDataLink: TFieldDataLink;
@@ -507,7 +510,7 @@ end;
 
 procedure TJvDBRichEdit.CMGetDataLink(var Msg: TMessage);
 begin
-  Msg.Result := Longint(FDataLink);
+  Msg.Result := LRESULT(FDataLink);
 end;
 
 procedure TJvDBRichEdit.UpdateMemo;

@@ -72,6 +72,9 @@ type
     destructor Destroy; override;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvXPCheckbox = class(TJvXPCustomCheckControl)
   protected
     procedure DrawCheckSymbol(const R: TRect); override;

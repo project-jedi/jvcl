@@ -124,6 +124,9 @@ type
 
   TJvDockSystemInfoChange = procedure(Value: Boolean) of object;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDockVIDVCStyle = class(TJvDockAdvStyle)
   private
     FSystemInfoChange: TJvDockSystemInfoChange;
@@ -623,14 +626,11 @@ begin
         begin
           Brush.Color := RGB(R1 + Round(DR * X), G1 + Round(DG * X),
             B1 + Round(DB * X));
-          with ARect do
-          begin
-            if Right <= Left + Round((X + 1) * DH) then
-              W := Right
-            else
-              W := Left + Round((X + 1) * DH);
-            FillRect(Rect(Left + Round(X * DH), Top, W, Bottom))
-          end;
+          if ARect.Right <= ARect.Left + Round((X + 1) * DH) then
+            W := ARect.Right
+          else
+            W := ARect.Left + Round((X + 1) * DH);
+          FillRect(Rect(ARect.Left + Round(X * DH), ARect.Top, W, ARect.Bottom))
         end;
       end
       else
@@ -1644,35 +1644,34 @@ begin
   DrawRect := ARect;
   Canvas.Brush.Color := TWinControlAccessProtected(DockSite).Color;
   Canvas.FillRect(DrawRect);
-  with ARect do
-    case GrabbersPosition of
-      gpLeft:
-        begin
-          DrawExpendBotton(Left + BorderWidth + LeftOffset, Top + TopOffset + ButtonHeight + ButtonSplitter +
-            BorderWidth);
-          DrawCloseButton(Left + BorderWidth + LeftOffset, Top + TopOffset + BorderWidth);
-          DrawGrabberLine(Left + BorderWidth + LeftOffset + 3, Top + 2 * ButtonHeight + TopOffset + ButtonSplitter +
-            BottomOffset + BorderWidth + 3, Left + BorderWidth + LeftOffset + 5, Bottom - BorderWidth - 2);
-          DrawGrabberLine(Left + BorderWidth + LeftOffset + 7, Top + 2 * ButtonHeight + TopOffset + ButtonSplitter +
-            BottomOffset + BorderWidth + 3, Left + BorderWidth + LeftOffset + 9, Bottom - BorderWidth - 2);
-        end;
-      gpTop:
-        begin
-          DrawExpendBotton(Right - LeftOffset - 2 * ButtonWidth - ButtonSplitter - BorderWidth, Top + TopOffset +
-            BorderWidth);
-          DrawCloseButton(Right - LeftOffset - ButtonWidth - BorderWidth, Top + TopOffset + BorderWidth);
-          DrawGrabberLine(Left + BorderWidth, Top + BorderWidth + TopOffset + 3, Right - 2 * ButtonWidth - RightOffset -
-            ButtonSplitter - LeftOffset - BorderWidth - 3, Top + BorderWidth + TopOffset + 5);
-          DrawGrabberLine(Left + BorderWidth, Top + BorderWidth + TopOffset + 7, Right - 2 * ButtonWidth - RightOffset -
-            ButtonSplitter - LeftOffset - BorderWidth - 3, Top + BorderWidth + TopOffset + 9);
-        end;
-      gpBottom:
-        begin
-        end;
-      gpRight:
-        begin
-        end;
-    end;
+  case GrabbersPosition of
+    gpLeft:
+      begin
+        DrawExpendBotton(ARect.Left + BorderWidth + LeftOffset, ARect.Top + TopOffset + ButtonHeight + ButtonSplitter +
+          BorderWidth);
+        DrawCloseButton(ARect.Left + BorderWidth + LeftOffset, ARect.Top + TopOffset + BorderWidth);
+        DrawGrabberLine(ARect.Left + BorderWidth + LeftOffset + 3, ARect.Top + 2 * ButtonHeight + TopOffset + ButtonSplitter +
+          BottomOffset + BorderWidth + 3, ARect.Left + BorderWidth + LeftOffset + 5, ARect.Bottom - BorderWidth - 2);
+        DrawGrabberLine(ARect.Left + BorderWidth + LeftOffset + 7, ARect.Top + 2 * ButtonHeight + TopOffset + ButtonSplitter +
+          BottomOffset + BorderWidth + 3, ARect.Left + BorderWidth + LeftOffset + 9, ARect.Bottom - BorderWidth - 2);
+      end;
+    gpTop:
+      begin
+        DrawExpendBotton(ARect.Right - LeftOffset - 2 * ButtonWidth - ButtonSplitter - BorderWidth, ARect.Top + TopOffset +
+          BorderWidth);
+        DrawCloseButton(ARect.Right - LeftOffset - ButtonWidth - BorderWidth, ARect.Top + TopOffset + BorderWidth);
+        DrawGrabberLine(ARect.Left + BorderWidth, ARect.Top + BorderWidth + TopOffset + 3, ARect.Right - 2 * ButtonWidth - RightOffset -
+          ButtonSplitter - LeftOffset - BorderWidth - 3, ARect.Top + BorderWidth + TopOffset + 5);
+        DrawGrabberLine(ARect.Left + BorderWidth, ARect.Top + BorderWidth + TopOffset + 7, ARect.Right - 2 * ButtonWidth - RightOffset -
+          ButtonSplitter - LeftOffset - BorderWidth - 3, ARect.Top + BorderWidth + TopOffset + 9);
+      end;
+    gpBottom:
+      begin
+      end;
+    gpRight:
+      begin
+      end;
+  end;
 end;
 
 procedure TJvDockVIDVCTree.ResetBounds(Force: Boolean);
@@ -1935,17 +1934,16 @@ begin
       DockRect := Rect(0, 0, DockSite.ClientWidth, DockSite.ClientHeight);
 
       if VisibleClients > 0 then
-        with DockRect do
-          case DropAlign of
-            alLeft:
-              Right := Right div 2;
-            alRight:
-              Left := Right div 2;
-            alTop:
-              Bottom := Bottom div 2;
-            alBottom:
-              Top := Bottom div 2;
-          end;
+        case DropAlign of
+          alLeft:
+            DockRect.Right := DockRect.Right div 2;
+          alRight:
+            DockRect.Left := DockRect.Right div 2;
+          alTop:
+            DockRect.Bottom := DockRect.Bottom div 2;
+          alBottom:
+            DockRect.Top := DockRect.Bottom div 2;
+        end;
     end;
   end
   else
@@ -2302,7 +2300,7 @@ begin
     if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
       Exit;
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesAvailable and ThemeServices.ThemesEnabled then
+    if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
     begin
       if GrabberSize < 14 then
       begin
@@ -3799,7 +3797,6 @@ end;
 
 // (rom) unused writeable const option removed
 
-{$IFDEF DELPHI6_UP}
 procedure TJvDockVIDVCDragDockObject.DefaultDockImage(Erase: Boolean);
 var
   DrawRect: TRect;
@@ -3879,77 +3876,6 @@ begin
     end;
   end;
 end;
-{$ELSE}
-procedure TJvDockVIDVCDragDockObject.DefaultDockImage(Erase: Boolean);
-const
-  LeftOffset = 4;
-var
-  DesktopWindow: HWND;
-  DC: HDC;
-  OldBrush: HBrush;
-  DrawRect: TRect;
-  PenSize: Integer;
-  ABrush: TBrush;
-  ButtomOffset: Integer;
-  MaxTabWidth: Integer;
-
-  procedure DoDrawDefaultImage;
-  begin
-    with DrawRect do
-    begin
-      PatBlt(DC, Left + PenSize, Top, Right - Left - PenSize, PenSize, PATINVERT);
-      PatBlt(DC, Right - PenSize, Top + PenSize, PenSize, Bottom - Top - PenSize, PATINVERT);
-      PatBlt(DC, Left, Bottom - PenSize, Right - Left - PenSize, PenSize, PATINVERT);
-      PatBlt(DC, Left, Top, PenSize, Bottom - Top - PenSize, PATINVERT);
-    end;
-  end;
-
-  procedure DoDrawTabImage;
-  begin
-    with DrawRect do
-    begin
-      ButtomOffset := 15;
-      MaxTabWidth := 30;
-
-      PatBlt(DC, Left + PenSize, Top, Right - Left - PenSize, PenSize, PATINVERT);
-      PatBlt(DC, Right - PenSize, Top + PenSize, PenSize, Bottom - Top - 2 * PenSize - ButtomOffset, PATINVERT);
-
-      if DrawRect.Right - DrawRect.Left - 2 * PenSize < LeftOffset + 2 * PenSize + 2 * MaxTabWidth then
-        MaxTabWidth := (DrawRect.Right - DrawRect.Left - 4 * PenSize - LeftOffset) div 2;
-
-      if DrawRect.Bottom - DrawRect.Top - 2 * PenSize < 2 * ButtomOffset then
-        ButtomOffset := Max((DrawRect.Bottom - DrawRect.Top - 2 * PenSize) div 2, 0);
-
-      PatBlt(DC, Left, Bottom - PenSize - ButtomOffset, 2 * PenSize + LeftOffset, PenSize, PATINVERT);
-      PatBlt(DC, Left + PenSize + LeftOffset, Bottom - ButtomOffset, PenSize, ButtomOffset, PATINVERT);
-      PatBlt(DC, Left + 2 * PenSize + LeftOffset, Bottom - PenSize, MaxTabWidth, PenSize, PATINVERT);
-      PatBlt(DC, Left + 2 * PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, PenSize, PenSize +
-        ButtomOffset, PATINVERT);
-      PatBlt(DC, Left + 3 * PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, Right - Left - 3 *
-        PenSize - LeftOffset - MaxTabWidth, PenSize, PATINVERT);
-
-      PatBlt(DC, Left, Top, PenSize, Bottom - Top - PenSize - ButtomOffset, PATINVERT);
-    end;
-  end;
-
-begin
-  FErase := Erase;
-  GetBrush_PenSize_DrawRect(ABrush, PenSize, DrawRect, Erase);
-
-  DesktopWindow := GetDesktopWindow;
-  DC := GetDCEx(DesktopWindow, 0, DCX_CACHE or DCX_LOCKWINDOWUPDATE);
-  try
-    OldBrush := SelectObject(DC, ABrush.Handle);
-    if not FIsTabDockOver then
-      DoDrawDefaultImage
-    else
-      DoDrawTabImage;
-    SelectObject(DC, OldBrush);
-  finally
-    ReleaseDC(DesktopWindow, DC);
-  end;
-end;
-{$ENDIF DELPHI6_UP}
 
 function TJvDockVIDVCDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 begin

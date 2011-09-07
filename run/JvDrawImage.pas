@@ -46,6 +46,9 @@ type
   TGonio = array [0..180, 0..1] of Extended;
   TSinPix = array [0..255] of Byte;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvDrawImage = class(TImage)
   private
     FGonio: TGonio;
@@ -1913,7 +1916,7 @@ end;
 procedure TJvDrawImage.ColorCircle(var bm: TBitmap; center: TPoint; Radius, Mode: Integer);
 var
   p, p0, p1: pbytearray;
-  dx, X, Y, w, h, i, j, sum, c: Integer;
+  (*dx, *)X, Y, w, h, i, j, sum, c: Integer;
   cm, tm: TBitmap;
   Rs, Rd: TRect;
 begin
@@ -2568,10 +2571,10 @@ end;
 procedure TJvDrawImage.MouseMove(Shift: TShiftState;
   X, Y: Integer);
 var
-  xp, yp, i, j, X1, Y1, X2, Y2, h, w, pw, movex, movey: Integer;
+  xp, yp, i, (*j, *)X1, Y1, X2, Y2, (*h, *)w, pw, movex, movey: Integer;
   myrect: TRect;
   Color1, Color2: TColor;
-  R1, G1, B1, R2, B2, G2: Byte;
+//  R1, G1, B1, R2, B2, G2: Byte;
   dx, dy, Angle: Extended;
 
   function rr: Integer;
@@ -2596,7 +2599,7 @@ begin
   if ((ssCtrl in Shift) and (ssAlt in Shift)) then
     Exit;
   mypen := Canvas.Pen.Mode;
-  h := Abs(Y - myorigin.Y);
+//  h := Abs(Y - myorigin.Y);
 //  w := Abs(X - myorigin.X);
   if myDraw then
   begin
@@ -3262,14 +3265,14 @@ procedure TJvDrawImage.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   myrect: TRect;
-  xs, ys, xt, yt, i, tangle: Integer;
-  c: TColor;
-  drw: string;
+  xs, ys, xt, yt, i(*, tangle*): Integer;
+//  c: TColor;
+//  drw: string;
   apoint: TPoint;
-  Bitmap: TBitmap;
-  X1, Y1, X2, Y2: Integer;
-  dcurve: array [0..3] of TPoint;
-  rgn: HRGN;
+//  Bitmap: TBitmap;
+//  X1, Y1, X2, Y2: Integer;
+//  dcurve: array [0..3] of TPoint;
+//  rgn: HRGN;
   R1, G1, B1, R2, G2, B2: Byte;
   r, g, b, dr, dg, DB: Extended;
   AColor, pcolor: TColor;

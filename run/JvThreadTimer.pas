@@ -50,19 +50,29 @@ uses
   JvTypes, JvComponentBase;
 
 type
+  // TThreadPriority has been marked platform and we don't want the warning
+  {$IFDEF RTL230_UP}{$IFDEF MSWINDOWS}{$WARNINGS OFF}TThreadPriority = Classes.TThreadPriority;{$WARNINGS ON}{$ENDIF RTL230_UP}{$ENDIF MSWINDOWS}
+
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
+  {$ENDIF RTL230_UP}
   TJvThreadTimer = class(TJvComponent)
   private
     FEnabled: Boolean;
     FInterval: Cardinal;
     FKeepAlive: Boolean;
     FOnTimer: TNotifyEvent;
+    {$IFDEF MSWINDOWS}
     FPriority: TThreadPriority;
+    {$ENDIF MSWINDOWS}
     FStreamedEnabled: Boolean;
     FThread: TThread;
     procedure SetEnabled(const Value: Boolean);
     procedure SetInterval(const Value: Cardinal);
     procedure SetOnTimer(const Value: TNotifyEvent);
+    {$IFDEF MSWINDOWS}
     procedure SetPriority(const Value: TThreadPriority);
+    {$ENDIF MSWINDOWS}
     procedure SetKeepAlive(const Value: Boolean);
   protected
     procedure DoOnTimer;
@@ -79,8 +89,9 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property KeepAlive: Boolean read FKeepAlive write SetKeepAlive default False;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
-    property Priority: TThreadPriority read FPriority write SetPriority
-      {$IFDEF MSWINDOWS} default tpNormal {$ENDIF};
+    {$IFDEF MSWINDOWS}
+    property Priority: TThreadPriority read FPriority write SetPriority default tpNormal;
+    {$ENDIF MSWINDOWS}
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -106,7 +117,9 @@ type
     FHasBeenSuspended: Boolean;
     FInterval: Cardinal;
     FTimer: TJvThreadTimer;
+    {$IFDEF MSWINDOWS}
     FPriority: TThreadPriority;
+    {$ENDIF MSWINDOWS}
     FSynchronizing: Boolean;
   protected
     procedure DoSuspend;
@@ -140,7 +153,9 @@ begin
     RaiseLastOSError;
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
+  {$IFDEF MSWINDOWS}
   FPriority := ATimer.Priority; // setting the priority is deferred to Execute()
+  {$ENDIF MSWINDOWS}
   ThreadName := Format('%s: %s',[ClassName, ATimer.Name]);
 end;
 
@@ -163,7 +178,9 @@ var
   Offset, TickCount: Cardinal;
 begin
   NameThread(ThreadName);
+  {$IFDEF MSWINDOWS}
   Priority := FPriority;
+  {$ENDIF MSWINDOWS}
   if WaitForSingleObject(FEvent, Interval) <> WAIT_TIMEOUT then
     Exit;
 
@@ -217,7 +234,9 @@ constructor TJvThreadTimer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInterval := 1000;
+  {$IFDEF MSWINDOWS}
   FPriority := tpNormal;
+  {$ENDIF MSWINDOWS}
 end;
 
 destructor TJvThreadTimer.Destroy;
@@ -286,6 +305,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure TJvThreadTimer.SetPriority(const Value: TThreadPriority);
 begin
   if FPriority <> Value then
@@ -295,6 +315,7 @@ begin
       FThread.Priority := FPriority;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 procedure TJvThreadTimer.StopTimer;
 begin

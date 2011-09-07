@@ -103,7 +103,7 @@ type
   }
   TJvThumbTitle = class(TJvExPanel)
   protected
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure Click; override;
     procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -141,7 +141,7 @@ type
 
   TJvBaseThumbnail = class(TJvExPanel)
   protected
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -161,7 +161,7 @@ type
 
   TJvBaseThumbView = class(TJvExScrollBox)
   protected
-    // function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    // function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -322,7 +322,7 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 
-function TJvThumbTitle.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvThumbTitle.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   inherited DoEraseBackground(Canvas, Param);
   Result := True;
@@ -507,7 +507,7 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
 end;
 
-function TJvBaseThumbnail.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvBaseThumbnail.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   inherited DoEraseBackground(Canvas, Param);
   Result := True;
@@ -604,7 +604,7 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
 end;
 {
-function TJvBaseThumbView.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvBaseThumbView.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
 begin
   //Result :=
     inherited DoEraseBackground(Canvas, Param);

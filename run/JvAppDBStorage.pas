@@ -105,6 +105,9 @@ type
     property OnWrite: TJvDBStorageWriteEvent read FOnWrite write FOnWrite;
   end;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvAppDBStorage = class(TJvCustomAppDBStorage)
   published
     property ReadOnly;

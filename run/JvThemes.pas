@@ -35,21 +35,15 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
-  {$IFDEF COMPILER7_UP}
-  Types,
-  {$ENDIF COMPILER7_UP}
-  Windows, Messages, CommCtrl,
+  Windows, Messages, CommCtrl, Types, SysUtils, Classes, Contnrs,
   {$IFDEF JVCLThemesEnabled}
-  Contnrs,
-  {$IFDEF COMPILER7_UP}
+    {$IFDEF COMPILER7_UP}
   Themes, UxTheme,
-  {$ELSE}
+    {$ELSE}
   ThemeSrv,
-  {$ENDIF COMPILER7_UP}
+    {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  Controls, StdCtrls, Forms, Graphics,
-  Buttons;
+  Controls, StdCtrls, Forms, Graphics, Buttons;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but
@@ -60,6 +54,10 @@ type
   TCMDenySubClassing = TMessage;
 
 {$IFDEF JVCLThemesEnabled}
+
+{.$MESSAGE HINT 'A few types are IFDEFed out for Pulsar in order to compile this unit. This needs a review.'}
+// ahuser: This is more an internal JVCL unit. All the types and constants wouldn't be necessary
+//         if we didn't support Delphi 6 with the ThemeManagerD6.
 
 // type name redirection
 type
@@ -92,7 +90,11 @@ type
 
   PThemedElementDetails = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.PThemedElementDetails; {$EXTERNALSYM PThemedElementDetails}
   TThemedElementDetails = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemedElementDetails; {$EXTERNALSYM TThemedElementDetails}
+  {$IFDEF COMPILER16_UP}
+  TThemeServices = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TCustomStyleServices; {$EXTERNALSYM TThemeServices}
+  {$ELSE}
   TThemeServices = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.TThemeServices; {$EXTERNALSYM TThemeServices}
+  {$ENDIF COMPILER16_UP}
 
 // enumerations as constants
 
@@ -212,10 +214,14 @@ const
   tebNormalGroupExpandPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebNormalGroupExpandPressed; {$EXTERNALSYM tebNormalGroupExpandPressed}
   tebNormalGroupHead = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebNormalGroupHead; {$EXTERNALSYM tebNormalGroupHead}
   tebSpecialGroupBackground = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupBackground; {$EXTERNALSYM tebSpecialGroupBackground}
+  {$IFNDEF COMPILER16_UP}
   tebSpecialGroupCollapseSpecial = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupCollapseSpecial; {$EXTERNALSYM tebSpecialGroupCollapseSpecial}
+  {$ENDIF ~COMPILER16_UP}
   tebSpecialGroupCollapseHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupCollapseHot; {$EXTERNALSYM tebSpecialGroupCollapseHot}
   tebSpecialGroupCollapsePressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupCollapsePressed; {$EXTERNALSYM tebSpecialGroupCollapsePressed}
+  {$IFNDEF COMPILER16_UP}
   tebSpecialGroupExpandSpecial = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupExpandSpecial; {$EXTERNALSYM tebSpecialGroupExpandSpecial}
+  {$ENDIF ~COMPILER16_UP}
   tebSpecialGroupExpandHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupExpandHot; {$EXTERNALSYM tebSpecialGroupExpandHot}
   tebSpecialGroupExpandPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupExpandPressed; {$EXTERNALSYM tebSpecialGroupExpandPressed}
   tebSpecialGroupHead = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.tebSpecialGroupHead; {$EXTERNALSYM tebSpecialGroupHead}
@@ -299,20 +305,26 @@ const
   trRebarRoot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trRebarRoot; {$EXTERNALSYM trRebarRoot}
   trGripper = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trGripper; {$EXTERNALSYM trGripper}
   trGripperVert = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trGripperVert; {$EXTERNALSYM trGripperVert}
+  {$IFNDEF COMPILER16_UP}
   trBandNormal = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trBandNormal; {$EXTERNALSYM trBandNormal}
   trBandHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trBandHot; {$EXTERNALSYM trBandHot}
   trBandPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trBandPressed; {$EXTERNALSYM trBandPressed}
   trBandDisabled = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trBandDisabled; {$EXTERNALSYM trBandDisabled}
   trBandChecked = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trBandChecked; {$EXTERNALSYM trBandChecked}
   trBandHotChecked = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trBandHotChecked; {$EXTERNALSYM trBandHotChecked}
+  {$ENDIF ~COMPILER16_UP}
   trChevronNormal = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronNormal; {$EXTERNALSYM trChevronNormal}
   trChevronHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronHot; {$EXTERNALSYM trChevronHot}
   trChevronPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronPressed; {$EXTERNALSYM trChevronPressed}
+  {$IFNDEF COMPILER16_UP}
   trChevronDisabled = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronDisabled; {$EXTERNALSYM trChevronDisabled}
+  {$ENDIF ~COMPILER16_UP}
   trChevronVertNormal = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronVertNormal; {$EXTERNALSYM trChevronVertNormal}
   trChevronVertHot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronVertHot; {$EXTERNALSYM trChevronVertHot}
   trChevronVertPressed = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronVertPressed; {$EXTERNALSYM trChevronVertPressed}
+  {$IFNDEF COMPILER16_UP}
   trChevronVertDisabled = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.trChevronVertDisabled; {$EXTERNALSYM trChevronVertDisabled}
+  {$ENDIF ~COMPILER16_UP}
 
 // TThemedScrollBar
 const
@@ -473,11 +485,13 @@ const
   ttbFlashButton = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbFlashButton; {$EXTERNALSYM ttbFlashButton}
   ttpFlashButtonGroupMenu = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttpFlashButtonGroupMenu; {$EXTERNALSYM ttpFlashButtonGroupMenu}
 
+{$IFNDEF COMPILER16_UP}
 // TThemedTaskBar
 const
   ttTaskBarDontCare = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttTaskBarDontCare; {$EXTERNALSYM ttTaskBarDontCare}
   ttTaskBarRoot = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttTaskBarRoot; {$EXTERNALSYM ttTaskBarRoot}
   ttbTimeNormal = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ttbTimeNormal; {$EXTERNALSYM ttbTimeNormal}
+{$ENDIF ~COMPILER16_UP}
 
 // TThemedToolBar
 const
@@ -704,14 +718,16 @@ const
   twSmallFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twSmallFrameBottomSizingTemplate; {$EXTERNALSYM twSmallFrameBottomSizingTemplate}
 
 type
-  {$IFDEF COMPILER7_UP}
-  TThemeServicesEx = TThemeServices;
-  {$ELSE}
   TThemeServicesEx = class(TThemeServices)
   public
+    {$IFNDEF COMPILER7_UP}
     procedure ApplyThemeChange;
+    {$ENDIF ~COMPILER7_UP}
+    {$IFNDEF COMPILER16_UP}
+    function GetElementContentRect(DC: HDC; Details: TThemedElementDetails;
+      const BoundingRect: TRect; out AContentRect: TRect): Boolean;
+    {$ENDIF ~COMPILER16_UP}
   end;
-  {$ENDIF COMPILER7_UP}
 
 function ThemeServices: TThemeServicesEx;
 
@@ -773,6 +789,7 @@ function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: 
 { IsMouseOver returns True if the mouse is over the control. }
 function IsMouseOver(Control: TControl): Boolean;
 
+// ~COMPILER7_UP: These functions are helpers for Delphi 6 that doesn't have the csParentPackground flag.
 { GetParentBackground returns True if the Control has the csParentPackground
   ControlStyle }
 function GetParentBackground(Control: TWinControl): Boolean;
@@ -827,7 +844,7 @@ var
   Cl: TColor;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and
      (Control.Parent <> nil) and
      ((Color = TWinControlThemeInfo(Control.Parent).Color) or
       (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
@@ -865,7 +882,7 @@ var
 begin
   {$IFDEF JVCLThemesEnabled}
   GetObject(Brush, SizeOf(LogBrush), @LogBrush);
-  if ThemeServices.ThemesEnabled and
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and
      (Control.Parent <> nil) and
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      ((not NeedsParentBackground) or
@@ -900,7 +917,7 @@ var
 begin
   Result := False;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     R := Rect;
     case uType of
@@ -1185,7 +1202,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if (Style <> bsWin31) and ThemeServices.ThemesEnabled then
+  if (Style <> bsWin31) and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
   begin
     Result := Client;
 
@@ -1202,7 +1219,7 @@ begin
 
     Details := ThemeServices.GetElementDetails(Btn);
     ThemeServices.DrawElement(Canvas.Handle, Details, Result);
-    Result := ThemeServices.ContentRect(Canvas.Handle, Details, Client);
+    ThemeServices.GetElementContentRect(Canvas.Handle, Details, Client, Result);
 
     if IsFocused then
       DrawFocusRect(Canvas.Handle, Result);
@@ -1288,7 +1305,7 @@ var
 {$ENDIF COMPILER11_UP}
 begin
   {$IFDEF COMPILER11_UP}
-  if ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
+  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and CheckWin32Version(6, 0) then
   begin
     FillChar(Options, SizeOf(Options), 0);
     Options.dwSize := SizeOf(Options);
@@ -1370,19 +1387,26 @@ end;
 {$IFDEF JVCLThemesEnabled}
 
 {$IFNDEF COMPILER7_UP}
-
 procedure TThemeServicesEx.ApplyThemeChange;
 begin
   ThemeServices.UpdateThemes;
   ThemeServices.DoOnThemeChange;
 end;
+{$ENDIF ~COMPILER7_UP}
 
-{$ENDIF !COMPILER7_UP}
+{$IFNDEF COMPILER16_UP}
+function TThemeServicesEx.GetElementContentRect(DC: HDC; Details: TThemedElementDetails;
+  const BoundingRect: TRect; out AContentRect: TRect): Boolean;
+begin
+  AContentRect := ContentRect(DC, Details, BoundingRect);
+  Result := True;
+end;
+{$ENDIF ~COMPILER16_UP}
 
 function ThemeServices: TThemeServicesEx;
 begin
   Result := TThemeServicesEx(
-    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.ThemeServices);
+    {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.{$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP});
 end;
 
 procedure PaintControlBorder(Control: TWinControl);
@@ -1413,8 +1437,7 @@ begin
     DrawRect := Control.BoundsRect;
   end;
 
-  with DrawRect do
-    ExcludeClipRect(DC, Left + 2, Top + 2, Right - 2, Bottom - 2);
+  ExcludeClipRect(DC, DrawRect.Left + 2, DrawRect.Top + 2, DrawRect.Right - 2, DrawRect.Bottom - 2);
   Details := ThemeServices.GetElementDetails(teEditTextNormal);
   ThemeServices.DrawElement(DC, Details, DrawRect);
 

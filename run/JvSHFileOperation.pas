@@ -55,6 +55,9 @@ type
     fofNoRecursion, fofNoConnectedElements, fofNoRecurseParse, fofWantNukeWarning);
   TJvSHFileOptions = set of TJvSHFileOption;
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvSHFileOperation = class(TJvCommonDialog)
   private
     FSourceFiles: TStringList;
@@ -115,7 +118,7 @@ uses
 type
   // helper object for file mappings
   PShHandleToMappings = ^TShHandleToMappings;
-  TShHandleToMappings = packed record
+  TShHandleToMappings = packed record // "hNameMappings points to an int followed by an array of Ansi/Unicode SHNAMEMAPPING structures"
     Count: UINT;
     PNameMappings: PSHNameMapping;
   end;

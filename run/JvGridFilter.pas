@@ -40,6 +40,9 @@ uses
   SysUtils, Classes;
 
 type
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvGridFilter = class(TComponent)
   private
     FGrid: TStringGrid;
@@ -138,7 +141,9 @@ begin
   S := Trim(AFilter);
   if S = '' then
     Exit;
+  {$IFNDEF CPUX64}
   @Func := nil;
+  {$ENDIF ~CPUX64}
   // parse field name
   repeat
     P := Pos('[', S);

@@ -41,6 +41,9 @@ type
 
   TPixelTransform = procedure(Dest, Source: PJvRGBTriple);
 
+  {$IFDEF RTL230_UP}
+  [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
+  {$ENDIF RTL230_UP}
   TJvBitmapButton = class(TJvGraphicControl)
   private
     FBitmap: TBitmap;
