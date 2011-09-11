@@ -388,8 +388,7 @@ begin
   begin
     with ColorTable.Colors[I] do
     begin
-      Index := Byte(Longint(Word(Red) * 77 + Word(Green) * 150 +
-        Word(Blue) * 29) shr 8);
+      Index := Byte(Longint(Word(Red) * 77 + Word(Green) * 150 + Word(Blue) * 29) shr 8);
       Red := Index;
       Green := Index;
       Blue := Index;
@@ -773,7 +772,7 @@ begin
   case Context.BitsPerPixel of
     1:
       begin
-        P := HugeOffset(Context.CurrLineData, Context.X shr 3);
+        P := PByte(PAnsiChar(Context.CurrLineData) + (Context.X shr 3));
         if (Context.X and $07) <> 0 then
           P^ := P^ or Word(Value shl (7 - (Word(Context.X and 7))))
         else
@@ -781,7 +780,7 @@ begin
       end;
     4:
       begin
-        P := HugeOffset(Context.CurrLineData, Context.X shr 1);
+        P := PByte(PAnsiChar(Context.CurrLineData) + (Context.X shr 1));
         if (Context.X and 1) <> 0 then
           P^ := P^ or Value
         else
@@ -789,7 +788,7 @@ begin
       end;
     8:
       begin
-        P := HugeOffset(Context.CurrLineData, Context.X);
+        P := PByte(PAnsiChar(Context.CurrLineData) + Context.X);
         P^ := Value;
       end;
   end;
@@ -801,8 +800,7 @@ begin
     Context.Y := InterlaceStep(Context.Y, Context.H, Context.Pass)
   else
     Inc(Context.Y);
-  Context.CurrLineData := HugeOffset(Context.Data,
-    (Context.H - 1 - Context.Y) * Context.LineIdent);
+  Context.CurrLineData := PAnsiChar(Context.Data) + (Context.H - 1 - Context.Y) * Context.LineIdent;
 end;
 
 procedure ReadGIFData(Stream: TStream; const Header: TBitmapInfoHeader;
@@ -860,8 +858,7 @@ begin
           OutCtxt.LineIdent := ((Header.biWidth * Header.biBitCount + 31)
             div 32) * 4;
           OutCtxt.Data := Data;
-          OutCtxt.CurrLineData := HugeOffset(Data, (Header.biHeight - 1) *
-            OutCtxt.LineIdent);
+          OutCtxt.CurrLineData := PAnsiChar(Data) + (Header.biHeight - 1) * OutCtxt.LineIdent;
           BitMask := (1 shl IntBitPerPixel) - 1;
           { 2 ^ MinCodeSize accounts for all colours in file }
           ClearCode := 1 shl MinCodeSize;
@@ -1075,7 +1072,7 @@ begin
       WriteCode(Stream, ClearCode, WriteCtxt);
       for I := 0 to HASH_TABLE_SIZE - 1 do
         HashTable[I] := nil;
-      Data := HugeOffset(Data, (Header.biHeight - 1) * LineIdent);
+      Data := PAnsiChar(Data) + (Header.biHeight - 1) * LineIdent;
       Y := 0;
       Pass := 0;
       if Assigned(ProgressProc) then
@@ -1083,21 +1080,21 @@ begin
       try
         while Y < Header.biHeight do
         begin
-          PData := HugeOffset(Data, -(Y * LineIdent));
+          PData := PByte(PAnsiChar(Data) - (Y * LineIdent));
           for X := 0 to Header.biWidth - 1 do
           begin
             case Header.biBitCount of
               8:
                 begin
                   Col := PData^;
-                  PData := HugeOffset(PData, 1);
+                  Inc(PData);
                 end;
               4:
                 begin
                   if X and 1 <> 0 then
                   begin
                     Col := PData^ and $0F;
-                    PData := HugeOffset(PData, 1);
+                    Inc(PData);
                   end
                   else
                     Col := PData^ shr 4;
@@ -1107,7 +1104,7 @@ begin
                 if X and 7 = 7 then
                 begin
                   Col := PData^ and 1;
-                  PData := HugeOffset(PData, 1);
+                  Inc(PData);
                 end
                 else
                   Col := (PData^ shr (7 - (X and $07))) and $01;
@@ -1620,11 +1617,11 @@ var
 begin
   ColorCount := 0;
   Stream.Position := 0;
-  BI := PBitmapInfoHeader(Longint(Stream.Memory) + SizeOf(TBitmapFileHeader));
+  BI := PBitmapInfoHeader(PAnsiChar(Stream.Memory) + SizeOf(TBitmapFileHeader));
   W := BI^.biWidth;
   H := BI^.biHeight;
-  Pal := PRGBPalette(Longint(BI) + SizeOf(TBitmapInfoHeader));
-  Bits := Pointer(Longword(Stream.Memory) + PBitmapFileHeader(Stream.Memory)^.bfOffBits);
+  Pal := PRGBPalette(PAnsiChar(BI) + SizeOf(TBitmapInfoHeader));
+  Bits := Pointer(PAnsiChar(Stream.Memory) + PBitmapFileHeader(Stream.Memory)^.bfOffBits);
   case BI^.biBitCount of
     1:
       ColorCount := 2;
@@ -1797,16 +1794,15 @@ begin
   Stream.Write(BI, SizeOf(TBitmapInfoHeader));
   FillRGBPalette(FImage.FColorMap, Colors);
   Stream.Write(Colors, SizeOf(TRGBQuad) * (1 shl BI.biBitCount));
-  Bits := AllocMemo(BI.biSizeImage);
+  Bits := GlobalAllocPtr(GMEM_ZEROINIT, BI.biSizeImage);
   try
-    FillChar(Bits^, BI.biSizeImage, #0);
     FImage.FImageData.Position := 0;
     ReadGIFData(FImage.FImageData, BI, FInterlaced, GIFLoadCorrupted,
       FImage.FBitsPerPixel, Bits, Corrupt, FOwner.DoProgress);
     FCorrupted := FCorrupted or Corrupt;
     Stream.WriteBuffer(Bits^, BI.biSizeImage);
   finally
-    FreeMemo(Bits);
+    GlobalFreePtr(Bits);
   end;
   Stream.Position := 0;
 end;
@@ -2024,8 +2020,7 @@ begin
       for I := 0 to FrameCount - 1 do
       begin
         AddFrame(TIcon(Icons[I]));
-        Self.Frames[I].FAnimateInterval :=
-          Longint(Frames[I].Rate * 100) div 6;
+        Self.Frames[I].FAnimateInterval := Longint(Frames[I].Rate * 100) div 6;
         if Frames[I].Rate = 0 then
           Self.Frames[I].FAnimateInterval := 100;
       end;

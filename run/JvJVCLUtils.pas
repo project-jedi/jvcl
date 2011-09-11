@@ -79,13 +79,6 @@ type
 // set the background wallpaper (two versions)
 procedure SetWallpaper(const Path: string); overload;
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle); overload;
-
-(* (rom) to be deleted. Use ScreenShot from JCL
-// screen capture functions
-function CaptureScreen(IncludeTaskBar: Boolean = True): TBitmap; overload;
-function CaptureScreen(Rec: TRect): TBitmap; overload;
-function CaptureScreen(WndHandle: Longword): TBitmap; overload;
-*)
 {$ENDIF MSWINDOWS}
 
 procedure RGBToHSV(R, G, B: Integer; var H, S, V: Integer);
@@ -407,25 +400,6 @@ function RectToStr(Rect: TRect): string;
 function StrToRect(const Str: string; const Def: TRect): TRect;
 function PointToStr(P: TPoint): string;
 function StrToPoint(const Str: string; const Def: TPoint): TPoint;
-
-{
-function IniReadString(IniFile: TObject; const Section, Ident,
-  Default: string): string;
-procedure IniWriteString(IniFile: TObject; const Section, Ident,
-  Value: string);
-function IniReadInteger(IniFile: TObject; const Section, Ident: string;
-  Default: Longint): Longint;
-procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
-  Value: Longint);
-function IniReadBool(IniFile: TObject; const Section, Ident: string;
-  Default: Boolean): Boolean;
-procedure IniWriteBool(IniFile: TObject; const Section, Ident: string;
-  Value: Boolean);
-procedure IniReadSections(IniFile: TObject; Strings: TStrings);
-procedure IniEraseSection(IniFile: TObject; const Section: string);
-procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
-}
-
 
 procedure AppBroadcast(Msg: UINT; wParam: WPARAM; lParam: LPARAM);
 
@@ -1066,78 +1040,6 @@ begin
       H := H + 360;
   end;
 end;
-
-
-(* (rom) to be deleted. Use ScreenShot from JCL
-{$IFDEF VCL}
-
-function CaptureScreen(Rec: TRect): TBitmap;
-const
-  NumColors = 256;
-var
-  R: TRect;
-  C: TCanvas;
-  LP: PLogPalette;
-  TmpPalette: HPALETTE;
-  Size: Integer;
-begin
-  Result := TBitmap.Create;
-  Result.Width := Rec.Right - Rec.Left;
-  Result.Height := Rec.Bottom - Rec.Top;
-  R := Rec;
-  C := TCanvas.Create;
-  try
-    C.Handle := GetDC(HWND_DESKTOP);
-    Result.Canvas.CopyRect(Rect(0, 0, Rec.Right - Rec.Left, Rec.Bottom -
-      Rec.Top), C, R);
-    Size := SizeOf(TLogPalette) + (Pred(NumColors) * SizeOf(TPaletteEntry));
-    LP := AllocMem(Size);
-    try
-      LP^.palVersion := $300;
-      LP^.palNumEntries := NumColors;
-      GetSystemPaletteEntries(C.Handle, 0, NumColors, LP^.palPalEntry);
-      TmpPalette := CreatePalette(LP^);
-      Result.Palette := TmpPalette;
-      DeleteObject(TmpPalette);
-    finally
-      FreeMem(LP, Size);
-    end
-  finally
-    ReleaseDC(HWND_DESKTOP, C.Handle);
-    C.Free;
-  end;
-end;
-
-function CaptureScreen(IncludeTaskBar: Boolean): TBitmap;
-var
-  R: TRect;
-begin
-  if IncludeTaskBar then
-    R := Rect(0, 0, Screen.Width, Screen.Height)
-  else
-    SystemParametersInfo(SPI_GETWORKAREA, 0, Pointer(@R), 0);
-  Result := CaptureScreen(R);
-end;
-
-function CaptureScreen(WndHandle: Longword): TBitmap;
-var
-  R: TRect;
-  WP: TWindowPlacement;
-begin
-  if GetWindowRect(WndHandle, R) then
-  begin
-    GetWindowPlacement(WndHandle, @WP);
-    if IsIconic(WndHandle) then
-      ShowWindow(WndHandle, SW_RESTORE);
-    BringWindowToTop(WndHandle);
-    Result := CaptureScreen(R);
-    SetWindowPlacement(WndHandle, @WP);
-  end
-  else
-    Result := nil;
-end;
-{$ENDIF VCL}
-*)
 
 {$IFDEF MSWINDOWS}
 
@@ -2620,7 +2522,7 @@ begin
   Handle := LoadCursor(Instance, ResID);
   if Handle = 0 then
     Handle := LoadAniCursor(Instance, ResID);
-  if Integer(Handle) = 0 then
+  if Handle = 0 then
     ResourceNotFound(ResID);
   try
     Result := GetNextFreeCursorIndex(crJVCLFirst, False);
@@ -3786,130 +3688,6 @@ const
   siListCount = 'Count';
   siItem = 'Item%d';
 
-(*
-function IniReadString(IniFile: TObject; const Section, Ident,
-  Default: string): string;
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    Result := TRegIniFile(IniFile).ReadString(Section, Ident, Default)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      Result := TCustomIniFile(IniFile).ReadString(Section, Ident, Default)
-    else
-      Result := Default;
-end;
-
-procedure IniWriteString(IniFile: TObject; const Section, Ident,
-  Value: string);
-var
-  S: string;
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    TRegIniFile(IniFile).WriteString(Section, Ident, Value)
-  else
-  {$ENDIF MSWINDOWS}
-  begin
-    S := Value;
-    if S <> '' then
-    begin
-      if ((S[1] = '"') and (S[Length(S)] = '"')) or
-      ((S[1] = '''') and (S[Length(S)] = '''')) then
-        S := '"' + S + '"';
-    end;
-    if IniFile is TCustomIniFile then
-      TCustomIniFile(IniFile).WriteString(Section, Ident, S);
-  end;
-end;
-
-function IniReadInteger(IniFile: TObject; const Section, Ident: string;
-  Default: Longint): Longint;
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    Result := TRegIniFile(IniFile).ReadInteger(Section, Ident, Default)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      Result := TCustomIniFile(IniFile).ReadInteger(Section, Ident, Default)
-    else
-      Result := Default;
-end;
-
-procedure IniWriteInteger(IniFile: TObject; const Section, Ident: string;
-  Value: Longint);
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    TRegIniFile(IniFile).WriteInteger(Section, Ident, Value)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      TCustomIniFile(IniFile).WriteInteger(Section, Ident, Value);
-end;
-
-function IniReadBool(IniFile: TObject; const Section, Ident: string;
-  Default: Boolean): Boolean;
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    Result := TRegIniFile(IniFile).ReadBool(Section, Ident, Default)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      Result := TCustomIniFile(IniFile).ReadBool(Section, Ident, Default)
-    else
-      Result := Default;
-end;
-
-procedure IniWriteBool(IniFile: TObject; const Section, Ident: string;
-  Value: Boolean);
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    TRegIniFile(IniFile).WriteBool(Section, Ident, Value)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      TCustomIniFile(IniFile).WriteBool(Section, Ident, Value);
-end;
-
-procedure IniEraseSection(IniFile: TObject; const Section: string);
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    TRegIniFile(IniFile).EraseSection(Section)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      TCustomIniFile(IniFile).EraseSection(Section);
-end;
-
-procedure IniDeleteKey(IniFile: TObject; const Section, Ident: string);
-begin
-  {$IFDEF MSWINDOWS}
-  if IniFile is TRegIniFile then
-    TRegIniFile(IniFile).DeleteKey(Section, Ident)
-  else
-  {$ENDIF MSWINDOWS}
-    if IniFile is TCustomIniFile then
-      TCustomIniFile(IniFile).DeleteKey(Section, Ident);
-end;
-
-procedure IniReadSections(IniFile: TObject; Strings: TStrings);
-begin
-  if IniFile is TCustomIniFile then
-    TCustomIniFile(IniFile).ReadSections(Strings)
-  {$IFDEF MSWINDOWS}
-  else
-  if IniFile is TRegIniFile then
-    TRegIniFile(IniFile).ReadSections(Strings);
-  {$ENDIF MSWINDOWS}
-end;
-*)
-
 {$HINTS OFF}
 type
   TComponentAccessProtected = class(TComponent);
@@ -3975,8 +3753,7 @@ begin
   try
     StartWait;
     try
-      Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
-        siListCount]), 0);
+      Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild, siListCount]), 0);
       if Count > 0 then
       begin
         for I := Count - 1 downto 0 do
@@ -4563,7 +4340,7 @@ type
   PWord = ^Word;
 var
   P: PByteArray;
-  LineBuffer, Data: Pointer;
+  LineBuffer, Data: PAnsiChar;
   LineWidth: Longint;
   TmpLineWidth, NewLineWidth: Longint;
   I, J: Longint;
@@ -4571,7 +4348,7 @@ var
   NewColormapSize, NumOfEntries: Integer;
   Mems: Longint;
   cRed, cGreen, cBlue: Longint;
-  LPSTR, Temp, Tmp: Pointer;
+  LPSTR, Temp, Tmp: PAnsiChar;
   NewColorSubdiv: PNewColorArray;
   ColorArrayEntries: PQColorArray;
   QuantizedColor: PQColor;
@@ -4580,17 +4357,15 @@ begin
   Mems := (Longint(SizeOf(TQColor)) * (MAX_COLORS)) +
     (Longint(SizeOf(TNewColor)) * 256) + LineWidth +
     (Longint(SizeOf(PQColor)) * (MAX_COLORS));
-  LPSTR := AllocMemo(Mems);
+  LPSTR := AllocMem(Mems);
   try
-    Temp := AllocMemo(Longint(Bmp.biWidth) * Longint(Bmp.biHeight) *
-      SizeOf(Word));
+    Temp := AllocMem(Longint(Bmp.biWidth) * Longint(Bmp.biHeight) * SizeOf(Word));
     try
       ColorArrayEntries := PQColorArray(LPSTR);
-      NewColorSubdiv := PNewColorArray(HugeOffset(LPSTR,
-        Longint(SizeOf(TQColor)) * (MAX_COLORS)));
-      LineBuffer := HugeOffset(LPSTR, (Longint(SizeOf(TQColor)) * (MAX_COLORS))
+      NewColorSubdiv := PNewColorArray(LPSTR + Longint(SizeOf(TQColor)) * (MAX_COLORS));
+      LineBuffer := LPSTR + (Longint(SizeOf(TQColor)) * (MAX_COLORS))
         +
-        (Longint(SizeOf(TNewColor)) * 256));
+        (Longint(SizeOf(TNewColor)) * 256);
       for I := 0 to MAX_COLORS - 1 do
       begin
         ColorArrayEntries^[I].RGB[0] := I shr 8;
@@ -4601,17 +4376,16 @@ begin
       Tmp := Temp;
       for I := 0 to Bmp.biHeight - 1 do
       begin
-        HMemCpy(LineBuffer, HugeOffset(gptr, (Bmp.biHeight - 1 - I) *
-          LineWidth), LineWidth);
-        P := LineBuffer;
+        Move(Pointer(PAnsiChar(gptr) + (Bmp.biHeight - 1 - I) * LineWidth)^, LineBuffer^, LineWidth);
+        P := PByteArray(LineBuffer);
         for J := 0 to Bmp.biWidth - 1 do
         begin
           Index := (Longint(P^[2] and $F0) shl 4) +
             Longint(P^[1] and $F0) + (Longint(P^[0] and $F0) shr 4);
           Inc(ColorArrayEntries^[Index].Count);
-          P := HugeOffset(P, 3);
+          Inc(PByte(P), 3);
           PWord(Tmp)^ := Index;
-          Tmp := HugeOffset(Tmp, 2);
+          Inc(Tmp, 2);
         end;
       end;
       for I := 0 to 255 do
@@ -4651,8 +4425,7 @@ begin
       NewColorSubdiv^[0].Count := Longint(Bmp.biWidth) * Longint(Bmp.biHeight);
       NewColormapSize := 1;
       DivideMap(NewColorSubdiv, ColorCount, NewColormapSize,
-        HugeOffset(LPSTR, Longint(SizeOf(TQColor)) * (MAX_COLORS) +
-        Longint(SizeOf(TNewColor)) * 256 + LineWidth));
+        LPSTR + Longint(SizeOf(TQColor)) * (MAX_COLORS) + Longint(SizeOf(TNewColor)) * 256 + LineWidth);
       if NewColormapSize < ColorCount then
       begin
         for I := NewColormapSize to ColorCount - 1 do
@@ -4691,20 +4464,20 @@ begin
       FillChar(Data8^, NewLineWidth * Bmp.biHeight, #0);
       for I := 0 to Bmp.biHeight - 1 do
       begin
-        LineBuffer := HugeOffset(Temp, (Bmp.biHeight - 1 - I) * TmpLineWidth);
-        Data := HugeOffset(Data8, I * NewLineWidth);
+        LineBuffer := Temp + (Bmp.biHeight - 1 - I) * TmpLineWidth;
+        Data := PAnsiChar(Data8) + I * NewLineWidth;
         for J := 0 to Bmp.biWidth - 1 do
         begin
           PByte(Data)^ := ColorArrayEntries^[PWord(LineBuffer)^].NewColorIndex;
-          LineBuffer := HugeOffset(LineBuffer, 2);
-          Data := HugeOffset(Data, 1);
+          Inc(LineBuffer, 2);
+          Inc(Data);
         end;
       end;
     finally
-      FreeMemo(Temp);
+      FreeMem(Temp);
     end;
   finally
-    FreeMemo(LPSTR);
+    FreeMem(LPSTR);
   end;
   ColorCount := NewColormapSize;
   Result := 0;
@@ -4794,8 +4567,7 @@ begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := ((Header.biWidth * DstBitsPerPixel + 31) div 32) * 4;
   for Y := 0 to Header.biHeight - 1 do
-    TruncLineProc(HugeOffset(Src, Y * SrcScanline),
-      HugeOffset(Dest, Y * DstScanline), Header.biWidth);
+    TruncLineProc(PAnsiChar(Src) + Y * SrcScanline, PAnsiChar(Dest) + Y * DstScanline, Header.biWidth);
 end;
 
 { return 6Rx6Gx6B palette
@@ -4832,13 +4604,13 @@ begin
   for X := 0 to CX - 1 do
   begin
     B := TruncIndex06[Byte(Src^)];
-    Src := HugeOffset(Src, 1);
+    Inc(PByte(Src));
     G := TruncIndex06[Byte(Src^)];
-    Src := HugeOffset(Src, 1);
+    Inc(PByte(Src));
     R := TruncIndex06[Byte(Src^)];
-    Src := HugeOffset(Src, 1);
+    Inc(PByte(Src), 1);
     PByte(Dest)^ := 6 * (6 * R + G) + B;
-    Dest := HugeOffset(Dest, 1);
+    Inc(PByte(Dest));
   end;
 end;
 
@@ -4885,13 +4657,13 @@ begin
   for X := 0 to CX - 1 do
   begin
     B := TruncIndex04[Byte(Src^)];
-    Src := HugeOffset(Src, 1);
+    Inc(PByte(Src));
     G := TruncIndex08[Byte(Src^)];
-    Src := HugeOffset(Src, 1);
+    Inc(PByte(Src));
     R := TruncIndex07[Byte(Src^)];
-    Src := HugeOffset(Src, 1);
+    Inc(PByte(Src));
     PByte(Dest)^ := 4 * (8 * R + G) + B;
-    Dest := HugeOffset(Dest, 1);
+    Inc(PByte(Dest));
   end;
 end;
 
@@ -4930,16 +4702,16 @@ begin
     for X := 0 to Header.biWidth - 1 do
     begin
       B := Src^;
-      Src := HugeOffset(Src, 1);
+      Inc(Src);
       G := Src^;
-      Src := HugeOffset(Src, 1);
+      Inc(Src);
       R := Src^;
-      Src := HugeOffset(Src, 1);
+      Inc(Src);
       Dest^ := Byte(Longint(Word(R) * 77 + Word(G) * 150 + Word(B) * 29) shr 8);
-      Dest := HugeOffset(Dest, 1);
+      Inc(Dest);
     end;
-    Data24 := HugeOffset(Data24, SrcScanline);
-    Data8 := HugeOffset(Data8, DstScanline);
+    Data24 := PAnsiChar(Data24) + SrcScanline;
+    Data8 := PAnsiChar(Data8) + DstScanline;
   end;
 end;
 
@@ -4974,20 +4746,20 @@ begin
     for X := 0 to Header.biWidth - 1 do
     begin
       B := Src^;
-      Src := HugeOffset(Src, 1);
+      Inc(Src);
       G := Src^;
-      Src := HugeOffset(Src, 1);
+      Inc(Src);
       R := Src^;
-      Src := HugeOffset(Src, 1);
+      Inc(Src);
       case ((X + Y) mod 3) of
         0: Dest^ := Byte(R shr 2);
         1: Dest^ := Byte($40 + (G shr 2));
         2: Dest^ := Byte($80 + (B shr 2));
       end;
-      Dest := HugeOffset(Dest, 1);
+      Inc(Dest);
     end;
-    Data24 := HugeOffset(Data24, SrcScanline);
-    Data8 := HugeOffset(Data8, DstScanline);
+    Data24 := PAnsiChar(Data24) + SrcScanline;
+    Data8 := PAnsiChar(Data8) + DstScanline;
   end;
 end;
 
@@ -5073,11 +4845,11 @@ begin
     for X := 0 to Header.biWidth - 1 do
     begin
       B := Byte(Data24^) and BM;
-      Data24 := HugeOffset(Data24, 1);
+      Inc(PByte(Data24));
       G := Byte(Data24^) and Gm;
-      Data24 := HugeOffset(Data24, 1);
+      Inc(PByte(Data24));
       R := Byte(Data24^) and Rm;
-      Data24 := HugeOffset(Data24, 1);
+      Inc(PByte(Data24));
       HashColor := Hash(R, G, B);
       repeat
         Index := Hist.HashTable[HashColor];
@@ -5111,7 +4883,7 @@ begin
         Inc(Hist.Freqs[Index].Frequency);
       end;
     end;
-    Data24 := HugeOffset(Data24, Step24);
+    Inc(PByte(Data24), Step24);
   end;
   Hist.ColCount := ColCount;
   Result := True;
@@ -5201,11 +4973,11 @@ begin
     for X := 0 to Header.biWidth - 1 do
     begin
       B := Byte(Data24^) and BM;
-      Data24 := HugeOffset(Data24, 1);
+      Inc(PByte(Data24));
       G := Byte(Data24^) and Gm;
-      Data24 := HugeOffset(Data24, 1);
+      Inc(PByte(Data24));
       R := Byte(Data24^) and Rm;
-      Data24 := HugeOffset(Data24, 1);
+      Inc(PByte(Data24));
       HashColor := Hash(R, G, B);
       repeat
         Index := Hist.HashTable[HashColor];
@@ -5217,10 +4989,10 @@ begin
           HashColor := 0;
       until False;
       PByte(Data8)^ := Hist.Freqs[Index].Nearest;
-      Data8 := HugeOffset(Data8, 1);
+      Inc(PByte(Data8));
     end;
-    Data24 := HugeOffset(Data24, Step24);
-    Data8 := HugeOffset(Data8, Step8);
+    Inc(PByte(Data24), Step24);
+    Inc(PByte(Data8), Step8);
   end;
 end;
 
@@ -5264,7 +5036,7 @@ procedure ExpandTo24Bit(const Header: TBitmapInfoHeader; Colors: TRGBPalette;
 var
   Scanline, NewScanline: Longint;
   Y, X: Integer;
-  Src, Dest: Pointer;
+  Src, Dest: PAnsiChar;
   C: Byte;
 begin
   if Header.biBitCount = 24 then
@@ -5275,8 +5047,8 @@ begin
   NewScanline := ((Header.biWidth * 3 + 3) and not 3);
   for Y := 0 to Header.biHeight - 1 do
   begin
-    Src := HugeOffset(Data, Y * Scanline);
-    Dest := HugeOffset(NewData, Y * NewScanline);
+    Src := PAnsiChar(Data) + Y * Scanline;
+    Dest := PAnsiChar(NewData) + Y * NewScanline;
     case Header.biBitCount of
       1:
       begin
@@ -5286,15 +5058,15 @@ begin
           if (X and 7) = 0 then
           begin
             C := Byte(Src^);
-            Src := HugeOffset(Src, 1);
+            Inc(Src);
           end
           else C := C shl 1;
           PByte(Dest)^ := Colors[C shr 7].rgbBlue;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C shr 7].rgbGreen;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C shr 7].rgbRed;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
         end;
       end;
       4:
@@ -5303,30 +5075,30 @@ begin
         while X < Header.biWidth - 1 do
         begin
           C := Byte(Src^);
-          Src := HugeOffset(Src, 1);
+          Inc(Src);
           PByte(Dest)^ := Colors[C shr 4].rgbBlue;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C shr 4].rgbGreen;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C shr 4].rgbRed;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C and 15].rgbBlue;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C and 15].rgbGreen;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C and 15].rgbRed;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           Inc(X, 2);
         end;
         if X < Header.biWidth then
         begin
           C := Byte(Src^);
           PByte(Dest)^ := Colors[C shr 4].rgbBlue;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C shr 4].rgbGreen;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C shr 4].rgbRed;
-          {Dest := HugeOffset(Dest, 1);}
+          {Inc(Dest);}
         end;
       end;
       8:
@@ -5334,13 +5106,13 @@ begin
         for X := 0 to Header.biWidth - 1 do
         begin
           C := Byte(Src^);
-          Src := HugeOffset(Src, 1);
+          Inc(Src);
           PByte(Dest)^ := Colors[C].rgbBlue;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C].rgbGreen;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
           PByte(Dest)^ := Colors[C].rgbRed;
-          Dest := HugeOffset(Dest, 1);
+          Inc(Dest);
         end;
       end;
     end;
@@ -5496,9 +5268,8 @@ begin
     InvalidBitmap;
   InternalGetDIBSizes(Src, HeaderSize, ImageSize, PixelFormat);
   Length := SizeOf(TBitmapFileHeader) + HeaderSize + ImageSize;
-  Result := AllocMemo(Length);
+  Result := GlobalAllocPtr(GMEM_ZEROINIT, Length);
   try
-    FillChar(Result^, Length, 0);
     FileHeader := Result;
     with FileHeader^ do
     begin
@@ -5510,7 +5281,7 @@ begin
     Bits := Pointer(PAnsiChar(BI) + HeaderSize);
     InternalGetDIB(Src, Pal, BI^, Bits^, PixelFormat);
   except
-    FreeMemo(Result);
+    GlobalFreePtr(Result);
     raise;
   end;
 end;
@@ -5561,7 +5332,7 @@ begin
             raise;
           end;
         finally
-          FreeMemo(P);
+          GlobalFreePtr(P);
         end;
       end;
     pf8bit:
@@ -5575,14 +5346,13 @@ begin
           Bits := Pointer(PAnsiChar(BI) + SizeOf(TBitmapInfoHeader));
           InternalGetDIBSizes(Bitmap.Handle, NewHeaderSize, ImageSize, PixelFormat);
           Length := SizeOf(TBitmapFileHeader) + NewHeaderSize;
-          P := AllocMemo(Length);
+          P := AllocMem(Length);
           try
-            FillChar(P^, Length, #0);
-            NewBI := PBitmapInfoHeader(Longint(P) + SizeOf(TBitmapFileHeader));
+            NewBI := PBitmapInfoHeader(PAnsiChar(P) + SizeOf(TBitmapFileHeader));
             if NewHeaderSize <= SizeOf(TBitmapInfoHeader) then
               NewPalette := nil
             else
-              NewPalette := PRGBPalette(Longint(NewBI) + SizeOf(TBitmapInfoHeader));
+              NewPalette := PRGBPalette(PAnsiChar(NewBI) + SizeOf(TBitmapInfoHeader));
             FileHeader := PBitmapFileHeader(P);
             InitializeBitmapInfoHeader(Bitmap.Handle, NewBI^, PixelFormat);
             if Assigned(NewPalette) then
@@ -5637,10 +5407,10 @@ begin
               raise;
             end;
           finally
-            FreeMemo(P);
+            FreeMem(P);
           end;
         finally
-          FreeMemo(InitData);
+          GlobalFreePtr(InitData);
         end;
       end
   else

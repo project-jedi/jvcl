@@ -916,25 +916,6 @@ function StrPAlloc(const S: string): PChar;
 procedure SplitCommandLine(const CmdLine: string; var ExeName, Params: string);
 function DropT(const S: string): string;
 
-{ Memory routines }
-
-function AllocMemo(Size: Longint): Pointer;
-function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
-procedure FreeMemo(var fpBlock: Pointer);
-function GetMemoSize(fpBlock: Pointer): Longint;
-{$IFDEF CPU32}
-{$MESSAGE HINT 'Is this CompareMem function at all necessary?'}
-function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean;
-{$ENDIF CPU32}
-
-{ Manipulate huge pointers routines }
-
-procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
-procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
-function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
-procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
-procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-
 function WindowClassName(Wnd: THandle): string;
 
 procedure SwitchToWindow(Wnd: THandle; Restore: Boolean);
@@ -6862,7 +6843,7 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    EnumWindows(@EnumWindowsProc, Integer(List));
+    EnumWindows(@EnumWindowsProc, LPARAM(List));
   finally
     List.EndUpdate;
   end;
@@ -7739,97 +7720,6 @@ begin
 end;
 {$ENDIF UNIX}
 
-{ Memory routines }
-
-function AllocMemo(Size: Longint): Pointer;
-begin
-  if Size > 0 then
-    Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-  else
-    Result := nil;
-end;
-
-function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
-begin
-  Result := GlobalReallocPtr(fpBlock, Size, HeapAllocFlags or GMEM_ZEROINIT);
-end;
-
-procedure FreeMemo(var fpBlock: Pointer);
-begin
-  if fpBlock <> nil then
-  begin
-    GlobalFreePtr(fpBlock);
-    fpBlock := nil;
-  end;
-end;
-
-function GetMemoSize(fpBlock: Pointer): Longint;
-var
-  hMem: THandle;
-begin
-  Result := 0;
-  if fpBlock <> nil then
-  begin
-    hMem := GlobalHandle(fpBlock);
-    if hMem <> 0 then
-      Result := GlobalSize(hMem);
-  end;
-end;
-
-{$IFDEF CPU32}
-function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,fpBlock1
-        MOV     EDI,fpBlock2
-        MOV     ECX,Size
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,2
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    INC     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-{$ENDIF CPU32}
-
-{ Manipulate huge pointers routines by Ray Lischner, The Waite Group, Inc. }
-
-procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
-begin
-  HugePtr := PAnsiChar(HugePtr) + Amount;
-end;
-
-procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
-begin
-  HugePtr := PAnsiChar(HugePtr) - Amount;
-end;
-
-function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
-begin
-  Result := PAnsiChar(HugePtr) + Amount;
-end;
-
-procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-begin
-  Move(SrcPtr^, DstPtr^, Amount);
-end;
-
-procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
-var
-  SrcPtr, DstPtr: PAnsiChar;
-begin
-  SrcPtr := PAnsiChar(Base) + Src * SizeOf(Pointer);
-  DstPtr := PAnsiChar(Base) + Dst * SizeOf(Pointer);
-  Move(SrcPtr^, DstPtr^, Size * SizeOf(Pointer));
-end;
-
 { String routines }
 
 procedure SplitCommandLine(const CmdLine: string; var ExeName, Params: string);
@@ -7941,7 +7831,7 @@ var
   Info: TAnimationInfo;
 begin
   Info.cbSize := SizeOf(Info);
-  Info.iMinAnimate := Integer(Value);
+  Info.iMinAnimate := Ord(Value);
   SystemParametersInfo(SPI_SETANIMATION, Info.cbSize, @Info, 0);
 end;
 
@@ -7986,8 +7876,7 @@ begin
 end;
 
 {$IFDEF BCB}
-function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): THandle;
+function FindPrevInstance(const MainFormClass: ShortString; const ATitle: string): THandle;
 {$ELSE}
 function FindPrevInstance(const MainFormClass, ATitle: string): THandle;
 {$ENDIF BCB}
@@ -8011,26 +7900,26 @@ begin
   end;
 end;
 
-function WindowsEnum(Handle: THandle; Param: Longint): BOOL; export; stdcall;
-begin
-  if WindowClassName(Handle) = 'TAppBuilder' then
-  begin
-    Result := False;
-    PLongint(Param)^ := 1;
-  end
-  else
-    Result := True;
-end;
-
 {$IFDEF BCB}
-function ActivatePrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): Boolean;
+function ActivatePrevInstance(const MainFormClass: ShortString; const ATitle: string): Boolean;
 {$ELSE}
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
+
+  function WindowsEnum(Handle: HWND; var IsDelphi: Boolean): BOOL; stdcall;
+  begin
+    if WindowClassName(Handle) = 'TAppBuilder' then
+    begin
+      IsDelphi := True;
+      Result := False;
+    end
+    else
+      Result := True;
+  end;
+
 var
   PrevWnd, PopupWnd, ParentWnd: HWND;
-  IsDelphi: Longint;
+  IsDelphi: Boolean;
 begin
   Result := False;
   PrevWnd := FindPrevInstance(MainFormClass, ATitle);
@@ -8044,10 +7933,9 @@ begin
     end;
     if WindowClassName(PrevWnd) = 'TApplication' then
     begin
-      IsDelphi := 0;
-      EnumThreadWindows(GetWindowTask(PrevWnd), @WindowsEnum,
-        LPARAM(@IsDelphi));
-      if Boolean(IsDelphi) then
+      IsDelphi := False;
+      EnumThreadWindows(GetWindowTask(PrevWnd), @WindowsEnum, LPARAM(@IsDelphi));
+      if IsDelphi then
         Exit;
       if IsIconic(PrevWnd) then
       begin { application is minimized }
