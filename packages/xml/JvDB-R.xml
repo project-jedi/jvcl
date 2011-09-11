@@ -30,6 +30,7 @@
     <Package Name="SMExportD2009r" Targets="d12" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportD2010r" Targets="d14" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXEr" Targets="d15" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportXE2r" Targets="d16" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -39,6 +40,7 @@
     <Package Name="SMImportD2009r" Targets="d12" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD2010r" Targets="d14" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXEr" Targets="d15" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportXE2r" Targets="d16" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
@@ -55,6 +57,7 @@
     <Package Name="ODAC120" Targets="d12" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC140" Targets="d14" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="ODAC150" Targets="d15" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="ODAC160" Targets="d16" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
     <Package Name="UNIDAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
@@ -62,6 +65,7 @@
     <Package Name="UNIDAC120" Targets="d12" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC140" Targets="d14" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC150" Targets="d15" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC160" Targets="d16" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
     <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
     <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
@@ -102,6 +106,11 @@
     <Package Name="cxGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
     <Package Name="cxTreeListD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
     <Package Name="cxPivotGridD15" Targets="d15" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
+    <Package Name="cxEditorsd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR"/>
+    <Package Name="cxDatad16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID || USE_3RDPARTY_DEVEXPRESS_CXGRID || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID || USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxGridd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID"/>
+    <Package Name="cxTreeListd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST"/>
+    <Package Name="cxPivotGridd16" Targets="d16" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB,help" Formname="" Condition=""/>
