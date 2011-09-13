@@ -121,7 +121,7 @@ begin
       DataSize := BlobStream.Size;
       SizeLabel.Caption := Format(SBlobSize, [FormatFloat(',0', BlobStream.Size)]);
       if DataSize > 0 then begin
-        FData := AllocMemo(DataSize);
+        FData := AllocMem(DataSize);
         BlobStream.Read(FData^, DataSize);
       end;
       FHexDump.Address := FData;
@@ -137,7 +137,7 @@ end;
 procedure TBlobViewDlg.FormDestroy(Sender: TObject);
 begin
   DataSource.OnDataChange := nil;
-  FreeMemo(FData);
+  FreeMem(FData);
   FData := nil;
 end;
 
