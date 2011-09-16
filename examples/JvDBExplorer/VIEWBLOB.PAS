@@ -39,7 +39,7 @@ interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
   StdCtrls, ExtCtrls, DBCtrls, DB, DBTables, Menus, HexDump,
-  JvComponent, JvFormPlacement;
+  JvComponent, JvFormPlacement, JvComponentBase;
 
 type
   TBlobViewDlg = class(TForm)
@@ -61,9 +61,6 @@ type
     FData: Pointer;
     FHexDump: THexDump;
   protected
-{$IFNDEF WIN32}
-    procedure CreateParams(var Params: TCreateParams); override;
-{$ENDIF}
   end;
 
 procedure BlobView(DataSet: TDataSet; const FieldName: string);
@@ -98,15 +95,6 @@ begin
   end;
 end;
 
-{$IFNDEF WIN32}
-procedure TBlobViewDlg.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  if Application.MainForm <> nil then
-    Params.WndParent := Application.MainForm.Handle;
-end;
-{$ENDIF}
-
 procedure TBlobViewDlg.DataSourceDataChange(Sender: TObject;
   Field: TField);
 var
@@ -114,13 +102,14 @@ var
   DataSize: Longint;
 begin
   if (Field = nil) or (Field = FField) then begin
-    FreeMemo(FData);
+    FreeMem(FData);
     FData := nil;
     BlobStream := TBlobStream.Create(FField as TBlobField, bmRead);
     try
       DataSize := BlobStream.Size;
       SizeLabel.Caption := Format(SBlobSize, [FormatFloat(',0', BlobStream.Size)]);
-      if DataSize > 0 then begin
+      if DataSize > 0 then
+      begin
         FData := AllocMem(DataSize);
         BlobStream.Read(FData^, DataSize);
       end;

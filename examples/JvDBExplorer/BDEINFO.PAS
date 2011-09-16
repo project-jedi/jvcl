@@ -38,8 +38,8 @@ unit BdeInfo;
 
 interface
 
-uses Classes, {$IFDEF WIN32} Windows, BDE, Registry, {$ELSE} IniFiles,
-  DbiTypes, DbiProcs, DbiErrs, {$ENDIF WIN32} SysUtils, DB, DBTables;
+uses
+  Classes, Windows, BDE, Registry, IniFiles, SysUtils, DB, DBTables;
 
 { TBdeInfo }
 
@@ -117,7 +117,6 @@ end;
 procedure TBdeInfo.UpdateRegInfo;
 var
   I: Integer;
-{$IFDEF WIN32}
   Reg: TRegistry;
 begin
   Reg := TRegistry.Create;
@@ -135,20 +134,6 @@ begin
     finally
       Free;
     end;
-{$ELSE}
-  Ini: TIniFile;
-const
-  sIDAPI = 'IDAPI';
-begin
-  Ini := TIniFile.Create('win.ini');
-  with Ini do
-    try
-      FDirectory := ReadString(sIDAPI, 'DLLPATH', '');
-      FCfgPath := ReadString(sIDAPI, 'CONFIGFILE01', '');
-    finally
-      Free;
-    end;
-{$ENDIF WIN32}
   I := Pos(';', FDirectory);
   if I > 0 then FDirectory := Copy(FDirectory, 1, I - 1);
   I := Pos(';', FCfgPath);
@@ -210,17 +195,17 @@ end;
 
 function TBdeInfo.GetNetworkType: string;
 begin
-  Result := StrPas(FConfig.szNetType);
+  Result := string(StrPas(FConfig.szNetType));
 end;
 
 function TBdeInfo.GetNetUserName: string;
 begin
-  Result := StrPas(FConfig.szUserName);
+  Result := string(StrPas(FConfig.szUserName));
 end;
 
 function TBdeInfo.GetLanguageDriver: string;
 begin
-  Result := StrPas(FConfig.szLangDriver);
+  Result := string(StrPas(FConfig.szLangDriver));
 end;
 
 function TBdeInfo.GetLangDriverDesc: string;
@@ -243,19 +228,14 @@ end;
 
 function FieldTypeName(AType: Word): string;
 const
-{$IFDEF COMPILER3_UP}
   MaxTypes = fldCURSOR;
-{$ELSE}
-  MaxTypes = fldLOCKINFO;
-{$ENDIF}
   Types: array [fldUNKNOWN..MaxTypes] of PChar =
     ('Unknown', 'String', 'Date', 'Blob', 'Boolean', 'Int16', 'Int32',
      'Float64', 'Decimal', 'Bytes', 'Time', 'DateTime', 'UInt16', 'UInt32',
-     'Float80', 'VarBytes', 'LockInfo'
-     {$IFDEF COMPILER3_UP}, 'Oracle Cursor' {$ENDIF});
+     'Float80', 'VarBytes', 'LockInfo', 'Oracle Cursor');
 begin
-  if AType < Low(Types) then AType := Low(Types)
-  else if AType > High(Types) then AType := Low(Types);
+  {if AType < Low(Types) then AType := Low(Types)
+  else} if AType > High(Types) then AType := Low(Types);
   Result := StrPas(Types[AType]);
 end;
 

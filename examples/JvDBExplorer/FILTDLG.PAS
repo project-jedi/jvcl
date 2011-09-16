@@ -38,7 +38,7 @@ interface
 
 uses Messages, WinTypes, WinProcs, SysUtils, Classes, Graphics, Forms,
   Controls, StdCtrls, Buttons, ExtCtrls, JvMRUList,
-  JvMRUManager, JvComponent, JvFormPlacement;
+  JvMRUManager, JvComponent, JvFormPlacement, JvComponentBase;
 
 type
   TFilterDialog = class(TForm)
@@ -95,10 +95,8 @@ end;
 procedure TFilterDialog.FormCreate(Sender: TObject);
 begin
   FilterEdit.MaxLength := DBIMAXTBLNAMELEN;
-{$IFDEF WIN32}
   UpCaseBox.Visible := True;
   BorderStyle := bsToolWindow;
-{$ENDIF}
 end;
 
 procedure TFilterDialog.UpCaseBoxClick(Sender: TObject);
@@ -109,31 +107,18 @@ end;
 procedure TFilterDialog.FilterEditChange(Sender: TObject);
 var
   SelStart, SelEnd: Integer;
-{$IFNDEF WIN32}
-  Res: LongInt;
-{$ENDIF}
 begin
   if UpCaseBox.Checked and not FUpdating then begin
     FUpdating := True;
     try
       if FilterEdit.HandleAllocated then begin
-{$IFDEF WIN32}
         SendMessage(FilterEdit.Handle, CB_GETEDITSEL, Integer(@SelStart),
           Integer(@SelEnd));
-{$ELSE}
-        Res := SendMessage(FilterEdit.Handle, CB_GETEDITSEL, 0, 0);
-        SelStart := LoWord(Res);
-        SelEnd := HiWord(Res);
-{$ENDIF}
       end;
       FilterEdit.Text := AnsiUpperCase(FilterEdit.Text);
       if FilterEdit.HandleAllocated then begin
         SendMessage(FilterEdit.Handle, CB_SETEDITSEL, 0,
-{$IFDEF WIN32}
           MakeLParam(SelStart, SelEnd));
-{$ELSE}
-          MakeLong(SelStart, SelEnd));
-{$ENDIF}
       end;
     finally
       FUpdating := False;

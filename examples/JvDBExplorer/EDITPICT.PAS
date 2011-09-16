@@ -69,13 +69,8 @@ type
     procedure MenuClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-{$IFDEF COMPILER3_UP}
     OpenDialog: TOpenPictureDialog;
     SaveDialog: TSavePictureDialog;
-{$ELSE}
-    OpenDialog: TOpenDialog;
-    SaveDialog: TSaveDialog;
-{$ENDIF}
     procedure UpdatePictureField;
   end;
 
@@ -86,7 +81,7 @@ implementation
 {$R *.DFM}
 
 uses Messages, SysUtils {$IFDEF USE_Jv_GIF}, JvGIF {$ENDIF}
-  {$IFDEF COMPILER3_UP} {$IFNDEF BCB}, Jpeg {$ENDIF} {$ENDIF};
+   {$IFNDEF BCB}, Jpeg {$ENDIF};
 
 function PictureEdit(DataSet: TDataSet; const FieldName: string): Boolean;
 begin
@@ -186,13 +181,8 @@ end;
 
 procedure TPictEditDlg.FormCreate(Sender: TObject);
 begin
-{$IFDEF COMPILER3_UP}
   OpenDialog := TOpenPictureDialog.Create(Self);
   SaveDialog := TSavePictureDialog.Create(Self);
-{$ELSE}
-  OpenDialog := TOpenDialog.Create(Self);
-  SaveDialog := TSaveDialog.Create(Self);
-{$ENDIF}
   with OpenDialog do begin
     Title := 'Load picture';
     Options := [ofHideReadOnly, ofFileMustExist, ofShowHelp];
