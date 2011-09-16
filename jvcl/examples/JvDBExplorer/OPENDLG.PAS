@@ -39,7 +39,7 @@ interface
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons,
   StdCtrls, Mask, JvToolEdit, DB, ExtCtrls, JvBDELists, 
   DBTables, JvComponent, JvFormPlacement, JvDBLookup, JvPicClip, JvExMask,
-  JvExControls;
+  JvExControls, JvComponentBase;
 
 type
   TOpenDatabaseDlg = class(TForm)
@@ -126,10 +126,8 @@ end;
 
 procedure TOpenDatabaseDlg.FormCreate(Sender: TObject);
 begin
-{$IFDEF WIN32}
   DirectoryEdit1.DialogText := 'Select a path to the target database.';
   DirectoryEdit1.DialogKind := dkWin32;
-{$ENDIF}
   DatabaseList := TJvBDEItems.Create(self);
   DatabaseList.ItemType := bdDatabases;
   DatabaseList.Open;

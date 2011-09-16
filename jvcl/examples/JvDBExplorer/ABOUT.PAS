@@ -86,29 +86,18 @@ end;
 
 procedure TAboutDlg.FormCreate(Sender: TObject);
 const
-{$IFDEF WIN32}
-  sFreeMem = 'Physical memory:        %s K';
-{$ELSE}
-  sFreeMem = 'Available memory:       %s K';
-{$ENDIF}
+  sFreeMem = 'Physical memory:        %s M';
 var
-  Mem: Longint;
-{$IFDEF WIN32}
-  MemStatus: TMemoryStatus;
-{$ENDIF}
+  Mem: Int64;
+  MemStatus: TMemoryStatusEx;
 begin
   Image1.Cursor := crHandPoint;
   VersionLabel.Caption := Format(VersionLabel.Caption, [SDbxVersion]);
   WinVer.Caption := GetWindowsVersion;
-{$IFDEF WIN32}
-  MemStatus.dwLength := SizeOf(TMemoryStatus);
-  GlobalMemoryStatus(MemStatus);
-  Mem := MemStatus.dwTotalPhys;
-{$ELSE}
-  Mem := GetFreeSpace(0);
-{$ENDIF}
-  FreeMem.Caption := Format(sFreeMem, [FormatFloat(',0.##',
-    Mem / 1024.0)]);
+  MemStatus.dwLength := SizeOf(TMemoryStatusEx);
+  GlobalMemoryStatusEx(MemStatus);
+  Mem := MemStatus.ullTotalPhys;
+  FreeMem.Caption := Format(sFreeMem, [FormatFloat(',0.##', Mem / 1024.0 / 1024.0)]);
 end;
 
 procedure TAboutDlg.Image1DblClick(Sender: TObject);
@@ -117,7 +106,6 @@ begin
 end;
 
 initialization
-{$IFDEF WIN32}
   with TJvVersionInfo.Create(Application.ExeName) do
   try
     if Valid then
@@ -127,7 +115,4 @@ initialization
   finally
     Free;
   end;
-{$ELSE}
-  SDbxVersion := '1.6';
-{$ENDIF}
 end.

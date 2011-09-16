@@ -41,19 +41,11 @@ Unit TUtil;
 interface
 
 
-{$IFDEF WIN32}
 uses
   {$IFDEF COMPILER10_UP}
   DBCommonTypes,
   {$ENDIF COMPILER10_UP}
   Windows, DB, BDE, SysUtils, DBTables;
-{$ELSE}
-uses
-  {$IFDEF COMPILER10_UP}
-  DBCommonTypes,
-  {$ENDIF COMPILER10_UP}
-  WinTypes, WinProcs, DB, DbiTypes, DbiProcs, DbiErrs, SysUtils, DbTables;
-{$ENDIF}
 
 type
   HTUses = Word;
@@ -182,40 +174,32 @@ const
   VFE_CANNOT_REBUILD    = 4; { table cannot be rebuilt; restore from a backup }
 
 const
-{$IFDEF WIN32}
   TULib = 'TUTIL32.DLL';
-{$ELSE}
-  TULib = 'TUTILITY.DLL';
-{$ENDIF}
 
 var
   TUHandle: THandle = 0;
-  TUInit: function (hTUSession: PHTUses): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
+  TUInit: function (hTUSession: PHTUses): DBIResult stdcall;
   TUVerifyTable: function (hTUSession: HTUses; pszTableName,
-    pszDriverType, pszErrTableName, pszPassword: PChar; iOptions: Integer;
-    var piErrorLevel: Cardinal): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
+    pszDriverType, pszErrTableName, pszPassword: PAnsiChar; iOptions: Integer;
+    var piErrorLevel: Cardinal): DBIResult stdcall;
   TURebuildTable: function (hTUSession: HTUses; pszTableName,
     pszDriverType, pszBackupTableName, pszKeyviolName,
-    pszProblemTableName: PChar;
-    pCrDesc: pCRTblDesc): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
+    pszProblemTableName: PAnsiChar;
+    pCrDesc: pCRTblDesc): DBIResult stdcall;
   TUGetCRTblDescCount: function (hTUSession: HTUses;
-    pszTableName: PChar; var iFldCount,iIdxCount, iSecRecCount,
+    pszTableName: PAnsiChar; var iFldCount,iIdxCount, iSecRecCount,
     iValChkCount, iRintCount, iOptParams,
-    iOptDataLen: Word): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
+    iOptDataLen: Word): DBIResult stdcall;
   TUFillCRTblDesc: function (hTUSession: HTUses; pCrDesc: pCRTblDesc;
     pszTableName,
-    pszPassword: PChar): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
-  TUFillCURProps: function (hTUSession: HTUses; pszTableName: PChar;
-    tblProps: pCURProps): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
-  TUExit: function (hTUSession: HTUses): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
+    pszPassword: PAnsiChar): DBIResult stdcall;
+  TUFillCURProps: function (hTUSession: HTUses; pszTableName: PAnsiChar;
+    tblProps: pCURProps): DBIResult stdcall;
+  TUExit: function (hTUSession: HTUses): DBIResult stdcall;
   TUGetErrorString: function (iErrorCode: DBIResult;
-    pszError: PChar): DBIResult {$IFDEF WIN32} stdcall {$ENDIF};
+    pszError: PAnsiChar): DBIResult stdcall;
 
-{$IFDEF COMPILER3_UP}
 resourcestring
-{$ELSE}
-const
-{$ENDIF}
   STUNotLoaded = 'Unable to load %s library';
   STUNoTables = 'No Paradox tables to verify';
   STUVerifyComplete = 'Verification successful. ';
@@ -237,25 +221,14 @@ function LoadTUtility: Boolean;
 var
   OldError: Word;
   Path: string;
-{$IFNDEF WIN32}
-  P: array[0..255] of Char;
-{$ENDIF}
 begin
   OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
     Path := NormalDir(GetBdeDirectory) + TULib;
-{$IFDEF WIN32}
     TUHandle := LoadLibrary(PChar(Path));
-{$ELSE}
-    TUHandle := LoadLibrary(StrPCopy(P, Path));
-{$ENDIF}
     if not TUtilityLoaded then begin
       Path := TULib;
-{$IFDEF WIN32}
       TUHandle := LoadLibrary(PChar(Path));
-{$ELSE}
-      TUHandle := LoadLibrary(StrPCopy(P, Path));
-{$ENDIF}
     end;
     if TUtilityLoaded then begin
       @TUInit := GetProcAddress(TUHandle, 'TUInit');
@@ -288,10 +261,10 @@ end;
 
 { ETUtilityError }
 
-function TrimMessage(Msg: PChar): PChar;
+function TrimMessage(Msg: PAnsiChar): PAnsiChar;
 var
   Blank: Boolean;
-  Source, Dest: PChar;
+  Source, Dest: PAnsiChar;
 begin
   Source := Msg;
   Dest := Msg;
@@ -329,9 +302,8 @@ var
   Msg, LastMsg: DBIMSG;
 begin
   inherited Create(0);
-{$IFDEF WIN32}
-  if not Session.Active then Exit;
-{$ENDIF}
+  if not Session.Active then
+    Exit;
   with EDBEngineErrorHack(Self) do begin
     if FErrors <> nil then begin
       for ErrorIndex := FErrors.Count - 1 downto 0 do
@@ -342,17 +314,17 @@ begin
   ErrorIndex := 1;
   try
     TUGetErrorString(ErrorCode, Msg);
-    TDBError.Create(Self, ErrorCode, 0, Msg);
+    TDBError.Create(Self, ErrorCode, 0, string(Msg));
     TrimMessage(Msg);
     if Msg[0] = #0 then
       Message := Format(STUUnknownError, [TULib, ErrorCode])
-    else Message := StrPas(Msg);
+    else Message := string(StrPas(Msg));
     while True do begin
       StrCopy(LastMsg, Msg);
       ErrorCode := DbiGetErrorEntry(ErrorIndex, NativeError, Msg);
       if (ErrorCode = DBIERR_NONE) or
         (ErrorCode = DBIERR_NOTINITIALIZED) then Break;
-      TDBError.Create(Self, ErrorCode, NativeError, Msg);
+      TDBError.Create(Self, ErrorCode, NativeError, string(Msg));
       TrimMessage(Msg);
       if (Msg[0] <> #0) and (StrComp(Msg, LastMsg) <> 0) then
         Message := Format('%s. %s', [Message, Msg]);
@@ -426,7 +398,7 @@ function TTUtility.ProgressCallback(CBInfo: Pointer): CBRType;
 begin
   Result := cbrCONTINUE;
   with PUVerifyCallBack(CBInfo)^ do begin
-    StrPCopy(TableName, Self.TableName);
+    StrPCopy(TableName, AnsiString(Self.TableName));
     if (PercentDone = 0) then PercentDone := -1;
   end;
 end;
@@ -439,7 +411,7 @@ begin
   TUGetErrorString(ErrorCode, Msg);
   TrimMessage(Msg);
   if Msg[0] = #0 then Result := Format(STUUnknownError, [TULib, ErrorCode])
-  else Result := StrPas(Msg);
+  else Result := string(StrPas(Msg));
 end;
 
 function TTUtility.VerifyFlag: Integer;
@@ -457,34 +429,33 @@ end;
 
 procedure TTUtility.SetTabName(const TabName: string; const Dest: DBIPATH);
 var
-  P: PChar;
+  P: PAnsiChar;
 begin
   P := @Dest[0];
-  if ChangeFileExt(TabName, '') <> StrPas(Dest) then begin
+  if ChangeFileExt(TabName, '') <> string(StrPas(Dest)) then begin
     if TabName <> '' then
-      StrPLCopy(Dest, AnsiUpperCase(ChangeFileExt(TabName, '')),
-        SizeOf(Dest) - 1)
+      StrPLCopy(Dest, AnsiString(AnsiUpperCase(ChangeFileExt(TabName, ''))), SizeOf(Dest) - 1)
     else FillChar(P^, SizeOf(Dest), #0);
   end;
 end;
 
 function TTUtility.GetPassword: string;
 begin
-  Result := StrPas(FPassword);
+  Result := string(StrPas(FPassword));
 end;
 
 procedure TTUtility.SetPassword(const Value: string);
 begin
   if Value <> Password then begin
     if Value <> '' then
-      StrPLCopy(FPassword, Value, SizeOf(FPassword) - 1)
+      StrPLCopy(FPassword, AnsiString(Value), SizeOf(FPassword) - 1)
     else FillChar(FPassword, SizeOf(FPassword), 0);
   end;
 end;
 
 function TTUtility.GetCheckErrorTable: string;
 begin
-  Result := StrPas(FCheckErrorTable);
+  Result := string(StrPas(FCheckErrorTable));
 end;
 
 procedure TTUtility.SetCheckErrorTable(const Value: string);
@@ -494,7 +465,7 @@ end;
 
 function TTUtility.GetErrorTable: string;
 begin
-  Result := StrPas(FErrorTable);
+  Result := string(StrPas(FErrorTable));
 end;
 
 procedure TTUtility.SetErrorTable(const Value: string);
@@ -504,7 +475,7 @@ end;
 
 function TTUtility.GetProblemTable: string;
 begin
-  Result := StrPas(FProblemTable);
+  Result := string(StrPas(FProblemTable));
 end;
 
 procedure TTUtility.SetProblemTable(const Value: string);
@@ -514,7 +485,7 @@ end;
 
 function TTUtility.GetKeyViolationTable: string;
 begin
-  Result := StrPas(FKeyViolationTable);
+  Result := string(StrPas(FKeyViolationTable));
 end;
 
 procedure TTUtility.SetKeyViolationTable(const Value: string);
@@ -524,7 +495,7 @@ end;
 
 function TTUtility.GetBackupTable: string;
 begin
-  Result := StrPas(FBackupTable);
+  Result := string(StrPas(FBackupTable));
 end;
 
 procedure TTUtility.SetBackupTable(const Value: string);
@@ -534,7 +505,7 @@ end;
 
 function TTUtility.GetTableName: string;
 begin
-  Result := StrPas(FTableName);
+  Result := string(StrPas(FTableName));
 end;
 
 procedure TTUtility.SetTableName(const Value: string);
@@ -558,9 +529,9 @@ begin
   Check(TUGetCRTblDescCount(FSession, FTableName, FTblDesc.iFldCount,
     FTblDesc.iIdxCount, FTblDesc.iSecRecCount, FTblDesc.iValChkCount,
     FTblDesc.iRintCount, FTblDesc.iOptParams, FOptDataLen));
-  StrPCopy(FTblDesc.szTblName, TableName);
+  StrPCopy(FTblDesc.szTblName, AnsiString(TableName));
   StrCopy(FTblDesc.szTblType, szPARADOX);
-  StrPCopy(FTblDesc.szErrTblName, ErrorTable);
+  StrPCopy(FTblDesc.szErrTblName, AnsiString(ErrorTable));
   GetMem(FTblDesc.pFldDesc, FTblDesc.iFldCount * SizeOf(FldDesc));
   GetMem(FTblDesc.PIdxDesc, FTblDesc.iIdxCount * SizeOf(IdxDesc));
   GetMem(FTblDesc.pSecDesc, FTblDesc.iSecRecCount * SizeOf(SecDesc));
@@ -614,9 +585,6 @@ begin
     try
       Screen.Cursor := crHourGlass;
       try
-{$IFNDEF WIN32}
-        CheckBackupTable;
-{$ENDIF}
         while not CheckOpen(TURebuildTable(FSession, FTableName,
           szPARADOX, FBackupTable, FKeyViolationTable, FProblemTable,
           @FTblDesc)) do {Retry};
@@ -768,16 +736,14 @@ var
   Desc: FILEDesc;
   DbPath: DBIPATH;
 begin
-{$IFDEF WIN32}
   Session.Active := True;
-{$ENDIF}
   DirName := DirectoryName;
   if not IsDirectory(DirName) then DirName := GetAliasPath(DirName);
   Result := DirName;
   Check(DbiOpenDatabase(nil, nil, dbiREADWRITE, dbiOPENSHARED,
     nil, 0, nil, nil, hDB));
   try
-    Check(DbiSetDirectory(hDB, StrPLCopy(DbPath, DirName, SizeOf(DbPath) - 1)));
+    Check(DbiSetDirectory(hDB, StrPLCopy(DbPath, AnsiString(DirName), SizeOf(DbPath) - 1)));
     List.BeginUpdate;
     try
       List.Clear;
@@ -868,7 +834,4 @@ end;
 
 initialization
   LoadTUtility;
-{$IFNDEF WIN32}
-  AddExitProc(FreeTUtility);
-{$ENDIF}
 end.

@@ -38,7 +38,7 @@ interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, DBCtrls, DB, 
-  JvComponent, JvFormPlacement, JvRichEdit, JvDBRichEdit, JvExStdCtrls;
+  JvComponent, JvFormPlacement, JvRichEdit, JvDBRichEdit, JvExStdCtrls, JvComponentBase;
 
 type
   TJvStrEditDlg  = class(TForm)
@@ -70,8 +70,6 @@ type
     procedure PlainTextCheckClick(Sender: TObject);
     procedure MemoChange(Sender: TObject);
   private
-    SingleLine: string[15];
-    MultipleLines: string[15];
   end;
 
 function StrListEdit(DataSet: TDataSet; const FieldName: string): Boolean;
@@ -84,7 +82,7 @@ uses Messages, SysUtils;
 
 function StrListEdit(DataSet: TDataSet; const FieldName: string): Boolean;
 begin
-  with TJvStrEditDlg .Create(Application) do
+  with TJvStrEditDlg.Create(Application) do
   try
     DataSource.DataSet := DataSet;
     Memo.DataField := FieldName;
@@ -99,64 +97,63 @@ end;
 
 { TJvStrEditDlg  }
 
-procedure TJvStrEditDlg .FileOpen(Sender: TObject);
+procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin
   with OpenDialog do
     if Execute then Memo.Lines.LoadFromFile(FileName);
 end;
 
-procedure TJvStrEditDlg .UpdateStatus(Sender: TObject);
+procedure TJvStrEditDlg.UpdateStatus(Sender: TObject);
 var
   Count: Integer;
   LineText: string;
 begin
   if (Memo <> nil) then Count := Memo.Lines.Count
   else Count := 0;
-  if Count = 1 then LineText := SingleLine
-  else LineText := MultipleLines;
+  if Count = 1 then LineText := 'Line'
+  else LineText := 'Lines';
   if LineCount <> nil then
     LineCount.Caption := Format('%d %s', [Count, LineText]);
 end;
 
-procedure TJvStrEditDlg .FormCreate(Sender: TObject);
+procedure TJvStrEditDlg.FormCreate(Sender: TObject);
 begin
-  SingleLine := 'Line';
-  MultipleLines := 'Lines';
   Memo.DefAttributes.Assign(Memo.Font);
 end;
 
-procedure TJvStrEditDlg .MemoKeyDown(Sender: TObject; var Key: Word;
+procedure TJvStrEditDlg.MemoKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then begin
+  if Key = VK_ESCAPE then
+  begin
     CancelBtn.Click;
   end;
 end;
 
-procedure TJvStrEditDlg .SaveBtnClick(Sender: TObject);
+procedure TJvStrEditDlg.SaveBtnClick(Sender: TObject);
 begin
   with SaveDialog do
     if Execute then Memo.Lines.SaveToFile(FileName);
 end;
 
-procedure TJvStrEditDlg .OkBtnClick(Sender: TObject);
+procedure TJvStrEditDlg.OkBtnClick(Sender: TObject);
 begin
   Memo.UpdateMemo;
   ModalResult := mrOk;
 end;
 
-procedure TJvStrEditDlg .DataSourceDataChange(Sender: TObject; Field: TField);
+procedure TJvStrEditDlg.DataSourceDataChange(Sender: TObject; Field: TField);
 begin
   UpdateStatus(nil);
   PlainTextCheck.Checked := Memo.PlainText;
 end;
 
-procedure TJvStrEditDlg .PlainTextCheckClick(Sender: TObject);
+procedure TJvStrEditDlg.PlainTextCheckClick(Sender: TObject);
 begin
   Memo.PlainText := PlainTextCheck.Checked;
 end;
 
-procedure TJvStrEditDlg .MemoChange(Sender: TObject);
+procedure TJvStrEditDlg.MemoChange(Sender: TObject);
 begin
   UpdateStatus(nil);
 end;
