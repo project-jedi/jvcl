@@ -102,7 +102,7 @@ implementation
 
 uses
   InstallerConsts, Core, MainConfig, Main, Utils, Math, JVCLConfiguration,
-  DelphiData;
+  DelphiData, PackageInformation;
 
 {$R *.dfm}
 
