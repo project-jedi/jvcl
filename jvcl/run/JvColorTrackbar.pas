@@ -209,6 +209,8 @@ begin
     else
       Position := WindowToPos(X);
   end;
+  if Assigned(OnMouseDown) then
+    OnMouseDown(Self, Button, Shift, X, Y);
 end;
 
 procedure TJvColorTrackBar.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -220,6 +222,8 @@ begin
     else
       Position := WindowToPos(X);
   end;
+  if Assigned(OnMouseMove) then
+    OnMouseMove(Self, Shift, X, Y);
 end;
 
 procedure TJvColorTrackBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -233,6 +237,8 @@ begin
       Position := WindowToPos(X);
   end;
   FButtonDown := False;
+  if Assigned(OnMouseUp) then
+    OnMouseUp(Self, Button, Shift, X, Y);
 end;
 
 procedure TJvColorTrackBar.Paint;
