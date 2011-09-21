@@ -28,7 +28,7 @@ function PathNoInsideRelative(const Path: string): string;
 implementation
 
 uses
-  Classes,
+  Classes, Math,
   StrUtils,
   JclStrings, JclFileUtils,
   SysUtils;
@@ -53,7 +53,7 @@ function GetRelativePath(const Origin, Destination: string): string;
 var
   OrigList: TStringList;
   DestList: TStringList;
-  DiffIndex: Integer;
+  DiffIndex, MinSize: Integer;
   i: Integer;
 begin
   // create a list of paths as separate strings
@@ -90,10 +90,11 @@ begin
     begin
       // find the first directory that is not the same
       DiffIndex := 0;
+      MinSize := Min(OrigList.Count, DestList.Count);
 {$IFDEF MSWINDOWS} // case insensitive
-      while CompareStr(OrigList[DiffIndex], DestList[DiffIndex]) = 0 do
+      while (DiffIndex < MinSize) and SameText (OrigList[DiffIndex], DestList[DiffIndex]) do
 {$ELSE}            // case sensitive
-      while OrigList[DiffIndex] = DestList[DiffIndex] do
+      while (DiffIndex < MinSize) and (OrigList[DiffIndex] = DestList[DiffIndex]) do
 {$ENDIF}
         Inc(DiffIndex);
 
