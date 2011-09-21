@@ -32,10 +32,11 @@ interface
 
 uses
   SysUtils, Classes, Contnrs,
-  JclSimpleXml,
-  DelphiData;
+  JclSimpleXml;
   
 type
+  TCompileTargetPlatform = (ctpWin32, ctpWin64);
+
   { xml Package files }
 
   TPackageXmlInfo = class;

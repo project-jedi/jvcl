@@ -32,7 +32,7 @@ unit DelphiData;
 interface
 
 uses
-  Windows, SysUtils, Classes, Contnrs, Registry;
+  Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
 
 const
   BDSVersions: array[1..9] of record
@@ -82,8 +82,6 @@ type
     constructor Create;
     property Items[Index: Integer]: TCompileTarget read GetItems; default;
   end;
-
-  TCompileTargetPlatform = (ctpWin32, ctpWin64);
 
   TCompileTarget = class(TObject)
   private
