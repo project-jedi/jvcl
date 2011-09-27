@@ -80,6 +80,7 @@ type
   {$IFNDEF RTL200_UP}
   TJvListViewCompareGroupEvent = procedure(Sender: TObject; Group1, Group2: TJvListViewGroup; var Compare: Integer) of object;
   {$ENDIF !RTL200_UP}
+  TJvListViewCancelEditEvent = procedure(Sender: TObject; Item: TListItem) of object;
 
   TJvListItems = class(TListItems, IJvAppStorageHandler, IJvAppStoragePublishedProps)
   private
@@ -363,6 +364,7 @@ type
     FReturnKeyTriggersItemDblClick: Boolean;
     FOnItemClick: TListViewItemClickNotifyEvent;
     FOnItemDblClick: TListViewItemClickNotifyEvent;
+    FOnCancelEdit: TJvListViewCancelEditEvent;
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     {$IFNDEF RTL200_UP}
@@ -420,6 +422,8 @@ type
       Stage: TCustomDrawStage): Boolean; override;
     function CustomDrawSubItem(Item: TListItem; SubItem: Integer;
       State: TCustomDrawState; Stage: TCustomDrawStage): Boolean; override;
+
+    procedure EditCanceled(Item: TListItem); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -471,6 +475,7 @@ type
     property ViewStyle: TJvViewStyle read FViewStyle write SetJvViewStyle default vsIcon;
 
     property OnAutoSort: TJvListViewColumnSortEvent read FOnAutoSort write FOnAutoSort;
+    property OnCancelEdit: TJvListViewCancelEditEvent read FOnCancelEdit write FOnCancelEdit;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnLoadProgress: TJvOnProgress read FOnLoadProgress write FOnLoadProgress;
     property OnSaveProgress: TJvOnProgress read FOnSaveProgress write FOnSaveProgress;
@@ -2201,6 +2206,11 @@ begin
           end;
         end;
 
+      LVN_ENDLABELEDITA, LVN_ENDLABELEDITW:
+        with PLVDispInfo(Message.NMHdr)^ do
+          if (item.pszText = nil) and (item.iItem <> -1) then
+            EditCanceled(Items[item.iItem]);
+
       NM_CLICK, NM_DBLCLK:
         with PNMListView(NMHdr)^ do
         begin
@@ -2234,6 +2244,12 @@ procedure TJvListView.ItemDblClick(AItem: TListItem; SubItemIndex: Integer; X, Y
 begin
   if Assigned(FOnItemDblClick) then
     FOnItemDblClick(Self, AItem, SubItemIndex, X, Y);
+end;
+
+procedure TJvListView.EditCanceled(Item: TListItem);
+begin
+  if Assigned(FOnCancelEdit) then
+    FOnCancelEdit(Self, Item);
 end;
 
 function TJvListView.CustomDrawSubItem(Item: TListItem; SubItem: Integer;
