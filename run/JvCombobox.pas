@@ -254,25 +254,29 @@ type
     FCapSelAll: string;
     FCapDeselAll: string;
     FCapInvertAll: string;
-    FItems: TStrings;
     FListBox: TJvCheckListBox;
     FSelectAll: TMenuItem;
     FDeselectAll: TMenuItem;
     FInvertAll: TMenuItem;
     FNoFocusColor: TColor;
     FSorted: Boolean;
-    FQuoteStyle: TJvCHBQuoteStyle; // added 2000/04/08
+    FQuoteStyle: TJvCHBQuoteStyle;
     FCheckedCount: Integer;
+    FCheckedCountValid: Boolean;
     FColumns: Integer;
     FDropDownLines: Integer;
     FDelimiter: Char;
     FIgnoreChange: Boolean;
     FOrderedText: Boolean;
+    FOrgListBoxWndProc: TWndMethod;
+    FUpdateCheckedTextSent: Boolean;
+    FKeepCheckedState: Boolean;
     procedure SetItems(AItems: TStrings);
     procedure ToggleOnOff(Sender: TObject);
     procedure KeyListBox(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ContextListBox(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
-    procedure ItemsChange(Sender: TObject);
+    procedure ListBoxWndProc(var Msg: TMessage);
+    procedure ItemsChange;
     procedure SetSorted(Value: Boolean);
     procedure AdjustHeight;
     procedure SetNoFocusColor(Value: TColor);
@@ -290,7 +294,8 @@ type
     procedure ChangeText(const NewText: string);
     procedure SetOrderedText(const Value: Boolean);
     function GetOrderedTextValue: string;
-    procedure RefreshCheckedCount;
+    function GetItems: TStrings;
+    function GetCheckedCount: Integer;
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -307,21 +312,22 @@ type
     function IsChecked(Index: Integer): Boolean;
     function GetText: string;
     property Checked[Index: Integer]: Boolean read GetChecked write SetChecked;
-    property CheckedCount: Integer read FCheckedCount;
-    property ItemEnabled[Index: Integer]: Boolean read GetItemEnabled write SetItemEnabled; //dejoy added
+    property CheckedCount: Integer read GetCheckedCount;
+    property ItemEnabled[Index: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
     property State[Index: Integer]: TCheckBoxState read GetState write SetState;
 
-    property Items: TStrings read FItems write SetItems;
+    property Items: TStrings read GetItems write SetItems;
     property CapSelectAll: string read FCapSelAll write FCapSelAll stored IsStoredCapSelAll;
     property CapDeSelectAll: string read FCapDeselAll write FCapDeselAll stored IsStoredCapDeselAll;
     property CapInvertAll: string read FCapInvertAll write FCapInvertAll;
     property NoFocusColor: TColor read FNoFocusColor write SetNoFocusColor;
     property Sorted: Boolean read FSorted write SetSorted default False;
-    property QuoteStyle: TJvCHBQuoteStyle read FQuoteStyle write FQuoteStyle default qsNone; // added 2000/04/08
+    property QuoteStyle: TJvCHBQuoteStyle read FQuoteStyle write FQuoteStyle default qsNone;
     property Columns: Integer read FColumns write SetColumns default 0;
     property DropDownLines: Integer read FDropDownLines write SetDropDownLines default 6;
     property Delimiter: Char read FDelimiter write SetDelimiter default ',';
     property OrderedText: Boolean read FOrderedText write SetOrderedText default False;
+    property KeepCheckedState: Boolean read FKeepCheckedState write FKeepCheckedState default False;
   end;
 
   {$IFDEF RTL230_UP}
@@ -412,6 +418,7 @@ uses
 const
   MinDropLines = 2;
   MaxDropLines = 50;
+  WM_UPDATECHECKEDTEXT = WM_USER + 102;
 
 type
   TJvPrivForm = class(TJvPopupWindow)
@@ -531,7 +538,7 @@ begin
   FDropDownLines := 6;
   FDelimiter := ',';
   FColumns := 0;
-  FQuoteStyle := qsNone;  // added 2000/04/08
+  FQuoteStyle := qsNone;
   FCheckedCount := 0;
   FNoFocusColor := clWindow;
   Caption := '';
@@ -540,9 +547,6 @@ begin
   FCapInvertAll := RsCapInvertAll;
   Height := 24;
   Width := 121;
-
-  FItems := TStringList.Create;
-  TStringList(FItems).OnChange := ItemsChange;
 
   Color := clWindow;
   ReadOnly := True;
@@ -569,6 +573,8 @@ begin
   FListBox.OnClickCheck := ToggleOnOff;
   FListBox.OnKeyDown := KeyListBox;
   FListBox.OnContextPopup := ContextListBox;
+  FOrgListBoxWndProc := FListBox.WindowProc;
+  FListBox.WindowProc := ListBoxWndProc;
   TJvPrivForm(FPopup).FActiveControl := FListBox;
 
   // Create PopUp
@@ -590,7 +596,6 @@ end;
 
 destructor TJvCustomCheckedComboBox.Destroy;
 begin
-  FItems.Free;
   FPopup.Free;
   FPopup := nil;
   inherited Destroy;
@@ -625,7 +630,6 @@ end;
 
 procedure TJvCustomCheckedComboBox.Clear;
 begin
-  FItems.Clear;
   FListBox.Clear;
   inherited Clear;
 end;
@@ -724,6 +728,11 @@ begin
   Result := FListBox.ItemEnabled[Index];
 end;
 
+function TJvCustomCheckedComboBox.GetItems: TStrings;
+begin
+  Result := FListBox.Items;
+end;
+
 function TJvCustomCheckedComboBox.GetState(Index: Integer): TCheckBoxState;
 begin
   Result := FListBox.State[Index];
@@ -768,23 +777,57 @@ begin
   Result := FCapSelAll <> RsCapDeselAll;
 end;
 
-procedure TJvCustomCheckedComboBox.RefreshCheckedCount;
+function TJvCustomCheckedComboBox.GetCheckedCount: Integer;
 var
   I, Count: Integer;
 begin
-  Count := 0;
-  for I := 0 to Items.Count - 1 do
-    if Checked[I] then
-      Inc(Count);
-  FCheckedCount := Count;
+  if not FCheckedCountValid then
+  begin
+    FCheckedCountValid := True;
+    Count := 0;
+    for I := 0 to Items.Count - 1 do
+      if Checked[I] then
+        Inc(Count);
+    FCheckedCount := Count;
+  end;
+  Result := FCheckedCount;
 end;
 
-procedure TJvCustomCheckedComboBox.ItemsChange(Sender: TObject);
+procedure TJvCustomCheckedComboBox.ItemsChange;
 begin
-  FListBox.Clear;
-  ChangeText('');
-  FListBox.Items.Assign(FItems);
-  RefreshCheckedCount;
+  FCheckedCountValid := False;
+  if KeepCheckedState then
+  begin
+    if not FUpdateCheckedTextSent then
+    begin
+      FUpdateCheckedTextSent := True;
+      PostMessage(FListBox.Handle, WM_UPDATECHECKEDTEXT, 0, 0);
+    end;
+  end
+  else
+  begin // old behavior
+    if FCheckedCount > 0 then
+      SetUnCheckedAll
+    else
+      ChangeText('');
+  end;
+end;
+
+procedure TJvCustomCheckedComboBox.ListBoxWndProc(var Msg: TMessage);
+begin
+  FOrgListBoxWndProc(Msg);
+  case Msg.Msg of
+    WM_PAINT, WM_UPDATECHECKEDTEXT:
+      begin
+        if FUpdateCheckedTextSent then
+        begin
+          FUpdateCheckedTextSent := False;
+          ChangeText(GetOrderedTextValue);
+        end;
+      end;
+    LB_ADDSTRING, LB_DELETESTRING, LB_INSERTSTRING, LB_RESETCONTENT:
+      ItemsChange;
+  end;
 end;
 
 procedure TJvCustomCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
@@ -926,7 +969,7 @@ end;
 
 procedure TJvCustomCheckedComboBox.SetItems(AItems: TStrings);
 begin
-  FItems.Assign(AItems);
+  FListBox.Items.Assign(AItems);
 end;
 
 procedure TJvCustomCheckedComboBox.SetNoFocusColor(Value: TColor);
@@ -954,7 +997,7 @@ begin
   if FSorted <> Value then
   begin
     FSorted := Value;
-    TStringList(FItems).Sorted := FSorted;
+    FListBox.Sorted := FSorted;
   end;
 end;
 
