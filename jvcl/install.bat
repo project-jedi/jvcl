@@ -1,5 +1,8 @@
 @echo off
 
+SETLOCAL
+pushd "%~dp0"
+
 SET JCLVERSION=1.105
 
 SET DELPHIVERSION=%1
@@ -62,3 +65,6 @@ pause
 :Leave
 SET DELPHIVERSION=
 SET JCLVERSION=
+
+popd
+ENDLOCAL
