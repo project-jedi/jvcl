@@ -1316,7 +1316,8 @@ begin
   if FHandle <> 0 then
     DeallocateHWndEx(FHandle);
 
-  GlobalCtrl.Remove(Self);
+  if GGlobalCtrl <> nil then
+    GlobalCtrl.Remove(Self);
 
   inherited Destroy;
 end;
