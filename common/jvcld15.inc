@@ -23,8 +23,13 @@ Known Issues:
 {------------------------------------------------------------------------------}
 
 {%hidden%}
-{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions. }
+{ Enable this define if you are using the Delphi 6, 7 or 2005 Personal Edition. }
 {.$DEFINE DelphiPersonalEdition}
+
+{%hidden%}
+{ The installer enables this define if you compile JVCL for Delphi and C++ Builder. It disables
+  the class constructor/destructor support that is not supported by C++Builder. }
+{.$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }
@@ -44,7 +49,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
 be compiled as "never-build package". }
-{$DEFINE JVCLThemesEnabled}
+{.$DEFINE JVCLThemesEnabled}
 
 { Activates MIDAS components (DBRemoteLogin).
 NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
@@ -53,7 +58,7 @@ the requires node of JvDBXXX.bpk !!! }
 
 { This define enables GIF image support. Deactivate this define
 if you are using another GIF image support library. }
-{.$DEFINE USE_JV_GIF}
+{$DEFINE USE_JV_GIF}
 
 { Activate this define if you do not want to use TGauge Borland sample
 component in TDBProgress component and FileUtil routines. In this case
@@ -142,7 +147,6 @@ For further informations have a look at http://www.allroundautomations.com }
 For further informations have a look at http://www.crlab.com }
 {.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
 
-
-{%missing%}
-{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }
-{$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
+{ Activates Support for the DevArt VCL Universal Data Access Components
+For further informations have a look at http://www.devart.com }
+{.$DEFINE USE_3RDPARTY_DEVART_UNIDAC}
