@@ -29,7 +29,7 @@ Known Issues:
 {%hidden%}
 { The installer enables this define if you compile JVCL for Delphi and C++ Builder. It disables
   the class constructor/destructor support that is not supported by C++Builder. }
-{.$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
+{$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }
@@ -49,7 +49,7 @@ of qrpt. NB! JVCL_UseQuickReport must also be defined}
 (http://www.lischke-online.de) installed and available and
 you are using D6/BCB6 or below. The ThemeManager package must
 be compiled as "never-build package". }
-{.$DEFINE JVCLThemesEnabled}
+{$DEFINE JVCLThemesEnabled}
 
 { Activates MIDAS components (DBRemoteLogin).
 NOTE: if you activate this, you must also manually add JvDlgsXXX.dcp to
@@ -83,7 +83,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{.$DEFINE UNITVERSIONING}
+{$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
@@ -94,34 +94,34 @@ For further informations have a look at http://www.scalabium.com
 ATTENTION : 
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE
 SMEXPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
-{.$DEFINE USE_3RDPARTY_SMEXPORT}
+{$DEFINE USE_3RDPARTY_SMEXPORT}
 
 { Activates SM-Import Wrapper Components (in DBActions)
 For further informations have a look at http://www.scalabium.com
 ATTENTION :
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE
 SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
-{.$DEFINE USE_3RDPARTY_SMIMPORT}
+{$DEFINE USE_3RDPARTY_SMIMPORT}
 
 { Activates Support for the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 { Activates Support for the DevExpress cxGrid-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
 { Activates Support for the DevExpress cxVerticalGrid-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
 
 { Activates Support for the DevExpress cxPivotGrid-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
 
 { Activates Support for the DevExpress cxTreeList-Controls
 For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
@@ -130,7 +130,7 @@ For further informations have a look at http://www.indyproject.org }
 { Activates the Internet Direct (Indy)-Components version 10.
 You MUST also activate $DEFINE USE_3RDPARTY_INDY for the compilation to work
 For further informations have a look at http://www.indyproject.org }
-{.$DEFINE USE_3RDPARTY_INDY10}
+{$DEFINE USE_3RDPARTY_INDY10}
 
 { Activates Support for the ICS-Components (Internet component suite
 For further informations have a look at http://www.overbyte.be/
@@ -145,7 +145,7 @@ For further informations have a look at http://www.allroundautomations.com }
 
 { Activates Support for the CoreLabs VCL Oracle Data Access Components
 For further informations have a look at http://www.crlab.com }
-{.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
+{$DEFINE USE_3RDPARTY_CORELAB_ODAC}
 
 { Activates Support for the DevArt VCL Universal Data Access Components
 For further informations have a look at http://www.devart.com }
