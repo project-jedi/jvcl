@@ -96,10 +96,10 @@ ALERT_jedi_inc_incompatible
 {-----------------------------------------------------------------------------}
 {$IFDEF DELPHI16}
  {$IFDEF CPUX86}
- {$I jvcld16win32.inc}
+ {$I jvcld16.inc}
  {$ENDIF CPUX86}
  {$IFDEF CPUX64}
- {$I jvcld16win64.inc}
+ {$I jvcld16_x64.inc}
  {$ENDIF CPUX64}
  {$DEFINE JVCL_CONFIGURED}
 {$ENDIF DELPHI16}
