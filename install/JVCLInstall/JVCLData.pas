@@ -1395,8 +1395,15 @@ begin
         Version := Target.IDEVersion + 6  // BDS 3 is Delphi 9
       else
         Version := Target.IDEVersion + 7; // BDS 7 is Delphi 14
-      Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d%s.inc', // do not localize
-          [LowerCase(Target.TargetType), Version, AnsiLowerCase(Target.PlatformName)]);
+      if Target.PlatForm = ctpWin32 then
+        Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d%s.inc', // do not localize
+            [LowerCase(Target.TargetType), Version, ''])
+      else if Target.PlatForm = ctpWin64 then
+        Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d%s.inc', // do not localize
+            [LowerCase(Target.TargetType), Version, '_x64'])
+      else
+        Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d%s.inc', // do not localize
+            [LowerCase(Target.TargetType), Version, AnsiLowerCase(Target.PlatformName)]);
     end
     else
       Filename := GetJVCLDir + '\common\' + Format('jvcl%s%d.inc', // do not localize
