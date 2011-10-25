@@ -118,6 +118,11 @@ uses
   {$ENDIF ~COMPILER12_UP}
   JvConsts;
 
+function IsNullOrEmptyStringField(Field: TField): Boolean;
+begin
+  Result := Field.IsNull or ((Field is TStringField) and (Trim(Field.AsString) = ''));
+end;
+
 //=== { TJvDBDateTimePicker } ================================================
 
 ///////////////////////////////////////////////////////////////////////////
@@ -232,7 +237,9 @@ procedure TJvDBDateTimePicker.DataChange(Sender: TObject);
 begin
   if Field <> nil then
   begin
-    if Kind = dtkDate then
+    if IsNullOrEmptyStringField(Field) then
+      DateTime := NullDate
+    else if Kind = dtkDate then
     begin
       if IsDateAndTimeField then
         DateTime := Field.AsDateTime
@@ -525,7 +532,9 @@ begin
     // DataLink field might be empty
     if Field <> nil then
     begin
-      if Kind = dtkDate then
+      if IsNullOrEmptyStringField(Field) then
+        D := 0
+      else if Kind = dtkDate then
       begin
         if IsDateAndTimeField then
           D := Field.AsDateTime
@@ -541,9 +550,7 @@ begin
       end;
     end
     else
-    begin
       D := Now;  // Default value for date time edits
-    end;
 
     DateTimeToSystemTime(D, ST);
     DateTime_SetSystemTime(FPaintControl.Handle, GDT_VALID, ST);
