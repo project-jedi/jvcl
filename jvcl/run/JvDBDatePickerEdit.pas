@@ -220,6 +220,11 @@ implementation
 uses
   Variants, SysUtils;
 
+function IsNullOrEmptyStringField(Field: TField): Boolean;
+begin
+  Result := Field.IsNull or ((Field is TStringField) and (Trim(Field.AsString) = ''));
+end;
+
 //=== { TJvCustomDBDatePickerEdit } ==========================================
 
 procedure TJvCustomDBDatePickerEdit.Change;
@@ -260,7 +265,7 @@ procedure TJvCustomDBDatePickerEdit.DataChange(Sender: TObject);
 begin
   if IsLinked and FDataLink.Active then
   begin
-    if AllowNoDate and FDataLink.Field.IsNull then
+    if AllowNoDate and IsNullOrEmptyStringField(FDataLink.Field) then
       InternalDate := NoDateValue
     else
       InternalDate := FDataLink.Field.AsDateTime;

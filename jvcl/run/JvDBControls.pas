@@ -731,7 +731,11 @@ uses
 
 {$R JvDBControls.res}
 
-//=== NEW IN JVCL 3.0 ==
+function IsNullOrEmptyStringField(Field: TField): Boolean;
+begin
+  Result := Field.IsNull or ((Field is TStringField) and (Trim(Field.AsString) = ''));
+end;
+
 //=== { TJvDBMaskEdit } ======================================================
 
 constructor TJvDBMaskEdit.Create(AOwner: TComponent);
@@ -1565,11 +1569,10 @@ begin
   if FDataLink.Field <> nil then
   begin
     EditMask := GetDateMask;
-    // Polaris
-    inherited SetDate(FDataLink.Field.AsDateTime);
-    //    Self.Date := FDataLink.Field.AsDateTime;
-    //    SetDate(FDataLink.Field.AsDateTime);
-    // Polaris
+    if IsNullOrEmptyStringField(FDataLink.Field) then
+      inherited SetDate(NullDate)
+    else
+      inherited SetDate(FDataLink.Field.AsDateTime);
   end
   else
   begin
@@ -1593,7 +1596,7 @@ procedure TJvDBDateEdit.EditingChange(Sender: TObject);
 begin
   inherited ReadOnly := not FDataLink.Editing;
   if FDataLink.Editing and DefaultToday and (FDataLink.Field <> nil) and
-    (FDataLink.Field.AsDateTime = NullDate) then
+    (IsNullOrEmptyStringField(FDataLink.Field) or (FDataLink.Field.AsDateTime = NullDate)) then
     FDataLink.Field.AsDateTime := SysUtils.Now;
 end;
 
@@ -1604,9 +1607,9 @@ begin
   ValidateEdit;
   D := Self.Date;
   if D <> NullDate then
-  begin // Polaris
+  begin
     if Int(FDataLink.Field.AsDateTime) <> D then
-      FDataLink.Field.AsDateTime := D + Frac(FDataLink.Field.AsDateTime)
+      FDataLink.Field.AsDateTime := D + Frac(FDataLink.Field.AsDateTime);
   end
   else
     FDataLink.Field.Clear;
