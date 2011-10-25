@@ -896,6 +896,8 @@ begin
   else
     Size := Canvas.TextExtent(S);
   Inc(Size.cx, CLeftMargin);
+  if Size.cy = 0 then // 0 is an invalid size for a ImageList
+    Size.cy := 1;
 
   FDragImage.Width := Size.cx;
   FDragImage.Height := Size.cy;
