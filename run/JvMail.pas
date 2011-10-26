@@ -39,7 +39,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, Controls, Forms,
   Mapi,
-  JclBase, JclMapi,
+  JclMapi,
   JvComponentBase;
 
 type
@@ -192,7 +192,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources, JclSysUtils;
+  JvResources, JclSysUtils;
 
 //=== { TJvMailRecipient } ===================================================
 

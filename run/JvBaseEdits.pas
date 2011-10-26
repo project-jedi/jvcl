@@ -316,7 +316,7 @@ const
 implementation
 
 uses
-  SysUtils, Math, Consts, Graphics,
+  SysUtils, Math, Graphics,
 //  JclLogic,
   JvJCLUtils, JvCalc, JvConsts, JvResources, JclSysUtils;
 

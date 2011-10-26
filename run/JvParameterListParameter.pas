@@ -34,7 +34,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
   Controls, FileCtrl, Dialogs, ComCtrls, Buttons, Variants,
-  JvPanel, JvPropertyStore, JvParameterList, JvDynControlEngine, JvDSADialogs,
+  JvPanel, JvParameterList, JvDynControlEngine, JvDSADialogs,
   JvDynControlEngineIntf, ActnList;
 
 type

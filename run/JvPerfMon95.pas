@@ -161,8 +161,8 @@ const
 implementation
 
 uses
-  Consts, RTLConsts,
-  JvJCLUtils, JvJVCLUtils, JvResources;
+  RTLConsts,
+  JvJCLUtils, JvResources;
 
 const
   PerfEnumKey = 'System\CurrentControlSet\Control\PerfStats\Enum';

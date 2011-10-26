@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Contnrs, Controls, DB, DBCtrls;
+  Windows, Messages, SysUtils, Classes, Controls, DB, DBCtrls;
 
 type
   TJvDBCheckBoxChangingEvent = procedure(Sender: TObject; var Allow: Boolean) of object;

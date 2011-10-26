@@ -507,7 +507,7 @@ const
 implementation
 
 uses
-  Math, DateUtils,
+  Math,
   JvJCLUtils, JvJVCLUtils, JvThemes, JclSysUtils;
 
 {$R JvTimeLine.res}

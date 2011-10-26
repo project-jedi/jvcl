@@ -35,8 +35,8 @@ uses
   {$ENDIF UNITVERSIONING}
   {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
   Classes, Forms, Controls, DBAccess, Ora,
-  JvBaseDlg, JvAppStorage, JvBaseDBLogonDialog,
-  JvDynControlEngine, JvBaseDBPasswordDialog, 
+  JvAppStorage, JvBaseDBLogonDialog,
+  JvDynControlEngine, JvBaseDBPasswordDialog,
   {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvDynControlEngineIntf;
 

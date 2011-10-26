@@ -1753,9 +1753,8 @@ const
 implementation
 
 uses
-  Consts, Printers,
-  JvConsts, JvResources,
-  TypInfo;
+
+  JvResources;
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)

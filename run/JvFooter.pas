@@ -145,7 +145,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvResources;
 
 //=== { TJvFooterBtn } =======================================================
 

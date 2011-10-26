@@ -355,7 +355,7 @@ implementation
 uses
   Variants, SysUtils, Menus,
   {$IFDEF HAS_UNIT_CHARACTER}
-  Character, // for inline
+  // for inline
   {$ENDIF HAS_UNIT_CHARACTER}
   JclStrings,
   JvConsts, JvTypes, JvResources, JclSysUtils;

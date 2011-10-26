@@ -659,9 +659,9 @@ uses
   JvDBLookup,
   JvConsts, JvResources, JvThemes, JvJCLUtils, JvJVCLUtils,
   {$IFDEF COMPILER7_UP}
-  GraphUtil, // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
+  // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
   {$ENDIF COMPILER7_UP}
-  JvAppStoragePropertyEngineDB, JvDBGridSelectColumnForm, JclSysUtils;
+  JvDBGridSelectColumnForm, JclSysUtils;
 
 {$R JvDBGrid.res}
 

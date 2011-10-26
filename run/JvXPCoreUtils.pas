@@ -34,7 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, TypInfo, Windows, Graphics, Controls,
+  SysUtils, Classes, Windows, Graphics, Controls,
   JvJCLUtils, JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;

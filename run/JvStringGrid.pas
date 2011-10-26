@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids, StdCtrls,
-  JvTypes, JvJCLUtils, JvExGrids;
+  JvJCLUtils, JvExGrids;
 
 const
   GM_ACTIVATECELL = WM_USER + 123;

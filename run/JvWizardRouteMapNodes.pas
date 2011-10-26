@@ -45,7 +45,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Windows, Messages, Graphics, StdCtrls,
+  Classes, Windows, Messages, Graphics,
   JvWizard;
 
 type

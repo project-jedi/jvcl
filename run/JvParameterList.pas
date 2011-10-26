@@ -32,9 +32,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, Windows, Messages,
-  StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs, ComCtrls,
+  StdCtrls, ExtCtrls, Graphics, Forms, Controls, Dialogs,
   Variants,
-  JvConsts, JvTypes, JvDynControlEngine, JvDynControlEngineIntf, JvDSADialogs,
+  JvConsts, JvTypes, JvDynControlEngine, JvDynControlEngineIntf,
   JvComponentBase, JvPanel, JvPropertyStore, JvAppStorage, JvAppStorageSelectList;
 
 type

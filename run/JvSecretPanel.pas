@@ -41,7 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, ExtCtrls, Forms,
-  JvTimer, JvExtComponent, JvTypes;
+  JvTimer, JvExtComponent;
 
 type
   TGlyphLayout = (glGlyphLeft, glGlyphRight, glGlyphTop, glGlyphBottom);
@@ -169,9 +169,9 @@ const
 implementation
 
 uses
-  CommCtrl,
-  Consts, SysUtils, Math, ActnList,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvConsts;
+
+  SysUtils, Math,
+  JvJCLUtils, JvJVCLUtils, JvConsts;
 
 const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);

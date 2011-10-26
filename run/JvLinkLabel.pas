@@ -201,7 +201,7 @@ const
 implementation
 
 uses
-  JvThemes, JvResources, JvJVCLUtils;
+  JvThemes, JvResources;
 
 const
   crNewLinkHand = 1;

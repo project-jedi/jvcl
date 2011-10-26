@@ -205,8 +205,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls,
-  Forms, StdCtrls, ExtCtrls, Menus, ActnList,
+  Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls,
+  Forms, StdCtrls, ExtCtrls, Menus,
   JvConsts, JvFixedEditPopUp, JvStdEditActions, JvUnicodeCanvas, JvComponent,
   JvExControls;
 

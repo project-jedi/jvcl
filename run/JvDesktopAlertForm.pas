@@ -40,7 +40,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   ImgList, ActnList,
-  JvButton, JvLabel, JvComponent, JvConsts, JvExForms;
+  JvButton, JvLabel, JvExForms;
 
 const
   cDefaultAlertFormWidth = 329;

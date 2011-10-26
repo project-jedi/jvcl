@@ -110,7 +110,7 @@ const
 implementation
 
 uses
-  JvResources, JvConsts;
+  JvResources;
 
 constructor TJvMailSlotServer.Create(AOwner: TComponent);
 begin

@@ -330,7 +330,7 @@ const
 implementation
 
 uses
-  JvDsgnIntf, JvJCLUtils, JvJVCLUtils, JvConsts, JvThemes, JvResources;
+  JvDsgnIntf, JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
 
 { Cursors resources }
 {$R JvScrollMax.res}

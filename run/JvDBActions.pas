@@ -33,10 +33,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, ActnList, ImgList, Graphics,
+  Windows, ActnList, Graphics,
   Forms, Controls, Classes, DB,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGridCustomTableView, cxDBData,
+  cxGridCustomTableView,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   {$IFDEF USE_3RDPARTY_SMEXPORT}
   SMEWIZ, ExportDS, SMEEngine,
@@ -520,21 +520,17 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils,
+  SysUtils, StrUtils,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxGrid, cxGridDBDataDefinitions,
+  cxGrid,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   {$IFDEF USE_3RDPARTY_SMEXPORT}
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   SMEEngCx,
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  sme2sql, IniFiles,
+  sme2sql,
   {$ENDIF USE_3RDPARTY_SMEXPORT}
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  cxCustomData,
-  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  JvResources, JvParameterList,
-  JvDSADialogs,
+  JvResources, JvParameterList, JvDSADialogs,
   Variants, Dialogs, StdCtrls, Clipbrd, JvJVCLUtils, JclFileUtils;
 
 function TJvDatabaseActionList.GetDataComponent: TComponent;

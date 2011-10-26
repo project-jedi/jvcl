@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   CommCtrl,
-  SysUtils, Classes, Contnrs, Graphics, Controls, Forms, ComCtrls, StdActns,
+  SysUtils, Classes, Graphics, Controls, Forms, ComCtrls, StdActns,
   JVCLVer, JvExComCtrls;
 
 type
@@ -100,7 +100,7 @@ const
 implementation
 
 uses
-  Math,
+
   JvThemes, JvResources, JvTypes, JvJVCLUtils;
 
 //=== { TJvStatusBar } =======================================================

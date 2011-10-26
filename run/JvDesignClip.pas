@@ -72,8 +72,7 @@ const
 implementation
 
 uses
-  SysUtils, Clipbrd,
-  JvDesignUtils;
+  SysUtils, Clipbrd;
 
 var
   CF_COMPONENTSTREAM: UINT;

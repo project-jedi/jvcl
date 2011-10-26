@@ -302,7 +302,7 @@ uses
   Variants,
   TypInfo,
 //  JclUnicode, // for reg exp support
-  JclWideStrings,
+
   JvTypes, JvResources, JvJVCLUtils;
 
 var

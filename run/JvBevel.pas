@@ -162,8 +162,7 @@ const
 implementation
 
 uses
-  SysUtils, TypInfo, RTLConsts,
-  JvResources;
+  SysUtils, TypInfo, RTLConsts;
 
 type
   TReaderAccess = class(TReader);

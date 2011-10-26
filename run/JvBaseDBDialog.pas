@@ -33,8 +33,7 @@ uses
   JclUnitVersioning,
 {$ENDIF UNITVERSIONING}
   JvDynControlEngine,
-  Classes, JvBaseDlg, JvAppStorage, Forms, Controls, JvDynControlEngineIntf,
-  JvPropertyStore, Menus;
+  Classes, JvBaseDlg, JvAppStorage, Forms, Controls;
 
 type
   TJvBaseDBDialog = class(TJvCommonDialog)
@@ -77,8 +76,8 @@ const
 
 implementation
 
-uses 
-  SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, 
+uses
+  SysUtils, Types,
   JvJVCLUtils;
 
 function TJvBaseDBDialog.CreateForm: TForm;

@@ -515,7 +515,7 @@ implementation
 uses
   SysUtils, RTLConsts, Controls,
   JclStrings,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvResources;
 
 const
   aisPrvEvt = 'aisPrvEvt';

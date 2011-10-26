@@ -480,7 +480,7 @@ implementation
 
 uses
   Variants, SysUtils,
-  JvDynControlEngineTools, JvDynControlEngineVCL, JvConsts, JvJCLUtils;
+  JvDynControlEngineTools, JvJCLUtils;
 
 var
   IntDynControlEngineVCLDB: TJvDynControlEngineDB = nil;

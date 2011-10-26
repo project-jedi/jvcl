@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, ImgList, Graphics, ComCtrls,
+  Windows, Graphics, ComCtrls,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   QWindows, QImgList, QGraphics, QComCtrls,
@@ -67,7 +67,7 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils, Variants, Dialogs, StdCtrls, Clipbrd;
+  SysUtils, Variants, Dialogs;
 
 
 procedure InitActionEngineList;

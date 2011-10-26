@@ -423,9 +423,7 @@ const
 
 implementation
 
-uses
-  Math,
-  JvConsts, JvThemes;
+
 
 const
   cMAILTO = 'MAILTO:';

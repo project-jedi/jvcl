@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Forms, Controls, Menus,
-  JvBaseDlg, JvAppStorage, JvDynControlEngine, JvDynControlEngineIntf,
+  JvAppStorage, JvDynControlEngine, JvDynControlEngineIntf,
   JvPropertyStore, JvBaseDBDialog, JvBaseDBPasswordDialog, Graphics;
 
 type
@@ -404,7 +404,7 @@ const
 implementation
 
 uses
-  Windows, SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, Dialogs,
+  Windows, SysUtils, Types, ComCtrls, StdCtrls, Dialogs,
   JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources;
 
 

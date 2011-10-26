@@ -62,8 +62,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils,
-  Graphics, Controls, Forms, ExtCtrls, ImgList, ActnList, Messages,
-  JvConsts, JvXPCore, JvXPCoreUtils, JvJVCLUtils, JvTypes;
+  Graphics, Controls, Forms, ImgList, ActnList, Messages,
+  JvXPCore, JvXPCoreUtils, JvJVCLUtils, JvTypes;
 
 type
   TJvXPBarRollDirection = (rdExpand, rdCollapse);

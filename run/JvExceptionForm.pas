@@ -36,7 +36,7 @@ uses
   Windows,
   Messages, ComObj,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  JvLabel, JvComponent, JvExControls;
+  JvLabel, JvComponent;
 
 type
   TJvErrorEvent = procedure(Error: Exception; var Msg: string) of object;
@@ -96,7 +96,7 @@ implementation
 
 uses
   Consts,
-  JvTypes,
+
   JvJCLUtils, JvConsts, JvResources;
 
 {$R *.dfm}

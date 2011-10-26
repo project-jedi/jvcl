@@ -40,7 +40,7 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  JvMTConsts, JvMTSync;
+  JvMTConsts;
 
 type
   TMTManager = class;

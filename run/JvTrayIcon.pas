@@ -48,9 +48,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Menus, ShellAPI, ImgList, DateUtils,
-  JvConsts, JvTypes, JvComponentBase;
+  JvComponentBase;
 
 type
   TBalloonType = (btNone, btError, btInfo, btWarning);

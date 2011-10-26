@@ -65,8 +65,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Forms,
-  JclBase,
-  JvAppStorage, JvTypes, JvJVCLUtils;
+
+  JvAppStorage, JvTypes;
 
 type
   TJvAppRegistryStorageOptions = class(TJvAppStorageOptions)
@@ -152,7 +152,7 @@ implementation
 
 uses
   SysUtils, Dialogs,
-  JclRegistry, JclResources, JclStrings, JclFileUtils,
+  JclRegistry, JclResources,
   JvConsts, JvResources;
 
 const

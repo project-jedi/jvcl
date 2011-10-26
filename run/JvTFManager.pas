@@ -1051,7 +1051,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources,
+  JvResources,
   Dialogs, Forms, JvJVCLUtils, JclSysUtils;
 
 function AdjustEndTime(ATime: TTime): TTime;

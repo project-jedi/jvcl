@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  JvComponent, JvConsts;
+  JvComponent;
 
 type
   TJvPrivateProgressUpdate = procedure(Sender: TObject;

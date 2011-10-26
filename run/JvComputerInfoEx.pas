@@ -1464,7 +1464,7 @@ const
 implementation
 
 uses
-  WinInet, Registry,
+  Registry,
   JclShell, JclRegistry, JclFileUtils,
   JvJCLUtils, // Include/ExcludeTrailingPathDelimiter
   JvResources;

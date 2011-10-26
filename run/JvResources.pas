@@ -32,11 +32,10 @@ unit JvResources;
 
 interface
 
-uses
   {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
+uses
+  JclUnitVersioning;
   {$ENDIF UNITVERSIONING}
-  JvConsts;
 
 //=== used in several files ==================================================
 resourcestring

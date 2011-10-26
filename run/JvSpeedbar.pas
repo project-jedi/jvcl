@@ -32,9 +32,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, IniFiles,
+  SysUtils, Classes,
   Windows, Messages, Menus, Buttons, Controls,
-  Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
+  Graphics, Forms, ImgList, ExtCtrls, Grids,
   RTLConsts,
   JclBase,
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
@@ -510,7 +510,7 @@ const
 implementation
 
 uses
-  Math, Consts,
+  Math,
   JvJVCLUtils, JvJCLUtils, JvSpeedbarSetupForm, JvResources;
 
 const

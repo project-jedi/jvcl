@@ -210,7 +210,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
-  Consts, SysUtils, ExtCtrls,
+  SysUtils, ExtCtrls,
   JvDockSupportProc, JvDockGlobals;
 
 type

@@ -34,8 +34,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  TypInfo, Classes,
-  Windows, Controls, Graphics, StdCtrls, ExtCtrls,
+  Classes,
+  Windows, Controls, Graphics, StdCtrls,
   JvJCLUtils,
   JvXPCore, JvXPCoreUtils;
 

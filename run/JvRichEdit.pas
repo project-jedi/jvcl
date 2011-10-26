@@ -49,7 +49,7 @@ uses
   Windows, ActiveX, ComObj, CommCtrl, Messages, SysUtils, Classes, Controls,
   OleCtnrs,
   Forms, Graphics, StdCtrls, Dialogs, RichEdit, Menus, ComCtrls, SyncObjs,
-  JVCLVer, JvExStdCtrls, JvTypes;
+  JvExStdCtrls, JvTypes;
 
 type
   TJvCustomRichEdit = class;

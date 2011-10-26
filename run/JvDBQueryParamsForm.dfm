@@ -25,6 +25,9 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
+  DesignSize = (
+    354
+    179)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
@@ -35,6 +38,9 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Define Parameters'
     TabOrder = 0
+    DesignSize = (
+      328
+      109)
     object Label1: TLabel
       Left = 8
       Top = 20
@@ -87,7 +93,6 @@ object JvQueryParamsDialog: TJvQueryParamsDialog
       Height = 21
       Style = csDropDownList
       Anchors = [akTop, akRight]
-      ItemHeight = 13
       Sorted = True
       TabOrder = 1
       OnChange = TypeListChange

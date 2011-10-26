@@ -206,11 +206,11 @@ const
 implementation
 
 uses
-  RTLConsts,
+
   {$IFDEF COMPILER7_UP}
   SysConst,
   {$ENDIF COMPILER7_UP}
-  SysUtils, Forms, ExtCtrls, Consts,
+  SysUtils, Forms, ExtCtrls,
   JvThemes, JclSysUtils;
 
 var

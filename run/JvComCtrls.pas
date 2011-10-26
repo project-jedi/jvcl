@@ -44,11 +44,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Contnrs, Graphics, Controls, Forms,
-  Classes, 
+  Windows, Messages, Graphics, Controls, Forms,
+  Classes,
   Menus, ComCtrls, ImgList, Buttons, Types, CommCtrl,
   JvJVCLUtils, JvComponentBase, JvComponent, JvExControls, JvExComCtrls, JvWin32,
-  JvToolEdit, JvDataSourceIntf;
+  JvDataSourceIntf;
 
 const
   JvDefPageControlBorder = 4;

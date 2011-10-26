@@ -38,7 +38,7 @@ uses
   Variants, Windows, Messages,
   Controls, Graphics, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
   SysUtils, Classes,
-  JclBase,
+
   JvTypes, JvExGrids;
 
 type
@@ -151,8 +151,8 @@ const
 implementation
 
 uses
-  Math, Consts, MultiMon,
-  JvThemes, JvConsts, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton,
+  Math, MultiMon,
+  JvThemes, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton,
   JvComponent, JvJVCLUtils, JclSysUtils;
 
 procedure FontSetDefault(AFont: TFont);

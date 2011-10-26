@@ -119,7 +119,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Variants, Classes, Graphics, Controls, DB,
-  JvDBGrid, JvTypes; {JvTypes contains Exception base class}
+  JvDBGrid; {JvTypes contains Exception base class}
 
 const
   JvGridSort_ASC = True;

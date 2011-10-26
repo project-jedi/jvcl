@@ -40,7 +40,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, ImgList, ComCtrls,
-  JvComponent, JvThemes, JvPageList, JvExComCtrls;
+  JvPageList, JvExComCtrls;
 
 type
   TJvCustomPageListTreeView = class;
@@ -396,8 +396,8 @@ const
 implementation
 
 uses
-  JvResources,
-  Forms, JvJVCLUtils;
+
+  Forms;
 
 procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);
 var

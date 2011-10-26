@@ -36,7 +36,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Contnrs, Classes, SysUtils,
+  Windows, Classes, SysUtils,
   JvUrlListGrabber, JvTypes;
 
 type

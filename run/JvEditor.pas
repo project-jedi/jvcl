@@ -390,8 +390,8 @@ const
 implementation
 
 uses
-  Consts, RTLConsts, SysUtils, Math, Graphics, Clipbrd,
-  JvUnicodeCanvas, JvJCLUtils, JvThemes, JvConsts, JvResources;
+  SysUtils, Math, Graphics, Clipbrd,
+  JvUnicodeCanvas, JvJCLUtils, JvConsts, JvResources;
 
 type
   TJvUndoBufferAccessProtected = class(TJvUndoBuffer);

@@ -35,8 +35,8 @@ uses
   Variants,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls,
-  JvComponent, JvExComCtrls, JvComCtrls, ExtCtrls, JvExControls,
-  JvInspector, StdCtrls, JvExStdCtrls, JvListBox, JvPropertyStore,
+  JvComponent, ExtCtrls, JvExControls,
+  JvInspector, StdCtrls, JvPropertyStore,
   JvPropertyStoreEditorIntf, JvDynControlEngineIntf, ActnList, Menus;
 
 type
@@ -229,7 +229,7 @@ const
 implementation
 
 uses
-  RTLConsts,
+
   JvResources,
   TypInfo, JvDynControlEngine, JvJVCLUtils;
 

@@ -1229,7 +1229,7 @@ uses
   {$IFDEF MSWINDOWS}
   ActiveX,
   {$ENDIF MSWINDOWS}
-  SysUtils, Consts, TypInfo, RTLConsts,
+  SysUtils, TypInfo, RTLConsts,
   JclStrings,
   JvTypes, JvConsts, JvResources, JvJCLUtils;
 

@@ -47,9 +47,9 @@ uses
   Variants,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
-  JclBase,
+
   JvConsts,
-  JvExControls, JvSpeedButton, JvTypes, JvExMask, JvExForms, JvButton,
+  JvExControls, JvSpeedButton, JvTypes, JvExMask,
   JvDataSourceIntf, JvBrowseFolder;
 
 const
@@ -1108,7 +1108,7 @@ const
 implementation
 
 uses
-  RTLConsts, Math, Consts, MaskUtils,
+  RTLConsts, Math, MaskUtils,
   MultiMon,
   JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,

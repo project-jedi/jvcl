@@ -33,7 +33,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Controls, DB, Classes,
   ActnList, Forms, Graphics, JvTypes,
-  JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
+  JvPanel, JvDynControlEngine, JvDynControlEngineDB;
 
 type
   TJvDataSourceEditDialogCreateDataControlsEvent = procedure(ADatacomponent :

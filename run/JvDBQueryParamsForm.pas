@@ -80,7 +80,7 @@ const
 implementation
 
 uses
-  DBConsts,
+
   JvDBUtils,
   JvTypes, JvResources;
 

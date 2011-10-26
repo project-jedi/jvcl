@@ -41,7 +41,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
-  Forms, ExtCtrls, Contnrs;
+  Forms, ExtCtrls;
 
 type
   TJvDesignSurface = class;
@@ -283,7 +283,7 @@ const
 implementation
 
 uses
-  Clipbrd,
+
   JvDesignUtils, JvDesignClip, JvDesignImp, JvResources, JvTypes;
 
 //=== { TJvDesignCustomMessenger } ===========================================

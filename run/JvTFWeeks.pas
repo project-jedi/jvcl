@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  JvTypes,
+
   JvTFManager, JvTFGlance, JvTFUtils;
 
 type

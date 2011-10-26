@@ -44,7 +44,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls;
+  JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
   TJvExShape = class(TShape, IJvExControl)

@@ -32,14 +32,14 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Forms, Buttons, StdCtrls,
+  SysUtils, Classes, Forms, StdCtrls,
   {$IFDEF MSWINDOWS}
-  Windows, Controls, ComCtrls, ExtCtrls,
+  Windows, Controls, ComCtrls,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   QWindows,
   {$ENDIF UNIX}
-  JvTypes, JvComponentBase, JvThread, JvDynControlEngine, JvDynControlEngineIntf;
+  JvThread, JvDynControlEngine, JvDynControlEngineIntf;
 
 type
   TJvThreadBaseDialogOptions = class;
@@ -247,7 +247,7 @@ implementation
 uses
   Dialogs, Graphics,
   {$IFDEF COMPILER11_UP} // Delphi 2007 introduced ShellAnimations
-  ShellAnimations,
+
   {$ENDIF COMPILER11_UP}
   JvResources;
 

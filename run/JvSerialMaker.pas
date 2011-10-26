@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  JvTypes, JvComponentBase;
+  JvComponentBase;
 
 type
   {$IFDEF RTL230_UP}

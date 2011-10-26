@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, ActnList, ImgList, Graphics,
+  Windows, ActnList, Graphics,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   QWindows, QActnList, QImgList, QGraphics,
@@ -145,8 +145,8 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils, Variants,
-  JvResources, JvJVCLUtils;
+  SysUtils, Variants,
+  JvJVCLUtils;
 
 //=== { TJvActionEngineList } ========================================
 

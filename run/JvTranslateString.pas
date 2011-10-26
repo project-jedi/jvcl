@@ -117,7 +117,7 @@ const
 implementation
 
 uses
-  SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, Forms, Dialogs,
+  SysUtils, Types, Forms, Dialogs,
   JclFileUtils,
   JvJCLUtils,
   JvJVCLUtils;

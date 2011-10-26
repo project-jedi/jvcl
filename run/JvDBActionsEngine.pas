@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, ImgList, Graphics,
+  Windows, Graphics,
   Forms, Controls, Classes, DB,
   JvActionsEngine,
   DBGrids, JvPanel, JvDynControlEngineDB, JvDynControlEngineDBTools;
@@ -192,8 +192,8 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils,
-  JvResources, JvParameterList, JvParameterListParameter, JvDSADialogs,
+  SysUtils, Grids, TypInfo,
+  JvResources,
   Variants, JvDBActions, Dialogs;
 
 var

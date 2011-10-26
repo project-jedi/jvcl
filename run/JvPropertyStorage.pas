@@ -108,11 +108,10 @@ const
 
 implementation
 
+{$IFDEF RTL200_UP}
 uses
-  {$IFDEF RTL200_UP}
-  AnsiStrings,
-  {$ENDIF RTL200_UP}
-  JvJCLUtils;
+  AnsiStrings;
+{$ENDIF RTL200_UP}
 
 //=== { TJvPropInfoList } ====================================================
 

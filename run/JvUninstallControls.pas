@@ -34,8 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, SysUtils, Classes, Graphics, Controls, StdCtrls,
-  JvComponent, JvTypes;
+  Windows, SysUtils, Classes, Graphics, Controls, StdCtrls;
 
 type
   TJvUCBDisplayMode = (hkCurrentUser, hkLocalMachine); // subset of TJvRegKey

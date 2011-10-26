@@ -407,8 +407,8 @@ uses
   Types,
   {$ENDIF COMPILER10_UP}
   RTLConsts,
-  JclBase,
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvCtrls, JvResources;
+
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);

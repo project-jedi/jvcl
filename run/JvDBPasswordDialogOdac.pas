@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
-  Classes, Menus,
+  Classes,
   Ora, dbaccess,
   {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
   JvBaseDBPasswordDialog;
@@ -70,7 +70,7 @@ implementation
 
 {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
 uses
-  SysUtils, ExtCtrls, ComCtrls, StdCtrls, Types;
+  SysUtils, Types;
 
 function TJvDBOdacPasswordDialog.ChangePasswordInSession(NewPassword: string): Boolean;
 begin

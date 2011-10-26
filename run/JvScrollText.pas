@@ -36,7 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, StdCtrls,
-  JvStaticText, JvTypes, JvImageDrawThread, JvComponent;
+  JvStaticText, JvImageDrawThread, JvComponent;
 
 type
   TJvScrollTextDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom); // also in JvMoveableBevel, JvAppearingLabel
@@ -138,7 +138,7 @@ const
 implementation
 
 uses
-  JvJVCLUtils, JvThemes, JvResources;
+  JvJVCLUtils, JvThemes;
 
 constructor TJvScrollText.Create(AOwner: TComponent);
 begin

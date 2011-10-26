@@ -47,7 +47,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JvTypes, JvThemes, JvComponent, JvExtComponent, JvExControls,
+  JvTypes, JvThemes, JvExtComponent, JvExControls,
   JvHotTrackPersistent;
 
 type

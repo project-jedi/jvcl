@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, ImgList, Graphics, ComCtrls,
+  Windows, Graphics,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   QWindows, QImgList, QGraphics, QComCtrls,
@@ -69,7 +69,7 @@ const
 implementation
 
 uses
-  SysUtils, TypInfo, StrUtils, Variants, Clipbrd;
+  SysUtils, Variants;
 
 Type TAccessStringGrid = class(TStringGrid);
 

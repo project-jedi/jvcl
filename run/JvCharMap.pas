@@ -355,9 +355,9 @@ const
 implementation
 
 uses
-  SysUtils, Math, Forms,
+  SysUtils, Forms,
   {$IFDEF MSWINDOWS}
-  JvWin32,
+
   {$ENDIF MSWINDOWS}
   JvConsts;
 

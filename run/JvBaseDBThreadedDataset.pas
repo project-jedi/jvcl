@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
+  SysUtils, Classes, StdCtrls, Forms, Controls,
   DB,
   JvThread, JvThreadDialog, JvDynControlEngine;
 

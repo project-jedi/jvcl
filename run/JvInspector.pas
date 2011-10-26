@@ -170,7 +170,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
-  JvExControls, JvExExtCtrls, JvAutoComplete, JvJVCLUtils,
+  JvExControls, JvAutoComplete, JvJVCLUtils,
   JvComponentBase, JvComponent, JvTypes, JvConsts;
 
 const
@@ -2091,7 +2091,7 @@ const
 implementation
 
 uses
-  RTLConsts, Types, StrUtils, Variants, Consts, Dialogs, Forms, Buttons,
+  RTLConsts, Types, Variants, Consts, Dialogs, Forms, Buttons,
   JclRTTI, JclLogic, JclStrings,
   JvJCLUtils, JvThemes, JvResources, JclSysUtils;
 

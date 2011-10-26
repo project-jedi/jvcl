@@ -39,7 +39,7 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  JvComponent, JvSegmentedLEDDisplay, JvExControls;
+  JvSegmentedLEDDisplay, JvExControls;
 
 type
   TfmeJvSegmentedLEDDisplayMapper = class(TFrame)
@@ -158,7 +158,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvResources;
 
 {$R *.dfm}
 

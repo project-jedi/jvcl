@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, CommCtrl, Types, SysUtils, Classes, Contnrs,
+  Windows, Messages, CommCtrl, Types, SysUtils, Classes,
   {$IFDEF JVCLThemesEnabled}
     {$IFDEF COMPILER7_UP}
   Themes, UxTheme,
@@ -43,7 +43,7 @@ uses
   ThemeSrv,
     {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  Controls, StdCtrls, Forms, Graphics, Buttons;
+  Controls, Forms, Graphics, Buttons;
 
 const
  // Add a message handler to a component that is themed by the ThemeManager but

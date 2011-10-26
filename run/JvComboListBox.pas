@@ -45,7 +45,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
-  Classes, Graphics, Controls, Forms, StdCtrls, Buttons,
+  Classes, Graphics, Controls, Forms, StdCtrls,
   JvListBox,
   Menus;
 

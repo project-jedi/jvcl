@@ -38,7 +38,7 @@ uses
   Windows, Messages, Graphics, Controls,
   ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
   CommCtrl, JvJCLUtils,
-  JvComponent, JvButton;
+  JvButton;
 
 type
   TJvFrameStyle =
@@ -240,7 +240,7 @@ const
 implementation
 
 uses
-  JvConsts, JvJVCLUtils;
+  JvConsts;
 
 { create a grayed version of a color bitmap }
 { SLOW! don't use in realtime! }

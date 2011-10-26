@@ -767,7 +767,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources, JclStrings, JvJVCLUtils;
+  JvResources, JclStrings, JvJVCLUtils;
 
 //=== { TJvTFGlanceCell } ====================================================
 

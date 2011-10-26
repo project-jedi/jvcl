@@ -845,7 +845,7 @@ implementation
 
 uses
   SysUtils,
-  JvDynControlEngineTools, JvConsts, JvJCLUtils;
+  JvDynControlEngineTools, JvJCLUtils;
 
 var
   IntDynControlEngineVCL: TJvDynControlEngine = nil;

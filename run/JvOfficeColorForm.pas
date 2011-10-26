@@ -37,8 +37,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvConsts, JvComponent, JvOfficeColorPanel, JvOfficeDragBarForm;
+  Windows, Messages, Graphics, Controls, Forms, ExtCtrls,
+  JvComponent, JvOfficeColorPanel, JvOfficeDragBarForm;
 
 {------------------------------------------------------------------------------}
 

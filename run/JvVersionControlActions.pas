@@ -33,7 +33,7 @@ Uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, ActnList, ImgList, Graphics, Classes, JvActionsEngine,
+  Windows, ActnList, Graphics, Classes, JvActionsEngine,
   JvVersionControlActionsEngine, JclVersionControl;
 
 type

@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, ImgList, Graphics, ComCtrls,
+  Windows, Graphics,
   {$ENDIF MSWINDOWS}
   Forms, Controls, Classes, JvVersionControlActionsEngine;
 
@@ -64,8 +64,8 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils, Variants,
-  Dialogs, StdCtrls, Clipbrd, FileCtrl;
+  SysUtils, Variants,
+  Dialogs, FileCtrl;
 
 
 procedure InitActionEngineList;

@@ -113,7 +113,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources, JvTypes;
+  JvResources, JvTypes;
 
 type
   // helper object for file mappings

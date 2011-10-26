@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DB,
+  Classes,
   JvDBActionsEngine;
 
 type

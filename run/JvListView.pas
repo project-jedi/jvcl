@@ -517,10 +517,10 @@ uses
   {$IFDEF COMPILER10_UP}
   Types,
   {$ENDIF COMPILER10_UP}
-  Math, Contnrs,
+
   VarUtils, Variants,
-  JclWideStrings, 
-  JvConsts, JvResources;
+
+  JvConsts;
 
 type
   // Mantis 980: New types for group/tile/insert mark handling

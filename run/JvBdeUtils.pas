@@ -234,9 +234,9 @@ const
 implementation
 
 uses
-  SysUtils, Registry, Forms, Controls, Dialogs, Consts, Math,
-  IniFiles, DBConsts, bdeconst, DBCommon, Variants, RTLConsts,
-  JvConsts, JvJVCLUtils, JvJCLUtils, JvTypes, JvResources;
+  SysUtils, Registry, Forms, Controls, Dialogs, Math,
+  IniFiles, DBConsts, bdeconst, Variants, RTLConsts,
+  JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
 
 { Utility routines }
 
