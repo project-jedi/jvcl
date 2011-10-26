@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Dialogs,
-  JVCLVer, JvComponentBase;
+  JVCLVer;
 
 type
 

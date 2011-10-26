@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Controls, Forms, ExtCtrls,
-  FileCtrl, StdCtrls, SysUtils, Messages, Graphics,
+  SysUtils, Messages, Graphics,
   JvThumbnails, JvBaseThumbnail, JvExControls;
 
 type

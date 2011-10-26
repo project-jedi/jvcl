@@ -37,8 +37,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
-  JclBase,
-  JvTypes, JvWndProcHook, JVCLVer;
+
+  JvWndProcHook, JVCLVer;
 
 const
   // custom painter constants
@@ -774,11 +774,11 @@ const
 implementation
 
 uses
-  CommCtrl, Consts, Math, Types,
+  CommCtrl, Math, Types,
   {$IFNDEF COMPILER7_UP}
   JvWin32,
   {$ENDIF ~COMPILER7_UP}
-  JclGraphUtils, JclSysInfo, JvConsts, JvJCLUtils, JvJVCLUtils;
+  JclGraphUtils, JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
   Separator = '-';

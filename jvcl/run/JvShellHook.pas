@@ -40,7 +40,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes,
-  JvComponentBase, JvWin32;
+  JvComponentBase;
 
 type
   PShellHookInfo = ^TShellHookInfo;

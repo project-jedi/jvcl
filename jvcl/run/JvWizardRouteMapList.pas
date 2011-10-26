@@ -39,7 +39,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls, Forms,
-  JvTypes, JvConsts, JvJVCLUtils,
+  JvTypes, JvJVCLUtils,
   JvWizard;
 
 type

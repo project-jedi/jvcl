@@ -576,7 +576,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
-  Consts, SysUtils, Math, Forms, ExtCtrls,
+  SysUtils, Math, Forms, ExtCtrls,
   JvDockSupportProc, JvDockGlobals;
 
 type

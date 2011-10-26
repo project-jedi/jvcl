@@ -680,7 +680,7 @@ const
 implementation
 
 uses
-  VDBConsts, StrUtils, DBConsts, SysUtils, Math, MultiMon,
+  VDBConsts, DBConsts, SysUtils, Math, MultiMon,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources, JclSysUtils;
 
 procedure CheckLookupFormat(const AFormat: string);

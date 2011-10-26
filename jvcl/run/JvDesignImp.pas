@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Controls, Graphics,
-  Forms, ExtCtrls, Contnrs,
+  Forms, Contnrs,
   JvDesignSurface;
 
 const

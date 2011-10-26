@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Controls,
   JvRichEdit, JvListView, JvCheckListBox, JvEdit, JvHotKey, JvListBox,
-  JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit, JVCLVer,
+  JvMaskEdit, JvMemo, JvComCtrls, JvScrollBox, JvToolEdit,
   StdCtrls;
 
 type

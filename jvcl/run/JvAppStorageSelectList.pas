@@ -162,7 +162,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts, JvResources, JvJVCLUtils;
+  JvResources, JvJVCLUtils;
 
 function TJvAppStorageSelectListEasyDialogInstance.CreateControls(AOperation: TJvAppStorageSelectListOperation;
     ACaption: string = ''): TForm;

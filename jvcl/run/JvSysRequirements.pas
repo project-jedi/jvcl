@@ -116,7 +116,7 @@ const
 implementation
 
 uses
-  Math,
+
   JvResources;
 
 constructor TJvSysRequirements.Create(AOwner: TComponent);

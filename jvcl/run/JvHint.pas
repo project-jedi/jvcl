@@ -102,7 +102,7 @@ implementation
 
 uses
   Math,
-  JvConsts, JvResources;
+  JvResources;
 
 //=== { TJvHint } ============================================================
 

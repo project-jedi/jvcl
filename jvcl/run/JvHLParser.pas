@@ -48,7 +48,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Dialogs,
   JclWideStrings,
-  JvTypes, JvJCLUtils;
+  JvJCLUtils;
 
 const
   ieBadRemark = 1;

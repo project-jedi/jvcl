@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   JclStrings,
-  JvTypes, JvComponentBase;
+  JvComponentBase;
 
 type
   PTagInfo = ^TTagInfo;

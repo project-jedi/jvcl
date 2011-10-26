@@ -41,7 +41,7 @@ uses
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
   Classes,
-  JclBase,
+
   JvAppStorage, JvPropertyStore, JvSimpleXml, JvTypes, JclStreams;
 
 type
@@ -205,7 +205,7 @@ implementation
 uses
   SysUtils, TypInfo,
   JclStrings,
-  JvJCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvResources;
 
 const
   cNullDigit = '0';

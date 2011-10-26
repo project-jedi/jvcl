@@ -39,7 +39,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Windows, Messages, Graphics, Controls,
-  Forms, Dialogs, Menus, StdCtrls, ExtCtrls,
+  Forms, Dialogs, StdCtrls,
   JvTFUtils, JvTFManager;
 
 type

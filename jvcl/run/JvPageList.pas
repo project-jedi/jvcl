@@ -298,8 +298,7 @@ const
 implementation
 
 uses
-  Forms,
-  JvResources;
+  Forms;
 
 function GetUniqueName(AOwner: TComponent; const AClassName: string): string;
 var

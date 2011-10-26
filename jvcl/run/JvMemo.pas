@@ -51,7 +51,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvCaret, JvTypes, JvComponent, JvExStdCtrls;
+  JvCaret, JvTypes, JvExStdCtrls;
 
 type
   TJvCustomMemo = class(TJvExCustomMemo)

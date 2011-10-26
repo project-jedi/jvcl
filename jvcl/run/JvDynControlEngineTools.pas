@@ -31,7 +31,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Variants, Classes, Controls, StdCtrls, Forms, ExtCtrls,
+  Variants, Classes, Controls, StdCtrls, Forms,
   JvDynControlEngine;
 
 function CreateDynControlDialog(const AFormCaption, AButton1Caption, AButton2Caption: string;

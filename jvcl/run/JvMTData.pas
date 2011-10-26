@@ -33,13 +33,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Contnrs, SyncObjs,
+  SysUtils, Classes, Contnrs,
   {$IFDEF MSWINDOWS}
   {$IFDEF DEBUGINFO_ON}
   Windows,   // for OutputDebugString
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  JvMTSync, JvMTConsts, JvMTThreading;
+  JvMTSync, JvMTThreading;
 
 type
   TMTBoundedQueue = class(TObjectQueue)

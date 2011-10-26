@@ -39,7 +39,7 @@ uses
   Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
   JvConsts, // missing color constants for D5
-  JvColorBox, JvComponent, JvToolEdit;
+  JvColorBox, JvComponent;
 
 const
   cButtonWidth = 22;

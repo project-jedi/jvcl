@@ -33,8 +33,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, ActnList, ImgList, Graphics,
-  Forms, Controls, Classes, JvActionsEngine, JclVersionControl;
+  Windows, Graphics,
+  Forms, Controls, Classes, JvActionsEngine;
 
 type
   TjvVersionControlActionEngine = class(TJvActionBaseEngine)
@@ -78,8 +78,8 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils,
-  Variants, Dialogs, StdCtrls, Clipbrd,
+  SysUtils,
+  Variants, Dialogs,
   JvVersionControlActions;
 
 

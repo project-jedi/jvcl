@@ -45,7 +45,7 @@ uses
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, ExtCtrls, StdCtrls, ImgList,
   JvJCLUtils, JvCombobox,
-  JvComponent, JvExControls, JvExStdCtrls;
+  JvExStdCtrls;
 
 type
   TJvButtonColors = (fsLighter, fsLight, fsMedium, fsDark, fsDarker);

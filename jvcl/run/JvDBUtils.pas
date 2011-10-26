@@ -38,7 +38,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Variants, Classes, SysUtils, Contnrs, DB,
+  Variants, Classes, SysUtils, DB,
   JvAppStorage;
 
 type

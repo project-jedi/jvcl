@@ -85,7 +85,7 @@ implementation
 
 uses
   SysUtils,
-  JvConsts, JvResources, JvJVCLUtils;
+  JvResources, JvJVCLUtils;
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);

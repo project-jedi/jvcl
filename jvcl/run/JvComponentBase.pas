@@ -38,7 +38,7 @@ uses
   {$IFDEF USE_DXGETTEXT}
   JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
-  JvConsts,
+
   JVCLVer;
 
 type

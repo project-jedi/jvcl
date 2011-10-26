@@ -36,10 +36,8 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
-  DB,
+  SysUtils, Classes, Forms, Controls, DB,
   OraSmart, Ora, DBaccess,
-  JvThread, JvThreadDialog, JvDynControlEngine,
   JvBaseDBThreadedDataset;
 {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
 

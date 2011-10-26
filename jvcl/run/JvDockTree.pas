@@ -37,7 +37,7 @@ uses
   {$ENDIF UNITVERSIONING}
   ComCtrls,
   Windows, Messages, Classes, Graphics, Controls, Forms,
-  JvComponentBase, JvDockSupportClass;
+  JvComponentBase;
 
 type
   TJvDockTree = class;

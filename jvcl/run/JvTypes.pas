@@ -37,9 +37,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Consts,
+  SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics,
-  JvConsts, JvResources;
+  JvResources;
 
 const
   MaxPixelCount = 32767;

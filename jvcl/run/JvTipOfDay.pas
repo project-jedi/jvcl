@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Graphics, Controls, Messages, Forms, StdCtrls,
-  JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, JvConsts;
+  JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;

@@ -35,7 +35,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Types,
   Classes, Graphics,
-  JvComponentBase, JvComponent, JvExControls, JvExForms, JvExExtCtrls,
+  JvExExtCtrls,
   JvExComCtrls;
 
 type

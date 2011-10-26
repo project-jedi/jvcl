@@ -38,8 +38,8 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, CommCtrl, SysUtils, Classes, Graphics, Controls,
   Forms, ComCtrls, Menus,
-  JclBase,
-  JvTypes, JvMenus, JvExComCtrls;
+
+  JvMenus, JvExComCtrls;
 
 type
   {$IFDEF RTL230_UP}
@@ -86,8 +86,7 @@ const
 
 implementation
 
-uses
-  JvJVCLUtils;
+
 
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin

@@ -35,7 +35,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, Menus,
-  JvJVCLUtils, JvCheckListBox, JvExStdCtrls, JvDataProvider, JvMaxPixel,
+  JvCheckListBox, JvExStdCtrls, JvDataProvider, JvMaxPixel,
   JvToolEdit;
 
 type
@@ -412,8 +412,8 @@ const
 implementation
 
 uses
-  SysUtils, Consts, TypInfo, Buttons, RTLConsts, Variants,
-  JvDataProviderIntf, JvItemsSearchs, JvThemes, JvConsts, JvResources, JvTypes;
+  SysUtils, Consts, RTLConsts, Variants,
+  JvDataProviderIntf, JvItemsSearchs, JvConsts, JvResources;
 
 const
   MinDropLines = 2;

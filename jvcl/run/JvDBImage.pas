@@ -52,7 +52,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls,
-  Clipbrd, DB, DBCtrls, Forms, Contnrs,
+  Clipbrd, DB, DBCtrls, Forms,
   JvJVCLUtils;
 
 type

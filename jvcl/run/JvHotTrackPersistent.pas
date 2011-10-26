@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Classes, Graphics,
-  JvTypes, JvConsts;
+  JvTypes;
 
 type
   TJvHotTrackOptionsClass = class of TJvHotTrackOptions;

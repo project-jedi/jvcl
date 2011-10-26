@@ -63,7 +63,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, Types,
   ActnList, ImgList,
-  JvComponentBase, JvTypes, JvWin32;
+  JvComponentBase, JvTypes;
 
 type
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
@@ -316,7 +316,7 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf, JvConsts, JvJCLUtils, JvResources, JvWndProcHook, JvJVCLUtils;
+  JvDsgnIntf, JvJCLUtils, JvResources, JvWndProcHook, JvJVCLUtils;
 
 const
   { Msimg32.dll is included in Windows 98 and later }

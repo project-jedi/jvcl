@@ -1168,7 +1168,7 @@ const
 implementation
 
 uses
-  Math,
+
   Forms, ActnList,
   JvJVCLUtils, JvJCLUtils, JvResources;
 

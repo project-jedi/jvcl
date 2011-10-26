@@ -36,7 +36,7 @@ uses
   Variants, Types, RTLConsts,
   SysUtils, Classes, Windows, Messages, Controls, Forms,
   JvWndProcHook,
-  JvAppStorage, JvComponentBase, JvJVCLUtils, JvTypes, JvConsts;
+  JvAppStorage, JvComponentBase, JvJVCLUtils, JvTypes;
 
 type
   TJvIniLink = class;
@@ -289,7 +289,7 @@ const
 implementation
 
 uses
-  Consts,
+
   JclStrings,
   JvJCLUtils, JvPropertyStorage;
 

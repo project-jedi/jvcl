@@ -378,8 +378,7 @@ const
 
 implementation
 
-uses
-  TypInfo;
+
 
 var
   InternalFocusedColor: TColor = TColor($00733800);

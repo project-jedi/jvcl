@@ -34,7 +34,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
   Forms, DBCtrls, DB, StdCtrls, ComCtrls,
-  JvDBGrid, JvPanel, JvDBControls, JvDBDateTimePicker, JvDBCombobox, JvDBImage,
+  JvDBGrid, JvDBControls, JvDBDateTimePicker, JvDBCombobox, JvDBImage,
   JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineIntf,
   JvDynControlEngineDBIntf;
 
@@ -530,7 +530,7 @@ implementation
 uses
   Variants, SysUtils,
   JvDynControlEngineVCLDB,
-  JvDynControlEngineTools, JvDynControlEngineJVCL, JvConsts, JvJCLUtils;
+  JvDynControlEngineTools, JvJCLUtils;
 
 var
   IntDynControlEngineJVCLDB: TJvDynControlEngineDB = nil;

@@ -40,7 +40,7 @@ uses
   {$ENDIF USE_DXGETTEXT}
   Windows, Messages, Controls, Forms,
   JvConsts,
-  JVCLVer, JvComponentBase, JvExControls, JvExForms, JvExStdCtrls;
+  JvExControls, JvExForms, JvExStdCtrls;
 
 type
   TJvGraphicControl = TJvExGraphicControl;

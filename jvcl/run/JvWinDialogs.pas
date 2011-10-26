@@ -37,7 +37,7 @@ uses
   Windows, ShellAPI, ShlObj, ComObj, ActiveX, CommDlg, UrlMon,
   SysUtils, Classes,
   Graphics, Controls, Forms, Dialogs,
-  JvBaseDlg, JvTypes, JvComponent, JvJCLUtils; // For OSCheck
+  JvBaseDlg, JvJCLUtils; // For OSCheck
 
 {$HPPEMIT '#include "dbt.h"'}
 

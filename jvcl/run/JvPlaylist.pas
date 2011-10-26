@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Messages, Controls, StdCtrls,
-  JvCtrls, JvListBox;
+  JvListBox;
 
 type
   {$IFDEF RTL230_UP}

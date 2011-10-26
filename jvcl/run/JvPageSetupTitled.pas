@@ -75,7 +75,7 @@ implementation
 {$R JvPageSetupTitled.res}
 
 uses
-  Windows, Forms, SysUtils, CommDlg;
+  Windows, Forms, SysUtils;
 
 const
   // dialog controls

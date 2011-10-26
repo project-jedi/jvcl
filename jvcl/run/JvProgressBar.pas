@@ -37,7 +37,7 @@ uses
   Windows, Messages,
   CommCtrl,
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  JvExComCtrls, JvComponent;
+  JvExComCtrls;
 
 type
   TJvBaseProgressBar = class(TGraphicControl)

@@ -33,8 +33,8 @@ uses
   JclUnitVersioning,
 {$ENDIF UNITVERSIONING}
   JvDynControlEngine,
-  Classes, JvBaseDlg, JvAppStorage, Forms, Controls,
-  JvPropertyStore, Menus, JvBaseDBDialog, JvDynControlEngineIntf;
+  Classes, Forms, Controls,
+  JvBaseDBDialog, JvDynControlEngineIntf;
 
 type
   TJvPasswordDialogModifyPasswordEvent = procedure(var Password: string) of object;
@@ -114,8 +114,8 @@ const
 
 implementation
 
-uses 
-  SysUtils, Types, ExtCtrls, ComCtrls, StdCtrls, JvResources, JvDSADialogs,
+uses
+  SysUtils, Types, JvResources, JvDSADialogs,
   Dialogs;
 
 

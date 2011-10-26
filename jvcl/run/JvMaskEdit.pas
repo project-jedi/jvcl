@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Mask, Forms, StdCtrls,
-  JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
+  JvTypes, JvCaret, JvToolEdit, JvExMask;
 
 type
   TJvCustomMaskEdit = class(TJvCustomComboEdit)

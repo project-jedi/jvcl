@@ -97,8 +97,8 @@ const
 implementation
 
 uses
-  Forms, Consts, SyncObjs,
-  JvJVCLUtils, JvResources, JvTypes;
+  Forms, SyncObjs,
+  JvResources, JvTypes;
 
 //=== { TJvTimerThread } =====================================================
 

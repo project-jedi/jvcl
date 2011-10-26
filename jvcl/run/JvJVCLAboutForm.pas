@@ -39,7 +39,7 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles, Messages, Controls, Forms, StdCtrls, ExtCtrls,
   Dialogs, Buttons,
-  jpeg,
+
   JclSysInfo,
   JVCLVer, JvBaseDlg, JvComponent;
 
@@ -115,7 +115,7 @@ const
 implementation
 
 uses
-  JvJVCLUtils, JvJCLUtils;
+  JvJCLUtils;
 
 {$R *.dfm}
 

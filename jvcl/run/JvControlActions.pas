@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF MSWINDOWS}
-  Windows, ActnList, ImgList, Graphics,
+  Windows, ActnList, Graphics,
   {$ENDIF MSWINDOWS}
   {$IFDEF UNIX}
   QActnList, QWindows, QImgList, QGraphics,
@@ -172,7 +172,7 @@ const
 implementation
 
 uses
-  SysUtils, Grids, TypInfo, StrUtils, Variants, Dialogs, StdCtrls, Clipbrd;
+  SysUtils, Variants, Dialogs;
 
 //=== { TJvControlBaseAction } ==============================================
 

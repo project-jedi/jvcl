@@ -313,7 +313,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvJVCLUtils, JvThemes, JvWndProcHook, JvResources, JvWin32,
+  JvJVCLUtils, JvThemes, JvWndProcHook, JvWin32,
   JclStringConversions, JclUnicode;
 
 const

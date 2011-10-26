@@ -950,7 +950,7 @@ implementation
 
 uses
   Variants, Controls, Forms,
-  JvJVCLUtils, JvCsvParse, JvConsts, JvResources, JvTypes, JclSysUtils;
+  JvCsvParse, JvConsts, JvResources, JclSysUtils;
 
 const
   // These characters cannot be used for separator for various reasons:

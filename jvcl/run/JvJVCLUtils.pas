@@ -32,13 +32,13 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Variants, RTLConsts,
+  Variants,
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
   SysUtils,
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
-  Dialogs, ComCtrls, ImgList, Grids, IniFiles, MultiMon,
+  Dialogs, ComCtrls, ImgList, Grids, MultiMon,
   Classes, // must be after "Forms"
   JclBase,
   JvJCLUtils, JvAppStorage, JvTypes;
@@ -878,15 +878,15 @@ const
 implementation
 
 uses
-  SysConst,
+
   Consts,
   {$IFDEF MSWINDOWS}
-  CommCtrl, MMSystem, ShlObj, ActiveX,
+  CommCtrl, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
   Math, Contnrs,
   jpeg,
-  JclSysInfo, JclFileUtils,
-  JvConsts, JvProgressUtils, JvResources;
+  JclFileUtils,
+  JvConsts, JvResources;
 
 {$R JvConsts.res}
 

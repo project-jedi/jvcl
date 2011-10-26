@@ -36,9 +36,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ActnList, Menus,
-  JvBaseDlg, JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame,
-  JvExControls, JvComponent;
+  Forms, Dialogs, StdCtrls,
+  JvSegmentedLEDDisplay, JvSegmentedLEDDisplayMapperFrame,
+  JvComponent;
 
 type
   TfrmSLDMappingEditorDialog = class(TJvForm)

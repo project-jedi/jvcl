@@ -163,7 +163,7 @@ implementation
 
 uses
   Variants, SysUtils, TypInfo,
-  JvResources, JvTypes, JvDynControlEngineIntf, JvDynControlEngineVCLDB;
+  JvResources, JvTypes, JvDynControlEngineIntf;
 
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;

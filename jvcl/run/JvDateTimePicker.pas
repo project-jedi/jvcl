@@ -111,12 +111,11 @@ const
 implementation
 
 uses
-  CommCtrl, JvThemes,
+  CommCtrl,
   {$IFDEF HAS_TYPES}
   Types,
   {$ENDIF HAS_TYPES}
-//  JvJCLUtils,
-  JvResources;
+  JvThemes;
 
 {$IFNDEF COMPILER7_UP}
 const

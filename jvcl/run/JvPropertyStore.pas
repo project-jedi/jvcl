@@ -224,7 +224,7 @@ const
 implementation
 
 uses
-  RTLConsts, Consts, SysUtils, TypInfo,
+  RTLConsts, SysUtils, TypInfo,
   JclSynch,
   JvStrings, JvResources, JvJVCLUtils;
 

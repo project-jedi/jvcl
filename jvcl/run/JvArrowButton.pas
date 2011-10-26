@@ -161,7 +161,7 @@ const
 implementation
 
 uses
-  SysUtils, Consts, Forms,
+  SysUtils, Forms,
   JvConsts, JvThemes, JvJCLUtils;
 
 type

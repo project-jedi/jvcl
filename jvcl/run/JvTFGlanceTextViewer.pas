@@ -287,7 +287,7 @@ const
 implementation
 
 uses
-  JvJVCLUtils, JvResources;
+  JvResources;
 
 //=== { TJvTFGVTextControl } =================================================
 

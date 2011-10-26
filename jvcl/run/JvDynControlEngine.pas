@@ -31,7 +31,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics, Buttons,
+  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
   Variants,
   JvDynControlEngineIntf;
 
@@ -237,7 +237,7 @@ implementation
 
 uses
   TypInfo,
-  JvResources, JvTypes, JvDynControlEngineVCL, JvComponent,
+  JvResources, JvTypes, JvComponent,
   JvJVCLUtils;
 
 var

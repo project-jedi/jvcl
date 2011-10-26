@@ -30,7 +30,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Graphics, ComCtrls,
+  Classes, Graphics,
   JvCustomItemViewer;
 
 type

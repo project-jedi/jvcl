@@ -35,10 +35,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, StdCtrls, ExtCtrls, Forms, Controls,
+  SysUtils, Classes, Forms, Controls,
   DB,
   ADODB,
-  JvThread, JvThreadDialog, JvDynControlEngine,
+
   JvBaseDBThreadedDataset;
 
 type

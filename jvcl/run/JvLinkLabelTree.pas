@@ -305,7 +305,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvResources;
 
 type
   TRectList = class(TOwnerPointerList)

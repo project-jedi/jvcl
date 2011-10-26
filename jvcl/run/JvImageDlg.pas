@@ -35,8 +35,8 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Graphics, Controls, Forms, ExtCtrls,
-  jpeg,
-  JvBaseDlg, JvComponent, JvTypes;
+
+  JvBaseDlg, JvComponent;
 
 type
   {$IFDEF RTL230_UP}
@@ -70,7 +70,7 @@ const
 implementation
 
 uses
-  JvConsts, JvResources, JvExForms;
+  JvResources;
 
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin

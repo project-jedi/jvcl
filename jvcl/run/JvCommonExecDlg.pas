@@ -58,7 +58,7 @@ const
 implementation
 
 uses
-  Controls, JvTypes;
+  Controls;
 
 constructor TJvCommonExecDialog.Create(AOwner: TComponent);
 begin

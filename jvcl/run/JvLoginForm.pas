@@ -217,8 +217,8 @@ implementation
 
 uses
   Consts,
-  IniFiles,
-  JvJCLUtils, JvJVCLUtils, JvResources, JvConsts;
+
+  JvJCLUtils, JvResources, JvConsts;
 
 {$R *.dfm}
 

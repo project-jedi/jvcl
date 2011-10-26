@@ -33,8 +33,8 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Types, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvListBox, JvCtrls,
-  JvComponent, JvExStdCtrls;
+  JvListBox,
+  JvComponent;
 
 type
   TJvDualListForm = class(TJvForm)

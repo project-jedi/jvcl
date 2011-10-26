@@ -82,7 +82,7 @@ implementation
 
 uses
   SysUtils, Forms,
-  JvDockSupportProc, JvDockGlobals;
+  JvDockSupportProc;
 
 constructor TJvDockDelphiStyle.Create(AOwner: TComponent);
 begin
