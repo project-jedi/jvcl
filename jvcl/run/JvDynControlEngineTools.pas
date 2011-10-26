@@ -108,10 +108,12 @@ end;
 
 function JvDynControlVariantToBoolean(Value: Variant): Boolean;
 begin
-  if VarType(Value) = varBoolean then
+  if VarIsNull(Value) then
+    Result := False
+  else if VarType(Value) = varBoolean then
     Result := Value
   else
-    Result := UpperCase(Value) = 'TRUE';
+    Result := UpperCase(VarToStr(Value)) = 'TRUE';
 end;
 
 {$IFDEF UNITVERSIONING}
