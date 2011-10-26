@@ -367,7 +367,6 @@ var
   DynControlKey: IJvDynControlKey;
   DynControlMouse: IJvDynControlMouse;
   DynControl: IJvDynControl;
-  Button: TButton;
   BtnLeft : Integer;
 
   function CreateBtn(AOwner: TComponent; AParentControl: TWinControl; const AButtonName, ACaption, AHint: string; AOnClick:
