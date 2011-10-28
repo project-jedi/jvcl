@@ -339,7 +339,7 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics, Buttons, ImgList, Types,
-  JvComponent, JvWizardCommon;
+  JvComponent, JvThemes, JvWizardCommon;
 
 type
   TJvWizardButtonKind = (bkStart, bkLast, bkBack, bkNext, bkFinish, bkCancel, bkHelp);

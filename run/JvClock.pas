@@ -206,7 +206,7 @@ const
 implementation
 
 uses
-
+  RTLConsts,
   {$IFDEF COMPILER7_UP}
   SysConst,
   {$ENDIF COMPILER7_UP}
