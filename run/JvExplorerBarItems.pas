@@ -395,7 +395,7 @@ implementation
 
 uses
   {$IFDEF JVCLThemesEnabled}
-  Themes,
+  JvThemes,
   {$ENDIF JVCLThemesEnabled}
   Math, DateUtils;
 
