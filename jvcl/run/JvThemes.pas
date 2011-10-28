@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, CommCtrl, Types, SysUtils, Classes,
+  Windows, Messages, CommCtrl, Types, SysUtils, Classes, Contnrs,
   {$IFDEF JVCLThemesEnabled}
     {$IFDEF COMPILER7_UP}
   Themes, UxTheme,

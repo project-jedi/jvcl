@@ -93,7 +93,8 @@ const
 
 implementation
 
-
+uses
+  Math;
 
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
