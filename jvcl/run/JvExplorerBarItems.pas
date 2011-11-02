@@ -396,6 +396,9 @@ implementation
 uses
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
+  {$IFDEF RTL230_UP} // XE2+
+  Themes,
+  {$ENDIF RTL230_UP}
   {$ENDIF JVCLThemesEnabled}
   Math, DateUtils;
 
