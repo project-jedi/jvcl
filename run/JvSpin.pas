@@ -496,7 +496,6 @@ const
 implementation
 
 uses
-
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,

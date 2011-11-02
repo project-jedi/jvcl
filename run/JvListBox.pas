@@ -407,7 +407,6 @@ uses
   Types,
   {$ENDIF COMPILER10_UP}
   RTLConsts,
-
   JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const

@@ -226,7 +226,6 @@ const
 implementation
 
 uses
-
   {$IFDEF RTL200_UP}
   AnsiStrings,
   {$ENDIF RTL200_UP}

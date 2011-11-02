@@ -34,7 +34,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, DB, Variants, DBCtrls,
-
   JvAppStorage, JvTypes;
 
 // DB table must contain 3 fields for the storage

@@ -337,7 +337,6 @@ const
 implementation
 
 uses
-
   JvXPCoreUtils, JvJVCLUtils;
 
 {$R JvXPCore.res}

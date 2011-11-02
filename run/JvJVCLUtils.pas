@@ -878,7 +878,6 @@ const
 implementation
 
 uses
-
   Consts,
   {$IFDEF MSWINDOWS}
   CommCtrl, ShlObj, ActiveX,

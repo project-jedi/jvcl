@@ -289,7 +289,6 @@ const
 implementation
 
 uses
-
   JclStrings,
   JvJCLUtils, JvPropertyStorage;
 

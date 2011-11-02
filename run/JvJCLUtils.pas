@@ -1077,8 +1077,7 @@ uses
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF HAS_UNIT_CHARACTER}
-  // needed for JclStrings inlined functions
-  Character,
+  Character, // needed for JclStrings inlined functions
   {$ENDIF HAS_UNIT_CHARACTER}
   Consts,
   JclStrings, JclSysInfo, JclFileUtils,

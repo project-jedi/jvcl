@@ -1753,7 +1753,6 @@ const
 implementation
 
 uses
-
   JvResources;
 
 //Type

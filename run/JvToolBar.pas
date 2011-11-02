@@ -38,7 +38,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, CommCtrl, SysUtils, Classes, Graphics, Controls,
   Forms, ComCtrls, Menus,
-
   JvMenus, JvExComCtrls;
 
 type
@@ -85,8 +84,6 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
-
-
 
 constructor TJvToolBar.Create(AOwner: TComponent);
 begin

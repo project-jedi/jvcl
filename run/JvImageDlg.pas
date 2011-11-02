@@ -35,7 +35,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Graphics, Controls, Forms, ExtCtrls,
-
   JvBaseDlg, JvComponent;
 
 type

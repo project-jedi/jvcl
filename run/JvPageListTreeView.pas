@@ -396,7 +396,6 @@ const
 implementation
 
 uses
-
   Forms;
 
 procedure ResetSiblingFolders(Node: TTreeNode; ImageIndex, SelectedIndex: Integer; Recurse: Boolean = False);

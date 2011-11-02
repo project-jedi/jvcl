@@ -37,7 +37,6 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, IniFiles,
-
   JvAppStorage, JvPropertyStore, JvTypes;
 
 type

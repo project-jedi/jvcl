@@ -47,7 +47,6 @@ uses
   Variants,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
-
   JvConsts,
   JvExControls, JvSpeedButton, JvTypes, JvExMask,
   JvDataSourceIntf, JvBrowseFolder;

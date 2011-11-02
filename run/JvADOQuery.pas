@@ -36,9 +36,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Forms, Controls,
-  DB,
-  ADODB,
-
+  DB, ADODB,
   JvBaseDBThreadedDataset;
 
 type
@@ -111,7 +109,6 @@ type
     property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read GetOnThreadException write SetOnThreadException;
   end;
 
-type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
@@ -181,7 +178,6 @@ type
     property OnThreadException: TJvThreadedDatasetThreadExceptionEvent read GetOnThreadException write SetOnThreadException;
   end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -194,7 +190,8 @@ const
 
 implementation
 
-uses Variants;
+uses
+  Variants;
 
 //=== { TJvADOSmartQuery } ==================================================
 

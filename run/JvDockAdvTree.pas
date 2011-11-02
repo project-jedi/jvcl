@@ -116,8 +116,6 @@ const
 
 implementation
 
-
-
 //=== { TJvDockAdvTree } =====================================================
 
 constructor TJvDockAdvTree.Create(DockSite: TWinControl;
