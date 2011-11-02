@@ -116,7 +116,6 @@ const
 implementation
 
 uses
-
   JvResources;
 
 constructor TJvSysRequirements.Create(AOwner: TComponent);

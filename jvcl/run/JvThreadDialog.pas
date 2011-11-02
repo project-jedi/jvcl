@@ -247,7 +247,7 @@ implementation
 uses
   Dialogs, Graphics,
   {$IFDEF COMPILER11_UP} // Delphi 2007 introduced ShellAnimations
-
+  ShellAnimations,
   {$ENDIF COMPILER11_UP}
   JvResources;
 

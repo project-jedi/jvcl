@@ -573,7 +573,11 @@ const
 implementation
 
 uses
-  JvResources;
+  JvResources,
+  // JvUrlGrabbers MUST be included here so that the grabbers
+  // it contains are registered before any JvUrlListGrabber
+  // component reads its properties.
+  JvUrlGrabbers;
 
 var
   // the global object to contain the list of registered

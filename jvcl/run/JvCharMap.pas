@@ -36,9 +36,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
   Types, Classes, Graphics, Controls, Grids,
   JvComponent, JvExControls, JvExGrids;
 
@@ -173,7 +171,6 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-
   TJvCustomCharMap = class(TJvExCustomDrawGrid)
   private
     FCharPanel: TCustomControl;
@@ -266,11 +263,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function CellSize: TSize;
-    {$IFDEF COMPILER5}
-    procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    {$ENDIF COMPILER5}
-    procedure SetBounds(ALeft: Integer; ATop: Integer;
-      AWidth: Integer; AHeight: Integer); override;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   {$IFDEF RTL230_UP}
@@ -356,18 +349,14 @@ implementation
 
 uses
   SysUtils, Forms,
-  {$IFDEF MSWINDOWS}
-
-  {$ENDIF MSWINDOWS}
   JvConsts;
 
 const
   cShadowAlpha = 100;
 
 type
-  TCanvasAccessProtected = class(TCanvas);
+  TCanvasAccess = class(TCanvas);
 
-  {$IFDEF MSWINDOWS}
   TShadowWindow = class(TJvCustomControl)
   private
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
@@ -380,13 +369,10 @@ type
     property Color default clBlack;
     constructor Create(AOwner: TComponent); override;
   end;
-  {$ENDIF MSWINDOWS}
-
+  
   TCharZoomPanel = class(TJvCustomControl)
   private
-    {$IFDEF MSWINDOWS}
     FShadow: TShadowWindow;
-    {$ENDIF MSWINDOWS}
     FCharacter: WideChar;
     FEndChar: Cardinal;
     FOldWndProc: TWndMethod;
@@ -421,11 +407,9 @@ type
     property ShadowSize: Integer read FShadowSize write SetShadowSize;
   end;
 
-procedure WideDrawText(Canvas: TCanvas; const Text: WideString; ARect: TRect;
-  uFormat: Cardinal);
+procedure WideDrawText(Canvas: TCanvas; const Text: WideString; ARect: TRect; uFormat: Cardinal);
 begin
-  // (p3) TCanvasAccessProtected bit stolen from Troy Wolbrink's TNT controls (not that it makes any difference AFAICS)
-  with TCanvasAccessProtected(Canvas) do
+  with TCanvasAccess(Canvas) do
   begin
     Changing;
     RequiredState([csHandleValid, csFontValid, csBrushValid]);
@@ -435,8 +419,6 @@ begin
     Changed;
   end;
 end;
-
-{$IFDEF MSWINDOWS}
 
 //=== { TShadowWindow } ======================================================
 
@@ -452,10 +434,7 @@ begin
   Visible := False;
 end;
 
-
 procedure TShadowWindow.CreateHandle;
-
-
 var
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
 
@@ -476,8 +455,6 @@ begin
   inherited CreateHandle;
 end;
 
-
-
 procedure TShadowWindow.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -493,10 +470,6 @@ begin
   Msg.Result := HTTRANSPARENT;
 end;
 
-
-
-
-
 procedure TShadowWindow.VisibleChanged;
 begin
   inherited VisibleChanged;
@@ -505,8 +478,6 @@ begin
     SetWindowPos(Handle, TWinControl(Owner).Handle, 0, 0, 0, 0,
       SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE or SWP_NOOWNERZORDER);
 end;
-
-{$ENDIF MSWINDOWS}
 
 //=== { TJvCustomCharMap } ===================================================
 
@@ -573,15 +544,11 @@ begin
   RecalcCells;
 end;
 
-
 procedure TJvCustomCharMap.CreateHandle;
 begin
   inherited CreateHandle;
   RecalcCells;
 end;
-
-
-
 
 function TJvCustomCharMap.DoMouseWheelDown(Shift: TShiftState;  MousePos: TPoint): Boolean;
 begin
@@ -956,7 +923,6 @@ begin
   end;
 end;
 
-
 procedure TJvCustomCharMap.SetLocale(const Value: LCID);
 begin
   if (FLocale <> Value) and IsValidLocale(Value, LCID_SUPPORTED) then
@@ -965,8 +931,6 @@ begin
     Invalidate;
   end;
 end;
-
-
 
 procedure TJvCustomCharMap.SetPanelVisible(Value: Boolean);
 begin
@@ -1033,7 +997,6 @@ begin
   Result := True;
 end;
 
-
 procedure TJvCustomCharMap.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
@@ -1063,7 +1026,6 @@ begin
       ShowCharPanel(Col, Row);
   end;
 end;
-
 
 //=== { TCharZoomPanel } =====================================================
 
@@ -1102,8 +1064,6 @@ begin
     FShadow.Visible := False;
 end;
 
-
-
 procedure TCharZoomPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -1129,8 +1089,6 @@ begin
   end;
 end;
 
-
-
 procedure TCharZoomPanel.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   // (rom) only accept without Shift, Alt or Ctrl down
@@ -1150,7 +1108,6 @@ begin
   else
     inherited KeyDown(Key, Shift);
 end;
-
 
 procedure TCharZoomPanel.FormWindowProc(var Msg: TMessage);
 begin
@@ -1184,7 +1141,6 @@ begin
   end;
 end;
 
-
 procedure TCharZoomPanel.Paint;
 var
   R: TRect;
@@ -1216,7 +1172,6 @@ begin
   end;
 end;
 
-
 procedure TCharZoomPanel.UnhookWndProc;
 var
   F: TCustomForm;
@@ -1229,12 +1184,10 @@ begin
   end;
 end;
 
-
 procedure TCharZoomPanel.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
 end;
-
 
 procedure TCharZoomPanel.WMNCHitTest(var Msg: TWMNCHitTest);
 begin
@@ -1242,15 +1195,12 @@ begin
   Msg.Result := HTTRANSPARENT;
 end;
 
-
 procedure TCharZoomPanel.FocusSet(PrevWnd: THandle);
 begin
   inherited FocusSet(PrevWnd);
   if not (csDestroying in ComponentState) and Parent.CanFocus then
     Parent.SetFocus;
 end;
-
-
 
 procedure TCharZoomPanel.CreateHandle;
 begin
@@ -1263,10 +1213,6 @@ begin
   inherited;
   UpdateShadow;
 end;
-
-
-
-
 
 procedure TCharZoomPanel.SetParent( AParent: TWinControl);
 begin

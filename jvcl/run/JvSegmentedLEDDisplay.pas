@@ -41,7 +41,6 @@ uses
   Windows,
   {$ENDIF MSWINDOWS}
   Classes, Graphics,
-
   JvComponent, JvTypes;
 
 // Additional color values for unlit color settings (TUnlitColor type)

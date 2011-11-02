@@ -169,7 +169,6 @@ const
 implementation
 
 uses
-
   SysUtils, Math,
   JvJCLUtils, JvJVCLUtils, JvConsts;
 

@@ -229,7 +229,6 @@ const
 implementation
 
 uses
-
   JvResources,
   TypInfo, JvDynControlEngine, JvJVCLUtils;
 

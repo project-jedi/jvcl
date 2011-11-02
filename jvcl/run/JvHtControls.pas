@@ -423,8 +423,6 @@ const
 
 implementation
 
-
-
 const
   cMAILTO = 'MAILTO:';
   cURLTYPE = '://';

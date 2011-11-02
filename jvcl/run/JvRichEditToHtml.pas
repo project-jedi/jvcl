@@ -37,7 +37,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   {$IFDEF HAS_UNIT_CHARACTER}
-  // inline
+  Character, // inline
   {$ENDIF HAS_UNIT_CHARACTER}
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,

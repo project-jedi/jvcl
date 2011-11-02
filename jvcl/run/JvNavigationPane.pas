@@ -1168,7 +1168,6 @@ const
 implementation
 
 uses
-
   Forms, ActnList,
   JvJVCLUtils, JvJCLUtils, JvResources;
 

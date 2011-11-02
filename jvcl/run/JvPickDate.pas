@@ -38,7 +38,6 @@ uses
   Variants, Windows, Messages,
   Controls, Graphics, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
   SysUtils, Classes,
-
   JvTypes, JvExGrids;
 
 type

@@ -100,7 +100,6 @@ const
 implementation
 
 uses
-
   JvThemes, JvResources, JvTypes, JvJVCLUtils;
 
 //=== { TJvStatusBar } =======================================================

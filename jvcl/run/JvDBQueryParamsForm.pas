@@ -80,7 +80,6 @@ const
 implementation
 
 uses
-
   JvDBUtils,
   JvTypes, JvResources;
 

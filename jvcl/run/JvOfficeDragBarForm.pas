@@ -125,8 +125,6 @@ const
 
 implementation
 
-
-
 //=== { TJvOfficeDragBarForm } =================================================
 
 constructor TJvOfficeDragBarForm.Create(AOwner: TComponent);

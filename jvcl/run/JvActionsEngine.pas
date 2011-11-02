@@ -36,9 +36,6 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ActnList, Graphics,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  QWindows, QActnList, QImgList, QGraphics,
-  {$ENDIF UNIX}
   Controls, Classes;
 
 type

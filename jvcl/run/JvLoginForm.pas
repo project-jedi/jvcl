@@ -217,7 +217,6 @@ implementation
 
 uses
   Consts,
-
   JvJCLUtils, JvResources, JvConsts;
 
 {$R *.dfm}

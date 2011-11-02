@@ -37,7 +37,6 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
-
   JvWndProcHook, JVCLVer;
 
 const

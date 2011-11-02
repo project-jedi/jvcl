@@ -96,7 +96,6 @@ implementation
 
 uses
   Consts,
-
   JvJCLUtils, JvConsts, JvResources;
 
 {$R *.dfm}
