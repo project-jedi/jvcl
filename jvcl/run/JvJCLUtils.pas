@@ -1076,9 +1076,10 @@ uses
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF UNICODE}
+  {$IFDEF HAS_UNIT_CHARACTER}
   // needed for JclStrings inlined functions
-  {$ENDIF UNICODE}
+  Character,
+  {$ENDIF HAS_UNIT_CHARACTER}
   Consts,
   JclStrings, JclSysInfo, JclFileUtils,
   Math, JclSysUtils;
