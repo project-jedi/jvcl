@@ -39,7 +39,7 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles, Messages, Controls, Forms, StdCtrls, ExtCtrls,
   Dialogs, Buttons,
-
+  jpeg, // this is required because the Picture contains a JPEG image
   JclSysInfo,
   JVCLVer, JvBaseDlg, JvComponent;
 
