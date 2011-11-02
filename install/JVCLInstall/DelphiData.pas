@@ -782,6 +782,7 @@ var
   ConditionProperty: TJclSimpleXMLProp;
   ForceEnvOptionsUpdate: Boolean;
   LibraryKey: string;
+  ValueInfo: TRegDataInfo;
 begin
   Reg := TRegistry.Create;
   try
@@ -867,8 +868,13 @@ begin
     begin
       // If "ForceEnvOptionsUpdate" is set the EnvOptions.dproj file must be considered out of date
       if Reg.OpenKeyReadOnly(RegistryKey + '\Globals') then
-        if Reg.ValueExists('ForceEnvOptionsUpdate') and (Reg.ReadString('ForceEnvOptionsUpdate') = '1') then
-          ForceEnvOptionsUpdate := True;
+        if Reg.GetDataInfo('ForceEnvOptionsUpdate', ValueInfo) then
+          case ValueInfo.RegData of // some installer write it as REG_DWORD instead of REG_SZ
+            rdString:
+              ForceEnvOptionsUpdate := Reg.ReadString('ForceEnvOptionsUpdate') = '1';
+            rdInteger:
+              ForceEnvOptionsUpdate := Reg.ReadInteger('ForceEnvOptionsUpdate') = 1;
+          end;
     end;
 
     // get library paths
