@@ -183,9 +183,3 @@ ALERT_jedi_inc_incompatible
  {$ENDIF JVCLThemesEnabled}
 {$ENDIF COMPILER7_UP}
 
-// only allowed for VCL
-{$IFNDEF VCL}
- {$UNDEF JvInterpreter_OLEAUTO}
- {$UNDEF JVCLThemesEnabled}
- {$UNDEF JVCLThemesEnabledD6}
-{$ENDIF !VCL}
