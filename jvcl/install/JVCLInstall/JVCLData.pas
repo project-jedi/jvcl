@@ -103,6 +103,7 @@ type
     function GetJVCLPackagesDir: string;
 
     function GetTargetSymbol: string;
+    function GetMainTargetSymbol: string;
     function GetAutoDependencies: Boolean;
     function GetBuild: Boolean;
     function GetUnitOutDir: string;
@@ -200,6 +201,9 @@ type
     property TargetSymbol: string read GetTargetSymbol;
       // TargetSymbol returns the symbol that is used in the xml files for this
       // target.
+    property MainTargetSymbol: string read GetMainTargetSymbol;
+      // MainTargetSymbol returns the symbol that is used in the xml files for this
+      // target's main version. It does not include the personal/standard flag
 
     property UnitOutDir: string read GetUnitOutDir;
       // UnitOutDir specifies the JVCL directory where the .dcu should go.
@@ -1037,7 +1041,7 @@ begin
         ProjectGroup.Packages[i].Compile := Ini.ReadBool(ProjectGroup.BpgName, ProjectGroup.Packages[i].Info.Name, True)
       else
       begin
-        if Ini.ReadBool(ProjectGroup.BpgName + ' Designtime', ProjectGroup.Packages[i].Info.Name, False) then
+        if Ini.ReadBool(ProjectGroup.BpgName + ' Designtime', ProjectGroup.Packages[i].Info.Name, False) then // do not localize
           ProjectGroup.Packages[i].Install := True;
       end;
   finally
@@ -1088,7 +1092,21 @@ begin
     else
       Pers := 'p'; // do not localize
   end;
-  Result := Format('%s%d%s', [Target.TargetType, Target.Version, Pers]); // do not localize
+  Result := Format('%s%s', [MainTargetSymbol, Pers]); // do not localize
+end;
+
+function TTargetConfig.GetMainTargetSymbol: string;
+var
+  PlatformPostfix: string;
+begin
+  PlatformPostfix := '';
+  case Target.Platform of
+    ctpWin32:
+      PlatformPostfix := '';
+    ctpWin64:
+      PlatformPostfix := '_x64'; // do not localize
+  end;
+  Result := Format('%s%d%s', [Target.TargetType, Target.Version, PlatformPostfix]); // do not localize
 end;
 
 function TTargetConfig.GetUnitOutDir: string;

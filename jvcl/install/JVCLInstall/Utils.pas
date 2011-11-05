@@ -52,8 +52,7 @@ function EndsWith(const Text, EndText: string; CaseInsensitive: Boolean): Boolea
 function SubStr(const Text: string; StartIndex, EndIndex: Integer): string;
 
 function HasText(Text: string; const Values: array of string): Boolean; // case insensitive
-procedure AddPaths(List: TStrings; Add: Boolean; const Dir: string;
-  const Paths: array of string);
+procedure AddPaths(List: TStrings; Add: Boolean; const Dir: string; const Paths: array of string);
 function OpenAtAnchor(const FileName, Anchor: string): Boolean;
 
 procedure FindFiles(const Dir, Mask: string; SubDirs: Boolean; List: TStrings;
@@ -69,7 +68,9 @@ function DirContainsFiles(const Dir, Mask: string): Boolean;
 function PathListToStr(List: TStrings): string;
 procedure StrToPathList(Paths: string; List: TStrings);
 
+function RemoveInvalidPaths(const Paths: string): string;
 function ConcatPaths(List: TStrings; const Separator: string): string;
+function AppendPath(const APath, ASubDir: string): string;
 
 function FixBackslashBackslash(const Dir: string): string;
 
@@ -408,6 +409,23 @@ begin
   end;
 end;
 
+function RemoveInvalidPaths(const Paths: string): string;
+var
+  List: TStrings;
+  I: Integer;
+begin
+  List := TStringList.Create;
+  try
+    StrToPathList(Paths, List);
+    for I := List.Count - 1 downto 0 do
+      if not DirectoryExists(List[I]) or (List.IndexOf(List[I]) <> I) then
+        List.Delete(I);
+    Result := PathListToStr(List);
+  finally
+    List.Free;
+  end;
+end;
+
 function ConcatPaths(List: TStrings; const Separator: string): string;
 var
   i: Integer;
@@ -424,6 +442,14 @@ begin
     else
       Result := Result + Separator + S;
   end;
+end;
+
+function AppendPath(const APath, ASubDir: string): string;
+begin
+  if ASubDir <> '' then
+    Result := IncludeTrailingPathDelimiter(APath) + ASubDir
+  else
+    Result := ExcludeTrailingPathDelimiter(APath);
 end;
 
 function FixBackslashBackslash(const Dir: string): string;

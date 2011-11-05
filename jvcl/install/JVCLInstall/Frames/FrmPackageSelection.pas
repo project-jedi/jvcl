@@ -124,7 +124,7 @@ end;
 
 procedure TFramePackageSelection.Init;
 var
-  i: Integer;
+  I: Integer;
   ListItem: TListItem;
 begin
   FInitializing := True;
@@ -136,15 +136,15 @@ begin
     ListViewTargetIDEs.Items.BeginUpdate;
     try
       ListViewTargetIDEs.Items.Clear;
-      for i := 0 to Installer.SelTargetCount - 1 do
+      for I := 0 to Installer.SelTargetCount - 1 do
       begin
-        with Installer.SelTargets[i] do
+        with Installer.SelTargets[I] do
         begin
           if InstallJVCL then
           begin
             ListItem := ListViewTargetIDEs.Items.Add;
             ListItem.Caption := Target.DisplayName;
-            ListItem.Data := Installer.SelTargets[i];
+            ListItem.Data := Installer.SelTargets[I];
 
             AddIconFileToImageList(ImageListTargets, Target.Executable);
             ListItem.ImageIndex := ImageListTargets.Count - 1;
@@ -254,7 +254,7 @@ end;
 
 procedure TFramePackageSelection.SelectPackageList(ProjectGroup: TProjectGroup);
 var
-  i, Idx: Integer;
+  I, Idx: Integer;
   DisplayMode: Integer;
 begin
   if FInSelection <> 0 then
@@ -273,26 +273,33 @@ begin
       Idx := CheckListBoxFrameworks.Items.IndexOfObject(ProjectGroup);
       LblTarget.Caption := TTargetConfig(ListViewTargetIDEs.Selected.Data).Target.DisplayName +
         ' - ' + CheckListBoxFrameworks.Items[Idx];
-      for i := 0 to ProjectGroup.Count - 1 do
+      for I := 0 to ProjectGroup.Count - 1 do
       begin
         case DisplayMode of
           0: // designtime
-            if not ProjectTypeIsDesign(ProjectGroup.Packages[i].Info.ProjectType) then
+            if not ProjectTypeIsDesign(ProjectGroup.Packages[I].Info.ProjectType) then
               Continue;
           1: // runtime
-            if ProjectTypeIsDesign(ProjectGroup.Packages[i].Info.ProjectType) then
+            if ProjectTypeIsDesign(ProjectGroup.Packages[I].Info.ProjectType) then
               Continue;
           2: // both
             ;
         end;
-        CheckListBoxPackages.Items.AddObject(ProjectGroup.Packages[i].Info.DisplayName,
-          ProjectGroup.Packages[i]);
+        CheckListBoxPackages.Items.AddObject(ProjectGroup.Packages[I].Info.DisplayName,
+          ProjectGroup.Packages[I]);
       end;
     end
     else
       LblTarget.Caption := RsSelectTargetIDE;
 
     UpdatePackageState;
+    // If DesignTime packages should be shown but there are none (e.g. in x64), then switch to
+    // runtime packages.
+    if (CheckListBoxPackages.Items.Count = 0) and (DisplayMode = 0) then
+    begin
+      ComboBoxDisplayMode.ItemIndex := 1; // show runtime pages
+      SelectPackageList(ProjectGroup);
+    end;
   finally
     CheckListBoxPackages.Items.EndUpdate;
   end;
@@ -305,7 +312,7 @@ end;
 
 procedure TFramePackageSelection.CheckListBoxFrameworksClickCheck(Sender: TObject);
 var
-  i: Integer;
+  I: Integer;
   Kind: TPackageGroupKind;
   NewInstallMode: TInstallMode;
   S: string;
@@ -313,14 +320,14 @@ begin
   Assert(SelTargetConfig <> nil);
 
   NewInstallMode := [];
-  for i := 0 to CheckListBoxFrameworks.Items.Count - 1 do
+  for I := 0 to CheckListBoxFrameworks.Items.Count - 1 do
   begin
-    S := CheckListBoxFrameworks.Items[i];
+    S := CheckListBoxFrameworks.Items[I];
     for Kind := pkFirst to pkLast do
     begin
       if S = PackageGroupKindToStr[Kind] then
       begin
-        if CheckListBoxFrameworks.Checked[i] then
+        if CheckListBoxFrameworks.Checked[I] then
           Include(NewInstallMode, Kind)
         else
           Exclude(NewInstallMode, Kind);
@@ -332,14 +339,14 @@ begin
   SelTargetConfig.InstallMode := NewInstallMode;
 
  // update, InstallMode uses a write-method
-  for i := 0 to CheckListBoxFrameworks.Items.Count - 1 do
+  for I := 0 to CheckListBoxFrameworks.Items.Count - 1 do
   begin
-    S := CheckListBoxFrameworks.Items[i];
+    S := CheckListBoxFrameworks.Items[I];
     for Kind := pkFirst to pkLast do
     begin
       if S = PackageGroupKindToStr[Kind] then
       begin
-        CheckListBoxFrameworks.Checked[i] := Kind in SelTargetConfig.InstallMode;
+        CheckListBoxFrameworks.Checked[I] := Kind in SelTargetConfig.InstallMode;
         Break;
       end;
     end;
@@ -348,18 +355,18 @@ end;
 
 procedure TFramePackageSelection.CheckListBoxPackagesClickCheck(Sender: TObject);
 var
-  i: Integer;
+  I: Integer;
   Pkg: TPackageTarget;
 begin
   with CheckListBoxPackages do
   begin
     Pkg := nil;
    // get the one that has changed
-    for i := 0 to Items.Count - 1 do
+    for I := 0 to Items.Count - 1 do
     begin
-      if State[i] <> GetStateOfPackage(TPackageTarget(Items.Objects[i])) then
+      if State[I] <> GetStateOfPackage(TPackageTarget(Items.Objects[I])) then
       begin
-        Pkg := TPackageTarget(Items.Objects[i]);
+        Pkg := TPackageTarget(Items.Objects[I]);
         Break;
       end;
     end;
@@ -369,27 +376,27 @@ begin
       if ProjectTypeIsDesign(Pkg.Info.ProjectType) then
       begin
        // designtime package can be installed
-        if State[i] = cbGrayed then
-          State[i] := cbChecked;
-        Pkg.Install := Checked[i];
-        Pkg.Compile := Checked[i];
+        if State[I] = cbGrayed then
+          State[I] := cbChecked;
+        Pkg.Install := Checked[I];
+        Pkg.Compile := Checked[I];
         if ComboBoxDisplayMode.ItemIndex in [0, 1] then // designtime, runtime
         begin
           Pkg := Pkg.FindRuntimePackage;
           if Pkg <> nil then
           begin
             Pkg.Install := False;
-            Pkg.Compile := State[i] <> cbUnchecked;
+            Pkg.Compile := State[I] <> cbUnchecked;
           end;
         end;
       end
       else
       begin
        // runtime packages can only be compiled but not installed
-        if State[i] = cbChecked then
-          State[i] := cbUnchecked;
+        if State[I] = cbChecked then
+          State[I] := cbUnchecked;
         Pkg.Install := False;
-        Pkg.Compile := State[i] <> cbUnchecked;
+        Pkg.Compile := State[I] <> cbUnchecked;
       end;
     end;
 
@@ -400,16 +407,16 @@ end;
 
 procedure TFramePackageSelection.UpdatePackageState;
 var
-  i: Integer;
+  I: Integer;
 begin
   if CheckListBoxFrameworks.ItemIndex <> -1 then
   begin
     with CheckListBoxPackages do
      // update from dependencies
-      for i := 0 to Items.Count - 1 do
+      for I := 0 to Items.Count - 1 do
       begin
-        State[i] := GetStateOfPackage(TPackageTarget(Items.Objects[i]));
-        ItemEnabled[i] := CheckListBoxFrameworks.Checked[CheckListBoxFrameworks.ItemIndex];
+        State[I] := GetStateOfPackage(TPackageTarget(Items.Objects[I]));
+        ItemEnabled[I] := CheckListBoxFrameworks.Checked[CheckListBoxFrameworks.ItemIndex];
       end;
   end;
 end;
@@ -486,14 +493,14 @@ end;
 
 procedure TFramePackageSelection.ActionInstallAllExecute(Sender: TObject);
 var
-  i: Integer;
+  I: Integer;
   Pkg: TPackageTarget;
 begin
   if (Sender = ActionInstallAll) or (Sender = ActionInstallNone) then
   begin
-    for i := 0 to CheckListBoxPackages.Items.Count - 1 do
+    for I := 0 to CheckListBoxPackages.Items.Count - 1 do
     begin
-      Pkg := TPackageTarget(CheckListBoxPackages.Items.Objects[i]);
+      Pkg := TPackageTarget(CheckListBoxPackages.Items.Objects[I]);
       if Sender = ActionInstallAll then
       begin
         Pkg.Install := True
@@ -522,7 +529,7 @@ var
   S: string;
   Lines: TStrings;
   Pkg, RuntimePkg: TPackageTarget;
-  i: Integer;
+  I: Integer;
 begin
   if TimerHint.Tag <> 1 then
     Exit;
@@ -551,8 +558,8 @@ begin
       begin
         Lines.Add('<b>' + RsPkgInfoRequires + '</b>');
         S := '';
-        for i := 0 to Pkg.RequireCount - 1 do
-          S := S + Pkg.Requires[i].GetBplName(SelProjectGroup) + ', ';
+        for I := 0 to Pkg.RequireCount - 1 do
+          S := S + Pkg.Requires[I].GetBplName(SelProjectGroup) + ', ';
         Delete(S, Length(S) - 1, 2);
         Lines.Add(WordWrapString(S));
         Lines.Add('');
@@ -562,8 +569,8 @@ begin
       begin
         Lines.Add('<b>' + RsPkgInfoContains + '</b>');
         S := '';
-        for i := 0 to Pkg.ContainCount - 1 do
-          S := S + ExtractFileName(Pkg.Contains[i].Name) + ', ';
+        for I := 0 to Pkg.ContainCount - 1 do
+          S := S + ExtractFileName(Pkg.Contains[I].Name) + ', ';
         Delete(S, Length(S) - 1, 2);
         Lines.Add(WordWrapString(S));
       end;

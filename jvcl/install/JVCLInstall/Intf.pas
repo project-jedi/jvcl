@@ -82,6 +82,7 @@ type
     procedure RegisterJVCLVersionInfo;
 
     function GetTargetSymbol: string;
+    function GetMainTargetSymbol: string;
     function GetAutoDependencies: Boolean;
     function GetDebugUnits: Boolean;
     function GetBuild: Boolean;
@@ -121,7 +122,8 @@ type
 
     function GetOutputDirs(DebugUnits: Boolean): TOutputDirs;
 
-    property TargetSymbol: string read GetTargetSymbol;
+    property TargetSymbol: string read GetTargetSymbol; // includes personal/standard flag
+    property MainTargetSymbol: string read GetMainTargetSymbol; // without personal/standard flag
     property Target: TCompileTarget read GetTarget;
     property AutoDependencies: Boolean read GetAutoDependencies;
     property DebugUnits: Boolean read GetDebugUnits;

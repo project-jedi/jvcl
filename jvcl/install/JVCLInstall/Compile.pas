@@ -125,8 +125,7 @@ type
     procedure DoTargetProgress(Current: TTargetConfig; Position, Max: Integer); virtual;
     procedure DoProjectProgress(const Text: string; Position, Max: Integer); virtual;
     procedure DoResourceProgress(const Text: string; Position, Max: Integer); virtual;
-    procedure DoPackageProgress(Current: TPackageTarget; const Text: string;
-      Position, Max: Integer); virtual;
+    procedure DoPackageProgress(Current: TPackageTarget; const Text: string; Position, Max: Integer); virtual;
 
     procedure DoProgress(const Text: string; Position, Max: Integer;
       Kind: TProgressKind); virtual;
@@ -248,19 +247,6 @@ begin
 end;
 
 {----------------------------------------------------------------------}
-
-function CutPersEdition(const Edition: string): string;
-var
-  i: Integer;
-begin
-  Result := Edition;
-  for i := 2 to Length(Result) do
-    if not CharInSet(Result[i], ['0'..'9']) then
-    begin
-      Result := Copy(Result, 1, i - 1);
-      Exit;
-    end;
-end;
 
 function ReplaceTargetMacros(const S: string; TargetConfig: ITargetConfig): string;
 var
@@ -486,6 +472,7 @@ var
   I: Integer;
   OutDirs: TOutputDirs;
   Target: TCompileTarget;
+  BDSLibDir: string;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
 
@@ -495,14 +482,24 @@ begin
     Lines.Add(DccOpt);
 
     // default paths
+
+    {if TargetConfig.DebugUnits then
+      BDSLibDir := TargetConfig.Target.RootLibDebugDir
+    else}
+      BDSLibDir := TargetConfig.Target.RootLibReleaseDir;
+
+    if not DirectoryExists(BDSLibDir) then
+      raise Exception.CreateFmt('The unit directory "%s" does not exist.'#10'Please contact the JVCL team about this.', [BDSLibDir]);
+
     SearchPaths := TargetConfig.Target.ExpandDirMacros(
-      TargetConfig.Target.RootLibDir + ';' +
-      TargetConfig.Target.RootLibDir + PathDelim + 'obj;' +
+      BDSLibDir + ';' +
+      BDSLibDir + PathDelim + 'obj;' +
       TargetConfig.JclDcpDir + ';' +
       TargetConfig.JclDcuDir + ';' +
       OutDirs.DcpDir + ';' +
       OutDirs.UnitOutDir
     );
+    SearchPaths := RemoveInvalidPaths(SearchPaths);
     Lines.Add('-U"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
     Lines.Add('-I"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Common' + '"');
     Lines.Add('-R"' + SearchPaths + ';' + TargetConfig.JVCLDir + PathDelim + 'Resources' + '"');
@@ -1037,7 +1034,7 @@ begin
 end;
 
 /// <summary>
-/// CompileDelphiPackage() compiles a Delphi.Win32 package. If one of the commands
+/// CompileDelphiPackage() compiles a Delphi package. If one of the commands
 /// could not be executed a message dialog is shown with the complete command
 /// line of the failed command. Returns the ExitCode of the last/failed command.
 /// </summary>
@@ -1538,29 +1535,39 @@ begin
   Aborted := False;
   FOutput.Clear;
 
-  DeleteRemovedFiles(TargetConfig);
+  try
+    DeleteRemovedFiles(TargetConfig);
 
-  // VCL
-  if Result and (pkVCL in TargetConfig.InstallMode) then
-  begin
-    if not TargetConfig.DeveloperInstall then
+    // VCL
+    if Result and (pkVCL in TargetConfig.InstallMode) then
     begin
-      // debug units
-      if TargetConfig.Target.SupportsPersonalities([persDelphi]) and
-        TargetConfig.DebugUnits then
+      if not TargetConfig.DeveloperInstall then
+      begin
+        // debug units
+        if TargetConfig.Target.SupportsPersonalities([persDelphi]) and
+          TargetConfig.DebugUnits then
+          Result := CompileProjectGroup(
+            TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
+      end;
+
+      if Result then
+      begin
+        // compile
         Result := CompileProjectGroup(
-          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
-    end;
+          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
+      end;
 
-    if Result then
+      if Result then
+        CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
+    end;
+  except
+    on E: Exception do
     begin
-      // compile
-      Result := CompileProjectGroup(
-        TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
+      if Assigned(ApplicationHandleException) then
+        ApplicationHandleException(nil);
+      AbortReason := E.Message;
+      Result := False;
     end;
-
-    if Result then
-      CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
   end;
 end;
 
@@ -1742,7 +1749,7 @@ var
   AProjectIndex, i: Integer;
   TargetConfig: ITargetConfig;
   DccOpt: string;
-  Edition, JVCLPackagesDir: string;
+  JVCLPackagesDir: string;
   Files: TStrings;
 
   ProjectOrder: TList;
@@ -1781,7 +1788,6 @@ begin
         Inc(FPkgCount);
     FPkgIndex := 0;
 
-    Edition := TargetConfig.TargetSymbol;
     JVCLPackagesDir := TargetConfig.JVCLPackagesDir;
 
     DccOpt := '-M'; // make modified units, output 'never build' DCPs
@@ -1813,7 +1819,7 @@ begin
 
 {**}DoProjectProgress(RsGeneratingPackages + DebugProgress, GetProjectIndex, ProjectMaxProgress);
     // generate the packages and .cfg files
-    if not GeneratePackages('JVCL', CutPersEdition(Edition),
+    if not GeneratePackages('JVCL', {CutPersEdition(TargetSymbol)} TargetConfig.MainTargetSymbol,
                             TargetConfig.JVCLPackagesDir) then
       Exit; // AbortReason is set in GeneratePackages
 
