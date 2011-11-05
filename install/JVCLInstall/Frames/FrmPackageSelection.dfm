@@ -8,8 +8,9 @@ object FramePackageSelection: TFramePackageSelection
   object LblTarget: TLabel
     Left = 8
     Top = 101
-    Width = 55
+    Width = 314
     Height = 13
+    AutoSize = False
     Caption = 'LblTarget'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

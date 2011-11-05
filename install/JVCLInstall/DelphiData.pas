@@ -147,6 +147,7 @@ type
     function GetBplDir: string;
     function GetDcpDir: string;
     function GetRootLibDir: string;
+    function GetRootLibReleaseDir: string;
     function GetProjectDir: string;
   protected
     property DCPOutputDir: string read FDCPOutputDir; // with macros, could contain double backslashes when resolving the macro
@@ -219,7 +220,7 @@ type
     property ProductVersion: string read FProductVersion;
     property Executable: string read FExecutable; // [Reg->App] x:\path\Delphi.exe
     property RootDir: string read FRootDir; // [Reg->RootDir] x:\path
-    property RootLibDir: string read GetRootLibDir; // RootDir + '\lib'
+    property RootLibReleaseDir: string read GetRootLibReleaseDir; // new: $(RootDir)\lib\$(Platform)\release, old: $(RootDir)\lib
     property Edition: string read FEdition; // [Reg->Version] PER/PRO/CSS
     property LatestUpdate: Integer read FLatestUpdate;
     property LatestRTLPatch: Integer read FLatestRTLPatch;
@@ -376,7 +377,7 @@ begin
         SetLength(ResValue, 1024);
         SetLength(ResValue, LoadString(H, ResId[Index], PChar(ResValue), Length(ResValue) - 1));
         if Result <> '' then
-          Result := ExcludeTrailingPathDelimiter(Result) + '\' + ResValue
+          Result := AppendPath(Result, ResValue)
         else
           Result := ResValue;
       end;
@@ -1483,18 +1484,35 @@ begin
     end;
 end;
 
+function TCompileTarget.GetRootLibDir: string;
+var
+  PlatformDir: string;
+begin
+  PlatformDir := '';
+  if IsBDS and (IDEVersion >= 8) then // RAD Studio XE started the new directory structure
+    case FPlatform of
+      ctpWin32: PlatformDir := 'win32'; // do not localize
+      ctpWin64: PlatformDir := 'win64'; // do not localize
+    end;
+
+  Result := AppendPath(AppendPath(RootDir, 'lib'), PlatformDir);
+end;
+
+function TCompileTarget.GetRootLibReleaseDir: string;
+begin
+  if IsBDS and (IDEVersion >= 8) then // RAD Studio XE started the new directory structure
+    Result := AppendPath(GetRootLibDir, 'release')
+  else
+    Result := GetRootLibDir;
+end;
+
 function TCompileTarget.GetProjectDir: string;
 begin
   if IsBDS then
     Result := BDSProjectsDir
   else
     Result := RootDir;
-  Result := Result + PathDelim + 'Projects';
-end;
-
-function TCompileTarget.GetRootLibDir: string;
-begin
-  Result := RootDir + PathDelim + 'Lib';
+  Result := AppendPath(Result, 'Projects');
 end;
 
 { TDelphiPackageList }
