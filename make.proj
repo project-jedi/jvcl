@@ -22,8 +22,9 @@
 {**************************************************************************************************}
 -->
 	<PropertyGroup>
+		<Platform Condition=" '$(Platform)' == '' ">win32</Platform>
 		<BDSLIB>$(BDS)\lib</BDSLIB>
-		<PLATFORM>win32</PLATFORM>
+		<PLATFORM>$(Platform)</PLATFORM>
 		<ProjectVersion>12.0</ProjectVersion> <!-- must be not empty, value doesn't matter -->
 	</PropertyGroup>
 	<Import Condition=" Exists('$(BDS)\Bin\CodeGear.Common.Targets') " Project="$(BDS)\Bin\CodeGear.Common.Targets" />
@@ -35,60 +36,102 @@
 
 	<!-- Delphi Version -->
 	<PropertyGroup>
+		<EditionDirVersion></EditionDirVersion>
 		<!--
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc60.dll') ">d6</LibDirVersion>
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc70.dll') ">d7</LibDirVersion>
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc90.dll') ">d9</LibDirVersion>
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc100.dll') and Exists('$(BDS)\bin\bordbk100N.dll') ">d10</LibDirVersion>
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc100.dll') and Exists('$(BDS)\bin\bordbk105N.dll') ">d11</LibDirVersion>
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc60.dll') ">d6</EditionDirVersion>
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc70.dll') ">d7</EditionDirVersion>
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc90.dll') ">d9</EditionDirVersion>
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc100.dll') and Exists('$(BDS)\bin\bordbk100N.dll') ">d10</EditionDirVersion>
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc100.dll') and Exists('$(BDS)\bin\bordbk105N.dll') ">d11</EditionDirVersion>
 		-->
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc120.dll') ">d12</LibDirVersion> <!-- 2009 -->
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc140.dll') ">d14</LibDirVersion> <!-- 2010 -->
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc150.dll') ">d15</LibDirVersion> <!-- XE   -->
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc160.dll') ">d16</LibDirVersion> <!-- XE2  -->
-		<LibDirVersion Condition=" Exists('$(BDS)\bin\dcc170.dll') ">d17</LibDirVersion> <!-- XE3  -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc120.dll')   ">d12</EditionDirVersion> <!-- 2009 -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc140.dll')   ">d14</EditionDirVersion> <!-- 2010 -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc150.dll')   ">d15</EditionDirVersion> <!-- XE   -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32160.dll') ">d16</EditionDirVersion> <!-- XE2 -->
+		<EditionDirVersion Condition=" Exists('$(BDS)\bin\dcc32170.dll') ">d17</EditionDirVersion> <!-- XE3 -->
+
+		<LibDirVersion>$(EditionDirVersion)\$(Platform)</LibDirVersion>
+		<LibDirVersion Condition=" '$(EditionDirVersion)' == 'd12' or '$(EditionDirVersion)' == 'd14' or '$(EditionDirVersion)' == 'd15' ">$(EditionDirVersion)</LibDirVersion>
+		<EditionDirVersionPlatform>$(EditionDirVersion)</EditionDirVersionPlatform>
+		<EditionDirVersionPlatform Condition=" '$(Platform)' == 'win64' ">$(EditionDirVersion)_x64</EditionDirVersionPlatform>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Packages Include="
-			JvCore;					JvCoreDesign;
-			JvSystem;				JvSystemDesign;
-			JvStdCtrls;				JvStdCtrlsDesign;
-			JvControls;				JvControlsDesign;
-			JvCmp;					JvCmpDesign;
-			JvCustom;				JvCustomDesign;
-			JvDlgs;					JvDlgsDesign;
-			JvCrypt;				JvCryptDesign;
-			JvMM;					JvMMDesign;
-			JvNet;					JvNetDesign;
-			JvAppFrm;				JvAppFrmDesign;
-			JvDB;					JvDBDesign;
-			JvBDE;					JvBDEDesign;
-			JvPascalInterpreter;	JvPascalInterpreterDesign;
-			JvBands;				JvBandsDesign;
-			JvPluginSystem;			JvPluginSystemDesign;
-			JvJans;					JvJansDesign;
-			JvGlobus;				JvGlobusDesign;
-			JvPrintPreview;			JvPrintPreviewDesign;
-			JvPageComps;			JvPageCompsDesign;
-			JvWizards;				JvWizardsDesign;
-			JvTimeFramework;		JvTimeFrameworkDesign;
-			JvHMI;					JvHMIDesign;
-			JvManagedThreads;		JvManagedThreadsDesign;
-			JvXPCtrls;				JvXPCtrlsDesign;
-			JvDocking;				JvDockingDesign;
-			JvDotNetCtrls;			JvDotNetCtrlsDesign;
-			JvRuntimeDesign;		JvRuntimeDesignDesign;
+			JvCore;
+			JvSystem;
+			JvStdCtrls;
+			JvControls;
+			JvCmp;
+			JvCustom;
+			JvDlgs;
+			JvCrypt;
+			JvMM;
+			JvNet;
+			JvAppFrm;
+			JvDB;
+			JvPascalInterpreter;
+			JvBands;
+			JvPluginSystem;
+			JvJans;
+			JvGlobus;
+			JvPrintPreview;
+			JvPageComps;
+			JvWizards;
+			JvTimeFramework;
+			JvHMI;
+			JvManagedThreads;
+			JvXPCtrls;
+			JvDocking;
+			JvDotNetCtrls;
+			JvRuntimeDesign;
+			" />
+		<Packages Condition=" '$(Platform)' == 'win32' " Include="
+			JvBDE;
+			" />
+		<DesignPackages Condition=" '$(Platform)' == 'win32' " Include="
+			JvCoreDesign;		
+			JvSystemDesign;		
+			JvStdCtrlsDesign;		
+			JvControlsDesign;		
+			JvCmpDesign;		
+			JvCustomDesign;		
+			JvDlgsDesign;		
+			JvCryptDesign;		
+			JvMMDesign;		
+			JvNetDesign;		
+			JvAppFrmDesign;		
+			JvDBDesign;		
+			JvBDEDesign;		
+			JvPascalInterpreterDesign;		
+			JvBandsDesign;		
+			JvPluginSystemDesign;		
+			JvJansDesign;		
+			JvGlobusDesign;		
+			JvPrintPreviewDesign;		
+			JvPageCompsDesign;		
+			JvWizardsDesign;		
+			JvTimeFrameworkDesign;		
+			JvHMIDesign;		
+			JvManagedThreadsDesign;		
+			JvXPCtrlsDesign;		
+			JvDockingDesign;		
+			JvDotNetCtrlsDesign;		
+			JvRuntimeDesignDesign;		
 			" />
 	</ItemGroup>
 
 	<PropertyGroup>
-		<DCC32>&quot;$(BDS)\bin\dcc32.exe&quot; --no-config -Q</DCC32>
+		<DCC Condition=" '$(Platform)' == 'win32' ">&quot;$(BDS)\bin\dcc32.exe&quot; --no-config -Q</DCC>
+		<DCC Condition=" '$(Platform)' == 'win64' ">&quot;$(BDS)\bin\dcc64.exe&quot; --no-config -Q</DCC>
 
 		<BCBCompile>false</BCBCompile>
 		<BCBCompile Condition=" Exists('$(BDS)\bin\bccide.dll') ">true</BCBCompile>
 
-		<!-- Use Delphi XE's properties -->
+		<UnitScopeRequired>true</UnitScopeRequired>
+		<UnitScopeRequired Condition=" '$(EditionDirVersion)' == 'd12' or '$(EditionDirVersion)' == 'd14' or '$(EditionDirVersion)' == 'd15' ">false</UnitScopeRequired>
+		<UnitScopeOption Condition=" '$(UnitScopeRequired)' == 'true' ">-nsSystem;Winapi;System.Win;Vcl;Data;Data.Win;Datasnap.Win;Vcl.Imaging;Soap.Win;Xml.Win;Xml;Bde</UnitScopeOption>
+		<!-- Use Delphi XE+ properties -->
 		<DelphiLibraryPath Condition=" '$(DelphiLibraryPath)' == '' ">$(Win32LibraryPath)</DelphiLibraryPath>
 		<DelphiDebugDCUPath Condition=" '$(DelphiDebugDCUPath)' == '' ">$(Win32DebugDCUPath)</DelphiDebugDCUPath>
 		<DelphiDLLOutputPath Condition=" '$(DelphiDLLOutputPath)' == '' ">$(Win32DLLOutputPath)</DelphiDLLOutputPath>
@@ -102,7 +145,7 @@
 		<JvclDir>$(MSBuildProjectDirectory)</JvclDir>
 		<IncludeDirs>$(JvclDir)\Common</IncludeDirs>
 		<UnitDirs>$(JvclDir)\Run</UnitDirs>
-		<ResDirs>$(UnitDirs);$(JvclDir)\Resources</ResDirs>
+		<ResDirs>$(UnitDirs);$(JvclDir)\Resources;$(BDS)\lib\$(Platform)\release</ResDirs>
 		<DcuOutDir Condition=" '$(DcuOutDir)' == '' ">$(JvclDir)\lib\$(LibDirVersion)</DcuOutDir>
 		<ObjOutDir Condition=" '$(ObjOutDir)' == '' ">$(DcuOutDir)</ObjOutDir>
 		<DcpOutDir Condition=" '$(DcpOutDir)' == '' ">$(DcuOutDir)</DcpOutDir>
@@ -113,10 +156,11 @@
 		<DebugDcpOutDir Condition=" '$(DebugDcpOutDir)' == '' ">$(DebugDcuOutDir)</DebugDcpOutDir>
 
 		<!-- Compiler command line options -->
+		<PackageOptions>$(PackageOptions) -M  $(UnitScopeOption)</PackageOptions>
 		<PackageOptions Condition=" '$(UserDefines)' != '' ">$(PackageOptions) -D$(UserDefines)</PackageOptions>
 		<PackageOptions Condition=" '$(BCBCompile)' == 'true' ">$(PackageOptions) -JL</PackageOptions>
-		<PackageOptions>$(PackageOptions) -M -LE&quot;$(BplOutDir)&quot;</PackageOptions>
-		<PackageOptions>$(PackageOptions) -M -I&quot;$(IncludeDirs)&quot; -R&quot;$(ResDirs)&quot;</PackageOptions>
+		<PackageOptions>$(PackageOptions) -LE&quot;$(BplOutDir)&quot;</PackageOptions>
+		<PackageOptions>$(PackageOptions) -I&quot;$(IncludeDirs)&quot; -R&quot;$(ResDirs)&quot;</PackageOptions>
 		
 		<ReleasePackageOptions>$(PackageOptions)</ReleasePackageOptions>
 		<ReleasePackageOptions>$(ReleasePackageOptions) -DRELEASE -$D- -$Y- -$L-</ReleasePackageOptions>
@@ -131,7 +175,7 @@
 		<DebugPackageOptions>$(DebugPackageOptions) -U&quot;$(DebugDcuOutDir);$(DebugDcpOutDir);$(DelphiDebugDCUPath);$(DelphiLibraryPath)&quot;</DebugPackageOptions>
 
 		<JvclIncTplFile>$(JvclDir)\Common\jvclbase.inc</JvclIncTplFile>
-		<JvclIncFile>$(JvclDir)\Common\jvcl$(LibDirVersion).inc</JvclIncFile>
+		<JvclIncFile>$(JvclDir)\Common\jvcl$(EditionDirVersionPlatform).inc</JvclIncFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -180,12 +224,13 @@
 
 	<!-- Use Batching via "%(Packages.FileName)" for the packages -->
 	<Target Name="CompileDebugPackages" DependsOnTargets="CreateOutputDirectories;CopyResFiles;CreateJvclIniFile">
-		<Exec Command="$(DCC32) $(DebugPackageOptions) %(Packages.FileName).dpk" WorkingDirectory="$(JvclDir)\Packages\$(LibDirVersion)" />
+		<Exec Command="$(DCC) $(DebugPackageOptions) %(Packages.FileName).dpk" WorkingDirectory="$(JvclDir)\Packages\$(EditionDirVersionPlatform)" />
 	</Target>
 
 	<!-- Use Batching via "%(Packages.FileName)" for the packages -->
 	<Target Name="CompileReleasePackages" DependsOnTargets="CreateOutputDirectories;CopyResFiles;CreateJvclIniFile">
-		<Exec Command="$(DCC32) $(ReleasePackageOptions) %(Packages.FileName).dpk" WorkingDirectory="$(JvclDir)\Packages\$(LibDirVersion)" />
+		<Exec Command="$(DCC) $(ReleasePackageOptions) %(Packages.FileName).dpk" WorkingDirectory="$(JvclDir)\Packages\$(EditionDirVersionPlatform)" />
+		<Exec Condition=" '$(Platform)' == 'win32' " Command="$(DCC) $(ReleasePackageOptions) %(DesignPackages.FileName).dpk" WorkingDirectory="$(JvclDir)\Packages\$(EditionDirVersionPlatform)" />
 	</Target>
 
 	<Target Name="CompilePackages" DependsOnTargets="CompileDebugPackages;CompileReleasePackages">
