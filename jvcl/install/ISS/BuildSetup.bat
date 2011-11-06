@@ -39,10 +39,10 @@ del /Q /S "%JVCLBUILTDIR%\*.*" 2>NUL >NUL
 SET JvclLib=%JVCLBUILTDIR%\lib\win32
 
 cd %JVCLROOT%
-msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JVCLBUILTDIR%\hpp" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JVCLBUILTDIR%\bpl" "/p:JclLibDir=%JCLBUILTDIR%\lib\win32" -v:d
+msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JVCLBUILTDIR%\hpp" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JVCLBUILTDIR%\bpl" "/p:JclLibDir=%JCLBUILTDIR%\lib\win32"
 if ERRORLEVEL 1 goto Failed
 if not exist "%BDS%\bin\dcc64.exe" goto NoWin64
-msbuild make.proj "/p:Platform=win64" "/p:HppOutDir=%JVCLBUILTDIR%\hpp64" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win64" "/p:BplOutDir=%JVCLBUILTDIR%\bpl\Win64" "/p:JclLibDir=%JCLBUILTDIR%\lib\win64" -v:d
+msbuild make.proj "/p:Platform=win64" "/p:HppOutDir=%JVCLBUILTDIR%\hpp64" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win64" "/p:BplOutDir=%JVCLBUILTDIR%\bpl\Win64" "/p:JclLibDir=%JCLBUILTDIR%\lib\win64"
 if ERRORLEVEL 1 goto Failed
 :: For 64bit we have to install both win32 and lib\win64
 SET JvclLib=%JVCLBUILTDIR%\lib
