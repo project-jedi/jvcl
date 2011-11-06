@@ -59,8 +59,8 @@ type
     Label2: TLabel;
     OpenDialog1: TOpenDialog;
     Button1: TButton;
-    JvFormStorageSelectList1: TJvFormStorageSelectList;
     JvAppRegistryStorage1: TJvAppRegistryStorage;
+    procedure Button1Click(Sender: TObject);
     procedure YetAnotherOption1Click(Sender: TObject);
   private
     { Private declarations }
@@ -74,6 +74,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TJvAppStorageBaseMainFrm.Button1Click(Sender: TObject);
+begin
+  OpenDialog1.Execute;
+end;
 
 procedure TJvAppStorageBaseMainFrm.YetAnotherOption1Click(Sender: TObject);
 begin

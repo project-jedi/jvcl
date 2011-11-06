@@ -2,8 +2,8 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
   Left = 321
   Top = 227
   Caption = 'App Storage Demo'
-  ClientHeight = 351
-  ClientWidth = 366
+  ClientHeight = 455
+  ClientWidth = 652
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,32 +15,32 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
   TextHeight = 13
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 332
-    Width = 366
+    Top = 436
+    Width = 652
     Height = 19
     Panels = <>
-    ExplicitTop = 342
-    ExplicitWidth = 376
+    ExplicitTop = 332
+    ExplicitWidth = 366
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 366
-    Height = 332
+    Width = 652
+    Height = 436
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 376
-    ExplicitHeight = 342
+    ExplicitWidth = 366
+    ExplicitHeight = 332
     object Panel2: TPanel
       Left = 1
       Top = 1
-      Width = 364
+      Width = 650
       Height = 137
       Align = alTop
       BevelInner = bvLowered
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 374
+      ExplicitWidth = 364
       object Label1: TLabel
         Left = 8
         Top = 12
@@ -124,23 +124,24 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
         Height = 25
         Caption = 'Open Dialog'
         TabOrder = 8
+        OnClick = Button1Click
       end
     end
     object Panel3: TPanel
       Left = 1
       Top = 138
-      Width = 364
-      Height = 193
+      Width = 650
+      Height = 297
       Align = alClient
       BevelOuter = bvSpace
       Caption = 'Panel3'
       TabOrder = 1
-      ExplicitWidth = 374
-      ExplicitHeight = 203
+      ExplicitWidth = 364
+      ExplicitHeight = 193
       object Label2: TLabel
         Left = 1
         Top = 1
-        Width = 362
+        Width = 648
         Height = 13
         Align = alTop
         Caption = 'Stored Memo:'
@@ -149,8 +150,8 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
       object Memo2: TMemo
         Left = 1
         Top = 14
-        Width = 362
-        Height = 178
+        Width = 648
+        Height = 282
         Align = alClient
         Color = clInfoBk
         Lines.Strings = (
@@ -168,8 +169,8 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
           ' dialogs and per-user settings between sessions. (such'
           ' as storing the directory of the last opened file) ')
         TabOrder = 0
-        ExplicitWidth = 372
-        ExplicitHeight = 188
+        ExplicitWidth = 362
+        ExplicitHeight = 178
       end
     end
   end
@@ -233,13 +234,6 @@ object JvAppStorageBaseMainFrm: TJvAppStorageBaseMainFrm
   object OpenDialog1: TOpenDialog
     Left = 200
     Top = 8
-  end
-  object JvFormStorageSelectList1: TJvFormStorageSelectList
-    AppStorage = JvAppIniFileStorage1
-    SelectPath = 'something'
-    FormStorage = JvFormStorage1
-    Left = 393
-    Top = 18
   end
   object JvAppRegistryStorage1: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
