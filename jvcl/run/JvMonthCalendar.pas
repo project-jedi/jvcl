@@ -26,7 +26,6 @@ Known Issues:
 unit JvMonthCalendar;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

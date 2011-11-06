@@ -42,7 +42,6 @@ Known Issues:
 unit JvMemo;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

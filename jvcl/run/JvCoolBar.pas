@@ -26,7 +26,6 @@ Known Issues:
 unit JvCoolBar;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

@@ -27,7 +27,6 @@ Known Issues:
 unit JvMenus;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

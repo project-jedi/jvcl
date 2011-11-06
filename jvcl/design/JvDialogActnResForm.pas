@@ -25,7 +25,6 @@ Known Issues:
 unit JvDialogActnResForm;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

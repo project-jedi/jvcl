@@ -33,7 +33,6 @@ Known Issues:
 unit JvListView;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

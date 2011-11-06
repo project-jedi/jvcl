@@ -26,7 +26,6 @@ Known Issues:
 unit JvCheckTreeView;
 
 {$I jvcl.inc}
-{$I vclonly.inc} // <- JvComCtrls
 
 interface
 

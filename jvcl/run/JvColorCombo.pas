@@ -34,7 +34,6 @@ Known Issues:
 unit JvColorCombo;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 
