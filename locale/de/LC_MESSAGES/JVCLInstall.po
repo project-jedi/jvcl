@@ -496,10 +496,10 @@ msgid ""
 "JclDebug can use these information."
 msgstr ""
 "Aktivieren Sie diese Option, wenn der Installer die detaillierten\n"
-"Map Informationen als Resourcen in das Kompilat linken soll.\n"
+"Map Informationen als Ressourcen in die Packages linken soll.\n"
 "\n"
-"Die Verteilung von Kompilats und Map-Datei reduziert\n"
-"sich damit auf die Verteilung des Kompilats.\n"
+"Dadurch reduziert sich die Auslieferung auf die Packages. Die\n"
+"Map-Dateien müssen nicht mit ausgeliefert werden.\n"
 "\n"
 "JclDebug kann diese Informationen nutzen."
 
@@ -508,7 +508,7 @@ msgstr ""
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxLinkMapFiles..Caption
 #: Frames/FrmConfigPage.dfm:309
 msgid "&Link Map files in binaries"
-msgstr "Map Dateien in Kompilat &linken"
+msgstr "Map Dateien in Packages &linken"
 
 #  FrameConfigPage..CheckBoxIgnoreMakeErrors....Height
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles....Height
@@ -521,8 +521,8 @@ msgid ""
 "or the jdbg files were created."
 msgstr ""
 "Aktivieren Sie diese Option, wenn der Installer die detaillierten\n"
-"Map Informationen löschen soll, nachdem sie in das Kompilat\n"
-"gelinkt oder die jdbg Dateien erzeugt wurden."
+"Map Informationen löschen soll, nachdem sie in das Package\n"
+"gelinkt bzw. die jdbg Datei erzeugt wurde."
 
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
 #  FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeleteMapFiles..Caption
@@ -797,7 +797,7 @@ msgstr "Packagedateien generieren..."
 #. Programmer's name for it: RsGeneratingResources
 #: Compile.pas:191
 msgid "Generating resources..."
-msgstr "Resourcedateien generieren..."
+msgstr "Ressourcedateien generieren..."
 
 #  Programmer's name for it: RsCompilingPackages
 #  Programmer's name for it: RsCompilingPackages
@@ -870,7 +870,7 @@ msgstr "Es trat ein Fehler beim Generieren der Templates auf."
 #. Programmer's name for it: RsErrorCompilingResources
 #: Compile.pas:202
 msgid "Error while compiling resources."
-msgstr "Es trat ein Fehler beim Kompilieren der Resourcedateien auf."
+msgstr "Es trat ein Fehler beim Kompilieren der Ressourcedateien auf."
 
 #  Programmer's name for it: RsErrorGeneratingTemplatesForDir
 #. Programmer's name for it: RsErrorGeneratingTemplatesForDir
