@@ -24,7 +24,6 @@ Known Issues:
 unit JvDynControlEngineJVCL;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

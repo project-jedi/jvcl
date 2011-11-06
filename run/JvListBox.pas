@@ -47,7 +47,6 @@ Notes (2003-05-21) // Remko Bonte
 unit JvListBox;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

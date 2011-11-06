@@ -26,7 +26,6 @@ Known Issues:
 unit JvHotKey;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

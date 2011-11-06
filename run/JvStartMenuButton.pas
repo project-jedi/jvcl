@@ -26,7 +26,6 @@ Known Issues:
 unit JvStartMenuButton;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

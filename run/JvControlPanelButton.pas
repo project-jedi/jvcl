@@ -29,7 +29,6 @@ Known Issues:
 unit JvControlPanelButton;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

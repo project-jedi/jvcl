@@ -26,7 +26,6 @@ Known Issues:
 unit JvCombobox;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

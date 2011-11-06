@@ -24,7 +24,6 @@ Known Issues:
 unit JvPageSetup;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

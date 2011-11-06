@@ -35,7 +35,6 @@ Modifications:
 unit JvSystemPopup;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

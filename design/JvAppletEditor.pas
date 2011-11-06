@@ -26,7 +26,6 @@ Known Issues:
 unit JvAppletEditor;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

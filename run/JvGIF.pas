@@ -26,7 +26,6 @@ Known Issues:
 unit JvGIF;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

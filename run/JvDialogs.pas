@@ -30,7 +30,6 @@ Known Issues:
 unit JvDialogs;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

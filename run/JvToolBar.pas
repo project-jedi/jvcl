@@ -28,7 +28,6 @@ Known Issues:
 unit JvToolBar;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

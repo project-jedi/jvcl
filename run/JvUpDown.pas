@@ -33,7 +33,6 @@ Known Issues:
 unit JvUpDown;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 

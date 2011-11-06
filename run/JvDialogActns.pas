@@ -26,7 +26,6 @@ Known Issues:
 unit JvDialogActns;
 
 {$I jvcl.inc}
-{$I vclonly.inc}
 
 interface
 
