@@ -19,7 +19,7 @@ SET InnoSetupDir=%JCLBUILTDIR%\..\InnoSetup
 if not exist "%JVCLROOT%\run\JVCLVer.pas" goto NoRootDirFound
 if not exist "%SETUPDIR%\Install.iss" goto NoInstallDir
 if not exist "%InnoSetupDir%\..\Install.iss" goto NoJclInnoSetupDirFound
-if not exist "%JCLBUILTDIR%\lib\Jcl.dcp" goto NoJclLibDirFound
+if not exist "%JCLBUILTDIR%\lib\win32\Jcl.dcp" goto NoJclLibDirFound
 
 
 :: ==========================================================
@@ -36,16 +36,24 @@ md "%JVCLBUILTDIR%\bpl" 2>NUL >NUL
 del /Q /S "%JVCLBUILTDIR%\*.*" 2>NUL >NUL
 
 :: == Compile the files
+SET JvclLib=%JVCLBUILTDIR%\lib\win32
+
 cd %JVCLROOT%
-msbuild make.proj "/p:HppOutDir=%JVCLBUILTDIR%\hpp" "/p:DcuOutDir=%JVCLBUILTDIR%\lib" "/p:BplOutDir=%JVCLBUILTDIR%\bpl" "/p:JclLibDir=%JCLBUILTDIR%\lib"
+msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JVCLBUILTDIR%\hpp" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JVCLBUILTDIR%\bpl" "/p:JclLibDir=%JCLBUILTDIR%\lib\win32" -v:d
 if ERRORLEVEL 1 goto Failed
+if not exist "%BDS%\bin\dcc64.exe" goto NoWin64
+msbuild make.proj "/p:Platform=win64" "/p:HppOutDir=%JVCLBUILTDIR%\hpp64" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win64" "/p:BplOutDir=%JVCLBUILTDIR%\bpl\Win64" "/p:JclLibDir=%JCLBUILTDIR%\lib\win64" -v:d
+if ERRORLEVEL 1 goto Failed
+:: For 64bit we have to install both win32 and lib\win64
+SET JvclLib=%JVCLBUILTDIR%\lib
+:NoWin64
 cd %SETUPDIR%
 
 :: ==========================================================
 :: Compile Setup
 :: ==========================================================
 :Setup
-"%InnoSetupDir%\ISCC.exe" Install.iss /dCmdLineBuild "/dJvclRoot=%JVCLROOT%" "/dJvclLib=%JVCLBUILTDIR%\lib" "/dJvclBpl=%JVCLBUILTDIR%\bpl" "/dJvclHpp="%JVCLBUILTDIR%\hpp"
+"%InnoSetupDir%\ISCC.exe" Install.iss /dCmdLineBuild "/dJvclRoot=%JVCLROOT%" "/dJvclLib=%JvclLib%" "/dJvclBpl=%JVCLBUILTDIR%\bpl" "/dJvclHpp="%JVCLBUILTDIR%\hpp"
 if ERRORLEVEL 1 goto Failed
 
 
