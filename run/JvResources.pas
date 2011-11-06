@@ -238,8 +238,8 @@ resourcestring
   RsShortcut = '&Shortcut';
   RsConnectAs = 'Connect-&As';
 
-  RSImportConnectionList = 'Import Connection List';
-  RSExportConnectionList = 'Export Connection List';
+  RsImportConnectionList = 'Import Connection List';
+  RsExportConnectionList = 'Export Connection List';
   RsConnectionListImportOverwrite = 'Overwrite';
   RsConnectionListImportAppend = 'Append';
   RsConnectionListImportAppendOverwriteExistingEntries = 'Append/Overwrite existing entries?';
@@ -641,11 +641,6 @@ resourcestring
   RsParamEditor = '%0:s%1:s%2:s Parameters';
 
   RsEInvalidParamFieldType = 'Must have a valid field type selected';
-
-//=== JvDBRemoteLogin.pas ====================================================
-resourcestring
-  RsKeyLoginSection = 'Remote Login';
-  RsKeyLastLoginUserName = 'Last User';
 
 //=== JvDBTreeView.pas =======================================================
 resourcestring
