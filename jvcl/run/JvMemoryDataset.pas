@@ -239,6 +239,7 @@ type
       const ResultFields: string): Variant; override;
     procedure SortOnFields(const FieldNames: string = '';
       CaseInsensitive: Boolean = True; Descending: Boolean = False);
+    procedure SwapRecords(Idx1: integer; Idx2: integer);
     procedure EmptyTable;
     procedure CopyStructure(Source: TDataSet; UseAutoIncAsInteger: Boolean = False);
     function LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
@@ -2133,6 +2134,12 @@ begin
     raise;
   end;
 end;
+
+procedure TJvMemoryData.SwapRecords(Idx1, Idx2: integer);
+begin
+  FRecords.Exchange(Idx1, Idx2);
+end;
+
 
 procedure TJvMemoryData.Sort;
 var
