@@ -34,8 +34,8 @@ Known Issues:
 
 {$IFNDEF VCL}
   {$IFDEF SUPPORTS_COMPILETIME_MESSAGES}
-    {$MESSAGE FATAL 'This unit is only supported for VCL!'}
+    {$MESSAGE FATAL 'This unit is only supported for VCL! Check whether you are building a console application.'}
   {$ELSE}
-    'This unit is only supported for VCL!'
+    'This unit is only supported for VCL! Check whether you are building a console application.'
   {$ENDIF SUPPORTS_COMPILETIME_MESSAGES}
 {$ENDIF !VCL}
