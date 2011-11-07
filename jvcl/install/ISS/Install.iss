@@ -185,18 +185,21 @@ Name: "{app}\lib\d16\win64"
 Name: "{app}\lib\d16\win64\debug"
 
 [Files]
-Source: {#JvclRoot}\changelog.txt; DestDir: "{app}"; Flags: ignoreversion
-Source: {#JvclRoot}\readme.htm; DestDir: "{app}"; Flags: ignoreversion
-Source: {#JvclRoot}\clean.bat; DestDir: "{app}"; Flags: ignoreversion
-Source: {#JvclRoot}\install.bat; DestDir: "{app}"; Flags: ignoreversion
-Source: {#JvclRoot}\makemodified.bat; DestDir: "{app}"; Flags: ignoreversion
-Source: {#JvclRoot}\common\*.inc; DestDir: "{app}\common"; Flags: ignoreversion
+Source: {#JvclRoot}\*; DestDir: "{app}"; Flags: ignoreversion
+Source: {#JvclRoot}\bin\*.csv; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: {#JvclRoot}\bin\*.bmp; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: {#JvclRoot}\bin\*.mdb; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: {#JvclRoot}\bin\Data\*; DestDir: "{app}\bin\Data"; Flags: ignoreversion
+Source: {#JvclRoot}\common\*.inc; DestDir: "{app}\common"; Excludes: "jedi.inc"; Flags: ignoreversion
+Source: {#JvclRoot}\common\jedi\*; DestDir: "{app}\common"; Flags: ignoreversion
 Source: {#JvclRoot}\run\*.pas; DestDir: "{app}\run"; Flags: ignoreversion
 Source: {#JvclRoot}\run\*.dfm; DestDir: "{app}\run"; Flags: ignoreversion
 Source: {#JvclRoot}\design\*.pas; DestDir: "{app}\design"; Flags: ignoreversion
 Source: {#JvclRoot}\design\*.dfm; DestDir: "{app}\design"; Flags: ignoreversion
 Source: {#JvclRoot}\packages\*; DestDir: "{app}\packages"; Excludes: ".svn,__history,*.drc"; Flags: ignoreversion sortfilesbyextension recursesubdirs
+Source: {#JvclRoot}\install\ISS\*; DestDir: "{app}\install\ISS"; Excludes: ".svn,__history"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclRoot}\install\JVCLInstall\*; DestDir: "{app}\install\JVCLInstall"; Excludes: ".svn,__history"; Flags: ignoreversion recursesubdirs sortfilesbyextension
+Source: {#JvclRoot}\install\release\*; DestDir: "{app}\install\release"; Excludes: ".svn,__history"; Flags: ignoreversion recursesubdirs sortfilesbyextension
 Source: {#JvclRoot}\devtools\*; DestDir: "{app}\devtools"; Excludes: ".svn,__history,*.dcu,*.map,bin\*.exe"; Flags: ignoreversion sortfilesbyextension recursesubdirs
 Source: {#JvclRoot}\images\*; DestDir: "{app}\images"; Excludes: ".svn,__history,*.txt"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclRoot}\resources\*; DestDir: "{app}\resources"; Excludes: ".svn,__history,*.txt"; Flags: ignoreversion sortfilesbyextension
