@@ -539,127 +539,6 @@ var
   HookFmtLoadStr: THook;
   {$endif}
 
-function Utf8EncodeChar(wc: WideChar): UTF8String;
-var
-  w: Word;
-begin
-  w := Ord(wc);
-  case w of
-    0..$7F:
-      Result := AnsiChar(w);
-    $80..$3FF:
-      Result := AnsiChar($C0 + (w shr 6)) +
-                AnsiChar($80 + (w and $3F));
-    $400..$FFFF:
-      Result := AnsiChar($E0 +(w shr 12))+
-                AnsiChar($80 +((w shr 6) and $3F)) +
-                AnsiChar($80 +(w and $3F));
-  else
-    raise Exception.Create('Huh, what happened here?');
-  end;
-end;
-
-function Utf8Encode(ws: UnicodeString): UTF8String;
-var
-  i: Integer;
-begin
-  Result := '';
-  for i := 1 to Length(ws) do
-    Result := Result + Utf8EncodeChar(ws[i]);
-end;
-
-// If dummychar is #0, it will raise Exception when an error occurs
-function Utf8Decode(s: UTF8String; dummychar: WideChar = #0): UnicodeString;
-var
-  i: Integer;
-  b: Byte;
-  c: Cardinal;
-  mode: 0..5;
-begin
-  Result := '';
-  mode := 0;
-  c := 0;
-  for i := 1 to Length(s) do
-  begin
-    b := Ord(s[i]);
-    if mode = 0 then
-    begin
-      case b of
-        0..$7F:
-          Result := Result + WideChar(b);
-        $80..$BF, $FF:
-          begin
-            if dummychar = #0 then
-              raise Exception.Create ('Invalid byte sequence encountered in utf-8 string')
-            else
-              Result := Result + dummychar;
-            mode := 0;
-          end;
-        $C0..$DF:
-          begin
-            c := (b and $1F);
-            mode := 1;
-          end;
-        $E0..$EF:
-          begin
-            c := (b and $F);
-            mode := 2;
-          end;
-        $F0..$F7:
-          begin
-            c := (b and $7);
-            mode := 3;
-          end;
-        $F8..$FB:
-          begin
-            c := (b and $3);
-            mode := 4;
-          end;
-        $FC..$FE:
-          begin
-            c := (b and $1);
-            mode := 5;
-          end;
-      end;
-    end
-    else
-    begin
-      case b of
-        $00..$7F, $C0..$FF:
-          if dummychar = #0 then
-            raise Exception.Create('Invalid byte sequence encountered in utf-8 string')
-          else
-            Result:=Result+dummychar;
-        $80..$BF:
-          begin
-            c := c * $40 + (b and $3F);
-            Dec(mode);
-            if mode = 0 then
-            begin
-              if c <= $FFFF then
-                Result := Result + WideChar(c)
-              else
-              begin
-                if dummychar = #0 then
-                  raise Exception.Create('Utf-8 string contained unicode character larger than $FFFF. This is not supported.')
-                else
-                  Result := Result + dummychar;
-              end;
-            end;
-          end;
-      else
-        raise Exception.Create ('Huh? More than 256 different values in a byte?');
-      end;
-    end;
-  end;
-  if mode <> 0 then begin
-    if dummychar = #0 then
-      raise Exception.Create ('Utf-8 string terminated unexpectedly in the middle of a multibyte sequence')
-    else
-      Result := Result + dummychar;
-  end;
-end;
-
 function StripCR(s: UTF8String): UTF8String;
 var
   i: Integer;
@@ -678,7 +557,7 @@ end;
 function DecodePropName(const PropName: ShortString): string;
 begin
   {$IFDEF UNICODE}
-  Result := System.UTF8Decode(PropName);
+  Result := UTF8Decode(PropName);
   {$ELSE}
   Result := PropName;
   {$ENDIF UNICODE}
