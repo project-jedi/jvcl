@@ -1263,6 +1263,9 @@ implementation
 
 uses
   TypInfo,
+  {$IFDEF CPUX64}
+  System.Rtti,
+  {$ENDIF CPUX64}
   {$IFDEF JvInterpreter_OLEAUTO}
   OleConst, ActiveX, ComObj,
   {$ENDIF JvInterpreter_OLEAUTO}
@@ -1804,17 +1807,23 @@ end;
 
 type
   TFunc = procedure;
+  {$IFNDEF CPU64}
   TiFunc = function: Integer;
   TfFunc = function: Boolean;
   TwFunc = function: Word;
+  {$ENDIF ~CPU64}
 
 function CallDllIns(Ins: HINST; const FuncName: string; Args: TJvInterpreterArgs;
   ParamDesc: TTypeArray; ResTyp: Word): Variant;
 var
   Func: TFunc;
+  {$IFNDEF CPU64}
   iFunc: TiFunc;
   fFunc: TfFunc;
   wFunc: TwFunc;
+  {$ELSE}
+  Params: TArray<System.Rtti.TValue>;
+  {$ENDIF ~CPU64}
   I: Integer;
   AInt: Integer;
  // Abyte : Byte;
@@ -1824,13 +1833,20 @@ var
 begin
   Result := Null;
   Func := GetProcAddress(Ins, PChar(FuncName));
+  {$IFNDEF CPU64}
   iFunc := @Func;
   fFunc := @Func;
   wFunc := @Func;
+  {$ENDIF ~CPU64}
   if Assigned(Func) then
   begin
     try
+      {$IFNDEF CPU64}
       for I := Args.Count - 1 downto 0 do { 'stdcall' call conversion }
+      {$ELSE}
+      SetLength(Params, Args.Count);
+      for I := 0 to Args.Count - 1 do
+      {$ENDIF ~CPU64}
       begin
         if (ParamDesc[I] and varByRef) = 0 then
           case ParamDesc[I] of
@@ -1842,7 +1858,7 @@ begin
                   push AInt
                 end;
                 {$ELSE}
-                {$MESSAGE WARN 'Needs review for x64'}
+                Params[I] := TValue.From(AInt);
                 {$ENDIF ~CPU64}
               end;
             varSmallint:
@@ -1853,7 +1869,7 @@ begin
                   push AWord
                 end;
                 {$ELSE}
-                {$MESSAGE WARN 'Needs review for x64'}
+                Params[I] := TValue.From(AWord);
                 {$ENDIF ~CPU64}
               end;
             varString:
@@ -1864,7 +1880,7 @@ begin
                   push APointer
                 end;
                 {$ELSE}
-                {$MESSAGE WARN 'Needs review for x64'}
+                Params[I] := TValue.From(APointer);
                 {$ENDIF ~CPU64}
               end;
           else
@@ -1880,7 +1896,7 @@ begin
                   push APointer
                 end;
                 {$ELSE}
-                {$MESSAGE WARN 'Needs review for x64'}
+                Params[I] := TValue.From(APointer);
                 {$ENDIF ~CPU64}
               end;
             varSmallint:
@@ -1891,7 +1907,7 @@ begin
                   push APointer
                 end;
                 {$ELSE}
-                {$MESSAGE WARN 'Needs review for x64'}
+                Params[I] := TValue.From(APointer);
                 {$ENDIF ~CPU64}
               end;
           else
@@ -1901,13 +1917,29 @@ begin
 
       case ResTyp of
         varSmallint:
-          Result := wFunc;
+          {$IFNDEF CPU64}
+          Result := wFunc();
+          {$ELSE}
+          Result := System.Rtti.Invoke(@Func, Params, System.TypInfo.TCallConv.ccStdCall, TypeInfo(SmallInt), True).AsType<SmallInt>();
+          {$ENDIF ~CPU64}
         varInteger:
-          Result := iFunc;
+          {$IFNDEF CPU64}
+          Result := iFunc();
+          {$ELSE}
+          Result := System.Rtti.Invoke(@Func, Params, System.TypInfo.TCallConv.ccStdCall, TypeInfo(Integer), True).AsType<Integer>();
+          {$ENDIF ~CPU64}
         varBoolean:
-          Result := Boolean(Ord(fFunc));
+          {$IFNDEF CPU64}
+          Result := Boolean(Ord(fFunc()));
+          {$ELSE}
+          Result := Boolean(Ord(System.Rtti.Invoke(@Func, Params, System.TypInfo.TCallConv.ccStdCall, TypeInfo(Boolean), True).AsType<Boolean>()));
+          {$ENDIF ~CPU64}
         varEmpty:
-          Func;
+          {$IFNDEF CPU64}
+          Func();
+          {$ELSE}
+          System.Rtti.Invoke(@Func, Params, System.TypInfo.TCallConv.ccStdCall, nil, True);
+          {$ENDIF ~CPU64}
       else
         JvInterpreterErrorN(ieDllInvalidResult, -1, FuncName);
       end;
@@ -3799,10 +3831,16 @@ var
     AWord: Word;
     iRes: Integer;
     Func: Pointer;
+    {$IFNDEF CPU64}
     RegEAX, RegEDX, RegECX: Integer;
+    {$ELSE}
+    Params: TArray<System.Rtti.TValue>;
+    {$ENDIF ~CPU64}
   begin
     Result := False;
+    {$IFNDEF CPU64}
     iRes := 0;
+    {$ENDIF ~CPU64}
     for I := 0 to FDirectGetList.Count - 1 do
     begin
       JvInterpreterMethod := TJvInterpreterDMethod(FDirectGetList[I]);
@@ -3817,6 +3855,7 @@ var
         Args.Identifier := Identifier;
         CheckAction(Expression, Args, JvInterpreterMethod.Data);
         CheckArgs(Args, JvInterpreterMethod.ParamCount, JvInterpreterMethod.ParamTypes);
+        {$IFNDEF CPU64}
         if ccFastCall in JvInterpreterMethod.CallConvention then
         begin
           { !!! Delphi fast-call !!! }
@@ -3828,25 +3867,17 @@ var
               (JvInterpreterMethod.ParamTypes[J] = varBoolean) {?} then
             begin
               AInt := Args.Values[J];
-              {$IFNDEF CPU64}
               asm
                 push AInt
               end;
-              {$ELSE}
-              {$MESSAGE WARN 'Needs review for x64'}
-              {$ENDIF ~CPU64}
             end
             else
             if JvInterpreterMethod.ParamTypes[J] = varSmallint then
             begin
               AWord := Word(Args.Values[J]);
-              {$IFNDEF CPU64}
               asm
                 push AWord
               end;
-              {$ELSE}
-              {$MESSAGE WARN 'Needs review for x64'}
-              {$ENDIF ~CPU64}
             end
             else
               JvInterpreterErrorN(ieDirectInvalidArgument, -1, Identifier);
@@ -3880,7 +3911,6 @@ var
             (JvInterpreterMethod.ResTyp = varEmpty) or
             (JvInterpreterMethod.ResTyp = varObject) or
             (JvInterpreterMethod.ResTyp = varPointer) then
-              {$IFNDEF CPU64}
             asm
               mov      EAX, RegEAX
               mov      EDX, RegEDX
@@ -3888,13 +3918,35 @@ var
               call     Func
               mov      iRes, EAX
             end
-            {$ELSE}
-            begin
-            end
-            {$MESSAGE WARN 'Needs review for x64'}
-            {$ENDIF ~CPU64}
           else
             JvInterpreterErrorN(ieDirectInvalidResult, -1, Identifier);
+        {$ELSE}
+        SetLength(Params, 1 + JvInterpreterMethod.ParamCount);
+        Params[0] := TValue.From(Args.Obj);
+        for J := 0 to JvInterpreterMethod.ParamCount - 1 do
+        begin
+          if (JvInterpreterMethod.ParamTypes[J] = varInteger) or
+             (JvInterpreterMethod.ParamTypes[J] = varBoolean) {?} then
+          begin
+            AInt := Args.Values[J];
+            Params[1 + J] := TValue.From(AInt);
+          end
+          else if JvInterpreterMethod.ParamTypes[J] = varSmallint then
+          begin
+            AWord := Word(Args.Values[J]);
+            Params[1 + J] := TValue.From(AWord);
+          end
+          else if (JvInterpreterMethod.ParamTypes[J] = varObject) or
+                  (JvInterpreterMethod.ParamTypes[J] = varString) or
+                  (JvInterpreterMethod.ParamTypes[J] = varPointer) then
+          begin
+            Params[1 + J] := TValue.From(TVarData(Args.Values[J]).VPointer);
+          end
+          else
+            JvInterpreterErrorN(ieDirectInvalidArgument, -1, Identifier);
+        end;
+        iRes := System.Rtti.Invoke(Func, Params, System.TypInfo.TCallConv.ccReg, TypeInfo(Integer), False).AsType<Integer>();
+        {$ENDIF ~CPU64}
 
           { clear result }
           if (JvInterpreterMethod.ResTyp = varInteger) or
@@ -3912,9 +3964,11 @@ var
           else
           if JvInterpreterMethod.ResTyp = varEmpty then
             Value := Null;
+        {$IFNDEF CPU64}
         end
         else
           JvInterpreterErrorN(ieDirectInvalidConvention, -1, Identifier);
+        {$ENDIF ~CPU64}
         Result := True;
         Exit;
       end;
