@@ -2801,7 +2801,7 @@ begin
   try
     WriteStream(Stream, True);
     Stream.Position := 0;
-    Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
+    Data := GlobalAlloc(GMEM_MOVEABLE, Stream.Size);
     try
       if Data <> 0 then
       begin
