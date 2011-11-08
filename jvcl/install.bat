@@ -21,6 +21,9 @@ if EXIST JVCLCmdStarter.cfg  del JVCLCmdStarter.cfg
 ::if ERRORLEVEL 1 goto Failed
 cd ..\..
 
+:: delete the generated DCU files so that users don't get confused
+del /Q dcu\*.dcu >NUL
+
 :: create mo files, if possible (msgfmt must be in the PATH environment variable)
 echo.
 cd locale
