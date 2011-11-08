@@ -128,7 +128,7 @@ type
     procedure DoCleanPalette(Reg: TRegistry; const Name: string;
       RemoveEmptyPalettes: Boolean);
     procedure ClearPackageCache(const Key: string; const AStartsWith: string);
-    function RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
+    procedure RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup);
 
     procedure UpdateOptions;
     procedure EnableOption(const Name: string; Enable: Boolean; ForceEnable: Boolean = False);
@@ -146,7 +146,7 @@ type
     procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
       DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
     procedure AddPathsToIDE;
-    function RegisterToIDE: Boolean;
+    procedure RegisterDesigntimePackages;
     procedure RegisterJVCLVersionInfo;
 
     function GetOutputDirs(DebugUnits: Boolean): TOutputDirs;
@@ -843,6 +843,8 @@ begin
     AddPaths(Target.SearchPaths, {Add:=}DeveloperInstall, Owner.JVCLDir,
       ['run']); // do not localize
   end;
+
+  Target.SavePaths;
 end;
 
 function TTargetConfig.CanInstallJVCL: Boolean;
@@ -1484,7 +1486,7 @@ begin
   end;
 end;
 
-function TTargetConfig.RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup): Boolean;
+procedure TTargetConfig.RegisterProjectGroupToIDE(ProjectGroup: TProjectGroup);
 var
   PackageIndex, i: Integer;
   KnownPackages, DisabledPackages: TDelphiPackageList;
@@ -1519,12 +1521,10 @@ begin
     end;
   end;
 
-  ProjectGroup.Target.SavePaths;
   ProjectGroup.Target.SavePackagesLists;
-  Result := True;
 end;
 
-function TTargetConfig.RegisterToIDE: Boolean;
+procedure TTargetConfig.RegisterDesigntimePackages;
 var
   Kind: TPackageGroupKind;
   i: Integer;
@@ -1545,7 +1545,7 @@ begin
         end;
       end;
     end;
-    Result := RegisterProjectGroupToIDE(AllPackages);
+    RegisterProjectGroupToIDE(AllPackages);
   finally
     AllPackages.Free;
   end;

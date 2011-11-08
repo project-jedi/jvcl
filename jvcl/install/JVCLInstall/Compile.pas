@@ -1937,7 +1937,7 @@ begin
       begin
         if TargetConfig.CleanPalettes then
           TargetConfig.CleanJVCLPalette(False);
-        TargetConfig.RegisterToIDE;
+        TargetConfig.RegisterDesigntimePackages;
       end;
     end;
   finally
