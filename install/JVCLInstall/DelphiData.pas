@@ -56,15 +56,15 @@ const
 
 type
   TPersonalityType = (
-    persDelphi, persDelphiNet,
-    persBCB, persManagedCpp,
-    persCSharp, persVisualBasic
+    persDelphi,
+    persBCB
   );
   TPersonalities = set of TPersonalityType;
 
 const
   PersNames: array[TPersonalityType] of string = (
-    'Delphi.Win32', 'Delphi.NET', 'BCB', 'BCB.NET'{???}, 'C#Builder', 'VB.NET'
+    'Delphi.Win32', // This is "Delphi" but Embarcadero couldn't rename it
+    'BCB'
   );
 
 type
@@ -970,7 +970,7 @@ begin
     end;
 
     { for BDS >= 5.0 this is the failsafe code
-      for BDS <= 4.0 this it the normal way }
+      for BDS <= 4.0 this is the normal way }
     LibraryKey := RegistryKey + '\Library';
     if IDEVersion >= 9 then
       LibraryKey := LibraryKey + '\' + PlatformName;
@@ -1020,6 +1020,7 @@ begin
       Reg.CloseKey;
     end;
 
+    (*
     if IsBDS and (IDEVersion = 6) then
     begin
       { Repair C++ Paths that were destroyed by a previous installer version }
@@ -1041,7 +1042,8 @@ begin
         FGlobalCppLibraryPaths.Insert(2, '$(BDS)\RaveReports\Lib');
       end;
     end;
- finally
+    *)
+  finally
     Reg.Free;
   end;
 

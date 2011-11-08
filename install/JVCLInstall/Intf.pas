@@ -76,7 +76,7 @@ type
     procedure DeinstallJVCL(Progress: TDeinstallProgressEvent;
       DeleteFiles: TDeleteFilesEvent; RealUninstall: Boolean);
     procedure AddPathsToIDE;
-    function RegisterToIDE: Boolean;
+    procedure RegisterDesigntimePackages;
     procedure GetPackageBinariesForDeletion(List: TStrings);
     procedure CleanJVCLPalette(RemoveEmptyPalettes: Boolean);
     procedure RegisterJVCLVersionInfo;

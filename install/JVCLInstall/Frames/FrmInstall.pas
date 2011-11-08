@@ -396,9 +396,7 @@ begin
         begin
           if SelTargets[i].CleanPalettes then
             SelTargets[i].CleanJVCLPalette(False);
-          Success := SelTargets[i].RegisterToIDE;
-          if not Success then
-            Break;
+          SelTargets[i].RegisterDesigntimePackages;
         end;
   end;
 
