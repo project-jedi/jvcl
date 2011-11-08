@@ -107,100 +107,13 @@ const
 implementation
 
 uses
+  StrUtils,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  {$IFDEF DELPHI64_TEMPORARY}
-  StrUtils,
-  {$ENDIF DELPHI64_TEMPORARY}
   JvConsts, JvResources, JvTypes;
 
 {$R *.dfm}
-
-{$IFDEF DELPHI64_TEMPORARY}
-{$MESSAGE HINT 'Is there at all still a need for Q_PosEx or could always PosEx used?'}
-function Q_PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
-begin
-  Result := PosEx(FindString, SourceString, StartPos);
-end;
-{$ELSE ~DELPHI64_TEMPORARY}
-function Q_PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        PUSH    EBX
-        PUSH    EDX
-        TEST    EAX,EAX
-        JE      @@qt
-        TEST    EDX,EDX
-        JE      @@qt0
-        MOV     ESI,EAX
-        MOV     EDI,EDX
-        MOV     EAX,[EAX-4]
-        MOV     EDX,[EDX-4]
-        DEC     EAX
-        SUB     EDX,EAX
-        DEC     ECX
-        SUB     EDX,ECX
-        JNG     @@qt0
-        MOV     EBX,EAX
-        XCHG    EAX,EDX
-        NOP
-{$IFDEF UNICODE}
-        ADD     EDI,ECX
-        ADD     EDI,ECX
-        MOV     ECX,EAX
-        MOV     AX,WORD PTR [ESI]
-@@lp1:  CMP     AX,WORD PTR [EDI]
-        JE      @@uu
-@@fr:   ADD     EDI,2
-        DEC     ECX
-        JNZ     @@lp1
-@@qt0:  XOR     EAX,EAX
-        JMP     @@qt
-@@ms:   MOV     AX,WORD PTR [ESI]
-        MOV     EBX,EDX
-        JMP     @@fr
-@@uu:   TEST    EDX,EDX
-        JE      @@fd
-@@lp2:  MOV     AX,WORD PTR [ESI+EBX*2]
-        XOR     AX,WORD PTR [EDI+EBX*2]
-        JNE     @@ms
-        DEC     EBX
-        JNE     @@lp2
-@@fd:   LEA     EAX,[EDI+2]
-        SUB     EAX,[ESP]
-        SHR     EAX,1
-{$ELSE}
-        ADD     EDI,ECX
-        MOV     ECX,EAX
-        MOV     AL,BYTE PTR [ESI]
-@@lp1:  CMP     AL,BYTE PTR [EDI]
-        JE      @@uu
-@@fr:   INC     EDI
-        DEC     ECX
-        JNZ     @@lp1
-@@qt0:  XOR     EAX,EAX
-        JMP     @@qt
-@@ms:   MOV     AL,BYTE PTR [ESI]
-        MOV     EBX,EDX
-        JMP     @@fr
-@@uu:   TEST    EDX,EDX
-        JE      @@fd
-@@lp2:  MOV     AL,BYTE PTR [ESI+EBX]
-        XOR     AL,BYTE PTR [EDI+EBX]
-        JNE     @@ms
-        DEC     EBX
-        JNE     @@lp2
-@@fd:   LEA     EAX,[EDI+1]
-        SUB     EAX,[ESP]
-{$ENDIF UNICODE}
-@@qt:   POP     ECX
-        POP     EBX
-        POP     EDI
-        POP     ESI
-end;
-{$ENDIF ~DELPHI64_TEMPORARY}
 
 procedure SaveAnsiFileFromString(const AFile, AText: string);
 var
@@ -290,7 +203,7 @@ begin
       StartPos := FDicIndex[I - 1]
     else
       StartPos := 1;
-    P := Q_PosEx(Cr + Chr(96 + I), FDict, StartPos);
+    P := PosEx(Cr + Chr(96 + I), FDict, StartPos);
     if P <> 0 then
       FDicIndex[I] := P
     else
@@ -309,7 +222,7 @@ begin
       StartPos := FUserDicIndex[I - 1]
     else
       StartPos := 1;
-    P := Q_PosEx(Cr + Chr(96 + I), FUserDic, StartPos);
+    P := PosEx(Cr + Chr(96 + I), FUserDic, StartPos);
     if P <> 0 then
       FUserDicIndex[I] := P
     else
@@ -405,7 +318,7 @@ begin
     else
       StartPos := 1;
 
-    if Q_PosEx(S + Cr, FDict, StartPos) = 0 then
+    if PosEx(S + Cr, FDict, StartPos) = 0 then
     begin
       if FUserDic <> '' then
       begin
@@ -413,7 +326,7 @@ begin
           StartPos := FUserDicIndex[Index]
         else
           StartPos := 1;
-        if Q_PosEx(S + Cr, FUserDic, StartPos) = 0 then
+        if PosEx(S + Cr, FUserDic, StartPos) = 0 then
         begin
           CreateSpellerDialog(Spw);
           try
@@ -465,7 +378,7 @@ begin
     else
       StartPos := 1;
 
-    if Q_PosEx(S + Cr, FDict, StartPos) = 0 then
+    if PosEx(S + Cr, FDict, StartPos) = 0 then
     begin
       if FUserDic <> '' then
       begin
@@ -473,7 +386,7 @@ begin
           StartPos := FUserDicIndex[Index]
         else
           StartPos := 1;
-        if Q_PosEx(S + Cr, FUserDic, StartPos) = 0 then
+        if PosEx(S + Cr, FUserDic, StartPos) = 0 then
         begin
           FSpellerDialog.TxtSpell.Text := Spw;
           FSpellerDialog.LblContext.Caption := Copy(FSourceText, FWordBegin, 75);

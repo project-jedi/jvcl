@@ -4070,9 +4070,7 @@ var
   B: Byte;
 begin
   InStream.Position := 0;
-  Count := 1024;
-  while Count = 1024 do
-  begin
+  repeat
     Count := InStream.Read(Buf1, 1024);
     Count2 := 0;
     I := 0;
@@ -4112,7 +4110,7 @@ begin
       end;
     end;
     OutStream.Write(Buf2, Count2);
-  end;
+  until Count <> 1024;
 end;
 
 procedure RleDecompressTo(InStream, OutStream: TStream);
@@ -4123,9 +4121,7 @@ var
   B: Byte;
 begin
   InStream.Position := 0;
-  Count := 1024;
-  while Count = 1024 do
-  begin
+  repeat
     Count := InStream.Read(Buf1, 1024);
     Count2 := 0;
     I := 0;
@@ -4152,7 +4148,7 @@ begin
       Inc(I);
     end;
     OutStream.Write(Buf2, Count2);
-  end;
+  until Count <> 1024;
 end;
 
 procedure RleCompress(Stream: TStream);
