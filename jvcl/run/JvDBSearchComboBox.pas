@@ -382,34 +382,39 @@ procedure TJvDBCustomSearchComboBox.ReadList;
 var
   Bmrk: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
   N, CurIndex: Integer;
+  DataSet: TDataSet;
+  Field: TField;
 begin
-  if (FDataLink.DataField = nil) or (FDataLink.DataSet = nil) or
-     (not FDataLink.DataSet.Active) then
+  if (FDataLink.DataField = nil) or (FDataLink.DataSet = nil) or not FDataLink.DataSet.Active then
     Exit;
-  ClearList;
-  CurIndex := -1;
-  with FDataLink.DataSet do
-  begin
-    Bmrk := Bookmark;
-    DisableControls;
+  Items.BeginUpdate;
+  try
+    DataSet := FDataLink.DataSet;
+    ClearList;
+    CurIndex := -1;
+    Bmrk := DataSet.Bookmark;
+    DataSet.DisableControls;
     N := 0;
     try
-      First;
-      while not EOF do
+      Field := DataSet.FieldByName(FDataLink.FDataFieldName);
+      DataSet.First;
+      while not DataSet.Eof do
       begin
-        FBookmarks.Add(GetBookmark);
-        Items.AddObject(FieldByName(FDataLink.FDataFieldName).DisplayText, TObject(FBookmarks[N]));
-        if {$IFDEF RTL200_UP}CompareBookmarks(Bookmark, Bmrk) = 0{$ELSE}Bookmark = Bmrk{$ENDIF RTL200} then
+        FBookmarks.Add(DataSet.GetBookmark);
+        Items.AddObject(Field.DisplayText, TObject(FBookmarks[N]));
+        if {$IFDEF RTL200_UP}DataSet.CompareBookmarks(DataSet.Bookmark, Bmrk) = 0{$ELSE}DataSet.Bookmark = Bmrk{$ENDIF RTL200} then
           CurIndex := N;
         Inc(N);
-        Next;
+        DataSet.Next;
       end;
-      Bookmark := Bmrk;
+      DataSet.Bookmark := Bmrk;
     finally
-      EnableControls;
+      DataSet.EnableControls;
     end;
-    ItemIndex := CurIndex;
+  finally
+    Items.EndUpdate;
   end;
+  ItemIndex := CurIndex;
 end;
 
 procedure TJvDBCustomSearchComboBox.ClearList;
