@@ -115,6 +115,58 @@ uses
 
 {$R *.dfm}
 
+{$IFDEF COMPILER6} // BCB 6 doesn't have the PosEx function (Delphi 6 has)
+function PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
+asm
+        PUSH    ESI
+        PUSH    EDI
+        PUSH    EBX
+        PUSH    EDX
+        TEST    EAX,EAX
+        JE      @@qt
+        TEST    EDX,EDX
+        JE      @@qt0
+        MOV     ESI,EAX
+        MOV     EDI,EDX
+        MOV     EAX,[EAX-4]
+        MOV     EDX,[EDX-4]
+        DEC     EAX
+        SUB     EDX,EAX
+        DEC     ECX
+        SUB     EDX,ECX
+        JNG     @@qt0
+        MOV     EBX,EAX
+        XCHG    EAX,EDX
+        NOP
+        ADD     EDI,ECX
+        MOV     ECX,EAX
+        MOV     AL,BYTE PTR [ESI]
+@@lp1:  CMP     AL,BYTE PTR [EDI]
+        JE      @@uu
+@@fr:   INC     EDI
+        DEC     ECX
+        JNZ     @@lp1
+@@qt0:  XOR     EAX,EAX
+        JMP     @@qt
+@@ms:   MOV     AL,BYTE PTR [ESI]
+        MOV     EBX,EDX
+        JMP     @@fr
+@@uu:   TEST    EDX,EDX
+        JE      @@fd
+@@lp2:  MOV     AL,BYTE PTR [ESI+EBX]
+        XOR     AL,BYTE PTR [EDI+EBX]
+        JNE     @@ms
+        DEC     EBX
+        JNE     @@lp2
+@@fd:   LEA     EAX,[EDI+1]
+        SUB     EAX,[ESP]
+@@qt:   POP     ECX
+        POP     EBX
+        POP     EDI
+        POP     ESI
+end;
+{$ENDIF COMPILER6}
+
 procedure SaveAnsiFileFromString(const AFile, AText: string);
 var
   AnsiText: AnsiString;
