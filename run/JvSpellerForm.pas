@@ -115,7 +115,7 @@ uses
 
 {$R *.dfm}
 
-{$IFDEF COMPILER6} // BCB 6 doesn't have the PosEx function (Delphi 6 has)
+{$IFDEF COMPILER6} // BCB 6 doesn't have the PosEx function
 function PosEx(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm
         PUSH    ESI
