@@ -152,6 +152,7 @@ function FormatAnsiSQLCondition(const FieldName, Operator, Value: string;
 
 const
   TrueExpr = '0=0';
+  {$NODEFINE TrueExpr}
 
 const
   { Server Date formats}

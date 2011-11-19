@@ -101,7 +101,9 @@ uses
 const
   // (rom) this name is shared in several units and should be made global
   cItem = 'Item';
+  {$NODEFINE cItem}
   cVersionCheckName = 'Version';
+  {$NODEFINE cVersionCheckName}
 
 type
   TJvCustomAppStorage = class;

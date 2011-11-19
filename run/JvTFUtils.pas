@@ -36,13 +36,12 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Graphics, Controls, Classes, SysUtils;
 
+{$IFNDEF COMPILER12_UP} // Delphi 2009 knows System::TDate and System::TTime
 {$HPPEMIT '#ifndef TDate'}
-
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
-
-
 {$HPPEMIT '#endif'}
+{$ENDIF ~COMPILER12_UP}
 
 type
   TJvTFVisibleScrollBars = set of (vsbHorz, vsbVert);
