@@ -754,8 +754,10 @@ begin
     Exit;
   w := CalculateFormWidth;
   W := Round(W/10)*10;
-  if (ClientWidth < W-50) or (ClientWidth > W+50)then // Reduces the resize flickering when the text is changed to often
-    ClientWidth := W;
+  if W < (ClientWidth -50) then // Reduces the resize flickering when the text is changed to often
+    ClientWidth := W
+  else if W > ClientWidth then
+    ClientWidth := W+20; // Reduces the resize flickering when the text is changed to often
   SetControlHeightWidth;
   h := CalculateFormHeight + FDefaultBorderWidth*2;
   h := Round(h/10)*10;
