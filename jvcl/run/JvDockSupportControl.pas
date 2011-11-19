@@ -3573,8 +3573,8 @@ var
   TCItem: TTCItem;
 begin
   TCItem.mask := TCIF_PARAM;
-  TCItem.lParam := Longint(AObject);
-  if SendMessage(FTabControl.Handle, TCM_SETITEM, Index, LPARAM(@TCItem)) = 0 then
+  TCItem.lParam := LPARAM(AObject);
+  if SendMessage(FTabControl.Handle, TCM_SETITEM, WPARAM(Index), LPARAM(@TCItem)) = 0 then
     TabControlError(Format(sTabFailSetObject, [Index]));
 end;
 

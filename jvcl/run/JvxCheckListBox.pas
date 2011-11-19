@@ -330,6 +330,9 @@ implementation
 
 uses
   SysUtils, Consts, Math,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils, // ULONG_PTR
+  {$ENDIF ~COMPILER12_UP}
   JvConsts, JvJVCLUtils, JvThemes;
 
 //=== { TJvListBoxStrings } ==================================================
@@ -370,13 +373,13 @@ end;
 function TJvListBoxStrings.GetObject(Index: Integer): TObject;
 begin
   Result := TObject(ListBox.GetItemData(Index));
-  if Longint(Result) = LB_ERR then
+  if LPARAM(Result) = LPARAM(LB_ERR) then
     Error(SListIndexError, Index);
 end;
 
 procedure TJvListBoxStrings.PutObject(Index: Integer; AObject: TObject);
 begin
-  ListBox.SetItemData(Index, Longint(AObject));
+  ListBox.SetItemData(Index, LPARAM(AObject));
 end;
 
 function TJvListBoxStrings.Add(const S: string): Integer;
@@ -1016,7 +1019,7 @@ procedure TJvxCustomListBox.WMPaint(var Msg: TWMPaint);
     begin
       MeasureItemStruct.itemID := I;
       if I < Items.Count then
-        MeasureItemStruct.itemData := Longint(Items.Objects[I]);
+        MeasureItemStruct.itemData := ULONG_PTR(Items.Objects[I]);
       MeasureItemStruct.itemWidth := W;
       MeasureItemStruct.itemHeight := FItemHeight;
       DrawItemStruct.itemData := MeasureItemStruct.itemData;
@@ -1965,7 +1968,7 @@ end;
 function TJvxCheckListBox.CreateCheckObject(Index: Integer): TObject;
 begin
   Result := TJvCheckListBoxItem.Create;
-  inherited SetItemData(Index, Longint(Result));
+  inherited SetItemData(Index, LPARAM(Result));
 end;
 
 function TJvxCheckListBox.IsCheckObject(Index: Integer): Boolean;

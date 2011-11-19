@@ -1179,7 +1179,7 @@ begin
   begin
     Msg.Msg := CM_EXPANDED;
     Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(Self);
+    Msg.LParam := LPARAM(Self);
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;

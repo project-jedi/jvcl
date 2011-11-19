@@ -269,11 +269,6 @@ end;
 // Generic dialog hook. Centers the dialog on the screen in response to
 // the WM_INITDIALOG message
 
-{$IFNDEF RTL230_UP}
-type
-  LONG_PTR = LongInt;
-{$ENDIF ~RTL230_UP}
-
 function DialogHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
 begin
   Result := 0;
@@ -282,10 +277,8 @@ begin
     CenterWindow(Wnd);
     THackCommonDialog(CreationControl).FHandle := Wnd;
     THackCommonDialog(CreationControl).FDefWndProc :=
-      Pointer({$IFDEF RTL230_UP}SetWindowLongPtr{$ELSE}SetWindowLong{$ENDIF RTL230_UP}(Wnd, GWL_WNDPROC,
-      LONG_PTR(THackCommonDialog(CreationControl).FObjectInstance)));
-    CallWindowProc(THackCommonDialog(CreationControl).FObjectInstance, Wnd,
-      Msg, AWParam, ALParam);
+      Pointer(SetWindowLongPtr(Wnd, GWL_WNDPROC, LONG_PTR(THackCommonDialog(CreationControl).FObjectInstance)));
+    CallWindowProc(THackCommonDialog(CreationControl).FObjectInstance, Wnd, Msg, AWParam, ALParam);
     CreationControl := nil;
   end;
 end;

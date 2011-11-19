@@ -337,17 +337,17 @@ end;
 procedure TJvExCustomMaskEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomMaskEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomMaskEdit.GetDlgCode(var Code: TDlgCodes);
@@ -356,12 +356,12 @@ end;
 
 procedure TJvExCustomMaskEdit.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCustomMaskEdit.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCustomMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -667,17 +667,17 @@ end;
 procedure TJvExMaskEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExMaskEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExMaskEdit.GetDlgCode(var Code: TDlgCodes);
@@ -686,12 +686,12 @@ end;
 
 procedure TJvExMaskEdit.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExMaskEdit.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;

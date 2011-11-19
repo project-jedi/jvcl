@@ -356,7 +356,7 @@ end;
 
 function IsConsoleWindow(AHandle: THandle): Boolean;
 begin
-  Result := LongWord(GetWindowLong(AHandle, GWL_HINSTANCE)) = WinSrvHandle;
+  Result := THandle(GetWindowLongPtr(AHandle, GWL_HINSTANCE)) = WinSrvHandle;
 end;
 
 function InternalCloseApp(ProcessID: DWORD; UseQuit: Boolean): Boolean;

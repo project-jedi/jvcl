@@ -1400,7 +1400,7 @@ begin
     LName := AParent.Name;
     Write(Indent + '      <parent>');
     Write(Indent + '        <class>' + LClassName + '</class>');
-    Write(Indent + '        <name>' + LName + '@' + IntToHex(Integer(AParent), 8) + '</name>');
+    Write(Indent + '        <name>' + LName + '@' + IntToHex(LPARAM(AParent), 2 * SizeOf(LPARAM)) + '</name>');
     if AParent is TJvDockPanel then
     begin
       DockServer := TJvDockPanel(AParent).DockServer;
@@ -1604,7 +1604,7 @@ begin
     LName := AParent.Name;
     //Write(Indent + '      <parent>');
     //Write(Indent + '        <class>' + LClassName + '</class>');
-    //Write(Indent + '        <name>' + LName + '@' + IntToHex(Integer(AParent), 8) + '</name>');
+    //Write(Indent + '        <name>' + LName + '@' + IntToHex(LPARAM(AParent), 2 * SizeOf(LPARAM)) + '</name>');
     if AParent is TJvDockPanel then
     begin
       (*DockServer := TJvDockPanel(AParent).DockServer;

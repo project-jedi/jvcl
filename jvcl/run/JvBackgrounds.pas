@@ -1500,7 +1500,7 @@ begin
     if not ((csLoading in FClient.ComponentState) or ((FClient is TCustomForm) and (csDesigning in FClient.ComponentState))) then
     begin
       FClient.HandleNeeded;
-      FPrevWndProc := Pointer(SetWindowLong(ClientHandle, GWL_WNDPROC, Longint(FNewWndProc)));
+      FPrevWndProc := Pointer(SetWindowLongPtr(ClientHandle, GWL_WNDPROC, LONG_PTR(FNewWndProc)));
       FBackground.FImage.UpdateWorkingBmp;
     end;
 end;
@@ -1514,8 +1514,7 @@ begin
     begin
       if FClient.HandleAllocated then
       begin
-        if (Longint(FNewWndProc) <>
-          SetWindowLong(ClientHandle, GWL_WNDPROC, Longint(FPrevWndProc))) and
+        if (FNewWndProc <> Pointer(SetWindowLongPtr(ClientHandle, GWL_WNDPROC, LONG_PTR(FPrevWndProc)))) and
           not (csDestroying in FClient.ComponentState) then
           MessageDlg(Format(SChainError, [FBackground.Owner.Name, FBackground.Name, FClient.Name,
             WorkaroundStr[csDesigning in FBackground.ComponentState]]),

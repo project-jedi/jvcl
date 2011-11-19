@@ -104,6 +104,11 @@ uses
 const
   cDefaultFontName = 'MS Sans Serif';
 
+{$IFNDEF COMPILER12_UP}
+type
+  NativeInt = Integer;
+{$ENDIF ~COMPILER12_UP}
+
 //=== { TJvCheckItemsProperty } ==============================================
 
 function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;
@@ -130,7 +135,7 @@ begin
     end;
     CheckList.Items := TStrings(GetOrdValue);
     if ShowModal = mrOk then
-      SetOrdValue(Longint(CheckList.Items));
+      SetOrdValue(NativeInt(CheckList.Items));
   finally
     Free;
   end;

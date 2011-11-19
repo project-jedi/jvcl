@@ -474,7 +474,7 @@ begin
   else
   begin
     Result := TObject(ListBox.GetItemData(Index));
-    if Longint(Result) = LB_ERR then
+    if LPARAM(Result) = LPARAM(LB_ERR) then
       Error(SListIndexError, Index);
   end;
 end;
@@ -509,7 +509,7 @@ begin
     if (Index <> -1) and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]) then
     begin
       ListBox.DeselectProvider;
-      ListBox.SetItemData(Index, Longint(AObject));
+      ListBox.SetItemData(Index, LPARAM(AObject));
     end;
   end;
 end;

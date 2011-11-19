@@ -200,6 +200,11 @@ uses
   Dlgs, JvDateTimeForm,
   JvTypes, JvStringsForm, JvDsgnConsts, JvConsts;
 
+{$IFNDEF COMPILER12_UP}
+type
+  NativeInt = Integer;
+{$ENDIF ~COMPILER12_UP}
+
 function ValueName(E: Extended): string;
 begin
   if E = High(Integer) then
@@ -905,7 +910,7 @@ begin
   begin
     if not (Form is GetTypeData(GetPropType)^.ClassType) then
       raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-    SetOrdValue(Longint(Form));
+    SetOrdValue(NativeInt(Form));
   end
   else
     inherited SetValue(Value);

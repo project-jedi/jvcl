@@ -64,7 +64,7 @@ uses
 
 procedure TCommonDialog_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TCommonDialog(Args.Obj).Handle);
+  Value := NativeInt(TCommonDialog(Args.Obj).Handle);
 end;
 
 

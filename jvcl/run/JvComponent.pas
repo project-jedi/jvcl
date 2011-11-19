@@ -146,7 +146,7 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
-{$IFNDEF DELPHI2009_UP}
+{$IFNDEF COMPILER12_UP}
 procedure TJvForm.CMShowingChanged(var Message: TMessage);
 var
   NewParent: HWND;
@@ -157,7 +157,7 @@ begin
     begin
       // restore StayOnTop
       NewParent := Application.Handle;
-      if GetWindowLong(Handle, GWL_HWNDPARENT) <> Longint(NewParent) then
+      if HWND(GetWindowLong(Handle, GWL_HWNDPARENT)) <> NewParent then
         SetWindowLong(Handle, GWL_HWNDPARENT, Longint(NewParent));
       SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOACTIVATE);
     end
@@ -176,14 +176,14 @@ begin
           NewParent := Application.MainForm.Handle;
         if NewParent = 0 then
           NewParent := Application.Handle;
-        if GetWindowLong(Handle, GWL_HWNDPARENT) <> Longint(NewParent) then
+        if HWND(GetWindowLong(Handle, GWL_HWNDPARENT)) <> NewParent then
           SetWindowLong(Handle, GWL_HWNDPARENT, Longint(NewParent));
       end;
     end;
   end;
   inherited;
 end;
-{$ENDIF ~DELPHI2009_UP}
+{$ENDIF ~COMPILER12_UP}
 
 function TJvForm.ShowModal: Integer;
 var

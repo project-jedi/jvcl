@@ -76,7 +76,7 @@ type
     Msg: Cardinal;
     Index: Integer;
     {$IFDEF COMPILER16_UP}
-	WParamFiller: TDWordFiller;
+    WParamFiller: TDWordFiller;
     {$ENDIF COMPILER16_UP}
     Control: TControl;
     Result: LRESULT;

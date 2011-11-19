@@ -92,7 +92,7 @@ type
     FActionLink: TJvOutlookBarButtonActionLink;
     FImageIndex: TImageIndex;
     FCaption: TCaption;
-    FTag: Integer;
+    FTag: NativeInt;
     FDown: Boolean;
     FEnabled: Boolean;
     FAutoToggle: Boolean;
@@ -120,7 +120,7 @@ type
     property Action: TBasicAction read GetAction write SetAction;
     property Caption: TCaption read FCaption write SetCaption;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
-    property Tag: Integer read FTag write FTag;
+    property Tag: NativeInt read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
     property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
@@ -530,7 +530,7 @@ begin
   Parent := AParent;
   BorderStyle := bsNone;
   ParentFont := False;
-  Tag := Integer(AObject);
+  Tag := NativeInt(AObject);
 end;
 
 destructor TJvOutlookBarEdit.Destroy;
@@ -542,13 +542,13 @@ end;
 
 procedure TJvOutlookBarEdit.EditAccept;
 begin
-  Parent.Perform(CM_CAPTION_EDIT_ACCEPT, WPARAM(Self), Tag);
+  Parent.Perform(CM_CAPTION_EDIT_ACCEPT, WPARAM(Self), LPARAM(Tag));
   Hide;
 end;
 
 procedure TJvOutlookBarEdit.EditCancel;
 begin
-  Parent.Perform(CM_CAPTION_EDIT_CANCEL, WPARAM(Self), Tag);
+  Parent.Perform(CM_CAPTION_EDIT_CANCEL, WPARAM(Self), LPARAM(Tag));
   Hide;
 end;
 
@@ -2589,7 +2589,7 @@ var
   B: TJvOutlookBarButton;
   P: TJvOutlookBarPage;
 begin
-  TJvOutlookBarEdit(FEdit).Tag := Msg.WParam;
+  TJvOutlookBarEdit(FEdit).Tag := NativeInt(Msg.WParam);
 //  TJvOutlookBarEdit(FEdit).Font.Name := Pages[ActivePageIndex].Font.Name;
 //  TJvOutlookBarEdit(FEdit).Font.Size := Pages[ActivePageIndex].Font.Size;
   case Msg.LParam of
@@ -2729,8 +2729,6 @@ begin
     end;
 end;
 
-
-
 procedure TJvCustomOutlookBar.CMDialogChar(var Msg: TCMDialogChar);
 var
   I: Integer;
@@ -2759,9 +2757,6 @@ begin
   end;
   inherited;
 end;
-
-
-
 
 function TJvCustomOutlookBar.DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage;
   Index: Integer; Down, Inside: Boolean): Boolean;
@@ -2855,7 +2850,6 @@ procedure TJvPageBtnProps.SetShadow(const Value: TColor);
 begin
   FShadow := Value;
 end;
-
 
 
 {$IFDEF UNITVERSIONING}

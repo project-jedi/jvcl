@@ -81,7 +81,7 @@ begin
     if (Dlg.ShowModal = mrOK) or (Dlg.Tag = 0) then
     begin
       Dlg.SaveToStr(Res);
-//      SetOrdValue(Integer(Res));
+//      SetOrdValue(NativeInt(Res));
     end;
   finally
     Dlg.Free;

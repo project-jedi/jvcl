@@ -672,7 +672,7 @@ end;
 
 function TJvDropTarget.GetFilenames(List: TStrings): Integer;
 var
-  DragH: Integer;
+  DragH: HDROP;
   Medium: TStgMedium;
   Name: string;
   I, Count, Len: Integer;
@@ -681,7 +681,7 @@ begin
   if FDataObject.GetData(FileDropFormatEtc, Medium) = S_OK then
     try
       try
-        DragH := Integer(GlobalLock(Medium.hGlobal));
+        DragH := HDROP(GlobalLock(Medium.hGlobal));
         try
           Count := DragQueryFile(DragH, Cardinal(-1), nil, 0);
           if List <> nil then
@@ -710,7 +710,7 @@ end;
 
 function TJvDropTarget.GetFilenamesW(List: TWideStrings): Integer;
 var
-  DragH: Integer;
+  DragH: HDROP;
   Medium: TStgMedium;
   Name: widestring;
   I, Count, Len: Integer;
@@ -719,7 +719,7 @@ begin
   if FDataObject.GetData(FileDropFormatEtc, Medium) = S_OK then
     try
       try
-        DragH := Integer(GlobalLock(Medium.hGlobal));
+        DragH := HDROP(GlobalLock(Medium.hGlobal));
         try
           Count := DragQueryFileW(DragH, Cardinal(-1), nil, 0);
           if List <> nil then

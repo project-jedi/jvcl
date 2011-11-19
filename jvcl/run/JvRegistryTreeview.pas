@@ -156,6 +156,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils, // NativeInt
+  {$ENDIF ~COMPILER12_UP}
   JvResources, JvJVCLUtils;
 
 {$R JvRegistryTreeView.res}
@@ -181,9 +184,9 @@ begin
     TmpNode := Node;
     while TmpNode <> nil do
     begin
-      if Longint(TmpNode.Data) < 0 then
+      if NativeInt(HKEY(TmpNode.Data)) < 0 then
       begin
-        Reg.RootKey := Longint(TmpNode.Data);
+        Reg.RootKey := HKEY(TmpNode.Data);
         Result := True;
         Break;
       end;

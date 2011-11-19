@@ -1853,17 +1853,17 @@ end;
 procedure TJvExCustomPanel.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomPanel.GetDlgCode(var Code: TDlgCodes);
@@ -1872,12 +1872,12 @@ end;
 
 procedure TJvExCustomPanel.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCustomPanel.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCustomPanel.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -2142,17 +2142,17 @@ end;
 procedure TJvExCustomRadioGroup.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomRadioGroup.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomRadioGroup.GetDlgCode(var Code: TDlgCodes);
@@ -2161,12 +2161,12 @@ end;
 
 procedure TJvExCustomRadioGroup.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCustomRadioGroup.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCustomRadioGroup.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -2431,17 +2431,17 @@ end;
 procedure TJvExCustomControlBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomControlBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomControlBar.GetDlgCode(var Code: TDlgCodes);
@@ -2450,12 +2450,12 @@ end;
 
 procedure TJvExCustomControlBar.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCustomControlBar.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCustomControlBar.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -2720,17 +2720,17 @@ end;
 procedure TJvExControlBar.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExControlBar.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExControlBar.GetDlgCode(var Code: TDlgCodes);
@@ -2739,12 +2739,12 @@ end;
 
 procedure TJvExControlBar.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExControlBar.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExControlBar.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -3009,17 +3009,17 @@ end;
 procedure TJvExPanel.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExPanel.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExPanel.GetDlgCode(var Code: TDlgCodes);
@@ -3028,12 +3028,12 @@ end;
 
 procedure TJvExPanel.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExPanel.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExPanel.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -3298,17 +3298,17 @@ end;
 procedure TJvExRadioGroup.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExRadioGroup.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExRadioGroup.GetDlgCode(var Code: TDlgCodes);
@@ -3317,12 +3317,12 @@ end;
 
 procedure TJvExRadioGroup.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExRadioGroup.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExRadioGroup.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -3587,17 +3587,17 @@ end;
 procedure TJvExPage.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExPage.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExPage.GetDlgCode(var Code: TDlgCodes);
@@ -3606,12 +3606,12 @@ end;
 
 procedure TJvExPage.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExPage.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExPage.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -3876,17 +3876,17 @@ end;
 procedure TJvExNotebook.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExNotebook.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExNotebook.GetDlgCode(var Code: TDlgCodes);
@@ -3895,12 +3895,12 @@ end;
 
 procedure TJvExNotebook.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExNotebook.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExNotebook.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -4165,17 +4165,17 @@ end;
 procedure TJvExHeader.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExHeader.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExHeader.GetDlgCode(var Code: TDlgCodes);
@@ -4184,12 +4184,12 @@ end;
 
 procedure TJvExHeader.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExHeader.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExHeader.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -4604,17 +4604,17 @@ end;
 procedure TJvExCustomLabeledEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomLabeledEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomLabeledEdit.GetDlgCode(var Code: TDlgCodes);
@@ -4623,12 +4623,12 @@ end;
 
 procedure TJvExCustomLabeledEdit.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCustomLabeledEdit.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCustomLabeledEdit.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -4893,17 +4893,17 @@ end;
 procedure TJvExLabeledEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExLabeledEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExLabeledEdit.GetDlgCode(var Code: TDlgCodes);
@@ -4912,12 +4912,12 @@ end;
 
 procedure TJvExLabeledEdit.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExLabeledEdit.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExLabeledEdit.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -5182,17 +5182,17 @@ end;
 procedure TJvExCustomColorBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomColorBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCustomColorBox.GetDlgCode(var Code: TDlgCodes);
@@ -5201,12 +5201,12 @@ end;
 
 procedure TJvExCustomColorBox.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCustomColorBox.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCustomColorBox.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
@@ -5471,17 +5471,17 @@ end;
 procedure TJvExColorBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExColorBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExColorBox.GetDlgCode(var Code: TDlgCodes);
@@ -5490,12 +5490,12 @@ end;
 
 procedure TJvExColorBox.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExColorBox.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExColorBox.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;

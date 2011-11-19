@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls;
+  JvTypes, JvThemes, JVCLVer, JvExControls;
 
 type
   WINCONTROL_DECL_DEFAULT(CustomDBGrid)

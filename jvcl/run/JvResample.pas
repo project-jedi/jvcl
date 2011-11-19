@@ -610,9 +610,9 @@ begin
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
     SourceLine := Work.ScanLine[0];
-    Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine);
+    Delta := PAnsiChar(Work.ScanLine[1]) - PAnsiChar(SourceLine);
     DestLine := Dst.ScanLine[0];
-    DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine);
+    DestDelta := PAnsiChar(Dst.ScanLine[1]) - PAnsiChar(DestLine);
     for K := 0 to DstWidth - 1 do
     begin
       DestPixel := Pointer(DestLine);
@@ -624,7 +624,7 @@ begin
         // Weight := 0.0;
         for J := 0 to Contrib^[I].N - 1 do
         begin
-          Color := PColorRGB(Integer(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
+          Color := PColorRGB(PAnsiChar(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
           Weight := Contrib^[I].P^[J].Weight;
           if Weight = 0.0 then
             Continue;
@@ -654,7 +654,7 @@ begin
         else
           Color.B := Round(Rgb.B);
         DestPixel^ := Color;
-        Inc({$IFDEF RTL230_UP}INT_PTR{$ELSE}Integer{$ENDIF RTL230_UP}(DestPixel), DestDelta);
+        Inc(PAnsiChar(DestPixel), DestDelta);
       end;
       Inc(SourceLine, 1);
       Inc(DestLine, 1);

@@ -207,6 +207,11 @@ const
   JvInterpreter_MAX_ARRAY_DIMENSION = 10;
 
 type
+
+  {$IFNDEF COMPILER12_UP}
+  NativeInt = Integer; // also redeclare for Delphi 2007 where it is declared as Int64
+  {$ENDIF ~COMPILER12_UP}
+
   { argument definition }
   PValueArray = ^TValueArray;
   TValueArray = array [0..cJvInterpreterMaxArgs] of Variant;
@@ -4779,7 +4784,7 @@ begin
     tkString, tkLString, tkWString:
       SetStrProp(Args.Obj, PropInf, VarToStr(Value));
     tkClass:
-      SetOrdProp(Args.Obj, PropInf, Integer(V2O(Value)));
+      SetOrdProp(Args.Obj, PropInf, NativeInt(V2O(Value)));
     tkSet:
       SetOrdProp(Args.Obj, PropInf, V2S(Value));
     tkInterface:
@@ -5749,7 +5754,7 @@ begin
     if TVarData(Variable).VType = varArray then
     begin
       {Get array value}
-      PP := PJvInterpreterArrayRec(Integer(JvInterpreterVarAsType(Variable, varInteger)));
+      PP := PJvInterpreterArrayRec(NativeInt(JvInterpreterVarAsType(Variable, varInteger)));
       if Args.Count > PP.Dimension then
         JvInterpreterError(ieArrayTooManyParams, -1)
       else
@@ -5828,7 +5833,7 @@ begin
     if TVarData(Variable).VType = varArray then
     begin
       { Get array value }
-      PP := PJvInterpreterArrayRec(Integer(JvInterpreterVarAsType(Variable, varInteger)));
+      PP := PJvInterpreterArrayRec(NativeInt(JvInterpreterVarAsType(Variable, varInteger)));
       if Args.Count > PP.Dimension then
         JvInterpreterError(ieArrayTooManyParams, -1)
       else
@@ -8298,8 +8303,7 @@ end;
 
 procedure TJvInterpreterArrayDataType.Init(var V: Variant);
 begin
-  V := Integer(JvInterpreterArrayInit(FDimension, FArrayBegin, FArrayEnd,
-    FArrayType, FDT));
+  V := NativeInt(JvInterpreterArrayInit(FDimension, FArrayBegin, FArrayEnd, FArrayType, FDT));
   TVarData(V).VType := varArray;
 end;
 

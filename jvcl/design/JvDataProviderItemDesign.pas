@@ -237,7 +237,7 @@ begin
     tkClass:
       begin
         Inc(Result, SizeOf(TClass) + SizeOf(PPTypeInfo) + SizeOf(Smallint) + StringBaseLen(1, @TypeData.UnitName));
-        Inc(Result, PropListSize(Pointer(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName))));
+        Inc(Result, PropListSize(Pointer(PAnsiChar(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName))));
       end;
   end;
 end;
@@ -331,7 +331,7 @@ end;
 
 function GetPropData(TypeData: PTypeData): PPropData;
 begin
-  Result := PPropData(Integer(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName));
+  Result := PPropData(PAnsiChar(@TypeData.UnitName) + StringBaseLen(1, @TypeData.UnitName));
 end;
 
 procedure ClearPropList(const AClass: TClass);
@@ -725,11 +725,11 @@ var
     destProp := PPropInfo(GetPropData(TypeData));
     destIdx := TypeData.PropCount;
     ExistingCount := PPropData(destProp).PropCount;
-    Inc(Integer(destProp), SizeOf(Word));
+    Inc(PAnsiChar(destProp), SizeOf(Word));
     BaseInfoSize := SizeOf(TPropInfo) - SizeOf(ShortString) + 1;
     while ExistingCount > 0 do
     begin
-      Inc(Integer(destProp), BaseInfoSize + Length(destProp.Name));
+      Inc(PAnsiChar(destProp), BaseInfoSize + Length(destProp.Name));
       Dec(ExistingCount);
     end;
   end;
@@ -802,7 +802,7 @@ var
       {$ENDIF COMPILER10_UP}
     end;
     // advance destination pointer
-    Inc(Integer(destProp), size);
+    Inc(PAnsiChar(destProp), size);
   end;
 
   procedure CopyExtensionProperties;

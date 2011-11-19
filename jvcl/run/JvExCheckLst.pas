@@ -251,17 +251,17 @@ end;
 procedure TJvExCheckListBox.ControlsListChanging(Control: TControl; Inserting: Boolean);
 begin
   if Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCheckListBox.ControlsListChanged(Control: TControl; Inserting: Boolean);
 begin
   if not Inserting then
-    BaseWndProc(CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+    BaseWndProc(CM_CONTROLLISTCHANGE, WPARAM(Control), LPARAM(Inserting))
   else
-    BaseWndProc(CM_CONTROLCHANGE, Integer(Control), Integer(Inserting));
+    BaseWndProc(CM_CONTROLCHANGE, WPARAM(Control), LPARAM(Inserting));
 end;
 
 procedure TJvExCheckListBox.GetDlgCode(var Code: TDlgCodes);
@@ -270,12 +270,12 @@ end;
 
 procedure TJvExCheckListBox.FocusSet(PrevWnd: THandle);
 begin
-  BaseWndProc(WM_SETFOCUS, Integer(PrevWnd), 0);
+  BaseWndProc(WM_SETFOCUS, WPARAM(PrevWnd), 0);
 end;
 
 procedure TJvExCheckListBox.FocusKilled(NextWnd: THandle);
 begin
-  BaseWndProc(WM_KILLFOCUS, Integer(NextWnd), 0);
+  BaseWndProc(WM_KILLFOCUS, WPARAM(NextWnd), 0);
 end;
 
 function TJvExCheckListBox.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
