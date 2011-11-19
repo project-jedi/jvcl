@@ -76,10 +76,7 @@ const
     {$IFDEF COMPILER14_UP}
     , dgTitleClick, dgTitleHotTrack
     {$ENDIF COMPILER14_UP}];
-
-  {$IFDEF BCB}
   {$NODEFINE DefJvGridOptions}
-  {$ENDIF BCB}
 
   JvDefaultAlternateRowColor = TColor($00CCCCCC); // Light gray
   JvDefaultAlternateRowFontColor = TColor($00000000); // Black
