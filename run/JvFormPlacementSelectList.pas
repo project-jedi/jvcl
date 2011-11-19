@@ -48,6 +48,7 @@ type
     function RestoreFormStorage(const ACaption: string = ''): Boolean;
     function SaveFormStorage(const ACaption: string = ''): Boolean;
   published
+    property AppStorage;
     property CheckEntries;
     property FormStorage: TJvFormStorage read FFormStorage write SetFormStorage;
     property SelectListDialog;
