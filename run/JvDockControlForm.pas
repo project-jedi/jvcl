@@ -1293,7 +1293,7 @@ begin
   end;
   if ChildDockSite <> nil then
     TWinControlAccessProtected(ChildDockSite).SendDockNotification(CM_INVALIDATEDOCKHOST,
-      Integer(Control), Integer(FocusLost));
+      WPARAM(Control), LPARAM(FocusLost));
 end;
 {$ENDIF !COMPILER9_UP}
 
@@ -2959,7 +2959,7 @@ var
 begin
   Result := TJvDockTabHostForm.Create(Application);
   Result.Name := 'TJvDockTabHostForm_' + Control1.Name + '_' + Control2.Name + '_' +
-    IntToHex(Integer(Result), 8);
+    IntToHex(LPARAM(Result), 2 * SizeOf(LPARAM));
 
   { CreateTabDockClass implicitly sets Result.DockClient.DockStyle via the
     assign in that function }

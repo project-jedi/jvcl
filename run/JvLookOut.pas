@@ -1398,7 +1398,7 @@ procedure TJvCustomLookOutButton.CMParentImageSizeChanged(var Msg: TMessage);
 var
   FTmp: Boolean;
 begin
-  if (Msg.LParam <> Longint(Self)) and FParentImageSize then
+  if (Msg.LParam <> LPARAM(Self)) and FParentImageSize then
   begin
     FTmp := FParentImageSize;
     SetImageSize(TJvImageSize(Msg.WParam));
@@ -1506,7 +1506,7 @@ begin
       { notify others }
       Msg.Msg := CM_LEAVEBUTTON;
       Msg.WParam := 0;
-      Msg.LParam := Longint(Self);
+      Msg.LParam := LPARAM(Self);
       Msg.Result := 0;
       Invalidate;
       Parent.Broadcast(Msg);
@@ -1537,7 +1537,7 @@ end;
 
 procedure TJvCustomLookOutButton.CMLeaveButton(var Msg: TMessage);
 begin
-  if (Msg.LParam <> Longint(Self)) and MouseOver and not FStayDown then
+  if (Msg.LParam <> LPARAM(Self)) and MouseOver and not FStayDown then
   begin
     MouseOver := False;
     //    FDown := False;
@@ -2132,8 +2132,8 @@ begin
       SetParentImageSize(False);
     { notify children }
     Msg.Msg := CM_IMAGESIZECHANGED;
-    Msg.WParam := Longint(Ord(FImageSize));
-    Msg.LParam := Longint(Self);
+    Msg.WParam := WPARAM(Ord(FImageSize));
+    Msg.LParam := LPARAM(Self);
     Msg.Result := 0;
     if Parent <> nil then
       Parent.Broadcast(Msg);
@@ -2152,7 +2152,7 @@ procedure TJvLookOutPage.CMParentImageSizeChanged(var Msg: TMessage);
 var
   Tmp: Boolean;
 begin
-  if (Msg.LParam <> Longint(Self)) and FParentImageSize then
+  if (Msg.LParam <> LPARAM(Self)) and FParentImageSize then
   begin
     Tmp := FParentImageSize;
     SetImageSize(TJvImageSize(Msg.WParam));
@@ -2548,8 +2548,8 @@ begin
     FImageSize := Value;
     { notify children }
     Msg.Msg := CM_IMAGESIZECHANGED;
-    Msg.WParam := Longint(Ord(FImageSize));
-    Msg.LParam := Longint(Self);
+    Msg.WParam := WPARAM(Ord(FImageSize));
+    Msg.LParam := LPARAM(Self);
     Msg.Result := 0;
     Broadcast(Msg);
   end;

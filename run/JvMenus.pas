@@ -865,7 +865,7 @@ begin
           if Item <> nil then
           begin
             Mesg := AMsg;
-            TWMMeasureItem(Mesg).MeasureItemStruct^.itemData := Longint(Item);
+            TWMMeasureItem(Mesg).MeasureItemStruct^.itemData := ULONG_PTR(Item);
             Menu.Dispatch(Mesg);
             Result := 1;
             Handled := True;
@@ -878,7 +878,7 @@ begin
           if Item <> nil then
           begin
             Mesg := AMsg;
-            TWMDrawItem(Mesg).DrawItemStruct^.itemData := Longint(Item);
+            TWMDrawItem(Mesg).DrawItemStruct^.itemData := ULONG_PTR(Item);
             Menu.Dispatch(Msg);
             Result := 1;
             Handled := True;
@@ -3648,7 +3648,7 @@ begin
       begin
         GetWindowRect(CanvasWindow, WRect);
 
-        DefProc := Pointer(GetWindowLong(CanvasWindow, GWL_WNDPROC));
+        DefProc := Pointer(GetWindowLongPtr(CanvasWindow, GWL_WNDPROC));
         if (DefProc <> nil) and
            (DefProc <> @XPMenuItemPainterWndProc) and
            not (csDesigning in Menu.ComponentState) then
@@ -3983,8 +3983,7 @@ procedure TWindowList.AddHook(AHandle: THandle; OldProc, NewProc: Pointer);
 begin
   FWindowList.Add(Pointer(AHandle));
   FPrevProcList.Add(OldProc);
-
-  SetWindowLong(AHandle, GWL_WNDPROC, Integer(NewProc));
+  SetWindowLongPtr(AHandle, GWL_WNDPROC, LONG_PTR(NewProc));
 end;
 
 function TWindowList.CallPrevWindowProc(hwnd: THandle; uMsg: UINT;
@@ -4020,7 +4019,11 @@ begin
   Index := FWindowList.IndexOf(Pointer(AHandle));
   if Index >= 0 then
   begin
+    {$IFDEF RTL230_UP}
+    SetWindowLongPtr(AHandle, GWL_WNDPROC, LONG_PTR(FPrevProcList[Index]));
+    {$ELSE}
     SetWindowLong(AHandle, GWL_WNDPROC, Integer(FPrevProcList[Index]));
+    {$ENDIF RTL230_UP}
 
     FWindowList.Delete(Index);
     FPrevProcList.Delete(Index);

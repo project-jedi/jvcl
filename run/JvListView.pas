@@ -1048,7 +1048,7 @@ type
 var
   Parm: TParamSort;
 
-  function CustomCompare1(Item1, Item2, ParamSort: Integer): Integer stdcall;
+  function CustomCompare1(Item1, Item2, ParamSort: LPARAM): Integer stdcall;
   var
     Parm: TParamSort;
     i1, i2: TListItem;
@@ -1239,7 +1239,7 @@ var
     end;
   end;
 
-  function CustomCompare2(Item1, Item2, ParamSort: Integer): Integer; stdcall;
+  function CustomCompare2(Item1, Item2, ParamSort: LPARAM): Integer; stdcall;
   begin
     Result := -CustomCompare1(Item1, Item2, ParamSort);
   end;
@@ -1253,12 +1253,12 @@ begin
     if FLast = Column.Index then
     begin
       FLast := -1;
-      CustomSort(TLVCompare(@CustomCompare2), Integer(@Parm));
+      CustomSort(TLVCompare(@CustomCompare2), LPARAM(@Parm));
     end
     else
     begin
       FLast := Column.Index;
-      CustomSort(TLVCompare(@CustomCompare1), Integer(@Parm));
+      CustomSort(TLVCompare(@CustomCompare1), LPARAM(@Parm));
     end;
   end;
 end;
@@ -1822,8 +1822,8 @@ begin
 
   {$IFNDEF RTL200_UP}
   // Force a change from True to False so that InsertMarks work correctly.
-  SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(not FGroupView), 0);
-  SendMessage(Handle, LVM_ENABLEGROUPVIEW, Integer(FGroupView), 0);
+  SendMessage(Handle, LVM_ENABLEGROUPVIEW, WPARAM(Integer(not FGroupView)), 0);
+  SendMessage(Handle, LVM_ENABLEGROUPVIEW, WPARAM(Integer(FGroupView)), 0);
   {$ENDIF !RTL200_UP}
   if FSavedColumnOrder <> '' then
   begin

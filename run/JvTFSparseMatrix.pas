@@ -37,23 +37,27 @@ uses
   Classes, SysUtils;
 
 type
+  {$IFNDEF COMPILER12_UP}
+  NativeInt = Integer;
+  {$ENDIF ~COMPILER12_UP}
+
   EJvTFSparseMatrixError = class(Exception);
   PSMQuantum = ^TSMQuantum;
   TSMQuantum = record
     Index: Integer;
-    Data: Integer;
+    Data: NativeInt;
     Link: PSMQuantum;
   end;
 
   TJvTFSparseMatrix = class(TObject)
   private
     FMatrix: TSMQuantum;
-    FNullValue: Integer;
-    procedure SetNullValue(Value: Integer);
-    function GetData(Row, Col: Integer): Integer;
-    procedure SetData(Row, Col, Value: Integer);
-    procedure Put(Row, Col, Data: Integer);
-    function Get(Row, Col: Integer): Integer;
+    FNullValue: NativeInt;
+    procedure SetNullValue(Value: NativeInt);
+    function GetData(Row, Col: Integer): NativeInt;
+    procedure SetData(Row, Col: Integer; Value: NativeInt);
+    procedure Put(Row, Col: Integer; Data: NativeInt);
+    function Get(Row, Col: Integer): NativeInt;
     function FindQuantum(Row, Col: Integer;
       var Prev, Curr: PSMQuantum; var RowExists: Boolean): Boolean;
   public
@@ -61,8 +65,8 @@ type
     procedure Clear;
     procedure Pack;
     procedure CopyTo(DestMatrix: TJvTFSparseMatrix);
-    property Data[Row, Col: Integer]: Integer read GetData write SetData; default;
-    property NullValue: Integer read FNullValue write SetNullValue default 0;
+    property Data[Row, Col: Integer]: NativeInt read GetData write SetData; default;
+    property NullValue: NativeInt read FNullValue write SetNullValue default 0;
     procedure Dump(const DumpList: TStrings);
   end;
 
@@ -189,7 +193,7 @@ begin
   end;
 end;
 
-function TJvTFSparseMatrix.Get(Row, Col: Integer): Integer;
+function TJvTFSparseMatrix.Get(Row, Col: Integer): NativeInt;
 var
   Prev, Curr: PSMQuantum;
   RowExists: Boolean;
@@ -200,12 +204,12 @@ begin
     Result := NullValue;
 end;
 
-function TJvTFSparseMatrix.GetData(Row, Col: Integer): Integer;
+function TJvTFSparseMatrix.GetData(Row, Col: Integer): NativeInt;
 begin
   Result := Get(Row, Col);
 end;
 
-procedure TJvTFSparseMatrix.Put(Row, Col, Data: Integer);
+procedure TJvTFSparseMatrix.Put(Row, Col: Integer; Data: NativeInt);
 var
   P, Prev, Curr: PSMQuantum;
   RowExists: Boolean;
@@ -244,12 +248,12 @@ begin
   end;
 end;
 
-procedure TJvTFSparseMatrix.SetData(Row, Col, Value: Integer);
+procedure TJvTFSparseMatrix.SetData(Row, Col: Integer; Value: NativeInt);
 begin
   Put(Row, Col, Value);
 end;
 
-procedure TJvTFSparseMatrix.SetNullValue(Value: Integer);
+procedure TJvTFSparseMatrix.SetNullValue(Value: NativeInt);
 begin
   if FMatrix.Data = 0 then
     FNullValue := Value

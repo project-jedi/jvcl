@@ -360,7 +360,7 @@ end;
 
 procedure TTreeNode_GetHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TTreeNode(Args.Obj).GetHandle);
+  Value := NativeInt(TTreeNode(Args.Obj).GetHandle);
 end;
 
 { function GetLastChild: TTreeNode; }
@@ -563,7 +563,7 @@ end;
 
 procedure TTreeNode_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TTreeNode(Args.Obj).Handle);
+  Value := NativeInt(TTreeNode(Args.Obj).Handle);
 end;
 
 { property Read HasChildren: Boolean }
@@ -856,7 +856,7 @@ end;
 
 procedure TTreeNodes_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TTreeNodes(Args.Obj).Handle);
+  Value := NativeInt(TTreeNodes(Args.Obj).Handle);
 end;
 
 { property Read Item[Integer]: TTreeNode }
@@ -1612,7 +1612,7 @@ end;
 
 procedure TListItem_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TListItem(Args.Obj).Handle);
+  Value := NativeInt(TListItem(Args.Obj).Handle);
 end;
 
 { property Read ImageIndex: Integer }
@@ -1810,7 +1810,7 @@ end;
 
 procedure TListItems_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TListItems(Args.Obj).Handle);
+  Value := NativeInt(TListItems(Args.Obj).Handle);
 end;
 
 { property Read Item[Integer]: TListItem }
@@ -2155,7 +2155,7 @@ end;
 
 procedure TAnimate_Read_ResHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TAnimate(Args.Obj).ResHandle);
+  Value := NativeInt(TAnimate(Args.Obj).ResHandle);
 end;
 
 { property Write ResHandle(Value: THandle) }

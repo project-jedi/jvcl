@@ -662,14 +662,14 @@ end;
 
 procedure TWinControl_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TWinControl(Args.Obj).Handle);
+  Value := NativeInt(TWinControl(Args.Obj).Handle);
 end;
 
 { property Read ParentWindow: HWnd }
 
 procedure TWinControl_Read_ParentWindow(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TWinControl(Args.Obj).ParentWindow);
+  Value := NativeInt(TWinControl(Args.Obj).ParentWindow);
 end;
 
 { property Write ParentWindow(Value: HWnd) }
@@ -866,14 +866,14 @@ end;
 
 procedure TCustomImageList_GetImageBitmap(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TCustomImageList(Args.Obj).GetImageBitmap);
+  Value := NativeInt(TCustomImageList(Args.Obj).GetImageBitmap);
 end;
 
 { function GetMaskBitmap: HBITMAP; }
 
 procedure TCustomImageList_GetMaskBitmap(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TCustomImageList(Args.Obj).GetMaskBitmap);
+  Value := NativeInt(TCustomImageList(Args.Obj).GetMaskBitmap);
 end;
 
 
@@ -1008,7 +1008,7 @@ end;
 
 procedure TCustomImageList_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TCustomImageList(Args.Obj).Handle);
+  Value := NativeInt(TCustomImageList(Args.Obj).Handle);
 end;
 
 { property Write Handle(Value: HImageList) }
@@ -1399,7 +1399,7 @@ end;
 
 procedure THackWinControl_Read_WindowHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(THackWinControl(Args.Obj).WindowHandle);
+  Value := NativeInt(THackWinControl(Args.Obj).WindowHandle);
 end;
 
 { property Write WindowHandle(Value: HWnd) }
@@ -1518,7 +1518,7 @@ end;
 
 procedure JvInterpreter_IdentToCursor(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := IdentToCursor(Args.Values[0], longint(TVarData(Args.Values[1]).vInteger));
+  Value := IdentToCursor(Args.Values[0], Longint(TVarData(Args.Values[1]).vInteger));
 end;
 
 { function GetShortHint(const Hint: string): string; }

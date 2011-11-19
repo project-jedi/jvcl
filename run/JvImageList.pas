@@ -330,7 +330,7 @@ begin
     NewProc := @HandleNeededHook;
 
     Code.Jump := $E9;
-    Code.Offset := Integer(NewProc) - Integer(OrgProc) - SizeOf(Code);
+    Code.Offset := PAnsiChar(NewProc) - PAnsiChar(OrgProc) - SizeOf(Code);
 
     if ReadProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), N) and
       WriteProtectedMemory(OrgProc, @Code, SizeOf(Code), N) then

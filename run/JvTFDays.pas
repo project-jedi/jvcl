@@ -2361,7 +2361,7 @@ begin
   // col found above.
   for MapRow := StartRow to EndRow do
   begin
-    FData[MapRow, MapCol] := Integer(Appt);
+    FData[MapRow, MapCol] := NativeInt(Appt);
     FData[MapRow, -1] := FData[MapRow, -1] + 1;
   end;
 end;
@@ -2547,7 +2547,8 @@ end;
 
 function TJvTFApptMap.HasAppt(Appt: TJvTFAppt): Boolean;
 var
-  MapRow, MapCol, StartRow, EndRow, ApptsExamined, Test: Integer;
+  MapRow, MapCol, StartRow, EndRow, ApptsExamined: Integer;
+  Test: NativeInt;
   ApptGrid: TJvTFDays;
 begin
   FGridCol.CalcStartEndRows(Appt, StartRow, EndRow);
@@ -2572,7 +2573,7 @@ begin
       if Test > 0 then
       begin
         Inc(ApptsExamined);
-        if Test = Integer(Appt) then
+        if Test = NativeInt(Appt) then
           Result := True;
       end;
 

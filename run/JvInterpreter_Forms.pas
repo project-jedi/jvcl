@@ -609,7 +609,7 @@ end;
 
 procedure TScreen_Read_Cursors(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TScreen(Args.Obj).Cursors[Args.Values[0]]);
+  Value := NativeInt(TScreen(Args.Obj).Cursors[Args.Values[0]]);
 end;
 
 { property Write Cursors[Integer]: HCURSOR }
@@ -691,7 +691,7 @@ end;
 
 procedure TScreen_Read_DefaultKbLayout(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TScreen(Args.Obj).DefaultKbLayout);
+  Value := NativeInt(TScreen(Args.Obj).DefaultKbLayout);
 end;
 
 
@@ -900,7 +900,7 @@ end;
 
 procedure TApplication_Read_DialogHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TApplication(Args.Obj).DialogHandle);
+  Value := NativeInt(TApplication(Args.Obj).DialogHandle);
 end;
 
 { property Write DialogHandle(Value: HWnd) }
@@ -923,7 +923,7 @@ end;
 
 procedure TApplication_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TApplication(Args.Obj).Handle);
+  Value := NativeInt(TApplication(Args.Obj).Handle);
 end;
 
 { property Write Handle(Value: HWnd) }

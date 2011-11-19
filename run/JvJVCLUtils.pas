@@ -5276,7 +5276,7 @@ begin
       bfSize := Length;
       bfOffBits := SizeOf(FileHeader^) + HeaderSize;
     end;
-    BI := PBitmapInfoHeader(Longint(FileHeader) + SizeOf(FileHeader^));
+    BI := PBitmapInfoHeader(PAnsiChar(FileHeader) + SizeOf(FileHeader^));
     Bits := Pointer(PAnsiChar(BI) + HeaderSize);
     InternalGetDIB(Src, Pal, BI^, Bits^, PixelFormat);
   except
@@ -5339,7 +5339,7 @@ begin
         { pf8bit - expand to 24bit first }
         InitData := DIBFromBit(Bitmap.Handle, Bitmap.Palette, pf24bit, Len);
         try
-          BI := PBitmapInfoHeader(Longint(InitData) + SizeOf(TBitmapFileHeader));
+          BI := PBitmapInfoHeader(PAnsiChar(InitData) + SizeOf(TBitmapFileHeader));
           if BI^.biBitCount <> 24 then
             raise EJVCLException.CreateRes(@RsEBitCountNotImplemented);
           Bits := Pointer(PAnsiChar(BI) + SizeOf(TBitmapInfoHeader));
@@ -5988,8 +5988,8 @@ var
   Msg: Messages.TMessage;
   WndProc: TWndMethod;
 begin
-  TMethod(WndProc).Code := Pointer(GetWindowLong(Window, 0));
-  TMethod(WndProc).Data := Pointer(GetWindowLong(Window, SizeOf(Pointer)));
+  TMethod(WndProc).Code := Pointer(GetWindowLongPtr(Window, 0));
+  TMethod(WndProc).Data := Pointer(GetWindowLongPtr(Window, SizeOf(Pointer)));
   if Assigned(WndProc) then
   begin
     Msg.Msg := Message;
@@ -6028,9 +6028,9 @@ begin
 
   if Assigned(Method) then
   begin
-    Windows.SetWindowLong(Result, 0, Longint(TMethod(Method).Code));
-    Windows.SetWindowLong(Result, SizeOf(TMethod(Method).Code), Longint(TMethod(Method).Data));
-    Windows.SetWindowLong(Result, GWL_WNDPROC, Longint(@StdWndProc));
+    SetWindowLongPtr(Result, 0, LONG_PTR(TMethod(Method).Code));
+    SetWindowLongPtr(Result, SizeOf(TMethod(Method).Code), LONG_PTR(TMethod(Method).Data));
+    SetWindowLongPtr(Result, GWL_WNDPROC, LONG_PTR(@StdWndProc));
   end;
 end;
 

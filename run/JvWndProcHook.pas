@@ -105,6 +105,11 @@ const
 
 implementation
 
+{$IFNDEF COMPILER12_UP}
+uses
+  JvJCLUtils; // SetWindowLongPtr
+{$ENDIF ~COMPILER12_UP}
+
 type
   PJvHookInfo = ^TJvHookInfo;
   TJvHookInfo = record
@@ -615,8 +620,7 @@ begin
   else
   begin
     FOldWndProc := nil;
-    FOldWndProcHandle := TFarProc(GetWindowLong(FHandle, GWL_WNDPROC));
-    SetWindowLong(FHandle, GWL_WNDPROC, Integer(MakeObjectInstance(WindowProc)));
+    FOldWndProcHandle := TFarProc(SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(MakeObjectInstance(WindowProc))));
     FHooked := True;
   end;
 end;
@@ -660,8 +664,7 @@ begin
   end
   else
   begin
-    Ptr := TFarProc(GetWindowLong(FHandle, GWL_WNDPROC));
-    SetWindowLong(FHandle, GWL_WNDPROC, Integer(FOldWndProcHandle));
+    Ptr := TFarProc(SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(FOldWndProcHandle)));
     FreeObjectInstance(Ptr);
     FHooked := False;
   end;

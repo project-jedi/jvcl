@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvConsts, JvTypes, JvThemes, JVCLVer, JvExControls, JvExButtons;
+  JvTypes, JvThemes, JVCLVer, JvExControls, JvExButtons;
 
 type
   WINCONTROL_DECL_DEFAULT(DBEdit)

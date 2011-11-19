@@ -40,7 +40,7 @@ uses
 
 procedure DrawDesignFrame(Canvas: TCanvas; Rect: TRect);
 begin
-  if Integer(Canvas.Handle) <> 0 then
+  if Canvas.Handle <> HDC(0) then
   begin
     Canvas.Brush.Style := bsClear;
     Canvas.Pen.Color := clGray;

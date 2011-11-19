@@ -155,6 +155,9 @@ uses
   CommDlg, CommCtrl, Dlgs,
   SysUtils, Math,
   JclSysInfo,
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils, // SetWindowLongPtr
+  {$ENDIF ~COMPILER12_UP}
   JvJVCLUtils;
 
 const
@@ -277,7 +280,7 @@ begin
       SWP_FRAMECHANGED or SWP_DRAWFRAME or SWP_NOCOPYBITS);
     SysMenu := GetSystemMenu(ParentWnd, False);
     InsertMenu(SysMenu, SC_CLOSE, MF_BYCOMMAND, SC_SIZE, PChar(GetLocalizedSizeCommand));
-    FOldParentWndInstance := Pointer(SetWindowLong(FParentWnd, GWL_WNDPROC, Longint(FParentWndInstance)));
+    FOldParentWndInstance := Pointer(SetWindowLongPtr(FParentWnd, GWL_WNDPROC, LONG_PTR(FParentWndInstance)));
     UpdateControlPos;
   end;
   UpdateCaptions;

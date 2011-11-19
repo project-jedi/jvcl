@@ -1099,7 +1099,7 @@ begin
   BrowseInfo.hwndOwner := FOwnerWindow;
   BrowseInfo.pszDisplayName := dspName;
   BrowseInfo.lpfn := TFNBFFCallBack(@lpfnBrowseProc);
-  BrowseInfo.lParam := Longint(Self);
+  BrowseInfo.lParam := LPARAM(Self);
 
   if (FStatusText = '') or not (odNewDialogStyle in FUsedOptions) then
     BrowseInfo.lpszTitle := Pointer(FTitle)
@@ -1213,8 +1213,7 @@ end;
 procedure TJvBrowseForFolderDialog.HookDialog;
 begin
   if FDialogWindow <> 0 then
-    FDefWndProc := Pointer(SetWindowLong(FDialogWindow, GWL_WNDPROC,
-      Longint(FObjectInstance)));
+    FDefWndProc := Pointer(SetWindowLongPtr(FDialogWindow, GWL_WNDPROC, LONG_PTR(FObjectInstance)));
 end;
 
 function TJvBrowseForFolderDialog.IsRootDirectoryPathStored: Boolean;

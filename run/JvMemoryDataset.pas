@@ -1119,7 +1119,7 @@ begin
         Move(Buffer^, RecBuf[1], DataSize);
     end;
     if not (State in [dsCalcFields, dsFilter, dsNewValue]) then
-      DataEvent(deFieldChange, Longint(Field));
+      DataEvent(deFieldChange, NativeInt(Field));
   end;
 end;
 
@@ -2919,7 +2919,7 @@ begin
     FField.Modified := True;
   if FModified then
     try
-      FDataSet.DataEvent(deFieldChange, Longint(FField));
+      FDataSet.DataEvent(deFieldChange, NativeInt(FField));
     except
       AppHandleException(Self);
     end;

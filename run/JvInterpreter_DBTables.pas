@@ -320,7 +320,7 @@ end;
 
 procedure TSession_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TSession(Args.Obj).Handle);
+  Value := NativeInt(TSession(Args.Obj).Handle);
 end;
 
 { property Read Locale: TLocale }
@@ -547,14 +547,14 @@ end;
 
 procedure TDatabase_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Longint(TDatabase(Args.Obj).Handle);
+  Value := NativeInt(TDatabase(Args.Obj).Handle);
 end;
 
 { property Write Handle(Value: HDBIDB) }
 
 procedure TDatabase_Write_Handle(const Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TDatabase(Args.Obj).Handle := HDBIDB(Longint(Value));
+  TDatabase(Args.Obj).Handle := HDBIDB(NativeInt(Value));
 end;
 
 { property Read IsSQLBased: Boolean }
@@ -941,7 +941,7 @@ end;
 
 procedure TBDEDataSet_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Longint(TBDEDataSet(Args.Obj).Handle);
+  Value := NativeInt(TBDEDataSet(Args.Obj).Handle);
 end;
 
 { property Read KeySize: Word }
@@ -1041,7 +1041,7 @@ end;
 
 procedure TDBDataSet_Read_DBHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Longint(TDBDataSet(Args.Obj).DBHandle);
+  Value := NativeInt(TDBDataSet(Args.Obj).DBHandle);
 end;
 
 { property Read DBLocale: TLocale }

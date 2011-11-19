@@ -1188,7 +1188,7 @@ begin
   else
   begin
     Result := TObject(SendMessage(ComboBox.Handle, CB_GETITEMDATA, Index, 0));
-    if Longint(Result) = CB_ERR then
+    if (LPARAM(Result) = LPARAM(CB_ERR)) and ((Count = 0) or (Index < 0) or (Index > Count)) then
       Error(SListIndexError, Index);
   end;
 end;

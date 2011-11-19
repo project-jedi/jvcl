@@ -84,6 +84,11 @@ uses
   SysUtils, TypInfo, LibHelp, Consts,
   JvTypes, JvJVCLUtils;
 
+{$IFNDEF COMPILER12_UP}
+type
+  NativeInt = Integer;
+{$ENDIF ~COMPILER12_UP}
+
 //=== Utility routines =======================================================
 
 function EditGraphic(Graphic: TGraphic; AClass: TGraphicClass;
@@ -127,7 +132,7 @@ begin
       PictureEditor.FPicDlg.Caption := TComponent(Comp).Name + '.' + GetName;
     PictureEditor.Picture := TPicture(Pointer(GetOrdValue));
     if PictureEditor.Execute then
-      SetOrdValue(Longint(PictureEditor.Picture));
+      SetOrdValue(NativeInt(PictureEditor.Picture));
   finally
     PictureEditor.Free;
   end;
@@ -174,7 +179,7 @@ begin
     if PictureEditor.Execute then
       if (PictureEditor.Picture.Graphic = nil) or
         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
-        SetOrdValue(Longint(PictureEditor.Picture.Graphic))
+        SetOrdValue(NativeInt(PictureEditor.Picture.Graphic))
       else
         raise EJVCLException.CreateRes(@SInvalidPropertyValue);
   finally

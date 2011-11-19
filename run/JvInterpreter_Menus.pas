@@ -118,7 +118,7 @@ end;
 
 procedure TMenuItem_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TMenuItem(Args.Obj).Handle);
+  Value := NativeInt(TMenuItem(Args.Obj).Handle);
 end;
 
 { property Read Count: Integer }
@@ -352,14 +352,14 @@ end;
 
 procedure TMenu_Read_Handle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TMenu(Args.Obj).Handle);
+  Value := NativeInt(TMenu(Args.Obj).Handle);
 end;
 
 { property Read WindowHandle: HWND }
 
 procedure TMenu_Read_WindowHandle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Integer(TMenu(Args.Obj).WindowHandle);
+  Value := NativeInt(TMenu(Args.Obj).WindowHandle);
 end;
 
 { property Write WindowHandle(Value: HWND) }

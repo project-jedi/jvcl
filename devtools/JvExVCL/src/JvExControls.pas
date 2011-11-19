@@ -109,9 +109,6 @@ const
 
 implementation
 
-uses
-  TypInfo;
-
 var
   InternalFocusedColor: TColor = TColor($00733800);
   InternalUnfocusedColor: TColor = clGray;

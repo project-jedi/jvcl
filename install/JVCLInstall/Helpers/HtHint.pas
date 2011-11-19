@@ -39,12 +39,7 @@ type
   protected
     procedure Paint; override;
   public
-    {$IFDEF VCL}
     function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    function CalcHintRect(MaxWidth: Integer; const AHint: WideString; AData: Pointer): TRect; override;
-    {$ENDIF VisualCLX}
   end;
 
 implementation
@@ -244,12 +239,7 @@ begin
   ItemHtDrawEx(Canvas, Rect, State, Text, HideSelColor, S, W, False);
 end;
 
-{$IFDEF VCL}
 function THtHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-function THtHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: WideString; AData: Pointer): TRect;
-{$ENDIF VisualCLX}
 var
   S: string;
   R: TRect;
@@ -282,21 +272,11 @@ var
   R: TRect;
 begin
   R := ClientRect;
-  {$IFDEF VisualCLX}
-  Canvas.Brush.Color := Color;
-  Canvas.Brush.Style := bsSolid;
-  {$ENDIF VisualCLX}
   Inc(R.Left, 2);
   Inc(R.Top, 2);
   Canvas.Font.Color := Screen.HintFont.Color;
 
   ItemHtDraw(Canvas, R, [odDefault], Text, False);
-  {$IFDEF VisualCLX}
-  Canvas.Brush.Style := bsClear;
-  Dec(R.Left, 2);
-  Dec(R.Top, 2);
-  DrawShadeRect(Canvas, R, False, 1, 0);
-  {$ENDIF VisualCLX}
 end;
 
 end.

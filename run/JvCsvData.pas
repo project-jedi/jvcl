@@ -2445,7 +2445,7 @@ begin
       Move(Buffer^, PDestination[1], Field.DataSize);
     //Result := True; {there is no return value, oops}
     // Notify controls of a field change:
-    DataEvent(deFieldChange, Longint(Field));
+    DataEvent(deFieldChange, NativeInt(Field));
     Exit;
   end;
 
@@ -2601,7 +2601,7 @@ begin
   FFileDirty := True;
 
   // Notify controls of a field change:
-  DataEvent(deFieldChange, Longint(Field));
+  DataEvent(deFieldChange, NativeInt(Field));
 end;
 
 // Removes first and last character of the string (assumes they are quotes,
@@ -2834,7 +2834,7 @@ begin
       SetCsvRowItem(RowPtr, PhysicalLocation, UserString);
       TempString := UserString;
       // Notify controls of a field change:
-      //DataEvent(deFieldChange, LongInt(Field));
+      //DataEvent(deFieldChange, NativeInt(Field));
       // XXX Doesn't do what I needed. left here commented out
       // in case I ever go back and try to get something like this
       // working again.

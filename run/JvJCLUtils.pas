@@ -65,19 +65,40 @@ const
   NullHandle = 0;
   USDecimalSeparator = '.';
 
+{$IFNDEF COMPILER12_UP} // Delphi 2009 introduced it and fixed the NativeInt of Delphi 2007
+type
+  // Compatibility for older Delphi versions, so the JVCL doesn't need to IFDEFs every call to
+  // SetWindowLongPtr/GetWindowLongPtr.
+  NativeInt = Integer;
+
+  {$EXTERNALSYM INT_PTR}
+  INT_PTR = Integer;
+  {$EXTERNALSYM LONG_PTR}
+  LONG_PTR = Longint;
+  {$EXTERNALSYM UINT_PTR}
+  UINT_PTR = Cardinal;
+  {$EXTERNALSYM ULONG_PTR}
+  ULONG_PTR = LongWord;
+  {$EXTERNALSYM DWORD_PTR}
+  DWORD_PTR = ULONG_PTR;
+
+{$EXTERNALSYM GetWindowLongPtr}
+function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): LONG_PTR; stdcall;
+{$EXTERNALSYM SetWindowLongPtr}
+function SetWindowLongPtr(hWnd: HWND; nIndex: Integer; dwNewLong: LONG_PTR): LONG_PTR; stdcall;
+{$ENDIF ~COMPILER12_UP}
+
 type
   EJvConvertError = Class(EConvertError);  { subclass EConvertError raised by some non-Def versions of floating point conversion routine }
   {$IFDEF UNIX}
   TFileTime = Integer;
   {$ENDIF UNIX}
-  
+
   {$IFNDEF RTL150_UP}
   TFormatSettings = record
     DecimalSeparator: Char;
   end;
   {$ENDIF RTL150_UP}
-
-
 
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 function SendStructMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var Data): Integer;
@@ -902,7 +923,7 @@ function RectSquare(var ARect: TRect; AMaxSize: Integer = -1): Boolean;
 
 {$IFDEF MSWINDOWS}
 procedure FreeUnusedOle;
-function GetWindowsVersion: string;
+function GetWindowsVersionString: string;
 function LoadDLL(const LibName: string): THandle;
 function RegisterServer(const ModuleName: string): Boolean;
 function UnregisterServer(const ModuleName: string): Boolean;
@@ -1092,14 +1113,27 @@ const
   RC_ShellName = 'Shell_TrayWnd';
   RC_DefaultIcon = 'DefaultIcon';
   {$ENDIF MSWINDOWS}
+  tkStrings: set of TTypeKind = [tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString];
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
   RsEPropertyNotExists = 'Property "%s" does not exist';
   RsEInvalidPropertyType = 'Property "%s" has invalid type';
   RsEPivotLessThanZero = 'JvJCLUtils.MakeYear4Digit: Pivot < 0';
-const
-  tkStrings: set of TTypeKind = [tkString, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString];
+
+{$IFNDEF COMPILER12_UP} // Delphi 2009 introduced it and fixed the NativeInt of Delphi 2007
+function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): LONG_PTR; stdcall;
+asm
+  pop ebp
+  jmp GetWindowLong
+end;
+
+function SetWindowLongPtr(hWnd: HWND; nIndex: Integer; dwNewLong: LONG_PTR): LONG_PTR; stdcall;
+asm
+  pop ebp
+  jmp SetWindowLong
+end;
+{$ENDIF ~COMPILER12_UP}
 
 function SendRectMessage(Handle: THandle; Msg: Integer; wParam: WPARAM; var R: TRect): Integer;
 begin
@@ -7625,7 +7659,7 @@ begin
     OSCheck(False);
 end;
 
-function GetWindowsVersion: string;
+function GetWindowsVersionString: string;
 const
   sWindowsVersion = 'Windows %s %d.%.2d.%.3d %s';
 var
@@ -7859,7 +7893,7 @@ end;
 
 function GetWindowParent(Wnd: THandle): THandle;
 begin
-  Result := GetWindowLong(Wnd, GWL_HWNDPARENT);
+  Result := THandle(GetWindowLongPtr(Wnd, GWL_HWNDPARENT));
 end;
 
 procedure ActivateWindow(Wnd: THandle);

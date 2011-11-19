@@ -278,6 +278,9 @@ const
 implementation
 
 uses
+  {$IFNDEF COMPILER12_UP}
+  JvJCLUtils, // SetWindowLongPtr
+  {$ENDIF ~COMPILER12_UP}
   Math;
 
 //=== { TJvgCustomLabel } ====================================================
@@ -351,12 +354,12 @@ procedure TJvgCustomLabel.HookFocusControlWndProc;
 var
   P: Pointer;
 begin
-  P := Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC));
+  P := Pointer(GetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC));
   if P <> FNewWndProc then
   begin
     FPrevWndProc := P;
     FNewWndProc := JvMakeObjectInstance(FocusControlWndHookProc);
-    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, Longint(FNewWndProc));
+    SetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC, LONG_PTR(FNewWndProc));
   end;
 end;
 
@@ -364,9 +367,9 @@ procedure TJvgCustomLabel.UnhookFocusControlWndProc;
 begin
   //  if not(csDesigning in ComponentState) then Exit;
   if (FNewWndProc <> nil) and (FPrevWndProc <> nil) and
-    (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
+    (Pointer(GetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
   begin
-    SetWindowLong(FocusControl.Handle, GWL_WNDPROC, Longint(FPrevWndProc));
+    SetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC, LONG_PTR(FPrevWndProc));
     // (rom) JvFreeObjectInstance call added
     JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;

@@ -183,7 +183,9 @@ type
     property OnResize;
     property OnStartDock;
     property OnUnDock;
+    {$IFDEF COMPILER7_UP}
     property ParentBackground default True;
+    {$ENDIF COMPILER7_UP}
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;

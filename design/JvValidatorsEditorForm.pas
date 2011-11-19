@@ -119,6 +119,11 @@ const
     [tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
      tkWChar, tkLString, {$IFDEF UNICODE} tkUString, {$ENDIF} tkWString, tkVariant, tkInt64];
 
+{$IFNDEF COMPILER12_UP}
+type
+  NativeInt = Integer;
+{$ENDIF ~COMPILER12_UP}
+
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var
   I: Integer;
@@ -430,7 +435,7 @@ begin
     end;
     A := TAction.Create(Self);
     A.Caption := AName;
-    A.Tag := Integer(AClass);
+    A.Tag := NativeInt(AClass);
     A.ImageIndex := 0;
     if I - K < 9 then
       A.ShortCut := ShortCut(Ord('0') + I + 1 - K, [ssCtrl]);

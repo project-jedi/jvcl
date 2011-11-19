@@ -162,7 +162,7 @@ end;
 
 function SortByObject(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  // note: higher values sorted at the top
+  // note: higher values sorted at the top (Objects[] contains the DosDateTime
   Result := Integer(List.Objects[Index2]) - Integer(List.Objects[Index1]);
 end;
 

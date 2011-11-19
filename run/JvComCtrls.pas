@@ -797,15 +797,12 @@ begin
   if Value <> FHandle then
   begin
     if FHandle <> 0 then
-      SetWindowLong(FHandle, GWL_WNDPROC, Integer(FOrgWndProc));
+      SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(FOrgWndProc));
 
     FHandle := Value;
 
     if FHandle <> 0 then
-    begin
-      FOrgWndProc := Pointer(GetWindowLong(FHandle, GWL_WNDPROC));
-      SetWindowLong(FHandle, GWL_WNDPROC, Integer(FInstance));
-    end;
+      FOrgWndProc := Pointer(SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(FInstance)));
   end;
 end;
 
@@ -1385,7 +1382,7 @@ begin
       // to select it (the first edit is always selected). I don't know if removing
       // it has any side-effects but I haven't noticed anything
 //      WM_LBUTTONDOWN, WM_MBUTTONDOWN, WM_RBUTTONDOWN:
-//        Perform(Event, Value, Integer(SmallPoint(XPos, YPos)));
+//        Perform(Event, Value, LPARAM(SmallPoint(XPos, YPos)));
     end;
   inherited;
 end;
