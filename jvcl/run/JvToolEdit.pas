@@ -43,6 +43,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, ActiveX,
   {$ENDIF MSWINDOWS}
+  Types,
   ShlObj,
   Variants,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,

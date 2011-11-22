@@ -67,7 +67,7 @@ implementation
 
 uses
   StdCtrls, SysUtils, JclStrings, JvDynControlEngineIntf, ExtCtrls,
-  JclFileUtils, Dialogs;
+  JclFileUtils, Dialogs, JclUnitVersioning;
 
 procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine = nil);
 var

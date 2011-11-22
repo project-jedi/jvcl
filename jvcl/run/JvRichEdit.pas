@@ -942,6 +942,7 @@ const
 implementation
 
 uses
+  Types,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   {$IFDEF RTL200_UP}
   CommDlg,

@@ -1753,7 +1753,7 @@ const
 implementation
 
 uses
-  JvResources;
+  Types, JvResources;
 
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
@@ -1776,7 +1776,7 @@ end;
 
 function EmptyRect: TRect;
 begin
-  Result := Rect(0, 0, 0, 0);
+  Result := Classes.Rect(0, 0, 0, 0);
 end;
 
 function RectWidth(ARect: TRect): Integer;
@@ -2242,7 +2242,7 @@ begin
   with FFillPic.Canvas do
   begin
     Brush.Color := FColor;
-    FillRect(Rect(0, 0, FFillPic.Width, FFillPic.Height));
+    FillRect(Classes.Rect(0, 0, FFillPic.Width, FFillPic.Height));
   end;
 end;
 
@@ -4929,11 +4929,11 @@ begin
     begin
       if FDitheredBackground then
         // added by TIM, 10/27/2001 10:36:03 PM:
-        DrawDither(Canvas, Rect(0, 0, Width, Height), Self.Color, clGray)
+        DrawDither(Canvas, Classes.Rect(0, 0, Width, Height), Self.Color, clGray)
       else
       begin
         Brush.Color := Self.Color;
-        FillRect(Rect(0, 0, Width, Height));
+        FillRect(Classes.Rect(0, 0, Width, Height));
       end;
     end;
 
@@ -5741,7 +5741,7 @@ begin
        // move grab handles
       if agoMoveAppt in Options then
       begin
-//          HandleRect := Rect(ARect.Left + 2, ARect.Top, ARect.Right - 3,
+//          HandleRect := Classes.Rect(ARect.Left + 2, ARect.Top, ARect.Right - 3,
 //                      ARect.Top + GrabHandles.Height);
 //          DrawGrabHandle(ACanvas, HandleRect, Appt, True);
         HandleRect := GetTopGrabHandleRect(Col, Appt);
@@ -5749,7 +5749,7 @@ begin
       end;
       if agoSizeAppt in Options then
       begin
-//          HandleRect := Rect(ARect.Left + 2,
+//          HandleRect := Classes.Rect(ARect.Left + 2,
 //                      ARect.Bottom - GrabHandles.Height,
 //                      ARect.Right - 3, ARect.Bottom);
 //          DrawGrabHandle(ACanvas, HandleRect, Appt, False);
@@ -6063,34 +6063,34 @@ var
   CornerLeft: Integer;
 begin
   case Corner of
-    //group agcTopLeft   : ARect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
+    //group agcTopLeft   : ARect := Classes.Rect(0, 0, RowHdrWidth, ColHdrHeight);
     agcTopLeft:
       {$IFDEF Jv_TIMEBLOCKS}
       // ok
-      ARect := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight);
+      ARect := Classes.Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight);
       {$ELSE}
       // remove
-      //  ARect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
+      //  ARect := Classes.Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
       {$ENDIF Jv_TIMEBLOCKS}
     agcTopRight:
       begin
         CornerLeft := Lesser(CellRect(RightCol, -1).Right, ClientWidth - FVScrollBar.Width);
-        //group ARect := Rect(CornerLeft, 0, ClientWidth, ColHdrHeight);
-        ARect := Rect(CornerLeft, 0, ClientWidth, CalcGroupColHdrsHeight);
+        //group ARect := Classes.Rect(CornerLeft, 0, ClientWidth, ColHdrHeight);
+        ARect := Classes.Rect(CornerLeft, 0, ClientWidth, CalcGroupColHdrsHeight);
       end;
     agcBottomLeft:
       {$IFDEF Jv_TIMEBLOCKS}
       // ok
-      ARect := Rect(0, ClientHeight - FHScrollBar.Height,
+      ARect := Classes.Rect(0, ClientHeight - FHScrollBar.Height,
         CalcBlockRowHdrsWidth, ClientHeight);
       {$ELSE}
       // remove
-      //  ARect := Rect(0,  ClientHeight - FHScrollBar.Height,
+      //  ARect := Classes.Rect(0,  ClientHeight - FHScrollBar.Height,
       //        RowHdrWidth, ClientHeight);
       {$ENDIF Jv_TIMEBLOCKS}
 
     agcBottomRight:
-      ARect := Rect(ClientWidth - FVScrollBar.Width - 1,
+      ARect := Classes.Rect(ClientWidth - FVScrollBar.Width - 1,
         ClientHeight - FHScrollBar.Height - 1, ClientWidth, ClientHeight);
   end;
 
@@ -6326,8 +6326,8 @@ begin
 
     // (rom) silly assignments
     // Just set top (0), left, and bottom (ColHdrHeight) for now.
-    //group ARect := Rect(ColLeft, 0, 0, ColHdrHeight);
-    LRect := Rect(ColLeft, CalcGroupHdrHeight, 0, CalcGroupColHdrsHeight);
+    //group ARect := Classes.Rect(ColLeft, 0, 0, ColHdrHeight);
+    LRect := Classes.Rect(ColLeft, CalcGroupHdrHeight, 0, CalcGroupColHdrsHeight);
     // Set right by adding this col's width to the left value
     LRect.Right := LRect.Left + TheCol.Width;
     LRect := CellRect(I, -1);
@@ -7573,7 +7573,7 @@ begin
 
             if Assigned(Coord.Schedule) then
               SchedName := Coord.Schedule.SchedName;
-            DragRect := Rect(-1, -1, -1, -1); // Used to not show hint if outside a valid day.
+            DragRect := Classes.Rect(-1, -1, -1, -1); // Used to not show hint if outside a valid day.
             for I := 0 to Cols.Count - 1 do
             begin
               Sched := Cols[I].Schedule;
@@ -8983,15 +8983,15 @@ Var
 begin
   if (Row = gcGroupHdr) and (Col > gcHdr) then
     begin
-      VisGrpHdrRect := Rect(RowHdrWidth, 0, RowHdrWidth + GetDataWidth,
+      VisGrpHdrRect := Classes.Rect(RowHdrWidth, 0, RowHdrWidth + GetDataWidth,
                     CalcGroupHdrHeight);
       Windows.IntersectRect(Result, VisGrpHdrRect, VirtualGroupHdrRect(Col));
     end
   else
   if Col < 0 then // Row hdr
     if Row < 0 then
-      //group Result := Rect(0, 0, RowHdrWidth, ColHdrHeight)  // origin cell
-      Result := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight) // origin cell
+      //group Result := Classes.Rect(0, 0, RowHdrWidth, ColHdrHeight)  // origin cell
+      Result := Classes.Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight) // origin cell
     else
     if (Row >= TopRow) and (Row <= BottomRow) then
       // Row Hdr for visible data row
@@ -9051,25 +9051,25 @@ var
 begin
   if (Col = gcGroupHdr) and (Row > gcHdr) then
   begin
-    VisGrpHdrRect := Rect(0, CalcGroupColHdrsHeight, CalcBlockRowHdrsWidth,
+    VisGrpHdrRect := Classes.Rect(0, CalcGroupColHdrsHeight, CalcBlockRowHdrsWidth,
       CalcGroupColHdrsHeight + GetDataHeight);
     Windows.IntersectRect(Result, VisGrpHdrRect, VirtualBlockHdrRect(Row));
   end
   else
   if (Row = gcGroupHdr) and (Col > gcHdr) then
   begin
-    //block VisGrpHdrRect := Rect(RowHdrWidth, 0, RowHdrWidth + GetDataWidth,
+    //block VisGrpHdrRect := Classes.Rect(RowHdrWidth, 0, RowHdrWidth + GetDataWidth,
     //          CalcGroupHdrHeight);
-    VisGrpHdrRect := Rect(CalcBlockRowHdrsWidth, 0,
+    VisGrpHdrRect := Classes.Rect(CalcBlockRowHdrsWidth, 0,
       CalcBlockRowHdrsWidth + GetDataWidth, CalcGroupHdrHeight);
     Windows.IntersectRect(Result, VisGrpHdrRect, VirtualGroupHdrRect(Col));
   end
   else
   if Col < 0 then // Row hdr
     if Row < 0 then
-      //group Result := Rect(0, 0, RowHdrWidth, ColHdrHeight)  // origin cell
-      //block Result := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight) // origin cell
-      Result := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight)
+      //group Result := Classes.Rect(0, 0, RowHdrWidth, ColHdrHeight)  // origin cell
+      //block Result := Classes.Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight) // origin cell
+      Result := Classes.Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight)
     else
     if (Row >= TopRow) and (Row <= BottomRow) then
       // Row Hdr for visible data row
@@ -10951,7 +10951,7 @@ end;
 procedure TJvTFDays.UpdateWeekendFillPic;
 begin
   FWeekendFillPic.Canvas.Brush.Color := WeekendColor;
-  FWeekendFillPic.Canvas.FillRect(Rect(0, 0, FWeekendFillPic.Width,
+  FWeekendFillPic.Canvas.FillRect(Classes.Rect(0, 0, FWeekendFillPic.Width,
     FWeekendFillPic.Height));
 end;
 
@@ -11668,7 +11668,7 @@ end;
 // move grab handles
 //function TJvTFDays.GetBottomGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 //begin
-//  Result := Rect(0, 0, 0, 0);
+//  Result := Classes.Rect(0, 0, 0, 0);
 //  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
 //    Cols[Col].ApptInCol(Appt) then
 //   begin
@@ -11681,7 +11681,7 @@ end;
 //// move grab handles
 //function TJvTFDays.GetTopGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 //begin
-//  Result := Rect(0, 0, 0, 0);
+//  Result := Classes.Rect(0, 0, 0, 0);
 //  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
 //    Cols[Col].ApptInCol(Appt) then
 //   begin
@@ -11695,7 +11695,7 @@ end;
 
 function TJvTFDays.GetBottomGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 begin
-  Result := Rect(0, 0, 0, 0);
+  Result := Classes.Rect(0, 0, 0, 0);
 //  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
   if (Col > gcHdr) and Assigned(Appt) and Cols[Col].ApptInCol(Appt) then
   begin
@@ -11709,7 +11709,7 @@ end;
 
 function TJvTFDays.GetTopGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 begin
-  Result := Rect(0, 0, 0, 0);
+  Result := Classes.Rect(0, 0, 0, 0);
 //  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
   if (Col > gcHdr) and Assigned(Appt) and Cols[Col].ApptInCol(Appt) then
   begin
@@ -11987,7 +11987,7 @@ var
 begin
   if (Row = gcGroupHdr) and (Col > gcHdr) then
   begin
-    VisGrpHdrRect := Rect(RowHdrWidth, 0,
+    VisGrpHdrRect := Classes.Rect(RowHdrWidth, 0,
       RowHdrWidth + GetDataWidth(PageInfo.ShowRowHdr),
       CalcGroupHdrHeight);
     Windows.IntersectRect(Result, VisGrpHdrRect,
@@ -11998,8 +11998,8 @@ begin
     if Row < 0 then
       // origin cell
       if PageInfo.ShowColHdr and PageInfo.ShowRowHdr then
-       //group Result := Rect(0, 0, RowHdrWidth, ColHdrHeight)
-        Result := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight)
+       //group Result := Classes.Rect(0, 0, RowHdrWidth, ColHdrHeight)
+        Result := Classes.Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight)
       else
         Result := EmptyRect
     else
@@ -12888,8 +12888,8 @@ procedure TJvTFDaysPrinter.DrawCorner(ACanvas: TCanvas);
 var
   ARect: TRect;
 begin
-  //group ARect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
-  ARect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
+  //group ARect := Classes.Rect(0, 0, RowHdrWidth, ColHdrHeight);
+  ARect := Classes.Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
   with ACanvas do
   begin
     Brush.Color := HdrAttr.Color;
@@ -13134,7 +13134,7 @@ begin
       DrawInfo := TJvTFDrawPicInfo(DrawList[I]);
       Pic.Height := DrawInfo.ImageList.Height;
       Pic.Width := DrawInfo.ImageList.Width;
-      Pic.Canvas.FillRect(Rect(0, 0, Pic.Width, Pic.Height));
+      Pic.Canvas.FillRect(Classes.Rect(0, 0, Pic.Width, Pic.Height));
       with DrawInfo do
         ImageList.Draw(Pic.Canvas, 0, 0, ImageIndex);
       DestRect.Left := DrawInfo.PicLeft;
@@ -13143,7 +13143,7 @@ begin
         ScreenToPrinter(DrawInfo.ImageList.Width + 2, True);
       DestRect.Bottom := DrawInfo.PicTop +
         ScreenToPrinter(DrawInfo.ImageList.Height + 2, False);
-      PrintBitmap(ACanvas, Rect(0, 0, Pic.Width, Pic.Height), DestRect, Pic);
+      PrintBitmap(ACanvas, Classes.Rect(0, 0, Pic.Width, Pic.Height), DestRect, Pic);
     end;
   finally
     Pic.Free;
