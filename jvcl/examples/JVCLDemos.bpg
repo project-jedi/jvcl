@@ -614,28 +614,28 @@ $(DCC)
 ColorHintsTest.exe: RaLib\RaHtHints\ColorHintsTest.dpr
 $(DCC)
 
-JvInterpreterTest.exe: RaLib\RaInterpreter\JvInterpreterTest.dpr
+JvInterpreterTest.exe: JvInterpreterDemos\JvInterpreterTest\JvInterpreterTest.dpr
 $(DCC)
 
-SampleProject1.exe: RaLib\RaInterpreter\samples\project1\SampleProject1.dpr
+SampleProject1.exe: JvInterpreterDemos\JvInterpreterTest\samples\project1\SampleProject1.dpr
 $(DCC)
 
-DynamicLoad.exe: RaLib\RaInterpreterDynamicLoad\DynamicLoad.dpr
+DynamicLoad.exe: JvInterpreterDemos\JvInterpreterDynamicLoad\DynamicLoad.dpr
 $(DCC)
 
-JvInterpreter_MyLabelPackage.bpl: RaLib\RaInterpreterDynamicLoad\JvInterpreter_MyLabelPackage.dpk
+JvInterpreter_MyLabelPackage.bpl: JvInterpreterDemos\JvInterpreterDynamicLoad\JvInterpreter_MyLabelPackage.dpk
 $(DCC)
 
-MyLabelPackage.bpl: RaLib\RaInterpreterDynamicLoad\MyLabelPackage.dpk
+MyLabelPackage.bpl: JvInterpreterDemos\JvInterpreterDynamicLoad\MyLabelPackage.dpk
 $(DCC)
 
-JvInterpreterEndUser.exe: RaLib\RaInterpreterEndUser\JvInterpreterEndUser.dpr
+JvInterpreterEndUser.exe: JvInterpreterDemos\JvInterpreterEndUser\JvInterpreterEndUser.dpr
 $(DCC)
 
-MDIapp.exe: RaLib\RaInterpreterMDI\MDIapp.dpr
+MDIapp.exe: JvInterpreterDemos\JvInterpreterMDI\MDIapp.dpr
 $(DCC)
 
-RANotepad.exe: RaLib\RaInterpreterNotepad\RANotepad.dpr
+RANotepad.exe: JvInterpreterDemos\JvInterpreterNotepad\RANotepad.dpr
 $(DCC)
 
 Rxdemo.exe: RxLib\Rxdemo.dpr
