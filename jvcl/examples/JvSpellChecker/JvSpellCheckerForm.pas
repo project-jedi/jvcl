@@ -28,6 +28,8 @@ unit JvSpellCheckerForm;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSpellChecker, ActnList;
@@ -226,14 +228,14 @@ begin
 
   if chkNumber.Checked then // ignore words that contains numbers
     for i := 1 to Length(Value) do
-      if (Value[i] in ['0'..'9', '#', '%']) then
+      if {$IFDEF RTL200_UP}CharInSet(Value[i], ['0'..'9', '#', '%']){$ELSE}(Value[i] in ['0'..'9', '#', '%']){$ENDIF RTL200_UP} then
       begin
         CanIgnore := true;
         Exit;
       end;
   if chkURL.Checked then // ignore URL's and file paths (this code is in no way 100% effective...)
     for i := 1 to Length(Value) do
-      if (Value[i] in [':', '/', '\']) then
+      if {$IFDEF RTL200_UP}CharInSet(Value[i], [':', '/', '\']){$ELSE}(Value[i] in [':', '/', '\']){$ENDIF RTL200_UP} then
       begin
         CanIgnore := true;
         Exit;

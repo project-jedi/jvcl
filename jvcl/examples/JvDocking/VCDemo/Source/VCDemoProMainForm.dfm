@@ -1,9 +1,9 @@
 object MainForm: TMainForm
   Left = 262
   Top = 156
-  Width = 648
-  Height = 508
   Caption = 'Macrosoft Visual C++'
+  ClientHeight = 473
+  ClientWidth = 632
   Color = clGray
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object MainForm: TMainForm
   object MainControlBar: TControlBar
     Left = 0
     Top = 0
-    Width = 640
+    Width = 632
     Height = 104
     Align = alTop
     AutoSize = True
@@ -32,6 +32,10 @@ object MainForm: TMainForm
     TabOrder = 0
     OnBandMove = MainControlBarBandMove
     OnResize = MainControlBarResize
+    ExplicitWidth = 640
+    DesignSize = (
+      632
+      104)
     object tb_Standard_ToolBar: TToolBar
       Tag = 1
       Left = 11
@@ -42,8 +46,6 @@ object MainForm: TMainForm
       Anchors = []
       AutoSize = True
       Caption = 'Standard'
-      EdgeBorders = []
-      Flat = True
       Images = Action_ImageList
       TabOrder = 0
       object ToolButton1: TToolButton
@@ -161,7 +163,6 @@ object MainForm: TMainForm
           Width = 190
           Height = 21
           ImeName = #215#207#185#226#198#180#210#244#202#228#200#235#183#168
-          ItemHeight = 13
           TabOrder = 0
         end
       end
@@ -189,8 +190,6 @@ object MainForm: TMainForm
       Align = alClient
       AutoSize = True
       Caption = 'Edit'
-      EdgeBorders = []
-      Flat = True
       Images = Action_ImageList
       TabOrder = 1
       object ToolButton19: TToolButton
@@ -259,8 +258,6 @@ object MainForm: TMainForm
       Align = alClient
       AutoSize = True
       Caption = 'Edit'
-      EdgeBorders = []
-      Flat = True
       Images = Action_ImageList
       TabOrder = 2
       object ToolButton29: TToolButton
@@ -303,8 +300,6 @@ object MainForm: TMainForm
       Align = alClient
       AutoSize = True
       Caption = 'Edit'
-      EdgeBorders = []
-      Flat = True
       Images = Action_ImageList
       TabOrder = 3
       object ToolButton37: TToolButton
@@ -422,10 +417,8 @@ object MainForm: TMainForm
       ButtonHeight = 19
       ButtonWidth = 57
       Caption = 'MainMenu_ToolBar'
-      EdgeBorders = []
       EdgeInner = esNone
       EdgeOuter = esNone
-      Flat = True
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -515,8 +508,8 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 462
-    Width = 640
+    Top = 454
+    Width = 632
     Height = 19
     Panels = <
       item
@@ -525,6 +518,8 @@ object MainForm: TMainForm
       item
         Width = 50
       end>
+    ExplicitTop = 462
+    ExplicitWidth = 640
   end
   object MainMenu1: TMainMenu
     Images = Action_ImageList
@@ -1813,7 +1808,7 @@ object MainForm: TMainForm
     Left = 8
     Top = 104
     Bitmap = {
-      494C010150005400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010150005400080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005001000001002000000000000050
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -4594,7 +4589,6 @@ object MainForm: TMainForm
   end
   object JvDockVCStyle1: TJvDockVCStyle
     ConjoinServerOption.GrabbersSize = 15
-    ConjoinServerOption.SplitterWidth = 4
     Left = 136
     Top = 104
   end
@@ -4608,17 +4602,17 @@ object MainForm: TMainForm
     LeftSplitterStyle.Cursor = crHSplit
     LeftSplitterStyle.ParentColor = False
     LeftSplitterStyle.Size = 4
-    TopSplitterStyle.Cursor = crVSplit
-    TopSplitterStyle.ParentColor = False
-    TopSplitterStyle.Size = 4
     RightSplitterStyle.Cursor = crHSplit
     RightSplitterStyle.ParentColor = False
     RightSplitterStyle.Size = 4
+    TopSplitterStyle.Cursor = crVSplit
+    TopSplitterStyle.ParentColor = False
+    TopSplitterStyle.Size = 4
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
     BottomSplitterStyle.Size = 4
-    OnGetClientAlignSize = lbDockServer1GetClientAlignSize
     DockStyle = JvDockVCStyle1
+    OnGetClientAlignSize = lbDockServer1GetClientAlignSize
     Left = 104
     Top = 104
   end

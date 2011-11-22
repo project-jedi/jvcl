@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Forms, Classes, Controls, JvInterpreter, JvInterpreterFm, JvComponent,
-  JvFormPlacement, StdCtrls, JvHTControls, JvExStdCtrls;
+  JvFormPlacement, StdCtrls, JvHTControls, JvExStdCtrls, JvComponentBase;
 
 type
   TReports = class(TForm)
@@ -58,7 +58,11 @@ implementation
 
 uses
   Variants,
-  JvJVCLUtils, JvJCLUtils, JvInterpreter_all, JvInterpreter_Quickrpt;
+  JvJVCLUtils, JvJCLUtils,
+  {$IFDEF JVCL_UseQuickReport}
+  JvInterpreter_Quickrpt,
+  {$ENDIF JVCL_UseQuickReport}
+  JvInterpreter_all;
 
 {$R *.DFM}
 

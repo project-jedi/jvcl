@@ -19,7 +19,7 @@ interface
 
 uses
   Windows, Messages, SysUtils{, Variants}, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvDockControlForm, JvComponent;
+  Dialogs, StdCtrls, JvDockControlForm, JvComponent, JvComponentBase;
 
 type
   TCallStackForm = class(TForm)
@@ -38,7 +38,8 @@ var
 
 implementation
 
-uses Main;
+uses
+  VCDemoProMainForm;
 
 {$R *.dfm}
 

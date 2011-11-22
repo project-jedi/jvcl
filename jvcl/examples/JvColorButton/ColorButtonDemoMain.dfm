@@ -23,5 +23,7 @@ object ColorDemoMainForm: TColorDemoMainForm
     Options = [cdAnyColor]
     Color = clNavy
     OnChange = ColorButton1Change
+    TabOrder = 0
+    TabStop = False
   end
 end

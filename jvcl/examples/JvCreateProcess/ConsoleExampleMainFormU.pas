@@ -29,9 +29,12 @@ unit ConsoleExampleMainFormU;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvComponent, JvCreateProcess, StdCtrls, Menus, ExtCtrls;
+  Dialogs, JvComponent, JvCreateProcess, StdCtrls, Menus, ExtCtrls,
+  JvComponentBase;
 
 type
   TConsoleExampleMainForm = class(TForm)
@@ -169,7 +172,7 @@ end;
 procedure TConsoleExampleMainForm.ExecuteCommand;
 begin
   AddCommand(edtCommand.Text);
-  JvCreateProcess1.WriteLn(edtCommand.Text);
+  JvCreateProcess1.WriteLn({$IFDEF RTL200_UP}AnsiString{$ENDIF RTL200_UP}(edtCommand.Text));
   edtCommand.SelectAll;
 end;
 

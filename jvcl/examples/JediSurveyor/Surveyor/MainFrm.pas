@@ -32,7 +32,8 @@ uses
   JvBevel, Buttons, JvBitBtn, JvFooter, JvComponent, JvSurveyIntf,
   JvDialogs, ImgList, ActnList, JvActions, JvLinkLabel,
   JvRadioButton, JvCheckBox, JvMemo, Menus, JvExForms, JvExButtons,
-  JvExExtCtrls, JvExControls, JvImageSquare;
+  JvExExtCtrls, JvExControls, JvImageSquare, JvExStdCtrls, JvButton, JvCtrls,
+  JvExtComponent;
 
 type
   TfrmMain = class(TForm)
@@ -84,7 +85,7 @@ type
     procedure acNextPageExecute(Sender: TObject);
     procedure acLoadSurveyExecute(Sender: TObject);
     procedure lblDescriptionLinkClick(Sender: TObject; LinkNumber: Integer;
-      LinkText: String);
+      LinkText, LinkParam: String);
     procedure acCheckAllExecute(Sender: TObject);
     procedure acUncheckAllExecute(Sender: TObject);
     procedure acInvertExecute(Sender: TObject);
@@ -646,7 +647,7 @@ begin
   if FSurvey.SurveyTaker.ID = '' then
     FSurvey.SurveyTaker.ID := CreateClassID;
   FSurvey.SaveToFile(FTempSurveyFilename,ffBinary);
-  acSendMail.MailOptions.Attachments.Add(FTempSurveyFilename);
+  acSendMail.MailOptions.Attachments.Add({$IFDEF RTL200_UP}AnsiString{$ENDIF RTL200_UP}(FTempSurveyFilename));
 
   acSendMail.MailOptions.ShowDialogs := true; // not acSendMail.Mail.UserLogged;
   if acSendMail.Execute then
@@ -654,7 +655,7 @@ begin
 end;
 
 procedure TfrmMain.lblDescriptionLinkClick(Sender: TObject;
-  LinkNumber: Integer; LinkText: String);
+  LinkNumber: Integer; LinkText, LinkParam: String);
 begin
   OpenObject(LinkText);
 end;

@@ -21,7 +21,6 @@ object foMain: TfoMain
     Active = True
     Bindings = <>
     DefaultPort = 8000
-    OnCommandGet = IdHTTPServer1CommandGet
     Left = 12
     Top = 48
   end

@@ -38,6 +38,786 @@ implementation
 uses
  SysUtils;
 
+procedure UsageTextGenericDesktop(Usage: TUsage; var UsageText: string);
+begin
+  case Usage of
+    HID_USAGE_UNDEFINED:
+      UsageText := 'Undefined';
+    HID_USAGE_GENERIC_POINTER:
+      UsageText := 'Pointing Device';
+    HID_USAGE_GENERIC_MOUSE:
+      UsageText := 'Mouse';
+    HID_USAGE_GENERIC_RESERVED1:
+      UsageText := 'Reserved';
+    HID_USAGE_GENERIC_JOYSTICK:
+      UsageText := 'Joystick';
+    HID_USAGE_GENERIC_GAMEPAD:
+      UsageText := 'Gamepad';
+    HID_USAGE_GENERIC_KEYBOARD:
+      UsageText := 'Keyboard';
+    HID_USAGE_GENERIC_KEYPAD:
+      UsageText := 'Keypad';
+    HID_USAGE_GENERIC_MULTIAXIS:
+      UsageText := 'Multi-Axis';
+    HID_USAGE_GENERIC_X:
+      UsageText := 'X Axis';
+    HID_USAGE_GENERIC_Y:
+      UsageText := 'Y Axis';
+    HID_USAGE_GENERIC_Z:
+      UsageText := 'Z Axis';
+    HID_USAGE_GENERIC_RX:
+      UsageText := 'Rotational X Axis';
+    HID_USAGE_GENERIC_RY:
+      UsageText := 'Rotational Y Axis';
+    HID_USAGE_GENERIC_RZ:
+      UsageText := 'Rotational Z Axis';
+    HID_USAGE_GENERIC_SLIDER:
+      UsageText := 'Slider';
+    HID_USAGE_GENERIC_DIAL:
+      UsageText := 'Dial';
+    HID_USAGE_GENERIC_WHEEL:
+      UsageText := 'Wheel';
+    HID_USAGE_GENERIC_HATSWITCH:
+      UsageText := 'Hat Switch';
+    HID_USAGE_GENERIC_COUNTED_BUFFER:
+      UsageText := 'Counted Buffer';
+    HID_USAGE_GENERIC_BYTE_COUNT:
+      UsageText := 'Byte Count';
+    HID_USAGE_GENERIC_MOTION_WAKEUP:
+      UsageText := 'Motion Wakeup';
+    HID_USAGE_GENERIC_START:
+      UsageText := 'Start';
+    HID_USAGE_GENERIC_SELECT:
+      UsageText := 'Select';
+    HID_USAGE_GENERIC_RESERVED2:
+      UsageText := 'Reserved';
+    HID_USAGE_GENERIC_VX:
+      UsageText := 'Velocity X';
+    HID_USAGE_GENERIC_VY:
+      UsageText := 'Velocity Y';
+    HID_USAGE_GENERIC_VZ:
+      UsageText := 'Velocity Z';
+    HID_USAGE_GENERIC_VBRX:
+      UsageText := 'Velocity Brake X';
+    HID_USAGE_GENERIC_VBRY:
+      UsageText := 'Velocity Brake Y';
+    HID_USAGE_GENERIC_VBRZ:
+      UsageText := 'Velocity Brake Z';
+    HID_USAGE_GENERIC_VNO:
+      UsageText := 'Vno';
+    HID_USAGE_FEATURE_NOTIFICATION:
+      UsageText := 'Feature Notification';
+    HID_USAGE_GENERIC_SYSTEM_CTL:
+      UsageText := 'System Control';
+    HID_USAGE_GENERIC_SYSCTL_POWER:
+      UsageText := 'System Control Power Down';
+    HID_USAGE_GENERIC_SYSCTL_SLEEP:
+      UsageText := 'System Control Sleep';
+    HID_USAGE_GENERIC_SYSCTL_WAKE:
+      UsageText := 'System Control Wake Up';
+    HID_USAGE_GENERIC_SYSCTL_CONTEXT_MENU:
+      UsageText := 'System Control Context Menu';
+    HID_USAGE_GENERIC_SYSCTL_MAIN_MENU:
+      UsageText := 'System Control Main Menu';
+    HID_USAGE_GENERIC_SYSCTL_APP_MENU:
+      UsageText := 'System Control App Menu';
+    HID_USAGE_GENERIC_SYSCTL_HELP_MENU:
+      UsageText := 'System Control Help Menu';
+    HID_USAGE_GENERIC_SYSCTL_MENU_EXIT:
+      UsageText := 'System Control Menu Exit';
+    HID_USAGE_GENERIC_SYSCTL_MENU_SELECT:
+      UsageText := 'System Control Menu Select';
+    HID_USAGE_GENERIC_SYSCTL_MENU_RIGHT:
+      UsageText := 'System Control Menu Right';
+    HID_USAGE_GENERIC_SYSCTL_MENU_LEFT:
+      UsageText := 'System Control Menu Left';
+    HID_USAGE_GENERIC_SYSCTL_MENU_UP:
+      UsageText := 'System Control Menu Up';
+    HID_USAGE_GENERIC_SYSCTL_MENU_DOWN:
+      UsageText := 'System Control Menu Down';
+    HID_USAGE_GENERIC_SYSCTL_COLD_RESTART:
+      UsageText := 'System Control Cold Restart';
+    HID_USAGE_GENERIC_SYSCTL_WARM_RESTART:
+      UsageText := 'System Control Warm Restart';
+    HID_USAGE_GENERIC_SYSCTL_DPAD_UP:
+      UsageText := 'System Control DPad Up';
+    HID_USAGE_GENERIC_SYSCTL_DPAD_DOWN:
+      UsageText := 'System Control DPad Down';
+    HID_USAGE_GENERIC_SYSCTL_DPAD_RIGHT:
+      UsageText := 'System Control DPad Right';
+    HID_USAGE_GENERIC_SYSCTL_DPAD_LEFT:
+      UsageText := 'System Control DPad Left';
+    HID_USAGE_GENERIC_SYSCTL_DOCK:
+      UsageText := 'System Control Dock';
+    HID_USAGE_GENERIC_SYSCTL_UNDOCK:
+      UsageText := 'System Control Undock';
+    HID_USAGE_GENERIC_SYSCTL_SETUP:
+      UsageText := 'System Control Setup';
+    HID_USAGE_GENERIC_SYSCTL_BREAK:
+      UsageText := 'System Control Break';
+    HID_USAGE_GENERIC_SYSCTL_DEBUGGER_BREAK:
+      UsageText := 'System Control Debugger Break';
+    HID_USAGE_GENERIC_SYSCTL_APP_BREAK:
+      UsageText := 'System Control Application Break';
+    HID_USAGE_GENERIC_SYSCTL_APP_DEBUGGER_BREAK:
+      UsageText := 'System Control Application Debugger Break';
+    HID_USAGE_GENERIC_SYSCTL_SYSTEM_SPEAKER_MUTE:
+      UsageText := 'System Control Speaker Mute';
+    HID_USAGE_GENERIC_SYSCTL_SYSTEM_HIBERNATE:
+      UsageText := 'System Control Hibernate';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_INVERT:
+      UsageText := 'System Control Invert Display';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_INTERNAL:
+      UsageText := 'System Control Internal Display';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_EXTERNAL:
+      UsageText := 'System Control External Display';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_BOTH:
+      UsageText := 'System Control Both Displays';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_DUAL:
+      UsageText := 'System Control Dual Displays';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_TOGGLE_INT_EXT:
+      UsageText := 'System Control Toggle Internal/External Display';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_SWAP:
+      UsageText := 'System Control Swap Primary/Secondary Displays';
+    HID_USAGE_GENERIC_SYSCTL_DISPLAY_LCD_AUTOSCALE:
+      UsageText := 'System Control LCD Autoscale Display';
+  end;
+end;
+
+procedure UsageTextPageSimulation(Usage: TUsage; var UsageText: string);
+begin
+  case Usage of
+    HID_USAGE_SIMULATION_UNDEFINED:
+      UsageText := 'Undefined';
+    HID_USAGE_SIMULATION_FLIGHT:
+      UsageText := 'Flight';
+    HID_USAGE_SIMULATION_AUTOMOBILE:
+      UsageText := 'Automobile';
+    HID_USAGE_SIMULATION_TANK:
+      UsageText := 'Tank';
+    HID_USAGE_SIMULATION_SPACESHIP:
+      UsageText := 'Spaceship';
+    HID_USAGE_SIMULATION_SUBMARINE:
+      UsageText := 'Submarine';
+    HID_USAGE_SIMULATION_SAILING:
+      UsageText := 'Sailing';
+    HID_USAGE_SIMULATION_MOTORCYCLE:
+      UsageText := 'Motorcycle';
+    HID_USAGE_SIMULATION_SPORTS:
+      UsageText := 'Sports';
+    HID_USAGE_SIMULATION_AIRPLANE:
+      UsageText := 'Airplane';
+    HID_USAGE_SIMULATION_HELICOPTER:
+      UsageText := 'Helicopter';
+    HID_USAGE_SIMULATION_MAGIC_CARPET:
+      UsageText := 'Magic Carpet';
+    HID_USAGE_SIMULATION_BICYCLE:
+      UsageText := 'Bicycle';
+    HID_USAGE_SIMULATION_FLIGHT_CONTROL_STICK:
+      UsageText := 'Flight Control Stick';
+    HID_USAGE_SIMULATION_FLIGHT_STICK:
+      UsageText := 'Flight Stick';
+    HID_USAGE_SIMULATION_CYCLIC_CONTROL:
+      UsageText := 'Cyclic Control';
+    HID_USAGE_SIMULATION_CYCLIC_TRIM:
+      UsageText := 'Cyclic Trim';
+    HID_USAGE_SIMULATION_FLIGHT_YOKE:
+      UsageText := 'Flight Yoke';
+    HID_USAGE_SIMULATION_TRACK_CONTROL:
+      UsageText := 'Track Control';
+    HID_USAGE_SIMULATION_AILERON:
+      UsageText := 'Aileron';
+    HID_USAGE_SIMULATION_AILERON_TRIM:
+      UsageText := 'Aileron Trim';
+    HID_USAGE_SIMULATION_ANTITORQUE_CONTROL:
+      UsageText := 'Anti-Torque Control';
+    HID_USAGE_SIMULATION_AUTOPILOT_ENABLE:
+      UsageText := 'Enable Autopilot';
+    HID_USAGE_SIMULATION_CHAFF_RELEASE:
+      UsageText := 'Chaff Release';
+    HID_USAGE_SIMULATION_COLLECTIVE_CONTROL:
+      UsageText := 'Collective Control';
+    HID_USAGE_SIMULATION_DIVE_BREAK:
+      UsageText := 'Dive Break';
+    HID_USAGE_SIMULATION_ELECTRONIC_COUNTERMEASURES:
+      UsageText := 'Electronic Countermeasures';
+    HID_USAGE_SIMULATION_ELEVATOR:
+      UsageText := 'Elevator';
+    HID_USAGE_SIMULATION_ELEVATOR_TRIM:
+      UsageText := 'Elevator Trim';
+    HID_USAGE_SIMULATION_RUDDER:
+      UsageText := 'Rudder';
+    HID_USAGE_SIMULATION_THROTTLE:
+      UsageText := 'Throttle';
+    HID_USAGE_SIMULATION_FLIGHT_COMMUNICATIONS:
+      UsageText := 'Flight Communications';
+    HID_USAGE_SIMULATION_FLARE_RELEASE:
+      UsageText := 'Flare Release';
+    HID_USAGE_SIMULATION_LANDING_GEAR:
+      UsageText := 'Landing Gear';
+    HID_USAGE_SIMULATION_TOE_BRAKE:
+      UsageText := 'Toe Brake';
+    HID_USAGE_SIMULATION_TRIGGER:
+      UsageText := 'Trigger';
+    HID_USAGE_SIMULATION_WEAPONS_ARM:
+      UsageText := 'Arm Weapons';
+    HID_USAGE_SIMULATION_WEAPONS_SELECT:
+      UsageText := 'Select Weapons';
+    HID_USAGE_SIMULATION_WING_FLAPS:
+      UsageText := 'Wing Flaps';
+    HID_USAGE_SIMULATION_ACCELERATOR:
+      UsageText := 'Accelerator';
+    HID_USAGE_SIMULATION_BRAKE:
+      UsageText := 'Brake';
+    HID_USAGE_SIMULATION_CLUTCH:
+      UsageText := 'Clutch';
+    HID_USAGE_SIMULATION_SHIFTER:
+      UsageText := 'Shifter';
+    HID_USAGE_SIMULATION_STEERING:
+      UsageText := 'Steering';
+    HID_USAGE_SIMULATION_TURRET_DIRECTION:
+      UsageText := 'Turret Direction';
+    HID_USAGE_SIMULATION_BARREL_ELEVATION:
+      UsageText := 'Barrel Elevation';
+    HID_USAGE_SIMULATION_DIVE_PLANE:
+      UsageText := 'Dive Plane';
+    HID_USAGE_SIMULATION_BALLAST:
+      UsageText := 'Ballast';
+    HID_USAGE_SIMULATION_BICYCLE_CRANK:
+      UsageText := 'Bicycle Crank';
+    HID_USAGE_SIMULATION_HANDLE_BARS:
+      UsageText := 'Handle Bars';
+    HID_USAGE_SIMULATION_FRONT_BRAKE:
+      UsageText := 'Front Brake';
+    HID_USAGE_SIMULATION_REAR_BRAKE:
+      UsageText := 'Rear Brake';
+  end;
+end;
+
+procedure UsageTextPageSport(Usage: TUsage; var UsageText: string);
+begin
+  case Usage of
+    HID_USAGE_SPORT_UNDEFINED:
+      UsageText := 'Undefined';
+    HID_USAGE_SPORT_BASEBALL_BAT:
+      UsageText := 'Baseball Bat';
+    HID_USAGE_SPORT_GOLF_CLUB:
+      UsageText := 'Golf Club';
+    HID_USAGE_SPORT_ROWING_MACHINE:
+      UsageText := 'Rowing Machine';
+    HID_USAGE_SPORT_TREADMILL:
+      UsageText := 'Treadmill';
+    HID_USAGE_SPORT_OAR:
+      UsageText := 'Oar';
+    HID_USAGE_SPORT_SLOPE:
+      UsageText := 'Slope';
+    HID_USAGE_SPORT_RATE:
+      UsageText := 'Rate';
+    HID_USAGE_SPORT_STICK_SPEED:
+      UsageText := 'Stick Speed';
+    HID_USAGE_SPORT_STICK_FACE_ANGLE:
+      UsageText := 'Stick Face Angle';
+    HID_USAGE_SPORT_STICK_HEEL_TOE:
+      UsageText := 'Stick Heel/Toe';
+    HID_USAGE_SPORT_STICK_FOLLOW_THROUGH:
+      UsageText := 'Stick Follow Through';
+    HID_USAGE_SPORT_STICK_TEMPO:
+      UsageText := 'Stick Tempo';
+    HID_USAGE_SPORT_STICK_TYPE:
+      UsageText := 'Stick Type';
+    HID_USAGE_SPORT_STICK_HEIGHT:
+      UsageText := 'Stick Height';
+    HID_USAGE_SPORT_PUTTER:
+      UsageText := 'Putter';
+    HID_USAGE_SPORT_IRON_1:
+      UsageText := 'Iron 1';
+    HID_USAGE_SPORT_IRON_2:
+      UsageText := 'Iron 2';
+    HID_USAGE_SPORT_IRON_3:
+      UsageText := 'Iron 3';
+    HID_USAGE_SPORT_IRON_4:
+      UsageText := 'Iron 4';
+    HID_USAGE_SPORT_IRON_5:
+      UsageText := 'Iron 5';
+    HID_USAGE_SPORT_IRON_6:
+      UsageText := 'Iron 6';
+    HID_USAGE_SPORT_IRON_7:
+      UsageText := 'Iron 7';
+    HID_USAGE_SPORT_IRON_8:
+      UsageText := 'Iron 8';
+    HID_USAGE_SPORT_IRON_9:
+      UsageText := 'Iron 9';
+    HID_USAGE_SPORT_IRON_10:
+      UsageText := 'Iron 10';
+    HID_USAGE_SPORT_IRON_11:
+      UsageText := 'Iron 11';
+    HID_USAGE_SPORT_SAND_WEDGE:
+      UsageText := 'Sand Wedge';
+    HID_USAGE_SPORT_LOFT_WEDGE:
+      UsageText := 'Loft Wedge';
+    HID_USAGE_SPORT_POWER_WEDGE:
+      UsageText := 'Power Wedge';
+    HID_USAGE_SPORT_WOOD_1:
+      UsageText := 'Wood 1';
+    HID_USAGE_SPORT_WOOD_3:
+      UsageText := 'Wood 3';
+    HID_USAGE_SPORT_WOOD_5:
+      UsageText := 'Wood 5';
+    HID_USAGE_SPORT_WOOD_7:
+      UsageText := 'Wood 7';
+    HID_USAGE_SPORT_WOOD_9:
+      UsageText := 'Wood 9';
+  end;
+end;
+
+procedure UsageTextPageKeyboard(Usage: TUsage; var UsageText: string);
+begin
+  case Usage of
+    HID_USAGE_KEYBOARD_NOEVENT:
+      UsageText := 'Empty';
+    HID_USAGE_KEYBOARD_ROLLOVER:
+      UsageText := 'Rollover';
+    HID_USAGE_KEYBOARD_POSTFAIL:
+      UsageText := 'Postfail';
+    HID_USAGE_KEYBOARD_UNDEFINED:
+      UsageText := 'Undefined Error';
+    HID_USAGE_KEYBOARD_aA:
+      UsageText := 'A';
+    HID_USAGE_KEYBOARD_bB:
+      UsageText := 'B';
+    HID_USAGE_KEYBOARD_cC:
+      UsageText := 'C';
+    HID_USAGE_KEYBOARD_dD:
+      UsageText := 'D';
+    HID_USAGE_KEYBOARD_eE:
+      UsageText := 'E';
+    HID_USAGE_KEYBOARD_fF:
+      UsageText := 'F';
+    HID_USAGE_KEYBOARD_gG:
+      UsageText := 'G';
+    HID_USAGE_KEYBOARD_hH:
+      UsageText := 'H';
+    HID_USAGE_KEYBOARD_iI:
+      UsageText := 'I';
+    HID_USAGE_KEYBOARD_jJ:
+      UsageText := 'J';
+    HID_USAGE_KEYBOARD_kK:
+      UsageText := 'K';
+    HID_USAGE_KEYBOARD_lL:
+      UsageText := 'L';
+    HID_USAGE_KEYBOARD_mM:
+      UsageText := 'M';
+    HID_USAGE_KEYBOARD_nN:
+      UsageText := 'N';
+    HID_USAGE_KEYBOARD_oO:
+      UsageText := 'O';
+    HID_USAGE_KEYBOARD_pP:
+      UsageText := 'P';
+    HID_USAGE_KEYBOARD_qQ:
+      UsageText := 'Q';
+    HID_USAGE_KEYBOARD_rR:
+      UsageText := 'R';
+    HID_USAGE_KEYBOARD_sS:
+      UsageText := 'S';
+    HID_USAGE_KEYBOARD_tT:
+      UsageText := 'T';
+    HID_USAGE_KEYBOARD_uU:
+      UsageText := 'U';
+    HID_USAGE_KEYBOARD_vV:
+      UsageText := 'V';
+    HID_USAGE_KEYBOARD_wW:
+      UsageText := 'W';
+    HID_USAGE_KEYBOARD_xX:
+      UsageText := 'X';
+    HID_USAGE_KEYBOARD_yY:
+      UsageText := 'Y';
+    HID_USAGE_KEYBOARD_zZ:
+      UsageText := 'Z';
+    HID_USAGE_KEYBOARD_ONE:
+      UsageText := '1';
+    HID_USAGE_KEYBOARD_TWO:
+      UsageText := '2';
+    HID_USAGE_KEYBOARD_THREE:
+      UsageText := '3';
+    HID_USAGE_KEYBOARD_FOUR:
+      UsageText := '4';
+    HID_USAGE_KEYBOARD_FIVE:
+      UsageText := '5';
+    HID_USAGE_KEYBOARD_SIX:
+      UsageText := '6';
+    HID_USAGE_KEYBOARD_SEVEN:
+      UsageText := '7';
+    HID_USAGE_KEYBOARD_EIGHT:
+      UsageText := '8';
+    HID_USAGE_KEYBOARD_NINE:
+      UsageText := '9';
+    HID_USAGE_KEYBOARD_ZERO:
+      UsageText := '0';
+    HID_USAGE_KEYBOARD_ENTER:
+      UsageText := 'Enter (not Return)';
+    HID_USAGE_KEYBOARD_ESCAPE:
+      UsageText := 'Esc';
+    HID_USAGE_KEYBOARD_BACKSPACE:
+      UsageText := 'Backspace';
+    HID_USAGE_KEYBOARD_TAB:
+      UsageText := 'Tabulator';
+    HID_USAGE_KEYBOARD_SPACE:
+      UsageText := 'Space';
+    HID_USAGE_KEYBOARD_MINUS:
+      UsageText := '-';
+    HID_USAGE_KEYBOARD_EQUAL:
+      UsageText := '=';
+    HID_USAGE_KEYBOARD_LSQBRACKET:
+      UsageText := '[';
+    HID_USAGE_KEYBOARD_RSQBRACKET:
+      UsageText := ']';
+    HID_USAGE_KEYBOARD_BACKSLASH:
+      UsageText := '\';
+    HID_USAGE_KEYBOARD_HASHMARK2:
+      UsageText := '# 2';
+    HID_USAGE_KEYBOARD_SEMICOLON:
+      UsageText := ';';
+    HID_USAGE_KEYBOARD_APOSTROPH:
+      UsageText := '''';
+    HID_USAGE_KEYBOARD_GRAVEACCENT:
+      UsageText := '`';
+    HID_USAGE_KEYBOARD_COMMA:
+      UsageText := ',';
+    HID_USAGE_KEYBOARD_DOT:
+      UsageText := '.';
+    HID_USAGE_KEYBOARD_SLASH:
+      UsageText := '/';
+    HID_USAGE_KEYBOARD_CAPS_LOCK:
+      UsageText := 'Caps Lock';
+    HID_USAGE_KEYBOARD_F1:
+      UsageText := 'F1';
+    HID_USAGE_KEYBOARD_F2:
+      UsageText := 'F2';
+    HID_USAGE_KEYBOARD_F3:
+      UsageText := 'F3';
+    HID_USAGE_KEYBOARD_F4:
+      UsageText := 'F4';
+    HID_USAGE_KEYBOARD_F5:
+      UsageText := 'F5';
+    HID_USAGE_KEYBOARD_F6:
+      UsageText := 'F6';
+    HID_USAGE_KEYBOARD_F7:
+      UsageText := 'F7';
+    HID_USAGE_KEYBOARD_F8:
+      UsageText := 'F8';
+    HID_USAGE_KEYBOARD_F9:
+      UsageText := 'F9';
+    HID_USAGE_KEYBOARD_F10:
+      UsageText := 'F10';
+    HID_USAGE_KEYBOARD_F11:
+      UsageText := 'F11';
+    HID_USAGE_KEYBOARD_F12:
+      UsageText := 'F12';
+    HID_USAGE_KEYBOARD_PRINT_SCREEN:
+      UsageText := 'Print Screen';
+    HID_USAGE_KEYBOARD_SCROLL_LOCK:
+      UsageText := 'Scroll Lock';
+    HID_USAGE_KEYBOARD_PAUSE:
+      UsageText := 'Pause';
+    HID_USAGE_KEYBOARD_INSERT:
+      UsageText := 'Ins';
+    HID_USAGE_KEYBOARD_HOME:
+      UsageText := 'Home';
+    HID_USAGE_KEYBOARD_PAGEUP:
+      UsageText := 'PgUp';
+    HID_USAGE_KEYBOARD_DELETE:
+      UsageText := 'Del';
+    HID_USAGE_KEYBOARD_END:
+      UsageText := 'End';
+    HID_USAGE_KEYBOARD_PAGEDOWN:
+      UsageText := 'PgDn';
+    HID_USAGE_KEYBOARD_RIGHT:
+      UsageText := 'Right Arrow';
+    HID_USAGE_KEYBOARD_LEFT:
+      UsageText := 'Left Arrow';
+    HID_USAGE_KEYBOARD_DOWN:
+      UsageText := 'Down Arrow';
+    HID_USAGE_KEYBOARD_UP:
+      UsageText := 'Up Arrow';
+    HID_USAGE_KEYPAD_NUM_LOCK:
+      UsageText := 'Keypad Num Lock';
+    HID_USAGE_KEYPAD_SLASH:
+      UsageText := 'Keypad /';
+    HID_USAGE_KEYPAD_STAR:
+      UsageText := 'Keypad *';
+    HID_USAGE_KEYPAD_MINUS:
+      UsageText := 'Keypad -';
+    HID_USAGE_KEYPAD_PLUS:
+      UsageText := 'Keypad +';
+    HID_USAGE_KEYPAD_ENTER:
+      UsageText := 'Keypad Enter';
+    HID_USAGE_KEYPAD_ONE:
+      UsageText := 'Keypad 1';
+    HID_USAGE_KEYPAD_TWO:
+      UsageText := 'Keypad 2';
+    HID_USAGE_KEYPAD_THREE:
+      UsageText := 'Keypad 3';
+    HID_USAGE_KEYPAD_FOUR:
+      UsageText := 'Keypad 4';
+    HID_USAGE_KEYPAD_FIVE:
+      UsageText := 'Keypad 5';
+    HID_USAGE_KEYPAD_SIX:
+      UsageText := 'Keypad 6';
+    HID_USAGE_KEYPAD_SEVEN:
+      UsageText := 'Keypad 7';
+    HID_USAGE_KEYPAD_EIGHT:
+      UsageText := 'Keypad 8';
+    HID_USAGE_KEYPAD_NINE:
+      UsageText := 'Keypad 9';
+    HID_USAGE_KEYPAD_ZERO:
+      UsageText := 'Keypad 0';
+    HID_USAGE_KEYPAD_DOT:
+      UsageText := 'Keypad .';
+    HID_USAGE_KEYBOARD_BACKSLASH2:
+      UsageText := '\ 2';
+    HID_USAGE_KEYBOARD_APPLICATION:
+      UsageText := 'Application';
+    HID_USAGE_KEYBOARD_POWER:
+      UsageText := 'Power';
+    HID_USAGE_KEYPAD_EQUAL2:
+      UsageText := 'Keypad = 2';
+    HID_USAGE_KEYBOARD_F13:
+      UsageText := 'F13';
+    HID_USAGE_KEYBOARD_F14:
+      UsageText := 'F14';
+    HID_USAGE_KEYBOARD_F15:
+      UsageText := 'F15';
+    HID_USAGE_KEYBOARD_F16:
+      UsageText := 'F16';
+    HID_USAGE_KEYBOARD_F17:
+      UsageText := 'F17';
+    HID_USAGE_KEYBOARD_F18:
+      UsageText := 'F18';
+    HID_USAGE_KEYBOARD_F19:
+      UsageText := 'F19';
+    HID_USAGE_KEYBOARD_F20:
+      UsageText := 'F20';
+    HID_USAGE_KEYBOARD_F21:
+      UsageText := 'F21';
+    HID_USAGE_KEYBOARD_F22:
+      UsageText := 'F22';
+    HID_USAGE_KEYBOARD_F23:
+      UsageText := 'F23';
+    HID_USAGE_KEYBOARD_F24:
+      UsageText := 'F24';
+    HID_USAGE_KEYBOARD_EXECUTE:
+      UsageText := 'Execute';
+    HID_USAGE_KEYBOARD_HELP:
+      UsageText := 'Help';
+    HID_USAGE_KEYBOARD_MENU:
+      UsageText := 'Menu';
+    HID_USAGE_KEYBOARD_SELECT:
+      UsageText := 'Select';
+    HID_USAGE_KEYBOARD_STOP:
+      UsageText := 'Stop';
+    HID_USAGE_KEYBOARD_AGAIN:
+      UsageText := 'Again';
+    HID_USAGE_KEYBOARD_UNDO:
+      UsageText := 'Undo';
+    HID_USAGE_KEYBOARD_CUT:
+      UsageText := 'Cut';
+    HID_USAGE_KEYBOARD_COPY:
+      UsageText := 'Copy';
+    HID_USAGE_KEYBOARD_PASTE:
+      UsageText := 'Paste';
+    HID_USAGE_KEYBOARD_FIND:
+      UsageText := 'Find';
+    HID_USAGE_KEYBOARD_MUTE:
+      UsageText := 'Mute';
+    HID_USAGE_KEYBOARD_VOLUME_UP:
+      UsageText := 'Volume Up';
+    HID_USAGE_KEYBOARD_VOLUME_DOWN:
+      UsageText := 'Volume Down';
+    HID_USAGE_KEYBOARD_LOCKCAPS:
+      UsageText := 'Caps Lock';
+    HID_USAGE_KEYBOARD_LOCKNUM:
+      UsageText := 'Num Lock';
+    HID_USAGE_KEYBOARD_LOCKSCROLL:
+      UsageText := 'Scroll Lock';
+    HID_USAGE_KEYPAD_COMMA:
+      UsageText := 'Keypad ,';
+    HID_USAGE_KEYPAD_EQUALSIGN:
+      UsageText := 'Keypad =';
+    HID_USAGE_KEYBOARD_INATL1:
+      UsageText := 'International 1';
+    HID_USAGE_KEYBOARD_INATL2:
+      UsageText := 'International 2';
+    HID_USAGE_KEYBOARD_INATL3:
+      UsageText := 'International 3';
+    HID_USAGE_KEYBOARD_INATL4:
+      UsageText := 'International 4';
+    HID_USAGE_KEYBOARD_INATL5:
+      UsageText := 'International 5';
+    HID_USAGE_KEYBOARD_INATL6:
+      UsageText := 'International 6';
+    HID_USAGE_KEYBOARD_INATL7:
+      UsageText := 'International 7';
+    HID_USAGE_KEYBOARD_INATL8:
+      UsageText := 'International 8';
+    HID_USAGE_KEYBOARD_INATL9:
+      UsageText := 'International 9';
+    HID_USAGE_KEYBOARD_LANG1:
+      UsageText := 'Language 1';
+    HID_USAGE_KEYBOARD_LANG2:
+      UsageText := 'Language 2';
+    HID_USAGE_KEYBOARD_LANG3:
+      UsageText := 'Language 3';
+    HID_USAGE_KEYBOARD_LANG4:
+      UsageText := 'Language 4';
+    HID_USAGE_KEYBOARD_LANG5:
+      UsageText := 'Language 5';
+    HID_USAGE_KEYBOARD_LANG6:
+      UsageText := 'Language 6';
+    HID_USAGE_KEYBOARD_LANG7:
+      UsageText := 'Language 7';
+    HID_USAGE_KEYBOARD_LANG8:
+      UsageText := 'Language 8';
+    HID_USAGE_KEYBOARD_LANG9:
+      UsageText := 'Language 9';
+    HID_USAGE_KEYBOARD_ALTERASE:
+      UsageText := 'Alternate Erase';
+    HID_USAGE_KEYBOARD_SYSREQ:
+      UsageText := 'Sys Request';
+    HID_USAGE_KEYBOARD_CANCEL:
+      UsageText := 'Cancel';
+    HID_USAGE_KEYBOARD_CLEAR:
+      UsageText := 'Clear';
+    HID_USAGE_KEYBOARD_PRIOR:
+      UsageText := 'Prior';
+    HID_USAGE_KEYBOARD_RETURN:
+      UsageText := 'Return (not Enter)';
+    HID_USAGE_KEYBOARD_SEPARATOR:
+      UsageText := 'Separator';
+    HID_USAGE_KEYBOARD_OUT:
+      UsageText := 'Out';
+    HID_USAGE_KEYBOARD_OPER:
+      UsageText := 'Oper';
+    HID_USAGE_KEYBOARD_CLEAR_AGAIN:
+      UsageText := 'Clear/Again';
+    HID_USAGE_KEYBOARD_CRSEL:
+      UsageText := 'CrSel/Props';
+    HID_USAGE_KEYBOARD_EXSEL:
+      UsageText := 'ExSel';
+    HID_USAGE_KEYPAD_HUNDREDS:
+      UsageText := 'Keypad 00';
+    HID_USAGE_KEYPAD_THOUSANDS:
+      UsageText := 'Keypad 000';
+    HID_USAGE_KEYPAD_THOUSANDS_SEP:
+      UsageText := 'Keypad Thousands Separator';
+    HID_USAGE_KEYPAD_DECIMAL_SEP:
+      UsageText := 'Keypad Decimal Separator';
+    HID_USAGE_KEYPAD_CURR_UNIT:
+      UsageText := 'Keypad Currency Unit';
+    HID_USAGE_KEYPAD_CURR_SUBUNIT:
+      UsageText := 'Keypad Currency Subunit';
+    HID_USAGE_KEYPAD_LROUNDBRACKET:
+      UsageText := 'Keypad (';
+    HID_USAGE_KEYPAD_RROUNDBRACKET:
+      UsageText := 'Keypad )';
+    HID_USAGE_KEYPAD_LCURLYBRACKET:
+      UsageText := 'Keypad {';
+    HID_USAGE_KEYPAD_RCURLYBRACKET:
+      UsageText := 'Keypad }';
+    HID_USAGE_KEYPAD_TABULATOR:
+      UsageText := 'Keypad Tabulator';
+    HID_USAGE_KEYPAD_BACKSPACE:
+      UsageText := 'Keypad Backspace';
+    HID_USAGE_KEYPAD_A:
+      UsageText := 'Keypad A';
+    HID_USAGE_KEYPAD_B:
+      UsageText := 'Keypad B';
+    HID_USAGE_KEYPAD_C:
+      UsageText := 'Keypad C';
+    HID_USAGE_KEYPAD_D:
+      UsageText := 'Keypad D';
+    HID_USAGE_KEYPAD_E:
+      UsageText := 'Keypad E';
+    HID_USAGE_KEYPAD_F:
+      UsageText := 'Keypad F';
+    HID_USAGE_KEYPAD_XOR:
+      UsageText := 'Keypad XOR';
+    HID_USAGE_KEYPAD_CIRCUMFLEX:
+      UsageText := 'Keypad ^';
+    HID_USAGE_KEYPAD_PERCENT:
+      UsageText := 'Keypad %';
+    HID_USAGE_KEYPAD_BIGGER_THAN:
+      UsageText := 'Keypad <';
+    HID_USAGE_KEYPAD_LESS_THAN:
+      UsageText := 'Keypad >';
+    HID_USAGE_KEYPAD_BINARY_AND:
+      UsageText := 'Keypad &';
+    HID_USAGE_KEYPAD_LOGICAL_AND:
+      UsageText := 'Keypad &&';
+    HID_USAGE_KEYPAD_BINARY_OR:
+      UsageText := 'Keypad |';
+    HID_USAGE_KEYPAD_LOGICAL_OR:
+      UsageText := 'Keypad ||';
+    HID_USAGE_KEYPAD_COLON:
+      UsageText := 'Keypad :';
+    HID_USAGE_KEYPAD_HASHMARK:
+      UsageText := 'Keypad #';
+    HID_USAGE_KEYPAD_SPACE:
+      UsageText := 'Keypad Space';
+    HID_USAGE_KEYPAD_AT:
+      UsageText := 'Keypad @';
+    HID_USAGE_KEYPAD_EXCLAMATION:
+      UsageText := 'Keypad !';
+    HID_USAGE_KEYPAD_MEM_STORE:
+      UsageText := 'Keypad Memory Store';
+    HID_USAGE_KEYPAD_MEM_RECALL:
+      UsageText := 'Keypad Memory Recall';
+    HID_USAGE_KEYPAD_MEM_CLEAR:
+      UsageText := 'Keypad Memory Clear';
+    HID_USAGE_KEYPAD_MEM_ADD:
+      UsageText := 'Keypad Memory Add';
+    HID_USAGE_KEYPAD_MEM_SUBTRACT:
+      UsageText := 'Keypad Memory Subtract';
+    HID_USAGE_KEYPAD_MEM_MULTIPLY:
+      UsageText := 'Keypad Memory Multiply';
+    HID_USAGE_KEYPAD_MEM_DIVIDE:
+      UsageText := 'Keypad Memory Divide';
+    HID_USAGE_KEYPAD_PLUS_MINUS:
+      UsageText := 'Keypad Memory Minus';
+    HID_USAGE_KEYPAD_CLEAR:
+      UsageText := 'Keypad Clear';
+    HID_USAGE_KEYPAD_CLEAR_ENTRY:
+      UsageText := 'Keypad Clear Entry';
+    HID_USAGE_KEYPAD_BINARY:
+      UsageText := 'Keypad Binary';
+    HID_USAGE_KEYPAD_OCTAL:
+      UsageText := 'Keypad Octal';
+    HID_USAGE_KEYPAD_DECIMAL:
+      UsageText := 'Keypad Decimal';
+    HID_USAGE_KEYPAD_HEXADECIMAL:
+      UsageText := 'Keypad Hexadecimal';
+    HID_USAGE_KEYPAD_RESERVED1:
+      UsageText := 'Keypad Reserved1';
+    HID_USAGE_KEYPAD_RESERVED2:
+      UsageText := 'Keypad Reserved2';
+    HID_USAGE_KEYBOARD_LCTRL:
+      UsageText := 'Left Ctrl';
+    HID_USAGE_KEYBOARD_LSHFT:
+      UsageText := 'Left Shift';
+    HID_USAGE_KEYBOARD_LALT:
+      UsageText := 'Left Alt';
+    HID_USAGE_KEYBOARD_LGUI:
+      UsageText := 'Left GUI';
+    HID_USAGE_KEYBOARD_RCTRL:
+      UsageText := 'Right Ctrl';
+    HID_USAGE_KEYBOARD_RSHFT:
+      UsageText := 'Right Shift';
+    HID_USAGE_KEYBOARD_RALT:
+      UsageText := 'Right Alt';
+    HID_USAGE_KEYBOARD_RGUI:
+      UsageText := 'Right GUI';
+  end;
+end;
+
 procedure UsageAndUsagePageText(UsagePage, Usage: TUsage; var UsagePageText, UsageText: string);
 begin
   UsagePageText := '';
@@ -48,258 +828,12 @@ begin
     HID_USAGE_PAGE_GENERIC:
       begin
         UsagePageText := 'Generic Desktop';
-        case Usage of
-          HID_USAGE_UNDEFINED:
-            UsageText := 'Undefined';
-          HID_USAGE_GENERIC_POINTER:
-            UsageText := 'Pointing Device';
-          HID_USAGE_GENERIC_MOUSE:
-            UsageText := 'Mouse';
-          HID_USAGE_GENERIC_RESERVED1:
-            UsageText := 'Reserved';
-          HID_USAGE_GENERIC_JOYSTICK:
-            UsageText := 'Joystick';
-          HID_USAGE_GENERIC_GAMEPAD:
-            UsageText := 'Gamepad';
-          HID_USAGE_GENERIC_KEYBOARD:
-            UsageText := 'Keyboard';
-          HID_USAGE_GENERIC_KEYPAD:
-            UsageText := 'Keypad';
-          HID_USAGE_GENERIC_MULTIAXIS:
-            UsageText := 'Multi-Axis';
-          HID_USAGE_GENERIC_X:
-            UsageText := 'X Axis';
-          HID_USAGE_GENERIC_Y:
-            UsageText := 'Y Axis';
-          HID_USAGE_GENERIC_Z:
-            UsageText := 'Z Axis';
-          HID_USAGE_GENERIC_RX:
-            UsageText := 'Rotational X Axis';
-          HID_USAGE_GENERIC_RY:
-            UsageText := 'Rotational Y Axis';
-          HID_USAGE_GENERIC_RZ:
-            UsageText := 'Rotational Z Axis';
-          HID_USAGE_GENERIC_SLIDER:
-            UsageText := 'Slider';
-          HID_USAGE_GENERIC_DIAL:
-            UsageText := 'Dial';
-          HID_USAGE_GENERIC_WHEEL:
-            UsageText := 'Wheel';
-          HID_USAGE_GENERIC_HATSWITCH:
-            UsageText := 'Hat Switch';
-          HID_USAGE_GENERIC_COUNTED_BUFFER:
-            UsageText := 'Counted Buffer';
-          HID_USAGE_GENERIC_BYTE_COUNT:
-            UsageText := 'Byte Count';
-          HID_USAGE_GENERIC_MOTION_WAKEUP:
-            UsageText := 'Motion Wakeup';
-          HID_USAGE_GENERIC_START:
-            UsageText := 'Start';
-          HID_USAGE_GENERIC_SELECT:
-            UsageText := 'Select';
-          HID_USAGE_GENERIC_RESERVED2:
-            UsageText := 'Reserved';
-          HID_USAGE_GENERIC_VX:
-            UsageText := 'Velocity X';
-          HID_USAGE_GENERIC_VY:
-            UsageText := 'Velocity Y';
-          HID_USAGE_GENERIC_VZ:
-            UsageText := 'Velocity Z';
-          HID_USAGE_GENERIC_VBRX:
-            UsageText := 'Velocity Brake X';
-          HID_USAGE_GENERIC_VBRY:
-            UsageText := 'Velocity Brake Y';
-          HID_USAGE_GENERIC_VBRZ:
-            UsageText := 'Velocity Brake Z';
-          HID_USAGE_GENERIC_VNO:
-            UsageText := 'Vno';
-          HID_USAGE_FEATURE_NOTIFICATION:
-            UsageText := 'Feature Notification';
-          HID_USAGE_GENERIC_SYSTEM_CTL:
-            UsageText := 'System Control';
-          HID_USAGE_GENERIC_SYSCTL_POWER:
-            UsageText := 'System Control Power Down';
-          HID_USAGE_GENERIC_SYSCTL_SLEEP:
-            UsageText := 'System Control Sleep';
-          HID_USAGE_GENERIC_SYSCTL_WAKE:
-            UsageText := 'System Control Wake Up';
-          HID_USAGE_GENERIC_SYSCTL_CONTEXT_MENU:
-            UsageText := 'System Control Context Menu';
-          HID_USAGE_GENERIC_SYSCTL_MAIN_MENU:
-            UsageText := 'System Control Main Menu';
-          HID_USAGE_GENERIC_SYSCTL_APP_MENU:
-            UsageText := 'System Control App Menu';
-          HID_USAGE_GENERIC_SYSCTL_HELP_MENU:
-            UsageText := 'System Control Help Menu';
-          HID_USAGE_GENERIC_SYSCTL_MENU_EXIT:
-            UsageText := 'System Control Menu Exit';
-          HID_USAGE_GENERIC_SYSCTL_MENU_SELECT:
-            UsageText := 'System Control Menu Select';
-          HID_USAGE_GENERIC_SYSCTL_MENU_RIGHT:
-            UsageText := 'System Control Menu Right';
-          HID_USAGE_GENERIC_SYSCTL_MENU_LEFT:
-            UsageText := 'System Control Menu Left';
-          HID_USAGE_GENERIC_SYSCTL_MENU_UP:
-            UsageText := 'System Control Menu Up';
-          HID_USAGE_GENERIC_SYSCTL_MENU_DOWN:
-            UsageText := 'System Control Menu Down';
-          HID_USAGE_GENERIC_SYSCTL_COLD_RESTART:
-            UsageText := 'System Control Cold Restart';
-          HID_USAGE_GENERIC_SYSCTL_WARM_RESTART:
-            UsageText := 'System Control Warm Restart';
-          HID_USAGE_GENERIC_SYSCTL_DPAD_UP:
-            UsageText := 'System Control DPad Up';
-          HID_USAGE_GENERIC_SYSCTL_DPAD_DOWN:
-            UsageText := 'System Control DPad Down';
-          HID_USAGE_GENERIC_SYSCTL_DPAD_RIGHT:
-            UsageText := 'System Control DPad Right';
-          HID_USAGE_GENERIC_SYSCTL_DPAD_LEFT:
-            UsageText := 'System Control DPad Left';
-          HID_USAGE_GENERIC_SYSCTL_DOCK:
-            UsageText := 'System Control Dock';
-          HID_USAGE_GENERIC_SYSCTL_UNDOCK:
-            UsageText := 'System Control Undock';
-          HID_USAGE_GENERIC_SYSCTL_SETUP:
-            UsageText := 'System Control Setup';
-          HID_USAGE_GENERIC_SYSCTL_BREAK:
-            UsageText := 'System Control Break';
-          HID_USAGE_GENERIC_SYSCTL_DEBUGGER_BREAK:
-            UsageText := 'System Control Debugger Break';
-          HID_USAGE_GENERIC_SYSCTL_APP_BREAK:
-            UsageText := 'System Control Application Break';
-          HID_USAGE_GENERIC_SYSCTL_APP_DEBUGGER_BREAK:
-            UsageText := 'System Control Application Debugger Break';
-          HID_USAGE_GENERIC_SYSCTL_SYSTEM_SPEAKER_MUTE:
-            UsageText := 'System Control Speaker Mute';
-          HID_USAGE_GENERIC_SYSCTL_SYSTEM_HIBERNATE:
-            UsageText := 'System Control Hibernate';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_INVERT:
-            UsageText := 'System Control Invert Display';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_INTERNAL:
-            UsageText := 'System Control Internal Display';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_EXTERNAL:
-            UsageText := 'System Control External Display';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_BOTH:
-            UsageText := 'System Control Both Displays';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_DUAL:
-            UsageText := 'System Control Dual Displays';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_TOGGLE_INT_EXT:
-            UsageText := 'System Control Toggle Internal/External Display';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_SWAP:
-            UsageText := 'System Control Swap Primary/Secondary Displays';
-          HID_USAGE_GENERIC_SYSCTL_DISPLAY_LCD_AUTOSCALE:
-            UsageText := 'System Control LCD Autoscale Display';
-        end;
+        UsageTextGenericDesktop(Usage, UsageText);
       end;
     HID_USAGE_PAGE_SIMULATION:
       begin
         UsagePageText := 'Simulation';
-        case Usage of
-          HID_USAGE_SIMULATION_UNDEFINED:
-            UsageText := 'Undefined';
-          HID_USAGE_SIMULATION_FLIGHT:
-            UsageText := 'Flight';
-          HID_USAGE_SIMULATION_AUTOMOBILE:
-            UsageText := 'Automobile';
-          HID_USAGE_SIMULATION_TANK:
-            UsageText := 'Tank';
-          HID_USAGE_SIMULATION_SPACESHIP:
-            UsageText := 'Spaceship';
-          HID_USAGE_SIMULATION_SUBMARINE:
-            UsageText := 'Submarine';
-          HID_USAGE_SIMULATION_SAILING:
-            UsageText := 'Sailing';
-          HID_USAGE_SIMULATION_MOTORCYCLE:
-            UsageText := 'Motorcycle';
-          HID_USAGE_SIMULATION_SPORTS:
-            UsageText := 'Sports';
-          HID_USAGE_SIMULATION_AIRPLANE:
-            UsageText := 'Airplane';
-          HID_USAGE_SIMULATION_HELICOPTER:
-            UsageText := 'Helicopter';
-          HID_USAGE_SIMULATION_MAGIC_CARPET:
-            UsageText := 'Magic Carpet';
-          HID_USAGE_SIMULATION_BICYCLE:
-            UsageText := 'Bicycle';
-          HID_USAGE_SIMULATION_FLIGHT_CONTROL_STICK:
-            UsageText := 'Flight Control Stick';
-          HID_USAGE_SIMULATION_FLIGHT_STICK:
-            UsageText := 'Flight Stick';
-          HID_USAGE_SIMULATION_CYCLIC_CONTROL:
-            UsageText := 'Cyclic Control';
-          HID_USAGE_SIMULATION_CYCLIC_TRIM:
-            UsageText := 'Cyclic Trim';
-          HID_USAGE_SIMULATION_FLIGHT_YOKE:
-            UsageText := 'Flight Yoke';
-          HID_USAGE_SIMULATION_TRACK_CONTROL:
-            UsageText := 'Track Control';
-          HID_USAGE_SIMULATION_AILERON:
-            UsageText := 'Aileron';
-          HID_USAGE_SIMULATION_AILERON_TRIM:
-            UsageText := 'Aileron Trim';
-          HID_USAGE_SIMULATION_ANTITORQUE_CONTROL:
-            UsageText := 'Anti-Torque Control';
-          HID_USAGE_SIMULATION_AUTOPILOT_ENABLE:
-            UsageText := 'Enable Autopilot';
-          HID_USAGE_SIMULATION_CHAFF_RELEASE:
-            UsageText := 'Chaff Release';
-          HID_USAGE_SIMULATION_COLLECTIVE_CONTROL:
-            UsageText := 'Collective Control';
-          HID_USAGE_SIMULATION_DIVE_BREAK:
-            UsageText := 'Dive Break';
-          HID_USAGE_SIMULATION_ELECTRONIC_COUNTERMEASURES:
-            UsageText := 'Electronic Countermeasures';
-          HID_USAGE_SIMULATION_ELEVATOR:
-            UsageText := 'Elevator';
-          HID_USAGE_SIMULATION_ELEVATOR_TRIM:
-            UsageText := 'Elevator Trim';
-          HID_USAGE_SIMULATION_RUDDER:
-            UsageText := 'Rudder';
-          HID_USAGE_SIMULATION_THROTTLE:
-            UsageText := 'Throttle';
-          HID_USAGE_SIMULATION_FLIGHT_COMMUNICATIONS:
-            UsageText := 'Flight Communications';
-          HID_USAGE_SIMULATION_FLARE_RELEASE:
-            UsageText := 'Flare Release';
-          HID_USAGE_SIMULATION_LANDING_GEAR:
-            UsageText := 'Landing Gear';
-          HID_USAGE_SIMULATION_TOE_BRAKE:
-            UsageText := 'Toe Brake';
-          HID_USAGE_SIMULATION_TRIGGER:
-            UsageText := 'Trigger';
-          HID_USAGE_SIMULATION_WEAPONS_ARM:
-            UsageText := 'Arm Weapons';
-          HID_USAGE_SIMULATION_WEAPONS_SELECT:
-            UsageText := 'Select Weapons';
-          HID_USAGE_SIMULATION_WING_FLAPS:
-            UsageText := 'Wing Flaps';
-          HID_USAGE_SIMULATION_ACCELERATOR:
-            UsageText := 'Accelerator';
-          HID_USAGE_SIMULATION_BRAKE:
-            UsageText := 'Brake';
-          HID_USAGE_SIMULATION_CLUTCH:
-            UsageText := 'Clutch';
-          HID_USAGE_SIMULATION_SHIFTER:
-            UsageText := 'Shifter';
-          HID_USAGE_SIMULATION_STEERING:
-            UsageText := 'Steering';
-          HID_USAGE_SIMULATION_TURRET_DIRECTION:
-            UsageText := 'Turret Direction';
-          HID_USAGE_SIMULATION_BARREL_ELEVATION:
-            UsageText := 'Barrel Elevation';
-          HID_USAGE_SIMULATION_DIVE_PLANE:
-            UsageText := 'Dive Plane';
-          HID_USAGE_SIMULATION_BALLAST:
-            UsageText := 'Ballast';
-          HID_USAGE_SIMULATION_BICYCLE_CRANK:
-            UsageText := 'Bicycle Crank';
-          HID_USAGE_SIMULATION_HANDLE_BARS:
-            UsageText := 'Handle Bars';
-          HID_USAGE_SIMULATION_FRONT_BRAKE:
-            UsageText := 'Front Brake';
-          HID_USAGE_SIMULATION_REAR_BRAKE:
-            UsageText := 'Rear Brake';
-        end;
+        UsageTextPageSimulation(Usage, UsageText);
       end;
     HID_USAGE_PAGE_VR:
       begin
@@ -336,78 +870,7 @@ begin
     HID_USAGE_PAGE_SPORT:
       begin
         UsagePageText := 'Sport';
-        case Usage of
-          HID_USAGE_SPORT_UNDEFINED:
-            UsageText := 'Undefined';
-          HID_USAGE_SPORT_BASEBALL_BAT:
-            UsageText := 'Baseball Bat';
-          HID_USAGE_SPORT_GOLF_CLUB:
-            UsageText := 'Golf Club';
-          HID_USAGE_SPORT_ROWING_MACHINE:
-            UsageText := 'Rowing Machine';
-          HID_USAGE_SPORT_TREADMILL:
-            UsageText := 'Treadmill';
-          HID_USAGE_SPORT_OAR:
-            UsageText := 'Oar';
-          HID_USAGE_SPORT_SLOPE:
-            UsageText := 'Slope';
-          HID_USAGE_SPORT_RATE:
-            UsageText := 'Rate';
-          HID_USAGE_SPORT_STICK_SPEED:
-            UsageText := 'Stick Speed';
-          HID_USAGE_SPORT_STICK_FACE_ANGLE:
-            UsageText := 'Stick Face Angle';
-          HID_USAGE_SPORT_STICK_HEEL_TOE:
-            UsageText := 'Stick Heel/Toe';
-          HID_USAGE_SPORT_STICK_FOLLOW_THROUGH:
-            UsageText := 'Stick Follow Through';
-          HID_USAGE_SPORT_STICK_TEMPO:
-            UsageText := 'Stick Tempo';
-          HID_USAGE_SPORT_STICK_TYPE:
-            UsageText := 'Stick Type';
-          HID_USAGE_SPORT_STICK_HEIGHT:
-            UsageText := 'Stick Height';
-          HID_USAGE_SPORT_PUTTER:
-            UsageText := 'Putter';
-          HID_USAGE_SPORT_IRON_1:
-            UsageText := 'Iron 1';
-          HID_USAGE_SPORT_IRON_2:
-            UsageText := 'Iron 2';
-          HID_USAGE_SPORT_IRON_3:
-            UsageText := 'Iron 3';
-          HID_USAGE_SPORT_IRON_4:
-            UsageText := 'Iron 4';
-          HID_USAGE_SPORT_IRON_5:
-            UsageText := 'Iron 5';
-          HID_USAGE_SPORT_IRON_6:
-            UsageText := 'Iron 6';
-          HID_USAGE_SPORT_IRON_7:
-            UsageText := 'Iron 7';
-          HID_USAGE_SPORT_IRON_8:
-            UsageText := 'Iron 8';
-          HID_USAGE_SPORT_IRON_9:
-            UsageText := 'Iron 9';
-          HID_USAGE_SPORT_IRON_10:
-            UsageText := 'Iron 10';
-          HID_USAGE_SPORT_IRON_11:
-            UsageText := 'Iron 11';
-          HID_USAGE_SPORT_SAND_WEDGE:
-            UsageText := 'Sand Wedge';
-          HID_USAGE_SPORT_LOFT_WEDGE:
-            UsageText := 'Loft Wedge';
-          HID_USAGE_SPORT_POWER_WEDGE:
-            UsageText := 'Power Wedge';
-          HID_USAGE_SPORT_WOOD_1:
-            UsageText := 'Wood 1';
-          HID_USAGE_SPORT_WOOD_3:
-            UsageText := 'Wood 3';
-          HID_USAGE_SPORT_WOOD_5:
-            UsageText := 'Wood 5';
-          HID_USAGE_SPORT_WOOD_7:
-            UsageText := 'Wood 7';
-          HID_USAGE_SPORT_WOOD_9:
-            UsageText := 'Wood 9';
-        end;
+        UsageTextPageSport(Usage, UsageText);
       end;
     HID_USAGE_PAGE_GAME:
       begin
@@ -490,450 +953,7 @@ begin
     HID_USAGE_PAGE_KEYBOARD:
       begin
         UsagePageText := 'Keyboard';
-        case Usage of
-          HID_USAGE_KEYBOARD_NOEVENT:
-            UsageText := 'Empty';
-          HID_USAGE_KEYBOARD_ROLLOVER:
-            UsageText := 'Rollover';
-          HID_USAGE_KEYBOARD_POSTFAIL:
-            UsageText := 'Postfail';
-          HID_USAGE_KEYBOARD_UNDEFINED:
-            UsageText := 'Undefined Error';
-          HID_USAGE_KEYBOARD_aA:
-            UsageText := 'A';
-          HID_USAGE_KEYBOARD_bB:
-            UsageText := 'B';
-          HID_USAGE_KEYBOARD_cC:
-            UsageText := 'C';
-          HID_USAGE_KEYBOARD_dD:
-            UsageText := 'D';
-          HID_USAGE_KEYBOARD_eE:
-            UsageText := 'E';
-          HID_USAGE_KEYBOARD_fF:
-            UsageText := 'F';
-          HID_USAGE_KEYBOARD_gG:
-            UsageText := 'G';
-          HID_USAGE_KEYBOARD_hH:
-            UsageText := 'H';
-          HID_USAGE_KEYBOARD_iI:
-            UsageText := 'I';
-          HID_USAGE_KEYBOARD_jJ:
-            UsageText := 'J';
-          HID_USAGE_KEYBOARD_kK:
-            UsageText := 'K';
-          HID_USAGE_KEYBOARD_lL:
-            UsageText := 'L';
-          HID_USAGE_KEYBOARD_mM:
-            UsageText := 'M';
-          HID_USAGE_KEYBOARD_nN:
-            UsageText := 'N';
-          HID_USAGE_KEYBOARD_oO:
-            UsageText := 'O';
-          HID_USAGE_KEYBOARD_pP:
-            UsageText := 'P';
-          HID_USAGE_KEYBOARD_qQ:
-            UsageText := 'Q';
-          HID_USAGE_KEYBOARD_rR:
-            UsageText := 'R';
-          HID_USAGE_KEYBOARD_sS:
-            UsageText := 'S';
-          HID_USAGE_KEYBOARD_tT:
-            UsageText := 'T';
-          HID_USAGE_KEYBOARD_uU:
-            UsageText := 'U';
-          HID_USAGE_KEYBOARD_vV:
-            UsageText := 'V';
-          HID_USAGE_KEYBOARD_wW:
-            UsageText := 'W';
-          HID_USAGE_KEYBOARD_xX:
-            UsageText := 'X';
-          HID_USAGE_KEYBOARD_yY:
-            UsageText := 'Y';
-          HID_USAGE_KEYBOARD_zZ:
-            UsageText := 'Z';
-          HID_USAGE_KEYBOARD_ONE:
-            UsageText := '1';
-          HID_USAGE_KEYBOARD_TWO:
-            UsageText := '2';
-          HID_USAGE_KEYBOARD_THREE:
-            UsageText := '3';
-          HID_USAGE_KEYBOARD_FOUR:
-            UsageText := '4';
-          HID_USAGE_KEYBOARD_FIVE:
-            UsageText := '5';
-          HID_USAGE_KEYBOARD_SIX:
-            UsageText := '6';
-          HID_USAGE_KEYBOARD_SEVEN:
-            UsageText := '7';
-          HID_USAGE_KEYBOARD_EIGHT:
-            UsageText := '8';
-          HID_USAGE_KEYBOARD_NINE:
-            UsageText := '9';
-          HID_USAGE_KEYBOARD_ZERO:
-            UsageText := '0';
-          HID_USAGE_KEYBOARD_ENTER:
-            UsageText := 'Enter (not Return)';
-          HID_USAGE_KEYBOARD_ESCAPE:
-            UsageText := 'Esc';
-          HID_USAGE_KEYBOARD_BACKSPACE:
-            UsageText := 'Backspace';
-          HID_USAGE_KEYBOARD_TAB:
-            UsageText := 'Tabulator';
-          HID_USAGE_KEYBOARD_SPACE:
-            UsageText := 'Space';
-          HID_USAGE_KEYBOARD_MINUS:
-            UsageText := '-';
-          HID_USAGE_KEYBOARD_EQUAL:
-            UsageText := '=';
-          HID_USAGE_KEYBOARD_LSQBRACKET:
-            UsageText := '[';
-          HID_USAGE_KEYBOARD_RSQBRACKET:
-            UsageText := ']';
-          HID_USAGE_KEYBOARD_BACKSLASH:
-            UsageText := '\';
-          HID_USAGE_KEYBOARD_HASHMARK2:
-            UsageText := '# 2';
-          HID_USAGE_KEYBOARD_SEMICOLON:
-            UsageText := ';';
-          HID_USAGE_KEYBOARD_APOSTROPH:
-            UsageText := '''';
-          HID_USAGE_KEYBOARD_GRAVEACCENT:
-            UsageText := '`';
-          HID_USAGE_KEYBOARD_COMMA:
-            UsageText := ',';
-          HID_USAGE_KEYBOARD_DOT:
-            UsageText := '.';
-          HID_USAGE_KEYBOARD_SLASH:
-            UsageText := '/';
-          HID_USAGE_KEYBOARD_CAPS_LOCK:
-            UsageText := 'Caps Lock';
-          HID_USAGE_KEYBOARD_F1:
-            UsageText := 'F1';
-          HID_USAGE_KEYBOARD_F2:
-            UsageText := 'F2';
-          HID_USAGE_KEYBOARD_F3:
-            UsageText := 'F3';
-          HID_USAGE_KEYBOARD_F4:
-            UsageText := 'F4';
-          HID_USAGE_KEYBOARD_F5:
-            UsageText := 'F5';
-          HID_USAGE_KEYBOARD_F6:
-            UsageText := 'F6';
-          HID_USAGE_KEYBOARD_F7:
-            UsageText := 'F7';
-          HID_USAGE_KEYBOARD_F8:
-            UsageText := 'F8';
-          HID_USAGE_KEYBOARD_F9:
-            UsageText := 'F9';
-          HID_USAGE_KEYBOARD_F10:
-            UsageText := 'F10';
-          HID_USAGE_KEYBOARD_F11:
-            UsageText := 'F11';
-          HID_USAGE_KEYBOARD_F12:
-            UsageText := 'F12';
-          HID_USAGE_KEYBOARD_PRINT_SCREEN:
-            UsageText := 'Print Screen';
-          HID_USAGE_KEYBOARD_SCROLL_LOCK:
-            UsageText := 'Scroll Lock';
-          HID_USAGE_KEYBOARD_PAUSE:
-            UsageText := 'Pause';
-          HID_USAGE_KEYBOARD_INSERT:
-            UsageText := 'Ins';
-          HID_USAGE_KEYBOARD_HOME:
-            UsageText := 'Home';
-          HID_USAGE_KEYBOARD_PAGEUP:
-            UsageText := 'PgUp';
-          HID_USAGE_KEYBOARD_DELETE:
-            UsageText := 'Del';
-          HID_USAGE_KEYBOARD_END:
-            UsageText := 'End';
-          HID_USAGE_KEYBOARD_PAGEDOWN:
-            UsageText := 'PgDn';
-          HID_USAGE_KEYBOARD_RIGHT:
-            UsageText := 'Right Arrow';
-          HID_USAGE_KEYBOARD_LEFT:
-            UsageText := 'Left Arrow';
-          HID_USAGE_KEYBOARD_DOWN:
-            UsageText := 'Down Arrow';
-          HID_USAGE_KEYBOARD_UP:
-            UsageText := 'Up Arrow';
-          HID_USAGE_KEYPAD_NUM_LOCK:
-            UsageText := 'Keypad Num Lock';
-          HID_USAGE_KEYPAD_SLASH:
-            UsageText := 'Keypad /';
-          HID_USAGE_KEYPAD_STAR:
-            UsageText := 'Keypad *';
-          HID_USAGE_KEYPAD_MINUS:
-            UsageText := 'Keypad -';
-          HID_USAGE_KEYPAD_PLUS:
-            UsageText := 'Keypad +';
-          HID_USAGE_KEYPAD_ENTER:
-            UsageText := 'Keypad Enter';
-          HID_USAGE_KEYPAD_ONE:
-            UsageText := 'Keypad 1';
-          HID_USAGE_KEYPAD_TWO:
-            UsageText := 'Keypad 2';
-          HID_USAGE_KEYPAD_THREE:
-            UsageText := 'Keypad 3';
-          HID_USAGE_KEYPAD_FOUR:
-            UsageText := 'Keypad 4';
-          HID_USAGE_KEYPAD_FIVE:
-            UsageText := 'Keypad 5';
-          HID_USAGE_KEYPAD_SIX:
-            UsageText := 'Keypad 6';
-          HID_USAGE_KEYPAD_SEVEN:
-            UsageText := 'Keypad 7';
-          HID_USAGE_KEYPAD_EIGHT:
-            UsageText := 'Keypad 8';
-          HID_USAGE_KEYPAD_NINE:
-            UsageText := 'Keypad 9';
-          HID_USAGE_KEYPAD_ZERO:
-            UsageText := 'Keypad 0';
-          HID_USAGE_KEYPAD_DOT:
-            UsageText := 'Keypad .';
-          HID_USAGE_KEYBOARD_BACKSLASH2:
-            UsageText := '\ 2';
-          HID_USAGE_KEYBOARD_APPLICATION:
-            UsageText := 'Application';
-          HID_USAGE_KEYBOARD_POWER:
-            UsageText := 'Power';
-          HID_USAGE_KEYPAD_EQUAL2:
-            UsageText := 'Keypad = 2';
-          HID_USAGE_KEYBOARD_F13:
-            UsageText := 'F13';
-          HID_USAGE_KEYBOARD_F14:
-            UsageText := 'F14';
-          HID_USAGE_KEYBOARD_F15:
-            UsageText := 'F15';
-          HID_USAGE_KEYBOARD_F16:
-            UsageText := 'F16';
-          HID_USAGE_KEYBOARD_F17:
-            UsageText := 'F17';
-          HID_USAGE_KEYBOARD_F18:
-            UsageText := 'F18';
-          HID_USAGE_KEYBOARD_F19:
-            UsageText := 'F19';
-          HID_USAGE_KEYBOARD_F20:
-            UsageText := 'F20';
-          HID_USAGE_KEYBOARD_F21:
-            UsageText := 'F21';
-          HID_USAGE_KEYBOARD_F22:
-            UsageText := 'F22';
-          HID_USAGE_KEYBOARD_F23:
-            UsageText := 'F23';
-          HID_USAGE_KEYBOARD_F24:
-            UsageText := 'F24';
-          HID_USAGE_KEYBOARD_EXECUTE:
-            UsageText := 'Execute';
-          HID_USAGE_KEYBOARD_HELP:
-            UsageText := 'Help';
-          HID_USAGE_KEYBOARD_MENU:
-            UsageText := 'Menu';
-          HID_USAGE_KEYBOARD_SELECT:
-            UsageText := 'Select';
-          HID_USAGE_KEYBOARD_STOP:
-            UsageText := 'Stop';
-          HID_USAGE_KEYBOARD_AGAIN:
-            UsageText := 'Again';
-          HID_USAGE_KEYBOARD_UNDO:
-            UsageText := 'Undo';
-          HID_USAGE_KEYBOARD_CUT:
-            UsageText := 'Cut';
-          HID_USAGE_KEYBOARD_COPY:
-            UsageText := 'Copy';
-          HID_USAGE_KEYBOARD_PASTE:
-            UsageText := 'Paste';
-          HID_USAGE_KEYBOARD_FIND:
-            UsageText := 'Find';
-          HID_USAGE_KEYBOARD_MUTE:
-            UsageText := 'Mute';
-          HID_USAGE_KEYBOARD_VOLUME_UP:
-            UsageText := 'Volume Up';
-          HID_USAGE_KEYBOARD_VOLUME_DOWN:
-            UsageText := 'Volume Down';
-          HID_USAGE_KEYBOARD_LOCKCAPS:
-            UsageText := 'Caps Lock';
-          HID_USAGE_KEYBOARD_LOCKNUM:
-            UsageText := 'Num Lock';
-          HID_USAGE_KEYBOARD_LOCKSCROLL:
-            UsageText := 'Scroll Lock';
-          HID_USAGE_KEYPAD_COMMA:
-            UsageText := 'Keypad ,';
-          HID_USAGE_KEYPAD_EQUALSIGN:
-            UsageText := 'Keypad =';
-          HID_USAGE_KEYBOARD_INATL1:
-            UsageText := 'International 1';
-          HID_USAGE_KEYBOARD_INATL2:
-            UsageText := 'International 2';
-          HID_USAGE_KEYBOARD_INATL3:
-            UsageText := 'International 3';
-          HID_USAGE_KEYBOARD_INATL4:
-            UsageText := 'International 4';
-          HID_USAGE_KEYBOARD_INATL5:
-            UsageText := 'International 5';
-          HID_USAGE_KEYBOARD_INATL6:
-            UsageText := 'International 6';
-          HID_USAGE_KEYBOARD_INATL7:
-            UsageText := 'International 7';
-          HID_USAGE_KEYBOARD_INATL8:
-            UsageText := 'International 8';
-          HID_USAGE_KEYBOARD_INATL9:
-            UsageText := 'International 9';
-          HID_USAGE_KEYBOARD_LANG1:
-            UsageText := 'Language 1';
-          HID_USAGE_KEYBOARD_LANG2:
-            UsageText := 'Language 2';
-          HID_USAGE_KEYBOARD_LANG3:
-            UsageText := 'Language 3';
-          HID_USAGE_KEYBOARD_LANG4:
-            UsageText := 'Language 4';
-          HID_USAGE_KEYBOARD_LANG5:
-            UsageText := 'Language 5';
-          HID_USAGE_KEYBOARD_LANG6:
-            UsageText := 'Language 6';
-          HID_USAGE_KEYBOARD_LANG7:
-            UsageText := 'Language 7';
-          HID_USAGE_KEYBOARD_LANG8:
-            UsageText := 'Language 8';
-          HID_USAGE_KEYBOARD_LANG9:
-            UsageText := 'Language 9';
-          HID_USAGE_KEYBOARD_ALTERASE:
-            UsageText := 'Alternate Erase';
-          HID_USAGE_KEYBOARD_SYSREQ:
-            UsageText := 'Sys Request';
-          HID_USAGE_KEYBOARD_CANCEL:
-            UsageText := 'Cancel';
-          HID_USAGE_KEYBOARD_CLEAR:
-            UsageText := 'Clear';
-          HID_USAGE_KEYBOARD_PRIOR:
-            UsageText := 'Prior';
-          HID_USAGE_KEYBOARD_RETURN:
-            UsageText := 'Return (not Enter)';
-          HID_USAGE_KEYBOARD_SEPARATOR:
-            UsageText := 'Separator';
-          HID_USAGE_KEYBOARD_OUT:
-            UsageText := 'Out';
-          HID_USAGE_KEYBOARD_OPER:
-            UsageText := 'Oper';
-          HID_USAGE_KEYBOARD_CLEAR_AGAIN:
-            UsageText := 'Clear/Again';
-          HID_USAGE_KEYBOARD_CRSEL:
-            UsageText := 'CrSel/Props';
-          HID_USAGE_KEYBOARD_EXSEL:
-            UsageText := 'ExSel';
-          HID_USAGE_KEYPAD_HUNDREDS:
-            UsageText := 'Keypad 00';
-          HID_USAGE_KEYPAD_THOUSANDS:
-            UsageText := 'Keypad 000';
-          HID_USAGE_KEYPAD_THOUSANDS_SEP:
-            UsageText := 'Keypad Thousands Separator';
-          HID_USAGE_KEYPAD_DECIMAL_SEP:
-            UsageText := 'Keypad Decimal Separator';
-          HID_USAGE_KEYPAD_CURR_UNIT:
-            UsageText := 'Keypad Currency Unit';
-          HID_USAGE_KEYPAD_CURR_SUBUNIT:
-            UsageText := 'Keypad Currency Subunit';
-          HID_USAGE_KEYPAD_LROUNDBRACKET:
-            UsageText := 'Keypad (';
-          HID_USAGE_KEYPAD_RROUNDBRACKET:
-            UsageText := 'Keypad )';
-          HID_USAGE_KEYPAD_LCURLYBRACKET:
-            UsageText := 'Keypad {';
-          HID_USAGE_KEYPAD_RCURLYBRACKET:
-            UsageText := 'Keypad }';
-          HID_USAGE_KEYPAD_TABULATOR:
-            UsageText := 'Keypad Tabulator';
-          HID_USAGE_KEYPAD_BACKSPACE:
-            UsageText := 'Keypad Backspace';
-          HID_USAGE_KEYPAD_A:
-            UsageText := 'Keypad A';
-          HID_USAGE_KEYPAD_B:
-            UsageText := 'Keypad B';
-          HID_USAGE_KEYPAD_C:
-            UsageText := 'Keypad C';
-          HID_USAGE_KEYPAD_D:
-            UsageText := 'Keypad D';
-          HID_USAGE_KEYPAD_E:
-            UsageText := 'Keypad E';
-          HID_USAGE_KEYPAD_F:
-            UsageText := 'Keypad F';
-          HID_USAGE_KEYPAD_XOR:
-            UsageText := 'Keypad XOR';
-          HID_USAGE_KEYPAD_CIRCUMFLEX:
-            UsageText := 'Keypad ^';
-          HID_USAGE_KEYPAD_PERCENT:
-            UsageText := 'Keypad %';
-          HID_USAGE_KEYPAD_BIGGER_THAN:
-            UsageText := 'Keypad <';
-          HID_USAGE_KEYPAD_LESS_THAN:
-            UsageText := 'Keypad >';
-          HID_USAGE_KEYPAD_BINARY_AND:
-            UsageText := 'Keypad &';
-          HID_USAGE_KEYPAD_LOGICAL_AND:
-            UsageText := 'Keypad &&';
-          HID_USAGE_KEYPAD_BINARY_OR:
-            UsageText := 'Keypad |';
-          HID_USAGE_KEYPAD_LOGICAL_OR:
-            UsageText := 'Keypad ||';
-          HID_USAGE_KEYPAD_COLON:
-            UsageText := 'Keypad :';
-          HID_USAGE_KEYPAD_HASHMARK:
-            UsageText := 'Keypad #';
-          HID_USAGE_KEYPAD_SPACE:
-            UsageText := 'Keypad Space';
-          HID_USAGE_KEYPAD_AT:
-            UsageText := 'Keypad @';
-          HID_USAGE_KEYPAD_EXCLAMATION:
-            UsageText := 'Keypad !';
-          HID_USAGE_KEYPAD_MEM_STORE:
-            UsageText := 'Keypad Memory Store';
-          HID_USAGE_KEYPAD_MEM_RECALL:
-            UsageText := 'Keypad Memory Recall';
-          HID_USAGE_KEYPAD_MEM_CLEAR:
-            UsageText := 'Keypad Memory Clear';
-          HID_USAGE_KEYPAD_MEM_ADD:
-            UsageText := 'Keypad Memory Add';
-          HID_USAGE_KEYPAD_MEM_SUBTRACT:
-            UsageText := 'Keypad Memory Subtract';
-          HID_USAGE_KEYPAD_MEM_MULTIPLY:
-            UsageText := 'Keypad Memory Multiply';
-          HID_USAGE_KEYPAD_MEM_DIVIDE:
-            UsageText := 'Keypad Memory Divide';
-          HID_USAGE_KEYPAD_PLUS_MINUS:
-            UsageText := 'Keypad Memory Minus';
-          HID_USAGE_KEYPAD_CLEAR:
-            UsageText := 'Keypad Clear';
-          HID_USAGE_KEYPAD_CLEAR_ENTRY:
-            UsageText := 'Keypad Clear Entry';
-          HID_USAGE_KEYPAD_BINARY:
-            UsageText := 'Keypad Binary';
-          HID_USAGE_KEYPAD_OCTAL:
-            UsageText := 'Keypad Octal';
-          HID_USAGE_KEYPAD_DECIMAL:
-            UsageText := 'Keypad Decimal';
-          HID_USAGE_KEYPAD_HEXADECIMAL:
-            UsageText := 'Keypad Hexadecimal';
-          HID_USAGE_KEYPAD_RESERVED1:
-            UsageText := 'Keypad Reserved1';
-          HID_USAGE_KEYPAD_RESERVED2:
-            UsageText := 'Keypad Reserved2';
-          HID_USAGE_KEYBOARD_LCTRL:
-            UsageText := 'Left Ctrl';
-          HID_USAGE_KEYBOARD_LSHFT:
-            UsageText := 'Left Shift';
-          HID_USAGE_KEYBOARD_LALT:
-            UsageText := 'Left Alt';
-          HID_USAGE_KEYBOARD_LGUI:
-            UsageText := 'Left GUI';
-          HID_USAGE_KEYBOARD_RCTRL:
-            UsageText := 'Right Ctrl';
-          HID_USAGE_KEYBOARD_RSHFT:
-            UsageText := 'Right Shift';
-          HID_USAGE_KEYBOARD_RALT:
-            UsageText := 'Right Alt';
-          HID_USAGE_KEYBOARD_RGUI:
-            UsageText := 'Right GUI';
-        end;
+        UsageTextPageKeyboard(Usage, UsageText);
       end;
     HID_USAGE_PAGE_LED:
       begin

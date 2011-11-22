@@ -40,7 +40,7 @@ interface
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls,
   StdCtrls, ExtCtrls, FileCtrl, Mask, JvToolEdit, DB, DBTables,
   JvValidateEdit, JvComponent, JvFormPlacement, JvEdit, JvExStdCtrls,
-  JvExMask;
+  JvExMask, JvComponentBase;
 
 type
   TDestTableDlg = class(TForm)
@@ -83,7 +83,7 @@ implementation
 {$B-}
 
 uses
-  Consts, Dialogs, JvJVCLUtils, JvJCLUtils, Main;
+  Consts, Dialogs, JvJVCLUtils, JvJCLUtils, DBExplorerDemoMainForm;
 
 {$R *.DFM}
 

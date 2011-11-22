@@ -30,7 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvPluginManager, StdCtrls, Buttons, Menus, ExtCtrls, ImgList, JvComponent;
+  JvPluginManager, StdCtrls, Buttons, Menus, ExtCtrls, ImgList, JvComponent,
+  JvComponentBase;
 
 type
   TForm1 = class(TForm)

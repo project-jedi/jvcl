@@ -2,7 +2,7 @@ program VCDemoPro;
 
 uses
   Forms,
-  Main in 'Main.pas' {MainForm},
+  VCDemoProMainForm in 'VCDemoProMainForm.pas' {MainForm},
   WorkSpaceUnit in 'WorkSpaceUnit.pas' {WorkSpaceForm},
   OutputUnit in 'OutputUnit.pas' {OutputForm},
   SourceEditUnit in 'SourceEditUnit.pas' {SourceEditForm},

@@ -31,7 +31,7 @@ unit MainFrm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Forms, Controls,
   Dialogs, StdCtrls, Mask, ExtCtrls, ImgList, ComCtrls, Menus,
   JvToolEdit,
   jpeg, JvPCX, JvGIF, JvAni, JvCursor, 

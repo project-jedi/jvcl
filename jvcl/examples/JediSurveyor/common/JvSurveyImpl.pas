@@ -26,6 +26,8 @@ unit JvSurveyImpl;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   SysUtils, Classes,
   JvSurveyIntf, JvSimpleXML;
@@ -649,9 +651,9 @@ var
   X: TJvSimpleXML;
   AStream: TmemoryStream;
 begin
-  DecimalSeparator := '.';
-  ShortDateFormat := 'YYYY-MM-DD';
-  DateSeparator := '-';
+  {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator := '.';
+  {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := 'YYYY-MM-DD';
+  {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := '-';
   Items.Clear;
   AStream := TMemoryStream.Create;
   try
@@ -698,24 +700,18 @@ var
   X: TJvSimpleXML;
   item, item2: TJvSimpleXmlElem;
   i: integer;
-  PrologStream: TStringStream;
   AStream: TMemoryStream;
 begin
-  DecimalSeparator := '.';
-  ShortDateFormat := 'YYYY-MM-DD';
-  DateSeparator := '-';
+  {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DecimalSeparator := '.';
+  {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}ShortDateFormat := 'YYYY-MM-DD';
+  {$IFDEF RTL220_UP}FormatSettings.{$ENDIF RTL220_UP}DateSeparator := '-';
   // DONE: build XML doc
   X := TJvSimpleXML.Create(nil);
   try
     Items.Sort;
-    // this is weird: does it really have to be this complicated?
-    PrologStream := TStringStream.Create('<?xml version="1.0" stand-alone="yes" encoding="UTF-8" ?>');
-    try
-      PrologStream.Seek(0, soFromBeginning);
-      X.Prolog.LoadFromStream(PrologStream);
-    finally
-      PrologStream.Free;
-    end;
+    X.Prolog.Version := '1.0';
+    X.Prolog.StandAlone := True;
+    X.Prolog.Encoding := 'UTF-8';
     X.Root.Name := 'JEDISURVEY';
     X.Root.Properties.Add('Version', '1.0');
     item := X.Root.Items.Add('SURVEY');

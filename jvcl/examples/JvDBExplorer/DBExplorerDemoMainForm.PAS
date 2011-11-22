@@ -33,7 +33,7 @@
 {                                                       }
 {*******************************************************}
 
-unit Main;
+unit DBExplorerDemoMainForm;
 
 interface
 
@@ -210,7 +210,8 @@ implementation
 
 {$R *.DFM}
 
-uses DBInpReq, DBCbRest, SQLMon, Bde, JvJCLUtils, JvBDELoginDialog,
+uses
+  (*DBInpReq, *)DBCbRest, SQLMon, Bde, JvJCLUtils, JvBDELoginDialog,
   ChildWin2, OpenDlg, JvDBUtils, IniFiles, RenDlg, About, Options, OptDlg,
   JvBdeUtils, BdeProp, UserHelp, JvHints, ShellAPI, JvJVCLUtils;
 

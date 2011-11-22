@@ -28,11 +28,15 @@ unit FormMain;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ClassUtils, JvXmlDatabase, IdBaseComponent, IdComponent, IdURI,
-  IdTCPServer, IdCustomHTTPServer, IdHTTPServer, ClassHospital, ShellApi,
-  JvComponent, JvTrayIcon, Menus, ActnList;
+  IdTCPServer, IdCustomHTTPServer, IdCustomTCPServer, IdHTTPServer,
+  {$IFDEF DELPHI10_UP}IdContext,{$ENDIF DELPHI10_UP}
+  ClassHospital, ShellApi,
+  JvComponent, JvTrayIcon, Menus, ActnList, JvComponentBase;
 
 type
   TfoMain = class(TForm)
@@ -47,15 +51,17 @@ type
     N1: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure IdHTTPServer1CommandGet(AThread: TIdPeerThread;
-      ARequestInfo: TIdHTTPRequestInfo;
-      AResponseInfo: TIdHTTPResponseInfo);
     procedure actHomeExecute(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
     procedure JvTrayIcon1DblClick(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
+    procedure IdHTTPServer1CommandGet(
+      {$IFDEF DELPHI10_UP}AContext: TIdContext{$ELSE}AThread: TIdPeerThread{$ENDIF DELPHI10_UP};
+      ARequestInfo: TIdHTTPRequestInfo;
+      AResponseInfo: TIdHTTPResponseInfo);
   public
+    constructor Create(AOwner: TComponent); override;
   end;
 
 var
@@ -76,7 +82,7 @@ begin
   Caption := Caption + ' ' + TUtils.GetBuild;
 end;
 {**********************************************************************}
-procedure TfoMain.IdHTTPServer1CommandGet(AThread: TIdPeerThread;
+procedure TfoMain.IdHTTPServer1CommandGet({$IFDEF DELPHI10_UP}AContext: TIdContext{$ELSE}AThread: TIdPeerThread{$ENDIF DELPHI10_UP};
   ARequestInfo: TIdHTTPRequestInfo; AResponseInfo: TIdHTTPResponseInfo);
 var
  lHeaders: TStringList;
@@ -129,6 +135,14 @@ begin
     AResponseInfo.ResponseNo := 500;
   end;
 end;
+
+constructor TfoMain.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  IdHTTPServer1.OnCommandGet := IdHTTPServer1CommandGet;
+end;
+
 {**********************************************************************}
 procedure TfoMain.actHomeExecute(Sender: TObject);
 begin

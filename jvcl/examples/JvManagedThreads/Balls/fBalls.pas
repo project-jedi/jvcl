@@ -28,11 +28,13 @@ unit fBalls;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvMTThreading, StdCtrls, JvMTSync, JvMTData, JvMTConsts,
   ExtCtrls, ComCtrls, TeeProcs, TeEngine, Chart,
-  JvMtComponents, JvComponent;
+  JvMtComponents, JvComponent, JvComponentBase;
 
 type
   TBallMove = class
@@ -79,6 +81,11 @@ var
   fBouncingBalls: TfBouncingBalls;
 
 implementation
+
+{$IFDEF RTL220_UP}
+uses
+  Types;
+{$ENDIF RTL220_UP}
 
 {$R *.dfm}
 

@@ -2,6 +2,8 @@ unit TVDemoMain;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvBackgroundTreeview, ComCtrls, Menus, JvBackgrounds, StdCtrls, ExtCtrls;
@@ -144,7 +146,7 @@ begin
   AClass := TClass(Node.Data);
   if AClass = TObject
     then ClassName.Caption := 'System.TObject'
-    else ClassName.Caption := GetTypeData(AClass.ClassInfo).UnitName+'.'+AClass.ClassName;
+    else ClassName.Caption := {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(GetTypeData(AClass.ClassInfo).UnitName)+'.'+AClass.ClassName;
   InstanceSize.Caption := IntToStr(AClass.InstanceSize);
   PropListView.Items.Clear;
   Properties := GetClassProperties(AClass, AllKinds);
@@ -155,8 +157,8 @@ begin
       for I := 0 to Length(Properties)-1 do
       with PropListView.Items.Add, Properties[I]^ do
       begin
-        Caption := Name;
-        SubItems.Add(PropType^^.Name);
+        Caption := {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(Name);
+        SubItems.Add({$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropType^^.Name));
         if Default = Low(Integer) then
           DefaultStr := '<none>'
         else

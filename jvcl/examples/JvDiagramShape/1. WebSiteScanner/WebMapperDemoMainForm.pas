@@ -28,10 +28,12 @@ unit WebMapperDemoMainForm;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, JvDiagramShape, ComCtrls, ImgList,
-  JvComponent, JvUrlGrabbers, JvUrlListGrabber;
+  JvComponent, JvUrlGrabbers, JvUrlListGrabber, JvComponentBase;
 
 type
   TWebMapperDemoMainFrm = class(TForm)
@@ -285,8 +287,8 @@ begin
                 begin
                   // Trying to load a document with a relative path to the
                   // current one. Make the path absolute.
-                  if not ((FCurrentUrl[Length(FCurrentUrl)] in ['/', '\']) or
-                    ((Length(TempStr) > 0) and (TempStr[1] in ['/', '\']))) then
+                  if not ({$IFDEF RTL200_UP}CharInSet(FCurrentUrl[Length(FCurrentUrl)], ['/', '\']){$ELSE}(FCurrentUrl[Length(FCurrentUrl)] in ['/', '\']){$ENDIF RTL200_UP} or
+                    ((Length(TempStr) > 0) and {$IFDEF RTL200_UP}CharInSet(TempStr[1], ['/', '\']){$ELSE}(TempStr[1] in ['/', '\']){$ENDIF RTL200_UP})) then
                   begin
                     TempStr := '/' + TempStr;
                   end;

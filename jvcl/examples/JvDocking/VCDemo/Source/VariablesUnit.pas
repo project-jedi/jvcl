@@ -20,7 +20,7 @@ interface
 uses
   Windows, Messages, SysUtils{, Variants}, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls, ExtCtrls, Tabs, JvDockControlForm,
-  JvComponent;
+  JvComponent, JvComponentBase;
 
 type
   TVariablesForm = class(TForm)
@@ -46,7 +46,8 @@ var
 
 implementation
 
-uses Main;
+uses
+  VCDemoProMainForm;
 
 {$R *.dfm}
 

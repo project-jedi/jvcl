@@ -26,6 +26,8 @@ unit scUtils;
 
 interface
 
+{$I jvcl.inc}
+
 procedure Run;
 
 implementation
@@ -95,7 +97,7 @@ begin
   end;
 
   for i := 1 to ParamCount do
-    if not (ParamStr(i)[1] in ['-','/']) then
+    if not {$IFDEF RTL200_UP}CharInSet(ParamStr(i)[1],{$ELSE}(ParamStr(i)[1] in {$ENDIF RTL200_UP} ['-','/']) then
       ConvertSurveys(ExpandUNCFilename(ParamStr(i)),InPlace,ToBinary);
 end;
 

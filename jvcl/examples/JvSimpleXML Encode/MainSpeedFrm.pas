@@ -67,7 +67,7 @@ var
 
 implementation
 uses
-  JvSimpleXML, JvJVCLUtils, ShellAPI;
+  JvSimpleXML, JvJVCLUtils, ShellAPI, JclSimpleXML;
 
 {$R *.dfm}
 
