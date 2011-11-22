@@ -103,7 +103,7 @@ type
       const Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);
   private
     FFileName: TFileName;
-    FileTime: Integer;
+    FFileTime: TDateTime;
     Exts: array[TJvHighlighter] of string;
     Capt: string;
     BaseLine: Integer;
@@ -195,7 +195,7 @@ begin
   RAHLEditor1.BeginUpdate;
   try
     RAHLEditor1.Lines.LoadFromFile(AFileName);
-    FileTime := FileAge(AFileName);
+    FileAge(AFileName, FFileTime);
     RAHLEditor1.SetLeftTop(0, 0);
     RAHLEditor1.Modified := False;
     RAHLEditor1ChangeStatus(nil);
@@ -210,12 +210,15 @@ begin
 end;
 
 procedure TMain.CheckFileModified;
+var
+  CurrentFileTime: TDateTime;
 begin
   if FFileName = '' then
     Exit;
   if FileExists(FFileName) then
   begin
-    if FileTime <> FileAge(FFileName) then
+    FileAge(FFileName, CurrentFileTime);
+    if FFileTime <> CurrentFileTime then
     begin
       if RAHLEditor1.Modified then
         if MessageDlg('File time/date changed.'#13 +
@@ -249,7 +252,7 @@ end;
 procedure TMain.miFileSaveClick(Sender: TObject);
 begin
   RAHLEditor1.Lines.SaveToFile(FFileName);
-  FileTime := FileAge(FFileName);
+  FileAge(FFileName, FFileTime);
   RAHLEditor1.Modified := False;
   RAHLEditor1ChangeStatus(nil);
 end;
@@ -382,7 +385,7 @@ begin
   begin
     RAHLEditor1.Lines.SaveToFile(SaveDialog1.FileName);
     FFileName := SaveDialog1.FileName;
-    FileTime := FileAge(FFileName);
+    FileAge(FFileName, FFileTime);
   end
   else
     Abort;
