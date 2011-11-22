@@ -37,7 +37,7 @@ unit About;
 interface
 
 uses
-  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  SysUtils, Windows, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, JvComponent,
   JvSecretPanel, JvExExtCtrls;
 
@@ -70,7 +70,7 @@ const
 implementation
 
 uses
-  JvVersionInfo, JvConsts, JvJCLUtils;
+  JvVersionInfo, JvConsts, JvJCLUtils, JclWin32;
 
 {$R *.DFM}
 
