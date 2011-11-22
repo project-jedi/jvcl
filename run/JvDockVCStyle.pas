@@ -207,6 +207,7 @@ const
 implementation
 
 uses
+  Types,
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
@@ -953,12 +954,12 @@ var
         if VCDockZone.CloseBtnDown then
           CurrentThemeTypeBtn := twSmallCloseButtonPushed;
         Details := ThemeServices.GetElementDetails(CurrentThemeTypeBtn);
-        ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top,
+        ThemeServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top,
           Left + ButtonWidth, Top + ButtonHeight));
       end
       else
       {$ENDIF JVCLThemesEnabled}
-        DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+        DrawFrameControl(Canvas.Handle, Classes.Rect(Left, Top, Left + ButtonWidth,
           Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Ord(VCDockZone.CloseBtnDown) * DFCS_PUSHED);
     end;
   end;
@@ -992,11 +993,11 @@ var
         if InActive then
           CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 3);
         Details := ThemeServices.GetElementDetails(CurrentThemeTypeSB);
-        ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+        ThemeServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
       end
       else
       {$ENDIF JVCLThemesEnabled}
-        DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+        DrawFrameControl(Canvas.Handle, Classes.Rect(Left, Top, Left + ButtonWidth,
           Top + ButtonHeight), DFC_SCROLL,
           ArrowOrient[CurrArrow[IsMaximum, DockSiteOrientation]] +
             Cardinal(Ord(InActive)) * DFCS_INACTIVE +
@@ -1284,14 +1285,14 @@ begin
     Result := Zone;
     with Zone.ChildControl do
     begin
-      if PtInRect(Rect(
+      if PtInRect(Classes.Rect(
         Left - GrabberSize + LeftOffset,
         Top + TopOffset,
         Left - GrabberSize + LeftOffset + ButtonWidth,
         Top + TopOffset + ButtonHeight), MousePos) then
         HTFlag := HTCLOSE
       else
-      if PtInRect(Rect(
+      if PtInRect(Classes.Rect(
         Left - GrabberSize + LeftOffset,
         Top + ButtonHeight + TopOffset + ButtonSplitter,
         Left - GrabberSize + LeftOffset + ButtonWidth,
@@ -1314,14 +1315,14 @@ begin
     Result := Zone;
     with Zone.ChildControl do
     begin
-      if PtInRect(Rect(
+      if PtInRect(Classes.Rect(
         Left + Width - ButtonWidth - RightOffset,
         Top - GrabberSize + TopOffset,
         Left + Width - RightOffset,
         Top - GrabberSize + TopOffset + ButtonHeight), MousePos) then
         HTFlag := HTCLOSE
       else
-      if PtInRect(Rect(
+      if PtInRect(Classes.Rect(
         Left + Width - 2 * ButtonWidth - RightOffset - ButtonSplitter,
         Top - GrabberSize + TopOffset,
         Left + Width - ButtonWidth - RightOffset - ButtonSplitter,

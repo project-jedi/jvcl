@@ -153,7 +153,7 @@ implementation
 
 uses
   CommDlg, CommCtrl, Dlgs,
-  SysUtils, Math,
+  Types, SysUtils, Math,
   JclSysInfo,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils, // SetWindowLongPtr

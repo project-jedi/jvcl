@@ -8262,6 +8262,9 @@ begin
   end;
 end;
 
+{$IFDEF DELPHI2007}
+{$WARNINGS OFF}  // D2007 gives a bogus W1035 on the first line that assigns Result.
+{$ENDIF DELPHI2007}
 function TextToValText(const AValue: string): string;
 var
   I, J: Integer;
@@ -8294,6 +8297,7 @@ begin
   if Result = '-' then
     Result := '-0';
 end;
+{$WARNINGS ON}
 
 function DrawText(Canvas: TCanvas; const Text: string; Len: Integer; var R: TRect; WinFlags: Integer): Integer; overload;
 begin

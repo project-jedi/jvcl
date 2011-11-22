@@ -598,6 +598,7 @@ const
 implementation
 
 uses
+  Types,
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
   {$ENDIF JVCLThemesEnabled}
@@ -3924,7 +3925,7 @@ begin
   if FIsTabDockOver and Assigned(FDropTabControl) then
   begin
     TabControlRect := FDropTabControl.BoundsRect;
-    TabControlRect := Rect(FDropTabControl.ClientToScreen(TabControlRect.TopLeft),
+    TabControlRect := Classes.Rect(FDropTabControl.ClientToScreen(TabControlRect.TopLeft),
                      FDropTabControl.ClientToScreen(TabControlRect.BottomRight));
     // This is to make sure the TabControlRect is included in the DrawRect
     if PtInRect(DrawRect, TabControlRect.TopLeft) and
