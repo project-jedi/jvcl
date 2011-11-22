@@ -314,7 +314,7 @@ begin
   ErrorIndex := 1;
   try
     TUGetErrorString(ErrorCode, Msg);
-    TDBError.Create(Self, ErrorCode, 0, string(Msg));
+    TDBError.Create(Self, ErrorCode, 0, PChar(string(Msg)));
     TrimMessage(Msg);
     if Msg[0] = #0 then
       Message := Format(STUUnknownError, [TULib, ErrorCode])
@@ -324,7 +324,7 @@ begin
       ErrorCode := DbiGetErrorEntry(ErrorIndex, NativeError, Msg);
       if (ErrorCode = DBIERR_NONE) or
         (ErrorCode = DBIERR_NOTINITIALIZED) then Break;
-      TDBError.Create(Self, ErrorCode, NativeError, string(Msg));
+      TDBError.Create(Self, ErrorCode, NativeError, PChar(string(Msg)));
       TrimMessage(Msg);
       if (Msg[0] <> #0) and (StrComp(Msg, LastMsg) <> 0) then
         Message := Format('%s. %s', [Message, Msg]);

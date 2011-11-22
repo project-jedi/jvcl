@@ -32,7 +32,6 @@ object MainForm: TMainForm
     TabOrder = 0
     OnBandMove = MainControlBarBandMove
     OnResize = MainControlBarResize
-    ExplicitWidth = 640
     DesignSize = (
       632
       104)
@@ -415,7 +414,7 @@ object MainForm: TMainForm
       Align = alNone
       Anchors = [akLeft, akTop, akRight, akBottom]
       ButtonHeight = 19
-      ButtonWidth = 57
+      ButtonWidth = 51
       Caption = 'MainMenu_ToolBar'
       EdgeInner = esNone
       EdgeOuter = esNone
@@ -518,8 +517,6 @@ object MainForm: TMainForm
       item
         Width = 50
       end>
-    ExplicitTop = 462
-    ExplicitWidth = 640
   end
   object MainMenu1: TMainMenu
     Images = Action_ImageList
@@ -1808,7 +1805,7 @@ object MainForm: TMainForm
     Left = 8
     Top = 104
     Bitmap = {
-      494C010150005400080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101500054000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005001000001002000000000000050
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

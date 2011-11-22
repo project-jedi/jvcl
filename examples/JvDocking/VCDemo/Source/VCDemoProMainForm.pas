@@ -477,7 +477,7 @@ type
     procedure SetToolButtonDownAndActionCheck;
 
     function FindExistFile(AFileName: string): TCustomForm;
-    function FindOrOpenFile(filename:String):TCustomForm;
+    procedure FindOrOpenFile(filename:String);
 
     { Private declarations }
   public
@@ -596,7 +596,7 @@ begin
     end;
 end;
 
-function TMainForm.FindOrOpenFile(filename:String):TCustomForm;
+procedure TMainForm.FindOrOpenFile(filename:String);
 var
   ExistForm: TCustomForm;
 begin

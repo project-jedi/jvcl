@@ -176,7 +176,7 @@ type
 implementation
 
 uses
-  ZLib,
+  Windows, ZLib, Types,
   JclSysInfo, JvJVCLUtils, JvSurveyUtils;
 
 resourcestring
