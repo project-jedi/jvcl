@@ -7,22 +7,18 @@ COM = ..\..\common
 BIN = ..\..\bin
 DCU = ..\..\dcu
 RES = ..\..\resources
-JCLSRC=..\..\..\JCL\source
-JCL = $(JCLSRC);$(JCLSRC)\common;$(JCLSRC)\windows;$(JCLSRC)\vcl
-JCLH = ..\$(JCLSRC);..\$(JCLSRC)\common;..\$(JCLSRC)\windows;..\$(JCLSRC)\vcl
-JCLHH = ..\..\$(JCLSRC);..\..\$(JCLSRC)\common;..\..\$(JCLSRC)\windows;..\..\$(JCLSRC)\vcl
-JCLHHH = ..\..\..\$(JCLSRC);..\..\..\$(JCLSRC)\common;..\..\..\$(JCLSRC)\windows;..\..\..\$(JCLSRC)\vcl
-SRC = $(RUN);$(RES);$(COM);$(JCL);
-SRCH = ..\$(RUN);..\$(RES);..\$(COM);$(JCLH);
-SRCHH = ..\..\$(RUN);..\..\$(RES);..\..\$(COM);$(JCLHH);
-SRCHHH = ..\..\..\$(RUN);..\..\..\$(RES);..\..\..\$(COM);$(JCLHHH);
+SRC = $(RUN);$(RES);$(COM);
+SRCH = ..\$(RUN);..\$(RES);..\$(COM);
+SRCHH = ..\..\$(RUN);..\..\$(RES);..\..\$(COM);
+SRCHHH = ..\..\..\$(RUN);..\..\..\$(RES);..\..\..\$(COM);
 #---------------------------------------------------------------------------------------------------
+DCCBASE = ..\..\packages\bin\dcc32ex.exe --requires-jcl --use-jcl-source
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
-DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
-DCCHSURVEY = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH);..\common -n..\$(DCU) -r$(SRCH);..\common -u$(SRCH);..\common -q -w -B
-DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
-DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
+DCC  = $(DCCBASE) -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
+DCCH = ..\$(DCCBASE) -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
+DCCHSURVEY = ..\$(DCCBASE) -e..\$(BIN) -i$(SRCH);..\common -n..\$(DCU) -r$(SRCH);..\common -u$(SRCH);..\common -q -w -B
+DCCHH = ..\..\$(DCCBASE) -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
+DCCHHH = ..\..\..\$(DCCBASE) -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 all: docking inspector standard threads ralib rxlib plugin xml mega surveyor diagram
@@ -989,12 +985,12 @@ JvFullColorDialogPrj.exe: "JvFullColorDialog\JvFullColorDialogPrj.dpr"
  
 JvUltimDBGridADOTest.exe: "JvUltimDBGrid\ADO\JvUltimDBGridADOTest.dpr" 
   @cd JvUltimDBGrid\ADO
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   @cd ..\..
  
 JvUltimDBGridBDETest.exe: "JvUltimDBGrid\BDE\JvUltimDBGridBDETest.dpr" 
   @cd JvUltimDBGrid\BDE
-  $(DCC) $&.dpr
+  $(DCCH) $&.dpr
   @cd ..\..
    
 
