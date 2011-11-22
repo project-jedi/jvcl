@@ -12,7 +12,7 @@ SRCH = ..\$(RUN);..\$(RES);..\$(COM);
 SRCHH = ..\..\$(RUN);..\..\$(RES);..\..\$(COM);
 SRCHHH = ..\..\..\$(RUN);..\..\..\$(RES);..\..\..\$(COM);
 #---------------------------------------------------------------------------------------------------
-DCCBASE = ..\..\packages\bin\dcc32ex.exe --requires-jcl --use-jcl-source
+DCCBASE = ..\..\packages\bin\dcc32ex.exe --requires-jcl --use-jcl-source --delphi-version=$(DELPHIVERSION)
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
 DCC  = $(DCCBASE) -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
 DCCH = ..\$(DCCBASE) -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
