@@ -19,7 +19,8 @@ interface
 
 uses
   Windows, Messages, SysUtils{, Variants}, Classes, Graphics, Controls, Forms,
-  Dialogs, JvDockControlForm, ComCtrls, ImgList, ExtCtrls, JvComponent;
+  Dialogs, JvDockControlForm, ComCtrls, ImgList, ExtCtrls, JvComponent,
+  JvComponentBase;
 
 type
   TWorkSpaceForm = class(TForm)
@@ -50,7 +51,8 @@ var
 
 implementation
 
-uses Main;
+uses
+  VCDemoProMainForm;
 
 {$R *.dfm}
 

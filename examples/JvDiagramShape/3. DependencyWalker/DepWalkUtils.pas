@@ -28,6 +28,8 @@ unit DepWalkUtils;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Classes, SysUtils, Controls;
 
@@ -107,12 +109,12 @@ begin
   J := 1;
   while true do
   begin
-    while (I <= Length(S)) and not (S[i] in Delims) do
+    while (I <= Length(S)) and not {$IFDEF RTL200_UP}CharInSet(S[i], Delims){$ELSE}(S[i] in Delims){$ENDIF RTL200_UP} do
       Inc(I);
     tmp := trim(Copy(S, J, I - J));
     if tmp <> '' then
       Results.Add(tmp);
-    if (I <= Length(S)) and (S[I] in Delims) then
+    if (I <= Length(S)) and {$IFDEF RTL200_UP}CharInSet(S[i], Delims){$ELSE}(S[I] in Delims){$ENDIF RTL200_UP} then
       Inc(I); // skip the delimiter
     J := I;
     if i > Length(S) then

@@ -14,7 +14,7 @@ located at http://jvcl.delphi-jedi.org
 Known Issues:
 -----------------------------------------------------------------------------}
 
-unit Main;
+unit AdvanceProMainForm;
 
 {$I jvcl.inc}
 

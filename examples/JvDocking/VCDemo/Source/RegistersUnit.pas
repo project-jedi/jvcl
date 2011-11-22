@@ -19,7 +19,8 @@ interface
 
 uses
   Windows, Messages, SysUtils{, Variants}, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, JvDockControlForm, ExtCtrls, JvComponent;
+  Dialogs, StdCtrls, ComCtrls, JvDockControlForm, ExtCtrls, JvComponent,
+  JvComponentBase;
 
 type
   TRegistersForm = class(TForm)
@@ -38,7 +39,8 @@ var
 
 implementation
 
-uses Main;
+uses
+  VCDemoProMainForm;
 
 {$R *.dfm}
 

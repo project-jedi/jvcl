@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils{, Variants}, Classes, Graphics, Controls, Forms,
   Dialogs, JvDockControlForm, Tabs, StdCtrls, ComCtrls, ExtCtrls,
-  JvComponent;
+  JvComponent, JvComponentBase;
 
 type
   TOutputForm = class(TForm)
@@ -46,7 +46,8 @@ var
 
 implementation
 
-uses Main;
+uses
+  VCDemoProMainForm;
 
 {$R *.dfm}
 

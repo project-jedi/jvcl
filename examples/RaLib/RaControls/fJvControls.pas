@@ -36,7 +36,7 @@ uses
   JvButtons, Buttons, JvScrollMax, Mask, DBCtrls, JvBDEMove, 
   JvProgressComponent, JvHtControls, JvaScrollText, ImgList, JvComponent, JvCaptionButton,
   JvExControls, JvExExtCtrls, JvExStdCtrls, JvExButtons, JvComponentBase,
-  JvAppStorage, JvAppIniStorage;
+  JvAppStorage, JvAppIniStorage, JvExtComponent;
 
 type
   TMainForm  = class(TForm)
@@ -154,7 +154,7 @@ uses JvJCLUtils, JvJVCLUtils;
 {$R JvStdCtrlsReg.dcr}
 {$R JvDlgsReg.dcr}
 {$R JvCustomReg.dcr}
-{$R JvCtrlsReg.dcr}
+{$R JvControlsReg.dcr}
 {$R JvDBReg.dcr}
 {$R JvBDEReg.dcr}
 //{$R rai.dcr}

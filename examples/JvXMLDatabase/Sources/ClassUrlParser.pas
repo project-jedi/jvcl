@@ -28,6 +28,8 @@ unit ClassUrlParser;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, SysUtils, Classes, Contnrs;
 
@@ -166,7 +168,7 @@ begin
             else if pos('Content-Type', lValue) = 1 then
             begin
               //This is a file
-              while AUrl[i] in [#10, #13] do
+              while {$IFDEF RTL200_UP}CharInSet(AUrl[i], [#10, #13]){$ELSE}AUrl[i] in [#10, #13]{$ENDIF RTL200_UP} do
                 inc(i);
 
               //Read the file!
@@ -184,7 +186,7 @@ begin
             else if (lName <> '') then
               AddVariable;
           end;
-          while AUrl[i] in [#10, #13] do
+          while {$IFDEF RTL200_UP}CharInSet(AUrl[i], [#10, #13]){$ELSE}AUrl[i] in [#10, #13]{$ENDIF RTL200_UP} do
             inc(i);
           dec(i);
         end;

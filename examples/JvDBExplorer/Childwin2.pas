@@ -64,7 +64,7 @@ uses WinTypes, WinProcs, Messages, Classes, Graphics, Forms, Controls, DB,
   {$ENDIF USE_QR2}
   JvBDEProgress, JvPicClip, JvBDELists, JvAnimatedImage, JvSpeedButton,
   JvBDEIndex, JvDBControls, JvDBGrid, JvExControls, JvExStdCtrls,
-  JvExExtCtrls, JvExDBGrids;
+  JvExExtCtrls, JvExDBGrids, JvComponentBase, JvExtComponent;
 
 type
   TTransOperation = (teStart, teCommit, teRollback);
@@ -274,7 +274,7 @@ implementation
 
 uses SysUtils, Clipbrd, DBConsts, TUtil, JvJVCLUtils, JvJCLUtils, Options,
   {$IFDEF USE_VQB} Qbe, {$ENDIF} Bde, SqlMon, EditStr,
-  EditPict, ViewBlob, JvDBUtils, JvBdeUtils, JvDBQueryParamsForm, Main, FiltDlg, DestTab, SrcTab,
+  EditPict, ViewBlob, JvDBUtils, JvBdeUtils, JvDBQueryParamsForm, DBExplorerDemoMainForm, FiltDlg, DestTab, SrcTab,
   BdeInfo;
 
 const

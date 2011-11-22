@@ -28,6 +28,8 @@ unit JimParse;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   SysUtils, Classes;
 
@@ -401,7 +403,7 @@ begin {Identifier}
   Result := '';
 
   if (Length(FLookahead.AsString) >= 1) and
-     (not (FLookahead.AsString[1] in IdentifierSet)) then begin
+     (not {$IFDEF RTL200_UP}CharInSet(FLookahead.AsString[1], IdentifierSet){$ELSE}(FLookahead.AsString[1] in IdentifierSet){$ENDIF RTL200_UP}) then begin
     raise EjimHtmlParserError.Create('HTML syntax error. Expected identifier, ' +
                                      'but got : ' + FLookahead.AsString +
                                      ' in tag ' + FLastTag);
@@ -417,7 +419,7 @@ begin {Identifier}
     end;
 
     Match(FLookahead.TokenType);
-  until not (FLookahead.AsString[1] in IdentifierSet);
+  until not {$IFDEF RTL200_UP}CharInSet(FLookahead.AsString[1], IdentifierSet){$ELSE}(FLookahead.AsString[1] in IdentifierSet){$ENDIF RTL200_UP};
 end;  {Identifier}
 
 
@@ -443,7 +445,7 @@ begin {PlainValue}
   Result := '';
 
   if (Length(FLookahead.AsString) >= 1) and
-     (not (FLookahead.AsString[1] in PlainValueSet)) then begin
+     (not {$IFDEF RTL200_UP}CharInSet(FLookahead.AsString[1], PlainValueSet){$ELSE}(FLookahead.AsString[1] in PlainValueSet){$ENDIF RTL200_UP}) then begin
     raise EjimHtmlParserError.Create('HTML syntax error. Expected plain value, ' +
                                      'but got : ' + FLookahead.AsString +
                                      ' in tag ' + FLastTag);
@@ -452,7 +454,7 @@ begin {PlainValue}
   repeat
     Result := Result + FLookahead.AsString;
     Match(FLookahead.TokenType);
-  until not (FLookahead.AsString[1] in PlainValueSet);
+  until not {$IFDEF RTL200_UP}CharInSet(FLookahead.AsString[1], PlainValueSet){$ELSE}(FLookahead.AsString[1] in PlainValueSet){$ENDIF RTL200_UP};
 end;  {PlainValue}
 
 

@@ -65,7 +65,7 @@ var
 
 implementation
 uses
-  ShellAPI, JvJCLUtils, JvJVCLUtils, Clipbrd;
+  ShellAPI, JvJCLUtils, JvJVCLUtils, Clipbrd, JclSimpleXML;
 
 {$R *.dfm}
 
@@ -89,7 +89,7 @@ begin
       else
         S := reSource.Lines.Text;
       FStartValue := GetTickCount;
-      S := UTF8Encode(S);
+      S := {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(UTF8Encode(S));
       FStartValue := GetTickCount - FStartValue;
       if chkUseClipboard.Checked then
       begin
@@ -109,7 +109,7 @@ begin
       else
         S := reSource.Lines.Text;
       FStartValue := GetTickCount;
-      S := XMLEncode(S);
+      S := JclSimpleXML.XMLEncode(S);
       FStartValue := GetTickCount - FStartValue;
       if chkUseClipboard.Checked then
       begin
@@ -140,7 +140,7 @@ begin
     begin
       S := reSource.Lines.Text;
       FStartValue := GetTickCount;
-      S := UTF8Decode(S);
+      S := {$IFDEF RTL200_UP}UTF8ToString(AnsiString(S)){$ELSE}UTF8Decode(S){$ENDIF RTL200_UP};
       FStartValue := GetTickCount - FStartValue;
       reResult.Lines.Text := S;
     end
@@ -148,7 +148,7 @@ begin
     begin
       S := reSource.Lines.Text;
       FStartValue := GetTickCount;
-      SimpleXMLDecode(S, chkTrim.Checked);
+      JclSimpleXML.SimpleXMLDecode(S, chkTrim.Checked);
       FStartValue := GetTickCount - FStartValue;
       reResult.Lines.Text := S;
     end;

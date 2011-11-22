@@ -93,7 +93,7 @@ var
 begin
   Image1.Cursor := crHandPoint;
   VersionLabel.Caption := Format(VersionLabel.Caption, [SDbxVersion]);
-  WinVer.Caption := GetWindowsVersion;
+  WinVer.Caption := GetWindowsVersionString;
   MemStatus.dwLength := SizeOf(TMemoryStatusEx);
   GlobalMemoryStatusEx(MemStatus);
   Mem := MemStatus.ullTotalPhys;

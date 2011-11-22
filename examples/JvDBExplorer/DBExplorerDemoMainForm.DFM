@@ -623,7 +623,7 @@ object DBExplorerMainForm: TDBExplorerMainForm
     Top = 36
   end
   object FormPlacement: TJvFormStorage
-    AppStoragePath = 'DBExplorerMainForm'
+    AppStoragePath = 'DBExplorerMainForm\'
     OnSavePlacement = FormPlacementSavePlacement
     OnRestorePlacement = FormPlacementRestorePlacement
     StoredProps.Strings = (

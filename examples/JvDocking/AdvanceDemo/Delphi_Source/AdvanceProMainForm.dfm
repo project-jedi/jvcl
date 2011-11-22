@@ -1,10 +1,10 @@
 object MainForm: TMainForm
   Left = 228
   Top = 269
-  Width = 586
-  Height = 341
   Anchors = []
   Caption = 'Main Window'
+  ClientHeight = 306
+  ClientWidth = 570
   Color = clGray
   DefaultMonitor = dmMainForm
   Font.Charset = ANSI_CHARSET
@@ -25,7 +25,7 @@ object MainForm: TMainForm
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
-    Width = 578
+    Width = 570
     Height = 26
     Anchors = []
     AutoSize = True
@@ -33,10 +33,10 @@ object MainForm: TMainForm
     Caption = 'ToolBar1'
     Color = clBtnFace
     EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
-    Flat = True
     ParentColor = False
     ShowCaptions = True
     TabOrder = 0
+    ExplicitWidth = 578
     object btnDelphi: TToolButton
       Left = 0
       Top = 0
@@ -78,17 +78,18 @@ object MainForm: TMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 273
-    Width = 578
+    Top = 287
+    Width = 570
     Height = 19
     Panels = <>
-    SimplePanel = False
+    ExplicitTop = 273
+    ExplicitWidth = 578
   end
   object Memo1: TMemo
     Left = 0
     Top = 26
-    Width = 578
-    Height = 247
+    Width = 570
+    Height = 261
     Align = alClient
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -248,12 +249,12 @@ object MainForm: TMainForm
     LeftSplitterStyle.Cursor = crHSplit
     LeftSplitterStyle.ParentColor = False
     LeftSplitterStyle.Size = 4
-    TopSplitterStyle.Cursor = crVSplit
-    TopSplitterStyle.ParentColor = False
-    TopSplitterStyle.Size = 4
     RightSplitterStyle.Cursor = crHSplit
     RightSplitterStyle.ParentColor = False
     RightSplitterStyle.Size = 4
+    TopSplitterStyle.Cursor = crVSplit
+    TopSplitterStyle.ParentColor = False
+    TopSplitterStyle.Size = 4
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
     BottomSplitterStyle.Size = 4
@@ -262,40 +263,16 @@ object MainForm: TMainForm
     Top = 48
   end
   object JvDockDelphiStyle1: TJvDockDelphiStyle
-    ConjoinServerOption.GrabbersSize = 12
-    ConjoinServerOption.SplitterWidth = 4
     Left = 32
     Top = 112
   end
   object JvDockVCStyle1: TJvDockVCStyle
     ConjoinServerOption.GrabbersSize = 15
-    ConjoinServerOption.SplitterWidth = 4
     Left = 64
     Top = 112
   end
   object JvDockVIDStyle1: TJvDockVIDStyle
-    ConjoinServerOption.GrabbersSize = 18
-    ConjoinServerOption.SplitterWidth = 4
-    ConjoinServerOption.ActiveFont.Charset = ANSI_CHARSET
-    ConjoinServerOption.ActiveFont.Color = clWhite
-    ConjoinServerOption.ActiveFont.Height = -11
-    ConjoinServerOption.ActiveFont.Name = 'Tahoma'
-    ConjoinServerOption.ActiveFont.Style = [fsBold]
-    ConjoinServerOption.InactiveFont.Charset = ANSI_CHARSET
-    ConjoinServerOption.InactiveFont.Color = 13160660
-    ConjoinServerOption.InactiveFont.Height = -11
-    ConjoinServerOption.InactiveFont.Name = 'Tahoma'
-    ConjoinServerOption.InactiveFont.Style = [fsBold]
-    ConjoinServerOption.TextAlignment = taLeftJustify
-    ConjoinServerOption.ActiveTitleStartColor = 6956042
-    ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
-    ConjoinServerOption.InactiveTitleStartColor = clGray
-    ConjoinServerOption.InactiveTitleEndColor = clSilver
-    ConjoinServerOption.TextEllipsis = True
-    ConjoinServerOption.SystemInfo = True
-    TabServerOption.TabPosition = tpBottom
-    TabServerOption.ActiveSheetColor = clBtnFace
-    TabServerOption.InactiveSheetColor = clBtnShadow
+    AlwaysShowGrabber = False
     TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
     TabServerOption.ActiveFont.Color = clWindowText
     TabServerOption.ActiveFont.Height = -11
@@ -306,8 +283,7 @@ object MainForm: TMainForm
     TabServerOption.InactiveFont.Height = -11
     TabServerOption.InactiveFont.Name = 'MS Shell Dlg 2'
     TabServerOption.InactiveFont.Style = []
-    TabServerOption.HotTrackColor = clBlue
-    TabServerOption.ShowTabImages = False
+    TabServerOption.ShowCloseButtonOnTabs = False
     Left = 96
     Top = 112
   end
@@ -361,27 +337,7 @@ object MainForm: TMainForm
     end
   end
   object JvDockVSNetStyle1: TJvDockVSNetStyle
-    ConjoinServerOption.GrabbersSize = 18
-    ConjoinServerOption.SplitterWidth = 4
-    ConjoinServerOption.ActiveFont.Charset = ANSI_CHARSET
-    ConjoinServerOption.ActiveFont.Color = clWhite
-    ConjoinServerOption.ActiveFont.Height = -11
-    ConjoinServerOption.ActiveFont.Name = 'Tahoma'
-    ConjoinServerOption.ActiveFont.Style = []
-    ConjoinServerOption.InactiveFont.Charset = ANSI_CHARSET
-    ConjoinServerOption.InactiveFont.Color = clBlack
-    ConjoinServerOption.InactiveFont.Height = -11
-    ConjoinServerOption.InactiveFont.Name = 'Tahoma'
-    ConjoinServerOption.InactiveFont.Style = []
-    ConjoinServerOption.TextAlignment = taLeftJustify
-    ConjoinServerOption.ActiveTitleStartColor = 6956042
-    ConjoinServerOption.ActiveTitleEndColor = 6956042
-    ConjoinServerOption.InactiveTitleStartColor = clBtnFace
-    ConjoinServerOption.InactiveTitleEndColor = clBtnFace
-    ConjoinServerOption.TextEllipsis = True
-    ConjoinServerOption.SystemInfo = True
-    TabServerOption.TabPosition = tpBottom
-    TabServerOption.ActiveSheetColor = clBtnFace
+    AlwaysShowGrabber = False
     TabServerOption.InactiveSheetColor = clInfoBk
     TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
     TabServerOption.ActiveFont.Color = clWindowText
@@ -393,17 +349,12 @@ object MainForm: TMainForm
     TabServerOption.InactiveFont.Height = -11
     TabServerOption.InactiveFont.Name = 'MS Shell Dlg 2'
     TabServerOption.InactiveFont.Style = []
-    TabServerOption.HotTrackColor = clBlue
-    TabServerOption.ShowTabImages = True
+    TabServerOption.ShowCloseButtonOnTabs = False
     ChannelOption.ActivePaneSize = 150
-    ChannelOption.ShowImage = True
-    ChannelOption.HideHoldTime = 1000
     Left = 128
     Top = 112
   end
   object JvDockVIDVCStyle1: TJvDockVIDVCStyle
-    ConjoinServerOption.GrabbersSize = 18
-    ConjoinServerOption.SplitterWidth = 4
     ConjoinServerOption.ActiveFont.Charset = ANSI_CHARSET
     ConjoinServerOption.ActiveFont.Color = clWhite
     ConjoinServerOption.ActiveFont.Height = -11
@@ -419,12 +370,9 @@ object MainForm: TMainForm
     ConjoinServerOption.ActiveTitleEndColor = clSkyBlue
     ConjoinServerOption.InactiveTitleStartColor = clGray
     ConjoinServerOption.InactiveTitleEndColor = clSilver
-    ConjoinServerOption.TextEllipsis = True
     ConjoinServerOption.SystemInfo = False
     TabServerOption.HotTrack = True
-    TabServerOption.TabPosition = tpBottom
     TabServerOption.ActiveSheetColor = clBtnFace
-    TabServerOption.InactiveSheetColor = clBtnShadow
     TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
     TabServerOption.ActiveFont.Color = clWindowText
     TabServerOption.ActiveFont.Height = -11
@@ -435,7 +383,6 @@ object MainForm: TMainForm
     TabServerOption.InactiveFont.Height = -11
     TabServerOption.InactiveFont.Name = 'MS Sans Serif'
     TabServerOption.InactiveFont.Style = []
-    TabServerOption.HotTrackColor = clBlue
     TabServerOption.ShowTabImages = True
     Left = 216
     Top = 112

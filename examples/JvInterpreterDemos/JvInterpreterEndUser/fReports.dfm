@@ -63,6 +63,7 @@ object Reports: TReports
     TabOrder = 2
   end
   object RegAuto2: TJvFormStorage
+    AppStoragePath = '%FORM_NAME%'
     StoredValues = <>
     Left = 88
     Top = 200

@@ -28,8 +28,8 @@ package plgTest;
 
 requires
   vcl,
-  JvCoreD6R,
-  JvPluginD6R;
+  JvCore,
+  JvPluginSystem;
 
 contains
   PluginTest in 'PluginTest.pas' {Test: TJvPlugin},

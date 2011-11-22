@@ -24,7 +24,7 @@
 
 ******************************************************************}
 
-unit Main;
+unit ColorButtonDemoMain;
 
 interface
 

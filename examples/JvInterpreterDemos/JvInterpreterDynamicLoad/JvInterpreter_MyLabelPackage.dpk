@@ -28,9 +28,14 @@ requires
   rtl,
   vcl,
   MyLabelPackage,
-  vclx;
+  vclx,
+  vclimg,
+  Jcl,
+  JvCore,
+  JvPascalInterpreter;
 
 contains
   JvInterpreter_MyLabel in 'JvInterpreter_MyLabel.pas';
 
 end.
+

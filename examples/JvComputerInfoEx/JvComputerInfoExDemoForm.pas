@@ -27,6 +27,8 @@ unit JvComputerInfoExDemoForm;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvComputerInfoEx, Menus, JvMenus, StdCtrls, JvExStdCtrls,
@@ -222,7 +224,7 @@ begin
     for i := 0 to Count - 1 do
     begin
       PropInfo := PropList[i];
-      PropName := PropInfo^.Name;
+      PropName := {$IFDEF RTL200_UP}string{$ENDIF RTL200_UP}(PropInfo^.Name);
       case PropInfo^.PropType^.Kind of
         tkInteger:
           AddItem(Category, PropName, IntToStr(GetOrdProp(AnObject, PropName)), Indent);

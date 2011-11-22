@@ -113,7 +113,7 @@ type
 
 implementation
 
-uses Consts, IniFiles, JvJVCLUtils, JvDBUtils, Options, Main, DBCbRest, JvBdeUtils;
+uses Consts, IniFiles, JvJVCLUtils, JvDBUtils, Options, DBExplorerDemoMainForm, DBCbRest, JvBdeUtils;
 
 {$R *.DFM}
 

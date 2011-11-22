@@ -28,6 +28,8 @@ unit JvPasImportForm;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, JvFormPlacement, JvComponentBase,
@@ -155,7 +157,7 @@ const
     Result := Token;
     if Roll = 0 then
     begin
-      if (Token[1] in [';', ':', ',', '(', ')']) or
+      if {$IFDEF RTL200_UP}CharInSet(Token[1], [';', ':', ',', '(', ')']){$ELSE}(Token[1] in [';', ':', ',', '(', ')']){$ENDIF RTL200_UP} or
         (Length(Decl) > 0) and (Decl[Length(Decl)] = '(') then
         Decl := Decl + Token
       else
@@ -227,7 +229,7 @@ const
           ParamType := NextToken;
           while True do
           begin
-            if Token[1] in [')', ';'] then
+            if {$IFDEF RTL200_UP}CharInSet(Token[1], [')', ';']){$ELSE}Token[1] in [')', ';']{$ENDIF RTL200_UP} then
             begin
               RollBack(1);
               Break;
@@ -344,7 +346,7 @@ const
     Result := False;
     Name := NextToken;
     if (Length(Name) > 2) and (Name[1] = 'O') and
-      (Name[2] = 'n') and (Name[3] in ['A'..'Z']) then
+      (Name[2] = 'n') and {$IFDEF RTL200_UP}CharInSet(Name[3], ['A'..'Z']){$ELSE}(Name[3] in ['A'..'Z']){$ENDIF RTL200_UP} then
       { Skip Event Handlers }
       Exit;
 
@@ -795,7 +797,7 @@ const
     while True do
     begin
       En := NextToken;
-      if not (NextToken[1] in [',', ')']) then
+      if not {$IFDEF RTL200_UP}CharInSet(NextToken[1], [',', ')']){$ELSE}(NextToken[1] in [',', ')']){$ENDIF RTL200_UP} then
         Break;
       S := UnitNameStr;
       AdapterNames.Add(S);

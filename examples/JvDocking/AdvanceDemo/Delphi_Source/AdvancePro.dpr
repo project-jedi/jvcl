@@ -2,7 +2,7 @@ program AdvancePro;
 
 uses
   Forms,
-  Main in 'Main.pas' {MainForm};
+  AdvanceProMainForm in 'AdvanceProMainForm.pas' {MainForm};
 
 {$R *.RES}
 
