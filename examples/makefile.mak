@@ -845,33 +845,33 @@ ColorHintsTest.exe: "RaLib\RaHtHints\ColorHintsTest.dpr"
   $(DCCH) $&.dpr
   @cd ..\..
 
-JvInterpreterTest.exe: "RaLib\RaInterpreter\JvInterpreterTest.dpr"
-  @cd RaLib\RaInterpreter
+JvInterpreterTest.exe: "JvInterpreterDemos\JvInterpreterTest\JvInterpreterTest.dpr"
+  @cd JvInterpreterDemos\JvInterpreterTest
   $(DCCH) $&.dpr
   @cd ..\..
 
-SampleProject1.exe: "RaLib\RaInterpreter\samples\project1\SampleProject1.dpr"
-  @cd RaLib\RaInterpreter\samples\project1
+SampleProject1.exe: "JvInterpreterDemos\JvInterpreterTest\samples\project1\SampleProject1.dpr"
+  @cd JvInterpreterDemos\JvInterpreterTest\samples\project1
   $(DCCHHH) $&.dpr
   @cd ..\..\..\..
 
-DynamicLoad.exe: "RaLib\RaInterpreterDynamicLoad\DynamicLoad.dpr"
-  @cd RaLib\RaInterpreterDynamicLoad
+DynamicLoad.exe: "JvInterpreterDemos\JvInterpreterDynamicLoad\DynamicLoad.dpr"
+  @cd JvInterpreterDemos\JvInterpreterDynamicLoad
   $(DCCH) $&.dpr
   @cd ..\..
 
-JvInterpreterEndUser.exe: "RaLib\RaInterpreterEndUser\JvInterpreterEndUser.dpr"
-  @cd RaLib\RaInterpreterEndUser
+JvInterpreterEndUser.exe: "JvInterpreterDemos\JvInterpreterEndUser\JvInterpreterEndUser.dpr"
+  @cd JvInterpreterDemos\JvInterpreterEndUser
   $(DCCH) $&.dpr
   @cd ..\..
 
-MDIapp.exe: "RaLib\RaInterpreterMDI\MDIapp.dpr"
-  @cd RaLib\RaInterpreterMDI
+MDIapp.exe: "JvInterpreterDemos\JvInterpreterMDI\MDIapp.dpr"
+  @cd JvInterpreterDemos\JvInterpreterMDI
   $(DCCH) $&.dpr
   @cd ..\..
 
-RANotepad.exe: "RaLib\RaInterpreterNotepad\RANotepad.dpr"
-  @cd RaLib\RaInterpreterNotepad
+RANotepad.exe: "JvInterpreterDemos\JvInterpreterNotepad\RANotepad.dpr"
+  @cd JvInterpreterDemos\JvInterpreterNotepad
   $(DCCH) $&.dpr
   @cd ..\..
 
