@@ -45,7 +45,9 @@ type
     { Private-Deklarationen }
     UnitVersionForm: TCustomForm;
     procedure CloseButtonOnClick(Sender: TObject);
+    {$IFDEF UNITVERSIONING}
     procedure ExportButtonOnClick(Sender: TObject);
+    {$ENDIF UNITVERSIONING}
     procedure TreeViewOnChange(Sender: TObject; Node: TTreeNode);
   public
     procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
@@ -67,7 +69,7 @@ implementation
 
 uses
   StdCtrls, SysUtils, JclStrings, JvDynControlEngineIntf, ExtCtrls,
-  JclFileUtils, Dialogs, JclUnitVersioning;
+  JclFileUtils, Dialogs;
 
 procedure ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine = nil);
 var
@@ -87,6 +89,7 @@ begin
     UnitVersionForm.ModalResult := mrOk;
 end;
 
+{$IFDEF UNITVERSIONING}
 procedure TJvJclUnitVersioningBrowser.ExportButtonOnClick(Sender: TObject);
 var
   SaveDialog: TSaveDialog;
@@ -102,6 +105,7 @@ begin
     SaveDialog.Free;
   end;
 end;
+{$ENDIF UNITVERSIONING}
 
 procedure TJvJclUnitVersioningBrowser.ShowUnitVersioning(const aDynControlEngine: tJvDynControlEngine);
 
@@ -171,9 +175,11 @@ begin
     Button.Left := Round((UnitVersionForm.Width - Button.Width) / 2);
     ButtonPanel.Height := Button.Height + 6;
     Button.Top := Round((ButtonPanel.Height - Button.Height) / 2);
+    {$IFDEF UNITVERSIONING}
     Button := DynEngine.CreateButton(UnitVersionForm, ButtonPanel, 'ExportBtn', 'Export', '', ExportButtonOnClick, True, True);
     Button.Left := 10;
     Button.Top := Round((ButtonPanel.Height - Button.Height) / 2);
+    {$ENDIF UNITVERSIONING}
     BottomBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'BottomBox', 'Details');
     BottomBox.Align := alBottom;
     TopBox := DynEngine.CreateGroupBoxControl(UnitVersionForm, MainPanel, 'TopBox', 'Unit Versions');
