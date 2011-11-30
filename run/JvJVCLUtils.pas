@@ -1456,7 +1456,6 @@ end;
 
 { Bitmaps }
 
-// see above for VisualCLX version of CopyParentImage
 type
   TAccessWinControl = class(TWinControl);
 
@@ -7104,10 +7103,6 @@ begin
   Stream.Read(Size, SizeOf(Size));
   Bitmap.LoadFromStream(Stream);
 end;
-
-type
-  TAccessReader = class(TReader)
-  end;
 
 procedure TJvPicture.DefineProperties(Filer: TFiler);
 var
