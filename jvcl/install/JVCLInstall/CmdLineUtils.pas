@@ -46,6 +46,9 @@ type
     FAutoUpdate: Boolean;
     FAutoInstall: Boolean;
     FAutoCloseAfterSuccess: Boolean;
+    FAutoCloseAfterError: Boolean;
+    FContinueOnError: Boolean;
+    FXMLResultFileName: string;
     FRebuildPackages: Boolean;
     FRegistryKeyDelphi: string;
     FRegistryKeyBCB: string;
@@ -71,6 +74,9 @@ type
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
     property AutoInstall: Boolean read FAutoInstall write FAutoInstall;
     property AutoCloseAfterSuccess: Boolean read FAutoCloseAfterSuccess write FAutoCloseAfterSuccess;
+    property AutoCloseAfterError: Boolean read FAutoCloseAfterError write FAutoCloseAfterError;
+    property ContinueOnError: Boolean read FContinueOnError write FContinueOnError;
+    property XMLResultFileName: string read FXMLResultFileName write FXMLResultFileName; 
     property RebuildPackages: Boolean read FRebuildPackages write FRebuildPackages;
     property RegistryKeyDelphi: string read FRegistryKeyDelphi write FRegistryKeyDelphi;
     property RegistryKeyBCB: string read FRegistryKeyBCB write FRegistryKeyBCB;
@@ -100,6 +106,9 @@ begin
   AddBool('--autoinstall', 'Installs JVCL 3 for all installed IDEs.', FAutoInstall);
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
   AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
+  AddBool('--autoclose-error', 'Automatically close the installer after a failed installation', FAutoCloseAfterError);
+  AddBool('--continue-on-error', 'Automatically continue compilation of other targets should the current one fail', FContinueOnError);
+  AddString('--XMLResult=', 'Write the compilation status in the given XML file', FXMLResultFileName);
   AddSpace;
   AddString('-rDelphi=', 'Sets the Registry sub-key for the Delphi IDEs.', FRegistryKeyDelphi);
   AddString('-rBCB=', 'Sets the Registry sub-key for the BCB IDEs.', FRegistryKeyBCB);

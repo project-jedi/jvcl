@@ -171,6 +171,8 @@ type
       { translates the formular/frame }
     procedure ForcedFinish;
       { sets the installer to the finished mode. }
+    procedure ForcedFinishError;
+      { sets the installer to the finished in error mode. }
   end;
 
   TPackageInstaller = class(TComponent, IPackageInstaller)
@@ -183,6 +185,7 @@ type
     FOnUpdateNavigation: TNotifyEvent;
     FOnTranslate: TNotifyEvent;
     FOnFinished: TNotifyEvent;
+    FOnFinishedError: TNotifyEvent;
 
     function GetPage: IInstallerPage;
     function GetNextPage: IInstallerPage;
@@ -193,6 +196,7 @@ type
     procedure RebuildPage;
     procedure Translate(Component: TComponent);
     procedure ForcedFinish;
+    procedure ForcedFinishError;
   public
     constructor Create(AInstaller: IInstaller); reintroduce;
     destructor Destroy; override;
@@ -217,6 +221,7 @@ type
     property OnUpdateNavigation: TNotifyEvent read FOnUpdateNavigation write FOnUpdateNavigation;
     property OnTranslate: TNotifyEvent read FOnTranslate write FOnTranslate;
     property OnFinished: TNotifyEvent read FOnFinished write FOnFinished;
+    property OnFinishedError: TNotifyEvent read FOnFinishedError write FOnFinishedError;
   end;
 
 var
@@ -365,6 +370,12 @@ procedure TPackageInstaller.ForcedFinish;
 begin
   if Assigned(FOnFinished) then
     FOnFinished(Self);
+end;
+
+procedure TPackageInstaller.ForcedFinishError;
+begin
+  if Assigned(FOnFinishedError) then
+    FOnFinishedError(Self);
 end;
 
 initialization

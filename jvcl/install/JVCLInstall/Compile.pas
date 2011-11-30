@@ -182,6 +182,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
+  JclSimpleXML, JclStreams,
   CmdLineUtils, JvConsts, Utils, Core, Dcc32FileAgePatch;
 
 resourcestring
@@ -1269,6 +1270,9 @@ var
   Frameworks, Count: Integer;
   TargetConfigs: array of TTargetConfig;
   SysInfo: string;
+  XML: TJclSimpleXML;
+  AConfig: TTargetConfig;
+  AConfigElem: TJclSimpleXMLElem;
 begin
   Result := True;
   FAborted := False;
@@ -1316,11 +1320,35 @@ begin
     if pkVCL in TargetConfigs[i].InstallMode then
     begin
       Result := CompileTarget(TargetConfigs[i], pkVCL);
-      if not Result then
+      if not Result and not CmdOptions.ContinueOnError then
         Break;
       Inc(Index);
     end;
     DoTargetProgress(TargetConfigs[i], Index, Frameworks);
+  end;
+
+  if CmdOptions.XMLResultFileName <> '' then
+  begin
+    XML := TJclSimpleXML.Create;
+    try
+      XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
+      XML.Root.Name := 'JclInstall';
+      for I := 0 to Count - 1 do
+      begin
+        AConfig := TargetConfigs[I];
+        AConfigElem := XML.Root.Items.Add('Config');
+
+        AConfigElem.Properties.Add('Target', AConfig.MainTargetSymbol);
+        AConfigElem.Properties.Add('TargetName', AConfig.Target.Name);
+        AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
+        AConfigElem.Properties.Add('InstallAttempted', I <= Index);
+        AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
+//        AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
+      end;
+      XML.SaveToFile(CmdOptions.XMLResultFileName, JclStreams.seUTF8);
+    finally
+      XML.Free;
+    end;
   end;
 end;
 
@@ -1536,29 +1564,33 @@ begin
   FOutput.Clear;
 
   try
-    DeleteRemovedFiles(TargetConfig);
+    try
+      DeleteRemovedFiles(TargetConfig);
 
-    // VCL
-    if Result and (pkVCL in TargetConfig.InstallMode) then
-    begin
-      if not TargetConfig.DeveloperInstall then
+      // VCL
+      if Result and (pkVCL in TargetConfig.InstallMode) then
       begin
-        // debug units
-        if TargetConfig.Target.SupportsPersonalities([persDelphi]) and
-          TargetConfig.DebugUnits then
+        if not TargetConfig.DeveloperInstall then
+        begin
+          // debug units
+          if TargetConfig.Target.SupportsPersonalities([persDelphi]) and
+            TargetConfig.DebugUnits then
+            Result := CompileProjectGroup(
+              TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
+        end;
+
+        if Result then
+        begin
+          // compile
           Result := CompileProjectGroup(
-            TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], True);
-      end;
+            TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
+        end;
 
-      if Result then
-      begin
-        // compile
-        Result := CompileProjectGroup(
-          TargetConfig.Frameworks.Items[TargetConfig.Target.IsPersonal, pkVCL], False);
+        if Result then
+          CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
       end;
-
-      if Result then
-        CaptureLine('[Finished JVCL for VCL installation]', Aborted); // do not localize
+    finally
+      TargetConfig._SetBuildSuccess(Result);
     end;
   except
     on E: Exception do

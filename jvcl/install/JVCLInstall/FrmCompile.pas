@@ -123,7 +123,10 @@ implementation
 {$IFDEF MSWINDOWS}
 {$I windowsonly.inc}
 uses
-  FileCtrl;
+  CmdLineUtils, FileCtrl;
+{$ELSE}
+uses
+  CmdLineUtils;
 {$ENDIF MSWINDOWS}
 
 {$R *.dfm}
@@ -336,7 +339,7 @@ begin
     LblStatus.Caption := RsCompiled;
   //BtnOk.Enabled := ErrorReason <> '';
   BtnOk.Caption := SOKButton;
-  if (ErrorReason <> '') or (LblStatus.Caption = RsCompileAborted) then
+  if ((ErrorReason <> '') or (LblStatus.Caption = RsCompileAborted)) and not CmdOptions.ContinueOnError then
   begin
     Hide;
     ShowModal;
