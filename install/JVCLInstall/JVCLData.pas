@@ -84,6 +84,8 @@ type
     FJVCLConfig: TJVCLConfig;
     FJVCLRegistryConfig: TJVCLRegistryConfig;
 
+    FBuildSuccess: Boolean;
+
     procedure SetInstallMode(Value: TInstallMode);
     function GetFrameworkCount: Integer;
     function GetDxgettextDir: string;
@@ -135,6 +137,8 @@ type
   public
     property Target: TCompileTarget read GetTarget;
     property Owner: TJVCLData read FOwner;
+
+    procedure _SetBuildSuccess(Value: Boolean);
   public
     constructor Create(AOwner: TJVCLData; ATarget: TCompileTarget); reintroduce;
     destructor Destroy; override;
@@ -314,6 +318,8 @@ type
 
     property JclBplDir: string read GetJclBplDir;
       // JclBplDir returns the directory where the JclXx.bpl/JclVclXX.bpl files are.
+
+    property BuildSuccess: Boolean read FBuildSuccess;
   end;
 
   TJclLinkMapFile = function(ExecutableFileName, MapFileName: PChar;
@@ -962,6 +968,11 @@ begin
     Result := Copy(Name, 1, Length(Name) - 2) + '.dcp'
   else
     Result := Name;
+end;
+
+procedure TTargetConfig._SetBuildSuccess(Value: Boolean);
+begin
+  FBuildSuccess := Value;
 end;
 
 function TTargetConfig.VersionedJVCLXmlBpl(const Name: string): string;

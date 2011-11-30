@@ -78,6 +78,7 @@ type
     procedure DoPageShow(Sender: TObject);
     procedure DoTranslate(Sender: TObject);
     procedure DoFinished(Sender: TObject);
+    procedure DoFinishedError(Sender: TObject);
 
     procedure RecreatePage(var Msg: TMessage); message WM_USER + 1;
     procedure CreateWizardControl;
@@ -212,6 +213,12 @@ begin
     JvWizardFinishButtonClick(Sender);
 end;
 
+procedure TFormMain.DoFinishedError(Sender: TObject);
+begin
+  if CmdOptions.AutoCloseAfterError then
+    JvWizardFinishButtonClick(Sender);
+end;
+
 procedure TFormMain.CreateWizardControl;
 begin
   JvWizard := TJvWizard.Create(Self);
@@ -272,6 +279,7 @@ begin
   PackageInstaller.OnUpdateNavigation := DoUpdateNavigation;
   PackageInstaller.OnTranslate := DoTranslate;
   PackageInstaller.OnFinished := DoFinished;
+  PackageInstaller.OnFinishedError := DoFinishedError;
 
   Caption := PackageInstaller.Installer.InstallerName;
   Application.Title := Caption;
