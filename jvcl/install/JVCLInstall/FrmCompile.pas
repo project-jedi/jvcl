@@ -31,6 +31,7 @@ unit FrmCompile;
 interface
 
 uses
+  JVCLData,
   Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   Consts;
 
@@ -46,6 +47,8 @@ type
     procedure AddError(const Text: string);
     procedure AddFatal(const Text: string);
     procedure AddText(const Msg: string);
+
+    procedure SetCurrentTarget(ATarget: TTargetConfig);
 
       { Text is the line that the compiler outputs. The ICompileMessages
         implementor must parse the line itself. }
@@ -88,6 +91,7 @@ type
     FCurFilename: string;
     FCompileMessages: ICompileMessages;
     FAutoClearCompileMessages: Boolean;
+    FCurrentTarget: TTargetConfig;
     procedure SetCurrentLine(Line: Cardinal);
     function IsCompileFileLine(const Line: string): Boolean;
   public
@@ -95,6 +99,7 @@ type
     procedure Compiling(const Filename: string);
     procedure Linking(const Filename: string);
     procedure Done(const ErrorReason: string = '');
+    procedure SetCurrentTarget(ATarget: TTargetConfig);
 
     function HandleLine(const Line: string): TCompileLineType;
 
@@ -179,6 +184,9 @@ begin
   Result := clText;
   if Line = '' then
     Exit;
+
+  if Assigned(FCompileMessages) then
+    FCompileMessages.SetCurrentTarget(FCurrentTarget);
 
   if IsCompileFileLine(Line) then
     Result := clFileProgress
@@ -374,6 +382,11 @@ begin
   LblTotalLines.Caption := IntToStr(FTotalLines + FCurrentLine);
   BringToFront;
   Application.ProcessMessages;
+end;
+
+procedure TFormCompile.SetCurrentTarget(ATarget: TTargetConfig);
+begin
+  FCurrentTarget := ATarget;
 end;
 
 procedure TFormCompile.FormCloseQuery(Sender: TObject; var CanClose: Boolean);

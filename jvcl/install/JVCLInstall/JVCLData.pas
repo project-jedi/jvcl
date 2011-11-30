@@ -125,6 +125,7 @@ type
     function GetDebugHppDir: string;
     function GetDebugBplDir: string;
     function GetDebugDcpDir: string;
+    function GetLogFileName: string;
   protected
     procedure Init; virtual;
     procedure DoCleanPalette(Reg: TRegistry; const Name: string;
@@ -320,6 +321,8 @@ type
       // JclBplDir returns the directory where the JclXx.bpl/JclVclXX.bpl files are.
 
     property BuildSuccess: Boolean read FBuildSuccess;
+
+    property LogFileName: string read GetLogFileName;
   end;
 
   TJclLinkMapFile = function(ExecutableFileName, MapFileName: PChar;
@@ -395,6 +398,7 @@ type
 implementation
 
 uses
+  JclFileUtils,
   Utils, CmdLineUtils, PackageInformation, JediRegInfo;
 
 resourcestring
@@ -1278,6 +1282,11 @@ end;
 function TTargetConfig.GetLinkMapFiles: Boolean;
 begin
   Result := FLinkMapFiles;
+end;
+
+function TTargetConfig.GetLogFileName: string;
+begin
+  Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + 'jvcl_install_' + LowerCase(GetMainTargetSymbol) + '.log'; 
 end;
 
 function TTargetConfig.GetCreateJdbgFiles: Boolean;

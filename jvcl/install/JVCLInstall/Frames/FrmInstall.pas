@@ -62,6 +62,8 @@ type
     FLastCapLine: string;
     procedure EvProgress(Sender: TObject; const Text: string;
       Position, Max: Integer; Kind: TProgressKind);
+    procedure EvTargetProgress(Sender: TObject; Current: TTargetConfig;
+      Position, Max: Integer);
     procedure EvCaptureLine(const Text: string; var AAborted: Boolean);
     procedure EvIdle(Sender: TObject);
     procedure Init;
@@ -147,6 +149,13 @@ begin
   end;
 
   Application.ProcessMessages;
+end;
+
+procedure TFrameInstall.EvTargetProgress(Sender: TObject;
+  Current: TTargetConfig; Position, Max: Integer);
+begin
+  if Assigned(Compiler) then
+    FormCompile.SetCurrentTarget(Current);
 end;
 
 procedure TFrameInstall.EvCaptureLine(const Text: string; var AAborted: Boolean);
@@ -354,6 +363,7 @@ begin
     Compiler := TCompiler.Create(Installer.Data);
     try
       Compiler.OnProgress := EvProgress;
+      Compiler.OnTargetProgress := EvTargetProgress;
       Compiler.OnCaptureLine := EvCaptureLine;
       Compiler.OnIdle := EvIdle;
       Success := Compiler.Compile;

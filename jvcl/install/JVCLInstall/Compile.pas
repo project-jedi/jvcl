@@ -1343,7 +1343,7 @@ begin
         AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
         AConfigElem.Properties.Add('InstallAttempted', I <= Index);
         AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
-//        AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
+        AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
       end;
       XML.SaveToFile(CmdOptions.XMLResultFileName, JclStreams.seUTF8);
     finally
