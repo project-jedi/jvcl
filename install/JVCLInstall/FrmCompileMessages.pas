@@ -32,6 +32,7 @@ unit FrmCompileMessages;
 interface
 
 uses
+  JclSysUtils, JVCLData,
   Windows, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Menus, FrmCompile;
 
@@ -55,16 +56,23 @@ type
   private
     FList: TObjectList;
     FPaths: TStrings;
+    FLogLines: TJclSimpleLog;
+    FCurrentTarget: TTargetConfig;
+    
     procedure ExtractText(Typ: TMsgType; const Text: string);
     function GetCount: Integer;
     procedure SetPaths(const Value: TStrings);
+
+    procedure WriteLog(const Msg: string);
   public
+    destructor Destroy; override;
     procedure Clear;
 
     procedure AddHint(const Text: string);
     procedure AddWarning(const Text: string);
     procedure AddError(const Text: string);
     procedure AddFatal(const Text: string);
+    procedure SetCurrentTarget(ATarget: TTargetConfig);
 
     procedure AddMsg(Typ: TMsgType; const Filename: string; Line: Integer; const Msg: string);
     procedure AddText(const Msg: string);
@@ -162,23 +170,48 @@ begin
   ExtractText(msgHint, Text);
 end;
 
+function TypToStr(Typ: TMsgType): string;
+begin
+  case Typ of
+    msgFatal:
+      Result := RsCompilerFatal;
+    msgError:
+      Result := RsCompilerError;
+    msgWarning:
+      Result := RsCompilerWarning;
+    msgHint:
+      Result := RsCompilerHint;
+    msgText:
+      Result := '';
+    else
+      raise Exception.CreateFmt('Unsupported type %d', [Integer(Typ)]);
+  end;
+end;
+
 procedure TFormCompileMessages.AddMsg(Typ: TMsgType;
   const Filename: string; Line: Integer; const Msg: string);
 var
   Item: TMsgItem;
+  Prefix: string;
 begin
   Item := TMsgItem.Create(Filename, Line, Msg, Typ);
   FList.Add(Item);
   ListBox.Items.AddObject('', Item);
+
+  Prefix := '';
+  if FileName <> '' then
+    Prefix := Prefix + FileName;
+  if Line > 0 then
+    Prefix := Prefix + ' (' + IntToStr(Line) + ')';
+  if Typ <> msgText then
+    Prefix := Prefix + ' - ' + TypToStr(Typ) + ': ';
+
+  WriteLog(Prefix + Msg);
 end;
 
 procedure TFormCompileMessages.AddText(const Msg: string);
-var
-  Item: TMsgItem;
 begin
-  Item := TMsgItem.Create('', 0, Msg, msgText);
-  FList.Add(Item);
-  ListBox.Items.AddObject('', Item);
+  AddMsg(msgText, '', 0, Msg);
   Show;
 end;
 
@@ -188,6 +221,13 @@ begin
   FList.Clear;
   Hide;
   Application.ProcessMessages;
+end;
+
+destructor TFormCompileMessages.Destroy;
+begin
+  FLogLines.Free;
+
+  inherited Destroy;
 end;
 
 procedure TFormCompileMessages.ListBoxDrawItem(Control: TWinControl;
@@ -338,10 +378,36 @@ begin
   Result := ListBox.Items.Count;
 end;
 
+procedure TFormCompileMessages.SetCurrentTarget(ATarget: TTargetConfig);
+begin
+  if FCurrentTarget <> ATarget then
+  begin
+    FCurrentTarget := ATarget;
+    FreeAndNil(FLogLines);
+  end;
+end;
+
 procedure TFormCompileMessages.SetPaths(const Value: TStrings);
 begin
   if Value <> FPaths then
     FPaths.Assign(Value);
+end;
+
+procedure TFormCompileMessages.WriteLog(const Msg: string);
+begin
+  try
+    if Assigned(FCurrentTarget) then
+    begin
+      if not Assigned(FLogLines) then
+      begin
+        FLogLines := TJclSimpleLog.Create(FCurrentTarget.LogFileName);
+        FLogLines.ClearLog;
+      end;
+      FLogLines.Write(Msg);
+    end;
+  except
+    ; // writing log should not prevent the rest from working
+  end;
 end;
 
 end.
