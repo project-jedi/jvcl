@@ -4079,8 +4079,11 @@ procedure TJvCustomInspector.RefreshValues;
 begin
   if (Selected <> nil) and Selected.Editing then
   begin
-    Selected.DoneEdit(True);
-    Selected.InitEdit;
+    if (Selected.EditCtrl = nil) or (Selected.DisplayValue <> Selected.EditCtrl.Text) then
+    begin
+      Selected.DoneEdit(True);
+      Selected.InitEdit;
+    end;
   end;
   Invalidate;
 end;
