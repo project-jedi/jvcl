@@ -468,7 +468,7 @@ end;
 
 function FindToolbar(Window: THandle; var ToolbarHandle: THandle): BOOL; stdcall;
 var
-  Buf: array [Byte] of Char;
+  Buf: array[Byte] of Char;
 begin
   GetClassName(Window, Buf, Length(Buf) - 1);
   // Set result to false when we have found a toolbar
@@ -482,12 +482,9 @@ var
   TrayHandle: THandle;
 begin
   Result := 0;
-
   TrayHandle := GetTrayHandle;
-  if TrayHandle = 0 then
-    Exit;
-
-  EnumChildWindows(TrayHandle, @FindToolbar, LPARAM(@Result));
+  if TrayHandle <> 0 then
+    EnumChildWindows(TrayHandle, @FindToolbar, LPARAM(@Result));
 end;
 
 function GetIconRect(const AWnd: THandle; const AID: UINT; var IconRect: TRect): Boolean;

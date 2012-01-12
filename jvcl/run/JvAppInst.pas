@@ -311,28 +311,26 @@ begin
     Size, Handle);
 end;
 
-
-function TJvAppInstances.GetIsRemoteInstanceActive: Boolean;
 type
-  PData = ^TData;
-  TData = record
+  PEnumWinData = ^TEnumWinData;
+  TEnumWinData = record
     Instance: TJvAppInstances;
     Message: TMessage;
   end;
 
+function EnumWinProc(Wnd: HWND; Data: PEnumWinData): BOOL; stdcall;
+begin
+  with Data^.Message do
+    SendMessage(Wnd, Msg, WParam, LParam);
+  Result := Data^.Instance.Active;
+end;
+
+function TJvAppInstances.GetIsRemoteInstanceActive: Boolean;
 var
   I: Integer;
   Wnd: HWND;
   TID: DWORD;
-  Data: TData;
-
-  function EnumWinProc(Wnd: HWND; Data: PData): BOOL; stdcall;
-  begin
-    with Data^.Message do
-      SendMessage(Wnd, Msg, WParam, LParam);
-    Result := Data^.Instance.Active;
-  end;
-
+  Data: TEnumWinData;
 begin
   for I := 0 to AppInstances.InstanceCount - 1 do
   begin
