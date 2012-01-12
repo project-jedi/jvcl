@@ -2887,7 +2887,6 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-
 { Check if this is the active Windows task }
 { Copied from implementation of FORMS.PAS  }
 type
@@ -2913,11 +2912,9 @@ var
 begin
   Info.FocusWnd := Windows.GetActiveWindow;
   Info.Found := False;
-
   EnumThreadWindows(GetCurrentThreadId, @CheckTaskWindow, LPARAM(@Info));
   Result := Info.Found;
 end;
-
 {$ENDIF MSWINDOWS}
 
 {$IFDEF UNIX}
@@ -2926,8 +2923,6 @@ begin
   Result := Application.Active;
 end;
 {$ENDIF UNIX}
-
-
 
 function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 begin

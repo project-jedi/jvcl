@@ -359,7 +359,6 @@ begin
   Result := THandle(GetWindowLongPtr(AHandle, GWL_HINSTANCE)) = WinSrvHandle;
 end;
 
-function InternalCloseApp(ProcessID: DWORD; UseQuit: Boolean): Boolean;
 type
   PEnumWinRec = ^TEnumWinRec;
   TEnumWinRec = record
@@ -367,26 +366,27 @@ type
     PostQuit: Boolean;
     FoundWin: Boolean;
   end;
+
+function EnumWinProc(Wnd: HWND; Param: PEnumWinRec): BOOL; stdcall;
+var
+  PID, TID: DWORD;
+begin
+  TID := GetWindowThreadProcessId(Wnd, @PID);
+  if PID = Param.ProcessID then
+  begin
+    if Param.PostQuit then
+      PostThreadMessage(TID, WM_QUIT, 0, 0)
+    else
+    if IsWindowVisible(Wnd) or IsConsoleWindow(Wnd) then
+      PostMessage(Wnd, WM_CLOSE, 0, 0);
+    Param.FoundWin := True;
+  end;
+  Result := True;
+end;
+
+function InternalCloseApp(ProcessID: DWORD; UseQuit: Boolean): Boolean;
 var
   EnumWinRec: TEnumWinRec;
-
-  function EnumWinProc(Wnd: HWND; Param: PEnumWinRec): BOOL; stdcall;
-  var
-    PID, TID: DWORD;
-  begin
-    TID := GetWindowThreadProcessId(Wnd, @PID);
-    if PID = Param.ProcessID then
-    begin
-      if Param.PostQuit then
-        PostThreadMessage(TID, WM_QUIT, 0, 0)
-      else
-      if IsWindowVisible(Wnd) or IsConsoleWindow(Wnd) then
-        PostMessage(Wnd, WM_CLOSE, 0, 0);
-      Param.FoundWin := True;
-    end;
-    Result := True;
-  end;
-
 begin
   EnumWinRec.ProcessID := ProcessID;
   EnumWinRec.PostQuit := UseQuit;

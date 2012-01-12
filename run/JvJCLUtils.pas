@@ -7930,23 +7930,22 @@ begin
   end;
 end;
 
+function WindowsEnum(Handle: HWND; var IsDelphi: Boolean): BOOL; stdcall;
+begin
+  if WindowClassName(Handle) = 'TAppBuilder' then
+  begin
+    IsDelphi := True;
+    Result := False;
+  end
+  else
+    Result := True;
+end;
+
 {$IFDEF BCB}
 function ActivatePrevInstance(const MainFormClass: ShortString; const ATitle: string): Boolean;
 {$ELSE}
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
-
-  function WindowsEnum(Handle: HWND; var IsDelphi: Boolean): BOOL; stdcall;
-  begin
-    if WindowClassName(Handle) = 'TAppBuilder' then
-    begin
-      IsDelphi := True;
-      Result := False;
-    end
-    else
-      Result := True;
-  end;
-
 var
   PrevWnd, PopupWnd, ParentWnd: HWND;
   IsDelphi: Boolean;
