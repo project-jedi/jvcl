@@ -645,19 +645,18 @@ end;
 
 //=== { TJvProgramVersionsStringList } =======================================
 
-procedure TJvProgramVersionsStringList.Sort;
-
-  function VersionNumberSortCompare(List: TStringList; Index1, Index2: Integer): Integer;
-  var
-    S1, S2: string;
-  begin
-    S1 := TJvProgramVersionInfo(List.Objects[Index1]).ProgramVersion;
-    S2 := TJvProgramVersionInfo(List.Objects[Index2]).ProgramVersion;
-    Result := CompareVersionNumbers(S1, S2);
-  end;
-
+function VersionNumberSortCompare(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  Info1, Info2: TJvProgramVersionInfo;
 begin
-  CustomSort(@VersionNumberSortCompare);
+  Info1 := TJvProgramVersionInfo(List.Objects[Index1]);
+  Info2 := TJvProgramVersionInfo(List.Objects[Index2]);
+  Result := CompareVersionNumbers(Info1.ProgramVersion, Info2.ProgramVersion);
+end;
+
+procedure TJvProgramVersionsStringList.Sort;
+begin
+  CustomSort(VersionNumberSortCompare);
 end;
 
 function TJvProgramVersionCheck.CreateVersionHistoryAppstorage(aFileFormat: TjvProgramVersionHistoryFileFormat):

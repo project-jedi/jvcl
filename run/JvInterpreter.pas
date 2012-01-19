@@ -8195,28 +8195,27 @@ end;
 
 //=== { TJvInterpreterMethodList } ===========================================
 
-procedure TJvInterpreterMethodList.Sort(Compare: TListSortCompare);
-
-  function SortIdentifier(Item1, Item2: Pointer): Integer;
-  begin
-    { function AnsiStrIComp about 30% faster than AnsiCompareText }
-    { Result := AnsiCompareText(TJvInterpreterIdentifier(Item1).Identifier,
-      TJvInterpreterIdentifier(Item2).Identifier); }
-    Result := AnsiStrIComp(PChar(TJvInterpreterIdentifier(Item1).Identifier),
-      PChar(TJvInterpreterIdentifier(Item2).Identifier));
-
-    if (Result = 0) and (Item1 <> Item2) then
-    begin
-      if TJvInterpreterMethod(Item1).FClassType.InheritsFrom(TJvInterpreterMethod(Item2).FClassType) then
-        Result := -1
-      else
-      if TJvInterpreterMethod(Item2).FClassType.InheritsFrom(TJvInterpreterMethod(Item1).FClassType) then
-        Result := 1;
-    end;
-  end;
-
+function SortIdentifier(Item1, Item2: Pointer): Integer;
 begin
-  inherited Sort(@SortIdentifier);
+  { function AnsiStrIComp about 30% faster than AnsiCompareText }
+  { Result := AnsiCompareText(TJvInterpreterIdentifier(Item1).Identifier,
+    TJvInterpreterIdentifier(Item2).Identifier); }
+  Result := AnsiStrIComp(PChar(TJvInterpreterIdentifier(Item1).Identifier),
+    PChar(TJvInterpreterIdentifier(Item2).Identifier));
+
+  if (Result = 0) and (Item1 <> Item2) then
+  begin
+    if TJvInterpreterMethod(Item1).FClassType.InheritsFrom(TJvInterpreterMethod(Item2).FClassType) then
+      Result := -1
+    else
+    if TJvInterpreterMethod(Item2).FClassType.InheritsFrom(TJvInterpreterMethod(Item1).FClassType) then
+      Result := 1;
+  end;
+end;
+
+procedure TJvInterpreterMethodList.Sort(Compare: TListSortCompare);
+begin
+  inherited Sort(SortIdentifier);
 end;
 
 //=== { TJvInterpreterRecord } ===============================================
