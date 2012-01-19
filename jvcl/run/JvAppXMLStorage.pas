@@ -561,6 +561,9 @@ var
   StrValue: string;
   Node: TJvSimpleXmlElem;
   ValueElem: TJvSimpleXMLElem;
+  {$IFDEF CPUX64}
+  Ext80Value: Extended80;
+  {$ENDIF CPUX64}
 begin
   ReloadIfNeeded;
   SplitKeyPath(Path, ParentPath, ValueName);
@@ -572,8 +575,18 @@ begin
   begin
     try
       StrValue := ValueElem.Value;
-      // Result := StrToFloat(StrValue);
+      {$IFDEF CPUX64}
+      // Keep backward compatiblity to x86 Extended type
+      if BinStrToBuf(StrValue, @Ext80Value, SizeOf(Ext80Value)) = SizeOf(Ext80Value) then
+        try
+          Result := Ext80Value
+        except
+          Result := Default;
+        end
+      else
+      {$ELSE}
       if BinStrToBuf(StrValue, @Result, SizeOf(Result)) <> SizeOf(Result) then
+      {$ENDIF CPUX64}
         Result := Default;
     except
       if StorageOptions.DefaultIfReadConvertError then
@@ -595,6 +608,9 @@ var
   ValueName: string;
   Node: TJvSimpleXmlElem;
   ValueElem: TJvSimpleXMLElem;
+  {$IFDEF CPUX64}
+  Ext80Value: Extended80;
+  {$ENDIF CPUX64}
 begin
   ReloadIfNeeded;
   SplitKeyPath(Path, ParentPath, ValueName);
@@ -602,8 +618,15 @@ begin
   Xml.Options := Xml.Options + [sxoAutoCreate];
   ValueElem := GetValueElementFromNode(Node, ValueName);
   if Assigned(ValueElem) then
-    ValueElem.Value :=
-    BufToBinStr(@Value, SizeOf(Value));
+  begin
+    {$IFDEF CPUX64}
+    // Keep backward compatiblity to x86 Extended type
+    Ext80Value := Value;
+    ValueElem.Value := BufToBinStr(@Ext80Value, SizeOf(Ext80Value));
+    {$ELSE}
+    ValueElem.Value := BufToBinStr(@Value, SizeOf(Value));
+    {$ENDIF CPUX64}
+  end;
   Xml.Options := Xml.Options - [sxoAutoCreate];
   FlushIfNeeded;
 end;
