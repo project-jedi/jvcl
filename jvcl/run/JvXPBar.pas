@@ -1668,7 +1668,7 @@ procedure TJvXPCustomWinXPBar.SortVisibleItems(const Redraw: Boolean);
 begin
   if (csLoading in ComponentState) or (csDestroying in ComponentState) then
     Exit;
-  FVisibleItems.FItems.Sort(@SortByIndex);
+  FVisibleItems.FItems.Sort(SortByIndex);
   if Redraw then
     InternalRedraw;
 end;

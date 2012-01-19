@@ -2052,7 +2052,8 @@ begin
       Inc(Result);
 end;
 
-type tAccessControl = class(tControl);
+type
+  TAccessControl = class(TControl);
 
 procedure TJvParameterList.HandleShowValidState;
 var
@@ -2063,14 +2064,14 @@ var
   ParValid: Boolean;
   IEnable: Integer;
 
-  procedure SetControlFont (iControl : TControl;iValid : Boolean);
+  procedure SetControlFont(AControl: TControl; AValid: Boolean);
   begin
-    if Assigned(iControl) then
+    if Assigned(AControl) then
     begin
-      if iValid then
-        tAccessControl(iControl).Font.Style := tAccessControl(iControl).Font.Style - [fsItalic]
+      if AValid then
+        TAccessControl(AControl).Font.Style := tAccessControl(AControl).Font.Style - [fsItalic]
       else
-        tAccessControl(iControl).Font.Style := tAccessControl(iControl).Font.Style + [fsItalic];
+        TAccessControl(AControl).Font.Style := tAccessControl(AControl).Font.Style + [fsItalic];
     end;
   end;
 
@@ -2095,7 +2096,7 @@ begin
     end;
   if Assigned(OkButton) then
   begin
-    IEnable := GetEnableDisableReasonState(OkButtonDisableReasons, OkButtonEnableReasons) ;
+    IEnable := GetEnableDisableReasonState(OkButtonDisableReasons, OkButtonEnableReasons);
     if IEnable = -1 then
       OkButton.Enabled := False
     else

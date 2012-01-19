@@ -779,11 +779,7 @@ var
   MainPanel : TWinControl;
   DynControlAutoSize: IJvDynControlAutoSize;
 
-  {$IFDEF COMPILER12_UP}
-  procedure CalcTextRect (iSingle : Boolean; lpString: PWideChar; nCount: Integer;var lpRect: TRect);
-  {$ELSE}
-  procedure CalcTextRect (iSingle : Boolean; lpString: PChar; nCount: Integer;var lpRect: TRect);
-  {$ENDIF}
+  procedure CalcTextRect(iSingle: Boolean; lpString: PChar; nCount: Integer; var lpRect: TRect);
   begin
     if iSingle then
       DrawText(ResultForm.Canvas.Handle, lpString, nCount, lpRect,
@@ -793,7 +789,7 @@ var
           DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or ResultForm.DrawTextBiDiModeFlagsReadingOnly);
   end;
 
-  Procedure ResizeResultForm;
+  procedure ResizeResultForm;
   begin
     ResultForm.ClientWidth := Max(TimeoutTextWidth,
                                   Max(17 + ChkTextWidth,
@@ -814,8 +810,6 @@ var
     ResultForm.Left := (CenterParWidth div 2) - (ResultForm.Width div 2) + CenterParLeft;
     ResultForm.Top := (CenterParHeight div 2) - (ResultForm.Height div 2) + CenterParTop;
   end;
-
-
 
 begin
   ResultForm := nil;
