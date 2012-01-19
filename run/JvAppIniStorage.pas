@@ -408,12 +408,26 @@ var
   Section: string;
   Key: string;
   Value: string;
+  {$IFDEF CPUX64}
+  Ext80Value: Extended80;
+  {$ENDIF CPUX64}
 begin
   SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
     Value := ReadValue(Section, Key);
+    {$IFDEF CPUX64}
+    // Keep backward compatiblity to x86 Extended type
+    if BinStrToBuf(Value, @Ext80Value, SizeOf(Ext80Value)) = SizeOf(Ext80Value) then
+      try
+        Result := Ext80Value
+      except
+        Result := Default;
+      end
+    else
+    {$ELSE}
     if BinStrToBuf(Value, @Result, SizeOf(Result)) <> SizeOf(Result) then
+    {$ENDIF CPUX64}
       Result := Default;
   end
   else
@@ -424,9 +438,18 @@ procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extende
 var
   Section: string;
   Key: string;
+  {$IFDEF CPUX64}
+  Ext80Value: Extended80;
+  {$ENDIF CPUX64}
 begin
   SplitKeyPath(Path, Section, Key);
+  {$IFDEF CPUX64}
+  // Keep backward compatiblity to x86 Extended type
+  Ext80Value := Value;
+  WriteValue(Section, Key, BufToBinStr(@Ext80Value, SizeOf(Ext80Value)));
+  {$ELSE}
   WriteValue(Section, Key, BufToBinStr(@Value, SizeOf(Value)));
+  {$ENDIF CPUX64}
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;

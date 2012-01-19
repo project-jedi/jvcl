@@ -191,8 +191,7 @@ begin
   end;
 end;
 
-function TJvCustomAppDBStorage.DoReadBinary(const Path: string; Buf: TJvBytes;
-  BufSize: Integer): Integer;
+function TJvCustomAppDBStorage.DoReadBinary(const Path: string; Buf: TJvBytes; BufSize: Integer): Integer;
 var
   Value: AnsiString;
 begin
@@ -206,15 +205,13 @@ begin
     Move(Value[1], Buf, Result * SizeOf(AnsiChar));
 end;
 
-function TJvCustomAppDBStorage.DoReadFloat(const Path: string;
-  Default: Extended): Extended;
+function TJvCustomAppDBStorage.DoReadFloat(const Path: string; Default: Extended): Extended;
 begin
  // NOTE: StrToFloatDefIgnoreInvalidCharacters now called JvSafeStrToFloatDef:
   Result := JvSafeStrToFloatDef(DoReadString(Path, ''), Default);
 end;
 
-function TJvCustomAppDBStorage.DoReadInteger(const Path: string;
-  Default: Integer): Integer;
+function TJvCustomAppDBStorage.DoReadInteger(const Path: string; Default: Integer): Integer;
 begin
   Result := StrToIntDef(DoReadString(Path, ''), Default);
 end;
@@ -248,20 +245,17 @@ begin
   end;
 end;
 
-procedure TJvCustomAppDBStorage.DoWriteFloat(const Path: string;
-  Value: Extended);
+procedure TJvCustomAppDBStorage.DoWriteFloat(const Path: string; Value: Extended);
 begin
   WriteBinary(Path, @Value, SizeOf(Value));
 end;
 
-procedure TJvCustomAppDBStorage.DoWriteInteger(const Path: string;
-  Value: Integer);
+procedure TJvCustomAppDBStorage.DoWriteInteger(const Path: string;Value: Integer);
 begin
   DoWriteString(Path, IntToStr(Value));
 end;
 
-procedure TJvCustomAppDBStorage.DoWriteString(const Path: string;
-  const Value: string);
+procedure TJvCustomAppDBStorage.DoWriteString(const Path: string; const Value: string);
 var
   Section: string;
   Key: string;
@@ -270,14 +264,14 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-procedure TJvCustomAppDBStorage.EnumFolders(const Path: string;
-  const Strings: TStrings; const ReportListAsValue: Boolean);
+procedure TJvCustomAppDBStorage.EnumFolders(const Path: string; const Strings: TStrings;
+  const ReportListAsValue: Boolean);
 begin
   raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
 end;
 
-procedure TJvCustomAppDBStorage.EnumValues(const Path: string;
-  const Strings: TStrings; const ReportListAsValue: Boolean);
+procedure TJvCustomAppDBStorage.EnumValues(const Path: string; const Strings: TStrings;
+  const ReportListAsValue: Boolean);
 begin
   raise EJvAppDBStorageError.CreateRes(@RsENotSupported);
 end;
@@ -309,8 +303,7 @@ begin
   Result := SectionExists(StrEnsureNoPrefix(PathDelim, Path), True);
 end;
 
-procedure TJvCustomAppDBStorage.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TJvCustomAppDBStorage.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and not (csDestroying in ComponentState) then
