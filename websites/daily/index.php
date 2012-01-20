@@ -101,6 +101,7 @@ $LatestSourceFileNameZip = GetLatestFileName("/JVCL3-Source.+\.zip/");
  http-equiv="content-type">
   <title>Daily packages</title>
   <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+  <link rel="shortcut icon" href="styles/JEDI.ico" />
 </head>
 <body>
 <h1>JVCL Daily packages
@@ -270,9 +271,10 @@ Notes:<br>
 Should you have any problems with those files, please do not hesitate
 to contact us on our newsgroup here:<br>
 <br>
-<a href="news://forums.talkto.net/jedi.vcl">news://forums.talkto.net/jedi.vcl</a><br>
+<a href="news://news.delphi-jedi.org/jedi.vcl">news://news.delphi-jedi.org/jedi.vcl</a><br>
 <br>
 Thank you for considering the JVCL.<br>
 <br>
 </body>
+<a href="http://sourceforge.net/projects/jvcl"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=45786&amp;type=15" width="150" height="40" alt="Get JEDI Visual Component Library at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a></body>
 </html>
