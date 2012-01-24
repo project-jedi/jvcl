@@ -884,6 +884,11 @@ type
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
     FPhysicalReadOnly: Boolean;
     FFileLoaded: Boolean;
+    {$IFDEF DELPHI2005_UP}
+    FFileAge: TDateTime;
+    {$ELSE}
+    FFileAge: Integer;
+    {$ENDIF}
 
     function GetAsString: string; virtual; abstract;
     procedure SetAsString(const Value: string); virtual; abstract;
@@ -3538,6 +3543,7 @@ begin
   FLocation := flExeFile;
   FPhysicalReadOnly := False;
   FFileLoaded := False;
+  FFileAge := -1;
 end;
 
 procedure TJvCustomAppMemoryFileStorage.RecalculateFullFileName;
@@ -3586,12 +3592,28 @@ procedure TJvCustomAppMemoryFileStorage.Reload;
 begin
   FFileLoaded := True;
   FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
+  {$IFDEF DELPHI2005_UP}
+  FileAge(FullFileName, FFileAge);
+  {$ELSE}
+  FFileAge:= FileAge(FullFileName);
+  {$ENDIF}
+
   inherited Reload;
 end;
 
 function TJvCustomAppMemoryFileStorage.ReloadNeeded: Boolean;
+{$IFDEF DELPHI2005_UP}
+var t : TDateTime;
+{$ENDIF}
 begin
   Result := (not FFileLoaded or AutoReload) and not IsUpdating;
+  {$IFDEF DELPHI2005_UP}
+  if Result and FileAge(FullFileName, t) then
+    Result := FFileAge <> t;
+  {$ELSE}
+  if Result then
+    Result := FFileAge <> FileAge(FullFileName);;
+  {$ENDIF}
 end;
 
 function TJvCustomAppMemoryFileStorage.GetPhysicalReadOnly: Boolean;
