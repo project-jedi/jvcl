@@ -587,6 +587,7 @@ end;
 
 function DefaultDynControlEngineDB: TJvDynControlEngineDB;
 begin
+  Assert(Assigned(GlobalDefaultDynControlEngineDB),'JvDynControlEngineDB: DefaultDynControlEngineDB not definded');
   Result := GlobalDefaultDynControlEngineDB;
 end;
 
