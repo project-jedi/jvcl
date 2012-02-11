@@ -119,6 +119,8 @@ type
     procedure SetSavePassword(const Value: Boolean);
     procedure SetShortCutText(const Value: string);
   protected
+    //1 This function is to identify the connection info in the connection list
+    function SearchName: String; virtual;
     procedure SetDatabase(Value: string);
     procedure SetUsername(Value: string);
   public
@@ -141,6 +143,10 @@ type
   private
     FConnectAs: string;
     procedure SetConnectAs(const Value: string);
+  protected
+    //1 This function is to identify the connection info in the connection list
+    function SearchName: String; override;
+    function TranslateName(iName: string): string;
   public
     constructor Create(AOwner: TComponent); override;
     function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string; override;
@@ -405,6 +411,10 @@ implementation
 
 uses
   Windows, SysUtils, Types, ComCtrls, StdCtrls, Dialogs,
+  {$IFDEF HAS_UNIT_CHARACTER}
+  Character, 
+  {$ENDIF HAS_UNIT_CHARACTER}
+  JvJCLUtils, //ToUpper and CharInSet
   JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources;
 
 
@@ -2095,6 +2105,11 @@ begin
   Result := ShortCutToText(ShortCut);
 end;
 
+function TJvBaseConnectionInfo.SearchName: String;
+begin
+  Result := UserDatabaseString;
+end;
+
 procedure TJvBaseConnectionInfo.SetDatabase(Value: string);
 begin
   FDatabase := Trim(Value);
@@ -2163,6 +2178,33 @@ begin
       Result := Result + ' - ' + Group;
 end;
 
+function TJvBaseOracleConnectionInfo.TranslateName(iName: string): string;
+const UpperChars : set of char = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                                  '0','1','2','3','4','5','6','7','8','9','_','$','#','@'];
+const LowerChars : set of char = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+
+var i : Integer;
+    s : String;
+begin
+  s := trim(iName);
+  if s <> '' then
+    if (s[1] <> '"') or (s[length(s)] <> '"') then
+      for i := 1 to length(s) do
+        if CharInSet(s[i], LowerChars) then
+          s[i] := ToUpper(s[i])
+        else if not CharInSet(s[i], UpperChars) then
+        begin
+          Result := trim(iName);
+          Exit;
+        end;
+  Result := s;
+end;
+
+function TJvBaseOracleConnectionInfo.SearchName: String;
+begin
+  Result := TranslateName(Username) + '@' + TranslateName(Database);
+end;
+
 procedure TJvBaseOracleConnectionInfo.SetConnectAs(const Value: string);
 begin
   FConnectAs := Trim(UpperCase(Value));
@@ -2188,13 +2230,13 @@ procedure TJvBaseConnectionList.AddConnection(ConnectionInfo: TJvBaseConnectionI
 var
   p, p2, i: Integer;
 begin
-  p := Items.IndexOf(ConnectionInfo.UserDatabaseString);
+  p := Items.IndexOf(ConnectionInfo.SearchName);
   while p <> -1 do
   begin
     Items.Delete(p);
-    p := Items.IndexOf(ConnectionInfo.UserDatabaseString);
+    p := Items.IndexOf(ConnectionInfo.SearchName);
   end;
-  p2 := Items.AddObject(ConnectionInfo.UserDatabaseString, ConnectionInfo);
+  p2 := Items.AddObject(ConnectionInfo.SearchName, ConnectionInfo);
   if ConnectionInfo.ShortCut > 0 then
     for i := 0 to Count - 1 do
       if i <> p2 then
@@ -2246,7 +2288,7 @@ begin
   try
     Connection.Username := Username;
     Connection.Database := Database;
-    Result := Items.IndexOf(Connection.UserDatabaseString);
+    Result := Items.IndexOf(Connection.SearchName);
   finally
     Connection.Free;
   end;
@@ -2258,7 +2300,7 @@ var
 begin
   inherited LoadData;
   for i := 0 to Items.Count - 1 do
-    Items[i] := Connection[i].UserDatabaseString;
+    Items[i] := Connection[i].SearchName;
 end;
 
 procedure TJvBaseConnectionList.SetLastConnect(const Value: TJvBaseConnectionInfo);
