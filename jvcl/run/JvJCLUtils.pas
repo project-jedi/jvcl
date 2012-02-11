@@ -223,6 +223,9 @@ function HasChar(const Ch: Char; const S: string): Boolean;
 function HasCharW(const Ch: WideChar; const S: WideString): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function HasAnyChar(const Chars: string; const S: string): Boolean;
 {$IFNDEF COMPILER12_UP}
+function ToUpper(C: Char): Char; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+{$ENDIF ~COMPILER12_UP}
+{$IFNDEF COMPILER12_UP}
 function CharInSet(const Ch: AnsiChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 {$ENDIF ~COMPILER12_UP}
 function CharInSetW(const Ch: WideChar; const SetOfChar: TSysCharSet): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
@@ -2397,6 +2400,15 @@ function FileNewExt(const FileName, NewExt: TFileName): TFileName;
 begin
   Result := Copy(FileName, 1, Length(FileName) - Length(ExtractFileExt(FileName))) + NewExt;
 end;
+
+{$IFNDEF COMPILER12_UP}
+function ToUpper(C: Char): Char;
+var s : string;
+begin
+  s := UpperCase(c);
+  Result := s[1];
+end;
+{$ENDIF ~COMPILER12_UP}
 
 {$IFNDEF COMPILER12_UP}
 function CharInSet(const Ch: AnsiChar; const SetOfChar: TSysCharSet): Boolean;
