@@ -122,7 +122,7 @@
     <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
-    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
     <File Name="..\..\run\JvDBCombobox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBControls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB,help" Formname="" Condition=""/>
