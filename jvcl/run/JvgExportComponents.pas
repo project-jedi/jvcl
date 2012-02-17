@@ -614,7 +614,7 @@ var
   function CreateNode(const Name: string; Base: TJvSimpleXMLElemClassic):
     TJvSimpleXMLElemClassic;
   begin
-    Result := TJvSimpleXMLElemClassic.Create(XML.Root);
+    Result := TJvSimpleXMLElemClassic.Create;
     Base.Items.Add(Result);
     Result.Name := Name;
   end;
