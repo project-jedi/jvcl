@@ -26,7 +26,7 @@
         <value>URL HeadURL Author LastChangedBy Date LastChangedDate Rev Revision LastChangedRevision Id</value>
       </property>
     </setting>
-    <setting path="" mask="*.pas *.PAS *.cpp *.hpp *.HPP *.inc *.INC *.h *.dpr *.DPR *.dpk *.bpr *.bpk *.bpf *.gmk *.bmk *.def *.conf *.sh *.txt *.TXT *.bat *.xml *.htm *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dof *.DOF *.kof *.rc *.RC *.dfm *.DFM *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.INI *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.dic *.macros *.tmpl *.als *.hhk *.hhp *.hhc *.FAQ *.po *.pal *.dat *.csv *.htt *.tpl *.bkf *.jsf *.sql *.SQL *.xhs *.mps *.pad *.identifers *.templates *.reg *.gpi *.SUP *.desk *.lng *.sef *.itm" recurse="yes"  dironly="no">
+    <setting path="" mask="*.pas *.PAS *.cpp *.hpp *.HPP *.inc *.INC *.h *.dpr *.DPR *.dpk *.bpr *.bpk *.bpf *.gmk *.bmk *.def *.conf *.sh *.txt *.TXT *.bat *.xml *.htm *.html *.css *.exc *.bpg *.bdsgroup *.bdsproj *.groupproj *.dof *.DOF *.kof *.rc *.RC *.dfm *.DFM *.xfm *.dtx *.dsf *.dox *.dfg *.ini *.INI *.fpc *.mak *.int *.imp *.pl *.cmd *.manifest *.iss *.cs *.resx *.dic *.macros *.tmpl *.als *.hhk *.hhp *.hhc *.FAQ *.po *.pal *.dat *.csv *.htt *.tpl *.bkf *.jsf *.sql *.SQL *.xhs *.mps *.pad *.identifers *.templates *.reg *.gpi *.SUP *.desk *.lng *.sef *.itm *.php" recurse="yes"  dironly="no">
       <property name="svn:eol-style">
         <value>native</value>
       </property>
