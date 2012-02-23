@@ -878,6 +878,7 @@ type
     FDateFormat: string;
     FDateFormat2: string;
     FFormatting: Boolean;
+    FShowNullDate: Boolean;
     procedure SetMinDate(Value: TDateTime);
     procedure SetMaxDate(Value: TDateTime);
     function GetDate: TDateTime;
@@ -906,6 +907,7 @@ type
     function StoreMaxDate: Boolean;
     function FourDigitYear: Boolean;
     procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
+    procedure SetShowNullDate(const Value: Boolean);
   protected
     FDateAutoBetween: Boolean;
     procedure SetDate(Value: TDateTime); virtual;
@@ -929,6 +931,7 @@ type
     function GetDefaultDateFormat: string; virtual;
     function GetDefaultDateFormatPreferred: TPreferredDateFormat; virtual;
     function CreateDataConnector: TJvCustomComboEditDataConnector; override;
+    function DisplayNullDateAsEmptyText: Boolean; virtual;
 
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
     property CalendarHints: TStrings read GetCalendarHints write SetCalendarHints;
@@ -953,6 +956,7 @@ type
     property MaxLength stored False;
     { Text is already stored via Date property }
     property Text stored False;
+    property ShowNullDate: Boolean read FShowNullDate write SetShowNullDate;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1039,6 +1043,7 @@ type
     property ShowHint;
     property ShowButton;
     property CalendarStyle;
+    property ShowNullDate;
     property StartOfWeek;
     property Weekends;
     property WeekendColor;
@@ -3356,6 +3361,11 @@ begin
   inherited Destroy;
 end;
 
+function TJvCustomDateEdit.DisplayNullDateAsEmptyText: Boolean;
+begin
+  Result := not ShowNullDate;
+end;
+
 function TJvCustomDateEdit.CreateDataConnector: TJvCustomComboEditDataConnector;
 begin
   Result := TJvCustomDateEditDataConnector.Create(Self);
@@ -3699,7 +3709,7 @@ begin
   D := Self.Date;
   SavedModified := Modified;
   TestDateBetween(Value);
-  if Value = NullDate then
+  if (Value = NullDate) and DisplayNullDateAsEmptyText then
     Text := ''
   else
     Text := FormatDateTime(FDateFormat, Value);
@@ -3778,6 +3788,15 @@ end;
 procedure TJvCustomDateEdit.SetPopupValue(const Value: Variant);
 begin
   inherited SetPopupValue(StrToDateFmtDef(FDateFormat, VarToStr(Value), SysUtils.Date));
+end;
+
+procedure TJvCustomDateEdit.SetShowNullDate(const Value: Boolean);
+begin
+  if FShowNullDate <> Value then
+  begin
+    FShowNullDate := Value;
+    SetDate(Date);
+  end;
 end;
 
 procedure TJvCustomDateEdit.SetStartOfWeek(Value: TDayOfWeekName);

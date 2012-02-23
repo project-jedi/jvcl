@@ -338,6 +338,7 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Reset; override;
+    function DisplayNullDateAsEmptyText: Boolean; override;
     // Polaris
     procedure SetDate(Value: TDateTime); override;
     function IsValidDate(Value: TDateTime): Boolean;
@@ -414,6 +415,7 @@ type
     property PopupMenu;
     property ShowHint;
     property CalendarStyle;
+    property ShowNullDate;
     property StartOfWeek;
     property Weekends;
     property WeekendColor;
@@ -1393,6 +1395,15 @@ begin
   inherited Destroy;
   // (rom) destroy Canvas AFTER inherited Destroy
   FCanvas.Free;
+end;
+
+function TJvDBDateEdit.DisplayNullDateAsEmptyText: Boolean;
+begin
+  Result := inherited DisplayNullDateAsEmptyText;
+  
+  if FDataLink.Field <> nil then
+    if FDataLink.Field.IsNull then
+      Result := True;
 end;
 
 procedure TJvDBDateEdit.AfterPopup(Sender: TObject; var Date: TDateTime;
