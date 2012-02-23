@@ -3817,6 +3817,7 @@ var
   Placement: TWindowPlacement;
   WinState: TWindowState;
   DataFound: Boolean;
+  OriginalShowCmd: UINT;
 
   procedure ChangePosition(APosition: TPosition);
   begin
@@ -3846,6 +3847,7 @@ begin
   try
     Placement.Length := SizeOf(TWindowPlacement);
     GetWindowPlacement(Form.Handle, @Placement);
+    OriginalShowCmd := Placement.ShowCmd;
     if not IsWindowVisible(Form.Handle) then
       Placement.ShowCmd := SW_HIDE;
     if [fpSize, fpLocation] * Options <> [] then
@@ -3934,7 +3936,7 @@ begin
         (Application.MainForm = nil)) and ((Form.FormStyle = fsMDIForm) or
         ((Form.FormStyle = fsNormal) and (Form.Position = poDefault))) then
         WinState := wsMaximized;
-      Placement.ShowCmd := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siShowCmd]), SW_HIDE);
+      Placement.ShowCmd := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siShowCmd]), OriginalShowCmd);
       case Placement.ShowCmd of
         SW_SHOWNORMAL, SW_RESTORE, SW_SHOW:
           WinState := wsNormal;
