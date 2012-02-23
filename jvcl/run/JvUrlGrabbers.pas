@@ -237,7 +237,6 @@ type
 
   TJvHttpUrlGrabberThread = class(TJvCustomUrlGrabberThread)
   protected
-    FContinue: Boolean;
     function GetGrabber: TJvHttpUrlGrabber;
     procedure Grab; override;
   public
@@ -756,7 +755,7 @@ var
 begin
   Buffer := nil;
 
-  FContinue := True;
+  Continue := True;
   hSession := nil;
   hHostConnection := nil;
   hDownload := nil;
@@ -873,7 +872,7 @@ begin
       if HasSize then
       begin
         dwBytesRead := 1;
-        while (dwBytesRead > 0) and not Terminated and FContinue do
+        while (dwBytesRead > 0) and not Terminated and Continue do
         begin
           if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) then
             dwBytesRead := 0
@@ -890,7 +889,7 @@ begin
         end;
 
         SetGrabberStatus(gsStopping);
-        if FContinue and not Terminated then
+        if Continue and not Terminated then
           Synchronize(Ended);
       end
       else
@@ -907,7 +906,7 @@ begin
         end;
 
         SetGrabberStatus(gsStopping);
-        if FContinue and not Terminated then
+        if Continue and not Terminated then
           Synchronize(Ended);
       end;
     except
