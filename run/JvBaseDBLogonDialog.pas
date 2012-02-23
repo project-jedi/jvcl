@@ -414,6 +414,7 @@ uses
   {$IFDEF HAS_UNIT_CHARACTER}
   Character, 
   {$ENDIF HAS_UNIT_CHARACTER}
+  JclStrings,
   JvJCLUtils, //ToUpper and CharInSet
   JvAppIniStorage, JvAppXMLStorage, JvDSADialogs, JvResources;
 
@@ -2179,10 +2180,6 @@ begin
 end;
 
 function TJvBaseOracleConnectionInfo.TranslateName(iName: string): string;
-const UpperChars : set of char = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-                                  '0','1','2','3','4','5','6','7','8','9','_','$','#','@'];
-const LowerChars : set of char = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
-
 var i : Integer;
     s : String;
 begin
@@ -2190,9 +2187,9 @@ begin
   if s <> '' then
     if (s[1] <> '"') or (s[length(s)] <> '"') then
       for i := 1 to length(s) do
-        if CharInSet(s[i], LowerChars) then
+        if CharIsLower(s[i]) then
           s[i] := ToUpper(s[i])
-        else if not CharInSet(s[i], UpperChars) then
+        else if not CharIsUpper(s[i]) then
         begin
           Result := trim(iName);
           Exit;
