@@ -2053,12 +2053,6 @@ begin
 end;
 
 procedure TJvXPCustomWinXPBar.Paint;
-var
-  ARect: TRect;
-  Bitmap: TBitmap;
-  Index, I: Integer;
-  OwnColor: TColor;
-
   // (rom) Do as prefix for a local function is not ideal
   procedure DoDrawBackground(ACanvas: TCanvas; var R: TRect);
   begin
@@ -2082,6 +2076,10 @@ var
   end;
 
   procedure DoDrawHeader(ACanvas: TCanvas; var R: TRect);
+  var
+    Index: Integer;
+    OwnColor: TColor;
+    Bitmap: TBitmap;
   begin
     Dec(R.Top, FHeaderHeight);
     R.Bottom := R.Top + FHeaderHeight;
@@ -2161,26 +2159,26 @@ var
           // Transparency fix not needed Here! -WPostma
           Bitmap.Transparent := True;
           if BiDiMode = bdRightToLeft then
-            ACanvas.Draw(R.Left + 5, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap)
+          begin
+            ACanvas.Draw(R.Left + 5, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
+            Inc(R.Left, Bitmap.Width + 7);
+          end
           else
-            ACanvas.Draw(R.Right - 24, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
+          begin
+            ACanvas.Draw(R.Right - Bitmap.Width - 7, R.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
+            Dec(R.Right, Bitmap.Width + 7);
+          end;
         finally
           Bitmap.Free;
         end;
-        Dec(R.Right, 25);
       end;
-      Inc(R.Left, 22);
       ACanvas.Pen.Color := FColors.SeparatorColor;
-      JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
-      if BiDiMode = bdRightToLeft then
-        Inc(ARect.Right, 28)
-      else
-        Inc(R.Left, 16);
+      JvXPDrawLine(ACanvas, 1, R.Top + FHeaderHeight, Width - 1, R.Top + FHeaderHeight);
     end;
 
     { draw seperator line }
     ACanvas.Pen.Color := FColors.SeparatorColor;
-    JvXPDrawLine(ACanvas, 1, ARect.Top + FHeaderHeight, Width - 1, ARect.Top + FHeaderHeight);
+    JvXPDrawLine(ACanvas, 1, R.Top + FHeaderHeight, Width - 1, R.Top + FHeaderHeight);
 
     { draw icon }
 
@@ -2188,13 +2186,13 @@ var
     begin
       if BiDiMode = bdRightToLeft then
         begin
-          ACanvas.Draw(ARect.Right-FICon.Width-2, 0, FIcon);
-          Dec(ARect.Right, FIcon.Width+6);
+          ACanvas.Draw(R.Right-FICon.Width-2, 0, FIcon);
+          Dec(R.Right, FIcon.Width+6);
         end
       else
         begin
           ACanvas.Draw(2, 1, FIcon);
-          Inc(ARect.Right, FIcon.Width+6);
+          Inc(R.Left, FIcon.Width+6);
         end;
 
     end;
@@ -2202,14 +2200,18 @@ var
     ACanvas.Font.Assign(FHeaderFont);
     if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       ACanvas.Font.Color := FHotTrackColor;
-    ARect.Bottom := ARect.Top + FHeaderHeight;
+    R.Bottom := R.Top + FHeaderHeight;
     if BiDiMode = bdRightToLeft then
-      DrawText(ACanvas, Caption, -1, ARect,
+      DrawText(ACanvas, Caption, -1, R,
         DT_SINGLELINE or DT_RTLREADING or DT_RIGHT or DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX)
     else
-      DrawText(ACanvas, Caption, -1, ARect,
+      DrawText(ACanvas, Caption, -1, R,
         DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
   end;
+
+var
+  ARect: TRect;
+  I: Integer;
 begin
   { get client rect }
   ARect := GetClientRect;
