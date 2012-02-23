@@ -134,7 +134,6 @@ object JvMouseGestureDemoMainFrm: TJvMouseGestureDemoMainFrm
       Anchors = [akLeft, akTop, akRight, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      Enabled = False
       TabOrder = 4
       OnMouseDown = FormMouseDown
       OnMouseMove = FormMouseMove
