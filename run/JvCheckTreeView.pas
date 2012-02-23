@@ -133,6 +133,7 @@ type
     procedure SetCheckBoxes(const Value: Boolean); override;
 
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
+    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -526,6 +527,49 @@ begin
   begin
     Node := Sender as TJvTreeNode;
     InternalSetChecked(Node, Node.Checked, CheckBoxOptions.CascadeLevels)
+  end;
+end;
+
+procedure TJvCheckTreeView.WMLButtonDown(var Message: TWMLButtonDown);
+var
+  Node: TTreeNode;
+  Item: TTVItem;
+begin
+  inherited;
+
+  // Mantis 5629
+  // For some reason yet to be fully understood, the VCL (or maybe the underlying windows API)
+  // changes the Item.state value back to a value valid for checkboxes and not for
+  // radio buttons if one continues to click on a radio button if it is already checked.
+  // To fix this, we inspect the node under the mouse and if it's a radio item
+  // that has its state image outside of the valid values, we restore the valid value.
+  // This is not the most beautiful code in the world, but until someone understands
+  // the root cause of this, this will suffice.
+  //
+  // --> Clues for someone willing to look:
+  // The change happens when the inherited handler exists of the WM_NOTIFY management code
+  // in TWinControl.MainWndProc. During the whole execution of that procedure, the
+  // item.state value is valid, and as soon as one exits and comes back here, it is changed
+  // Must be that a message is waiting to be processed and it gets so by calling any
+  // TreeView function, but it's nearly impossible to track as it does not get passed
+  // to us if we setup a TVM_GETITEM message handler...   
+  Node := GetNodeAt(Message.XPos, Message.YPos);
+  if RadioItem[Node] then
+  begin
+    Item.hItem := Node.ItemId;
+    Item.mask := TVIF_STATE;
+    Item.StateMask := TVIS_STATEIMAGEMASK;
+    TreeView_GetItem(Handle, Item);
+
+    if ((Item.State and TVIS_STATEIMAGEMASK) <> Cardinal(IndexToStateImageMask(CheckBoxOptions.RadioUncheckedIndex))) and
+       ((Item.State and TVIS_STATEIMAGEMASK) <> Cardinal(IndexToStateImageMask(CheckBoxOptions.RadioCheckedIndex))) then
+    begin
+      Item.mask := TVIF_STATE or TVIF_HANDLE;
+      Item.stateMask := TVIS_STATEIMAGEMASK;
+      Item.hItem := Node.ItemId;
+      Item.state := IndexToStateImageMask(Node.StateIndex);
+      TreeView_SetItem(Handle, Item);
+    end;
   end;
 end;
 
