@@ -2380,7 +2380,8 @@ begin
     mask := TVIF_STATE;
     hItem := ItemId;
     if TreeView_GetItem(Handle, Item) then
-      Result := ((Item.State and TVIS_CHECKED) = TVIS_CHECKED)
+      Result := (((Item.State and TVIS_STATEIMAGEMASK) or TVIS_CHECKED) = TVIS_CHECKED) or
+                (((Item.State and TVIS_STATEIMAGEMASK) or TVIS_CHECKED shl 1) = TVIS_CHECKED shl 1)
     else
       Result := False;
   end;
@@ -2421,10 +2422,11 @@ begin
       hItem := ItemId;
       mask := TVIF_STATE;
       StateMask := TVIS_STATEIMAGEMASK;
+      TreeView_GetItem(Handle, Item);
       if Value then
-        Item.State := TVIS_CHECKED
+        Item.State := Item.State + TVIS_CHECKED
       else
-        Item.State := TVIS_CHECKED shr 1;
+        Item.State := Item.State - TVIS_CHECKED;
       TreeView_SetItem(Handle, Item);
     end;
     DoCheckedChange;
