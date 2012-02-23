@@ -382,7 +382,7 @@ type
     procedure Refresh;
     procedure Popup(X, Y: Integer); override;
     procedure DefaultDrawItem(Item: TMenuItem; Rect: TRect;
-      State: TMenuOwnerDrawState);
+      State: TMenuOwnerDrawState); deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS}'DefaultDrawItem calls DrawItem that is also called by OnDrawItem. As such, it is useless and even dangerous if you call it from OnDrawItem handler.'{$ENDIF SUPPORTS_DEPRECATED_DETAILS};
     procedure Rebuild(ForceIfLoading: Boolean = False);
 
     property Canvas: TCanvas read GetCanvas;
@@ -1766,11 +1766,7 @@ end;
 procedure TJvPopupMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
   State: TMenuOwnerDrawState);
 begin
-  if Canvas.Handle <> 0 then
-  begin
-    GetActiveItemPainter.Menu := Self;
-    GetActiveItemPainter.Paint(Item, Rect, State);
-  end;
+  DrawItem(Item, Rect, State)
 end;
 
 procedure TJvPopupMenu.DrawItem(Item: TMenuItem; Rect: TRect;
