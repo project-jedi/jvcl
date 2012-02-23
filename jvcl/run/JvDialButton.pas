@@ -43,10 +43,11 @@ uses
 type
   TJvDialPointerShape = (psLine, psTriangle, psDot, psOwnerDraw);
   TJvTickLength = (tlShort, tlMiddle, tlLong);
-  TJvDialAngle = 0..3600; // 0.0 - 360.0 deg
+  TJvDialAngle = 0..3600; // 0.0 - 360.0 deg    // in decidegrees (use 100 for 10 degrees)
   TJvRepeatValue = 10..1000; // mouse repeat values
   TJvCustomDialButton = class;
   TJvDialDrawEvent = procedure(Sender: TJvCustomDialButton; ARect: TRect) of object;
+  TJvDialComputeTicks = procedure(Sender: TJvCustomDialButton) of object;
 
   PTick = ^TTick;
   TTick = record
@@ -88,6 +89,7 @@ type
     FRepeatDelay: TJvRepeatValue;
     FOnChange: TNotifyEvent;
     FOnDrawPointer: TJvDialDrawEvent;
+    FOnComputeTicks: TJvDialComputeTicks;
     function CalcBounds(var AWidth, AHeight: Integer): Boolean;
     function GetAngle: TJvDialAngle;
     function GetCenter: TPoint;
@@ -112,6 +114,7 @@ type
     procedure SetTickStyle(Value: TTickStyle);
     procedure UpdateSize;
     procedure TimerExpired(Sender: TObject);
+    procedure ComputeTicks;
   protected
     function AngleToPos(AnAngle: TJvDialAngle): Integer;
     procedure BitmapNeeded; dynamic;
@@ -144,16 +147,16 @@ type
     procedure DecPos(Shift: TShiftState); dynamic;
     property Ticks: TList read FTicks write FTicks stored True;
     // to be published later:
-    property Angle: TJvDialAngle read GetAngle write SetAngle stored False;
+    property Angle: TJvDialAngle read GetAngle write SetAngle stored False;   // in decidegrees (use 100 for 10 degrees)
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property ButtonEdge: Integer read FButtonEdge write SetButtonEdge default 2;
     property DefaultPos: Integer read FDefaultPos write SetDefaultPos;
     property Frequency: Integer read FFrequency write SetFrequency default 10;
     property LargeChange: Integer read FLargeChange write SetLargeChange default 2;
     property Max: Integer read FMax write SetMax default 100;
-    property MaxAngle: TJvDialAngle read FMaxAngle write SetMaxAngle default 3300;
+    property MaxAngle: TJvDialAngle read FMaxAngle write SetMaxAngle default 3300;   // in decidegrees (use 100 for 10 degrees)
     property Min: Integer read FMin write SetMin default 0;
-    property MinAngle: TJvDialAngle read FMinAngle write SetMinAngle default 300;
+    property MinAngle: TJvDialAngle read FMinAngle write SetMinAngle default 300;   // in decidegrees (use 100 for 10 degrees)
     property PointerColorOn: TColor read FPointerColor write SetPointerColor default clBtnText;
     property PointerColorOff: TColor read FPointerColorOff write SetPointerColorOff default clGrayText;
     property PointerSize: Integer read FPointerSize write SetPointerSize default 33;
@@ -168,6 +171,7 @@ type
     property TabStop default True;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDrawPointer: TJvDialDrawEvent read FOnDrawPointer write FOnDrawPointer;
+    property OnComputeTicks: TJvDialComputeTicks read FOnComputeTicks write FOnComputeTicks;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -225,6 +229,7 @@ type
     // events
     property OnChange;
     property OnClick;
+    property OnComputeTicks;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
@@ -401,6 +406,7 @@ end;
 procedure TJvCustomDialButton.SetParams(APosition, AMin, AMax: Integer);
 var
   Invalid: Boolean;
+  InvalidTicks: Boolean;
   Changed: Boolean;
 begin
   Changed := False;
@@ -416,18 +422,25 @@ begin
     APosition := AMax;
 
   Invalid := False;
+  InvalidTicks := False;
 
   // Change Min if necessary and flag redrawing if so.
   if FMin <> AMin then
   begin
     FMin := AMin;
-    Invalid := True;
+    InvalidTicks := True;
   end;
 
   // Change Max if necessary and flag redrawing if so.
   if FMax <> AMax then
   begin
     FMax := AMax;
+    InvalidTicks := True;
+  end;
+
+  if InvalidTicks then
+  begin
+    ComputeTicks;
     Invalid := True;
   end;
 
@@ -457,6 +470,7 @@ end;
 procedure TJvCustomDialButton.SetAngleParams(AnAngle, AMin, AMax: TJvDialAngle);
 var
   Invalid: Boolean;
+  InvalidTicks: Boolean;
   Pos: Integer;
 begin
   // Error if AMax < AMin
@@ -469,18 +483,25 @@ begin
   if AnAngle > AMax then
     AnAngle := AMax;
   Invalid := False;
+  InvalidTicks := False;
 
   // Set MinAngle.
   if FMinAngle <> AMin then
   begin
     FMinAngle := AMin;
-    Invalid := True;
+    InvalidTicks := True;
   end;
 
   // Set MaxAngle.
   if FMaxAngle <> AMax then
   begin
     FMaxAngle := AMax;
+    InvalidTicks := True;
+  end;
+
+  if InvalidTicks then
+  begin
+    ComputeTicks;
     Invalid := True;
   end;
 
@@ -630,8 +651,7 @@ begin
   if FTickStyle <> Value then
   begin
     FTickStyle := Value;
-    ClearTicks;
-    SetTicks(Value);
+    ComputeTicks;
     FBitmapInvalid := True;
     Invalidate;
   end;
@@ -1267,9 +1287,27 @@ begin
   inherited ColorChanged;
 end;
 
+procedure TJvCustomDialButton.ComputeTicks;
+begin
+  if csLoading in ComponentState then
+    Exit;
+
+  ClearTicks;
+  case FTickStyle of
+    tsNone:
+      ;
+    tsAuto:
+      SetTicks(FTickStyle);
+    tsManual:
+      if Assigned(FOnComputeTicks) then
+        FOnComputeTicks(Self);
+  end;
+end;
+
 procedure TJvCustomDialButton.Loaded;
 begin
   inherited Loaded;
+  ComputeTicks;
   Change;
 end;
 
