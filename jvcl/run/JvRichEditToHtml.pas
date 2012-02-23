@@ -461,6 +461,7 @@ var
   LOnSelectionChange: TNotifyEvent;
   Text: string;
   Len: Integer;
+  PreviousChar: Char;
 begin
   LOnChange := Value.OnChange;
   LOnSelectionChange := Value.OnSelectionChange;
@@ -514,6 +515,7 @@ begin
         end;
 
         J := I;
+        PreviousChar := #0;
         while (J <= Len) and not CharInSet(Text[J], [#$A, #$B, #$D]) do { RICHEDIT uses #$B also for line breaking }
         begin
           Att.Assign(Value.SelAttributes);
@@ -526,10 +528,11 @@ begin
           end
           else
           begin
-            if CharIsAlphaNum(Text[J]) then
-              St.Append(Text[J])
+            if (Text[J] = ' ') and (PreviousChar = ' ') then
+              St.Append('&nbsp;')
             else
               St.Append(CharToHtml(Text[J]));
+            PreviousChar := Text[J];
             Inc(J);
             Value.SelStart := J;
           end;
