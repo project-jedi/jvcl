@@ -413,10 +413,7 @@ begin
           end
           else
           begin
-            if CharIsAlphaNum(Text[J]) then
-              St.Append(Text[J])
-            else
-              St.Append(CharToHtml(Text[J]));
+            St.Append(CharToHtml(Text[J]));
             Inc(J);
             Value.SelStart := J;
           end;
