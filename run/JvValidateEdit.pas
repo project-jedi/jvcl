@@ -254,6 +254,7 @@ type
   TJvValidateEdit = class(TJvCustomValidateEdit)
   published
     property AllowEmpty default False;
+    property Align;
     property Alignment default taRightJustify;
     property Anchors;
     property AutoAlignment default True;
