@@ -7037,8 +7037,8 @@ begin
 
   { Locale Handling logic October 2008 supercedes former StrToFloatUS functionality. }
   {$IFDEF RTL150_UP}
-  LocalFormatSettings.ThousandSeparator := GetLocaleChar(LOCALE_SYSTEM_DEFAULT, LOCALE_STHOUSAND, '.');
-  LocalFormatSettings.DecimalSeparator := GetLocaleChar(LOCALE_SYSTEM_DEFAULT, LOCALE_SDECIMAL, '.');
+  LocalFormatSettings.ThousandSeparator := GetLocaleChar(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, '.');
+  LocalFormatSettings.DecimalSeparator := GetLocaleChar(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, '.');
   {$ELSE}
   LocalFormatSettings.DecimalSeparator := DecimalSeparator;
   {$ENDIF RTL150_UP}
