@@ -878,7 +878,7 @@ procedure TInternalInplaceEdit.KeyDown(var Key: Word; Shift: TShiftState);
 
   function ForwardMovement: Boolean;
   begin
-    Result := dgAlwaysShowEditor in TDBGrid(Grid).Options;
+    Result := dgAlwaysShowEditor in TJvDBGrid(Grid).Options;
   end;
 
   function Ctrl: Boolean;
