@@ -568,6 +568,7 @@ type
     property Font;
     property ItemHeight;
     property Painter;
+    property PopupMenu;
     property ReadOnly default False;
     property UseBands default False;
     property WantTabs default False;
@@ -584,6 +585,7 @@ type
     property OnItemValueError;
     property OnItemDoubleClicked;
     property OnItemEdit; // User clicks Ellipsis button.
+    property OnContextPopup;
     property BeforeEdit; // Low level hook for customizing TEdit/TMemo after objects are created, just before editing.
 
     // Standard control events
