@@ -294,6 +294,7 @@ var
   nValueCount: Integer;
 begin
 //Chart.Options.Title := 'Click on the Chart Title to change it!';
+  Chart.Options.PenCount := 3;
 
   Chart.ClearFloatingMarkers; // remove any previous markers.
 
