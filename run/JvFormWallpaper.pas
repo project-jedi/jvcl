@@ -76,6 +76,8 @@ const
 
 implementation
 
+uses
+  Forms;
 
 constructor TJvFormWallpaper.Create(AOwner: TComponent);
 begin
@@ -163,7 +165,10 @@ end;
 
 procedure TJvFormWallpaper.FormPaint(Sender: TObject);
 begin
-  Invalidate;
+  if (Parent is TForm) and (TForm(Parent).FormStyle = fsMDIForm) then
+    RequestAlign // Invalidate DOES NOT work here (Mantis 5689)
+  else
+    Invalidate;
 end;
 
 {$IFDEF UNITVERSIONING}
