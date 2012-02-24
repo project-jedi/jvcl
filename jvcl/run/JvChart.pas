@@ -1521,6 +1521,7 @@ begin
     for N := OldLen to Idx do
       FData[N] := FClearToValue;
   end;
+  FDataAlloc := Length(FData);
 end;
 {$ENDIF TJVCHART_ARRAY_OF_ARRAY}
 
