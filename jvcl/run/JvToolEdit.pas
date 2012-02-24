@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -559,6 +559,8 @@ type
     property LocalizedName: string read GetLocalizedName;
   published
     property AcceptFiles: Boolean read FAcceptFiles write SetAcceptFiles default True;
+    property AlwaysEnableButton default True;
+    property AlwaysShowPopup default True;
     property OnBeforeDialog: TExecOpenDialogEvent read FOnBeforeDialog write FOnBeforeDialog;
     property OnAfterDialog: TExecOpenDialogEvent read FOnAfterDialog write FOnAfterDialog;
     property OnDropFiles: TNotifyEvent read FOnDropFiles write FOnDropFiles;
@@ -4401,6 +4403,8 @@ begin
   OEMConvert := True;
   {$ENDIF ~UNICODE}
   FAcceptFiles := True;
+  AlwaysEnableButton := True;
+  AlwaysShowPopup := True;
   FAutoCompleteOptions := [acoAutoSuggest];
   ControlState := ControlState + [csCreating];
   try
