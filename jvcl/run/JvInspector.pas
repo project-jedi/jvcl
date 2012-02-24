@@ -1967,6 +1967,9 @@ type
     FSingleProp: Single;
     FSmallintProp: Smallint;
     FTDateTimeProp: TDateTime;
+    {$IFDEF UNICODE}
+    FUnicodeString: UnicodeString;
+    {$ENDIF}
     FWideCharProp: WideChar;
     FWordProp: Word;
     FWordBoolProp: WordBool;
@@ -1990,6 +1993,9 @@ type
     property SingleProp: Single read FSingleProp;
     property SmallintProp: Smallint read FSmallintProp;
     property TDateTimeProp: TDateTime read FTDateTimeProp;
+    {$IFDEF UNICODE}
+    property UnicodeStringProp: UnicodeString read FUnicodeString;
+    {$ENDIF}
     property WideCharProp: WideChar read FWideCharProp;
     property WordProp: Word read FWordProp;
     property WordBoolProp: WordBool read FWordBoolProp;
