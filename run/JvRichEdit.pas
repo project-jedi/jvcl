@@ -493,6 +493,7 @@ type
   TRichDropEffects = set of TRichDropEffect;
   TRichEditURLClickEvent = procedure(Sender: TObject; const URLText: string;
     Button: TMouseButton) of object;
+  TRichEditURLHoverEvent = procedure(Sender: TObject; const URLText: string) of object;
   TRichEditProtectChangeEx = procedure(Sender: TObject; const Msg: TMessage;
     StartPos, EndPos: Integer; var AllowChange: Boolean) of object;
   TRichEditFindErrorEvent = procedure(Sender: TObject; const FindText: string) of object;
@@ -549,6 +550,7 @@ type
     FOnProtectChangeEx: TRichEditProtectChangeEx;
     FOnSaveClipboard: TRichEditSaveClipboard;
     FOnURLClick: TRichEditURLClickEvent;
+    FOnURLHover: TRichEditURLHoverEvent;
     FOnTextNotFound: TRichEditFindErrorEvent;
     FOnCloseFindDialog: TRichEditFindCloseEvent;
     // From JvRichEdit.pas by Sébastien Buysse
@@ -650,6 +652,7 @@ type
     function ProtectChange(const Msg: TMessage; StartPos, EndPos: Integer): Boolean; dynamic;
     function SaveClipboard(NumObj, NumChars: Integer): Boolean; dynamic;
     procedure URLClick(const URLText: string; Button: TMouseButton); dynamic;
+    procedure URLHover(const URLText: string); dynamic;
     function DoDragAllowed(const ShiftState: TShiftState; var AllowedEffects: TRichDropEffects): Boolean; dynamic;
     function DoGetDragDropEffect(const ShiftState: TShiftState; var Effects: TRichDropEffects): Boolean; dynamic;
     function DoQueryAcceptData(const ADataObject: IDataObject; var AFormat: TClipFormat;
@@ -697,6 +700,40 @@ type
     property OnResizeRequest: TRichEditResizeEvent read FOnResizeRequest
       write FOnResizeRequest;
     property OnURLClick: TRichEditURLClickEvent read FOnURLClick write FOnURLClick;
+
+    // This event this is called as long as the Mouse moves over a link.
+    // To handle the first call only, check the current cursor handle.
+    // The RichEdit control 2.0 or higher sets the cursor to "HandPoint" when
+    // the Mouse is over a link and resets the cursor handle to the previous
+    // cursor on exit.
+    // so basically, you do this in your event handler:
+    //
+    //  if HandpointCursorHandle = 0 then
+    //  begin
+    //    // Remember the handle of the "HandPoint" cursor (set by RichEdit 2.0 or higher)
+    //    // Must be reset to 0 in JvRichEdit1MouseMove() after handle has changed.
+    //    HandpointCursorHandle := Windows.GetCursor;
+    //
+    //    // Do what you need when Mouse is the first time over a link
+    //  end;
+    //
+    // then in OnMouseMove you do this to reset the global variable
+    // 
+    //  // "URLHover" event has been called then this value is <> 0
+    //  if HandpointCursorHandle <> 0 then
+    //  begin
+    //    // Mouse is not over a link anymore than the cursor handle has changed
+    //    if Windows.GetCursor <> HandpointCursorHandle then
+    //    begin
+    //      // Reset the cursor handle
+    //      HandpointCursorHandle := 0;
+    //
+    //      // Do what you need when Mouse is not over the link anymore
+    //    end;
+    //  end;
+    //
+    property OnURLHover: TRichEditURLHoverEvent read FOnURLHover write FOnURLHover;
+    
     property OnTextNotFound: TRichEditFindErrorEvent read FOnTextNotFound write FOnTextNotFound;
     property OnCloseFindDialog: TRichEditFindCloseEvent read FOnCloseFindDialog
       write FOnCloseFindDialog;
@@ -748,6 +785,7 @@ type
     // because GetTextLen is unreliable in this case.
     // See Mantis 4782 and http://edn.embarcadero.com/article/26772 for details
     function GetTextLenEx: Integer;
+    function CharFromPos(X, Y: Integer): Integer;
     function LineFromChar(CharIndex: Integer): Integer;
     function GetLineIndex(LineNo: Integer): Integer;
     function GetLineLength(CharIndex: Integer): Integer;
@@ -887,6 +925,7 @@ type
     property OnGetDragDropEffect;
     property OnQueryAcceptData;
     property OnURLClick;
+    property OnURLHover;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -2711,6 +2750,10 @@ begin
         with PENLink(NMHdr)^ do
         begin
           case Msg of
+            WM_MOUSEMOVE:
+              begin
+                URLHover(GetTextRange(chrg.cpMin, chrg.cpMax));
+              end;
             WM_RBUTTONDOWN:
               begin
                 FClickRange := chrg;
@@ -3706,6 +3749,14 @@ begin
   Result := not AutoAdvancedTypography;
 end;
 
+function TJvCustomRichEdit.CharFromPos(X, Y: Integer): Integer;
+var
+  Pt: TPoint;
+begin
+  Pt := Point(X, Y);
+  Result := SendMessage(Handle, EM_CHARFROMPOS, 0, LPARAM(@Pt));
+end;
+
 function TJvCustomRichEdit.LineFromChar(CharIndex: Integer): Integer;
 begin
   Result := SendMessage(Handle, EM_EXLINEFROMCHAR, 0, CharIndex);
@@ -4502,6 +4553,12 @@ procedure TJvCustomRichEdit.URLClick(const URLText: string; Button: TMouseButton
 begin
   if Assigned(OnURLClick) then
     OnURLClick(Self, URLText, Button);
+end;
+
+procedure TJvCustomRichEdit.URLHover(const URLText: string);
+begin
+  if Assigned(OnURLHover) then
+    OnURLHover(Self, URLText);
 end;
 
 procedure TJvCustomRichEdit.WMDestroy(var Msg: TWMDestroy);
@@ -7229,7 +7286,7 @@ end;
 function TOleUILinkInfo.GetNextLink(dwLink: Longint): Longint;
 begin
   if dwLink = 0 then
-    Result := 1
+    Result := Longint(FRichEdit)
   else
     Result := 0;
 end;
