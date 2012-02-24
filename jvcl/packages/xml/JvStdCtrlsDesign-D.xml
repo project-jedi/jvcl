@@ -20,6 +20,7 @@
   <Contains>
     <File Name="..\..\design\JvCheckedItemsForm.pas" Targets="all_win32" Formname="JvCheckItemsEditor" Condition=""/>
     <File Name="..\..\design\JvProgressEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvIPAddressEditor.pas" Targets="all_win32" Formname="" Condition=""/>
     <File Name="..\..\design\JvStdCtrlsReg.pas" Targets="all_win32" Formname="" Condition=""/>
   </Contains>
 </Package>

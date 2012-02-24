@@ -88,7 +88,7 @@ type
     procedure DefaultHandler(var Msg); override;
   end;
 
-  TJvIP4AddressComponentIndex = 1..4; // Numeration is backward, according to intel bytes order and MSDN FIRST_IPADDRESS
+  TJvIPAddressComponentIndex = 1..4; // Numeration is backward, according to intel bytes order and MSDN FIRST_IPADDRESS
 
   TJvIPAddressRange = class(TPersistent)
   private
@@ -99,20 +99,20 @@ type
     procedure SetMaxRange(const Index: Integer; const Value: Byte);
     procedure SetMinRange(const Index: Integer; const Value: Byte);
     {$IFOPT R+}
-    procedure CheckIndex(const I: TJvIP4AddressComponentIndex);
+    procedure CheckIndex(const I: TJvIPAddressComponentIndex);
     {$ENDIF}
-    function GetCheckedMaxRange(I: TJvIP4AddressComponentIndex): Byte; {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
-    function GetCheckedMinRange(I: TJvIP4AddressComponentIndex): Byte; {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
-    procedure SetCheckedMaxRange(I: TJvIP4AddressComponentIndex; const Value: Byte); {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
-    procedure SetCheckedMinRange(I: TJvIP4AddressComponentIndex; const Value: Byte); {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
+    function GetCheckedMaxRange(I: TJvIPAddressComponentIndex): Byte; {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
+    function GetCheckedMinRange(I: TJvIPAddressComponentIndex): Byte; {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
+    procedure SetCheckedMaxRange(I: TJvIPAddressComponentIndex; const Value: Byte); {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
+    procedure SetCheckedMinRange(I: TJvIPAddressComponentIndex; const Value: Byte); {$IFOPT R-}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{$ENDIF}
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure Change(Index: Integer);
 
   public
     constructor Create(Control: TWinControl);
-    property Min[I: TJvIP4AddressComponentIndex]: Byte read GetCheckedMinRange write SetCheckedMinRange;
-    property Max[I: TJvIP4AddressComponentIndex]: Byte read GetCheckedMaxRange write SetCheckedMaxRange;
+    property Min[I: TJvIPAddressComponentIndex]: Byte read GetCheckedMinRange write SetCheckedMinRange;
+    property Max[I: TJvIPAddressComponentIndex]: Byte read GetCheckedMaxRange write SetCheckedMaxRange;
   published
     property Field1Min: Byte index 0 read GetMinRange write SetMinRange default 0;
     property Field1Max: Byte index 0 read GetMaxRange write SetMaxRange default 255;
@@ -166,10 +166,10 @@ type
   end;
 
   // declare externally to avoid Code Completion going crazy
-  TJvIP4AddressDual = packed record
+  TJvIPAddressDual = packed record
   case byte of
     0: (Address: LongWord);
-    1: (Comps: array[TJvIP4AddressComponentIndex] of Byte);
+    1: (Comps: array[TJvIPAddressComponentIndex] of Byte);
   end;
 
   {$IFDEF RTL230_UP}
@@ -180,7 +180,7 @@ type
     FEditControls: array [0..3] of TJvIPEditControlHelper;
     FEditControlCount: Integer;
 
-    FAddress: TJvIP4AddressDual;
+    FAddress: TJvIPAddressDual;
     FRange: TJvIPAddressRange;
     FAddressValues: TJvIPAddressValues;
     FChanging: Boolean;
@@ -232,8 +232,8 @@ type
     procedure PushAddressToWindows; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
     procedure UpdateValuesFromString(S: string);
-    function GetAddressValue(Component: TJvIP4AddressComponentIndex): Byte; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetAddressValue(Component: TJvIP4AddressComponentIndex; const Value: Byte);
+    function GetAddressValue(Component: TJvIPAddressComponentIndex): Byte; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetAddressValue(Component: TJvIPAddressComponentIndex; const Value: Byte);
 
     procedure KeyPress(var Key: Char); override;
     procedure DoExit; override;
@@ -245,7 +245,7 @@ type
 
     procedure ClearAddress;
     function IsBlank: Boolean;
-    property AddressValue[Component: TJvIP4AddressComponentIndex]: Byte read GetAddressValue write SetAddressValue;
+    property AddressValue[Component: TJvIPAddressComponentIndex]: Byte read GetAddressValue write SetAddressValue;
 
     // this property is only here for bacwkard compatibility, please use .AddressValue[Index] and .Address instead
     property AddressValues: TJvIPAddressValues read FAddressValues write SetAddressValues stored False;
@@ -766,14 +766,14 @@ begin
 end;
 
 {$IFOPT R+}
-procedure TJvIPAddressRange.CheckIndex(const I: TJvIP4AddressComponentIndex);
+procedure TJvIPAddressRange.CheckIndex(const I: TJvIPAddressComponentIndex);
 begin
-  if (I > High(TJvIP4AddressComponentIndex)) or (I < Low(TJvIP4AddressComponentIndex)) then
+  if (I > High(TJvIPAddressComponentIndex)) or (I < Low(TJvIPAddressComponentIndex)) then
     raise ERangeError.Create(Self.ClassName + ' range error: ' + IntToStr(I));
 end;
 {$ENDIF}
 
-function TJvIPAddressRange.GetCheckedMaxRange(I: TJvIP4AddressComponentIndex): Byte;
+function TJvIPAddressRange.GetCheckedMaxRange(I: TJvIPAddressComponentIndex): Byte;
 begin
   {$IFOPT R+}
   CheckIndex(I);
@@ -781,7 +781,7 @@ begin
   Result := GetMaxRange(I - 1);
 end;
 
-function TJvIPAddressRange.GetCheckedMinRange(I: TJvIP4AddressComponentIndex): Byte;
+function TJvIPAddressRange.GetCheckedMinRange(I: TJvIPAddressComponentIndex): Byte;
 begin
   {$IFOPT R+}
   CheckIndex(I);
@@ -799,7 +799,7 @@ begin
   Result := FRange[Index].Min;
 end;
 
-procedure TJvIPAddressRange.SetCheckedMaxRange(I: TJvIP4AddressComponentIndex;
+procedure TJvIPAddressRange.SetCheckedMaxRange(I: TJvIPAddressComponentIndex;
   const Value: Byte);
 begin
   {$IFOPT R+}
@@ -808,7 +808,7 @@ begin
   SetMaxRange(I - 1, Value);
 end;
 
-procedure TJvIPAddressRange.SetCheckedMinRange(I: TJvIP4AddressComponentIndex;
+procedure TJvIPAddressRange.SetCheckedMinRange(I: TJvIPAddressComponentIndex;
   const Value: Byte);
 begin
   {$IFOPT R+}
@@ -1452,12 +1452,12 @@ begin
   inherited;
 end;
 
-function TJvIPAddress.GetAddressValue(Component: TJvIP4AddressComponentIndex): Byte;
+function TJvIPAddress.GetAddressValue(Component: TJvIPAddressComponentIndex): Byte;
 begin
   Result := FAddress.Comps[5-Component];
 end;
 
-procedure TJvIPAddress.SetAddressValue(Component: TJvIP4AddressComponentIndex;
+procedure TJvIPAddress.SetAddressValue(Component: TJvIPAddressComponentIndex;
   const Value: Byte);
 var
   AllowChange: Boolean;
