@@ -273,6 +273,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    // accessible so that people can set options prior export (prolog in particular)
+    property XML: TJvSimpleXML read FXML;
   published
     property FileName;
     property Caption;
