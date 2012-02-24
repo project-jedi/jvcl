@@ -134,6 +134,8 @@ type
 
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+    function GetCheckedFromState(Node: TTreeNode): Boolean; override;
+    procedure SetCheckedInState(Node: TTreeNode; Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -389,6 +391,22 @@ begin
       Result := inherited Checked[Node];
 end;
 
+function TJvCheckTreeView.GetCheckedFromState(Node: TTreeNode): Boolean;
+var
+  Item: TTVItem;
+begin
+  with Item do
+  begin
+    mask := TVIF_STATE;
+    hItem := Node.ItemId;
+    if TreeView_GetItem(Handle, Item) then
+      Result := (((Item.State and TVIS_STATEIMAGEMASK) or TVIS_CHECKED) = TVIS_CHECKED) or
+                (((Item.State and TVIS_STATEIMAGEMASK) or TVIS_CHECKED shl 1) = TVIS_CHECKED shl 1)
+    else
+      Result := False;
+  end;
+end;
+
 function TJvCheckTreeView.GetRadioItem(Node: TTreeNode): Boolean;
 begin
   with CheckBoxOptions do
@@ -482,6 +500,25 @@ begin
 
   if CheckBoxOptions.Style = cbsJVCL then
     InternalSetChecked(Node, Value, CheckBoxOptions.CascadeLevels)
+end;
+
+procedure TJvCheckTreeView.SetCheckedInState(Node: TTreeNode; Value: Boolean);
+var
+  Item: TTVItem;
+begin
+  FillChar(Item, SizeOf(Item), 0);
+  with Item do
+  begin
+    hItem := Node.ItemId;
+    mask := TVIF_STATE;
+    StateMask := TVIS_STATEIMAGEMASK;
+    TreeView_GetItem(Handle, Item);
+    if Value then
+      Item.State := Item.State + TVIS_CHECKED
+    else
+      Item.State := Item.State - TVIS_CHECKED;
+    TreeView_SetItem(Handle, Item);
+  end;
 end;
 
 procedure TJvCheckTreeView.SetRadioItem(Node: TTreeNode; const Value: Boolean);

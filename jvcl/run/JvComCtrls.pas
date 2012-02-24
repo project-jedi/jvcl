@@ -632,6 +632,8 @@ type
     property ScrollDirection: Integer read FScrollDirection write SetScrollDirection;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure DblClick; override;
+    function GetCheckedFromState(Node: TTreeNode): Boolean; virtual;
+    procedure SetCheckedInState(Node: TTreeNode; Value: Boolean); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     function IsNodeSelected(Node: TTreeNode): Boolean;
@@ -688,6 +690,8 @@ type
     property OnNodeCheckedChange: TJvTreeViewNodeCheckedChange read FOnNodeCheckedChange write FOnNodeCheckedChange;
   end;
 
+const
+  TVIS_CHECKED = $2000;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -705,9 +709,6 @@ uses
   SysUtils, Math, StrUtils,
   JclStrings,
   JvConsts, JvThemes, JvJCLUtils;
-
-const
-  TVIS_CHECKED = $2000;
 
 function NeedCheckStateEmulation(): Boolean; // ComCtrls 6+ under Vista+
 {$IFNDEF COMPILER7_UP}
@@ -2540,15 +2541,21 @@ function TJvTreeNode.GetChecked: Boolean;
 var
   Item: TTVItem;
 begin
-  with Item do
+  if Owner.Owner is TJvTreeView then
   begin
-    mask := TVIF_STATE;
-    hItem := ItemId;
-    if TreeView_GetItem(Handle, Item) then
-      Result := (((Item.State and TVIS_STATEIMAGEMASK) or TVIS_CHECKED) = TVIS_CHECKED) or
-                (((Item.State and TVIS_STATEIMAGEMASK) or TVIS_CHECKED shl 1) = TVIS_CHECKED shl 1)
-    else
-      Result := False;
+    Result := TJvTreeView(Owner.Owner).GetCheckedFromState(Self);
+  end
+  else
+  begin
+    with Item do
+    begin
+      mask := TVIF_STATE;
+      hItem := ItemId;
+      if TreeView_GetItem(Handle, Item) then
+        Result := ((Item.State and TVIS_CHECKED) = TVIS_CHECKED)
+      else
+        Result := False;
+    end;
   end;
 end;
 
@@ -2581,18 +2588,24 @@ begin
   if Value <> GetChecked then
   begin
     FChecked := Value;
-    FillChar(Item, SizeOf(Item), 0);
-    with Item do
+    if Owner.Owner is TJvTreeView then
     begin
-      hItem := ItemId;
-      mask := TVIF_STATE;
-      StateMask := TVIS_STATEIMAGEMASK;
-      TreeView_GetItem(Handle, Item);
-      if Value then
-        Item.State := Item.State + TVIS_CHECKED
-      else
-        Item.State := Item.State - TVIS_CHECKED;
-      TreeView_SetItem(Handle, Item);
+      TJvTreeView(Owner.Owner).SetCheckedInState(Self, FChecked);
+    end
+    else
+    begin
+      FillChar(Item, SizeOf(Item), 0);
+      with Item do
+      begin
+        hItem := ItemId;
+        mask := TVIF_STATE;
+        StateMask := TVIS_STATEIMAGEMASK;
+        if Value then
+          Item.State := TVIS_CHECKED
+        else
+          Item.State := TVIS_CHECKED shr 1;
+        TreeView_SetItem(Handle, Item);
+      end;
     end;
     DoCheckedChange;
   end;
@@ -2782,6 +2795,21 @@ begin
   Result := TJvTreeNode(Node).Checked;
 end;
 
+function TJvTreeView.GetCheckedFromState(Node: TTreeNode): Boolean;
+var
+  Item: TTVItem;
+begin
+  with Item do
+  begin
+    mask := TVIF_STATE;
+    hItem := Node.ItemId;
+    if TreeView_GetItem(Handle, Item) then
+      Result := ((Item.State and TVIS_CHECKED) = TVIS_CHECKED)
+    else
+      Result := False;
+  end;
+end;
+
 function TJvTreeView.GetNodePopup(Node: TTreeNode): TPopupMenu;
 begin
   Result := TJvTreeNode(Node).PopupMenu;
@@ -2943,6 +2971,24 @@ end;
 procedure TJvTreeView.SetChecked(Node: TTreeNode; Value: Boolean);
 begin
   TJvTreeNode(Node).Checked := Value;
+end;
+
+procedure TJvTreeView.SetCheckedInState(Node: TTreeNode; Value: Boolean);
+var
+  Item: TTVItem;
+begin
+  FillChar(Item, SizeOf(Item), 0);
+  with Item do
+  begin
+    hItem := Node.ItemId;
+    mask := TVIF_STATE;
+    StateMask := TVIS_STATEIMAGEMASK;
+    if Value then
+      Item.State := TVIS_CHECKED
+    else
+      Item.State := TVIS_CHECKED shr 1;
+    TreeView_SetItem(Handle, Item);
+  end;
 end;
 
 procedure TJvTreeView.SetNodePopup(Node: TTreeNode; Value: TPopupMenu);
