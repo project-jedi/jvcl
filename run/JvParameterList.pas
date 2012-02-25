@@ -48,6 +48,8 @@ type
   TJvParameterListClass = class of TJvParameterList;
 
   TJvParameterListEvent = procedure(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter) of object;
+  TJvParameterListAfterParameterWincontrolPropertiesChangedEvent = procedure(const Parameter: TJvBaseParameter; const WinControl:
+    TWinControl) of object;
 
   TJvParameterOnValidateData = procedure (const Data : Variant; var Msg : String; var Valid : Boolean) of Object;
 
@@ -138,16 +140,25 @@ type
     FTag: Integer;
     FColor: TColor;
     FAdditionalData: Pointer;
+    FAfterWincontrolPropertiesChanged: TJvParameterListAfterParameterWincontrolPropertiesChangedEvent;
+    FAfterWincontrolPropertiesChangedDisabledCnt: Integer;
     FEnabled: Boolean;
     FHelpContext: THelpContext;
     FDisableReasons: TJvParameterListEnableDisableReasonList;
     FEnableReasons: TJvParameterListEnableDisableReasonList;
+    FJvDynControlReadOnly: IJvDynControlReadOnly;
     FJvDynControlCaption: IJvDynControlCaption;
     FVisible: Boolean;
     FOnEnterParameter: TJvParameterListEvent;
     FOnExitParameter: TJvParameterListEvent;
     FOnValidateData: TJvParameterOnValidateData;
     FRequired: Boolean;
+    procedure DisableAfterWincontrolPropertiesChanged;
+    procedure EnableAfterWincontrolPropertiesChanged;
+    procedure HandleAfterWincontrolPropertiesChanged;
+    function IsAfterWincontrolPropertiesChangedDisabled: Boolean;
+    procedure SetAfterWincontrolPropertiesChangedDisabled(Updating: Boolean);
+    procedure SetCaption(const Value: string);
     procedure SetParameterList(const Value: TJvParameterList);
   protected
     procedure SetAsString(const Value: string); virtual;
@@ -174,6 +185,7 @@ type
     procedure SetVisible(Value: Boolean); virtual;
     function GetHeight: Integer; virtual;
     procedure SetHeight(Value: Integer); virtual;
+    procedure SetReadOnly(const Value: Boolean);
     function GetWidth: Integer; virtual;
     procedure SetWidth(Value: Integer); virtual;
     procedure SetTabOrder(Value: Integer); virtual;
@@ -185,6 +197,7 @@ type
     property JvDynControl: IJvDynControl read FJvDynControl;
     property JvDynControlCaption: IJvDynControlCaption read FJvDynControlCaption;
     property JvDynControlData: IJvDynControlData read FJvDynControlData;
+    property JvDynControlReadOnly: IJvDynControlReadOnly read FJvDynControlReadOnly;
     property Value: Variant read FValue write FValue;
     function IsDataValid(const AData: Variant; var vMsg: String): Boolean; virtual;
     procedure SetWinControlProperties; virtual;
@@ -226,11 +239,11 @@ type
     property ParentParameterName: string read FParentParameterName write FParentParameterName;
     {Is the value required, will be checked in the validate function}
     property Required: Boolean read FRequired write FRequired;
-    property ReadOnly: Boolean read FReadOnly write FReadOnly;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Visible: Boolean read FVisible write SetVisible;
     {the next properties find their expressions in the same properties of TWinControl }
-    property Caption: string read FCaption write FCaption;
+    property Caption: string read FCaption write SetCaption;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Hint: string read FHint write FHint;
@@ -239,6 +252,8 @@ type
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
     property EnableReasons: TJvParameterListEnableDisableReasonList read FEnableReasons;
+    property AfterWincontrolPropertiesChanged: TJvParameterListAfterParameterWincontrolPropertiesChangedEvent read
+      FAfterWincontrolPropertiesChanged write FAfterWincontrolPropertiesChanged;
     /// Use this event to implement a custom logic to validate the parameter contents
     property OnValidateData: TJvParameterOnValidateData read FOnValidateData write FOnValidateData;
     property OnEnterParameter: TJvParameterListEvent read FOnEnterParameter write FOnEnterParameter;
@@ -327,7 +342,7 @@ type
     function GetParentByName(MainParent: TWinControl; const ASearchName: string): TWinControl;
     function GetCount: Integer;
 
-    procedure SetParameters(Index: Integer; Value: TJvBaseParameter);
+    procedure SetParameters(Index: Integer; const Value: TJvBaseParameter);
     function GetParameters(Index: Integer): TJvBaseParameter;
 
     function GetCurrentWidth: Integer;
@@ -392,7 +407,7 @@ type
     property CurrentHeight: Integer read GetCurrentHeight;
     property DynControlEngine: TJvDynControlEngine read FDynControlEngine write FDynControlEngine;
     { Property to get access to the parameters }
-    property Parameters[Index: Integer]: TJvBaseParameter read GetParameters write SetParameters;
+    property Parameters[Index: Integer]: TJvBaseParameter read GetParameters write SetParameters; default;
     // Enable/DisableReason for the OkButton
     property OkButtonDisableReasons: TJvParameterListEnableDisableReasonList
         read FOkButtonDisableReasons write FOkButtonDisableReasons;
@@ -411,6 +426,7 @@ type
     activated the labels invalid parameters will be shown italic
     }
     procedure HandleShowValidState;
+    function IndexOfParameter(AParameter: TJvBaseParameter): Integer;
     { load the data of all allowed parameters from the AppStorage }
     procedure LoadData;
     { load the data of all allowed parameters from the AppStorage }
@@ -798,6 +814,7 @@ begin
   FJvDynControl := nil;
   FJvDynControlCaption := nil;
   FJvDynControlData := nil;
+  FJvDynControlReadOnly := nil;
   Color := clBtnFace;
   FEnabled := True;
   FVisible := True;
@@ -906,6 +923,7 @@ begin
       FJvDynControl := nil;
       FJvDynControlCaption := nil;
       FJvDynControlData := nil;
+      FJvDynControlReadOnly := nil;
     end
   else if (AComponent = FParameterList) then
     fParameterList := nil;
@@ -951,27 +969,33 @@ procedure TJvBaseParameter.SetWinControl(const Value: TWinControl);
 begin
   FJvDynControl := nil;
   FJvDynControlCaption := nil;
+  FJvDynControlData := nil;
+  FJvDynControlReadOnly := nil;
   ReplaceComponentReference(Self, Value, TComponent(FWinControl));
   if not Assigned(Value) then
     Exit;
   Supports(FWinControl, IJvDynControl, FJvDynControl);
   Supports(FWinControl, IJvDynControlCaption, FJvDynControlCaption);
   Supports(FWinControl, IJvDynControlData, FJvDynControlData);
+  Supports(FWinControl, IJvDynControlReadOnly, FJvDynControlReadOnly);
 
-  SetWinControlProperties;
+  DisableAfterWincontrolPropertiesChanged;
+  try
+    SetWinControlProperties;
+  finally
+    EnableAfterWincontrolPropertiesChanged;
+  end;
+  HandleAfterWincontrolPropertiesChanged;
 end;
 
 procedure TJvBaseParameter.SetWinControlProperties;
-var
-  IDynControlReadOnly: IJvDynControlReadOnly;
 begin
   if Assigned(WinControl) then
   begin
-    if Assigned(JvDynControlCaption) then
-      JvDynControlCaption.ControlSetCaption(Caption);
-    if Supports(FWinControl, IJvDynControlReadOnly, IDynControlReadOnly) then
+    SetCaption(Caption);
+    if Assigned(JvDynControlReadOnly) then
     begin
-      IDynControlReadOnly.ControlSetReadOnly(ReadOnly);
+      JvDynControlReadOnly.ControlSetReadOnly(ReadOnly);
       SetEnabled(FEnabled);
     end
     else
@@ -986,8 +1010,11 @@ begin
     WinControl.Hint := Hint;
     WinControl.Tag := Tag;
     WinControl.HelpContext := HelpContext;
-    JvDynControl.ControlSetOnEnter(ParameterList.OnEnterParameterControl);
-    JvDynControl.ControlSetOnExit(ParameterList.OnExitParameterControl);
+    if Assigned(JvDynControl) then
+    begin
+      JvDynControl.ControlSetOnEnter(ParameterList.OnEnterParameterControl);
+      JvDynControl.ControlSetOnExit(ParameterList.OnExitParameterControl);
+    end;
     if Assigned(JvDynControlData) then
       JvDynControlData.ControlSetOnChange(ParameterList.OnChangeParameterControl);
   end;
@@ -998,6 +1025,7 @@ begin
   FEnabled := Value;
   if Assigned(WinControl) then
     WinControl.Enabled := Value;
+  HandleAfterWincontrolPropertiesChanged;
 end;
 
 procedure TJvBaseParameter.SetVisible(Value: Boolean);
@@ -1005,6 +1033,7 @@ begin
   FVisible := Value;
   if Assigned(WinControl) then
     WinControl.Visible := Value;
+  HandleAfterWincontrolPropertiesChanged;
 end;
 
 function TJvBaseParameter.GetHeight: Integer;
@@ -1035,6 +1064,7 @@ begin
   FWidth := Value;
   if Assigned(WinControl) then
     WinControl.Width := Value;
+  HandleAfterWincontrolPropertiesChanged;
 end;
 
 procedure TJvBaseParameter.SetTabOrder(Value: Integer);
@@ -1042,6 +1072,7 @@ begin
   FTabOrder := Value;
   if Assigned(WinControl) then
     WinControl.TabOrder := Value;
+  HandleAfterWincontrolPropertiesChanged;
 end;
 
 procedure TJvBaseParameter.GetData;
@@ -1062,22 +1093,28 @@ procedure TJvBaseParameter.Assign(Source: TPersistent);
 begin
   if Source is TJvBaseParameter then
   begin
-    AsVariant := TJvBaseParameter(Source).AsVariant;
-    Caption := TJvBaseParameter(Source).Caption;
-    SearchName := TJvBaseParameter(Source).SearchName;
-    Width := TJvBaseParameter(Source).Width;
-    Height := TJvBaseParameter(Source).Height;
-    Required := TJvBaseParameter(Source).Required;
-    ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
-    StoreValueToAppStorage := TJvBaseParameter(Source).StoreValueToAppStorage;
-    StoreValueCrypted := TJvBaseParameter(Source).StoreValueCrypted;
-    TabOrder := TJvBaseParameter(Source).TabOrder;
-    FParameterList := TJvBaseParameter(Source).ParameterList;
-    Color := TJvBaseParameter(Source).Color;
-    ReadOnly := TJvBaseParameter(Source).ReadOnly;
-    Enabled := TJvBaseParameter(Source).Enabled;
-    FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
-    FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
+    DisableAfterWincontrolPropertiesChanged;
+    try
+      AsVariant := TJvBaseParameter(Source).AsVariant;
+      Caption := TJvBaseParameter(Source).Caption;
+      SearchName := TJvBaseParameter(Source).SearchName;
+      Width := TJvBaseParameter(Source).Width;
+      Height := TJvBaseParameter(Source).Height;
+      Required := TJvBaseParameter(Source).Required;
+      ParentParameterName := TJvBaseParameter(Source).ParentParameterName;
+      StoreValueToAppStorage := TJvBaseParameter(Source).StoreValueToAppStorage;
+      StoreValueCrypted := TJvBaseParameter(Source).StoreValueCrypted;
+      TabOrder := TJvBaseParameter(Source).TabOrder;
+      FParameterList := TJvBaseParameter(Source).ParameterList;
+      Color := TJvBaseParameter(Source).Color;
+      ReadOnly := TJvBaseParameter(Source).ReadOnly;
+      Enabled := TJvBaseParameter(Source).Enabled;
+      FEnableReasons.Assign(TJvBaseParameter(Source).FEnableReasons);
+      FDisableReasons.Assign(TJvBaseParameter(Source).FDisableReasons);
+    finally
+      EnableAfterWincontrolPropertiesChanged;
+      HandleAfterWincontrolPropertiesChanged;
+    end;
   end
   else
     inherited Assign(Source);
@@ -1087,6 +1124,18 @@ function TJvBaseParameter.Clone(AOwner: TJvParameterlist): TJvBaseParameter;
 begin
   Result := TJvBaseParameterClass(ClassType).Create(AOwner);
   Result.Assign(Self);
+end;
+
+procedure TJvBaseParameter.DisableAfterWincontrolPropertiesChanged;
+begin
+  Dec(FAfterWincontrolPropertiesChangedDisabledCnt);
+  if FAfterWincontrolPropertiesChangedDisabledCnt = 0 then SetAfterWincontrolPropertiesChangedDisabled(False);
+end;
+
+procedure TJvBaseParameter.EnableAfterWincontrolPropertiesChanged;
+begin
+  Inc(FAfterWincontrolPropertiesChangedDisabledCnt);
+  if FAfterWincontrolPropertiesChangedDisabledCnt = 1 then SetAfterWincontrolPropertiesChangedDisabled(True);
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
@@ -1112,6 +1161,17 @@ begin
   Result := GetParameterNameBase + GetParameterNameExt;
 end;
 
+procedure TJvBaseParameter.HandleAfterWincontrolPropertiesChanged;
+begin
+  if Assigned(FAfterWincontrolPropertiesChanged) and not IsAfterWincontrolPropertiesChangedDisabled then
+    AfterWincontrolPropertiesChanged(Self, WinControl);
+end;
+
+function TJvBaseParameter.IsAfterWincontrolPropertiesChangedDisabled: Boolean;
+begin
+  Result := FAfterWincontrolPropertiesChangedDisabledCnt > 0;
+end;
+
 function TJvBaseParameter.IsValid(const AData: Variant): Boolean;
 var Msg : String;
 begin
@@ -1131,9 +1191,32 @@ begin
     vMsg := Format(RsErrParameterMustBeEntered, [Caption]);
 end;
 
+procedure TJvBaseParameter.SetAfterWincontrolPropertiesChangedDisabled(Updating: Boolean);
+begin
+end;
+
+procedure TJvBaseParameter.SetCaption(const Value: string);
+begin
+  FCaption := Value;
+  if Assigned(JvDynControlCaption) then
+    JvDynControlCaption.ControlSetCaption(FCaption);
+  HandleAfterWincontrolPropertiesChanged;
+end;
+
 procedure TJvBaseParameter.SetParameterList(const Value: TJvParameterList);
 begin
   ReplaceComponentReference(Self, Value, TComponent(FParameterList));
+end;
+
+procedure TJvBaseParameter.SetReadOnly(const Value: Boolean);
+begin
+  FReadOnly := Value;
+  if Assigned(WinControl) then
+    if Assigned(JvDynControlReadOnly) then
+      JvDynControlReadOnly.ControlSetReadOnly(ReadOnly)
+    else
+      SetEnabled(FEnabled and not ReadOnly);
+  HandleAfterWincontrolPropertiesChanged;
 end;
 
 //=== { TJvParameterList } ===================================================
@@ -1973,7 +2056,7 @@ begin
     ArrangePanel.ArrangeSettings := ArrangeSettings;
 end;
 
-procedure TJvParameterList.SetParameters(Index: Integer; Value: TJvBaseParameter);
+procedure TJvParameterList.SetParameters(Index: Integer; const Value: TJvBaseParameter);
 begin
   if (Index >= 0) and (Index < IntParameterList.Count) then
     IntParameterList.Objects[Index] := Value;
@@ -2102,6 +2185,11 @@ begin
     else
       OkButton.Enabled := Valid;
   end;
+end;
+
+function TJvParameterList.IndexOfParameter(AParameter: TJvBaseParameter): Integer;
+begin
+  Result := IntParameterList.IndexOfObject(AParameter);
 end;
 
 //=== { TJvParameterListPropertyStore } ======================================
