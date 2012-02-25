@@ -94,7 +94,7 @@ end;
 
 function TJvIPAddressProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paReadOnly, paDisplayReadOnly, paMultiSelect, paSubProperties, paRevertable, paVolatileSubProperties];
+  Result := [paReadOnly{$IFDEF DELPHI2005_UP}, paDisplayReadOnly{$ENDIF}, paMultiSelect, paSubProperties, paRevertable, paVolatileSubProperties];
 end;
 
 procedure TJvIPAddressProperty.GetProperties(Proc: TGetPropProc);
@@ -136,7 +136,7 @@ function TJvIPAddressComponentProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paRevertable];
   if GetPropInfo.SetProc = nil then
-     Result := Result + [paReadOnly, paDisplayReadOnly];
+     Result := Result + [paReadOnly{$IFDEF DELPHI2005_UP}, paDisplayReadOnly{$ENDIF}];
 
   if GetComponent(0) <> nil then
      if GetComponent(0) is TJvIPAddress then
@@ -268,7 +268,7 @@ function TJvIPAddressAsNumberProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paRevertable];
   if GetPropInfo.SetProc = nil then
-     Result := Result + [paReadOnly, paDisplayReadOnly];
+     Result := Result + [paReadOnly{$IFDEF DELPHI2005_UP}, paDisplayReadOnly{$ENDIF}];
 end;
 
 function TJvIPAddressAsNumberProperty.GetName: string;
@@ -292,7 +292,7 @@ function TJvIPAddressAsTextProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paRevertable];
   if GetPropInfo.SetProc = nil then
-     Result := Result + [paReadOnly, paDisplayReadOnly];
+     Result := Result + [paReadOnly{$IFDEF DELPHI2005_UP}, paDisplayReadOnly{$ENDIF}];
 end;
 
 function TJvIPAddressAsTextProperty.GetName: string;
