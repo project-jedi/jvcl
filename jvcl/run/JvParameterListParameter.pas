@@ -140,12 +140,10 @@ type
   published
     /// The searchname of the afterparameter.
     /// The afterparameter will positioned behind the edit control.
-    property AfterParameterName: string read FAfterParameterName write
-      FAfterParameterName;
+    property AfterParameterName: string read FAfterParameterName write FAfterParameterName;
     /// The searchname of the beforeparameter.
     /// The beforeparameter will positioned before the edit control.
-    property BeforeParameterName: string read FBeforeParameterName write
-      FBeforeParameterName;
+    property BeforeParameterName: string read FBeforeParameterName write FBeforeParameterName;
     /// Width of the edit control
     property EditWidth: Integer read FEditWidth write FEditWidth;
     /// Mode how the label and the edit control will be arranged :
@@ -1009,8 +1007,7 @@ begin
     FAfterParameterControl := nil;
 end;
 
-procedure TJvBasePanelEditParameter.CreateBeforeParameterControl(
-  AParameterParent: TWinControl);
+procedure TJvBasePanelEditParameter.CreateBeforeParameterControl(AParameterParent: TWinControl);
 var
   BeforeParameter: TJvBaseParameter;
 begin
