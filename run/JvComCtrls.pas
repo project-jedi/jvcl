@@ -1,4 +1,4 @@
-﻿{-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -1008,7 +1008,7 @@ begin
             AddressValues.Value3 = 26
             AddressValues.Value4 = 228
     }
-    if StartsStr('AddressValues.', TReaderCracker(Filer).PropName) then
+    if Pos('AddressValues.', TReaderCracker(Filer).PropName) = 1 then
       Filer.DefineProperty(TReaderCracker(Filer).PropName, DFMSkipLegacyAddressValues, nil,false);
   end;
 end;
@@ -3488,13 +3488,6 @@ begin
   end;
 end;
 
-{$IFDEF UNITVERSIONING}
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 { TJvIPAddressValues }
 
@@ -3542,4 +3535,12 @@ begin
   end;
 end;
 
+
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 end.
