@@ -204,9 +204,8 @@ begin
               DaysGrid := PhotoOpMain.JvTFDays1;
 
               // Add the appt to selected schedule(s)
-              If DaysGrid.ValidSelection Then
-                For I := DaysGrid.SelStart.X to DaysGrid.SelEnd.X do
-                  Appt.AddSchedule(DaysGrid.Cols[I].SchedName);
+              For I := 0 to DaysGrid.Cols.Count - 1 do
+                Appt.AddSchedule(DaysGrid.Cols[I].SchedName);
 
               // Now that we're done working with the appointment and it is
               // actually assigned to a schedule, we should set the Persistent
