@@ -494,6 +494,8 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    procedure DefaultDrawColumnCell(const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState); virtual;
     procedure DefaultDataCellDraw(const Rect: TRect; Field: TField; State: TGridDrawState);
     procedure DisableScroll;
     procedure EnableScroll;
@@ -2894,6 +2896,28 @@ begin
     Key := #0;
 end;
 
+procedure TJvDBGrid.DefaultDrawColumnCell(const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  MemoText: string;
+begin
+  if Assigned(Column.Field) and
+    (WordWrapAllFields or (Column.Field is TStringField) or (ShowMemos and IsMemoField(Column.Field))) then
+  begin
+    MemoText := Column.Field.DisplayText;
+    if FShowMemos and IsMemoField(Column.Field) then
+    begin
+      // The MemoField's default DisplayText is '(Memo)' but we want the content
+      if not Assigned(Column.Field.OnGetText) then
+        MemoText := Column.Field.AsString;
+    end;
+    WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
+      UseRightToLeftAlignmentForField(Column.Field, Column.Alignment), False);
+  end
+  else
+    inherited DefaultDrawColumnCell(Rect, DataCol, Column, State);
+end;
+
 procedure TJvDBGrid.DefaultDataCellDraw(const Rect: TRect; Field: TField;
   State: TGridDrawState);
 begin
@@ -3499,7 +3523,6 @@ var
   Highlight: Boolean;
   Bmp: TBitmap;
   Field, ReadOnlyTestField: TField;
-  MemoText: string;
 begin
   Field := Column.Field;
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
@@ -3542,21 +3565,7 @@ begin
     end
     else
     begin
-      if (Field <> nil) and
-         (WordWrapAllFields or (Field is TStringField) or (FShowMemos and IsMemoField(Field))) then
-      begin
-        MemoText := Field.DisplayText;
-        if FShowMemos and IsMemoField(Field) then
-        begin
-          // The MemoField's default DisplayText is '(Memo)' but we want the content
-          if not Assigned(Field.OnGetText) then
-            MemoText := Field.AsString;
-        end;
-        WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
-          UseRightToLeftAlignmentForField(Field, Column.Alignment), False);
-      end
-      else
-        DefaultDrawColumnCell(Rect, DataCol, Column, State);
+      DefaultDrawColumnCell(Rect, DataCol, Column, State);
     end;
   end;
   if (Columns.State = csDefault) or not DefaultDrawing or (csDesigning in ComponentState) then
