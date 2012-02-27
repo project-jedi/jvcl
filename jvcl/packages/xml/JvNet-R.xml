@@ -22,13 +22,13 @@
     <Package Name="IndyProtocols" Targets="allv9up" Condition="USE_3RDPARTY_INDY &amp;&amp; USE_3RDPARTY_INDY10"/>
     <Package Name="IcsBcb60" Targets="C6,C6p" Condition="USE_3RDPARTY_ICS"/>
     <Package Name="IcsDel60" Targets="D6,D6p" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel70" Targets="D7,D7p" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel90" Targets="D9,D9p" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel100" Targets="D10,D10p" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel110" Targets="D11" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel120" Targets="D12" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel140" Targets="D14" Condition="USE_3RDPARTY_ICS"/>
-    <Package Name="IcsDel150" Targets="D15" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD7Run" Targets="D7,D7p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2006Run" Targets="D10,D10p" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2007Run" Targets="D11" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2009Run" Targets="D12" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsD2010Run" Targets="D14" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsDXERun" Targets="D15" Condition="USE_3RDPARTY_ICS"/>
+    <Package Name="OverbyteIcsDXE2Run" Targets="D16" Condition="USE_3RDPARTY_ICS"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvFormToHtml.pas" Targets="all" Formname="" Condition=""/>
