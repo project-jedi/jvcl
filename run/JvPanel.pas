@@ -667,11 +667,22 @@ var
   R: TRect;
   OldPenColor:TColor;
   OldPenWidth: Integer;
+  ControlIndex: Integer;
+  CurControl: TControl;
 begin
   if Assigned(FOnPaint) then
   begin
     FOnPaint(Self);
     Exit;
+  end;
+
+  // must force child controls to redraw completely, even their non client areas (Mantis 4406)
+  for ControlIndex := 0 to ControlCount - 1 do
+  begin
+    CurControl := Controls[ControlIndex];
+    CurControl.Invalidate;
+    if CurControl is TWinControl then
+      RedrawWindow(TWinControl(CurControl).Handle, nil, 0, RDW_FRAME or RDW_INVALIDATE);
   end;
 
   if MouseOver and HotTrack then
