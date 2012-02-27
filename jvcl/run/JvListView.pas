@@ -80,6 +80,8 @@ type
   TJvListViewCompareGroupEvent = procedure(Sender: TObject; Group1, Group2: TJvListViewGroup; var Compare: Integer) of object;
   {$ENDIF !RTL200_UP}
   TJvListViewCancelEditEvent = procedure(Sender: TObject; Item: TListItem) of object;
+  TJvListViewBeginColumnResizeEvent = procedure(Sender: TCustomListview; ColumnIndex: Integer; ColumnWidth: Integer; var CanResize: Boolean) of object;
+  TJvListViewColumnResizeEvent = procedure(Sender: TCustomListview; ColumnIndex: Integer; ColumnWidth: Integer) of Object;
 
   TJvListItems = class(TListItems, IJvAppStorageHandler, IJvAppStoragePublishedProps)
   private
@@ -364,6 +366,10 @@ type
     FOnItemClick: TListViewItemClickNotifyEvent;
     FOnItemDblClick: TListViewItemClickNotifyEvent;
     FOnCancelEdit: TJvListViewCancelEditEvent;
+    FOnBeginColumnResize: TJvListViewBeginColumnResizeEvent;
+    FOnEndColumnResize: TJvListViewColumnResizeEvent;
+    FOnColumnResizing: TJvListViewColumnResizeEvent;
+    
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     {$IFNDEF RTL200_UP}
@@ -386,6 +392,8 @@ type
     {$ENDIF !RTL200_UP}
     procedure TileViewPropertiesChange(Sender: TObject);
     procedure LoadTileViewProperties;
+    function GetColumnIndex(PHeader: PNMHdr): Integer;
+    function GetColumnWidth(PHeader: PNMHdr): Integer;
   protected
     function CreateListItem: TListItem; override;
     function CreateListItems: TListItems; override;
@@ -413,6 +421,7 @@ type
     procedure LVMInsertColumn(var Msg: TMessage); message LVM_INSERTCOLUMN;
     procedure LVMSetColumn(var Msg: TMessage); message LVM_SETCOLUMN;
     procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
+    procedure WMNotify(var Msg: TWMNotify); message WM_NOTIFY;
 
     procedure InsertItem(Item: TListItem); override;
     function IsCustomDrawn(Target: TCustomDrawTarget; Stage: TCustomDrawStage): Boolean; override;
@@ -423,6 +432,9 @@ type
       State: TCustomDrawState; Stage: TCustomDrawStage): Boolean; override;
 
     procedure EditCanceled(Item: TListItem); virtual;
+    function DoBeginColumnResize(ColumnIndex, ColumnWidth: Integer): Boolean; virtual;
+    procedure DoColumnResizing(ColumnIndex, ColumnWidth: Integer); virtual;
+    procedure DoEndColumnResize(ColumnIndex, ColumnWidth: Integer); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -487,6 +499,9 @@ type
     property OnParentColorChange;
     property OnItemClick: TListViewItemClickNotifyEvent read FOnItemClick write FOnItemClick;
     property OnItemDblClick: TListViewItemClickNotifyEvent read FOnItemDblClick write FOnItemDblClick;
+    property OnBeginColumnResize: TJvListViewBeginColumnResizeEvent read FOnBeginColumnResize write FOnBeginColumnResize;
+    property OnEndColumnResize: TJvListViewColumnResizeEvent read FOnEndColumnResize write FOnEndColumnResize;
+    property OnColumnResizing: TJvListViewColumnResizeEvent read FOnColumnResizing write FOnColumnResizing;
 
     // This property contains a collection that allows to specify additional
     // properties for each columns (sort method for instance). It can not be
@@ -1715,6 +1730,36 @@ begin
     end;
 end;
 
+function TJvListView.GetColumnIndex(PHeader: PNMHdr): Integer;
+var
+  HwndHeader: HWND;
+  ItemInfo: THdItem;
+  ItemIndex: Integer;
+  Buffer: array [0..128] of Char;
+begin
+  Result := -1;
+  HwndHeader := pHeader^.hwndFrom;
+  ItemIndex := pHDNotify(pHeader)^.Item;
+  FillChar(ItemInfo, SizeOf(ItemInfo), 0);
+  ItemInfo.Mask := HDI_TEXT;
+  ItemInfo.pszText := Buffer;
+  ItemInfo.cchTextMax := SizeOf(Buffer) - 1;
+  Header_GetItem(HwndHeader, ItemIndex, ItemInfo);
+  if CompareStr(Columns[ItemIndex].Caption, ItemInfo.pszText) = 0 then
+  begin
+    Result := ItemIndex;
+  end
+  else
+  begin
+    for ItemIndex := 0 to Columns.Count - 1 do
+      if CompareStr(Columns[ItemIndex].Caption, ItemInfo.pszText) = 0 then
+      begin
+        Result := ItemIndex;
+        Break;
+      end;
+  end;
+end;
+
 function TJvListView.GetColumnsOrder: string;
 var
   Res: array of Integer;
@@ -1739,6 +1784,14 @@ begin
   end
   else
     Result := '';
+end;
+
+function TJvListView.GetColumnWidth(PHeader: PNMHdr): Integer;
+begin
+  Result := -1;
+  if Assigned(PHDNotify(PHeader)^.PItem) and
+    ((PHDNotify(PHeader)^.PItem^.Mask and HDI_WIDTH) <> 0) then
+    Result := PHDNotify(PHeader)^.PItem^.cxy;
 end;
 
 procedure TJvListView.SetColumnsOrder(const Order: string);
@@ -1807,8 +1860,11 @@ begin
 end;
 
 procedure TJvListView.CreateWnd;
+var
+  Wnd: HWND;
 begin
   inherited CreateWnd;
+  
   UpdateHeaderImages(ListView_GetHeader(Handle));
   if FSavedExtendedColumns.Count > 0 then
     FExtendedColumns.Assign(FSavedExtendedColumns);
@@ -1830,6 +1886,10 @@ begin
     ColumnsOrder := FSavedColumnOrder;
     FSavedColumnOrder := '';
   end;
+
+  // This will ensure the HDN_Track notification message is sent:
+  Wnd := GetWindow(Handle, GW_CHILD);
+  SetWindowLong(wnd, GWL_STYLE, GetWindowLong(wnd, GWL_STYLE) and not HDS_FULLDRAG);
 end;
 
 procedure TJvListView.UpdateHeaderImages(HeaderHandle: Integer);
@@ -1884,6 +1944,24 @@ begin
 //  if Msg.CalcValidRects and Assigned(HeaderImages) and (ViewStyle = vsReport) and ShowColumnHeaders then
 //    with Msg.CalcSize_Params^.rgrc[0] do
 //      Top := Top + HeaderImages.Height + 3;
+end;
+
+procedure TJvListView.WMNotify(var Msg: TWMNotify);
+begin
+  inherited;
+
+  // Must be tested for in WM_NOTIFY handler because the CN_NOTIFY handler
+  // does not receive them.
+  // Must also be processed AFTER the inherited handler or the code won't work
+  case Msg.NMHdr^.code of
+    HDN_ENDTRACK:
+      DoEndColumnResize(GetColumnIndex(Msg.NMHdr), GetColumnWidth(Msg.NMHdr));
+    HDN_BEGINTRACK:
+      if not DoBeginColumnResize(GetColumnIndex(Msg.NMHdr), GetColumnWidth(Msg.NMHdr)) Then
+        Msg.Result := 1;
+    HDN_TRACK:
+      DoColumnResizing(GetColumnIndex(Msg.NMHdr), GetColumnWidth(Msg.NMHdr));
+  end;
 end;
 
 procedure TJvListView.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -2419,6 +2497,14 @@ begin
   end;
 end;
 
+function TJvListView.DoBeginColumnResize(ColumnIndex,
+  ColumnWidth: Integer): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnBeginColumnResize) then
+    FOnBeginColumnResize(Self, ColumnIndex, ColumnWidth, Result);
+end;
+
 {$IFNDEF RTL200_UP}
 function TJvListView.DoCompareGroups(Group1, Group2: TJvListViewGroup): Integer;
 begin
@@ -2428,6 +2514,18 @@ begin
     Result := Group2.GroupId - Group1.GroupId;
 end;
 {$ENDIF !RTL200_UP}
+
+procedure TJvListView.DoColumnResizing(ColumnIndex, ColumnWidth: Integer);
+begin
+  if Assigned(FOnColumnResizing) then
+    FOnColumnResizing(Self, ColumnIndex, ColumnWidth);
+end;
+
+procedure TJvListView.DoEndColumnResize(ColumnIndex, ColumnWidth: Integer);
+begin
+  if Assigned(FOnEndColumnResize) then
+    FOnEndColumnResize(Self, ColumnIndex, ColumnWidth);
+end;
 
 procedure TJvListView.TileViewPropertiesChange(Sender: TObject);
 var
