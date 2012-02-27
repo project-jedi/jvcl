@@ -52,7 +52,7 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
     function GetAttributes: TPropertyAttributes; override;
-    function GetIsDefault: Boolean; override;
+    function GetIsDefault: Boolean; {$IFDEF DELPHI7_UP}override;{$ENDIF DELPHI7_UP}
   end;
 
 implementation
