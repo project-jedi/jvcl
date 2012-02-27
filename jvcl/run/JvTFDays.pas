@@ -2400,13 +2400,8 @@ end;
 
 procedure TJvTFApptMap.UpdateMapGroups;
 var
-  MapRow, MapCol, GroupStart, GroupEnd, MaxEndRow: Integer;
-  CurrStartRow, CurrEndRow, GridRowCount, Examined, ApptCount: Integer;
-  Appt: TJvTFAppt;
+  GridRowCount: Integer;
 begin
-  GroupStart := 0;
-  MapRow := 0;
-
   if Assigned(FGridCol.ColCollection.ApptGrid) then
     GridRowCount := FGridCol.ColCollection.ApptGrid.RowCount
   else
@@ -2415,49 +2410,10 @@ begin
   else
     GridRowCount := 0;
 
-  while MapRow <= GridRowCount - 1 do
-  begin
-    if FData[MapRow, -1] > 0 then
-    begin
-      MaxEndRow := MapRow;
-
-      Examined := 0;
-      ApptCount := FData[MapRow, -1];
-      MapCol := 1;
-      while (Examined < ApptCount) and (MapCol <= 60) do
-      begin
-        Appt := TJvTFAppt(FData[MapRow, MapCol]);
-        if Assigned(Appt) then
-        begin
-          FGridCol.CalcStartEndRows(Appt, CurrStartRow, CurrEndRow);
-          if CurrEndRow > MaxEndRow then
-            MaxEndRow := CurrEndRow;
-          Inc(Examined);
-        end;
-        Inc(MapCol);
-      end;
-
-      if (MaxEndRow = MapRow) or (MaxEndRow >= GridRowCount - 1) then // end of group
-      begin
-        GroupEnd := MapRow;
-          // find max appts in group and record in map col 0
-        ProcessMapGroup(GroupStart, GroupEnd);
-
-//          TForm(FGridCol.ColCollection.ApptGrid.Owner).Caption := IntToStr(GroupStart) + ' - ' + IntToStr(GroupEnd);
-
-        Inc(MapRow);
-        GroupStart := MapRow; // next group starts on next row
-      end
-      else
-        MapRow := MaxEndRow;
-    end
-    else
-    begin
-      ProcessMapGroup(MapRow, MapRow);
-      Inc(MapRow);
-      GroupStart := MapRow; // next group starts on next row
-    end;
-  end;
+  // we could try to find a smaller group, by looking for the first and last
+  // row where there is at least one appt, but CPU wise, it's actually simpler
+  // to let the ProcessMapGroup function deal with it.
+  ProcessMapGroup(0, GridRowCount);
 end;
 
 procedure TJvTFApptMap.Clear;
