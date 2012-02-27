@@ -101,6 +101,7 @@ procedure TJvIPAddressProperty.GetProperties(Proc: TGetPropProc);
 var
   I: Integer;
   Vp: TJvIPAddressComponentProperty;
+  E: IProperty; 
 begin
   // outcome layout in OI:
   // byte values
@@ -113,12 +114,18 @@ begin
     Vp.Idx := I;
     Vp.ValIdx := 5-I;
 
-    Proc(Vp);
+    E := Vp;
+    Proc(E);
+    E := nil;
   end;
 
-  Proc(TJvIPAddressAsTextProperty.Create(Self));
+  E := TJvIPAddressAsTextProperty.Create(Self);
+  Proc(E);
+  E := nil;
 
-  Proc(TJvIPAddressAsNumberProperty.Create(Self));
+  E := TJvIPAddressAsNumberProperty.Create(Self);
+  Proc(E);
+  E := nil;
 end;
 
 function TJvIPAddressProperty.GetValue: string;
