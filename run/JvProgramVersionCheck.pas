@@ -36,7 +36,11 @@ uses
   IdHTTP, IdFTP,
   {$ENDIF USE_3RDPARTY_INDY}
   {$IFDEF USE_3RDPARTY_ICS}
+  {$IFDEF DELPHI7_UP}
+  OverbyteIcsHttpProt, OverbyteIcsFtpCli,
+  {$ELSE}
   HttpProt, FtpCli,
+  {$ENDIF DELPHI7_UP}
   {$ENDIF USE_3RDPARTY_ICS}
   JvPropertyStore, JvAppStorage, JvAppIniStorage, JvAppXMLStorage,
   JvParameterList, JvThread, JvThreadDialog, SysUtils;
