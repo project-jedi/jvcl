@@ -1057,7 +1057,7 @@ end;
 procedure TJvListView.ColClick(Column: TListColumn);
 type
   TParamSort = record
-    Index: Integer;
+    ColumnIndex: Integer;
     Sender: TObject;
   end;
 var
@@ -1199,16 +1199,16 @@ var
     Parm := TParamSort(Pointer(ParamSort)^);
     i1 := TListItem(Item1);
     i2 := TListItem(Item2);
-    I := Parm.Index;
+    I := Parm.ColumnIndex;
 
     // (Salvatore)
-    if Parm.Index < TJvListView(Parm.Sender).ExtendedColumns.Count  then
-      SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.Index].SortMethod
+    if Parm.ColumnIndex < TJvListView(Parm.Sender).ExtendedColumns.Count  then
+      SortKind := TJvListView(Parm.Sender).ExtendedColumns[Parm.ColumnIndex].SortMethod
     else
       SortKind := TJvListView(Parm.Sender).SortMethod;
 
     if Assigned(TJvListView(Parm.Sender).OnAutoSort) then
-      TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.Index, SortKind);
+      TJvListView(Parm.Sender).OnAutoSort(Parm.Sender, Parm.ColumnIndex, SortKind);
 
     case I of
       {sort by caption}
@@ -1263,7 +1263,7 @@ begin
   inherited ColClick(Column);
   if FSortOnClick then
   begin
-    Parm.Index := Column.Index;
+    Parm.ColumnIndex := Column.Index;
     Parm.Sender := Self;
     if FLast = Column.Index then
     begin
