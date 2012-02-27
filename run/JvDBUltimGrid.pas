@@ -145,7 +145,7 @@ type
     FieldToSort: TField): Boolean of object;
   TGetSortFieldNameEvent = procedure(Sender: TJvDBUltimGrid; var FieldName: string) of object;
 
-  TSortWith = (swIndex, swFields, swUserFunc, swWhere);
+  TSortWith = (swIndex, swFields, swClient, swUserFunc, swWhere);
 
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
@@ -155,11 +155,16 @@ type
     FSortedFields: TSortFields;
     FSortWith: TSortWith;
     FSortOK: Boolean;
+    FRestoreOnSort: Boolean;
+    FSortExcludedFields: string;
+    FMasterFields: string;
+    FIndexList: TStringList;
+
     FMultiColSort: Boolean;
     FOnIndexNotFound: TIndexNotFoundEvent;
     FOnUserSort: TUserSortEvent;
     FOnCheckIfValidSortField: TCheckIfValidSortFieldEvent;
-    FSavedBookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
+    FSavedBookmark: {$IFDEF RTL185_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL185_UP};
     FSavedRowPos: Integer;
     FOnRestoreGridPosition: TRestoreGridPosEvent;
     FValueToSearch: Variant;
@@ -169,6 +174,8 @@ type
     procedure SetMultiColSort(const Value: Boolean);
     function PrivateSearch(var ResultCol: Integer; var ResultField: TField;
       const CaseSensitive, WholeFieldOnly, Next: Boolean): Boolean;
+    procedure SetSortExcludedFields(const Value: string);
+    procedure SetMasterFields(const Value: string);
   protected
     function SortMarkerAssigned(const AFieldName: string): Boolean; override;
     procedure DoTitleClick(ACol: Longint; AField: TField); override;
@@ -180,12 +187,14 @@ type
     property SortedFields: TSortFields read FSortedFields;
     property SortOK: Boolean read FSortOK;
     procedure SaveGridPosition;
-    procedure RestoreGridPosition;
+    procedure RestoreGridPosition(Mode: TResyncMode = [rmExact, rmCenter]);
     property SearchFields: TStringList read FSearchFields write FSearchFields;
     function Search(const ValueToSearch: Variant; var ResultCol: Integer;
       var ResultField: TField; const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
     function SearchNext(var ResultCol: Integer; var ResultField: TField;
       const CaseSensitive, WholeFieldOnly, Focus: Boolean): Boolean;
+    // Reset any sorting is done so far. Then user can sort dataset using a sorting dataset property
+    procedure ClearSortedFields;
   published
     property SortedField stored False; // Property of JvDBGrid not used in JvDBUltimGrid
     property SortMarker stored False; // Property of JvDBGrid hidden in JvDBUltimGrid
@@ -193,11 +202,21 @@ type
     { SortWith:
       swIndex    : for BDE tables (assignment of OnIndexNotFound is recommended)
       swFields   : for ADO tables
+      swClient   : for ClientDataSets
       swUserFunc : for other data providers (assignment of OnUserSort is mandatory) }
     property SortWith: TSortWith read FSortWith write FSortWith default swIndex;
 
     { MultiColSort: is the sorting allowed on several columns or only one ? }
     property MultiColSort: Boolean read FMultiColSort write SetMultiColSort default True;
+
+    { Current record position is restored after sorting }
+    property RestoreOnSort: Boolean read FRestoreOnSort write FRestoreOnSort default True;
+    { User can exclude columns from sorting. 'Fieldname1;Fieldname2;Fieldname3' }
+    property SortExcludedFields: string read FSortExcludedFields write SetSortExcludedFields;
+
+    { Fix problem on detail dataset when insert record after you have click title to sort }
+    { Needed for detail datasets in a master/detail relationship }
+    property MasterFields: string read FMasterFields write SetMasterFields;
 
     { OnIndexNotFound: fired when SortWith = swIndex and the sorting index is not found }
     property OnIndexNotFound: TIndexNotFoundEvent read FOnIndexNotFound write FOnIndexNotFound;
@@ -233,9 +252,9 @@ const
 implementation
 
 uses
-  TypInfo, Forms, SysUtils, DBGrids,
+  TypInfo, Forms, SysUtils, DBGrids, DBClient,
   JclStrings,
-  JvResources;
+  JvResources, JvJCLUtils, JvDBUtils;
 
 constructor TJvDBUltimGrid.Create(AOwner: TComponent);
 begin
@@ -246,16 +265,24 @@ begin
   FMultiColSort := True;
   FOnIndexNotFound := nil;
   FOnUserSort := nil;
-  FSavedBookmark := {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP};
+  FRestoreOnSort := True;
+  FSavedBookmark := {$IFDEF RTL185_UP}nil{$ELSE}''{$ENDIF RTL185_UP};
   FSavedRowPos := 0;
   FOnRestoreGridPosition := nil;
   FValueToSearch := Null;
   FSearchFields := TStringList.Create;
+  FIndexList := TStringList.Create;
 end;
 
 destructor TJvDBUltimGrid.Destroy;
 begin
+  {$IF defined(RTL185_UP) and not defined(RTL200_UP)}
+  if FSavedBookmark <> nil then
+    DataLink.DataSet.FreeBookmark(FSavedBookmark);
+  {$IFEND}
+  
   FSearchFields.Free;
+  FIndexList.Free;
   inherited Destroy;
 end;
 
@@ -289,21 +316,36 @@ const
   cIndexDefs = 'IndexDefs';
   cIndexName = 'IndexName';
   cIndexFieldNames = 'IndexFieldNames';
+  cNewIndexName = 'NewIndexName_';
 var
   DSet: TDataSet;
 
-  procedure UpdateProp(const PropName: string; const Value: string);
+  procedure UpdateProp(const PropName: string; const Value: string; SortField: TField);
+  var
+    Error: Boolean;
   begin
-    SetStrProp(DSet, PropName, Value);
-    FSortedFields := FieldsToSort;
-    FSortOK := True;
+    // Workaround for ADO 10 KB key limitation
+    Error := (SortWith = swFields) and // swFields: for ADO tables
+             (SortField.DataType in [ftString, ftWideString]) and
+             (SortField.DataSize > 9361);
+
+    if not Error then 
+    begin
+      SetStrProp(DSet, PropName, Value);
+      FSortedFields := FieldsToSort;
+      FSortOK := True;
+    end 
+    else
+    begin 
+      FSortOK := False;
+    end;
   end;
 
 var
   SortString, DescString: string;
   MaxFTS: Integer;
 
-  procedure SearchIndex;
+  procedure SearchIndex(SortField: TField);
   var
     IndexDefs: TIndexDefs;
     I, J: Integer;
@@ -325,14 +367,14 @@ var
           if (IndexDefs.Items[I].DescFields = '') and
             not (ixDescending in IndexDefs.Items[I].Options) then
           begin
-            UpdateProp(cIndexName, IndexDefs.Items[I].Name);
+            UpdateProp(cIndexName, IndexDefs.Items[I].Name, SortField);
             Break;
           end;
         end
         else
         if AnsiSameText(DescString, IndexDefs.Items[I].DescFields) then
         begin
-          UpdateProp(cIndexName, IndexDefs.Items[I].Name);
+          UpdateProp(cIndexName, IndexDefs.Items[I].Name, SortField);
           Break;
         end
         else
@@ -341,7 +383,7 @@ var
         begin
           for J := 0 to MaxFTS do
             FieldsToSort[J].Order := JvGridSort_DESC;
-          UpdateProp(cIndexName, IndexDefs.Items[I].Name);
+          UpdateProp(cIndexName, IndexDefs.Items[I].Name, SortField);
           Break;
         end;
       end;
@@ -350,6 +392,7 @@ var
 var
   FTS: Integer;
   SortField: TField;
+  NewIndexName: string;
   Retry: Boolean;
   FieldIsValid: Boolean;
 begin
@@ -360,6 +403,9 @@ begin
     DSet := DataSource.DataSet;
     DSet.CheckBrowseMode;
 
+    if FRestoreOnSort then
+      SaveGridPosition;
+
     // Checking of OnUserSort assignment
     if Assigned(OnUserSort) then
       SortWith := swUserFunc;
@@ -367,7 +413,7 @@ begin
       raise EJVCLDbGridException.CreateRes(@RsEJvDBGridUserSortNotAssigned);
 
     // Checking of index properties
-    if (SortWith = swIndex) and
+    if (SortWith in [swIndex, swClient]) and
       not (IsPublishedProp(DSet, cIndexDefs) and IsPublishedProp(DSet, cIndexName)) then
       raise EJVCLDbGridException.CreateRes(@RsEJvDBGridIndexPropertyMissing)
     else
@@ -380,11 +426,21 @@ begin
     DSet.DisableControls;
     try
       SortString := '';
+
+      { 
+        - ADO datasets
+        - TClientDataSets with Provider or else TClientDataSets loses recordset.
+        - Not tested for BDE.
+      }
+      if (SortWith in [swFields, swClient]) and (FMasterFields <> '') then
+        SortString := FMasterFields;
+
       DescString := '';
       MaxFTS := Length(FieldsToSort) - 1;
       for FTS := 0 to MaxFTS do
       begin
         FieldsToSort[FTS].Name := Trim(FieldsToSort[FTS].Name);
+        SortField := nil; // to avoid warning
         if SortWith <> swWhere then
         begin
           SortField := DSet.FieldByName(FieldsToSort[FTS].Name);
@@ -420,7 +476,7 @@ begin
           end;
           if FTS = MaxFTS then
           begin
-            SearchIndex;
+            SearchIndex(SortField);
             if not SortOK then
             begin
               if Assigned(OnIndexNotFound) then
@@ -429,7 +485,7 @@ begin
                 OnIndexNotFound(Self, FieldsToSort, SortString, DescString, Retry);
                 if Retry then
                 begin
-                  SearchIndex;
+                  SearchIndex(SortField);
                   if not SortOK then
                     raise EJVCLDbGridException.CreateRes(@RsEJvDBGridIndexMissing);
                 end;
@@ -439,6 +495,35 @@ begin
             end;
           end;
         end
+        else
+
+        if SortWith = swClient then
+        begin
+          // Sort with IndexName
+          if SortString <> '' then
+            SortString := SortString + ';';
+          SortString := SortString + FieldsToSort[FTS].Name;
+          if FieldsToSort[FTS].Order = JvGridSort_DESC then
+          begin
+            if DescString <> '' then
+              DescString := DescString + ';';
+            DescString := DescString + FieldsToSort[FTS].Name;
+          end;
+          if FTS = MaxFTS then
+          begin
+            // Create the index.
+            NewIndexName:=cNewIndexName + IntToStr(FIndexList.Count + 1);
+            FIndexList.Add(NewIndexName);
+            TClientDataSet(DSet).AddIndex(NewIndexName, SortString, [], DescString);
+            // Set the index.
+            UpdateProp(cIndexName, NewIndexName, SortField);
+            if not SortOK then
+            begin
+              { }
+            end;
+          end;
+        end
+
         else
         if SortWith in [swFields, swUserFunc, swWhere] then
         begin
@@ -463,7 +548,7 @@ begin
                 FSortedFields := FieldsToSort;
             end
             else
-              UpdateProp(cIndexFieldNames, SortString);
+              UpdateProp(cIndexFieldNames, SortString, SortField);
           end;
         end;
       end;
@@ -473,6 +558,10 @@ begin
       DSet.EnableControls;
       Screen.Cursor := crDefault;
     end;
+
+    if FRestoreOnSort then
+      RestoreGridPosition([rmExact]); // Position current record on top.
+//      RestoreGridPosition; // Center current record.
   end;
 end;
 
@@ -489,6 +578,31 @@ begin
   end;
 end;
 
+procedure TJvDBUltimGrid.SetSortExcludedFields(const Value: string);
+begin
+  if FSortExcludedFields <> Value then
+    FSortExcludedFields := StringReplace(Trim(Value), ';', ',', [rfReplaceAll]);
+end;
+
+procedure TJvDBUltimGrid.SetMasterFields(const Value: string);
+begin
+  if FMasterFields <> Value then
+    FMasterFields := StringReplace(Trim(Value), ';', ',', [rfReplaceAll]);
+end;
+
+procedure TJvDBUltimGrid.ClearSortedFields;
+var
+  SF: Integer;
+begin
+  if Assigned(FSortedFields) then
+  begin
+    for SF := 0 to Length(FSortedFields) - 1 do
+      ChangeSortMarker(smNone);
+    SetLength(FSortedFields, 0);
+    Invalidate;
+  end;
+end;
+
 procedure TJvDBUltimGrid.DoTitleClick(ACol: Longint; AField: TField);
 var
   Keys: TKeyboardState;
@@ -497,10 +611,25 @@ var
   FieldsToSort: TSortFields;
   I: Integer;
   SortFieldName: string;
+
+  function IsExcluded(F: TField): Boolean;
+  var
+    I: Integer;
+  begin
+    Result:=False;
+    if FSortExcludedFields <> '' then
+      for I:=1 to WordCount(FSortExcludedFields, [',']) do
+        if AnsiSameText(F.FieldName, Trim(ExtractWord(I, FSortExcludedFields, [',']))) then 
+        begin
+          Result := True;
+          Exit;
+        end;
+  end;
+
 begin
   FSortOK := False;
   try
-    if Assigned(AField) then
+    if AutoSort and Assigned(AField) and not IsExcluded(AField) then
     begin
       Found := False;
       SortArraySize := 1;
@@ -560,33 +689,29 @@ end;
 
 procedure TJvDBUltimGrid.SaveGridPosition;
 begin
+  {$IF defined(RTL185_UP) and not defined(RTL200_UP)}
+  if FSavedBookmark <> nil then
+    DataLink.DataSet.FreeBookmark(FSavedBookmark);
+  FSavedBookmark := DataLink.DataSet.GetBookmark;
+  {$ELSE}
   FSavedBookmark := DataLink.DataSet.Bookmark;
+  {$IFEND}
   FSavedRowPos := DataLink.ActiveRecord;
 end;
 
-procedure TJvDBUltimGrid.RestoreGridPosition;
+procedure TJvDBUltimGrid.RestoreGridPosition(Mode: TResyncMode = [rmExact, rmCenter]);
 begin
   if Assigned(FOnRestoreGridPosition) then
   begin
-    // This example for ADO datasets positions the dataset cursor exactly
-    // where it was before it moves (put this code into your event):
-    //
-    // Delphi code:
-    // if (MyADODataSet.BookmarkValid(SavedBookmark)) then
-    //   MyADODataSet.Recordset.Bookmark := POleVariant(SavedBookmark)^;
-    // try MyADODataSet.Resync([rmExact]); except end;
-    //
-    // BCB code:
-    // if (MyADODataSet->BookmarkValid(SavedBookmark))
-    //   MyADODataSet->Recordset->Bookmark = *(POleVariant)SavedBookmark;
-    // try {MyADODataSet->Resync(TResyncMode() << rmExact);} catch (...) {}
-    //
+    if DataLink.DataSet.BookmarkValid(FSavedBookmark) then
+      GotoBookmarkEx(DataLink.DataSet, FSavedBookmark, [rmExact], False);
+
     DataLink.ActiveRecord := FSavedRowPos;
-    FOnRestoreGridPosition(Self, Pointer(FSavedBookmark), FSavedRowPos);
+    FOnRestoreGridPosition(Self, FSavedBookmark, FSavedRowPos);
   end
   else
-  if DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
-    DataLink.DataSet.GotoBookmark(Pointer(FSavedBookmark));
+  if DataLink.DataSet.BookmarkValid(FSavedBookmark) then
+    GotoBookmarkEx(DataLink.DataSet, FSavedBookmark, Mode, False);
 end;
 
 function TJvDBUltimGrid.PrivateSearch(var ResultCol: Integer; var ResultField: TField;
