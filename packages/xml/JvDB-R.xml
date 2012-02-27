@@ -17,6 +17,7 @@
     <Package Name="rtl" Targets="C,D" Condition=""/>
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="dbrtl" Targets="DB" Condition=""/>
+    <Package Name="dsnap" Targets="DB" Condition=""/>
     <Package Name="vcldb" Targets="DB" Condition=""/>
     <Package Name="adortl" Targets="DB" Condition=""/>
     <Package Name="vclx" Targets="C,D" Condition=""/>
