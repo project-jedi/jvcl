@@ -110,6 +110,7 @@ type
     // register a new base validator class. DisplayName is used by the design-time editor.
     // A class with an empty DisplayName will not sshow up in the editor
     class procedure RegisterBaseValidator(const DisplayName: string; AValidatorClass: TJvBaseValidatorClass);
+    class procedure UnregisterBaseValidator(AValidatorClass: TJvBaseValidatorClass);
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -370,6 +371,18 @@ begin
   begin
     Classes.RegisterClass(TPersistentClass(AValidatorClass));
     ValidatorsList.AddObject(DisplayName, Pointer(AValidatorClass));
+  end;
+end;
+
+class procedure TJvBaseValidator.UnregisterBaseValidator(AValidatorClass: TJvBaseValidatorClass);
+var
+  ClassIndex: Integer;
+begin
+  ClassIndex := ValidatorsList.IndexOfObject(Pointer(AValidatorClass));
+  if ClassIndex >= 0 then
+  begin
+    Classes.UnregisterClass(TPersistentClass(AValidatorClass));
+    ValidatorsList.Delete(ClassIndex);
   end;
 end;
 
