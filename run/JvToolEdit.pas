@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -2955,11 +2955,11 @@ begin
     if BorderStyle = bsSingle then
     begin
       if Ctl3D then
-        BtnRect := Bounds(Width - FButton.Width - 2, 0,
-          FButton.Width, Height - 2)
+        BtnRect := Bounds(Width - FButton.Width - 2 - 1, 0 + 1,
+          FButton.Width, Height - 2 - 2)
       else
-        BtnRect := Bounds(Width - FButton.Width - 1, 1,
-          FButton.Width, Height - 2);
+        BtnRect := Bounds(Width - FButton.Width - 1 - 1, 1 + 1,
+          FButton.Width, Height - 2 - 2);
     end
     else
       BtnRect := Bounds(Width - FButton.Width, 0,
@@ -2971,7 +2971,7 @@ begin
     if BorderStyle = bsSingle then
     begin
       if not Flat then
-        BtnRect := Bounds(Width - FButton.Width - 4, 0,
+        BtnRect := Bounds(Width - FButton.Width - 4 + 1, 0 + 1,
           FButton.Width, Height - 4)
       else
         BtnRect := Bounds(Width - FButton.Width - 2, 2,
