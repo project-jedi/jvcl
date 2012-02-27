@@ -2914,7 +2914,7 @@ begin
     WriteCellText(Rect, 2, 2, MemoText, Column.Alignment,
       UseRightToLeftAlignmentForField(Column.Field, Column.Alignment), False);
   end
-  else
+  else if GetImageIndex(Column.Field) < 0 then  // Mantis 5013: Must not call inherited drawer, or the text will be painted over
     inherited DefaultDrawColumnCell(Rect, DataCol, Column, State);
 end;
 
