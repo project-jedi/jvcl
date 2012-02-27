@@ -369,7 +369,8 @@ type
     FOnBeginColumnResize: TJvListViewBeginColumnResizeEvent;
     FOnEndColumnResize: TJvListViewColumnResizeEvent;
     FOnColumnResizing: TJvListViewColumnResizeEvent;
-    
+    FLastSortedColumnIndex: Integer;
+
     procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     {$IFNDEF RTL200_UP}
@@ -412,6 +413,7 @@ type
     procedure SetJvViewStyle(Value: TJvViewStyle); virtual;
     procedure ItemClick(AItem: TListItem; SubItemIndex: Integer; X, Y: Integer); virtual;
     procedure ItemDblClick(AItem: TListItem; SubItemIndex: Integer; X, Y: Integer); virtual;
+    procedure SetLastSortedColumnIndex(const Value: Integer); virtual;
 
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -462,6 +464,8 @@ type
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure SetFocus; override;
+
+    property LastSortedColumnIndex: Integer read FLastSortedColumnIndex write SetLastSortedColumnIndex;
   published
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
@@ -1263,6 +1267,7 @@ begin
   inherited ColClick(Column);
   if FSortOnClick then
   begin
+    FLastSortedColumnIndex := Column.Index;
     Parm.ColumnIndex := Column.Index;
     Parm.Sender := Self;
     if FLast = Column.Index then
@@ -2494,6 +2499,15 @@ begin
     finally
       FSettingJvViewStyle := False;
     end;
+  end;
+end;
+
+procedure TJvListView.SetLastSortedColumnIndex(const Value: Integer);
+begin
+  if FLastSortedColumnIndex <> Value then
+  begin
+    FLastSortedColumnIndex := Value;
+    ColClick(Columns[Value]);
   end;
 end;
 
