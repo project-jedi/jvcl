@@ -43,7 +43,9 @@ uses
   Types, SysUtils, Classes, Forms, Graphics;
 
 type
-  TPluginMessageEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;
+  // For legacy reasons, the first one still exists but you are encouraged to use the second
+  TPluginMessageEvent    = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;
+  TPluginMessageObjEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string; AObj:TObject) of object;
   TPluginInitializeEvent = procedure(Sender: TObject; var AllowLoad: Boolean) of object;
   TJvPluginCommand = class;
   TJvPluginCommands = class;
@@ -60,6 +62,9 @@ type
     FManager: TComponent;
     FInstanceCount: Integer;
     FOnPluginMessage: TPluginMessageEvent;
+    FOnBroadcastToAllMessage: TPluginMessageEvent;
+    FOnPluginMessageObj: TPluginMessageObjEvent;
+    FOnBroadcastToAllMessageObj: TPluginMessageObjEvent;
     FOnInitialize: TPluginInitializeEvent;
     FOnConfigure: TNotifyEvent;
     FPluginVersion: string;
@@ -73,13 +78,25 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     procedure Configure; virtual; stdcall;
     function Initialize(Manager: TComponent; HostApplication: TApplication;
       FileName: string): Boolean; virtual; stdcall;
     procedure SendPluginMessage(APluginMessage: Longint; AMessageText: string);
+    procedure BroadcastMsgToALL(APluginMessage: Longint; AMessageText: string); virtual; stdcall;
+    procedure BroadcastMsgToALLObj(APluginMessage: Longint; AMessageText: string; AObj:TObject);
+    // Only reason I can think of that would require BroadcastMsgToALL to be exported is when the plugin needs to
+    // send a message to other modules in order to function properly.  In such a case the host
+    // would need to implement a rebroadcast method.  In Delphi this is done by the Plugin Manager,
+    // other languages, implementation of rebroadcast. Leaving the obj ver alone for now.
+
     property HostApplication: TApplication read FHostApplication;
     property Manager: TComponent read FManager;
     property FileName: TFileName read FFileName;
+
+    // Host uses this Event property (not the plugin component through the object inspector) so it is not published.
+    property OnPluginBroadcast: TPluginMessageEvent read FOnBroadcastToAllMessage write FOnBroadcastToAllMessage;
+    property OnPluginBroadcastObj: TPluginMessageObjEvent read FOnBroadcastToAllMessageObj write FOnBroadcastToAllMessageObj;
   published
     property Author: string read FAuthor write FAuthor;
     property Commands: TJvPluginCommands read FCommands write SetCommands;
@@ -90,6 +107,7 @@ type
 //    property Version: string read GetVersion write SetVersion;
     property PluginVersion: string read FPluginVersion write FPluginVersion;
     property OnPluginMessage: TPluginMessageEvent read FOnPluginMessage write FOnPluginMessage;
+    property OnPluginMessageWithObj: TPluginMessageObjEvent read FOnPluginMessageObj write FOnPluginMessageObj;
     property OnInitialize: TPluginInitializeEvent read FOnInitialize write FOnInitialize;
     property OnConfigure: TNotifyEvent read FOnConfigure write FOnConfigure;
   end;
@@ -225,6 +243,20 @@ end;
 procedure TJvPlugIn.SendPluginMessage(APluginMessage: Integer; AMessageText: string);
 begin
   TriggerPluginMessageEvent(APluginMessage, AMessageText);
+end;
+
+procedure TJvPlugIn.BroadcastMsgToALL(APluginMessage: Integer;  AMessageText: string);
+begin
+  // Remember, when called, this method will trigger assigned method within host, not within the plugin component.
+  if Assigned(FOnBroadcastToAllMessage) then
+    FOnBroadcastToAllMessage(Self, APluginMessage, AMessageText);
+end;
+
+procedure TJvPlugIn.BroadcastMsgToALLObj(APluginMessage: Integer; AMessageText: string; AObj: TObject);
+begin
+  // Remember, when called, this method will trigger assigned method within host, not within the plugin component.
+  if Assigned(FOnBroadcastToAllMessageObj) then
+    FOnBroadcastToAllMessageObj(Self, APluginMessage, AMessageText, AObj);
 end;
 
 //=== { TJvPluginCommand } ===================================================
