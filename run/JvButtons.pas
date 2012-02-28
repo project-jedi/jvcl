@@ -127,12 +127,17 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
+  TJvHTButton = class;
+
   TJvHTButtonGlyph = class(TJvButtonGlyph)
   private
+    FOwner: TJvHTButton;
     procedure DrawButtonText(Canvas: TCanvas; const Caption: string;
       TextBounds: TRect; State: TButtonState); override;
   protected
     procedure CalcTextRect(Canvas: TCanvas; var TextRect: TRect; const Caption: string); override;
+  public
+    constructor Create(AOwner: TJvHTButton); 
   end;
 
   TJvaCaptionButton = class(TJvComponent)
@@ -262,9 +267,15 @@ type
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
   TJvHTButton = class(TJvaColorButton)
+  private
+    FSuperSubScriptRatio: Double;
+    function ISuperSuperSubScriptRatioStored: Boolean;
+    procedure SetSuperSubScriptRation(const Value: Double);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  published
+    property SuperSubScriptRatio: Double read FSuperSubScriptRatio write SetSuperSubScriptRation stored ISuperSuperSubScriptRatioStored;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -864,6 +875,13 @@ begin
   DrawText(Canvas, Caption, Length(Caption), TextRect, DT_CALCRECT);
 end;
 
+constructor TJvHTButtonGlyph.Create(AOwner: TJvHTButton);
+begin
+  inherited Create;
+
+  FOwner := AOwner;
+end;
+
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 begin
@@ -874,13 +892,13 @@ begin
     begin
       OffsetRect(TextBounds, 1, 1);
       Font.Color := clBtnHighlight;
-      ItemHtDraw(Canvas, TextBounds, [], Caption);
+      ItemHtDraw(Canvas, TextBounds, [], Caption, FOwner.SuperSubScriptRatio);
       OffsetRect(TextBounds, -1, -1);
       Font.Color := clBtnShadow;
-      ItemHtDraw(Canvas, TextBounds, [], Caption);
+      ItemHtDraw(Canvas, TextBounds, [], Caption, FOwner.SuperSubScriptRatio);
     end
     else
-      ItemHtDraw(Canvas, TextBounds, [], Caption);
+      ItemHtDraw(Canvas, TextBounds, [], Caption, FOwner.SuperSubScriptRatio);
   end;
 end;
 
@@ -889,7 +907,7 @@ var
   Size: TSize;
 begin
   TextRect := Rect(0, 0, 0, 0);
-  Size := ItemHTExtent(Canvas, TextRect, [], Caption);
+  Size := ItemHTExtent(Canvas, TextRect, [], Caption, FOwner.SuperSubScriptRatio);
   TextRect := Rect(0, 0, Size.cx, Size.cy);
 end;
 
@@ -1753,7 +1771,8 @@ constructor TJvHTButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FGlyphDrawer.Free;
-  FGlyphDrawer := TJvHTButtonGlyph.Create;
+  FGlyphDrawer := TJvHTButtonGlyph.Create(Self);
+  FSuperSubScriptRatio := DefaultSuperSubScriptRatio;
 end;
 
 destructor TJvHTButton.Destroy;
@@ -1761,6 +1780,20 @@ begin
   TJvHTButtonGlyph(FGlyphDrawer).Free;
   FGlyphDrawer := nil;
   inherited Destroy;
+end;
+
+function TJvHTButton.ISuperSuperSubScriptRatioStored: Boolean;
+begin
+  Result := FSuperSubScriptRatio <> DefaultSuperSubScriptRatio;
+end;
+
+procedure TJvHTButton.SetSuperSubScriptRation(const Value: Double);
+begin
+  if FSuperSubScriptRatio <> Value then
+  begin
+    FSuperSubScriptRatio := Value;
+    Invalidate;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
