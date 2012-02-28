@@ -62,6 +62,7 @@
 			<DCCReference Include="rtl.dcp"/>
 			<DCCReference Include="vcl.dcp"/>
 			<DCCReference Include="dbrtl.dcp"/>
+			<DCCReference Include="dsnap.dcp"/>
 			<DCCReference Include="vcldb.dcp"/>
 			<DCCReference Include="adortl.dcp"/>
 			<DCCReference Include="vclx.dcp"/>
