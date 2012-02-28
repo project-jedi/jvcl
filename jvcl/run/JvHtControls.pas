@@ -117,6 +117,9 @@ uses
   Windows, Messages, Graphics, Contnrs, Controls, StdCtrls, Dialogs,
   JvJVCLUtils, JvExStdCtrls, JvDataSourceIntf;
 
+const
+  DefaultSuperSubScriptRatio: Double = 2/3;
+
 type
   TJvCustomListBoxDataConnector = class(TJvFieldDataConnector)
   private
@@ -145,9 +148,12 @@ type
     FColorHighlightText: TColor;
     FColorDisabledText: TColor;
     FDataConnector: TJvCustomListBoxDataConnector;
+    FSuperSubScriptRatio: Double;
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDataConnector(const Value: TJvCustomListBoxDataConnector);
+    function ISuperSuperSubScriptRatioStored: Boolean;
+    procedure SetSuperSubScriptRation(const Value: Double);
   protected
     function CreateDataConnector: TJvCustomListBoxDataConnector; virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -163,6 +169,7 @@ type
   protected
     procedure CMChanged(var Message: TCMChanged); message CM_CHANGED;
     property HideSel: Boolean read FHideSel write SetHideSel;
+    property SuperSubScriptRatio: Double read FSuperSubScriptRatio write SetSuperSubScriptRation stored ISuperSuperSubScriptRatioStored;
 
     property ColorHighlight: TColor read FColorHighlight write FColorHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write FColorHighlightText;
@@ -211,6 +218,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Sorted;
+    property SuperSubScriptRatio;
     //property Style;
     property TabOrder;
     property TabStop;
@@ -244,9 +252,12 @@ type
     FColorHighlight: TColor;
     FColorHighlightText: TColor;
     FColorDisabledText: TColor;
+    FSuperSubScriptRatio: Double;
     procedure SetHideSel(Value: Boolean);
     function GetPlainItems(Index: Integer): string;
     procedure SetDropWidth(ADropWidth: Integer);
+    function ISuperSuperSubScriptRatioStored: Boolean;
+    procedure SetSuperSubScriptRation(const Value: Double);
   protected
     procedure CreateWnd; override;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
@@ -261,6 +272,7 @@ type
     property ColorHighlight: TColor read FColorHighlight write FColorHighlight;
     property ColorHighlightText: TColor read FColorHighlightText write FColorHighlightText;
     property ColorDisabledText: TColor read FColorDisabledText write FColorDisabledText;
+    property SuperSubScriptRatio: Double read FSuperSubScriptRatio write SetSuperSubScriptRation stored ISuperSuperSubScriptRatioStored;
   end;
 
   {$IFDEF RTL230_UP}
@@ -298,6 +310,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Sorted;
+    property SuperSubScriptRatio;
     property TabOrder;
     property TabStop;
     property Text;
@@ -328,6 +341,9 @@ type
     FOnHyperLinkClick: TJvHyperLinkClickEvent;
     FMouseX, FMouseY: Integer;
     FHyperLinkMouseButtons: TJvHTLabelMouseButtons;
+    FSuperSubScriptRatio: Double;
+    function ISuperSuperSubScriptRatioStored: Boolean;
+    procedure SetSuperSubScriptRation(const Value: Double);
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -342,6 +358,7 @@ type
 
     property HyperLinkMouseButtons: TJvHTLabelMouseButtons read FHyperLinkMouseButtons write FHyperLinkMouseButtons default [mbLeft];
     property OnHyperLinkClick: TJvHyperLinkClickEvent read FOnHyperLinkClick write FOnHyperLinkClick;
+    property SuperSubScriptRatio: Double read FSuperSubScriptRatio write SetSuperSubScriptRation stored ISuperSuperSubScriptRatioStored;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -376,6 +393,7 @@ type
     property PopupMenu;
     // property ShowAccelChar;   not supported
     property ShowHint;
+    property SuperSubScriptRatio;
     property Transparent;
     property Visible;
     // property WordWrap;   not supported
@@ -397,18 +415,18 @@ type
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer = 100);
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100);
   { example for Text parameter : 'Item 1 <b>bold</b> <i>italic ITALIC <br><FONT COLOR="clRed">red <FONT COLOR="clgreen">green <FONT COLOR="clblue">blue </i>' }
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
 function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
 function ItemHTPlain(const Text: string): string;
 function ItemHTExtent(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; Scale: Integer = 100): TSize;
+  const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
-function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
 function PrepareText(const A: string): string; deprecated;
 
 {$IFDEF UNITVERSIONING}
@@ -444,21 +462,21 @@ end;
 procedure ItemHTDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType; MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer = 100);
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100);
 begin
-  HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LinkName, Scale);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Width, CalcType, MouseX, MouseY, MouseOnLink, LinkName, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTDraw(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; Scale: Integer = 100): string;
+  const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
 begin
-  HTMLDrawText(Canvas, Rect, State, Text, Scale);
+  HTMLDrawText(Canvas, Rect, State, Text, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTDrawHL(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; MouseX, MouseY: Integer; Scale: Integer = 100): string;
+  const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
 begin
-  HTMLDrawTextHL(Canvas, Rect, State, Text, MouseX, MouseY, Scale);
+  HTMLDrawTextHL(Canvas, Rect, State, Text, MouseX, MouseY, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTPlain(const Text: string): string;
@@ -467,20 +485,20 @@ begin
 end;
 
 function ItemHTExtent(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
-  const Text: string; Scale: Integer = 100): TSize;
+  const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
 begin
-  Result := HTMLTextExtent(Canvas, Rect, State, Text, Scale);
+  Result := HTMLTextExtent(Canvas, Rect, State, Text, SuperSubScriptRatio, Scale);
 end;
 
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
 begin
-  Result := HTMLTextWidth(Canvas, Rect, State, Text, Scale);
+  Result := HTMLTextWidth(Canvas, Rect, State, Text, SuperSubScriptRatio, Scale);
 end;
 
-function ItemHTHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
 begin
-  Result := HTMLTextHeight(Canvas, Text, Scale);
+  Result := HTMLTextHeight(Canvas, Text, SuperSubScriptRatio, Scale);
 end;
 
 function IsHyperLinkPaint(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawState;
@@ -488,7 +506,7 @@ function IsHyperLinkPaint(Canvas: TCanvas; Rect: TRect; const State: TOwnerDrawS
 var
   W: Integer;
 begin
-  ItemHTDrawEx(Canvas, Rect, State, Text, W, htmlShow, MouseX, MouseY, Result, HyperLink);
+  ItemHTDrawEx(Canvas, Rect, State, Text, W, htmlShow, MouseX, MouseY, Result, HyperLink, DefaultSuperSubScriptRatio);
 end;
 
 function IsHyperLink(Canvas: TCanvas; Rect: TRect; const Text: string;
@@ -496,7 +514,7 @@ function IsHyperLink(Canvas: TCanvas; Rect: TRect; const Text: string;
 var
   W: Integer;
 begin
-  ItemHTDrawEx(Canvas, Rect, [], Text, W, htmlHyperLink, MouseX, MouseY, Result, HyperLink);
+  ItemHTDrawEx(Canvas, Rect, [], Text, W, htmlHyperLink, MouseX, MouseY, Result, HyperLink, DefaultSuperSubScriptRatio);
 end;
 
 //=== { TJvCustomListBoxDataConnector } ======================================
@@ -587,6 +605,7 @@ begin
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
   FColorDisabledText := clGrayText;
+  FSuperSubScriptRatio := DefaultSuperSubScriptRatio;
 end;
 
 destructor TJvCustomHTListBox.Destroy;
@@ -620,12 +639,12 @@ begin
 
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
-  ItemHTDraw(Canvas, Rect, State, Items[Index]);
+  ItemHTDraw(Canvas, Rect, State, Items[Index], SuperSubScriptRatio);
 end;
 
 procedure TJvCustomHTListBox.MeasureItem(Index: Integer; var Height: Integer);
 begin
-  Height := ItemHTHeight(Canvas, Items[Index]);
+  Height := ItemHTHeight(Canvas, Items[Index], SuperSubScriptRatio);
 end;
 
 function TJvCustomHTListBox.CreateDataConnector: TJvCustomListBoxDataConnector;
@@ -654,9 +673,23 @@ begin
   Invalidate;
 end;
 
+procedure TJvCustomHTListBox.SetSuperSubScriptRation(const Value: Double);
+begin
+  if FSuperSubScriptRatio <> Value then
+  begin
+    FSuperSubScriptRatio := Value;
+    Invalidate;
+  end;
+end;
+
 function TJvCustomHTListBox.GetPlainItems(Index: Integer): string;
 begin
   Result := ItemHTPlain(Items[Index]);
+end;
+
+function TJvCustomHTListBox.ISuperSuperSubScriptRatioStored: Boolean;
+begin
+  Result := FSuperSubScriptRatio <> DefaultSuperSubScriptRatio;
 end;
 
 procedure TJvCustomHTListBox.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -726,6 +759,7 @@ begin
   FColorHighlight := clHighlight;
   FColorHighlightText := clHighlightText;
   FColorDisabledText := clGrayText;
+  FSuperSubScriptRatio := DefaultSuperSubScriptRatio;
 end;
 
 procedure TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
@@ -741,7 +775,7 @@ begin
 
   Canvas.FillRect(Rect);
   Inc(Rect.Left, 2);
-  ItemHTDraw(Canvas, Rect, State, Items[Index]);
+  ItemHTDraw(Canvas, Rect, State, Items[Index], SuperSubScriptRatio);
 end;
 
 function TJvCustomHTComboBox.GetHeight: Integer;
@@ -760,9 +794,23 @@ begin
   Invalidate;
 end;
 
+procedure TJvCustomHTComboBox.SetSuperSubScriptRation(const Value: Double);
+begin
+  if FSuperSubScriptRatio <> Value then
+  begin
+    FSuperSubScriptRatio := Value;
+    Invalidate;
+  end;
+end;
+
 function TJvCustomHTComboBox.GetPlainItems(Index: Integer): string;
 begin
   Result := ItemHTPlain(Items[Index]);
+end;
+
+function TJvCustomHTComboBox.ISuperSuperSubScriptRatioStored: Boolean;
+begin
+  Result := FSuperSubScriptRatio <> DefaultSuperSubScriptRatio;
 end;
 
 procedure TJvCustomHTComboBox.CreateWnd;
@@ -795,12 +843,18 @@ constructor TJvCustomHTLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHyperLinkMouseButtons := [mbLeft];
+  FSuperSubScriptRatio := DefaultSuperSubScriptRatio;
 end;
 
 procedure TJvCustomHTLabel.FontChanged;
 begin
   inherited FontChanged;
   AdjustBounds;
+end;
+
+function TJvCustomHTLabel.ISuperSuperSubScriptRatioStored: Boolean;
+begin
+  Result := FSuperSubScriptRatio <> DefaultSuperSubScriptRatio;
 end;
 
 procedure TJvCustomHTLabel.Loaded;
@@ -823,8 +877,8 @@ begin
     try
       Canvas.Handle := DC;
       Canvas.Font.Assign(Font);
-      Rect.Bottom := ItemHTHeight(Canvas, Caption);
-      MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption);
+      Rect.Bottom := ItemHTHeight(Canvas, Caption, SuperSubScriptRatio);
+      MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption, SuperSubScriptRatio);
     finally
       Canvas.Handle := 0;
       ReleaseDC(HWND_DESKTOP, DC);
@@ -855,9 +909,9 @@ begin
     tlTop:
       ;
     tlBottom:
-      Result.Top := Result.Bottom - ItemHTHeight(Canvas, Caption);
+      Result.Top := Result.Bottom - ItemHTHeight(Canvas, Caption, SuperSubScriptRatio);
     tlCenter:
-      Result.Top := (Result.Bottom - Result.Top - ItemHTHeight(Canvas, Caption)) div 2;
+      Result.Top := (Result.Bottom - Result.Top - ItemHTHeight(Canvas, Caption, SuperSubScriptRatio)) div 2;
   end;
 end;
 
@@ -867,6 +921,15 @@ begin
   begin
     inherited SetAutoSize(Value);
     AdjustBounds;
+  end;
+end;
+
+procedure TJvCustomHTLabel.SetSuperSubScriptRation(const Value: Double);
+begin
+  if FSuperSubScriptRatio <> Value then
+  begin
+    FSuperSubScriptRatio := Value;
+    Invalidate;
   end;
 end;
 
@@ -890,13 +953,13 @@ begin
   begin
     OffsetRect(Rect, 1, 1);
     Canvas.Font.Color := clBtnHighlight;
-    ItemHTDrawHL(Canvas, Rect, [odDisabled], PaintText, FMouseX, FMouseY);
+    ItemHTDrawHL(Canvas, Rect, [odDisabled], PaintText, FMouseX, FMouseY, SuperSubScriptRatio);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
-    ItemHTDrawHL(Canvas, Rect, [odDisabled], PaintText, FMouseX, FMouseY);
+    ItemHTDrawHL(Canvas, Rect, [odDisabled], PaintText, FMouseX, FMouseY, SuperSubScriptRatio);
   end
   else
-    ItemHTDrawHL(Canvas, Rect, [], PaintText, FMouseX, FMouseY);
+    ItemHTDrawHL(Canvas, Rect, [], PaintText, FMouseX, FMouseY, SuperSubScriptRatio);
 end;
 
 procedure TJvCustomHTLabel.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -948,9 +1011,9 @@ begin
       tlTop:
         ;
       tlBottom:
-        R.Top := R.Bottom - ItemHTHeight(Canvas, Caption);
+        R.Top := R.Bottom - ItemHTHeight(Canvas, Caption, SuperSubScriptRatio);
       tlCenter:
-        R.Top := (R.Bottom - R.Top - ItemHTHeight(Canvas, Caption)) div 2;
+        R.Top := (R.Bottom - R.Top - ItemHTHeight(Canvas, Caption, SuperSubScriptRatio)) div 2;
     end;
     if IsHyperLink(Canvas, R, Caption, X, Y, LinkName) then
       ExecuteHyperlink(Self, FOnHyperLinkClick, LinkName);

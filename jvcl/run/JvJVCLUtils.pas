@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -686,22 +686,22 @@ type
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer = 100); overload;
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100); overload;
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width, Height: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer = 100); overload;
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer = 100); overload;
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): string;
 function HTMLDrawTextHL(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer;
+  const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer; SuperSubScriptRatio: Double; 
   Scale: Integer = 100): string;
 function HTMLPlainText(const Text: string): string;
 function HTMLTextExtent(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): TSize;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
-function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
+function HTMLTextHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
 function HTMLPrepareText(const Text: string): string;
 
 // This type is used to allow an easy migration from a TBitmap property to a
@@ -6675,20 +6675,23 @@ end;
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer);
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer);
 var
   H: Integer;
 begin
   HTMLDrawTextEx(Canvas, Rect, State, Text, Width, H, CalcType, MouseX, MouseY, MouseOnLink,
-    LinkName, Scale);
+    LinkName, SuperSubScriptRatio, Scale);
   if CalcType = htmlCalcHeight then
     Width := H;
 end;
 
+type
+  TScriptPosition = (spNormal, spSuperscript, spSubscript);
+
 procedure HTMLDrawTextEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; var Width, Height: Integer;
   CalcType: TJvHTMLCalcType;  MouseX, MouseY: Integer; var MouseOnLink: Boolean;
-  var LinkName: string; Scale: Integer);
+  var LinkName: string; SuperSubScriptRatio: Double; Scale: Integer);
 const
   DefaultLeft = 0; // (ahuser) was 2
 var
@@ -6711,6 +6714,7 @@ var
   RemFontColor,
   RemBrushColor: TColor;
   RemFontSize: Integer;
+  ScriptPosition: TScriptPosition;
 
   function ExtractPropertyValue(const Tag: string; PropName: string): string;
   var
@@ -6760,7 +6764,7 @@ var
       taRightJustify:
         Result := (Rect.Right - Rect.Left) - HTMLTextWidth(Canvas, Rect, State, Str, Scale);
       taCenter:
-        Result := DefaultLeft + ((Rect.Right - Rect.Left) - HTMLTextWidth(Canvas, Rect, State, Str)) div 2;
+        Result := DefaultLeft + ((Rect.Right - Rect.Left) - HTMLTextWidth(Canvas, Rect, State, Str, SuperSubScriptRatio)) div 2;
     else
       Result := DefaultLeft;
     end;
@@ -6772,29 +6776,42 @@ var
   var
     Width, Height: Integer;
     R: TRect;
+    OriginalFontSize: Integer;
   begin
     R := Rect;
     Inc(R.Left, CurLeft);
     if Assigned(Canvas) then
     begin
-      Width  := Canvas.TextWidth(M);
-      Height := CanvasMaxTextHeight(Canvas);
-      if IsLink and not MouseOnLink then
-        if (MouseY >= R.Top) and (MouseY <= R.Top + Height) and
-           (MouseX >= R.Left) and (MouseX <= R.Left + Width) and
-           ((MouseY > 0) or (MouseX > 0)) then
+      OriginalFontSize := Canvas.Font.Size; 
+      try
+        if ScriptPosition <> spNormal then
+          Canvas.Font.Size := Round(Canvas.Font.Size * SuperSubScriptRatio);
+          
+        Width  := Canvas.TextWidth(M);
+        Height := CanvasMaxTextHeight(Canvas);
+
+        if ScriptPosition = spSubscript then
+          R.Top := R.Bottom - Height - 1;
+
+        if IsLink and not MouseOnLink then
+          if (MouseY >= R.Top) and (MouseY <= R.Top + Height) and
+             (MouseX >= R.Left) and (MouseX <= R.Left + Width) and
+             ((MouseY > 0) or (MouseX > 0)) then
+          begin
+            MouseOnLink := True;
+            Canvas.Font.Color := clRed; // hover link
+            LinkName := TempLink;
+          end;
+        if CalcType = htmlShow then
         begin
-          MouseOnLink := True;
-          Canvas.Font.Color := clRed; // hover link
-          LinkName := TempLink;
+          if Trans then
+            Canvas.Brush.Style := bsClear; // for transparent
+          Canvas.TextOut(R.Left, R.Top, M);
         end;
-      if CalcType = htmlShow then
-      begin
-        if Trans then
-          Canvas.Brush.Style := bsClear; // for transparent
-        Canvas.TextOut(R.Left, R.Top, M);
+        CurLeft := CurLeft + Width;
+      finally
+        Canvas.Font.Size := OriginalFontSize;
       end;
-      CurLeft := CurLeft + Width;
     end;
   end;
 
@@ -6840,6 +6857,7 @@ begin
     vStr.Text := HTMLPrepareText(vText);
     LinkName := '';
     TempLink := '';
+    ScriptPosition := spNormal;
 
     Selected := (odSelected in State) or (odDisabled in State);
     Trans := (Canvas.Brush.Style = bsClear) and not selected;
@@ -6878,7 +6896,10 @@ begin
               'U':
                 Style(fsUnderline, False);
               'S':
-                Style(fsStrikeOut, False);
+                begin
+                  ScriptPosition := spNormal;
+                  Style(fsStrikeOut, False);
+                end;
               'F':
                 begin
                   if not Selected then // restore old colors
@@ -6938,7 +6959,21 @@ begin
               'U':
                 Style(fsUnderline, True);
               'S':
-                Style(fsStrikeOut, True);
+                begin
+                  if GetChar(vText, 4, True) = 'P' then
+                  begin
+                    ScriptPosition := spSuperscript;
+                  end
+                  else if GetChar(vText, 4, True) = 'B' then
+                  begin
+                    ScriptPosition := spSubscript;
+                  end
+                  else
+                  begin
+                    ScriptPosition := spNormal;
+                    Style(fsStrikeOut, True);
+                  end;
+                end;
               'H':
                 if (GetChar(vText, 3, True) = 'R') and Assigned(Canvas) then // HR
                 begin
@@ -7021,24 +7056,24 @@ begin
 end;
 
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer): string;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer): string;
 var
   W: Integer;
   S: Boolean;
   St: string;
 begin
-  HTMLDrawTextEx(Canvas, Rect, State, Text, W, htmlShow, 0, 0, S, St, Scale);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, W, htmlShow, 0, 0, S, St, SuperSubScriptRatio, Scale);
 end;
 
 function HTMLDrawTextHL(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; MouseX, MouseY: Integer;
-  Scale: Integer): string;
+  SuperSubScriptRatio: Double; Scale: Integer): string;
 var
   W: Integer;
   S: Boolean;
   St: string;
 begin
-  HTMLDrawTextEx(Canvas, Rect, State, Text, W, htmlShow, MouseX, MouseY, S, St, Scale);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, W, htmlShow, MouseX, MouseY, S, St, SuperSubScriptRatio, Scale);
 end;
 
 function HTMLPlainText(const Text: string): string;
@@ -7059,34 +7094,34 @@ begin
 end;
 
 function HTMLTextExtent(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): TSize;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): TSize;
 var
   S: Boolean;
   St: string;
 begin
-  HTMLDrawTextEx(Canvas, Rect, State, Text, Result.cx, Result.cy, htmlCalcWidth, 0, 0, S, St);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Result.cx, Result.cy, htmlCalcWidth, 0, 0, S, St, SuperSubScriptRatio, Scale);
   if Result.cy = 0 then
     Result.cy := CanvasMaxTextHeight(Canvas);
   Inc(Result.cy);
 end;
 
 function HTMLTextWidth(Canvas: TCanvas; Rect: TRect;
-  const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): Integer;
+  const State: TOwnerDrawState; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
 var
   S: Boolean;
   St: string;
 begin
-  HTMLDrawTextEx(Canvas, Rect, State, Text, Result, htmlCalcWidth, 0, 0, S, St);
+  HTMLDrawTextEx(Canvas, Rect, State, Text, Result, htmlCalcWidth, 0, 0, S, St, SuperSubScriptRatio, Scale);
 end;
 
-function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
+function HTMLTextHeight(Canvas: TCanvas; const Text: string; SuperSubScriptRatio: Double; Scale: Integer = 100): Integer;
 var
   S: Boolean;
   St: string;
   R: TRect;
 begin
   R := Rect(0, 0, 0, 0);
-  HTMLDrawTextEx(Canvas, R, [], Text, Result, htmlCalcHeight, 0, 0, S, St, Scale);
+  HTMLDrawTextEx(Canvas, R, [], Text, Result, htmlCalcHeight, 0, 0, S, St, SuperSubScriptRatio, Scale);
   if Result = 0 then
     Result := CanvasMaxTextHeight(Canvas);
   Inc(Result);
