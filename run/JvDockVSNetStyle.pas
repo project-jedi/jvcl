@@ -548,7 +548,7 @@ const
 implementation
 
 uses
-  SysUtils, Math, {AppEvnts,} JvJVCLUtils,
+  SysUtils, Math, ImgList, {AppEvnts,} JvJVCLUtils,
   JvDockSupportProc;
 
 type
@@ -1471,7 +1471,7 @@ var
       Canvas.FrameRect(DrawRect);
 
       AdjustImagePos;
-      Block.FImageList.Draw(Canvas, DrawRect.Left, DrawRect.Top, I);
+      Block.FImageList.Draw(Canvas, DrawRect.Left, DrawRect.Top, I, dsTransparent, itImage);
 
       if Block.ActivePane = Block.VSPane[I] then
       begin
