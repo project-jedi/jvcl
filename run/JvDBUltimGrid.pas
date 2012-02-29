@@ -118,7 +118,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Variants, Classes, Graphics, Controls, DB,
+  Windows, Variants, Classes, SysUtils, Graphics, Controls, DB,
   JvDBGrid; {JvTypes contains Exception base class}
 
 const
@@ -158,7 +158,7 @@ type
     FRestoreOnSort: Boolean;
     FSortExcludedFields: string;
     FMasterFields: string;
-    FIndexList: TStringList;
+    FIndexCounter: Cardinal;
 
     FMultiColSort: Boolean;
     FOnIndexNotFound: TIndexNotFoundEvent;
@@ -239,6 +239,8 @@ type
     property OnAfterSort: TNotifyEvent read FOnAfterSort write FOnAfterSort;
   end;
 
+  EJvDBUltimGrid = class(Exception);
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -252,8 +254,8 @@ const
 implementation
 
 uses
-  TypInfo, Forms, SysUtils, DBGrids, DBClient,
-  JclStrings,
+  TypInfo, Forms, DBGrids,
+  JclStrings, JclSysUtils,
   JvResources, JvJCLUtils, JvDBUtils;
 
 constructor TJvDBUltimGrid.Create(AOwner: TComponent);
@@ -271,13 +273,11 @@ begin
   FOnRestoreGridPosition := nil;
   FValueToSearch := Null;
   FSearchFields := TStringList.Create;
-  FIndexList := TStringList.Create;
 end;
 
 destructor TJvDBUltimGrid.Destroy;
 begin
   FSearchFields.Free;
-  FIndexList.Free;
   inherited Destroy;
 end;
 
@@ -311,7 +311,6 @@ const
   cIndexDefs = 'IndexDefs';
   cIndexName = 'IndexName';
   cIndexFieldNames = 'IndexFieldNames';
-  cNewIndexName = 'NewIndexName_';
 var
   DSet: TDataSet;
 
@@ -384,13 +383,60 @@ var
       end;
   end;
 
+  procedure SetClientIndex(SortField: TField);
+  const
+    cIndexPrefix = '_Idx_';
+  var
+    IndexDefs: TIndexDefs;
+    I: Integer;
+    NewIndexName: string;
+  begin
+    IndexDefs := TIndexDefs(GetOrdProp(DSet, cIndexDefs));
+    IndexDefs.Update;
+    { Search for an existing index... }
+    for I := 0 to IndexDefs.Count - 1 do begin
+      if (Pos(cIndexPrefix, IndexDefs.Items[I].Name) = 1) and // Search among the indexes this procedure creates by itselt.
+         (AnsiSameText(SortString, IndexDefs.Items[I].Fields)) and
+         (AnsiSameText(DescString, IndexDefs.Items[I].DescFields))
+      then begin
+        NewIndexName := IndexDefs.Items[I].Name;
+        UpdateProp(cIndexName, NewIndexName, SortField);
+        Break;
+      end
+    end;
+    { ... or else create a new one }
+    Inc(FIndexCounter);
+    NewIndexName := cIndexPrefix + IntToStr(FIndexCounter{IndexDefs.Count});
+    with IndexDefs.AddIndexDef do begin
+      Name := NewIndexName;
+      Fields := SortString;
+      CaseInsFields := SortString;
+      DescFields := DescString;
+    end;
+    UpdateProp(cIndexName, NewIndexName, SortField);
+  end;
+
 var
   FTS: Integer;
   SortField: TField;
-  NewIndexName: string;
   Retry: Boolean;
   FieldIsValid: Boolean;
 begin
+  // Test for dataset class compatibility with respect to sort method
+  case SortWith of
+    swIndex:
+      if not InheritsFromByName(DataSource.DataSet.ClassType, 'TTable') then
+        raise EJvDBUltimGrid.Create('Only TTable or derived classes or allowed for SortWith = swIndex');
+    swFields:
+      if not InheritsFromByName(DataSource.DataSet.ClassType, 'TCustomADODataSet') then
+        raise EJvDBUltimGrid.Create('Only TCustomADODataSet or derived classes or allowed for SortWith = swFields');
+    swClient:
+      if not InheritsFromByName(DataSource.DataSet.ClassType, 'TCustomClientDataSet') then
+        raise EJvDBUltimGrid.Create('Only TCustomClientDataSet or derived classes or allowed for SortWith = swClient');
+    swUserFunc: ;
+    swWhere: ;
+  end;
+
   FSortOK := False;
   if Assigned(DataLink) and DataLink.Active and Assigned(FieldsToSort) then
   begin
@@ -422,11 +468,11 @@ begin
     try
       SortString := '';
 
-      { 
-        - ADO datasets
+      {*** FMasterFields needed for:
+        - ADO datasets in a master/detail relationship for the detail dataset.
         - TClientDataSets with Provider or else TClientDataSets loses recordset.
-        - Not tested for BDE.
-      }
+        ( Not tested for BDE tables )
+      ***}
       if (SortWith in [swFields, swClient]) and (FMasterFields <> '') then
         SortString := FMasterFields;
 
@@ -506,12 +552,7 @@ begin
           end;
           if FTS = MaxFTS then
           begin
-            // Create the index.
-            NewIndexName:=cNewIndexName + IntToStr(FIndexList.Count + 1);
-            FIndexList.Add(NewIndexName);
-            TClientDataSet(DSet).AddIndex(NewIndexName, SortString, [], DescString);
-            // Set the index.
-            UpdateProp(cIndexName, NewIndexName, SortField);
+            SetClientIndex(SortField);
             if not SortOK then
             begin
               { }
