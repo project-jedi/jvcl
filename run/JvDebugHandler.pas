@@ -128,13 +128,14 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes, Forms,
   JclDebug, JclHookExcept,
+  JvComponentBase,
   AppEvnts;
 
 type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
   {$ENDIF RTL230_UP}
-  TJvDebugHandler = class(TComponent)
+  TJvDebugHandler = class(TJvComponent)
   private
     FExceptionLogging: Boolean;
     FAppEvents: TApplicationEvents;
