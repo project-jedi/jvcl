@@ -153,7 +153,7 @@ end;
 
 procedure TJvLogFile.Add(const Time, Title, Description: string);
 begin
-  Add(DateTimeToStr(Now), Title, FDefaultSeverity, Description);
+  Add(Time, Title, FDefaultSeverity, Description);
 end;
 
 procedure TJvLogFile.Add(const Title, Description: string);
