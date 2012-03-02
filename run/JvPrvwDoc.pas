@@ -64,7 +64,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
   Forms, Dialogs,
-  JvComponent, JvExControls;
+  JvComponent, JvExControls, JvTypes;
 
 type
   TJvPreviewScaleMode = (
@@ -240,6 +240,19 @@ type
     property Visible: Boolean read FVisible write SetVisible default True;
   end;
 
+  TJvCustomPreviewControlDeactivateHintThread = class(TJvCustomThread)
+  private
+    FHintWindow: THintWindow;
+    FDelay: Integer;
+
+    procedure HideHintWindow;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(HintWindow: THintWindow);
+    procedure Start(Delay: Integer = 0);
+  end;
+
   TJvCustomPreviewControl = class(TJvCustomControl)
   private
     FBuffer: TBitmap;
@@ -276,6 +289,9 @@ type
     FOnOptionsChange: TNotifyEvent;
     FOnScrollHint: TJvScrollHintEvent;
     FSelection: TJvPreviewSelection;
+    FHintWindow: THintWindow;
+    FDeactivateHintThread: TJvCustomPreviewControlDeactivateHintThread;
+
     procedure DoOptionsChange(Sender: TObject);
     procedure DoDeviceInfoChange(Sender: TObject);
     procedure DoScaleModeChange(Sender: TObject);
@@ -449,31 +465,7 @@ implementation
 
 uses
   Math,
-  JvThemes, JvTypes;
-
-var
-  HintWindow: THintWindow = nil;
-
-function GetHintWindow: THintWindow;
-begin
-  if HintWindow = nil then
-  begin
-    HintWindow := HintWindowClass.Create(Application);
-    HintWindow.Visible := False;
-  end;
-  Result := HintWindow;
-end;
-
-type
-  TDeactiveHintThread = class(TJvCustomThread)
-  private
-    FHintWindow: THintWindow;
-    FDelay: Integer;
-  protected
-    procedure Execute; override;
-  public
-    constructor Create(Delay: Integer; HintWindow: THintWindow);
-  end;
+  JvThemes;
 
   // returns True if Inner is completely within Outer
 
@@ -925,6 +917,10 @@ begin
   FScrollBars := ssBoth;
   FHideScrollBars := False;
   TabStop := True;
+
+  FHintWindow := Forms.HintWindowClass.Create(Self);
+  FHintWindow.Visible := False;
+  FDeactivateHintThread := TJvCustomPreviewControlDeactivateHintThread.Create(FHintWindow);
 end;
 
 destructor TJvCustomPreviewControl.Destroy;
@@ -935,6 +931,8 @@ begin
   FOptions.Free;
   FPages.Free;
   FBuffer.Free;
+  FDeactivateHintThread.Free;
+  FHintWindow.Free;
   inherited Destroy;
 end;
 
@@ -1372,8 +1370,7 @@ begin
       end;
     SB_ENDSCROLL:
       begin
-        TDeactiveHintThread.Create(500, HintWindow);
-        HintWindow := nil;
+        FDeactivateHintThread.Start;
         Exit;
       end;
   end;
@@ -1765,8 +1762,7 @@ begin
     Msg.Result := 0;
     WMVScroll(Msg);
     Refresh;
-    TDeactiveHintThread.Create(500, HintWindow);
-    HintWindow := nil;
+    FDeactivateHintThread.Start;
     Result := True;
   end;
 end;
@@ -1839,7 +1835,7 @@ begin
     FOnScrollHint(Self, NewPos, S);
     if S <> '' then
     begin
-      HW := GetHintWindow;
+      HW := FHintWindow;
       if not HW.Visible then
       begin
         HW.Color := Application.HintColor;
@@ -1913,27 +1909,53 @@ end;
 
 //=== { TDeactiveHintThread } ================================================
 
-constructor TDeactiveHintThread.Create(Delay: Integer; HintWindow: THintWindow);
+constructor TJvCustomPreviewControlDeactivateHintThread.Create(HintWindow: THintWindow);
 begin
   inherited Create(False);
-  FreeOnTerminate := True;
+  FreeOnTerminate := False;
   FHintWindow := HintWindow;
-  FDelay := Delay;
-  if FDelay = 0 then
-    FDelay := Application.HintHidePause;
+  FDelay := -1;
 end;
 
-procedure TDeactiveHintThread.Execute;
+procedure TJvCustomPreviewControlDeactivateHintThread.Execute;
+const
+  Step = 10;
+var
+  Elapsed: Integer;
 begin
   NameThread(ThreadName);
-  Sleep(FDelay);
-  if FHintWindow <> nil then
+  Elapsed := 0;
+
+  while not Terminated do
   begin
-    FHintWindow.Visible := False;
-    FHintWindow.ActivateHint(Rect(0, 0, 0, 0), '');
-    FHintWindow := nil;
+    if FDelay >= 0 then
+    begin
+      if FDelay = 0 then
+        FDelay := Application.HintHidePause;
+        
+      Inc(Elapsed, Step);
+
+      if Elapsed > FDelay then
+      begin
+        Synchronize(HideHintWindow);
+        Elapsed := 0;
+        FDelay := -1;
+      end;
+    end;
+
+    Sleep(Step);
   end;
-  Terminate;
+end;
+
+procedure TJvCustomPreviewControlDeactivateHintThread.HideHintWindow;
+begin
+  FHintWindow.Visible := False;
+  FHintWindow.ActivateHint(Rect(0, 0, 0, 0), '');
+end;
+
+procedure TJvCustomPreviewControlDeactivateHintThread.Start(Delay: Integer);
+begin
+  FDelay := Delay;
 end;
 
 procedure TJvCustomPreviewControl.SetSelection(const Value: TJvPreviewSelection);
