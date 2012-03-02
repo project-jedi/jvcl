@@ -3753,6 +3753,11 @@ begin
 
 
   FCanResizeColumn := State = gsColSizing; //  If true, mouse double clicking can resize column.
+
+  // Mantis 5818: the inherited code sometimes gives an invalid index for the column
+  if Index > FirstVisibleColumn + VisibleColCount then
+    Index := FirstVisibleColumn + VisibleColCount;
+
   FResizeColumnIndex := Index - 1;// Store the column index to resize.
 
   if (State = gsNormal) and (Y <= RowHeights[0]) then
