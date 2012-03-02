@@ -1216,9 +1216,15 @@ end;
 
 procedure TJvCustomPreviewControl.DrawPreview(PageIndex: Integer;
   APageRect, APrintRect: TRect);
+var
+  SaveIndex: Integer;
 begin
+  // prevent painting outside page
+  SaveIndex := SaveDC(FBuffer.Canvas.Handle);
+  IntersectClipRect(FBuffer.Canvas.Handle, APageRect.Left, APageRect.Top, APageRect.Right, APageRect.Bottom);
   FBuffer.Canvas.StretchDraw(APageRect, Pages[PageIndex]);
   DoDrawPreviewPage(PageIndex, FBuffer.Canvas, APageRect, APrintRect);
+  RestoreDC(FBuffer.Canvas.Handle, SaveIndex);
 end;
 
 function TJvCustomPreviewControl.GetPage(Index: Integer): TMetafile;
@@ -1543,11 +1549,11 @@ begin
   DC := GetDC(HWND_DESKTOP);
   try
     if AWidth > 0 then
-      AWidth := MulDiv(AWidth, 100, MulDiv(DeviceInfo.PhysicalWidth,
-        GetDeviceCaps(DC, LOGPIXELSX), DeviceInfo.LogPixelsX));
+      AWidth := AWidth * Int64(100) div
+        MulDiv(DeviceInfo.PhysicalWidth, GetDeviceCaps(DC, LOGPIXELSX), DeviceInfo.LogPixelsX);
     if AHeight > 0 then
-      AHeight := MulDiv(AHeight, 100, MulDiv(DeviceInfo.PhysicalHeight,
-        GetDeviceCaps(DC, LOGPIXELSY), DeviceInfo.LogPixelsY));
+      AHeight := AHeight * Int64(100) div
+        MulDiv(DeviceInfo.PhysicalHeight, GetDeviceCaps(DC, LOGPIXELSY), DeviceInfo.LogPixelsY);
     if (AHeight > 0) and (AWidth > 0) then
       Result := Min(AWidth, AHeight)
     else
@@ -1641,11 +1647,14 @@ begin
 
     FTotalRows := Max((PageCount div TotalCols) + Ord(PageCount mod TotalCols <> 0), 1);
 
-    // TODO: this just isn't right...
-    FMaxHeight := TotalRows * (FPageHeight + Integer(Options.VertSpacing)) + Integer(Options.VertSpacing);
-    //    if (FMaxHeight > ClientHeight) and (TotalRows > 1) then
-    //      Dec(FMaxHeight,FPageHeight - Integer(Options.VertSpacing));
-    FMaxWidth := TotalCols * (FPageWidth + Integer(Options.HorzSpacing)) + Integer(Options.HorzSpacing);
+    FMaxHeight := TotalRows * (FPageHeight + Integer(Options.VertSpacing));
+    if IsPageMode then
+      FMaxHeight := FMaxHeight + Max((ClientHeight - ((FPageHeight + Integer(Options.VertSpacing)) * VisibleRows)) div 2, FOptions.VertSpacing) * 2
+    else
+      FMaxHeight := FMaxHeight + Integer(Options.VertSpacing) * 2;
+
+    FMaxWidth := TotalCols * (FPageWidth + Integer(Options.HorzSpacing));
+    FMaxWidth := FMaxWidth + Max((ClientWidth - ((FPageWidth + Integer(Options.HorzSpacing)) * TotalCols)) div 2, Integer(Options.HorzSpacing));
   finally
     ReleaseDC(HWND_DESKTOP, DC);
   end;
