@@ -242,14 +242,14 @@ type
 
   TJvCustomPreviewControlDeactivateHintThread = class(TJvCustomThread)
   private
-    FHintWindow: THintWindow;
+    FOwner: TJvCustomPreviewControl;
     FDelay: Integer;
 
     procedure HideHintWindow;
   protected
     procedure Execute; override;
   public
-    constructor Create(HintWindow: THintWindow);
+    constructor Create(AOwner: TJvCustomPreviewControl);
     procedure Start(Delay: Integer = 0);
   end;
 
@@ -918,9 +918,7 @@ begin
   FHideScrollBars := False;
   TabStop := True;
 
-  FHintWindow := Forms.HintWindowClass.Create(Self);
-  FHintWindow.Visible := False;
-  FDeactivateHintThread := TJvCustomPreviewControlDeactivateHintThread.Create(FHintWindow);
+  FDeactivateHintThread := TJvCustomPreviewControlDeactivateHintThread.Create(Self);
 end;
 
 destructor TJvCustomPreviewControl.Destroy;
@@ -1824,7 +1822,6 @@ end;
 procedure TJvCustomPreviewControl.DoScrollHint(NewPos: Integer);
 var
   S: string;
-  HW: THintWindow;
   Pt: TPoint;
   R: TRect;
 begin
@@ -1835,22 +1832,31 @@ begin
     FOnScrollHint(Self, NewPos, S);
     if S <> '' then
     begin
-      HW := FHintWindow;
-      if not HW.Visible then
+      if not Assigned(FHintWindow) then
       begin
-        HW.Color := Application.HintColor;
-        HW.Visible := True;
+        if Assigned(HintWindowClass) then
+          FHintWindow := HintWindowClass.Create(Self)
+        else
+          FHintWindow := Forms.HintWindowClass.Create(Self);
+          
+        FHintWindow.Visible := False;
       end;
-      R := Rect(0, 0, HW.Canvas.TextWidth(S) + 6,
-        HW.Canvas.TextHeight(S) + 4);
+
+      if not FHintWindow.Visible then
+      begin
+        FHintWindow.Color := Application.HintColor;
+        FHintWindow.Visible := True;
+      end;
+      R := Rect(0, 0, FHintWindow.Canvas.TextWidth(S) + 6,
+        FHintWindow.Canvas.TextHeight(S) + 4);
       GetCursorPos(Pt);
       Pt := ScreenToClient(Pt);
-      Pt.X := ClientWidth - HW.Canvas.TextWidth(S) - 12;
+      Pt.X := ClientWidth - FHintWindow.Canvas.TextWidth(S) - 12;
       Pt := ClientToScreen(Pt);
       OffsetRect(R, Pt.X, Pt.Y - 4);
-      HW.ActivateHint(R, S);
-      HW.Invalidate;
-      HW.Update;
+      FHintWindow.ActivateHint(R, S);
+      FHintWindow.Invalidate;
+      FHintWindow.Update;
     end;
   end;
 end;
@@ -1909,11 +1915,11 @@ end;
 
 //=== { TDeactiveHintThread } ================================================
 
-constructor TJvCustomPreviewControlDeactivateHintThread.Create(HintWindow: THintWindow);
+constructor TJvCustomPreviewControlDeactivateHintThread.Create(AOwner: TJvCustomPreviewControl);
 begin
   inherited Create(False);
   FreeOnTerminate := False;
-  FHintWindow := HintWindow;
+  FOwner := AOwner;
   FDelay := -1;
 end;
 
@@ -1949,8 +1955,12 @@ end;
 
 procedure TJvCustomPreviewControlDeactivateHintThread.HideHintWindow;
 begin
-  FHintWindow.Visible := False;
-  FHintWindow.ActivateHint(Rect(0, 0, 0, 0), '');
+  if Assigned(FOwner.FHintWindow) then
+  begin
+    FOwner.FHintWindow.Visible := False;
+    FOwner.FHintWindow.ActivateHint(Rect(0, 0, 0, 0), '');
+    FOwner.FHintWindow.ReleaseHandle;
+  end;
 end;
 
 procedure TJvCustomPreviewControlDeactivateHintThread.Start(Delay: Integer);
