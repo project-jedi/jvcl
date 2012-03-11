@@ -1002,47 +1002,39 @@ begin
       Reg.CloseKey;
     end;
 
-    if IsBDS and Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
+    // C++Builder global directories
+    if IsBDS then
     begin
-      ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-      ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
-      Reg.CloseKey;
-    end;
-
-    if IsBDS and (IDEVersion >= 6) and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths') then // do not localize
-    begin
-      if FGlobalIncludePaths.Count = 0 then
+      // C++Builder (2006) 2007
+      if {(IDEVersion < 6) and} Reg.OpenKeyReadOnly(RegistryKey + '\CppPaths') then // do not localize
+      begin
         ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
-      if FGlobalCppBrowsingPaths.Count = 0 then
         ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
-      if FGlobalCppLibraryPaths.Count = 0 then
-        ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
-      Reg.CloseKey;
-    end;
-
-    (*
-    if IsBDS and (IDEVersion = 6) then
-    begin
-      { Repair C++ Paths that were destroyed by a previous installer version }
-      if (FGlobalIncludePaths.IndexOf('$(BDS)\ObjRepos\Cpp') = -1) and
-         (FGlobalIncludePaths.IndexOf('$(BDS)\include\Indy10') = -1) and
-         (FGlobalIncludePaths.IndexOf('$(BDS)\RaveReports\Lib') = -1) then
-      begin
-        FGlobalIncludePaths.Insert(0, '$(BDS)\ObjRepos\Cpp');
-        FGlobalIncludePaths.Insert(1, '$(BDS)\include\Indy10');
-        FGlobalIncludePaths.Insert(2, '$(BDS)\RaveReports\Lib');
+        Reg.CloseKey;
       end;
-
-      if (FGlobalCppLibraryPaths.IndexOf('$(BDS)\lib') = -1) and
-         (FGlobalCppLibraryPaths.IndexOf('$(BDS)\lib\Indy10') = -1) and
-         (FGlobalCppLibraryPaths.IndexOf('$(BDS)\RaveReports\Lib') = -1) then
+      // C++Builder 2009, 2010, XE
+      if (IDEVersion >= 6) and (IDEVersion < 9) and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths') then // do not localize
       begin
-        FGlobalCppLibraryPaths.Insert(0, '$(BDS)\lib');
-        FGlobalCppLibraryPaths.Insert(1, '$(BDS)\lib\Indy10');
-        FGlobalCppLibraryPaths.Insert(2, '$(BDS)\RaveReports\Lib');
+        if FGlobalIncludePaths.Count = 0 then
+          ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
+        if FGlobalCppBrowsingPaths.Count = 0 then
+          ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
+        if FGlobalCppLibraryPaths.Count = 0 then
+          ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
+        Reg.CloseKey;
+      end;
+      // C++Builder XE2 only supports Win32
+      if (IDEVersion >= 9) and Reg.OpenKeyReadOnly(RegistryKey + '\C++\Paths\' + GetPlatformStr) then // do not localize
+      begin
+        if FGlobalIncludePaths.Count = 0 then
+          ConvertPathList(Reg.ReadString('IncludePath'), FGlobalIncludePaths); // do not localize
+        if FGlobalCppBrowsingPaths.Count = 0 then
+          ConvertPathList(Reg.ReadString('BrowsingPath'), FGlobalCppBrowsingPaths); // do not localize
+        if FGlobalCppLibraryPaths.Count = 0 then
+          ConvertPathList(Reg.ReadString('LibraryPath'), FGlobalCppLibraryPaths); // do not localize
+        Reg.CloseKey;
       end;
     end;
-    *)
   finally
     Reg.Free;
   end;
@@ -1216,8 +1208,9 @@ begin
       Reg.CloseKey;
     end;
     if IsBDS and
-       (((IDEVersion >= 5) and Reg.OpenKey(RegistryKey + '\C++\Paths', False)) or  // might not exist  // do not localize
-        Reg.OpenKey(RegistryKey + '\CppPaths', False)) then     // might not exist  // do not localize
+       (((IDEVersion >= 5) and (IDEVersion < 9) and Reg.OpenKey(RegistryKey + '\C++\Paths', False)) or // may not exist  // do not localize
+        ((IDEVersion >= 9) and Reg.OpenKey(RegistryKey + '\C++\Paths\' + GetPlatformStr, False)) or // may not exist  // do not localize
+        Reg.OpenKey(RegistryKey + '\CppPaths', False)) then     // may not exist  // do not localize
     begin
       S := ConvertPathList(FGlobalIncludePaths);
       if not Reg.ValueExists('IncludePath') or (S <> Reg.ReadString('IncludePath')) then
