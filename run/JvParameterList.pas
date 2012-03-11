@@ -1078,9 +1078,7 @@ end;
 procedure TJvBaseParameter.GetData;
 begin
   if Assigned(WinControl) then
-    AsVariant := WinControlData
-  else
-    AsVariant := Null;
+    AsVariant := WinControlData;
 end;
 
 procedure TJvBaseParameter.SetData;
