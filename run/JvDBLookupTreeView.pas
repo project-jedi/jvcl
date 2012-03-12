@@ -535,6 +535,10 @@ end;
 
 destructor TJvDBLookupControl.Destroy;
 begin
+  // Deregister FreeNotifications
+  DataSource := nil;
+  ListSource := nil;
+
   FListFields.Free;
   FListLink.FDBLookupControl := nil;
   FListLink.Free;
@@ -701,7 +705,7 @@ procedure TJvDBLookupControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
+  if (Operation = opRemove) and not (csDestroying in ComponentState) then
   begin
     if (FDataLink <> nil) and (AComponent = DataSource) then
       DataSource := nil;
