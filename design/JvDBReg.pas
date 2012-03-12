@@ -137,6 +137,9 @@ begin
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 
+  RegisterComponentEditor(TJvCsvDataSet, TJvCSVDataSetComponentEditor);
+
+
   RegisterActions(RsJVCLDBActionsCategory, [TJvDatabaseFirstAction,
     TJvDatabaseLastAction, TJvDatabaseNextAction, TJvDatabasePriorAction,
     TJvDatabaseNextBlockAction, TJvDatabasePriorBlockAction,
