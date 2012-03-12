@@ -1,10 +1,10 @@
 object MainForm: TMainForm
-  Left = 32
-  Top = 93
+  Left = 290
+  Top = 259
   Width = 965
   Height = 678
   Caption = 'Controlling Docking from Code'
-  Color = clBtnFace
+  Color = 14734247
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -17,8 +17,8 @@ object MainForm: TMainForm
   TextHeight = 13
   object JvSplitter1: TJvSplitter
     Left = 0
-    Top = 477
-    Width = 957
+    Top = 473
+    Width = 949
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -26,8 +26,8 @@ object MainForm: TMainForm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 113
-    Height = 477
+    Width = 265
+    Height = 473
     Align = alLeft
     Color = 15399897
     TabOrder = 0
@@ -107,15 +107,34 @@ object MainForm: TMainForm
       Value = 18
       OnChange = SpinEdit1Change
     end
+    object tbDockRightSide: TCheckBox
+      Left = 8
+      Top = 270
+      Width = 233
+      Height = 17
+      Caption = 'Dock in tabs to right side (reproduce bug)'
+      TabOrder = 7
+      OnClick = tbDockRightSideClick
+    end
+    object cbWorkaround: TCheckBox
+      Left = 8
+      Top = 296
+      Width = 193
+      Height = 17
+      Caption = 'Tab-Docking workaround mode'
+      Checked = True
+      State = cbChecked
+      TabOrder = 8
+    end
   end
   object Panel2: TPanel
-    Left = 113
+    Left = 265
     Top = 0
-    Width = 844
-    Height = 477
+    Width = 684
+    Height = 473
     Align = alClient
     Caption = 'Custom Docking Area'
-    Color = clAppWorkSpace
+    Color = 4227200
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
@@ -126,8 +145,8 @@ object MainForm: TMainForm
   end
   object Panel3: TPanel
     Left = 0
-    Top = 480
-    Width = 957
+    Top = 476
+    Width = 949
     Height = 164
     Align = alBottom
     Caption = 'PanelBottom'
@@ -135,7 +154,7 @@ object MainForm: TMainForm
     object MemoTrace: TMemo
       Left = 1
       Top = 1
-      Width = 955
+      Width = 947
       Height = 162
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
@@ -158,28 +177,26 @@ object MainForm: TMainForm
     RightSplitterStyle.Color = clBlue
     RightSplitterStyle.Cursor = crHSplit
     RightSplitterStyle.ParentColor = False
+    RightSplitterStyle.MinSize = 500
     TopSplitterStyle.Color = clYellow
     TopSplitterStyle.Cursor = crVSplit
     TopSplitterStyle.ParentColor = False
     BottomSplitterStyle.Color = clRed
     BottomSplitterStyle.Cursor = crVSplit
     BottomSplitterStyle.ParentColor = False
+    LeftDock = False
+    TopDock = False
+    BottomDock = False
+    DockStyle = JvDockVIDStyle1
     OnGetClientAlignSize = dockServerGetClientAlignSize
     OnFinishSetDockPanelSize = dockServerFinishSetDockPanelSize
     OnCustomPanel = dockServerCustomPanel
-    LeftDock = False
-    TopDock = False
-    RightDock = False
-    BottomDock = False
-    DockStyle = JvDockVIDStyle1
-    CustomDock = False
     Left = 288
     Top = 136
   end
   object JvDockVIDStyle1: TJvDockVIDStyle
     AlwaysShowGrabber = True
     ConjoinServerOption.GrabbersSize = 20
-    ConjoinServerOption.SplitterWidth = 4
     ConjoinServerOption.ActiveFont.Charset = DEFAULT_CHARSET
     ConjoinServerOption.ActiveFont.Color = clWhite
     ConjoinServerOption.ActiveFont.Height = -13
@@ -190,16 +207,11 @@ object MainForm: TMainForm
     ConjoinServerOption.InactiveFont.Height = -13
     ConjoinServerOption.InactiveFont.Name = 'Trebuchet MS'
     ConjoinServerOption.InactiveFont.Style = [fsBold]
-    ConjoinServerOption.TextAlignment = taLeftJustify
     ConjoinServerOption.ActiveTitleStartColor = 14898176
     ConjoinServerOption.ActiveTitleEndColor = 16749885
     ConjoinServerOption.InactiveTitleStartColor = 14653050
     ConjoinServerOption.InactiveTitleEndColor = 15448477
-    ConjoinServerOption.TextEllipsis = True
     ConjoinServerOption.SystemInfo = False
-    TabServerOption.TabPosition = tpBottom
-    TabServerOption.ActiveSheetColor = clBtnFace
-    TabServerOption.InactiveSheetColor = clBtnShadow
     TabServerOption.ActiveFont.Charset = DEFAULT_CHARSET
     TabServerOption.ActiveFont.Color = clWindowText
     TabServerOption.ActiveFont.Height = -11
@@ -210,8 +222,6 @@ object MainForm: TMainForm
     TabServerOption.InactiveFont.Height = -11
     TabServerOption.InactiveFont.Name = 'MS Sans Serif'
     TabServerOption.InactiveFont.Style = []
-    TabServerOption.HotTrackColor = clBlue
-    TabServerOption.ShowTabImages = False
     TabServerOption.ShowCloseButtonOnTabs = False
     Left = 306
     Top = 232
