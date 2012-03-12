@@ -48,12 +48,12 @@ type
   end;
 
   { A right click on the CSVDataSet will allow you to select the CSV field definitions editor. }
-{  TCSVDataSetComponentEditor = class(TComponentEditor)
-    function GetVerbCount : Integer; override;
-    function GetVerb (Index : Integer) : string; override;
-    procedure ExecuteVerb(Index : Integer); override;
+  TJvCSVDataSetComponentEditor = class(TComponentEditor)
+	function GetVerbCount : Integer; override;
+	function GetVerb (Index : Integer) : string; override;
+	procedure ExecuteVerb(Index : Integer); override;
   end;
- }
+
 
   TJvFilenameProperty = class(TStringProperty)
   public
@@ -61,12 +61,11 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
-//procedure Register;
 
 implementation
 
 uses
-  JvCsvDataForm, JvConsts, JvDsgnConsts;
+  DSDesign, JvCsvDataForm, JvConsts, JvDsgnConsts;
 
 { CsvDataDefStrDsgn= String Editor at design time for CSVDefs }
 
@@ -113,34 +112,34 @@ begin
   //end
 end;
 
-{
-function TCSVDataSetComponentEditor.GetVerbCount: Integer;
+
+function TJvCSVDataSetComponentEditor.GetVerbCount: Integer;
 begin
  Result := 2;  //The number of item in popup-menu
 end;
 
-function TCSVDataSetComponentEditor.GetVerb (Index : Integer) : string;
+function TJvCSVDataSetComponentEditor.GetVerb (Index : Integer) : string;
 begin
   case Index of
-    0:  Result := 'Edit CSV Field Definitions...'; // Label displayed for each
-    1:  Result := 'Edit VCL Field Definitions...';
+	0:  Result := 'Edit CSV Field Definitions...'; // Label displayed for each
+	1:  Result := 'Edit VCL Field Definitions...';
   else
-    Result := '';
+	Result := '';
   end;
 end;
 
-procedure TCSVDataSetComponentEditor.ExecuteVerb(Index : Integer);
+procedure TJvCSVDataSetComponentEditor.ExecuteVerb(Index : Integer);
 var
-  CsvOwner: TCSVDataSet;
+  CsvOwner: TJvCSVDataSet;
   s2: string;
 begin
  case Index of
    0 : begin
 //Execution for each
            try
-             CsvOwner := Component as TCSVDataSet;
+             CsvOwner := Component as TJvCSVDataSet;
              // D.Caption := Component.Owner.Name +'.'+ Component.Name;
-             s2 := DoCsvDefDialog( CsvOwner.CsvFieldDef );
+			 s2 := DoCsvDefDialog( CsvOwner.CsvFieldDef, CsvOwner.Separator );
              if CsvOwner.CsvFieldDef<>s2 then begin
                 CsvOwner.CsvFieldDef := s2;
                 Designer.Modified;
@@ -150,15 +149,14 @@ begin
            end;
       end;
    1 : begin
-        // Requires DSDESIGN:
-            ShowFieldsEditor(Designer, TDataSet(Component), GetDSDesignerClass);
+		// Requires DSDESIGN:
+			ShowFieldsEditor(Designer, TDataSet(Component), {GetDSDesignerClass} TDSDesigner );
           // Instead we have to pretend that this fields editor does not exist!?
 
       end;
 
   end;
 end;
-}
 
 //=== { TJvFilenameProperty } ================================================
 

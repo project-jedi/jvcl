@@ -47,10 +47,11 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
+
 implementation
 
 uses
-  Forms, Dialogs;
+  Windows, Forms, Dialogs;
 
 //=== { TJvCSVFileNameProperty } =============================================
 
@@ -114,5 +115,6 @@ begin
   except
   end;
 end;
+
 
 end.

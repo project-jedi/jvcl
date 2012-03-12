@@ -132,52 +132,6 @@ end;
 
 
 
-{
-function TCSVDataSetComponentEditor.GetVerbCount : Integer;
-begin
- Result := 2;  //The number of item in popup-menu
-end;
-
-function TCSVDataSetComponentEditor.GetVerb (Index : Integer) : string;
-begin
- case Index of
-   0 :  Result := 'Edit CSV Field Definitions...'; //Label displayed for each
-   1 :  Result := 'Edit VCL Field Definitions...';
- else
-        result := '';
-  end;
-end;
-
-procedure TCSVDataSetComponentEditor.ExecuteVerb(Index : Integer);
-var
-  CsvOwner :   TCSVDataSet;
-  s2 :   String;
-begin
- case Index of
-   0 : begin
-//Execution for each
-           try
-             CsvOwner := Component as TCSVDataSet;
-             // D.Caption := Component.Owner.Name +'.'+ Component.Name;
-             s2 := DoCsvDefDialog( CsvOwner.CsvFieldDef );
-             if CsvOwner.CsvFieldDef<>s2 then begin
-                CsvOwner.CsvFieldDef := s2;
-                Designer.Modified;
-             end;
-           finally
-             // Any cleanup goes here.
-           end;
-      end;
-   1 : begin
-        // Requires DSDESIGN:
-            ShowFieldsEditor(Designer, TDataSet(Component), GetDSDesignerClass);
-          // Instead we have to pretend that this fields editor does not exist!?
-
-      end;
-
-  end;
-end;
-}
 
 
 { TJvFilenameProperty }
