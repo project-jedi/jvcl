@@ -1781,7 +1781,7 @@ end;
 
 function TJvDockDragDockObject.CanLeave(NewTarget: TWinControl): Boolean;
 begin
-  Result := NewTarget <> TWinControl(FDragTarget);
+  Result := (NewTarget <> TWinControl(FDragTarget));
 end;
 
 function TJvDockDragDockObject.Capture: THandle;
@@ -2283,7 +2283,26 @@ begin
 end;
 
 function TJvDockManager.DoUnDock(Source: TJvDockDragDockObject; Target: TWinControl; Client: TControl): Boolean;
+var
+  allow:Boolean;
 begin
+  if not (csDestroying in Client.ComponentState) then
+  if Client is TForm then begin
+      if Client is TForm then begin
+        allow := true;
+        if Assigned(TForm(Client).OnUnDock) then
+          TForm(Client).OnUnDock(Self,Client,TWinControl(nil),allow);
+         if not allow then begin
+               result := false;
+               exit;
+         end;
+
+      end;
+
+  end;
+
+
+
   if Client.HostDockSite is TJvDockCustomControl then
     Result := TJvDockCustomControl(Client.HostDockSite).CustomUnDock(Source, Target, Client)
   else

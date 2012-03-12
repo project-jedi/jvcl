@@ -135,8 +135,11 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvComponent, JvDockControlForm, ExtCtrls, JvDockVIDVCStyle,
   StdCtrls, JvDockVIDStyle, JvDockDelphiStyle, JvDockVSNetStyle,
-  JvAppStorage, JvAppIniStorage, DocFm, JvExExtCtrls, JvSplitter, Spin;
+  JvAppStorage, JvAppIniStorage, DocFm, JvExExtCtrls, JvSplitter, Spin,
+  JvDockTree, JvComponentBase;
 
+const
+  MinWidth=500;  
 type
   TMainForm = class(TForm)
     Panel1: TPanel;
@@ -155,6 +158,8 @@ type
     JvSplitter1: TJvSplitter;
     SpinEdit1: TSpinEdit;
     Label1: TLabel;
+    tbDockRightSide: TCheckBox;
+    cbWorkaround: TCheckBox;
     procedure dockServerCustomPanel(Sender: TJvDockServer;
       var aParent: TWinControl; var Align: TAlign);
     procedure ButtonSibDockClick(Sender: TObject);
@@ -168,6 +173,7 @@ type
     procedure ButtonCreateTabDockClick(Sender: TObject);
     procedure ButtonCreateConjoinClick(Sender: TObject);
     procedure SpinEdit1Change(Sender: TObject);
+    procedure tbDockRightSideClick(Sender: TObject);
   private
     { Private declarations }
     FColors : Array of TColor;
@@ -188,7 +194,7 @@ var
 implementation
 
 {$R *.dfm}
-uses JvDockTree,JvDockAdvTree;
+uses JvDockAdvTree;
 
 
 procedure TMainForm.dockServerCustomPanel(Sender: TJvDockServer;
@@ -228,9 +234,10 @@ procedure TMainForm.ButtonSibDockClick(Sender: TObject);
 var
  newDocFm:TDocForm;
  besideForm:TWinControl;
- WinControls:TList;
-// dockClient:TJvDockClient;
+// WinControls:TList;
  n : Integer;
+ ctrl:TWinControl;
+ adef:TAlign;
 begin
   Assert(Assigned(DockServer.DockStyle));
 
@@ -240,45 +247,50 @@ begin
 
   Assert(Assigned(DockServer.CustomDockPanel));
 
-// TJvDockClient.CreateTabHostAndDockControl
-{  newDocFm.DockClient.CreateTabHostAndDockControl(
-  ParentForm, Source.Control
-  )
-  }
-
-  // Depending on how much stuff is on the form, we could
-  // dock in a different location:
-  WinControls := TList.Create;
-  try
-  DockServer.CustomDockPanel.GetDockedControls(WinControls);
-   n := WinControls.Count;
-   Trace('before New Document Window docked, Docked Clients='+IntToStr(n));
-
-
  { Simplest version just puts siblings side by side horizontally: }
  //  newDocFm.ManualDock( DockServer.CustomDockPanel, nil, alNone )
 
  (* A nicer way to lay things out, a "drill down" viewing method
-    suitable for a wide top level document, and a bunch of smaller
-    panels below it:   *)
+	suitable for a wide top level document, and a bunch of smaller
+	panels below it:   *)
+
+  if tbDockRightSide.Checked then begin
+	ctrl := DockServer.RightDockPanel;
+	adef := alClient;
+	newDocFm.Width := 50;
+	newDocFm.sg.FixedCols := 0;
+	newDocFm.sg.FixedRows := 0;
+	newDocFm.sg.ColCount := 6;
+	newDocFm.sg.RowCount := 20;
+	newDocFm.sg.ScrollBars := ssNone;
+  end else begin
+	ctrl := DockServer.CustomDockPanel;
+	adef := alNone;
+  end;
+
+  n := ctrl.DockClientCount;
+  Trace('before New Document Window docked, Docked Clients='+IntToStr(n));
 
  { here is how we decide how to position the documents when they are docked }
  if n = 0 then begin { first entry }
-  Trace('docking first form which should take up entire custom dock area ');
-  newDocFm.ManualDock( DockServer.CustomDockPanel, nil, alNone )
+	if  tbDockRightSide.Checked then
+	  Trace('docking first form which should take up entire custom dock area ')
+	else
+	  Trace('docking first form which should be on the right-side dock area');
+	  
+  newDocFm.ManualDock( ctrl, nil, adef )
  end else if n = 1 then begin {second entry }
    Trace('docking second form which should be docked below the first form');
-   newDocFm.ManualDock( DockServer.CustomDockPanel, TWinControl(WinControls.Items[0]) , alBottom )
+   newDocFm.ManualDock( ctrl, ctrl.DockClients[0],  alBottom )
  end else if n >= 2 then begin { third and later entries! }
-  // There is a problem in this case! Debugging it!
+
    Trace('docking additional form which should be docked beside the last form');
-   besideForm := TWinControl(WinControls.Items[n-1]);
-   newDocFm.ManualDock( DockServer.CustomDockPanel, besideForm, alRight );
+   besideForm := TWinControl(ctrl.DockClients[n-1]);
+   newDocFm.ManualDock( ctrl, besideForm, alRight );
  end;
 
-  finally
-      WinControls.Free;
-  end;
+
+  TJvDockPanel(ctrl).DockManager.ResetBounds(true);
 
 end;
 
@@ -324,7 +336,9 @@ begin
            alCustom:
               s := 'Custom';
     end;
-    Trace('OnGetClientAlignSize '+s);
+	Trace('OnGetClientAlignSize '+s);
+	if Value< MinWidth then
+		Value := MinWidth;
 end;
 
 procedure TMainForm.Button2Click(Sender: TObject);
@@ -414,16 +428,26 @@ end;
 procedure TMainForm.ButtonCreateTabDockClick(Sender: TObject);
 var
  newDocFm1,newDocFm2:TDocForm;
-// n : Integer;
  tabHost: TJvDockTabHostForm;
+ ctrl:TWinControl;
 begin
   newDocFm1 := MakeNewDocFm;
   newDocFm2 := MakeNewDocFm;
-  tabHost := ManualTabDock( DockServer.CustomDockPanel, newDocFm1,  newDocFm2 );
+
+
+   { If checkbox is checked, reporduce JEDI Issue 5023 }
+  if tbDockRightSide.Checked then
+    ctrl := DockServer.RightDockPanel
+  else
+    ctrl := DockServer.CustomDockPanel;
+
+  tabHost := ManualTabDock( ctrl, newDocFm1,  newDocFm2, cbWorkaround.Checked );
 
   // How to add a 3rd and a fourth page:
-  newDocFm2 := MakeNewDocFm;
-  ManualTabDockAddPage( tabHost, newDocFm2 );
+  if Assigned(tabHost) then begin
+	newDocFm2 := MakeNewDocFm;
+	ManualTabDockAddPage( tabHost, newDocFm2 );
+  end;
  
 end;
 
@@ -449,6 +473,23 @@ end;
 procedure TMainForm.SpinEdit1Change(Sender: TObject);
 begin
   JvDockVIDStyle1.ConjoinServerOption.GrabbersSize := SpinEdit1.Value;
+end;
+
+procedure TMainForm.tbDockRightSideClick(Sender: TObject);
+begin
+  dockServer.CustomDock := not tbDockRightSide.Checked;
+  dockServer.RightDock := tbDockRightSide.Checked;
+
+  if (tbDockRightSide.Checked) then begin
+	panel2.Align := alLeft;
+	panel2.Width := 40;
+  end else begin
+	panel2.Align := alCLient;
+	if DockServer.DockPanel[dpRight].DockClientCount>0 then begin
+		if (DockServer.DockPanel[dpRight].Width < MinWidth )then
+				DockServer.DockPanel[dpRight].Width := MinWidth;
+	end;
+  end;
 end;
 
 end.
