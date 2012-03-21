@@ -543,7 +543,6 @@ begin
   FKnownPackages := TDelphiPackageList.Create;
 
   LoadFromRegistry;
-  FIsValid := (RootDir <> '') and (Executable <> '') and FileExists(Executable);
   FIsEvaluation := not FileExists(RootDir + '\bin\dcc32.exe');
 end;
 
@@ -811,6 +810,13 @@ begin
       ReadUpdateState(Reg);
       Reg.CloseKey;
     end;
+
+    FIsValid := (RootDir <> '') and (Executable <> '') and FileExists(Executable);
+
+    // If we are not valid, no need to go any further as reading the rest of the values
+    // might try to access executable or batch files that are not here.
+    if not IsValid then
+      Exit;
 
     Reg.Free;
     Reg := TRegistry.Create;
