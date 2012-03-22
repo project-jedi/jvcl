@@ -1515,7 +1515,7 @@ type
 
 
 
-{ Contributed by Kiriakos }
+{ Contributed by Kiriakos. Improved version 2011-12-27 }
 function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
 var
   TabHost: TJvDockTabHostForm;
@@ -1529,8 +1529,8 @@ begin
 
   if DockClient1.DockState = JvDockState_Docking then
   begin
-	ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
-	Form1.ManualFloat(ScreenPos); // This screws up on Delphi 2010.
+    ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+    Form1.ManualFloat(ScreenPos);
   end;
 
   DockClient2 := FindDockClient(Form2);
@@ -1539,8 +1539,8 @@ begin
 
   if DockClient2.DockState = JvDockState_Docking then
   begin
-	ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
-	Form2.ManualFloat(ScreenPos);
+    ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+    Form2.ManualFloat(ScreenPos);
   end;
 
   TabHost := DockClient1.CreateTabHostAndDockControl(Form1, Form2);
@@ -1551,6 +1551,7 @@ begin
   ShowDockForm(Form2);
   Result := TabHost;
 end;
+
 
 {_ManualTabDock:experimental}
 function _ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm;oldTechnique:Boolean): TJvDockTabHostForm;
