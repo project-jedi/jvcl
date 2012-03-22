@@ -436,8 +436,6 @@ type
   TJvDockPaintDockSplitterEvent = TJvDockPaintDockEvent;
   TJvDockFormHintEvent = procedure(HTFlag: Integer; var HintStr: string; var CanShow: Boolean) of object;
 
-  TJvNotifyDragEvent = procedure (Sender:TObject; var AllowDrag:Boolean) of object;
-
 
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
@@ -844,8 +842,12 @@ function GetClientAlignControlArea(AControl: TWinControl; Align: TAlign; Exclude
 procedure ResetDockClient(Control: TControl; NewTarget: TControl); overload;
 procedure ResetDockClient(DockClient: TJvDockClient; NewTarget: TControl); overload;
 
-{ Quick way to do tabbed docking programmatically - Added by Warren. New implementation Jan 2010 }
-function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm;oldTechnique:Boolean=false): TJvDockTabHostForm;
+
+function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
+
+function _ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm;oldTechnique:Boolean=false): TJvDockTabHostForm; {experimental}
+
+
 { Must create the initial tab dock with two pages, using ManualTabDock,
   then you can add more pages with this:}
 procedure ManualTabDockAddPage(TabHost: TJvDockTabHostForm; AForm: TForm);
@@ -1098,20 +1100,19 @@ var
 begin
   if not (csDestroying in DockForm.ComponentState) then
   if DockForm is TForm then begin
-        allow := true;
-        if Assigned(TForm(DockForm).OnUnDock) then begin
-          TForm(DockForm).OnUnDock(DockForm,DockForm,TWinControl(nil),allow);
-        end else begin
-		  dockClient := FindDockClient(DockForm);
-		  if Assigned(dockclient) and (not dockClient.CanFloat) then begin
-                exit;
-          end;
-
-        end;
-         if not allow then begin
-               exit;
-         end;
-
+	allow := true;
+	if Assigned(TForm(DockForm).OnUnDock) then
+	  TForm(DockForm).OnUnDock(DockForm,DockForm,
+		TWinControl(nil),allow);
+	if allow then begin
+	  dockClient := FindDockClient(DockForm);
+	  if Assigned(dockclient) and (not dockClient.CanFloat) then begin
+		exit;
+	  end;
+	end;
+	if not allow then begin
+	  exit;
+	end;
   end;
 
 
@@ -1512,10 +1513,47 @@ end;
 type
   TWinControlAccess = class(TWinControl);
 
-{ Quick way to do tabbed docking programmatically - this way only works if your
-  dock style is written to accept InsertControl calls of this type, and generate
-  tab hosts. Rewritten January 21, 2010. WPostma }
-function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm;oldTechnique:Boolean): TJvDockTabHostForm;
+
+
+{ Contributed by Kiriakos }
+function ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm): TJvDockTabHostForm;
+var
+  TabHost: TJvDockTabHostForm;
+  DockClient1, DockCLient2: TJvDockClient;
+  ScreenPos: TRect;
+begin
+  DockClient1 := FindDockClient(Form1);
+  Form1.Hide;
+
+  Assert(Assigned(DockClient1));
+
+  if DockClient1.DockState = JvDockState_Docking then
+  begin
+	ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+	Form1.ManualFloat(ScreenPos); // This screws up on Delphi 2010.
+  end;
+
+  DockClient2 := FindDockClient(Form2);
+  Assert(Assigned(DockClient2));
+  Form2.Hide;
+
+  if DockClient2.DockState = JvDockState_Docking then
+  begin
+	ScreenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+	Form2.ManualFloat(ScreenPos);
+  end;
+
+  TabHost := DockClient1.CreateTabHostAndDockControl(Form1, Form2);
+
+  TabHost.ManualDock(DockSite,nil,alClient);
+
+  ShowDockForm(Form1);
+  ShowDockForm(Form2);
+  Result := TabHost;
+end;
+
+{_ManualTabDock:experimental}
+function _ManualTabDock(DockSite: TWinControl; Form1, Form2: TForm;oldTechnique:Boolean): TJvDockTabHostForm;
 var
   DockClient: TJvDockClient;
   HostForm: TForm;

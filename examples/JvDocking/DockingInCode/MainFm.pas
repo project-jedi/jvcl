@@ -441,7 +441,9 @@ begin
   else
     ctrl := DockServer.CustomDockPanel;
 
-  tabHost := ManualTabDock( ctrl, newDocFm1,  newDocFm2, cbWorkaround.Checked );
+	tabHost := ManualTabDock( ctrl, newDocFm1,  newDocFm2);
+  //tabHost := _ManualTabDock( ctrl, newDocFm1,  newDocFm2, cbWorkaround.Checked );
+
 
   // How to add a 3rd and a fourth page:
   if Assigned(tabHost) then begin

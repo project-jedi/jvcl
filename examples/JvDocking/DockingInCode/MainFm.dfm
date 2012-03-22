@@ -125,6 +125,7 @@ object MainForm: TMainForm
       Checked = True
       State = cbChecked
       TabOrder = 8
+      Visible = False
     end
   end
   object Panel2: TPanel
