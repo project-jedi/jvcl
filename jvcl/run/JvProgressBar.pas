@@ -36,10 +36,124 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   CommCtrl,
+  {$IFDEF RTL210_UP}
+  ShlObj,
+  {$ENDIF RTL210_UP}
   SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
   JvExComCtrls;
 
+{$IFNDEF RTL210_UP}
+const
+  SID_ITaskbarList                            = '{56FDF342-FD6D-11D0-958A-006097C9A090}';
+  SID_ITaskbarList2                           = '{602D4995-B13A-429B-A66E-1935E44F4317}';
+  SID_ITaskbarList3                           = '{EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF}';
+  SID_ITaskbarList4                           = '{C43DC798-95D1-4BEA-9030-BB99E2983A1A}';
+  
+  CLSID_TaskbarList: TGUID                            = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
+  {$EXTERNALSYM CLSID_TaskbarList}
+  
 type
+  ITaskbarList = interface(IUnknown)
+    [SID_ITaskbarList]
+    function HrInit: HRESULT; stdcall;
+    function AddTab(hwnd: HWND): HRESULT; stdcall;
+    function DeleteTab(hwnd: HWND): HRESULT; stdcall;
+    function ActivateTab(hwnd: HWND): HRESULT; stdcall;
+    function SetActiveAlt(hwnd: HWND): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList}
+  
+  ITaskbarList2 = interface(ITaskbarList)
+    [SID_ITaskbarList2]
+    function MarkFullscreenWindow(hwnd: HWND; fFullscreen: BOOL): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList2}
+  
+type
+  THUMBBUTTON = record 
+    dwMask: DWORD;
+    iId: UINT;
+    iBitmap: UINT;
+    hIcon: HICON;
+    szTip: packed array[0..259] of WCHAR;
+    dwFlags: DWORD;
+  end;
+  {$EXTERNALSYM THUMBBUTTON}
+  tagTHUMBBUTTON = THUMBBUTTON;
+  {$EXTERNALSYM tagTHUMBBUTTON}
+  TThumbButton = THUMBBUTTON;
+  PThumbButton = ^TThumbButton;
+
+// THUMBBUTTON flags
+const
+  THBF_ENABLED        =  $0000;
+  {$EXTERNALSYM THBF_ENABLED}
+  THBF_DISABLED       =  $0001;
+  {$EXTERNALSYM THBF_DISABLED}
+  THBF_DISMISSONCLICK =  $0002;
+  {$EXTERNALSYM THBF_DISMISSONCLICK}
+  THBF_NOBACKGROUND   =  $0004;
+  {$EXTERNALSYM THBF_NOBACKGROUND}
+  THBF_HIDDEN         =  $0008;
+  {$EXTERNALSYM THBF_HIDDEN}
+  THBF_NONINTERACTIVE = $10; 
+  {$EXTERNALSYM THBF_NONINTERACTIVE}
+// THUMBBUTTON mask
+  THB_BITMAP          =  $0001;
+  {$EXTERNALSYM THB_BITMAP}
+  THB_ICON            =  $0002;
+  {$EXTERNALSYM THB_ICON}
+  THB_TOOLTIP         =  $0004;
+  {$EXTERNALSYM THB_TOOLTIP}
+  THB_FLAGS           =  $0008;
+  {$EXTERNALSYM THB_FLAGS}
+  THBN_CLICKED        =  $1800;
+  {$EXTERNALSYM THBN_CLICKED}
+
+const
+  TBPF_NOPROGRESS    = 0; 
+  {$EXTERNALSYM TBPF_NOPROGRESS}
+  TBPF_INDETERMINATE = $1; 
+  {$EXTERNALSYM TBPF_INDETERMINATE}
+  TBPF_NORMAL        = $2; 
+  {$EXTERNALSYM TBPF_NORMAL}
+  TBPF_ERROR         = $4; 
+  {$EXTERNALSYM TBPF_ERROR}
+  TBPF_PAUSED        = $8; 
+  {$EXTERNALSYM TBPF_PAUSED}
+
+  TBATF_USEMDITHUMBNAIL   = $1; 
+  {$EXTERNALSYM TBATF_USEMDITHUMBNAIL}
+  TBATF_USEMDILIVEPREVIEW = $2; 
+  {$EXTERNALSYM TBATF_USEMDILIVEPREVIEW}
+
+type
+  ITaskbarList3 = interface(ITaskbarList2)
+    [SID_ITaskbarList3]
+    function SetProgressValue(hwnd: HWND; ullCompleted: ULONGLONG; 
+      ullTotal: ULONGLONG): HRESULT; stdcall;
+    function SetProgressState(hwnd: HWND; tbpFlags: Integer): HRESULT; stdcall;
+    function RegisterTab(hwndTab: HWND; hwndMDI: HWND): HRESULT; stdcall;
+    function UnregisterTab(hwndTab: HWND): HRESULT; stdcall;
+    function SetTabOrder(hwndTab: HWND; hwndInsertBefore: HWND): HRESULT; stdcall;
+    function SetTabActive(hwndTab: HWND; hwndMDI: HWND; 
+      tbatFlags: Integer): HRESULT; stdcall;
+    function ThumbBarAddButtons(hwnd: HWND; cButtons: UINT;
+      pButton: PThumbButton): HRESULT; stdcall;
+    function ThumbBarUpdateButtons(hwnd: HWND; cButtons: UINT;
+      pButton: PThumbButton): HRESULT; stdcall;
+    function ThumbBarSetImageList(hwnd: HWND; himl: HIMAGELIST): HRESULT; stdcall;
+    function SetOverlayIcon(hwnd: HWND; hIcon: HICON;
+      pszDescription: LPCWSTR): HRESULT; stdcall;
+    function SetThumbnailTooltip(hwnd: HWND; pszTip: LPCWSTR): HRESULT; stdcall;
+    function SetThumbnailClip(hwnd: HWND; var prcClip: TRect): HRESULT; stdcall;
+  end;
+  {$EXTERNALSYM ITaskbarList3}
+  {$ENDIF !RTL210_UP}
+
+type
+  TJvTaskBarProgressState = (tpsNormal, tpsNoProgress, tpsIndeterminate, tpsError, tpsPaused);
+
   TJvBaseProgressBar = class(TGraphicControl)
   private
     FBlockSize: Integer;
@@ -51,6 +165,9 @@ type
     FBarColor: TColor;
     FSteps: Integer;
     FOnChange: TNotifyEvent;
+    FTaskBar: ITaskBarList3;
+    FDisplayOnTaskbar: Boolean;
+    FTaskbarState: TJvTaskBarProgressState;
     procedure SetMax(Value: Integer);
     procedure SetMin(Value: Integer);
     procedure SetOrientation(Value: TProgressBarOrientation);
@@ -59,6 +176,8 @@ type
     procedure SetBlockSize(const Value: Integer);
     procedure SetBarColor(const Value: TColor);
     procedure SetSteps(const Value: Integer);
+    procedure SetDisplayOnTaskbar(const Value: Boolean);
+    procedure SetTaskbarState(const Value: TJvTaskBarProgressState);
   protected
     // BarSize is the upper limit of the area covered by the progress bar
     // Derived classes should override this method to provide their own drawing
@@ -72,6 +191,7 @@ type
     function GetMaxBarSize: Integer; virtual;
     procedure Paint; override;
     procedure Change; virtual;
+    procedure WndProc(var Message: TMessage); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure StepIt; virtual;
@@ -86,6 +206,10 @@ type
     property Position: Integer read FPosition write SetPosition default 0;
     property Smooth: Boolean read FSmooth write SetSmooth default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+
+    { For Windows >= 7 }
+    property DisplayOnTaskbar: Boolean read FDisplayOnTaskbar write SetDisplayOnTaskbar default False;
+    property TaskbarState: TJvTaskBarProgressState read FTaskbarState write SetTaskbarState default tpsNormal;
   published
     property Width default 150;
   end;
@@ -105,16 +229,23 @@ type
     FMarqueeDelay: Integer;
     FSmoothReverse: Boolean;
     FState: TJvProgressBarState;
+    FDisplayOnTaskbar: Boolean;
+    FTaskBar: ITaskBarList3;
+    FTaskbarState: TJvTaskBarProgressState;
+
     procedure SetFillColor(const Value: TColor);
     procedure SetMarquee(Value: Boolean);
     procedure SetMarqueePaused(Value: Boolean);
     procedure SetMarqueeDelay(Value: Integer);
     procedure SetSmoothReverse(Value: Boolean);
     procedure SetState(Value: TJvProgressBarState);
+    procedure SetDisplayOnTaskbar(Value: Boolean);
+    procedure SetTaskbarState(const Value: TJvTaskBarProgressState);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure PbmSetPos(var Msg: TMessage); message PBM_SETPOS;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -127,6 +258,9 @@ type
     { For Windows >= Vista }
     property SmoothReverse: Boolean read FSmoothReverse write SetSmoothReverse default False;
     property State: TJvProgressBarState read FState write SetState default pbsNormal;
+    { For Windows >= 7 }
+    property DisplayOnTaskbar: Boolean read FDisplayOnTaskbar write SetDisplayOnTaskbar default False;
+    property TaskbarState: TJvTaskBarProgressState read FTaskbarState write SetTaskbarState default tpsNormal;
 
     property HintColor;
     property OnMouseEnter;
@@ -218,6 +352,7 @@ const
 implementation
 
 uses
+  ComObj,
   JvJCLUtils, JvJVCLUtils;
 
 const
@@ -252,6 +387,8 @@ const
   PBST_PAUSED             = $0003;
 
   cProgressStates: array[TJvProgressBarState] of Cardinal = (PBST_NORMAL, PBST_ERROR, PBST_PAUSED);
+
+  cTBPFFlags: array[TJvTaskBarProgressState] of Integer = (TBPF_NORMAL, TBPF_NOPROGRESS, TBPF_INDETERMINATE, TBPF_ERROR, TBPF_PAUSED);
 
 //=== { TJvBaseProgressBar } =================================================
 
@@ -330,6 +467,12 @@ begin
     FPosition := Value;
     Change;
     Invalidate;
+
+    if not (TaskbarState in [tpsNormal, tpsError, tpsPaused]) then
+      TaskbarState := tpsNormal;
+
+    if DisplayOnTaskbar then
+      FTaskBar.SetProgressValue(Parent.Handle, Position, Max);
   end;
 end;
 
@@ -425,9 +568,25 @@ begin
   end;
 end;
 
+procedure TJvBaseProgressBar.SetTaskbarState(
+  const Value: TJvTaskBarProgressState);
+begin
+  FTaskbarState := Value;
+  if Assigned(FTaskBar) then
+    FTaskbar.SetProgressState(Parent.Handle, cTBPFFlags[TaskbarState]);
+end;
+
 procedure TJvBaseProgressBar.StepIt;
 begin
   StepBy(Steps);
+end;
+
+procedure TJvBaseProgressBar.WndProc(var Message: TMessage);
+begin
+  if not Assigned(FTaskBar) then
+    FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
+
+  inherited WndProc(Message);
 end;
 
 procedure TJvBaseProgressBar.Change;
@@ -456,6 +615,11 @@ begin
       FBlockSize := 1;
     Invalidate;
   end;
+end;
+
+procedure TJvBaseProgressBar.SetDisplayOnTaskbar(const Value: Boolean);
+begin
+  FDisplayOnTaskbar := Value;
 end;
 
 procedure TJvBaseProgressBar.SetBarColor(const Value: TColor);
@@ -493,12 +657,30 @@ begin
     SendMessage(Handle, PBM_SETMARQUEE, Ord(not MarqueePaused), LPARAM(MarqueeDelay));
   if State <> pbsNormal then
     SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
+
+  FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
+end;
+
+procedure TJvProgressBar.PbmSetPos(var Msg: TMessage);
+begin
+  if not (TaskbarState in [tpsNormal, tpsError, tpsPaused]) then
+    TaskbarState := tpsNormal;
+
+  if DisplayOnTaskbar and Assigned(FTaskbar) then
+    FTaskBar.SetProgressValue(Parent.Handle, Msg.WParam, Max);
+
+  inherited;
 end;
 
 procedure TJvProgressBar.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   // Reduce flicker
   DefaultHandler(Message);
+end;
+
+procedure TJvProgressBar.SetDisplayOnTaskbar(Value: Boolean);
+begin
+  FDisplayOnTaskbar := Value;
 end;
 
 procedure TJvProgressBar.SetFillColor(const Value: TColor);
@@ -565,6 +747,13 @@ begin
     if HandleAllocated then
       SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
   end;
+end;
+
+procedure TJvProgressBar.SetTaskbarState(const Value: TJvTaskBarProgressState);
+begin
+  FTaskbarState := Value;
+  if Assigned(FTaskBar) then
+    FTaskbar.SetProgressState(Parent.Handle, cTBPFFlags[TaskbarState]);
 end;
 
 //=== { TJvBaseGradientProgressBar } =========================================
