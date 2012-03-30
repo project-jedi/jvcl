@@ -609,8 +609,21 @@ procedure TJvBaseProgressBar.SetTaskbarState(
   const Value: TJvTaskBarProgressState);
 begin
   FTaskbarState := Value;
-  if Assigned(FTaskBar) then
-    FTaskbar.SetProgressState(Parent.Handle, cTBPFFlags[TaskbarState]);
+
+  if DisplayOnTaskbar and Assigned(FTaskbar) then
+  begin
+    {$IFDEF RTL185_UP}
+    if Application.MainFormOnTaskbar then
+    begin
+      if Assigned(FParentForm) then
+        FTaskbar.SetProgressState(FParentForm.Handle, cTBPFFlags[TaskbarState]);
+    end
+    else
+    {$ENDIF RTL185_UP}
+    begin
+      FTaskbar.SetProgressState(Application.Handle, cTBPFFlags[TaskbarState]);
+    end;
+  end;
 end;
 
 procedure TJvBaseProgressBar.StepIt;
@@ -831,8 +844,21 @@ end;
 procedure TJvProgressBar.SetTaskbarState(const Value: TJvTaskBarProgressState);
 begin
   FTaskbarState := Value;
-  if Assigned(FTaskBar) then
-    FTaskbar.SetProgressState(Parent.Handle, cTBPFFlags[TaskbarState]);
+
+  if DisplayOnTaskbar and Assigned(FTaskbar) then
+  begin
+    {$IFDEF RTL185_UP}
+    if Application.MainFormOnTaskbar then
+    begin
+      if Assigned(FParentForm) then
+        FTaskbar.SetProgressState(FParentForm.Handle, cTBPFFlags[TaskbarState]);
+    end
+    else
+    {$ENDIF RTL185_UP}
+    begin
+      FTaskbar.SetProgressState(Application.Handle, cTBPFFlags[TaskbarState]);
+    end;
+  end;
 end;
 
 //=== { TJvBaseGradientProgressBar } =========================================
