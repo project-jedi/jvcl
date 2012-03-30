@@ -241,11 +241,13 @@ type
     procedure SetState(Value: TJvProgressBarState);
     procedure SetDisplayOnTaskbar(Value: Boolean);
     procedure SetTaskbarState(const Value: TJvTaskBarProgressState);
+    procedure SetTaskbarPosition(Value: Integer);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure PbmSetPos(var Msg: TMessage); message PBM_SETPOS;
+    procedure PbmStepIp(var Msg: TMessage); message PBM_STEPIT;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -663,13 +665,16 @@ end;
 
 procedure TJvProgressBar.PbmSetPos(var Msg: TMessage);
 begin
-  if not (TaskbarState in [tpsNormal, tpsError, tpsPaused]) then
-    TaskbarState := tpsNormal;
-
-  if DisplayOnTaskbar and Assigned(FTaskbar) then
-    FTaskBar.SetProgressValue(Parent.Handle, Msg.WParam, Max);
-
   inherited;
+
+  SetTaskbarPosition(Msg.WParam);
+end;
+
+procedure TJvProgressBar.PbmStepIp(var Msg: TMessage);
+begin
+  inherited;
+
+  SetTaskbarPosition(Position);
 end;
 
 procedure TJvProgressBar.WMEraseBkgnd(var Message: TWMEraseBkgnd);
@@ -747,6 +752,15 @@ begin
     if HandleAllocated then
       SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
   end;
+end;
+
+procedure TJvProgressBar.SetTaskbarPosition(Value: Integer);
+begin
+  if not (TaskbarState in [tpsNormal, tpsError, tpsPaused]) then
+    TaskbarState := tpsNormal;
+
+  if DisplayOnTaskbar and Assigned(FTaskbar) then
+    FTaskBar.SetProgressValue(Parent.Handle, Value, Max);
 end;
 
 procedure TJvProgressBar.SetTaskbarState(const Value: TJvTaskBarProgressState);
