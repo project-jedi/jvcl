@@ -168,6 +168,8 @@ type
     FTaskBar: ITaskBarList3;
     FDisplayOnTaskbar: Boolean;
     FTaskbarState: TJvTaskBarProgressState;
+    FParentForm: TCustomForm;
+
     procedure SetMax(Value: Integer);
     procedure SetMin(Value: Integer);
     procedure SetOrientation(Value: TProgressBarOrientation);
@@ -192,6 +194,7 @@ type
     procedure Paint; override;
     procedure Change; virtual;
     procedure WndProc(var Message: TMessage); override;
+    procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure StepIt; virtual;
@@ -232,6 +235,7 @@ type
     FDisplayOnTaskbar: Boolean;
     FTaskBar: ITaskBarList3;
     FTaskbarState: TJvTaskBarProgressState;
+    FParentForm: TCustomForm;
 
     procedure SetFillColor(const Value: TColor);
     procedure SetMarquee(Value: Boolean);
@@ -248,6 +252,7 @@ type
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure PbmSetPos(var Msg: TMessage); message PBM_SETPOS;
     procedure PbmStepIp(var Msg: TMessage); message PBM_STEPIT;
+    procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -458,6 +463,24 @@ begin
   end;
 end;
 
+procedure TJvBaseProgressBar.SetParent(AParent: TWinControl);
+var
+  CurParent: TControl;
+begin
+  inherited SetParent(AParent);
+
+  FParentForm := nil;
+  CurParent := AParent;
+
+  while not Assigned(FParentForm) and Assigned(CurParent) do
+  begin
+    if CurParent is TCustomForm then
+      FParentForm := TCustomForm(CurParent);    
+
+    CurParent := CurParent.Parent;
+  end; 
+end;
+
 procedure TJvBaseProgressBar.SetPosition(Value: Integer);
 begin
   if Value > FMax then
@@ -473,8 +496,20 @@ begin
     if not (TaskbarState in [tpsNormal, tpsError, tpsPaused]) then
       TaskbarState := tpsNormal;
 
-    if DisplayOnTaskbar then
-      FTaskBar.SetProgressValue(Parent.Handle, Position, Max);
+    if DisplayOnTaskbar and Assigned(FTaskbar) then
+    begin
+      {$IFDEF RTL185_UP}
+      if Application.MainFormOnTaskbar then
+      begin
+        if Assigned(FParentForm) then
+          FTaskBar.SetProgressValue(FParentForm.Handle, Value, Max);
+      end
+      else
+      {$ENDIF RTL185_UP}
+      begin
+        FTaskBar.SetProgressValue(Application.Handle, Value, Max);
+      end;
+    end;
   end;
 end;
 
@@ -722,6 +757,24 @@ begin
   end;
 end;
 
+procedure TJvProgressBar.SetParent(AParent: TWinControl);
+var
+  CurParent: TControl;
+begin
+  inherited SetParent(AParent);
+
+  FParentForm := nil;
+  CurParent := AParent;
+
+  while not Assigned(FParentForm) and Assigned(CurParent) do
+  begin
+    if CurParent is TCustomForm then
+      FParentForm := TCustomForm(CurParent);    
+
+    CurParent := CurParent.Parent;
+  end; 
+end;
+
 procedure TJvProgressBar.SetMarqueeDelay(Value: Integer);
 begin
   if Value < 0 then
@@ -760,7 +813,19 @@ begin
     TaskbarState := tpsNormal;
 
   if DisplayOnTaskbar and Assigned(FTaskbar) then
-    FTaskBar.SetProgressValue(Parent.Handle, Value, Max);
+  begin
+    {$IFDEF RTL185_UP}
+    if Application.MainFormOnTaskbar then
+    begin
+      if Assigned(FParentForm) then
+        FTaskBar.SetProgressValue(FParentForm.Handle, Value, Max);
+    end
+    else
+    {$ENDIF RTL185_UP}
+    begin
+      FTaskBar.SetProgressValue(Application.Handle, Value, Max);
+    end;
+  end;
 end;
 
 procedure TJvProgressBar.SetTaskbarState(const Value: TJvTaskBarProgressState);
