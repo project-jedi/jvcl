@@ -448,6 +448,8 @@ resourcestring
   RsNormal = 'Normal';
   RsHigh = 'High';
   RsRealTime = 'RealTime';
+  RsBelowNormal = 'Below normal';
+  RsAboveNormal = 'Above normal';
 
   RsEProcessIsRunning = 'Cannot perform this operation when process is running';
   RsEProcessNotRunning = 'Process is not running';

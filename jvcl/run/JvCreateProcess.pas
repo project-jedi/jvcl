@@ -48,7 +48,7 @@ const
 type
   EJvProcessError = EJVCLException;
 
-  TJvProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime);
+  TJvProcessPriority = (ppIdle, ppNormal, ppHigh, ppRealTime, ppBelowNormal, ppAboveNormal);
 
   TJvConsoleOption = (coOwnerData, coRedirect, coSeparateError);
   TJvConsoleOptions = set of TJvConsoleOption;
@@ -249,9 +249,13 @@ const
   CM_READ = WM_USER + 1;
   CM_THREADTERMINATED = WM_USER + 2;
 
+  BELOW_NORMAL_PRIORITY_CLASS = $00004000;
+  ABOVE_NORMAL_PRIORITY_CLASS = $00008000;
+
   //MaxProcessCount = 4096;
   ProcessPriorities: array [TJvProcessPriority] of DWORD =
-    (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, REALTIME_PRIORITY_CLASS);
+    (IDLE_PRIORITY_CLASS, NORMAL_PRIORITY_CLASS, HIGH_PRIORITY_CLASS, REALTIME_PRIORITY_CLASS,
+     BELOW_NORMAL_PRIORITY_CLASS, ABOVE_NORMAL_PRIORITY_CLASS);
 
 type
   { Threads which monitor the created process }
@@ -586,6 +590,10 @@ begin
           Result := ppHigh;
         REALTIME_PRIORITY_CLASS:
           Result := ppRealTime;
+        BELOW_NORMAL_PRIORITY_CLASS:
+          Result := ppBelowNormal;
+        ABOVE_NORMAL_PRIORITY_CLASS:
+          Result := ppAboveNormal;
       else
         Result := ppNormal;
       end;
@@ -616,6 +624,10 @@ begin
       Result := RsHigh;
     ppRealTime:
       Result := RsRealTime;
+    ppBelowNormal:
+      Result := RsBelowNormal;
+    ppAboveNormal:
+      Result := RsAboveNormal;
   end;
 end;
 
