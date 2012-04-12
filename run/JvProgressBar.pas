@@ -360,6 +360,7 @@ implementation
 
 uses
   ComObj,
+  JclSysInfo,
   JvJCLUtils, JvJVCLUtils;
 
 const
@@ -633,7 +634,7 @@ end;
 
 procedure TJvBaseProgressBar.WndProc(var Message: TMessage);
 begin
-  if not Assigned(FTaskBar) then
+  if not Assigned(FTaskBar) and IsWin7 then
     FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
 
   inherited WndProc(Message);
@@ -708,7 +709,8 @@ begin
   if State <> pbsNormal then
     SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
 
-  FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
+  if IsWin7 then
+    FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
 end;
 
 procedure TJvProgressBar.PbmSetPos(var Msg: TMessage);
