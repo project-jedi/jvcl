@@ -166,6 +166,7 @@ type
     FSteps: Integer;
     FOnChange: TNotifyEvent;
     FTaskBar: ITaskBarList3;
+    FTaskBarTested: Boolean;
     FDisplayOnTaskbar: Boolean;
     FTaskbarState: TJvTaskBarProgressState;
     FParentForm: TCustomForm;
@@ -633,9 +634,15 @@ begin
 end;
 
 procedure TJvBaseProgressBar.WndProc(var Message: TMessage);
+var
+  TaskBarList: IInterface;
 begin
-  if not Assigned(FTaskBar) and IsWin7 then
-    FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
+  if not (FTaskBarTested) and not Assigned(FTaskBar) then
+  begin
+    TaskBarList := CreateComObject(CLSID_TaskbarList);
+    TaskBarList.QueryInterface(ITaskBarList3, FTaskBar);
+    FTaskBarTested := True;
+  end;
 
   inherited WndProc(Message);
 end;
@@ -701,6 +708,8 @@ begin
 end;
 
 procedure TJvProgressBar.CreateWnd;
+var
+  TaskBarList: IInterface;
 begin
   inherited CreateWnd;
   SendMessage(Handle, PBM_SETBARCOLOR, 0, ColorToRGB(FFillColor));
@@ -709,8 +718,8 @@ begin
   if State <> pbsNormal then
     SendMessage(Handle, PBM_SETSTATE, cProgressStates[State], 0);
 
-  if IsWin7 then
-    FTaskBar := CreateComObject(CLSID_TaskbarList) as ITaskBarList3;
+  TaskBarList := CreateComObject(CLSID_TaskbarList);
+  TaskBarList.QueryInterface(ITaskBarList3, FTaskBar);
 end;
 
 procedure TJvProgressBar.PbmSetPos(var Msg: TMessage);
