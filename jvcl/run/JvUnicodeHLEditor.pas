@@ -809,6 +809,8 @@ begin
     if (FLong <> 0) {(FHighlighter <> hlHtml)} then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
+      if Parser.pcPos > Parser.pcProgram + Length(S) then
+        Parser.pcPos := Parser.pcProgram + Length(S); // => #0
       case Highlighter of
         hlCBuilder, hlPython, hlPerl, hlNQC, hlCSharp:
           case FLong of
