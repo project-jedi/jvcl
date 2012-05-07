@@ -1273,11 +1273,10 @@ var
   XML: TJclSimpleXML;
   AConfig: TTargetConfig;
   AConfigElem: TJclSimpleXMLElem;
+  CompiledConfigIndex: Integer;
 begin
   Result := True;
   FAborted := False;
-  Index := 0;
-  Count := 0;
   try
     SysInfo := GetWindowsProductString;
 
@@ -1297,6 +1296,7 @@ begin
     AbortReason := '';
     // read target configs that should be compiled
     Frameworks := 0;
+    Count := 0;
     SetLength(TargetConfigs, Data.Targets.Count);
     for i := 0 to High(TargetConfigs) do
     begin
@@ -1314,6 +1314,7 @@ begin
     ClearSourceDirectory;
 
     // compile all selected targets
+    Index := 0;
     for i := 0 to Count - 1 do
     begin
       DoTargetProgress(TargetConfigs[i], Index, Frameworks);
@@ -1333,9 +1334,10 @@ begin
       try
         XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
         XML.Root.Name := 'JclInstall';
-        for I := 0 to Count - 1 do
+        CompiledConfigIndex := 0;
+        for I := 0 to Data.Targets.Count - 1 do
         begin
-          AConfig := TargetConfigs[I];
+          AConfig := Data.TargetConfig[I];
           AConfigElem := XML.Root.Items.Add('Config');
 
           AConfigElem.Properties.Add('Target', AConfig.MainTargetSymbol);
@@ -1346,9 +1348,12 @@ begin
             AConfigElem.Properties.Add('TargetName', Format('%s %s', [AConfig.Target.Name, AConfig.Target.VersionStr])); // do not localize
 
           AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
-          AConfigElem.Properties.Add('InstallAttempted', I <= Index);
+          AConfigElem.Properties.Add('InstallAttempted', AConfig = TargetConfigs[CompiledConfigIndex]);
           AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
           AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
+
+          if AConfig = TargetConfigs[CompiledConfigIndex] then
+            Inc(CompiledConfigIndex);
         end;
         XML.SaveToFile(CmdOptions.XMLResultFileName, JclStreams.seUTF8);
       finally
