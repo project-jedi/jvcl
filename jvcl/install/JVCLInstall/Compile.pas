@@ -1276,78 +1276,79 @@ var
 begin
   Result := True;
   FAborted := False;
-
-  SysInfo := GetWindowsProductString;
-
-  if SysInfo <> '' then
-  begin
-    SysInfo := #1 + SysInfo + Format(' %s (%d.%d.%d)',
-      [Win32CSDVersion, Win32MajorVersion, Win32MinorVersion, Win32BuildNumber]);
-
-    CaptureLine(SysInfo, FAborted);
-    CaptureLine('', FAborted);
-  end;
-  CaptureLine(Format('JVCL %d.%d.%d.%d',
-    [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]),
-    FAborted);
-  CaptureLine('', FAborted);
-
-  AbortReason := '';
-  // read target configs that should be compiled
-  Count := 0;
-  Frameworks := 0;
-  SetLength(TargetConfigs, Data.Targets.Count);
-  for i := 0 to High(TargetConfigs) do
-  begin
-    if Data.TargetConfig[i].InstallJVCL then
-    begin
-      TargetConfigs[Count] := Data.TargetConfig[i];
-      Inc(Count);
-      if pkVCL in Data.TargetConfig[i].InstallMode then
-        Inc(Frameworks);
-    end;
-  end;
-  SetLength(TargetConfigs, Count);
-
-  // Delete all units from the JVCL source directory where they shouldn't be
-  ClearSourceDirectory;
-
-  // compile all selected targets
   Index := 0;
-  for i := 0 to Count - 1 do
-  begin
-    DoTargetProgress(TargetConfigs[i], Index, Frameworks);
-    if pkVCL in TargetConfigs[i].InstallMode then
+  Count := 0;
+  try
+    SysInfo := GetWindowsProductString;
+
+    if SysInfo <> '' then
     begin
-      Result := CompileTarget(TargetConfigs[i], pkVCL);
-      if not Result and not CmdOptions.ContinueOnError then
-        Break;
-      Inc(Index);
+      SysInfo := #1 + SysInfo + Format(' %s (%d.%d.%d)',
+        [Win32CSDVersion, Win32MajorVersion, Win32MinorVersion, Win32BuildNumber]);
+
+      CaptureLine(SysInfo, FAborted);
+      CaptureLine('', FAborted);
     end;
-    DoTargetProgress(TargetConfigs[i], Index, Frameworks);
-  end;
+    CaptureLine(Format('JVCL %d.%d.%d.%d',
+      [JVCLVersionMajor, JVCLVersionMinor, JVCLVersionRelease, JVCLVersionBuild]),
+      FAborted);
+    CaptureLine('', FAborted);
 
-  if CmdOptions.XMLResultFileName <> '' then
-  begin
-    XML := TJclSimpleXML.Create;
-    try
-      XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
-      XML.Root.Name := 'JclInstall';
-      for I := 0 to Count - 1 do
+    AbortReason := '';
+    // read target configs that should be compiled
+    Frameworks := 0;
+    SetLength(TargetConfigs, Data.Targets.Count);
+    for i := 0 to High(TargetConfigs) do
+    begin
+      if Data.TargetConfig[i].InstallJVCL then
       begin
-        AConfig := TargetConfigs[I];
-        AConfigElem := XML.Root.Items.Add('Config');
-
-        AConfigElem.Properties.Add('Target', AConfig.MainTargetSymbol);
-        AConfigElem.Properties.Add('TargetName', AConfig.Target.Name);
-        AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
-        AConfigElem.Properties.Add('InstallAttempted', I <= Index);
-        AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
-        AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
+        TargetConfigs[Count] := Data.TargetConfig[i];
+        Inc(Count);
+        if pkVCL in Data.TargetConfig[i].InstallMode then
+          Inc(Frameworks);
       end;
-      XML.SaveToFile(CmdOptions.XMLResultFileName, JclStreams.seUTF8);
-    finally
-      XML.Free;
+    end;
+    SetLength(TargetConfigs, Count);
+
+    // Delete all units from the JVCL source directory where they shouldn't be
+    ClearSourceDirectory;
+
+    // compile all selected targets
+    for i := 0 to Count - 1 do
+    begin
+      DoTargetProgress(TargetConfigs[i], Index, Frameworks);
+      if pkVCL in TargetConfigs[i].InstallMode then
+      begin
+        Result := CompileTarget(TargetConfigs[i], pkVCL);
+        if not Result and not CmdOptions.ContinueOnError then
+          Break;
+        Inc(Index);
+      end;
+      DoTargetProgress(TargetConfigs[i], Index, Frameworks);
+    end;
+  finally
+    if CmdOptions.XMLResultFileName <> '' then
+    begin
+      XML := TJclSimpleXML.Create;
+      try
+        XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
+        XML.Root.Name := 'JclInstall';
+        for I := 0 to Count - 1 do
+        begin
+          AConfig := TargetConfigs[I];
+          AConfigElem := XML.Root.Items.Add('Config');
+
+          AConfigElem.Properties.Add('Target', AConfig.MainTargetSymbol);
+          AConfigElem.Properties.Add('TargetName', AConfig.Target.Name);
+          AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
+          AConfigElem.Properties.Add('InstallAttempted', I <= Index);
+          AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
+          AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
+        end;
+        XML.SaveToFile(CmdOptions.XMLResultFileName, JclStreams.seUTF8);
+      finally
+        XML.Free;
+      end;
     end;
   end;
 end;
