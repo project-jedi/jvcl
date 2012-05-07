@@ -1269,6 +1269,7 @@ var
   i, Index: Integer;
   Frameworks, Count: Integer;
   TargetConfigs: array of TTargetConfig;
+  InstallAttempted: array of Boolean;
   SysInfo: string;
   XML: TJclSimpleXML;
   AConfig: TTargetConfig;
@@ -1309,6 +1310,7 @@ begin
       end;
     end;
     SetLength(TargetConfigs, Count);
+    SetLength(InstallAttempted, Count);
 
     // Delete all units from the JVCL source directory where they shouldn't be
     ClearSourceDirectory;
@@ -1317,9 +1319,12 @@ begin
     Index := 0;
     for i := 0 to Count - 1 do
     begin
+      InstallAttempted[i] := False;
       DoTargetProgress(TargetConfigs[i], Index, Frameworks);
       if pkVCL in TargetConfigs[i].InstallMode then
       begin
+        if not FAborted then
+          InstallAttempted[i] := True;
         Result := CompileTarget(TargetConfigs[i], pkVCL);
         if not Result and not CmdOptions.ContinueOnError then
           Break;
@@ -1348,7 +1353,7 @@ begin
             AConfigElem.Properties.Add('TargetName', Format('%s %s', [AConfig.Target.Name, AConfig.Target.VersionStr])); // do not localize
 
           AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
-          AConfigElem.Properties.Add('InstallAttempted', AConfig = TargetConfigs[CompiledConfigIndex]);
+          AConfigElem.Properties.Add('InstallAttempted', InstallAttempted[CompiledConfigIndex]);
           AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
           AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
 
