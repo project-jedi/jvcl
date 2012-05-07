@@ -1354,7 +1354,7 @@ begin
 
           AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
           AConfigElem.Properties.Add('InstallAttempted', InstallAttempted[CompiledConfigIndex]);
-          AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
+          AConfigElem.Properties.Add('InstallSuccess', AConfig.InstallSuccess);
           AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
 
           if AConfig = TargetConfigs[CompiledConfigIndex] then
