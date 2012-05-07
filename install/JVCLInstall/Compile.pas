@@ -1333,12 +1333,12 @@ begin
       XML := TJclSimpleXML.Create;
       try
         XML.Options := [sxoAutoCreate, sxoAutoIndent, sxoAutoEncodeValue, sxoAutoEncodeEntity];
-        XML.Root.Name := 'JclInstall';
+        XML.Root.Name := 'JvclInstall';
         CompiledConfigIndex := 0;
         for I := 0 to Data.Targets.Count - 1 do
         begin
           AConfig := Data.TargetConfig[I];
-          AConfigElem := XML.Root.Items.Add('Config');
+          AConfigElem := XML.Root.Items.Add('Installation');
 
           AConfigElem.Properties.Add('Target', AConfig.MainTargetSymbol);
 
