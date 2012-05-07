@@ -55,6 +55,7 @@ type
     FRegistryKeyBDS: string;
 
     FItemList: TObjectList;
+    FForceInstall: Boolean;
     procedure ShowHelp;
   protected
     procedure AddBool(const Name, Help: string; var Value: Boolean);
@@ -73,6 +74,7 @@ type
     property KeepFiles: Boolean read FKeepFiles write FKeepFiles;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
     property AutoInstall: Boolean read FAutoInstall write FAutoInstall;
+    property ForceInstall: Boolean read FForceInstall write FForceInstall;
     property AutoCloseAfterSuccess: Boolean read FAutoCloseAfterSuccess write FAutoCloseAfterSuccess;
     property AutoCloseAfterError: Boolean read FAutoCloseAfterError write FAutoCloseAfterError;
     property ContinueOnError: Boolean read FContinueOnError write FContinueOnError;
@@ -104,6 +106,7 @@ begin
   AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddBool('--autoinstall', 'Installs JVCL 3 for all installed IDEs.', FAutoInstall);
+  AddBool('--forceinstall', 'For installing JVCL 3 for all installed IDEs.', FForceInstall);
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
   AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
   AddBool('--autoclose-error', 'Automatically close the installer after a failed installation', FAutoCloseAfterError);

@@ -144,10 +144,17 @@ begin
   FPackageInstaller := APackageInstaller;
 
   InstallType := itFreshInstall;
-  if Data.IsJVCLInstalledAnywhere(3) then
-    InstallType := itUpdate
+  if CmdOptions.ForceInstall then
+  begin
+    CmdOptions.AutoInstall := True;
+  end
   else
-    CmdOptions.AutoUpdate := False; // auto update not possible
+  begin
+    if Data.IsJVCLInstalledAnywhere(3) then
+      InstallType := itUpdate
+    else
+      CmdOptions.AutoUpdate := False; // auto update not possible
+  end;
 
   if CmdOptions.AutoInstall then
     CmdOptions.AutoUpdate := True;
