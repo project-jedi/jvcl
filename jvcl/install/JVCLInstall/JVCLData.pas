@@ -84,7 +84,7 @@ type
     FJVCLConfig: TJVCLConfig;
     FJVCLRegistryConfig: TJVCLRegistryConfig;
 
-    FBuildSuccess: Boolean;
+    FInstallSuccess: Boolean;
 
     procedure SetInstallMode(Value: TInstallMode);
     function GetFrameworkCount: Integer;
@@ -320,7 +320,7 @@ type
     property JclBplDir: string read GetJclBplDir;
       // JclBplDir returns the directory where the JclXx.bpl/JclVclXX.bpl files are.
 
-    property BuildSuccess: Boolean read FBuildSuccess;
+    property InstallSuccess: Boolean read FInstallSuccess;
 
     property LogFileName: string read GetLogFileName;
   end;
@@ -976,7 +976,7 @@ end;
 
 procedure TTargetConfig._SetBuildSuccess(Value: Boolean);
 begin
-  FBuildSuccess := Value;
+  FInstallSuccess := Value;
 end;
 
 function TTargetConfig.VersionedJVCLXmlBpl(const Name: string): string;
