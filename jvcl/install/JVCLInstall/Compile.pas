@@ -1339,7 +1339,12 @@ begin
           AConfigElem := XML.Root.Items.Add('Config');
 
           AConfigElem.Properties.Add('Target', AConfig.MainTargetSymbol);
-          AConfigElem.Properties.Add('TargetName', AConfig.Target.Name);
+
+          if AConfig.Target.IsBDS and (AConfig.Target.IDEVersion >= 9) then
+            AConfigElem.Properties.Add('TargetName', Format('%s %s %s', [AConfig.Target.Name, AConfig.Target.VersionStr, AConfig.Target.PlatformName])) // do not localize
+          else
+            AConfigElem.Properties.Add('TargetName', Format('%s %s', [AConfig.Target.Name, AConfig.Target.VersionStr])); // do not localize
+
           AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
           AConfigElem.Properties.Add('InstallAttempted', I <= Index);
           AConfigElem.Properties.Add('BuildSuccess', AConfig.BuildSuccess);
