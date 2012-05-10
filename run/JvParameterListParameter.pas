@@ -201,7 +201,6 @@ type
   end;
 
   TJvGroupBoxParameter = class(TJvArrangeParameter)
-  private
   protected
     function GetParameterNameExt: string; override;
     procedure ReArrangeGroupbox(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer);
@@ -442,14 +441,12 @@ type
   end;
 
   TJvListBoxParameter = class(TJvListParameter)
-  private
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
     procedure Assign(Source: TPersistent); override;
-  published
   end;
 
   TJvCheckListItemDataWrapper = class(TObject)
@@ -1669,9 +1666,7 @@ end;
 procedure TJvComboBoxParameter.GetData;
 begin
   if Assigned(WinControl) then
-    Value := WinControlData
-  else
-    Value := Null;
+    Value := WinControlData;
 end;
 
 procedure TJvComboBoxParameter.SetData;
@@ -2741,9 +2736,7 @@ end;
 procedure TJvCheckComboBoxParameter.GetData;
 begin
   if Assigned(WinControl) then
-    Value := WinControlData
-  else
-    Value := Null;
+    Value := WinControlData;
 end;
 
 procedure TJvCheckComboBoxParameter.SetData;
