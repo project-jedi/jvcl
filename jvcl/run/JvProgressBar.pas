@@ -48,11 +48,23 @@ const
   SID_ITaskbarList2                           = '{602D4995-B13A-429B-A66E-1935E44F4317}';
   SID_ITaskbarList3                           = '{EA1AFB91-9E28-4B86-90E9-9E9F8A5EEFAF}';
   SID_ITaskbarList4                           = '{C43DC798-95D1-4BEA-9030-BB99E2983A1A}';
-  
+
   CLSID_TaskbarList: TGUID                            = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
   {$EXTERNALSYM CLSID_TaskbarList}
-  
+
 type
+  {$IFNDEF RTL185_UP}
+  {$IFNDEF RTL150_UP}
+  UInt64 = Int64; // kludge, use with caution
+  {$ENDIF RTL150_UP}
+  DWORDLONG = UInt64;
+  {$EXTERNALSYM DWORDLONG}
+  ULONGLONG = UInt64;
+  {$EXTERNALSYM ULONGLONG}
+  PULONGLONG = ^UInt64;
+  {$EXTERNALSYM PULONGLONG}
+  {$ENDIF RTL185_UP}
+
   ITaskbarList = interface(IUnknown)
     [SID_ITaskbarList]
     function HrInit: HRESULT; stdcall;
