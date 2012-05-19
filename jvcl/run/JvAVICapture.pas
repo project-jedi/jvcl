@@ -605,15 +605,14 @@ begin
   SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
   if SelfObj <> nil then
   begin
-    // send the message to the containing window,
-    // except for WM_NCHITTEST during design
+    // send the message to the containing window, except for WM_NCHITTEST
     // This will prevent 100% processor usage when the mouse is kept over
-    // the control during design time
+    // the control during design time or run time
     // Note: We MUST convert SelfObj to a TWinControl as the Handle
     // property of TJvAVICapture returns the handle of the AVICap window
     // thus leading to an infinite loop if we were to use it...
-    if (Msg <> WM_NCHITTEST) or not (csDesigning in SelfObj.ComponentState) then
-        PostMessage(TWinControl(SelfObj).Handle, Msg, wParam, lParam);
+    if Msg <> WM_NCHITTEST then
+      PostMessage(TWinControl(SelfObj).Handle, Msg, wParam, lParam);
 
     // sending the message to the original window proc
     Result := CallWindowProc(SelfObj.FPreviousWndProc, hWnd, Msg, wParam, lParam);
