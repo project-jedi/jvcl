@@ -62,7 +62,7 @@ type
     procedure HidCtlDeviceDataError(HidDev: TJvHidDevice;
       Error: Cardinal);
   public
-    Edits: array [0..63] of TEdit;
+    Edits: array [0..1023] of TEdit;
     CurrentDevice: TJvHidDevice;
   published
     procedure ShowRead(HidDev: TJvHidDevice; ReportID: Byte;
