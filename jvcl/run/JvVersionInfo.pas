@@ -143,7 +143,7 @@ const
 implementation
 
 uses
-  JvJCLUtils;
+  JclFileUtils, JvJCLUtils;
 
 constructor TJvVersionInfo.Create(const AFileName: string);
 begin

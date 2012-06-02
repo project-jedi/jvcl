@@ -690,8 +690,6 @@ function AnsiDequotedStr(const S: string; AQuote: Char): string; // follow Delph
 function GetTempFileName(const Prefix: AnsiString): AnsiString;
 {$ENDIF UNIX}
 
-{ begin JvFileUtil }
-function FileDateTime(const FileName: string): TDateTime;
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
 function DeleteFilesEx(const FileMasks: array of string): Boolean;
 function NormalDir(const DirName: string): string;
@@ -5923,27 +5921,6 @@ begin
     if not ((Length(Result) = 3) and CharInSet(Result[1], ['A'..'Z', 'a'..'z']) and
       (Result[2] = ':')) then
       Delete(Result, Length(Result), 1);
-end;
-
-function FileDateTime(const FileName: string): TDateTime;
-{$IFNDEF COMPILER10_UP}
-var
-  Age: Longint;
-{$ENDIF !COMPILER10_UP}
-begin
-  {$IFDEF COMPILER10_UP}
-  if not FileAge(Filename, Result) then
-    Result := NullDate;
-  {$ELSE}
-  Age := FileAge(FileName);
-  {$IFDEF MSWINDOWS}
-  // [roko] -1 is valid FileAge value on Linux
-  if Age = -1 then
-    Result := NullDate
-  else
-  {$ENDIF MSWINDOWS}
-    Result := FileDateToDateTime(Age);
-  {$ENDIF COMPILER10_UP}
 end;
 
 function HasAttr(const FileName: string; Attr: Integer): Boolean;
