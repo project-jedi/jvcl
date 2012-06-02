@@ -46,7 +46,7 @@ uses
 type
   TJvCustomAppXMLStorage = class;
 
-  TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
+  TJvAppXMLStorageOptions = class(TJvAppFileStorageOptions)
   private
     FAutoEncodeEntity: Boolean;
     FAutoEncodeValue: Boolean;
@@ -69,6 +69,22 @@ type
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
+    property BooleanStringTrueValues;
+    property BooleanStringFalseValues;
+    property BooleanAsString;
+    property EnumerationAsString;
+    property TypedIntegerAsString;
+    property SetAsString;
+    property DateTimeAsString;
+    property FloatAsString;
+    property DefaultIfReadConvertError;
+    property DefaultIfValueNotExists;
+    property StoreDefaultValues;
+    property UseOldItemNameFormat;
+    property UseTranslateStringEngineDateTimeFormats;
+    property BackupType;
+    property BackupKeepFileAfterFlush;
+
     //Flag to determine if a stringlist should be stored as single string and not as list of string items
     property StoreStringListAsSingleString;
     property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
@@ -159,12 +175,11 @@ type
   [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
   {$ENDIF RTL230_UP}
   TJvAppXMLFileStorage = class(TJvCustomAppXMLStorage)
-  private
-    procedure FlushInternal;
-    procedure ReloadInternal;
+  protected
+    procedure ClearInternal; override;
+    procedure FlushInternal; override;
+    procedure ReloadInternal; override;
   public
-    procedure Flush; override;
-    procedure Reload; override;
     property Xml;
     property AsString;
   published
@@ -1038,47 +1053,14 @@ begin
   // No Write necessary
 end;
 
-//=== { TJvAppXMLFileStorage } ===============================================
-
-procedure TJvAppXMLFileStorage.Flush;
-var
-  Path: string;
+procedure TJvAppXMLFileStorage.ClearInternal;
 begin
-  if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
-  begin
-    try
-      Path := ExtractFilePath(FullFileName);
-      if Path <> '' then
-        ForceDirectories(Path);
-      if SynchronizeFlushReload then
-        Synchronize(FlushInternal, FullFileName)
-      else
-        FlushInternal;
-    except
-      on E: Exception do
-        DoError(E.Message);
-    end;
-  end;
+  Xml.Root.Clear;
 end;
 
 procedure TJvAppXMLFileStorage.FlushInternal;
 begin
   Xml.SaveToFile(FullFileName, StorageOptions.Encoding, StorageOptions.CodePage);
-end;
-
-procedure TJvAppXMLFileStorage.Reload;
-begin
-  if not IsUpdating and not (csDesigning in ComponentState) then
-  begin
-    inherited Reload;
-    if FileExists(FullFileName) then
-      if SynchronizeFlushReload then
-        Synchronize(ReloadInternal, FullFileName)
-      else
-        ReloadInternal
-    else // file may have disappeared. If so, clear the root element
-      Xml.Root.Clear;
-  end;
 end;
 
 procedure TJvAppXMLFileStorage.ReloadInternal;

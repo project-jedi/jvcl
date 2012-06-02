@@ -40,7 +40,7 @@ uses
   JvAppStorage, JvPropertyStore, JvTypes;
 
 type
-  TJvAppIniStorageOptions = class(TJvAppStorageOptions)
+  TJvAppIniStorageOptions = class(TJvAppFileStorageOptions)
   private
     FReplaceCRLF: Boolean;
     FPreserveLeadingTrailingBlanks: Boolean;
@@ -51,10 +51,24 @@ type
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
+    property BooleanStringTrueValues;
+    property BooleanStringFalseValues;
+    property BooleanAsString;
+    property EnumerationAsString;
+    property TypedIntegerAsString;
+    property SetAsString;
+    property DateTimeAsString;
+    property FloatAsString default False;
+    property DefaultIfReadConvertError;
+    property DefaultIfValueNotExists;
+    property StoreDefaultValues;
+    property UseOldItemNameFormat;
+    property UseTranslateStringEngineDateTimeFormats;
+    property BackupType;
+    property BackupKeepFileAfterFlush;
     property ReplaceCRLF: Boolean read FReplaceCRLF write SetReplaceCRLF default False;
     property PreserveLeadingTrailingBlanks: Boolean read FPreserveLeadingTrailingBlanks
       write SetPreserveLeadingTrailingBlanks default False;
-    property FloatAsString default False;
   end;
 
   // Storage to INI file, all in memory. This is the base class
@@ -128,12 +142,11 @@ type
   [ComponentPlatformsAttribute(pidWin32 or pidWin64 or pidOSX32)]
   {$ENDIF RTL230_UP}
   TJvAppIniFileStorage = class(TJvCustomAppIniStorage)
-  private
-    procedure FlushInternal;
-    procedure ReloadInternal;
+  protected
+    procedure ClearInternal; override;
+    procedure FlushInternal; override;
+    procedure ReloadInternal; override;
   public
-    procedure Flush; override;
-    procedure Reload; override;
     property AsString;
     property IniFile;
   published
@@ -793,46 +806,16 @@ end;
 
 //=== { TJvAppIniFileStorage } ===============================================
 
-procedure TJvAppIniFileStorage.Flush;
-var
-  Path: string;
+procedure TJvAppIniFileStorage.ClearInternal;
 begin
-  if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
-  begin
-    try
-      Path := ExtractFilePath(IniFile.FileName);
-      if Path <> '' then
-        ForceDirectories(Path);
-      if SynchronizeFlushReload then
-        Synchronize(FlushInternal, FullFileName)
-      else
-        FlushInternal;
-    except
-      on E: Exception do
-        DoError(E.Message);
-    end;
-  end;
+  IniFile.Clear;
 end;
+
 
 procedure TJvAppIniFileStorage.FlushInternal;
 begin
   IniFile.Rename(FullFileName, False);
   IniFile.UpdateFile;
-end;
-
-procedure TJvAppIniFileStorage.Reload;
-begin
-  if not IsUpdating and not (csDesigning in ComponentState) then
-  begin
-    inherited Reload;
-    if FileExists(FullFileName) then
-      if SynchronizeFlushReload then
-        Synchronize(ReloadInternal, FullFileName)
-      else
-        ReloadInternal
-    else  // file may have disappeared. If so, clear the file
-      IniFile.Clear;
-  end;
 end;
 
 procedure TJvAppIniFileStorage.ReloadInternal;
