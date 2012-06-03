@@ -84,6 +84,8 @@ type
     property UseTranslateStringEngineDateTimeFormats;
     property BackupType;
     property BackupKeepFileAfterFlush;
+    property BackupHistoryCount;
+    property BackupHistoryType;
 
     //Flag to determine if a stringlist should be stored as single string and not as list of string items
     property StoreStringListAsSingleString;
