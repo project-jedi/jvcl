@@ -1085,6 +1085,7 @@ begin
   try
     AppStorage.StorageOptions.WhiteSpaceReplacement := '_';
     AppStorage.StorageOptions.UseOldItemNameFormat := False;
+    AppStorage.FlushOnDestroy := False;
     AppStorage.SynchronizeFlushReload := True;
     if Assigned(AStorageOptions) then
       AppStorage.StorageOptions.Assign(AStorageOptions);
@@ -1118,6 +1119,7 @@ begin
   try
     AppStorage.StorageOptions.WhiteSpaceReplacement := '_';
     AppStorage.StorageOptions.UseOldItemNameFormat := False;
+    AppStorage.FlushOnDestroy := False;
     AppStorage.SynchronizeFlushReload := True;
     if Assigned(AStorageOptions) then
       AppStorage.StorageOptions.Assign(AStorageOptions);
