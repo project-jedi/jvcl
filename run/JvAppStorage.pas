@@ -867,17 +867,31 @@ type
 
 
   TJvAppFileStorageBackupType = (afsbtNone, afsbtCreateBefore, afsbtRenameAfter);
+  TJvAppFileStorageBackupHistoryType = (afsbhtNone, afsbhtAllways, afsbht1Minute, afsbht15Minute, afsbht1Hour, afsbht4Hour,
+        afsbht12Hour, afsbht1Day, afsbht3Day, afsbht1Week, afsbht1Month);
+
   TJvAppFileStorageOptions = class(TJvCustomAppStorageOptions)
   private
+    FBackupHistoryCount: Integer;
+    FBackupHistoryType: TJvAppFileStorageBackupHistoryType;
     FBackupType: TJvAppFileStorageBackupType;
     FBackupKeepFileAfterFlush: Boolean;
   public
     constructor Create; override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-  published
-    property BackupType: TJvAppFileStorageBackupType read FBackupType write FBackupType default afsbtNone;
+    //1 Property to define the number of history files which should be preserved
+    property BackupHistoryCount: Integer read FBackupHistoryCount write FBackupHistoryCount default 0;
+    //1 Property to define how often a history file of the backup file should be created
+    property BackupHistoryType: TJvAppFileStorageBackupHistoryType read FBackupHistoryType write FBackupHistoryType default
+        afsbhtNone;
+    //1 Property to define that the backup file should be preserved after the flush has been finished or not
     property BackupKeepFileAfterFlush: Boolean read FBackupKeepFileAfterFlush write FBackupKeepFileAfterFlush default false;
+    /// Property to define if and how a backup file should be created.
+    /// - None = No Backup
+    /// - CreateBefore = Copy the old file as backup before writing the new file
+    /// - AfterReplace = Write the new file into a tmp file and after writing rename
+    /// the old file as backup and the new as save file
+    property BackupType: TJvAppFileStorageBackupType read FBackupType write FBackupType default afsbtNone;
   end;
 
   // Base class for all in memory file storage classes.
@@ -3735,6 +3749,21 @@ begin
         FileMove(FileName, SaveFileName, True);
         SetFileNameInternal(SaveFileName)
       end;
+      if (StorageOptions.BackupHistoryCount > 0) and (StorageOptions.BackupHistoryType <> afsbhtNone) then
+        case StorageOptions.BackupHistoryType of
+          //afsbhtNone,
+          afsbhtAllways  : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now);
+          afsbht1Minute  : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-(1/24/60));
+          afsbht15Minute : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-(1/24/4));
+          afsbht1Hour    : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-(1/24));
+          afsbht4Hour    : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-(1/8));
+          afsbht12Hour   : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-(1/2));
+          afsbht1Day     : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-1);
+          afsbht3Day     : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-3);
+          afsbht1Week    : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-7);
+          afsbht1Month   : FileHistory(FullFileName, Path, StorageOptions.BackupHistoryCount, Now-30);
+        end;
+
       if (StorageOptions.BackupType <> afsbtNone) and not StorageOptions.BackupKeepFileAfterFlush then
         DeleteFile(BackupFileName);
     except
@@ -3884,11 +3913,8 @@ begin
   inherited Create;
   FBackupKeepFileAfterFlush := false;
   FBackupType := afsbtNone;
-end;
-
-destructor TJvAppFileStorageOptions.Destroy;
-begin
-  inherited Destroy;
+  FBackupHistoryType := afsbhtNone;
+  FBackupHistoryCount := 0;
 end;
 
 procedure TJvAppFileStorageOptions.Assign(Source: TPersistent);

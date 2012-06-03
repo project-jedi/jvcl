@@ -66,6 +66,8 @@ type
     property UseTranslateStringEngineDateTimeFormats;
     property BackupType;
     property BackupKeepFileAfterFlush;
+    property BackupHistoryCount;
+    property BackupHistoryType;
     property ReplaceCRLF: Boolean read FReplaceCRLF write SetReplaceCRLF default False;
     property PreserveLeadingTrailingBlanks: Boolean read FPreserveLeadingTrailingBlanks
       write SetPreserveLeadingTrailingBlanks default False;
