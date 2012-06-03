@@ -845,7 +845,8 @@ begin
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;
     AppStorage.DefaultSection := ADefaultSection;
-	AppStorage.SynchronizeFlushReload := True;
+    AppStorage.FlushOnDestroy := False;
+    AppStorage.SynchronizeFlushReload := True;
     SaveAppStorage := APropertyStore.AppStorage;
     SaveAppStoragePath := APropertyStore.AppStoragePath;
     try
@@ -879,7 +880,8 @@ begin
     AppStorage.Location := flCustom;
     AppStorage.FileName := AFileName;
     AppStorage.DefaultSection := ADefaultSection;
-	AppStorage.SynchronizeFlushReload := True;
+    AppStorage.FlushOnDestroy := False;
+    AppStorage.SynchronizeFlushReload := True;
     SaveAppStorage := APropertyStore.AppStorage;
     SaveAppStoragePath := APropertyStore.AppStoragePath;
     try

@@ -907,6 +907,7 @@ type
   TJvCustomAppMemoryFileStorage = class(TJvCustomAppStorage)
   private
     FFullFileName: TFileName;
+    function CalculateFullFileName: string;
     function GetStorageOptions: TJvAppFileStorageOptions;
     procedure SetFileNameInternal(const Value: TFileName);
     procedure SetStorageOptions(const Value: TJvAppFileStorageOptions);
@@ -3588,7 +3589,7 @@ begin
   FFileAge := -1;
 end;
 
-procedure TJvCustomAppMemoryFileStorage.RecalculateFullFileName;
+function TJvCustomAppMemoryFileStorage.CalculateFullFileName: string;
 var
   NameOnly: string;
   RelPathName: string;
@@ -3596,7 +3597,7 @@ var
 begin
   if (FileName = '') and (Location <> flCustom) then
   begin
-    FFullFileName := '';
+    Result := '';
   end
   else
   begin
@@ -3608,25 +3609,30 @@ begin
       RelPathName := TransFileName;
     case Location of
       flCustom:
-        FFullFileName := DoGetFileName;
+        Result := DoGetFileName;
       flExeFile:
-        FFullFileName := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
+        Result := PathAddSeparator(ExtractFilePath(ParamStr(0))) + NameOnly;
       {$IFDEF MSWINDOWS}
       flTemp:
-        FFullFileName := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
+        Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
-        FFullFileName := PathAddSeparator(GetWindowsFolder) + NameOnly;
+        Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flUserFolder:
-        FFullFileName := PathAddSeparator(GetAppdataFolder) + RelPathName;
+        Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
       {$ENDIF MSWINDOWS}
       {$IFDEF UNIX}
       flTemp:
-        FFullFileName := PathAddSeparator(PathGetTempPath) + NameOnly;
+        Result := PathAddSeparator(PathGetTempPath) + NameOnly;
       flUserFolder:
-        FFullFileName := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
+        Result := PathAddSeparator(GetEnvironmentVariable('HOME')) + RelPathName;
       {$ENDIF UNIX}
     end;
   end;
+end;
+
+procedure TJvCustomAppMemoryFileStorage.RecalculateFullFileName;
+begin
+  FFullFileName := CalculateFullFileName;
   FPhysicalReadOnly := FileExists(FullFileName) and FileIsReadOnly(FullFileName);
 end;
 
@@ -3672,7 +3678,8 @@ begin
   if Value <> FileName then
   begin
     if not (csLoading in ComponentState) and not IsUpdating then
-      Flush;
+      if FullFileName <> CalculateFullFileName then
+        Flush;
 
     SetFileNameInternal(Value);
 
@@ -3696,7 +3703,8 @@ begin
   if FLocation <> Value then
   begin
     if not (csLoading in ComponentState) and not IsUpdating then
-      Flush;
+      if FullFileName <> CalculateFullFileName then
+        Flush;
     FLocation := Value;
     RecalculateFullFileName;
     if not (csLoading in ComponentState) and not IsUpdating then
@@ -3724,6 +3732,7 @@ procedure TJvCustomAppMemoryFileStorage.FlushToFile;
 var
   Path: string;
   BackupFileName : string;
+  SaveFullFileName : string;
   SaveFileName : string;
 begin
   if (FullFileName <> '') and not ReadOnly and not (csDesigning in ComponentState) then
@@ -3738,6 +3747,7 @@ begin
       if (StorageOptions.BackupType = afsbtRenameAfter) then
       begin
         SaveFileName := FileName;
+        SaveFullFileName := FullFileName;
         SetFileNameInternal(FileName+'.tmp');
       end;
 
@@ -3745,8 +3755,8 @@ begin
 
       if (StorageOptions.BackupType = afsbtRenameAfter) then
       begin
-        FileMove(FullFileName, BackupFileName, True);
-        FileMove(FileName, SaveFileName, True);
+        FileMove(SaveFullFileName, BackupFileName, True);
+        FileMove(FullFileName, SaveFullFileName, True);
         SetFileNameInternal(SaveFileName)
       end;
       if (StorageOptions.BackupHistoryCount > 0) and (StorageOptions.BackupHistoryType <> afsbhtNone) then
