@@ -7644,7 +7644,7 @@ end;
 function LoadDLL(const LibName: string): THandle;
 begin
   Result := SafeLoadLibrary(LibName);
-  if Result <> 0 then
+  if Result = 0 then
     OSCheck(False);
 end;
 
