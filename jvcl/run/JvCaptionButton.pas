@@ -2729,7 +2729,7 @@ begin
       Result := HandleNotify(TWMNotify(Msg));
     WM_SIZE:
       begin
-        if FCurrentWindowState <> ParentForm.WindowState then
+        if Assigned(ParentForm) and (FCurrentWindowState <> ParentForm.WindowState) then
         begin
           FNeedRecalculate := True;
           FCurrentWindowState := ParentForm.WindowState;
