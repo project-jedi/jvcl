@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -198,6 +198,7 @@ type
     procedure SetAddress(const Value: LongWord);
     procedure SetAddressValues(const Value: TJvIPAddressValues);
     procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
+    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure WMDestroy(var Msg: TWMNCDestroy); message WM_DESTROY;
     procedure WMParentNotify(var Msg: TWMParentNotify); message WM_PARENTNOTIFY;
@@ -1225,6 +1226,22 @@ begin
     if FEditControls[I] <> nil then
       FEditControls[I].Handle := 0;
   FEditControlCount := 0;
+end;
+
+procedure TJvIPAddress.CMEnabledChanged(var Message: TMessage);
+begin
+  inherited;
+
+  if not Enabled then
+  begin
+    Color := clBtnFace;
+    Font.Color := clBtnShadow;
+  end
+  else
+  begin
+    Color := clWindow;
+    Font.Color := clWindowText;
+  end;
 end;
 
 procedure TJvIPAddress.ColorChanged;
