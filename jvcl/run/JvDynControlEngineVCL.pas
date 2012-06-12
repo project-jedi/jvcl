@@ -802,7 +802,6 @@ type
     function ControlGetPage(const PageName: string): TWinControl;
   end;
 
-  {$IFDEF DELPHI6_UP}
   TJvDynControlVCLColorComboBox = class(TColorBox, IUnknown, IJvDynControl,
       IJvDynControlColorComboBoxControl)
   public
@@ -826,7 +825,6 @@ type
     function GetControlDefaultColor: TColor; stdcall;
     procedure SetControlDefaultColor(const Value: TColor); stdcall;
   end;
-  {$ENDIF DELPHI6_UP}
 
 function DynControlEngineVCL: TJvDynControlEngine;
 procedure SetDynControlEngineVCLDefault;
@@ -3389,7 +3387,6 @@ begin
     Result := nil;
 end;
 
-{$IFDEF DELPHI6_UP}
 //=== { TJvDynControlVCLColorComboBox } ===========================================
 
 Type TAccessCustomColorBox = class(TCustomColorBox);
@@ -3474,7 +3471,6 @@ procedure TJvDynControlVCLColorComboBox.SetControlDefaultColor(const Value:
 begin
   DefaultColorColor := Value;
 end;
-{$ENDIF DELPHI6_UP}
 
 //=== { TJvDynControlEngineVCL } =============================================
 
