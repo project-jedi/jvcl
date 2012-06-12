@@ -3906,7 +3906,6 @@ end;
 
 // (rom) unused writeable const option removed
 
-{$IFDEF DELPHI6_UP}
 procedure TJvDockVIDDragDockObject.DefaultDockImage(Erase: Boolean);
 var
   DrawRect: TRect;
@@ -4056,7 +4055,6 @@ begin
     ReleaseDC(DesktopWindow, DC);
   end;
 end;
-{$ENDIF DELPHI6_UP}
 
 function TJvDockVIDDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 begin

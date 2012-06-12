@@ -3307,9 +3307,7 @@ begin
   RegisterControlType(jctProgressbar, TJvDynControlJVCLProgressbar);
   RegisterControlType(jctTabControl, TJvDynControlJVCLTabControl);
   RegisterControlType(jctPageControl, TJvDynControlJVCLPageControl);
-  {$IFDEF DELPHI6_UP}
   RegisterControlType(jctColorComboBox, TJvDynControlVCLColorComboBox);
-  {$ENDIF DELPHI6_UP}
 end;
 
 procedure TJvDynControlJVCLTabControl.ControlCreateTab(const AName: string);

@@ -1723,10 +1723,8 @@ begin
     FBrush.Free;
     FBrush := nil;
   end;
-  {$IFDEF DELPHI6_UP}
   FAlphaBlendedForm.Free;
   FAlphaBlendedTab.Free;
-  {$ENDIF DELPHI6_UP}
   inherited Destroy;
 end;
 
@@ -1734,7 +1732,6 @@ function TJvDockDragDockObject.GetAlphaBlendedTab: TJvAlphaBlendedForm;
 begin
   if FAlphaBlendedTab = nil then
   begin
-    {$IFDEF DELPHI6_UP} // Delphi 5's TCustomForm doesn't have the AlphaBlend properties
     FAlphaBlendedTab := TJvAlphaBlendedForm.CreateNew(nil);
     FAlphaBlendedTab.Visible := False;
     FAlphaBlendedTab.Color := clHighlight;
@@ -1744,7 +1741,6 @@ begin
     FAlphaBlendedTab.BorderStyle := bsNone;
     FAlphaBlendedTab.FormStyle := fsStayOnTop;
     FAlphaBlendedTab.BoundsRect := Rect(0, 0, 0, 0);
-    {$ENDIF DELPHI6_UP}
   end;
   Result := FAlphaBlendedTab;
 end;
@@ -1790,7 +1786,6 @@ begin
   SetCapture(Result);
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure TJvDockDragDockObject.DefaultDockImage(Erase: Boolean);
 Var
   DrawRect: TRect;
@@ -1801,32 +1796,6 @@ begin
   AlphaBlendedForm.Visible := True;
   AlphaBlendedForm.BoundsRect := DrawRect;
 end;
-{$ELSE}
-procedure TJvDockDragDockObject.DefaultDockImage(Erase: Boolean);
-var
-  DesktopWindow: HWND;
-  DC: HDC;
-  OldBrush: HBRUSH;
-  R: TRect;
-  PenSize: Integer;
-  Brush: TBrush;
-begin
-  GetBrush_PenSize_DrawRect(Brush, PenSize, R, Erase);
-
-  DesktopWindow := GetDesktopWindow;
-  DC := GetDCEx(DesktopWindow, 0, DCX_CACHE or DCX_LOCKWINDOWUPDATE);
-  try
-    OldBrush := SelectObject(DC, Brush.Handle);
-    PatBlt(DC, R.Left + PenSize, R.Top, R.Right - R.Left - PenSize, PenSize, PATINVERT);
-    PatBlt(DC, R.Right - PenSize, R.Top + PenSize, PenSize, R.Bottom - R.Top - PenSize, PATINVERT);
-    PatBlt(DC, R.Left, R.Bottom - PenSize, R.Right - R.Left - PenSize, PenSize, PATINVERT);
-    PatBlt(DC, R.Left, R.Top, PenSize, R.Bottom - R.Top - PenSize, PATINVERT);
-    SelectObject(DC, OldBrush);
-  finally
-    ReleaseDC(DesktopWindow, DC);
-  end;
-end;
-{$ENDIF DELPHI6_UP}
 
 function TJvDockDragDockObject.DragFindWindow(const Pos: TPoint): THandle;
 var

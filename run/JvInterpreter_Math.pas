@@ -65,7 +65,6 @@ begin
   Value := Math.ArcCosh(Extended(Args.Values[0]));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_ArcCot(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.ArcCot(Extended(Args.Values[0]));
@@ -95,7 +94,6 @@ procedure JvInterpreter_ArcSecH(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.ArcSecH(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_ArcSin(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -122,7 +120,6 @@ begin
   Value := Math.Ceil(Extended(Args.Values[0]));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_ClearExceptions(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Math.ClearExceptions;
@@ -132,26 +129,22 @@ procedure JvInterpreter_Cosecant(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.Cosecant(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_Cosh(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.Cosh(Extended(Args.Values[0]));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_Cot(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.Cot(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_Cotan(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.Cotan(Extended(Args.Values[0]));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_CotH(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.CotH(Extended(Args.Values[0]));
@@ -176,14 +169,12 @@ procedure JvInterpreter_CycleToGrad(var Value: Variant; Args: TJvInterpreterArgs
 begin
   Value := Math.CycleToGrad(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_CycleToRad(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.CycleToRad(Extended(Args.Values[0]));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_DegToCycle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.DegToCycle(Extended(Args.Values[0]));
@@ -193,7 +184,6 @@ procedure JvInterpreter_DegToGrad(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.DegToGrad(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_DegToRad(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -205,7 +195,6 @@ begin
   Value := Math.Floor(Extended(Args.Values[0]));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_GradToCycle(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.GradToCycle(Extended(Args.Values[0]));
@@ -215,7 +204,6 @@ procedure JvInterpreter_GradToDeg(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.GradToDeg(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_GradToRad(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -232,7 +220,6 @@ begin
   Value := Extended(Math.IntPower(Extended(Args.Values[0]), Integer(Args.Values[1])));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_IsInfinite(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Boolean(Math.IsInfinite(Double(Args.Values[0])));
@@ -242,7 +229,6 @@ procedure JvInterpreter_IsNan(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Boolean(Math.IsNan(Double(Args.Values[0])));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_Ldexp(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -304,7 +290,6 @@ begin
   Value := Extended(Math.RandG(Extended(Args.Values[0]), Extended(Args.Values[1])));
 end;
 
-{$IFDEF DELPHI6_UP}
 procedure JvInterpreter_RandomRange(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Integer(Math.RandomRange(Integer(Args.Values[0]), Integer(Args.Values[1])));
@@ -324,7 +309,6 @@ procedure JvInterpreter_SecH(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := Math.SecH(Extended(Args.Values[0]));
 end;
-{$ENDIF DELPHI6_UP}
 
 procedure JvInterpreter_Sinh(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -361,9 +345,7 @@ begin
   begin
     // add constants
     AddConst(cMath, 'PI', PI);
-    {$IFDEF DELPHI6_UP}
     AddConst(cMath, 'Infinity', Infinity);
-    {$ENDIF DELPHI6_UP}
     AddConst(cMath, 'MaxComp', MaxComp);
     AddConst(cMath, 'MaxDouble', MaxDouble);
     // TODO: fix MaxExtended, raises and overflow error atm
@@ -373,49 +355,37 @@ begin
     AddConst(cMath, 'MinDouble', MinDouble);
     AddConst(cMath, 'MinExtended', MinExtended);
     AddConst(cMath, 'MinSingle', MinSingle);
-    {$IFDEF DELPHI6_UP}
     AddConst(cMath, 'NaN', NaN);
     AddConst(cMath, 'NegInfinity', NegInfinity);
-    {$ENDIF DELPHI6_UP}
 
     // add functions
     AddFunction(cMath, 'ArcCos', JvInterpreter_ArcCos, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcCosh', JvInterpreter_ArcCosh, 1, [varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'ArcCot', JvInterpreter_ArcCot, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcCotH', JvInterpreter_ArcCot, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcCsc', JvInterpreter_ArcCsc, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcCscH', JvInterpreter_ArcCsc, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcSec', JvInterpreter_ArcSec, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcSecH', JvInterpreter_ArcSecH, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'ArcSin', JvInterpreter_ArcSin, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcSinh', JvInterpreter_ArcSinh, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'ArcTan2', JvInterpreter_ArcTan2, 2, [varEmpty,varEmpty], varEmpty);
     AddFunction(cMath, 'ArcTanh', JvInterpreter_ArcTanh, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'Ceil', JvInterpreter_Ceil, 1, [varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'ClearExceptions', JvInterpreter_ClearExceptions, 0, [], varEmpty);
     // TODO: add CompareValue function
     AddFunction(cMath, 'Cosecant', JvInterpreter_Cosecant, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'Cosh', JvInterpreter_Cosh, 1, [varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'Cot', JvInterpreter_Cot, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'Cotan', JvInterpreter_Cotan, 1, [varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'CotH', JvInterpreter_CotH, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'Csc', JvInterpreter_Csc, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'CscH', JvInterpreter_Csc, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'CycleToDeg', JvInterpreter_CycleToDeg, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'CycleToGrad', JvInterpreter_CycleToGrad, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'CycleToRad', JvInterpreter_CycleToRad, 1, [varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'DegToCycle', JvInterpreter_DegToCycle, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'DegToGrad', JvInterpreter_DegToGrad, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'DegToRad', JvInterpreter_DegToRad, 1, [varEmpty], varEmpty);
     // TODO: add DivMod function
     // TODO: add DoubleDecliningBalance function
@@ -426,10 +396,8 @@ begin
     // TODO: add GetExceptionMask function
     // TODO: add GetPrecisionMode function
     // TODO: add GetRoundMode function
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'GradToCycle', JvInterpreter_GradToCycle, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'GradToDeg', JvInterpreter_GradToDeg, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'GradToRad', JvInterpreter_GradToRad, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'Hypot', JvInterpreter_Hypot, 2, [varEmpty,varEmpty], varEmpty);
     // TODO: add InRange function
@@ -437,10 +405,8 @@ begin
     // TODO: add  InterestRate function
     // TODO: add  InternalRateOfReturn function
     AddFunction(cMath, 'IntPower', JvInterpreter_IntPower, 2, [varEmpty,varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'IsInfinite', JvInterpreter_IsInfinite, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'IsNan', JvInterpreter_IsNan, 1, [varEmpty], varEmpty);
-    {$ENDIF DELPHI6_UP}
     // TODO: add IsZero function
     AddFunction(cMath, 'Ldexp', JvInterpreter_Ldexp, 2, [varEmpty,varEmpty], varEmpty);
     AddFunction(cMath, 'LnXP1', JvInterpreter_LnXP1, 1, [varEmpty], varEmpty);
@@ -469,7 +435,6 @@ begin
     AddFunction(cMath, 'RadToDeg', JvInterpreter_RadToDeg, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'RadToGrad', JvInterpreter_RadToGrad, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'RandG', JvInterpreter_RandG, 2, [varEmpty,varEmpty], varEmpty);
-    {$IFDEF DELPHI6_UP}
     AddFunction(cMath, 'RandomRange', JvInterpreter_RandomRange, 2, [varEmpty,varEmpty], varEmpty);
     // TODO: add RoundTo function
     // TODO: add SameValue function
@@ -482,7 +447,6 @@ begin
     // TODO: add Sign function
     // TODO: add SimpleRoundTo function
     // TODO: add SinCos function
-    {$ENDIF DELPHI6_UP}
     AddFunction(cMath, 'Sinh', JvInterpreter_Sinh, 1, [varEmpty], varEmpty);
     AddFunction(cMath, 'SLNDepreciation', JvInterpreter_SLNDepreciation, 3, [varEmpty,varEmpty,varEmpty], varEmpty);
     // TODO: add StdDev function
