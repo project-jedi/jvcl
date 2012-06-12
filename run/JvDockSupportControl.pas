@@ -2336,7 +2336,8 @@ var
     begin
       WasVisible := Control.Visible;
       try
-        DragObject.AlphaBlendedForm.Hide;
+        if Assigned(DragObject.AlphaBlendedForm) then
+          DragObject.AlphaBlendedForm.Hide;
         Control.Dock(nil, DragObject.DockRect);
         if (Control.Left <> DragObject.DockRect.Left) or (Control.Top <> DragObject.DockRect.Top) then
         begin
