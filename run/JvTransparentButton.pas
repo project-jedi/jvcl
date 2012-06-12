@@ -215,7 +215,7 @@ type
     property OnStartDrag;
 
     property Glyph: TBitmap read FGlyph write SetGlyph;
-    property GlyphStretched: Boolean read FGlyphStretched write SetGlyphStretched;
+    property GlyphStretched: Boolean read FGlyphStretched write SetGlyphStretched default False;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs default 1;
     property KeepMouseLeavePressed: Boolean read FKeepMouseLeavePressed write FKeepMouseLeavePressed default False;
     property Images: TJvTransparentButtonImages read FImages write SetImages;
