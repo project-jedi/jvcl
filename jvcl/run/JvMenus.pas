@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -3468,6 +3468,12 @@ end;
 
 procedure TJvXPMenuItemPainter.DrawMenuBitmap(X, Y: Integer; Bitmap: TBitmap);
 begin
+  // to take the margin into account
+  if IsRightToLeft then
+    Inc(X, 3)
+  else
+    Dec(X, 3);
+
   if mdDisabled in FState then
     DrawDisabledBitmap(X, Y, Bitmap)
   else
