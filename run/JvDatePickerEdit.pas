@@ -1267,7 +1267,15 @@ end;
 procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvDropCalendar then
+  begin
     TJvDropCalendar(FPopup).Show;
+    if Assigned(OnPopupShown) then
+      OnPopupShown(Self);
+  end
+  else
+  begin
+    inherited ShowPopup(Origin);
+  end;
 end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
