@@ -1078,6 +1078,8 @@ type
     property DisabledTextColor;
     property DisabledColor;
     property OnKeyDown;
+    property OnPopupHidden;
+    property OnPopupShown;
 
     property DataConnector;
   end;

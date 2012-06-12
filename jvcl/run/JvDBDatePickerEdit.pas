@@ -201,6 +201,8 @@ type
     property OnParentColorChange;
     property OnSetFocus;
     property OnStartDrag;
+    property OnPopupHidden;
+    property OnPopupShown;
 
     property OnGetValidDateString;
   end;

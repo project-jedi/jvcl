@@ -301,6 +301,8 @@ type
     property OnMouseUp;
     property OnContextPopup;
     property OnStartDrag;
+    property OnPopupHidden;
+    property OnPopupShown;
   end;
 
 {$IFDEF UNITVERSIONING}
