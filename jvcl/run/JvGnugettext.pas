@@ -157,6 +157,9 @@ type
   FilenameString=string;
   MsgIdString=UnicodeString;
   TranslatedUnicodeString=UnicodeString;
+  {$IFNDEF DELPHI2010OROLDER}
+  NativeInt=Integer;
+  {$ENDIF}
 
 // Main GNU gettext functions. See documentation for instructions on how to use them.
 //DOM-IGNORE-BEGIN
