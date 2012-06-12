@@ -213,7 +213,7 @@ begin
     Exit;
   if not MouseOver then
   begin
-    if UsesPictures then
+    if UsesPictures and Enabled then
       State := stEntered;
     inherited MouseEnter(Control);
   end;
@@ -223,7 +223,7 @@ procedure TJvImage.MouseLeave(Control: TControl);
 begin
   if MouseOver then
   begin
-    if UsesPictures then
+    if UsesPictures and Enabled then
       ApplyClick;
     inherited MouseLeave(Control);
   end;
