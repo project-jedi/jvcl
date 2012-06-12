@@ -97,6 +97,7 @@ type
     FEnabled: Boolean;
     FAutoToggle: Boolean;
     FOnClick: TNotifyEvent;
+    FLinkedObject: TObject;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetDown(const Value: Boolean);
@@ -116,6 +117,9 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
+
+    // A property for user's usage, allowing to link an object to the button
+    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   published
     property Action: TBasicAction read GetAction write SetAction;
     property Caption: TCaption read FCaption write SetCaption;
@@ -189,6 +193,9 @@ type
     procedure EditCaption;
     property DownButton: TJvOutlookBarButton read GetDownButton write SetDownButton;
     property DownIndex: Integer read GetDownIndex write SetDownIndex;
+
+    // A property for user's usage, allowing to link an objet to the page.
+    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
@@ -204,9 +211,6 @@ type
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
-
-    // A property for user's usage, allowing to link an objet to the page.
-    property LinkedObject: TObject read FLinkedObject write FLinkedObject;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
