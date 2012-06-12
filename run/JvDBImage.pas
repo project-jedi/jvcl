@@ -68,12 +68,14 @@ type
     FProportional: Boolean;
     FOnGetGraphicClass: TJvGetGraphicClassEvent;
     FTransparent: Boolean;
+    FShowNameIfEmpty: Boolean;
     procedure SetAutoDisplay(Value: Boolean);
     procedure SetProportional(Value: Boolean);
     procedure DataChange(Sender: TObject);
     procedure PictureChanged(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure SetTransparent(const Value: Boolean);
+    procedure SetShowNameIfEmpty(const Value: Boolean);
   protected
     procedure CreateHandle; override;
     procedure CheckFieldType;
@@ -96,6 +98,7 @@ type
     property BevelKind default bkNone;
     property BevelOuter;
     property Proportional: Boolean read FProportional write SetProportional default False;
+    property ShowNameIfEmpty: Boolean read FShowNameIfEmpty write SetShowNameIfEmpty default True;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property OnGetGraphicClass: TJvGetGraphicClassEvent read FOnGetGraphicClass write FOnGetGraphicClass;
   end;
@@ -127,6 +130,7 @@ begin
   FAutoDisplay := True;
   FOldPictureChange := Picture.OnChange;
   Picture.OnChange := PictureChanged;
+  FShowNameIfEmpty := True;
 end;
 
 procedure TJvDBImage.SetProportional(Value: Boolean);
@@ -134,6 +138,15 @@ begin
   if FProportional <> Value then
   begin
     FProportional := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvDBImage.SetShowNameIfEmpty(const Value: Boolean);
+begin
+  if FShowNameIfEmpty <> Value then
+  begin
+    FShowNameIfEmpty := Value;
     Invalidate;
   end;
 end;
@@ -323,7 +336,7 @@ begin
         DrawPict.Free;
       end;
     end
-    else
+    else if ShowNameIfEmpty then
     begin
       Font := Self.Font;
       if (FDataLink <> nil) and (FDataLink.Field <> nil) then
