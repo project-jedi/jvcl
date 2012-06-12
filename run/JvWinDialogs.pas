@@ -731,7 +731,8 @@ begin
     @SHOutOfMemoryMessageBox := GetProcAddress(ShellHandle, PAnsiChar(126));
     @SHHandleDiskFull := GetProcAddress(ShellHandle, PAnsiChar(185));
     @SHStartNetConnectionDialog := GetProcAddress(ShellHandle, PAnsiChar(215));
-    @SHOpenWith := GetProcAddress(ShellHandle, PAnsiChar('OpenAs_RunDLLA'));
+
+    @SHOpenWith := GetProcAddress(ShellHandle, {$IFDEF UNICODE}'OpenAs_RunDLLW'{$ELSE}'OpenAs_RunDLLA'{$ENDIF UNICODE});
   end;
 
   CommHandle := SafeLoadLibrary('comdlg32.dll');
