@@ -624,6 +624,7 @@ type
     procedure WMRButtonUp(var Msg: TMessage); message WM_RBUTTONUP;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
+    procedure WMSetText(var Msg: TMessage); message WM_SETTEXT;
     // From JvRichEdit.pas by Sébastien Buysse
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
@@ -4627,6 +4628,18 @@ end;
 procedure TJvCustomRichEdit.WMSetFont(var Msg: TWMSetFont);
 begin
   FDefAttributes.Assign(Font);
+end;
+
+procedure TJvCustomRichEdit.WMSetText(var Msg: TMessage);
+begin
+  // if auto URL detection is active, then the handle must have been
+  // created before setting the text so that the appropriate flag is
+  // set on the underlying control.
+  // This way the URL detection mechanism can work (Mantis 5792)
+  if AutoURLDetect then
+    HandleNeeded;
+
+  inherited;
 end;
 
 procedure TJvCustomRichEdit.WMVScroll(var Msg: TWMVScroll);
