@@ -443,6 +443,8 @@ type
     property DisabledTextColor; // RDB
     property DisabledColor; // RDB
     property OnKeyDown; // RDB
+    property OnPopupHidden;
+    property OnPopupShown;
   end;
 
   {$IFDEF RTL230_UP}
@@ -583,6 +585,8 @@ type
     property OnContextPopup;
     property OnEndDock;
     property OnStartDock;
+    property OnPopupHidden; // RH: Added - issue 5726
+    property OnPopupShown; // RH: Added - issue 5726
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
