@@ -134,9 +134,9 @@ type
   end;
 
   {$IFDEF BCB}
-  TValueType = (vtInt, vtFloat, vtHex, vtString);
+  TValueType = (vtInt, vtFloat, vtHex);
   {$ELSE}
-  TValueType = (vtInteger, vtFloat, vtHex, vtString);
+  TValueType = (vtInteger, vtFloat, vtHex);
   {$ENDIF BCB}
 
   TSpinButtonKind = (bkStandard, bkDiagonal, bkClassic);
@@ -173,8 +173,6 @@ type
     FUpDown: TCustomUpDown;
     FThousands: Boolean; // New
     FIsNegative: Boolean;
-    FItems: TStrings;
-
     function StoreCheckMaxValue: Boolean;
     function StoreCheckMinValue: Boolean;
     procedure SetCheckMaxValue(NewValue: Boolean);
@@ -207,8 +205,6 @@ type
     procedure SetDecimal(NewValue: Byte);
     procedure SetEditRect;
     procedure SetThousands(Value: Boolean);
-    procedure SetItems(NewValue: TStrings);
-    function GetItems: TStrings;
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure SetShowButton(Value: Boolean);
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
@@ -261,7 +257,6 @@ type
     property Decimal: Byte read FDecimal write SetDecimal default 2;
     property EditorEnabled: Boolean read FEditorEnabled write FEditorEnabled default True;
     property Increment: Extended read FIncrement write FIncrement stored IsIncrementStored;
-    property Items: TStrings read GetItems write SetItems;
     property MaxValue: Extended read FMaxValue write SetMaxValue stored IsMaxStored;
     property MinValue: Extended read FMinValue write SetMinValue stored IsMinStored;
     property CheckOptions: TJvCheckOptions read FCheckOptions write FCheckOptions default
@@ -302,7 +297,6 @@ type
     property Decimal;
     property EditorEnabled;
     property Increment;
-    property Items;
     property MaxValue;
     property MinValue;
     property ShowButton;
@@ -687,7 +681,6 @@ begin
   FreeAndNil(FButton);
   FreeAndNil(FBtnWindow);
   FreeAndNil(FUpDown);
-  FItems.Free;
   inherited Destroy;
 end;
 
@@ -1004,14 +997,6 @@ begin
     Result := 0;
 end;
 
-function TJvCustomSpinEdit.GetItems: TStrings;
-begin
-  if not Assigned(FItems) then
-    FItems := TStringList.Create;
-
-  Result := FItems;
-end;
-
 function TJvCustomSpinEdit.GetMinHeight: Integer;
 var
   I, H: Integer;
@@ -1157,7 +1142,6 @@ begin
   FLCheckMinValue := True;
   FLCheckMaxValue := True;
   FOldValue := Value;
-  Text := FItems[Round(Value)];
 end;
 
 procedure TJvCustomSpinEdit.RecreateButton;
@@ -1358,19 +1342,6 @@ begin
     Invalidate;
     DataChanged;
   end;
-end;
-
-procedure TJvCustomSpinEdit.SetItems(NewValue: TStrings);
-begin
-  if not Assigned(FItems) then
-    FItems := TStringList.Create;
-
-  // As Assign might copy unwanted properties, we clear then add strings
-  FItems.Clear;
-  FItems.AddStrings(NewValue);
-
-  Value := 0;
-  Text := FItems[0];
 end;
 
 procedure TJvCustomSpinEdit.SetMaxValue(NewValue: Extended);
@@ -1853,17 +1824,6 @@ begin
         end;
       vtHex:
         Result := StrToIntDef('$' + Text, Round(FMinValue));
-      vtString:
-        begin
-          FChanging := True;
-          try
-            Result := FItems.IndexOf(Text) + Round(FMinValue);
-            if Result < 0 then
-              Result := 0;
-          finally
-            FChanging := False;
-          end;
-        end
     else {vtInteger}
       Result := StrToIntDef(RemoveThousands(Text), Round(FMinValue));
     end;
