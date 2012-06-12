@@ -161,7 +161,7 @@ const
 implementation
 
 uses
-  SysUtils, Forms,
+  SysUtils, Forms, ActnList, ImgList,
   JvConsts, JvThemes, JvJCLUtils;
 
 type
@@ -195,6 +195,7 @@ type
 
   TButtonGlyph = class(TObject)
   private
+    FArrowButton: TJvArrowButton;
     FOriginal: TBitmap;
     FGlyphList: TGlyphList;
     FIndexs: array [TButtonState] of Integer;
@@ -216,7 +217,7 @@ type
       Margin, Spacing: Integer; var GlyphPos: TPoint; var TextBounds: TRect;
       Alignment: TAlignment; VerticalAlignment: TVerticalAlignment);
   public
-    constructor Create;
+    constructor Create(AArrowButton: TJvArrowButton);
     destructor Destroy; override;
     { return the text rectangle }
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
@@ -388,11 +389,12 @@ begin
   end;
 end;
 
-constructor TButtonGlyph.Create;
+constructor TButtonGlyph.Create(AArrowButton: TJvArrowButton);
 var
   I: TButtonState;
 begin
   inherited Create;
+  FArrowButton := AArrowButton;
   FOriginal := TBitmap.Create;
   FOriginal.OnChange := GlyphChanged;
   FTransparentColor := clOlive;
@@ -608,16 +610,40 @@ procedure TButtonGlyph.DrawButtonGlyph(Canvas: TCanvas; const GlyphPos: TPoint;
   State: TButtonState; Transparent: Boolean);
 var
   Index: Integer;
+  CustomAction: TCustomAction;
+  ActionList: TCustomActionList;
+  ImageList: TCustomImageList;
 begin
-  if (FOriginal = nil) or (FOriginal.Width = 0) or (FOriginal.Height = 0) then
-    Exit;
-  Index := CreateButtonGlyph(State);
-  if Transparent or (State = bsExclusive) then
-    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, GlyphPos.X, GlyphPos.Y, 0, 0,
-      clNone, clNone, ILD_Transparent)
+  ImageList := nil;
+  Index := -1;
+
+  if (FOriginal <> nil) and not FOriginal.Empty then
+  begin
+    Index := CreateButtonGlyph(State);
+    ImageList := FGlyphList;
+  end
   else
-    ImageList_DrawEx(FGlyphList.Handle, Index, Canvas.Handle, GlyphPos.X, GlyphPos.Y, 0, 0,
-      ColorToRGB(clBtnFace), clNone, ILD_Normal);
+  begin
+    if (FArrowButton.Action is TCustomAction) then
+    begin
+      CustomAction := TCustomAction(FArrowButton.Action);
+      ActionList := CustomAction.ActionList;
+      if (ActionList.Images <> nil) and (CustomAction.ImageIndex >= 0) and
+        (CustomAction.ImageIndex < ActionList.Images.Count) then
+      begin
+        ImageList := ActionList.Images;
+        Index := CustomAction.ImageIndex;
+      end;
+    end;
+  end;
+
+  if Assigned(ImageList) then
+    if Transparent or (State = bsExclusive) then
+      ImageList_DrawEx(ImageList.Handle, Index, Canvas.Handle, GlyphPos.X, GlyphPos.Y, 0, 0,
+        clNone, clNone, ILD_Transparent)
+    else
+      ImageList_DrawEx(ImageList.Handle, Index, Canvas.Handle, GlyphPos.X, GlyphPos.Y, 0, 0,
+        ColorToRGB(clBtnFace), clNone, ILD_Normal);
 end;
 
 procedure TButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
@@ -657,15 +683,29 @@ var
   ClientSize, GlyphSize, TextSize: TPoint;
   TotalSize: TPoint;
   S: string;
+  ActionList: TCustomActionList;
+  CustomAction: TCustomAction;
 begin
   { calculate the item sizes }
   ClientSize := Point(Client.Right - Client.Left, Client.Bottom -
     Client.Top);
 
-  if FOriginal <> nil then
+  if (FOriginal <> nil) and not FOriginal.Empty then
+  begin
     GlyphSize := Point(FOriginal.Width div FNumGlyphs, FOriginal.Height)
+  end
   else
+  begin
     GlyphSize := Point(0, 0);
+    if (FArrowButton.Action is TCustomAction) then
+    begin
+      CustomAction := TCustomAction(FArrowButton.Action);
+      ActionList := CustomAction.ActionList;
+      if (ActionList.Images <> nil) and (CustomAction.ImageIndex >= 0) and
+        (CustomAction.ImageIndex < ActionList.Images.Count) then
+        GlyphSize := Point(ActionList.Images.Width, ActionList.Images.Height);
+    end;
+  end;
 
   if Length(Caption) > 0 then
   begin
@@ -811,7 +851,7 @@ begin
   SetBounds(0, 0, 42, 25);
   ControlStyle := [csCaptureMouse, {csOpaque, }csDoubleClicks];
   IncludeThemeStyle(Self, [csParentBackground]);
-  FGlyph := TButtonGlyph.Create;
+  FGlyph := TButtonGlyph.Create(Self);
   TButtonGlyph(FGlyph).OnChange := GlyphChanged;
   FFillFont := TFont.Create;
   FFillFont.Assign(Font);
