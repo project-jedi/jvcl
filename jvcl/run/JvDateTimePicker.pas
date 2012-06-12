@@ -152,10 +152,8 @@ begin
 end;
 
 function TJvDateTimePicker.WithinDelta(Val1, Val2: TDateTime): Boolean;
-const
-  cOneSecond = 1 / 86400;
 begin
-  Result := Abs(Frac(Val1) - Frac(Val2)) <= cOneSecond;
+  Result := Abs(Frac(Val1) - Frac(Val2)) < EncodeTime(0, 0, 1, 0);
 end;
 
 function TJvDateTimePicker.CheckNullValue: Boolean;

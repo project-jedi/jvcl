@@ -583,6 +583,11 @@ begin
         DateTimeToSystemTime(DateTime, st);
         MsgSetDateTime(st);
         Exit;
+      end
+      else if (Kind = dtkTime) and Assigned(Field) then
+      begin
+        Field.Value := SystemTimeToDateTime(PNMDateTimeChange(Msg.NMHdr).st);
+        Exit;
       end;
     end;
   end;
