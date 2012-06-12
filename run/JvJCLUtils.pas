@@ -493,9 +493,9 @@ function ExtractDay(ADate: TDateTime): Word;
 function ExtractMonth(ADate: TDateTime): Word;
 function ExtractYear(ADate: TDateTime): Word;
 function IncDate(ADate: TDateTime; Days, Months, Years: Integer): TDateTime;
-function IncDay(ADate: TDateTime; Delta: Integer): TDateTime; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
-function IncMonth(ADate: TDateTime; Delta: Integer): TDateTime;
-function IncYear(ADate: TDateTime; Delta: Integer): TDateTime;
+function IncDay(ADate: TDateTime; Delta: Integer = 1): TDateTime; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
+function IncMonth(ADate: TDateTime; Delta: Integer = 1): TDateTime;
+function IncYear(ADate: TDateTime; Delta: Integer) = 1: TDateTime;
 function ValidDate(ADate: TDateTime): Boolean;
 procedure DateDiff(Date1, Date2: TDateTime; var Days, Months, Years: Word);
 function MonthsBetween(Date1, Date2: TDateTime): Double;
