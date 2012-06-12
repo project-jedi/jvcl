@@ -104,6 +104,7 @@ type
   {$ENDIF BCB}
 
   TJvDBGridColumnResize = (gcrNone, gcrGrid, gcrDataSet);
+  TJvDBGridCellHintPosition = (gchpDefault, gchpMouse);
 
   TSelectColumn = (scDataBase, scGrid);
   TTitleClickEvent = procedure(Sender: TObject; ACol: Longint;
@@ -291,6 +292,7 @@ type
     FRowResize: Boolean;
     FRowsHeight: Integer;
     FTitleRowHeight: Integer;
+    FCellHintPosition: TJvDBGridCellHintPosition;
     FCanDelete: Boolean;
 
     { Cancel edited record on mouse wheel or when resize column (double-click)}
@@ -593,6 +595,10 @@ type
       default JvGridResizeProportionally;
     property SelectColumnsDialogStrings: TJvSelectDialogColumnStrings
       read FSelectColumnsDialogStrings write SetSelectColumnsDialogStrings;
+
+    { Determines how cell hint position is calculated, check TJvDBGrid.CMHintShow (Mantis #5759) }
+    property CellHintPosition: TJvDBGridCellHintPosition read FCellHintPosition write FCellHintPosition default gchpDefault;
+
     { Allows user to delete things using the "del" key }
     property CanDelete: Boolean read FCanDelete write FCanDelete default True;
 
@@ -4466,11 +4472,15 @@ var
   ACol, ARow, ATimeOut, SaveRow: Integer;
   AtCursorPosition: Boolean;
   CalcOptions: Integer;
+  InitialMousePos: TPoint;
   HintRect: TRect;
 begin
   AtCursorPosition := True;
   with Msg.HintInfo^ do
   begin
+    { Save the position of mouse cursor }
+    InitialMousePos := Mouse.CursorPos;
+
     HintStr := GetShortHint(Hint);
     ATimeOut := HideTimeOut;
     Self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
@@ -4505,7 +4515,7 @@ begin
 
     if FShowTitleHint and (ACol >= 0) and (ARow <= -1) then
     begin
-      AtCursorPosition := False;
+      AtCursorPosition := FCellHintPosition = gchpMouse;
       HintStr := Columns[ACol].FieldName;
       ATimeOut := Max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowTitleHint) and DataLink.Active then
@@ -4516,7 +4526,7 @@ begin
     if FShowCellHint and (ACol >= 0) and DataLink.Active and
       ((ARow >= 0) or not FShowTitleHint) then
     begin
-      AtCursorPosition := False;
+      AtCursorPosition := FCellHintPosition = gchpMouse;
       HintStr := Hint;
       SaveRow := DataLink.ActiveRecord;
       try
@@ -4569,7 +4579,9 @@ begin
     end;
 
     if not AtCursorPosition and HintWindowClass.ClassNameIs('THintWindow') then
-      HintPos := ClientToScreen(CursorRect.TopLeft);
+      HintPos := ClientToScreen(CursorRect.TopLeft)
+    else
+      HintPos := InitialMousePos;
   end;
   inherited;
 end;
