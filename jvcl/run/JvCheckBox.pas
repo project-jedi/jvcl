@@ -517,6 +517,9 @@ begin
     FDataConnector.Assign(Value);
 end;
 
+type
+  TWinControlAccess = class(TWinControl);
+
 procedure TJvCheckBox.SetFocus;
 var
   I: Integer;
@@ -524,17 +527,26 @@ var
 begin
   inherited SetFocus;
 
-  FocusLinkedControl := nil;
-  I := 0;
-  while (I < LinkedControls.Count) and not Assigned(FocusLinkedControl) do
+  // we want to skip our own focus, either to our children or to a sibling
+  // depending on the direction that the user asked for
+  if GetKeyState(VK_SHIFT) >= 0 then
   begin
-    if (loForceFocus in LinkedControls[I].Options) and (LinkedControls[I].Control is TWinControl) then
-      FocusLinkedControl := LinkedControls[I].Control;
+    FocusLinkedControl := nil;
+    I := 0;
+    while (I < LinkedControls.Count) and not Assigned(FocusLinkedControl) do
+    begin
+      if (loForceFocus in LinkedControls[I].Options) and (LinkedControls[I].Control is TWinControl) then
+        FocusLinkedControl := LinkedControls[I].Control;
 
-    Inc(I);
+      Inc(I);
+    end;
+    if Assigned(FocusLinkedControl) and TWinControl(FocusLinkedControl).CanFocus then
+      TWinControl(FocusLinkedControl).SetFocus;
+  end
+  else
+  begin
+    TWinControlAccess(Parent).SelectNext(Self, False, True);
   end;
-  if Assigned(FocusLinkedControl) then
-    TWinControl(FocusLinkedControl).SetFocus;
 end;
 
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);
