@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -204,6 +204,7 @@ type
     procedure Run;
     procedure StopWaiting;
     procedure Terminate;
+    procedure TerminateTree;
     function Write(const S: AnsiString): Boolean;
     function WriteLn(const S: AnsiString): Boolean;
     property ProcessInfo: TProcessInformation read FProcessInfo;
@@ -243,7 +244,7 @@ implementation
 uses
   Math,
   JclStrings,
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
+  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources, TlHelp32;
 
 const
   CM_READ = WM_USER + 1;
@@ -407,6 +408,53 @@ begin
   OSCheck(ProcessHandle <> 0);
   Result := TerminateProcess(ProcessHandle, 0);
   CloseHandle(ProcessHandle);
+end;
+
+type
+ TProcessArray = array of DWORD;
+
+function InternalTerminateProcessTree(ProcessID: DWORD): Boolean;
+
+  function GetChildrenProcesses(const Process: DWORD; const IncludeParent: Boolean): TProcessArray;
+  var
+    Snapshot: Cardinal;
+    ProcessList: PROCESSENTRY32;
+    Current: Integer;
+  begin
+    Current := 0;
+    SetLength(Result, 1);
+    Result[0] := Process;
+    repeat
+      ProcessList.dwSize := SizeOf(PROCESSENTRY32);
+      Snapshot := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+      if (Snapshot = INVALID_HANDLE_VALUE) or not Process32First(Snapshot, ProcessList) then
+        Continue;
+      repeat
+        if ProcessList.th32ParentProcessID = Result[Current] then
+        begin
+          SetLength(Result, Length(Result) + 1);
+          Result[Length(Result) - 1] := ProcessList.th32ProcessID;
+        end;
+      until Process32Next(Snapshot, ProcessList) = False;
+      Inc(Current);
+    until Current >= Length(Result);
+    if not IncludeParent then
+      Result := Copy(Result, 2, Length(Result));
+  end;
+
+var
+  Handle: THandle;
+  List: TProcessArray;
+  I: Integer;
+begin
+  Result := True;
+  List := GetChildrenProcesses(ProcessID, True);
+  for I := Length(List) - 1 downto 0 do
+    if Result then
+    begin
+      Handle := OpenProcess(PROCESS_TERMINATE, false, List[I]);
+      Result := (Handle <> 0) and TerminateProcess(Handle, 0) and CloseHandle(Handle);
+    end;
 end;
 
 function SafeCloseHandle(var H: THandle): Boolean;
@@ -1362,6 +1410,12 @@ procedure TJvCreateProcess.Terminate;
 begin
   CheckRunning;
   InternalTerminateProcess(FProcessInfo.dwProcessId);
+end;
+
+procedure TJvCreateProcess.TerminateTree;
+begin
+  CheckRunning;
+  InternalTerminateProcessTree(FProcessInfo.dwProcessId);
 end;
 
 procedure TJvCreateProcess.TerminateWaitThread;
