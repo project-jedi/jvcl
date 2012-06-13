@@ -1699,18 +1699,21 @@ var
         if (BytesReturned <> 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
         begin
           FunctionClassDeviceData := AllocMem(BytesReturned);
-          FunctionClassDeviceData^.cbSize := SizeOf(TSPDeviceInterfaceDetailData);
-          if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
-            FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
-          begin
-            // fill in PnPInfo of device
-            PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
-            // create HID device object and add it to the device list
-            HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
-            NewList.Add(HidDev);
-            Inc(Devn);
+          try
+            FunctionClassDeviceData^.cbSize := SizeOf(TSPDeviceInterfaceDetailData);
+            if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
+              FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
+            begin
+              // fill in PnPInfo of device
+              PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
+              // create HID device object and add it to the device list
+              HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
+              NewList.Add(HidDev);
+              Inc(Devn);
+            end;
+          finally
+            FreeMem(FunctionClassDeviceData);
           end;
-          FreeMem(FunctionClassDeviceData);
         end;
       end;
     until not Success;
