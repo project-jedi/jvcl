@@ -33,7 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent, JvBaseDlg, StdCtrls, JvImageDlg, JvWinDialogs,
-  JvCommonDialogD, JvDiskPrompt, JvCopyError,
+  JvCustomFileMessageDialog, JvDiskPrompt, JvCopyError,
   JvDeleteError, JvPageSetup, JvPageSetupTitled, 
   JvCalc, JvTipOfDay, ExtCtrls, JvCaptionPanel, JvFindFiles,
   JvGroupBox, Buttons, JvBitBtn, JvBrowseFolder, JvSelectDirectory,

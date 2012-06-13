@@ -64,7 +64,7 @@ type
 
   TJvLoginForm = class;
 
-  TJvCustomLogin = class(TJvCommonDialogF)
+  TJvCustomLogin = class(TJvCommonDialog)
   private
     FActive: Boolean;
     FAttemptNumber: Integer;

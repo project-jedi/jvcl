@@ -35,13 +35,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes,
-  JvCommonDialogD, JvTypes;
+  JvCustomFileMessageDialog, JvTypes;
 
 type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvCopyError = class(TJvCommonDialogD)
+  TJvCopyError = class(TJvCustomFileMessageDialog)
   private
     FPathToSource: string;
     FNewPath: string;

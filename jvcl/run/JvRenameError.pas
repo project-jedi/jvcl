@@ -35,13 +35,13 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes,
-  JvCommonDialogD, JvTypes;
+  JvCustomFileMessageDialog, JvTypes;
 
 type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvRenameError = class(TJvCommonDialogD)
+  TJvRenameError = class(TJvCustomFileMessageDialog)
   private
     FWin32ErrorCode: Integer;
     FStyle: TJvDeleteStyles;

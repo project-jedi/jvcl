@@ -37,7 +37,7 @@ uses
   JvBaseDlg;
 
 type
-  TJvCommonExecDialog = class(TJvCommonDialogP)
+  TJvCommonExecDialog = class(TJvCommonDialog)
   private
     FOwnerWindow: THandle;
   public

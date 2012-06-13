@@ -40,7 +40,7 @@
     <File Name="..\..\run\JvTipOfDay.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWinDialogs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAddPrinter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCommonDialogD.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCustomFileMessageDialog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCommonExecDlg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvConnectNetwork.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCopyError.pas" Targets="all" Formname="" Condition=""/>
@@ -73,7 +73,7 @@
     <File Name="..\..\..\help\JvTipOfDay.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvWinDialogs.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvAddPrinter.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\..\help\JvCommonDialogD.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCustomFileMessageDialog.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvCommonExecDlg.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvConnectNetwork.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvCopyError.dtx" Targets="help" Formname="" Condition=""/>

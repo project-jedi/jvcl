@@ -50,7 +50,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvFindFilesDialog = class(TJvCommonDialogF)
+  TJvFindFilesDialog = class(TJvCommonDialog)
   private
     FUseSpecialFolder: Boolean;
     FDirectory: string;

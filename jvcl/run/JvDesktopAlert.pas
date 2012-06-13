@@ -147,7 +147,7 @@ type
   TJvDesktopAlertOption = (daoCanClick, daoCanMove, daoCanMoveAnywhere, daoCanClose);
   TJvDesktopAlertOptions = set of TJvDesktopAlertOption;
 
-  TJvCustomDesktopAlert = class(TJvCommonDialogP)
+  TJvCustomDesktopAlert = class(TJvCommonDialog)
   private
     FStacker: TJvDesktopAlertStack;
     FColors: TJvDesktopAlertColors;

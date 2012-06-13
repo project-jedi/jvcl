@@ -100,7 +100,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvProgressDialog = class(TJvCommonDialogF)
+  TJvProgressDialog = class(TJvCommonDialog)
   private
     FIMin: Integer;
     FIMax: Integer;

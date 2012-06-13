@@ -175,7 +175,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvFormatDriveDialog = class(TJvCommonDialogF)
+  TJvFormatDriveDialog = class(TJvCommonDialog)
   private
     FDrive: Char;
     FFormatType: TJvFormatDriveKind;
@@ -217,7 +217,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvAppletDialog = class(TJvCommonDialogF)
+  TJvAppletDialog = class(TJvCommonDialog)
   private
     FAppletName: string;
     FAppletIndex: Integer;
@@ -286,11 +286,11 @@ type
     property Caption: string read FCaption write FCaption;
   end;
 
-  // (rom) changed to new TJvCommonDialogF to get better Execute
+  // (rom) changed to new TJvCommonDialog to get better Execute
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvChangeIconDialog = class(TJvCommonDialogF)
+  TJvChangeIconDialog = class(TJvCommonDialog)
   private
     FIconIndex: Integer;
     FFileName: TFileName;
@@ -327,7 +327,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvRunDialog = class(TJvCommonDialogP)
+  TJvRunDialog = class(TJvCommonDialog)
   private
     FCaption: string;
     FDescription: string;
@@ -346,7 +346,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvObjectPropertiesDialog = class(TJvCommonDialogF)
+  TJvObjectPropertiesDialog = class(TJvCommonDialog)
   private
     FObjectName: TFileName;
     FObjectType: TShellObjectType;
@@ -362,7 +362,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvNewLinkDialog = class(TJvCommonDialogP)
+  TJvNewLinkDialog = class(TJvCommonDialog)
   private
     FDestinationFolder: string;
   public
@@ -374,7 +374,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvAddHardwareDialog = class(TJvCommonDialogP)
+  TJvAddHardwareDialog = class(TJvCommonDialog)
   public
     function Execute: Boolean; override;
   end;
@@ -382,7 +382,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvOpenWithDialog = class(TJvCommonDialogP)
+  TJvOpenWithDialog = class(TJvCommonDialog)
   private
     FFileName: TFileName;
   public
@@ -394,7 +394,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvDiskFullDialog = class(TJvCommonDialogF)
+  TJvDiskFullDialog = class(TJvCommonDialog)
   private
     FDriveChar: Char;
     procedure SetDriveChar(Value: Char);
@@ -415,7 +415,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvExitWindowsDialog = class(TJvCommonDialogP)
+  TJvExitWindowsDialog = class(TJvCommonDialog)
   private
     FKind: TJvExitWindowsKind;
   public
@@ -440,7 +440,7 @@ type
   TJvURLAssociationDialogOption = (uaDefaultName, uaRegisterAssoc);
   TJvURLAssociationDialogOptions = set of TJvURLAssociationDialogOption;
 
-  TJvURLAssociationDialog = class(TJvCommonDialogF)
+  TJvURLAssociationDialog = class(TJvCommonDialog)
   private
     FURL: string;
     FAssociatedApp: string;
@@ -480,7 +480,7 @@ type
   TJvMIMEAssociationOption = (maRegisterAssoc);
   TJvMIMEAssociationOptions = set of TJvMIMEAssociationOption;
 
-  TJvMIMEAssociationDialog = class(TJvCommonDialogF)
+  TJvMIMEAssociationDialog = class(TJvCommonDialog)
   private
     FContentType: string;
     FAssociatedApp: string;
@@ -579,7 +579,7 @@ type
   end;
 
   // (p3) encapsulation of the SoftwareUpdateMessageBox ( for CDF file updating)
-  TJvSoftwareUpdateDialog = class(TJvCommonDialogF)
+  TJvSoftwareUpdateDialog = class(TJvCommonDialog)
   private
     FReturnValue: Cardinal;
     FDistributionUnit: string;

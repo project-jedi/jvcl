@@ -19,7 +19,7 @@
   <Contains>
     <File Name="..\..\design\JvTipOfDayEditor.pas" Targets="all_win32" Formname="" Condition=""/>
     <File Name="..\..\design\JvAppletEditor.pas" Targets="all_win32" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCommonDialogDEditor.pas" Targets="all_win32" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCustomFileMessageDialogEditor.pas" Targets="all_win32" Formname="" Condition=""/>
     <File Name="..\..\design\JvDesktopAlertEditors.pas" Targets="all_win32" Formname="" Condition=""/>
     <File Name="..\..\design\JvProgressComponentEditor.pas" Targets="all_win32" Formname="" Condition=""/>
     <File Name="..\..\design\JvFindReplaceEditor.pas" Targets="all_win32" Formname="" Condition=""/>

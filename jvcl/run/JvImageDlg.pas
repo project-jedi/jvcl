@@ -41,7 +41,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvImageDialog = class(TJvCommonDialogP)
+  TJvImageDialog = class(TJvCommonDialog)
   private
     FPicture: TPicture;
     FTitle: string;
