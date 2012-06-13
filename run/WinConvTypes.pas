@@ -65,11 +65,13 @@ type
 
 {$IFNDEF RTL185_UP}
 type
-  ULONG_PTR = PDWORD;
+  // WARNING: Those types are defined as DWORD for simplicity under old versions
+  // of Delphi but they really should be defined as pointers to their base types
+  ULONG_PTR = DWORD;
   {$EXTERNALSYM ULONG_PTR}
-  DWORD_PTR = PDWORD;
+  DWORD_PTR = DWORD;
   {$EXTERNALSYM DWORD_PTR}
-  UINT_PTR  = PDWORD;
+  UINT_PTR  = DWORD;
   {$EXTERNALSYM UINT_PTR}
 {$ENDIF ~RTL185_UP}
 
