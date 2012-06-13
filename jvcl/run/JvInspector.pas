@@ -8351,12 +8351,15 @@ end;
 
 function TJvInspectorVariantItem.GetDisplayValue: string;
 begin
-  Result := Data.AsVariant;
+  Result := VarToStr(Data.AsVariant);   // return empty string instead of triggering exception when Data is Null
 end;
 
 procedure TJvInspectorVariantItem.SetDisplayValue(const Value: string);
 begin
-  Data.AsVariant := Value;
+  if Value = '' then
+    Data.AsVariant := Unassigned
+  else
+    Data.AsVariant := Value;
 end;
 
 //=== { TJvInspectorClassItem } ==============================================
