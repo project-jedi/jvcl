@@ -380,14 +380,8 @@ begin
 end;
 
 function TJvDesignCustomController.GetShift: TShiftState;
-// obones: For C5/D5 compatibility, we must use a local variable
-// as KeyboardStateToShiftState with no parameters was introduced
-// in D6/C6
-var
-  KeyState: TKeyBoardState;
 begin
-  GetKeyboardState(KeyState);
-  Result := KeyboardStateToShiftState(KeyState);
+  Result := KeyboardStateToShiftState;
 end;
 
 //=== { TJvDesignCustomSelector } ============================================

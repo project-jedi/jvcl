@@ -496,18 +496,6 @@ begin
     (Inner.Bottom > Outer.Top);
 end;
 
-// use our own EnsureRange since D5 doesn't have it
-
-function EnsureRange(const AValue, AMin, AMax: Integer): Integer;
-begin
-  Result := AValue;
-  Assert(AMin <= AMax);
-  if Result < AMin then
-    Result := AMin;
-  if Result > AMax then
-    Result := AMax;
-end;
-
 //=== { TJvPreviewPageOptions } ==============================================
 
 constructor TJvPreviewPageOptions.Create;

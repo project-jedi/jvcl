@@ -568,7 +568,6 @@ begin
       try
         FOwner := nil;
         S.Delete(Index);
-        // Use FOwner.GetOwner to keep D5/C5 compatibility
         if (SavedOwner.GetOwner is TJvImageListBox) and (TJvImageListBox(SavedOwner.GetOwner).Sorted) then
           S.AddObject(Value, Self)
         else

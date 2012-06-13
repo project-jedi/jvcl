@@ -190,7 +190,7 @@ implementation
 uses
   JvJCLUtils, // BinStrToBuf & BufToBinStr
   JvConsts, JvResources,
-  JclStrings; // JvConsts or PathDelim under D5 and BCB5
+  JclStrings;
 
 const
   cNullDigit = '0';
