@@ -970,7 +970,7 @@ end;
 
 function DefaultDynControlEngine: TJvDynControlEngine;
 begin
-  Assert(Assigned(GlobalDefaultDynControlEngine),'JvDynControlEngine: DefaultDynControlEngine not definded');
+  Assert(Assigned(GlobalDefaultDynControlEngine),'JvDynControlEngine: DefaultDynControlEngine not defined');
   Result := GlobalDefaultDynControlEngine;
 end;
 
