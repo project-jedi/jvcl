@@ -1623,6 +1623,7 @@ type
     function GetAsMethod: TMethod; override;
     function GetAsOrdinal: Int64; override;
     function GetAsString: string; override;
+    function GetAsVariant: Variant; override;
     function GetInstance: TObject; virtual;
     function GetProp: PPropInfo; virtual;
     function IsEqualReference(const Ref: TJvCustomInspectorData): Boolean; override;
@@ -1632,6 +1633,7 @@ type
     procedure SetAsMethod(const Value: TMethod); override;
     procedure SetAsOrdinal(const Value: Int64); override;
     procedure SetAsString(const Value: string); override;
+    procedure SetAsVariant(const Value: Variant); override;
     procedure SetInstance(const Value: TObject); virtual;
     procedure SetProp(Value: PPropInfo); virtual;
     function SupportsMethodPointers: Boolean; override;
@@ -10707,6 +10709,15 @@ begin
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
 end;
 
+function TJvInspectorPropData.GetAsVariant: Variant;
+begin
+  CheckReadAccess;
+  if Prop.PropType^.Kind = tkVariant then
+    Result := GetVariantProp(Instance, Prop)
+  else
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorVariant]);
+end;
+
 function TJvInspectorPropData.GetInstance: TObject;
 begin
   Result := FInstance;
@@ -10798,6 +10809,19 @@ begin
     SetStrProp(Instance, Prop, Value)
   else
     raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorString]);
+  InvalidateData;
+  Invalidate;
+end;
+
+procedure TJvInspectorPropData.SetAsVariant(const Value: Variant);
+begin
+  CheckWriteAccess;
+  if IsReadOnlyProperty then
+    Abort;
+  if TypeInfo.Kind = tkVariant then
+    SetVariantProp(Instance, Prop, Value)
+  else
+    raise EJvInspectorData.CreateResFmt(@RsEJvInspDataNoAccessAs, [cJvInspectorVariant]);
   InvalidateData;
   Invalidate;
 end;
