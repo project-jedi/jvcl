@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCommonExecDlg, JvRenameError, JvDeleteError,
-  JvCopyError, JvCommonDialogD, JvDiskPrompt,
+  JvCopyError, JvCustomFileMessageDialog, JvDiskPrompt,
   JvConnectNetwork, JvSelectDirectory, JvBaseDlg, JvFindFiles, JvComponent,
   JvWinDialogs, ComCtrls, JvBrowseFolder, JvPageSetupTitled, JvPageSetup,
   JvAddPrinter, JvCalc, JvDialogs;

@@ -175,7 +175,7 @@ type
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
-  TJvBrowseForFolderDialog = class(TJvCommonDialogF, IFolderFilter)
+  TJvBrowseForFolderDialog = class(TJvCommonDialog, IFolderFilter)
   private
     { Handle to the owner form of the dialog, used if Position = fpFormCenter }
     FOwnerWindow: THandle;

@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -57,7 +57,7 @@ File17=..\..\run\JvSelectDirectory.pas
 File18=..\..\run\JvTipOfDay.pas
 File19=..\..\run\JvWinDialogs.pas
 File20=..\..\run\JvAddPrinter.pas
-File21=..\..\run\JvCommonDialogD.pas
+File21=..\..\run\JvCustomFileMessageDialog.pas
 File22=..\..\run\JvCommonExecDlg.pas
 File23=..\..\run\JvConnectNetwork.pas
 File24=..\..\run\JvCopyError.pas
@@ -90,7 +90,7 @@ File50=..\..\..\help\JvSelectDirectory.dtx
 File51=..\..\..\help\JvTipOfDay.dtx
 File52=..\..\..\help\JvWinDialogs.dtx
 File53=..\..\..\help\JvAddPrinter.dtx
-File54=..\..\..\help\JvCommonDialogD.dtx
+File54=..\..\..\help\JvCustomFileMessageDialog.dtx
 File55=..\..\..\help\JvCommonExecDlg.dtx
 File56=..\..\..\help\JvConnectNetwork.dtx
 File57=..\..\..\help\JvCopyError.dtx

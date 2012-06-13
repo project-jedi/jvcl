@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvCommonDialogDEditor;
+unit JvCustomFileMessageDialogEditor;
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -33,10 +33,10 @@ interface
 uses
   SysUtils,
   DesignEditors, DesignIntf,
-  JvCommonDialogD;
+  JvCustomFileMessageDialog;
 
 type
-  TJvCommonDialogDEditor = class(TDefaultEditor)
+  TJvCustomFileMessageDialogEditor = class(TDefaultEditor)
   public
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
@@ -48,16 +48,16 @@ implementation
 uses
   JvDsgnConsts;
 
-procedure TJvCommonDialogDEditor.ExecuteVerb(Index: Integer);
+procedure TJvCustomFileMessageDialogEditor.ExecuteVerb(Index: Integer);
 begin
-  with Component as TJvCommonDialogD do
+  with Component as TJvCustomFileMessageDialog do
     case Index of
       0:
         Execute;
     end;
 end;
 
-function TJvCommonDialogDEditor.GetVerb(Index: Integer): string;
+function TJvCustomFileMessageDialogEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -65,7 +65,7 @@ begin
   end;
 end;
 
-function TJvCommonDialogDEditor.GetVerbCount: Integer;
+function TJvCustomFileMessageDialogEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

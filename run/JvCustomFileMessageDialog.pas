@@ -23,7 +23,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvCommonDialogD;
+unit JvCustomFileMessageDialog;
 
 {$I jvcl.inc}
 {$I windowsonly.inc}
@@ -39,7 +39,7 @@ uses
   JvTypes, JvComponentBase;
 
 type
-  TJvCommonDialogD = class(TJvComponent)
+  TJvCustomFileMessageDialog = class(TJvComponent)
   private
     FTitle: string;
     FOwnerWindow: THandle;
@@ -104,9 +104,9 @@ begin
     Result := Result or IDF_WARNIFSKIP;
 end;
 
-//=== { TJvCommonDialogD } ===================================================
+//=== { TJvCustomFileMessageDialog } ===================================================
 
-constructor TJvCommonDialogD.Create(AOwner: TComponent);
+constructor TJvCustomFileMessageDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTitle := '';
@@ -119,7 +119,7 @@ begin
     raise EJVCLException.CreateRes(@RsEErrorSetupDll);
 end;
 
-destructor TJvCommonDialogD.Destroy;
+destructor TJvCustomFileMessageDialog.Destroy;
 begin
   UnloadSetupApi;
   inherited Destroy;

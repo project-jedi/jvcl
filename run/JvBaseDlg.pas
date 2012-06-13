@@ -45,17 +45,6 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
-  TJvCommonDialogP = class(TJvCommonDialog)
-  public
-//    procedure Execute; virtual; abstract;
-  end;
-
-  // (rom) alternative to TJvCommonDialogP
-  TJvCommonDialogF = class(TJvCommonDialog)
-  public
-//    function Execute: Boolean; virtual; abstract;
-  end;
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
