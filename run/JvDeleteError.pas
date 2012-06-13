@@ -68,7 +68,7 @@ const
 implementation
 
 uses
-  SetupApi;
+  JvSetupApi;
 
 constructor TJvDeleteError.Create(AOwner: TComponent);
 begin
