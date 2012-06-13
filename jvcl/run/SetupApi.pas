@@ -872,16 +872,24 @@ const
   {$EXTERNALSYM SPID_REMOVED}
 
 type
+  TFiller = record
+    {$IFDEF CPU64}
+    Fill: array[0..1] of Byte;
+    {$ENDIF CPU64}
+  end;
+
   PSPDeviceInterfaceDetailDataA = ^TSPDeviceInterfaceDetailDataA;
   PSPDeviceInterfaceDetailDataW = ^TSPDeviceInterfaceDetailDataW;
   SP_DEVICE_INTERFACE_DETAIL_DATA_A = packed record
     cbSize: DWORD;
     DevicePath: array [0..ANYSIZE_ARRAY - 1] of AnsiChar;
+    Filler: TFiller;
   end;
   {$EXTERNALSYM SP_DEVICE_INTERFACE_DETAIL_DATA_A}
   SP_DEVICE_INTERFACE_DETAIL_DATA_W = packed record
     cbSize: DWORD;
     DevicePath: array [0..ANYSIZE_ARRAY - 1] of WideChar;
+    Filler: TFiller;
   end;
   {$EXTERNALSYM SP_DEVICE_INTERFACE_DETAIL_DATA_W}
   TSPDeviceInterfaceDetailDataA = SP_DEVICE_INTERFACE_DETAIL_DATA_A;
