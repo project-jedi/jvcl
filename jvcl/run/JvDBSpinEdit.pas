@@ -51,7 +51,6 @@ type
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure EditingChange(Sender: TObject);
-    procedure ActiveChange(Sender: TObject);
     function GetDataField: string; { Returns data field name. }
     function GetDataSource: TDataSource; { Returns linked data source. }
     procedure SetDataField(const NewFieldName: string); { Assigns new field. }
@@ -117,7 +116,6 @@ begin
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnEditingChange := EditingChange;
   FDataLink.OnUpdateData := UpdateData;
-  FDataLink.OnActiveChange := ActiveChange;
 end;
 
 destructor TJvDBSpinEdit.Destroy;
@@ -125,12 +123,6 @@ begin
   FDataLink.Free;
   FDataLink := nil;
   inherited Destroy;
-end;
-
-procedure TJvDBSpinEdit.ActiveChange(Sender: TObject);
-begin
-  if not (csDesigning in ComponentState) then
-    Enabled := FDataLink.Active;
 end;
 
 procedure TJvDBSpinEdit.Change;
