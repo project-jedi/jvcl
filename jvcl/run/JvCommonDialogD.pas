@@ -67,7 +67,7 @@ const
 implementation
 
 uses
-  SetupApi,
+  JvSetupApi,
   JvResources;
 
 const

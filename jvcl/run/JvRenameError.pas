@@ -70,7 +70,7 @@ const
 implementation
 
 uses
-  SetupApi,
+  JvSetupApi,
   JclSysUtils;
 
 constructor TJvRenameError.Create(AOwner: TComponent);

@@ -77,7 +77,7 @@ implementation
 
 uses
   JclSysUtils,
-  SetupApi;
+  JvSetupApi;
 
 constructor TJvCopyError.Create(AOwner: TComponent);
 begin

@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -40,7 +40,7 @@ File3=..\..\run\HidUsage.pas
 File4=..\..\run\ModuleLoader.pas
 File5=..\..\run\WinConvTypes.pas
 File6=..\..\run\DBT.pas
-File7=..\..\run\SetupApi.pas
+File7=..\..\run\JvSetupApi.pas
 File8=..\..\run\JvXmlDatabase.pas
 File9=..\..\run\JvAppInst.pas
 File10=..\..\run\JvChangeNotify.pas

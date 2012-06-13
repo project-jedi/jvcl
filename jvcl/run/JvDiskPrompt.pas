@@ -75,7 +75,7 @@ const
 implementation
 
 uses
-  SetupApi;
+  JvSetupApi;
 
 constructor TJvDiskPrompt.Create(AOwner: TComponent);
 begin

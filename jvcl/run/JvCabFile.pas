@@ -99,7 +99,7 @@ const
 implementation
 
 uses
-  SetupApi, WinConvTypes, StrUtils,
+  StrUtils, JvSetupAPI,
   JvConsts, JvResources;
 
 constructor TJvCABFile.Create(AOwner: TComponent);

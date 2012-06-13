@@ -23,7 +23,7 @@
     <File Name="..\..\run\ModuleLoader.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\WinConvTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\DBT.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\SetupApi.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSetupApi.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvXmlDatabase.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppInst.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvChangeNotify.pas" Targets="all" Formname="" Condition=""/>
