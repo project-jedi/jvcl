@@ -50,7 +50,6 @@ const
   SID_ITaskbarList4                           = '{C43DC798-95D1-4BEA-9030-BB99E2983A1A}';
 
   CLSID_TaskbarList: TGUID                            = '{56FDF344-FD6D-11d0-958A-006097C9A090}';
-  {$EXTERNALSYM CLSID_TaskbarList}
 
 type
   {$IFNDEF RTL185_UP}
@@ -73,13 +72,11 @@ type
     function ActivateTab(hwnd: HWND): HRESULT; stdcall;
     function SetActiveAlt(hwnd: HWND): HRESULT; stdcall;
   end;
-  {$EXTERNALSYM ITaskbarList}
   
   ITaskbarList2 = interface(ITaskbarList)
     [SID_ITaskbarList2]
     function MarkFullscreenWindow(hwnd: HWND; fFullscreen: BOOL): HRESULT; stdcall;
   end;
-  {$EXTERNALSYM ITaskbarList2}
   
 type
   THUMBBUTTON = record 
@@ -90,55 +87,35 @@ type
     szTip: packed array[0..259] of WCHAR;
     dwFlags: DWORD;
   end;
-  {$EXTERNALSYM THUMBBUTTON}
   tagTHUMBBUTTON = THUMBBUTTON;
-  {$EXTERNALSYM tagTHUMBBUTTON}
   TThumbButton = THUMBBUTTON;
   PThumbButton = ^TThumbButton;
 
 // THUMBBUTTON flags
 const
   THBF_ENABLED        =  $0000;
-  {$EXTERNALSYM THBF_ENABLED}
   THBF_DISABLED       =  $0001;
-  {$EXTERNALSYM THBF_DISABLED}
   THBF_DISMISSONCLICK =  $0002;
-  {$EXTERNALSYM THBF_DISMISSONCLICK}
   THBF_NOBACKGROUND   =  $0004;
-  {$EXTERNALSYM THBF_NOBACKGROUND}
   THBF_HIDDEN         =  $0008;
-  {$EXTERNALSYM THBF_HIDDEN}
   THBF_NONINTERACTIVE = $10; 
-  {$EXTERNALSYM THBF_NONINTERACTIVE}
 // THUMBBUTTON mask
   THB_BITMAP          =  $0001;
-  {$EXTERNALSYM THB_BITMAP}
   THB_ICON            =  $0002;
-  {$EXTERNALSYM THB_ICON}
   THB_TOOLTIP         =  $0004;
-  {$EXTERNALSYM THB_TOOLTIP}
   THB_FLAGS           =  $0008;
-  {$EXTERNALSYM THB_FLAGS}
   THBN_CLICKED        =  $1800;
-  {$EXTERNALSYM THBN_CLICKED}
 
 const
   TBPF_NOPROGRESS    = 0; 
-  {$EXTERNALSYM TBPF_NOPROGRESS}
   TBPF_INDETERMINATE = $1; 
-  {$EXTERNALSYM TBPF_INDETERMINATE}
   TBPF_NORMAL        = $2; 
-  {$EXTERNALSYM TBPF_NORMAL}
   TBPF_ERROR         = $4; 
-  {$EXTERNALSYM TBPF_ERROR}
   TBPF_PAUSED        = $8; 
-  {$EXTERNALSYM TBPF_PAUSED}
-
+  
   TBATF_USEMDITHUMBNAIL   = $1; 
-  {$EXTERNALSYM TBATF_USEMDITHUMBNAIL}
   TBATF_USEMDILIVEPREVIEW = $2; 
-  {$EXTERNALSYM TBATF_USEMDILIVEPREVIEW}
-
+  
 type
   ITaskbarList3 = interface(ITaskbarList2)
     [SID_ITaskbarList3]
@@ -160,7 +137,6 @@ type
     function SetThumbnailTooltip(hwnd: HWND; pszTip: LPCWSTR): HRESULT; stdcall;
     function SetThumbnailClip(hwnd: HWND; var prcClip: TRect): HRESULT; stdcall;
   end;
-  {$EXTERNALSYM ITaskbarList3}
   {$ENDIF !RTL210_UP}
 
 type
