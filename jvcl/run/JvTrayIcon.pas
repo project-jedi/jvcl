@@ -1575,9 +1575,8 @@ begin
   // data has no usefull meaning in a context of another
   // process (since Win95) - so we need
   // to allocate some memory inside Tray process.
-  // Use @ProcessId for C5/D5 compatibility
-
-  if GetWindowThreadProcessId(FToolbarHandle, @ProcessID) = 0 then
+  
+  if GetWindowThreadProcessId(FToolbarHandle, ProcessID) = 0 then
     Exit;
 
   FProcess := OpenProcess(PROCESS_ALL_ACCESS, False, ProcessID);

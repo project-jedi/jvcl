@@ -38,7 +38,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   Classes, Graphics, Controls, Forms, Buttons, Dialogs,
-  JvConsts, // missing color constants for D5
+  JvConsts,
   JvColorBox, JvComponent;
 
 const
