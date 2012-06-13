@@ -411,7 +411,7 @@ begin
     DrawBitmap(FBitmaps[FStateOn]);
   if FTextPosition <> tpNone then
   begin
-    FontHeight := TextHeight('W');
+    FontHeight := Canvas.TextHeight('W');
     ARect.Top := ((ARect.Bottom + ARect.Top) - FontHeight) shr 1;
     ARect.Bottom := ARect.Top + FontHeight;
     Text := Caption;
