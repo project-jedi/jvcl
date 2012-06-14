@@ -1492,6 +1492,7 @@ begin
     begin
       FAddress.Comps[Component] := Value;
       PushAddressToWindows;
+      FSaveBlank := False;
     end;
   end;
 end;
