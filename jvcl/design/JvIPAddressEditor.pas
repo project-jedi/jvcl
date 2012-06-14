@@ -58,37 +58,7 @@ type
 implementation
 
 uses
-  SysUtils;
-
-  // helpers for SetOrdValue(StrToInt(Value:Cardinal));
-  // Should care for values between high(integer) and high(cardinal)
-  // Delphi has UIntToStr() but not StrToUInt()
-  // better be moved to JclSysUtils
-
-function TryStrToUInt(const Value: string; out Res: Cardinal): boolean;
-var i6: Int64;
-begin
-  Result := false;
-  if not TryStrToInt64(Value, i6) then
-    Exit;
-  if ( i6 < Low(Res)) or ( i6 > High(Res)) then
-    Exit;
-
-  Result := true;
-  Res := i6;
-end;
-
-function StrToUIntDef(const Value: string; const Default: Cardinal): Cardinal;
-begin
-  if not TryStrToUInt(Value, Result) then
-    Result := Default;
-end;
-
-function StrToUInt(const Value: string): Cardinal;
-begin
-  if not TryStrToUInt(Value, Result) then
-    raise EConvertError.Create('"'+Value+'" is not within range of Cardinal data type');
-end;
+  SysUtils, JclSysUtils;
 
 { TJvIPAddressProperty }
 
@@ -290,7 +260,7 @@ end;
 
 procedure TJvIPAddressAsNumberProperty.SetValue(const Value: string);
 begin
-  SetOrdValue(StrToUInt(Value));
+  SetOrdValue(StrToCardinal(Value));
 end;
 
 { TJvIPAddressAsTextProperty }
