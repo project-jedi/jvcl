@@ -176,7 +176,7 @@ type
     destructor Destroy; override;
     function Showing: Boolean;
     procedure Close(Immediate: Boolean);
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     property StyleHandler: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
   published
     property AlertStack: TJvDesktopAlertStack read GetAlertStack write SetAlertStack;
@@ -247,7 +247,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     property Form: TJvCustomFormDesktopAlert read FDesktopForm;
     property Data: TObject read FData write FData;
   published
@@ -293,7 +293,7 @@ type
   protected
   public
     property Form: TJvCustomFormDesktopAlert read FDesktopForm write SetForm;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property AlertStack;
     property AlertStyle;
@@ -740,12 +740,12 @@ begin
   inherited Destroy;
 end;
 
-function TJvDesktopAlert.Execute: Boolean;
+function TJvDesktopAlert.Execute(ParentWnd: HWND): Boolean;
 var
   I, X, Y: Integer;
   FActiveWindow, FActiveFocus: HWND;
 begin
-  inherited Execute;
+  inherited Execute(ParentWnd);
 
   DesktopForm.OnShowing := InternalOnShowing;
   DesktopForm.OnShow    := InternalOnShow;
@@ -795,7 +795,7 @@ begin
   if not AutoFocus then
   begin
     FActiveFocus := GetFocus;
-    FActiveWindow := GetActiveWindow;
+    FActiveWindow := ParentWnd;
   end
   else
   begin
@@ -1580,7 +1580,7 @@ begin
   end;
 end;
 
-function TJvCustomDesktopAlert.Execute: Boolean;
+function TJvCustomDesktopAlert.Execute(ParentWnd: HWND): Boolean;
 var
   ARect: TRect;
   Position: TJvDesktopAlertPosition;
@@ -1663,8 +1663,14 @@ begin
         if (Location.Position = dapMainFormCenter) and (Application <> nil) and (Application.MainForm <> nil) then
           CenterForm(FDesktopForm, Application.MainForm.BoundsRect)
         else
-        if (Location.Position = dapOwnerFormCenter) and (Owner is TCustomForm) then
-          CenterForm(FDesktopForm, TCustomForm(Owner).BoundsRect);
+        if (Location.Position = dapOwnerFormCenter) then
+          if (Owner is TCustomForm) then
+            CenterForm(FDesktopForm, TCustomForm(Owner).BoundsRect)
+          else
+          begin
+            GetWindowRect(ParentWnd, ARect);
+            CenterForm(FDesktopForm, ARect);
+          end;
       end;
   end;
 
@@ -1762,11 +1768,12 @@ end;
 
 { TJvDesktopAlertForm }
 
-function TJvDesktopAlertForm.Execute: Boolean;
+function TJvDesktopAlertForm.Execute(ParentWnd: HWND): Boolean;
 var
   FActiveWindow, FActiveFocus: HWND;
 begin
-  inherited Execute;
+  inherited Execute(ParentWnd);
+
   FDesktopForm.Closeable := (daoCanClose in Options);
   FDesktopForm.OnUserMove := InternalOnMove;
 
@@ -1774,7 +1781,7 @@ begin
   if not AutoFocus then
   begin
     FActiveFocus := GetFocus;
-    FActiveWindow := GetActiveWindow;
+    FActiveWindow := ParentWnd;
   end
   else
   begin

@@ -87,7 +87,7 @@ type
   public
     procedure LoadOptions;
     procedure SaveOptions;
-    class function Execute(StoreSettings: Boolean): Boolean;
+    class function Execute(ParentWnd: HWND; StoreSettings: Boolean): Boolean;
   end;
 
   {$IFDEF RTL230_UP}
@@ -97,7 +97,7 @@ type
   private
     FStoreSettings: Boolean;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property StoreSettings: Boolean read FStoreSettings write FStoreSettings default False;
   end;
@@ -244,12 +244,12 @@ begin
   Close;
 end;
 
-function TJvJVCLAboutComponent.Execute: Boolean;
+function TJvJVCLAboutComponent.Execute(ParentWnd: HWND): Boolean;
 begin
-  Result := TJvJVCLAboutForm.Execute(StoreSettings);
+  Result := TJvJVCLAboutForm.Execute(ParentWnd, StoreSettings);
 end;
 
-class function TJvJVCLAboutForm.Execute(StoreSettings: Boolean): Boolean;
+class function TJvJVCLAboutForm.Execute(ParentWnd: HWND; StoreSettings: Boolean): Boolean;
 begin
   with Self.Create(Application) do
   try
@@ -258,6 +258,7 @@ begin
     // (rom) used as component outside the IDE the buttons are not useful
     btnHelp.Visible := StoreSettings;
     btnOptions.Visible := StoreSettings;
+    ParentWindow := ParentWnd;
     Result := ShowModal = mrOk;
     if StoreSettings then
       SaveOptions;

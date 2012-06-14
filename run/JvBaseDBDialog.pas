@@ -33,7 +33,7 @@ uses
   JclUnitVersioning,
 {$ENDIF UNITVERSIONING}
   JvDynControlEngine,
-  Classes, JvBaseDlg, JvAppStorage, Forms, Controls;
+  Windows, Classes, JvBaseDlg, JvAppStorage, Forms, Controls;
 
 type
   TJvBaseDBDialog = class(TJvCommonDialog)
@@ -55,7 +55,7 @@ type
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write SetAppStoragePath;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     function SessionIsConnected: Boolean; virtual;
     property DBDialog: TForm read FDBDialog ;
     property Session: TComponent read FSession write SetSession;
@@ -94,7 +94,7 @@ procedure TJvBaseDBDialog.AfterCreateFormControls(aForm: TForm);
 begin
 end;
 
-function TJvBaseDBDialog.Execute: Boolean;
+function TJvBaseDBDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   if not Assigned(Session) then
     Abort;
@@ -102,6 +102,7 @@ begin
   try
     AfterCreateFormControls(FDBDialog);
     FDBDialog.ShowModal;
+    FDBDialog.ParentWindow := ParentWnd;
     Result := FDBDialog.ModalResult = mrOk;
   finally
     FreeAndNil(FDBDialog);

@@ -74,7 +74,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
 
     property CalcDisplay: Double read GetDisplay;
     property Memory: Double read FMemory;
@@ -480,7 +480,7 @@ begin
     FOnDisplayChange(Self);
 end;
 
-function TJvCalculator.Execute: Boolean;
+function TJvCalculator.Execute(ParentWnd: HWND): Boolean;
 begin
   if csDesigning in ComponentState then
     FCalc := CreateCalculatorForm(Application, HelpContext)
@@ -490,6 +490,7 @@ begin
   try
     Ctl3D := not FFlat;
     Caption := Self.Title;
+    ParentWindow := ParentWnd;
     TJvCalculatorPanel(FCalcPanel).FMemory := Self.FMemory;
     TJvCalculatorPanel(FCalcPanel).UpdateMemoryLabel;
     TJvCalculatorPanel(FCalcPanel).FPrecision := Max(2, Self.Precision);

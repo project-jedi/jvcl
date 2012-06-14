@@ -32,7 +32,7 @@ unit JvAddPrinter;
 interface
 
 uses
-  Classes,
+  Windows, Classes,
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -43,8 +43,8 @@ type
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
   TJvAddPrinterDialog = class(TJvCommonDialog)
-  published
-    function Execute: Boolean; override;
+  public
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -60,7 +60,7 @@ const
 implementation
 
 uses
-  Windows, ActiveX, ShlObj, ShellAPI, SysUtils;
+  ActiveX, ShlObj, ShellAPI, SysUtils;
 
 // (rom) move to JCL
 
@@ -155,7 +155,7 @@ end;
 
 //=== { TJvAddPrinterDialog } ================================================
 
-function TJvAddPrinterDialog.Execute: Boolean;
+function TJvAddPrinterDialog.Execute(ParentWnd: HWND): Boolean;
 var
   AddPrinterItemIDList: PItemIDList;
   Allocator: IMalloc;
@@ -175,6 +175,7 @@ begin
           fMask := SEE_MASK_INVOKEIDLIST or SEE_MASK_FLAG_NO_UI;
           lpIDList := AddPrinterItemIDList;
           nShow := SW_SHOWDEFAULT;
+          Wnd := ParentWnd;
         end;
         // (rom) now reports success
         Result := ShellExecuteEx(@ShellExecuteInfo);

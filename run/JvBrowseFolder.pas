@@ -227,7 +227,6 @@ type
     function DoShouldShow(const AItem: string): Boolean;
     function DoGetEnumFlags(const AFolder: string; var Flags: TJvBrowsableObjectClasses): Boolean;
 
-    function GetOwnerWindow: THandle;
     procedure MainWndProc(var Msg: TMessage);
     procedure HookDialog;
 
@@ -255,7 +254,7 @@ type
     property Pidl: PItemIDList read FPidl;
     property Handle: THandle read FDialogWindow;
 
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property Directory: string read FDirectory write FDirectory;
     property DisplayName: string read FDisplayName write FDisplayName stored False;
@@ -1059,7 +1058,7 @@ begin
   Result := DoValidateFailed(PChar(string(AEditText)));
 end;
 
-function TJvBrowseForFolderDialog.Execute: Boolean;
+function TJvBrowseForFolderDialog.Execute(ParentWnd: HWND): Boolean;
 var
   dspName: array [0..MAX_PATH] of Char;
   BrowseInfo: TBrowseInfo;
@@ -1068,12 +1067,12 @@ var
   WindowList: Pointer;
   Option: TOptionsDirectory;
 begin
+  FOwnerWindow := ParentWnd;
   ShellVersion := GetShellVersion;
   if ShellVersion < $00040000 then
     raise EJVCLException.CreateRes(@RsEShellNotCompatible);
 
   FDialogWindow := 0;
-  FOwnerWindow := GetOwnerWindow;
   FPositionSet := False;
   FHelpButtonHandle := 0;
   FHelpButtonHeightDelta := 0;
@@ -1179,27 +1178,6 @@ begin
   for Obj := Low(TJvBrowsableObjectClass) to High(TJvBrowsableObjectClass) do
     if Obj in Flags then
       Inc(pgrfFlags, CBrowseObjectClasses[Obj]);
-end;
-
-function TJvBrowseForFolderDialog.GetOwnerWindow: THandle;
-var
-  F: TCustomForm;
-begin
-  // (Ralf Kaiser) Owner maybe a TDataModule
-  if Owner is TControl then
-    F := GetParentForm(TControl(Owner))
-  else
-    F := nil;
-  if F <> nil then
-    Result := F.Handle
-  else
-  if Owner is TWinControl then
-    Result := (Owner as TWinControl).Handle
-  else
-  if (Screen <> nil) and (Screen.ActiveCustomForm <> nil) then
-    Result := Screen.ActiveCustomForm.Handle
-  else
-    Result := GetForegroundWindow;
 end;
 
 function TJvBrowseForFolderDialog.GetRootDirectoryPath: string;

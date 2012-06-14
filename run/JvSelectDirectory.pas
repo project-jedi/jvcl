@@ -34,7 +34,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes,
+  Windows, Classes,
   FileCtrl,
   JvBaseDlg;
 
@@ -53,7 +53,7 @@ type
     FTitle: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property Directory: string read FDirectory;
     property HelpContext: Longint read FHelpContext write FHelpContext default 0;
@@ -87,7 +87,7 @@ begin
   FTitle := '';
 end;
 
-function TJvSelectDirectory.Execute: Boolean;
+function TJvSelectDirectory.Execute(ParentWnd: HWND): Boolean;
 begin
   FDirectory := InitialDir;
   DoShow;

@@ -180,14 +180,13 @@ type
     FDrive: Char;
     FFormatType: TJvFormatDriveKind;
     FCapacity: TJvDriveCapacity;
-    FHandle: HWND;
     FOnError: TJvFormatDriveErrorEvent;
     procedure SetDrive(Value: Char);
   protected
     procedure DoError(ErrValue: Integer);
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; override;
   published
     property Drive: Char read FDrive write SetDrive default 'A';
     property FormatType: TJvFormatDriveKind read FFormatType write FFormatType;
@@ -200,7 +199,7 @@ type
   {$ENDIF RTL230_UP}
   TJvOrganizeFavoritesDialog = class(TJvCommonDialog)
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
   TJvCplInfo = record
@@ -235,7 +234,7 @@ type
     function ValidApplet: Boolean;
     // (p3) NOTE: if AppletName or AppletIndex is invalid, shows the control
     // panel explorer window instead and returns FALSE
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     property Count: Integer read FCount;
     property AppletInfo[Index: Integer]: TJvCplInfo read GetAppletInfo;
   published
@@ -252,7 +251,7 @@ type
     FCaption: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     property ComputerName: string read FComputerName;
   published
     property Caption: string read FCaption write FCaption;
@@ -268,7 +267,7 @@ type
     FCaption: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     property FolderName: string read FFolderName;
   published
     property Caption: string read FCaption write FCaption;
@@ -281,7 +280,7 @@ type
   private
     FCaption: string;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property Caption: string read FCaption write FCaption;
   end;
@@ -295,7 +294,7 @@ type
     FIconIndex: Integer;
     FFileName: TFileName;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property IconIndex: Integer read FIconIndex write FIconIndex;
     property FileName: TFileName read FFileName write FFileName;
@@ -316,7 +315,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property Caption: string read FCaption write FCaption;
     property Icon: TIcon read FIcon write SetIcon stored StoreIcon;
@@ -336,7 +335,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property Caption: string read FCaption write FCaption;
     property Description: string read FDescription write FDescription;
@@ -352,7 +351,7 @@ type
     FObjectType: TShellObjectType;
     FInitialTab: string;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property ObjectName: TFileName read FObjectName write FObjectName;
     property ObjectType: TShellObjectType read FObjectType write FObjectType;
@@ -366,7 +365,7 @@ type
   private
     FDestinationFolder: string;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property DestinationFolder: string read FDestinationFolder write FDestinationFolder;
   end;
@@ -376,7 +375,7 @@ type
   {$ENDIF RTL230_UP}
   TJvAddHardwareDialog = class(TJvCommonDialog)
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
   {$IFDEF RTL230_UP}
@@ -386,7 +385,7 @@ type
   private
     FFileName: TFileName;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property FileName: TFileName read FFileName write FFileName;
   end;
@@ -401,7 +400,7 @@ type
     function GetDrive: UINT;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property DriveChar: Char read FDriveChar write SetDriveChar default 'C';
   end;
@@ -419,7 +418,7 @@ type
   private
     FKind: TJvExitWindowsKind;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     property Kind: TJvExitWindowsKind read FKind write FKind default ekXPDialog;
   end;
@@ -427,13 +426,13 @@ type
   // (p3) this extension (PlacesBar) is already in TJvOpenDialog
   TJvOpenDialog2000 = class(TOpenDialog)
   public
-    function Execute: Boolean; override;
+    function Execute{$IFDEF RTL180_UP}(ParentWnd: HWND){$ENDIF RTL180_UP}: Boolean; overload; override;
   end;
 
   // (p3) this extension (PlacesBar) is already in TJvSaveDialog
   TJvSaveDialog2000 = class(TSaveDialog)
   public
-    function Execute: Boolean; override;
+    function Execute{$IFDEF RTL180_UP}(ParentWnd: HWND){$ENDIF RTL180_UP}: Boolean; overload; override;
   end;
 
 
@@ -448,13 +447,12 @@ type
     FOptions: TJvURLAssociationDialogOptions;
     FDefaultProtocol: string;
     FReturnValue: HRESULT;
-    function GetParentHandle: THandle;
   public
     // Returns false if user cancelled or if the user
     // elected not to register the association. To find out if the user made
     // a one-time choice, check the AssociatedApp property: if it is empty,
     // the user cancelled
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     constructor Create(AOwner: TComponent); override;
     // After Execute, contains the path and filename to the associated application (if user didn't cancel)
     property AssociatedApp: string read FAssociatedApp;
@@ -487,9 +485,8 @@ type
     FFileName: TFileName;
     FOptions: TJvMIMEAssociationOptions;
     FReturnValue: HRESULT;
-    function GetParentHandle: THandle;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     // After Execute, contains the path and filename to the associated application (if user didn't cancel)
     property AssociatedApp: string read FAssociatedApp;
     // Value returned by the function called by Execute.
@@ -585,7 +582,7 @@ type
     FDistributionUnit: string;
     FDistInfo: TJvSoftwareUpdateInfo;
   public
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     property ReturnValue: Cardinal read FReturnValue;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -863,7 +860,7 @@ end;
 
 //=== { TJvOrganizeFavoritesDialog } =========================================
 
-function TJvOrganizeFavoritesDialog.Execute: Boolean;
+function TJvOrganizeFavoritesDialog.Execute(ParentWnd: HWND): Boolean;
 var
   Path: AnsiString;
   lpfnDoOrganizeFavDlg: LPFNORGFAV;
@@ -875,7 +872,7 @@ begin
     lpfnDoOrganizeFavDlg := LPFNORGFAV(GetProcAddress(SHDocvwHandle, 'DoOrganizeFavDlg'));
     if not Assigned(lpfnDoOrganizeFavDlg) then
       raise EWinDialogError.CreateRes(@RsEFunctionNotSupported);
-    lpfnDoOrganizeFavDlg(GetForegroundWindow, PAnsiChar(Path));
+    lpfnDoOrganizeFavDlg(ParentWnd, PAnsiChar(Path));
     Result := True;
   end;
 end;
@@ -995,13 +992,13 @@ begin
   Load;
 end;
 
-function TJvAppletDialog.Execute: Boolean;
+function TJvAppletDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   Result := ValidApplet;
   if Result then
-    FAppletFunc(GetForegroundWindow, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData)
+    FAppletFunc(ParentWnd, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData)
   else
-    ShellExecute(GetFocus, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
+    ShellExecute(ParentWnd, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
 end;
 
 function TJvAppletDialog.ValidApplet: Boolean;
@@ -1019,7 +1016,7 @@ begin
   FComputerName := '';
 end;
 
-function TJvComputerNameDialog.Execute: Boolean;
+function TJvComputerNameDialog.Execute(ParentWnd: HWND): Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
@@ -1028,12 +1025,12 @@ var
 begin
   Result := False;
 
-  if Failed(SHGetSpecialFolderLocation(GetForegroundWindow, CSIDL_NETWORK,
+  if Failed(SHGetSpecialFolderLocation(ParentWnd, CSIDL_NETWORK,
     ItemIDList)) then
     Exit;
 
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
-  BrowseInfo.hwndOwner := GetForegroundWindow;
+  BrowseInfo.hwndOwner := ParentWnd;
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
@@ -1057,7 +1054,7 @@ begin
   FFolderName := '';
 end;
 
-function TJvBrowseFolderDialog.Execute: Boolean;
+function TJvBrowseFolderDialog.Execute(ParentWnd: HWND): Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
@@ -1067,7 +1064,7 @@ var
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);
-  BrowseInfo.hwndOwner := GetForegroundWindow;
+  BrowseInfo.hwndOwner := ParentWnd;
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
@@ -1094,13 +1091,9 @@ constructor TJvFormatDriveDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDrive := 'A';
-  if AOwner is TCustomForm then
-    FHandle := TCustomForm(AOwner).Handle
-  else
-    FHandle := HWND_DESKTOP;
 end;
 
-function TJvFormatDriveDialog.Execute: Boolean;
+function TJvFormatDriveDialog.Execute(ParentWnd: HWND): Boolean;
 var
   iDrive, iCapacity, iFormatType, RetVal: Integer;
 begin
@@ -1126,7 +1119,7 @@ begin
     iFormatType := Ord(FFormatType);
   end;
 
-  RetVal := SHFormatDrive(FHandle, iDrive, iCapacity, iFormatType);
+  RetVal := SHFormatDrive(ParentWnd, iDrive, iCapacity, iFormatType);
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     Result := RetVal = 0
   else
@@ -1276,7 +1269,7 @@ end;
 
 //=== { TJvOutOfMemoryDialog } ===============================================
 
-function TJvOutOfMemoryDialog.Execute: Boolean;
+function TJvOutOfMemoryDialog.Execute(ParentWnd: HWND): Boolean;
 var
   CaptionBuffer: Pointer;
 begin
@@ -1295,7 +1288,7 @@ begin
       StrPCopy(PChar(CaptionBuffer), FCaption);
   end;
   if Assigned(SHOutOfMemoryMessageBox) then
-    Result := Boolean(SHOutOfMemoryMessageBox(GetForegroundWindow, CaptionBuffer,
+    Result := Boolean(SHOutOfMemoryMessageBox(ParentWnd, CaptionBuffer,
       MB_OK or MB_ICONHAND))
   else
     raise EWinDialogError.CreateRes(@RsENotSupported);
@@ -1325,7 +1318,7 @@ begin
   Result := (not FIcon.Empty);
 end;
 
-function TJvShellAboutDialog.Execute: Boolean;
+function TJvShellAboutDialog.Execute(ParentWnd: HWND): Boolean;
 const
   AboutText = 'JvDialogs 2.0';
   CaptionSeparator = '#';
@@ -1339,7 +1332,7 @@ begin
 
   CaptionText := CaptionText + CaptionSeparator + Product;
 
-  OSCheck(LongBool(ShellAbout(Application.MainForm.Handle,
+  OSCheck(LongBool(ShellAbout(ParentWnd,
     PChar(CaptionText), PChar(OtherText), FIcon.Handle)));
   Result := True;
 end;
@@ -1360,7 +1353,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvRunDialog.Execute: Boolean;
+function TJvRunDialog.Execute(ParentWnd: HWND): Boolean;
 var
   CaptionBuffer: Pointer;
   DescriptionBuffer: Pointer;
@@ -1391,7 +1384,7 @@ begin
   end;
 
   if Assigned(SHRunDialog) then
-    Result := SHRunDialog(GetForegroundWindow, FIcon.Handle, nil, CaptionBuffer,
+    Result := SHRunDialog(ParentWnd, FIcon.Handle, nil, CaptionBuffer,
       DescriptionBuffer, 0) = 0
   else
     raise EWinDialogError.CreateRes(@RsENotSupported);
@@ -1404,7 +1397,7 @@ end;
 
 //=== { TJvObjectPropertiesDialog } ==========================================
 
-function TJvObjectPropertiesDialog.Execute: Boolean;
+function TJvObjectPropertiesDialog.Execute(ParentWnd: HWND): Boolean;
 var
   ObjectNameBuffer: Pointer;
   TabNameBuffer: Pointer;
@@ -1432,7 +1425,7 @@ begin
       begin
         StrPCopy(PChar(TabNameBuffer), InitialTab);
       end;
-      Result := SHObjectProperties(GetForegroundWindow,
+      Result := SHObjectProperties(ParentWnd,
         ShellObjectTypeEnumToConst(ObjectType), ObjectNameBuffer,
         TabNameBuffer);
     finally
@@ -1469,7 +1462,7 @@ end;
 
 //=== { TJvNewLinkDialog } ===================================================
 
-function TJvNewLinkDialog.Execute: Boolean;
+function TJvNewLinkDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   NewLinkHere(0, 0, PChar(DestinationFolder), 0);
   Result := True; // No way to know it worked
@@ -1477,7 +1470,7 @@ end;
 
 //=== { TJvAddHardwareDialog } ===============================================
 
-function TJvAddHardwareDialog.Execute: Boolean;
+function TJvAddHardwareDialog.Execute(ParentWnd: HWND): Boolean;
 var
   APModule: THandle;
   Applet: TCplApplet;
@@ -1627,9 +1620,9 @@ end;
 
 //=== { TJvOpenWithDialog } ==================================================
 
-function TJvOpenWithDialog.Execute: Boolean;
+function TJvOpenWithDialog.Execute(ParentWnd: HWND): Boolean;
 begin
-  SHOpenWith(0, 0, PChar(FileName), SW_SHOW);
+  SHOpenWith(ParentWnd, 0, PChar(FileName), SW_SHOW);
   Result := True; // No way to know it worked
 end;
 
@@ -1646,13 +1639,13 @@ begin
   Result := Ord(FDriveChar) - Ord('A');
 end;
 
-function TJvDiskFullDialog.Execute: Boolean;
+function TJvDiskFullDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   if not Assigned(SHHandleDiskFull) then
     raise EWinDialogError.CreateRes(@RsENotSupported);
   Result := GetDriveType(PChar(DriveChar + ':\')) = 3;
   if Result then
-    SHHandleDiskFull(GetForegroundWindow, GetDrive);
+    SHHandleDiskFull(ParentWnd, GetDrive);
 end;
 
 procedure TJvDiskFullDialog.SetDriveChar(Value: Char);
@@ -1665,20 +1658,20 @@ end;
 
 //=== { TJvExitWindowsDialog } ===============================================
 
-function TJvExitWindowsDialog.Execute: Boolean;
+function TJvExitWindowsDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   if not Assigned(SHShutDownDialog) and not Assigned(SHShutDownDialog6) then
     raise EWinDialogError.CreateRes(@RsENotSupported);
   if Assigned(SHShutDownDialog6) then
-    SHShutDownDialog6(GetForegroundWindow, Integer(Kind)) // Vista or newer
+    SHShutDownDialog6(ParentWnd, Integer(Kind)) // Vista or newer
   else
-    SHShutDownDialog(GetForegroundWindow);
+    SHShutDownDialog(ParentWnd);
   Result := True;
 end;
 
 //=== { TJvChangeIconDialog } ================================================
 
-function TJvChangeIconDialog.Execute: Boolean;
+function TJvChangeIconDialog.Execute(ParentWnd: HWND): Boolean;
 var
   Buf: array [0..MAX_PATH] of Char;
   BufW: array [0..MAX_PATH] of WideChar;
@@ -1686,7 +1679,7 @@ begin
   if Assigned(SHChangeIconW) then
   begin
     StringToWideChar(FileName, BufW, SizeOf(BufW));
-    Result := SHChangeIconW(GetForegroundWindow, BufW, SizeOf(BufW), FIconIndex) = 1;
+    Result := SHChangeIconW(ParentWnd, BufW, SizeOf(BufW), FIconIndex) = 1;
     if Result then
       FileName := BufW;
   end
@@ -1694,7 +1687,7 @@ begin
   if Assigned(SHChangeIcon) then
   begin
     StrPCopy(Buf, FileName);
-    Result := SHChangeIcon(GetForegroundWindow, Buf, SizeOf(Buf), FIconIndex) = 1;
+    Result := SHChangeIcon(ParentWnd, Buf, SizeOf(Buf), FIconIndex) = 1;
     if Result then
       FileName := Buf;
   end
@@ -1726,22 +1719,22 @@ end;
 
 //=== { TJvOpenDialog2000 } ==================================================
 
-function TJvOpenDialog2000.Execute: Boolean;
+function TJvOpenDialog2000.Execute{$IFDEF RTL180_UP}(ParentWnd: HWND){$ENDIF RTL180_UP}: Boolean;
 begin
   if CheckWin32Version(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Result := DoExecute(@OpenInterceptor)
   else
-    Result := inherited Execute;
+    Result := inherited Execute{$IFDEF RTL180_UP}(ParentWnd){$ENDIF RTL180_UP};
 end;
 
 //=== { TJvSaveDialog2000 } ==================================================
 
-function TJvSaveDialog2000.Execute: Boolean;
+function TJvSaveDialog2000.Execute{$IFDEF RTL180_UP}(ParentWnd: HWND){$ENDIF RTL180_UP}: Boolean;
 begin
   if CheckWin32Version(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Result := DoExecute(@SaveInterceptor)
   else
-    Result := inherited Execute;
+    Result := inherited Execute{$IFDEF RTL180_UP}(ParentWnd){$ENDIF RTL180_UP};
 end;
 
 //=== { TJvURLAssociationDialog } ============================================
@@ -1753,7 +1746,7 @@ begin
   FDefaultProtocol := 'http://'; // the URL property needs a protocol or the function call fails
 end;
 
-function TJvURLAssociationDialog.Execute: Boolean;
+function TJvURLAssociationDialog.Execute(ParentWnd: HWND): Boolean;
 var
   dwFlags: DWORD;
   Buf: array [0..MAX_PATH] of Char;
@@ -1771,33 +1764,16 @@ begin
       dwFlags := dwFlags or URLASSOCDLG_FL_USE_DEFAULT_NAME;
     if uaRegisterAssoc in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_REGISTER_ASSOC;
-    FReturnValue := URLAssociationDialog(GetParentHandle, dwFlags,
+    FReturnValue := URLAssociationDialog(ParentWnd, dwFlags,
       PChar(FileName), PChar(URL), Buf, SizeOf(Buf));
     Result := ReturnValue = S_OK;
     FAssociatedApp := Buf;
   end;
 end;
 
-function TJvURLAssociationDialog.GetParentHandle: THandle;
-var
-  F: TCustomForm;
-begin
-  Result := 0;
-  if Owner is TControl then
-  begin
-    F := GetParentForm(TControl(Owner));
-    if F <> nil then
-      Result := F.Handle;
-  end;
-  if Result = 0 then
-    Result := GetForegroundWindow;
-  if Result = 0 then
-    Result := GetDesktopWindow;
-end;
-
 //=== { TJvMIMEAssociationDialog } ===========================================
 
-function TJvMIMEAssociationDialog.Execute: Boolean;
+function TJvMIMEAssociationDialog.Execute(ParentWnd: HWND): Boolean;
 var
   dwFlags: Cardinal;
   Buf: array [0..MAX_PATH] of Char;
@@ -1812,28 +1788,11 @@ begin
       dwFlags := MIMEASSOCDLG_FL_REGISTER_ASSOC
     else
       dwFlags := 0;
-    FReturnValue := MIMEAssociationDialog(GetParentHandle, dwFlags,
+    FReturnValue := MIMEAssociationDialog(ParentWnd, dwFlags,
       PChar(FileName), PChar(ContentType), Buf, SizeOf(Buf));
     Result := ReturnValue = 0;
     FAssociatedApp := Buf;
   end;
-end;
-
-function TJvMIMEAssociationDialog.GetParentHandle: THandle;
-var
-  F: TCustomForm;
-begin
-  Result := 0;
-  if Owner is TControl then
-  begin
-    F := GetParentForm(TControl(Owner));
-    if F <> nil then
-      Result := F.Handle;
-  end;
-  if Result = 0 then
-    Result := GetForegroundWindow;
-  if Result = 0 then
-    Result := GetDesktopWindow;
 end;
 
 //=== { TJvSoftwareUpdateDialog } ============================================
@@ -1850,7 +1809,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvSoftwareUpdateDialog.Execute: Boolean;
+function TJvSoftwareUpdateDialog.Execute(ParentWnd: HWND): Boolean;
 var
   psdi: TSoftDistInfo;
 begin
@@ -1859,7 +1818,7 @@ begin
   if Assigned(SoftwareUpdateMessageBox) then
   begin
     psdi := FDistInfo.SoftDistInfo;
-    FReturnValue := SoftwareUpdateMessageBox(GetDesktopWindow, '', 0, psdi);
+    FReturnValue := SoftwareUpdateMessageBox(ParentWnd, '', 0, psdi);
     Result := ReturnValue = IDYES;
     if ReturnValue <> IDABORT then
       FDistInfo.SoftDistInfo := psdi;

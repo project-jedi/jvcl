@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Dialogs,
+  Windows, Dialogs,
   JVCLVer;
 
 type
@@ -41,6 +41,11 @@ type
   TJvCommonDialog = class(TCommonDialog)
   private
     FAboutJVCL: TJVCLAboutInfo;
+  public
+    {$IFNDEF RTL180_UP}
+    function Execute: Boolean; overload; override;
+    function Execute(ParentWnd: HWND): Boolean; reintroduce; overload; virtual; abstract;
+    {$ENDIF ~RTL180_UP}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -57,6 +62,9 @@ const
 
 implementation
 
+uses
+  Controls, Forms;
+
 {$IFDEF UNITVERSIONING}
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
@@ -64,5 +72,29 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
+{ TJvCommonDialog }
+
+{$IFNDEF RTL180_UP}
+function TJvCommonDialog.Execute: Boolean;
+var
+  ParentWnd: HWND;
+  F: TCustomForm;
+begin
+  ParentWnd := 0;
+  if Owner is TControl then
+  begin
+    F := GetParentForm(TControl(Owner));
+    if F <> nil then
+      ParentWnd := F.Handle;
+  end;
+  if ParentWnd = 0 then
+    ParentWnd := GetForegroundWindow;
+  if ParentWnd = 0 then
+    ParentWnd := GetDesktopWindow;
+
+  Result := Execute(ParentWnd);
+end;
+{$ENDIF ~RTL180_UP}
 
 end.

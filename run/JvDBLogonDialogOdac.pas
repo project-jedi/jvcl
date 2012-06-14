@@ -150,7 +150,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ConnectSession;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     function ExecuteOnSession(Session: TCustomDAConnection): Boolean;
     property ConnectedDialogConnectionInfo: TJvBaseConnectionInfo read
         GetConnectedDialogConnectionInfo;
@@ -230,7 +230,7 @@ begin
     FLogonDialogInternal.ConnectSession;
 end;
 
-function TJvDBOdacConnectDialog.Execute: Boolean;
+function TJvDBOdacConnectDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   Result := ExecuteOnSession(Connection);
 end;
