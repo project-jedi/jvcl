@@ -47,8 +47,16 @@ uses
   JvJVCLAboutForm, JVCLVer, JvDsgnConsts;
 
 procedure TJVCLAboutDialogProperty.Edit;
+var
+  Component: TJvJVCLAboutComponent;
 begin
-  TJvJVCLAboutForm.Execute(False);
+  Component := TJvJVCLAboutComponent.Create(nil);
+  try
+    Component.StoreSettings := False;
+    Component.Execute;
+  finally
+    Component.Free;
+  end;
 end;
 
 function TJVCLAboutDialogProperty.GetAttributes: TPropertyAttributes;

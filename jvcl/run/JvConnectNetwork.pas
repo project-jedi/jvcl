@@ -42,24 +42,24 @@ type
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
   TJvConnectNetwork = class(TJvCommonDialog)
-  published
-    function Execute: Boolean; override;
+  public
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
   {$ENDIF RTL230_UP}
   TJvDisconnectNetwork = class(TJvCommonDialog)
-  published
-    function Execute: Boolean; override;
+  public
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
   TJvNetworkConnect = class(TJvCommonDialog)
   private
     FConnect: Boolean;
-  published
+  public
     property Connect: Boolean read FConnect write FConnect;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -75,22 +75,22 @@ const
 implementation
 
 
-function TJvConnectNetwork.Execute: Boolean;
+function TJvConnectNetwork.Execute(ParentWnd: HWND): Boolean;
 begin
-  Result := WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
+  Result := WNetConnectionDialog(ParentWnd, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
-function TJvDisconnectNetwork.Execute: Boolean;
+function TJvDisconnectNetwork.Execute(ParentWnd: HWND): Boolean;
 begin
-  Result := WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
+  Result := WNetDisconnectDialog(ParentWnd, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
-function TJvNetworkConnect.Execute: Boolean;
+function TJvNetworkConnect.Execute(ParentWnd: HWND): Boolean;
 begin
   if FConnect then
-    Result := WNetConnectionDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR
+    Result := WNetConnectionDialog(ParentWnd, RESOURCETYPE_DISK) = NO_ERROR
   else
-    Result := WNetDisconnectDialog(GetForegroundWindow, RESOURCETYPE_DISK) = NO_ERROR;
+    Result := WNetDisconnectDialog(ParentWnd, RESOURCETYPE_DISK) = NO_ERROR;
 end;
 
 {$IFDEF UNITVERSIONING}

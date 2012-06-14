@@ -33,7 +33,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes,
+  Windows, SysUtils, Classes,
   Graphics, Controls, Forms, ExtCtrls,
   JvBaseDlg, JvComponent;
 
@@ -53,7 +53,7 @@ type
   published
     property Picture: TPicture read GetPicture write SetPicture;
     property Title: string read FTitle write FTitle;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -84,7 +84,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvImageDialog.Execute: Boolean;
+function TJvImageDialog.Execute(ParentWnd: HWND): Boolean;
 var
   Form: TJvForm;
   Image1: TImage;
@@ -105,6 +105,7 @@ begin
       Form.Caption := FTitle;
       Image1.SetBounds(0,0,Picture.Width,Picture.Height);
       Image1.Anchors := [akTop, akLeft, akRight, akBottom];
+      Form.ParentWindow := ParentWnd;
       Result := Form.ShowModal = mrOk;
     finally
       Form.Free;

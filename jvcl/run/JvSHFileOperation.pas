@@ -72,12 +72,10 @@ type
     procedure SetSourceFiles(Value: TStrings);
     procedure SetDestFiles(Value: TStrings);
   protected
-    // returns a Handle to the window that owns this dialog
-    function GetWinHandle: THandle; virtual;
     procedure DoFileMapping(const OldFileName, NewFileName: string); virtual;
   public
     // performs the Operation and returns True if no errors occurred
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -141,7 +139,7 @@ end;
 
 {** returns True if no error occurred and user didn't abort }
 
-function TJvSHFileOperation.Execute: Boolean;
+function TJvSHFileOperation.Execute(ParentWnd: HWND): Boolean;
 const
   AOperation: array [TJvSHFileOpType] of UINT =
     (FO_COPY, FO_DELETE, FO_MOVE, FO_RENAME);
@@ -187,7 +185,7 @@ begin
     pTo := PChar(ppTo);
 
     wFunc := AOperation[FOperation];
-    Wnd := GetWinHandle; // (Owner as TForm).Handle;
+    Wnd := ParentWnd; // (Owner as TForm).Handle;
   end;
   FLastErrorMsg := EmptyStr;
   Result := SHFileOperation(SFOS) = 0;
@@ -252,14 +250,6 @@ end;
 procedure TJvSHFileOperation.SetDestFiles(Value: TStrings);
 begin
   FDestFiles.Assign(Value);
-end;
-
-function TJvSHFileOperation.GetWinHandle: THandle;
-begin
-  if Owner is TWinControl then
-    Result := TWinControl(Owner).Handle
-  else
-    Result := GetForegroundWindow;
 end;
 
 procedure TJvSHFileOperation.DoFileMapping(const OldFileName, NewFileName: string);

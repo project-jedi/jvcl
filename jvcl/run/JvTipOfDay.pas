@@ -36,7 +36,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, Graphics, Controls, Messages, Forms, StdCtrls,
+  Windows, Classes, Graphics, Controls, Messages, Forms, StdCtrls,
   JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton;
 
 type
@@ -134,7 +134,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure LoadFromFile(const AFileName: string);
     procedure SaveToFile(const AFileName: string);
@@ -171,7 +171,7 @@ const
 implementation
 
 uses
-  SysUtils, Windows, ExtCtrls, Dialogs,
+  SysUtils, ExtCtrls, Dialogs,
   JvWndProcHook,
   JvButton, JvResources, JvComponent, JvJVCLUtils;
 
@@ -262,7 +262,7 @@ begin
     FOnAfterExecute(Self);
 end;
 
-function TJvTipOfDay.Execute: Boolean;
+function TJvTipOfDay.Execute(ParentWnd: HWND): Boolean;
 var
   LForm: TJvForm;
 begin

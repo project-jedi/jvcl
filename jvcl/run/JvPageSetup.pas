@@ -101,7 +101,7 @@ type
     FPageSetupRec: TPageSetupDlg;
     FPaintWhat: TJvPSPaintWhat;
     procedure SetOptions(Value: TJvPageOptions);
-    function DoExecute(Show: Boolean): Boolean;
+    function DoExecute(ParentWnd: HWND; Show: Boolean): Boolean;
     procedure ReadMargin(AMargin: TJvMarginSize; Reader: TReader);
     procedure WriteMargin(AMargin: TJvMarginSize; Writer: TWriter);
     procedure ReadValues(AReader: TReader);
@@ -121,7 +121,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     procedure GetDefaults; virtual;
     property PaperSize: TPoint read FPaperSize;
   published
@@ -582,7 +582,7 @@ begin
   end;
 end;
 
-function TJvPageSetupDialog.DoExecute(Show: Boolean): Boolean;
+function TJvPageSetupDialog.DoExecute(ParentWnd: HWND; Show: Boolean): Boolean;
 var
   PageDlgRec: TPageSetupDlg;
   DevHandle: THandle;
@@ -593,7 +593,7 @@ begin
   with PageDlgRec do
   begin
     lStructSize := SizeOf(PageDlgRec);
-    hwndOwner := Application.Handle;
+    hwndOwner := ParentWnd;
     Flags := FFlags;
     rtMinMargin := Rect(FMinMargin.Left, FMinMargin.Top, FMinMargin.Right,
       FMinMargin.Bottom);
@@ -641,16 +641,16 @@ begin
   end;
 end;
 
-function TJvPageSetupDialog.Execute: Boolean;
+function TJvPageSetupDialog.Execute(ParentWnd: HWND): Boolean;
 begin
-  Result := DoExecute(True);
+  Result := DoExecute(ParentWnd, True);
 end;
 
 // Get default margin values
 
 procedure TJvPageSetupDialog.GetDefaults;
 begin
-  DoExecute(False);
+  DoExecute(GetActiveWindow, False);
 end;
 
 procedure TJvPageSetupDialog.SetOptions(Value: TJvPageOptions);

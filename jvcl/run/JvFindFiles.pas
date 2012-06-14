@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils, Classes, ShlObj, ShellAPI, ActiveX,
+  Windows, SysUtils, Classes, ShlObj, ShellAPI, ActiveX,
   JvBaseDlg;
 
 type
@@ -57,7 +57,7 @@ type
     FSpecial: TJvSpecialFolder;
   public
     constructor Create(AOwner: TComponent); override;
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
   published
     // the directory to start the search in
     property Directory: string read FDirectory write FDirectory;
@@ -67,7 +67,7 @@ type
     property UseSpecialFolder: Boolean read FUseSpecialFolder write FUseSpecialFolder;
   end;
 
-function FindFilesDlg(const StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
+function FindFilesDlg(ParentWnd: HWND; const StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
 
 {$IFDEF UNITVERSIONING}
 const
@@ -96,12 +96,12 @@ begin
   FSpecial := sfMyComputer;
 end;
 
-function TJvFindFilesDialog.Execute: Boolean;
+function TJvFindFilesDialog.Execute(ParentWnd: HWND): Boolean;
 begin
-  Result := FindFilesDlg(FDirectory, FSpecial, FUseSpecialFolder);
+  Result := FindFilesDlg(ParentWnd, FDirectory, FSpecial, FUseSpecialFolder);
 end;
 
-function FindFilesDlg(const StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
+function FindFilesDlg(ParentWnd: HWND; const StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
 var
   Pidl: PITEMIDLIST;
   PMalloc: IMalloc;
@@ -123,6 +123,7 @@ begin
     end
     else
       Sei.lpFile := PChar(StartIn);
+    Sei.Wnd := ParentWnd;
     Result := ShellExecuteEx(@Sei);
   finally
     PMalloc._Release;

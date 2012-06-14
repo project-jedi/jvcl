@@ -244,7 +244,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     // executes (displays) the object picker dialog
-    function Execute: Boolean; override;
+    function Execute(ParentWnd: HWND): Boolean; overload; override;
     // resets the object picker. clears all options, scopes and attributes
     procedure Reset;
     // the list of selected objects is available through this class
@@ -670,7 +670,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvObjectPickerDialog.Execute: Boolean;
+function TJvObjectPickerDialog.Execute(ParentWnd: HWND): Boolean;
 var
   InitInfo: TDsOpInitInfo;
   ScopesInitInfo: array of TDsOpScopeInitInfo;
