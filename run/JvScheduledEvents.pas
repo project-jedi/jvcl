@@ -103,6 +103,8 @@ type
     FAppStoragePath: string;
     FAutoSave: Boolean;
     FEvents: TJvEventCollection;
+    FPostedEvents: TList;
+    FEventsPosted: Boolean;
     FOnStartEvent: TNotifyEvent;
     FOnEndEvent: TNotifyEvent;
     FWnd: THandle;
@@ -112,6 +114,8 @@ type
     procedure DoStartEvent(const Event: TJvEventCollectionItem);
     procedure SetAppStorage(Value: TJvCustomAppStorage);
     function GetEvents: TJvEventCollection;
+    procedure PostEvent(Event: TJvEventCollectionItem);
+    procedure RemovePostedEvent(Event: TJvEventCollectionItem);
     procedure InitEvents;
     procedure Loaded; override;
     procedure LoadSingleEvent(Sender: TJvCustomAppStorage;
@@ -161,6 +165,7 @@ type
   protected
     function GetItem(Index: Integer): TJvEventCollectionItem;
     procedure SetItem(Index: Integer; Value: TJvEventCollectionItem);
+    procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvEventCollectionItem;
@@ -324,6 +329,7 @@ var
   I: Integer;
   SysTime: TSystemTime;
   NowStamp: TTimeStamp;
+  SchedEvents: TJvCustomScheduledEvents;
 begin
   NameThread(ThreadName);
   try
@@ -339,9 +345,10 @@ begin
           begin
             GetLocalTime(SysTime);
             NowStamp := DateTimeToTimeStamp(Now);
-            with SysTime do
-              NowStamp.Time := wHour * 3600000 + wMinute * 60000 + wSecond * 1000 + wMilliseconds;
-            TskColl := TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Events;
+            NowStamp.Time := SysTime.wHour * 3600000 + SysTime.wMinute * 60000 +
+                             SysTime.wSecond * 1000 + SysTime.wMilliseconds;
+            SchedEvents := TJvCustomScheduledEvents(FEventComponents[FEventIdx]);
+            TskColl := SchedEvents.Events;
             I := 0;
             while (I < TskColl.Count) and not Terminated do
             begin
@@ -349,8 +356,7 @@ begin
                 (CompareTimeStamps(NowStamp, TskColl[I].NextFire) >= 0) then
               begin
                 TskColl[I].Triggered;
-                PostMessage(TJvCustomScheduledEvents(FEventComponents[FEventIdx]).Handle,
-                  CM_EXECEVENT, LPARAM(TskColl[I]), 0);
+                SchedEvents.PostEvent(TskColl[I]);
               end;
               Inc(I);
             end;
@@ -495,6 +501,7 @@ end;
 constructor TJvCustomScheduledEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FPostedEvents := TList.Create;
   FEvents := TJvEventCollection.Create(Self);
 
   FWnd := AllocateHWndEx(WndProc);
@@ -518,6 +525,7 @@ begin
       DeallocateHWndEx(FWnd);
   end;
   FEvents.Free;
+  FPostedEvents.Free;
   inherited Destroy;
 end;
 
@@ -835,21 +843,81 @@ begin
     end;
 end;
 
-procedure TJvCustomScheduledEvents.CMExecEvent(var Msg: TMessage);
+procedure TJvCustomScheduledEvents.PostEvent(Event: TJvEventCollectionItem);
 begin
-  with Msg do
+  ScheduleThread.Lock;
+  try
+    FPostedEvents.Add(Event);
+    if not FEventsPosted then
+    begin
+      // Post one message for all posted events
+      FEventsPosted := True;
+      PostMessage(Handle, CM_EXECEVENT, 0, 0);
+    end;
+  finally
+    ScheduleThread.Unlock;
+  end;
+end;
+
+procedure TJvCustomScheduledEvents.RemovePostedEvent(Event: TJvEventCollectionItem);
+begin
+  if not (csDestroying in ComponentState) and (GScheduleThread <> nil) then
+  begin
+    ScheduleThread.Lock;
     try
-      DoStartEvent(TJvEventCollectionItem(WParam));
-      TJvEventCollectionItem(WParam).Execute;
-      DoEndEvent(TJvEventCollectionItem(WParam));
-      Result := 1;
-    except
-      if Assigned(ApplicationHandleException) then
-        ApplicationHandleException(Self);
-    end
+      Event.FState := sesEnded;
+      while FPostedEvents.Remove(Event) <> -1 do
+        ;
+    finally
+      ScheduleThread.Unlock;
+    end;
+  end;
+end;
+
+procedure TJvCustomScheduledEvents.CMExecEvent(var Msg: TMessage);
+var
+  Event: TJvEventCollectionItem;
+begin
+  try
+    ScheduleThread.Lock;
+    try
+      while FPostedEvents.Count > 0 do
+      begin
+        Event := FPostedEvents[0];
+        FPostedEvents.Delete(0);
+
+        ScheduleThread.Unlock; // the user code must not be protected by the critical section
+        try
+          try
+            DoStartEvent(Event);
+            Event.Execute;
+            DoEndEvent(Event);
+          except
+            // proceed with the next event as if it were 2 messages
+            if Assigned(ApplicationHandleException) then
+              ApplicationHandleException(Self);
+          end;
+        finally
+          ScheduleThread.Lock;
+        end;
+      end;
+    finally
+      FEventsPosted := False;
+      ScheduleThread.Unlock;
+    end;
+  except
+    if Assigned(ApplicationHandleException) then // don't let exceptions escape
+      ApplicationHandleException(Self);
+  end;
+  Msg.Result := 1;
 end;
 
 //=== { TJvEventCollection } =================================================
+
+constructor TJvEventCollection.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvEventCollectionItem);
+end;
 
 function TJvEventCollection.GetItem(Index: Integer): TJvEventCollectionItem;
 begin
@@ -861,11 +929,6 @@ begin
   inherited Items[Index] := Value;
 end;
 
-constructor TJvEventCollection.Create(AOwner: TPersistent);
-begin
-  inherited Create(AOwner, TJvEventCollectionItem);
-end;
-
 function TJvEventCollection.Add: TJvEventCollectionItem;
 begin
   Result := TJvEventCollectionItem(inherited Add);
@@ -874,6 +937,13 @@ end;
 function TJvEventCollection.Insert(Index: Integer): TJvEventCollectionItem;
 begin
   Result := TJvEventCollectionItem(inherited Insert(Index));
+end;
+
+procedure TJvEventCollection.Notify(Item: TCollectionItem; Action: TCollectionNotification);
+begin
+  inherited Notify(Item, Action);
+  if Action in [cnExtracting, cnDeleting] then
+    (Owner as TJvCustomScheduledEvents).RemovePostedEvent(Item as TJvEventCollectionItem);
 end;
 
 //=== { TJvEventCollectionItem } =============================================
@@ -926,6 +996,7 @@ destructor TJvEventCollectionItem.Destroy;
 begin
   ScheduleThread.Lock;
   try
+    Stop;
     inherited Destroy;
   finally
     ScheduleThread.Unlock;
