@@ -151,7 +151,7 @@ uses
 constructor TJvColorButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TabStop := False;
+  TabStop := True;
   FOptions := [];
   FCustomColors := TStringList.Create;
   Color := clBlack;
