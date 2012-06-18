@@ -1147,7 +1147,7 @@ begin
   if FShowSeconds then
     TimeStr := TimeStr + ':ss';
   if FTwelveHour then
-    TimeStr := TimeStr + ' ampm';
+    TimeStr := TimeStr + ' am/pm';
   TimeStr := FormatDateTime(TimeStr, GetSystemTime);
   if (H >= 10) or FLeadingZero then
     L := 5
@@ -1185,7 +1185,7 @@ begin
     if FullTime or (NewTime.Hour <> FDisplayTime.Hour) then
     begin
       Rect.Right := Rect.Left + TextWidth(SAmPm);
-      DrawText(Canvas, @SAmPm[1], Length(SAmPm), Rect,    // DO NOT CHANGE @SAmPm[1], it is used to get a PChar to the string
+      DrawText(Canvas, PChar(SAmPm), Length(SAmPm), Rect,
         DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
     end;
   end;
