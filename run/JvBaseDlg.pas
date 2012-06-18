@@ -65,13 +65,6 @@ implementation
 uses
   Controls, Forms;
 
-{$IFDEF UNITVERSIONING}
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 { TJvCommonDialog }
 
@@ -97,4 +90,11 @@ begin
 end;
 {$ENDIF ~RTL180_UP}
 
+{$IFDEF UNITVERSIONING}
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 end.
