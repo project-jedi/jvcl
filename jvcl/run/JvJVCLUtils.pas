@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -2926,7 +2926,7 @@ end;
 
 function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 begin
-  if Caption = '' then
+  if Caption <> '' then
     Result := Application.MessageBox(PChar(Msg), PChar(Caption), Flags)
   else
     Result := Application.MessageBox(PChar(Msg), PChar(Application.Title), Flags);
