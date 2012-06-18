@@ -1149,7 +1149,7 @@ begin
   begin
     if NewDrive <> #0 then
     begin
-      if not SetCurrentDir(NewDrive + ':') then
+      if not SetCurrentDir(NewDrive + DriveDelim + PathDelim) then
       begin
         TmpDrive := NewDrive;
         if DoDriveChangeError(NewDrive) and (NewDrive <> TmpDrive) then
