@@ -910,10 +910,13 @@ type
   {$IFDEF UNICODE}
   TSPDeviceInterfaceDetailData = TSPDeviceInterfaceDetailDataW;
   PSPDeviceInterfaceDetailData = PSPDeviceInterfaceDetailDataW;
+  SP_DEVICE_INTERFACE_DETAIL_DATA = SP_DEVICE_INTERFACE_DETAIL_DATA_W;
   {$ELSE}
   TSPDeviceInterfaceDetailData = TSPDeviceInterfaceDetailDataA;
   PSPDeviceInterfaceDetailData = PSPDeviceInterfaceDetailDataA;
+  SP_DEVICE_INTERFACE_DETAIL_DATA = SP_DEVICE_INTERFACE_DETAIL_DATA_A;
   {$ENDIF UNICODE}
+  {$EXTERNALSYM SP_DEVICE_INTERFACE_DETAIL_DATA}
 
 //
 // Backward compatibility--do not use.
