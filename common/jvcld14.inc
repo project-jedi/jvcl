@@ -83,7 +83,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{$DEFINE UNITVERSIONING}
+{.$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
@@ -194,11 +194,3 @@ For further informations have a look at http://www.devart.com }
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED}
   {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 {$ENDIF}
-
-{%missing%}
-{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-
-{%missing%}
-{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
