@@ -31,7 +31,7 @@ unit JvOdacSmartQuery;
 
 interface
 
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+{$IFDEF USE_3RDPARTY_DEVART_ODAC}
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
@@ -39,9 +39,9 @@ uses
   SysUtils, Classes, Forms, Controls, DB,
   OraSmart, Ora, DBaccess,
   JvBaseDBThreadedDataset;
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+{$ENDIF USE_3RDPARTY_DEVART_ODAC}
 
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+{$IFDEF USE_3RDPARTY_DEVART_ODAC}
 type
   TJvOdacThreadedDatasetAllowedContinueRecordFetchOptions =
     class(TJvBaseThreadedDatasetAllowedContinueRecordFetchOptions)
@@ -318,11 +318,11 @@ const
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+{$ENDIF USE_3RDPARTY_DEVART_ODAC}
 
 implementation
 
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+{$IFDEF USE_3RDPARTY_DEVART_ODAC}
 uses Variants, MemData;
 
 //=== { TJvOdacSmartQuery } ==================================================
@@ -1381,6 +1381,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+{$ENDIF USE_3RDPARTY_DEVART_ODAC}
 end.
 

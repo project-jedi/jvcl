@@ -49,15 +49,15 @@
     <Package Name="DOA41D2006" Targets="d11" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D2009" Targets="d12" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D2010" Targets="d14" Condition="USE_3RDPARTY_DOA"/>
-    <Package Name="ODAC60" Targets="d6,c6" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC90" Targets="d9" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC120" Targets="d12" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC140" Targets="d14" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC150" Targets="d15" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
-    <Package Name="ODAC160" Targets="d16" Condition="USE_3RDPARTY_CORELAB_ODAC"/>
+    <Package Name="ODAC60" Targets="d6,c6" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC105" Targets="d11" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC120" Targets="d12" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC140" Targets="d14" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC150" Targets="d15" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC160" Targets="d16" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="UNIDAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
@@ -166,7 +166,7 @@
     <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
-    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
     <File Name="..\..\run\JvDBCombobox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBControls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB,help" Formname="" Condition=""/>
@@ -178,10 +178,10 @@
     <File Name="..\..\run\JvBaseDBPasswordDialog.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBLogonDialog.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBLogonDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
-    <File Name="..\..\run\JvDBLogonDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
     <File Name="..\..\run\JvDBLookupTreeView.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBPasswordDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
-    <File Name="..\..\run\JvDBPasswordDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBPasswordDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
     <File Name="..\..\run\JvDBProgressBar.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBQueryParamsForm.pas" Targets="DB,help" Formname="JvQueryParamsDialog" Condition=""/>
     <File Name="..\..\run\JvDBRadioPanel.pas" Targets="DB,help" Formname="" Condition=""/>
@@ -209,7 +209,7 @@
     <File Name="..\..\run\JvDynControlEngineVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
-    <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_CORELAB_ODAC || HELP"/>
+    <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvADOQuery.pas" Targets="DB,help" Formname="" Condition=""/>
