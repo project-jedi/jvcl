@@ -83,7 +83,7 @@ OLE automation calls (for VCL only). }
 
 { This activates the unit versioning system where each JVCL unit gets a record that defines
 which revision, date and filename the unit has. }
-{$DEFINE UNITVERSIONING}
+{.$DEFINE UNITVERSIONING}
 
 // *********************************************************************
 // Start Definition of Third Party Components
@@ -94,43 +94,43 @@ For further informations have a look at http://www.scalabium.com
 ATTENTION : 
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE
 SMEXPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
-{$DEFINE USE_3RDPARTY_SMEXPORT}
+{.$DEFINE USE_3RDPARTY_SMEXPORT}
 
 { Activates SM-Import Wrapper Components (in DBActions)
 For further informations have a look at http://www.scalabium.com
 ATTENTION :
 BEFORE YOU ACTIVATE THIS OPTION YOU MUST CHANGE THE
 SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
-{$DEFINE USE_3RDPARTY_SMIMPORT}
+{.$DEFINE USE_3RDPARTY_SMIMPORT}
 
 { Activates Support for the DevExpress cxEditor-Controls
 For further informations have a look at http://www.devexpress.com 
 You have to choose between shared and non shared packages}
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED}
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED}
 
 { Activates Support for the DevExpress cxGrid-Controls
 For further informations have a look at http://www.devexpress.com 
 You have to choose between shared and non shared packages}
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED}
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED}
 
 { Activates Support for the DevExpress cxVerticalGrid-Controls
 For further informations have a look at http://www.devexpress.com 
 You have to choose between shared and non shared packages}
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED}
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED}
 
 { Activates Support for the DevExpress cxPivotGrid-Controls
 For further informations have a look at http://www.devexpress.com 
 You have to choose between shared and non shared packages}
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED}
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED}
 
 { Activates Support for the DevExpress cxTreeList-Controls
 For further informations have a look at http://www.devexpress.com 
 You have to choose between shared and non shared packages}
-{$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED}
 {.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED}
 
 
@@ -156,11 +156,11 @@ For further informations have a look at http://www.allroundautomations.com }
 
 { Activates Support for the CoreLabs VCL Oracle Data Access Components
 For further informations have a look at http://www.crlab.com }
-{$DEFINE USE_3RDPARTY_CORELAB_ODAC}
+{.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
 
 { Activates Support for the DevArt VCL Universal Data Access Components
 For further informations have a look at http://www.devart.com }
-{$DEFINE USE_3RDPARTY_DEVART_UNIDAC}
+{.$DEFINE USE_3RDPARTY_DEVART_UNIDAC}
 
 
 
@@ -194,11 +194,3 @@ For further informations have a look at http://www.devart.com }
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED}
   {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
 {$ENDIF}
-
-{%missing%}
-{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-
-{%missing%}
-{ JVCL DEVELOPER INFO: This option is missing, please update the jvclbase.inc file. }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
