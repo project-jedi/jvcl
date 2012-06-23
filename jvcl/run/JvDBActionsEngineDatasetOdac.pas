@@ -36,7 +36,7 @@ uses
   Classes, DB,
   JvDBActionsEngine;
 
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+{$IFDEF USE_3RDPARTY_DEVART_ODAC}
 type
   TJvDatabaseActionOdacDatasetEngine = class(TJvDatabaseActionBaseDatasetEngine)
   public
@@ -47,7 +47,7 @@ type
     function SupportsRefreshRecord(AActionComponent : TComponent): Boolean;
         override;
   end;
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+{$ENDIF USE_3RDPARTY_DEVART_ODAC}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -61,7 +61,7 @@ const
 
 implementation
 
-{$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+{$IFDEF USE_3RDPARTY_DEVART_ODAC}
 
 uses
   DBAccess, SysUtils, Variants;
@@ -127,13 +127,13 @@ begin
   Result := True;
 end;
 
-{$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+{$ENDIF USE_3RDPARTY_DEVART_ODAC}
 
 procedure InitActionEngineList;
 begin
-  {$IFDEF USE_3RDPARTY_CORELAB_ODAC}
+  {$IFDEF USE_3RDPARTY_DEVART_ODAC}
   RegisterDatabaseActionEngine(TJvDatabaseActionOdacDatasetEngine);
-  {$ENDIF USE_3RDPARTY_CORELAB_ODAC}
+  {$ENDIF USE_3RDPARTY_DEVART_ODAC}
 end;
 
 initialization

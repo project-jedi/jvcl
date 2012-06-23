@@ -154,9 +154,9 @@ ICS* PACKAGE FROM AUTOMATIC COMPILE TO MANUAL COMPILE }
 For further informations have a look at http://www.allroundautomations.com }
 {.$DEFINE USE_3RDPARTY_DOA}
 
-{ Activates Support for the CoreLabs VCL Oracle Data Access Components
-For further informations have a look at http://www.crlab.com }
-{.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
+{ Activates Support for the DevArt VCL Oracle Data Access Components
+For further informations have a look at http://www.devart.com }
+{.$DEFINE USE_3RDPARTY_DEVART_ODAC}
 
 { Activates Support for the DevArt VCL Universal Data Access Components
 For further informations have a look at http://www.devart.com }
