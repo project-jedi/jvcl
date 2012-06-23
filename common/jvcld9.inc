@@ -104,24 +104,35 @@ SMIMPORT PACKAGE FROM AUTOMATIC COMPILE NO MANUAL COMPILE }
 {.$DEFINE USE_3RDPARTY_SMIMPORT}
 
 { Activates Support for the DevExpress cxEditor-Controls
-For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+For further informations have a look at http://www.devexpress.com 
+You have to choose between shared and non shared packages}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED}
 
 { Activates Support for the DevExpress cxGrid-Controls
-For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+For further informations have a look at http://www.devexpress.com 
+You have to choose between shared and non shared packages}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED}
 
 { Activates Support for the DevExpress cxVerticalGrid-Controls
-For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+For further informations have a look at http://www.devexpress.com 
+You have to choose between shared and non shared packages}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED}
 
 { Activates Support for the DevExpress cxPivotGrid-Controls
-For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+For further informations have a look at http://www.devexpress.com 
+You have to choose between shared and non shared packages}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED}
 
 { Activates Support for the DevExpress cxTreeList-Controls
-For further informations have a look at http://www.devexpress.com }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+For further informations have a look at http://www.devexpress.com 
+You have to choose between shared and non shared packages}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED}
+{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED}
+
 
 { Activates the Internet Direct (Indy)-Components
 For further informations have a look at http://www.indyproject.org }
@@ -150,3 +161,36 @@ For further informations have a look at http://www.crlab.com }
 { Activates Support for the DevArt VCL Universal Data Access Components
 For further informations have a look at http://www.devart.com }
 {.$DEFINE USE_3RDPARTY_DEVART_UNIDAC}
+
+
+
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+{$ENDIF}
+{$IFDEF USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED}
+  {$DEFINE USE_3RDPARTY_DEVEXPRESS_CXTREELIST}
+{$ENDIF}
