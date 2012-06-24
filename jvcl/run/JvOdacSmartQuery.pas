@@ -551,9 +551,11 @@ begin
 end;
 
 function TJvOdacSmartQuery.IsThreadAllowed: Boolean;
+var ThreadedDatasetInterface : IJvThreadedDatasetInterface;
 begin
-  if Assigned(MasterSource) and Assigned(MasterSource.Dataset) and (MasterSource.Dataset is TJvOdacSmartQuery) then
-    Result := not TJvOdacSmartQuery(MasterSource.Dataset).ThreadHandler.ThreadIsActive
+  if Assigned(MasterSource) and Assigned(MasterSource.Dataset)
+     and Supports(MasterSource.DataSet, IJvThreadedDatasetInterface, ThreadedDatasetInterface) then
+    Result := not ThreadedDatasetInterface.ThreadIsActive
   else
     Result := True;
 end;
@@ -974,9 +976,11 @@ begin
 end;
 
 function TJvOdacOraQuery.IsThreadAllowed: Boolean;
+var ThreadedDatasetInterface : IJvThreadedDatasetInterface;
 begin
-  if Assigned(MasterSource) and Assigned(MasterSource.Dataset) and (MasterSource.Dataset is TJvOdacSmartQuery) then
-    Result := not TJvOdacSmartQuery(MasterSource.Dataset).ThreadHandler.ThreadIsActive
+  if Assigned(MasterSource) and Assigned(MasterSource.Dataset)
+     and Supports(MasterSource.DataSet, IJvThreadedDatasetInterface, ThreadedDatasetInterface) then
+    Result := not ThreadedDatasetInterface.ThreadIsActive
   else
     Result := True;
 end;
@@ -1290,9 +1294,11 @@ begin
 end;
 
 function TJvOdacOraTable.IsThreadAllowed: Boolean;
+var ThreadedDatasetInterface : IJvThreadedDatasetInterface;
 begin
-  if Assigned(MasterSource) and Assigned(MasterSource.Dataset) and (MasterSource.Dataset is TJvOdacSmartQuery) then
-    Result := not TJvOdacSmartQuery(MasterSource.Dataset).ThreadHandler.ThreadIsActive
+  if Assigned(MasterSource) and Assigned(MasterSource.Dataset)
+     and Supports(MasterSource.DataSet, IJvThreadedDatasetInterface, ThreadedDatasetInterface) then
+    Result := not ThreadedDatasetInterface.ThreadIsActive
   else
     Result := True;
 end;
