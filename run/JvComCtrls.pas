@@ -545,10 +545,14 @@ type
     property OnCheckedChange: TNotifyEvent read FOnCheckedChange write FOnCheckedChange;
   end;
 
+  TJvNodeSelectCause = (nscUnknown = TVC_UNKNOWN, nscMouse = TVC_BYMOUSE, nscKeyboard = TVC_BYKEYBOARD);
+
   TPageChangedEvent = procedure(Sender: TObject; Item: TTreeNode; Page: TTabSheet) of object;
   TJvTreeViewComparePageEvent = procedure(Sender: TObject; Page: TTabSheet;
     Node: TTreeNode; var Matches: Boolean) of object;
   TJvTreeViewNodeCheckedChange = procedure(Sender: TObject; Node: TJvTreeNode) of object;
+  TJvTreeViewSelectionChangingEvent = procedure(Sender: TObject; OldNode, NewNode: TJvTreeNode;
+    Cause: TJvNodeSelectCause; var Allow: Boolean) of object;
 
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
@@ -560,6 +564,7 @@ type
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnEditCancelled: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
+    FOnSelectionChanging: TJvTreeViewSelectionChangingEvent;
     FCheckBoxes: Boolean;
     FOnHScroll: TNotifyEvent;
     FOnVScroll: TNotifyEvent;
@@ -573,6 +578,7 @@ type
     FOnNodeCheckedChange: TJvTreeViewNodeCheckedChange;
     FCheckEventsDisabled: Boolean;
     FRecreateCheckedState: array of Boolean;
+    FForceClickSelect: Boolean;
 
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -619,6 +625,7 @@ type
     procedure DoExit; override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     procedure DoSelectionChange; dynamic;
+    function DoSelectionChanging(OldNode, NewNode: TJvTreeNode; Cause: TJvNodeSelectCause): Boolean; virtual;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     procedure Edit(const Item: TTVItem); override;
@@ -670,6 +677,7 @@ type
     property ItemHeight: Integer read GetItemHeight write SetItemHeight default 16;
     property Menu: TMenu read FMenu write SetMenu;
     property MenuDblClick: Boolean read FMenuDblClick write FMenuDblClick default False;
+    property ForceClickSelect: Boolean read FForceClickSelect write FForceClickSelect default True;
     property HintColor;
     property ItemIndex: Integer read GetItemIndex write SetItemIndex stored False;
     property Checkboxes: Boolean read FCheckBoxes write SetCheckBoxes default False;
@@ -687,7 +695,7 @@ type
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
-
+    property OnSelectionChanging: TJvTreeViewSelectionChangingEvent read FOnSelectionChanging write FOnSelectionChanging;
     property OnNodeCheckedChange: TJvTreeViewNodeCheckedChange read FOnNodeCheckedChange write FOnNodeCheckedChange;
   end;
 
@@ -2675,6 +2683,7 @@ begin
   inherited Create(AOwner);
   FCheckBoxes := False;
   MultiSelectStyle := JvDefaultTreeViewMultiSelectStyle;
+  FForceClickSelect := True; // to keep the backward compatibility as default
 
   // Since IsCustomDrawn method is not virtual we have to assign ancestor's
   // OnCustomDrawItem event to enable custom drawing
@@ -2779,6 +2788,13 @@ procedure TJvTreeView.DoSelectionChange;
 begin
   if Assigned(FOnSelectionChange) then
     FOnSelectionChange(Self);
+end;
+
+function TJvTreeView.DoSelectionChanging(OldNode, NewNode: TJvTreeNode; Cause: TJvNodeSelectCause): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnSelectionChanging) then
+    FOnSelectionChanging(Self, OldNode, NewNode, Cause, Result);
 end;
 
 procedure TJvTreeView.DragOver(Source: TObject; X, Y: Integer;
@@ -3085,7 +3101,7 @@ begin
       NM_CLICK, NM_RCLICK:
         begin
           Node := GetNodeAt(Point.X, Point.Y);
-          if Assigned(Node) and not MultiSelect then
+          if Assigned(Node) and ForceClickSelect and not MultiSelect then
             Selected := Node;
 
           if (Node <> nil) and (Msg.NMHdr.code = NM_RCLICK) then
@@ -3116,6 +3132,10 @@ begin
               end;
             end;
         end;
+      TVN_SELCHANGINGA, TVN_SELCHANGINGW:
+        Msg.Result := Ord(not DoSelectionChanging(Items.GetNode(PNMTreeView(Msg.NMHdr).itemOld.hItem) as TJvTreeNode,
+                                                  Items.GetNode(PNMTreeView(Msg.NMHdr).itemNew.hItem) as TJvTreeNode,
+                                                  TJvNodeSelectCause(PNMTreeView(Msg.NMHdr).action)));
     end;
   end;
 end;
