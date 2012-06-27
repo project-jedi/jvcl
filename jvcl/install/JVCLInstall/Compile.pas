@@ -182,7 +182,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JclSimpleXML, JclStreams,
+  JclSimpleXML, JclStreams, JclSysUtils,
   CmdLineUtils, JvConsts, Utils, Core, Dcc32FileAgePatch;
 
 resourcestring
@@ -1275,6 +1275,7 @@ var
   AConfig: TTargetConfig;
   AConfigElem: TJclSimpleXMLElem;
   CompiledConfigIndex: Integer;
+  LogContent: TStringList;
 begin
   Result := True;
   FAborted := False;
@@ -1314,6 +1315,11 @@ begin
 
     // Delete all units from the JVCL source directory where they shouldn't be
     ClearSourceDirectory;
+
+    // Remove previous log files if asked to
+    for I := 0 to Data.Targets.Count - 1 do
+      if CmdOptions.DeletePreviousLogFiles then
+        SysUtils.DeleteFile(Data.TargetConfig[I].LogFileName);
 
     // compile all selected targets
     Index := 0;
@@ -1355,7 +1361,17 @@ begin
           AConfigElem.Properties.Add('Enabled', pkVCL in AConfig.InstallMode);
           AConfigElem.Properties.Add('InstallAttempted', InstallAttempted[CompiledConfigIndex]);
           AConfigElem.Properties.Add('InstallSuccess', AConfig.InstallSuccess);
-          AConfigElem.Properties.Add('LogFileName', AConfig.LogFileName);
+          AConfigElem.Properties.Add('LogFileName', Iff(FileExists(AConfig.LogFileName), AConfig.LogFileName, ''));
+          if CmdOptions.IncludeLogFilesInXML and FileExists(AConfig.LogFileName) then
+          begin
+            LogContent := TStringList.Create;
+            try
+              LogContent.LoadFromFile(AConfig.LogFileName{$IFDEF UNICODE}, TEncoding.UTF8{$ENDIF UNICODE});
+              AConfigElem.Items.Add('LogFile').Items.AddCData('', {$IFNDEF UNICODE}UTF8Decode{$ENDIF UNICODE}(LogContent.Text));
+            finally
+              LogContent.Free;
+            end;
+          end;
 
           if AConfig = TargetConfigs[CompiledConfigIndex] then
             Inc(CompiledConfigIndex);
