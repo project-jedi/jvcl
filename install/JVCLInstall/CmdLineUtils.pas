@@ -48,7 +48,9 @@ type
     FAutoCloseAfterSuccess: Boolean;
     FAutoCloseAfterError: Boolean;
     FContinueOnError: Boolean;
+    FDeletePreviousLogFiles: Boolean;
     FXMLResultFileName: string;
+    FIncludeLogFilesInXML: Boolean;
     FRebuildPackages: Boolean;
     FRegistryKeyDelphi: string;
     FRegistryKeyBCB: string;
@@ -78,7 +80,9 @@ type
     property AutoCloseAfterSuccess: Boolean read FAutoCloseAfterSuccess write FAutoCloseAfterSuccess;
     property AutoCloseAfterError: Boolean read FAutoCloseAfterError write FAutoCloseAfterError;
     property ContinueOnError: Boolean read FContinueOnError write FContinueOnError;
-    property XMLResultFileName: string read FXMLResultFileName write FXMLResultFileName; 
+    property DeletePreviousLogFiles: Boolean read FDeletePreviousLogFiles write FDeletePreviousLogFiles;
+    property XMLResultFileName: string read FXMLResultFileName write FXMLResultFileName;
+    property IncludeLogFilesInXML: Boolean read FIncludeLogFilesInXML write FIncludeLogFilesInXML;
     property RebuildPackages: Boolean read FRebuildPackages write FRebuildPackages;
     property RegistryKeyDelphi: string read FRegistryKeyDelphi write FRegistryKeyDelphi;
     property RegistryKeyBCB: string read FRegistryKeyBCB write FRegistryKeyBCB;
@@ -111,7 +115,9 @@ begin
   AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
   AddBool('--autoclose-error', 'Automatically close the installer after a failed installation', FAutoCloseAfterError);
   AddBool('--continue-on-error', 'Automatically continue compilation of other targets should the current one fail', FContinueOnError);
+  AddBool('--delete-previous-log-files', 'Delete log files from previous installations before starting this one', FDeletePreviousLogFiles);
   AddString('--XMLResult=', 'Write the compilation status in the given XML file', FXMLResultFileName);
+  AddBool('--include-log-files-in-XML', 'Include the log files content in the result XML', FIncludeLogFilesInXML);
   AddSpace;
   AddString('-rDelphi=', 'Sets the Registry sub-key for the Delphi IDEs.', FRegistryKeyDelphi);
   AddString('-rBCB=', 'Sets the Registry sub-key for the BCB IDEs.', FRegistryKeyBCB);
