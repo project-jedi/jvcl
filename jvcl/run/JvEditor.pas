@@ -391,6 +391,9 @@ implementation
 
 uses
   SysUtils, Math, Graphics, Clipbrd,
+  {$IFDEF UNICODE}
+  Character,
+  {$ENDIF UNICODE}
   JvUnicodeCanvas, JvJCLUtils, JvConsts, JvResources;
 
 type
@@ -946,7 +949,11 @@ var
 begin
   Key := Char(Value);
   WasSelected := (FSelection.IsSelected) and (not PersistentBlocks);
+  {$IFDEF UNICODE}
+  if (Key >= #32) and ((Key <= #$FF) or not TCharacter.IsControl(Char(Value))) then
+  {$ELSE}
   if CharInSet(Key, [#32..#255]) then
+  {$ENDIF UNICODE}
   begin
     if not HasChar(Key, JvEditorCompletionChars) then
       Completion.DoKeyPress(Key);
