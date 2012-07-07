@@ -2342,8 +2342,11 @@ end;
 
 procedure TJvDynControlJVCLComboBox.ControlSetValue(Value: Variant);
 begin
-  if (Style = csDropDownList) and VarIsInt(Value) then
-    ItemIndex := Items.IndexOf(Value)
+  if (Style = csDropDownList) then
+    if VarIsInt(Value) then
+      ItemIndex := VarToInt(Value)
+    else
+      ItemIndex := Items.IndexOf(VarToStr(Value))
   else
     Text := VarToStr(Value);
 end;
