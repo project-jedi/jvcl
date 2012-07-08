@@ -4,10 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, DBAccess, Ora, xOdacSession, StdCtrls, Grids, DBGrids, ExtCtrls,
+  Dialogs, DB, DBAccess, Ora, StdCtrls, Grids, DBGrids, ExtCtrls,
   JvDBLogonDialogOdac, JvBaseDlg, JvBaseDBDialog, JvBaseDBPasswordDialog,
   JvDBPasswordDialogOdac, MemDS, OraSmart, JvOdacSmartQuery, JvDBActions,
-  ActnList, JvActionsEngine, Buttons;
+  ActnList, JvActionsEngine, Buttons, JvDBLogonDialogBaseDevart,
+  JvDBActionsEngineDatasetDevart,
+  JvDynControlEngineJVCL, JvComponentBase, JvAppStorage, JvAppRegistryStorage;
 
 type
   TForm1 = class(TForm)
@@ -60,6 +62,8 @@ type
     JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction;
     JvDatabaseSimpleAction2: TJvDatabaseSimpleAction;
     JvDatabaseEditAction2: TJvDatabaseEditAction;
+    SQLMemo: TMemo;
+    JvAppRegistryStorage1: TJvAppRegistryStorage;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -91,6 +95,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
+  JvOdacSmartQuery1.SQL.Text := SQLMemo.Text;
   JvOdacSmartQuery1.Open;
 end;
 

@@ -20,9 +20,6 @@ object Form1: TForm1
     Height = 41
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = 235
-    ExplicitTop = 165
-    ExplicitWidth = 185
     object Button1: TButton
       Left = 10
       Top = 10
@@ -71,10 +68,10 @@ object Form1: TForm1
   end
   object DBGrid1: TDBGrid
     Left = 0
-    Top = 41
+    Top = 170
     Width = 918
-    Height = 469
-    Align = alClient
+    Height = 340
+    Align = alBottom
     DataSource = DataSource1
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
@@ -97,8 +94,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseFirstAction1
       Caption = 'First Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 0
     end
     object BitBtn2: TBitBtn
@@ -108,8 +103,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabasePriorAction1
       Caption = 'Prior Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 1
     end
     object BitBtn3: TBitBtn
@@ -119,8 +112,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseLastAction1
       Caption = 'Last Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 2
     end
     object BitBtn4: TBitBtn
@@ -130,8 +121,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseNextAction1
       Caption = 'Next Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 3
     end
     object BitBtn5: TBitBtn
@@ -141,8 +130,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabasePositionAction1
       Caption = '0/0'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 4
     end
     object BitBtn6: TBitBtn
@@ -152,8 +139,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseSingleRecordWindowAction1
       Caption = 'Single Record Window'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 5
     end
     object BitBtn7: TBitBtn
@@ -163,8 +148,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseOpenAction1
       Caption = 'Open'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 6
     end
     object BitBtn8: TBitBtn
@@ -174,8 +157,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseCloseAction1
       Caption = 'Close'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 7
     end
     object BitBtn9: TBitBtn
@@ -185,8 +166,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseModifyAllAction1
       Caption = 'Modify All'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 8
     end
     object BitBtn10: TBitBtn
@@ -196,8 +175,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseShowSQLStatementAction1
       Caption = 'Show SQL'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 9
     end
     object BitBtn11: TBitBtn
@@ -207,8 +184,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseEditAction1
       Caption = 'Edit Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 10
     end
     object BitBtn12: TBitBtn
@@ -218,8 +193,6 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseCopyAction1
       Caption = 'Copy Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 11
     end
     object BitBtn13: TBitBtn
@@ -229,17 +202,28 @@ object Form1: TForm1
       Height = 25
       Action = JvDatabaseInsertAction1
       Caption = 'Insert Record'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 12
     end
   end
+  object SQLMemo: TMemo
+    Left = 0
+    Top = 41
+    Width = 918
+    Height = 129
+    Align = alClient
+    Lines.Strings = (
+      'Select * from user_objects')
+    TabOrder = 3
+    ExplicitHeight = 250
+  end
   object OraSession1: TOraSession
+    DataTypeMap = <>
     ConnectDialog = JvDBOdacConnectDialog1
     Left = 205
     Top = 120
   end
   object JvOdacSmartQuery1: TJvOdacSmartQuery
+    DataTypeMap = <>
     Session = OraSession1
     SQL.Strings = (
       'SELECT * FROM V$SESSION')
@@ -261,7 +245,11 @@ object Form1: TForm1
     Top = 250
   end
   object JvDBOdacConnectDialog1: TJvDBOdacConnectDialog
+    AppStorage = JvAppRegistryStorage1
+    AppStoragePath = 'Logon'
     Options.AllowNullPasswords = True
+    Options.ShowAlias = True
+    Options.ShowColors = True
     Options.ShowOracleHome = True
     Left = 120
     Top = 200
@@ -408,5 +396,13 @@ object Form1: TForm1
       Caption = 'Edit Record'
       DataComponent = DataSource1
     end
+  end
+  object JvAppRegistryStorage1: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\JVCL\Examples\JVDBOdacComponents'
+    SubStorages = <>
+    Left = 235
+    Top = 340
   end
 end
