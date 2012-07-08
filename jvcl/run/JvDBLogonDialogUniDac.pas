@@ -299,6 +299,7 @@ procedure TJvDBUniDacLogonDialog.CreateAdditionalConnectDialogControls(AOwner: T
 var
   DynControlComboBox:IJvDynControlComboBox;
   UniProviderNames: TStringList;
+  IDynControl: IJvDynControl;
 begin
   inherited CreateAdditionalConnectDialogControls (AOwner, AParentControl);
   CreateAdditionalConnectDialogEditPanel(AOwner, AParentControl, 'Provider', RsProvider, jctComboBox, ProviderPanel, ProviderEdit, IProviderEditData, ProviderOnEditChange);
@@ -318,8 +319,20 @@ begin
 
   CreateAdditionalConnectDialogEditPanel(AOwner, AParentControl, 'Server', RsServer, jctComboBox, ServerPanel, ServerEdit, IServerEditData, DefaultOnEditChange);
   Supports(ServerEdit, IJvDynControlItems, IServerEditItems);
+  if Supports(ServerEdit, IJvDynControl, IDynControl) then
+  begin
+    IDynControl.ControlSetOnClick(DefaultOnEditChange);
+    IDynControl.ControlSetOnExit(DefaultOnEditChange); // Fix for the VCL/JVCL Controls which did not react on OnChange and OnClick
+  end;
+
   CreateAdditionalConnectDialogEditPanel(AOwner, AParentControl, 'OracleHome', RsOracleHome, jctComboBox, OracleHomePanel, OracleHomeEdit, IOracleHomeEditData, DefaultOnEditChange);
   Supports(OracleHomeEdit, IJvDynControlItems, IOracleHomeEditItems);
+  if Supports(OracleHomeEdit, IJvDynControl, IDynControl) then
+  begin
+    IDynControl.ControlSetOnClick(DefaultOnEditChange);
+    IDynControl.ControlSetOnExit(DefaultOnEditChange); // Fix for the VCL/JVCL Controls which did not react on OnChange and OnClick
+  end;
+
   CreateAdditionalConnectDialogEditPanel(AOwner, AParentControl, 'Port', RsPort, jctEdit, PortPanel, PortEdit, IPortEditData, DefaultOnEditChange);
 
   DirectCheckBox := DynControlEngine.CreateCheckboxControl(AOwner, AParentControl, 'DirectCheckBox', RsDirectConnect);

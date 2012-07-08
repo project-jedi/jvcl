@@ -881,6 +881,11 @@ begin
     IDynControlEdit.ControlSetPasswordChar('*');
 
   CreateAdditionalConnectDialogEditPanel(AForm, EditConnectionPanel, 'Database', RsDatabase, jctComboBox, DatabasePanel, DatabaseComboBox, IDatabaseComboBoxData, DefaultOnEditChange);
+  if Supports(DatabaseComboBox, IJvDynControl, IDynControl) then
+  begin
+    IDynControl.ControlSetOnClick(DefaultOnEditChange);
+    IDynControl.ControlSetOnExit(DefaultOnEditChange); // Fix for the VCL/JVCL Controls which did not react on OnChange and OnClick
+  end;
 
   CreateAdditionalConnectDialogEditPanel(AForm, EditConnectionPanel, 'Alias', RsAlias, jctEdit, AliasPanel, AliasEdit, IAliasEditData, DefaultOnEditChange);
 
@@ -902,6 +907,11 @@ begin
 
   CreateAdditionalConnectDialogEditPanel(AForm, LeftBottomPanel, 'ConnectGroup', RsConnectGroup, jctComboBox, ConnectGroupPanel, ConnectGroupComboBox, IConnectGroupComboBoxData, DefaultOnEditChange);
   ConnectGroupPanel.Visible := Options.ShowConnectGroup;
+  if Supports(ConnectGroupComboBox, IJvDynControl, IDynControl) then
+  begin
+    IDynControl.ControlSetOnClick(DefaultOnEditChange);
+    IDynControl.ControlSetOnExit(DefaultOnEditChange); // Fix for the VCL/JVCL Controls which did not react on OnChange and OnClick
+  end;
 
   ColorBoxPanel := DynControlEngine.CreatePanelControl(AForm, LeftBottomPanel, 'ColorBoxPanel', '', alTop);
   AlignControlTop(ColorBoxPanel, ConnectGroupPanel);
@@ -2115,7 +2125,7 @@ end;
 procedure TJvBaseDBOracleLogonDialog.SetEditPanelsTabOrder;
 begin
   inherited SetEditPanelsTabOrder;
-  ConnectAsPanel.TabOrder := 2;
+  ConnectAsPanel.TabOrder := 3;
 end;
 
 procedure TJvBaseDBOracleLogonDialog.SetEditPanelsVisibility;
