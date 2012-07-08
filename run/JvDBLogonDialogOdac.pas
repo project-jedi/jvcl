@@ -38,7 +38,7 @@ uses
   JvAppStorage, JvBaseDBLogonDialog,
   JvDynControlEngine, JvBaseDBPasswordDialog,
   {$ENDIF USE_3RDPARTY_DEVART_ODAC}
-  JvDynControlEngineIntf;
+  JvDynControlEngineIntf, JvDBLogonDialogBaseDevart;
 
 {$IFDEF USE_3RDPARTY_DEVART_ODAC}
 type
@@ -49,8 +49,7 @@ type
     FOracleHome: string;
   public
     constructor Create(AOwner: TComponent); override;
-    function ConnectString(ShowShortCut, ShowConnectGroup: Boolean): string;
-        override;
+    function ConnectString: string; override;
   published
     property Net: Boolean read FNet write FNet default false;
     property OracleHome: string read FOracleHome write FOracleHome;
@@ -59,6 +58,9 @@ type
   TJvOdacOracleConnectionList = class(TJvBaseOracleConnectionList)
   protected
     function CreateObject: TPersistent; override;
+    function GetConnection(I: Longint): TJvOdacOracleConnectionInfo;
+  public
+    property Connection[I: Longint]: TJvOdacOracleConnectionInfo read GetConnection;
   end;
 
   TJvDBOdacLogonDialogOptions = class(TJvBaseDBOracleLogonDialogOptions)
@@ -85,28 +87,29 @@ type
     NetOptionCheckBox: TWinControl;
     OracleHomeEdit: TWinControl;
     OracleHomePanel: TWinControl;
+    function GetConnectionList: TJvOdacOracleConnectionList;
     function GetOptions: TJvDBOdacLogonDialogOptions;
     function GetOraSession: TOraSession;
-    function GetSession: TCustomDAConnection;
     procedure SetOptions(const Value: TJvDBOdacLogonDialogOptions);
-    procedure SetSession(const Value: TCustomDAConnection); reintroduce;
   protected
-    procedure CreateAdditionalConnectDialogControls(AOwner: TComponent;
-      AParentControl: TWinControl); override;
+    procedure CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl: TWinControl); override;
     procedure CreateFormControls(AForm: TForm); override;
     function CreatePasswordChangeDialog: TJvBaseDBPasswordDialog; override;
-    procedure FillDatabaseComboBoxDefaultValues(Items: TStrings); override;
+    procedure FillAllComoboBoxes; override;
+    procedure FillDatabaseComboBoxValues(Items: TStrings); override;
+    procedure FillOracleHomeComboBox;
     { Retrieve the class that holds the storage options and format settings. }
-    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
-        override;
+    class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; override;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass; override;
     procedure HandleExpiredPassword(const ErrorMessage: string);
-    procedure ResizeFormControls; override;
+    procedure SetEditPanelsVisibility; override;
+    procedure SetSession(const Value: TComponent); override;
     procedure TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo); override;
     procedure TransferConnectionInfoToDialog(ConnectionInfo: TJvBaseConnectionInfo); override;
     procedure TransferSessionDataFromConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo); override;
     procedure TransferSessionDataToConnectionInfo(ConnectionInfo: TJvBaseConnectionInfo); override;
+    property ConnectionList: TJvOdacOracleConnectionList read GetConnectionList;
     property OraSession: TOraSession read GetOraSession;
   public
     procedure ClearControlInterfaceObjects; override;
@@ -114,70 +117,22 @@ type
     function SessionIsConnected: Boolean; override;
   published
     property Options: TJvDBOdacLogonDialogOptions read GetOptions write SetOptions;
-    property Session: TCustomDAConnection read GetSession write SetSession;
   end;
 
-  TJvDBOdacConnectDialog = class(TCustomConnectDialog)
+  TJvDBOdacConnectDialog = class(TJvDBBaseDevartConnectDialog)
   private
-    FLogonDialogInternal: TJvDBOdacLogonDialog;
     FOnFillDatabaseList: TJvLogonDialogFillListEvent;
-    function GetAfterTransferSessionDataToConnectionInfo:
-      TJvLogonDialogConnectionInfoEvent;
-    function GetAppStorage: TJvCustomAppStorage;
-    function GetAppStoragePath: string;
-    function GetBeforeTransferConnectionInfoToSessionData:
-      TJvLogonDialogConnectionInfoEvent;
-    function GetConnectedDialogConnectionInfo: TJvBaseConnectionInfo;
-    function GetDynControlEngine: TJvDynControlEngine;
-    function GetOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
-    function GetOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
-    function GetOnFillShortcutList: TJvLogonDialogFillListEvent;
-    function GetOnSessionConnect: TJvLogonDialogBaseSessionEvent;
-    function GetOptions: TJvDBOdacLogonDialogOptions;
-    procedure SetAfterTransferSessionDataToConnectionInfo(const Value: TJvLogonDialogConnectionInfoEvent);
-    procedure SetBeforeTransferConnectionInfoToSessionData(const Value: TJvLogonDialogConnectionInfoEvent);
-    procedure SetDynControlEngine(const Value: TJvDynControlEngine);
-    procedure SetOnDecryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
-    procedure SetOnEncryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
-    procedure SetOnFillShortcutList(const Value: TJvLogonDialogFillListEvent);
-    procedure SetOnSessionConnect(const Value: TJvLogonDialogBaseSessionEvent);
-    procedure SetOptions(const Value: TJvDBOdacLogonDialogOptions);
+    function GetLogonDialogInternal: TJvDBOdacLogonDialog; reintroduce; virtual;
   protected
-    procedure SetAppStorage(Value: TJvCustomAppStorage);
-    procedure SetAppStoragePath(Value: string); virtual;
-    property LogonDialogInternal: TJvDBOdacLogonDialog read FLogonDialogInternal write FLogonDialogInternal;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure ConnectSession;
-    function Execute: Boolean; override;
-    function ExecuteOnSession(Session: TCustomDAConnection): Boolean;
-    property ConnectedDialogConnectionInfo: TJvBaseConnectionInfo read
-        GetConnectedDialogConnectionInfo;
+    function CreateLogonDialogInternal: TJvBaseDBLogonDialog; override;
+    function GetOptions: TJvDBOdacLogonDialogOptions; reintroduce; virtual;
+    procedure SetOptions(const Value: TJvDBOdacLogonDialogOptions); reintroduce; virtual;
+    property LogonDialogInternal: TJvDBOdacLogonDialog read GetLogonDialogInternal;
   published
     procedure InternalFillDatabaseList(List: TStringList);
-    //1 This events gives you the possibility to modify the connection data after receiving the data from the current session
-    property AfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent read
-      GetAfterTransferSessionDataToConnectionInfo write SetAfterTransferSessionDataToConnectionInfo;
-    property AppStorage: TJvCustomAppStorage read GetAppStorage write SetAppStorage;
-    property AppStoragePath: string read GetAppStoragePath write SetAppStoragePath;
-    //1 This Event gives you the possibility to modify the connection data before it is transfered to the current session
-    property BeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent read
-      GetBeforeTransferConnectionInfoToSessionData write SetBeforeTransferConnectionInfoToSessionData;
-    property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write
-      SetDynControlEngine;
     property Options: TJvDBOdacLogonDialogOptions read GetOptions write SetOptions;
-    property OnDecryptPassword: TJvLogonDialogEncryptDecryptEvent read
-      GetOnDecryptPassword write SetOnDecryptPassword;
-    property OnEncryptPassword: TJvLogonDialogEncryptDecryptEvent read
-      GetOnEncryptPassword write SetOnEncryptPassword;
     //1 Event for filling the database list
-    property OnFillDatabaseList: TJvLogonDialogFillListEvent read
-        FOnFillDatabaseList write FOnFillDatabaseList;
-    //1 Event for customizing the shortcut list
-    property OnFillShortcutList: TJvLogonDialogFillListEvent read GetOnFillShortcutList write SetOnFillShortcutList;
-    property OnSessionConnect: TJvLogonDialogBaseSessionEvent read
-        GetOnSessionConnect write SetOnSessionConnect;
+    property OnFillDatabaseList: TJvLogonDialogFillListEvent read FOnFillDatabaseList write FOnFillDatabaseList;
   end;
 {$ENDIF USE_3RDPARTY_DEVART_ODAC}
 
@@ -209,99 +164,20 @@ begin
   FShowOracleHome := False;
 end;
 
-//=== { TJvDBOdacConnectDialog } =============================================
-
-constructor TJvDBOdacConnectDialog.Create(AOwner: TComponent);
+function TJvDBOdacConnectDialog.CreateLogonDialogInternal: TJvBaseDBLogonDialog;
 begin
-  inherited Create(AOwner);
-  FLogonDialogInternal := TJvDBOdacLogonDialog.Create(Self);
-  FLogonDialogInternal.OnFillDatabaseList := InternalFillDatabaseList;
+  Result := TJvDBOdacLogonDialog.Create(Self);
+  TJvDBOdacLogonDialog(Result).OnFillDatabaseList := InternalFillDatabaseList;
 end;
 
-destructor TJvDBOdacConnectDialog.Destroy;
+function TJvDBOdacConnectDialog.GetLogonDialogInternal: TJvDBOdacLogonDialog;
 begin
-  FreeAndNil(FLogonDialogInternal);
-  inherited Destroy;
-end;
-
-procedure TJvDBOdacConnectDialog.ConnectSession;
-begin
-  if Assigned(FLogonDialogInternal) then
-    FLogonDialogInternal.ConnectSession;
-end;
-
-function TJvDBOdacConnectDialog.Execute: Boolean;
-begin
-  Result := ExecuteOnSession(Connection);
-end;
-
-function TJvDBOdacConnectDialog.ExecuteOnSession(Session: TCustomDAConnection):
-    Boolean;
-begin
-  if Assigned(FLogonDialogInternal) then
-  begin
-    LogonDialogInternal.Session := Session;
-    Result := LogonDialogInternal.Execute;
-  end
-  else
-    Result := False;
-end;
-
-function TJvDBOdacConnectDialog.GetAfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent;
-begin
-  Result := LogonDialogInternal.AfterTransferSessionDataToConnectionInfo;
-end;
-
-function TJvDBOdacConnectDialog.GetAppStorage: TJvCustomAppStorage;
-begin
-  Result := LogonDialogInternal.AppStorage;
-end;
-
-function TJvDBOdacConnectDialog.GetAppStoragePath: string;
-begin
-  Result := LogonDialogInternal.AppStoragePath;
-end;
-
-function TJvDBOdacConnectDialog.GetBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
-begin
-  Result := LogonDialogInternal.BeforeTransferConnectionInfoToSessionData;
-end;
-
-function TJvDBOdacConnectDialog.GetConnectedDialogConnectionInfo:
-    TJvBaseConnectionInfo;
-begin
-  Result := LogonDialogInternal.ConnectedDialogConnectionInfo;
-end;
-
-function TJvDBOdacConnectDialog.GetDynControlEngine: TJvDynControlEngine;
-begin
-  Result := LogonDialogInternal.DynControlEngine
-end;
-
-function TJvDBOdacConnectDialog.GetOnDecryptPassword: TJvLogonDialogEncryptDecryptEvent;
-begin
-  Result := LogonDialogInternal.OnDecryptPassword;
-end;
-
-function TJvDBOdacConnectDialog.GetOnEncryptPassword: TJvLogonDialogEncryptDecryptEvent;
-begin
-  Result := LogonDialogInternal.OnEncryptPassword;
-end;
-
-function TJvDBOdacConnectDialog.GetOnFillShortcutList: TJvLogonDialogFillListEvent;
-begin
-  Result := LogonDialogInternal.OnFillShortcutList;
-end;
-
-function TJvDBOdacConnectDialog.GetOnSessionConnect:
-    TJvLogonDialogBaseSessionEvent;
-begin
-  Result := LogonDialogInternal.OnSessionConnect;
+  Result := TJvDBOdacLogonDialog(inherited GetLogonDialogInternal);
 end;
 
 function TJvDBOdacConnectDialog.GetOptions: TJvDBOdacLogonDialogOptions;
 begin
-  Result := LogonDialogInternal.Options
+  Result := LogonDialogInternal.Options;
 end;
 
 procedure TJvDBOdacConnectDialog.InternalFillDatabaseList(List: TStringList);
@@ -309,54 +185,6 @@ begin
   GetServerList(List);
   if Assigned(OnFillDatabaseList) then
     OnFillDatabaseList(List);
-end;
-
-procedure TJvDBOdacConnectDialog.SetAfterTransferSessionDataToConnectionInfo(
-  const Value: TJvLogonDialogConnectionInfoEvent);
-begin
-  LogonDialogInternal.AfterTransferSessionDataToConnectionInfo := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetAppStorage(Value: TJvCustomAppStorage);
-begin
-  LogonDialogInternal.AppStorage := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetAppStoragePath(Value: string);
-begin
-  LogonDialogInternal.AppStoragePath := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetBeforeTransferConnectionInfoToSessionData(
-  const Value: TJvLogonDialogConnectionInfoEvent);
-begin
-  LogonDialogInternal.BeforeTransferConnectionInfoToSessionData := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetDynControlEngine(const Value: TJvDynControlEngine);
-begin
-  LogonDialogInternal.DynControlEngine := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetOnDecryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
-begin
-  LogonDialogInternal.OnDecryptPassword := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetOnEncryptPassword(const Value: TJvLogonDialogEncryptDecryptEvent);
-begin
-  LogonDialogInternal.OnEncryptPassword := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetOnFillShortcutList(const Value: TJvLogonDialogFillListEvent);
-begin
-  LogonDialogInternal.OnFillShortcutList := Value;
-end;
-
-procedure TJvDBOdacConnectDialog.SetOnSessionConnect(const Value:
-    TJvLogonDialogBaseSessionEvent);
-begin
-  LogonDialogInternal.OnSessionConnect:= Value;
 end;
 
 procedure TJvDBOdacConnectDialog.SetOptions(const Value: TJvDBOdacLogonDialogOptions);
@@ -375,8 +203,8 @@ procedure TJvDBOdacLogonDialog.ConnectSession;
 begin
   if Assigned(Session) then
   try
-    Session.DisConnect;
-    Session.PerformConnect;
+    OraSession.DisConnect;
+    OraSession.PerformConnect;
   except
     on E: EOraError do
     begin
@@ -395,40 +223,15 @@ begin
   end;
 end;
 
-procedure TJvDBOdacLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent;
-  AParentControl: TWinControl);
+procedure TJvDBOdacLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl: TWinControl);
 var
-  LabelControl: TControl;
-  IDynControlLabel: IJvDynControlLabel;
-  Items : TStringList;
-  i: Integer;
   IDynControlComboBox: IJvDynControlComboBox;
-  IDynControlAutoSize: IJvDynControlAutoSize;
 begin
   inherited CreateAdditionalConnectDialogControls (AOwner, AParentControl);
-  OracleHomePanel := DynControlEngine.CreatePanelControl(AOwner, AParentControl, 'OracleHomePanel', '', alTop);
-  AlignControlTop(OracleHomePanel, nil);
-  LabelControl := DynControlEngine.CreateLabelControl(AOwner, OracleHomePanel, 'OracleHomeLabel', RsOracleHome, nil);
-  AlignControlTop(LabelControl, nil);
-  Items := TStringList.Create;
-  try
-    for i := 0 to OracleHomeCount - 1 do
-      Items.Add(OracleHomeNames[i]);
-    OracleHomeEdit := DynControlEngine.CreateComboBoxControl(AOwner, OracleHomePanel, 'OracleHomeEdit', Items);
-    if Supports(OracleHomeEdit, IJvDynControlComboBox, IDynControlComboBox) then
-      IDynControlComboBox.ControlSetNewEntriesAllowed(False);
-  finally
-    Items.Free;
-  end;
-  Supports(OracleHomeEdit, IJvDynControlData, IOracleHomeEditData);
-  IOracleHomeEditData.ControlValue := '';
-  AlignControlTop(OracleHomeEdit, LabelControl);
-  if Supports(LabelControl, IJvDynControlLabel, IDynControlLabel) then
-    IDynControlLabel.ControlSetFocusControl(OracleHomeEdit);
-  if Supports(LabelControl, IJvDynControlAutoSize,IDynControlAutoSize) then
-    IDynControlAutoSize.ControlSetAutoSize(True);
-  SetPanelHeight(OracleHomePanel);
-  OracleHomePanel.Visible := Options.ShowOracleHome;
+  CreateAdditionalConnectDialogEditPanel(AOwner, AParentControl, 'OracleHome', RsOracleHome, jctComboBox, OracleHomePanel, OracleHomeEdit, IOracleHomeEditData, DefaultOnEditChange);
+  if Supports(OracleHomeEdit, IJvDynControlComboBox, IDynControlComboBox) then
+    IDynControlComboBox.ControlSetNewEntriesAllowed(False);
+
   NetOptionCheckBox := DynControlEngine.CreateCheckboxControl(AOwner,AParentControl, 'NetOptionCheckBox',
     RsUseNetOptionForDirectConnect);
   AlignControlTop(NetOptionCheckBox, OracleHomePanel);
@@ -448,7 +251,13 @@ begin
   Result := TJvDBOdacPasswordDialog.Create(Self);
 end;
 
-procedure TJvDBOdacLogonDialog.FillDatabaseComboBoxDefaultValues(Items: TStrings);
+procedure TJvDBOdacLogonDialog.FillAllComoboBoxes;
+begin
+  inherited FillAllComoboBoxes;
+  FillOracleHomeComboBox;
+end;
+
+procedure TJvDBOdacLogonDialog.FillDatabaseComboBoxValues(Items: TStrings);
 var
   Enum: TOraServerEnumerator;
   List: TStringList;
@@ -464,8 +273,29 @@ begin
   end;
 end;
 
-class function TJvDBOdacLogonDialog.GetDBLogonConnectionListClass:
-    TJvBaseConnectionListClass;
+procedure TJvDBOdacLogonDialog.FillOracleHomeComboBox;
+var
+  Items: TStringList;
+  IDynControlItems: IJvDynControlItems;
+  i : Integer;
+begin
+  Items := TStringList.Create;
+  try
+    for i := 0 to OracleHomeCount - 1 do
+      Items.Add(OracleHomeNames[i]);
+    if Supports(OracleHomeEdit, IJvDynControlItems, IDynControlItems) then
+      IDynControlItems.ControlItems.Assign(Items);
+  finally
+    Items.Free;
+  end;
+end;
+
+function TJvDBOdacLogonDialog.GetConnectionList: TJvOdacOracleConnectionList;
+begin
+  Result := TJvOdacOracleConnectionList(Inherited ConnectionList);
+end;
+
+class function TJvDBOdacLogonDialog.GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
 begin
   Result := TJvOdacOracleConnectionList;
 end;
@@ -485,30 +315,25 @@ begin
   Result := FOraSession;
 end;
 
-function TJvDBOdacLogonDialog.GetSession: TCustomDAConnection;
-begin
-  Result := TCustomDAConnection(inherited Session);
-end;
-
 procedure TJvDBOdacLogonDialog.HandleExpiredPassword(const ErrorMessage: string);
 begin
   if JvDSADialogs.MessageDlg(ErrorMessage + #13#10 + RsDoYouWantToChangePassword,
-    mtInformation, [mbYes, mbNo], 0, dckScreen,
-    0, mbDefault, mbDefault, mbDefault, DynControlEngine) = mrYes then
+        mtInformation, [mbYes, mbNo], 0, dckScreen, 0, mbDefault, mbDefault, mbDefault, DynControlEngine) = mrYes then
     if ChangePassword then
       if not SessionIsConnected then
-        Session.PerformConnect;
-end;
-
-procedure TJvDBOdacLogonDialog.ResizeFormControls;
-begin
-  inherited ResizeFormControls;
-  SetPanelHeight(OracleHomePanel);
+        OraSession.PerformConnect;
 end;
 
 function TJvDBOdacLogonDialog.SessionIsConnected: Boolean;
 begin
-  Result := Session.Connected;
+  Result := OraSession.Connected;
+end;
+
+procedure TJvDBOdacLogonDialog.SetEditPanelsVisibility;
+begin
+  Inherited SetEditPanelsVisibility;
+  SetPanelVisible(OracleHomePanel, Options.ShowOracleHome);
+  NetOptionCheckBox.Visible := Options.ShowNetOption;
 end;
 
 procedure TJvDBOdacLogonDialog.SetOptions(const Value: TJvDBOdacLogonDialogOptions);
@@ -516,13 +341,13 @@ begin
   (inherited Options).Assign(Value);
 end;
 
-procedure TJvDBOdacLogonDialog.SetSession(const Value: TCustomDAConnection);
+procedure TJvDBOdacLogonDialog.SetSession(const Value: TComponent);
 begin
   inherited SetSession(Value);
   if Value is TOraSession then
     FOraSession := TOraSession(Value)
   else
-    FORaSession := nil;
+    FOraSession := nil;
 end;
 
 procedure TJvDBOdacLogonDialog.TransferConnectionInfoFromDialog(ConnectionInfo: TJvBaseConnectionInfo);
@@ -560,18 +385,21 @@ procedure TJvDBOdacLogonDialog.TransferSessionDataFromConnectionInfo(ConnectionI
 begin
   if Assigned(Session) then
   begin
-    Session.Server := ConnectionInfo.Database;
-    Session.Password := ConnectionInfo.Password;
-    Session.Username := ConnectionInfo.Username;
+    OraSession.Server := ConnectionInfo.Database;
+    OraSession.Password := ConnectionInfo.Password;
+    OraSession.Username := ConnectionInfo.Username;
     if Assigned(OraSession) and (ConnectionInfo is TJvBaseOracleConnectionInfo) then
     begin
       if TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSDBA' then
         OraSession.ConnectMode := cmSYSDBA
       else
-        if TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSOPER' then
-          OraSession.ConnectMode := cmSYSOper
+        if TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSASM' then
+          OraSession.ConnectMode := cmSYSASM
         else
-          OraSession.ConnectMode := cmNormal;
+          if TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs = 'SYSOPER' then
+            OraSession.ConnectMode := cmSYSOper
+          else
+            OraSession.ConnectMode := cmNormal;
       if (ConnectionInfo is TJvOdacOracleConnectionInfo) then
       begin
         if Options.ShowNetOption then
@@ -587,14 +415,16 @@ procedure TJvDBOdacLogonDialog.TransferSessionDataToConnectionInfo(ConnectionInf
 begin
   if Assigned(Session) then
   begin
-    ConnectionInfo.Database := Session.Server;
-    ConnectionInfo.Password := Session.Password;
-    ConnectionInfo.Username := Session.Username;
+    ConnectionInfo.Database := OraSession.Server;
+    ConnectionInfo.Password := OraSession.Password;
+    ConnectionInfo.Username := OraSession.Username;
     if Assigned(OraSession) and (ConnectionInfo is TJvBaseOracleConnectionInfo) then
     begin
       case OraSession.ConnectMode of
         cmSYSDBA:
           TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSDBA';
+        cmSYSASM:
+          TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSASM';
         cmSYSOPER:
           TJvBaseOracleConnectionInfo(ConnectionInfo).ConnectAs := 'SYSOPER';
       else
@@ -616,16 +446,20 @@ begin
   Result := TJvOdacOracleConnectionInfo.Create(Self);
 end;
 
+function TJvOdacOracleConnectionList.GetConnection(I: Longint): TJvOdacOracleConnectionInfo;
+begin
+  Result := TJvOdacOracleConnectionInfo(inherited Connection[i])
+end;
+
 constructor TJvOdacOracleConnectionInfo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FNet := false;
 end;
 
-function TJvOdacOracleConnectionInfo.ConnectString(ShowShortCut,
-    ShowConnectGroup: Boolean): string;
+function TJvOdacOracleConnectionInfo.ConnectString: string;
 begin
-  Result := inherited ConnectString(ShowShortCut, ShowConnectGroup);
+  Result := inherited ConnectString;
   if OracleHome <> '' then
     Result:= Result + ' - '+OracleHome;
   if Net then
