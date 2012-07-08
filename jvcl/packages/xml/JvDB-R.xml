@@ -58,6 +58,15 @@
     <Package Name="ODAC140" Targets="d14" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODAC150" Targets="d15" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODAC160" Targets="d16" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL60" Targets="d6,c6" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL70" Targets="d7" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL90" Targets="d9" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL100" Targets="d10" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL105" Targets="d11" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL120" Targets="d12" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL140" Targets="d14" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL150" Targets="d15" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL160" Targets="d16" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="UNIDAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
@@ -66,6 +75,14 @@
     <Package Name="UNIDAC140" Targets="d14" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC150" Targets="d15" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC160" Targets="d16" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL105" Targets="d11" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL120" Targets="d12" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL140" Targets="d14" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL150" Targets="d15" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL160" Targets="d16" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
     <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
     <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
@@ -166,7 +183,7 @@
     <File Name="..\..\run\JvDBActionsEngine.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBActionsEngineDatasetDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
-    <File Name="..\..\run\JvDBActionsEngineDatasetOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBActionsEngineDatasetDevart.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
     <File Name="..\..\run\JvDBCombobox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBControls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBDatePickerEdit.pas" Targets="DB,help" Formname="" Condition=""/>
@@ -178,7 +195,9 @@
     <File Name="..\..\run\JvBaseDBPasswordDialog.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDBLogonDialog.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBLogonDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogBaseDevart.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
     <File Name="..\..\run\JvDBLogonDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
+    <File Name="..\..\run\JvDBLogonDialogUniDac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
     <File Name="..\..\run\JvDBLookupTreeView.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBPasswordDialogDoa.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
     <File Name="..\..\run\JvDBPasswordDialogOdac.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
@@ -210,6 +229,7 @@
     <File Name="..\..\run\JvDynControlEngineJVCLDB.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvOracleDataset.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DOA || HELP"/>
     <File Name="..\..\run\JvOdacSmartQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_ODAC || HELP"/>
+    <File Name="..\..\run\JvUniDacQuery.pas" Targets="DB,help" Formname="" Condition="USE_3RDPARTY_DEVART_UNIDAC || HELP"/>
     <File Name="..\..\run\JvDBCheckBox.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvDBFilterExpr.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvADOQuery.pas" Targets="DB,help" Formname="" Condition=""/>
