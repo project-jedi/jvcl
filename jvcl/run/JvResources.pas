@@ -235,7 +235,9 @@ resourcestring
   RsUsername = '&Username';
   RsPassword = '&Password';
   RsDatabase = '&Database';
+  RsAlias= 'Al&ias';
   RsShortcut = '&Shortcut';
+  RsConnectGroup = '&Connect Group';
   RsConnectAs = 'Connect-&As';
 
   RsImportConnectionList = 'Import Connection List';
@@ -267,6 +269,12 @@ resourcestring
       '    SID is system identifier that specifies Global Database Name.';
   RsNetOptionConnectionList = 'NET Option';
 
+//=== JvDBLogonDialogUnidac.pas  ===============================================
+resourcestring
+  RsServer= 'Ser&ver';
+  RsPort= 'Port';
+  RsProvider='&Provider';
+  RsDirectConnect='&Direct Connect';
 
 //=== JvBDEExceptionForm.pas =================================================
 resourcestring
