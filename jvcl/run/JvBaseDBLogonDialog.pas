@@ -2197,7 +2197,10 @@ end;
 
 function TJvBaseConnectionInfo.DatabaseGroupIdentifier: string;
 begin
-  Result := TranslateDatabaseName(Database);
+  if AliasEnabled and (Alias <> '') then
+    Result := Alias
+  else
+    Result := TranslateDatabaseName(Database);
 end;
 
 function TJvBaseConnectionInfo.GetDatabaseEnabled: Boolean;
