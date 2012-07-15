@@ -294,6 +294,7 @@ type
     procedure LoadSettings;
     procedure PasswordDialog_AfterTransferPasswordFromSession(var Password: string);
     procedure PasswordDialog_BeforeTransferPasswordToSession(var Password: string);
+    procedure RearrangePanelControlsByTaborder(iPanel: TWinControl);
     procedure RemoveFromListBtnClick(Sender: TObject);
     procedure ResizeAllControls;
     procedure SetActivePage(const Value: TJvDBLogonDialogActivePage);
@@ -1658,19 +1659,28 @@ begin
 end;
 
 procedure TJvBaseDBLogonDialog.RearrangeEditPanelControlsByTaborder;
-var i,p,t : Integer;
-    Ctrl : TWinControl;
 begin
   SetEditPanelsTabOrder;
+  RearrangePanelControlsByTaborder(LeftBottomPanel);
+  RearrangePanelControlsByTaborder(EditConnectionPanel);
+end;
+
+procedure TJvBaseDBLogonDialog.RearrangePanelControlsByTaborder(iPanel: TWinControl);
+var
+  i: Integer;
+  p: Integer;
+  t: Integer;
+  Ctrl: TWinControl;
+begin
   t := 0;
   p := 0;
-  while p < EditConnectionPanel.ControlCount do
+  while p < iPanel.ControlCount do
   begin
-    for I := 0 to EditConnectionPanel.ControlCount-1 do
+    for I := 0 to iPanel.ControlCount-1 do
     begin
-      if not (EditConnectionPanel.Controls[i] is TWinControl) then
+      if not (iPanel.Controls[i] is TWinControl) then
         Continue;
-      Ctrl := TWinControl(EditConnectionPanel.Controls[i]);
+      Ctrl := TWinControl(iPanel.Controls[i]);
       if not Ctrl.Visible then
         Continue;
       if Ctrl.TabOrder = p then
