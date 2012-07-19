@@ -1,5 +1,7 @@
 unit JvDBOdacComponentsMainForm;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -9,7 +11,12 @@ uses
   JvDBPasswordDialogOdac, MemDS, OraSmart, JvOdacSmartQuery, JvDBActions,
   ActnList, JvActionsEngine, Buttons, JvDBLogonDialogBaseDevart,
   JvDBActionsEngineDatasetDevart,
-  JvDynControlEngineJVCL, JvComponentBase, JvAppStorage, JvAppRegistryStorage;
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  JvDynControlEngineDevExpCx,
+  {$ELSE}
+  JvDynControlEngineJVCL,
+  {$ENDIF}
+  JvComponentBase, JvAppStorage, JvAppRegistryStorage;
 
 type
   TForm1 = class(TForm)

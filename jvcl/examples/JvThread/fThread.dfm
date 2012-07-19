@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'JvThread Demo'
-  ClientHeight = 143
+  ClientHeight = 201
   ClientWidth = 364
   Color = clBtnFace
   DefaultMonitor = dmDesktop
@@ -65,7 +65,7 @@ object Form1: TForm1
   object Button3: TButton
     Left = 121
     Top = 18
-    Width = 100
+    Width = 145
     Height = 25
     Caption = 'Start Job 1 &Dialog'
     TabOrder = 2
@@ -74,11 +74,20 @@ object Form1: TForm1
   object Button4: TButton
     Left = 121
     Top = 69
-    Width = 100
+    Width = 145
     Height = 25
-    Caption = 'Start Job 2 D&ialog'
+    Caption = 'Start Job 2 D&ialog Animated'
     TabOrder = 3
     OnClick = Button4Click
+  end
+  object Button5: TButton
+    Left = 121
+    Top = 138
+    Width = 145
+    Height = 25
+    Caption = 'Start Job 3 &Sizing Dialog'
+    TabOrder = 4
+    OnClick = Button3Click
   end
   object JvThread1: TJvThread
     Exclusive = True
@@ -118,7 +127,7 @@ object Form1: TForm1
     DialogOptions.CancelButtonCaption = 'Cancel'
     DialogOptions.Caption = 'Execute Thread'
     DialogOptions.InfoText = 'Infotext'#13#10'<yx<yx'#13#10'<y'#13#10'x'
-    DialogOptions.CommonAVI = aviCopyFiles
+    DialogOptions.CommonAVI = aviFindFile
     Left = 260
     Top = 80
   end
