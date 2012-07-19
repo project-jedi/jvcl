@@ -1432,6 +1432,7 @@ end;
 procedure TJvBaseDBLogonDialog.GetFromListBtnClick(Sender: TObject);
 begin
   TransferConnectionInfoToDialog(CurrentDialogListConnectionInfo);
+  ValidateConnectBtnEnabled;
 end;
 
 function TJvBaseDBLogonDialog.GetGroupByDatabase: Boolean;
@@ -2008,6 +2009,8 @@ begin
     if Assigned(AfterTransferSessionDataToConnectionInfo) then
       AfterTransferSessionDataToConnectionInfo(tmpConnectionInfo);
     TransferConnectionInfoToDialog(tmpConnectionInfo);
+    CurrentConnectionInfo.Assign(tmpConnectionInfo);
+    ValidateConnectBtnEnabled;
   finally
     tmpConnectionInfo.Free;
   end;
