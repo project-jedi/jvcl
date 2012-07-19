@@ -2,6 +2,8 @@ unit Main;
 
 interface
 
+{$I jvcl.inc}
+
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvProgramVersionCheck, JvComponent, JvAppStorage, JvAppIniStorage,
@@ -24,7 +26,7 @@ type
     procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
   public
-    procedure VersionCheck;            
+    procedure VersionCheck;
   end;
 
 var
@@ -35,7 +37,11 @@ implementation
 {$R *.dfm}
 
 Uses JclFileUtils, JvTypes, JvPropertyStoreEditor,
-  JvDynControlEngineJVCLInspector, JvDynControlEngineJVCL;
+  JvDynControlEngineJVCLInspector, JvDynControlEngineJVCL
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  ,  JvDynControlEngineDevExpCx
+  {$ENDIF}
+  ;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -57,12 +63,13 @@ end;
 
 procedure TForm1.VersionCheck;
 begin
-  with ProgramVersionCheck do
-  begin
-    Execute ;
-  end;
+  ProgramVersionCheck.Execute ;
 end;
 
 begin
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  RegisterJvDynControlRTTIInspectorControl(DynControlEngineDevExpCx);
+  {$ELSE}
   RegisterJvDynControlRTTIInspectorControl(DynControlEngineJVCL);
+  {$ENDIF}
 end.

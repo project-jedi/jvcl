@@ -48,6 +48,7 @@ type
     JvThreadAnimateDialog1: TJvThreadAnimateDialog;
     Button3: TButton;
     Button4: TButton;
+    Button5: TButton;
     procedure JvThread1Execute(Sender: TObject; params: Pointer);
     procedure Button1Click(Sender: TObject);
     procedure JvThread2Execute(Sender: TObject; params: Pointer);
@@ -55,7 +56,11 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure ThreadDialogChangeThreadDialogOptions(DialogOptions: TJvThreadBaseDialogOptions);
   private
+    ThreadInfoProgressBarPosition: Integer;
+    ThreadInfoText: string;
+    procedure OnThreadExecute(Sender: TObject; Params: Pointer);
   public
     Value: Integer;
     Value2: Integer;
@@ -80,7 +85,7 @@ begin
   //Do the job here
   k := 0;
   for i := 0 to 100 do
-    for j := 0 to 500 do
+    for j := 0 to 800 do
     begin
       Inc(k);
 
@@ -160,10 +165,62 @@ begin
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
+var
+  Thread: TJvThread;
+  ThreadDialog: TJvThreadSimpleDialog;
 begin
-  JvThread1.ThreadDialog := JvThreadSimpleDialog1;
-  JvThread1.Execute(Self);
-  //(Sender as TButton).Enabled := False;
+  Thread := TJvThread.Create(Self);
+  ThreadDialog := TJvThreadSimpleDialog.Create(Self);
+  try
+    Thread.Name := 'Thread';
+    Thread.Exclusive := True;
+    Thread.MaxCount := 0;
+    Thread.RunOnCreate := True;
+    Thread.FreeOnTerminate := True;
+    Thread.ThreadDialog := ThreadDialog;
+    Thread.OnExecute := OnThreadExecute;
+    ThreadDialog.Name := 'ThreadDialog';
+    ThreadDialog.ChangeThreadDialogOptions :=  ThreadDialogChangeThreadDialogOptions;
+    ThreadDialog.DialogOptions.Caption := 'Sizing Thread Sample';
+    ThreadDialog.DialogOptions.ShowCancelButton := False;
+    ThreadDialog.DialogOptions.ShowDialog := True;
+    ThreadDialog.DialogOptions.ShowModal := True;
+    ThreadDialog.DialogOptions.ShowProgressBar := True;
+    Thread.ExecuteWithDialog(nil);
+  finally
+    Thread.Free;
+    ThreadDialog.Free;
+  end;
+
+end;
+
+procedure TForm1.ThreadDialogChangeThreadDialogOptions(DialogOptions: TJvThreadBaseDialogOptions);
+begin
+  DialogOptions.InfoText := ThreadInfoText;
+  if DialogOptions is TJvThreadSimpleDialogOptions then
+    TJvThreadSimpleDialogOptions(DialogOptions).ProgressbarPosition := ThreadInfoProgressBarPosition;
+end;
+
+procedure TForm1.OnThreadExecute(Sender: TObject; Params: Pointer);
+var
+  i: Integer;
+begin
+//  (TBaseSQLUtility(Params));
+  for i := 0 to 20 do
+  begin
+    ThreadInfoProgressBarPosition := i;
+    case i mod 5 of
+      1 : ThreadInfoText := 'Das ist ein Test';
+      2 : ThreadInfoText := 'ist ein Test';
+      3 : ThreadInfoText := 'Das ist ein sehr sehr sehr langer Test der nicht zu umbrüchen führt';
+      4 : ThreadInfoText := 'Das ist ein langer Test der nicht zu umbrüchen führt';
+      5 : ThreadInfoText := 'Das ist ein langer Test der zu umbrüchen führt';
+      else
+        ThreadInfoText := 'Das ist ein anderer Test der auch zu lang wird und daher nicht passt';
+    end;
+    Sleep(1000);
+  end;
+
 end;
 
 end.

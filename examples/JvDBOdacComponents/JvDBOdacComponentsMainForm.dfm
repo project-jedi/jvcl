@@ -214,7 +214,6 @@ object Form1: TForm1
     Lines.Strings = (
       'Select * from user_objects')
     TabOrder = 3
-    ExplicitHeight = 250
   end
   object OraSession1: TOraSession
     DataTypeMap = <>
