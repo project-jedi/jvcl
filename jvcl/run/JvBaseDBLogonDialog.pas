@@ -2227,6 +2227,8 @@ begin
   else
     if DatabaseEnabled and (Database <> '') then
       Result := Result + '@' + TranslateDatabaseName(Database);
+  if ShortCutText <> '' then
+    Result := Result + ' ('+ShortCutText+')';
 end;
 
 function TJvBaseConnectionInfo.DatabaseGroupIdentifier: string;
