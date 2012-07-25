@@ -673,7 +673,9 @@ begin
   if not(AliasEnabled and (Alias <> '')) and
     DatabaseEnabled and (Database <> '') then
     Result := Result + ' - ' + Database;
-  Result := Result + ' ('+Provider+')';
+  Result := Result + ' {'+Provider+'}';
+  if ShortCutText <> '' then
+    Result := Result + ' ('+ShortCutText+')';
 end;
 
 function TJvUniDacConnectionInfo.DatabaseGroupIdentifier: string;
