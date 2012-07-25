@@ -124,47 +124,47 @@ type
   {$ENDIF RTL230_UP}
   TJvDBUniDacLogonDialog = class(TJvBaseDBOracleLogonDialog)
   private
-    FInternalConnection: TUniConnection;
+    DirectCheckBox: TWinControl;
     FInternalConnectDialog: TUniConnectDialog;
+    FInternalConnection: TUniConnection;
     FOnFillServerList: TJvUniDacLogonDialogFillListEvent;
     FUniConnection: TUniConnection;
+    IDirectCheckBox: IJvDynControlCheckBox;
     IOracleHomeEditData: IJvDynControlData;
     IOracleHomeEditItems: IJvDynControlItems;
-    OracleHomeEdit: TWinControl;
-    OracleHomePanel: TWinControl;
-    IServerEditData: IJvDynControlData;
-    IServerEditItems: IJvDynControlItems;
-    ServerEdit: TWinControl;
-    ServerPanel: TWinControl;
     IPortEditData: IJvDynControlData;
-    PortEdit: TWinControl;
-    PortPanel: TWinControl;
     IProviderEditData: IJvDynControlData;
     IProviderEditItems: IJvDynControlItems;
+    IServerEditData: IJvDynControlData;
+    IServerEditItems: IJvDynControlItems;
+    OracleHomeEdit: TWinControl;
+    OracleHomePanel: TWinControl;
+    PortEdit: TWinControl;
+    PortPanel: TWinControl;
     ProviderEdit: TWinControl;
     ProviderPanel: TWinControl;
-    DirectCheckBox: TWinControl;
-    IDirectCheckBox: IJvDynControlCheckBox;
+    ServerEdit: TWinControl;
+    ServerPanel: TWinControl;
     function GetConnectionList: TJvUniDacConnectionList;
     function GetCurrentConnectionInfo: TJvUniDacConnectionInfo;
     function GetOptions: TJvDBUniDacLogonDialogOptions;
     function GetUniConnection: TUniConnection;
     procedure SetOptions(const Value: TJvDBUniDacLogonDialogOptions);
-    property InternalConnection: TUniConnection read FInternalConnection;
     property InternalConnectDialog: TUniConnectDialog read FInternalConnectDialog;
+    property InternalConnection: TUniConnection read FInternalConnection;
   protected
     procedure CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl: TWinControl); override;
     procedure CreateFormControls(AForm: TForm); override;
     procedure FillAllComoboBoxes; override;
     procedure FillDatabaseComboBoxValues(Items: TStrings); override;
-    procedure FillServerComboBoxValues(Items: TStrings); virtual;
     procedure FillServerComboBox;
-    procedure ProviderOnEditChange(Sender: TObject);
+    procedure FillServerComboBoxValues(Items: TStrings); virtual;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonConnectionListClass: TJvBaseConnectionListClass; override;
     { Retrieve the class that holds the storage options and format settings. }
     class function GetDBLogonDialogOptionsClass: TJvBaseDBLogonDialogOptionsClass; override;
     procedure HandleExpiredPassword(const ErrorMessage: string);
+    procedure ProviderOnEditChange(Sender: TObject);
     procedure SetEditPanelsTabOrder; override;
     procedure SetEditPanelsVisibility; override;
     procedure SetSession(const Value: TComponent); override;
@@ -182,8 +182,8 @@ type
     function SessionIsConnected: Boolean; override;
     property CurrentConnectionInfo: TJvUniDacConnectionInfo read GetCurrentConnectionInfo;
   published
-    property OnFillServerList: TJvUniDacLogonDialogFillListEvent read FOnFillServerList write FOnFillServerList;
     property Options: TJvDBUniDacLogonDialogOptions read GetOptions write SetOptions;
+    property OnFillServerList: TJvUniDacLogonDialogFillListEvent read FOnFillServerList write FOnFillServerList;
   end;
 
   TJvDBUniDacConnectDialog = class(TJvDBBaseDevartConnectDialog)
@@ -263,12 +263,14 @@ end;
 procedure TJvDBUniDacLogonDialog.ClearControlInterfaceObjects;
 begin
   inherited ClearControlInterfaceObjects;
-  IOracleHomeEditData:= nil;
-  IProviderEditData:= nil;
-  IProviderEditItems:= nil;
-  IServerEditData:= nil;
-  IServerEditItems:= nil;
-  IPortEditData:= nil;
+  IDirectCheckBox := nil;
+  IOracleHomeEditData := nil;
+  IOracleHomeEditItems := nil;
+  IPortEditData := nil;
+  IProviderEditData := nil;
+  IProviderEditItems := nil;
+  IServerEditData := nil;
+  IServerEditItems := nil;
 end;
 
 procedure TJvDBUniDacLogonDialog.ConnectSession;
@@ -367,21 +369,6 @@ begin
     end;
 end;
 
-procedure TJvDBUniDacLogonDialog.FillServerComboBoxValues(Items: TStrings);
-var i : Integer;
-  Connection: TJvUniDacConnectionInfo;
-begin
-  if Options.AddConnectionValuesToComboBox then
-    for i := 0 to ConnectionList.Count - 1 do
-    begin
-      Connection := ConnectionList.Connection[i];
-      if Connection.Provider = CurrentConnectionInfo.Provider then
-        if Connection.Server <> '' then
-          if Items.IndexOf(Connection.Server) < 0 then
-            Items.Add(Connection.Server);
-    end;
-end;
-
 procedure TJvDBUniDacLogonDialog.FillServerComboBox;
 var
   List: TStringList;
@@ -409,6 +396,21 @@ begin
   end;
 end;
 
+procedure TJvDBUniDacLogonDialog.FillServerComboBoxValues(Items: TStrings);
+var i : Integer;
+  Connection: TJvUniDacConnectionInfo;
+begin
+  if Options.AddConnectionValuesToComboBox then
+    for i := 0 to ConnectionList.Count - 1 do
+    begin
+      Connection := ConnectionList.Connection[i];
+      if Connection.Provider = CurrentConnectionInfo.Provider then
+        if Connection.Server <> '' then
+          if Items.IndexOf(Connection.Server) < 0 then
+            Items.Add(Connection.Server);
+    end;
+end;
+
 function TJvDBUniDacLogonDialog.GetConnectionList: TJvUniDacConnectionList;
 begin
   Result := TJvUniDacConnectionList(Inherited ConnectionList);
@@ -417,14 +419,6 @@ end;
 function TJvDBUniDacLogonDialog.GetCurrentConnectionInfo: TJvUniDacConnectionInfo;
 begin
   Result := TJvUniDacConnectionInfo(inherited CurrentConnectionInfo);
-end;
-
-procedure TJvDBUniDacLogonDialog.ProviderOnEditChange(Sender: TObject);
-begin
-  TransferConnectionInfoFromDialog(CurrentConnectionInfo);
-  RearrangeEditPanel;
-  FillAllComoboBoxes;
-  ValidateConnectBtnEnabled;
 end;
 
 class function TJvDBUniDacLogonDialog.GetDBLogonConnectionListClass: TJvBaseConnectionListClass;
@@ -454,6 +448,14 @@ begin
     if ChangePassword then
       if not SessionIsConnected then
         UniConnection.PerformConnect;
+end;
+
+procedure TJvDBUniDacLogonDialog.ProviderOnEditChange(Sender: TObject);
+begin
+  TransferConnectionInfoFromDialog(CurrentConnectionInfo);
+  RearrangeEditPanel;
+  FillAllComoboBoxes;
+  ValidateConnectBtnEnabled;
 end;
 
 function TJvDBUniDacLogonDialog.SessionIsConnected: Boolean;
