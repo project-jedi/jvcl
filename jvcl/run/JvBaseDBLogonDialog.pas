@@ -25,6 +25,7 @@ Known Issues:
 unit JvBaseDBLogonDialog;
 
 {$I jvcl.inc}
+{$DEFINE CODESITE}
 
 interface
 
@@ -205,19 +206,17 @@ type
     AdditionalBtn: TWinControl;
     AdditionalPopupMenu: TPopupMenu;
     AddToListBtn: TWinControl;
-    AliasEdit: TWinControl;
     AliasPanel: TWinControl;
     ButtonPanel: TWinControl;
     CancelBtn: TWinControl;
     ColorBoxPanel: TWinControl;
-    ColorComboBox: TWinControl;
     ConnectBtn: TWinControl;
-    ConnectGroupComboBox: TWinControl;
     ConnectGroupPanel: TWinControl;
     ConnectListListBox: TWinControl;
     DatabaseComboBox: TWinControl;
     DatabasePanel: TWinControl;
     DatabaseTreeView: TWinControl;
+    EditConnectionPanel: TWinControl;
     FAfterTransferSessionDataToConnectionInfo: TJvLogonDialogConnectionInfoEvent;
     FBeforeTransferConnectionInfoToSessionData: TJvLogonDialogConnectionInfoEvent;
     FConnectionList: TJvBaseConnectionList;
@@ -237,6 +236,7 @@ type
     IAliasEditData: IJvDynControlData;
     IColorComboBox: IJvDynControlColorComboBoxControl;
     IConnectGroupComboBoxData: IJvDynControlData;
+    IConnectGroupComboBoxItems: IJvDynControlItems;
     IConnectionListPageControlTab: IJvDynControlTabControl;
     IConnectListListBoxData: IJvDynControlData;
     IConnectListListBoxItems: IJvDynControlItems;
@@ -252,12 +252,10 @@ type
     IUserTreeView: IJvDynControlTreeView;
     LeftBottomPanel: TWinControl;
     LeftPanel: TWinControl;
-    EditConnectionPanel: TWinControl;
     PasswordEdit: TWinControl;
     PasswordPanel: TWinControl;
     RemoveFromListBtn: TWinControl;
     SavePasswordsCheckBox: TWinControl;
-    ShortCutComboBox: TWinControl;
     ShortCutPanel: TWinControl;
     UserNameEdit: TWinControl;
     UserNamePanel: TWinControl;
@@ -555,31 +553,37 @@ end;
 
 procedure TJvBaseDBLogonDialog.ClearControlInterfaceObjects;
 begin
-  IConnectGroupComboBoxData := nil;
-  IConnectionListPageControlTab := nil;
-  IConnectListListBoxData := nil;
-  IConnectListListBoxItems := nil;
-  IColorComboBox := nil;
-  IDatabaseComboBoxData := nil;
-  IDatabaseTreeView := nil;
-  IGroupByDatabaseCheckBox := nil;
-  IGroupByUserCheckBox := nil;
-  IGroupTreeView := nil;
-  IPasswordEditData := nil;
-  ISavePasswordsCheckBox := nil;
-  IShortCutComboBoxData := nil;
-  IUserNameEditData := nil;
-  IUserTreeView := nil;
+  IAliasEditData:= nil;
+  IColorComboBox:= nil;
+  IConnectGroupComboBoxData:= nil;
+  IConnectGroupComboBoxItems:= nil;
+  IConnectionListPageControlTab:= nil;
+  IConnectListListBoxData:= nil;
+  IConnectListListBoxItems:= nil;
+  IDatabaseComboBoxData:= nil;
+  IDatabaseTreeView:= nil;
+  IGroupByDatabaseCheckBox:= nil;
+  IGroupByUserCheckBox:= nil;
+  IGroupTreeView:= nil;
+  IPasswordEditData:= nil;
+  ISavePasswordsCheckBox:= nil;
+  IShortCutComboBoxData:= nil;
+  IUserNameEditData:= nil;
+  IUserTreeView:= nil;
 end;
 
 procedure TJvBaseDBLogonDialog.ClearFormControls;
 begin
-  IUserNameEditData.ControlValue := '';
-  IPasswordEditData.ControlValue := '';
-  IDatabaseComboBoxData.ControlValue := '';
+  if Assigned(IUserNameEditData)  then
+    IUserNameEditData.ControlValue := '';
+  if Assigned(IPasswordEditData)  then
+    IPasswordEditData.ControlValue := '';
+  if Assigned(IDatabaseComboBoxData)  then
+    IDatabaseComboBoxData.ControlValue := '';
   if Assigned(IConnectGroupComboBoxData)  then
     IConnectGroupComboBoxData.ControlValue := '';
-  IShortCutComboBoxData.ControlValue := '';
+  if Assigned(IShortCutComboBoxData)  then
+    IShortCutComboBoxData.ControlValue := '';
   if Assigned(IColorComboBox)  then
     IColorComboBox.ControlSelectedColor  := cDefaultColorComboBoxColor;
 end;
@@ -659,7 +663,11 @@ end;
 procedure TJvBaseDBLogonDialog.CreateFormControls(AForm: TForm);
 var
   MainPanel, ListPanel, ListBtnPanel, GroupListPanel: TWinControl;
+  AliasEdit: TWinControl;
+  ShortCutComboBox: TWinControl;
+  ConnectGroupComboBox: TWinControl;
   ConnectionListPageControl: TWinControl;
+  ColorComboBox: TWinControl;
   Items: TStringList;
   ITabControl: IJvDynControlTabControl;
   IDynControl: IJvDynControl;
@@ -680,7 +688,7 @@ begin
   AForm.BorderStyle := bsDialog;
   AForm.Caption := RsLogonToDatabase;
   AForm.ClientHeight := 440;
-  AForm.ClientWidth := 590;
+  AForm.ClientWidth := 680;
   AForm.Position := poScreenCenter;
   AForm.KeyPreview := True;
   AForm.OnClose := FormClose;
@@ -860,7 +868,7 @@ begin
   SavePasswordsCheckBox.Visible := Options.ShowSavePasswords;
 
   LeftPanel := DynControlEngine.CreatePanelControl(AForm, MainPanel, 'LeftPanel', '', alLeft);
-  LeftPanel.Width := 240;
+  LeftPanel.Width := 280;
   if Supports(LeftPanel, IJvDynControlBevelBorder, IDynControlBevelBorder) then
     IDynControlBevelBorder.ControlSetBevelOuter(bvNone);
   LeftPanel.TabOrder := 0;
@@ -892,7 +900,6 @@ begin
 
   CreateAdditionalConnectDialogControls(AForm, EditConnectionPanel);
 
-
   CreateAdditionalConnectDialogEditPanel(AForm, LeftBottomPanel, 'ShortCut', RsShortCut, jctComboBox, ShortCutPanel, ShortCutComboBox, IShortCutComboBoxData, DefaultOnEditChange);
   if Supports(ShortCutComboBox, IJvDynControlComboBox, IDynControlComboBox) then
     IDynControlComboBox.ControlSetNewEntriesAllowed(False);
@@ -913,6 +920,7 @@ begin
     IDynControl.ControlSetOnClick(DefaultOnEditChange);
     IDynControl.ControlSetOnExit(DefaultOnEditChange); // Fix for the VCL/JVCL Controls which did not react on OnChange and OnClick
   end;
+  Supports(ConnectGroupComboBox, IJvDynControlItems, IConnectGroupComboBoxItems);
 
   ColorBoxPanel := DynControlEngine.CreatePanelControl(AForm, LeftBottomPanel, 'ColorBoxPanel', '', alTop);
   AlignControlTop(ColorBoxPanel, ConnectGroupPanel);
@@ -934,6 +942,7 @@ begin
     IDynControlAutoSize.ControlSetAutoSize(True);
   ColorBoxPanel.Visible := Options.ShowColors;
   SetPanelHeight(ColorBoxPanel);
+
 end;
 
 function TJvBaseDBLogonDialog.CreatePasswordChangeDialog: TJvBaseDBPasswordDialog;
@@ -993,6 +1002,8 @@ end;
 
 procedure TJvBaseDBLogonDialog.DefaultOnEditChange(Sender: TObject);
 begin
+  if csDestroying in ComponentState then
+    Exit;
   TransferConnectionInfoFromDialog(CurrentConnectionInfo);
   ValidateConnectBtnEnabled;
 end;
@@ -1058,10 +1069,8 @@ var
   i: Integer;
   Connection: TJvBaseConnectionInfo;
   Items: TStringList;
-  IDynControlItems: IJvDynControlItems;
 begin
-  if Assigned(ConnectGroupComboBox) and
-     Supports(ConnectGroupComboBox, IJvDynControlItems, IDynControlItems) then
+  if Assigned(IConnectGroupComboBoxItems) then
   begin
     Items := TStringList.Create;
     try
@@ -1073,7 +1082,7 @@ begin
           if Items.IndexOf(Connection.Group) < 0 then
             Items.Add(Connection.Group);
       end;
-      IDynControlItems.ControlItems.Assign(Items);
+      IConnectGroupComboBoxItems.ControlItems.Assign(Items);
     finally
       Items.Free;
     end;
@@ -1314,7 +1323,9 @@ begin
   if DBDialog.ModalResult = mrOk then
   begin
     if Options.SaveLastConnect then
-      TransferConnectionInfoFromDialog(ConnectionList.LastConnect);
+      TransferConnectionInfoFromDialog(ConnectionList.LastConnect)
+    else
+      ConnectionList.LastConnect.Clear;
     StoreSettings;
   end;
   ClearControlInterfaceObjects;
@@ -1349,9 +1360,14 @@ begin
   ClearFormControls;
   FillAllConnectionLists;
   TransferSessionDataToDialog;
-  if Options.SaveLastConnect and
-     ((DialogUserName = '') or (ConnectionList.LastConnect.SearchName = CurrentConnectionInfo.SearchName)) then
-    TransferConnectionInfoToDialog(ConnectionList.LastConnect);
+  if Options.SaveLastConnect then
+  begin
+    if (ConnectionList.LastConnect.SearchName = CurrentConnectionInfo.SearchName) then
+      ConnectionList.LastConnect.Password := CurrentConnectionInfo.Password;
+    if ((DialogUserName = '') or
+        (ConnectionList.LastConnect.SearchName = CurrentConnectionInfo.SearchName)) then
+      TransferConnectionInfoToDialog(ConnectionList.LastConnect);
+  end;
   ValidateConnectBtnEnabled;
 end;
 
@@ -1818,9 +1834,12 @@ end;
 
 procedure TJvBaseDBLogonDialog.SetEditPanelsTabOrder;
 begin
-  UsernamePanel.TabOrder := 0;
-  PasswordPanel.TabOrder := 1;
-  DataBasePanel.TabOrder := 2;
+  if Assigned(UsernamePanel) then
+    UsernamePanel.TabOrder := 0;
+  if Assigned(PasswordPanel) then
+    PasswordPanel.TabOrder := 1;
+  if Assigned(DataBasePanel) then
+    DataBasePanel.TabOrder := 2;
 end;
 
 procedure TJvBaseDBLogonDialog.SetEditPanelsVisibility;
@@ -1915,20 +1934,20 @@ begin
   begin
     if ConnectionInfo.UsernameEnabled then
       if Options.UsernameCaseSensitive then
-        ConnectionInfo.Username := IUserNameEditData.ControlValue
+        ConnectionInfo.Username := DialogUserName
       else
-        ConnectionInfo.Username := UpperCase(IUserNameEditData.ControlValue)
+        ConnectionInfo.Username := UpperCase(DialogUserName)
     else
       ConnectionInfo.Username := '';
     if ConnectionInfo.PasswordEnabled then
-      ConnectionInfo.Password := EncryptPassword(IPasswordEditData.ControlValue)
+      ConnectionInfo.Password := EncryptPassword(DialogPassword)
     else
       ConnectionInfo.Password := '';
     if  ConnectionInfo.DatabaseEnabled  then
       if Options.DatabasenameCaseSensitive then
-        ConnectionInfo.Database := IDatabaseComboBoxData.ControlValue
+        ConnectionInfo.Database := DialogDatabase
       else
-        ConnectionInfo.Database := UpperCase(IDatabaseComboBoxData.ControlValue)
+        ConnectionInfo.Database := UpperCase(DialogDatabase)
     else
       ConnectionInfo.Database := '';
     if Options.ShowAlias and Assigned(IAliasEditData) and ConnectionInfo.AliasEnabled then
@@ -1937,7 +1956,7 @@ begin
       ConnectionInfo.Group := IConnectGroupComboBoxData.ControlValue;
     if Options.ShowColors and Assigned(IColorComboBox) then
       ConnectionInfo.Color := IColorComboBox.ControlSelectedColor;
-    if Options.ShowShortcuts then
+    if Options.ShowShortcuts and Assigned(IShortCutComboBoxData) then
       ConnectionInfo.ShortCutText := IShortCutComboBoxData.ControlValue;
   end;
 end;
@@ -1958,13 +1977,13 @@ begin
       IShortCutComboBoxData.ControlValue := ConnectionInfo.ShortCutText;
     if Options.ShowColors and Assigned(IColorComboBox) then
       IColorComboBox.ControlSelectedColor := ConnectionInfo.Color;
-    if (ConnectionInfo.Username = '') and UserNameEdit.CanFocus then
+    if (ConnectionInfo.Username = '') and Assigned(UserNameEdit) and UserNameEdit.CanFocus then
       UserNameEdit.SetFocus
     else
-      if (ConnectionInfo.Password = '') and PasswordEdit.CanFocus then
+      if (ConnectionInfo.Password = '') and Assigned(PasswordEdit) and PasswordEdit.CanFocus then
         PasswordEdit.SetFocus
       else
-        if (ConnectionInfo.Database = '') and DatabaseComboBox.CanFocus  then
+        if (ConnectionInfo.Database = '') and Assigned(DatabaseComboBox) and DatabaseComboBox.CanFocus  then
           DatabaseComboBox.SetFocus;
   end;
 end;
@@ -2068,7 +2087,8 @@ end;
 procedure TJvBaseDBOracleLogonDialog.ClearFormControls;
 begin
   inherited ClearFormControls;
-  IConnectAsComboBoxData.ControlValue := 'NORMAL';
+  if Assigned(IConnectAsComboBoxData) then
+    IConnectAsComboBoxData.ControlValue := 'NORMAL';
 end;
 
 procedure TJvBaseDBOracleLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl:
@@ -2138,7 +2158,8 @@ end;
 procedure TJvBaseDBOracleLogonDialog.SetEditPanelsTabOrder;
 begin
   inherited SetEditPanelsTabOrder;
-  ConnectAsPanel.TabOrder := 3;
+  if Assigned(ConnectAsPanel) then
+    ConnectAsPanel.TabOrder := 3;
 end;
 
 procedure TJvBaseDBOracleLogonDialog.SetEditPanelsVisibility;
