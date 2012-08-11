@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -112,7 +112,7 @@ File72=..\..\..\help\JvFullColorForm.dtx
 File73=..\..\..\help\JvFullColorCircleForm.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2011 Project JEDI
+Copyright=Copyright (C) 1999, 2012 Project JEDI
 Summary=Documentation of the JVCL Multimedia and Image Components Runtime Package
 Title=JVCL Multimedia and Image Components Runtime Package
 VersionBuild=0

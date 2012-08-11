@@ -118,7 +118,7 @@ File81=..\..\..\help\JvSysRequirements.dtx
 File82=..\..\..\help\JvMailSlots.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2011 Project JEDI
+Copyright=Copyright (C) 1999, 2012 Project JEDI
 Summary=Documentation of the JVCL System Components Runtime Package
 Title=JVCL System Components Runtime Package
 VersionBuild=0

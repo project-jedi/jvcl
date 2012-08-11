@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{F6D59ED0-9823-4814-B216-A8A78B517198}</ProjectGuid>
 			<MainSource>JvXPCtrlsDesign.dpk</MainSource>
@@ -94,7 +94,7 @@
 						<VersionInfoKeys Name="FileDescription">JVCL XP Controls</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvXPCtrlsDesign</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvXPCtrlsDesign120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

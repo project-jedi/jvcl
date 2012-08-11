@@ -104,7 +104,7 @@ File64=..\..\..\help\JvDesktopAlert.dtx
 File65=..\..\..\help\JvDesktopAlertForm.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2011 Project JEDI
+Copyright=Copyright (C) 1999, 2012 Project JEDI
 Summary=Documentation of the JVCL Dialog Components Runtime Package
 Title=JVCL Dialog Components Runtime Package
 VersionBuild=0

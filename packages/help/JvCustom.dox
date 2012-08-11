@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -112,7 +112,7 @@ File73=..\..\..\help\JvTabBar.dtx
 File74=..\..\..\help\JvTabBarXPPainter.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2011 Project JEDI
+Copyright=Copyright (C) 1999, 2012 Project JEDI
 Summary=Documentation of the JVCL Custom Controls Runtime Package
 Title=JVCL Custom Controls Runtime Package
 VersionBuild=0
