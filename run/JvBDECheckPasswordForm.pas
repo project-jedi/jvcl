@@ -190,12 +190,12 @@ begin
             Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
         end;
         if Ok then
-          MessageBox(RsPasswordChanged, '', MB_OK or MB_ICONINFORMATION)
+          JvMessageBox(RsPasswordChanged, MB_OK or MB_ICONINFORMATION)
         else
         if Error = peMismatch then
-          MessageBox(RsPasswordsMismatch, '', MB_OK or MB_ICONERROR)
+          JvMessageBox(RsPasswordsMismatch, MB_OK or MB_ICONERROR)
         else
-          MessageBox(RsPasswordNotChanged, '', MB_OK or MB_ICONERROR);
+          JvMessageBox(RsPasswordNotChanged, MB_OK or MB_ICONERROR);
       finally
         if Table <> nil then
           Table.Free;
