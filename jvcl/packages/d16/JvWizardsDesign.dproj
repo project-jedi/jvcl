@@ -107,7 +107,7 @@
 						<VersionInfoKeys Name="FileDescription">JVCL Wizard</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvWizardsDesign</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvWizardsDesign160.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

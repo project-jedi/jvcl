@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{D967C259-8727-4B1D-8824-FC792F5A9F89}</ProjectGuid>
 			<MainSource>JvCmp.dpk</MainSource>
@@ -101,7 +101,7 @@
 						<VersionInfoKeys Name="FileDescription">JVCL Non-Visual Components Runtime Package</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvCmp</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvCmp140.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

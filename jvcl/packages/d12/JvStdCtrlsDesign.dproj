@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{2022FFED-CBA4-4663-8E1E-7C0855769930}</ProjectGuid>
 			<MainSource>JvStdCtrlsDesign.dpk</MainSource>
@@ -94,7 +94,7 @@
 						<VersionInfoKeys Name="FileDescription">JVCL Standard Controls</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvStdCtrlsDesign</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvStdCtrlsDesign120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

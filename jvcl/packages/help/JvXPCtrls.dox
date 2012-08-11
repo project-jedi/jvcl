@@ -1,4 +1,4 @@
-﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
+; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -56,7 +56,7 @@ File17=..\..\..\help\JvExplorerBar.dtx
 File18=..\..\..\help\JvExplorerBarItems.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2011 Project JEDI
+Copyright=Copyright (C) 1999, 2012 Project JEDI
 Summary=Documentation of the JVCL XP Controls Runtime Package
 Title=JVCL XP Controls Runtime Package
 VersionBuild=0

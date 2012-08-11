@@ -1,4 +1,4 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{C70AFC0D-40D7-4F4D-A0F6-B1C17B608455}</ProjectGuid>
 			<MainSource>JvNet.dpk</MainSource>
@@ -94,7 +94,7 @@
 						<VersionInfoKeys Name="FileDescription">JVCL Network Components Runtime Package</VersionInfoKeys>
 						<VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName">JvNet</VersionInfoKeys>
-						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2011 Project JEDI</VersionInfoKeys>
+						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">JvNet120.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
