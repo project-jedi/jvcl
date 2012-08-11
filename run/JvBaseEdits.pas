@@ -319,7 +319,6 @@ implementation
 
 uses
   SysUtils, Math, Graphics,
-//  JclLogic,
   JvJCLUtils, JvCalc, JvConsts, JvResources, JclSysUtils;
 
 {$R JvBaseEdits.Res}
@@ -932,7 +931,6 @@ begin
     Invalidate;
 end;
 
-
 procedure TJvCustomNumEdit.WMPaint(var Msg: TWMPaint);
 var
   S: string;
@@ -945,9 +943,6 @@ begin
     FFocused and not PopupVisible, FCanvas, Msg) then
     inherited;
 end;
-
-
-
 
 procedure TJvCustomNumEdit.FontChanged;
 begin
@@ -1029,7 +1024,6 @@ begin
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
       Bmp.LoadFromResourceName(HInstance, sCalcBmp);
       GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally

@@ -1225,7 +1225,7 @@ begin
   PaintRect := Rect(0, 0, Width, Height);
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if ThemeServices.Enabled then
   begin
     if ControlInGlassPaint(Self) then
       FillRect(Canvas.Handle, ClientRect, GetStockObject(BLACK_BRUSH))
