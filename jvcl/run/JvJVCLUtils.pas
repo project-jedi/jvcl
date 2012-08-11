@@ -271,9 +271,6 @@ function FindFormByClassName(const FormClassName: string): TForm;
 function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
 
-{ MessageBox is Application.MessageBox with string (not PChar) parameters.
-  if Caption parameter = '', it replaced with Application.Title }
-function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer; overload;
 function MsgBox(Handle: THandle; const Caption, Text: string; Flags: Integer): Integer; overload;
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
@@ -2923,14 +2920,6 @@ begin
   Result := Application.Active;
 end;
 {$ENDIF UNIX}
-
-function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
-begin
-  if Caption <> '' then
-    Result := Application.MessageBox(PChar(Msg), PChar(Caption), Flags)
-  else
-    Result := Application.MessageBox(PChar(Msg), PChar(Application.Title), Flags);
-end;
 
 const
   NoHelp = 0; { for MsgDlg2 }

@@ -2570,7 +2570,7 @@ begin
   end
   else
   begin
-    MessageBox('!!! asked to draw nil item !!!'#13#10 +
+    JvMessageBox('!!! asked to draw nil item !!!'#13#10 +
       'Please report this to the JVCL team, ' +
       'detailing the precise conditions in ' +
       'which this error occured.'#13#10 +
