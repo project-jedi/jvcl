@@ -83,7 +83,7 @@ SolidCompression=yes
 ShowLanguageDialog=auto
 OptimizedChecks=yes
 
-// for skin
+; for skin
 #define MyWizardBottomImageFile "Skin\images\wizardbottom.bmp"
 #define MyWizardButtonImageFile "Skin\images\button.bmp"
 #define MyWizardImageFile "wizard.bmp"
