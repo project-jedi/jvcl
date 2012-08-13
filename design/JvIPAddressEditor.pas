@@ -260,7 +260,7 @@ end;
 
 procedure TJvIPAddressAsNumberProperty.SetValue(const Value: string);
 begin
-  SetOrdValue(StrToCardinal(Value));
+  SetOrdValue(StrToUInt(Value));
 end;
 
 { TJvIPAddressAsTextProperty }
