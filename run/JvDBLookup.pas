@@ -2389,6 +2389,8 @@ begin
     ExStyle := WS_EX_TOOLWINDOW;
     AddBiDiModeExStyle(ExStyle);
     WindowClass.Style := CS_SAVEBITS;
+    if CheckWin32Version(5, 1) then // Windows XP+
+      WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
   end;
 end;
 
