@@ -41,8 +41,8 @@
       <Projects Name="JvPascalInterpreterDesign90.bpl" Type="String">d9\JvPascalInterpreterDesign.bdsproj</Projects>
       <Projects Name="JvBands90.bpl" Type="String">d9\JvBands.bdsproj</Projects>
       <Projects Name="JvBandsDesign90.bpl" Type="String">d9\JvBandsDesign.bdsproj</Projects>
-      <Projects Name="JvPlugin90.bpl" Type="String">d9\JvPlugin.bdsproj</Projects>
-      <Projects Name="JvPluginDesign90.bpl" Type="String">d9\JvPluginDesign.bdsproj</Projects>
+      <Projects Name="JvPluginSystem90.bpl" Type="String">d9\JvPluginSystem.bdsproj</Projects>
+      <Projects Name="JvPluginSystemDesign90.bpl" Type="String">d9\JvPluginSystemDesign.bdsproj</Projects>
       <Projects Name="JvJans90.bpl" Type="String">d9\JvJans.bdsproj</Projects>
       <Projects Name="JvJansDesign90.bpl" Type="String">d9\JvJansDesign.bdsproj</Projects>
       <Projects Name="JvGlobus90.bpl" Type="String">d9\JvGlobus.bdsproj</Projects>
