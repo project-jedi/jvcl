@@ -32,6 +32,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Messages, Graphics, CommDlg, Dialogs,
+  JclBase,
   JvBaseDlg;
 
 const
@@ -269,7 +270,7 @@ end;
 // Generic dialog hook. Centers the dialog on the screen in response to
 // the WM_INITDIALOG message
 
-function DialogHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
+function DialogHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): UINT_PTR; stdcall;
 begin
   Result := 0;
   if Msg = WM_INITDIALOG then
@@ -283,7 +284,7 @@ begin
   end;
 end;
 
-function PageDrawHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): {$IFDEF RTL230_UP}UINT_PTR{$ELSE}UINT{$ENDIF RTL230_UP}; stdcall;
+function PageDrawHook(Wnd: HWND; Msg: UINT; AWParam: WPARAM; ALParam: LPARAM): UINT_PTR; stdcall;
 const
   PagePaintWhat: array [WM_PSD_FULLPAGERECT..WM_PSD_YAFULLPAGERECT] of TJvPSPaintWhat =
    (pwFullPage, pwMinimumMargins, pwMargins,
@@ -355,7 +356,7 @@ end;
 
 function CopyData(Handle: THandle): THandle;
 var
-  Src, Dest: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP};
+  Src, Dest: PByte;
   Size: Integer;
 begin
   if Handle <> 0 then
@@ -491,8 +492,7 @@ procedure TJvPageSetupDialog.WMCommand(var Msg: TWMCommand);
 const
   IDPRINTERBTN = $0402;
 begin
-  if not ((Msg.ItemID = IDPRINTERBTN) and
-    (Msg.NotifyCode = BN_CLICKED) and DoPrinter) then
+  if not ((Msg.ItemID = IDPRINTERBTN) and (Msg.NotifyCode = BN_CLICKED) and DoPrinter) then
     inherited;
 end;
 
@@ -548,32 +548,32 @@ type
 var
   ActiveWindow: HWND;
   WindowList: Pointer;
-  {$IFNDEF DELPHI64_TEMPORARY}
+  {$IFDEF CPU86}
   FPUControlWord: Word;
-  {$ENDIF ~DELPHI64_TEMPORARY}
+  {$ENDIF CPU86}
 begin
   ActiveWindow := GetActiveWindow;
   WindowList := DisableTaskWindows(0);
   try
     Application.HookMainWindow(MessageHook);
-    {$IFNDEF DELPHI64_TEMPORARY}
+    {$IFDEF CPU86}
     asm
       // Avoid FPU control word change in NETRAP.dll, NETAPI32.dll, etc
       FNSTCW  FPUControlWord
     end;
-    {$ENDIF ~DELPHI64_TEMPORARY}
+    {$ENDIF CPU86}
     try
       CreationControl := Self;
       PageSetupControl := Self;
       Result := TDialogFunc(DialogFunc)(DialogData);
     finally
       PageSetupControl := nil;
-      {$IFNDEF DELPHI64_TEMPORARY}
+      {$IFDEF CPU86}
       asm
         FNCLEX
         FLDCW FPUControlWord
       end;
-      {$ENDIF ~DELPHI64_TEMPORARY}
+      {$ENDIF CPU86}
       Application.UnhookMainWindow(MessageHook);
     end;
   finally

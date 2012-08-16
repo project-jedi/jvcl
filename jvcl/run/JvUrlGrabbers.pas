@@ -337,6 +337,7 @@ implementation
 
 uses
   WinInet,
+  JclBase, // DWORD_PTR
   JvResources;
 
 const
@@ -802,7 +803,7 @@ begin
 
       // Connect to the host
       hHostConnection := InternetConnect(hSession, PChar(HostName), Port,
-        UserName, Password, INTERNET_SERVICE_HTTP, 0, DWORD(Self));
+        UserName, Password, INTERNET_SERVICE_HTTP, 0, DWORD_PTR(Self));
 
       if Terminated then
         Exit;

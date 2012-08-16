@@ -16,3 +16,5 @@ JvDSADialog:
 JvBandObject:
   * MakeMsgHookInstance creates a helper function in memory that injects the hidden Self parameter (x64 ready)
 
+JvPageSetup:
+  * THackCommonDialog, hard typecast to get access to private fields

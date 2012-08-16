@@ -811,13 +811,6 @@ begin
   Value := IntPower(Args.Values[0], Args.Values[1]);
 end;
 
-{ function ChangeTopException(E: TObject): TObject; }
-
-procedure JvInterpreter_ChangeTopException(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := O2V(ChangeTopException(V2O(Args.Values[0])));
-end;
-
 { function MakeValidFileName(const FileName: TFileName; const ReplaceBadChar: Char): TFileName; }
 
 procedure JvInterpreter_MakeValidFileName(var Value: Variant; Args: TJvInterpreterArgs);
@@ -1058,7 +1051,6 @@ begin
     AddFunction(cJvUtils, 'SwapInt', JvInterpreter_SwapInt, 2, [varInteger or varByRef, varInteger or varByRef],
       varEmpty);
     AddFunction(cJvUtils, 'IntPower', JvInterpreter_IntPower, 2, [varInteger, varInteger], varEmpty);
-    AddFunction(cJvUtils, 'ChangeTopException', JvInterpreter_ChangeTopException, 1, [varObject], varEmpty);
     AddFunction(cJvUtils, 'MakeValidFileName', JvInterpreter_MakeValidFileName, 2, [varEmpty, varEmpty], varEmpty);
     AddFunction(cJvUtils, 'AnsiStrLIComp', JvInterpreter_AnsiStrLIComp, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddFunction(cJvUtils, 'Var2Type', JvInterpreter_Var2Type, 2, [varEmpty, varInteger], varEmpty);

@@ -728,6 +728,7 @@ type
       const BoundingRect: TRect; out AContentRect: TRect): Boolean;
     function IsSystemStyle: Boolean;
     function Enabled: Boolean;
+    function Available: Boolean;
     {$ENDIF ~COMPILER16_UP}
   end;
 
@@ -1467,6 +1468,11 @@ end;
 function TThemeServicesEx.Enabled: Boolean;
 begin
   Result := ThemesEnabled;
+end;
+
+function TThemeServicesEx.Available: Boolean;
+begin
+  Result := ThemesAvailable;
 end;
 {$ENDIF ~COMPILER16_UP}
 

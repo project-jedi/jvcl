@@ -603,8 +603,6 @@ function RecycleFile(FileToRecycle: string): Boolean;
 function CopyFile(FromFile, ToDir: string): Boolean;
 function ShellObjectTypeEnumToConst(ShellObjectType: TShellObjectType): UINT;
 function ShellObjectTypeConstToEnum(ShellObjectType: UINT): TShellObjectType;
-function ShellMessageBox(Instance: THandle; Owner: THandle; Text: PChar;
-  Caption: PChar; Style: UINT; Parameters: array of Pointer): Integer; cdecl;
 
 type
   FreePIDLProc = procedure(PIDL: PItemIDList); stdcall;
@@ -1202,69 +1200,6 @@ end;
 procedure ClearRecentDocs;
 begin
   SHAddToRecentDocs(SHARD_PATH, nil);
-end;
-
-function ExecuteShellMessageBox(MethodPtr: Pointer; Instance: THandle;
-  Owner: HWND; Text: Pointer; Caption: Pointer; Style: UINT;
-  Parameters: array of Pointer): Integer;
-type
-  PPointer = ^Pointer;
-{$IFNDEF DELPHI64_TEMPORARY}
-var
-  ParamCount: Integer;
-  ParamBuffer: PChar;
-  BufferIndex: Integer;
-{$ENDIF ~DELPHI64_TEMPORARY}
-begin
-  {$IFDEF DELPHI64_TEMPORARY}
-  System.Error(rePlatformNotImplemented);
-  Result := MaxInt; // to remove the warning
-  {$ELSE ~DELPHI64_TEMPORARY}
-  ParamCount := High(Parameters) + 1;
-  GetMem(ParamBuffer, ParamCount * SizeOf(Pointer));
-  try
-    for BufferIndex := 0 to High(Parameters) do
-    begin
-      PPointer(@ParamBuffer[BufferIndex * SizeOf(Pointer)])^ :=
-        Parameters[High(Parameters) - BufferIndex];
-    end;
-    asm
-      mov ECX, ParamCount
-      cmp ECX, 0
-      je  @MethodCall
-      mov EDX, ParamBuffer
-@StartLoop:
-      push DWORD PTR[EDX]
-      add  EDX, 4
-      loop @StartLoop
-@MethodCall:
-      push Style
-      push Caption
-      push Text
-      push Owner
-      push Instance
-
-      call MethodPtr
-      mov  Result, EAX
-    end;
-  finally
-    FreeMem(ParamBuffer);
-  end;
-  {$ENDIF ~DELPHI64_TEMPORARY}
-end;
-
-function ShellMessageBox(Instance: THandle; Owner: THandle; Text: PChar;
-  Caption: PChar; Style: UINT; Parameters: array of Pointer): Integer;
-var
-  MethodPtr: Pointer;
-  ShellDLL: HMODULE;
-begin
-  ShellDLL := SafeLoadLibrary(Shell32);
-  MethodPtr := GetProcAddress(ShellDLL, PChar(183));
-  if Assigned(MethodPtr) then
-    Result := ExecuteShellMessageBox(MethodPtr, Instance, Owner, Text, Caption, Style, Parameters)
-  else
-    Result := ID_CANCEL;
 end;
 
 //=== { TJvOutOfMemoryDialog } ===============================================
