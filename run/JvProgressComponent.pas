@@ -262,10 +262,7 @@ begin
 //      (Owner as TJvProgressComponent).FOnShow(Self);
     except
       on E: Exception do
-      begin
-        (Owner as TJvProgressComponent).FException := E;
-        ChangeTopException(nil);
-      end;
+        (Owner as TJvProgressComponent).FException := AcquireExceptionObject;
     end;
   finally
     ModalResult := mrOk;

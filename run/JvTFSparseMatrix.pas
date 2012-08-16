@@ -214,9 +214,6 @@ var
   P, Prev, Curr: PSMQuantum;
   RowExists: Boolean;
 begin
-  {$IFDEF DELPHI64_TEMPORARY}
-  System.Error(rePlatformNotImplemented);
-  {$ENDIF DELPHI64_TEMPORARY}
   if FindQuantum(Row, Col, Prev, Curr, RowExists) then
     if Data <> NullValue then
       Curr^.Data := Data
@@ -234,9 +231,7 @@ begin
       P^.Index := Row;
       P^.Link := nil;
       P^.Data := Prev^.Data;
-      {$IFNDEF DELPHI64_TEMPORARY}
       PSMQuantum(Prev^.Data) := P;
-      {$ENDIF ~DELPHI64_TEMPORARY}
       Prev := P;
     end;
 

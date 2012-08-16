@@ -332,8 +332,12 @@ var
   GMsimg32Handle: THandle = 0;
   GTriedLoadMsimg32Dll: Boolean = False;
 
-  _AlphaBlend: Pointer;
-  _TransparentBlt: Pointer;
+  _AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest,
+    nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc,
+    nHeightSrc: Integer; BlendFunction: BLENDFUNCTION): BOOL; stdcall;
+  _TransparentBlt: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, hHeightDest: Integer;
+    hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer;
+    crTransparent: UINT): BOOL; stdcall;
 
 {$IFDEF JVCLThemesEnabled}
 
@@ -511,8 +515,8 @@ end;
 
 procedure UnloadMsimg32Dll;
 begin
-  _TransparentBlt := nil;
-  _AlphaBlend := nil;
+  @_TransparentBlt := nil;
+  @_AlphaBlend := nil;
   if GMsimg32Handle > 0 then
     FreeLibrary(GMsimg32Handle);
   GMsimg32Handle := 0;
@@ -524,8 +528,8 @@ begin
   GMsimg32Handle := SafeLoadLibrary(Msimg32DLLName);
   if GMsimg32Handle <> 0 then
   begin
-    _TransparentBlt := GetProcAddress(GMsimg32Handle, TransparentBltName);
-    _AlphaBlend := GetProcAddress(GMsimg32Handle, AlphaBlendName);
+    @_TransparentBlt := GetProcAddress(GMsimg32Handle, TransparentBltName);
+    @_AlphaBlend := GetProcAddress(GMsimg32Handle, AlphaBlendName);
   end;
 end;
 
@@ -707,38 +711,26 @@ end;
 
 //=== Global procedures ======================================================
 
-function AlphaBlend;
+function AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest,
+  nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc,
+  nHeightSrc: Integer; BlendFunction: BLENDFUNCTION): BOOL; stdcall;
 begin
   if not GTriedLoadMsimg32Dll then
     LoadMsimg32Dll;
-  Result := Assigned(_AlphaBlend);
-  {$IFDEF DELPHI64_TEMPORARY}
-  System.Error(rePlatformNotImplemented);
-  {$ELSE ~DELPHI64_TEMPORARY}
-  if Result then
-    asm
-      mov esp, ebp
-      pop ebp
-      jmp [_AlphaBlend]
-    end;
-  {$ENDIF ~DELPHI64_TEMPORARY}
+  Result := Assigned(_AlphaBlend) and
+    _AlphaBlend(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc,
+      nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, BlendFunction);
 end;
 
-function TransparentBlt;
+function TransparentBlt(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, hHeightDest: Integer;
+  hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer;
+  crTransparent: UINT): BOOL; stdcall;
 begin
   if not GTriedLoadMsimg32Dll then
     LoadMsimg32Dll;
-  Result := Assigned(_TransparentBlt);
-  {$IFDEF DELPHI64_TEMPORARY}
-  System.Error(rePlatformNotImplemented);
-  {$ELSE ~DELPHI64_TEMPORARY}
-  if Result then
-    asm
-      mov esp, ebp
-      pop ebp
-      jmp [_TransparentBlt]
-    end;
-  {$ENDIF ~DELPHI64_TEMPORARY}
+  Result := Assigned(_TransparentBlt) and
+    _TransparentBlt(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, hHeightDest, hdcSrc,
+      nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, crTransparent);
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -1171,7 +1163,7 @@ end;
 
 procedure TGlobalXPData.Update;
 begin
-  FIsThemed := ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and IsThemeActive and IsAppThemed;
+  FIsThemed := StyleServices.Available and IsThemeActive and IsAppThemed;
   if not FIsThemed then
     Exit;
 
@@ -2646,7 +2638,7 @@ begin
         { force theme data refresh, needed when
 
           * Non-themed application and switching system font size }
-        if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+        if not StyleServices.Enabled then
           ThemeServices.UpdateThemes;
         {$ENDIF JVCLThemesEnabled}
       end;

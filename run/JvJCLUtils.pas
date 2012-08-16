@@ -326,7 +326,6 @@ function PrettyNameToColor(const Value: string): TColor;
 {**** other routines }
 procedure SwapInt(var Int1, Int2: Integer); {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF SUPPORTS_INLINE}
 function IntPower(Base, Exponent: Integer): Integer;
-function ChangeTopException(E: TObject): TObject; // Linux version writes error message to ErrOutput
 function StrToBool(const S: string): Boolean;
 
 function Var2Type(V: Variant; const DestVarType: Integer): Variant;
@@ -2440,47 +2439,6 @@ begin
     Result := 0
   else
     Result := 1;
-end;
-
-function ChangeTopException(E: TObject): TObject;
-type
-  PRaiseFrame = ^TRaiseFrame;
-  TRaiseFrame = record
-    NextRaise: PRaiseFrame;
-    ExceptAddr: Pointer;
-    ExceptObject: TObject;
-    //ExceptionRecord: PExceptionRecord;
-  end;
-begin
-  {$IFDEF DELPHI64_TEMPORARY}
-  System.Error(rePlatformNotImplemented);
-  Result := E;
-  {$ELSE ~DELPHI64_TEMPORARY}
-  { C++ Builder 3 Warning !}
-  { if linker error occured with message "unresolved external 'System::RaiseList'" try
-    comment this function implementation, compile,
-    then uncomment and compile again. }
-  {$IFDEF MSWINDOWS}
-  {$IFDEF SUPPORTS_DEPRECATED}
-  {$WARN SYMBOL_DEPRECATED OFF}
-  {$ENDIF SUPPORTS_DEPRECATED}
-  if RaiseList <> nil then
-  begin
-    Result := PRaiseFrame(RaiseList)^.ExceptObject;
-    PRaiseFrame(RaiseList)^.ExceptObject := E
-  end
-  else
-    Result := nil;
-  {$IFDEF SUPPORTS_DEPRECATED}
-  {$WARN SYMBOL_DEPRECATED ON}
-  {$ENDIF SUPPORTS_DEPRECATED}
-  {$ENDIF MSWINDOWS}
-  {$IFDEF UNIX}
-  // XXX: changing exception in stack frame is not supported on Kylix
-  Writeln(ErrOutput, 'ChangeTopException');
-  Result := E;
-  {$ENDIF UNIX}
-  {$ENDIF ~DELPHI64_TEMPORARY}
 end;
 
 function KeyPressed(VK: Integer): Boolean;
@@ -7548,15 +7506,10 @@ procedure ResourceNotFound(ResID: PChar);
 var
   S: string;
 begin
-  {$IFDEF DELPHI64_TEMPORARY}
-  if INT_PTR(ResID) <= $FFFF then
+  if DWORD_PTR(ResID) <= $FFFF then
     S := IntToStr(INT_PTR(ResID))
-  {$ELSE ~DELPHI64_TEMPORARY}
-  if LongRec(ResID).Hi = 0 then
-    S := IntToStr(LongRec(ResID).Lo)
-  {$ENDIF ~DELPHI64_TEMPORARY}
   else
-    S := StrPas(ResID);
+    S := ResID;
   raise EResNotFound.CreateResFmt(@SResNotFound, [S]);
 end;
 

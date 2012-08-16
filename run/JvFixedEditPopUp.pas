@@ -281,25 +281,9 @@ type
 function THiddenPopupObject.GetClipboardCommands: TJvClipboardCommands;
 const
   cClipboardCommands = 'ClipboardCommands';
-{$IFNDEF DELPHI64_TEMPORARY}
-var
-  Value: TIntegerSet;
-  I: Integer;
-{$ENDIF ~DELPHI64_TEMPORARY}
 begin
   if IsPublishedProp(Edit, cClipboardCommands) then
-  begin
-    Result := [];
-    {$IFDEF DELPHI64_TEMPORARY}
-    System.Error(rePlatformNotImplemented);
-    {$ELSE ~DELPHI64_TEMPORARY}
-    // does it really have to be this complicated ?!
-    Value := TIntegerSet(GetOrdProp(Edit, cClipboardCommands));
-    for I := 0 to SizeOf(Integer) * 8 - 1 do
-      if I in Value then
-        Include(Result, TJvClipboardCommand(I));
-    {$ENDIF ~DELPHI64_TEMPORARY}
-  end
+    Result := TJvClipboardCommands(Byte(GetOrdProp(Edit, cClipboardCommands)))
   else
     Result := [caCopy, caCut, caPaste, caUndo];
 end;

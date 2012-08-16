@@ -1533,13 +1533,8 @@ begin
   try
     if Module <> 0 then
     begin
-      {$IFDEF DELPHI64_TEMPORARY}
-      if INT_PTR(ResID) <= $FFFF then
+      if DWORD_PTR(ResID) <= $FFFF then
         Result.LoadFromResourceID(Module, INT_PTR(ResID))
-      {$ELSE ~DELPHI64_TEMPORARY}
-      if LongRec(ResID).Hi = 0 then
-        Result.LoadFromResourceID(Module, LongRec(ResID).Lo)
-      {$ENDIF ~DELPHI64_TEMPORARY}
       else
         Result.LoadFromResourceName(Module, StrPas(ResID));
     end

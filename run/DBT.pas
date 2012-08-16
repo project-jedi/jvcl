@@ -53,7 +53,7 @@ interface
 (*$HPPEMIT '' *)
 
 uses
-  Windows;
+  Windows, Messages;
 
 { *
   * BroadcastSpecialMessage constants
@@ -571,10 +571,13 @@ type
 
 type
   TWMDeviceChange = record
-   Msg:    Cardinal;
-   Event:  {$IFDEF DELPHI64_TEMPORARY}WPARAM{$ELSE}UINT{$ENDIF};
-   dwData: Pointer;
-   Result: LRESULT;
+    Msg: Cardinal;
+    {$IFDEF COMPILER16_UP}
+    MsgFiller: TDWordFiller;
+    {$ENDIF COMPILER16_UP}
+    Event: WPARAM;
+    dwData: Pointer;
+    Result: LRESULT;
   end;
 
 implementation
