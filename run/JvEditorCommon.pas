@@ -2793,7 +2793,7 @@ procedure TJvCustomEditorBase.WMGetText(var Msg: TWMGetText);
 var
   S: string;
 begin
-  if Msg.Text = nil then
+  if (Msg.Text = nil) or (csDestroying in ComponentState) then // stupid VCL wants to save the WindowText when the control is released
     Msg.Result := 0
   else
   begin
@@ -2806,7 +2806,10 @@ end;
 
 procedure TJvCustomEditorBase.WMGetTextLength(var Msg: TMessage);
 begin
-  Msg.Result := GetTextLen;
+  if csDestroying in ComponentState then // stupid VCL wants to save the WindowText when the control is released
+    Msg.Result := 0
+  else
+    Msg.Result := GetTextLen;
 end;
 
 procedure TJvCustomEditorBase.UpdateEditorSize;
