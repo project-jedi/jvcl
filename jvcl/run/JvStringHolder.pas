@@ -217,7 +217,8 @@ uses
   JvJCLUtils, JvResources, JvConsts, JvTypes;
 
 const
-  XorVersion = 1;
+  AnsiXorVersion = 1;
+  XorVersion = 2;
 
 function ExtractName(const Items: string; var Pos: Integer): string;
 var
@@ -785,8 +786,15 @@ begin
     while not Reader.EndOfList do
     begin
       Tmp := Reader.ReadString;
-      if FReserved >= XorVersion then
-        Strings.Add(XorDecode(KeyString, Tmp))
+      if FReserved >= AnsiXorVersion then
+      begin
+        if FReserved >= XorVersion then
+          Strings.Add(XorDecodeString(KeyString, Tmp))
+        else
+          {$WARNINGS OFF} // XorDecode is deprecated, but we need it for backward compatibility, so hide the warning
+          Strings.Add(XorDecode(KeyString, Tmp));
+          {$WARNINGS ON}
+      end
       else
         Strings.Add(string(XorString(ShortString(KeyString), ShortString(Tmp))));
     end;
@@ -837,7 +845,7 @@ begin
   Writer.WriteListBegin;
   Writer.WriteString(KeyString);
   for I := 0 to Strings.Count - 1 do
-    Writer.WriteString(XorEncode(KeyString, Strings[I]));
+    Writer.WriteString(XorEncodeString(KeyString, Strings[I]));
   Writer.WriteListEnd;
 end;
 

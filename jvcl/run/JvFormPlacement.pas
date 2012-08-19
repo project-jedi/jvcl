@@ -1174,7 +1174,7 @@ begin
   if KeyString <> '' then
   begin
     SaveStrValue := VarToStr(SaveValue);
-    SaveStrValue := XorEncode(KeyString, SaveStrValue);
+    SaveStrValue := XorEncodeString(KeyString, SaveStrValue);
     StoredValues.Storage.WriteString(PathName, SaveStrValue);
   end
   else
@@ -1203,9 +1203,9 @@ begin
   if KeyString <> '' then
   begin
     DefaultStrValue := VarToStr(Value);
-    DefaultStrValue := XorEncode(KeyString, DefaultStrValue);
+    DefaultStrValue := XorEncodeString(KeyString, DefaultStrValue);
     RestoreStrValue := StoredValues.Storage.ReadString(PathName, DefaultStrValue);
-    RestoreStrValue := XorDecode(KeyString, RestoreStrValue);
+    RestoreStrValue := XorDecodeString(KeyString, RestoreStrValue);
     RestoreValue := RestoreStrValue;
   end
   else
