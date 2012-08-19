@@ -1763,8 +1763,10 @@ begin
   end;
 end;
 
+{$WARNINGS OFF} // prevent compiler from showing the deprecated warning in Delphi 6
 procedure TJvPopupMenu.DefaultDrawItem(Item: TMenuItem; Rect: TRect;
   State: TMenuOwnerDrawState);
+{$WARNINGS ON}
 begin
   DrawItem(Item, Rect, State)
 end;

@@ -2381,6 +2381,10 @@ begin
 end;
 
 procedure TJvPopupDataList.CreateParams(var Params: TCreateParams);
+{$IFDEF COMPILER6}
+const
+  CS_DROPSHADOW = $20000;
+{$ENDIF COMPILER6}
 begin
   inherited CreateParams(Params);
   with Params do
