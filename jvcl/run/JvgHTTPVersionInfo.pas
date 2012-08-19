@@ -51,7 +51,7 @@ type
     function GetProgramURL: string;
     function GetComments: string;
     procedure OnLoadVersionInfo(Sender: TObject; const PDisp: IDispatch;
-      var URL: OleVariant);
+      {$IFDEF COMPILER16_UP}const{$ELSE}var{$ENDIF} URL: OleVariant);
   public
     property VersionInfo: TStrings read GetVersionInfoProperty;
     function GetVersionInfo(WinControl: TWinControl): Boolean;
@@ -142,7 +142,7 @@ begin
 end;
 
 procedure TJvgHTTPVersionInfo.OnLoadVersionInfo(Sender: TObject;
-  const PDisp: IDispatch; var URL: OleVariant);
+  const PDisp: IDispatch; {$IFDEF COMPILER16_UP}const{$ELSE}var{$ENDIF} URL: OleVariant);
 var
   Doc: Variant;
 begin

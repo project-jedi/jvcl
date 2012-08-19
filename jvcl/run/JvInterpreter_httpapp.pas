@@ -52,8 +52,12 @@ const
 implementation
 
 uses
-  SysUtils, Classes,
-  HTTPApp;
+  {$IFDEF HAS_UNITSCOPE}
+  Web.HTTPApp,
+  {$ELSE}
+  HTTPApp,
+  {$ENDIF HAS_UNITSCOPE}
+  SysUtils, Classes;
 
 { function ReadClient(var Buffer; Count: Integer): Integer; }
 
