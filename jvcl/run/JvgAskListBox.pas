@@ -75,7 +75,7 @@ type
     FCaptionsAlign_: UINT;
     FShowText: Boolean;
     FSegment1Width: Word;
-    FPushedButton: array[0..1023] of Byte;
+    FPushedButton: array of Byte;
     FOnButtonClicked: TNotifyEvent;
     FSelectedItem: Word;
     FButtons: TStringList;
@@ -246,7 +246,6 @@ begin
   FTextAlign.OnChanged := SmthChanged;
   FCaptionsAlign.OnChanged := SmthChanged;
 
-  FillChar(FPushedButton, SizeOf(FPushedButton), #0);
   FWallpaper := nil;
 end;
 
@@ -323,18 +322,17 @@ var
   procedure DrawTextInRect(Rect: TRect; Align: Word; StrListNum: Integer);
   var
     FontColor: TColor;
-    szStr: array[0..255] of Char;
-    Len: Word;
+    S: string;
+    Len: Integer;
     TextStyle: TglTextStyle;
   begin
     Dec(Rect.Right, 2);
-    //    FillMemory(@szStr,255,0);
     if StrListNum = -1 then
-      StrPCopy(szStr, Items[Index])
+      S := Items[Index]
     else
-      StrPCopy(szStr, Buttons[StrListNum - 1]);
+      S := Buttons[StrListNum - 1];
 
-    Len := StrLen(szStr);
+    Len := Length(S);
 
     if StrListNum = -1 then
     begin
@@ -361,47 +359,47 @@ var
         begin
           Canvas.Font.Color := clBtnHighlight;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
           Canvas.Font.Color := clBtnShadow;
           OffsetRect(Rect, 2, 2);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
           Canvas.Font.Color := FontColor;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
         end;
       fstRecessed:
         begin
           Canvas.Font.Color := clBtnShadow;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
           Canvas.Font.Color := clBtnHighlight;
           OffsetRect(Rect, 2, 2);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
           Canvas.Font.Color := FontColor;
           OffsetRect(Rect, -1, -1);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
         end;
       fstPushed:
         begin
           Canvas.Font.Color := clBtnHighlight;
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
           OffsetRect(Rect, -1, -1);
           Canvas.Font.Color := clBtnShadow;
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
         end;
       fstShadow:
         begin
           Canvas.Font.Color := clBtnShadow;
           OffsetRect(Rect, 2, 2);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
           Canvas.Font.Color := FontColor;
           OffsetRect(Rect, -2, -2);
-          DrawText(Canvas, szStr, Len, Rect, Align);
+          DrawText(Canvas, PChar(S), Len, Rect, Align);
         end;
     else
       begin
         Canvas.Font.Color := FontColor;
-        DrawText(Canvas, szStr, Len, Rect, Align);
+        DrawText(Canvas, PChar(S), Len, Rect, Align);
       end;
     end;
   end;
@@ -417,6 +415,9 @@ begin
     Canvas.Handle := hDC;
     Rect := rcItem;
   end;
+
+  if Length(FPushedButton) <> Items.Count then
+    SetLength(FPushedButton, Items.Count);
 
   Canvas.Brush := Brush;
   //  if State = [odSelected,odFocused] then Exit;
@@ -795,6 +796,8 @@ var
   I: Word;
 begin
   Result := False;
+  if Length(FPushedButton) <> Items.Count then
+    SetLength(FPushedButton, Items.Count);
   for I := 0 to Items.Count - 1 do
     if FPushedButton[I] = 0 then
       Exit;
@@ -806,6 +809,8 @@ var
   I: Word;
 begin
   Result := 0;
+  if Length(FPushedButton) <> Items.Count then
+    SetLength(FPushedButton, Items.Count);
   if Colon = 0 then
   begin
     for I := 0 to Items.Count - 1 do
@@ -845,7 +850,11 @@ begin
   if Index >= Items.Count then
     Result := -1
   else
+  begin
+    if Length(FPushedButton) <> Items.Count then
+      SetLength(FPushedButton, Items.Count);
     Result := FPushedButton[Index];
+  end;
 end;
 
 function TJvgAskListBox.SetPushedButtonInLine(Index: Word; Value: Word): Boolean;
@@ -855,6 +864,8 @@ begin
   if (Index < Items.Count) and (Value <= FButtons.Count) then
   begin
     Result := True;
+    if Length(FPushedButton) <> Items.Count then
+      SetLength(FPushedButton, Items.Count);
     if FPushedButton[Index] = Value then
       Exit;
     FPushedButton[Index] := Value;
