@@ -40,7 +40,7 @@ uses
   {$IFDEF JV_MIDAS}
   JvDBRemoteLogin,
   {$ENDIF JV_MIDAS}
-  {$IFDEF USE_3RDPARTY_DOA} 
+  {$IFDEF USE_3RDPARTY_DOA}
   JvOracleDataset,
   JvDBPasswordDialogDoa,
   JvDBLogonDialogDoa,
@@ -62,7 +62,7 @@ uses
   JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
   JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridEditors, JvCsvDataEditor,
   JvDBActionsEngine, JvDBActions, JvDBCheckBox,
-  JvDBActnResForm, JvDataSource, JvDataSourceIntf, 
+  JvDBActnResForm, JvDataSource, JvDataSourceIntf,
   JvDynControlEngineVCL // This prevents runtime error messages about not initialized JvDynControlEngine
   ;
 
@@ -73,6 +73,7 @@ const
   cDataField = 'DataField';
   cKeyField = 'KeyField';
   cListField = 'ListField';
+  cDisplayField = 'DisplayField';
   cListKeyField = 'ListKeyField';
   cMasterField = 'MasterField';
   cDetailField = 'DetailField';
@@ -117,7 +118,10 @@ begin
   RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cListField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cListKeyField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(TDataFieldString), TJvDataConnector, cLookupField, TJvLookupSourceProperty);
-  
+
+  RegisterPropertyEditor(TypeInfo(string), TJvDBComboBoxListSettings, cKeyField, TJvDataFieldProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvDBComboBoxListSettings, cDisplayField, TJvDataFieldProperty);
+
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupEdit, cLookupField, TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, cItemField, TJvDataFieldProperty);
