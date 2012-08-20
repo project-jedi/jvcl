@@ -2818,9 +2818,9 @@ begin
   // Note: we do not add a call to IsDefaultPropertyValue here because it would
   // return True for any sub component which is not desirable as we want to
   // always store sub classes whether they are components or not.
-  if not StorageOptions.StoreDefaultValues and (
-    not Assigned(P.GetProc) or not Assigned(P.SetProc) or
-    not IsStoredProp(PersObj, P)) then
+  if not StorageOptions.StoreDefaultValues
+    and (not Assigned(P.GetProc) or not Assigned(P.SetProc) or not IsStoredProp(PersObj, P))
+    and (PropType(PersObj, PropName) <> tkClass) then // Classes can have data without having a stored property
     Exit;
 
   case PropType(PersObj, PropName) of
@@ -2891,7 +2891,8 @@ begin
         begin
           if SubObj is TStrings then
           begin
-            WriteStringList(Path, TStrings(SubObj))
+            if StorageOptions.StoreDefaultValues or (TStrings(SubObj).Count > 0) then
+              WriteStringList(Path, TStrings(SubObj))
           end
           else
           begin
