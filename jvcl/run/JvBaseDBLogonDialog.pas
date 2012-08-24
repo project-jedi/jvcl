@@ -1056,6 +1056,7 @@ end;
 
 procedure TJvBaseDBLogonDialog.FillAllConnectionLists;
 begin
+  FillAllComoboBoxes;
   FillConnectionList;
   FillDatabaseTreeView;
   FillGroupTreeView;
