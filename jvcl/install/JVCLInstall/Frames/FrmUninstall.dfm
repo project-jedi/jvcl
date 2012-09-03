@@ -36,6 +36,7 @@ object FrameUninstall: TFrameUninstall
     Top = 154
     Width = 505
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
   end
   object ProgressBarDelete: TProgressBar
@@ -43,6 +44,7 @@ object FrameUninstall: TFrameUninstall
     Top = 202
     Width = 505
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
   end
 end

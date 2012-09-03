@@ -245,7 +245,7 @@ begin
              Width := tmpWidth;
         end;
       end;
-      Inc(Width, GetDefaultCheckBoxSize.cx*4 div 2);  // add checkbox size
+      Inc(Width, GetDefaultCheckBoxSize.cx*Canvas.Font.PixelsPerInch*4 div 2 div 96);  // add checkbox size
 
       if HorzOrientation = hoLeft then
         X := 8

@@ -47,6 +47,7 @@ object FormMain: TFormMain
     Top = 8
     Width = 116
     Height = 31
+    AutoSize = True
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0

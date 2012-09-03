@@ -34,6 +34,7 @@ object FramePackageSelection: TFramePackageSelection
     Top = 49
     Width = 62
     Height = 13
+    Anchors = [akTop, akRight]
     Caption = '&Frameworks:'
     FocusControl = CheckListBoxFrameworks
   end
@@ -43,6 +44,7 @@ object FramePackageSelection: TFramePackageSelection
     Width = 78
     Height = 13
     Alignment = taRightJustify
+    Anchors = [akTop, akRight]
     Caption = '&Show packages:'
     FocusControl = ComboBoxDisplayMode
   end
@@ -53,6 +55,7 @@ object FramePackageSelection: TFramePackageSelection
     Height = 272
     OnClickCheck = CheckListBoxPackagesClickCheck
     AllowGrayed = True
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 18
     ParentShowHint = False
     PopupMenu = PopupMenuPackages
@@ -77,6 +80,7 @@ object FramePackageSelection: TFramePackageSelection
       'w all packages. Only packages that depend on others'#13#10'     are ch' +
       'ecked/unchecked if necessary.'
     Style = csDropDownList
+    Anchors = [akTop, akRight]
     ItemHeight = 13
     ParentShowHint = False
     ShowHint = True
@@ -92,6 +96,7 @@ object FramePackageSelection: TFramePackageSelection
     Top = 24
     Width = 344
     Height = 73
+    Anchors = [akLeft, akTop, akRight]
     Columns = <
       item
         AutoSize = True
@@ -108,10 +113,10 @@ object FramePackageSelection: TFramePackageSelection
   object CheckListBoxFrameworks: TCheckListBox
     Left = 356
     Top = 63
-    Width = 154
+    Width = 157
     Height = 31
     OnClickCheck = CheckListBoxFrameworksClickCheck
-    ItemHeight = 16
+    Anchors = [akTop, akRight]
     Style = lbOwnerDrawVariable
     TabOrder = 1
     OnClick = CheckListBoxFrameworksClick
@@ -122,6 +127,7 @@ object FramePackageSelection: TFramePackageSelection
     Width = 157
     Height = 25
     Action = ActionResetPackages
+    Anchors = [akTop, akRight]
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3

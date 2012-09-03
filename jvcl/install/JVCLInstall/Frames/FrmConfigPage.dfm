@@ -374,10 +374,10 @@ object FrameConfigPage: TFrameConfigPage
   object ComboBoxTargetIDE: TComboBox
     Left = 80
     Top = 8
-    Width = 218
+    Width = 298
     Height = 22
     Style = csOwnerDrawFixed
-    ItemHeight = 16
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 6
     OnChange = ComboBoxTargetIDEChange
     OnDrawItem = ComboBoxTargetIDEDrawItem
@@ -388,6 +388,7 @@ object FrameConfigPage: TFrameConfigPage
     Width = 129
     Height = 25
     Hint = 'Edit all compile time conditions that are in the jvcl.inc file.'
+    Anchors = [akTop, akRight]
     Caption = 'Edit jvcl%s%d.inc'
     ParentShowHint = False
     ShowHint = True

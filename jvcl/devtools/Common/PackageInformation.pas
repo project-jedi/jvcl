@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, Contnrs,
-  JclSimpleXml;
+  JclSimpleXml, JclFileUtils;
   
 type
   TCompileTargetPlatform = (ctpWin32, ctpWin64);
@@ -252,6 +252,7 @@ type
     FPackagesXmlDir: string;
     FTargetSymbol: string;
     FTargetPlatform: TCompileTargetPlatform;
+    FPackageXmlDirFileNames: TStringList;
 
     function GetCount: Integer;
     function GetPackages(Index: Integer): TBpgPackageTarget;
@@ -264,6 +265,7 @@ type
     function GetIsVCLX: Boolean; virtual;
     function GetPackageTargetClass: TBpgPackageTargetClass; virtual;
     procedure LoadFile;
+    function XmlFileExists(const XmlName: string): Boolean;
   public
     constructor Create(const AFilename, APackagesXmlDir, ATargetSymbol: string; ATargetPlatform: TCompileTargetPlatform);
       { Set AFilename to '' if you want a PackageGroup instance that does not
@@ -482,20 +484,32 @@ end;
 function GetPackageXmlInfo(const BplName, XmlDir: string): TPackageXmlInfo; overload;
 var
   Index: Integer;
-  GenericPrefix, Name: string;
+  GenericPrefix, Name, RuntimeName: string;
 begin
   GenericPrefix := XmlDir + PathDelim + BplNameToGenericName(BplName);
-  Name := GenericPrefix + '-R.xml';
-  if not FileExists(Name) then
-    Name := GenericPrefix + '-D.xml';
+  RuntimeName := GenericPrefix + '-R.xml';
+  Name := RuntimeName;
  // already in the cache
   if XmlFileCache.Find(Name, Index) then
     Result := TPackageXmlInfo(XmlFileCache.Objects[Index])
   else
   begin
-   // create a new one and add it to the cache
-    Result := TPackageXmlInfo.Create(Name); // do not localize
-    XmlFileCache.AddObject(Name, Result);
+    Result := nil;
+    Name := GenericPrefix + '-D.xml';
+    if XmlFileCache.Find(Name, Index) then
+      Result := TPackageXmlInfo(XmlFileCache.Objects[Index])
+    else
+    begin
+      // Access the disk as the last option
+      if FileExists(RuntimeName) then
+        Name := RuntimeName;
+    end;
+    if Result = nil then
+    begin
+     // create a new one and add it to the cache
+      Result := TPackageXmlInfo.Create(Name); // do not localize
+      XmlFileCache.AddObject(Name, Result);
+    end;
   end;
 end;
 
@@ -1080,6 +1094,8 @@ begin
   FTargetSymbol := ATargetSymbol;
   FTargetPlatform := ATargetPlatform;
   FFilename := AFilename;
+  FPackageXmlDirFileNames := TStringList.Create;
+
   FPackages := TObjectList.Create(Filename <> '');
   if Filename <> '' then
     LoadFile;
@@ -1087,6 +1103,7 @@ end;
 
 destructor TPackageGroup.Destroy;
 begin
+  FPackageXmlDirFileNames.Free;
   FPackages.Free;
   inherited Destroy;
 end;
@@ -1096,8 +1113,8 @@ var
   GenericPrefix: string;
 begin
   Result := nil;
-  GenericPrefix := PackagesXmlDir + PathDelim + BplNameToGenericName(TargetName);
-  if FileExists(GenericPrefix + '-R.xml') or FileExists(GenericPrefix + '-D.xml') then // do not localize
+  GenericPrefix := {PackagesXmlDir + PathDelim +} BplNameToGenericName(TargetName);
+  if XmlFileExists(GenericPrefix + '-R.xml') or XmlFileExists(GenericPrefix + '-D.xml') then // do not localize
   begin
     try
       Result := GetPackageTargetClass.Create(Self, TargetName, SourceName);
@@ -1189,6 +1206,10 @@ procedure TPackageGroup.LoadFile;
 var
   i: Integer;
 begin
+  FPackageXmlDirFileNames.Clear;
+  BuildFileList(PackagesXmlDir + '\*.xml', faAnyFile, FPackageXmlDirFileNames, False);
+  FPackageXmlDirFileNames.Sorted := True;
+
   if CompareText(ExtractFileExt(FileName), '.groupproj') = 0 then
     LoadGroupProjFile
   else
@@ -1358,6 +1379,11 @@ begin
   finally
     xml.Free;
   end;
+end;
+
+function TPackageGroup.XmlFileExists(const XmlName: string): Boolean;
+begin
+  Result := FPackageXmlDirFileNames.IndexOf(XmlName) <> -1;
 end;
 
 { TBpgPackageTarget }

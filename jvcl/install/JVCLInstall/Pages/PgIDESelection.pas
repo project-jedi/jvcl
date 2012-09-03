@@ -249,6 +249,7 @@ begin
   begin
     with TButton.Create(Client) do
     begin
+      Width := Width * Font.PixelsPerInch div 96;
       Left := Client.ClientWidth - Width - 8;
       Top := Client.ClientHeight - Height - 8;
       Anchors := [akRight, akBottom];
