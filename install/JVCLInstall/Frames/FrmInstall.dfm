@@ -31,6 +31,7 @@ object FrameInstall: TFrameInstall
     Width = 505
     Height = 13
     Cursor = crHandPoint
+    Anchors = [akLeft, akTop, akRight]
     AutoSize = False
     Caption = 'LblOpenFile'
     Font.Charset = DEFAULT_CHARSET
@@ -49,6 +50,7 @@ object FrameInstall: TFrameInstall
     Top = 32
     Width = 505
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
   end
   object ProgressBarCompile: TProgressBar
@@ -56,6 +58,7 @@ object FrameInstall: TFrameInstall
     Top = 96
     Width = 505
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
   end
   object RichEditLog: TRichEdit
@@ -63,6 +66,7 @@ object FrameInstall: TFrameInstall
     Top = 128
     Width = 505
     Height = 247
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -80,6 +84,7 @@ object FrameInstall: TFrameInstall
     Top = 128
     Width = 81
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = '&Details >>'
     TabOrder = 3
     OnClick = BtnDetailsClick

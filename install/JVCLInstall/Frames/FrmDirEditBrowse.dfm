@@ -27,6 +27,7 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     Width = 279
     Height = 21
     Hint = 'Directory does not exist'
+    Anchors = [akLeft, akTop, akRight]
     ParentShowHint = False
     ShowHint = False
     TabOrder = 0
@@ -40,6 +41,7 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     Width = 21
     Height = 21
     Hint = 'Browse...'
+    Anchors = [akLeft, akTop, akRight]
     Caption = '...'
     ParentShowHint = False
     ShowHint = True
