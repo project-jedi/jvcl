@@ -1478,7 +1478,7 @@ begin
           end
           else
           {$ENDIF COMPILER16_UP}
-            ACanvas.Font.Color := DisabledTextColor;
+          ACanvas.Font.Color := DisabledTextColor;
           ACanvas.TextRect(EditRect, X, EditRect.Top, S);
         finally
           RestoreDC(ACanvas.Handle, -1);
@@ -1494,7 +1494,7 @@ begin
         end
         else
         {$ENDIF COMPILER16_UP}
-          Brush.Color := TEd(Editor).Color;
+        Brush.Color := TEd(Editor).Color;
         ACanvas.TextRect(EditRect, X, EditRect.Top, S);
       end;
     end;
@@ -2115,11 +2115,11 @@ begin
     else
     {$ENDIF COMPILER16_UP}
     begin
-      Canvas.Brush.Color := FDisabledColor;
-      Canvas.Brush.Style := bsSolid;
-      Canvas.FillRect(ClientRect);
-    end;
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
   end;
+end;
 end;
 
 procedure TJvCustomComboEdit.FocusSet(PrevWnd: THandle);
@@ -2366,7 +2366,11 @@ begin
     else
     begin
       { must catch and remove this, since is actually multi-line }
-      GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
+      if (Form <> nil) and (Form.Perform(CM_DIALOGKEY, Byte(Key), 0) <> 0) then
+      begin
+        Key := #0;
+        Exit;
+      end;
       if Key = Cr then
       begin
         inherited KeyPress(Key);
