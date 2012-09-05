@@ -31,6 +31,7 @@
 ;---------------------------------------------------
 ; Setup the preprocessor defines for the binary files
 #ifdef Include_SingleIDE
+
 #define JvclLib6     JvclLib
 #define   JvclBpl6   JvclBpl
 #define JvclLib7     JvclLib
@@ -55,6 +56,10 @@
 #define JvclLib16    JvclLib
 #define   JvclBpl16  JvclBpl
 #define   JvclHpp16  JvclHpp
+#define JvclLib17    JvclLib
+#define   JvclBpl17  JvclBpl
+#define   JvclHpp17  JvclHpp
+
 #endif
 
 ;---------------------------------------------------
@@ -183,6 +188,10 @@ Name: "{app}\lib\d16\win32"
 Name: "{app}\lib\d16\win32\debug"
 Name: "{app}\lib\d16\win64"
 Name: "{app}\lib\d16\win64\debug"
+Name: "{app}\lib\d17\win32"
+Name: "{app}\lib\d17\win32\debug"
+Name: "{app}\lib\d17\win64"
+Name: "{app}\lib\d17\win64\debug"
 
 [Files]
 Source: {#JvclRoot}\*; DestDir: "{app}"; Flags: ignoreversion
@@ -260,12 +269,20 @@ Source: {#JvclBpl15}\*; DestDir: "{code:GetDelphiBplDir|15}"; Components: "IDE\D
 Source: {#JvclHpp15}\*; DestDir: "{app}\include\d15"; Components: "IDE\Delphi15"; Flags: ignoreversion sortfilesbyextension
 #endif
 #ifdef Include_Delphi16
-; SolidBreak; lib\Delphi XE
+; SolidBreak; lib\Delphi XE2
 Source: {#JvclLib16}\*; DestDir: "{app}\lib\d16"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi16"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#JvclBpl16}\*; DestDir: "{code:GetDelphiBplDir|16}"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclBpl16}\Win64\*; DestDir: "{code:GetDelphiBplDir|16}\Win64"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclHpp16}\*; DestDir: "{app}\include\d16"; Components: "IDE\Delphi16"; Flags: ignoreversion sortfilesbyextension
 #endif
+#ifdef Include_Delphi17
+; SolidBreak; lib\Delphi XE3
+Source: {#JvclLib17}\*; DestDir: "{app}\lib\d17"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi17"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JvclBpl17}\*; DestDir: "{code:GetDelphiBplDir|17}"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+Source: {#JvclBpl17}\Win64\*; DestDir: "{code:GetDelphiBplDir|17}\Win64"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+Source: {#JvclHpp17}\*; DestDir: "{app}\include\d17"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+#endif
+
 #endif
 
 ; only source code => execute JVCL Installer
@@ -351,6 +368,16 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Jedi\JVCL"; ValueType: string; Va
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|16}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi16";
 #endif
+#ifdef Include_Delphi17
+; Delphi XE3
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|17}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d17; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi17"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi17";
+#endif
+
 #endif
 
 
@@ -409,7 +436,14 @@ Type: files; Name: "{app}\lib\d16\win64\debug\*"
 Type: files; Name: "{app}\include\d16\*"
 Type: files; Name: "{code:GetDelphiBplDir|16}\Jv*.*"
 Type: files; Name: "{code:GetDelphiBplDir|16}\Win64\Jv*.*"
-
+; lib\Delphi/C++Builder XE3
+Type: files; Name: "{app}\lib\d17\win32\*"
+Type: files; Name: "{app}\lib\d17\win32\debug\*"
+Type: files; Name: "{app}\lib\d17\win64\*"
+Type: files; Name: "{app}\lib\d17\win64\debug\*"
+Type: files; Name: "{app}\include\d17\*"
+Type: files; Name: "{code:GetDelphiBplDir|17}\Jv*.*"
+Type: files; Name: "{code:GetDelphiBplDir|17}\Win64\Jv*.*"
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
@@ -434,7 +468,7 @@ var
   Version: Integer;
 begin
 {  // Uninstall from all IDEs ?
-  for Version := 6 to 16 do
+  for Version := 6 to 17 do
     UninstallDesignPackagesPrefixed(ikDelphi, Version, 'Jv');
   for Version := 6 to 6 do
     UninstallDesignPackagesPrefixed(ikBCB, Version, 'Jv');}
@@ -529,7 +563,7 @@ begin
   if Result then
   begin
     Result := False;
-    for Version := 6 to 16 do
+    for Version := 6 to 17 do
     begin
       if IsDelphiJclInstalled(Version) then
       begin
