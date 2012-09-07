@@ -310,17 +310,24 @@ var
   GlobalBandFormMessageHook: HHook;
   GlobalBandForms: TList;
 
+procedure InstallHook; forward;
+procedure UninstallHook; forward;
+
 //=== { TJvBandForm } ========================================================
 
 procedure TJvBandForm.AfterConstruction;
 begin
   inherited AfterConstruction;
   GlobalBandForms.Add(Self);
+  if (GlobalBandForms.Count = 1) and not (csDesigning in ComponentState) then
+    InstallHook;
 end;
 
 procedure TJvBandForm.BeforeDestruction;
 begin
   GlobalBandForms.Remove(Self);
+  if (GlobalBandForms.Count = 0) and not (csDesigning in ComponentState) then
+    UninstallHook;
   inherited BeforeDestruction;
 end;
 
@@ -425,26 +432,27 @@ var
   I: Integer;
   Msg: PMsg;
 begin
-  try
-    lOk := False;
-    Msg := PMsg(Pointer(lParam));
-    if (((Msg^.message = WM_KEYDOWN) or (Msg^.message = WM_KEYUP)) and
-      ((Msg^.wParam = VK_BACK))) then
-      lOk := True
-    else
-    if Msg^.message = WM_MOUSEMOVE then //Enable Flat effects!
-      Application.HandleMessage;
-    if lOk then
-    begin
-      for I := 0 to GlobalBandForms.Count - 1 do
-        if IsDialogMessage(TJvBandForm(GlobalBandForms.Items[I]).Handle, Msg^) then
-        begin
-          Msg^.message := WM_NULL;
-          Break;
-        end;
+  if nCode >= 0 then
+    try
+      lOk := False;
+      Msg := PMsg(Pointer(lParam));
+      if (((Msg^.message = WM_KEYDOWN) or (Msg^.message = WM_KEYUP)) and
+        ((Msg^.wParam = VK_BACK))) then
+        lOk := True
+      else
+      if Msg^.message = WM_MOUSEMOVE then //Enable Flat effects!
+        Application.HandleMessage;
+      if lOk then
+      begin
+        for I := 0 to GlobalBandForms.Count - 1 do
+          if IsDialogMessage(TJvBandForm(GlobalBandForms.Items[I]).Handle, Msg^) then
+          begin
+            Msg^.message := WM_NULL;
+            Break;
+          end;
+      end;
+    except
     end;
-  except
-  end;
   Result := CallNextHookEx(GlobalBandFormMessageHook, nCode, wParam, lParam);
 end;
 
@@ -487,10 +495,8 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
   GlobalBandForms := TList.Create;
-  InstallHook;
 
 finalization
-  UninstallHook;
   GlobalBandForms.Free;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
