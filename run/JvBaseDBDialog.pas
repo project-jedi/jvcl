@@ -43,6 +43,7 @@ type
     FDBDialog: TForm;
     FDynControlEngine: TJvDynControlEngine;
     FSession: TComponent;
+    FParentWnd: HWND;
     function GetDynControlEngine: TJvDynControlEngine;
   protected
     function CreateForm: TForm; virtual;
@@ -78,12 +79,15 @@ implementation
 
 uses
   SysUtils, Types,
+  JvJCLUtils, // SetWindowLongPtr for older Delphi versions
   JvJVCLUtils;
 
 function TJvBaseDBDialog.CreateForm: TForm;
 begin
   Result := TForm(DynControlEngine.CreateForm('', ''));
   CreateFormControls(Result);
+  if FParentWnd <> 0 then
+    SetWindowLongPtr(Result.Handle, GWL_HWNDPARENT, LONG_PTR(FParentWnd));
 end;
 
 procedure TJvBaseDBDialog.CreateFormControls(aForm: TForm);
@@ -98,11 +102,11 @@ function TJvBaseDBDialog.Execute(ParentWnd: HWND): Boolean;
 begin
   if not Assigned(Session) then
     Abort;
+  FParentWnd := ParentWnd;
   FDBDialog := CreateForm;
   try
     AfterCreateFormControls(FDBDialog);
     FDBDialog.ShowModal;
-    FDBDialog.ParentWindow := ParentWnd;
     Result := FDBDialog.ModalResult = mrOk;
   finally
     FreeAndNil(FDBDialog);
