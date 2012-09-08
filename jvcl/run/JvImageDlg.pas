@@ -71,6 +71,34 @@ implementation
 uses
   JvResources;
 
+type
+  TJvImageDlgForm = class(TJvForm)
+  private
+    FParentWnd: HWND;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  public
+    constructor Create(AOwner: TComponent; AParentWnd: HWND); reintroduce;
+  end;
+
+//=== { TJvImageDlgForm } ====================================================
+
+constructor TJvImageDlgForm.Create(AOwner: TComponent; AParentWnd: HWND);
+begin
+  FParentWnd := AParentWnd;
+  CreateNew(AOwner, 0);
+end;
+
+procedure TJvImageDlgForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if FParentWnd <> 0 then
+    Params.WndParent := FParentWnd;
+end;
+
+
+//=== { TJvImageDialog } ====================================================
+
 constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -86,13 +114,13 @@ end;
 
 function TJvImageDialog.Execute(ParentWnd: HWND): Boolean;
 var
-  Form: TJvForm;
+  Form: TJvImageDlgForm;
   Image1: TImage;
 begin
   Result := False;
   if (Picture.Height <> 0) and (Picture.Width <> 0) then
   begin
-    Form := TJvForm.CreateNew(Self);
+    Form := TJvImageDlgForm.Create(Self, ParentWnd);
     try
       Form.BorderStyle := bsDialog;
       Form.BorderIcons := [biSystemMenu];
@@ -105,7 +133,6 @@ begin
       Form.Caption := FTitle;
       Image1.SetBounds(0,0,Picture.Width,Picture.Height);
       Image1.Anchors := [akTop, akLeft, akRight, akBottom];
-      Form.ParentWindow := ParentWnd;
       Result := Form.ShowModal = mrOk;
     finally
       Form.Free;
