@@ -26,7 +26,6 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
-  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
