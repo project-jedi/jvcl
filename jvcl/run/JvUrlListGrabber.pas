@@ -1058,8 +1058,7 @@ begin
   Result := '';
 end;
 
-class function TJvCustomUrlGrabber.GetFormattedUrl(
-  const URL: string): string;
+class function TJvCustomUrlGrabber.GetFormattedUrl(const URL: string): string;
 var
   ProtocolMarker: string;
   TmpHostName: string;
@@ -1081,6 +1080,8 @@ end;
 class procedure TJvCustomUrlGrabber.ParseUrl(URL: string; Protocol: string;
   var Host: string; var FileName: string; var UserName: string;
   var Password: string; var Port: Cardinal);
+var
+  Ps: Integer;
 begin
   // Default return values
   Host := '';
@@ -1096,30 +1097,34 @@ begin
   // Get the filename, if any
   if Pos('/', URL) <> 0 then
   begin
-    Host := Copy(URL, 1, Pos('/', URL) - 1);
-    FileName := Copy(URL, Pos('/', URL) + 1, Length(URL));
+    Ps := Pos('/', URL);
+    Host := Copy(URL, 1, Ps - 1);
+    FileName := Copy(URL, Ps + 1, Length(URL));
   end
   else
     Host := URL;
 
   // Get the username password couple
-  if Pos('@', Host) <> 0 then
+  Ps := Pos('@', Host);
+  if Ps <> 0 then
   begin
-    UserName := Copy(Host, 1, Pos('@', Host) - 1);
-    Host := Copy(Host, Pos('@', Host) + 1, Length(Host));
+    UserName := Copy(Host, 1, Ps - 1);
+    Host := Copy(Host, Ps + 1, Length(Host));
     // now, figure out if there is a password
-    if Pos(':', UserName) <> 0 then
+    Ps := Pos(':', UserName);
+    if Ps <> 0 then
     begin
-      UserName := Copy(UserName, 1, Pos(':', UserName) - 1);
-      Password := Copy(UserName, Pos(':', UserName) + 1, Length(UserName));
+      Password := Copy(UserName, Ps + 1, Length(UserName));
+      UserName := Copy(UserName, 1, Ps - 1);
     end;
   end;
 
   // Get the port
-  if Pos(':', Host) <> 0 then
+  Ps := Pos(':', Host);
+  if Ps <> 0 then
   begin
-    Port := StrToIntDef(Copy(Host, Pos(':', Host) + 1, Length(Host)), 0);
-    Host := Copy(Host, 1, Pos(':', Host) - 1);
+    Port := StrToIntDef(Copy(Host, Ps + 1, Length(Host)), 0);
+    Host := Copy(Host, 1, Ps - 1);
   end;
 end;
 
