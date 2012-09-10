@@ -829,7 +829,7 @@ begin
       if DataType in ftBlobTypes then
         Result := Pointer(GetBlobData(Field, Buffer))
       else
-        Result := (PByte(Buffer) + FOffsets[Index]);
+        Result := (PJvMemBuffer(Buffer) + FOffsets[Index]);
   end;
 end;
 
@@ -1029,14 +1029,12 @@ end;
 function TJvMemoryData.GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean;
 var
   RecBuf: PJvMemBuffer;
-  PByteRecBuf: PByte;
   Data: PByte;
   VarData: Variant;
 begin
   Result := False;
   if not GetActiveRecBuf(RecBuf) then
     Exit;
-  PByteRecBuf := PByte(@RecBuf[0]);  
   
   if Field.FieldNo > 0 then
   begin
@@ -1073,8 +1071,8 @@ begin
   else
   if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
   begin
-    Inc(PByteRecBuf, FRecordSize + Field.Offset);
-    Result := Byte(PByteRecBuf[0]) <> 0;
+    Inc(RecBuf, FRecordSize + Field.Offset);
+    Result := Byte(RecBuf[0]) <> 0;
     if Result and (Buffer <> nil) then
       Move(RecBuf[1], {$IFDEF RTL240_UP}PByte(@Buffer[0]){$ELSE}Buffer{$ENDIF RTL240_UP}^, Field.DataSize);
   end;
@@ -1083,14 +1081,12 @@ end;
 procedure TJvMemoryData.SetFieldData(Field: TField; Buffer: TJvValueBuffer);
 var
   RecBuf: PJvMemBuffer;
-  PByteRecBuf: PByte;
   Data: PByte;
   VarData: Variant;
 begin
   if not (State in dsWriteModes) then
     Error(SNotEditing);
   GetActiveRecBuf(RecBuf);
-  PByteRecBuf := PByte(@RecBuf[0]);
   if Field.FieldNo > 0 then
   begin
     if State in [dsCalcFields, dsFilter] then
@@ -1132,10 +1128,10 @@ begin
   end
   else {fkCalculated, fkLookup}
   begin
-    Inc(PByteRecBuf, FRecordSize + Field.Offset);
-    Byte(PByteRecBuf[0]) := Ord(Buffer <> nil);
-    if Byte(PByteRecBuf[0]) <> 0 then
-      Move({$IFDEF RTL240_UP}PByte(@Buffer[0]){$ELSE}Buffer{$ENDIF RTL240_UP}^, PByteRecBuf[1], Field.DataSize);
+    Inc(RecBuf, FRecordSize + Field.Offset);
+    Byte(RecBuf[0]) := Ord(Buffer <> nil);
+    if Byte(RecBuf[0]) <> 0 then
+      Move({$IFDEF RTL240_UP}PByte(@Buffer[0]){$ELSE}Buffer{$ENDIF RTL240_UP}^, RecBuf[1], Field.DataSize);
   end;
   if not (State in [dsCalcFields, dsFilter, dsNewValue]) then
     DataEvent(deFieldChange, NativeInt(Field));
