@@ -207,16 +207,18 @@ type
 
   EJvCsvKeyError = class(EDatabaseError); // Key Uniqueness or Key Problem
 
-  {$IFDEF COMPILER12_UP}
-  TJvRecordBuffer = TRecordBuffer;  // Delphi 2009
-  {$ELSE}
-  TJvRecordBuffer = PAnsiChar;
-  {$ENDIF COMPILER12_UP}
-  
   {$IFDEF RTL240_UP}
+  PJvMemBuffer = PByte;
+  TJvRecordBuffer = TRecordBuffer;
   TJvValueBuffer = TValueBuffer;
   TJvBookmark = TBookmark;
   {$ELSE}
+  {$IFDEF UNICODE}
+  PJvMemBuffer = PByte;
+  {$ELSE}
+  PJvMemBuffer = PAnsiChar;
+  {$ENDIF UNICODE}
+  TJvRecordBuffer = Pointer;
   TJvValueBuffer = Pointer;
   TJvBookmark = Pointer;
   {$ENDIF RTL240_UP}
@@ -345,7 +347,7 @@ type
     constructor Create;
 
     procedure AddRow(Item: PCsvRow);
-    function AllocRecordBuffer: TJvRecordBuffer;  { was PChar, now in tiburon it is PByte }
+    function AllocRecordBuffer: PJvRecordBuffer;  { was PChar, now in tiburon it is PByte }
 
     procedure InsertRow(const Position: Integer;  Item: PCsvRow);
     procedure AddRowStr(const Item: string); // convert string->TJvCsvRow
@@ -572,23 +574,23 @@ type
     procedure SetCsvFieldDef(const Value: string);
 
     { Mandatory VCL TDataSet Overrides - Pure Virtual Methods of Base Class }
-    function AllocRecordBuffer: TJvRecordBuffer; override;
-    procedure FreeRecordBuffer(var Buffer: TJvRecordBuffer); override;
-    procedure InternalInitRecord(Buffer: TJvRecordBuffer); override;
-    function GetRecord(Buffer: TJvRecordBuffer; GetMode: TGetMode;
+    function AllocRecordBuffer: PJvRecordBuffer; override;
+    procedure FreeRecordBuffer(var Buffer: PJvRecordBuffer); override;
+    procedure InternalInitRecord(Buffer: PJvRecordBuffer); override;
+    function GetRecord(Buffer: PJvRecordBuffer; GetMode: TGetMode;
       DoCheck: Boolean): TGetResult; override;
 
     function GetRecordSize: Word; override;
     procedure SetFieldData(Field: TField; Buffer: TJvValueBuffer); override;
-    procedure ClearCalcFields(Buffer: TJvRecordBuffer); override;
+    procedure ClearCalcFields(Buffer: PJvRecordBuffer); override;
 
     // Bookmark methods:
-    procedure GetBookmarkData(Buffer: TJvRecordBuffer; Data: TJvBookmark); override;
-    function GetBookmarkFlag(Buffer: TJvRecordBuffer): TBookmarkFlag; override;
+    procedure GetBookmarkData(Buffer: PJvRecordBuffer; Data: TJvBookmark); override;
+    function GetBookmarkFlag(Buffer: PJvRecordBuffer): TBookmarkFlag; override;
     procedure InternalGotoBookmark(Bookmark: TJvBookmark); override;
-    procedure InternalSetToRecord(Buffer: TJvRecordBuffer); override; // on Insertion???
-    procedure SetBookmarkFlag(Buffer: TJvRecordBuffer; Value: TBookmarkFlag); override;
-    procedure SetBookmarkData(Buffer: TJvRecordBuffer; Data: TJvBookmark); override;
+    procedure InternalSetToRecord(Buffer: PJvRecordBuffer); override; // on Insertion???
+    procedure SetBookmarkFlag(Buffer: PJvRecordBuffer; Value: TBookmarkFlag); override;
+    procedure SetBookmarkData(Buffer: PJvRecordBuffer; Data: TJvBookmark); override;
 
     // Navigational methods:
     procedure InternalFirst; override;
@@ -1831,7 +1833,7 @@ begin
 end;
 
 { You shouldn't create a "TJvCsvRow-memory-buffer-record-aggregate" anywhere else than here. }
-function TJvCustomCsvDataSet.AllocRecordBuffer: TJvRecordBuffer;
+function TJvCustomCsvDataSet.AllocRecordBuffer: PJvRecordBuffer;
 begin
   Assert(Assigned(FData));
   Result := FData.AllocRecordBuffer;
@@ -1839,7 +1841,7 @@ end;
 
 { calc fields support }
 
-procedure TJvCustomCsvDataSet.ClearCalcFields(Buffer: TJvRecordBuffer);
+procedure TJvCustomCsvDataSet.ClearCalcFields(Buffer: PJvRecordBuffer);
 begin
   // Assumes that our buffer is a TJvCsvRow followed by
   // a dynamically resized buffer used for calculated field
@@ -1899,7 +1901,7 @@ begin
   Result := FData.FEnquoteBackslash;
 end;
 
-procedure TJvCustomCsvDataSet.FreeRecordBuffer(var Buffer: TJvRecordBuffer);
+procedure TJvCustomCsvDataSet.FreeRecordBuffer(var Buffer: PJvRecordBuffer);
 begin
   if Buffer <> nil then
     FreeMem(Buffer);
@@ -1907,7 +1909,7 @@ end;
 
 { called after the record is allocated }
 
-procedure TJvCustomCsvDataSet.InternalInitRecord(Buffer: TJvRecordBuffer);
+procedure TJvCustomCsvDataSet.InternalInitRecord(Buffer: PJvRecordBuffer);
 var
   RowPtr: PCsvRow;
 begin
@@ -2235,7 +2237,7 @@ begin
   end;
 end;
 
-function TJvCustomCsvDataSet.GetRecord(Buffer: TJvRecordBuffer; GetMode: TGetMode;
+function TJvCustomCsvDataSet.GetRecord(Buffer: PJvRecordBuffer; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 var
   RowPtr: PCsvRow;
@@ -3038,12 +3040,12 @@ begin
     Result := False;
 end;
 
-procedure TJvCustomCsvDataSet.GetBookmarkData(Buffer: TJvRecordBuffer; Data: TJvBookmark);
+procedure TJvCustomCsvDataSet.GetBookmarkData(Buffer: PJvRecordBuffer; Data: TJvBookmark);
 begin
   PInteger(Data)^ := PCsvRow(Buffer)^.Bookmark.Data;
 end;
 
-function TJvCustomCsvDataSet.GetBookmarkFlag(Buffer: TJvRecordBuffer): TBookmarkFlag;
+function TJvCustomCsvDataSet.GetBookmarkFlag(Buffer: PJvRecordBuffer): TBookmarkFlag;
 begin
   Result := PCsvRow(Buffer)^.Bookmark.Flag;
 end;
@@ -3071,7 +3073,7 @@ begin
     Result := Bookmark_Gtr;
 end;
 
-procedure TJvCustomCsvDataSet.SetBookmarkFlag(Buffer: TJvRecordBuffer; Value: TBookmarkFlag);
+procedure TJvCustomCsvDataSet.SetBookmarkFlag(Buffer: PJvRecordBuffer; Value: TBookmarkFlag);
 begin
   PCsvRow(Buffer)^.Bookmark.Flag := Value;
 end;
@@ -3082,7 +3084,7 @@ begin
   FRecordPos := PInteger(Bookmark)^;
 end;
 
-procedure TJvCustomCsvDataSet.InternalSetToRecord(Buffer: TJvRecordBuffer);
+procedure TJvCustomCsvDataSet.InternalSetToRecord(Buffer: PJvRecordBuffer);
 begin
   FRecordPos := PCsvRow(Buffer)^.Bookmark.Data; // Look up index from the record.
 //  Resync([]);
@@ -3096,7 +3098,7 @@ begin
     FData.BackslashCrLf := Value;
 end;
 
-procedure TJvCustomCsvDataSet.SetBookmarkData(Buffer: TJvRecordBuffer; Data: TJvBookmark);
+procedure TJvCustomCsvDataSet.SetBookmarkData(Buffer: PJvRecordBuffer; Data: TJvBookmark);
 begin
   PCsvRow(Buffer)^.Bookmark.Data := PInteger(Data)^;
 end;
@@ -4301,7 +4303,7 @@ begin
   AddRow(PNewItem);
 end;
 
-function TJvCsvRows.AllocRecordBuffer: TJvRecordBuffer;
+function TJvCsvRows.AllocRecordBuffer: PJvRecordBuffer;
 begin
   Assert(FTextBufferSize >= JvCsv_MINLINELENGTH);
   Result := AllocMem(GetRowAllocSize);  {was SizeOf(TJvCsvRow)}
