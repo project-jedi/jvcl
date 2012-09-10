@@ -43,7 +43,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_TYPES}
-  System.Types,
+  Types,
   {$ENDIF HAS_UNIT_TYPES}
   SysUtils, JclStrings;
 
