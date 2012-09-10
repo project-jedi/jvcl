@@ -2416,7 +2416,7 @@ var
   RowPtr: PCsvRow;
   NewVal: string;
   CP, PhysicalLocation: Integer;
-  PDestination: TJvRecordBuffer;
+  PDestination: PJvMemBuffer;
   CsvColumnData: PCsvColumn;
   DT: TDateTime;
   ATimeStamp: TTimeStamp;
@@ -2449,7 +2449,7 @@ begin
       Exit;
     Inc(PDestination, GetCalcDataOffset(RowPtr) + Field.Offset);
 
-    PDestination[0] := Ord(Buffer <> nil);
+    PDestination[0] := {$IFNDEF RTL200_UP}AnsiChar{$ENDIF RTL200_UP}(Ord(Buffer <> nil));
 
     if AnsiChar(PDestination[0]) <> #0 then
       Move({$IFDEF RTL240_UP}PByte(@Buffer[0]){$ELSE}Buffer{$ENDIF RTL240_UP}^, PDestination[1], Field.DataSize);
@@ -2702,7 +2702,7 @@ end;
 function TJvCustomCsvDataSet.GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean;
 var
   RowPtr: PCsvRow;
-  PSource: TJvRecordBuffer;
+  PSource: PJvMemBuffer;
   UserString, TempString: string;
   AnsiStr: AnsiString;
   PhysicalLocation: Integer;
@@ -3898,7 +3898,7 @@ end;
 
 function TJvCustomCsvDataSet.GetRecNo: Integer; {RecNo := FRecordPos+1}
 var
-  BufPtr: PByte;
+  BufPtr: PJvMemBuffer;
 begin
   CheckActive;
 
