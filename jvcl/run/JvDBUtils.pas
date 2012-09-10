@@ -195,6 +195,12 @@ implementation
 
 uses
   DBConsts, Math, Controls, Forms, Dialogs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
+  {$IFDEF RTL240_UP}
+  System.Generics.Collections,
+  {$ENDIF RTL240_UP}
   JvJVCLUtils, JvJCLUtils, JvTypes, JvConsts, JvResources;
 
 { TJvDataLink }
@@ -467,7 +473,7 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
 var
   FieldCount: Integer;
-  Fields: TList;
+  Fields: TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP};
   Bookmark: {$IFDEF RTL200_UP}TBookmark{$ELSE}TBookmarkStr{$ENDIF RTL200_UP};
 
   function CompareField(Field: TField; const Value: Variant): Boolean;
@@ -513,7 +519,7 @@ begin
   DataSet.CheckBrowseMode;
   if DataSet.IsEmpty then
     Exit;
-  Fields := TList.Create;
+  Fields := TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP}.Create;
   try
     DataSet.GetFieldList(Fields, KeyFields);
     FieldCount := Fields.Count;

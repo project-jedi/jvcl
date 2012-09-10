@@ -39,8 +39,11 @@ uses
   ShellAPI,
   {$ENDIF MSWINDOWS}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, Grids, Menus, Clipbrd,
-  JvJVCLUtils, JvTypes,
-  SysUtils, StdCtrls, Classes;
+  SysUtils, StdCtrls, Classes,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  JvJVCLUtils, JvTypes;
 
 {$DEFINE USECUSTOMGRID}
 

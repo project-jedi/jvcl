@@ -117,6 +117,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   SysUtils, Types, Forms, Dialogs,
   JclFileUtils,
   JvJCLUtils,

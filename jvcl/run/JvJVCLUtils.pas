@@ -36,6 +36,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShellAPI, Registry,
   {$ENDIF MSWINDOWS}
+  Types,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   SysUtils,
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus,
   Dialogs, ComCtrls, ImgList, Grids, MultiMon,

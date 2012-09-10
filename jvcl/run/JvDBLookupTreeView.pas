@@ -51,6 +51,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
+  {$IFDEF RTL240_UP}
+  System.Generics.Collections,
+  {$ENDIF RTL240_UP}
   Classes, Controls, Forms, ComCtrls, DB,
   JvDBTreeView, JvToolEdit, JvComponent, JvExControls;
 
@@ -89,7 +92,7 @@ type
     FMasterField: TField;
     FKeyField: TField;
     FListField: TField;
-    FListFields: TList;
+    FListFields: TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP};
     FKeyValue: Variant;
     FUseFilter: Boolean;
     FSearchText: string;
@@ -528,7 +531,7 @@ begin
   FDataLink.FDBLookupControl := Self;
   FListLink := TJvLookupListSourceLink.Create;
   FListLink.FDBLookupControl := Self;
-  FListFields := TList.Create;
+  FListFields := TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP}.Create;
   FKeyValue := Null;
   FSearchTickCount := 0;
 end;

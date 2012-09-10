@@ -982,6 +982,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Types,
   Printers, ComStrs, OleConst, OleDlg, Math, Registry, Contnrs,
   {$IFDEF RTL200_UP}

@@ -38,6 +38,9 @@ implementation
 
 uses
   Classes, ImgList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   DesignIntf, DesignEditors, VCLEditors,
   JvDsgnConsts, JvXPProgressBar,
   JvXPCore, JvXPPropertyEditors, JvXPBar, JvXPContainer,

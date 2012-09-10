@@ -36,6 +36,9 @@ uses
   Windows, Messages, Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ExtCtrls, Grids,
   RTLConsts,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JclBase,
   JvSpeedButton, JvAppStorage, JvConsts, JvTypes, JvFormPlacement,
   JvComponent, JvExtComponent, JvThemes, JvExControls;
@@ -510,7 +513,7 @@ const
 implementation
 
 uses
-  Math,
+  Types, Math,
   JvJVCLUtils, JvJCLUtils, JvSpeedbarSetupForm, JvResources;
 
 const

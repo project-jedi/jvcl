@@ -174,6 +174,12 @@ const
 {$HINTS OFF}
 
 type
+  {$IFDEF COMPILER12_UP}
+  TJvRecordBuffer = TRecordBuffer;  // Delphi 2009
+  {$ELSE}
+  TJvRecordBuffer = PAnsiChar;
+  {$ENDIF COMPILER12_UP}
+  
   TDataSetAccessProtected = class(TDataSet);
 
 {*******************************************************}
@@ -522,7 +528,7 @@ begin
       DsSetRecordCount(DS, 1); { FActiveRecord + 1 }
       DsSetCanModify(DS, False);
       SetLength(BufPtr, 1);
-      BufPtr[0] := {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(RecBuf);
+      BufPtr[0] := TJvRecordBuffer(RecBuf);
       DsSetBuffers(DS, BufPtr);
       { call user defined function }
       Result := Ord(FOnFiltering(Self, DS));

@@ -234,6 +234,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   SysUtils, Registry, Forms, Controls, Dialogs, Math,
   IniFiles, DBConsts, bdeconst, Variants, RTLConsts,
   JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;

@@ -283,6 +283,7 @@ const
 implementation
 
 uses
+  Types,
   JvDesignUtils, JvDesignClip, JvDesignImp, JvResources, JvTypes;
 
 //=== { TJvDesignCustomMessenger } ===========================================

@@ -876,7 +876,7 @@ const
 implementation
 
 uses
-  SysUtils,
+  Types, SysUtils,
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
   JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvJVCLUtils;
 

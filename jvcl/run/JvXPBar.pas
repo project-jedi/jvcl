@@ -63,6 +63,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Classes, SysUtils,
   Graphics, Controls, Forms, ImgList, ActnList, Messages,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvXPCore, JvXPCoreUtils, JvJVCLUtils, JvTypes;
 
 type
@@ -566,6 +569,7 @@ const
 implementation
 
 uses
+  Types,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}

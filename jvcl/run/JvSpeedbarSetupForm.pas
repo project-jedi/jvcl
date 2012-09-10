@@ -102,7 +102,7 @@ const
 implementation
 
 uses
-  Math, Consts,
+  Types, Math, Consts,
   JvJVCLUtils, JvTypes, JvResources;
 
 {$R *.dfm}

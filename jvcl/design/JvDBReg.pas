@@ -34,6 +34,9 @@ procedure Register;
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
+  System.Actions,
+  {$ENDIF HAS_UNIT_SYSTEM_ACTIONS}
   Classes, ComCtrls, ActnList,
   DesignEditors, DesignIntf,
   JvDsgnConsts,

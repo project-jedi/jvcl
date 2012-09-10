@@ -39,6 +39,9 @@ implementation
 uses
   Classes, ImgList, ComCtrls,
   VCLEditors, DesignEditors, DesignIntf, DesignMenus,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvDsgnConsts,
   JvNavigationPane, JvPageList, JvPageListTreeView, JvPageListEditors,
   JvNavPaneEditors, JvTreeItemsEditorForm, JvPageLinkEditorForm, JvPageListEditorForm;

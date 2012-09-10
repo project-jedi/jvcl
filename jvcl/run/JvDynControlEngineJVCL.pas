@@ -40,6 +40,9 @@ uses
   Classes,
   Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvMaskEdit, JvDateTimePicker, JvBitBtn, JvCheckBox, JvBaseEdits,
   JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvCombobox, JvImage, JvSpin, JvCheckListBox,

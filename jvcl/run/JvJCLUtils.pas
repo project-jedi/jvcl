@@ -45,6 +45,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages, ShlObj, ActiveX,
   {$ENDIF MSWINDOWS}
+  Types,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   Variants, SysUtils, Classes, Contnrs, Graphics, Clipbrd, Controls,
   StrUtils, TypInfo,
   JclBase,

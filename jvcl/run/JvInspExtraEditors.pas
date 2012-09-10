@@ -39,6 +39,9 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Graphics, Controls, StdCtrls, ImgList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvInspector;
 
 type
@@ -178,7 +181,7 @@ const
 implementation
 
 uses
-  TypInfo,
+  Types, TypInfo,
   JclRTTI,
   JvResources;
 

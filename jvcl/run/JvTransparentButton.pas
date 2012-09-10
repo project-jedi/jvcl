@@ -37,8 +37,11 @@ uses
   SysUtils, Classes,
   Windows, Messages, Graphics, Controls,
   ExtCtrls, Menus, Forms, ImgList, ActnList, Buttons,
-  CommCtrl, JvJCLUtils,
-  JvButton;
+  CommCtrl,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  JvJCLUtils, JvButton;
 
 type
   TJvFrameStyle =
@@ -1252,10 +1255,10 @@ begin
         Glyph.Width := 0;
         Glyph.Height := 0;
 
-        if not CheckDefaults or ((Images <> nil) and (Images.ActiveIndex = -1)) then
+        if not CheckDefaults or ((Images <> nil) and (Self.Images.ActiveIndex = -1)) then
         begin
-          Images.ActiveImage := ActionList.Images;
-          Images.ActiveIndex := ImageIndex;
+          Self.Images.ActiveImage := ActionList.Images;
+          Self.Images.ActiveIndex := ImageIndex;
         end;
       {end
       else

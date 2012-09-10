@@ -34,6 +34,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, SysUtils, StdCtrls, ExtCtrls, Graphics, Forms,
   Controls, FileCtrl, Dialogs, ComCtrls, Buttons, Variants,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvPanel, JvParameterList, JvDynControlEngine, JvDSADialogs,
   JvDynControlEngineIntf, ActnList;
 

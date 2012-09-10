@@ -42,6 +42,12 @@ const
 type
   TQueryOpenStatus = (qsOpened, qsExecuted, qsFailed);
 
+  {$IFDEF COMPILER12_UP}
+  TJvRecordBuffer = TRecordBuffer;  // Delphi 2009
+  {$ELSE}
+  TJvRecordBuffer = PAnsiChar;
+  {$ENDIF COMPILER12_UP}
+  
   TJvQuery = class(TQuery)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -67,7 +73,7 @@ type
     function GetRealSQL: TStrings;
   protected
     procedure InternalFirst; override;
-    function GetRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
+    function GetRecord(Buffer: TJvRecordBuffer; GetMode: TGetMode; DoCheck: Boolean): TGetResult; override;
     procedure Loaded; override;
     function CreateHandle: HDBICur; override;
     procedure OpenCursor(InfoQuery: Boolean); override;
@@ -333,7 +339,7 @@ begin
     inherited InternalFirst;
 end;
 
-function TJvQuery.GetRecord(Buffer: {$IFDEF COMPILER12_UP}PByte{$ELSE}PChar{$ENDIF COMPILER12_UP}; GetMode: TGetMode;
+function TJvQuery.GetRecord(Buffer: TJvRecordBuffer; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 begin
   //!!!!!!

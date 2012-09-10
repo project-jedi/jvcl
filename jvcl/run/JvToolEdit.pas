@@ -48,6 +48,9 @@ uses
   Variants,
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, Menus,
   Buttons, FileCtrl, Mask, ImgList, ActnList, ExtDlgs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvConsts,
   JvExControls, JvSpeedButton, JvTypes, JvExMask,
   JvDataSourceIntf, JvBrowseFolder;

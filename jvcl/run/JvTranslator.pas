@@ -173,7 +173,7 @@ type
 
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin
-  Result := GetWideStrProp(Instance, PropName);
+  Result := {$IFDEF RTL240_UP}GetStrProp{$ELSE}GetWideStrProp{$ENDIF RTL240_UP}(Instance, PropName);
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;

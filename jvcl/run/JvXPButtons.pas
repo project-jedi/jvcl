@@ -37,6 +37,9 @@ uses
   JvJVCLUtils,
   Classes, TypInfo,
   Windows, Messages, Graphics, Controls, Forms, ActnList, ImgList, Menus,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -301,6 +304,9 @@ const
 {$ENDIF UNITVERSIONING}
 
 implementation
+
+uses
+  Types;
 
 //=== { TJvXPCustomButtonActionLink } ========================================
 

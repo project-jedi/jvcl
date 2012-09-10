@@ -112,9 +112,7 @@ implementation
 
 uses
   CommCtrl,
-  {$IFDEF HAS_TYPES}
   Types,
-  {$ENDIF HAS_TYPES}
   JvThemes;
 
 {$IFNDEF COMPILER7_UP}

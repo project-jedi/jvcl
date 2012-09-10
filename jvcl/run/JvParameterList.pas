@@ -512,6 +512,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   JclStrings,
   JvParameterListParameter, JvResources, JvJVCLUtils, JclSysUtils;
 

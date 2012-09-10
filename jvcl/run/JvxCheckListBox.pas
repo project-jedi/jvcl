@@ -330,6 +330,9 @@ implementation
 
 uses
   SysUtils, Consts, Math,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils, // ULONG_PTR
   {$ENDIF ~COMPILER12_UP}
