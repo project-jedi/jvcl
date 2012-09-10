@@ -2707,7 +2707,7 @@ begin
     tkLString, tkString:
       SetStrProp(PersObj, PropName, ReadString(Path, GetStrProp(PersObj, PropName)));
     tkWString:
-      SetWideStrProp(PersObj, PropName, ReadWideString(Path, GetWideStrProp(PersObj, PropName)));
+      {$IFDEF RTL240_UP}SetStrProp{$ELSE}SetWideStrProp{$ENDIF RTL240_UP}(PersObj, PropName, ReadWideString(Path, {$IFDEF RTL240_UP}GetStrProp{$ELSE}GetWideStrProp{$ENDIF RTL240_UP}(PersObj, PropName)));
     tkEnumeration:
       begin
         TmpValue := GetOrdProp(PersObj, PropName);
@@ -2830,7 +2830,7 @@ begin
         WriteString(Path, GetStrProp(PersObj, PropName));
     tkWString:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
-        WriteWideString(Path, GetWideStrProp(PersObj, PropName));
+        WriteWideString(Path, {$IFDEF RTL240_UP}GetStrProp{$ELSE}GetWideStrProp{$ENDIF RTL240_UP}(PersObj, PropName));
     tkVariant:
       if StorageOptions.StoreDefaultValues or not IsDefaultStrProp(P) then
         WriteString(Path, VarToStr(GetVariantProp(PersObj, PropName)));

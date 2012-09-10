@@ -34,6 +34,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
   Forms, DBCtrls, DB, StdCtrls, ComCtrls,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvDBGrid, JvDBControls, JvDBDateTimePicker, JvDBCombobox, JvDBImage,
   JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineIntf,
   JvDynControlEngineDBIntf;

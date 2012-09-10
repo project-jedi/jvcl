@@ -34,8 +34,14 @@ procedure Register;
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
+  System.Actions,
+  {$ENDIF HAS_UNIT_SYSTEM_ACTIONS}
   Classes,
   Controls, ImgList, ActnList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   DesignEditors, DesignIntf,
   JvDsgnConsts, JvDsgnIntf,
   JvCaptionButton, JvDriveCtrls, JvRegistryTreeView, JvPlaylist,

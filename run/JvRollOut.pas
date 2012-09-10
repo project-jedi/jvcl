@@ -56,6 +56,9 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Forms, Messages, Controls, Graphics, ImgList, ExtCtrls, ActnList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvExtComponent, JvThemes;
 
 const
@@ -326,6 +329,7 @@ const
 implementation
 
 uses
+  Types,
   JvJVCLUtils; // for IsAccel()
 
 

@@ -33,8 +33,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Messages, Windows, CommCtrl, Graphics, Controls, Forms, Classes, ExtCtrls,
-  ComCtrls, ImgList,
+  Messages, Windows, CommCtrl, Graphics, Controls, Forms, ImgList, Classes, ExtCtrls,
+  ComCtrls,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvComponent, JvAppStorage,
   JvDockTree;
 
@@ -528,7 +531,7 @@ const
 implementation
 
 uses
-  ComStrs, Consts, SysUtils,
+  Types, ComStrs, Consts, SysUtils,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}

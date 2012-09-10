@@ -42,6 +42,9 @@ type
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_TYPES}
+  System.Types,
+  {$ENDIF HAS_UNIT_TYPES}
   SysUtils, JclStrings;
 
 { TDefine }

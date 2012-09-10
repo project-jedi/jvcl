@@ -56,7 +56,9 @@ uses
   TmSchema,
   {$ENDIF !COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
-
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvJCLUtils, JvThemes, JvComponent, JvExButtons;
 
 const
@@ -480,7 +482,7 @@ const
 implementation
 
 uses
-  Math,
+  Types, Math,
   JvConsts, JvJVCLUtils;
 
 {$R JvOutlookBar.res}

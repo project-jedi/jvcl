@@ -55,6 +55,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, StdCtrls, Controls, Forms,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvItemsSearchs, JvDataProvider, JvDataProviderIntf, JvExStdCtrls;
 
 type

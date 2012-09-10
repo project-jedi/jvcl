@@ -187,6 +187,7 @@ const
 implementation
 
 uses
+  Types,
   JvJCLUtils, JvJVCLUtils, JvThemes;
 
 //=== { TJvCustomStaticText } ================================================

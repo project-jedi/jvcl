@@ -261,7 +261,7 @@ type
     FMinCountSelectedRows: Integer;
     FShowSelectedRows: Boolean;
   protected
-    procedure SetCaption(Value: string);
+    procedure SetCaption(Value: string); {$IFDEF RTL240_UP}reintroduce;{$ENDIF RTL240_UP}
   public
     constructor Create(AOwner: TComponent); override;
     procedure ShowPositionDialog;

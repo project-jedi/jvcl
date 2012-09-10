@@ -2478,9 +2478,8 @@ begin
 
     Read(FPreviewLength, 2);
     FPreviewLength := ReverseBytes(FPreviewLength);
-
-    ReadData(BytesTillEndOfFrame);
   end;
+  ReadData(Stream.BytesTillEndOfFrame);
 end;
 
 function TJvID3AudioEncryptionFrame.SameUniqueIDAs(
@@ -2543,9 +2542,8 @@ begin
 
     TempWord := ReverseBytes(PreviewLength);
     Write(TempWord, 2);
-
-    WriteData;
   end;
+  WriteData;
 end;
 
 //=== { TJvID3Base } =========================================================
@@ -6058,8 +6056,8 @@ begin
     ReadStringA(FMIMEType);
     ReadStringEnc(FFileName);
     ReadStringEnc(FContentDescription);
-    ReadData(BytesTillEndOfFrame);
   end;
+  ReadData(Stream.BytesTillEndOfFrame);
 end;
 
 function TJvID3GeneralObjFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
@@ -6119,8 +6117,8 @@ begin
     WriteTerminatorEnc;
     WriteStringEnc(ContentDescription);
     WriteTerminatorEnc;
-    WriteData;
   end;
+  WriteData;
 end;
 
 //=== { TJvID3Header } =======================================================
@@ -6806,7 +6804,7 @@ begin
       }
       ReadStringA(FURL)
     else
-      ReadData(BytesTillEndOfFrame);
+      Self.ReadData(BytesTillEndOfFrame);
   end;
 end;
 
@@ -6883,7 +6881,7 @@ begin
     if HasOnlyURL then
       WriteStringA(URL)
     else
-      WriteData;
+      Self.WriteData;
   end;
 end;
 

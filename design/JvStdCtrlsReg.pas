@@ -37,6 +37,9 @@ uses
   Classes, Controls,
   FiltEdit,
   ImgList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   DesignEditors, DesignIntf,
   JvDsgnConsts, JvTypes,
   JvRichEdit,

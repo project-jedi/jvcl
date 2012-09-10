@@ -598,6 +598,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Types,
   {$IFDEF JVCLThemesEnabled}
   JvThemes,

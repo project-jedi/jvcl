@@ -1137,8 +1137,8 @@ var
             smNumeric:
               begin
                 try
-                  VarR8FromStr(First, LOCALE_USER_DEFAULT, 0, I);
-                  VarR8FromStr(Second, LOCALE_USER_DEFAULT, 0, J);
+                  VarR8FromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(First), LOCALE_USER_DEFAULT, 0, I);
+                  VarR8FromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(Second), LOCALE_USER_DEFAULT, 0, J);
                   Result := I > J;
                 except
                   try
@@ -1174,8 +1174,8 @@ var
               end;
             smCurrency:
               begin
-                VarCyFromStr(First, LOCALE_USER_DEFAULT, 0, a);
-                VarCyFromStr(Second, LOCALE_USER_DEFAULT, 0, b);
+                VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(First), LOCALE_USER_DEFAULT, 0, a);
+                VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(Second), LOCALE_USER_DEFAULT, 0, b);
                 Result := a > b;
               end;
             smAutomatic:

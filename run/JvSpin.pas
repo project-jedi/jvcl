@@ -496,7 +496,7 @@ const
 implementation
 
 uses
-  JvThemes,
+  Types, JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}

@@ -36,6 +36,12 @@ uses
   BDE, DB, DBTables;
 
 type
+  {$IFDEF RTL240_UP}
+  TJvValueBuffer = TValueBuffer;
+  {$ELSE}
+  TJvValueBuffer = Pointer;
+  {$ENDIF RTL240_UP}
+  
   TJvBDEMemoryTable = class(TDBDataSet)
   private
     FTableName: TFileName;
@@ -68,7 +74,7 @@ type
     procedure DeleteTable;
     procedure EmptyTable;
     procedure GotoRecord(RecordNo: Longint);
-    function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
+    function GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean; override;
     function IsSequenced: Boolean; override;
     function Locate(const KeyFields: string; const KeyValues: Variant;
       Options: TLocateOptions): Boolean; override;
@@ -254,7 +260,7 @@ begin
 end;
 
 
-function TJvBDEMemoryTable.GetFieldData(Field: TField; Buffer: Pointer): Boolean;
+function TJvBDEMemoryTable.GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean;
 var
   IsBlank: LongBool;
   RecBuf: {$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP};

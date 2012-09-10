@@ -41,6 +41,9 @@ uses
   ExptIntf,
   {$ENDIF !COMPILER7_UP}
   ToolsAPI,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JclSchedule,
   JvDsgnConsts,
   JvTrayIcon, JvThumbImage, JvThumbnails, JvThumbViews, JvBalloonHint,

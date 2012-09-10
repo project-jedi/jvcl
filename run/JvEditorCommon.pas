@@ -207,6 +207,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Contnrs, Graphics, Controls,
   Forms, StdCtrls, ExtCtrls, Menus,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvConsts, JvFixedEditPopUp, JvStdEditActions, JvUnicodeCanvas, JvComponent,
   JvExControls;
 

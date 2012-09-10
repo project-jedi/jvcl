@@ -548,7 +548,7 @@ const
 implementation
 
 uses
-  SysUtils, Math, ImgList, {AppEvnts,} JvJVCLUtils,
+  Types, SysUtils, Math, ImgList, {AppEvnts,} JvJVCLUtils,
   JvDockSupportProc;
 
 type

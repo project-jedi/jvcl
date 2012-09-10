@@ -745,7 +745,8 @@ begin
         // parenthesis that indicate the amount is negative. Using StrToFloatDef
         // would not catch the negative part, hence the need to use a function
         // that knows how to do the conversion.
-        VarCyFromStr(FEditText, LOCALE_USER_DEFAULT, 0, Cur);
+
+        VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(FEditText), LOCALE_USER_DEFAULT, 0, Cur);
         Result := Cur;
       end;
   else
@@ -793,7 +794,7 @@ begin
         // parenthesis that indicate the amount is negative. Using StrToFloatDef
         // would not catch the negative part, hence the need to use a function
         // that knows how to do the conversion.
-        VarCyFromStr(FEditText, LOCALE_USER_DEFAULT, 0, Cur);
+        VarCyFromStr({$IFDEF RTL240_UP}PChar{$ENDIF RTL240_UP}(FEditText), LOCALE_USER_DEFAULT, 0, Cur);
         Result := Cur;
       end;
     dfFloat, dfFloatGeneral, dfDecimal, dfPercent, dfScientific, dfFloatFixed:

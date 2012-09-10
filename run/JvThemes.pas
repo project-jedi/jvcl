@@ -36,6 +36,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages, CommCtrl, Types, SysUtils, Classes, Contnrs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   {$IFDEF JVCLThemesEnabled}
     {$IFDEF COMPILER7_UP}
   Themes, UxTheme,

@@ -34,6 +34,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, // inline
   Classes, Controls, StdCtrls,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvComponentBase, Forms;
 
 type
@@ -109,7 +112,7 @@ const
 implementation
 
 uses
-  Consts, SysUtils,
+  Types, Consts, SysUtils,
   JvDualListForm, JvResources, JvJVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);

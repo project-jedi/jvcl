@@ -64,6 +64,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls,
   Forms, Dialogs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvComponent, JvExControls, JvTypes;
 
 type
@@ -464,7 +467,7 @@ const
 implementation
 
 uses
-  Math,
+  Types, Math,
   JvThemes;
 
   // returns True if Inner is completely within Outer

@@ -411,7 +411,7 @@ const
 implementation
 
 uses
-  SysUtils, Consts, RTLConsts, Variants,
+  Types, SysUtils, Consts, RTLConsts, Variants,
   JvDataProviderIntf, JvItemsSearchs, JvConsts, JvResources;
 
 const

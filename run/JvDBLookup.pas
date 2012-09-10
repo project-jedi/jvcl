@@ -40,6 +40,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
+  {$IFDEF RTL240_UP}
+  System.Generics.Collections,
+  {$ENDIF RTL240_UP}
   Types, Variants, Classes, Graphics, Controls, Forms, DB, DBCtrls,
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
@@ -89,7 +92,7 @@ type
     FMasterField: TField;
     FKeyField: TField;
     FDisplayField: TField;
-    FListFields: TList;
+    FListFields: TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP};
     FValue: string;
     FDisplayValue: string;
     FDisplayEmpty: string;
@@ -802,7 +805,7 @@ begin
   FDataLink.FDataControl := Self;
   FLookupLink := TLookupSourceLink.Create;
   FLookupLink.FDataControl := Self;
-  FListFields := TList.Create;
+  FListFields := TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP}.Create;
   FEmptyValue := '';
   FEmptyStrIsNull := True;
   FEmptyItemColor := clWindow;

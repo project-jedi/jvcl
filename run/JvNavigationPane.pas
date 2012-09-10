@@ -35,6 +35,9 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvConsts, JvTypes, JvButton, JvPageList, JvComponentBase, JvComponent, JvExExtCtrls;
 
 type
@@ -1168,7 +1171,7 @@ const
 implementation
 
 uses
-  Forms, ActnList,
+  Types, Forms, ActnList,
   JvJVCLUtils, JvJCLUtils, JvResources;
 
 const

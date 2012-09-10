@@ -90,7 +90,7 @@ var
 implementation
 
 uses
-  Variants, Masks;
+  Classes, Variants, Masks;
 
 {$IFDEF COMPILER12_UP}
   // Our charsets do not contain any char > 127 what makes it safe because the

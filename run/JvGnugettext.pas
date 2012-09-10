@@ -101,6 +101,14 @@ interface
   // Delphi 2012 with Unicode
   {$DEFINE DELPHI2012OROLDER}
 {$endif}
+{$ifdef VER240}
+  // Delphi 2013 with Unicode
+  {$DEFINE DELPHI2013OROLDER}
+{$endif}
+
+{$ifdef DELPHI2013OROLDER}
+  {$DEFINE DELPHI2012OROLDER}
+{$endif}
 
 {$ifdef DELPHI2012OROLDER}
   {$DEFINE DELPHI2011OROLDER}
@@ -1806,10 +1814,10 @@ begin
             tkString, tkLString :
               old := GetStrProp(AnObject, PropName);
             tkWString :
-              old := GetWideStrProp(AnObject, PropName);
+              old := {$IFDEF RTL240_UP}GetStrProp{$ELSE}GetWideStrProp{$ENDIF RTL240_UP}(AnObject, PropName);
             {$IFDEF UNICODE}
             tkUString :
-              old := GetUnicodeStrProp(AnObject, PropName);
+              old := {$IFDEF RTL240_UP}GetStrProp{$ELSE}GetUnicodeStrProp{$ENDIF RTL240_UP}(AnObject, PropName);
             {$ENDIF}
           else
             raise Exception.Create ('Internal error: Illegal property type. This problem needs to be solved by a programmer, try to find a workaround.');

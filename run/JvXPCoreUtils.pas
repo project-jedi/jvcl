@@ -76,6 +76,9 @@ const
 
 implementation
 
+uses
+  Types;
+
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
   Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);

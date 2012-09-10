@@ -40,6 +40,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   ImgList, ActnList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvButton, JvLabel, JvExForms;
 
 const
@@ -190,7 +193,7 @@ const
 implementation
 
 uses
-  Menus, SysUtils,
+  Types, Menus, SysUtils,
   JvJVCLUtils, JvDesktopAlert, JvResources;
 
 {.$R *.dfm} // not needed

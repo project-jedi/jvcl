@@ -35,6 +35,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Types, Windows, Messages, Classes, Graphics, Controls, StdCtrls, ImgList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvButton;
 
 

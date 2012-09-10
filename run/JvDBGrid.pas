@@ -67,6 +67,9 @@ uses
   Types,
   Windows, Messages, Classes, Graphics, Controls, Grids, Menus, DBGrids, DB,
   StdCtrls, Forms, Contnrs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvTypes, {JvTypes contains Exception base class}
   JvAppStorage, JvFormPlacement, JvExDBGrids, JvDBUtils;
 

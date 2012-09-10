@@ -478,7 +478,7 @@ const
 implementation
 
 uses
-  Consts, Math, TypInfo,
+  Types, Consts, Math, TypInfo,
   {$IFDEF MSWINDOWS}
   JclRegistry,
   {$ENDIF MSWINDOWS}

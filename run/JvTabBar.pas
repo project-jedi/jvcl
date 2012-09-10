@@ -36,6 +36,9 @@ uses
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   ExtCtrls,
   SysUtils, Classes, Contnrs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvThemes;
 
 type
@@ -496,6 +499,7 @@ const
 implementation
 
 uses
+  Types,
   JvJVCLUtils;
 
 //=== { TJvCustomTabBar } ====================================================

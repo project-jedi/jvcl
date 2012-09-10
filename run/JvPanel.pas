@@ -362,6 +362,9 @@ const
 implementation
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF}
   Types, {$IFDEF COMPILER7_UP}Themes,{$ENDIF}
   JvJCLUtils, JvJVCLUtils, JvResources;
 

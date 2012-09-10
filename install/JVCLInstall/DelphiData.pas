@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
 
 const
-  BDSVersions: array[1..9] of record
+  BDSVersions: array[1..10] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -51,7 +51,8 @@ const
     (Name: 'CodeGear RAD Studio'; VersionStr: '2009'; Version: 12; CIV: '120'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: '2010'; Version: 14; CIV: '140'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE'; Version: 15; CIV: '150'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE2'; Version: 16; CIV: '160'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE2'; Version: 16; CIV: '160'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE3'; Version: 17; CIV: '170'; Supported: True)
   );
 
 type
@@ -451,7 +452,7 @@ begin
                   else
                     Target.Free;
 
-                  if (SubKey = 'BDS') and (KeyName[1] = '9') then
+                  if (SubKey = 'BDS') and (StrToIntDef(Copy(KeyName, 1, Pos('.', KeyName) - 1), -1) >= 9) then
                   begin
                     Target := TCompileTarget.Create(SubKey, KeyName, HKCUSubKey, ctpWin64);
                     if Target.IsValid then // only valid targets are allowed
@@ -475,10 +476,14 @@ end;
 
 function TCompileTargetList.IsBDSSupported(const IDEVersionStr: string): Boolean;
 var
-  IDEVersion: Integer;
+  P, IDEVersion: Integer;
 begin
   Result := False;
-  IDEVersion := StrToInt(IDEVersionStr[1]);
+  P := Pos('.', IDEVersionStr);
+  if P > 0 then
+    IDEVersion := StrToInt(Copy(IDEVersionStr, 1, P - 1))
+  else
+    IDEVersion := StrToInt(IDEVersionStr[1]);
   if (IDEVersion >= Low(BDSVersions)) and (IDEVersion <= High(BDSVersions)) then
     Result := BDSVersions[IDEVersion].Supported;
 end;
@@ -1287,7 +1292,7 @@ begin
   else
     Result := SupportedPersonalities * Personalities = Personalities;
   // there is no C++ Win64 personality yet
-  if (Personalities = [persBCB]) and IsBDS and (IDEVersion = 9) and (FPlatform = ctpWin64) then
+  if (Personalities = [persBCB]) and IsBDS and (IDEVersion >= 9) and (FPlatform = ctpWin64) then
     Result := False;
 end;
 

@@ -37,6 +37,9 @@ uses
   {$ENDIF MSWINDOWS}
   Variants, Classes, Controls, StdCtrls, ExtCtrls, Mask, Forms,
   Buttons, Dialogs, FileCtrl, ExtDlgs, CheckLst,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type

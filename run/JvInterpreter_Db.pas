@@ -52,8 +52,18 @@ const
 implementation
 
 uses
+  {$IFDEF RTL240_UP}
+  System.Generics.Collections,
+  {$ENDIF RTL240_UP}
   Classes, Variants, DB;
 
+type
+  {$IFDEF COMPILER12_UP}
+  TJvRecordBuffer = TRecordBuffer;  // Delphi 2009
+  {$ELSE}
+  TJvRecordBuffer = PAnsiChar;
+  {$ENDIF COMPILER12_UP}
+  
 { EDatabaseError }
 
 { TFieldDef }
@@ -2075,14 +2085,14 @@ end;
 
 procedure TDataSet_GetCurrentRecord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TDataSet(Args.Obj).GetCurrentRecord({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(AnsiString(Args.Values[0])));
+  Value := TDataSet(Args.Obj).GetCurrentRecord(TJvRecordBuffer(AnsiString(Args.Values[0])));
 end;
 
 { procedure GetFieldList(List: TList; const FieldNames: string); }
 
 procedure TDataSet_GetFieldList(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TDataSet(Args.Obj).GetFieldList(V2O(Args.Values[0]) as TList, Args.Values[1]);
+  TDataSet(Args.Obj).GetFieldList(V2O(Args.Values[0]) as TList{$IFDEF RTL240_UP}<TField>{$ENDIF RTL240_UP}, Args.Values[1]);
 end;
 
 { procedure GetFieldNames(List: TStrings); }

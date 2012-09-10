@@ -212,6 +212,10 @@ type
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
     function IsDesignMsg(Sender: TControl; var Msg: TMessage): Boolean;
+    {$IFDEF RTL240_UP}
+    procedure DrawSelectionMarks(AControl: TControl);
+    function IsSelected(AControl: TControl): Boolean;
+    {$ENDIF RTL240_UP}
     procedure PaintGrid;
     procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string); reintroduce;
     function UniqueName(const BaseName: string): string;
@@ -279,6 +283,7 @@ const
 implementation
 
 uses
+  Types,
   JvDesignUtils, JvResources, JvTypes;
 
 var
@@ -1233,6 +1238,19 @@ function TJvDesignDesigner.IsDesignMsg(Sender: TControl; var Msg: TMessage): Boo
 begin
   Result := Messenger.IsDesignMessage(Sender, Msg);
 end;
+
+{$IFDEF RTL240_UP}
+procedure TJvDesignDesigner.DrawSelectionMarks(AControl: TControl);
+begin
+  {$MESSAGE WARN 'Check and implement TJvDesignDesigner.DrawSelectionMarks if necessary'}
+end;
+
+function TJvDesignDesigner.IsSelected(AControl: TControl): Boolean;
+begin
+  {$MESSAGE WARN 'Check and implement TJvDesignDesigner.IsSelected if necessary'}
+  Result := False;
+end;
+{$ENDIF RTL240_UP}
 
 procedure TJvDesignDesigner.Modified;
 begin

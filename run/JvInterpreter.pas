@@ -1267,6 +1267,7 @@ const
 implementation
 
 uses
+  Types,
   TypInfo,
   {$IFDEF CPUX64}
   System.Rtti,

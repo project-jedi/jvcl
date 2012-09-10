@@ -277,7 +277,7 @@ const
 implementation
 
 uses
-  SysUtils, Math, Forms,
+  Types, SysUtils, Math, Forms,
   JvFixedEditPopUp, JvToolEdit;
 
 //=== Local procedures =======================================================

@@ -57,6 +57,13 @@ implementation
 uses
   BDE, Classes, DB, DBTables;
 
+type
+  {$IFDEF COMPILER12_UP}
+  TJvRecordBuffer = TRecordBuffer;  // Delphi 2009
+  {$ELSE}
+  TJvRecordBuffer = PAnsiChar;
+  {$ENDIF COMPILER12_UP}
+  
 { EDBEngineError }
 
 { constructor Create(ErrorCode: DBIResult) }
@@ -871,7 +878,7 @@ end;
 
 procedure TBDEDataSet_GetCurrentRecord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TBDEDataSet(Args.Obj).GetCurrentRecord({$IFDEF COMPILER12_UP}PByte{$ELSE}PAnsiChar{$ENDIF COMPILER12_UP}(AnsiString(Args.Values[0])));
+  Value := TBDEDataSet(Args.Obj).GetCurrentRecord(TJvRecordBuffer(AnsiString(Args.Values[0])));
 end;
 
 { procedure GetIndexInfo; }
