@@ -132,25 +132,48 @@ clicks+drags.
 
 }
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JvComponent, JvDockControlForm, ExtCtrls, JvDockVIDVCStyle,
-  StdCtrls, JvDockVIDStyle, JvDockDelphiStyle, JvDockVSNetStyle,
-  JvAppStorage, JvAppIniStorage, DocFm, JvExExtCtrls, JvSplitter, Spin,
-  JvDockTree, JvComponentBase;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  ExtCtrls,
+  StdCtrls,
+  Contnrs,
+  Spin,
+
+  DocFm,
+
+  JvComponent,
+  JvDockControlForm,
+  JvDockVIDVCStyle,
+  JvDockVIDStyle,
+  JvDockDelphiStyle,
+  JvDockVSNetStyle,
+  JvAppStorage,
+  JvAppIniStorage,
+  JvExExtCtrls,
+  JvSplitter,
+  JvDockTree,
+  JvComponentBase;
+
 
 const
-  MinWidth=500;  
+  MinWidth=500;
 type
+  TLastClickEnum = (lcNone,lcConjoin,lcSibling,lcTabbed);
+
   TMainForm = class(TForm)
     Panel1: TPanel;
     Panel2: TPanel;
     dockServer: TJvDockServer;
     ButtonSibDock: TButton;
     JvDockVIDStyle1: TJvDockVIDStyle;
-    Button2: TButton;
-    Button3: TButton;
     DockIniStorage: TJvAppIniFileStorage;
-    Button4: TButton;
     ButtonCreateTabDock: TButton;
     ButtonCreateConjoin: TButton;
     Panel3: TPanel;
@@ -179,10 +202,14 @@ type
     FColors : Array of TColor;
     FIndex :Integer;
     FDocumentFormIndex:Integer; // Give each form a different caption.
-
+    FDocs:TObjectList;
+    FLastClick:TLastClickEnum;
     procedure Trace(msg:String);
 
     function MakeNewDocFm:TDocForm;
+
+    procedure clearOldDocs;
+
 
   public
     { Public declarations }
@@ -213,22 +240,26 @@ end;
 function TMainForm.MakeNewDocFm:TDocForm;
 begin
   result := TDocForm.Create(nil);
+  result.Visible := false;
 
   result.DockClient.DockStyle := DockServer.DockStyle;
   result.sg.Color := FColors[FIndex];
   result.OnTrace := Trace;
 
+
   Inc(FDocumentFormIndex);
   result.Caption := 'Document Form #'+IntToStr(FDocumentFormIndex);
   result.Name := 'DocumentForm'+IntToStr(FDocumentFormIndex);
 
-  Inc(FIndex);
+  FDocs.Add(result);
+  FIndex := FDocs.Count;
   if (FIndex>=Length(FColors)) then FIndex := 0;
 
   result.Top := result.Top + (FIndex *  10);
   result.Left := result.Left + (FIndex *  10);
 
 end;
+
 
 procedure TMainForm.ButtonSibDockClick(Sender: TObject);
 var
@@ -239,13 +270,14 @@ var
  ctrl:TWinControl;
  adef:TAlign;
 begin
+  if FLastClick<>lcSibling then
+    clearOldDocs;
+
+  FLastClick := lcSibling;
   Assert(Assigned(DockServer.DockStyle));
 
   newDocFm := MakeNewDocFm;
 
-  newDocFm.Show;
-
-  Assert(Assigned(DockServer.CustomDockPanel));
 
  { Simplest version just puts siblings side by side horizontally: }
  //  newDocFm.ManualDock( DockServer.CustomDockPanel, nil, alNone )
@@ -289,9 +321,36 @@ begin
    newDocFm.ManualDock( ctrl, besideForm, alRight );
  end;
 
+  newDocFm.Show;
+
 
   TJvDockPanel(ctrl).DockManager.ResetBounds(true);
 
+end;
+
+procedure TMainForm.clearOldDocs;
+var
+  n:Integer;
+  R:TRect;
+  dockClient:TJvDockClient;
+  ctrl:TControl;
+begin
+  R.Top := -800;
+  R.Left := -800;
+  for n := 0 to dockServer.CustomDockPanel.DockClientCount-1 do
+  begin
+      ctrl := dockServer.CustomDockPanel.DockClients[n];
+      if ctrl is TForm then
+      begin
+         dockClient := FindDockClient(ctrl);
+         dockClient.FormUnDock(nil,nil);
+      end;
+
+      //dockClient.FormUnDock(nil,nil);
+  end;
+
+  // This Frees previously created forms.
+  FDocs.Clear;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -305,6 +364,7 @@ begin
 
     DockIniStorage.FileName := ExtractFilePath(Application.ExeName)+'CustomTabbedDockingLayout.ini';
 
+    FDocs :=  TObjectList.Create(true);
 
 
 end;
@@ -431,6 +491,11 @@ var
  tabHost: TJvDockTabHostForm;
  ctrl:TWinControl;
 begin
+  // clear previous contents
+  clearOldDocs;
+  FLastClick := lcTabbed;
+
+
   newDocFm1 := MakeNewDocFm;
   newDocFm2 := MakeNewDocFm;
 
@@ -450,7 +515,9 @@ begin
 	newDocFm2 := MakeNewDocFm;
 	ManualTabDockAddPage( tabHost, newDocFm2 );
   end;
- 
+
+  newDocFm1.Show;
+  newDocFm2.Show;
 end;
 
 
@@ -461,10 +528,16 @@ var
  newDocFm1,newDocFm2:TDocForm;
 // conjoinHost:TJvDockConjoinHostForm;
 begin
+  if FLastClick <> lcConjoin then
+    clearOldDocs;
+
+  FLastClick := lcConjoin;
   newDocFm1 := MakeNewDocFm;
   newDocFm2 := MakeNewDocFm;
   {conjoinHost := }ManualConjoinDock( DockServer.CustomDockPanel, newDocFm1,  newDocFm2 );
 
+  newDocFm1.Show;
+  newDocFm2.Show;
   // How to add a 3rd and a fourth page:
 //  newDocFm2 := MakeNewDocFm;
 //  ManualConjoinDockAdd( conjoinHost, newDocFm2 );   //TODO! IMPLEMENT THIS HELPER FUNCTION!

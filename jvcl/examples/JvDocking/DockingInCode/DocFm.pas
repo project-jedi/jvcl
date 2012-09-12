@@ -23,7 +23,6 @@ type
       DockForm: TForm; DockServer: TJvDockServer; DockPanel: TJvDockPanel;
       var CanDock: Boolean);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
     procedure FormUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
@@ -47,6 +46,7 @@ type
   public
     { Public declarations }
     property OnTrace:TMsgEvent read FOnTrace write FOnTrace;
+
   end;
 
 var
@@ -169,11 +169,6 @@ begin
      Trace('event:Undock blocked');
 
 
-end;
-
-procedure TDocForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-   Action := caFree;
 end;
 
 end.

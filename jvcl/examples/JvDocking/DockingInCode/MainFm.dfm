@@ -1,9 +1,9 @@
 object MainForm: TMainForm
   Left = 290
   Top = 259
-  Width = 965
-  Height = 678
   Caption = 'Controlling Docking from Code'
+  ClientHeight = 639
+  ClientWidth = 949
   Color = 14734247
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,17 +17,18 @@ object MainForm: TMainForm
   TextHeight = 13
   object JvSplitter1: TJvSplitter
     Left = 0
-    Top = 473
+    Top = 472
     Width = 949
     Height = 3
     Cursor = crVSplit
     Align = alBottom
+    ExplicitTop = 473
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 265
-    Height = 473
+    Height = 472
     Align = alLeft
     Color = 15399897
     TabOrder = 0
@@ -47,34 +48,6 @@ object MainForm: TMainForm
       Caption = 'Sibling Dock'
       TabOrder = 0
       OnClick = ButtonSibDockClick
-    end
-    object Button2: TButton
-      Left = 6
-      Top = 164
-      Width = 99
-      Height = 25
-      Hint = 'Display number of windows docked in the Custom Docking Area.'
-      Caption = 'View Dock Tree'
-      TabOrder = 5
-      OnClick = Button2Click
-    end
-    object Button3: TButton
-      Left = 6
-      Top = 101
-      Width = 99
-      Height = 25
-      Caption = 'Save Layout'
-      TabOrder = 3
-      OnClick = Button3Click
-    end
-    object Button4: TButton
-      Left = 6
-      Top = 132
-      Width = 99
-      Height = 25
-      Caption = 'Load Layout'
-      TabOrder = 4
-      OnClick = Button4Click
     end
     object ButtonCreateTabDock: TButton
       Left = 6
@@ -103,7 +76,7 @@ object MainForm: TMainForm
       Height = 22
       MaxValue = 100
       MinValue = 0
-      TabOrder = 6
+      TabOrder = 3
       Value = 18
       OnChange = SpinEdit1Change
     end
@@ -113,7 +86,7 @@ object MainForm: TMainForm
       Width = 233
       Height = 17
       Caption = 'Dock in tabs to right side (reproduce bug)'
-      TabOrder = 7
+      TabOrder = 4
       OnClick = tbDockRightSideClick
     end
     object cbWorkaround: TCheckBox
@@ -124,7 +97,7 @@ object MainForm: TMainForm
       Caption = 'Tab-Docking workaround mode'
       Checked = True
       State = cbChecked
-      TabOrder = 8
+      TabOrder = 5
       Visible = False
     end
   end
@@ -132,21 +105,22 @@ object MainForm: TMainForm
     Left = 265
     Top = 0
     Width = 684
-    Height = 473
+    Height = 472
     Align = alClient
     Caption = 'Custom Docking Area'
-    Color = 4227200
+    Color = clWhite
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindow
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    ParentBackground = False
     ParentFont = False
     TabOrder = 1
   end
   object Panel3: TPanel
     Left = 0
-    Top = 476
+    Top = 475
     Width = 949
     Height = 164
     Align = alBottom

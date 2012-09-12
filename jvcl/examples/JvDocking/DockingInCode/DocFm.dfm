@@ -1,9 +1,9 @@
 object DocForm: TDocForm
   Left = 456
   Top = 476
-  Width = 745
-  Height = 513
   Caption = 'Document Form'
+  ClientHeight = 474
+  ClientWidth = 729
   Color = clAqua
   DockSite = True
   DragKind = dkDock
@@ -14,7 +14,6 @@ object DocForm: TDocForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnEndDock = FormEndDock
@@ -35,7 +34,7 @@ object DocForm: TDocForm
     Left = 0
     Top = 33
     Width = 729
-    Height = 442
+    Height = 441
     Align = alClient
     Color = 16642009
     ColCount = 20
