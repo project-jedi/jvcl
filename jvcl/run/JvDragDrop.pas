@@ -386,7 +386,7 @@ begin
     ptd := nil;
     dwAspect := DVASPECT_CONTENT;
     lindex := 0;
-    tymed := TYMED_ISTREAM;
+    tymed := TYMED_ISTREAM or TYMED_ISTORAGE;
   end;
 end;
 
@@ -752,12 +752,15 @@ const
 var
   Medium: TStgMedium;
   InStream: IStream;
+  InStorage, StgMem: IStorage;
   Stat: TStatStg;
+  LockBytes: ILockBytes;
 
   Buf: Pointer;
   BufSize: Integer;
   Num: Int64;
   Position: Int64;
+  Offset: Int64;
 begin
   Result := False;
   if (Stream = nil) or (Index < 0) or (Index >= GetFileDescrCount) then
@@ -765,6 +768,7 @@ begin
 
   FileContentFormatEtc.lindex := Index;
   if FDataObject.GetData(FileContentFormatEtc, Medium) = S_OK then
+  begin
     try
       try
         if Medium.tymed and TYMED_ISTREAM <> 0 then
@@ -795,15 +799,65 @@ begin
               FreeMem(Buf);
             end;
           end;
+          Result := True;
+        end
+        else
+        if Medium.tymed and TYMED_ISTORAGE <> 0 then
+        begin
+          InStorage := IStorage(Medium.stg);
+          if Succeeded(CreateILockBytesOnHGlobal(0, True, LockBytes)) then
+          begin
+            if Succeeded(StgCreateDocfileOnILockBytes(LockBytes, STGM_CREATE or STGM_READWRITE or STGM_SHARE_EXCLUSIVE, 0, StgMem)) then
+            begin
+              if Succeeded(InStorage.CopyTo(0, nil, nil, StgMem)) then
+              begin
+                StgMem.Commit(STGC_DEFAULT);
+                LockBytes.Stat(Stat, STATFLAG_NONAME);
+
+                Num := Stat.cbSize;
+                if Num > 0 then
+                begin
+                  Offset := 0;
+                  GetMem(Buf, MaxBufSize);
+                  try
+                   // Speicherbereich reservieren
+                    Position := Stream.Position;
+                    Stream.Size := Stream.Size + Num;
+                    Stream.Position := Position;
+
+                    while Num > 0 do
+                    begin
+                      if Num < MaxBufSize then
+                        BufSize := Num
+                      else
+                        BufSize := MaxBufSize;
+                      LockBytes.ReadAt(Offset, Buf, BufSize, nil);
+                      Inc(Offset, BufSize);
+                      Stream.Write(Buf^, BufSize);
+                      Dec(Num, BufSize);
+                    end;
+                  finally
+                    FreeMem(Buf);
+                  end;
+                end;
+                Result := True;
+              end;
+            end;
+          end;
         end
         else
           Result := False;
       finally
+        InStream := nil;
+        InStorage := nil;
+        StgMem := nil;
+        LockBytes := nil;
         ReleaseStgMedium(Medium);
       end;
     except
       Result := False;
     end;
+  end;
 end;
 
 initialization
