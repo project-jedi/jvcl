@@ -149,7 +149,7 @@ function GET_KEYSTATE_LPARAM(lParam: LPARAM): WORD;
 implementation
 
 uses
-  JvWndProcHook;
+  JvWndProcHook, JvResources;
 
 const
   // from JwaWinUser.pas
@@ -178,7 +178,11 @@ end;
 constructor TJvAppCommand.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FForm := GetParentForm(TControl(AOwner));
+  FForm := nil;
+  if AOwner is TControl then
+    FForm := GetParentForm(AOwner as TControl);
+  if FForm = nil then
+    raise Exception.CreateResFmt(@RsEOwnerMustBeForm, [ClassName]);
   Active := True;
 end;
 
