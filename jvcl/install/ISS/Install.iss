@@ -468,7 +468,7 @@ var
   Version: Integer;
 begin
 {  // Uninstall from all IDEs ?
-  for Version := 6 to 17 do
+  for Version := 6 to LastInstalledIDEVersionNumber do
     UninstallDesignPackagesPrefixed(ikDelphi, Version, 'Jv');
   for Version := 6 to 6 do
     UninstallDesignPackagesPrefixed(ikBCB, Version, 'Jv');}
@@ -563,7 +563,7 @@ begin
   if Result then
   begin
     Result := False;
-    for Version := 6 to 17 do
+    for Version := 6 to LastInstalledIDEVersionNumber do
     begin
       if IsDelphiJclInstalled(Version) then
       begin

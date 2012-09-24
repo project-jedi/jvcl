@@ -1,6 +1,8 @@
 @echo off
 SETLOCAL
-SET SETUPDIR=%CD%
+SET CURDIR=%CD%
+SET SETUPDIR=%~dp0
+
 
 :: ==========================================================
 :: rsvars.bat check
@@ -12,15 +14,29 @@ if "-%BDS%" == "-" goto Leave
 :RsVarsCalled
 SET JVCLROOT=%SETUPDIR%\..\..
 SET JVCLBUILTDIR=%SETUPDIR%\setupbuild
-SET JCLBUILTDIR=%JVCLROOT%\..\JclInnoSetup\setupbuild
+
+:: == Find JCL root dir ==
+SET JCLROOT=%JVCLROOT%\..\jcl
+if exist "%JCLROOT%\source\common\JclBase.pas" goto JclRootDirFound
+:: Try the "trunk" checkout
+SET JCLROOT=%JVCLROOT%\..\jcl\jcl
+if not exist "%JCLROOT%\source\common\JclBase.pas" goto NoRootDirFound
+:JclRootDirFound
+
+SET JCLBUILTDIR=%JCLROOT%\..\JclInnoSetup\setupbuild
+if not exist "%JCLROOT%\..\Install.iss" goto JclInnoSetupDirFound
+:: Try the "trunk" checkout
+SET JCLBUILTDIR=%JCLROOT%\..\InnoSetup\setupbuild
+if not exist "%JCLROOT%\..\Install.iss" goto NoJclInnoSetupDirFound
+:JclInnoSetupDirFound
+
 SET InnoSetupDir=%JCLBUILTDIR%\..\InnoSetup
 
 :: == Sanity checks ==
-if not exist "%JVCLROOT%\run\JVCLVer.pas" goto NoRootDirFound
 if not exist "%SETUPDIR%\Install.iss" goto NoInstallDir
 if not exist "%InnoSetupDir%\..\Install.iss" goto NoJclInnoSetupDirFound
 if not exist "%JCLBUILTDIR%\lib\win32\Jcl.dcp" goto NoJclLibDirFound
-
+if not exist "%JVCLROOT%\run\JVCLVer.pas" goto NoRootDirFound
 
 :: ==========================================================
 :: Compile JVCL
@@ -33,12 +49,13 @@ md "%JVCLBUILTDIR%\lib" 2>NUL >NUL
 md "%JVCLBUILTDIR%\bpl" 2>NUL >NUL
 
 :: == Delete all files in the output directories, we always want to rebuild them ==
+if "-%JVCLBUILTDIR%" == "-" GOTO NoRootDirFound
 del /Q /S "%JVCLBUILTDIR%\*.*" 2>NUL >NUL
 
 :: == Compile the files
 SET JvclLib=%JVCLBUILTDIR%\lib\win32
 
-cd %JVCLROOT%
+cd /d "%JVCLROOT%"
 msbuild make.proj "/p:Platform=win32" "/p:HppOutDir=%JVCLBUILTDIR%\hpp" "/p:DcuOutDir=%JVCLBUILTDIR%\lib\win32" "/p:BplOutDir=%JVCLBUILTDIR%\bpl" "/p:JclLibDir=%JCLBUILTDIR%\lib\win32"
 if ERRORLEVEL 1 goto Failed
 if not exist "%BDS%\bin\dcc64.exe" goto NoWin64
@@ -47,7 +64,15 @@ if ERRORLEVEL 1 goto Failed
 :: For 64bit we have to install both win32 and lib\win64
 SET JvclLib=%JVCLBUILTDIR%\lib
 :NoWin64
-cd %SETUPDIR%
+cd /d "%SETUPDIR%"
+
+:: Generate Settings.iss file
+del Settings.iss >NUL 2>NUL
+dcc32 -E. "-U%JVCLBUILTDIR%\lib\win32;%JCLBUILTDIR%\lib\win32;%BDS%\lib\release;%BDS%\lib;%BDS%\lib\win32\release" "-R%JCLBUILTDIR%\lib\win32" GenerateSettings.dpr
+if ERRORLEVEL 1 goto Failed
+GenerateSettings.exe
+del GenerateSettings.exe >NUL
+
 
 :: ==========================================================
 :: Compile Setup
@@ -79,5 +104,5 @@ echo.
 pause
 
 :Leave
-cd %SETUPDIR%
+cd /d %CURDIR%
 ENDLOCAL
