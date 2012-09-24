@@ -106,6 +106,18 @@ const
 
 implementation
 
+{$IFNDEF COMPILER12_UP}
+const
+  ECM_FIRST       = $1500;
+  EM_SETCUEBANNER = ECM_FIRST + 1;   // Set the cue banner with the lParam = LPCWSTR
+
+  CBM_FIRST       = $1700;
+  CB_SETCUEBANNER = CBM_FIRST + 3;
+
+type
+  UnicodeString = WideString;
+{$ENDIF ~COMPILER12_UP}
+
 BEGIN_EDITCONTROL_CONSTRUCTOR(CustomMaskEdit)
   FBeepOnError := True;
   if UserTextHint then
