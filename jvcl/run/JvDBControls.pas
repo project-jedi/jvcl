@@ -148,6 +148,7 @@ type
     property PasswordChar;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowButton;
     property ShowHint;
     property TabOrder;
     property TabStop;

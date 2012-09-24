@@ -139,8 +139,9 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
-    property ShowHint;
+    property ShowButton;
     property ShowCheckBox;
+    property ShowHint;
     property Text;
     property TabOrder;
     {property TabStop;} { (rb) Why disabled?}
