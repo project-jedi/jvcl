@@ -203,6 +203,11 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
   TJvCustomCalcEdit = class(TJvCustomNumEdit)
@@ -281,12 +286,10 @@ type
     property Value;
     property Visible;
     property ZeroEmpty;
-    (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
-    (* -- RDB -- *)
-    property DecimalPlacesAlwaysShown; {WAP Added.}
+    property DecimalPlacesAlwaysShown;
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -306,6 +309,11 @@ type
     property OnStartDrag;
     property OnPopupHidden;
     property OnPopupShown;
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
 {$IFDEF UNITVERSIONING}

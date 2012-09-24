@@ -136,6 +136,11 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+
+    {$IFDEF COMPILER12_UP}
+    property NumbersOnly;
+    {$ENDIF}
+    property TextHint;
   end;
 
 {$IFDEF UNITVERSIONING}

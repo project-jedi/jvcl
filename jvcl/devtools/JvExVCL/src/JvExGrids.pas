@@ -59,6 +59,8 @@ type
 
   TJvExStringGrid = class(TStringGrid, IJvExControl)
   WINCONTROL_DECL
+  protected
+    property GridState: TGridState read FGridState;  
   end;
 
 {$IFDEF UNITVERSIONING}

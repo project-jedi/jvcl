@@ -142,7 +142,8 @@ type
     procedure InvalidateRow(ARow: Integer);
     procedure MoveColumn(FromIndex, ToIndex: Integer);
     procedure MoveRow(FromIndex, ToIndex: Longint);
-    property GridState;
+
+    property GridState: TGridState read FGridState;
     property InplaceEditor;
 
     // Calculates and sets the width of a specific column or all columns if Index < 0

@@ -297,11 +297,14 @@ type
     property OnContextPopup;
     property OnEndDock;
     property OnStartDock;
-    (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
-    (* -- RDB -- *)
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
   {$IFDEF RTL230_UP}

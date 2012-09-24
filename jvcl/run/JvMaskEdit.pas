@@ -183,6 +183,11 @@ type
     property OnSetFocus;
     property OnKillFocus;
     property OnStartDrag;
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
 {$IFDEF UNITVERSIONING}

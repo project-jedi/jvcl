@@ -667,6 +667,11 @@ type
     property OnContextPopup;
     property OnEndDock;
     property OnStartDock;
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
 

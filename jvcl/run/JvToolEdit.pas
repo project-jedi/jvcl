@@ -505,6 +505,14 @@ type
     property OnPopupHidden;
     property OnPopupChange;
     property OnPopupValueAccepted;
+
+    {$IFDEF COMPILER12_UP}
+    property NumbersOnly;
+    {$ENDIF}
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
   { TJvFileDirEdit }
@@ -576,6 +584,11 @@ type
     {$ELSE}
     property OEMConvert default True; // Mantis 3621
     {$ENDIF UNICODE}
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
   TFileDialogKind = (dkOpen, dkSave, dkOpenPicture, dkSavePicture);
@@ -1085,6 +1098,11 @@ type
     property OnPopupShown;
 
     property DataConnector;
+
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
   EComboEditError = class(EJVCLException);
@@ -1132,9 +1150,11 @@ uses
 {$R JvToolEdit.res}
 
 type
-  {$HINTS OFF}
   TCustomMaskEditAccessPrivate = class(TCustomEdit)
-  private
+  protected
+    {$IFDEF COMPILER18_UP}
+      {$MESSAGE WARNING 'Check if Vcl.Mask.TCustomMaskEdit still has the exact same fields and adjust the IFDEF'}
+    {$ENDIF}
     // Do not remove these fields, although they are not used.
     FEditMask: TEditMask;
     FMaskBlank: Char;
@@ -1144,9 +1164,8 @@ type
     FCaretPos: Integer;
     FBtnDownX: Integer;
     FOldValue: string;
-    FSettingCursor: Boolean;
+    FSettingCursor: Boolean; // << this field can't be read
   end;
-  {$HINTS ON}
 
   TCustomEditAccessProtected = class(TCustomEdit);
   TCustomFormAccessProtected = class(TCustomForm);

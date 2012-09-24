@@ -337,6 +337,14 @@ type
     property OnIsValid;
     property OnDecimalRounding;
     property DataConnector;
+
+    {$IFDEF COMPILER12_UP}
+    //property NumbersOnly;
+    {$ENDIF}
+    {$IFDEF COMPILER14_UP}
+    property Touch;
+    {$ENDIF COMPILER14_UP}
+    property TextHint;
   end;
 
 {$IFDEF UNITVERSIONING}
