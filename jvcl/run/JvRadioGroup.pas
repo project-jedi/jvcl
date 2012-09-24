@@ -124,12 +124,12 @@ var
   {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if Enabled then
-      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
+      Details := StyleServices.GetElementDetails(tbGroupBoxNormal)
     else
-      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
+      Details := StyleServices.GetElementDetails(tbGroupBoxDisabled);
     R := ClientRect;
     Inc(R.Top, Canvas.TextHeight('0') div 2);
 
@@ -148,7 +148,7 @@ begin
         if not (ebBottom in EdgeBorders) then
           Dec(ClipRect.Bottom, 3);
       end;
-      ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+      StyleServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
     end;
     if CaptionVisible then
     begin
@@ -168,9 +168,9 @@ begin
       Canvas.Refresh;
 
       {$IFDEF COMPILER16_UP}
-      ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, [tfLeft]);
+      StyleServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, [tfLeft]);
       {$ELSE}
-      ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
+      StyleServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
       {$ENDIF COMPILER16_UP}
     end;
     Exit;

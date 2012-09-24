@@ -876,7 +876,7 @@ begin
     FBitmapInvalid := True;
   end;
   {$IFDEF JVCLThemesEnabled}
-  if FBitmapInvalid or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if FBitmapInvalid or StyleServices.Enabled then
   {$ELSE}
   if FBitmapInvalid then
   {$ENDIF JVCLThemesEnabled}
@@ -889,7 +889,7 @@ begin
     end;
 
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       FBitmap.Canvas.CopyRect(FBitmapRect, Canvas, FBitmapRect);
     {$ENDIF JVCLThemesEnabled}
 
@@ -931,7 +931,7 @@ begin
     Canvas.Brush.Color := Parent.Brush.Color;
     Canvas.Brush.Style := bsSolid;
     {$IFDEF JVCLThemesEnabled}
-    if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if not StyleServices.Enabled then
     {$ENDIF JVCLThemesEnabled}
       Canvas.FillRect(FBitmapRect);
     SetViewportOrgEx(Canvas.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
@@ -994,7 +994,7 @@ begin
   InflateRect(ARect, -1, -1);
   Canvas.Brush.Style := bsClear;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     BitmapNeeded;
     Canvas.Pen.Color := FBitmap.Canvas.Pixels[0, 0]

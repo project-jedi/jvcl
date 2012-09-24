@@ -2657,7 +2657,7 @@ begin
           can't use that default dropdown button (because we then use toolbar buttons,
           and there is no themed dropdown toolbar button) }
         FButton.FDrawThemedDropDownBtn :=
-          ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and not ButtonFlat;
+          StyleServices.Enabled and not ButtonFlat;
         if FButton.FDrawThemedDropDownBtn then
         begin
           FButton.ButtonGlyph.Glyph := nil;
@@ -2726,7 +2726,7 @@ begin
     the glyph is the default themed dropdown button. When ButtonFlat = True, we
     can't use that default dropdown button, so we have to recreate the glyph
     in this special case }
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and (ImageKind = ikDropDown) then
+  if StyleServices.Enabled and (ImageKind = ikDropDown) then
     RecreateGlyph;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -3009,7 +3009,7 @@ var
   BtnRect: TRect;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if BorderStyle = bsSingle then
     begin
@@ -3105,7 +3105,7 @@ begin
   { If flat and themes are enabled, move the left edge of the edit rectangle
     to the right, otherwise the theme edge paints over the border }
   { (rb) This was for a specific font/language; check if this is still necessary }
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if BorderStyle = bsSingle then
     begin
@@ -3118,7 +3118,7 @@ begin
       end;
     end;
   end;
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
   if BorderStyle = bsSingle then
     if Ctl3D then
@@ -3153,7 +3153,7 @@ end;
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Ctl3D and (BorderStyle = bsSingle) then
+  if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) then
   begin
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
@@ -3183,7 +3183,7 @@ var
   DrawRect: TRect;
   Details: TThemedElementDetails;
 begin
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Ctl3D and (BorderStyle = bsSingle) and
+  if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) and
      not CheckWin32Version(6, 0) then // Vista draws the border animated and not with teEditTextNormal
   begin
     DC := GetWindowDC(Handle);
@@ -3192,8 +3192,8 @@ begin
       OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
       ExcludeClipRect(DC, DrawRect.Left + 1, DrawRect.Top + 1, DrawRect.Right - 1, DrawRect.Bottom - 1);
 
-      Details := ThemeServices.GetElementDetails(teEditTextNormal);
-      ThemeServices.DrawElement(DC, Details, DrawRect);
+      Details := StyleServices.GetElementDetails(teEditTextNormal);
+      StyleServices.DrawElement(DC, Details, DrawRect);
     finally
       ReleaseDC(Handle, DC);
     end;
@@ -4071,7 +4071,7 @@ var
   Bmp: TBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if GDirImageIndexXP < 0 then
     begin
@@ -4377,7 +4377,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if FDrawThemedDropDownBtn then
     begin
@@ -4392,8 +4392,8 @@ begin
       else
         ThemedState := tcDropDownButtonNormal;
       R := ClientRect;
-      Details := ThemeServices.GetElementDetails(ThemedState);
-      ThemeServices.DrawElement(Canvas.Handle, Details, R);
+      Details := StyleServices.GetElementDetails(ThemedState);
+      StyleServices.DrawElement(Canvas.Handle, Details, R);
     end
     else
       inherited Paint;
@@ -4742,7 +4742,7 @@ var
   Bmp: TBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if GFileImageIndexXP < 0 then
     begin

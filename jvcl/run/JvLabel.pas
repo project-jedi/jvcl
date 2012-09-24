@@ -501,7 +501,7 @@ begin
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.Enabled then
+  if StyleServices.Enabled then
     ControlStyle := ControlStyle - [csOpaque];
   {$ENDIF JVCLThemesEnabled}
 
@@ -1068,7 +1068,7 @@ begin
   if Transparent <> Value then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.Enabled then
+    if StyleServices.Enabled then
       Value := True; // themes aware Labels are always transparent
     {$ENDIF JVCLThemesEnabled}
     if Value then
@@ -1201,7 +1201,7 @@ begin
     NeedRepaint := not Transparent and
       (
       {$IFDEF JVCLThemesEnabled}
-      ThemeServices.Enabled or
+      StyleServices.Enabled or
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack and not (FDragging or OtherDragging)));
 
@@ -1228,7 +1228,7 @@ begin
     NeedRepaint := not Transparent and
       (
       {$IFDEF JVCLThemesEnabled}
-      ThemeServices.Enabled or
+      StyleServices.Enabled or
       {$ENDIF JVCLThemesEnabled}
       (FHotTrack and (FDragging or not OtherDragging)));
 

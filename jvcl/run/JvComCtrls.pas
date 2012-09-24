@@ -918,7 +918,7 @@ begin
       else
       begin
         {$IFDEF JVCLThemesEnabled}
-        if not FIPAddress.Enabled and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+        if not FIPAddress.Enabled and StyleServices.Enabled then
         begin
           EnableWindow(Handle, True);
           Exit;

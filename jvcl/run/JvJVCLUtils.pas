@@ -4144,7 +4144,7 @@ type
   TQColorArray = array [0..MAX_COLORS - 1] of TQColor;
 
   PQColorList = ^TQColorList;
-  TQColorList = array [0..{$IFDEF RTL230_UP}Maxint div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP} - 1] of PQColor;
+  TQColorList = array [0..{$IFDEF RTL230_UP}MaxInt div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP} - 1] of PQColor;
 
   PNewColor = ^TNewColor;
   TNewColor = record

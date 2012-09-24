@@ -770,8 +770,8 @@ begin
     if Sizeable then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
-        {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.DrawElement(Canvas.Handle, {$IFDEF RTL230_UP}StyleServices{$ELSE}ThemeServices{$ENDIF RTL230_UP}.GetElementDetails(tsGripper),
+      if StyleServices.Enabled then
+        StyleServices.DrawElement(Canvas.Handle, StyleServices.GetElementDetails(tsGripper),
           Rect(ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2,
             ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2,
             ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2))

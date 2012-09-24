@@ -2301,7 +2301,7 @@ begin
     if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
       Exit;
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Available and StyleServices.Enabled then
     begin
       if GrabberSize < 14 then
       begin
@@ -2315,8 +2315,8 @@ begin
         if AZone.CloseBtnDown then
           CurrentThemeType := twCloseButtonPushed;
       end;
-      Details := ThemeServices.GetElementDetails(CurrentThemeType);
-      ThemeServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+      Details := StyleServices.GetElementDetails(CurrentThemeType);
+      StyleServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
     end
     else
       {$ENDIF JVCLThemesEnabled}

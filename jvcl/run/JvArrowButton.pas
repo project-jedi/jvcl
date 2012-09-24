@@ -939,17 +939,17 @@ begin
       (csDesigning in ComponentState) then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Enabled then
       begin
-        Details := ThemeServices.GetElementDetails(ttbButtonNormal);
+        Details := StyleServices.GetElementDetails(ttbButtonNormal);
         if not Enabled and (csDesigning in ComponentState)  then
-          Details := ThemeServices.GetElementDetails(ttbButtonDisabled)
+          Details := StyleServices.GetElementDetails(ttbButtonDisabled)
         else if (FState in [bsDown, bsExclusive]) or (not SplittedButton and FArrowClick) then
-          Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+          Details := StyleServices.GetElementDetails(ttbButtonPressed)
         else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
-          Details := ThemeServices.GetElementDetails(ttbButtonHot);
-        ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
-        ThemeServices.GetElementContentRect(Canvas.Handle, Details, PaintRect, PaintRect);
+          Details := StyleServices.GetElementDetails(ttbButtonHot);
+        StyleServices.DrawElement(Canvas.Handle, Details, PaintRect);
+        StyleServices.GetElementContentRect(Canvas.Handle, Details, PaintRect, PaintRect);
       end
       else
       {$ENDIF JVCLThemesEnabled}
@@ -981,13 +981,13 @@ begin
   end;
   { draw image: }
   TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, Layout, Margin,
-    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} {$ENDIF},
+    Spacing, FState, Flat {$IFDEF JVCLThemesEnabled} or StyleServices.Enabled {$ENDIF},
     Alignment, VerticalAlignment);
 
   { calculate were to put arrow part }
   PaintRect := Rect(Width - ArrowWidth, 0, Width, Height);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
     Dec(PaintRect.Left);
   {$ENDIF JVCLThemesEnabled}
   Push := FArrowClick or (PressBoth and (FState in [bsDown, bsExclusive]));
@@ -1019,15 +1019,15 @@ begin
     if FMouseInControl and Enabled or (csDesigning in ComponentState) then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Enabled then
       begin
         if not Enabled and (csDesigning in ComponentState)  then
-          Details := ThemeServices.GetElementDetails(ttbButtonDisabled)
+          Details := StyleServices.GetElementDetails(ttbButtonDisabled)
         else if FState in [bsDown, bsExclusive] then
-          Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+          Details := StyleServices.GetElementDetails(ttbButtonPressed)
         else if FMouseInControl and (FState <> bsDisabled) or (csDesigning in ComponentState) then
-          Details := ThemeServices.GetElementDetails(ttbButtonHot);
-        ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
+          Details := StyleServices.GetElementDetails(ttbButtonHot);
+        StyleServices.DrawElement(Canvas.Handle, Details, PaintRect);
       end
       else
       {$ENDIF JVCLThemesEnabled}
@@ -1404,7 +1404,7 @@ begin
         FDown := False;
         FState := bsUp;
         {$IFDEF JVCLThemesEnabled}
-        if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Enabled and not Flat then
+        if StyleServices.Enabled and Enabled and not Flat then
         begin
           R := BoundsRect;
           Windows.InvalidateRect(Parent.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, True);
@@ -1468,7 +1468,7 @@ begin
     Repaint;
   end;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Enabled and not Flat then
+  if StyleServices.Enabled and Enabled and not Flat then
   begin
     R := BoundsRect;
     Windows.InvalidateRect(Parent.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, True);
@@ -1489,7 +1489,7 @@ begin
     Invalidate;
   end;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and Enabled and not Flat then
+  if StyleServices.Enabled and Enabled and not Flat then
   begin
     R := BoundsRect;
     Windows.InvalidateRect(Parent.Handle, {$IFNDEF COMPILER12_UP}@{$ENDIF ~COMPILER12_UP}R, True);

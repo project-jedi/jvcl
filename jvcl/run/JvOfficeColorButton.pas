@@ -399,7 +399,7 @@ begin
   { calculate were to put arrow part }
   PaintRect := Rect(3, 0, Width - 3, Height);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
     Dec(PaintRect.Left);
   {$ENDIF JVCLThemesEnabled}
 

@@ -434,7 +434,7 @@ begin
     FMouseInControl := True;
     inherited MouseEnter(Control);
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       Repaint
     else
     {$ENDIF JVCLThemesEnabled}
@@ -452,7 +452,7 @@ begin
     FMouseInControl := False;
     inherited MouseLeave(Control);
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       Repaint
     else
     {$ENDIF JVCLThemesEnabled}
@@ -522,7 +522,7 @@ begin
   end;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if not IsEnabled then
       Button := tbPushButtonDisabled
@@ -538,14 +538,14 @@ begin
     else
       Button := tbPushButtonNormal;
 
-    Details := ThemeServices.GetElementDetails(Button);
+    Details := StyleServices.GetElementDetails(Button);
     // Parent background.
-    ThemeServices.DrawParentBackground(Handle, DrawItemStruct.hDC, @Details, True);
+    StyleServices.DrawParentBackground(Handle, DrawItemStruct.hDC, @Details, True);
     // Button shape.
     if FMustDrawButtonFrame then
-      ThemeServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
+      StyleServices.DrawElement(DrawItemStruct.hDC, Details, DrawItemStruct.rcItem);
     // Return content rect
-    ThemeServices.GetElementContentRect(FCanvas.Handle, Details, DrawItemStruct.rcItem, RectContent);
+    StyleServices.GetElementContentRect(FCanvas.Handle, Details, DrawItemStruct.rcItem, RectContent);
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -667,7 +667,7 @@ begin
   if not FDisableDrawDown and (DrawItemStruct.itemState and ODS_SELECTED <> 0) and Enabled then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       OffsetRect(R, 1, 0)
     else
     {$ENDIF JVCLThemesEnabled}

@@ -1352,21 +1352,21 @@ begin
   FCheckedFrameColor := dxColor_CheckedFrameColorXP;
   FFocusedFrameColor := dxColor_FocusedFrameColorXP;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
-    Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
+    Details := StyleServices.GetElementDetails(tebHeaderBackgroundNormal);
     with Details do
     begin
-      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+      if GetThemeColor(StyleServices.Theme[Element], Part, State,
         TMT_FILLCOLOR, AColor) = 0 then
         FBodyColor := AColor;
-      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+      if GetThemeColor(StyleServices.Theme[Element], Part, State,
         TMT_GRADIENTCOLOR1, AColor) = 0 then
         FGradientFrom := AColor;
-      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+      if GetThemeColor(StyleServices.Theme[Element], Part, State,
         TMT_GRADIENTCOLOR2, AColor) = 0 then
         FGradientTo := AColor;
-      if GetThemeColor(ThemeServices.Theme[Element], Part, State,
+      if GetThemeColor(StyleServices.Theme[Element], Part, State,
         TMT_EDGEFILLCOLOR, AColor) = 0 then
         FSeparatorColor := AColor;
     end;

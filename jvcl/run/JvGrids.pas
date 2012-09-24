@@ -207,7 +207,7 @@ uses
   JvJCLUtils, JvJVCLUtils;
 
 const
-  MaxCustomExtents = {$IFDEF RTL230_UP}Maxint div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP};
+  MaxCustomExtents = {$IFDEF RTL230_UP}MaxInt div 16{$ELSE}MaxListSize{$ENDIF RTL230_UP};
   MaxShortInt = High(ShortInt);
 
 type

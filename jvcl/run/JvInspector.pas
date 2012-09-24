@@ -6844,7 +6844,7 @@ begin
         if Pressed then
           BFlags := BF_FLAT;
         {$IFDEF JVCLThemesEnabled}
-        if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+        if StyleServices.Enabled then
           DrawThemedButtonFace(Inspector, ACanvas, R, 0, bsNew, False, Pressed, False, False)
         else
         {$ENDIF JVCLThemesEnabled}

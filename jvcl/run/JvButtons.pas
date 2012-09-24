@@ -1543,7 +1543,7 @@ begin
     Flags := Flags or DFCS_INACTIVE;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if IsFocused or IsDefault then
       Flags := Flags or DFCS_MONO; // mis-used
@@ -1601,7 +1601,7 @@ begin
     Spacing, State, False {True});
 
   {$IFDEF JVCLThemesEnabled}
-  if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if not StyleServices.Enabled then
   {$ENDIF JVCLThemesEnabled}
     if IsFocused and IsDefault then
     begin

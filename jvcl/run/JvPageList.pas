@@ -484,7 +484,7 @@ begin
   else
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       DrawThemedBackground(Self, Canvas, ClientRect, Color, ParentBackground);
     {$ENDIF JVCLThemesEnabled}
     Result := True;

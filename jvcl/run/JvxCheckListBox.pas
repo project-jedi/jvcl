@@ -1674,7 +1674,7 @@ begin
   DrawRect.Bottom := DrawRect.Top + FCheckHeight;
   SaveColor := FCanvas.Brush.Color;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and (CheckKind in [ckCheckBoxes, ckRadioButtons]) then
+  if StyleServices.Enabled and (CheckKind in [ckCheckBoxes, ckRadioButtons]) then
   begin
     Flags := 0;
     if not Enabled then

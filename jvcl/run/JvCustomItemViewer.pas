@@ -1915,8 +1915,8 @@ procedure TJvCustomItemViewer.WMNCPaint(var Messages: TWMNCPaint);
 begin
   inherited;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
-    ThemeServices.PaintBorder(TWinControl(Self), False)
+  if StyleServices.Enabled then
+    StyleServices.PaintBorder(TWinControl(Self), False)
   {$ENDIF JVCLThemesEnabled}
 end;
 

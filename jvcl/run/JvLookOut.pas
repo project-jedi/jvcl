@@ -682,7 +682,7 @@ begin
   if not MouseOver then
   begin
     inherited MouseEnter(Control);
-    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} {$ENDIF} then
+    if FFlat {$IFDEF JVCLThemesEnabled} or StyleServices.Enabled {$ENDIF} then
       Invalidate;
   end;
 end;
@@ -693,7 +693,7 @@ begin
   begin
     inherited MouseLeave(Control);
     //  FDown := False;
-    if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} {$ENDIF} then
+    if FFlat {$IFDEF JVCLThemesEnabled} or StyleServices.Enabled {$ENDIF} then
       Invalidate;
   end;
 end;
@@ -2719,7 +2719,7 @@ begin
     if FBorderStyle = bsSingle then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Enabled then
         DrawThemedBorder(Self)
       else
       {$ENDIF JVCLThemesEnabled}
@@ -2925,7 +2925,7 @@ begin
     if FBorderStyle = bsSingle then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Enabled then
         DrawThemedBorder(Self)
       else
       {$ENDIF JVCLThemesEnabled}

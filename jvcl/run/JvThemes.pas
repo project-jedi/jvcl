@@ -850,7 +850,7 @@ var
   Cl: TColor;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.Enabled and
+  if StyleServices.Enabled and
      (Control.Parent <> nil) and
      ((Color = TWinControlThemeInfo(Control.Parent).Color) or
       (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
@@ -861,7 +861,7 @@ begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, Canvas.Handle, R)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil,
+        StyleServices.DrawParentBackground(TWinControl(Control).Handle, Canvas.Handle, nil,
           False, @R);
     end
     else
@@ -888,7 +888,7 @@ var
 begin
   {$IFDEF JVCLThemesEnabled}
   GetObject(Brush, SizeOf(LogBrush), @LogBrush);
-  if ThemeServices.Enabled and
+  if StyleServices.Enabled and
      (Control.Parent <> nil) and
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      ((not NeedsParentBackground) or
@@ -899,7 +899,7 @@ begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, DC, R)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R);
+        StyleServices.DrawParentBackground(TWinControl(Control).Handle, DC, nil, False, @R);
     end
     else
       PerformEraseBackground(Control, DC, R)
@@ -923,7 +923,7 @@ var
 begin
   Result := False;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.Enabled then
+  if StyleServices.Enabled then
   begin
     R := Rect;
     case uType of
@@ -947,8 +947,8 @@ begin
                 else
                   Btn := tbPushButtonNormal;
 
-                Details := ThemeServices.GetElementDetails(Btn);
-                ThemeServices.DrawElement(DC, Details, R);
+                Details := StyleServices.GetElementDetails(Btn);
+                StyleServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
             end;
@@ -994,8 +994,8 @@ begin
                 else
                   Btn := tbCheckBoxUncheckedNormal;
               end;
-              Details := ThemeServices.GetElementDetails(Btn);
-              ThemeServices.DrawElement(DC, Details, R);
+              Details := StyleServices.GetElementDetails(Btn);
+              StyleServices.DrawElement(DC, Details, R);
               Result := True;
             end;
           DFCS_BUTTONRADIO:
@@ -1026,8 +1026,8 @@ begin
                 else
                   Btn := tbRadioButtonUncheckedNormal;
               end;
-              Details := ThemeServices.GetElementDetails(Btn);
-              ThemeServices.DrawElement(DC, Details, R);
+              Details := StyleServices.GetElementDetails(Btn);
+              StyleServices.DrawElement(DC, Details, R);
               Result := True;
             end;
         end;
@@ -1047,8 +1047,8 @@ begin
                 else
                   ComboBox := tcDropDownButtonNormal;
 
-                Details := ThemeServices.GetElementDetails(ComboBox);
-                ThemeServices.DrawElement(DC, Details, R);
+                Details := StyleServices.GetElementDetails(ComboBox);
+                StyleServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
             DFCS_SCROLLUP:
@@ -1065,8 +1065,8 @@ begin
                 else
                   ScrollBar := tsArrowBtnUpNormal;
 
-                Details := ThemeServices.GetElementDetails(ScrollBar);
-                ThemeServices.DrawElement(DC, Details, R);
+                Details := StyleServices.GetElementDetails(ScrollBar);
+                StyleServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
             DFCS_SCROLLDOWN:
@@ -1083,8 +1083,8 @@ begin
                 else
                   ScrollBar := tsArrowBtnDownNormal;
 
-                Details := ThemeServices.GetElementDetails(ScrollBar);
-                ThemeServices.DrawElement(DC, Details, R);
+                Details := StyleServices.GetElementDetails(ScrollBar);
+                StyleServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
             DFCS_SCROLLLEFT:
@@ -1101,8 +1101,8 @@ begin
                 else
                   ScrollBar := tsArrowBtnLeftNormal;
 
-                Details := ThemeServices.GetElementDetails(ScrollBar);
-                ThemeServices.DrawElement(DC, Details, R);
+                Details := StyleServices.GetElementDetails(ScrollBar);
+                StyleServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
             DFCS_SCROLLRIGHT:
@@ -1119,8 +1119,8 @@ begin
                 else
                   ScrollBar := tsArrowBtnRightNormal;
 
-                Details := ThemeServices.GetElementDetails(ScrollBar);
-                ThemeServices.DrawElement(DC, Details, R);
+                Details := StyleServices.GetElementDetails(ScrollBar);
+                StyleServices.DrawElement(DC, Details, R);
                 Result := True;
               end;
           end;
@@ -1250,7 +1250,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if (Style <> bsWin31) and ThemeServices.Enabled then
+  if (Style <> bsWin31) and StyleServices.Enabled then
   begin
     Result := Client;
 
@@ -1265,9 +1265,9 @@ begin
     else
       Btn := tbPushButtonNormal;
 
-    Details := ThemeServices.GetElementDetails(Btn);
-    ThemeServices.DrawElement(Canvas.Handle, Details, Result);
-    ThemeServices.GetElementContentRect(Canvas.Handle, Details, Client, Result);
+    Details := StyleServices.GetElementDetails(Btn);
+    StyleServices.DrawElement(Canvas.Handle, Details, Result);
+    StyleServices.GetElementContentRect(Canvas.Handle, Details, Client, Result);
 
     if IsFocused then
       DrawFocusRect(Canvas.Handle, Result);
@@ -1353,7 +1353,7 @@ var
 {$ENDIF COMPILER11_UP}
 begin
   {$IFDEF COMPILER11_UP}
-  if ThemeServices.Enabled and CheckWin32Version(6, 0) then
+  if StyleServices.Enabled and CheckWin32Version(6, 0) then
   begin
     FillChar(Options, SizeOf(Options), 0);
     Options.dwSize := SizeOf(Options);
@@ -1450,8 +1450,8 @@ end;
 {$IFNDEF COMPILER7_UP}
 procedure TThemeServicesEx.ApplyThemeChange;
 begin
-  ThemeServices.UpdateThemes;
-  ThemeServices.DoOnThemeChange;
+  StyleServices.UpdateThemes;
+  StyleServices.DoOnThemeChange;
 end;
 {$ENDIF ~COMPILER7_UP}
 
@@ -1493,7 +1493,7 @@ end;
 
 procedure PaintControlBorder(Control: TWinControl);
 begin
-  ThemeServices.PaintBorder(TWinControl(Control), False)
+  StyleServices.PaintBorder(Control, False)
 end;
 
 procedure DrawThemedBorder(Control: TControl);
@@ -1520,8 +1520,8 @@ begin
   end;
 
   ExcludeClipRect(DC, DrawRect.Left + 2, DrawRect.Top + 2, DrawRect.Right - 2, DrawRect.Bottom - 2);
-  Details := ThemeServices.GetElementDetails(teEditTextNormal);
-  ThemeServices.DrawElement(DC, Details, DrawRect);
+  Details := StyleServices.GetElementDetails(teEditTextNormal);
+  StyleServices.DrawElement(DC, Details, DrawRect);
 
   ReleaseDC(Handle, DC);
 end;
@@ -1789,13 +1789,13 @@ begin
       if ThemeHooks.RecreationList.IndexOf(Control) = -1 then
         ThemeHooks.RecreationList.Add(Control);
     WM_PAINT:
-      if ThemeServices.ThemesEnabled then
+      if StyleServices.Enabled then
         ThemedPaint(TWMPaint(Msg), Handled);
     WM_ERASEBKGND:
-      if ThemeServices.ThemesEnabled then
+      if StyleServices.Enabled then
         ThemedEraseBkgnd(TWMEraseBkgnd(Msg), Handled);
     CN_CTLCOLORSTATIC, CN_CTLCOLORBTN:
-      if ThemeServices.ThemesEnabled then
+      if StyleServices.Enabled then
         ThemedCtlColorStatic(TWMCtlColorStatic(Msg), Handled);
   end;
 
@@ -1817,7 +1817,7 @@ begin
 
   case Msg.Msg of
     WM_NCPAINT:
-      if ThemeServices.ThemesEnabled then
+      if StyleServices.Enabled then
         ThemedNCPaint(TWMNCPaint(Msg));
     WM_DESTROY:
       if (csDestroying in Control.ComponentState) and (ThemeHooks.RecreationList.IndexOf(Control) = -1) then
@@ -1843,7 +1843,7 @@ begin
   if csNeedsBorderPaint in ThemeStyle then
     if Control is TWinControl then
     begin
-      ThemeServices.PaintBorder(TWinControl(Control), False);
+      StyleServices.PaintBorder(TWinControl(Control), False);
       Msg.Result := 0;
     end;
 end;
@@ -1859,7 +1859,7 @@ begin
       if TWinControl(Control).DoubleBuffered then
         PerformEraseBackground(Control, Msg.DC)
       else
-        ThemeServices.DrawParentBackground(TWinControl(Control).Handle, Msg.DC, nil, False);
+        StyleServices.DrawParentBackground(TWinControl(Control).Handle, Msg.DC, nil, False);
       Msg.Result := 1;
       Handled := True;
     end;
@@ -1946,10 +1946,10 @@ var
 begin
   if not Self.DoubleBuffered or (Msg.DC = HDC(Msg.Unused)) then
   begin
-    if ThemeServices.ThemesEnabled and (csParentBackground in GetThemeStyle(Self)) then
+    if StyleServices.Enabled and (csParentBackground in GetThemeStyle(Self)) then
     begin
       R := Self.ClientRect;
-      ThemeServices.DrawParentBackground(Self.Handle, Msg.DC, nil, False, @R);
+      StyleServices.DrawParentBackground(Self.Handle, Msg.DC, nil, False, @R);
     end
     else
       FillRect(Msg.DC, Self.ClientRect, Self.Brush.Handle);

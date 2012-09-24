@@ -2034,7 +2034,7 @@ const
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
     DrawThemedFrameControl(Canvas.Handle, R, DFC_SCROLL, ScrollTypes[Button] or States[State])
   else
   {$ENDIF JVCLThemesEnabled}

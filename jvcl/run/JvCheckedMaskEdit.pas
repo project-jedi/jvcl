@@ -287,7 +287,7 @@ begin
     ALeft := FCheck.Left + FCheck.Width;
     // ensure the text starts 2 points from the checkbox edge
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       ALeft := ALeft + 1;
     {$ENDIF JVCLThemesEnabled}
     if BorderStyle = bsNone then

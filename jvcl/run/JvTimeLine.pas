@@ -819,7 +819,7 @@ end;
 
 procedure TJvTLScrollBtn.MouseEnter(Control: TControl);
 begin
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and not (FMouseInControl) and not (csDesigning in ComponentState) then
+  if StyleServices.Enabled and not (FMouseInControl) and not (csDesigning in ComponentState) then
   begin
     FMouseInControl := True;
     Invalidate;
@@ -830,7 +830,7 @@ end;
 procedure TJvTLScrollBtn.MouseLeave(Control: TControl);
 begin
   inherited MouseLeave(Control);
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and FMouseInControl then
+  if StyleServices.Enabled and FMouseInControl then
   begin
     FMouseInControl := False;
     Invalidate;
@@ -857,7 +857,7 @@ begin
     Exit;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if FPushed then
       Button := tsArrowBtnLeftPressed
@@ -875,8 +875,8 @@ begin
       scrollDown:
         Button := TThemedScrollBar(Ord(tsArrowBtnDownNormal) + Ord(Button) - Ord(tsArrowBtnLeftNormal));
     end;
-    Details := ThemeServices.GetElementDetails(Button);
-    ThemeServices.DrawElement(Canvas.Handle, Details, Rect(0, 0, Width, Height));
+    Details := StyleServices.GetElementDetails(Button);
+    StyleServices.DrawElement(Canvas.Handle, Details, Rect(0, 0, Width, Height));
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -2409,13 +2409,13 @@ begin
     { Draw borders in non-client area }
     OffsetRect(RW, -RW.Left, -RW.Top);
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
     begin
       if FBorderStyle = bsSingle then
       begin
-        Details := ThemeServices.GetElementDetails(teEditTextNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, RW);
-        ThemeServices.GetElementContentRect(ACanvas.Handle, Details, RW, RW);
+        Details := StyleServices.GetElementDetails(teEditTextNormal);
+        StyleServices.DrawElement(ACanvas.Handle, Details, RW);
+        StyleServices.GetElementContentRect(ACanvas.Handle, Details, RW, RW);
       end;
     end
     else

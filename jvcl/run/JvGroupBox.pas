@@ -119,25 +119,25 @@ var
   LastBkMode: Integer;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     {$IFDEF COMPILER7_UP}
     inherited Paint;
     {$ELSE}
     if Enabled then
-      Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
+      Details := StyleServices.GetElementDetails(tbGroupBoxNormal)
     else
-      Details := ThemeServices.GetElementDetails(tbGroupBoxDisabled);
+      Details := StyleServices.GetElementDetails(tbGroupBoxDisabled);
     R := ClientRect;
     Inc(R.Top, Canvas.TextHeight('0') div 2);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+    StyleServices.DrawElement(Canvas.Handle, Details, R);
 
     CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8),
       Canvas.TextHeight(Caption));
 
     Canvas.Brush.Color := Self.Color;
     DrawThemedBackground(Self, Canvas, CaptionRect);
-    ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
+    StyleServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
     {$ENDIF COMPILER7_UP}
     Exit;
   end;

@@ -673,15 +673,15 @@ begin
   if not Result then
     Exit;
 
-  Details := ThemeServices.GetElementDetails(twMinButtonNormal);
+  Details := StyleServices.GetElementDetails(twMinButtonNormal);
   with Details do
-    Result := GetThemeFilename(ThemeServices.Theme[Element], Part, State,
+    Result := GetThemeFilename(StyleServices.Theme[Element], Part, State,
       TMT_IMAGEFILE, BitmapFileNameW, MAX_PATH) = S_OK;
   if not Result then
     Exit;
 
   with Details do
-    Result := GetThemeInt(ThemeServices.Theme[Element], Part, State,
+    Result := GetThemeInt(StyleServices.Theme[Element], Part, State,
       TMT_IMAGECOUNT, BitmapCount) = S_OK;
   if not Result then
     Exit;
@@ -691,7 +691,7 @@ begin
     Exit;
 
   with Details do
-    if GetThemeMargins(ThemeServices.Theme[Element], 0, Part, State,
+    if GetThemeMargins(StyleServices.Theme[Element], 0, Part, State,
       TMT_SIZINGMARGINS, nil, Margins) <> S_OK then
       FillChar(Margins, SizeOf(Margins), 0);
   ABitmap.Margins := Margins;
@@ -1138,15 +1138,15 @@ begin
   State := (State - 1) mod 4;
 
   { 1a. Draw the outer bit as a caption button }
-  Details := ThemeServices.GetElementDetails(cCaptionButton[State]);
-  ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
+  Details := StyleServices.GetElementDetails(cCaptionButton[State]);
+  StyleServices.DrawElement(ACanvas.Handle, Details, DrawRect);
 
   { 1b. Draw the inner bit as a normal button }
   DrawRgn := CreateRectRgn(DrawRect.Left + 1, DrawRect.Top + 1, DrawRect.Right - 1, DrawRect.Bottom - 1);
   try
-    Details := ThemeServices.GetElementDetails(cNormalButton[State]);
+    Details := StyleServices.GetElementDetails(cNormalButton[State]);
     SelectClipRgn(ACanvas.Handle, DrawRgn);
-    ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect);
+    StyleServices.DrawElement(ACanvas.Handle, Details, DrawRect);
     SelectClipRgn(ACanvas.Handle, 0);
   finally
     DeleteObject(DrawRgn);
@@ -1618,8 +1618,8 @@ begin
   OffsetRect(CaptionRect, -FButtonRect.Left, -FButtonRect.Top);
   ClipRect := Rect(0, 0, FButtonRect.Right - FButtonRect.Left, FButtonRect.Bottom - FButtonRect.Top);
 
-  Details := ThemeServices.GetElementDetails(CCaption[FHasSmallCaption, FCaptionActive]);
-  ThemeServices.DrawElement(ACanvas.Handle, Details, CaptionRect, @ClipRect);
+  Details := StyleServices.GetElementDetails(CCaption[FHasSmallCaption, FCaptionActive]);
+  StyleServices.DrawElement(ACanvas.Handle, Details, CaptionRect, @ClipRect);
 end;
 {$ENDIF JVCLThemesEnabled}
 
@@ -1786,11 +1786,11 @@ begin
     if FMouseInControl then
       Inc(CaptionButton);
 
-    Details := ThemeServices.GetElementDetails(CaptionButton);
+    Details := StyleServices.GetElementDetails(CaptionButton);
     { Special state for buttons drawn on a not active caption }
     if not FCaptionActive and (Details.State = 1) then
       Details.State := 5;
-    ThemeServices.DrawElement(ACanvas.Handle, Details, DrawRect)
+    StyleServices.DrawElement(ACanvas.Handle, Details, DrawRect)
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -2630,7 +2630,7 @@ begin
 
           * Switching from 'windows classic' style to 'windows XP' style
             ( delphi 7 bug) }
-        ThemeServices.UpdateThemes;
+        StyleServices.UpdateThemes;
         GlobalXPData.Update;
         {$ENDIF JVCLThemesEnabled}
       end;
@@ -2642,7 +2642,7 @@ begin
 
           * Non-themed application and switching system font size }
         if not StyleServices.Enabled then
-          ThemeServices.UpdateThemes;
+          StyleServices.UpdateThemes;
         {$ENDIF JVCLThemesEnabled}
       end;
     WM_SETTEXT:

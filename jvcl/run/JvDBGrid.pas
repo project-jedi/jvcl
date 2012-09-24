@@ -1837,7 +1837,7 @@ begin
     FOnBeforePaint(Self);
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
   begin
     // reset the inherited options but remove the goFixedVertLine and goFixedHorzLine values
     // as that causes the titles and indicator panels to have a black border
@@ -2367,7 +2367,7 @@ begin
     { XP Theming }
     {$IFNDEF COMPILER14_UP}
     {$IFDEF JVCLThemesEnabled}
-    if not (csDesigning in ComponentState) and UseXPThemes and ThemeServices.ThemesEnabled then
+    if not (csDesigning in ComponentState) and UseXPThemes and StyleServices.Enabled then
     begin
       FPaintInfo.ColSizing := Sizing(X, Y);
       if not FPaintInfo.ColSizing then
@@ -2589,7 +2589,7 @@ begin
   { XP Theming }
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if not (csDesigning in ComponentState) and UseXPThemes and ThemeServices.ThemesEnabled then
+  if not (csDesigning in ComponentState) and UseXPThemes and StyleServices.Enabled then
   begin
     if not FPaintInfo.ColSizing and not FPaintInfo.ColMoving then
     begin
@@ -2683,7 +2683,7 @@ begin
   { XP Theming }
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
   begin
     FPaintInfo.ColSizing := False;
     FPaintInfo.ColMoving := False;
@@ -2975,7 +2975,7 @@ var
       if WordWrap then
         DrawOptions := DrawOptions or DT_WORDBREAK;
       {$IFDEF JVCLThemesEnabled}
-      if not FixCell or not (UseXPThemes and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) then
+      if not FixCell or not (UseXPThemes and StyleServices.Enabled) then
       {$ENDIF JVCLThemesEnabled}
         {$IFDEF COMPILER14_UP}
         if not FixCell or (DrawingStyle in [gdsClassic, gdsThemed]) then
@@ -2993,7 +2993,7 @@ var
 begin
   if ReduceFlicker
      {$IFDEF COMPILER14_UP} and not FixCell {$ENDIF}
-     {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) {$ENDIF} then
+     {$IFDEF JVCLThemesEnabled} and not (UseXPThemes and StyleServices.Enabled) {$ENDIF} then
   begin
     // Use offscreen bitmap to eliminate flicker and
     // brush origin tics in painting / scrolling.
@@ -3055,49 +3055,49 @@ var
 begin
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
   begin
     lCellRect := ARect;
-    if ThemeServices.ThemesEnabled and (ARow = 0) and (ACol - ColumnOffset >= 0) and (dgTitles in Options) then
+    if StyleServices.Enabled and (ARow = 0) and (ACol - ColumnOffset >= 0) and (dgTitles in Options) then
     begin
       lCaptionRect := ARect;
       if not FPaintInfo.ColPressed or (FPaintInfo.ColPressedIdx <> ACol) then
       begin
         if (FPaintInfo.MouseInCol = -1) or (FPaintInfo.MouseInCol <> ACol) or (csDesigning in ComponentState) then
-          Details := ThemeServices.GetElementDetails(thHeaderItemNormal)
+          Details := StyleServices.GetElementDetails(thHeaderItemNormal)
         else
-          Details := ThemeServices.GetElementDetails(thHeaderItemHot);
+          Details := StyleServices.GetElementDetails(thHeaderItemHot);
         lCellRect.Right := lCellRect.Right + 1;
         lCellRect.Bottom := lCellRect.Bottom + 2;
       end
       else if AllowTitleClick then
       begin
-        Details := ThemeServices.GetElementDetails(thHeaderItemPressed);
+        Details := StyleServices.GetElementDetails(thHeaderItemPressed);
         InflateRect(lCaptionRect, -1, 1);
       end
       else
       begin
         if FPaintInfo.MouseInCol = ACol then
-          Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+          Details := StyleServices.GetElementDetails(thHeaderItemHot)
         else
-          Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
+          Details := StyleServices.GetElementDetails(thHeaderItemNormal);
       end;
-      ThemeServices.DrawElement(Canvas.Handle, Details, lCellRect);
+      StyleServices.DrawElement(Canvas.Handle, Details, lCellRect);
       { The column title isn't painted by DrawCell if the DataLink is not active. }
       if (DataLink = nil) or not DataLink.Active then
         if (ACol - ColumnOffset >= 0) and (ACol - ColumnOffset < Columns.Count) then
           DrawTitleCaption(Canvas, lCaptionRect, Columns[ACol - ColumnOffset]);
     end
-    else if (ACol = 0) and (dgIndicator in Options) and ThemeServices.ThemesEnabled then
+    else if (ACol = 0) and (dgIndicator in Options) and StyleServices.Enabled then
     begin
       // indicator column
       if ARow < TitleOffset then
-        Details := ThemeServices.GetElementDetails(thHeaderItemNormal)
+        Details := StyleServices.GetElementDetails(thHeaderItemNormal)
       else
-        Details := ThemeServices.GetElementDetails(thHeaderRoot);
+        Details := StyleServices.GetElementDetails(thHeaderRoot);
       lCellRect.Right := lCellRect.Right + 1;
       lCellRect.Bottom := lCellRect.Bottom + 2;
-      ThemeServices.DrawElement(Canvas.Handle, Details, lCellRect);
+      StyleServices.DrawElement(Canvas.Handle, Details, lCellRect);
       // draw the indicator
       if (Datalink.Active) and (ARow - TitleOffset = Datalink.ActiveRecord) then
       begin
@@ -3392,7 +3392,7 @@ begin
       if FTitleButtons or ([dgRowLines, dgColLines] * Options = [dgRowLines, dgColLines]) then
       begin
         {$IFDEF JVCLThemesEnabled}
-        if not (UseXPThemes and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) then
+        if not (UseXPThemes and StyleServices.Enabled) then
         {$ENDIF JVCLThemesEnabled}
         begin
           DrawEdge(Canvas.Handle, TitleRect, EdgeFlag[Down], BF_BOTTOMRIGHT);
@@ -3433,7 +3433,7 @@ begin
         DrawCellBackground(TitleRect, FixedColor, AState, ACol, ARow - TitleOffset);
         {$ELSE}
           {$IFDEF JVCLThemesEnabled}
-        if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+        if not (UseXPThemes and StyleServices.Enabled) then
           {$ENDIF JVCLThemesEnabled}
           Canvas.FillRect(TitleRect);
         {$ENDIF COMPILER14_UP}
@@ -3445,7 +3445,7 @@ begin
         DrawCellBackground(TitleRect, FixedColor, AState, ACol, ARow - TitleOffset);
         {$ELSE}
 //          {$IFDEF JVCLThemesEnabled}
-//        if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+//        if not (UseXPThemes and StyleServices.Enabled) then
 //          {$ENDIF JVCLThemesEnabled}
 //          Canvas.FillRect(TitleRect);
         {$ENDIF COMPILER14_UP}
@@ -3485,7 +3485,7 @@ begin
             DrawCellBackground(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom), FixedColor, AState, ACol, ARow - TitleOffset);
             {$ELSE}
               {$IFDEF JVCLThemesEnabled}
-            if not (UseXPThemes and ThemeServices.ThemesEnabled) then
+            if not (UseXPThemes and StyleServices.Enabled) then
               {$ENDIF JVCLThemesEnabled}
               Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
             {$ENDIF COMPILER14_UP}
@@ -3499,7 +3499,7 @@ begin
         WriteCellText(ARect, MinOffs, MinOffs, '', taLeftJustify, False, IsRightToLeft);
       {$IFDEF COMPILER14_UP}
       if ([dgRowLines, dgColLines] * Options = [dgRowLines, dgColLines]) and
-         ((DrawingStyle = gdsClassic) or ((DrawingStyle = gdsThemed) and not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP})) and
+         ((DrawingStyle = gdsClassic) or ((DrawingStyle = gdsThemed) and not StyleServices.Enabled)) and
          not (gdPressed in AState) then
       begin
         InflateRect(TitleRect, 1, 1);
@@ -4438,7 +4438,7 @@ begin
     FPaintInfo.ColPressedIdx := -1;
     {$IFNDEF COMPILER14_UP}
     {$IFDEF JVCLThemesEnabled}
-    if UseXPThemes and ThemeServices.ThemesEnabled then
+    if UseXPThemes and StyleServices.Enabled then
       if ValidCell(FCell) then
         InvalidateCell(FCell.X, FCell.Y);
     {$ENDIF JVCLThemesEnabled}
@@ -5044,7 +5044,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   lPt := Point(Mouse.CursorPos.X, Mouse.CursorPos.Y);
   Cell := MouseCoord(lPt.X, lPt.Y);
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
     if (dgTitles in Options) and (Cell.Y = 0) then
       InvalidateCell(Cell.X, Cell.Y);
   {$ENDIF JVCLThemesEnabled}
@@ -5056,7 +5056,7 @@ begin
   inherited;
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
     if ValidCell(FCell) then
       InvalidateCell(FCell.X, FCell.Y);
   {$ENDIF JVCLThemesEnabled}
@@ -5073,7 +5073,7 @@ begin
   FPaintInfo.MouseInCol := -1;
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
     if ValidCell(FCell) then
       InvalidateCell(FCell.X, FCell.Y);
   {$ENDIF JVCLThemesEnabled}
@@ -5091,7 +5091,7 @@ begin
   FPaintInfo.ColMoving := False;
   {$IFNDEF COMPILER14_UP}
   {$IFDEF JVCLThemesEnabled}
-  if UseXPThemes and ThemeServices.ThemesEnabled then
+  if UseXPThemes and StyleServices.Enabled then
     Invalidate;
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF ~COMPILER14_UP}

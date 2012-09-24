@@ -1584,7 +1584,7 @@ begin
       FMouseInBottomBtn := True
     else
       FMouseInTopBtn := True;
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       Repaint;
     inherited MouseEnter(Control);
   end;
@@ -1607,7 +1607,7 @@ begin
   begin
     FMouseInTopBtn := False;
     FMouseInBottomBtn := False;
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
       Repaint;
     inherited MouseLeave(Control);
   end;
@@ -1658,7 +1658,7 @@ begin
   end
   {$IFDEF JVCLThemesEnabled}
   else
-  if (FMouseInTopBtn or FMouseInBottomBtn) and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if (FMouseInTopBtn or FMouseInBottomBtn) and StyleServices.Enabled then
   begin
     if MouseInBottomBtn(Point(X, Y)) then
     begin
@@ -2027,7 +2027,7 @@ end;
 procedure TSpinButtonBitmaps.DrawAllBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
-  FIsThemed := ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP};
+  FIsThemed := StyleServices.Enabled;
   if FIsThemed then
   begin
     if FStyle = sbsClassic then
@@ -2076,16 +2076,16 @@ var
         else
           SelectClipRgn(Handle, TopRegion_TopAbove);
         // Copy top button
-        Details := ThemeServices.GetElementDetails(CDetails[False, AUpState]);
-        ThemeServices.DrawElement(Handle, Details, TopRect);
+        Details := StyleServices.GetElementDetails(CDetails[False, AUpState]);
+        StyleServices.DrawElement(Handle, Details, TopRect);
         // Select only bottom button
         if AUpState = bpsNormal then
           SelectClipRgn(Handle, BottomRegion_BottomAbove)
         else
           SelectClipRgn(Handle, BottomRegion_TopAbove);
         // Copy bottom button
-        Details := ThemeServices.GetElementDetails(CDetails[True, ADownState]);
-        ThemeServices.DrawElement(Handle, Details, BottomRect);
+        Details := StyleServices.GetElementDetails(CDetails[True, ADownState]);
+        StyleServices.DrawElement(Handle, Details, BottomRect);
         // Remove clipping restriction
         SelectClipRgn(Handle, 0);
       end;
@@ -2194,17 +2194,17 @@ begin
       begin
         Height := Self.Height;
         Width := Self.Width;
-        Details := ThemeServices.GetElementDetails(CDetails[State]);
-        ThemeServices.DrawElement(Canvas.Handle, Details, ButtonRect);
+        Details := StyleServices.GetElementDetails(CDetails[State]);
+        StyleServices.DrawElement(Canvas.Handle, Details, ButtonRect);
       end;
 
     { Init diagonal colors }
-    Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+    Details := StyleServices.GetElementDetails(tbPushButtonNormal);
     with Details do
     begin
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_EDGELIGHTCOLOR, ThemeColors[0]);
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_BORDERCOLORHINT, ThemeColors[1]);
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_EDGESHADOWCOLOR, ThemeColors[2]);
+      GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_EDGELIGHTCOLOR, ThemeColors[0]);
+      GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_BORDERCOLORHINT, ThemeColors[1]);
+      GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_EDGESHADOWCOLOR, ThemeColors[2]);
     end;
 
     UpBitmap := nil;

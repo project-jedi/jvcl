@@ -1367,7 +1367,7 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  if {Themed}ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and (not Flat) then
+  if {Themed}StyleServices.Enabled and (not Flat) then
   begin
     if not Enabled then
       Button := tsArrowBtnUpDisabled
@@ -1383,9 +1383,9 @@ begin
     if not FIsUpBtn then
       Button := TThemedScrollBar(Ord(tsArrowBtnDownNormal) + Ord(Button) - Ord(tsArrowBtnUpNormal));
 
-    Details := ThemeServices.GetElementDetails(Button);
+    Details := StyleServices.GetElementDetails(Button);
 
-    ThemeServices.DrawElement(Canvas.Handle, Details, ClientRect, nil); //@ClipRect);
+    StyleServices.DrawElement(Canvas.Handle, Details, ClientRect, nil); //@ClipRect);
   end
   else
     inherited Paint;
@@ -1409,7 +1409,7 @@ begin
   FPageBtnProps := TJvPageBtnProps.Create(self);
   DoubleBuffered := True;
   {$IFDEF JVCLThemesEnabled}
-  FThemed := ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP};
+  FThemed := StyleServices.Enabled;
   {$endif}
 
   ControlStyle := ControlStyle - [csAcceptsControls] + [csOpaque];
@@ -1678,17 +1678,17 @@ begin
           ToolBar := ttbButtonPressed
         else
           ToolBar := ttbButtonHot;
-        Details := ThemeServices.GetElementDetails(ToolBar);
+        Details := StyleServices.GetElementDetails(ToolBar);
 
         if BorderStyle = bsNone then
         begin
           ClipRect := R;
           InflateRect(R, 1, 1);
-          ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+          StyleServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
           InflateRect(R, -1, -1);
         end
         else
-          ThemeServices.DrawElement(Canvas.Handle, Details, R);
+          StyleServices.DrawElement(Canvas.Handle, Details, R);
 
         { Determine text color }
         if FPressedPageBtn = I then
@@ -1698,10 +1698,10 @@ begin
           ToolBar := ttbButtonHot
         else
           ToolBar := ttbButtonNormal;
-        Details := ThemeServices.GetElementDetails(ToolBar);
+        Details := StyleServices.GetElementDetails(ToolBar);
 
         with Details do
-          GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
+          GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
         Canvas.Font.Color := LColor;
       end
       else
@@ -1748,9 +1748,9 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if Themed then
   begin
-    Details := ThemeServices.GetElementDetails(ttbButtonNormal);
+    Details := StyleServices.GetElementDetails(ttbButtonNormal);
     with Details do
-      GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, ThemedColor);
+      GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, ThemedColor);
   end;
   {$ENDIF JVCLThemesEnabled}
   try
@@ -1921,8 +1921,8 @@ begin
         {$IFDEF JVCLThemesEnabled}
         if (Canvas.Brush.Color = clDefault) and ThemedBackground and Themed then
         begin
-          Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
-          ThemeServices.DrawElement(Canvas.Handle, Details, R);
+          Details := StyleServices.GetElementDetails(tebHeaderBackgroundNormal);
+          StyleServices.DrawElement(Canvas.Handle, Details, R);
         end
         else
         {$ENDIF JVCLThemesEnabled}
@@ -1968,17 +1968,17 @@ begin
           ToolBar := ttbButtonPressed
         else
           ToolBar := ttbButtonHot;
-        Details := ThemeServices.GetElementDetails(ToolBar);
+        Details := StyleServices.GetElementDetails(ToolBar);
 
         if BorderStyle = bsNone then
         begin
           ClipRect := R;
           InflateRect(R, 1, 1);
-          ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+          StyleServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
           InflateRect(R, -1, -1);
         end
         else
-          ThemeServices.DrawElement(Canvas.Handle, Details, R);
+          StyleServices.DrawElement(Canvas.Handle, Details, R);
 
         { Determine text color }
         if FPressedPageBtn = I then
@@ -1988,10 +1988,10 @@ begin
           ToolBar := ttbButtonHot
         else
           ToolBar := ttbButtonNormal;
-        Details := ThemeServices.GetElementDetails(ToolBar);
+        Details := StyleServices.GetElementDetails(ToolBar);
 
         with Details do
-          GetThemeColor(ThemeServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
+          GetThemeColor(StyleServices.Theme[Element], Part, State, TMT_TEXTCOLOR, LColor);
         Canvas.Font.Color := LColor;
       end
       else
@@ -2194,8 +2194,8 @@ begin
       R := ClientRect;
       ClipRect := R;
       InflateRect(R, 1, 0);
-      Details := ThemeServices.GetElementDetails(ttbButtonHot);
-      ThemeServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
+      Details := StyleServices.GetElementDetails(ttbButtonHot);
+      StyleServices.DrawElement(Canvas.Handle, Details, R, @ClipRect);
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -2331,7 +2331,7 @@ end;
 procedure TJvCustomOutlookBar.SetThemed(const Value: Boolean);
 begin
   {$IFDEF JVCLThemesEnabled}
-  if Value and (not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP}) then  { Warren added ability to theme/detheme this component for yourself instead of just checking if XP is themed.}
+  if Value and (not StyleServices.Enabled) then  { Warren added ability to theme/detheme this component for yourself instead of just checking if XP is themed.}
       exit;
   FThemed := Value;
   {$ELSE}
@@ -2358,10 +2358,10 @@ begin
     if Themed then
     begin
       if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
-        Details := ThemeServices.GetElementDetails(ttbButtonPressed)
+        Details := StyleServices.GetElementDetails(ttbButtonPressed)
       else
-        Details := ThemeServices.GetElementDetails(ttbButtonHot);
-      ThemeServices.DrawElement(Canvas.Handle, Details, R);
+        Details := StyleServices.GetElementDetails(ttbButtonHot);
+      StyleServices.DrawElement(Canvas.Handle, Details, R);
     end
     else
     {$ENDIF JVCLThemesEnabled}

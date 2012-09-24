@@ -3332,7 +3332,7 @@ begin
     R.Right := FButtonWidth;
   end;
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if not FListActive or not Enabled or ReadOnly then
       State := tcDropDownButtonDisabled
@@ -3344,8 +3344,8 @@ begin
       State := tcDropDownButtonHot
     else
       State := tcDropDownButtonNormal;
-    Details := ThemeServices.GetElementDetails(State);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+    Details := StyleServices.GetElementDetails(State);
+    StyleServices.DrawElement(Canvas.Handle, Details, R);
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -3451,7 +3451,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and not MouseOver then
+  if StyleServices.Enabled and not MouseOver then
   begin
     inherited MouseEnter(Control);
     Invalidate;

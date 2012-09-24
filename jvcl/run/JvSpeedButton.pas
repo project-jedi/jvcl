@@ -940,7 +940,7 @@ begin
       be used as a dock client. }
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
-      ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} or
+      StyleServices.Enabled or
       {$ENDIF JVCLThemesEnabled}
       FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
@@ -962,7 +962,7 @@ begin
     NeedRepaint :=
       {$IFDEF JVCLThemesEnabled}
       { Windows XP introduced hot states also for non-flat buttons. }
-      ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} or
+      StyleServices.Enabled or
       {$ENDIF JVCLThemesEnabled}
       HotTrack or (FFlat and Enabled and not FDragging and (GetCapture = NullHandle));
 
@@ -1228,7 +1228,7 @@ begin
   PaintRect := Rect(0, 0, Width, Height);
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.Enabled then
+  if StyleServices.Enabled then
   begin
     if ControlInGlassPaint(Self) then
       FillRect(Canvas.Handle, ClientRect, GetStockObject(BLACK_BRUSH))
@@ -1278,15 +1278,15 @@ begin
 
     if ToolButton = ttbToolbarDontCare then
     begin
-      Details := ThemeServices.GetElementDetails(Button);
-      ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
-      ThemeServices.GetElementContentRect(Canvas.Handle, Details, PaintRect, PaintRect);
+      Details := StyleServices.GetElementDetails(Button);
+      StyleServices.DrawElement(Canvas.Handle, Details, PaintRect);
+      StyleServices.GetElementContentRect(Canvas.Handle, Details, PaintRect, PaintRect);
     end
     else
     begin
-      Details := ThemeServices.GetElementDetails(ToolButton);
-      ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect);
-      ThemeServices.GetElementContentRect(Canvas.Handle, Details, PaintRect, PaintRect);
+      Details := StyleServices.GetElementDetails(ToolButton);
+      StyleServices.DrawElement(Canvas.Handle, Details, PaintRect);
+      StyleServices.GetElementContentRect(Canvas.Handle, Details, PaintRect, PaintRect);
     end;
 
     if (Button = tbPushButtonPressed) and Flat then

@@ -3921,14 +3921,14 @@ procedure TJvDockTree.DrawDockGrabber(Control: TWinControl;
       Exit;
     // MF
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Available and StyleServices.Enabled then
     begin
       if GrabberSize < 14 then
         CurrentThemeType := twSmallCloseButtonNormal
       else
         CurrentThemeType := twCloseButtonNormal;
-      Details := ThemeServices.GetElementDetails(CurrentThemeType);
-      ThemeServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top,
+      Details := StyleServices.GetElementDetails(CurrentThemeType);
+      StyleServices.DrawElement(Canvas.Handle, Details, Rect(Left, Top,
         Left + GrabberSize - 2, Top + GrabberSize - 2));
     end
     else

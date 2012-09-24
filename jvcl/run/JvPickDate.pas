@@ -971,7 +971,7 @@ begin
     Exit;
 
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     VertOffset := 0;
     HorzOffset := 0;

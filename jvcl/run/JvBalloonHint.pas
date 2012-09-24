@@ -441,14 +441,14 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if IsWinVista_UP and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if IsWinVista_UP and StyleServices.Enabled then
   begin
-    Result := GetThemeEnumValue(ThemeServices.Theme[teToolTip], TTP_BALLOONTITLE, 0,
+    Result := GetThemeEnumValue(StyleServices.Theme[teToolTip], TTP_BALLOONTITLE, 0,
       TMT_TEXTCOLOR, AThemedTextColor) = S_OK;
     if Result then
     begin
       // GetThemeFont is defined wrong; so cast it
-      Result := GetThemeFont(ThemeServices.Theme[teToolTip], 0, TTP_BALLOONTITLE, 0,
+      Result := GetThemeFont(StyleServices.Theme[teToolTip], 0, TTP_BALLOONTITLE, 0,
         TMT_FONT, {$IFDEF COMPILER12_UP}PLogFontW{$ELSE}PLogFontA{$ENDIF COMPILER12_UP}(@LogFontW)^) = S_OK;
 
       if Result then
@@ -727,7 +727,7 @@ begin
     if IsWinVista_UP then
     begin
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Enabled then
         OffsetRect(FMsgRect, 12, Max(9, FHeaderRect.Bottom))
       else
       {$ENDIF JVCLThemesEnabled}
@@ -764,9 +764,9 @@ begin
   end;
 
   {$IFDEF JVCLThemesEnabled}
-  if IsWinVista_UP and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and FIsMultiLineMsg then
+  if IsWinVista_UP and StyleServices.Enabled and FIsMultiLineMsg then
   begin
-    GetThemePartSize(ThemeServices.Theme[teToolTip], 0, TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition],
+    GetThemePartSize(StyleServices.Theme[teToolTip], 0, TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition],
       nil, TS_TRUE, ASize);
     FStemRect := Rect(0, 0, ASize.cx, ASize.cy);
     FTipHeight := ASize.cy;
@@ -793,8 +793,8 @@ begin
   if FShowCloseBtn then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if IsWinXP_UP and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
-      GetThemePartSize(ThemeServices.Theme[teToolTip], 0, TTP_CLOSE, TTCS_NORMAL,
+    if IsWinXP_UP and StyleServices.Enabled then
+      GetThemePartSize(StyleServices.Theme[teToolTip], 0, TTP_CLOSE, TTCS_NORMAL,
         nil, TS_DRAW, ASize)
     else
     {$ENDIF JVCLThemesEnabled}
@@ -976,7 +976,7 @@ begin
     begin
       WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
       {$IFDEF JVCLThemesEnabled}
-      if not IsWinSeven_UP and IsWinVista_UP and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if not IsWinSeven_UP and IsWinVista_UP and StyleServices.Enabled then
         ExStyle := ExStyle or WS_EX_LAYERED;
       {$ENDIF JVCLThemesEnabled}
     end
@@ -1060,10 +1060,10 @@ var
   RegionRound, RegionTip: HRGN;
 begin
   Result := CreateRectRgn(0, 0, 1, 1);
-  if GetThemeBackgroundRegion(ThemeServices.Theme[teToolTip], 0,
+  if GetThemeBackgroundRegion(StyleServices.Theme[teToolTip], 0,
     TTP_BALLOON, 0, FRoundRect, RegionRound) = S_OK then
   begin
-    if GetThemeBackgroundRegion(ThemeServices.Theme[teToolTip], 0,
+    if GetThemeBackgroundRegion(StyleServices.Theme[teToolTip], 0,
       TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition], FStemRect, RegionTip) = S_OK then
     begin
       CombineRgn(Result, RegionTip, RegionRound, RGN_OR);
@@ -1210,7 +1210,7 @@ begin
     Exit;
 
   {$IFDEF JVCLThemesEnabled}
-  if IsWinVista_UP and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and FIsMultiLineMsg then
+  if IsWinVista_UP and StyleServices.Enabled and FIsMultiLineMsg then
     Region := CreateThemedRegion
   else
   {$ENDIF JVCLThemesEnabled}
@@ -1235,19 +1235,19 @@ var
   {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if IsWinVista_UP and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if IsWinVista_UP and StyleServices.Enabled then
   begin
     if FIsMultiLineMsg then
     begin
-      DrawThemeBackground(ThemeServices.Theme[teToolTip], Msg.DC,
+      DrawThemeBackground(StyleServices.Theme[teToolTip], Msg.DC,
         TTP_BALLOON, 0, FRoundRect, @FRoundRect);
-      DrawThemeBackground(ThemeServices.Theme[teToolTip], Msg.DC,
+      DrawThemeBackground(StyleServices.Theme[teToolTip], Msg.DC,
         TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition], FStemRect, @FStemRect);
     end
     else
     begin
       R := ClientRect;
-      DrawThemeBackground(ThemeServices.Theme[teToolTip], Msg.DC,
+      DrawThemeBackground(StyleServices.Theme[teToolTip], Msg.DC,
         TTP_BALLOON, 0, R, @R);
       // draw black border
       BrushBlack := CreateSolidBrush(0);
@@ -2212,7 +2212,7 @@ begin
   if FShowCloseBtn then
   begin
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    if StyleServices.Enabled then
     begin
       if (FCloseState and DFCS_PUSHED > 0) and (FCloseState and DFCS_HOT = 0) then
         Button := tttCloseNormal
@@ -2225,8 +2225,8 @@ begin
       else
         Button := tttCloseNormal;
 
-      Details := ThemeServices.GetElementDetails(Button);
-      ThemeServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
+      Details := StyleServices.GetElementDetails(Button);
+      StyleServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
     end
     else
     {$ENDIF JVCLThemesEnabled}

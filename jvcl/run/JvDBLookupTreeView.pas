@@ -952,7 +952,7 @@ begin
   SetRect(R, W, 0, ClientWidth, ClientHeight);
   {added by zelen}
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
     if (not FListActive) or (not Enabled) or ReadOnly then
       State := tcDropDownButtonDisabled
@@ -964,8 +964,8 @@ begin
       State := tcDropDownButtonHot
     else
       State := tcDropDownButtonNormal;
-    Details := ThemeServices.GetElementDetails(State);
-    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+    Details := StyleServices.GetElementDetails(State);
+    StyleServices.DrawElement(Canvas.Handle, Details, R);
 
 
 
@@ -1753,7 +1753,7 @@ begin
     Exit;
   inherited MouseEnter(Control);
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and not MouseOver and not (csDesigning in ComponentState) then
+  if StyleServices.Enabled and not MouseOver and not (csDesigning in ComponentState) then
     Invalidate;
 end;
 
@@ -1761,7 +1761,7 @@ procedure TJvDBLookupTreeViewCombo.MouseLeave(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} and MouseOver then
+  if StyleServices.Enabled and MouseOver then
     Invalidate;
   inherited MouseLeave(Control);
 end;

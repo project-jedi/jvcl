@@ -948,13 +948,13 @@ var
       if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
         Exit;
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Available and StyleServices.Enabled then
       begin
         CurrentThemeTypeBtn := twSmallCloseButtonNormal;
         if VCDockZone.CloseBtnDown then
           CurrentThemeTypeBtn := twSmallCloseButtonPushed;
-        Details := ThemeServices.GetElementDetails(CurrentThemeTypeBtn);
-        ThemeServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top,
+        Details := StyleServices.GetElementDetails(CurrentThemeTypeBtn);
+        StyleServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top,
           Left + ButtonWidth, Top + ButtonHeight));
       end
       else
@@ -985,15 +985,15 @@ var
         (VCDockZone.ParentZone.VisibleChildCount >= 2));
       IsMaximum := VCDockZone.ZoneSizeStyle in [zssMaximum];
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Available{$ELSE}ThemesAvailable{$ENDIF RTL230_UP} and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Available and StyleServices.Enabled then
       begin
         CurrentThemeTypeSB := ArrowOrientTheme[CurrArrow[IsMaximum, DockSiteOrientation]];
         if VCDockZone.ExpandButtonDown then
           CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 2);
         if InActive then
           CurrentThemeTypeSB := TThemedScrollBar(Ord(CurrentThemeTypeSB) + 3);
-        Details := ThemeServices.GetElementDetails(CurrentThemeTypeSB);
-        ThemeServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
+        Details := StyleServices.GetElementDetails(CurrentThemeTypeSB);
+        StyleServices.DrawElement(Canvas.Handle, Details, Classes.Rect(Left, Top, Left + ButtonWidth, Top + ButtonHeight));
       end
       else
       {$ENDIF JVCLThemesEnabled}

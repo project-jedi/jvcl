@@ -168,7 +168,7 @@ begin
   end
   else
   {$IFDEF JVCLThemesEnabled}
-  if (FBorderStyle = bsSingle) and ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if (FBorderStyle = bsSingle) and StyleServices.Enabled then
     DrawThemedBorder(Self)
   else
   {$ENDIF JVCLThemesEnabled}

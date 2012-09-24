@@ -218,7 +218,7 @@ begin
   if (fpoTransparent in Options) and FNeedRebuildBackground then
   begin
     (*{$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled then
+    if StyleServices.Enabled then
       PerformEraseBackground(Self, FBackImage.Canvas.Handle)
     else
     {$ENDIF JVCLThemesEnabled}
@@ -342,7 +342,7 @@ begin
   Canvas.Draw(0, 0, FImage);
   {$IFDEF JVCLThemesEnabled}
   if BevelBold and ((BevelInner <> bvNone) or (BevelOuter <> bvNone)) and
-    ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+    StyleServices.Enabled then
     DrawThemedBorder(Self);
   {$ENDIF JVCLThemesEnabled}
 end;

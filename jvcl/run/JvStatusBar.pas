@@ -126,7 +126,7 @@ procedure TJvStatusBar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   {$IFDEF JVCLThemesEnabled}
-  if not ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if not StyleServices.Enabled then
   {$ENDIF JVCLThemesEnabled}
     with Params do
       WindowClass.Style := WindowClass.Style and not CS_HREDRAW;

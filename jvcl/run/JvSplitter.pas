@@ -83,7 +83,7 @@ var
   Bmp: TBitmap;
   DC: THandle;
 begin
-  if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+  if StyleServices.Enabled then
   begin
 //    DrawThemedBackground(Self, Canvas, ClientRect, Parent.Brush.Color);
     DC := Canvas.Handle;
