@@ -47,7 +47,7 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JvTypes, JvThemes, JvExtComponent, JvExControls,
+  JvTypes, JvExtComponent, JvExControls,
   JvHotTrackPersistent;
 
 type
@@ -364,8 +364,8 @@ implementation
 uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
-  {$ENDIF}
-  Types, {$IFDEF COMPILER7_UP}Themes,{$ENDIF}
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  Types, JvThemes,
   JvJCLUtils, JvJVCLUtils, JvResources;
 
 const

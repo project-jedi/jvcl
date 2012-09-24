@@ -1140,7 +1140,7 @@ implementation
 uses
   RTLConsts, Math, MaskUtils,
   MultiMon,
-  {$IFDEF COMPILER16_UP}
+  {$IFDEF COMPILER16_UP} // VCL-Styles support
   Vcl.Themes,
   {$ENDIF COMPILER16_UP}
   JclFileUtils, JclStrings,
@@ -2722,7 +2722,7 @@ procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
   FButton.Flat := Value;
   {$IFDEF JVCLThemesEnabled}
-  { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
+  { If XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
     the glyph is the default themed dropdown button. When ButtonFlat = True, we
     can't use that default dropdown button, so we have to recreate the glyph
     in this special case }
