@@ -74,9 +74,9 @@ type
     procedure MovePanelControls;
     function GetPanelClass: TStatusPanelClass;  override;
     procedure SBSetParts(var msg: TMessage); message SB_SETPARTS;
-    {$IFDEF COMPILER16_UP}
+    {$IFDEF COMPILER16}
     procedure WndProc(var Msg: TMessage); override;
-    {$ENDIF COMPILER16_UP}
+    {$ENDIF COMPILER16}
   public
     constructor Create(AOwner: TComponent); override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
@@ -249,7 +249,7 @@ begin
   MovePanelControls;
 end;
 
-{$IFDEF COMPILER16_UP}
+{$IFDEF COMPILER16}
 procedure TJvStatusBar.WndProc(var Msg: TMessage);
 var
   DC, PaintDC: HDC;
@@ -259,7 +259,7 @@ begin
   // TStatusBarStyleHook.Paint catches all WM_PAINT but doesn't call Control.PaintControls()
   // what causes TGraphicControls to not be painted. With this code we call the PaintControls
   // function in that case.
-  // TODO: When this bug gets fixed in a later Delphi version, the IFDEFs must be adjusted.
+  // This bug was fixed with XE3
   if (Msg.Msg = WM_PAINT) and StyleServices.Enabled and not StyleServices.IsSystemStyle then
   begin
     DC := HDC(Msg.WParam);
@@ -302,7 +302,7 @@ begin
   else
     inherited WndProc(Msg);
 end;
-{$ENDIF COMPILER16_UP}
+{$ENDIF COMPILER16}
 
 //=== { TJvStatusPanel } =====================================================
 
