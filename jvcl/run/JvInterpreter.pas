@@ -5149,6 +5149,7 @@ var
   {$ENDIF DELPHI7_UP}
   Dob: Extended;
   Int: Integer;
+  ValueInt64: Int64;
   Stub: Integer;
 begin
   FTokenStr := FParser.Token;
@@ -5157,7 +5158,15 @@ begin
     ttInteger:
       begin
         Val(FTokenStr, Int, Stub);
-        FToken := Int;
+        if Stub <> 0 then
+        begin
+          Val(FTokenStr, ValueInt64, Stub);
+          FToken := ValueInt64;
+          if Stub <> 0 then
+            JvInterpreterError(ieIntegerRequired, FParser.Pos);
+        end
+        else
+          FToken := Int;
       end;
     ttDouble:
       begin
