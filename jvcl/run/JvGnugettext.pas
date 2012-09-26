@@ -93,6 +93,10 @@ interface
   // Delphi 2009 with Unicode
   {$DEFINE DELPHI2009OROLDER}
 {$endif}
+{$ifdef VER210}
+  // Delphi 2010 with Unicode
+  {$DEFINE DELPHI2010OROLDER}
+{$endif}
 {$ifdef VER220}
   // Delphi 2011 with Unicode
   {$DEFINE DELPHI2011OROLDER}
@@ -2151,6 +2155,12 @@ begin
         end;
         {$endif}
         try
+          // Fix for Mantis #5917. TStringList doesn't release the objects in PutObject, so we
+          // use this to get sl.Clear to not destroy the objects in classes that inherit from
+          // TStringList but do a ClearObject in Clear.
+          if (sl.ClassType <> TStringList) and (sl is TStringList) then
+            for I := 0 to sl.Count do
+              sl.Objects[I] := nil;
           // same here, we don't want to modify the properties of the orignal string list
           sl.Clear;
           sl.AddStrings(s);
