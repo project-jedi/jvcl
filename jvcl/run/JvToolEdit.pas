@@ -3007,22 +3007,27 @@ end;
 procedure TJvCustomComboEdit.UpdateBtnBounds(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
 var
   BtnRect: TRect;
+  {$IFDEF JVCLThemesEnabled}
+  StyleExtraBorder: Integer;
+  {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
     if BorderStyle = bsSingle then
     begin
+       // Work around the VCL Style engine bug where edit controls are painted smaller than they are (see also WMNCCalcSize)
+      StyleExtraBorder := 0;
+      if not StyleServices.IsSystemStyle and Ctl3D then
+        StyleExtraBorder := 2;
+
       if Ctl3D then
-        BtnRect := Bounds(Width - FButton.Width - 2 - 1, 0 + 1,
-          FButton.Width, Height - 2 - 2)
+        BtnRect := Bounds(Width - FButton.Width - 2 - 1, 0 + 1, FButton.Width - StyleExtraBorder, Height - 2 - 2 - StyleExtraBorder)
       else
-        BtnRect := Bounds(Width - FButton.Width - 1 - 1, 1 + 1,
-          FButton.Width, Height - 2 - 2);
+        BtnRect := Bounds(Width - FButton.Width - 1 - 1, 1 + 1, FButton.Width - StyleExtraBorder, Height - 2 - 2 - StyleExtraBorder);
     end
     else
-      BtnRect := Bounds(Width - FButton.Width, 0,
-        FButton.Width, Height);
+      BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -3030,15 +3035,12 @@ begin
     if BorderStyle = bsSingle then
     begin
       if not Flat then
-        BtnRect := Bounds(Width - FButton.Width - 4 + 1, 0 + 1,
-          FButton.Width, Height - 4)
+        BtnRect := Bounds(Width - FButton.Width - 4 + 1, 0 + 1, FButton.Width, Height - 4)
       else
-        BtnRect := Bounds(Width - FButton.Width - 2, 2,
-          FButton.Width, Height - 4)
+        BtnRect := Bounds(Width - FButton.Width - 2, 2, FButton.Width, Height - 4)
     end
     else
-      BtnRect := Bounds(Width - FButton.Width, 0,
-        FButton.Width, Height);
+      BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
   end;
 
   // Mantis 4754: Bevels must be taken into account
@@ -3120,11 +3122,11 @@ begin
   end;
   if StyleServices.Enabled then
   begin
-  if BorderStyle = bsSingle then
-    if Ctl3D then
-      LRight := 1
-    else
-      LRight := -1;
+    if BorderStyle = bsSingle then
+      if Ctl3D then
+        LRight := 1
+      else
+        LRight := -1;
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -3153,7 +3155,8 @@ end;
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
-  if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) then
+  if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) and
+     StyleServices.IsSystemStyle then // Work around the VCL Style engine bug where edit controls are painted smaller than they are (see also UpdateBtnBounds)
   begin
     with Msg.CalcSize_Params^ do
       InflateRect(rgrc[0], 1, 1);
