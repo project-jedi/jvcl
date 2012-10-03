@@ -3022,9 +3022,9 @@ begin
         StyleExtraBorder := 2;
 
       if Ctl3D then
-        BtnRect := Bounds(Width - FButton.Width - 2 - 1, 0 + 1, FButton.Width - StyleExtraBorder, Height - 2 - 2 - StyleExtraBorder)
+        BtnRect := Bounds(Width - FButton.Width - 2 - 1 - StyleExtraBorder, 0 + 1, FButton.Width, Height - 2 - 2 - StyleExtraBorder)
       else
-        BtnRect := Bounds(Width - FButton.Width - 1 - 1, 1 + 1, FButton.Width - StyleExtraBorder, Height - 2 - 2 - StyleExtraBorder);
+        BtnRect := Bounds(Width - FButton.Width - 1 - 1 - StyleExtraBorder, 1 + 1, FButton.Width, Height - 2 - 2 - StyleExtraBorder);
     end
     else
       BtnRect := Bounds(Width - FButton.Width, 0, FButton.Width, Height);
