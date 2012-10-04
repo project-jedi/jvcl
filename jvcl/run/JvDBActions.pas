@@ -1072,7 +1072,11 @@ end;
 procedure TJvDatabasePositionAction.SetCaption(Value: string);
 begin
   if Value <> Caption then
+  {$IFDEF RTL240_UP}
+    inherited SetCaption (Value);
+  {$ELSE}
     Caption := Value;
+  {$ENDIF RTL240_UP}
 end;
 
 procedure TJvDatabasePositionAction.ShowPositionDialog;

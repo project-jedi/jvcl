@@ -292,20 +292,32 @@ procedure TJvActionEngineBaseAction.SetChecked(Value: Boolean);
 begin
   CheckChecked (Value);
   if Checked <> Value then
+  {$IFDEF RTL240_UP}
+    inherited SetChecked (Value);
+  {$ELSE}
     Checked := Value;
+  {$ENDIF RTL240_UP}
 end;
 
 procedure TJvActionEngineBaseAction.SetEnabled(Value: Boolean);
 begin
   CheckEnabled (Value);
   if Enabled <> Value then
+  {$IFDEF RTL240_UP}
+    inherited SetEnabled (Value);
+  {$ELSE}
     Enabled := Value;
+  {$ENDIF RTL240_UP}
 end;
 
 procedure TJvActionEngineBaseAction.SetImageIndex(Value: TImageIndex);
 begin
   if ImageIndex <> Value then
+  {$IFDEF RTL240_UP}
+    inherited SetImageIndex (Value);
+  {$ELSE}
     ImageIndex := Value;
+  {$ENDIF RTL240_UP}
 end;
 
 procedure TJvActionEngineBaseAction.SetParentComponent(AParent: TComponent);
@@ -319,7 +331,11 @@ procedure TJvActionEngineBaseAction.SetVisible(Value: Boolean);
 begin
   CheckVisible(Value);
   if Visible <> Value then
+  {$IFDEF RTL240_UP}
+    inherited SetVisible (Value);
+  {$ELSE}
     Visible := Value;
+  {$ENDIF RTL240_UP}
 end;
 
 procedure TJvActionEngineBaseAction.UpdateTarget(Target: TObject);
