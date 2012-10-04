@@ -33,7 +33,7 @@ uses
   JvExExtCtrls, JvComponent, JvPanel, ComCtrls, JvExComCtrls, JvDBActions,
   JvDateTimePicker, JvDBDateTimePicker, StdCtrls, ActnList, Buttons, DBActns,
   JvExDBGrids, JvDBGrid, ImgList, JvActionsEngine, JvControlActions,
-  JvDBActionsEngine;
+  JvDBActionsEngine, JvDBActionsEngineControlCxTreeList,JvControlActionsEngineCxTreeList;
 
 type
   TJvDBActionMainFrm = class(TForm)
@@ -86,6 +86,21 @@ type
     JvDatabaseEditAction2: TJvDatabaseEditAction;
     BitBtn12: TBitBtn;
     BitBtn13: TBitBtn;
+    JvControlCollapseAction1: TJvControlCollapseAction;
+    JvControlExpandAction1: TJvControlExpandAction;
+    JvControlExportAction1: TJvControlExportAction;
+    JvControlOptimizeColumnsAction1: TJvControlOptimizeColumnsAction;
+    JvControlCustomizeColumnsAction1: TJvControlCustomizeColumnsAction;
+    JvControlPrintAction1: TJvControlPrintAction;
+    JvControlCustomizeAction1: TJvControlCustomizeAction;
+    BitBtn14: TBitBtn;
+    BitBtn15: TBitBtn;
+    BitBtn16: TBitBtn;
+    BitBtn17: TBitBtn;
+    BitBtn18: TBitBtn;
+    BitBtn19: TBitBtn;
+    BitBtn20: TBitBtn;
+    procedure cxDBTreeList1Enter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure DBGrid1Enter(Sender: TObject);
     procedure JvDatabaseFirstAction1AfterExecute(Sender: TObject; ControlEngine:
@@ -117,7 +132,7 @@ uses JvDynControlEngine,
   JvDynControlEngineDBTools,
   JvDBActionsEngineControlCxGrid,
   JvDBActionsEngineDatasetAdo,
-  JvDBActionsEngineDatasetOdac,
+  JvDBActionsEngineDatasetDevart,
   JvDBActionsEngineDatasetdoa,
   JvDBActionsEngineDatasetDBExpress,
   JvDBActionsEngineDatasetCSVDataset;
@@ -152,6 +167,11 @@ begin
       dsInternalCalc : Result := 'dsInternalCalc';
       dsOpening      : Result := 'dsOpening';
    end;
+end;
+
+procedure TJvDBActionMainFrm.cxDBTreeList1Enter(Sender: TObject);
+begin
+//  JvDatabaseActionList1.DataComponent := cxDBTreeList1;
 end;
 
 procedure TJvDBActionMainFrm.JvDatabaseFirstAction1AfterExecute(Sender:
