@@ -2,7 +2,7 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   Left = 349
   Top = 48
   Caption = 'JvDBActionMainFrm'
-  ClientHeight = 625
+  ClientHeight = 701
   ClientWidth = 862
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,14 +14,14 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
   OnCreate = FormCreate
   DesignSize = (
     862
-    625)
+    701)
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
     Left = 3
     Top = 30
     Width = 785
-    Height = 242
+    Height = 318
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
@@ -88,6 +88,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseFirstAction1
     Caption = 'First Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 2
   end
   object BitBtn2: TBitBtn
@@ -97,6 +99,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabasePriorAction1
     Caption = 'Prior Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 3
   end
   object BitBtn3: TBitBtn
@@ -106,6 +110,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseLastAction1
     Caption = 'Last Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 4
   end
   object BitBtn4: TBitBtn
@@ -115,6 +121,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseNextAction1
     Caption = 'Next Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 5
   end
   object BitBtn5: TBitBtn
@@ -124,6 +132,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabasePositionAction1
     Caption = '0/0'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 6
   end
   object BitBtn6: TBitBtn
@@ -133,15 +143,17 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseSingleRecordWindowAction1
     Caption = 'Single Record Window'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 7
   end
   object JvDBGrid1: TJvDBGrid
-    Left = 10
-    Top = 260
-    Width = 766
-    Height = 261
+    Left = 8
+    Top = 354
+    Width = 590
+    Height = 185
     DataSource = DataSource1
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit, dgMultiSelect]
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
     TabOrder = 8
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -170,6 +182,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseOpenAction1
     Caption = 'Open'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 9
   end
   object BitBtn8: TBitBtn
@@ -179,6 +193,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseCloseAction1
     Caption = 'Close'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 10
   end
   object BitBtn9: TBitBtn
@@ -188,6 +204,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseModifyAllAction1
     Caption = 'Modify All'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 11
   end
   object BitBtn10: TBitBtn
@@ -197,6 +215,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseShowSQLStatementAction1
     Caption = 'Show SQL'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 15
   end
   object Button1: TButton
@@ -214,6 +234,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseEditAction1
     Caption = 'Edit Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 14
   end
   object BitBtn12: TBitBtn
@@ -223,6 +245,8 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseCopyAction1
     Caption = 'Copy Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 13
   end
   object BitBtn13: TBitBtn
@@ -232,7 +256,86 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
     Height = 25
     Action = JvDatabaseInsertAction1
     Caption = 'Insert Record'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 12
+  end
+  object BitBtn14: TBitBtn
+    Left = 15
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlCollapseAction1
+    Caption = 'Collapse'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 17
+  end
+  object BitBtn15: TBitBtn
+    Left = 113
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlExpandAction1
+    Caption = 'Expand'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 18
+  end
+  object BitBtn16: TBitBtn
+    Left = 505
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlCustomizeAction1
+    Caption = 'Customize Control'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 22
+  end
+  object BitBtn17: TBitBtn
+    Left = 604
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlPrintAction1
+    Caption = 'Print'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 23
+  end
+  object BitBtn18: TBitBtn
+    Left = 407
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlCustomizeColumnsAction1
+    Caption = 'Customize Columns'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 21
+  end
+  object BitBtn19: TBitBtn
+    Left = 212
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlExportAction1
+    Caption = 'Export Contents'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 19
+  end
+  object BitBtn20: TBitBtn
+    Left = 309
+    Top = 645
+    Width = 100
+    Height = 25
+    Action = JvControlOptimizeColumnsAction1
+    Caption = 'Optimize Columns'
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
+    TabOrder = 20
   end
   object JvCsvDataSet2: TJvCsvDataSet
     FieldDefs = <
@@ -465,6 +568,35 @@ object JvDBActionMainFrm: TJvDBActionMainFrm
       Caption = 'Edit Record'
       OnExecute = JvDatabaseFirstAction1Execute
       AfterExecute = JvDatabaseFirstAction1AfterExecute
+    end
+    object JvControlCollapseAction1: TJvControlCollapseAction
+      Category = 'JVCL-Control'
+      Caption = 'Collapse'
+    end
+    object JvControlExpandAction1: TJvControlExpandAction
+      Category = 'JVCL-Control'
+      Caption = 'Expand'
+    end
+    object JvControlExportAction1: TJvControlExportAction
+      Category = 'JVCL-Control'
+      Caption = 'Export Contents'
+    end
+    object JvControlOptimizeColumnsAction1: TJvControlOptimizeColumnsAction
+      Category = 'JVCL-Control'
+      Caption = 'Optimize Columns'
+    end
+    object JvControlCustomizeColumnsAction1: TJvControlCustomizeColumnsAction
+      Category = 'JVCL-Control'
+      Caption = 'Customize Columns'
+    end
+    object JvControlPrintAction1: TJvControlPrintAction
+      Category = 'JVCL-Control'
+      Caption = 'Print'
+    end
+    object JvControlCustomizeAction1: TJvControlCustomizeAction
+      Category = 'JVCL-Control'
+      Caption = 'Customize Control'
+      Hint = 'Customize the current control'
     end
   end
 end

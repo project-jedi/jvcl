@@ -6,31 +6,31 @@ object JvDBActions: TJvDBActions
     Left = 72
     Top = 8
     object JvDatabaseInsertAction1: TJvDatabaseInsertAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Insert Record'
     end
     object JvDatabaseCopyAction1: TJvDatabaseCopyAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Copy Record'
     end
     object JvDatabaseEditAction1: TJvDatabaseEditAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Edit Record'
     end
     object JvDatabaseDeleteAction1: TJvDatabaseDeleteAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Delete Record'
     end
     object JvDatabasePostAction1: TJvDatabasePostAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Post Changes'
     end
     object JvDatabaseCancelAction1: TJvDatabaseCancelAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Cancel Changes'
     end
     object JvDatabaseSingleRecordWindowAction1: TJvDatabaseSingleRecordWindowAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Single Record Window'
       Options.PostButtonCaption = '&Post'
       Options.CancelButtonCaption = '&Cancel'
@@ -44,62 +44,62 @@ object JvDBActions: TJvDBActions
       Options.ArrangeSettings.AutoSize = asBoth
     end
     object JvDatabaseFirstAction1: TJvDatabaseFirstAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'First Record'
       ImageIndex = 8
     end
     object JvDatabaseLastAction1: TJvDatabaseLastAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Last Record'
       ImageIndex = 12
     end
     object JvDatabaseNextAction1: TJvDatabaseNextAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Next Record'
       ImageIndex = 13
     end
     object JvDatabasePriorAction1: TJvDatabasePriorAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Prior Record'
       ImageIndex = 16
     end
     object JvDatabaseNextBlockAction1: TJvDatabaseNextBlockAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Next Record Block'
       ImageIndex = 14
     end
     object JvDatabasePriorBlockAction1: TJvDatabasePriorBlockAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Prior Record Block'
       ImageIndex = 17
     end
     object JvDatabasePositionAction1: TJvDatabasePositionAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = '0/0'
     end
     object JvDatabaseRefreshAction1: TJvDatabaseRefreshAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Refresh'
       ImageIndex = 18
     end
     object JvDatabaseSimpleAction1: TJvDatabaseSimpleAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'JvDatabaseSimpleAction1'
     end
     object JvDatabaseOpenAction1: TJvDatabaseOpenAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Open'
     end
     object JvDatabaseCloseAction1: TJvDatabaseCloseAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Close'
     end
     object JvDatabaseModifyAllAction1: TJvDatabaseModifyAllAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Modify All'
     end
     object JvDatabaseShowSQLStatementAction1: TJvDatabaseShowSQLStatementAction
-      Category = 'JVCL-DB'
+      Category = 'JVCL DB'
       Caption = 'Show SQL Statement'
     end
   end

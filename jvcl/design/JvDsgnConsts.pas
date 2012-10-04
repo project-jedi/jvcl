@@ -50,8 +50,8 @@ resourcestring
   RsPreviousPage = 'Previous Page';
   RsJVCLActionsCategory = 'JVCL';
   RsJVCLEditActionsCategory = 'JVCL Edit';
-  RsJVCLControlActionsCategory = 'JVCL-Control';
-  RsJVCLDBActionsCategory = 'JVCL-DB';
+  RsJVCLControlActionsCategory = 'JVCL Control';
+  RsJVCLDBActionsCategory = 'JVCL DB';
   RsPropertyEditors = '\Property Editors';
   RsJvEditorString = 'Click to edit...';
   RsSystemColors = 'System colors';
