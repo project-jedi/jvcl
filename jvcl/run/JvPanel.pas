@@ -156,8 +156,7 @@ type
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions: TJvHotTrackOptions;
     FLastScreenCursor: TCursor;
-    FPainting: Boolean;
-    FRedrawingChildren: Boolean;
+    FPainting: Integer;
     function GetArrangeSettings: TJvArrangeSettings;
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -681,29 +680,25 @@ begin
     Exit;
   end;
 
-  // must force child controls to redraw completely, even their non client areas (Mantis 4406)
-  if Transparent and not FPainting and not FRedrawingChildren then
-  begin
-    FRedrawingChildren := True;
-    try
+  Inc(FPainting);
+  try
+    // must force child controls to redraw completely, even their non client areas (Mantis 4406)
+    if Transparent and (FPainting = 1) then
+    begin
       for ControlIndex := 0 to ControlCount - 1 do
       begin
         CurControl := Controls[ControlIndex];
-        CurControl.Invalidate;
         if CurControl is TWinControl then
+        begin
+          CurControl.Invalidate;
           RedrawWindow(TWinControl(CurControl).Handle, nil, 0, RDW_FRAME or RDW_INVALIDATE);
-
-        // Must update here so that the invalidate message is processed immediately
-        // If not, there is a very strong risk of creating a refresh loop
-        CurControl.Update;
+          // Must update here so that the invalidate message is processed immediately
+          // If not, there is a very strong risk of creating a refresh loop
+          CurControl.Update;
+        end;
       end;
-    finally
-      FRedrawingChildren := False;
     end;
-  end;
 
-  FPainting := True;
-  try
     if MouseOver and HotTrack then
     begin
       Canvas.Font := Self.HotTrackFont;
@@ -795,7 +790,7 @@ begin
       end;
     end;
   finally
-    FPainting := False;
+    Dec(FPainting);
   end;
 end;
 
@@ -1015,6 +1010,8 @@ procedure TJvCustomArrangePanel.SetSizeable(const Value: Boolean);
 begin
   if FSizeable <> Value then
   begin
+    if FDragging and FSizeable then
+      MouseCapture := False;
     FSizeable := Value;
     Invalidate;
   end;

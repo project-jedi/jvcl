@@ -1672,7 +1672,6 @@ var
   MemBitmap: HBitmap;
   SaveBitmap: HBitmap;
   MemDC: HDC;
-  Index: Integer;
   DC: HDC;
 begin
   if not DoubleBuffered or ControlInGlassPaint(Self) then
@@ -1685,14 +1684,9 @@ begin
     SaveBitmap := SelectObject(MemDC, MemBitmap);
     try
       DC := Msg.DC;
-      Index := SaveDC(DC);
-      try
-        Msg.DC := MemDC;
-        inherited;
-        Msg.DC := DC;
-      finally
-        RestoreDC(Msg.DC, Index);
-      end;
+      Msg.DC := MemDC;
+      inherited;
+      Msg.DC := DC;
       BitBlt(Msg.DC, 0, 0, Width, Height, MemDC, 0, 0, SRCCOPY);
     finally
       SelectObject(MemDC, SaveBitmap);
