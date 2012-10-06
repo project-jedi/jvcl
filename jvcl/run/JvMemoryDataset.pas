@@ -94,6 +94,7 @@ type
   TSaveLoadState = (slsNone, slsLoading, slsSaving);
   TCompareRecords = function(Item1, Item2: TJvMemoryRecord): Integer of object;
   TWordArray = array of Word;
+  TJvBookmarkData = Integer;
   {$IFDEF RTL240_UP}
   PJvMemBuffer = PByte;
   TJvBookmark = TBookmark;
@@ -181,6 +182,7 @@ type
     procedure DoBeforeApplyRecord(ADataset: TDataset; RS: TRecordStatus; Found: Boolean);
     procedure DoAfterApplyRecord(ADataset: TDataset; RS: TRecordStatus; Apply: Boolean);
     procedure SetUseDataSetFilter(const Value: Boolean);
+    procedure InternalGotoBookmarkData(BookmarkData: TJvBookmarkData);
   protected
     function FindFieldData(Buffer: Pointer; Field: TField): Pointer;
     function CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
@@ -410,11 +412,10 @@ const
   STATUSNAME = 'C67F70Z90'; (* Magic *)
 
 type
-  TBookmarkData = Integer;
   PMemBookmarkInfo = ^TMemBookmarkInfo;
 
   TMemBookmarkInfo = record
-    BookmarkData: TBookmarkData;
+    BookmarkData: TJvBookmarkData;
     BookmarkFlag: TBookmarkFlag;
   end;
 
@@ -1229,8 +1230,8 @@ end;
 function TJvMemoryData.BookmarkValid(Bookmark: TBookmark): Boolean;
 begin
   Result := (Bookmark <> nil) and FActive and
-   (TBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) > Low(Integer)) and
-   (TBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) <= FLastID);
+   (TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) > Low(Integer)) and
+   (TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) <= FLastID);
 end;
 
 function TJvMemoryData.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer;
@@ -1244,12 +1245,12 @@ begin
   if (Bookmark1 = nil) and (Bookmark2 <> nil) then
     Result := -1
   else
-  if TBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) >
-     TBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
+  if TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) >
+     TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
     Result := 1
   else
-  if TBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) <
-     TBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
+  if TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark1[0]){$ELSE}Bookmark1{$ENDIF RTL200_UP}^) <
+     TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark2[0]){$ELSE}Bookmark2{$ENDIF RTL200_UP}^) then
     Result := -1
   else
     Result := 0;
@@ -1257,12 +1258,12 @@ end;
 
 procedure TJvMemoryData.GetBookmarkData(Buffer: PJvMemBuffer; Data: TJvBookmark);
 begin
-  Move(PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData, {$IFDEF RTL240_UP}PByte(@Data[0]){$ELSE}Data{$ENDIF RTL240_UP}^, SizeOf(TBookmarkData));
+  Move(PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData, {$IFDEF RTL240_UP}PByte(@Data[0]){$ELSE}Data{$ENDIF RTL240_UP}^, SizeOf(TJvBookmarkData));
 end;
 
 procedure TJvMemoryData.SetBookmarkData(Buffer: PJvMemBuffer; Data: TJvBookmark);
 begin
-  Move({$IFDEF RTL240_UP}PByte(@Data[0]){$ELSE}Data{$ENDIF RTL240_UP}^, PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData, SizeOf(TBookmarkData));
+  Move({$IFDEF RTL240_UP}PByte(@Data[0]){$ELSE}Data{$ENDIF RTL240_UP}^, PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData, SizeOf(TJvBookmarkData));
 end;
 
 function TJvMemoryData.GetBookmarkFlag(Buffer: PJvMemBuffer): TBookmarkFlag;
@@ -1275,13 +1276,13 @@ begin
   PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkFlag := Value;
 end;
 
-procedure TJvMemoryData.InternalGotoBookmark(Bookmark: TJvBookmark);
+procedure TJvMemoryData.InternalGotoBookmarkData(BookmarkData: TJvBookmarkData);
 var
   Rec: TJvMemoryRecord;
   SavePos: Integer;
   Accept: Boolean;
 begin
-  Rec := FindRecordID(TBookmarkData({$IFDEF RTL240_UP}PByte(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL240_UP}^));
+  Rec := FindRecordID(BookmarkData);
   if Rec <> nil then
   begin
     Accept := True;
@@ -1297,9 +1298,14 @@ begin
   end;
 end;
 
+procedure TJvMemoryData.InternalGotoBookmark(Bookmark: TJvBookmark);
+begin
+  InternalGotoBookmarkData(TJvBookmarkData({$IFDEF RTL240_UP}PByte(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL240_UP}^));
+end;
+
 procedure TJvMemoryData.InternalSetToRecord(Buffer: PJvMemBuffer);
 begin
-  InternalGotoBookmark(@PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData);
+  InternalGotoBookmarkData(PMemBookmarkInfo(Buffer + FBookmarkOfs)^.BookmarkData);
 end;
 
 procedure TJvMemoryData.InternalFirst;
@@ -1548,7 +1554,7 @@ end;
 
 procedure TJvMemoryData.InternalOpen;
 begin
-  BookmarkSize := SizeOf(TBookmarkData);
+  BookmarkSize := SizeOf(TJvBookmarkData);
   if DefaultFields then
     CreateFields;
   BindFields(True);
