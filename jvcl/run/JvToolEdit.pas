@@ -1708,7 +1708,7 @@ begin
   FBtnControl.Visible := True;
   FBtnControl.Parent := Self;
   FBtnControl.Align := alCustom;
-  FButton := TJvEditButton.Create(Self);
+  FButton := TJvEditButton.Create(Self); // this happens too late in some cases, causing a crash.
   FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
   FButton.Visible := True;
   FButton.Align := alClient;
@@ -3011,6 +3011,9 @@ var
   StyleExtraBorder: Integer;
   {$ENDIF JVCLThemesEnabled}
 begin
+  if not Assigned(FButton) then
+    exit;
+
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
