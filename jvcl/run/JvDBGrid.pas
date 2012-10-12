@@ -426,8 +426,8 @@ type
     procedure DrawTitleCaption(Canvas: TCanvas; const TextRect: TRect; DrawColumn: TColumn);
     procedure DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); virtual;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
-    procedure DrawDataCell(const Rect: TRect; Field: TField;
-      State: TGridDrawState); override; { obsolete from Delphi 2.0 }
+    procedure DrawDataCell(const Rect: TRect; Field: TField; State: TGridDrawState); override; { obsolete from Delphi 2.0 }
+    function GetPaintInfo: TJvGridPaintInfo;
 
     function BeginColumnDrag(var Origin: Integer; var Destination: Integer; const MousePt: TPoint): Boolean; override;
     procedure ColumnMoved(FromIndex: Integer; ToIndex: Integer); override;
@@ -1755,6 +1755,11 @@ begin
   Result := DataLink;
 end;
 
+function TJvDBGrid.GetPaintInfo: TJvGridPaintInfo;
+begin
+  Result := FPaintInfo;
+end;
+
 procedure TJvDBGrid.SetRowResize(Value: Boolean);
 begin
   if FRowResize <> Value then
@@ -1818,17 +1823,22 @@ var
   R: TRect;
   Size: TSize;
 begin
-  { Fill the area between the two scroll bars. }
-  Size.cx := GetSystemMetrics(SM_CXVSCROLL);
-  Size.cy := GetSystemMetrics(SM_CYHSCROLL);
-  if UseRightToLeftAlignment then
-    R := Bounds(0, Height - Size.cy, Size.cx, Size.cy)
-  else
-    R := Bounds(Width - Size.cx, Height - Size.cy, Size.cx, Size.cy);
-  Canvas.Brush.Color := Color;
-  Canvas.FillRect(R);
+  if Param = 0 then // don't optimize for painting child control backgrounds
+  begin
+    { Fill the area between the two scroll bars. }
+    Size.cx := GetSystemMetrics(SM_CXVSCROLL);
+    Size.cy := GetSystemMetrics(SM_CYHSCROLL);
+    if UseRightToLeftAlignment then
+      R := Bounds(0, Height - Size.cy, Size.cx, Size.cy)
+    else
+      R := Bounds(Width - Size.cx, Height - Size.cy, Size.cx, Size.cy);
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(R);
 
-  Result := True;
+    Result := True;
+  end
+  else
+    Result := inherited DoEraseBackground(Canvas, Param);
 end;
 
 procedure TJvDBGrid.Paint;
@@ -3099,7 +3109,7 @@ begin
       lCellRect.Bottom := lCellRect.Bottom + 2;
       StyleServices.DrawElement(Canvas.Handle, Details, lCellRect);
       // draw the indicator
-      if (Datalink.Active) and (ARow - TitleOffset = Datalink.ActiveRecord) then
+      if (DataLink.Active) and (ARow - TitleOffset = Datalink.ActiveRecord) then
       begin
         // Unfortunatelly the TDBGrid.FIndicators: TImageList is a private field so we have to
         // call the original painter for the indicator and draw it into a transparent bitmap
