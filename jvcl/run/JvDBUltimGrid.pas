@@ -438,14 +438,12 @@ begin
   end;
 
   FSortOK := False;
-  if Assigned(DataLink) and DataLink.Active and Assigned(FieldsToSort) then
+  if Assigned(DataLink) and DataLink.Active and Assigned(FieldsToSort) and
+    (DataSource.DataSet <> nil) and not (DataSource.DataSet.Eof and DataSource.DataSet.Bof) then
   begin
     // Dataset must be in browse mode
     DSet := DataSource.DataSet;
     DSet.CheckBrowseMode;
-
-    if FRestoreOnSort then
-      SaveGridPosition;
 
     // Checking of OnUserSort assignment
     if Assigned(OnUserSort) then
@@ -461,6 +459,9 @@ begin
     if (SortWith = swFields) and
       not IsPublishedProp(DSet, cIndexFieldNames) then
       raise EJVCLDbGridException.CreateRes(@RsEJvDBGridIndexPropertyMissing);
+
+    if FRestoreOnSort then
+      SaveGridPosition;
 
     // Sorting
     Screen.Cursor := crHourGlass;
@@ -537,7 +538,6 @@ begin
           end;
         end
         else
-
         if SortWith = swClient then
         begin
           // Sort with IndexName
@@ -731,20 +731,17 @@ end;
 
 procedure TJvDBUltimGrid.RestoreGridPosition(Mode: TResyncMode = [rmExact, rmCenter]);
 begin
-  if FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP} then
+  if Assigned(FOnRestoreGridPosition) then
   begin
-    if Assigned(FOnRestoreGridPosition) then
-    begin
-      if DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
-        GotoBookmarkEx(DataLink.DataSet, Pointer(FSavedBookmark), [rmExact], False);
+    if (FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP}) and DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
+      GotoBookmarkEx(DataLink.DataSet, Pointer(FSavedBookmark), [rmExact], False);
 
-      DataLink.ActiveRecord := FSavedRowPos;
-      FOnRestoreGridPosition(Self, Pointer(FSavedBookmark), FSavedRowPos);
-    end
-    else
-    if DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
-      GotoBookmarkEx(DataLink.DataSet, Pointer(FSavedBookmark), Mode, False);
-  end;
+    DataLink.ActiveRecord := FSavedRowPos;
+    FOnRestoreGridPosition(Self, Pointer(FSavedBookmark), FSavedRowPos);
+  end
+  else
+  if (FSavedBookmark <> {$IFDEF RTL200_UP}nil{$ELSE}''{$ENDIF RTL200_UP}) and DataLink.DataSet.BookmarkValid(Pointer(FSavedBookmark)) then
+    GotoBookmarkEx(DataLink.DataSet, Pointer(FSavedBookmark), Mode, False);
 end;
 
 function TJvDBUltimGrid.PrivateSearch(var ResultCol: Integer; var ResultField: TField;
