@@ -41,6 +41,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
   Buttons, Dialogs, FileCtrl, ActnList, ImgList,
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
@@ -4246,6 +4249,8 @@ begin
   fControlOnPropertyChange := Value;
 end;
 
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+
 function TJvDynControlCxColorComboBox.ControlGetColorName(AColor: TColor):
     string;
 begin
@@ -4486,7 +4491,6 @@ begin
   Properties.Delimiter:= Value;
 end;
 
-{$ENDIF}
 
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
