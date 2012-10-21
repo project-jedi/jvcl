@@ -2010,8 +2010,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Width = 90
       Height = 25
       Caption = '&Load Settings'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 0
       OnClick = BitBtn1Click
     end
@@ -2021,8 +2019,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Width = 90
       Height = 25
       Caption = '&Store Settings'
-      DoubleBuffered = True
-      ParentDoubleBuffered = False
       TabOrder = 1
       OnClick = BitBtn2Click
     end
