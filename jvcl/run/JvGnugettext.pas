@@ -2159,7 +2159,7 @@ begin
           // use this to get sl.Clear to not destroy the objects in classes that inherit from
           // TStringList but do a ClearObject in Clear.
           if (sl.ClassType <> TStringList) and (sl is TStringList) then
-            for I := 0 to sl.Count do
+            for I := 0 to sl.Count - 1 do
               sl.Objects[I] := nil;
           // same here, we don't want to modify the properties of the orignal string list
           sl.Clear;
