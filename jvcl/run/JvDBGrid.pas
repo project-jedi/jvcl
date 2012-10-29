@@ -3551,7 +3551,7 @@ begin
   Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or Focused);
   GetCellProps(Column, Canvas.Font, NewBackgrnd, Highlight or ActiveRowSelected);
   if not Highlight and (ReadOnlyCellColor <> clDefault) and
-     (not Field.CanModify or not CanEditCell(Field)) then
+     (Field <> nil) and (not Field.CanModify or not CanEditCell(Field)) then
   begin
     if (gdSelected in State) and (Focused xor MultiSelect) then
       Canvas.Brush.Color := NewBackgrnd
