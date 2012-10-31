@@ -727,6 +727,8 @@ end;
 
 function FindFullColorSpaceEditor(AColorSpaceID: TJvFullColorSpaceID): TJvFullColorSpacePropertyClass;
 begin
+  if GFullColorSpaceEditorArray = nil then
+    InitFullColorSpaceEditorArray;
   Result := GFullColorSpaceEditorArray[AColorSpaceID shr 2];
   if Result = nil then
     Result := DefaultFullColorSpacePropertyClass;
