@@ -51,6 +51,7 @@ type
   // forward declarations
   TJvHidDeviceController = class;
   TJvHidDevice = class;
+  TJvHidPnPInfo = class;
 
   // the Event function declarations
   TJvHidEnumerateEvent = function(HidDev: TJvHidDevice;
@@ -60,6 +61,7 @@ type
   TJvHidDataEvent = procedure(HidDev: TJvHidDevice; ReportID: Byte;
     const Data: Pointer; Size: Word) of object;
   TJvHidDataErrorEvent = procedure(HidDev: TJvHidDevice; Error: DWORD) of object;
+  TJvHidDeviceCreateError = procedure(Controller: TJvHidDeviceController; PnPInfo: TJvHidPnPInfo; var Handled: Boolean; var RetryCreate: Boolean) of object;
 
   // check out test function
   TJvHidCheckCallback = function(HidDev: TJvHidDevice): Boolean; stdcall;
@@ -363,6 +365,7 @@ type
     FDevDataErrorEvent: TJvHidDataErrorEvent;
     FDevUnplugEvent: TJvHidUnplugEvent;
     FRemovalEvent: TJvHidUnplugEvent;
+    FOnDeviceCreateError: TJvHidDeviceCreateError;
     FDevThreadSleepTime: Integer;
     FVersion: string;
     FDummy: string;
@@ -427,6 +430,8 @@ type
     property OnEnumerate: TJvHidEnumerateEvent read FEnumerateEvent write SetEnumerate;
     // the central event for HID device changes
     property OnDeviceChange: TNotifyEvent read FDeviceChangeEvent write SetDeviceChangeEvent;
+    // this event is triggered when an error occured while creating a given TJvHidDevice
+    property OnDeviceCreateError: TJvHidDeviceCreateError read FOnDeviceCreateError write FOnDeviceCreateError;
     // these events are copied to TJvHidDevices on creation
     property OnDeviceData: TJvHidDataEvent read FDevDataEvent write SetDevData;
     property OnDeviceDataError: TJvHidDataErrorEvent read FDevDataErrorEvent write SetDevDataError;
@@ -774,18 +779,26 @@ begin
           // if device is plugged in create a checked in copy
           if IsPluggedIn then
           begin
-            Dev := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
-            // make it a complete clone
-            Dev.OnData := TmpOnData;
-            Dev.OnUnplug := TmpOnUnplug;
-            Dev.ThreadSleepTime := ThreadSleepTime;
-            FList.Items[I] := Dev;
-            // the FPnPInfo has been handed over to the new object
-            FPnPInfo := nil;
-            if IsCheckedOut then
-            begin
-              Dec(FNumCheckedOutDevices);
-              Inc(FNumCheckedInDevices);
+            try
+              Dev := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
+              // make it a complete clone
+              Dev.OnData := TmpOnData;
+              Dev.OnUnplug := TmpOnUnplug;
+              Dev.ThreadSleepTime := ThreadSleepTime;
+              FList.Items[I] := Dev;
+              // the FPnPInfo has been handed over to the new object
+              FPnPInfo := nil;
+              if IsCheckedOut then
+              begin
+                Dec(FNumCheckedOutDevices);
+                Inc(FNumCheckedInDevices);
+              end;
+            except
+              on EControllerError do
+              begin
+                FList.Delete(I);
+                Dec(FNumUnpluggedDevices);
+              end;
             end;
           end
           else
@@ -1678,6 +1691,8 @@ var
     BytesReturned: DWORD;
     HidDev: TJvHidDevice;
     PnPInfo: TJvHidPnPInfo;
+    Handled: Boolean;
+    RetryCreate: Boolean;
   begin
     if not IsHidLoaded then
       Exit;
@@ -1707,9 +1722,30 @@ var
               // fill in PnPInfo of device
               PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
               // create HID device object and add it to the device list
-              HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
-              NewList.Add(HidDev);
-              Inc(Devn);
+              RetryCreate := False;
+              HidDev := nil;
+              repeat
+                try
+                  HidDev := TJvHidDevice.CtlCreate(PnPInfo, Self);
+                except
+                  on EControllerError do
+                    if Assigned(OnDeviceCreateError) then
+                    begin
+                      Handled := False;
+                      OnDeviceCreateError(Self, PnPInfo, Handled, RetryCreate);
+                      if not Handled then
+                        raise;
+                    end
+                    else
+                      raise;
+                end;
+              until not RetryCreate;
+              
+              if Assigned(HidDev) then
+              begin
+                NewList.Add(HidDev);
+                Inc(Devn);
+              end;
             end;
           finally
             FreeMem(FunctionClassDeviceData);
