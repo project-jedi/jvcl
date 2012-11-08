@@ -857,7 +857,8 @@ begin
       Items.EndUpdate;
       Values.EndUpdate;
     end;
-    SetComboText(LastText);
+    if ItemIndex = -1 then
+      SetComboText(LastText);
   end;
 end;
 
@@ -869,6 +870,7 @@ begin
   if Assigned(FOnReload) then
   begin
     case Event of
+      deUpdateState,
       deFieldListChange,
       deDataSetChange:
         FOnReload(Self);
