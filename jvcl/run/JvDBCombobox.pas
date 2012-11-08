@@ -50,6 +50,7 @@ type
     FOnReload: TNotifyEvent;
   protected
     procedure DataEvent(Event: TDataEvent; Info: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF}); override;
+    procedure ActiveChanged; override;
   public
     property OnReload: TNotifyEvent read FOnReload write FOnReload;
   end;
@@ -649,6 +650,7 @@ var
   PaintStruct: TPaintStruct;
   DC: HDC;
   OldFont: HFONT;
+  Index: Integer;
 begin
   { If the field value is not part of the DataSource }
   if (Style in [csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable]) and
@@ -657,7 +659,12 @@ begin
      ListSettings.IsValid then
   begin
     if ListSettings.DisplayField <> '' then
-      S := VarToStr(ListSettings.DataSource.DataSet.Lookup(ListSettings.KeyField, FDataLink.Field.AsVariant, ListSettings.DisplayField))
+    begin
+      //S := VarToStr(ListSettings.DataSource.DataSet.Lookup(ListSettings.KeyField, FDataLink.Field.AsVariant, ListSettings.DisplayField))
+      Index := Values.IndexOf(FDataLink.Field.AsString);
+      if (Index <> -1) and (Index < Items.Count) then
+        S := Items[Index];
+    end
     else
       S := FDataLink.Field.Text;
 
@@ -864,13 +871,19 @@ end;
 
 { TJvDBComboBoxListDataLink }
 
-procedure TJvDBComboBoxListDataLink.DataEvent(Event: TDataEvent; Info: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF});
+procedure TJvDBComboBoxListDataLink.ActiveChanged;
+begin
+  inherited ActiveChanged;
+  if Assigned(FOnReload) then
+    FOnReload(Self);
+end;
+
+procedure TJvDBComboBoxListDataLink.DataEvent(Event: TDataEvent; Info: Integer);
 begin
   inherited DataEvent(Event, Info);
   if Assigned(FOnReload) then
   begin
     case Event of
-      deUpdateState,
       deFieldListChange,
       deDataSetChange:
         FOnReload(Self);
