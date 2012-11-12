@@ -20,7 +20,7 @@ located at http://jvcl.delphi-jedi.org
 
 Known Issues:
 -----------------------------------------------------------------------------}
-// $Id: JvDBPasswordDialogOdac.pas 13371 2012-06-23 15:46:57Z jfudickar $
+// $Id$
 
 unit JvDBPasswordDialogUniDac;
 
@@ -59,9 +59,9 @@ type
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$URL: https://jvcl.svn.sourceforge.net/svnroot/jvcl/trunk/jvcl/run/JvDBPasswordDialogOdac.pas $';
-    Revision: '$Revision: 13371 $';
-    Date: '$Date: 2012-06-23 17:46:57 +0200 (Sa, 23 Jun 2012) $';
+    RCSfile: '$URL$';
+    Revision: '$Revision$';
+    Date: '$Date$';
     LogPath: 'JVCL\run'
     );
 {$ENDIF UNITVERSIONING}
