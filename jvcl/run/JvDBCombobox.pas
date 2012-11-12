@@ -878,7 +878,7 @@ begin
     FOnReload(Self);
 end;
 
-procedure TJvDBComboBoxListDataLink.DataEvent(Event: TDataEvent; Info: Integer);
+procedure TJvDBComboBoxListDataLink.DataEvent(Event: TDataEvent; Info: {$IFDEF RTL230_UP}NativeInt{$ELSE}Integer{$ENDIF});
 begin
   inherited DataEvent(Event, Info);
   if Assigned(FOnReload) then
