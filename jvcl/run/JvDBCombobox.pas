@@ -65,6 +65,8 @@ type
     FShowOutfilteredValue: Boolean;
     FOutfilteredValueFont: TFont;
     FComboBox: TJvCustomDBComboBox;
+    FOutfilteredItems: TStrings;
+    FOutfilteredValues: TStrings;
     procedure SetDataSource(const Value: TDataSource);
     procedure SetFilter(Value: string);
     function GetDataSource: TDataSource;
@@ -660,10 +662,9 @@ begin
   begin
     if ListSettings.DisplayField <> '' then
     begin
-      //S := VarToStr(ListSettings.DataSource.DataSet.Lookup(ListSettings.KeyField, FDataLink.Field.AsVariant, ListSettings.DisplayField))
-      Index := Values.IndexOf(FDataLink.Field.AsString);
+      Index := ListSettings.FOutfilteredValues.IndexOf(FDataLink.Field.AsString);
       if (Index <> -1) and (Index < Items.Count) then
-        S := Items[Index];
+        S := ListSettings.FOutfilteredItems[Index];
     end
     else
       S := FDataLink.Field.Text;
@@ -809,6 +810,8 @@ begin
      (ListSettings.DataSource <> nil) and (ListSettings.DataSource.DataSet <> nil) and
      (ListSettings.DataSource.State = dsBrowse) then
   begin
+    ListSettings.FOutfilteredItems.Clear;
+    ListSettings.FOutfilteredValues.Clear;
     { Component is in the ListDataSet mode }
     Items.BeginUpdate;
     Values.BeginUpdate;
@@ -836,12 +839,15 @@ begin
               DataSet.First;
               while not DataSet.Eof do
               begin
-                if FilterAccepted
-                   and ((FilterExpr = nil) or FilterExpr.Evaluate) 
-                   then
+                if FilterAccepted and ((FilterExpr = nil) or FilterExpr.Evaluate) then
                 begin
                   Items.Add(LDisplayField.AsString);
                   Values.Add(LKeyField.AsString);
+                end
+                else
+                begin
+                  ListSettings.FOutfilteredItems.Add(LDisplayField.AsString);
+                  ListSettings.FOutfilteredValues.Add(LKeyField.AsString);
                 end;
                 DataSet.Next;
               end;
@@ -903,6 +909,8 @@ begin
   FOutfilteredValueFont := TFont.Create;
   FOutfilteredValueFont.Color := clRed;
   FOutfilteredValueFont.OnChange := FontChange;
+  FOutfilteredItems := TStringList.Create;
+  FOutfilteredValues := TStringList.Create;
 end;
 
 destructor TJvDBComboBoxListSettings.Destroy;
@@ -912,6 +920,8 @@ begin
   FListDataLink.OnReload := nil;
   FListDataLink.Free;
   FListDataLink := nil;
+  FOutfilteredItems.Free;
+  FOutfilteredValues.Free;
   inherited Destroy;
 end;
 
