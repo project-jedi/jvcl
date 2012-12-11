@@ -4855,8 +4855,12 @@ begin
       WM_GETDLGCODE:
         begin
           CurrentEditor := FControls.ControlByName(FCurrentControl.Name);
-          if (CurrentEditor <> nil) and CurrentEditor.LeaveOnUpDownKey then
-            Message.Result := Message.Result or DLGC_WANTTAB or DLGC_WANTARROWS;
+          if CurrentEditor <> nil then
+          begin
+            Message.Result := Message.Result or DLGC_WANTTAB;
+            if CurrentEditor.LeaveOnUpDownKey then
+              Message.Result := Message.Result or DLGC_WANTARROWS;
+          end;
         end;
       CM_EXIT:
         HideCurrentControl;
