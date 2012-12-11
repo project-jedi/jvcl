@@ -390,6 +390,11 @@ end;
 
 { TCompileTargetList }
 
+function SortTargetsByVersionNumber(Item1, Item2: Pointer): Integer;
+begin
+  Result := TCompileTarget(Item1).Version - TCompileTarget(Item2).Version;
+end;
+
 constructor TCompileTargetList.Create;
 begin
   inherited Create;
@@ -410,6 +415,7 @@ begin
     LoadTargets(KeyCodeGear, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize
     LoadTargets(KeyEmbarcadero, 'BDS', CmdOptions.RegistryKeyBDS); // do not localize
   end;
+  Sort(SortTargetsByVersionNumber);
 end;
 
 function TCompileTargetList.GetItems(Index: Integer): TCompileTarget;
