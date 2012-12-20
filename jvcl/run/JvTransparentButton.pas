@@ -130,8 +130,6 @@ type
     FWordWrap: Boolean;
 
     FGlyph: TBitmap;
-    FGrayGlyph: TBitmap;
-    FDisabledGlyph: TBitmap;
     FNumGlyphs: TNumGlyphs;
     FKeepMouseLeavePressed: Boolean;
     FImages: TJvTransparentButtonImages;
@@ -163,6 +161,7 @@ type
 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AddImageGlyphs;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -306,38 +305,29 @@ begin
     Exit;
   MonoBmp := TBitmap.Create;
   TmpImage := TBitmap.Create;
-  W := Bmp.Width;
-  H := Bmp.Height;
-
-  with TmpImage do
-  begin
-    Width := W;
-    Height := H;
-    Canvas.Brush.Color := clBtnFace;
-  end;
-
   try
-    with MonoBmp do
-    begin
-      Assign(Bmp);
-      Canvas.Font.Color := clWhite;
-      Canvas.Brush.Color := clBlack;
-      Monochrome := True;
-    end;
+    W := Bmp.Width;
+    H := Bmp.Height;
 
-    with TmpImage.Canvas do
-    begin
-      Brush.Color := clBtnFace;
-      FillRect(Rect(0, 0, W, H));
-      Brush.Color := clBtnHighlight;
-      SetTextColor(Handle, clBlack);
-      SetBkColor(Handle, clWhite);
-      BitBlt(Handle, 1, 1, W + 1, H + 1, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-      Brush.Color := clBtnShadow;
-      SetTextColor(Handle, clBlack);
-      SetBkColor(Handle, clWhite);
-      BitBlt(Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-    end;
+    TmpImage.Canvas.Brush.Color := clBtnFace;
+    TmpImage.Width := W;
+    TmpImage.Height := H;
+
+    MonoBmp.Assign(Bmp);
+    MonoBmp.Canvas.Font.Color := clWhite;
+    MonoBmp.Canvas.Brush.Color := clBlack;
+    MonoBmp.Monochrome := True;
+
+    //TmpImage.Canvas.Brush.Color := clBtnFace;
+    //TmpImage.Canvas.FillRect(Rect(0, 0, W, H));
+    TmpImage.Canvas.Brush.Color := clBtnHighlight;
+    SetTextColor(TmpImage.Canvas.Handle, clBlack);
+    SetBkColor(TmpImage.Canvas.Handle, clWhite);
+    BitBlt(TmpImage.Canvas.Handle, 1, 1, W + 1, H + 1, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+    TmpImage.Canvas.Brush.Color := clBtnShadow;
+    SetTextColor(TmpImage.Canvas.Handle, clBlack);
+    SetBkColor(TmpImage.Canvas.Handle, clWhite);
+    BitBlt(TmpImage.Canvas.Handle, 0, 0, W, H, MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
     Bmp.Assign(TmpImage);
   finally
     MonoBmp.Free;
@@ -612,8 +602,6 @@ begin
 
   FNumGlyphs := 1;
   FGlyph := TBitmap.Create;
-  FGrayGlyph := TBitmap.Create;
-  FDisabledGlyph := TBitmap.Create;
   FGlyph.OnChange := GlyphChanged;
   FNumGlyphs := 1;
 
@@ -626,8 +614,6 @@ end;
 destructor TJvTransparentButton.Destroy;
 begin
   FreeAndNil(FGlyph);
-  FreeAndNil(FGrayGlyph);
-  FreeAndNil(FDisabledGlyph);
   FreeAndNil(FImages);
   // FImList.Free; // owner-destroyed
   inherited Destroy;
@@ -1030,15 +1016,19 @@ var
   Bmp: TBitmap;
   I, TmpWidth: Integer;
   Dest, Source: TRect;
+  GrayGlyph: TBitmap;
+  DisabledGlyph: TBitmap;
 begin
   if UseImages then
     Exit;
 
   FImList.Clear;
-  Bmp := TBitmap.Create;
-  try
-    if not AGlyph.Empty then
-    begin
+  if not AGlyph.Empty then
+  begin
+    Bmp := TBitmap.Create;
+    GrayGlyph := TBitmap.Create;
+    DisabledGlyph := TBitmap.Create;
+    try
       { destroy old list }
       TmpWidth := AGlyph.Width div FNumGlyphs;
       FImList.Width := TmpWidth;
@@ -1054,22 +1044,24 @@ begin
         if I = 0 then { first picture }
         begin
           { create the disabled and grayed bitmaps too }
-          FGrayGlyph.Assign(Bmp);
-          MonoBitmap(FGrayGlyph, 11, 59, 30);
-          FDisabledGlyph.Assign(Bmp);
-          BWBitmap(FDisabledGlyph);
+          GrayGlyph.Assign(Bmp);
+          MonoBitmap(GrayGlyph, 11, 59, 30);
+          DisabledGlyph.Assign(Bmp);
+          BWBitmap(DisabledGlyph);
         end;
         FImList.AddMasked(Bmp, Bmp.TransparentColor);
       end;
       { add last }
-      FImList.AddMasked(FGrayGlyph, FGrayGlyph.TransparentColor);
-      FImList.AddMasked(FDisabledGlyph, FDisabledGlyph.TransparentColor);
+      FImList.AddMasked(GrayGlyph, GrayGlyph.TransparentColor);
+      FImList.AddMasked(DisabledGlyph, DisabledGlyph.TransparentColor);
+    finally
+      Bmp.Free;
+      GrayGlyph.Free;
+      DisabledGlyph.Free;
     end;
-  finally
-    Bmp.Free;
+    FGlyph.Dormant;
   end;
   Invalidate;
-  FGlyph.Dormant;
 end;
 
 procedure TJvTransparentButton.SetGlyph(Bmp: TBitmap);
@@ -1219,11 +1211,20 @@ end;
 
 procedure TJvTransparentButton.GlyphChanged(Sender: TObject);
 begin
-  if UseImages then
-    AddImageGlyphs
-  else
-    AddGlyphGlyphs(Glyph, Glyph.TransparentColor, NumGlyphs);
+  if not (csLoading in ComponentState) then
+  begin
+    if UseImages then
+      AddImageGlyphs
+    else
+      AddGlyphGlyphs(Glyph, Glyph.TransparentColor, NumGlyphs);
+  end;
   Invalidate;
+end;
+
+procedure TJvTransparentButton.Loaded;
+begin
+  inherited Loaded;
+  GlyphChanged(Self);
 end;
 
 procedure TJvTransparentButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
