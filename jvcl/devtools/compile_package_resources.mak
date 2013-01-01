@@ -1,76 +1,7 @@
 ROOTDIR = $(MAKEDIR)\..
 
 # ---------------------------------------------------------------------------
-RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
-           ..\packages\c5\JvAppFrmC5D.res                  \
-           ..\packages\c5\JvAppFrmC5R.res                  \
-           ..\packages\c5\JvBandsC5D.res                   \
-           ..\packages\c5\JvBandsC5R.res                   \
-           ..\packages\c5\JvBDEC5D.res                     \
-           ..\packages\c5\JvBDEC5R.res                     \
-           ..\packages\c5\JvCmpC5D.res                     \
-           ..\packages\c5\JvCmpC5R.res                     \
-           ..\packages\c5\JvCoreC5D.res                    \
-           ..\packages\c5\JvCoreC5R.res                    \
-           ..\packages\c5\JvCryptC5D.res                   \
-           ..\packages\c5\JvCryptC5R.res                   \
-           ..\packages\c5\JvCtrlsC5D.res                   \
-           ..\packages\c5\JvCtrlsC5R.res                   \
-           ..\packages\c5\JvCustomC5D.res                  \
-           ..\packages\c5\JvCustomC5R.res                  \
-           ..\packages\c5\JvDBC5D.res                      \
-           ..\packages\c5\JvDBC5R.res                      \
-           ..\packages\c5\JvDlgsC5D.res                    \
-           ..\packages\c5\JvDlgsC5R.res                    \
-           ..\packages\c5\JvDockingC5D.res                 \
-           ..\packages\c5\JvDockingC5R.res                 \
-           ..\packages\c5\JvDotNetCtrlsC5D.res             \
-           ..\packages\c5\JvDotNetCtrlsC5R.res             \
-           ..\packages\c5\JvGlobusC5D.res                  \
-           ..\packages\c5\JvGlobusC5R.res                  \
-           ..\packages\c5\JvHMIC5D.res                     \
-           ..\packages\c5\JvHMIC5R.res                     \
-           ..\packages\c5\JvInterpreterC5D.res             \
-           ..\packages\c5\JvInterpreterC5R.res             \
-           ..\packages\c5\JvJansC5D.res                    \
-           ..\packages\c5\JvJansC5R.res                    \
-           ..\packages\c5\JvManagedThreadsC5D.res          \
-           ..\packages\c5\JvManagedThreadsC5R.res          \
-           ..\packages\c5\JvMMC5D.res                      \
-           ..\packages\c5\JvMMC5R.res                      \
-           ..\packages\c5\JvNetC5D.res                     \
-           ..\packages\c5\JvNetC5R.res                     \
-           ..\packages\c5\JvPageCompsC5D.res               \
-           ..\packages\c5\JvPageCompsC5R.res               \
-           ..\packages\c5\JvPluginC5D.res                  \
-           ..\packages\c5\JvPluginC5R.res                  \
-           ..\packages\c5\JvPrintPreviewC5D.res            \
-           ..\packages\c5\JvPrintPreviewC5R.res            \
-           ..\packages\c5\JvRuntimeDesignC5D.res           \
-           ..\packages\c5\JvRuntimeDesignC5R.res           \
-           ..\packages\c5\JvStdCtrlsC5D.res                \
-           ..\packages\c5\JvStdCtrlsC5R.res                \
-           ..\packages\c5\JvSystemC5D.res                  \
-           ..\packages\c5\JvSystemC5R.res                  \
-           ..\packages\c5\JvTimeFrameworkC5D.res           \
-           ..\packages\c5\JvTimeFrameworkC5R.res           \
-           ..\packages\c5\JvUIBC5D.res                     \
-           ..\packages\c5\JvUIBC5R.res                     \
-           ..\packages\c5\JvValidatorsC5D.res              \
-           ..\packages\c5\JvValidatorsC5R.res              \
-           ..\packages\c5\JvWizardC5D.res                  \
-           ..\packages\c5\JvWizardC5R.res                  \
-           ..\packages\c5\JvXPCtrlsC5D.res                 \
-           ..\packages\c5\JvXPCtrlsC5R.res                 \
-           ..\packages\c5std\JvCoreC5R.res                 \
-           ..\packages\c5std\JvDotNetCtrlsC5R.res          \
-           ..\packages\c5std\JvGlobusC5D.res               \
-           ..\packages\c5std\JvGlobusC5R.res               \
-           ..\packages\c5std\JvInterpreterC5D.res          \
-           ..\packages\c5std\JvInterpreterC5R.res          \
-           ..\packages\c5std\JvRuntimeDesignC5R.res        \
-           ..\packages\c5std\JvUIBC5R.res                  \
-           ..\packages\c6\Jv3rdC6R.res                     \
+RESFILES = ..\packages\c6\Jv3rdC6R.res                     \
            ..\packages\c6\JvAppFrmC6D.res                  \
            ..\packages\c6\JvAppFrmC6R.res                  \
            ..\packages\c6\JvBandsC6D.res                   \
@@ -208,75 +139,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d10per\JvInterpreterD10R.res        \
            ..\packages\d10per\JvRuntimeDesignD10R.res      \
            ..\packages\d10per\JvUIBD10R.res                \
-           ..\packages\d5\Jv3rdD5R.res                     \
-           ..\packages\d5\JvAppFrmD5D.res                  \
-           ..\packages\d5\JvAppFrmD5R.res                  \
-           ..\packages\d5\JvBandsD5D.res                   \
-           ..\packages\d5\JvBandsD5R.res                   \
-           ..\packages\d5\JvBDED5D.res                     \
-           ..\packages\d5\JvBDED5R.res                     \
-           ..\packages\d5\JvCmpD5D.res                     \
-           ..\packages\d5\JvCmpD5R.res                     \
-           ..\packages\d5\JvCoreD5D.res                    \
-           ..\packages\d5\JvCoreD5R.res                    \
-           ..\packages\d5\JvCryptD5D.res                   \
-           ..\packages\d5\JvCryptD5R.res                   \
-           ..\packages\d5\JvCtrlsD5D.res                   \
-           ..\packages\d5\JvCtrlsD5R.res                   \
-           ..\packages\d5\JvCustomD5D.res                  \
-           ..\packages\d5\JvCustomD5R.res                  \
-           ..\packages\d5\JvDBD5D.res                      \
-           ..\packages\d5\JvDBD5R.res                      \
-           ..\packages\d5\JvDlgsD5D.res                    \
-           ..\packages\d5\JvDlgsD5R.res                    \
-           ..\packages\d5\JvDockingD5D.res                 \
-           ..\packages\d5\JvDockingD5R.res                 \
-           ..\packages\d5\JvDotNetCtrlsD5D.res             \
-           ..\packages\d5\JvDotNetCtrlsD5R.res             \
-           ..\packages\d5\JvGlobusD5D.res                  \
-           ..\packages\d5\JvGlobusD5R.res                  \
-           ..\packages\d5\JvHMID5D.res                     \
-           ..\packages\d5\JvHMID5R.res                     \
-           ..\packages\d5\JvInterpreterD5D.res             \
-           ..\packages\d5\JvInterpreterD5R.res             \
-           ..\packages\d5\JvJansD5D.res                    \
-           ..\packages\d5\JvJansD5R.res                    \
-           ..\packages\d5\JvManagedThreadsD5D.res          \
-           ..\packages\d5\JvManagedThreadsD5R.res          \
-           ..\packages\d5\JvMMD5D.res                      \
-           ..\packages\d5\JvMMD5R.res                      \
-           ..\packages\d5\JvNetD5D.res                     \
-           ..\packages\d5\JvNetD5R.res                     \
-           ..\packages\d5\JvPageCompsD5D.res               \
-           ..\packages\d5\JvPageCompsD5R.res               \
-           ..\packages\d5\JvPluginD5D.res                  \
-           ..\packages\d5\JvPluginD5R.res                  \
-           ..\packages\d5\JvPrintPreviewD5D.res            \
-           ..\packages\d5\JvPrintPreviewD5R.res            \
-           ..\packages\d5\JvRuntimeDesignD5D.res           \
-           ..\packages\d5\JvRuntimeDesignD5R.res           \
-           ..\packages\d5\JvStdCtrlsD5D.res                \
-           ..\packages\d5\JvStdCtrlsD5R.res                \
-           ..\packages\d5\JvSystemD5D.res                  \
-           ..\packages\d5\JvSystemD5R.res                  \
-           ..\packages\d5\JvTimeFrameworkD5D.res           \
-           ..\packages\d5\JvTimeFrameworkD5R.res           \
-           ..\packages\d5\JvUIBD5D.res                     \
-           ..\packages\d5\JvUIBD5R.res                     \
-           ..\packages\d5\JvValidatorsD5D.res              \
-           ..\packages\d5\JvValidatorsD5R.res              \
-           ..\packages\d5\JvWizardD5D.res                  \
-           ..\packages\d5\JvWizardD5R.res                  \
-           ..\packages\d5\JvXPCtrlsD5D.res                 \
-           ..\packages\d5\JvXPCtrlsD5R.res                 \
-           ..\packages\d5std\JvCoreD5R.res                 \
-           ..\packages\d5std\JvDotNetCtrlsD5R.res          \
-           ..\packages\d5std\JvGlobusD5D.res               \
-           ..\packages\d5std\JvGlobusD5R.res               \
-           ..\packages\d5std\JvInterpreterD5D.res          \
-           ..\packages\d5std\JvInterpreterD5R.res          \
-           ..\packages\d5std\JvRuntimeDesignD5R.res        \
-           ..\packages\d5std\JvUIBD5R.res                  \
            ..\packages\d6\Jv3rdD6R.res                     \
            ..\packages\d6\JvAppFrmD6D.res                  \
            ..\packages\d6\JvAppFrmD6R.res                  \
@@ -407,48 +269,6 @@ RESFILES = ..\packages\c5\Jv3rdC5R.res                     \
            ..\packages\d7\JvWizardD7R.res                  \
            ..\packages\d7\JvXPCtrlsD7D.res                 \
            ..\packages\d7\JvXPCtrlsD7R.res                 \
-           ..\packages\d7clx\JvQ3rdD7R.res                 \
-           ..\packages\d7clx\JvQAppFrmD7D.res              \
-           ..\packages\d7clx\JvQAppFrmD7R.res              \
-           ..\packages\d7clx\JvQCmpD7D.res                 \
-           ..\packages\d7clx\JvQCmpD7R.res                 \
-           ..\packages\d7clx\JvQCoreD7D.res                \
-           ..\packages\d7clx\JvQCoreD7R.res                \
-           ..\packages\d7clx\JvQCryptD7D.res               \
-           ..\packages\d7clx\JvQCryptD7R.res               \
-           ..\packages\d7clx\JvQCtrlsD7D.res               \
-           ..\packages\d7clx\JvQCtrlsD7R.res               \
-           ..\packages\d7clx\JvQCustomD7D.res              \
-           ..\packages\d7clx\JvQCustomD7R.res              \
-           ..\packages\d7clx\JvQDlgsD7D.res                \
-           ..\packages\d7clx\JvQDlgsD7R.res                \
-           ..\packages\d7clx\JvQDotNetCtrlsD7R.res         \
-           ..\packages\d7clx\JvQHMID7D.res                 \
-           ..\packages\d7clx\JvQHMID7R.res                 \
-           ..\packages\d7clx\JvQJansD7D.res                \
-           ..\packages\d7clx\JvQJansD7R.res                \
-           ..\packages\d7clx\JvQManagedThreadsD7D.res      \
-           ..\packages\d7clx\JvQManagedThreadsD7R.res      \
-           ..\packages\d7clx\JvQMMD7D.res                  \
-           ..\packages\d7clx\JvQMMD7R.res                  \
-           ..\packages\d7clx\JvQNetD7D.res                 \
-           ..\packages\d7clx\JvQNetD7R.res                 \
-           ..\packages\d7clx\JvQPageCompsD7D.res           \
-           ..\packages\d7clx\JvQPageCompsD7R.res           \
-           ..\packages\d7clx\JvQRuntimeDesignD7D.res       \
-           ..\packages\d7clx\JvQRuntimeDesignD7R.res       \
-           ..\packages\d7clx\JvQStdCtrlsD7D.res            \
-           ..\packages\d7clx\JvQStdCtrlsD7R.res            \
-           ..\packages\d7clx\JvQSystemD7D.res              \
-           ..\packages\d7clx\JvQSystemD7R.res              \
-           ..\packages\d7clx\JvQUIBD7D.res                 \
-           ..\packages\d7clx\JvQUIBD7R.res                 \
-           ..\packages\d7clx\JvQValidatorsD7D.res          \
-           ..\packages\d7clx\JvQValidatorsD7R.res          \
-           ..\packages\d7clx\JvQWizardD7D.res              \
-           ..\packages\d7clx\JvQWizardD7R.res              \
-           ..\packages\d7clx\JvQXPCtrlsD7D.res             \
-           ..\packages\d7clx\JvQXPCtrlsD7R.res             \
            ..\packages\d7per\JvCoreD7R.res                 \
            ..\packages\d7per\JvDotNetCtrlsD7R.res          \
            ..\packages\d7per\JvGlobusD7D.res               \

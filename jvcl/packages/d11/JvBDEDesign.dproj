@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{13EB6F0F-0B65-4D2B-8DCB-B45F992EC6A9}</ProjectGuid>
     <MainSource>JvBDEDesign.dpk</MainSource>
@@ -63,7 +63,7 @@
           <VersionInfoKeys Name="FileDescription">JVCL BDE Components</VersionInfoKeys>
           <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JvBDEDesign</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
           <VersionInfoKeys Name="OriginalFilename">JvBDEDesign110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

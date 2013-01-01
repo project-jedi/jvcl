@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{08661E45-2C90-4301-A95E-77C50EE00CAF}</ProjectGuid>
     <MainSource>JvPrintPreview.dpk</MainSource>
@@ -63,7 +63,7 @@
           <VersionInfoKeys Name="FileDescription">JVCL Print Preview Components Runtime Package</VersionInfoKeys>
           <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JvPrintPreview</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
           <VersionInfoKeys Name="OriginalFilename">JvPrintPreview110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

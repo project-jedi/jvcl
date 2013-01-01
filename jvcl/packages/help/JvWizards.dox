@@ -1,4 +1,4 @@
-; This is a Doc-O-Matic version 6.5.1.1382 project file.
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -46,7 +46,7 @@ File9=..\..\..\help\JvWizardRouteMapList.dtx
 File10=..\..\..\help\JvWizard.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2012 Project JEDI
+Copyright=Copyright (C) 1999, 2013 Project JEDI
 Summary=Documentation of the JVCL Wizard Runtime Package
 Title=JVCL Wizard Runtime Package
 VersionBuild=0

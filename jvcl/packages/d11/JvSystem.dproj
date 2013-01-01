@@ -1,4 +1,4 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{5AA7A634-CDB2-46E6-B265-F973C14FFB4B}</ProjectGuid>
     <MainSource>JvSystem.dpk</MainSource>
@@ -63,7 +63,7 @@
           <VersionInfoKeys Name="FileDescription">JVCL System Components Runtime Package</VersionInfoKeys>
           <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
           <VersionInfoKeys Name="InternalName">JvSystem</VersionInfoKeys>
-          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2012 Project JEDI</VersionInfoKeys>
+          <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
           <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
           <VersionInfoKeys Name="OriginalFilename">JvSystem110.bpl</VersionInfoKeys>
           <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>

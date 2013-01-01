@@ -19,7 +19,7 @@ BEGIN
               VALUE "FileDescription", "JVCL Encryption and Compression\0"
               VALUE "FileVersion", "3.41.0.0\0"
               VALUE "InternalName", "JvCryptDesign\0"
-              VALUE "LegalCopyright", "Copyright (C) 1999, 2012 Project JEDI\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2013 Project JEDI\0"
               VALUE "OriginalFilename", "JvCryptDesign170.bpl\0"
               VALUE "ProductName", "JEDI Visual Component Library\0"
               VALUE "ProductVersion", "3.41 Build 0\0"

@@ -1,4 +1,4 @@
-; This is a Doc-O-Matic version 6.5.1.1382 project file.
+﻿; This is a Doc-O-Matic version 6.5.1.1382 project file.
 ; This file is maintained by Doc-O-Matic, do not edit manually.
 
 [*Control*]
@@ -48,7 +48,7 @@ File11=..\..\..\help\JvMTSyncMon.dtx
 File12=..\..\..\help\JvMTThreading.dtx
 
 [General]
-Copyright=Copyright (C) 1999, 2012 Project JEDI
+Copyright=Copyright (C) 1999, 2013 Project JEDI
 Summary=Documentation of the JVCL Managed Threads Runtime Package
 Title=JVCL Managed Threads Runtime Package
 VersionBuild=0
