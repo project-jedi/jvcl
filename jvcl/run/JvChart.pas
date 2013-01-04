@@ -3040,8 +3040,8 @@ var
   // Rectangle plotting:
   X, Y, X2, Y2: Integer;
 
-  aWidth:Integer;
-  aHeight:Integer;
+  //aWidth:Integer;
+  //aHeight:Integer;
   { Here be lots of local functions }
 
   { Draw symbol markers and text labels on a chart... }
@@ -3476,8 +3476,8 @@ var
 
 begin { Enough local functions for ya? -WP }
   ACanvas := GetChartCanvas(false);
-  aWidth := GetChartCanvasWidth;
-  aHeight:= GetChartCanvasHeight;
+  //aWidth := GetChartCanvasWidth;
+  //aHeight:= GetChartCanvasHeight;
 
   Assert(Assigned(ACanvas));
   Assert(Assigned(ACanvas.Brush));
