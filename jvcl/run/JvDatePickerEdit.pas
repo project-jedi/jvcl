@@ -1148,13 +1148,22 @@ begin
 end;
 
 procedure TJvCustomDatePickerEdit.SetDateFormat(AValue: string);
+var
+  UseDefaultDateFormat: Boolean;
 begin
+  UseDefaultDateFormat := False;
   if AValue = '' then
+  begin
     AValue := JclFormatSettings.ShortDateFormat;
+    // XE+ changed ShortDateFormat to always use '/'
+    FDateSeparator := JclFormatSettings.DateSeparator;
+    UseDefaultDateFormat := True;
+  end;
   if AValue <> FDateFormat then
   begin
     FDateFormat := AValue;
-    FDateSeparator := DetermineDateSeparator(FDateFormat);
+    if not UseDefaultDateFormat then
+      FDateSeparator := DetermineDateSeparator(FDateFormat);
     StoreDateFormat := FDateFormat <> JclFormatSettings.ShortDateFormat;
     ResetDateFormat;
   end;
