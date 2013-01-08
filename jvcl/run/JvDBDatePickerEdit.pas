@@ -175,7 +175,7 @@ type
     property ShowCheckBox;
     property StoreDateFormat;
     property TabOrder;
-    {property TabStop;} {(rb) Why disabled?}
+    property TabStop;
     property Visible;
     property OnButtonClick;
     property OnChange;
@@ -201,10 +201,12 @@ type
     property OnParentColorChange;
     property OnSetFocus;
     property OnStartDrag;
-    property OnPopupHidden;
-    property OnPopupShown;
 
     property OnGetValidDateString;
+    property OnPopupShown;
+    property OnPopupHidden;
+    property OnPopupChange;
+    property OnPopupValueAccepted;
   end;
 
 {$IFDEF UNITVERSIONING}
