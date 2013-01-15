@@ -5657,9 +5657,9 @@ begin
     if ListCount = 0 then
       ListCount := 1;
     TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
-    if ListBox.Height > Screen.Height then
+    if ListBox.Height > Screen.DesktopHeight then
     begin
-      ListCount := (Screen.Height - 4) div TListBox(ListBox).ItemHeight;
+      ListCount := (Screen.DesktopHeight - 4) div TListBox(ListBox).ItemHeight;
       TListBox(ListBox).Height := ListCount * TListBox(ListBox).ItemHeight + 4;
     end;
     ListBox.ItemIndex := ListBox.Items.IndexOf(EditCtrl.Text);
@@ -5677,16 +5677,16 @@ begin
     if ListBox.Items.Count > ListCount then
       Inc(J, GetSystemMetrics(SM_CXVSCROLL));
     ListBox.ClientWidth := J;
-    if ListBox.Width > Screen.Width then
-      ListBox.Width := Screen.Width;
+    if ListBox.Width > Screen.DesktopWidth then
+      ListBox.Width := Screen.DesktopWidth;
     P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Right - ListBox.Width, EditCtrl.Top));
     if P.X < 0 then
       P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
     Y := P.Y + RectHeight(Rects[iprValueArea]);
-    if Y + ListBox.Height > Screen.Height then
+    if Y + ListBox.Height > Screen.DesktopHeight then
       Y := P.Y - TListBox(ListBox).Height;
-    if P.X + ListBox.Width > Screen.Width then
-      P.X := Screen.Width - ListBox.Width;
+    if P.X + ListBox.Width > Screen.DesktopWidth then
+      P.X := Screen.DesktopWidth - ListBox.Width;
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or {SWP_NOACTIVATE or }SWP_SHOWWINDOW);
     InvalidateItem;
