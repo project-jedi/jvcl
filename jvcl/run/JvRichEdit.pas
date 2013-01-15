@@ -496,7 +496,7 @@ type
   TRichEditURLHoverEvent = procedure(Sender: TObject; const URLText: string) of object;
   TRichEditProtectChangeEx = procedure(Sender: TObject; const Msg: TMessage;
     StartPos, EndPos: Integer; var AllowChange: Boolean) of object;
-  TRichEditFindErrorEvent = procedure(Sender: TObject; const FindText: string) of object;
+  TRichEditFindErrorEvent = procedure(Sender: TObject; const TextToFind: string) of object;
   TRichEditFindCloseEvent = procedure(Sender: TObject; Dialog: TFindDialog) of object;
   TRichEditProgressEvent = procedure(Sender: TObject; PercentDone: Integer) of object;
   TRichEditDragAllowedEvent = procedure(Sender: TObject; ShiftState: TShiftState;
