@@ -66,6 +66,7 @@ type
     FCommands: TStringList;
     FCurrentCommandIndex: Integer;
     function GetCurrentCommand: string;
+    function FormatForDisplay(const S: string): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,7 +88,7 @@ var
 implementation
 
 uses
-  JclSysInfo, JvDSADialogs;
+  JclSysInfo, JclStrings, JvDSADialogs;
 
 {$R *.dfm}
 
@@ -104,7 +105,7 @@ procedure TConsoleExampleMainForm.AddNewLine(const S: string);
 begin
   with lsbConsole do
   begin
-    Items.Add(S);
+    Items.Add(FormatForDisplay(S));
     ItemIndex := Count - 1;
   end;
 end;
@@ -119,7 +120,7 @@ begin
   with lsbConsole do
   begin
     if Count > 0 then
-      Items[Count - 1] := S
+      Items[Count - 1] := FormatForDisplay(S)
     else
       AddNewLine(S);
     ItemIndex := Count - 1;
@@ -190,6 +191,11 @@ begin
   finally
     Free;
   end;
+end;
+
+function TConsoleExampleMainForm.FormatForDisplay(const S: string): string;
+begin
+  Result := StrReplaceChar(S, #255, ' ');
 end;
 
 procedure TConsoleExampleMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
