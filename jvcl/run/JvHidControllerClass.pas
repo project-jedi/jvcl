@@ -779,6 +779,7 @@ begin
           // if device is plugged in create a checked in copy
           if IsPluggedIn then
           begin
+            Dev := nil;
             try
               Dev := TJvHidDevice.CtlCreate(FPnPInfo, FMyController);
               // make it a complete clone
@@ -797,6 +798,7 @@ begin
               on EControllerError do
               begin
                 FList.Delete(I);
+                Dev.Free;
                 Dec(FNumUnpluggedDevices);
               end;
             end;
@@ -1608,9 +1610,9 @@ begin
       // set to uncontrolled
       FMyController := nil;
       if IsCheckedOut then
-        DoUnplug // pull the plug for checked out TJvHidDevices
-      else
-        Free; // kill TJvHidDevices which are not checked out
+        DoUnplug; // pull the plug for checked out TJvHidDevices
+
+      Free; // Always free, which will kill TJvHidDevices which are not checked out
     end;
   end;
   FList.Free;
@@ -1779,7 +1781,10 @@ begin
       DoRemoval(HidDev);
       // delete from list
       if not HidDev.IsCheckedOut then
+      begin
         FList.Delete(I);
+        HidDev.Free;
+      end;
       Changed := True;
     end;
   end;
