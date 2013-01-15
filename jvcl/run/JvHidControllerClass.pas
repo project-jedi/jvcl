@@ -1742,16 +1742,15 @@ var
               until not RetryCreate;
               
               if Assigned(HidDev) then
-              begin
                 NewList.Add(HidDev);
-                Inc(Devn);
-              end;
             end;
           finally
             FreeMem(FunctionClassDeviceData);
           end;
         end;
       end;
+
+      Inc(Devn);
     until not Success;
     SetupDiDestroyDeviceInfoList(PnPHandle);
   end;
