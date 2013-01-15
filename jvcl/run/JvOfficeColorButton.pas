@@ -837,10 +837,10 @@ begin
     Pt := Point(X, Y);
 
   FColorsForm.Left := Pt.X;
-  if (FColorsForm.Left + FColorsForm.Width) > Screen.Width then
-    FColorsForm.Left := Screen.Width - FColorsForm.Width;
+  if (FColorsForm.Left + FColorsForm.Width) > Screen.DesktopWidth then
+    FColorsForm.Left := Screen.DesktopWidth - FColorsForm.Width;
   FColorsForm.Top := Pt.Y + Height;
-  if (FColorsForm.Top + FColorsForm.Height) > Screen.Height then
+  if (FColorsForm.Top + FColorsForm.Height) > Screen.DesktopHeight then
     FColorsForm.Top := Pt.Y - FColorsForm.Height;
 end;
 
