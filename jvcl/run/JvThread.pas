@@ -34,6 +34,10 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, SysUtils, Classes, SyncObjs, Controls, ExtCtrls, Forms, Dialogs,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
   JvTypes, JvComponentBase, JvComponent;
 
 type

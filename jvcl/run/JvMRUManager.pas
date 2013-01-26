@@ -38,6 +38,9 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Windows, Menus, Graphics, Controls, Forms,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvFormPlacement, JvAppStorage, JvComponentBase;
 
 type

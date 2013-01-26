@@ -49,6 +49,10 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, ShlObj, ShellAPI,
   Classes, Graphics, Controls,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
   JclWin32, JclSysInfo,
   JvJVCLUtils, JvComponentBase, JvTypes;
 

@@ -45,6 +45,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   Windows, Classes, Graphics, Controls, ImgList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
   JvComponentBase;
 
 type

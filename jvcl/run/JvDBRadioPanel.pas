@@ -40,6 +40,9 @@ uses
   Windows,
   Messages,
   Classes, Controls, StdCtrls, DB, DBCtrls,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
   JvExtComponent;
 
 type

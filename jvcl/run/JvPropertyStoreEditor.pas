@@ -32,6 +32,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Variants,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls,

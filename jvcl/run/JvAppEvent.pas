@@ -45,6 +45,9 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows, Messages,
   SysUtils, Classes, Controls, Graphics, Forms, ActnList,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.Types,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
   JvTypes, JvComponentBase;
 
 const
