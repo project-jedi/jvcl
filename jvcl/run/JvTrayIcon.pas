@@ -98,6 +98,7 @@ type
     FCurrentIcon: TIcon;
     FState: TJvTrayIconStates;
     FStreamedActive: Boolean;
+    FOnQueryEndSession: TNotifyEvent;
 
     function GetApplicationVisible: Boolean;
     procedure SetApplicationVisible(const Value: Boolean);
@@ -181,6 +182,7 @@ type
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoDoubleClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure doOnQueryEndSession;
     function ApplicationHook(var Msg: TMessage): Boolean;
     function NotifyIcon(uFlags: UINT; dwMessage: DWORD): Boolean;
     procedure SetCurrentIcon(Value: TIcon); //HEG: New
@@ -235,6 +237,7 @@ type
     property OnBalloonHide: TNotifyEvent read FOnBalloonHide write FOnBalloonHide;
     property OnBalloonClick: TNotifyEvent read FOnBalloonClick write FOnBalloonClick;
     property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
+    property OnQueryEndSession: TNotifyEvent read FOnQueryEndSession write FOnQueryEndSession;
   end;
 
 procedure RefreshTray;
@@ -821,6 +824,12 @@ begin
     FOnMouseUp(Self, Button, Shift, X, Y);
   if (Button = mbRight) and (GetShellVersion < Shell32VersionIE5) then
     DoContextPopup(X, Y);
+end;
+
+procedure TJvTrayIcon.doOnQueryEndSession;
+begin
+  if Assigned(FOnQueryEndSession) then
+    FOnQueryEndSession(Self);
 end;
 
 procedure TJvTrayIcon.DoTimerDblClick;
@@ -1478,14 +1487,17 @@ begin
                 end;
             end;
           end;
-        {$IFNDEF DELPHI2009_UP}
-        // Add by Winston Feng 2003-9-28
-        // Handle the QueryEndSession and TaskbarCreated message, so trayicon
-        // will be deleted and restored correctly.
-        // For D2009 and upper, we must let the default window proc handle it.
         WM_QUERYENDSESSION:
-          Result := 1;
-        {$ENDIF ~DELPHI2009_UP}
+          begin
+            doOnQueryEndSession;
+            // Add by Winston Feng 2003-9-28
+            // Handle the QueryEndSession and TaskbarCreated message, so trayicon
+            // will be deleted and restored correctly.
+            // For D2009 and above, we must let the default window proc handle it.
+            {$IFNDEF DELPHI2009_UP}
+            Result := 1;
+            {$ENDIF ~DELPHI2009_UP}
+          end;
         WM_ENDSESSION:
           // (rb) Is it really necessairy to respond to WM_ENDSESSION?
           if TWMEndSession(Mesg).EndSession then
