@@ -255,6 +255,7 @@ type
     FPostOnEnterKey: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
+    FTitleArrowDown: Boolean;
     FTitlePopup: TPopupMenu;
     FOnShowTitleHint: TJvTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
@@ -2409,6 +2410,10 @@ begin
       LastCell.X := Col;
       LastCell.Y := Row;
 
+      if (Button = mbLeft) and FTitleArrow and (Cell.X = 0) and (Cell.Y = 0) and
+         (dgTitles in Options) and (dgIndicator in Options) then
+        FTitleArrowDown := True;
+
       if (Button = mbRight) and
         (dgTitles in Options) and (dgIndicator in Options) and
         (Cell.Y = 0) then
@@ -2671,10 +2676,13 @@ begin
     FGridState := gsNormal;
   end;
 
-  if FTitleArrow and (Button = mbLeft) and
-    (dgTitles in Options) and (dgIndicator in Options) and
-    (Cell.X = 0) and (Cell.Y = 0) and (Columns.Count > 0) then
-    ShowSelectColumnClick; // Selection of columns
+  if FTitleArrowDown and (Button = mbLeft) then
+  begin
+    FTitleArrowDown := False;
+    if FTitleArrow and (dgTitles in Options) and (dgIndicator in Options) and
+       (Cell.X = 0) and (Cell.Y = 0) and (Columns.Count > 0) then
+      ShowSelectColumnClick; // Selection of columns
+  end;
 
   if (Button = mbLeft) and (FGridState = gsColSizing) then
   begin
