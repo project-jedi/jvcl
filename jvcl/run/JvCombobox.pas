@@ -301,6 +301,7 @@ type
     procedure AdjustSize; override;
     procedure CreatePopup; override;
     procedure Change; override;
+    function AcceptPopup(var Value: Variant): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -603,6 +604,11 @@ begin
   FPopup.Free;
   FPopup := nil;
   inherited Destroy;
+end;
+
+function TJvCustomCheckedComboBox.AcceptPopup(var Value: Variant): Boolean;
+begin
+  Result := False;
 end;
 
 procedure TJvCustomCheckedComboBox.AdjustHeight;
