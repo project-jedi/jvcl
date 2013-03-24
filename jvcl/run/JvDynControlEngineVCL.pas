@@ -40,7 +40,7 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  JvDynControlEngine, JvDynControlEngineIntf;
+  JvDynControlEngine, JvDynControlEngineIntf, Grids;
 
 type
   TJvDynControlEngineVCL = class(TJvDynControlEngine)
@@ -828,6 +828,44 @@ type
     function GetControlDefaultColor: TColor; stdcall;
     procedure SetControlDefaultColor(const Value: TColor); stdcall;
   end;
+
+  TJvDynControlVCLStringGrid = class(TStringGrid, IUnknown, IJvDynControl, IJvDynControlStringGrid)
+  public
+    procedure ControlSetAnchors(Value: TAnchors);
+    // IJvDynControl
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetTabOrder(Value: Integer);
+    // IJvDynControlStringGrid
+    function GetControlCells(ACol, ARow: Integer): string;
+    function GetControlCol: Integer;
+    function GetControlColCount: Integer; stdcall;
+    function GetControlColWidths(Index: Integer): Integer;
+    function GetControlFixedCols: Integer;
+    function GetControlFixedRows: Integer;
+    function GetControlObjects(ACol, ARow: Integer): TObject;
+    function GetControlOptions: TGridOptions;
+    function GetControlRow: Integer;
+    function GetControlRowCount: Integer; stdcall;
+    function GetControlRowHeights(Index: Integer): Integer;
+    procedure SetControlCells(ACol, ARow: Integer; const Value: string);
+    procedure SetControlCol(const Value: Integer);
+    procedure SetControlColCount(const Value: Integer);
+    procedure SetControlColWidths(Index: Integer; const Value: Integer);
+    procedure SetControlFixedCols(const Value: Integer);
+    procedure SetControlFixedRows(const Value: Integer);
+    procedure SetControlObjects(ACol, ARow: Integer; Value: TObject);
+    procedure SetControlOptions(const Value: TGridOptions);
+    procedure SetControlRow(const Value: Integer);
+    procedure SetControlRowCount(const Value: Integer); stdcall;
+    procedure SetControlRowHeights(Index: Integer; const Value: Integer);
+  end;
+
+
 
 function DynControlEngineVCL: TJvDynControlEngine;
 procedure SetDynControlEngineVCLDefault;
@@ -3478,6 +3516,155 @@ begin
   DefaultColorColor := Value;
 end;
 
+
+procedure TJvDynControlVCLStringGrid.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetOnChange(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlCells(ACol, ARow: Integer): string;
+begin
+  Result := Cells[ACol, ARow];
+end;
+
+function TJvDynControlVCLStringGrid.GetControlCol: Integer;
+begin
+  Result := Col;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlColCount: Integer;
+begin
+  Result := ColCount;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlColWidths(Index: Integer): Integer;
+begin
+  Result := ColWidths[Index];
+end;
+
+function TJvDynControlVCLStringGrid.GetControlFixedCols: Integer;
+begin
+  Result := FixedCols;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlFixedRows: Integer;
+begin
+  Result := FixedRows;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlObjects(ACol, ARow: Integer): TObject;
+begin
+  Result := Objects[ACol, ARow];
+end;
+
+function TJvDynControlVCLStringGrid.GetControlOptions: TGridOptions;
+begin
+  Result := Options;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlRow: Integer;
+begin
+  Result := Row;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlRowCount: Integer;
+begin
+  Result := RowCount;
+end;
+
+function TJvDynControlVCLStringGrid.GetControlRowHeights(Index: Integer): Integer;
+begin
+  Result := RowHeights[Index];
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlCells(ACol, ARow: Integer; const Value: string);
+begin
+  Cells[ACol, ARow] := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlCol(const Value: Integer);
+begin
+  Col := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlColCount(const Value: Integer);
+begin
+  ColCount := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlColWidths(Index: Integer; const Value: Integer);
+begin
+  ColWidths[Index] := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlFixedCols(const Value: Integer);
+begin
+  FixedCols := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlFixedRows(const Value: Integer);
+begin
+  FixedRows := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlObjects(ACol, ARow: Integer; Value: TObject);
+begin
+  Objects[ACol, ARow] := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlOptions(const Value: TGridOptions);
+begin
+  Options := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlRow(const Value: Integer);
+begin
+  Row := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlRowCount(const Value: Integer);
+begin
+  RowCount := Value;
+end;
+
+procedure TJvDynControlVCLStringGrid.SetControlRowHeights(Index: Integer; const Value: Integer);
+begin
+  RowHeights [Index] := Value;
+end;
+
 //=== { TJvDynControlEngineVCL } =============================================
 
 procedure SetDynControlEngineVCLDefault;
@@ -3523,7 +3710,9 @@ begin
   {$IFDEF DELPHI7_UP}
   RegisterControlType(jctColorComboBox, TJvDynControlVCLColorComboBox);
   {$ENDIF}
+  RegisterControlType(jctStringGrid, TJvDynControlVCLStringGrid);
 end;
+
 
 
 initialization

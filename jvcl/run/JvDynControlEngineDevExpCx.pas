@@ -33,7 +33,7 @@ interface
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning, JvDynControlEngineIntf, Graphics, ComCtrls, Classes,
-  JvInspector, ExtCtrls;
+  ExtCtrls, Grids;
 {$ENDIF UNITVERSIONING}
 
 {$ELSE}
@@ -3992,68 +3992,6 @@ begin
 end;
 
 
-//=== { TJvDynControlEngineDevExpCx } ========================================
-
-constructor TJvDynControlEngineDevExpCx.Create;
-begin
-  inherited Create;
-  FCxProperties := TCxDynControlWrapper.Create;
-end;
-
-destructor TJvDynControlEngineDevExpCx.Destroy;
-begin
-  FreeAndNil(FCxProperties);
-  inherited Destroy;
-end;
-
-procedure TJvDynControlEngineDevExpCx.SetcxProperties(Value: TCxDynControlWrapper);
-begin
-  if Value is TCxDynControlWrapper then
-  begin
-    FCxProperties.LookAndFeel := Value.LookAndFeel;
-    FCxProperties.StyleController := Value.StyleController;
-  end;
-end;
-
-procedure TJvDynControlEngineDevExpCx.RegisterControls;
-begin
-  RegisterControlType(jctLabel, TJvDynControlCxLabel);
-  RegisterControlType(jctStaticText, TJvDynControlCxStaticText);
-  RegisterControlType(jctButton, TJvDynControlCxButton);
-  RegisterControlType(jctRadioButton, TJvDynControlCxRadioButton);
-  RegisterControlType(jctScrollBox, TJvDynControlCxScrollBox);
-  RegisterControlType(jctGroupBox, TJvDynControlCxGroupBox);
-  RegisterControlType(jctPanel, TJvDynControlCxPanel);
-  RegisterControlType(jctImage, TJvDynControlCxImage);
-  RegisterControlType(jctCheckBox, TJvDynControlCxCheckBox);
-  RegisterControlType(jctComboBox, TJvDynControlCxComboBox);
-  RegisterControlType(jctListBox, TJvDynControlCxListBox);
-  RegisterControlType(jctCheckListBox, TJvDynControlCxCheckListBox);
-  RegisterControlType(jctCheckComboBox, TJvDynControlCxCheckComboBox);
-  RegisterControlType(jctRadioGroup, TJvDynControlCxRadioGroup);
-  RegisterControlType(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
-  RegisterControlType(jctTimeEdit, TJvDynControlCxTimeEdit);
-  RegisterControlType(jctDateEdit, TJvDynControlCxDateEdit);
-  RegisterControlType(jctEdit, TJvDynControlCxMaskEdit);
-  RegisterControlType(jctCalculateEdit, TJvDynControlCxCalcEdit);
-  RegisterControlType(jctSpinEdit, TJvDynControlCxSpinEdit);
-  RegisterControlType(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
-  RegisterControlType(jctFileNameEdit, TJvDynControlCxFileNameEdit);
-  RegisterControlType(jctMemo, TJvDynControlCxMemo);
-  RegisterControlType(jctRichEdit, TJvDynControlCxRichEdit);
-  RegisterControlType(jctButtonEdit, TJvDynControlCxButtonEdit);
-  RegisterControlType(jctTreeVIew, TJvDynControlCxTreeView);
-  RegisterControlType(jctProgressbar, TJvDynControlCxProgressbar);
-  RegisterControlType(jctTabControl, TJvDynControlCxTabControl);
-  RegisterControlType(jctPageControl, TJvDynControlCxPageControl);
-  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
-  RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
-  {$ELSE}
-  //RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
-  {$ENDIF}
-  RegisterControlType(jctColorComboBox, TJvDynControlCxColorComboBox);
-end;
-
 function TJvDynControlEngineDevExpCx.CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
   Control: TControl;
@@ -4489,6 +4427,70 @@ end;
 procedure TJvDynControlCxCheckComboBox.ControlSetDelimiter(Value: string);
 begin
   Properties.Delimiter:= Value;
+end;
+
+
+//=== { TJvDynControlEngineDevExpCx } ========================================
+
+constructor TJvDynControlEngineDevExpCx.Create;
+begin
+  inherited Create;
+  FCxProperties := TCxDynControlWrapper.Create;
+end;
+
+destructor TJvDynControlEngineDevExpCx.Destroy;
+begin
+  FreeAndNil(FCxProperties);
+  inherited Destroy;
+end;
+
+procedure TJvDynControlEngineDevExpCx.SetcxProperties(Value: TCxDynControlWrapper);
+begin
+  if Value is TCxDynControlWrapper then
+  begin
+    FCxProperties.LookAndFeel := Value.LookAndFeel;
+    FCxProperties.StyleController := Value.StyleController;
+  end;
+end;
+
+procedure TJvDynControlEngineDevExpCx.RegisterControls;
+begin
+  RegisterControlType(jctLabel, TJvDynControlCxLabel);
+  RegisterControlType(jctStaticText, TJvDynControlCxStaticText);
+  RegisterControlType(jctButton, TJvDynControlCxButton);
+  RegisterControlType(jctRadioButton, TJvDynControlCxRadioButton);
+  RegisterControlType(jctScrollBox, TJvDynControlCxScrollBox);
+  RegisterControlType(jctGroupBox, TJvDynControlCxGroupBox);
+  RegisterControlType(jctPanel, TJvDynControlCxPanel);
+  RegisterControlType(jctImage, TJvDynControlCxImage);
+  RegisterControlType(jctCheckBox, TJvDynControlCxCheckBox);
+  RegisterControlType(jctComboBox, TJvDynControlCxComboBox);
+  RegisterControlType(jctListBox, TJvDynControlCxListBox);
+  RegisterControlType(jctCheckListBox, TJvDynControlCxCheckListBox);
+  RegisterControlType(jctCheckComboBox, TJvDynControlCxCheckComboBox);
+  RegisterControlType(jctRadioGroup, TJvDynControlCxRadioGroup);
+  RegisterControlType(jctDateTimeEdit, TJvDynControlCxDateTimeEdit);
+  RegisterControlType(jctTimeEdit, TJvDynControlCxTimeEdit);
+  RegisterControlType(jctDateEdit, TJvDynControlCxDateEdit);
+  RegisterControlType(jctEdit, TJvDynControlCxMaskEdit);
+  RegisterControlType(jctCalculateEdit, TJvDynControlCxCalcEdit);
+  RegisterControlType(jctSpinEdit, TJvDynControlCxSpinEdit);
+  RegisterControlType(jctDirectoryEdit, TJvDynControlCxDirectoryEdit);
+  RegisterControlType(jctFileNameEdit, TJvDynControlCxFileNameEdit);
+  RegisterControlType(jctMemo, TJvDynControlCxMemo);
+  RegisterControlType(jctRichEdit, TJvDynControlCxRichEdit);
+  RegisterControlType(jctButtonEdit, TJvDynControlCxButtonEdit);
+  RegisterControlType(jctTreeVIew, TJvDynControlCxTreeView);
+  RegisterControlType(jctProgressbar, TJvDynControlCxProgressbar);
+  RegisterControlType(jctTabControl, TJvDynControlCxTabControl);
+  RegisterControlType(jctPageControl, TJvDynControlCxPageControl);
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
+  RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
+  {$ELSE}
+  //RegisterControlType(jctRTTIInspector, TJvDynControlCxRTTIInspectorControl);
+  {$ENDIF}
+  RegisterControlType(jctColorComboBox, TJvDynControlCxColorComboBox);
+  RegisterControlType(jctStringGrid, TJvDynControlVCLStringGrid);
 end;
 
 

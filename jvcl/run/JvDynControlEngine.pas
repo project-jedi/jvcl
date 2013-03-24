@@ -71,6 +71,7 @@ const
   jctTabControl = TJvDynControlType('Tabcontrol');
   jctRTTIInspector = TJvDynControlType('RTTIInspector');
   jctColorComboBox = TJvDynControlType('ColorComboBox');
+  jctStringGrid = TJvDynControlType('StringGrid');
 
 type
   TControlClass = class of TControl;
@@ -132,86 +133,86 @@ type
   private
     FDistanceBetweenLabelAndControlHorz: Integer;
     FDistanceBetweenLabelAndControlVert: Integer;
-  protected
   public
     constructor Create; override;
-    function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
-        const AControlName, ACaption: string; AFocusControl: TWinControl = nil):
-        TControl; virtual;
-    function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string): TWinControl; virtual;
-    function CreatePanelControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string; AAlign: TAlign): TWinControl; virtual;
-    function CreateScrollBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateEditControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string): TWinControl; virtual;
-    function CreateComboBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; AItems: TStrings): TWinControl; virtual;
-    function CreateGroupBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string): TWinControl; virtual;
-    function CreateImageControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateRadioGroupControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string; AItems: TStrings;
-      AItemIndex: Integer = 0): TWinControl; virtual;
-    function CreateMemoControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateRichEditControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; AItems: TStrings): TWinControl; virtual;
-    function CreateCheckListBoxControl(AOwner: TComponent; AParentControl: TWinControl; const AControlName: string; AItems:
-        TStrings): TWinControl; virtual;
-    function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateCalculateControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateSpinControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string): TWinControl; virtual;
-    function CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; APages : TStrings): TWinControl; virtual;
-    function CreateTabControlControl(AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName: string; ATabs : TStrings): TWinControl; virtual;
     function CreateButton(AOwner: TComponent; AParentControl: TWinControl;
       const AButtonName, ACaption, AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
       ACancel: Boolean = False): TButton; virtual;
-    function CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
-      const ARadioButtonName, ACaption: string): TWinControl; virtual;
     function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
+    function CreateCalculateControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateCheckboxControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string): TWinControl; virtual;
     function CreateCheckComboBoxControl(AOwner: TComponent; AParentControl: TWinControl; const AControlName: string;
         AItems: TStrings; ADelimiter: string): TWinControl; virtual;
+    function CreateCheckListBoxControl(AOwner: TComponent; AParentControl: TWinControl; const AControlName: string; AItems:
+        TStrings): TWinControl; virtual;
     function CreateColorComboboxControl(AOwner: TComponent; AParentControl:
         TWinControl; const AControlName: string; ADefaultColor: TColor):
         TWinControl; virtual;
+    function CreateComboBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; AItems: TStrings): TWinControl; virtual;
+    function CreateDateControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateDateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateDirectoryControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateEditControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateFileNameControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
     function CreateForm(const ACaption, AHint: string): TCustomForm; virtual;
-
+    function CreateGroupBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string): TWinControl; virtual;
+    function CreateImageControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
+        const AControlName, ACaption: string; AFocusControl: TWinControl = nil):
+        TControl; virtual;
     function CreateLabelControlPanel(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl;
       ALabelOnTop: Boolean = True; ALabelDefaultWidth: Integer = 0): TWinControl; virtual;
+    function CreateListBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; AItems: TStrings): TWinControl; virtual;
+    function CreateMemoControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; APages : TStrings): TWinControl; virtual;
+    function CreatePanelControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string; AAlign: TAlign): TWinControl; virtual;
     function CreateProgressbarControl(AOwner: TComponent; AParentControl:
         TWinControl; const AControlName: string; AMin: Integer = 0; AMax: Integer =
         100; AStep: Integer = 1): TWinControl; virtual;
+    function CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
+      const ARadioButtonName, ACaption: string): TWinControl; virtual;
+    function CreateRadioGroupControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string; AItems: TStrings;
+      AItemIndex: Integer = 0): TWinControl; virtual;
+    function CreateRichEditControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
     function CreateRTTIInspectorControl(AOwner: TComponent; AParentControl:
         TWinControl; const AControlName: string; AOnDisplayProperty:
         TJvDynControlInspectorControlOnDisplayPropertyEvent;
         AOnTranslatePropertyName:
         TJvDynControlInspectorControlOnTranslatePropertyNameEvent): TWinControl;
         virtual;
+    function CreateScrollBoxControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateSpinControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateStaticTextControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName, ACaption: string): TWinControl; virtual;
+    function CreateStringGridControl(AOwner: TComponent; AParentControl: TWinControl; const AControlName: string;
+        AColCount, ARowCount: Integer; AFixedCols: Integer = 1; AFixedRows: Integer = 1): TWinControl; virtual;
+    function CreateTabControlControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string; ATabs : TStrings): TWinControl; virtual;
+    function CreateTimeControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
+    function CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
+      const AControlName: string): TWinControl; virtual;
   published
     property DistanceBetweenLabelAndControlHorz: Integer read FDistanceBetweenLabelAndControlHorz write FDistanceBetweenLabelAndControlHorz default 4;
     property DistanceBetweenLabelAndControlVert: Integer read FDistanceBetweenLabelAndControlVert write FDistanceBetweenLabelAndControlVert default 1;
@@ -592,238 +593,6 @@ begin
   FDistanceBetweenLabelAndControlVert := 1;
 end;
 
-function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
-    AParentControl: TWinControl; const AControlName, ACaption: string;
-    AFocusControl: TWinControl = nil): TControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-  DynCtrlLabel: IJvDynControlLabel;
-begin
-  Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-  IntfCast(Result, IJvDynControlLabel, DynCtrlLabel);
-  if Assigned(AFocusControl) then
-    DynCtrlLabel.ControlSetFocusControl(AFocusControl);
-end;
-
-function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-begin
-  Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-end;
-
-function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName, ACaption: string;
-  AAlign: TAlign): TWinControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-begin
-  Result := TWinControl(CreateControl(jctPanel, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-  Result.Align := AAlign;
-end;
-
-function TJvDynControlEngine.CreateScrollBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctScrollBox, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateEditControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-var
-  DynCtrlEdit: IJvDynControlEdit;
-begin
-  Result := TWinControl(CreateControl(jctEdit, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlEdit, DynCtrlEdit);
-end;
-
-function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-  DynCtrlFont: IJvDynControlFont;
-begin
-  Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
-    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'XXXXXX');
-end;
-
-function TJvDynControlEngine.CreateComboBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
-var
-  DynCtrlItems: IJvDynControlItems;
-begin
-  Result := TWinControl(CreateControl(jctComboBox, AOwner, AParentControl, AControlName));
-  if Assigned(AItems) then
-  begin
-    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-    DynCtrlItems.ControlSetItems(AItems);
-  end;
-end;
-
-function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-begin
-  Result := TWinControl(CreateControl(jctGroupBox, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-end;
-
-function TJvDynControlEngine.CreateImageControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctImage, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateRadioGroupControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName, ACaption: string;
-  AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-  DynCtrlItems: IJvDynControlItems;
-  DynCtrlData: IJvDynControlData;
-begin
-  Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-  IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-  DynCtrlItems.ControlSetItems(AItems);
-  IntfCast(Result, IJvDynControlData, DynCtrlData);
-  DynCtrlData.ControlValue := AItemIndex;
-end;
-
-function TJvDynControlEngine.CreateMemoControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-var
-  DynCtrlData: IJvDynControlData;
-begin
-  Result := TWinControl(CreateControl(jctMemo, AOwner, AParentControl, AControlName));
-  IntfCast(Result, IJvDynControlData, DynCtrlData);
-  DynCtrlData.ControlValue := '';
-end;
-
-function TJvDynControlEngine.CreateRichEditControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctRichEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateListBoxControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
-var
-  DynCtrlItems: IJvDynControlItems;
-begin
-  Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
-  if Assigned(AItems) then
-  begin
-    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-    DynCtrlItems.ControlSetItems(AItems);
-  end;
-end;
-
-function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent; AParentControl: TWinControl; const
-    AControlName: string; AItems: TStrings): TWinControl;
-var
-  DynCtrlItems: IJvDynControlItems;
-begin
-  Result := TWinControl(CreateControl(jctCheckListBox, AOwner, AParentControl, AControlName));
-  if Assigned(AItems) then
-  begin
-    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
-    DynCtrlItems.ControlSetItems(AItems);
-  end;
-end;
-
-function TJvDynControlEngine.CreateDateTimeControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctDateTimeEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateDateControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctDateEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateTimeControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctTimeEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateCalculateControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctCalculateEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateSpinControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctSpinEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateDirectoryControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctDirectoryEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateFileNameControl(AOwner: TComponent;
-  AParentControl: TWinControl; const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctFileNameEdit, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
-  const AControlName: string): TWinControl;
-begin
-  Result := TWinControl(CreateControl(jctTreeView, AOwner, AParentControl, AControlName));
-end;
-
-function TJvDynControlEngine.CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl;
-  const AControlName: string;APages : TStrings): TWinControl;
-var
-  DynTabControl: IJvDynControlTabControl;
-  i: Integer;
-begin
-  Result := TWinControl(CreateControl(jctPageControl, AOwner, AParentControl, AControlName));
-  if Assigned(APages) and (APages.Count > 0) then
-  begin
-    IntfCast(Result, IJvDynControlTabControl, DynTabControl);
-    for i := 0 to APages.Count - 1 do
-      DynTabControl.ControlCreateTab(APages[i]);
-  end;
-end;
-
-function TJvDynControlEngine.CreateTabControlControl(AOwner: TComponent; AParentControl: TWinControl;
-  const AControlName: string;ATabs : TStrings): TWinControl;
-var
-  DynTabControl: IJvDynControlTabControl;
-  i: Integer;
-begin
-  Result := TWinControl(CreateControl(jctTabControl, AOwner, AParentControl, AControlName));
-  if Assigned(ATabs) and (ATabs.Count > 0) then
-  begin
-    IntfCast(Result, IJvDynControlTabControl, DynTabControl);
-    for i := 0 to ATabs.Count - 1 do
-      DynTabControl.ControlCreateTab(ATabs[i]);
-  end;
-end;
-
-
 function TJvDynControlEngine.CreateButton(AOwner: TComponent;
   AParentControl: TWinControl; const AButtonName, ACaption, AHint: string;
   AOnClick: TNotifyEvent; ADefault: Boolean = False; ACancel: Boolean = False): TButton;
@@ -837,16 +606,6 @@ begin
   Result.Width := GetControlTextWidth(Result, Result.Font, ACaption+'XXXX');
 end;
 
-function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
-  const ARadioButtonName, ACaption: string): TWinControl;
-var
-  DynCtrlCaption: IJvDynControlCaption;
-begin
-  Result := TWinControl(CreateControl(jctRadioButton, AOwner, AParentControl, ARadioButtonName));
-  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
-  DynCtrlCaption.ControlSetCaption(ACaption);
-end;
-
 function TJvDynControlEngine.CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
   const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl;
 var
@@ -855,6 +614,25 @@ begin
   Result := TWinControl(CreateControl(jctButtonEdit, AOwner, AParentControl, AControlName));
   IntfCast(Result, IJvDynControlButtonEdit, DynCtrlButtonEdit);
   DynCtrlButtonEdit.ControlSetOnButtonClick(AOnButtonClick);
+end;
+
+function TJvDynControlEngine.CreateCalculateControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctCalculateEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateCheckboxControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+  DynCtrlFont: IJvDynControlFont;
+begin
+  Result := TWinControl(CreateControl(jctCheckBox, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+  if Supports(Result, IJvDynControlFont,DynCtrlFont) then
+    Result.Width := GetControlTextWidth(Result, DynCtrlFont.ControlFont, ACaption+'XXXXXX');
 end;
 
 function TJvDynControlEngine.CreateCheckComboBoxControl(AOwner: TComponent; AParentControl: TWinControl; const
@@ -873,6 +651,19 @@ begin
   end;
 end;
 
+function TJvDynControlEngine.CreateCheckListBoxControl(AOwner: TComponent; AParentControl: TWinControl; const
+    AControlName: string; AItems: TStrings): TWinControl;
+var
+  DynCtrlItems: IJvDynControlItems;
+begin
+  Result := TWinControl(CreateControl(jctCheckListBox, AOwner, AParentControl, AControlName));
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+  end;
+end;
+
 function TJvDynControlEngine.CreateColorComboboxControl(AOwner: TComponent;
     AParentControl: TWinControl; const AControlName: string; ADefaultColor:
     TColor): TWinControl;
@@ -885,11 +676,88 @@ begin
   DynControlColorComboBoxControl.ControlSelectedColor := ADefaultColor;
 end;
 
+function TJvDynControlEngine.CreateComboBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
+var
+  DynCtrlItems: IJvDynControlItems;
+begin
+  Result := TWinControl(CreateControl(jctComboBox, AOwner, AParentControl, AControlName));
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+  end;
+end;
+
+function TJvDynControlEngine.CreateDateControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctDateEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateDateTimeControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctDateTimeEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateDirectoryControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctDirectoryEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateEditControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+var
+  DynCtrlEdit: IJvDynControlEdit;
+begin
+  Result := TWinControl(CreateControl(jctEdit, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlEdit, DynCtrlEdit);
+end;
+
+function TJvDynControlEngine.CreateFileNameControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctFileNameEdit, AOwner, AParentControl, AControlName));
+end;
+
 function TJvDynControlEngine.CreateForm(const ACaption, AHint: string): TCustomForm;
 begin
   Result := TCustomForm(CreateControl(jctForm, Application, nil, ''));
   Result.Caption := ACaption;
   Result.Hint := AHint;
+end;
+
+function TJvDynControlEngine.CreateGroupBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+begin
+  Result := TWinControl(CreateControl(jctGroupBox, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+end;
+
+function TJvDynControlEngine.CreateImageControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctImage, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
+    AParentControl: TWinControl; const AControlName, ACaption: string;
+    AFocusControl: TWinControl = nil): TControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+  DynCtrlLabel: IJvDynControlLabel;
+begin
+  Result := CreateControl(jctLabel, AOwner, AParentControl, AControlName);
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlLabel, DynCtrlLabel);
+  if Assigned(AFocusControl) then
+    DynCtrlLabel.ControlSetFocusControl(AFocusControl);
 end;
 
 function TJvDynControlEngine.CreateLabelControlPanel(AOwner: TComponent;
@@ -933,6 +801,56 @@ begin
   Result := Panel;
 end;
 
+function TJvDynControlEngine.CreateListBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string; AItems: TStrings): TWinControl;
+var
+  DynCtrlItems: IJvDynControlItems;
+begin
+  Result := TWinControl(CreateControl(jctListBox, AOwner, AParentControl, AControlName));
+  if Assigned(AItems) then
+  begin
+    IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+    DynCtrlItems.ControlSetItems(AItems);
+  end;
+end;
+
+function TJvDynControlEngine.CreateMemoControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+var
+  DynCtrlData: IJvDynControlData;
+begin
+  Result := TWinControl(CreateControl(jctMemo, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlData, DynCtrlData);
+  DynCtrlData.ControlValue := '';
+end;
+
+function TJvDynControlEngine.CreatePageControlControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string;APages : TStrings): TWinControl;
+var
+  DynTabControl: IJvDynControlTabControl;
+  i: Integer;
+begin
+  Result := TWinControl(CreateControl(jctPageControl, AOwner, AParentControl, AControlName));
+  if Assigned(APages) and (APages.Count > 0) then
+  begin
+    IntfCast(Result, IJvDynControlTabControl, DynTabControl);
+    for i := 0 to APages.Count - 1 do
+      DynTabControl.ControlCreateTab(APages[i]);
+  end;
+end;
+
+function TJvDynControlEngine.CreatePanelControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName, ACaption: string;
+  AAlign: TAlign): TWinControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+begin
+  Result := TWinControl(CreateControl(jctPanel, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+  Result.Align := AAlign;
+end;
+
 function TJvDynControlEngine.CreateProgressbarControl(AOwner: TComponent;
     AParentControl: TWinControl; const AControlName: string; AMin: Integer = 0;
     AMax: Integer = 100; AStep: Integer = 1): TWinControl;
@@ -944,6 +862,39 @@ begin
   JvDynCtrlProgresBar.ControlSetMin(AMin);
   JvDynCtrlProgresBar.ControlSetMax(AMax);
   JvDynCtrlProgresBar.ControlSetStep(AStep);
+end;
+
+function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
+  const ARadioButtonName, ACaption: string): TWinControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+begin
+  Result := TWinControl(CreateControl(jctRadioButton, AOwner, AParentControl, ARadioButtonName));
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+end;
+
+function TJvDynControlEngine.CreateRadioGroupControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName, ACaption: string;
+  AItems: TStrings; AItemIndex: Integer = 0): TWinControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+  DynCtrlItems: IJvDynControlItems;
+  DynCtrlData: IJvDynControlData;
+begin
+  Result := TWinControl(CreateControl(jctRadioGroup, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+  IntfCast(Result, IJvDynControlItems, DynCtrlItems);
+  DynCtrlItems.ControlSetItems(AItems);
+  IntfCast(Result, IJvDynControlData, DynCtrlData);
+  DynCtrlData.ControlValue := AItemIndex;
+end;
+
+function TJvDynControlEngine.CreateRichEditControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctRichEdit, AOwner, AParentControl, AControlName));
 end;
 
 function TJvDynControlEngine.CreateRTTIInspectorControl(AOwner: TComponent;
@@ -959,6 +910,68 @@ begin
   IntfCast(Result, IJvDynControlRTTIInspectorControl, RTTIInspectorControl);
   RTTIInspectorControl.ControlOnDisplayProperty := AOnDisplayProperty;
   RTTIInspectorControl.ControlOnTranslatePropertyName := AOnTranslatePropertyName;
+end;
+
+function TJvDynControlEngine.CreateScrollBoxControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctScrollBox, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateSpinControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctSpinEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateStaticTextControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName, ACaption: string): TWinControl;
+var
+  DynCtrlCaption: IJvDynControlCaption;
+begin
+  Result := TWinControl(CreateControl(jctStaticText, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlCaption, DynCtrlCaption);
+  DynCtrlCaption.ControlSetCaption(ACaption);
+end;
+
+function TJvDynControlEngine.CreateStringGridControl(AOwner: TComponent; AParentControl: TWinControl; const
+    AControlName: string; AColCount, ARowCount: Integer; AFixedCols: Integer = 1; AFixedRows: Integer = 1): TWinControl;
+var
+  DynCtrlStringGrid: IJvDynControlStringGrid;
+begin
+  Result := TWinControl(CreateControl(jctStringGrid, AOwner, AParentControl, AControlName));
+  IntfCast(Result, IJvDynControlStringGrid, DynCtrlStringGrid);
+  DynCtrlStringGrid.ControlColCount := AColCount;
+  DynCtrlStringGrid.ControlFixedCols:= AFixedCols;
+  DynCtrlStringGrid.ControlRowCount := ARowCount;
+  DynCtrlStringGrid.ControlFixedRows:= AFixedRows;
+end;
+
+function TJvDynControlEngine.CreateTabControlControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string;ATabs : TStrings): TWinControl;
+var
+  DynTabControl: IJvDynControlTabControl;
+  i: Integer;
+begin
+  Result := TWinControl(CreateControl(jctTabControl, AOwner, AParentControl, AControlName));
+  if Assigned(ATabs) and (ATabs.Count > 0) then
+  begin
+    IntfCast(Result, IJvDynControlTabControl, DynTabControl);
+    for i := 0 to ATabs.Count - 1 do
+      DynTabControl.ControlCreateTab(ATabs[i]);
+  end;
+end;
+
+function TJvDynControlEngine.CreateTimeControl(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctTimeEdit, AOwner, AParentControl, AControlName));
+end;
+
+function TJvDynControlEngine.CreateTreeViewControl(AOwner: TComponent; AParentControl: TWinControl;
+  const AControlName: string): TWinControl;
+begin
+  Result := TWinControl(CreateControl(jctTreeView, AOwner, AParentControl, AControlName));
 end;
 
 

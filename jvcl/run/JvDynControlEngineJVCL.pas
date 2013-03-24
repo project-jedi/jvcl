@@ -47,7 +47,7 @@ uses
   JvLabel, JvListBox, JvMemo, JvRichEdit, JvPanel, JvRadioGroup, JvToolEdit,
   JvScrollBox, JvStaticText, JvCombobox, JvImage, JvSpin, JvCheckListBox,
   JvDynControlEngine, JvDynControlEngineIntf, JvGroupBox, JvComCtrls,
-  JvProgressBar;
+  JvProgressBar, JvStringGrid, Grids;
 
 type
   TJvDynControlJVCLMaskEdit = class(TJvMaskEdit, IUnknown,
@@ -852,6 +852,42 @@ type
 
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetDelimiter(Value: string);
+  end;
+
+  TJvDynControlJVCLStringGrid = class(TJvStringGrid, IUnknown, IJvDynControl, IJvDynControlStringGrid)
+  public
+    procedure ControlSetAnchors(Value: TAnchors);
+    // IJvDynControl
+    procedure ControlSetDefaultProperties;
+    procedure ControlSetHint(const Value: string);
+    procedure ControlSetOnChange(Value: TNotifyEvent);
+    procedure ControlSetOnClick(Value: TNotifyEvent);
+    procedure ControlSetOnEnter(Value: TNotifyEvent);
+    procedure ControlSetOnExit(Value: TNotifyEvent);
+    procedure ControlSetTabOrder(Value: Integer);
+    // IJvDynControlStringGrid
+    function GetControlCells(ACol, ARow: Integer): string;
+    function GetControlCol: Integer;
+    function GetControlColCount: Integer; stdcall;
+    function GetControlColWidths(Index: Integer): Integer;
+    function GetControlFixedCols: Integer;
+    function GetControlFixedRows: Integer;
+    function GetControlObjects(ACol, ARow: Integer): TObject;
+    function GetControlOptions: TGridOptions;
+    function GetControlRow: Integer;
+    function GetControlRowCount: Integer; stdcall;
+    function GetControlRowHeights(Index: Integer): Integer;
+    procedure SetControlCells(ACol, ARow: Integer; const Value: string);
+    procedure SetControlCol(const Value: Integer);
+    procedure SetControlColCount(const Value: Integer);
+    procedure SetControlColWidths(Index: Integer; const Value: Integer);
+    procedure SetControlFixedCols(const Value: Integer);
+    procedure SetControlFixedRows(const Value: Integer);
+    procedure SetControlObjects(ACol, ARow: Integer; Value: TObject);
+    procedure SetControlOptions(const Value: TGridOptions);
+    procedure SetControlRow(const Value: Integer);
+    procedure SetControlRowCount(const Value: Integer); stdcall;
+    procedure SetControlRowHeights(Index: Integer; const Value: Integer);
   end;
 
 
@@ -3264,57 +3300,6 @@ begin
   Step := Value;
 end;
 
-//=== { TJvDynControlEngineJVCL } ============================================
-
-type
-  TJvDynControlEngineJVCL = class(TJvDynControlEngine)
-  public
-    procedure RegisterControls; override;
-  end;
-
-function DynControlEngineJVCL: TJvDynControlEngine;
-begin
-  Result := IntDynControlEngineJVCL;
-end;
-
-procedure SetDynControlEngineJVCLDefault;
-begin
-  SetDefaultDynControlEngine(IntDynControlEngineJVCL);
-end;
-
-procedure TJvDynControlEngineJVCL.RegisterControls;
-begin
-  RegisterControlType(jctLabel, TJvDynControlJVCLLabel);
-  RegisterControlType(jctStaticText, TJvDynControlJVCLStaticText);
-  RegisterControlType(jctButton, TJvDynControlJVCLButton);
-  RegisterControlType(jctRadioButton, TJvDynControlJVCLRadioButton);
-  RegisterControlType(jctScrollBox, TJvDynControlJVCLScrollBox);
-  RegisterControlType(jctGroupBox, TJvDynControlJVCLGroupBox);
-  RegisterControlType(jctPanel, TJvDynControlJVCLPanel);
-  RegisterControlType(jctImage, TJvDynControlVCLImage);
-  RegisterControlType(jctCheckBox, TJvDynControlJVCLCheckBox);
-  RegisterControlType(jctComboBox, TJvDynControlJVCLComboBox);
-  RegisterControlType(jctListBox, TJvDynControlJVCLListBox);
-  RegisterControlType(jctCheckListBox, TJvDynControlJVCLCheckListBox);
-  RegisterControlType(jctCheckComboBox, TJvDynControlJVCLCheckedComboBox);
-  RegisterControlType(jctRadioGroup, TJvDynControlJVCLRadioGroup);
-  RegisterControlType(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
-  RegisterControlType(jctTimeEdit, TJvDynControlJVCLTimeEdit);
-  RegisterControlType(jctDateEdit, TJvDynControlJVCLDateEdit);
-  RegisterControlType(jctEdit, TJvDynControlJVCLMaskEdit);
-  RegisterControlType(jctCalculateEdit, TJvDynControlJVCLCalcEdit);
-  RegisterControlType(jctSpinEdit, TJvDynControlJVCLSpinEdit);
-  RegisterControlType(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
-  RegisterControlType(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
-  RegisterControlType(jctMemo, TJvDynControlJVCLMemo);
-  RegisterControlType(jctRichEdit, TJvDynControlJVCLRichEdit);
-  RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
-  RegisterControlType(jctTreeView, TJvDynControlJVCLTreeView);
-  RegisterControlType(jctProgressbar, TJvDynControlJVCLProgressbar);
-  RegisterControlType(jctTabControl, TJvDynControlJVCLTabControl);
-  RegisterControlType(jctPageControl, TJvDynControlJVCLPageControl);
-  RegisterControlType(jctColorComboBox, TJvDynControlVCLColorComboBox);
-end;
 
 procedure TJvDynControlJVCLTabControl.ControlCreateTab(const AName: string);
 begin
@@ -3576,6 +3561,209 @@ begin
     Delimiter:= Value[1]
   else
     Delimiter := chr(0);
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetAnchors(Value: TAnchors);
+begin
+  Anchors := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetDefaultProperties;
+begin
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetHint(const Value: string);
+begin
+  Hint := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetOnChange(Value: TNotifyEvent);
+begin
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetOnClick(Value: TNotifyEvent);
+begin
+  OnClick := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetOnEnter(Value: TNotifyEvent);
+begin
+  OnEnter := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetOnExit(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.ControlSetTabOrder(Value: Integer);
+begin
+  TabOrder := Value;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlCells(ACol, ARow: Integer): string;
+begin
+  Result := Cells[ACol, ARow];
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlCol: Integer;
+begin
+  Result := Col;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlColCount: Integer;
+begin
+  Result := ColCount;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlColWidths(Index: Integer): Integer;
+begin
+  Result := ColWidths[Index];
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlFixedCols: Integer;
+begin
+  Result := FixedCols;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlFixedRows: Integer;
+begin
+  Result := FixedRows;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlObjects(ACol, ARow: Integer): TObject;
+begin
+  Result := Objects[ACol, ARow];
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlOptions: TGridOptions;
+begin
+  Result := Options;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlRow: Integer;
+begin
+  Result := Row;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlRowCount: Integer;
+begin
+  Result := RowCount;
+end;
+
+function TJvDynControlJVCLStringGrid.GetControlRowHeights(Index: Integer): Integer;
+begin
+  Result := RowHeights[Index];
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlCells(ACol, ARow: Integer; const Value: string);
+begin
+  Cells[ACol, ARow] := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlCol(const Value: Integer);
+begin
+  Col := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlColCount(const Value: Integer);
+begin
+  ColCount := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlColWidths(Index: Integer; const Value: Integer);
+begin
+  ColWidths[Index] := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlFixedCols(const Value: Integer);
+begin
+  FixedCols := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlFixedRows(const Value: Integer);
+begin
+  FixedRows := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlObjects(ACol, ARow: Integer; Value: TObject);
+begin
+  Objects[ACol, ARow] := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlOptions(const Value: TGridOptions);
+begin
+  Options := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlRow(const Value: Integer);
+begin
+  Row := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlRowCount(const Value: Integer);
+begin
+  RowCount := Value;
+end;
+
+procedure TJvDynControlJVCLStringGrid.SetControlRowHeights(Index: Integer; const Value: Integer);
+begin
+  RowHeights [Index] := Value;
+end;
+
+//=== { TJvDynControlEngineJVCL } ============================================
+
+type
+  TJvDynControlEngineJVCL = class(TJvDynControlEngine)
+  public
+    procedure RegisterControls; override;
+  end;
+
+function DynControlEngineJVCL: TJvDynControlEngine;
+begin
+  Result := IntDynControlEngineJVCL;
+end;
+
+procedure SetDynControlEngineJVCLDefault;
+begin
+  SetDefaultDynControlEngine(IntDynControlEngineJVCL);
+end;
+
+procedure TJvDynControlEngineJVCL.RegisterControls;
+begin
+  RegisterControlType(jctLabel, TJvDynControlJVCLLabel);
+  RegisterControlType(jctStaticText, TJvDynControlJVCLStaticText);
+  RegisterControlType(jctButton, TJvDynControlJVCLButton);
+  RegisterControlType(jctRadioButton, TJvDynControlJVCLRadioButton);
+  RegisterControlType(jctScrollBox, TJvDynControlJVCLScrollBox);
+  RegisterControlType(jctGroupBox, TJvDynControlJVCLGroupBox);
+  RegisterControlType(jctPanel, TJvDynControlJVCLPanel);
+  RegisterControlType(jctImage, TJvDynControlVCLImage);
+  RegisterControlType(jctCheckBox, TJvDynControlJVCLCheckBox);
+  RegisterControlType(jctComboBox, TJvDynControlJVCLComboBox);
+  RegisterControlType(jctListBox, TJvDynControlJVCLListBox);
+  RegisterControlType(jctCheckListBox, TJvDynControlJVCLCheckListBox);
+  RegisterControlType(jctCheckComboBox, TJvDynControlJVCLCheckedComboBox);
+  RegisterControlType(jctRadioGroup, TJvDynControlJVCLRadioGroup);
+  RegisterControlType(jctDateTimeEdit, TJvDynControlJVCLDateTimeEdit);
+  RegisterControlType(jctTimeEdit, TJvDynControlJVCLTimeEdit);
+  RegisterControlType(jctDateEdit, TJvDynControlJVCLDateEdit);
+  RegisterControlType(jctEdit, TJvDynControlJVCLMaskEdit);
+  RegisterControlType(jctCalculateEdit, TJvDynControlJVCLCalcEdit);
+  RegisterControlType(jctSpinEdit, TJvDynControlJVCLSpinEdit);
+  RegisterControlType(jctDirectoryEdit, TJvDynControlJVCLDirectoryEdit);
+  RegisterControlType(jctFileNameEdit, TJvDynControlJVCLFileNameEdit);
+  RegisterControlType(jctMemo, TJvDynControlJVCLMemo);
+  RegisterControlType(jctRichEdit, TJvDynControlJVCLRichEdit);
+  RegisterControlType(jctButtonEdit, TJvDynControlJVCLButtonEdit);
+  RegisterControlType(jctTreeView, TJvDynControlJVCLTreeView);
+  RegisterControlType(jctProgressbar, TJvDynControlJVCLProgressbar);
+  RegisterControlType(jctTabControl, TJvDynControlJVCLTabControl);
+  RegisterControlType(jctPageControl, TJvDynControlJVCLPageControl);
+  {$IFDEF DELPHI7_UP}
+  RegisterControlType(jctColorComboBox, TJvDynControlVCLColorComboBox);
+  {$ENDIF}
+  RegisterControlType(jctStringGrid, TJvDynControlJVCLStringGrid);
 end;
 
 initialization

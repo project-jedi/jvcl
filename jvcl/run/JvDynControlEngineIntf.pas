@@ -37,7 +37,7 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  FileCtrl, SysUtils;
+  FileCtrl, SysUtils, Grids;
 
 type
   IJvDynControl = interface
@@ -407,6 +407,43 @@ type
     property ControlOnMouseLeave : TNotifyEvent read ControlGetOnMouseLeave write ControlSetOnMouseLeave;
     property ControlOnMousePress: TMouseMoveEvent read ControlGetOnMouseMove write ControlSetOnMouseMove;
     property ControlOnMouseUp: TMouseEvent read ControlGetOnMouseUp write ControlSetOnMouseUp;
+  end;
+
+  IJvDynControlStringGrid= interface
+    ['{83E40A5E-BD52-49F1-8DBC-E960CC1238C3}']
+    function GetControlCells(ACol, ARow: Integer): string;
+    function GetControlCol: Integer;
+    function GetControlColCount: Integer; stdcall;
+    function GetControlColWidths(Index: Integer): Integer;
+    function GetControlFixedCols: Integer;
+    function GetControlFixedRows: Integer;
+    function GetControlObjects(ACol, ARow: Integer): TObject;
+    function GetControlOptions: TGridOptions;
+    function GetControlRow: Integer;
+    function GetControlRowCount: Integer; stdcall;
+    function GetControlRowHeights(Index: Integer): Integer;
+    procedure SetControlCells(ACol, ARow: Integer; const Value: string);
+    procedure SetControlCol(const Value: Integer);
+    procedure SetControlColCount(const Value: Integer);
+    procedure SetControlColWidths(Index: Integer; const Value: Integer);
+    procedure SetControlFixedCols(const Value: Integer);
+    procedure SetControlFixedRows(const Value: Integer);
+    procedure SetControlObjects(ACol, ARow: Integer; Value: TObject);
+    procedure SetControlOptions(const Value: TGridOptions);
+    procedure SetControlRow(const Value: Integer);
+    procedure SetControlRowCount(const Value: Integer); stdcall;
+    procedure SetControlRowHeights(Index: Integer; const Value: Integer);
+    property ControlCells[ACol, ARow: Integer]: string read GetControlCells write SetControlCells;
+    property ControlCol: Integer read GetControlCol write SetControlCol;
+    property ControlColCount: Integer read GetControlColCount write SetControlColCount;
+    property ControlColWidths[Index: Integer]: Integer read GetControlColWidths write SetControlColWidths;
+    property ControlFixedCols: Integer read GetControlFixedCols write SetControlFixedCols;
+    property ControlFixedRows: Integer read GetControlFixedRows write SetControlFixedRows;
+    property ControlObjects[ACol, ARow: Integer]: TObject read GetControlObjects write SetControlObjects;
+    property ControlOptions: TGridOptions read GetControlOptions write SetControlOptions;
+    property ControlRow: Integer read GetControlRow write SetControlRow;
+    property ControlRowCount: Integer read GetControlRowCount write SetControlRowCount;
+    property ControlRowHeights[Index: Integer]: Integer read GetControlRowHeights write SetControlRowHeights;
   end;
 
 {$IFDEF UNITVERSIONING}
