@@ -58,7 +58,7 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  JvItemsSearchs, JvDataProvider, JvDataProviderIntf, JvExStdCtrls;
+  JvDataProvider, JvDataProviderIntf, JvExStdCtrls;
 
 type
   TJvListboxFillMode = (bfmTile, bfmStretch);
@@ -409,7 +409,7 @@ uses
   Types,
   {$ENDIF COMPILER10_UP}
   RTLConsts,
-  JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
+  JvItemsSearchs, JvJCLUtils, JvJVCLUtils, JvConsts, JvResources;
 
 const
   AlignFlags: array [TAlignment] of DWORD = (DT_LEFT, DT_RIGHT, DT_CENTER);
