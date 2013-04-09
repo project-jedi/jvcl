@@ -166,6 +166,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    //1 Sets a xml property for a given path
+    procedure DoSetXMLProperty(const Path, Name, Value : string); override;
   published
     property StorageOptions: TJvAppXMLStorageOptions read GetStorageOptions write SetStorageOptions;
   end;
@@ -959,6 +961,18 @@ end;
 function TJvCustomAppXMLStorage.DefaultExtension: string;
 begin
   Result := 'xml';
+end;
+
+procedure TJvCustomAppXMLStorage.DoSetXMLProperty(const Path, Name, Value : string);
+var
+  ANode: TJvSimpleXmlElem;
+begin
+  ReloadIfNeeded;
+  ANode := CreateAndSetNode(Path);
+  Xml.Options := Xml.Options + [sxoAutoCreate];
+  ANode.Properties.ItemNamed[Name].Value := Value;
+  Xml.Options := Xml.Options - [sxoAutoCreate];
+  FlushIfNeeded;
 end;
 
 function TJvCustomAppXMLStorage.GetOnDecodeValue: TJvSimpleXMLEncodeEvent;

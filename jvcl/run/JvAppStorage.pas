@@ -426,10 +426,14 @@ type
     function GetPhysicalReadOnly: Boolean; virtual;
 
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
-    function DecodeStrToDateTime(Value: string): TDateTime; virtual;
+    function DecodeStrToDateTime(const Value: string): TDateTime; virtual;
     function EncodeDateTimeToStr(Value: TDateTime): string; virtual;
     procedure Loaded; override;
     procedure DoError(const msg: string);
+    //1 Sets a xml property for a given path, this is only implemented for XML Appstorage
+    procedure DoSetXMLProperty(const Path, Name, Value : string); virtual;
+    //1 Sets a xml property for a given path, this is only implemented for XML Appstorage
+    procedure SetXMLPropertyInt(const Path, Name, Value : string); virtual;
     function GetFormatSettings: TFormatSettings;
     function ReadListItemCount(const Path: string; const ItemName: string = cItem): Integer; virtual;
     procedure WriteListItemCount(const Path: string; const ItemCount: Integer; const ItemName: string = cItem); virtual;
@@ -654,6 +658,8 @@ type
     procedure EnablePropertyValueCrypt;
     { Disables the Cryption of Property-Values (Only String-Values) }
     procedure DisablePropertyValueCrypt;
+    //1 Sets a xml property for a given path, this is only implemented for XML Appstorage
+    procedure SetXMLProperty(const Path, Name, Value : string);
     { Returns the current state if Property-Value Cryption is enabled }
     function IsPropertyValueCryptEnabled: Boolean;
     function ItemNameIndexPath(const ItemName: string; const Index: Integer): string; virtual;
@@ -3170,7 +3176,7 @@ begin
   end;
 end;
 
-function TJvCustomAppStorage.DecodeStrToDateTime(Value: string): TDateTime;
+function TJvCustomAppStorage.DecodeStrToDateTime(const Value: string): TDateTime;
 begin
   if StorageOptions.UseTranslateStringEngineDateTimeFormats then
     try
@@ -3181,6 +3187,26 @@ begin
     end
   else
     Result := StrToDateTime(Value);
+end;
+
+procedure TJvCustomAppStorage.DoSetXMLProperty(const Path, Name, Value : string);
+begin
+
+end;
+
+procedure TJvCustomAppStorage.SetXMLProperty(const Path, Name, Value : string);
+var
+  TargetStore: TJvCustomAppStorage;
+  TargetPath: string;
+begin
+  ResolvePath(Path, TargetStore, TargetPath);
+  if not TargetStore.ReadOnly then
+    TargetStore.SetXMLPropertyInt(TargetPath, Name, Value);
+end;
+
+procedure TJvCustomAppStorage.SetXMLPropertyInt(const Path, Name, Value : string);
+begin
+  DoSetXMLProperty(Path, Name, Value);
 end;
 
 function TJvCustomAppStorage.EncodeDateTimeToStr(Value: TDateTime): string;
