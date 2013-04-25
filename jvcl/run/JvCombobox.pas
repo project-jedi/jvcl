@@ -295,6 +295,8 @@ type
     function GetOrderedTextValue: string;
     function GetItems: TStrings;
     function GetCheckedCount: Integer;
+    function GetHeader(Index: Integer): Boolean;
+    procedure SetHeader(Index: Integer; const Value: Boolean);
   protected
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -315,6 +317,7 @@ type
     property CheckedCount: Integer read GetCheckedCount;
     property ItemEnabled[Index: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
     property State[Index: Integer]: TCheckBoxState read GetState write SetState;
+    property Header[Index: Integer]: Boolean read GetHeader write SetHeader;
 
     property Items: TStrings read GetItems write SetItems;
     property CapSelectAll: string read FCapSelAll write FCapSelAll stored IsStoredCapSelAll;
@@ -738,6 +741,11 @@ begin
   Result := FListBox.ItemEnabled[Index];
 end;
 
+function TJvCustomCheckedComboBox.GetHeader(Index: Integer): Boolean;
+begin
+  Result := FListBox.Header[Index];
+end;
+
 function TJvCustomCheckedComboBox.GetItems: TStrings;
 begin
   Result := FListBox.Items;
@@ -970,6 +978,11 @@ begin
   if FDropDownLines <> Value then
     if (Value >= MinDropLines) and (Value <= MaxDropLines) then
       FDropDownLines := Value;
+end;
+
+procedure TJvCustomCheckedComboBox.SetHeader(Index: Integer; const Value: Boolean);
+begin
+  FListBox.Header[Index] := Value;
 end;
 
 procedure TJvCustomCheckedComboBox.SetItemEnabled(Index: Integer; const Value: Boolean);
