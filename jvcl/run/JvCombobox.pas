@@ -304,6 +304,8 @@ type
     procedure CreatePopup; override;
     procedure Change; override;
     function AcceptPopup(var Value: Variant): Boolean; override;
+
+    property ListBox: TJvCheckListBox read FListBox;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
