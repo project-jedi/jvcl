@@ -361,6 +361,7 @@ type
     FJvEditor: TJvCustomEditorBase;
     FPtr: Integer;
     InUndo: Boolean;
+    FDiscardList: TObjectList;
     function LastUndo: TJvUndo;
     function IsNewGroup(AUndo: TJvUndo): Boolean;
     function CanRedo: Boolean;
@@ -1436,7 +1437,12 @@ end;
 procedure TJvUndoBuffer.Add(AUndo: TJvUndo);
 begin
   if InUndo then
+  begin
+    if FDiscardList = nil then
+      FDiscardList := TObjectList.Create;
+    FDiscardList.Add(AUndo);
     Exit;
+  end;
   ClearRedo;
   inherited Add(AUndo);
   FPtr := Count - 1;
@@ -1527,6 +1533,7 @@ begin
           FJvEditor.StatusChanged;
     end;
   finally
+    FreeAndNil(FDiscardList);
     InUndo := False;
   end;
 end;
