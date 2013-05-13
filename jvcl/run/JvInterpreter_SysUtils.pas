@@ -36,6 +36,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF RTL250_UP}
+  AnsiStrings, // must be included before SysUtils
+  {$ENDIF RTL250_UP}
   SysUtils,
   JvInterpreter;
 
@@ -957,7 +960,7 @@ procedure JvInterpreter_FormatBuf(var Value: Variant; Args: TJvInterpreterArgs);
   function FormatBufWorkaround(var Buffer; BufLen: Cardinal; const Format; FmtLen: Cardinal;
     const Args: array of const): Cardinal;
   begin
-    Result := FormatBuf(Buffer, BufLen, Format, FmtLen, Args);
+    Result := {$IFDEF RTL250_UP}AnsiStrings.{$ENDIF}FormatBuf(Buffer, BufLen, Format, FmtLen, Args);
   end;
 
 begin

@@ -110,6 +110,10 @@ interface
   {$DEFINE DELPHI2013OROLDER}
 {$endif}
 
+{$ifdef COMPILER17_UP} // stop playing catch up with newer Delphi versions
+  {$DEFINE DELPHI2013OROLDER}
+{$endif}
+
 {$ifdef DELPHI2013OROLDER}
   {$DEFINE DELPHI2012OROLDER}
 {$endif}
@@ -621,7 +625,7 @@ begin
   Assert (sLinebreak=ansistring(#13#10));
   i:=1;
   while i<=length(s) do begin
-    if (s[i]=#10) and (MidStr(s,i-1,1)<>#13) then begin
+    if (s[i]=#10) and (Copy(s,i-1,1)<>#13) then begin
       insert (#13,s,i);
       inc (i,2);
     end else
@@ -633,7 +637,7 @@ end;
 
 function IsWriteProp(Info: PPropInfo): Boolean;
 begin
-  Result := Assigned(Info) and (Info^.SetProc <> nil);
+  Result := Assigned(Info) and (Info.SetProc <> nil);
 end;
 
 function ResourceStringGettext(MsgId: MsgIdString): TranslatedUnicodeString;
@@ -984,7 +988,7 @@ type
     Ident: Integer;
     Str: String;
   end;
-  
+
 function SysUtilsEnumStringModules(Instance: {$IFDEF DELPHI2012OROLDER}NativeInt{$ELSE}Integer{$ENDIF DELPHI2012OROLDER}; Data: Pointer): Boolean;
 {$IFDEF MSWINDOWS}
 var
@@ -2763,7 +2767,7 @@ begin
         offset := tableoffset;
         Assert(sizeof(offset)=8);
         while (true) and (fs.Position<headerendpos) do begin
-          fs.Seek(offset,soFromBeginning);
+          fs.Seek(offset, soBeginning);
           offset:=ReadInt64(fs);
           if offset=0 then
             exit;
@@ -3193,7 +3197,7 @@ begin
         size := mofile.Size;
       Getmem (momemoryHandle, size);
       momemory := momemoryHandle;
-      mofile.Seek(offset, soFromBeginning);
+      mofile.Seek(offset, soBeginning);
       mofile.ReadBuffer(momemory^, size);
     finally
       FreeAndNil(mofile);

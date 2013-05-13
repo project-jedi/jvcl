@@ -123,6 +123,7 @@ implementation
 
 uses
   SysUtils,
+  JclAnsiStrings,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,       // CharInSet() and other future friendly bits
   {$ENDIF ~COMPILER12_UP}
@@ -138,7 +139,7 @@ var
   L, X, X1: Integer;
   DecimalFlag: Boolean;
 begin
-  L := StrLen(S1);
+  L := StrLenA(S1);
   DecimalFlag := False;
   X1 := 0;
 
@@ -179,7 +180,7 @@ function ValidIntLiteral(S1: PAnsiChar): Boolean;
 var
   L, X, X1: Integer;
 begin
-  L := StrLen(S1);
+  L := StrLenA(S1);
   X1 := 0;
   if L <= 0 then
   begin
@@ -207,7 +208,7 @@ function ValidHexLiteral(S1: PAnsiChar): Boolean;
 var
   L, X: Integer;
 begin
-  L := StrLen(S1);
+  L := StrLenA(S1);
   //  X1 := 0;
 
   { detect hex code type indicator }
@@ -232,7 +233,7 @@ var
   X, L: Integer;
   Digit, Val: Integer;
 begin
-  L := StrLen(S1);
+  L := StrLenA(S1);
   if (L < 2) or (L > 9) then
     raise EJVCLException.CreateRes(@RsEInvalidHexLiteral);
   if S1[0] <> '$' then
@@ -258,7 +259,7 @@ end;
 
 function ValidStringLiteral(S1: PAnsiChar): Boolean;
 begin
-  Result := (S1[0] = '"') and (S1[StrLen(S1) - 1] = '"');
+  Result := (S1[0] = '"') and (S1[StrLenA(S1) - 1] = '"');
 end;
 
 { Strip quotes and return as a real Delphi String }
@@ -278,11 +279,11 @@ var
   TempBuf: array [0..256] of AnsiChar;
   L: Integer;
 begin
-  L := StrLen(S1);
+  L := StrLenA(S1);
   if L > 255 then
     L := 255;
   if ValidStringLiteral(S1) then
-    StrLCopy(TempBuf, S1 + 1, L - 2);
+    StrLCopyA(TempBuf, S1 + 1, L - 2);
   Result := AnsiString(TempBuf);
 end;
 
@@ -290,25 +291,25 @@ end;
 
 function IsExpressionKeyword(S1: PAnsiChar): Boolean;
 begin
-  if StrIComp(S1, 'AND') = 0 then
+  if StrICompA(S1, 'AND') = 0 then
     Result := True
   else
-  if StrIComp(S1, 'OR') = 0 then
+  if StrICompA(S1, 'OR') = 0 then
     Result := True
   else
-  if StrIComp(S1, 'XOR') = 0 then
+  if StrICompA(S1, 'XOR') = 0 then
     Result := True
   else
-  if StrIComp(S1, 'NOT') = 0 then
+  if StrICompA(S1, 'NOT') = 0 then
     Result := True
   else
-  if StrIComp(S1, 'DIV') = 0 then
+  if StrICompA(S1, 'DIV') = 0 then
     Result := True
   else
-  if StrIComp(S1, 'SHR') = 0 then
+  if StrICompA(S1, 'SHR') = 0 then
     Result := True
   else
-  if StrIComp(S1, 'SHL') = 0 then
+  if StrICompA(S1, 'SHL') = 0 then
     Result := True
   else
     Result := False;
@@ -316,15 +317,15 @@ end;
 
 function IsKeyword(S1: PAnsiChar): Boolean;
 begin
-  Result := (StrIComp(S1, 'SET') = 0) or (StrIComp(S1, 'LET') = 0) or
-    (StrIComp(S1, 'DIM') = 0) or (StrIComp(S1, 'ARRAYCOPY') = 0) or
-    (StrIComp(S1, 'STRCOPY') = 0) or (StrIComp(S1, 'STRPAD') = 0) or
-    (StrIComp(S1, 'STRSTRIP') = 0) or (StrIComp(S1, 'END') = 0) or
-    (StrIComp(S1, 'INC') = 0) or (StrIComp(S1, 'DEC') = 0) or
-    (StrIComp(S1, 'PARAM') = 0) or (StrIComp(S1, 'JUMP') = 0) or
-    (StrIComp(S1, 'SLEEP') = 0) or (StrIComp(S1, 'GOTO') = 0) or
-    (StrIComp(S1, 'IF') = 0) or (StrIComp(S1, 'CALL') = 0) or
-    (StrIComp(S1, 'STOP') = 0) or (StrIComp(S1, 'CONST') = 0);
+  Result := (StrICompA(S1, 'SET') = 0) or (StrICompA(S1, 'LET') = 0) or
+    (StrICompA(S1, 'DIM') = 0) or (StrICompA(S1, 'ARRAYCOPY') = 0) or
+    (StrICompA(S1, 'STRCOPY') = 0) or (StrICompA(S1, 'STRPAD') = 0) or
+    (StrICompA(S1, 'STRSTRIP') = 0) or (StrICompA(S1, 'END') = 0) or
+    (StrICompA(S1, 'INC') = 0) or (StrICompA(S1, 'DEC') = 0) or
+    (StrICompA(S1, 'PARAM') = 0) or (StrICompA(S1, 'JUMP') = 0) or
+    (StrICompA(S1, 'SLEEP') = 0) or (StrICompA(S1, 'GOTO') = 0) or
+    (StrICompA(S1, 'IF') = 0) or (StrICompA(S1, 'CALL') = 0) or
+    (StrICompA(S1, 'STOP') = 0) or (StrICompA(S1, 'CONST') = 0);
 end;
 
 { JvValidIdentifier:
@@ -358,7 +359,7 @@ begin
     Exit;
   end;
 
-  X := StrLen(S1);
+  X := StrLenA(S1);
   if (X < 1) or (X > 32) then
   begin
     Result := False;
@@ -396,7 +397,7 @@ begin
   W := 0;
 
   { Empty in, Empty Out }
-  if StrLen(S1) = 0 then
+  if StrLenA(S1) = 0 then
     S2[0] := Chr(0);
 
   InQuotes := False;
@@ -459,9 +460,9 @@ begin
     end;
 
   { remove token from initial buffer, move to second buffer }
-  Y := Integer(StrLen(S1)) - X;
+  Y := Integer(StrLenA(S1)) - X;
   if Y > 0 then
-    StrLCopy(S1, S1 + X, Y) { copy remaining characters }
+    StrLCopyA(S1, S1 + X, Y) { copy remaining characters }
   else
     S1[0] := Chr(0); { just erase all of old AnsiString }
 
@@ -489,7 +490,7 @@ procedure JvEatWhitespaceChars(S1: PAnsiChar);
 var
   T, U, L: Integer;
 begin
-  L := StrLen(S1);
+  L := StrLenA(S1);
   // U := L;
   if L <= 0 then
     Exit;
@@ -505,7 +506,7 @@ begin
     if T > U then  // was T>=U (test me!)
       S1[0] := Chr(0)
     else
-      StrLCopy(S1, S1 + T, (U - T) + 1);
+      StrLCopyA(S1, S1 + T, (U - T) + 1);
 end;
 
 {$IFDEF COMPILER12_UP}
@@ -539,31 +540,31 @@ var
   Brackets: Integer;
 begin
   { make temporary copy of S1, check for parenthesis }
-  StrCopy(TempBuf, S1);
+  StrLCopyA(TempBuf, S1, Length(TempBuf));
   JvGetToken(TempBuf, S2);
-  if StrComp(S2, '(') = 0 then
+  if StrCompA(S2, '(') = 0 then
   begin
     Brackets := 1;
     S2[0] := Chr(0);
     repeat
       JvGetToken(TempBuf, Token);
-      if StrComp(Token, ')') = 0 then
+      if StrCompA(Token, ')') = 0 then
         Dec(Brackets);
       if Brackets > 0 then
       begin
-        StrCat(S2, Token);
-        StrCat(S2, ' ');
+        StrCatA(S2, Token);
+        StrCatA(S2, ' ');
       end;
-      if StrComp(Token, '(') = 0 then
+      if StrCompA(Token, '(') = 0 then
         Inc(Brackets);
-    until (StrLen(S1) = 0) or (Brackets = 0);
+    until (StrLenA(S1) = 0) or (Brackets = 0);
     if Brackets <> 0 then
     begin
       S2[0] := Chr(0);
       Result := False;
       Exit;
     end;
-    StrCopy(S1, TempBuf); { remainder back into S1 }
+    StrCopyA(S1, TempBuf); { remainder back into S1 }
     Result := True;
   end
   else
@@ -589,18 +590,18 @@ begin
     Brackets := 0;
     repeat
       JvGetToken(S1, TempBuf);
-      StrCat(SIdx, TempBuf);
-      if StrComp(TempBuf, ']') = 0 then
+      StrCatA(SIdx, TempBuf);
+      if StrCompA(TempBuf, ']') = 0 then
         Dec(Brackets);
-      if StrComp(TempBuf, '[') = 0 then
+      if StrCompA(TempBuf, '[') = 0 then
         Inc(Brackets);
 
-      if StrLen(S1) = 0 then
+      if StrLenA(S1) = 0 then
         Break;
     until Brackets <= 0;
 
     { Remove outermost brackets }
-    StrLCopy(SIdx, SIdx + 1, StrLen(SIdx) - 2);
+    StrLCopyA(SIdx, SIdx + 1, StrLenA(SIdx) - 2);
   end;
 end;
 
@@ -611,13 +612,13 @@ var
   Len1: Integer;
   TempBuf1, TempBuf2: array [0..128] of AnsiChar;
 begin
-  StrCopy(S1, TempBuf1);
+  StrLCopyA(TempBuf1, S1, Length(TempBuf1));
   JvGetToken(TempBuf1, TempBuf2);
-  if StrLen(TempBuf1) = 0 then
+  if StrLenA(TempBuf1) = 0 then
     Result := JvValidIdentifierAnsi(S1)
   else
   begin
-    Len1 := StrLen(TempBuf1);
+    Len1 := StrLenA(TempBuf1);
     if (TempBuf1[0] = '[') and (TempBuf1[Len1 - 1] = ']') then
       Result := JvValidIdentifierAnsi(S1)
     else

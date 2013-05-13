@@ -31,6 +31,9 @@ unit JVCL3Install;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Windows, ShellAPI, SysUtils, Classes, Core, Graphics, Controls, Forms,
   StdCtrls, Dialogs,
   DelphiData, JVCLData, Utils,

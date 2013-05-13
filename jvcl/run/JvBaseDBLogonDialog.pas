@@ -2323,10 +2323,14 @@ begin
       for i := 1 to length(s) do
       begin
         if CharInSet(s[i], LowerChars) then
+          {$IFDEF RTL250_UP}
+          s[i] := s[i].ToUpper
+          {$ELSE}
           s[i] := ToUpper(s[i])
+          {$ENDIF RTL250_UP}
         else if not CharInSet(s[i], UpperChars) then
         begin
-          Result := trim(iName);
+          Result := Trim(iName);
           Exit;
         end;
       end;
@@ -2347,10 +2351,14 @@ begin
       for i := 1 to length(s) do
       begin
         if CharInSet(s[i], LowerChars) then
+          {$IFDEF RTL250_UP}
+          s[i] := s[i].ToUpper
+          {$ELSE}
           s[i] := ToUpper(s[i])
+          {$ENDIF RTL250_UP}
         else if not CharInSet(s[i], UpperChars) then
         begin
-          Result := trim(iName);
+          Result := Trim(iName);
           Exit;
         end;
       end;

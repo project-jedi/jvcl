@@ -32,9 +32,13 @@ unit FrmCompileMessages;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  Windows, ShellAPI, Types, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, Menus,
   JclSysUtils, JVCLData,
-  Windows, ShellAPI, SysUtils, Classes, Contnrs, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Menus, FrmCompile;
+  FrmCompile;
 
 type
   TMsgType = (msgFatal, msgError, msgWarning, msgHint, msgText);

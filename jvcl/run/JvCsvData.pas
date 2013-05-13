@@ -636,7 +636,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function BookmarkValid(Bookmark: TBookmark): Boolean; override;
-    function GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean; override;
+    function GetFieldData(Field: TField; {$IFDEF RTL250_UP}var{$ENDIF} Buffer: TJvValueBuffer): Boolean; override;
 
 
     function _AllocateRow: PCsvRow; // Don't try to create your own CsvRow Objects outside JvCsvDataSet by just allocating a TJvCsvDataRow object. Call this instead.
@@ -960,7 +960,8 @@ implementation
 
 uses
   Variants, Controls, Forms,
-  JvCsvParse, JvConsts, JvResources, JclSysUtils;
+  JclSysUtils, JclAnsiStrings,
+  JvCsvParse, JvConsts, JvResources;
 
 const
   // These characters cannot be used for separator for various reasons:
@@ -1858,13 +1859,13 @@ begin
       if IsEmpty then
         Result := nil
       else
-        Result := ActiveBuffer;
+        Result := TJvRecordBuffer(ActiveBuffer);
     dsCalcFields:
-      Result := CalcBuffer;
+      Result := TJvRecordBuffer(CalcBuffer);
     dsFilter:
       Result := FFilterBuffer;
     dsEdit, dsInsert:
-      Result := ActiveBuffer;
+      Result := TJvRecordBuffer(ActiveBuffer);
   else
     Result := nil;
   end;
@@ -2332,7 +2333,7 @@ begin
 
       // Update calculated fields for this row:
       ClearCalcFields(Buffer);
-      GetCalcFields(Buffer);
+      GetCalcFields({$IFDEF RTL250_UP}TRecBuf{$ENDIF}(Buffer));
     except
       on E: EJvCsvDataSetError do
         raise; // pass our error through.
@@ -2699,7 +2700,7 @@ begin
   end;
 end;
 
-function TJvCustomCsvDataSet.GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean;
+function TJvCustomCsvDataSet.GetFieldData(Field: TField; {$IFDEF RTL250_UP}var{$ENDIF} Buffer: TJvValueBuffer): Boolean;
 var
   RowPtr: PCsvRow;
   PSource: PJvMemBuffer;
@@ -3915,9 +3916,9 @@ begin
   if Assigned(FData) and  (FData.FRecordsValid) then
   begin
     if State = dsCalcFields then
-      BufPtr := CalcBuffer
+      BufPtr := TJvRecordBuffer(CalcBuffer)
     else
-      BufPtr := ActiveBuffer;
+      BufPtr := TJvRecordBuffer(ActiveBuffer);
     Result := (PCsvRow(BufPtr)^.Bookmark.Data); // Record number.
   end
   else
@@ -4886,7 +4887,7 @@ begin
 
   WordFields.WordField[Col] := JvCsv_COLUMN_ENDMARKER; // last one has no end marker
   RowItemText := @RowItem._Text[0];
-  StrLCopy(RowItemText, PAnsiChar(RowString), RowItem.TextMaxLen);
+  StrLCopyA(RowItemText, PAnsiChar(RowString), RowItem.TextMaxLen);
 
   RowItem.Columns := Col; // Check this later!
 end;
@@ -4945,8 +4946,8 @@ begin
   if Copy1 = JvCsv_COLUMN_ENDMARKER then
   begin
     // Fix CSV damage:
-    StrLCat(RowItemText, @(PItem^.Separator), Length(RowItemText) + 1); // XXX todo later: Make sure we add however many commas or whatever are needed!
-    Copy1 := StrLen(RowItemText);
+    StrLCatA(RowItemText, @(PItem^.Separator), Length(RowItemText) + 1); // XXX todo later: Make sure we add however many commas or whatever are needed!
+    Copy1 := StrLenA(RowItemText);
     CsvRowSetColumnMarker(PItem, ColumnIndex, Copy1);
   end;
     // Update new rows:  FIX previous fix!
@@ -4961,11 +4962,11 @@ begin
   try
     if Copy1 > 0 then
     begin
-      StrLCopy(TempBuf, RowItemText, Copy1);
-      StrLCat(TempBuf, PAnsiChar(NewValue), PItem^.TextMaxLen);
+      StrLCopyA(TempBuf, RowItemText, Copy1);
+      StrLCatA(TempBuf, PAnsiChar(NewValue), PItem^.TextMaxLen);
     end
     else
-      StrLCopy(TempBuf, PAnsiChar(NewValue), PItem^.TextMaxLen);
+      StrLCopyA(TempBuf, PAnsiChar(NewValue), PItem^.TextMaxLen);
 
     Copy2 := CsvRowGetColumnMarker(PItem, ColumnIndex + 1);
     if Copy2 <> JvCsv_COLUMN_ENDMARKER then
@@ -4978,11 +4979,11 @@ begin
         Diff := 0
       else
         Diff := Length(NewValue) - (Copy2 - Copy1);
-      StrLCat(TempBuf, RowItemText + Copy2, PItem^.TextMaxLen);
+      StrLCatA(TempBuf, RowItemText + Copy2, PItem^.TextMaxLen);
     end;
 
     // Copy over the old memory buffer:
-    StrLCopy(RowItemText, TempBuf, PItem^.TextMaxLen);
+    StrLCopyA(RowItemText, TempBuf, PItem^.TextMaxLen);
 
     // Now that we've copied a new item of a different length into the place of the old one
     // we have to update the positions of the columns after ColumnIndex:
@@ -5042,7 +5043,7 @@ begin
         try
           OutText := @PItem^._Text[0];
           Inc(OutText, Copy1);
-          StrLCopy(TempBuf, OutText, Copy2 - Copy1);
+          StrLCopyA(TempBuf, OutText, Copy2 - Copy1);
           JvEatWhitespaceChars(PAnsiChar(@TempBuf[0]));
           Result := TempBuf;
         finally

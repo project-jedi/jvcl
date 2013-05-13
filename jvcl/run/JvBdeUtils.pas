@@ -236,7 +236,8 @@ implementation
 uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
-  {$ENDIF}
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  JclAnsiStrings,
   SysUtils, Registry, Forms, Controls, Dialogs, Math,
   IniFiles, DBConsts, bdeconst, Variants, RTLConsts,
   JvConsts, JvJVCLUtils, JvJCLUtils, JvResources;
@@ -588,13 +589,13 @@ var
   Params: TStrings;
 begin
   Result := '';
-  StrPLCopy(SAlias, AnsiString(AliasName), SizeOf(SAlias) - 1);
+  StrPLCopyA(SAlias, AnsiString(AliasName), SizeOf(SAlias) - 1);
   AnsiToOem(SAlias, SAlias);
   Check(DbiGetDatabaseDesc(SAlias, @Desc));
-  if StrIComp(Desc.szDbType, szCFGDBSTANDARD) = 0 then
+  if StrICompA(Desc.szDbType, szCFGDBSTANDARD) = 0 then
   begin
     OemToAnsi(Desc.szPhyName, Desc.szPhyName);
-    Result := string(StrPas(Desc.szPhyName));
+    Result := string(StrPasA(Desc.szPhyName));
   end
   else
   begin
@@ -1058,7 +1059,7 @@ begin
   if not Table.Active then
     _DBError(SDataSetClosed);
   Check(DbiGetCursorProps(Table.Handle, CurProp));
-  if StrComp(CurProp.szTableType, szPARADOX) = 0 then
+  if StrCompA(CurProp.szTableType, szPARADOX) = 0 then
   begin
     { Call DbiDoRestructure procedure if PARADOX table }
     hDb := nil;
@@ -1067,9 +1068,9 @@ begin
     with TblDesc do
     begin
       { Place the table name in descriptor }
-      StrPCopy(szTblName, AnsiString(Table.TableName));
+      StrPCopyA(szTblName, AnsiString(Table.TableName));
       { Place the table type in descriptor }
-      StrCopy(szTblType, CurProp.szTableType);
+      StrCopyA(szTblType, CurProp.szTableType);
       bPack := True;
       bProtected := CurProp.bProtected;
     end;
@@ -1096,7 +1097,7 @@ begin
     end;
   end
   else
-    if StrComp(CurProp.szTableType, szDBASE) = 0 then
+    if StrCompA(CurProp.szTableType, szDBASE) = 0 then
   begin
     { Call DbiPackTable procedure if dBase table }
     Exclusive := Table.Exclusive;
@@ -1194,17 +1195,17 @@ begin
     end;
     if DbiGetCursorProps(TBDEDataSet(DataSet).Handle, CurProp) <> DBIERR_NONE then
       Exit;
-    if (StrComp(CurProp.szTableType, szPARADOX) = 0) or
+    if (StrCompA(CurProp.szTableType, szPARADOX) = 0) or
       (CurProp.iSeqNums = 1) then
     begin
-      DataSet.GetCurrentRecord(nil);
+      DataSet.GetCurrentRecord({$IFDEF RTL250_UP}TRecBuf{$ENDIF}(nil));
       if DbiGetSeqNo(TBDEDataSet(DataSet).Handle, Result) <> DBIERR_NONE then
         Result := -1;
     end
     else
-      if StrComp(CurProp.szTableType, szDBASE) = 0 then
+      if StrCompA(CurProp.szTableType, szDBASE) = 0 then
     begin
-      DataSet.GetCurrentRecord(nil);
+      DataSet.GetCurrentRecord({$IFDEF RTL250_UP}TRecBuf{$ENDIF}(nil));
       if DbiGetRecord(TBDEDataSet(DataSet).Handle, dbiNOLOCK, nil, @FRecProp) = DBIERR_NONE
         then
         Result := FRecProp.iPhyRecNum;
@@ -1347,7 +1348,7 @@ begin
           DestTable.Open;
           try
             Check(DbiGetDirectory(DestTable.DBHandle, False, TablePath));
-            Path := NormalDir(string(OemToAnsiStr(StrPas(TablePath))));
+            Path := NormalDir(string(OemToAnsiStr(StrPasA(TablePath))));
           finally
             DestTable.Close;
           end;
@@ -1446,7 +1447,7 @@ procedure BdeTranslate(Locale: TLocale; Source, Dest: PAnsiChar; ToOem: Boolean)
 var
   Len: Cardinal;
 begin
-  Len := StrLen(Source);
+  Len := StrLenA(Source);
   if ToOem then
     AnsiToNativeBuf(Locale, Source, Dest, Len)
   else
@@ -1498,16 +1499,16 @@ begin
   if Msg[0] = #0 then
     Result := Format(SBDEError, [ErrorCode])
   else
-    Result := string(StrPas(Msg));
+    Result := string(StrPasA(Msg));
   while True do
   begin
-    StrCopy(LastMsg, Msg);
+    StrCopyA(LastMsg, Msg);
     ErrorCode := DbiGetErrorEntry(I, NativeError, Msg);
     if (ErrorCode = DBIERR_NONE) or
       (ErrorCode = DBIERR_NOTINITIALIZED) then
       Break;
     TrimMessage(Msg);
-    if (Msg[0] <> #0) and (StrComp(Msg, LastMsg) <> 0) then
+    if (Msg[0] <> #0) and (StrCompA(Msg, LastMsg) <> 0) then
       Result := Format('%s. %s', [Result, Msg]);
     Inc(I);
   end;
@@ -1564,7 +1565,7 @@ const
 var
   FileName: DBIPATH;
 begin
-  Check(DbiDebugLayerOptions(Options[Active], StrPLCopy(FileName,
+  Check(DbiDebugLayerOptions(Options[Active], StrPLCopyA(FileName,
     AnsiString(DebugFile), SizeOf(DBIPATH) - 1)));
 end;
 { begin JvDBUtil }
@@ -1958,8 +1959,8 @@ begin
     Check(DbiSetDirectory(hDb, PAnsiChar(AnsiString(Dir))));
     with RInt^ do
     begin
-      StrPCopy(szRintName, AnsiString(RefName));
-      StrPCopy(szTblName, AnsiString(MasterTable));
+      StrPCopyA(szRintName, AnsiString(RefName));
+      StrPCopyA(szTblName, AnsiString(MasterTable));
       eType := rintDEPENDENT;
       eModOp := ModOp;
       eDelOp := DelOp;
@@ -1971,8 +1972,8 @@ begin
     TblDesc.pRINTDesc := RInt;
     OpType := crADD;
     TblDesc.pecrRintOp := @OpType;
-    StrPCopy(TblDesc.szTblName, AnsiString(Tbl.TableName));
-    StrCopy(TblDesc.szTblType, szPARADOX);
+    StrPCopyA(TblDesc.szTblName, AnsiString(Tbl.TableName));
+    StrCopyA(TblDesc.szTblType, szPARADOX);
     Check(DbiDoRestructure(hDb, 1, @TblDesc, nil, nil, nil, False));
   finally
     Check(DbiCloseDatabase(hDb));
@@ -2046,11 +2047,11 @@ begin
   with TblDesc do
   begin
     { Place the table name in descriptor }
-    StrPCopy(szTblName, AnsiString(Table.TableName));
+    StrPCopyA(szTblName, AnsiString(Table.TableName));
     { Place the table type in descriptor }
-    StrCopy(szTblType, szPARADOX);
+    StrCopyA(szTblType, szPARADOX);
     { Master Password, Password }
-    StrPCopy(szPassword, AnsiString(pswd));
+    StrPCopyA(szPassword, AnsiString(pswd));
     { Set bProtected to True }
     bProtected := RESTRUCTURE_TRUE;
   end;
@@ -2095,13 +2096,13 @@ begin
     // Get the database handle from the table's cursor handle...
     Check(DbiGetObjFromObj(hDBIObj(Table.Handle), objDATABASE, hDBIObj(hDb)));
     // Put the table name in the table descriptor...
-    StrPCopy(TableDesc.szTblName, AnsiString(Table.TableName));
+    StrPCopyA(TableDesc.szTblName, AnsiString(Table.TableName));
     // Put the table type in the table descriptor...
-    StrPCopy(TableDesc.szTblType, Props.szTableType);
+    StrPCopyA(TableDesc.szTblType, Props.szTableType);
     // Set the Pack option in the table descriptor to True...
     TableDesc.bPack := True;
     { Master Password, Password }
-    StrPCopy(TableDesc.szPassword, AnsiString(pswd));
+    StrPCopyA(TableDesc.szPassword, AnsiString(pswd));
     { Set bProtected to True }
     TableDesc.bProtected := RESTRUCTURE_TRUE;
     // Close the table so the restructure can complete...

@@ -5,6 +5,9 @@ object FramePackageSelection: TFramePackageSelection
   Height = 397
   TabOrder = 0
   TabStop = True
+  DesignSize = (
+    518
+    397)
   object LblTarget: TLabel
     Left = 8
     Top = 101
@@ -81,7 +84,6 @@ object FramePackageSelection: TFramePackageSelection
       'ecked/unchecked if necessary.'
     Style = csDropDownList
     Anchors = [akTop, akRight]
-    ItemHeight = 13
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
@@ -136,7 +138,7 @@ object FramePackageSelection: TFramePackageSelection
     Left = 480
     Top = 128
     Bitmap = {
-      494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010103000500040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000084848400000000008484840000000000000000000000

@@ -807,7 +807,7 @@ begin
       BeforeEdit := DataSource.DataSet.BeforeEdit;
     end;
     DbiInitRecord((DataSource.DataSet as TBDEDataSet).Handle,
-      DataSource.DataSet.ActiveBuffer);
+      Pointer(DataSource.DataSet.ActiveBuffer));
     DsSetBOF(DataSource.DataSet, True);
     DsSetEOF(DataSource.DataSet, True);
     DsSetState(DataSource.DataSet, dsEdit);

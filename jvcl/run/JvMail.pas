@@ -192,7 +192,8 @@ const
 implementation
 
 uses
-  JvResources, JclSysUtils;
+  JclSysUtils, JclAnsiStrings,
+  JvResources;
 
 //=== { TJvMailRecipient } ===================================================
 
@@ -404,8 +405,8 @@ procedure TJvMail.CreateMapiMessage;
 
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := StrNew(PAnsiChar(AnsiString(ExtractFileName(Attachment[I]))));
-        FAttachArray[I].lpszPathName := StrNew(PAnsiChar(AnsiString(Attachment[I])));
+        FAttachArray[I].lpszFileName := StrNewA(PAnsiChar(AnsiString(ExtractFileName(Attachment[I]))));
+        FAttachArray[I].lpszPathName := StrNewA(PAnsiChar(AnsiString(Attachment[I])));
       end;
     end
     else
@@ -418,8 +419,8 @@ begin
     CreateRecips;
     MakeAttachments;
 
-    FMapiMessage.lpszSubject := StrNew(PAnsiChar(AnsiString(FSubject)));
-    FMapiMessage.lpszNoteText := StrNew(PAnsiChar(AnsiString(FBody.Text)));
+    FMapiMessage.lpszSubject := StrNewA(PAnsiChar(AnsiString(FSubject)));
+    FMapiMessage.lpszNoteText := StrNewA(PAnsiChar(AnsiString(FBody.Text)));
     FMapiMessage.lpRecips := PMapiRecipDesc(FRecipArray);
     FMapiMessage.nRecipCount := Length(FRecipArray);
     FMapiMessage.lpFiles := PMapiFileDesc(FAttachArray);
@@ -445,11 +446,11 @@ var
 
       FillChar(FRecipArray[RecipIndex], SizeOf(TMapiRecipDesc), #0);
       FRecipArray[RecipIndex].ulRecipClass := RecipList.RecipientClass;
-      FRecipArray[RecipIndex].lpszAddress := StrNew(PAnsiChar(AnsiString(RecipList[I].Address)));
+      FRecipArray[RecipIndex].lpszAddress := StrNewA(PAnsiChar(AnsiString(RecipList[I].Address)));
       if RecipList[I].Name = '' then // some clients requires Name item always filled
         FRecipArray[RecipIndex].lpszName := FRecipArray[RecipIndex].lpszAddress
       else
-        FRecipArray[RecipIndex].lpszName := StrNew(PAnsiChar(AnsiString(RecipList[I].Name)));
+        FRecipArray[RecipIndex].lpszName := StrNewA(PAnsiChar(AnsiString(RecipList[I].Name)));
 
       Inc(RecipIndex);
     end;
@@ -552,13 +553,13 @@ begin
   for I := 0 to High(FAttachArray) do
   begin
     if FAttachArray[I].lpszPathName <> FAttachArray[I].lpszFileName then
-      StrDispose(FAttachArray[I].lpszPathName);
-    StrDispose(FAttachArray[I].lpszFileName);
+      StrDisposeA(FAttachArray[I].lpszPathName);
+    StrDisposeA(FAttachArray[I].lpszFileName);
   end;
   FAttachArray := nil;
   FreeRecipArray;
-  StrDispose(FMapiMessage.lpszSubject);
-  StrDispose(FMapiMessage.lpszNoteText);
+  StrDisposeA(FMapiMessage.lpszSubject);
+  StrDisposeA(FMapiMessage.lpszNoteText);
   FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
 end;
 
@@ -569,8 +570,8 @@ begin
   for I := 0 to High(FRecipArray) do
   begin
     if FRecipArray[I].lpszName <> FRecipArray[I].lpszAddress then
-      StrDispose(FRecipArray[I].lpszName);
-    StrDispose(FRecipArray[I].lpszAddress);
+      StrDisposeA(FRecipArray[I].lpszName);
+    StrDisposeA(FRecipArray[I].lpszAddress);
   end;
   FRecipArray := nil;
 end;
@@ -726,7 +727,7 @@ begin
   CheckLoadLib;
   CreateMapiMessage;
   try
-    StrPCopy(MsgID, AnsiString(MessageID));
+    StrPCopyA(MsgID, AnsiString(MessageID));
     SaveTaskWindowsState;
     Flags := LogonFlags;
     if FLongMsgId then

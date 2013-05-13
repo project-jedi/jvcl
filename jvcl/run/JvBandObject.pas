@@ -183,6 +183,7 @@ uses
   {$IFDEF DEBUGINFO_ON}
   //zTrace,
   {$ENDIF DEBUGINFO_ON}
+  JclAnsiStrings,
   SysUtils, Registry, Math, Forms, Menus,
   JvConsts, JvJVCLUtils;
 
@@ -1067,14 +1068,14 @@ begin
         MenuItem := FBandForm.BandContextMenu.FindItem(idCmd, fkCommand);
         if MenuItem = nil then
           Exit;
-        StrCopy(pszName, PAnsiChar(AnsiString(MenuItem.Hint)));  // text lost here, unicode version should be considered
+        StrCopyA(pszName, PAnsiChar(AnsiString(MenuItem.Hint)));  // text lost here, unicode version should be considered
       end;
     GCS_VERB:
       begin
         MenuItem := FBandForm.BandContextMenu.FindItem(idCmd, fkCommand);
         if MenuItem = nil then
           Exit;
-        StrCopy(pszName, PAnsiChar(AnsiString(GetContextMenuCaption(MenuItem))));    // text lost here, unicode version should be considered
+        StrCopyA(pszName, PAnsiChar(AnsiString(GetContextMenuCaption(MenuItem))));    // text lost here, unicode version should be considered
       end;
     GCS_VALIDATE:
       Result := NOERROR;

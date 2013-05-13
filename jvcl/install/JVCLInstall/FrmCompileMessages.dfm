@@ -1,11 +1,11 @@
 object FormCompileMessages: TFormCompileMessages
   Left = 185
   Top = 216
-  ClientWidth = 743
-  ClientHeight = 118
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'Compiler Messages'
+  ClientHeight = 118
+  ClientWidth = 743
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,11 +20,10 @@ object FormCompileMessages: TFormCompileMessages
   object ListBox: TListBox
     Left = 0
     Top = 17
-    Width = 742
-    Height = 94
+    Width = 743
+    Height = 101
     Style = lbOwnerDrawFixed
     Align = alClient
-    ItemHeight = 16
     ParentShowHint = False
     PopupMenu = PopupMenu
     ShowHint = True
@@ -36,11 +35,12 @@ object FormCompileMessages: TFormCompileMessages
   object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 742
+    Width = 743
     Height = 17
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 742
     object LabelHelp: TLabel
       Left = 3
       Top = 2

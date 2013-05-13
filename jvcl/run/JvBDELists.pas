@@ -541,7 +541,7 @@ var
 begin
   if FTableName = '' then
     _DBError(SNoTableName);
-  STableName := {$IFDEF SUPPORTS_UNICODE}AnsiStrAlloc{$ELSE}StrAlloc{$ENDIF SUPPORTS_UNICODE}(Length(FTableName) + 1);
+  STableName := AllocMem((Length(FTableName) + 1) * SizeOf(AnsiChar));
   try
     AnsiToNative(DBLocale, AnsiString(FTableName), STableName, Length(FTableName));   // Cast to AnsiString may lead to data loss in D2009
     case FItemType of
@@ -571,7 +571,7 @@ begin
           ;
     end;
   finally
-    StrDispose(STableName);
+    FreeMem(STableName);
   end;
 end;
 
@@ -579,28 +579,26 @@ end;
 
 constructor TJvDatabaseDesc.Create(const DatabaseName: string);
 var
-  Buffer: PAnsiChar;
+  Buffer: AnsiString;
 begin
   inherited Create;
-  Buffer := StrPCopy({$IFDEF SUPPORTS_UNICODE}AnsiStrAlloc{$ELSE}StrAlloc{$ENDIF SUPPORTS_UNICODE}(Length(DatabaseName) + 1), AnsiString(DatabaseName));
-  try
-    Check(DbiGetDatabaseDesc(Buffer, @FDescription));
-  finally
-    StrDispose(Buffer);
-  end;
+  Buffer := AnsiString(DatabaseName);
+  {$IFNDEF SUPPORTS_UNICODE}
+  UniqueString(Buffer);
+  {$ENDIF ~SUPPORTS_UNICODE}
+  Check(DbiGetDatabaseDesc(PAnsiChar(Buffer), @FDescription));
 end;
 
 constructor TJvDriverDesc.Create(const DriverType: string);
 var
-  Buffer: PAnsiChar;
+  Buffer: AnsiString;
 begin
   inherited Create;
-  Buffer := StrPCopy({$IFDEF SUPPORTS_UNICODE}AnsiStrAlloc{$ELSE}StrAlloc{$ENDIF SUPPORTS_UNICODE}(Length(DriverType) + 1), AnsiString(DriverType));
-  try
-    Check(DbiGetDriverDesc(Buffer, FDescription));
-  finally
-    StrDispose(Buffer);
-  end;
+  Buffer := AnsiString(DriverType);
+  {$IFNDEF SUPPORTS_UNICODE}
+  UniqueString(Buffer);
+  {$ENDIF ~SUPPORTS_UNICODE}
+  Check(DbiGetDriverDesc(PAnsiChar(Buffer), FDescription));
 end;
 
 {$IFNDEF BCB}

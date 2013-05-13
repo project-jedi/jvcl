@@ -34,6 +34,9 @@ unit JvSegmentedLEDDisplay;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -440,7 +443,7 @@ implementation
 
 uses
   Controls, SysUtils,
-  JclGraphUtils,
+  JclAnsiStrings, JclGraphUtils,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
@@ -1793,7 +1796,7 @@ begin
   OrgPos := Stream.Position;
   try
     Stream.ReadBuffer(Hdr, SizeOf(Hdr));
-    if StrLIComp(Hdr.ID, PAnsiChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
+    if StrLICompA(Hdr.ID, PAnsiChar(Display.DigitClass.MapperFileID), Length(Display.DigitClass.MapperFileID)) = 0 then
       PrimReadMapping(Hdr, Stream)
     else
       raise EJVCLSegmentedLEDException.CreateRes(@RsEInvalidMappingFile);

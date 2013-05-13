@@ -260,7 +260,9 @@ end;
 
 procedure TField_GetData(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   Value := TField(Args.Obj).GetData(V2P(Args.Values[0]));
+  {$WARNINGS ON}
 end;
 
 { function IsBlob: Boolean; }
@@ -288,7 +290,9 @@ end;
 
 procedure TField_SetData(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   TField(Args.Obj).SetData(V2P(Args.Values[0]));
+  {$WARNINGS ON}
 end;
 
 { procedure SetFieldType(Value: TFieldType); }
@@ -302,7 +306,9 @@ end;
 
 procedure TField_Validate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   TField(Args.Obj).Validate(V2P(Args.Values[0]));
+  {$WARNINGS ON}
 end;
 
 { property Read AsBoolean: Boolean }
@@ -2085,7 +2091,7 @@ end;
 
 procedure TDataSet_GetCurrentRecord(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TDataSet(Args.Obj).GetCurrentRecord(TJvRecordBuffer(AnsiString(Args.Values[0])));
+  Value := TDataSet(Args.Obj).GetCurrentRecord({$IFDEF RTL250_UP}TRecBuf{$ENDIF}(TJvRecordBuffer(AnsiString(Args.Values[0]))));
 end;
 
 { procedure GetFieldList(List: TList; const FieldNames: string); }

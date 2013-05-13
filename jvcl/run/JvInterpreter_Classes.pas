@@ -32,6 +32,9 @@ unit JvInterpreter_Classes;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_TYPES}
+  Types, // inline
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -731,7 +734,7 @@ end;
 
 procedure TStream_Seek(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TStream(Args.Obj).Seek(Args.Values[0], Args.Values[1]);
+  Value := TStream(Args.Obj).Seek(Args.Values[0], TSeekOrigin(Integer(Args.Values[1])));
 end;
 
 { procedure ReadBuffer(var Buffer; Count: Longint); }

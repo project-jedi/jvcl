@@ -243,7 +243,7 @@ type
     function BookmarkValid(Bookmark: TBookmark): Boolean; override;
     function CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer; override;
     function CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream; override;
-    function GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean; override;
+    function GetFieldData(Field: TField; {$IFDEF RTL250_UP}var{$ENDIF} Buffer: TJvValueBuffer): Boolean; override;
     function GetCurrentRecord(Buffer: PJvMemBuffer): Boolean; override;
     function IsSequenced: Boolean; override;
     function Locate(const KeyFields: string; const KeyValues: Variant;
@@ -381,6 +381,7 @@ uses
   AnsiStrings,
   {$ENDIF HAS_UNIT_ANSISTRINGS}
   FMTBcd, SqlTimSt,
+  JclAnsiStrings,
   {$IFNDEF UNICODE}
   JvJCLUtils,
   {$ENDIF ~UNICODE}
@@ -907,7 +908,7 @@ end;
 
 procedure TJvMemoryData.InitRecord(Buffer: PJvMemBuffer);
 begin
-  inherited InitRecord(Buffer);
+  inherited InitRecord({$IFDEF RTL250_UP}TRecBuf{$ENDIF}(Buffer));
   with PMemBookmarkInfo(Buffer + FBookmarkOfs)^ do
   begin
     BookmarkData := Low(Integer);
@@ -941,7 +942,7 @@ begin
   end;
   for I := 0 to BlobFieldCount - 1 do
     PMemBlobArray(Buffer + FBlobOfs)[I] := PMemBlobArray(Rec.FBlobs)[I];
-  GetCalcFields(Buffer);
+  GetCalcFields({$IFDEF RTL250_UP}TRecBuf{$ENDIF}(Buffer));
 end;
 
 function TJvMemoryData.GetRecord(Buffer: PJvMemBuffer; GetMode: TGetMode;
@@ -1014,20 +1015,20 @@ begin
       if IsEmpty then
         RecBuf := nil
       else
-        RecBuf := ActiveBuffer;
+        RecBuf := PJvMemBuffer(ActiveBuffer);
     dsEdit, dsInsert:
-      RecBuf := ActiveBuffer;
+      RecBuf := PJvMemBuffer(ActiveBuffer);
     dsCalcFields:
-      RecBuf := CalcBuffer;
+      RecBuf := PJvMemBuffer(CalcBuffer);
     dsFilter:
-      RecBuf := TempBuffer;
+      RecBuf := PJvMemBuffer(TempBuffer);
     else
       RecBuf := nil;
   end;
   Result := RecBuf <> nil;
 end;
 
-function TJvMemoryData.GetFieldData(Field: TField; Buffer: TJvValueBuffer): Boolean;
+function TJvMemoryData.GetFieldData(Field: TField; {$IFDEF RTL250_UP}var{$ENDIF} Buffer: TJvValueBuffer): Boolean;
 var
   RecBuf: PJvMemBuffer;
   Data: PByte;
@@ -1049,9 +1050,9 @@ begin
       Inc(Data);
       case Field.DataType of
         ftGuid:
-          Result := Result and (StrLen(PAnsiChar(Data)) > 0);
+          Result := Result and (StrLenA(PAnsiChar(Data)) > 0);
         ftString, ftFixedChar:
-          Result := Result and (not TrimEmptyString or (StrLen(PAnsiChar(Data)) > 0));
+          Result := Result and (not TrimEmptyString or (StrLenA(PAnsiChar(Data)) > 0));
         ftWideString:
           {$IFDEF UNICODE}
           Result := Result and (not TrimEmptyString or (StrLen(PWideChar(Data)) > 0));
@@ -1175,7 +1176,7 @@ begin
     begin
       SaveState := SetTempState(dsFilter);
       try
-        RecordToBuffer(Records[FRecordPos], TempBuffer);
+        RecordToBuffer(Records[FRecordPos], PJvMemBuffer(TempBuffer));
         if (FFilterParser <> nil) and FFilterParser.Eval() then
         begin
           FFilterParser.EnableWildcardMatching := not (foNoPartialCompare in FilterOptions);
@@ -1205,7 +1206,7 @@ end;
 
 procedure TJvMemoryData.SetBlobData(Field: TField; Buffer: PJvMemBuffer; Value: TMemBlobData);
 begin
-  if Buffer = ActiveBuffer then
+  if Buffer = PJvMemBuffer(ActiveBuffer) then
   begin
     if State = dsFilter then
       Error(SNotEditing);
@@ -1498,14 +1499,14 @@ begin
   end;
 
   if State = dsEdit then
-    SetMemoryRecordData(ActiveBuffer, FRecordPos)
+    SetMemoryRecordData(PJvMemBuffer(ActiveBuffer), FRecordPos)
   else
   begin
     if State in [dsInsert] then
-      SetAutoIncFields(ActiveBuffer);
+      SetAutoIncFields(PJvMemBuffer(ActiveBuffer));
     if FRecordPos >= FRecords.Count then
     begin
-      SetMemoryRecordData(ActiveBuffer, AddRecord.Index);
+      SetMemoryRecordData(PJvMemBuffer(ActiveBuffer), AddRecord.Index);
       FRecordPos := FRecords.Count - 1;
     end
     else
@@ -1514,7 +1515,7 @@ begin
         RecPos := 0
       else
         RecPos := FRecordPos;
-      SetMemoryRecordData(ActiveBuffer, InsertRecord(RecPos).Index);
+      SetMemoryRecordData(PJvMemBuffer(ActiveBuffer), InsertRecord(RecPos).Index);
       FRecordPos := RecPos;
     end;
   end;
@@ -1786,7 +1787,7 @@ begin
         try
           for I := 0 to RecordCount - 1 do
           begin
-            RecordToBuffer(Records[I], TempBuffer);
+            RecordToBuffer(Records[I], PJvMemBuffer(TempBuffer));
             CalculateFields(TempBuffer);
             Matched := CompareRecord;
             if Matched then
@@ -2926,7 +2927,7 @@ begin
     FCached := True;
   end
   else
-    FCached := (FBuffer = FDataSet.ActiveBuffer);
+    FCached := (FBuffer = PJvMemBuffer(FDataSet.ActiveBuffer));
   FOpened := True;
   if Mode = bmWrite then
     Truncate;

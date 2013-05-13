@@ -131,7 +131,8 @@ const
 implementation
 
 uses
-  SysUtils, DBConsts, bdeconst,
+  JclAnsiStrings, // must be included before SysUtils ("StrMove" conflicts)
+  SysUtils, DBConsts, Bdeconst,
   JvDBUtils;
 
 constructor TJvQBEQuery.Create(AOwner: TComponent);
@@ -362,7 +363,7 @@ begin
           AText := PAnsiChar(AnsiString(TempQBE.Text));
           try
             FreeStatement;
-            if StrLen(AText) > 1 then
+            if StrLenA(AText) > 1 then
               PrepareQBE(AText)
             else
               _DBError(SEmptySQLStatement);

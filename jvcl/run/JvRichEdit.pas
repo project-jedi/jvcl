@@ -990,6 +990,7 @@ uses
   {$IFDEF RTL200_UP}
   CommDlg,
   {$ENDIF RTL200_UP}
+  JclAnsiStrings,
   JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
 
 type
@@ -1981,6 +1982,7 @@ function FileNameToHGLOBAL(const AFileName: AnsiString): HGLOBAL;
 var
   DataPtr: Pointer;
   Buffer: array[0..MAX_PATH] of AnsiChar;
+  Len: Integer;
 begin
   // DOC : Each entry point that accepts file names should expect all file name
   //       arguments from Word to be in the OEM character set (unless the character
@@ -1989,14 +1991,15 @@ begin
   //  For example: CharToOem will translate the copyright (c) symbol (=1 char)
   //  to C¸ (or something). Not doing so will result in errors.
 
-  StrCopy(Buffer, PAnsiChar(AFileName));
+  StrLCopyA(Buffer, PAnsiChar(AFileName), Length(Buffer));
   CharToOemA(Buffer, Buffer);
 
-  Result := GlobalAlloc(GHND, StrLen(Buffer) + 1); // with last #0, thus + 1
+  Len := StrLenA(Buffer);
+  Result := GlobalAlloc(GHND, Len + 1); // with last #0, thus + 1
   try
     DataPtr := GlobalLock(Result);
     try
-      StrCopy(DataPtr, Buffer);
+      StrLCopyA(DataPtr, Buffer, Len);
     finally
       GlobalUnlock(Result);
     end;
@@ -2009,12 +2012,14 @@ end;
 function AnsiStringToHGLOBAL(const S: AnsiString): HGLOBAL;
 var
   DataPtr: Pointer;
+  Size: Integer;
 begin
-  Result := GlobalAlloc(GHND, Length(S) + 1); // with last #0, thus + 1
+  Size := Length(S) + 1; // with last #0, thus + 1
+  Result := GlobalAlloc(GHND, Size);
   try
     DataPtr := GlobalLock(Result);
     try
-      Move(PAnsiChar(S)^, DataPtr^, Length(S) + 1);
+      Move(PAnsiChar(S)^, DataPtr^, Size);
     finally
       GlobalUnlock(Result);
     end;
@@ -6440,7 +6445,7 @@ begin
 
     Result :=
       (AStream.Read(Buffer, CRTFHeaderSize) = CRTFHeaderSize) and
-      (StrIComp(PAnsiChar(CRTFHeader), Buffer) = 0);
+      (StrICompA(PAnsiChar(CRTFHeader), Buffer) = 0);
   finally
     AStream.Position := SavedPosition;
   end;
@@ -6504,9 +6509,9 @@ begin
   FFreeStream := False;
   FStream := Stream;
 
-  FSavedPosition := FStream.Seek(0, soFromCurrent);
-  FStreamSize := FStream.Seek(0, soFromEnd);
-  FStream.Seek(FSavedPosition, soFromBeginning);
+  FSavedPosition := FStream.Seek(0, soCurrent);
+  FStreamSize := FStream.Seek(0, soEnd);
+  FStream.Seek(FSavedPosition, soBeginning);
   FBytesConverted := 0;
 
   Result := True;

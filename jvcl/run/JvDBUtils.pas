@@ -932,7 +932,7 @@ begin
     DS := TDataSetAccess(DataSet);
 		DS.CheckBrowseMode;
 		if ForceScrollEvents or (rmCenter in Mode) then DS.DoBeforeScroll;
-		DS.InternalGotoBookmark(Pointer(Bookmark));
+		DS.InternalGotoBookmark({$IFNDEF RTL250_UP}Pointer{$ENDIF}(Bookmark));
 		DS.Resync(Mode);
 		if ForceScrollEvents or (rmCenter in Mode) then DS.DoAfterScroll;
 	end;

@@ -5,6 +5,9 @@ object FrameInstall: TFrameInstall
   Height = 397
   TabOrder = 0
   TabStop = True
+  DesignSize = (
+    518
+    397)
   object LblTarget: TLabel
     Left = 8
     Top = 16

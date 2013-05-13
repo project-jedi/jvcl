@@ -40,7 +40,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  Classes, SysUtils,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
+  SysUtils, Classes,
   JclUnicode,
   JvComponentBase, JvId3v2Types, JvId3v1;
 
@@ -1869,8 +1872,8 @@ begin
       SourceFileSize := Source.Size;
       Dest.Size := SourceFileSize + DestTagSizeInclHeader - SourceTagSizeInclHeader;
 
-      Source.Seek(SourceTagSizeInclHeader, soFromBeginning);
-      Dest.Seek(DestTagSizeInclHeader, soFromBeginning);
+      Source.Seek(SourceTagSizeInclHeader, soBeginning);
+      Dest.Seek(DestTagSizeInclHeader, soBeginning);
       if SourceFileSize > SourceTagSizeInclHeader then
         Dest.CopyFrom(Source, SourceFileSize - SourceTagSizeInclHeader);
     finally
@@ -1901,7 +1904,7 @@ var
 begin
   { Seek sync point 11111111 111 }
   LastWasFF := False;
-  Result := AStream.Seek(BeginOffset, soFromBeginning);
+  Result := AStream.Seek(BeginOffset, soBeginning);
 
   while True do
   begin
@@ -1919,7 +1922,7 @@ begin
         Inc(Result, I - 1);
         if (I + BufferSize - 1 >= BytesRead) or (I = 0) then
         begin
-          AStream.Seek(Result, soFromBeginning);
+          AStream.Seek(Result, soBeginning);
           if not AStream.Read(Buffer, BufferSize) = BufferSize then
             Result := -1;
         end
@@ -3034,19 +3037,19 @@ begin
         ID3Error(RsENoTempStream, Self);
 
       LTempStreamSize := GetTempStreamSize;
-      FTempStream.Seek(0, soFromBeginning);
+      FTempStream.Seek(0, soBeginning);
       ApplyUnsynchronisationScheme(FTempStream, TmpStream, LTempStreamSize);
-      TmpStream.Seek(0, soFromBeginning);
-      FTempStream.Seek(0, soFromBeginning);
+      TmpStream.Seek(0, soBeginning);
+      FTempStream.Seek(0, soBeginning);
       FTempStream.CopyFrom(TmpStream, TmpStream.Size);
     end
     else
     begin
       { Exclude header (size=10) from the unsynchronisation }
-      FStream.Seek(10, soFromBeginning);
+      FStream.Seek(10, soBeginning);
       ApplyUnsynchronisationScheme(FStream, TmpStream, FStream.Size - 10);
-      TmpStream.Seek(0, soFromBeginning);
-      FStream.Seek(10, soFromBeginning);
+      TmpStream.Seek(0, soBeginning);
+      FStream.Seek(10, soBeginning);
       FStream.CopyFrom(TmpStream, TmpStream.Size);
     end;
   finally
@@ -3079,7 +3082,7 @@ begin
   if not Assigned(FTempStream) then
     FTempStream := TJvID3Stream.Create;
 
-  FTempStream.Seek(0, soFromBeginning);
+  FTempStream.Seek(0, soBeginning);
 
   { Init FTempStream as FStream }
   FTempStream.FSourceEncoding := FStream.FSourceEncoding;
@@ -3707,7 +3710,7 @@ begin
   if not Assigned(FTempStream) then
     FTempStream := TJvID3Stream.Create;
 
-  FTempStream.Seek(0, soFromBeginning);
+  FTempStream.Seek(0, soBeginning);
   RemoveUnsynchronisationScheme(FStream, FTempStream, ASize);
 end;
 
@@ -3817,12 +3820,12 @@ begin
 
       { Update header & write it again to the stream }
       Header.FSize := NewTagSizeInclHeader - 10;
-      FStream.Seek(0, soFromBeginning);
+      FStream.Seek(0, soBeginning);
       Header.Write;
 
       { Write the memory stream to the file }
-      FStream.Seek(0, soFromBeginning);
-      FileStream.Seek(0, soFromBeginning);
+      FStream.Seek(0, soBeginning);
+      FileStream.Seek(0, soBeginning);
       FileStream.CopyFrom(FStream, FStream.Size);
     finally
       FileStream.Free;
@@ -3972,7 +3975,7 @@ begin
     ID3Error(RsENoTempStream, Self);
 
   LTempStreamSize := GetTempStreamSize;
-  FTempStream.Seek(0, soFromBeginning);
+  FTempStream.Seek(0, soBeginning);
   FStream.CopyFrom(FTempStream, LTempStreamSize);
 end;
 
@@ -6612,7 +6615,7 @@ begin
     Stream := TMemoryStream.Create;
     try
       TGraphic(Source).SaveToStream(Stream);
-      Stream.Seek(0, soFromBeginning);
+      Stream.Seek(0, soBeginning);
       LoadFromStream(Stream);
     finally
       Stream.Free;

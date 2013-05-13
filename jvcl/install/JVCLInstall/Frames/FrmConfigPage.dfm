@@ -5,6 +5,9 @@ object FrameConfigPage: TFrameConfigPage
   Height = 397
   TabOrder = 0
   TabStop = True
+  DesignSize = (
+    518
+    397)
   object LblBCBGuide: TLabel
     Left = 279
     Top = 379
@@ -213,22 +216,32 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 9
       TabStop = True
       Visible = False
+      ExplicitLeft = 2
+      ExplicitTop = 203
+      ExplicitWidth = 261
+      ExplicitHeight = 49
       inherited LblCaption: TLabel
         Left = 7
         Width = 68
         Caption = 'BP&L Directory:'
+        ExplicitLeft = 7
+        ExplicitWidth = 68
       end
       inherited Bevel: TBevel
         Width = 261
         Visible = False
+        ExplicitWidth = 261
       end
       inherited EditDirectory: TEdit
         Left = 7
         Width = 227
         OnChange = FrameDirEditBrowseBPLEditDirectoryChange
+        ExplicitLeft = 7
+        ExplicitWidth = 227
       end
       inherited BtnDirBrowse: TButton
         Left = 234
+        ExplicitLeft = 234
       end
     end
     inline FrameDirEditBrowseHPP: TFrameDirEditBrowse
@@ -239,15 +252,22 @@ object FrameConfigPage: TFrameConfigPage
       TabOrder = 10
       TabStop = True
       Visible = False
+      ExplicitLeft = 2
+      ExplicitTop = 258
+      ExplicitWidth = 261
+      ExplicitHeight = 49
       inherited LblCaption: TLabel
         Left = 7
         Width = 70
         Caption = '&HPP Directory:'
         ParentShowHint = False
+        ExplicitLeft = 7
+        ExplicitWidth = 70
       end
       inherited Bevel: TBevel
         Width = 261
         Visible = False
+        ExplicitWidth = 261
       end
       inherited EditDirectory: TEdit
         Left = 7
@@ -256,10 +276,13 @@ object FrameConfigPage: TFrameConfigPage
           'The HPP directory specifies where the generated .hpp files'#13#10'shou' +
           'ld go. If this field is empty the generated .hpp files are'#13#10'writ' +
           'ten to the directory where the pascal source file is.'
+        ExplicitLeft = 7
+        ExplicitWidth = 227
       end
       inherited BtnDirBrowse: TButton
         Left = 234
         OnClick = FrameDirEditBrowseHPPBtnJCLDirBrowseClick
+        ExplicitLeft = 234
       end
     end
     object CheckBoxGenerateMapFiles: TCheckBox

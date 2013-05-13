@@ -31,6 +31,9 @@ unit HtHint;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvConsts;
 

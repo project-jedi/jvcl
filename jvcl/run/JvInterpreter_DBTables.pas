@@ -1741,7 +1741,9 @@ end;
 
 procedure TParam_GetData(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   TParam(Args.Obj).GetData(V2P(Args.Values[0]));
+  {$WARNINGS ON}
 end;
 
 { function GetDataSize: Integer; }
@@ -1769,14 +1771,18 @@ end;
 
 procedure TParam_SetBlobData(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   TParam(Args.Obj).SetBlobData(V2P(Args.Values[0]), Args.Values[1]);
+  {$WARNINGS ON}
 end;
 
 { procedure SetData(Buffer: Pointer); }
 
 procedure TParam_SetData(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   TParam(Args.Obj).SetData(V2P(Args.Values[0]));
+  {$WARNINGS ON}
 end;
 
 { property Read AsBCD: Currency }
@@ -2114,7 +2120,9 @@ end;
 
 procedure TParams_GetParamList(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF} // we want to call the deprecated function
   TParams(Args.Obj).GetParamList(V2O(Args.Values[0]) as TList, Args.Values[1]);
+  {$WARNINGS ON}
 end;
 
 { function IsEqual(Value: TParams): Boolean; }

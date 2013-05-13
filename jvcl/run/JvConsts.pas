@@ -86,6 +86,14 @@ const
   {$IFDEF DELPHI17}
   SDelphiKey = 'Software\Embarcadero\BDS\10.0';
   {$ENDIF DELPHI17}
+  {$IFDEF DELPHI18}
+  SDelphiKey = 'Software\Embarcadero\BDS\11.0';
+  {$ENDIF DELPHI18}
+
+  {$IF not declared(SDelphiKey)}
+    {$MESSAGE FATAL 'Declaration for SDelphiKey is missing'}
+  {$IFEND}
+  
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;

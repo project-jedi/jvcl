@@ -532,9 +532,12 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER10_UP}
+  {$IFDEF HAS_UNIT_TYPES}
   Types,
-  {$ENDIF COMPILER10_UP}
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF RTL250_UP}
+  AnsiStrings,
+  {$ENDIF RTL250_UP}
   VarUtils, Variants,
   JvConsts;
 
@@ -1439,7 +1442,7 @@ begin
   Items.BeginUpdate;
   try
     Items.Clear;
-    if StrComp(Buf, cLISTVIEW01) <> 0 then
+    if {$IFDEF RTL250_UP}AnsiStrings.{$ENDIF}StrComp(Buf, cLISTVIEW01) <> 0 then
     begin
       Stream.Position := Start;
       LoadOldStyle(Stream);

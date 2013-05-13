@@ -32,6 +32,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types,
+  {$ENDIF HAS_UNIT_TYPES}
   Windows, Classes, Controls, DB, DBTables, BDE,
   {$IFDEF COMPILER10_UP}
   DBCommonTypes,
@@ -141,6 +144,7 @@ implementation
 
 uses
   SysUtils, Math, Forms, StdCtrls,
+  JclAnsiStrings,
   JvProgressUtils, JvJVCLUtils;
 
 const
@@ -512,7 +516,7 @@ begin
       Exit;
     end;
     if CurFlag in TraceFlags then
-      FOnTrace(Self, CurFlag, string(StrPas(PTraceDesc(CBInfo)^.pszTrace)));
+      FOnTrace(Self, CurFlag, string(StrPasA(PTraceDesc(CBInfo)^.pszTrace)));
   end;
 end;
 
@@ -557,7 +561,7 @@ begin
   if CallInfo^.iPercentDone >= 0 then
     SetPercent(CallInfo^.iPercentDone)
   else
-    SetMessage(string(StrPas(CallInfo^.szMsg)));
+    SetMessage(string(StrPasA(CallInfo^.szMsg)));
 end;
 
 function TJvDBProgress.QryProgressCallback(CBInfo: Pointer): CBRType;

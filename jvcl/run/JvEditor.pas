@@ -42,6 +42,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Windows, Messages, Classes, Controls,
   JvEditorCommon;
 
@@ -957,7 +960,13 @@ begin
   Key := Char(Value);
   WasSelected := (FSelection.IsSelected) and (not PersistentBlocks);
   {$IFDEF UNICODE}
-  if (Key >= #32) and ((Key <= #$FF) or not TCharacter.IsControl(Char(Value))) then
+  if (Key >= #32) and ((Key <= #$FF) or
+    {$IFDEF RTL250_UP}
+    not Char(Value).IsControl
+    {$ELSE}
+    not TCharacter.IsControl(Char(Value))
+    {$ENDIF RTL250_UP}
+    ) then
   {$ELSE}
   if CharInSet(Key, [#32..#255]) then
   {$ENDIF UNICODE}

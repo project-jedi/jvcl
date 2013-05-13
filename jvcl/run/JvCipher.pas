@@ -230,31 +230,17 @@ begin
 end;
 
 function TJvCustomCipher.DecodeString(const Key, Value: AnsiString): AnsiString;
-var
-  Tmp: PAnsiChar;
 begin
-  GetMem(Tmp, Length(Value) + 1);
-  try
-    StrPCopy(Tmp, Value);
-    Decode(Key, Tmp, Length(Value));
-    SetString(Result, Tmp, Length(Value));
-  finally
-    FreeMem(Tmp);
-  end;
+  Result := Value;
+  UniqueString(Result);
+  Decode(Key, PAnsiChar(Result), Length(Value));
 end;
 
 function TJvCustomCipher.EncodeString(const Key, Value: AnsiString): AnsiString;
-var
-  Tmp: PAnsiChar;
 begin
-  GetMem(Tmp, Length(Value) + 1);
-  try
-    StrPCopy(Tmp, Value);
-    Encode(Key, Tmp, Length(Value));
-    SetString(Result, Tmp, Length(Value));
-  finally
-    FreeMem(Tmp);
-  end;
+  Result := Value;
+  UniqueString(Result);
+  Encode(Key, PAnsiChar(Result), Length(Value));
 end;
 
 function TJvCustomCipher.GetIsStored: Boolean;
