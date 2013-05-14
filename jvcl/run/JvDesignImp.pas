@@ -1242,12 +1242,12 @@ end;
 {$IFDEF RTL240_UP}
 procedure TJvDesignDesigner.DrawSelectionMarks(AControl: TControl);
 begin
-  {$MESSAGE WARN 'Check and implement TJvDesignDesigner.DrawSelectionMarks if necessary'}
+  {.$MESSAGE WARN 'Check and implement TJvDesignDesigner.DrawSelectionMarks if necessary'}
 end;
 
 function TJvDesignDesigner.IsSelected(AControl: TControl): Boolean;
 begin
-  {$MESSAGE WARN 'Check and implement TJvDesignDesigner.IsSelected if necessary'}
+  {.$MESSAGE WARN 'Check and implement TJvDesignDesigner.IsSelected if necessary'}
   Result := False;
 end;
 {$ENDIF RTL240_UP}

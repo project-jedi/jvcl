@@ -2237,12 +2237,14 @@ end;
 
 { procedure Translate(Src, Dest: PChar; ToOem: Boolean); }
 
+{$WARNINGS OFF} // we want to call the deprecated function
 procedure TDataSet_Translate(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TDataSet(Args.Obj).Translate(PAnsiChar(AnsiString(Args.Values[0])),
                                PAnsiChar(AnsiString(Args.Values[1])),
                                Args.Values[2]);
 end;
+{$WARNINGS ON}
 
 { procedure UpdateCursorPos; }
 
