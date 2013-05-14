@@ -16,18 +16,14 @@ SET JVCLROOT=%SETUPDIR%\..\..
 SET JVCLBUILTDIR=%SETUPDIR%\setupbuild
 
 :: == Find JCL root dir ==
-SET JCLROOT=%JVCLROOT%\..\jcl
-if exist "%JCLROOT%\source\common\JclBase.pas" goto JclRootDirFound
-:: Try the "trunk" checkout
 SET JCLROOT=%JVCLROOT%\..\jcl\jcl
-if not exist "%JCLROOT%\source\common\JclBase.pas" goto NoRootDirFound
+if exist "%JCLROOT%\source\common\JclBase.pas" goto JclRootDirFound
+goto NoRootDirFound
 :JclRootDirFound
 
-SET JCLBUILTDIR=%JCLROOT%\..\JclInnoSetup\setupbuild
+SET JCLBUILTDIR=%JCLROOT%\..\thirdparty\InnoSetup\setupbuild
 if not exist "%JCLROOT%\..\Install.iss" goto JclInnoSetupDirFound
-:: Try the "trunk" checkout
-SET JCLBUILTDIR=%JCLROOT%\..\InnoSetup\setupbuild
-if not exist "%JCLROOT%\..\Install.iss" goto NoJclInnoSetupDirFound
+goto NoJclInnoSetupDirFound
 :JclInnoSetupDirFound
 
 SET InnoSetupDir=%JCLBUILTDIR%\..\InnoSetup

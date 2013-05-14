@@ -19,8 +19,6 @@
 #define Include_Examples
 
 #include "Settings.iss"
-; get the JCL version
-#include "..\..\..\JclInnoSetup\Settings.iss"
 
 #define MyAppId "Jedi Visual Component Library"
 #define MyAppName "JEDI Visual Component Library"
@@ -59,6 +57,9 @@
 #define JvclLib17    JvclLib
 #define   JvclBpl17  JvclBpl
 #define   JvclHpp17  JvclHpp
+#define JvclLib18    JvclLib
+#define   JvclBpl18  JvclBpl
+#define   JvclHpp18  JvclHpp
 
 #endif
 
@@ -167,40 +168,58 @@ Name: "Options\RegisterGlobalDesignEditors"; Description: "Register global desig
 Name: "{app}\bin"
 Name: "{app}\dcu"
 ; DCU/OBJ output directories
+; Delphi 6
 Name: "{app}\lib\d6"
 Name: "{app}\lib\d6\debug"
+; Delphi 7
 Name: "{app}\lib\d7"
 Name: "{app}\lib\d7\debug"
+; 2005
 Name: "{app}\lib\d9"
 Name: "{app}\lib\d9\debug"
+; 2006
 Name: "{app}\lib\d10"
 Name: "{app}\lib\d10\debug"
+; 2007
 Name: "{app}\lib\d11"
 Name: "{app}\lib\d11\debug"
+; 2009
 Name: "{app}\lib\d12"
 Name: "{app}\lib\d12\debug"
+; 2010
 Name: "{app}\lib\d14"
 Name: "{app}\lib\d14\debug"
+; XE
 Name: "{app}\lib\d15"
 Name: "{app}\lib\d15\debug"
-Name: "{app}\lib\d16\"
+; XE2
+Name: "{app}\lib\d16"
 Name: "{app}\lib\d16\win32"
 Name: "{app}\lib\d16\win32\debug"
 Name: "{app}\lib\d16\win64"
 Name: "{app}\lib\d16\win64\debug"
+; XE3
+Name: "{app}\lib\d17"
 Name: "{app}\lib\d17\win32"
 Name: "{app}\lib\d17\win32\debug"
 Name: "{app}\lib\d17\win64"
 Name: "{app}\lib\d17\win64\debug"
+; XE4
+Name: "{app}\lib\d18"
+Name: "{app}\lib\d18\win32"
+Name: "{app}\lib\d18\win32\debug"
+Name: "{app}\lib\d18\win64"
+Name: "{app}\lib\d18\win64\debug"
+
 
 [Files]
-Source: {#JvclRoot}\*; DestDir: "{app}"; Flags: ignoreversion
+Source: {#JvclRoot}\*; DestDir: "{app}"; Excludes: ".git,.svn"; Flags: ignoreversion
 Source: {#JvclRoot}\bin\*.csv; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: {#JvclRoot}\bin\*.bmp; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: {#JvclRoot}\bin\*.mdb; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: {#JvclRoot}\bin\Data\*; DestDir: "{app}\bin\Data"; Flags: ignoreversion
 Source: {#JvclRoot}\common\*.inc; DestDir: "{app}\common"; Excludes: "jedi.inc"; Flags: ignoreversion
-Source: {#JvclRoot}\common\jedi\*; DestDir: "{app}\common"; Flags: ignoreversion
+Source: {#JvclRoot}\common\jedi\*; DestDir: "{app}\common"; Excludes: ".git"; Flags: ignoreversion
 Source: {#JvclRoot}\run\*.pas; DestDir: "{app}\run"; Flags: ignoreversion
 Source: {#JvclRoot}\run\*.dfm; DestDir: "{app}\run"; Flags: ignoreversion
 Source: {#JvclRoot}\design\*.pas; DestDir: "{app}\design"; Flags: ignoreversion
@@ -281,6 +300,13 @@ Source: {#JvclLib17}\*; DestDir: "{app}\lib\d17"; Excludes: ".svn,__history,*.tx
 Source: {#JvclBpl17}\*; DestDir: "{code:GetDelphiBplDir|17}"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclBpl17}\Win64\*; DestDir: "{code:GetDelphiBplDir|17}\Win64"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclHpp17}\*; DestDir: "{app}\include\d17"; Components: "IDE\Delphi17"; Flags: ignoreversion sortfilesbyextension
+#endif
+#ifdef Include_Delphi18
+; SolidBreak; lib\Delphi XE4
+Source: {#JvclLib18}\*; DestDir: "{app}\lib\d18"; Excludes: ".svn,__history,*.txt"; Components: "IDE\Delphi18"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
+Source: {#JvclBpl18}\*; DestDir: "{code:GetDelphiBplDir|18}"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
+Source: {#JvclBpl18}\Win64\*; DestDir: "{code:GetDelphiBplDir|18}\Win64"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
+Source: {#JvclHpp18}\*; DestDir: "{app}\include\d18"; Components: "IDE\Delphi18"; Flags: ignoreversion sortfilesbyextension
 #endif
 
 #endif
@@ -377,6 +403,15 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL"; ValueType: string; Va
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|17}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi17";
 #endif
+#ifdef Include_Delphi18
+; Delphi XE4
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|18}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d18; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JVCL"; ValueType: string; ValueName: "Version"; ValueData: {#JvclVersionStr}; Components: "IDE\Delphi18"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Jedi\JVCL\IDE"; ValueType: dword; ValueName: "RegisterGlobalDesignEditors"; ValueData: 1; Components: "Options\RegisterGlobalDesignEditors"; Flags: uninsdeletevalue;
+Root: HKCU; Subkey: "{code:GetDelphiRegKey|18}\Globals"; ValueType: string; ValueName: "ForceEnvOptionsUpdate"; ValueData: "1"; Components: "IDE\Delphi18";
+#endif
 
 #endif
 
@@ -444,6 +479,15 @@ Type: files; Name: "{app}\lib\d17\win64\debug\*"
 Type: files; Name: "{app}\include\d17\*"
 Type: files; Name: "{code:GetDelphiBplDir|17}\Jv*.*"
 Type: files; Name: "{code:GetDelphiBplDir|17}\Win64\Jv*.*"
+; lib\Delphi/C++Builder XE4
+Type: files; Name: "{app}\lib\d18\win32\*"
+Type: files; Name: "{app}\lib\d18\win32\debug\*"
+Type: files; Name: "{app}\lib\d18\win64\*"
+Type: files; Name: "{app}\lib\d18\win64\debug\*"
+Type: files; Name: "{app}\include\d18\*"
+Type: files; Name: "{code:GetDelphiBplDir|18}\Jv*.*"
+Type: files; Name: "{code:GetDelphiBplDir|18}\Win64\Jv*.*"
+
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
