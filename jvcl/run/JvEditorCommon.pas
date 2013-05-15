@@ -3524,6 +3524,7 @@ var
   pt: TPoint;
   XX, YY: Integer;
 begin
+  FSelection.Selecting := False; // may be true from a MouseDown+MouseMove, if another application had the focus when dbl-clicking on the editor
   FDoubleClick := True;
   if Assigned(FOnDblClick) then
     FOnDblClick(Self);
