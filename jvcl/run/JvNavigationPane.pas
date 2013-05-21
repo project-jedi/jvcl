@@ -34,7 +34,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
-  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList,
+  Windows, Messages, Controls, Graphics, Menus, ExtCtrls, ImgList, Math,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
@@ -2338,23 +2338,46 @@ var
     Result := Assigned(Images) and (ImageIndex >= 0);
   end;
 
+
+  function ColorBrightness(const aColor:Longint; const aChangeValue:Integer; aDestColor:Longint):Longint;
+  //Change Brightness from aColor to  aDestColor with aChangeValue in procent (100%=aDestColor)
+  type
+    TRGBColor = packed record
+      case Boolean of
+          True : (Color: Int32);
+          False: (r: Byte;
+                  g: Byte;
+                  b: Byte;
+                  a: Byte);
+    end;
+  var
+    Rgb, RgbDest: TRGBColor;
+  begin
+    Rgb.Color:=ColorToRGB(aColor);
+    RgbDest.Color:=ColorToRGB(aDestColor);
+    Rgb.r := Min(Max(Rgb.r - Round(aChangeValue * (Rgb.r - RgbDest.r) / 100), 0), $FF);
+    Rgb.g := Min(Max(Rgb.g - Round(aChangeValue * (Rgb.g - RgbDest.g) / 100), 0), $FF);
+    Rgb.b := Min(Max(Rgb.b - Round(aChangeValue * (Rgb.b - RgbDest.b) / 100), 0), $FF);
+    Result := Rgb.color;
+  end;
+
 begin
   R := ClientRect;
   if HotTrack and (bsMouseInside in MouseStates) then
   begin
     if bsMouseDown in MouseStates then
-      GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
+     GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
     else
-      GradientFillRect(Canvas, R, Colors.ButtonHotColorFrom, Colors.ButtonHotColorTo, fdTopToBottom, 32);
+     GradientFillRect(Canvas, R, Colors.ButtonHotColorFrom, Colors.ButtonHotColorTo, fdTopToBottom, 32);
   end
   else
   if Down then
-    GradientFillRect(Canvas, R, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32)
+   GradientFillRect(Canvas, R, Colors.ButtonSelectedColorFrom, Colors.ButtonSelectedColorTo, fdTopToBottom, 32)
   else
   if bsMouseDown in MouseStates then
-    GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
+   GradientFillRect(Canvas, R, Colors.ButtonSelectedColorTo, Colors.ButtonSelectedColorFrom, fdTopToBottom, 32)
   else
-    GradientFillRect(Canvas, ClientRect, Colors.ButtonColorFrom, Colors.ButtonColorTo, fdTopToBottom, 32);
+   GradientFillRect(Canvas, ClientRect, Colors.ButtonColorFrom, Colors.ButtonColorTo, fdTopToBottom, 32);
   InflateRect(R, -4, -4);
   if IsValidImage then
   begin
@@ -2365,17 +2388,20 @@ begin
   end;
   if Caption <> '' then
   begin
-    if HotTrack and (bsMouseInside in MouseStates) and not (bsMouseDown in MouseStates) then
+   if HotTrack and (bsMouseInside in MouseStates) and not (bsMouseDown in MouseStates) then
       Canvas.Font := HotTrackFont
     else
       Canvas.Font := Font;
     SetBkMode(Canvas.Handle, TRANSPARENT);
 
+    if not Enabled then
+      Canvas.Font.Color := ColorBrightness(Font.Color, 75, Canvas.Pixels[(R.Right - R.Left) div 2, (R.Bottom - R.Top) div 2]);
+
     TempRect := R;
     DrawText(Canvas, Caption, Length(Caption), TempRect,
-      DT_CALCRECT or cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER);
+     DT_CALCRECT or cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER);
     if WordWrap then
-      OffsetRect(R, 0, ((R.Bottom - R.Top) - (TempRect.Bottom - TempRect.Top)) div 2);
+     OffsetRect(R, 0, ((R.Bottom - R.Top) - (TempRect.Bottom - TempRect.Top)) div 2);
     DrawText(Canvas, Caption, Length(Caption), R,
       cAlignment[Alignment] or cWordWrap[WordWrap] or DT_VCENTER);
   end;
