@@ -2870,22 +2870,21 @@ begin
   Index := L;
 end;
 
+function SortIdentifier(Item1, Item2: Pointer): Integer;
+begin
+  { function AnsiStrIComp about 30% faster than AnsiCompareText }
+  { Result := AnsiCompareText(TJvInterpreterIdentifier(Item1).Identifier,
+     TJvInterpreterIdentifier(Item2).Identifier); }
+  Result := AnsiStrIComp(PChar(TJvInterpreterIdentifier(Item1).Identifier),
+    PChar(TJvInterpreterIdentifier(Item2).Identifier));
+end;
+
 procedure TJvInterpreterIdentifierList.Sort(Compare: TListSortCompare = nil);
-
-  function SortIdentifier(Item1, Item2: Pointer): Integer;
-  begin
-    { function AnsiStrIComp about 30% faster than AnsiCompareText }
-    { Result := AnsiCompareText(TJvInterpreterIdentifier(Item1).Identifier,
-       TJvInterpreterIdentifier(Item2).Identifier); }
-    Result := AnsiStrIComp(PChar(TJvInterpreterIdentifier(Item1).Identifier),
-      PChar(TJvInterpreterIdentifier(Item2).Identifier));
-  end;
-
 begin
   if Assigned(Compare) then
     inherited Sort(Compare)
   else
-    inherited Sort(TListSortCompare(@SortIdentifier));
+    inherited Sort(SortIdentifier);
 end;
 
 function TJvInterpreterIdentifierList.IndexOf(const UnitName, Identifier: string): TJvInterpreterIdentifier;
@@ -8205,7 +8204,7 @@ end;
 
 //=== { TJvInterpreterMethodList } ===========================================
 
-function SortIdentifier(Item1, Item2: Pointer): Integer;
+function SortMethodIdentifier(Item1, Item2: Pointer): Integer;
 begin
   { function AnsiStrIComp about 30% faster than AnsiCompareText }
   { Result := AnsiCompareText(TJvInterpreterIdentifier(Item1).Identifier,
@@ -8225,7 +8224,7 @@ end;
 
 procedure TJvInterpreterMethodList.Sort(Compare: TListSortCompare);
 begin
-  inherited Sort(SortIdentifier);
+  inherited Sort(SortMethodIdentifier);
 end;
 
 //=== { TJvInterpreterRecord } ===============================================
