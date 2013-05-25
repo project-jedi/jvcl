@@ -3767,10 +3767,10 @@ begin
 end;
 
 procedure TJvDBGrid.CalcSizingState(X, Y: Integer; var State: TGridState;
-  var Index: Longint; var SizingPos, SizingOfs: Integer;
-  var FixedInfo: TGridDrawInfo);
+  var Index: Longint; var SizingPos, SizingOfs: Integer; var FixedInfo: TGridDrawInfo);
 var
   Coord: TGridCoord;
+  DrawInfo: TGridDrawInfo;
 begin
   inherited CalcSizingState(X, Y, State, Index, SizingPos, SizingOfs, FixedInfo);
 
@@ -3778,14 +3778,18 @@ begin
   if not (dgColumnResize in Options) and not (csDesigning in ComponentState) then
     Exit;
 
-
   FCanResizeColumn := State = gsColSizing; //  If true, mouse double clicking can resize column.
 
-  // Mantis 5818: the inherited code sometimes gives an invalid index for the column
-  if Index > LeftCol + VisibleColCount then
-    Index := LeftCol + VisibleColCount;
+  { Mantis 5818: Index-out-of-range error when there is only one visible column partially displayed }
+  CalcDrawInfo(DrawInfo);
+  if (DrawInfo.Horz.FullVisBoundary = DrawInfo.Horz.FixedBoundary) then
+    Index := Index - 1; // Index from inherited code has the value of 2.
 
-  FResizeColumnIndex := Index - 1;// Store the column index to resize.
+  { Store the column index to resize }
+  if dgIndicator in Options then
+    FResizeColumnIndex := Index - 1
+  else
+    FResizeColumnIndex := Index; // Mantis 6061
 
   if (State = gsNormal) and (Y <= RowHeights[0]) then
   begin
