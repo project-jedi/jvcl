@@ -266,8 +266,8 @@ end;
 procedure TJvPropertyStorage.LoadAnyProperty(PropInfo: PPropInfo);
 begin
   try
-    if PropInfo <> nil then
-      ReadProperty (AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
+    if (PropInfo <> nil) and (PropInfo.SetProc <> nil) then
+      ReadProperty(AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
   except
     { ignore any exception }
   end;
@@ -275,8 +275,8 @@ end;
 
 procedure TJvPropertyStorage.StoreAnyProperty(PropInfo: PPropInfo);
 begin
-  if PropInfo <> nil then
-    WriteProperty (AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
+  if (PropInfo <> nil) and (PropInfo.SetProc <> nil) then // write only if we can load it again
+    WriteProperty(AppStoragePath, GetItemName(PropInfo.Name), TPersistent(FObject), PropInfo.Name);
 end;
 
 
