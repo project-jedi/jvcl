@@ -41,7 +41,6 @@ object FoLog: TFoLog
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    ExplicitWidth = 413
     object ToolButton2: TToolButton
       Left = 0
       Top = 0
@@ -97,8 +96,6 @@ object FoLog: TFoLog
     RowSelect = True
     TabOrder = 1
     ViewStyle = vsReport
-    ExplicitWidth = 413
-    ExplicitHeight = 313
   end
   object ImageList1: TImageList
     Left = 16

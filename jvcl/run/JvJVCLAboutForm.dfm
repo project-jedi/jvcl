@@ -635,7 +635,6 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
           C383C1C62B2174AB86419B6981FF0070D7F537450D5C14ACF547F2C0DA65DAB6
           3ECD31F7119A5FECDBAFF9F59BFEFD9AFEA7A8AB8CB97A12F53FFFD9}
         OnMouseDown = Panel1MouseDown
-        ExplicitWidth = 137
       end
       object imgProjectJEDI: TImage
         Left = 13

@@ -51,7 +51,6 @@ object ProfReport: TProfReport
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 233
     DesignSize = (
       445
       33)
@@ -143,6 +142,5 @@ object ProfReport: TProfReport
     TabOrder = 1
     ViewStyle = vsReport
     OnColumnClick = lvReportColumnClick
-    ExplicitHeight = 233
   end
 end
