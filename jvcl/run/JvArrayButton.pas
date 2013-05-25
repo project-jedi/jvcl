@@ -46,6 +46,7 @@ type
   private
     FPtDown: TPoint;
     FPushDown: Boolean;
+    FDown: Boolean;
     FColor: TColor;
     FRows: Integer;
     FCols: Integer;
@@ -54,6 +55,7 @@ type
     FColors: TStringList;
     FHints: THintStringList;
     FEnableds: array of Boolean;
+    FDowns: array of Boolean;
     {$IFDEF JVCLThemesEnabled}
     FMouseOverBtn: TPoint;
     FThemed: Boolean;
@@ -70,6 +72,8 @@ type
     procedure SetHints(const Value: THintStringList);
     function GetEnableds(Index: Integer): Boolean;
     procedure SetEnableds(Index: Integer; const Value: Boolean);
+    function GetDowns(Index: Integer): Boolean;
+    procedure SetDowns(Index: Integer; const Value: Boolean);
   protected
     procedure FontChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -107,6 +111,7 @@ type
 
     // A list of individual button Enabled state, from the top-left to the bottom-right button
     property Enableds[Index: Integer]: Boolean read GetEnableds write SetEnableds;
+    property Downs[Index: Integer]: Boolean read GetDowns write SetDowns;
   published
     property Align;
     property Anchors;
@@ -114,6 +119,8 @@ type
     property Cols: Integer read FCols write SetCols;
     {A List of button captions from the top-left to the bottom-right button}
     property Captions: TStrings read GetCaptions write SetCaptions;
+    {Buttons can be stay in pressed state}
+    property CanDown: Boolean read FDown write FDown default False;
     property Enabled;
     property Font;
     property Height default 35;
@@ -188,6 +195,7 @@ begin
   FHints.Free;
   FColors.Free;
   SetLength(FEnableds, 0);
+  SetLength(FDowns, 0);
   inherited Destroy;
 end;
 
@@ -205,13 +213,17 @@ procedure TJvArrayButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   Col, Row: Integer;
+  Index: Integer;
 begin
   if Button = mbLeft then
   begin
     MouseToCell(X, Y, Col, Row);
-    if FEnableds[Row * Cols + Col] then
+    Index := Row * Cols + Col;
+    if FEnableds[Index] then
     begin
       FPushDown := True;
+      if FDown then
+        FDowns[Index] := not FDowns[Index];
       FPtDown := Point(Col, Row);
       Invalidate;
     end;
@@ -346,12 +358,14 @@ begin
       if (FPtDown.X = Col) and (FPtDown.Y = Row) then
       begin
         if FPushDown then
-          DrawDown
-        else
-          DrawUp;
+          DrawDown;
       end
       else
+      if FDowns[Index] then
+        DrawDown
+      else
         DrawUp;
+
     end;
   end;
 end;
@@ -376,6 +390,15 @@ begin
   end;
 end;
 
+procedure TJvArrayButton.SetDowns(Index: Integer; const Value: Boolean);
+begin
+  if FDowns[Index] <> Value then
+  begin
+    FDowns[Index] := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvArrayButton.SetRows(const Value: Integer);
 begin
   if FRows <> Value then
@@ -390,6 +413,7 @@ end;
 procedure TJvArrayButton.SizeChanged;
 var
   OriginalEnableds: array of Boolean;
+  OriginalDowns: array of Boolean;
   I: Integer;
   MinLength: Integer;
 begin
@@ -407,6 +431,24 @@ begin
     FEnableds[I] := OriginalEnableds[I];
   for I := MinLength to Length(FEnableds) - 1 do
     FEnableds[I] := True;
+
+//-----------------------------------------------
+
+  SetLength(OriginalDowns, Length(FDowns));
+
+  for I := 0 to Length(FDowns) - 1 do
+    OriginalDowns[I] := FDowns[I];
+
+  SetLength(FDowns, Rows * Cols);
+
+  MinLength := Length(OriginalDowns);
+  if MinLength > Length(FDowns) then
+    MinLength := Length(FDowns);
+
+  for I := 0 to MinLength - 1 do
+    FDowns[I] := OriginalDowns[I];
+  for I := MinLength to Length(FDowns) - 1 do
+    FDowns[I] := False;
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -450,6 +492,11 @@ end;
 function TJvArrayButton.GetEnableds(Index: Integer): Boolean;
 begin
   Result := FEnableds[Index];
+end;
+
+function TJvArrayButton.GetDowns(Index: Integer): Boolean;
+begin
+  Result := FDowns[Index];
 end;
 
 procedure TJvArrayButton.SetColors(const Value: TStrings);
