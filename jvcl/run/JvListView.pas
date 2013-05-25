@@ -1990,13 +1990,16 @@ procedure TJvListView.WMAutoSelect(var Msg: TMessage);
 var
   lv: TListItem;
 begin
-  with Msg do
+  if AutoSelect and (Selected = nil) then // Mantis 6037: Prevent AutoSelect from stealing the selected item when processing messages
   begin
-    lv := TListItem(WParam);
-    if Assigned(lv) and (Items.IndexOf(lv) >= 0) and (LParam = 1) then
+    with Msg do
     begin
-      lv.Selected := True;
-      lv.Focused := True;
+      lv := TListItem(WParam);
+      if Assigned(lv) and (Items.IndexOf(lv) >= 0) and (LParam = 1) then
+      begin
+        lv.Selected := True;
+        lv.Focused := True;
+      end;
     end;
   end;
 end;
