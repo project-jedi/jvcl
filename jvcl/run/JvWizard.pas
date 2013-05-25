@@ -994,7 +994,7 @@ end;
 procedure TJvWizardButtonControl.CMVisibleChanged(var Msg: TMessage);
 begin
   inherited;
-  if Assigned(FWizard) then
+  if FWizard <> nil then
     FWizard.RepositionButtons;
 end;
 
@@ -1005,13 +1005,13 @@ var
   Stop: Boolean;
   Page: TJvWizardCustomPage;
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
   begin
     if not (csDesigning in ComponentState) then
     begin
       Stop := False;
       Page := FWizard.FActivePage;
-      if Assigned(Page) then
+      if Page <> nil then
         ButtonClick(Page, Stop);
       if Stop then
         Exit;
@@ -1176,7 +1176,7 @@ begin
     if Assigned(OnClick) then
       inherited Click
     else
-    if Assigned(FWizard) and Assigned(FWizard.ActivePage) then
+    if (FWizard <> nil) and (FWizard.ActivePage <> nil) then
     begin
       if Assigned(FWizard.ActivePage.OnHelpButtonClick) then
         inherited Click
@@ -1201,7 +1201,7 @@ end;
 
 function TJvWizardNavigateButton.GetCaption: string;
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     Result := FControl.Caption
   else
     Result := '';
@@ -1209,7 +1209,7 @@ end;
 
 function TJvWizardNavigateButton.GetGlyph: TBitmap;
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     Result := FControl.Glyph
   else
     Result := nil;
@@ -1217,7 +1217,7 @@ end;
 
 function TJvWizardNavigateButton.GetLayout: TButtonLayout;
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     Result := FControl.Layout
   else
     Result := blGlyphLeft;
@@ -1225,7 +1225,7 @@ end;
 
 function TJvWizardNavigateButton.GetNumGlyphs: Integer;
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     Result := FControl.NumGlyphs
   else
     Result := 0;
@@ -1233,31 +1233,31 @@ end;
 
 procedure TJvWizardNavigateButton.SetCaption(const Value: string);
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     FControl.Caption := Value;
 end;
 
 procedure TJvWizardNavigateButton.SetGlyph(const Value: TBitmap);
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     FControl.Glyph := Value;
 end;
 
 procedure TJvWizardNavigateButton.SetNumGlyphs(const Value: Integer);
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     FControl.NumGlyphs := Value;
 end;
 
 procedure TJvWizardNavigateButton.SetLayout(const Value: TButtonLayout);
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     FControl.Layout := Value;
 end;
 
 function TJvWizardNavigateButton.GetModalResult: TModalResult;
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     Result := FControl.ModalResult
   else
     Result := mrNone;
@@ -1265,13 +1265,13 @@ end;
 
 procedure TJvWizardNavigateButton.SetModalResult(const Value: TModalResult);
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     FControl.ModalResult := Value;
 end;
 
 function TJvWizardNavigateButton.GetButtonWidth: Integer;
 begin
-  if Assigned(FControl) then
+  if FControl <> nil then
     Result := FControl.Width
   else
     Result := 0;
@@ -1279,10 +1279,10 @@ end;
 
 procedure TJvWizardNavigateButton.SetButtonWidth(const Value: Integer);
 begin
-  if Assigned(FControl) and (FControl.Width <> Value) then
+  if (FControl <> nil) and (FControl.Width <> Value) then
   begin
     FControl.Width := Value;
-    if Assigned(FControl.FWizard) then
+    if FControl.FWizard <> nil then
       FControl.FWizard.RepositionButtons;
   end;
 end;
@@ -1309,7 +1309,7 @@ end;
 
 destructor TJvWizardRouteMapControl.Destroy;
 begin
-  if Assigned(Wizard) then
+  if Wizard <> nil then
     Wizard.FRouteMap := nil;
   FPages.Free;
   FImage.Free;
@@ -1323,9 +1323,9 @@ end;
 
 procedure TJvWizardRouteMapControl.DoAddPage(const APage: TJvWizardCustomPage);
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
   begin
-    if Assigned(APage) and (FPages.IndexOf(APage) < 0) then
+    if (APage <> nil) and (FPages.IndexOf(APage) < 0) then
       FPages.Add(APage);
     WizardPageAdded(APage);
   end;
@@ -1335,9 +1335,9 @@ procedure TJvWizardRouteMapControl.DoDeletePage(const APage: TJvWizardCustomPage
 var
   I: Integer;
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
   begin
-    if Assigned(APage) then
+    if (APage <> nil) then
     begin
       I := FPages.Remove(APage);
       if FPageIndex = I then
@@ -1349,9 +1349,9 @@ end;
 
 procedure TJvWizardRouteMapControl.DoActivatePage(const APage: TJvWizardCustomPage);
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
   begin
-    if Assigned(APage) then
+    if APage <> nil then
       FPageIndex := FPages.IndexOf(APage);
     WizardPageActivated(APage);
   end;
@@ -1359,16 +1359,16 @@ end;
 
 procedure TJvWizardRouteMapControl.DoUpdatePage(const APage: TJvWizardCustomPage);
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
     WizardPageUpdated(APage);
 end;
 
 procedure TJvWizardRouteMapControl.DoMovePage(const APage: TJvWizardCustomPage;
   const OldIndex: Integer);
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
   begin
-    if Assigned(APage) then
+    if APage <> nil then
     begin
       FPages.Move(OldIndex, APage.PageIndex);
       if OldIndex = FPageIndex then
@@ -1414,7 +1414,7 @@ procedure TJvWizardRouteMapControl.SetPageIndex(Value: Integer);
 begin
   if (FPageIndex <> Value) and (Value >= 0) and (Value < PageCount) then
   begin
-    if Assigned(FWizard) and (Pages[Value].Wizard = FWizard) then
+    if (FWizard <> nil) and (Pages[Value].Wizard = FWizard) then
     begin
       FWizard.SetActivePage(Pages[Value]);
       // read PageIndex from Wizard because the OnChanging event could have stopped it from switching to the page
@@ -1448,8 +1448,7 @@ begin
   if Button = mbLeft then
   begin
     APage := PageAtPos(Point(X, Y));
-    if Assigned(APage) and ((csDesigning in ComponentState) or
-      (APage.Enabled and APage.EnableJumpToPage)) then
+    if (APage <> nil) and ((csDesigning in ComponentState) or (APage.Enabled and APage.EnableJumpToPage)) then
     begin
       if APage.PageIndex = PageIndex + 1 then
         Wizard.SelectNextPage
@@ -1467,7 +1466,7 @@ procedure TJvWizardRouteMapControl.SetParent(AParent: TWinControl);
 var
   I: Integer;
 begin
-  if Assigned(AParent) then
+  if AParent <> nil then
   begin
     if not ((AParent is TJvWizard) or (AParent is TJvWizardCustomPage)) then
       raise EJvWizardError.CreateRes(@RsEInvalidParentControl);
@@ -1475,7 +1474,7 @@ begin
       AParent := TJvWizardCustomPage(AParent).Wizard;
   end;
   inherited SetParent(AParent);
-  if Assigned(AParent) then
+  if AParent <> nil then
   begin
     FWizard := TJvWizard(AParent);
     FWizard.FRouteMap := Self;
@@ -1483,7 +1482,7 @@ begin
     for I := 0 to FWizard.PageCount - 1 do
       FPages.Add(FWizard.FPages[I]);
 
-    if Assigned(FWizard.FActivePage) then
+    if FWizard.FActivePage <> nil then
       FPageIndex := FWizard.FActivePage.PageIndex
     else
       FPageIndex := -1;
@@ -1524,7 +1523,7 @@ end;
 
 function TJvWizardRouteMapControl.CanDisplay(const APage: TJvWizardCustomPage): Boolean;
 begin
-  Result := Assigned(APage) and ((csDesigning in ComponentState) or APage.Enabled);
+  Result := (APage <> nil) and ((csDesigning in ComponentState) or APage.Enabled);
   if not (csDesigning in ComponentState) and Assigned(FOnDisplaying) then
     FOnDisplaying(Self, APage, Result);
 end;
@@ -1554,7 +1553,7 @@ end;
 
 procedure TJvWizardImage.PaintTo(const ACanvas: TCanvas; ARect: TRect);
 begin
-  if Assigned(FPicture.Graphic) then
+  if FPicture.Graphic <> nil then
     JvWizardDrawImage(ACanvas, FPicture.Graphic, ARect, FAlignment, FLayout);
 end;
 
@@ -1588,7 +1587,7 @@ var
   AGraphic: TGraphic;
 begin
   AGraphic := FPicture.Graphic;
-  if Assigned(AGraphic) then
+  if AGraphic <> nil then
     Result := AGraphic.Transparent
   else
     Result := FTransparent;
@@ -1600,8 +1599,7 @@ var
 begin
   AGraphic := FPicture.Graphic;
   FTransparent := Value;
-  if Assigned(AGraphic) and
-    not ( (AGraphic is TMetaFile) or  (AGraphic is TIcon)) then
+  if (AGraphic <> nil) and not ((AGraphic is TMetaFile) or (AGraphic is TIcon)) then
     AGraphic.Transparent := Value;
 end;
 
@@ -1668,7 +1666,7 @@ end;
 
 procedure TJvWizardPageTitle.DoChange;
 begin
-  if Assigned(FWizardPageHeader) then
+  if FWizardPageHeader <> nil then
     FWizardPageHeader.DoChange;
 end;
 
@@ -1690,7 +1688,7 @@ begin
   if FWizardPageHeader <> Value then
   begin
     FWizardPageHeader := Value;
-    if Assigned(FWizardPageHeader) and Assigned(FWizardPageHeader.WizardPage) then
+    if (FWizardPageHeader <> nil) and (FWizardPageHeader.WizardPage <> nil) then
       AdjustFont(FWizardPageHeader.WizardPage.Font);
     FFont.OnChange := FontChange;
   end;
@@ -1725,8 +1723,7 @@ const
 var
   ATextRect: TRect;
 begin
-  if FVisible and Assigned(FWizardPageHeader) and
-    Assigned(FWizardPageHeader.WizardPage) then
+  if FVisible and (FWizardPageHeader <> nil) and (FWizardPageHeader.WizardPage <> nil) then
   begin
     ACanvas.Font.Assign(FFont);
     ATextRect := GetTextRect(ACanvas, ARect);
@@ -1796,10 +1793,10 @@ begin
   begin
     FText := Value;
     DoChange;
-    if Assigned(FWizardPageHeader) and
-      Assigned(FWizardPageHeader.WizardPage) and
-      Assigned(FWizardPageHeader.WizardPage.Wizard) and
-      Assigned(FWizardPageHeader.WizardPage.Wizard.FRouteMap) then
+    if (FWizardPageHeader <> nil) and
+      (FWizardPageHeader.WizardPage <> nil) and
+      (FWizardPageHeader.WizardPage.Wizard <> nil) and
+      (FWizardPageHeader.WizardPage.Wizard.FRouteMap <> nil) then
     begin
       FWizardPageHeader.WizardPage.Wizard.FRouteMap.DoUpdatePage(FWizardPageHeader.WizardPage);
     end;
@@ -1817,7 +1814,7 @@ end;
 
 procedure TJvWizardPageTitle.AdjustFont(const AFont: TFont);
 begin
-  if Assigned(AFont) then
+  if AFont <> nil then
   begin
     FFont.Name := AFont.Name;
     FFont.Charset := AFont.Charset;
@@ -1827,7 +1824,7 @@ end;
 procedure TJvWizardPageTitle.FontChange(Sender: TObject);
 begin
   // Font has changed, set the ParentFont property to False.
-  if Assigned(FWizardPageHeader) then
+  if FWizardPageHeader <> nil then
     FWizardPageHeader.ParentFont := False;
   DoChange;
 end;
@@ -1855,7 +1852,7 @@ end;
 
 procedure TJvWizardPageObject.DoChange;
 begin
-  if Assigned(FWizardPage) then
+  if FWizardPage <> nil then
     FWizardPage.Invalidate;
 end;
 
@@ -2002,18 +1999,17 @@ begin
       Brush.Color := Color;
       FillRect(R);
     end;
-    if Assigned(WizardPage) then
+    if WizardPage <> nil then
     begin
       { Show Header Divider }
       if {(csDesigning in WizardPage.ComponentState) or} FShowDivider then
         JvWizardDrawBorderEdges(ACanvas, R, fsGroove, [beBottom]);
 
       { Draw Header Image first }
-      if Assigned(WizardPage.Wizard) then
+      if WizardPage.Wizard <> nil then
       begin
         AImages := WizardPage.Wizard.HeaderImages;
-        if Assigned(AImages) and (FImageIndex >= 0) and
-          (FImageIndex < AImages.Count) then
+        if (AImages <> nil) and (FImageIndex >= 0) and (FImageIndex < AImages.Count) then
         begin
           ImageRect := GetImageRect(AImages, R);
           { R is the area where the title and subtitle paint to. }
@@ -2031,11 +2027,11 @@ end;
 
 procedure TJvWizardPageHeader.AdjustTitleFont;
 begin
-  if Assigned(FWizardPage) and FParentFont then
+  if (FWizardPage <> nil) and FParentFont then
   begin
-    if Assigned(FTitle) then
+    if FTitle <> nil then
       FTitle.AdjustFont(FWizardPage.Font);
-    if Assigned(FSubtitle) then
+    if FSubtitle <> nil then
       FSubtitle.AdjustFont(FWizardPage.Font);
   end;
 end;
@@ -2056,7 +2052,7 @@ end;
 procedure TJvWizardPageHeader.VisibleChanged;
 begin
   inherited VisibleChanged;
-  if Assigned(WizardPage) then
+  if WizardPage <> nil then
     WizardPage.Realign;
 end;
 
@@ -2094,7 +2090,7 @@ begin
   begin
     FAlign := Value;
     DoChange;
-    if Assigned(WizardPage) then
+    if WizardPage <> nil then
       WizardPage.Realign;
   end;
 end;
@@ -2145,7 +2141,7 @@ end;
 procedure TJvWizardWaterMark.VisibleChanged;
 begin
   inherited VisibleChanged;
-  if Assigned(WizardPage) then
+  if WizardPage <> nil then
     WizardPage.Realign;
 end;
 
@@ -2212,7 +2208,7 @@ end;
 
 destructor TJvWizardCustomPage.Destroy;
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
     FWizard.RemovePage(Self);
   FPanel.Free;
   FImage.Free;
@@ -2255,16 +2251,14 @@ var
   NextPage: TJvWizardCustomPage;
 begin
   inherited;
-  if Assigned(FWizard) then
+  if FWizard <> nil then
   begin
-    if Assigned(FWizard.FRouteMap) then
+    if FWizard.FRouteMap <> nil then
       FWizard.FRouteMap.DoUpdatePage(Self);
-    if not ((csDesigning in ComponentState) or Enabled) and
-      (FWizard.ActivePage = Self) then
+    if not ((csDesigning in ComponentState) or Enabled) and (FWizard.ActivePage = Self) then
     begin
-      NextPage := FWizard.FindNextPage(PageIndex, 1,
-        not (csDesigning in ComponentState));
-      if not Assigned(NextPage) then
+      NextPage := FWizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
+      if NextPage = nil then
         NextPage := FWizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
       FWizard.SetActivePage(NextPage);
     end;
@@ -2274,7 +2268,7 @@ end;
 procedure TJvWizardCustomPage.CMTextChanged(var Msg: TMessage);
 begin
   Invalidate;
-  if Assigned(FWizard) and Assigned(FWizard.FRouteMap) then
+  if (FWizard <> nil) and (FWizard.FRouteMap <> nil) then
     FWizard.FRouteMap.DoUpdatePage(Self);
 end;
 
@@ -2288,17 +2282,17 @@ procedure TJvWizardCustomPage.SetWizard(AWizard: TJvWizard);
 begin
   if FWizard <> AWizard then
   begin
-    if Assigned(FWizard) then
+    if FWizard <> nil then
       FWizard.RemovePage(Self);
     Parent := AWizard;
-    if Assigned(AWizard) then
+    if AWizard <> nil then
       AWizard.InsertPage(Self);
   end;
 end;
 
 function TJvWizardCustomPage.GetPageIndex: Integer;
 begin
-  if Assigned(FWizard) then
+  if FWizard <> nil then
     Result := FWizard.FPages.IndexOf(Self)
   else
     Result := -1;
@@ -2315,11 +2309,11 @@ procedure TJvWizardCustomPage.SetPageIndex(const Value: Integer);
 var
   OldIndex: Integer;
 begin
-  if Assigned(FWizard) and (Value >= 0) and (Value < FWizard.FPages.Count) then
+  if (FWizard <> nil) and (Value >= 0) and (Value < FWizard.FPages.Count) then
   begin
     OldIndex := PageIndex;
     FWizard.FPages.Move(OldIndex, Value);
-    if Assigned(FWizard.FRouteMap) then
+    if FWizard.FRouteMap <> nil then
       FWizard.FRouteMap.DoMovePage(Self, OldIndex);
   end;
 end;
@@ -2411,7 +2405,7 @@ begin
   if FEnabledButtons <> Value then
   begin
     FEnabledButtons := Value;
-    if Assigned(FWizard) and (FWizard.FActivePage = Self) then
+    if (FWizard <> nil) and (FWizard.FActivePage = Self) then
       FWizard.UpdateButtonsStatus;
   end;
 end;
@@ -2421,7 +2415,7 @@ begin
   if FVisibleButtons <> Value then
   begin
     FVisibleButtons := Value;
-    if Assigned(FWizard) and (FWizard.FActivePage = Self) then
+    if (FWizard <> nil) and (FWizard.FActivePage = Self) then
     begin
       { if there is no buttons are visible, then we don't need
         to display the button bar. }
@@ -2648,8 +2642,9 @@ function TJvWizard.FindNextEnabledPage(PageIndex: Integer; const Step: Integer;
   CheckDisable: Boolean): TJvWizardCustomPage;
 begin
   Result := FindNextPage(PageIndex, Step, CheckDisable);
-  while (Result <> nil) and not Result.EnableJumpToPage do
-    Result := FindNextPage(Result.PageIndex, Step, CheckDisable);
+  if not (csDesigning in ComponentState) then
+    while (Result <> nil) and not Result.EnableJumpToPage do
+      Result := FindNextPage(Result.PageIndex, Step, CheckDisable);
 end;
 
 procedure TJvWizard.SelectFirstPage;
@@ -2657,11 +2652,11 @@ var
   AFirstPage: TJvWizardCustomPage;
 begin
   AFirstPage := FindNextEnabledPage(-1, 1, not (csDesigning in ComponentState));
-  if Assigned(AFirstPage) then
+  if AFirstPage <> nil then
   begin
     if not (csDesigning in ComponentState) and Assigned(FOnSelectFirstPage) then
       FOnSelectFirstPage(Self, FActivePage, AFirstPage);
-    if Assigned(AFirstPage) then
+    if AFirstPage <> nil then
       SetActivePage(AFirstPage);
   end;
 end;
@@ -2671,11 +2666,11 @@ var
   ALastPage: TJvWizardCustomPage;
 begin
   ALastPage := FindNextEnabledPage(FPages.Count, -1, not (csDesigning in ComponentState));
-  if Assigned(ALastPage) then
+  if ALastPage <> nil then
   begin
     if not (csDesigning in ComponentState) and Assigned(FOnSelectLastPage) then
       FOnSelectLastPage(Self, FActivePage, ALastPage);
-    if Assigned(ALastPage) then
+    if ALastPage <> nil then
       SetActivePage(ALastPage);
   end;
 end;
@@ -2685,11 +2680,11 @@ var
   ANextPage: TJvWizardCustomPage;
 begin
   ANextPage := FindNextEnabledPage(GetActivePageIndex, 1, not (csDesigning in ComponentState));
-  if Assigned(ANextPage) then
+  if ANextPage <> nil then
   begin
     if not (csDesigning in ComponentState) and Assigned(FOnSelectNextPage) then
       FOnSelectNextPage(Self, FActivePage, ANextPage);
-    if Assigned(ANextPage) then
+    if ANextPage <> nil then
       SetActivePage(ANextPage);
   end;
 end;
@@ -2699,11 +2694,11 @@ var
   APriorPage: TJvWizardCustomPage;
 begin
   APriorPage := FindNextEnabledPage(GetActivePageIndex, -1, not (csDesigning in ComponentState));
-  if Assigned(APriorPage) then
+  if APriorPage <> nil then
   begin
     if not (csDesigning in ComponentState) and Assigned(FOnSelectPriorPage) then
       FOnSelectPriorPage(Self, FActivePage, APriorPage);
-    if Assigned(APriorPage) then
+    if APriorPage <> nil then
       SetActivePage(APriorPage);
   end;
 end;
@@ -2713,7 +2708,7 @@ var
   AFirstPage: TJvWizardCustomPage;
 begin
   AFirstPage := FindNextPage(-1, 1, CheckDisable);
-  Result := not Assigned(AFirstPage) or (APage = AFirstPage);
+  Result := (AFirstPage = nil) or (APage = AFirstPage);
 end;
 
 function TJvWizard.IsLastPage(const APage: TJvWizardCustomPage; CheckDisable: Boolean): Boolean;
@@ -2721,14 +2716,13 @@ var
   ALastPage: TJvWizardCustomPage;
 begin
   ALastPage := FindNextPage(FPages.Count, -1, CheckDisable);
-  Result := not Assigned(ALastPage) or (APage = ALastPage);
+  Result := (ALastPage = nil) or (APage = ALastPage);
 end;
 
 procedure TJvWizard.SetActivePage(Page: TJvWizardCustomPage);
 begin
   if not (csLoading in ComponentState) and
-    (not Assigned(Page) or ((Page.Wizard = Self) and
-    ((csDesigning in ComponentState) or Page.Enabled))) then
+    ((Page = nil) or ((Page.Wizard = Self) and ((csDesigning in ComponentState) or Page.Enabled))) then
   begin
     ChangeActivePage(Page);
   end;
@@ -2745,13 +2739,13 @@ begin
       Exit;
 
     ParentForm := GetParentForm(Self);
-    if Assigned(ParentForm) and Assigned(FActivePage) and
+    if (ParentForm <> nil) and (FActivePage <> nil) and
       FActivePage.ContainsControl(ParentForm.ActiveControl) and FActivePage.CanFocus then
     begin
       ParentForm.ActiveControl := FActivePage;
     end;
 
-    if Assigned(FActivePage) then
+    if FActivePage <> nil then
     begin
       { FActivePage.Exit, called just before the page is hidden. }
       FActivePage.ExitPage(Page);
@@ -2760,7 +2754,7 @@ begin
 
     { Just in case the new page is changed to be disabled again after
       the above OnExitPage event is called. }
-    if Assigned(Page) and not (Page.Enabled or (csDesigning in ComponentState)) then
+    if (Page <> nil) and not (Page.Enabled or (csDesigning in ComponentState)) then
     begin
       if IsForward(FActivePage, Page) then
         Page := FindNextPage(GetActivePageIndex) // try go forward
@@ -2768,13 +2762,13 @@ begin
         Page := FindNextPage(GetActivePageIndex, -1); // try go backward
     end;
 
-    if Assigned(Page) then
+    if Page <> nil then
     begin
       { FActivePage.Enter, called before the page shows up. }
       Page.Enter(FActivePage);
       Page.BringToFront;
       Page.Visible := True;
-      if Assigned(ParentForm) then
+      if ParentForm <> nil then
       begin
         if Page.CanFocus then
           ParentForm.ActiveControl := Page
@@ -2785,19 +2779,18 @@ begin
     end;
 
     FActivePage := Page;
-    if Assigned(FRouteMap) then
+    if FRouteMap <> nil then
       FRouteMap.DoActivatePage(FActivePage);
     if AutoHideButtonBar then
     begin
-      if Assigned(FActivePage) and (FActivePage.FVisibleButtons = []) then
+      if (FActivePage <> nil) and (FActivePage.FVisibleButtons = []) then
         ButtonBarHeight := 0
       else
         ButtonBarHeight := ciButtonBarHeight;
     end;
     { At design time, if the Page's Enabled property set to False,
       the following if block never gets called. }
-    if Assigned(ParentForm) and Assigned(FActivePage) and
-      (ParentForm.ActiveControl = FActivePage) then
+    if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
     begin
       FActivePage.SelectFirst;
       FActivePage.Done;
@@ -2810,7 +2803,7 @@ end;
 procedure TJvWizard.InsertPage(Page: TJvWizardCustomPage);
 begin
   FPages.Add(Page);
-  if Assigned(FRouteMap) then
+  if FRouteMap <> nil then
     FRouteMap.DoAddPage(Page);
 end;
 
@@ -2825,7 +2818,7 @@ begin
 
   if NextPage = Page then
     NextPage := nil;
-  if Assigned(FRouteMap) then
+  if FRouteMap <> nil then
     FRouteMap.DoDeletePage(Page);
   FPages.Remove(Page);
   SetActivePage(NextPage);
@@ -2836,7 +2829,7 @@ end;
 
 function TJvWizard.GetActivePageIndex: Integer;
 begin
-  if Assigned(ActivePage) then
+  if ActivePage <> nil then
     Result := ActivePage.PageIndex
   else
     Result := -1;
@@ -2888,7 +2881,7 @@ end;
 
 function TJvWizard.GetShowRouteMap: Boolean;
 begin
-  if Assigned(FRouteMap) then
+  if FRouteMap <> nil then
     Result := FRouteMap.Visible
   else
     Result := False;
@@ -2896,7 +2889,7 @@ end;
 
 procedure TJvWizard.SetShowRouteMap(Value: Boolean);
 begin
-  if Assigned(FRouteMap) then
+  if FRouteMap <> nil then
     FRouteMap.Visible := Value;
 end;
 
@@ -2917,13 +2910,13 @@ end;
 procedure TJvWizard.SetHeaderImages(Value: TCustomImageList);
 begin
   ReplaceImageListReference(Self, Value, FHeaderImages, FImageChangeLink);
-  if Assigned(FActivePage) then
+  if FActivePage <> nil then
     FActivePage.Invalidate;
 end;
 
 function TJvWizard.GetButtonClick(Index: Integer): TNotifyEvent;
 begin
-  if Assigned(FNavigateButtons[TJvWizardButtonKind(Index)].Control) then
+  if FNavigateButtons[TJvWizardButtonKind(Index)].Control <> nil then
     Result := FNavigateButtons[TJvWizardButtonKind(Index)].Control.OnClick
   else
     Result := nil;
@@ -2931,7 +2924,7 @@ end;
 
 procedure TJvWizard.SetButtonClick(Index: Integer; const Value: TNotifyEvent);
 begin
-  if Assigned(FNavigateButtons[TJvWizardButtonKind(Index)].Control) then
+  if FNavigateButtons[TJvWizardButtonKind(Index)].Control <> nil then
     FNavigateButtons[TJvWizardButtonKind(Index)].Control.OnClick := Value;
 end;
 
@@ -2945,7 +2938,7 @@ var
   Pt: TPoint;
 begin
   Pt := SmallPointToPoint(Msg.Pos);
-  if Assigned(FActivePage) and PtInRect(FActivePage.BoundsRect, Pt) then
+  if (FActivePage <> nil) and PtInRect(FActivePage.BoundsRect, Pt) then
     Msg.Result := 1;
 end;
 
@@ -2972,11 +2965,11 @@ var
   AEnabledButtonSet: TJvWizardButtonSet;
   AVisibleButtonSet: TJvWizardButtonSet;
 begin
-  if not Assigned(Parent) then
+  if Parent = nil then
     Exit;
   AEnabledButtonSet := [bkCancel];
   AVisibleButtonSet := [bkBack, bkNext, bkCancel];
-  if Assigned(FActivePage) then
+  if FActivePage <> nil then
   begin
     { By default, the Back button should be disabled for the first
       page at run time }
@@ -3032,12 +3025,12 @@ var
   end;
 
 begin
-  if not Assigned(Parent) then
+  if Parent = nil then
     Exit;
   if FButtonBarHeight > ciButtonHeight then
   begin
     AButtonSet := [bkBack, bkNext, bkCancel];
-    if Assigned(FActivePage) then
+    if FActivePage <> nil then
     begin
       AButtonSet := FActivePage.FVisibleButtons;
       if csDesigning in ComponentState then
@@ -3106,7 +3099,7 @@ end;
 
 procedure TJvWizard.ImageListChange;
 begin
-  if HandleAllocated and (Sender = FHeaderImages) and Assigned(FActivePage) then
+  if HandleAllocated and (Sender = FHeaderImages) and (FActivePage <> nil) then
     FActivePage.Invalidate;
 end;
 
@@ -3125,9 +3118,9 @@ end;
 
 function TJvWizard.IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boolean;
 begin
-  if Assigned(FromPage) and Assigned(ToPage) and (FromPage.Wizard <> ToPage.Wizard) then
+  if (FromPage <> nil) and (ToPage <> nil) and (FromPage.Wizard <> ToPage.Wizard) then
     raise EJvWizardError.CreateRes(@RsEInvalidWizardPage);
-  Result := not Assigned(FromPage) or (Assigned(ToPage) and (FromPage.PageIndex < ToPage.PageIndex));
+  Result := (FromPage = nil) or ((ToPage <> nil) and (FromPage.PageIndex < ToPage.PageIndex));
 end;
 
 procedure TJvWizard.SetAutoHideButtonBar(const Value: Boolean);
