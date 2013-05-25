@@ -286,7 +286,10 @@ begin
     OffsetRect(Rec, 1, 1);
 
   if Enabled then
-    Frame3D(Canvas, Rec, cl3DDkShadow, cl3DDkShadow, 1)
+  begin
+    Frame3D(Canvas, Rec, cl3DDkShadow, cl3DDkShadow, 1);
+    Canvas.Brush.Style := bsSolid;
+  end
   else
   begin
     Frame3D(Canvas, Rec, clBtnShadow, clBtnHighLight, 1);
