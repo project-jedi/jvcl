@@ -42,6 +42,12 @@ unit JvTracker;
 interface
 
 uses
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes, // inline
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  {$IFDEF HAS_UNIT_TYPES}
+  Types, // inline
+  {$ENDIF HAS_UNIT_TYPES}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
@@ -859,7 +865,11 @@ begin
       Value := Value - FStep;
     VK_RIGHT, VK_DOWN:
       Value := Value + FStep;
+  else
+    inherited;
+    Exit;
   end;
+  DoChangedValue(FValue);
 end;
 
 {$IFDEF UNITVERSIONING}
