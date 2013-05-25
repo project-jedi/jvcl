@@ -182,7 +182,7 @@ type
     procedure DoMouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoDoubleClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoClick(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure doOnQueryEndSession;
+    procedure DoOnQueryEndSession;
     function ApplicationHook(var Msg: TMessage): Boolean;
     function NotifyIcon(uFlags: UINT; dwMessage: DWORD): Boolean;
     procedure SetCurrentIcon(Value: TIcon); //HEG: New
@@ -826,7 +826,7 @@ begin
     DoContextPopup(X, Y);
 end;
 
-procedure TJvTrayIcon.doOnQueryEndSession;
+procedure TJvTrayIcon.DoOnQueryEndSession;
 begin
   if Assigned(FOnQueryEndSession) then
     FOnQueryEndSession(Self);
@@ -1489,14 +1489,8 @@ begin
           end;
         WM_QUERYENDSESSION:
           begin
-            doOnQueryEndSession;
-            // Add by Winston Feng 2003-9-28
-            // Handle the QueryEndSession and TaskbarCreated message, so trayicon
-            // will be deleted and restored correctly.
-            // For D2009 and above, we must let the default window proc handle it.
-            {$IFNDEF DELPHI2009_UP}
-            Result := 1;
-            {$ENDIF ~DELPHI2009_UP}
+            DoOnQueryEndSession;
+            Result := DefWindowProc(FHandle, Msg, WParam, LParam);
           end;
         WM_ENDSESSION:
           // (rb) Is it really necessairy to respond to WM_ENDSESSION?
