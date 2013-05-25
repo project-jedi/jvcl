@@ -542,17 +542,15 @@ var
 begin
   // remove old paths
   for j := 0 to High(Paths) do
-    for i := List.Count - 1 downto 0 do
-      if Paths[j] <> '' then
-      begin
-        Path := Paths[j];
-        if (Pos(':', Path) = 0) and (Path[1] <> '$') then
-          Path := PathDelim + ExtractFileName(Dir) + PathDelim + Paths[j];
-        if EndsWith(List[i], Path, True) then
-          List.Delete(i)
-        else if EndsWith(List[i], Path + '\', True) then
+    if Paths[j] <> '' then
+    begin
+      Path := Paths[j];
+      if (Pos(':', Path) = 0) and (Path[1] <> '$') then
+        Path := PathDelim + ExtractFileName(Dir) + PathDelim + Paths[j];
+      for i := List.Count - 1 downto 0 do
+        if EndsWith(List[i], Path, True) or EndsWith(List[i], Path + '\', True) then
           List.Delete(i);
-      end;
+    end;
 
   if Add then
     // add new paths
