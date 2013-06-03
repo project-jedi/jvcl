@@ -385,6 +385,8 @@ type
     FSize: Int64;
     // What has been read so far
     FBytesRead: Int64;
+    // True if data has been read
+    FGrabbingStarted: Boolean;
   protected
     // Event callers
     procedure DoError(ErrorMsg: string);
@@ -976,6 +978,10 @@ end;
 
 procedure TJvCustomUrlGrabber.DoEnded;
 begin
+  // Don't create empty file/stream if we didn't start grabbing
+  if not FGrabbingStarted Then
+    Exit;
+
   Stream.Position := 0;
   if FOutputMode = omStream then
   begin
@@ -1238,6 +1244,7 @@ procedure TJvCustomUrlGrabberThread.Execute;
 begin
   NameThread(ThreadName);
   SetGrabberStatus(gsStopped);
+  FGrabber.FGrabbingStarted := False;
   FGrabber.Stream := nil;
   try
     Grab;
@@ -1252,10 +1259,11 @@ begin
   end;
 end;
 
-procedure TJvCustomUrlGrabberThread.SetGrabberStatus(
-  Status: TJvGrabberStatus);
+procedure TJvCustomUrlGrabberThread.SetGrabberStatus(Status: TJvGrabberStatus);
 begin
   FGrabber.FStatus := Status;
+  if Status = gsGrabbing then
+    FGrabber.FGrabbingStarted := True;
 end;
 
 procedure TJvCustomUrlGrabberThread.UpdateGrabberProgress;
