@@ -30,10 +30,17 @@ __history
 
 # Lib directories
 jvcl/lib/*/*.res
+jvcl/lib/*/*.dfm
 jvcl/lib/*/debug/*.res
+jvcl/lib/*/debug/*.dfm
 jvcl/lib/*/win*/*.dfm
 jvcl/lib/*/win*/*.res
 jvcl/lib/*/win*/debug/*.res
+jvcl/lib/*/win*/debug/*.dfm
+jvcl/packages/*/dcc*.cfg
+
+# HPP output directories
+jvcl/include/*/*.hpp
 
 # tanslation files
 jvcl/locale/*/LC_MESSAGES/*.mo
