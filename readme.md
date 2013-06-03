@@ -64,10 +64,10 @@ Note that we also like to hear about you if everything is fine, as this will let
   JVCL developers hang out. The JVCL specific group is called **jedi.jvcl**, but you are recommended to also subscribe to at least
   **jedi.general** and **jedi.jcl**.
 
-  [Newsserver](news://news.delphi-jedi.org)
-    - [jedi.jvcl](news://news.delphi-jedi.org/jedi.jvcl)
-    - [jedi.general](news://news.delphi-jedi.org/jedi.general)
-    - [jedi.jcl](news://news.delphi-jedi.org/jedi.jcl)
+  Newsserver (<news://news.delphi-jedi.org>)
+    - jedi.jvcl (<news://news.delphi-jedi.org/jedi.jvcl>)
+    - jedi.general (<news://news.delphi-jedi.org/jedi.general>)
+    - jedi.jcl (<news://news.delphi-jedi.org/jedi.jcl>)
 
 - Web gateway
   If you can't access to the newsgroups directly (because of firewalls or company policy), there is also a [web gateway to the newsgroups](http://newsportal.delphi-jedi.org/).
