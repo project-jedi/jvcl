@@ -141,10 +141,12 @@
 		<!-- Insert JCL output directories -->
 		<DelphiLibraryPath Condition=" '$(JclLibDir)' != '' ">$(JclLibDir);$(DelphiLibraryPath)</DelphiLibraryPath>
 		<DelphiDebugDCUPath Condition=" '$(JclLibDir)' != '' ">$(JclLibDir)\debug;$(JclLibDir);$(DelphiDebugDCUPath)</DelphiDebugDCUPath> <!-- Put both JCL paths before default paths -->
-		
+		<IncludeDirs Condition=" '$(JclIncDir)' != '' ">$(JclIncDir)</IncludeDirs>
+		<IncludeDirs Condition=" '$(JclIncDir)' == '' ">$(DelphiLibraryPath)</IncludeDirs> <!-- If we don't have an explicit one, use the IDE's LibraryPath -->
+
 		<!-- Directories -->
 		<JvclDir>$(MSBuildProjectDirectory)</JvclDir>
-		<IncludeDirs>$(JvclDir)\Common</IncludeDirs>
+		<IncludeDirs>$(JvclDir)\Common;$(IncludeDirs)</IncludeDirs>
 		<UnitDirs>$(JvclDir)\Run</UnitDirs>
 		<ResDirs>$(UnitDirs);$(JvclDir)\Resources;$(BDS)\lib\$(Platform)\release</ResDirs>
 		<DcuOutDir Condition=" '$(DcuOutDir)' == '' ">$(JvclDir)\lib\$(LibDirVersion)</DcuOutDir>
