@@ -43,31 +43,32 @@ export FILEHOME=/home/obones/jvcl_export/files
 # start location (usually equal to where this script is located).
 export STARTFOLDER=/home/obones/jvcl_export
 
-# Base SVN URL
-export BASESVNURL=http://jvcl.svn.sourceforge.net/svnroot/jvcl/trunk
+# URL to checkout from. 
+export GITURL=https://github.com/project-jedi/jvcl.git
 
-# URL to checkout from. Requires that the svn binary supports SSL
-export SVNURL=$BASESVNURL/jvcl
+# branch to checkout
+export GITBRANCH=master
 
-# URL to checkout index.php from. Requires that the svn binary supports SSL
-export SVN_INDEX_PHP_URL=$BASESVNURL/websites/daily/index.php
+# Dir to zip 
+export ZIPPED_DIR=$FILEHOME/jvcl/jvcl
 
-# the SVN command used to get the files
-export SVNCOMMAND=export
+# Dir to read index.php from. 
+export INDEX_PHP_DIR=$FILEHOME/jvcl/websites/daily
 
 # Locations of various required binaries
 # Note: Those paths are valid on obones' server, please update to reflect those
 #       you are using on your own machine. 
-export SVNBIN=/usr/local/bin/svn
+export GITBIN=/bin/git
 export FINDBIN=/bin/find
 export ECHOBIN=/bin/echo
 export RMBIN=/bin/rm
+export MKDIRBIN=/bin/mkdir
 export UNIX2DOSBIN=/usr/bin/unix2dos
-export ZIPBIN=/usr/bin/zip
+export ZIPBIN=/bin/zip
 export CPBIN=/bin/cp
 export LNBIN=/bin/ln
 export CHMODBIN=/bin/chmod
-export SZIPBIN=/usr/local/bin/7za
+export SZIPBIN=/bin/7za
 
 # The call used to get a timestamp for the zip files
 export DATESTRING=`date -I`
@@ -81,11 +82,16 @@ function CurrentTimeTag()
 # delete old checkout folder
 $ECHOBIN `CurrentTimeTag` starting
 $RMBIN -rf $FILEHOME/jvcl
-cd $FILEHOME
-$ECHOBIN `CurrentTimeTag` "getting files from SVN"
 
-# get the latest sources from SVN
-$SVNBIN $SVNCOMMAND -q $SVNURL jvcl
+# create output folders
+$MKDIRBIN -p $FILEHOME
+$MKDIRBIN -p $DAILYDIR
+
+cd $FILEHOME
+$ECHOBIN `CurrentTimeTag` "getting files from GIT"
+
+# get the latest sources from git
+$GITBIN clone -q --depth 1 --branch $GITBRANCH $GITURL 
 cd $FILEHOME/jvcl
 
 # convert LF to CRLF for text files
@@ -101,7 +107,7 @@ $ECHOBIN `CurrentTimeTag` "converting to dos format (CRLF)"
 # we use find to look for directories AND files because some of
 # them may contain spaces which would be detected by for as a
 # separator in the list to iterate, thus skipping the file
-$FINDBIN $FILEHOME/jvcl -type d -print | while read SRCDIR
+$FINDBIN $ZIPPED_DIR -type d -print | while read SRCDIR
 do
 #  $ECHOBIN "Processing in $SRCDIR"
   cd "$SRCDIR"
@@ -110,12 +116,12 @@ do
   do
     if [[ -a $FILE ]]
     then
-      $UNIX2DOSBIN -q $FILE
+      $UNIX2DOSBIN -q "$FILE"
     fi
   done
 done
 
-cd $FILEHOME/jvcl
+cd $ZIPPED_DIR
 $ECHOBIN `CurrentTimeTag` "creating zip files"
 # create zip with all files and copy to daily
 $ZIPBIN -rq JVCL3.zip .
@@ -131,12 +137,12 @@ $RMBIN -f JVCL3-Source.zip
 
 $ECHOBIN `CurrentTimeTag` "creating 7zip files"
 # create 7zip with all files and copy to daily
-$SZIPBIN a -r JVCL3.7z \*
+$SZIPBIN a -r JVCL3.7z \* > /dev/null
 $CPBIN JVCL3.7z $DAILYDIR/JVCL3-$DATESTRING.7z
 $RMBIN -f JVCL3.7z
 
 # create 7zip with sources only and copy to daily
-$SZIPBIN a -r JVCL3-Source.7z  \*.htm \*.html \*.txt \*.bat \*.css \*.jpg common design run packages Resources install help -x!install/release/\*
+$SZIPBIN a -r JVCL3-Source.7z  \*.htm \*.html \*.txt \*.bat \*.css \*.jpg common design run packages Resources install help -x!install/release/\* > /dev/null
 
 $CPBIN JVCL3-Source.7z $DAILYDIR/JVCL3-Source-$DATESTRING.7z
 $RMBIN -f JVCL3-Source.7z
@@ -148,11 +154,12 @@ $FINDBIN . \( -daystart -mtime +2 -type f -name J\* \) -exec rm -f {} \;
 
 # copy the status docs
 $ECHOBIN `CurrentTimeTag` "copying build status page"
-$CPBIN -p -u -f "$FILEHOME/jvcl/help/Build status.html" "$DAILYDIR/Build status.html"
+$CPBIN -p -u -f "$ZIPPED_DIR/help/Build status.html" "$DAILYDIR/Build status.html"
 
-# Extract the index.php page
-$ECHOBIN `CurrentTimeTag` "Extracting the index.php page"
-$SVNBIN $SVNCOMMAND -q $SVN_INDEX_PHP_URL
+# Extract the index.php page styles folder
+$ECHOBIN `CurrentTimeTag` "Extracting the index.php page and styles folder"
+$CPBIN $INDEX_PHP_DIR/index.php .
+$CPBIN -r $INDEX_PHP_DIR/styles .
 
 # cleanup
 $ECHOBIN `CurrentTimeTag` "deleting exported jvcl files"
