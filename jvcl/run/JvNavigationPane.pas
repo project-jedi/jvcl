@@ -2338,27 +2338,23 @@ var
     Result := Assigned(Images) and (ImageIndex >= 0);
   end;
 
-
-  function ColorBrightness(const aColor:Longint; const aChangeValue:Integer; aDestColor:Longint):Longint;
-  //Change Brightness from aColor to  aDestColor with aChangeValue in procent (100%=aDestColor)
+  function ColorBrightness(const AColor: TColor; const AChangeValue: Integer; ADestColor: TColor): TColor;
+  // Change Brightness from AColor to ADestColor with AChangeValue in procent (100% = ADestColor)
   type
     TRGBColor = packed record
       case Boolean of
-          True : (Color: Int32);
-          False: (r: Byte;
-                  g: Byte;
-                  b: Byte;
-                  a: Byte);
+        True : (Color: TColor);
+        False: (r, g, b, a: Byte);
     end;
   var
     Rgb, RgbDest: TRGBColor;
   begin
-    Rgb.Color:=ColorToRGB(aColor);
-    RgbDest.Color:=ColorToRGB(aDestColor);
-    Rgb.r := Min(Max(Rgb.r - Round(aChangeValue * (Rgb.r - RgbDest.r) / 100), 0), $FF);
-    Rgb.g := Min(Max(Rgb.g - Round(aChangeValue * (Rgb.g - RgbDest.g) / 100), 0), $FF);
-    Rgb.b := Min(Max(Rgb.b - Round(aChangeValue * (Rgb.b - RgbDest.b) / 100), 0), $FF);
-    Result := Rgb.color;
+    Rgb.Color := ColorToRGB(AColor);
+    RgbDest.Color := ColorToRGB(ADestColor);
+    Rgb.r := Min(Max(Rgb.r - Round(AChangeValue * (Rgb.r - RgbDest.r) / 100), 0), $FF);
+    Rgb.g := Min(Max(Rgb.g - Round(AChangeValue * (Rgb.g - RgbDest.g) / 100), 0), $FF);
+    Rgb.b := Min(Max(Rgb.b - Round(AChangeValue * (Rgb.b - RgbDest.b) / 100), 0), $FF);
+    Result := Rgb.Color;
   end;
 
 begin
