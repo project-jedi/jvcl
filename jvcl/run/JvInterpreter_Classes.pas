@@ -733,8 +733,13 @@ end;
 { function Seek(Offset: Longint; Origin: Word): Longint; }
 
 procedure TStream_Seek(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  Offset: Int64;
+  Origin: Integer;
 begin
-  Value := TStream(Args.Obj).Seek(Args.Values[0], TSeekOrigin(Integer(Args.Values[1])));
+  Offset := Args.Values[0];
+  Origin := Args.Values[1];
+  Value := TStream(Args.Obj).Seek(Offset, TSeekOrigin(Origin));
 end;
 
 { procedure ReadBuffer(var Buffer; Count: Longint); }
