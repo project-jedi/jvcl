@@ -1587,11 +1587,8 @@ begin
 end;
 
 procedure TJvCustomWideEditor.ClipboardCopy;
-var
-  S: string;
 begin
-  S := GetSelText; // convert to ANSI
-  Clipboard.SetTextBuf(PChar(S));
+  Clipboard.AsText := GetSelText;
   SetClipboardBlockFormat(SelBlockFormat);
 end;
 
@@ -1807,23 +1804,18 @@ end;
 procedure TJvCustomWideEditor.ClipboardPaste;
 var
   ClipS: string;
-  Len: Integer;
-  H: THandle;
   X, Y, EndX, EndY: Integer;
 begin
   if (CaretY > FLines.Count - 1) and (FLines.Count > 0) then
     if BeepOnError then
       Beep;
-  H := Clipboard.GetAsHandle(CF_TEXT);
-  Len := GlobalSize(H);
-  if Len = 0 then
+  ClipS := Clipboard.AsText;
+  if ClipS = '' then
     Exit;
+  ClipS := ExpandTabs(AdjustLineBreaks(ClipS));
 
   BeginUpdate;
   try
-    SetLength(ClipS, Len);
-    SetLength(ClipS, Clipboard.GetTextBuf(PChar(ClipS), Len));
-    ClipS := ExpandTabs(AdjustLineBreaks(ClipS));
     PaintCaret(False);
 
     ReLine;
@@ -2005,7 +1997,7 @@ begin
     if ps > 1 then
     begin
       MoveWideChar(S[1], P[0], ps);
-      Inc(P, ps);
+      Inc(P, ps - 1);
     end;
 
     for I := ps to Length(S) do
