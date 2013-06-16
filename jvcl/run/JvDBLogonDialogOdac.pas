@@ -281,8 +281,8 @@ var
 begin
   Items := TStringList.Create;
   try
-    for i := 0 to OracleHomeCount - 1 do
-      Items.Add(OracleHomeNames[i]);
+    for i := 0 to Length(OracleHomes) - 1 do
+      Items.Add(OracleHomes[i].Name);
     if Supports(OracleHomeEdit, IJvDynControlItems, IDynControlItems) then
       IDynControlItems.ControlItems.Assign(Items);
   finally
