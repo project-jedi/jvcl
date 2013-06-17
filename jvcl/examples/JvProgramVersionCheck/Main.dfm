@@ -43,7 +43,7 @@ object Form1: TForm1
   object Button1: TButton
     Left = 205
     Top = 175
-    Width = 75
+    Width = 101
     Height = 25
     Caption = 'Check Again'
     TabOrder = 0
@@ -52,11 +52,20 @@ object Form1: TForm1
   object Button2: TButton
     Left = 205
     Top = 235
-    Width = 75
+    Width = 101
     Height = 25
     Caption = 'Edit History'
     TabOrder = 1
     OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 205
+    Top = 290
+    Width = 101
+    Height = 25
+    Caption = 'Show History XML'
+    TabOrder = 2
+    OnClick = Button3Click
   end
   object JvAppIniFileStorageVersionCheck: TJvAppIniFileStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
@@ -100,9 +109,6 @@ object Form1: TForm1
     VersionHistoryFileOptions.XMLOptions.DefaultIfReadConvertError = True
     VersionHistoryFileOptions.XMLOptions.UseOldItemNameFormat = False
     VersionHistoryFileOptions.XMLOptions.WhiteSpaceReplacement = '_'
-    VersionHistoryFileOptions.XMLOptions.AutoEncodeValue = False
-    VersionHistoryFileOptions.XMLOptions.AutoEncodeEntity = False
-    VersionHistoryFileOptions.XMLOptions.AutoIndent = False
     VersionHistoryFileOptions.XMLOptions.InvalidCharReplacement = '_'
     Left = 355
     Top = 205
