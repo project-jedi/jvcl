@@ -2335,6 +2335,10 @@ resourcestring
     '            (Components[I] is TJvPanelHotTrackOptions)) then'#13#10#13#10 +
     'or by using the Controls[] array property if possible.';
 
+//=== JvXMLBrowser.pas ====================================================
+resourcestring
+  RSXMLBrowserDialogButtonClose = '&Close';
+
 //=== not taken into JVCL ====================================================
 {
 resourcestring
