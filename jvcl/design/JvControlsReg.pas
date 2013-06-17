@@ -58,7 +58,7 @@ uses
   JvDsgnEditors, JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor,
   JvControlActions, JvControlActnResForm,
   JvFooterEditor, JvSpeedbarForm, JvTransparentButtonEditors, JvRollOutEditor,
-  JvVersionControlActions;
+  JvVersionControlActions, JvXMLBrowser;
 
 {$R JvControlsReg.dcr}
 
@@ -86,7 +86,7 @@ begin
     TJvContentScroller, TJvPageScroller, TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvCharMap, TJvZoom, TJvDice]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvCharMap, TJvZoom, TJvDice, TJvXMLBrowserControl]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint, TJvControlActionList]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
