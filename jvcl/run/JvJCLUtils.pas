@@ -471,8 +471,10 @@ procedure DrawRealSizeIcon(Canvas: TCanvas; Icon: TIcon; X, Y: Integer);
 
 function CreateScreenCompatibleDC: HDC;
 
+{$IFNDEF COMPILER12_UP} // Delphi 2009 introduced the "TRect" overload
 function InvalidateRect(hWnd: HWND; const lpRect: TRect; bErase: BOOL): BOOL; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 function InvalidateRect(hWnd: HWND; lpRect: PRect; bErase: BOOL): BOOL; overload; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+{$ENDIF ~COMPILER12_UP}
 
 { begin JvRLE }
 
@@ -4060,6 +4062,7 @@ begin
   Result := CreateCompatibleDC(HDC_DESKTOP);
 end;
 
+{$IFNDEF COMPILER12_UP}
 function InvalidateRect(hWnd: HWND; const lpRect: TRect; bErase: BOOL): BOOL;
 begin
   Result := Windows.InvalidateRect(hWnd, @lpRect, bErase);
@@ -4069,6 +4072,7 @@ function InvalidateRect(hWnd: HWND; lpRect: PRect; bErase: BOOL): BOOL;
 begin
   Result := Windows.InvalidateRect(hWnd, lpRect, bErase);
 end;
+{$ENDIF ~COMPILER12_UP}
 
 { begin JvRLE }
 
