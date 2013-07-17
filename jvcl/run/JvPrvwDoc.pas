@@ -142,8 +142,8 @@ type
     function MMToXPx(MM: Single): Integer;
     function MMToYPx(MM: Single): Integer;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
     property ReferenceHandle: HDC read FReferenceHandle write SetReferenceHandle;
+  published
     property LogPixelsX: Cardinal read FLogPixelsX write SetLogPixesX;
     property LogPixelsY: Cardinal read FLogPixelsY write SetLogPixelsY;
     property PhysicalWidth: Cardinal read FPhysicalWidth write SetPhysicalWidth;
