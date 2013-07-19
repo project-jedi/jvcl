@@ -292,6 +292,7 @@ type
     FOnOptionsChange: TNotifyEvent;
     FOnScrollHint: TJvScrollHintEvent;
     FSelection: TJvPreviewSelection;
+    FAccumulatedWheelDelta: Integer;
     FHintWindow: THintWindow;
     FDeactivateHintThread: TJvCustomPreviewControlDeactivateHintThread;
 
@@ -948,8 +949,8 @@ begin
     Inc(SI.fMask, SIF_DISABLENOSCROLL);
   GetScrollInfo(Handle, SB_HORZ, SI);
 
-  SI.nMax := FMaxWidth - ClientWidth;
-  SI.nPage := 0;
+  SI.nMax := FMaxWidth - 1;
+  SI.nPage := Min(ClientWidth, SI.nMax - SI.nMin + 1);
   ShowScrollBar(Handle, SB_HORZ, not HideScrollBars and (ScrollBars in [ssHorizontal, ssBoth]));
   SetScrollInfo(Handle, SB_HORZ, SI, True);
   // update scroll pos if it has changed
@@ -974,8 +975,8 @@ begin
   end
   else
   begin
-    SI.nMax := FMaxHeight - ClientHeight;
-    SI.nPage := 0; // FMaxHeight div TotalRows;
+    SI.nMax := FMaxHeight - 1;
+    SI.nPage := Min(ClientHeight, SI.nMax - SI.nMin + 1);
   end;
   ShowScrollBar(Handle, SB_VERT, not HideScrollBars and (ScrollBars in [ssVertical, ssBoth]));
   SetScrollInfo(Handle, SB_VERT, SI, True);
@@ -1312,11 +1313,12 @@ begin
     SB_ENDSCROLL:
       Exit;
   end;
-  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax);
+  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax - Max(SI.nPage - 1, 0));
   if Assigned(FOnHorzScroll) then
     FOnHorzScroll(Self, TScrollCode(Msg.ScrollCode), NewPos);
-  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax);
-  ScrollBy(-FScrollPos.X + NewPos, 0);
+  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax - Max(SI.nPage - 1, 0));
+  // Old versions of JVCL called ScrollBy, but it's redundant with SetScrollInfo.
+  //ScrollBy(-FScrollPos.X + NewPos, 0);
   FScrollPos.X := NewPos;
   SI.nPos := NewPos;
   SetScrollInfo(Handle, SB_HORZ, SI, True);
@@ -1328,11 +1330,19 @@ end;
 procedure TJvCustomPreviewControl.WMVScroll(var Msg: TWMVScroll);
 var
   SI: TScrollInfo;
-  NewPos, Increment: Integer;
+  NewPos, Increment, PageIncrement: Integer;
 begin
-  Increment := FPageHeight + Integer(Options.VertSpacing);
-  if not IsPageMode then
-    Increment := Increment div 3;
+  if IsPageMode then
+  Begin
+    Increment := FPageHeight + Integer(Options.VertSpacing);
+    PageIncrement := Increment;
+  End
+  Else
+  Begin
+    // Treat "1 line" as 50 pixels.  This is what, e.g., Firefox does.
+    Increment := 50;
+    PageIncrement := ClientHeight - Increment;
+  End;
   if Increment < 1 then
     Increment := 1;
 
@@ -1345,10 +1355,14 @@ begin
       NewPos := 0;
     SB_BOTTOM:
       NewPos := FMaxHeight;
-    SB_LINEDOWN, SB_PAGEDOWN:
+    SB_LINEDOWN:
       NewPos := FScrollPos.Y + Increment;
-    SB_LINEUP, SB_PAGEUP:
+    SB_PAGEDOWN:
+      NewPos := FScrollPos.Y + PageIncrement;
+    SB_LINEUP:
       NewPos := FScrollPos.Y - Increment;
+    SB_PAGEUP:
+      NewPos := FScrollPos.Y - PageIncrement;
     SB_THUMBPOSITION, SB_THUMBTRACK:
       begin
         NewPos := SI.nTrackPos;
@@ -1363,11 +1377,12 @@ begin
         Exit;
       end;
   end;
-  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax);
+  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax - Max(SI.nPage - 1, 0));
   if Assigned(FOnVertScroll) then
     FOnVertScroll(Self, TScrollCode(Msg.ScrollCode), NewPos);
-  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax);
-  ScrollBy(0, -FScrollPos.Y + NewPos);
+  NewPos := EnsureRange(NewPos, SI.nMin, SI.nMax - Max(SI.nPage - 1, 0));
+  // Old versions of JVCL called ScrollBy, but it's redundant with SetScrollInfo.
+  //ScrollBy(0, -FScrollPos.Y + NewPos);
   FScrollPos.Y := NewPos;
   SI.nPos := NewPos;
   SetScrollInfo(Handle, SB_VERT, SI, True);
@@ -1732,6 +1747,8 @@ function TJvCustomPreviewControl.DoMouseWheel(Shift: TShiftState;
 var
   Msg: TWMScroll;
   SI: TScrollInfo;
+  WheelScrollLines: Integer;
+  DeltaPerLine: Integer;
 begin
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
   if not Result then
@@ -1742,15 +1759,40 @@ begin
     GetScrollInfo(Handle, SB_VERT, SI);
     if SI.nMax = 0 then
       Exit;
+
+    SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @WheelScrollLines, 0);
+    FAccumulatedWheelDelta := FAccumulatedWheelDelta + WheelDelta;
+
     Msg.Msg := WM_VSCROLL;
-    if WheelDelta > 0 then
-      Msg.ScrollCode := SB_PAGEUP
+    if (WheelScrollLines = -1) Or IsPageMode then
+    begin
+      DeltaPerLine := 120;
+      if WheelDelta > 0 then
+        Msg.ScrollCode := SB_PAGEUP
+      else
+        Msg.ScrollCode := SB_PAGEDOWN;
+    end
     else
-      Msg.ScrollCode := SB_PAGEDOWN;
-    Msg.Pos := FScrollPos.Y;
-    Msg.Result := 0;
-    WMVScroll(Msg);
-    Refresh;
+    begin
+      DeltaPerLine := 120 div WheelScrollLines;
+      if WheelDelta > 0 then
+        Msg.ScrollCode := SB_LINEUP
+      else
+        Msg.ScrollCode := SB_LINEDOWN;
+    end;
+
+    while abs(FAccumulatedWheelDelta) >= DeltaPerLine do
+    begin
+      Msg.Pos := FScrollPos.Y;
+      Msg.Result := 0;
+      WMVScroll(Msg);
+      
+      if FAccumulatedWheelDelta > 0 then
+        FAccumulatedWheelDelta := FAccumulatedWheelDelta - DeltaPerLine
+      else
+        FAccumulatedWheelDelta := FAccumulatedWheelDelta + DeltaPerLine;
+    end;
+
     FDeactivateHintThread.Start;
     Result := True;
   end;
