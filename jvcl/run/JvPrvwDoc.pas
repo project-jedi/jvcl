@@ -951,7 +951,6 @@ begin
 
   SI.nMax := FMaxWidth - 1;
   SI.nPage := Min(ClientWidth, SI.nMax - SI.nMin + 1);
-  ShowScrollBar(Handle, SB_HORZ, not HideScrollBars and (ScrollBars in [ssHorizontal, ssBoth]));
   SetScrollInfo(Handle, SB_HORZ, SI, True);
   // update scroll pos if it has changed
   GetScrollInfo(Handle, SB_HORZ, SI);
@@ -960,6 +959,7 @@ begin
     ScrollBy(-FScrollPos.X + SI.nPos, 0);
     FScrollPos.X := SI.nPos;
   end;
+  ShowScrollBar(Handle, SB_HORZ, not HideScrollBars and (ScrollBars in [ssHorizontal, ssBoth]));
 
   // VERTICAL SCROLLBAR
   FillChar(SI, SizeOf(TScrollInfo), 0);
@@ -978,7 +978,6 @@ begin
     SI.nMax := FMaxHeight - 1;
     SI.nPage := Min(ClientHeight, SI.nMax - SI.nMin + 1);
   end;
-  ShowScrollBar(Handle, SB_VERT, not HideScrollBars and (ScrollBars in [ssVertical, ssBoth]));
   SetScrollInfo(Handle, SB_VERT, SI, True);
   // update scroll pos if it has changed
   GetScrollInfo(Handle, SB_VERT, SI);
@@ -987,6 +986,7 @@ begin
     ScrollBy(0, -FScrollPos.Y + SI.nPos);
     FScrollPos.Y := SI.nPos;
   end;
+  ShowScrollBar(Handle, SB_VERT, not HideScrollBars and (ScrollBars in [ssVertical, ssBoth]));
 end;
 
 procedure TJvCustomPreviewControl.Clear;
