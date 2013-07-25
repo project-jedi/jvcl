@@ -968,7 +968,7 @@ begin
     {$ENDIF RTL250_UP}
     ) then
   {$ELSE}
-  if CharInSet(Key, [#32..#255]) then
+  if Key >= #32 then
   {$ENDIF UNICODE}
   begin
     if not HasChar(Key, JvEditorCompletionChars) then

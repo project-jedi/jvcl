@@ -2759,7 +2759,7 @@ end;
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 begin
   if Assigned(SelectedField) and EditWithBoolBox(SelectedField) and
-    CharInSet(Char(Msg.CharCode), [Backspace, #32..#255]) then
+    ((Char(Msg.CharCode) = Backspace) or (Msg.CharCode >= 32)) then
   begin
     if not DoKeyPress(Msg) then
       case Char(Msg.CharCode) of

@@ -722,12 +722,11 @@ var
   TickCount: Integer;
   S: string;
 begin
-  if (FListField <> nil) and (FListField.FieldKind = fkData) and
-    (FListField.DataType = ftString) then
-    case Word(Key) of
+  if (FListField <> nil) and (FListField.FieldKind = fkData) and (FListField is TStringField) then
+    case Ord(Key) of
       VK_BACK, VK_ESCAPE:
         FSearchText := '';
-      VK_SPACE..255:
+      VK_SPACE..Ord(High(Char)):
         if CanModify then
         begin
           TickCount := GetTickCount;
@@ -737,8 +736,7 @@ begin
           if Length(FSearchText) < 32 then
           begin
             S := FSearchText + Key;
-            if FListLink.DataSet.Locate(FListField.FieldName, S,
-              [loCaseInsensitive, loPartialKey]) then
+            if FListLink.DataSet.Locate(FListField.FieldName, S, [loCaseInsensitive, loPartialKey]) then
             begin
               SelectKeyValue(FKeyField.Value);
               FSearchText := S;

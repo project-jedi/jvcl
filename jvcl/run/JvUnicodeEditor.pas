@@ -935,7 +935,6 @@ begin
 
   WasSelected := (FSelection.IsSelected) and (not PersistentBlocks);
   if Value >= 32 then
-  //if Key in [#32..#255] then
   begin
     if (Value < 256) and not HasChar(Char(Key), JvEditorCompletionChars) then
       Completion.DoKeyPress(Char(Key));
