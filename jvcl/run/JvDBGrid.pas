@@ -4655,7 +4655,7 @@ begin
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
-  if ReadOnly or not (Control.Enabled and DataLink.DataSet.CanModify) then
+  if ReadOnly or (DataLink.DataSet = nil) or not (Control.Enabled and DataLink.DataSet.CanModify) then
   begin
     HideCurrentControl;
     Exit;
