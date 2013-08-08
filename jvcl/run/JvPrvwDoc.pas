@@ -911,6 +911,7 @@ begin
   FPages := TList.Create;
   FPages.Capacity := 64;
   FBuffer := TBitmap.Create;
+  FBuffer.PixelFormat := pf32Bit;
 
   FOptions := TJvPreviewPageOptions.Create;
   FOptions.OnChange := DoOptionsChange;
@@ -1251,8 +1252,7 @@ procedure TJvCustomPreviewControl.Paint;
 begin
   if IsUpdating then
     Exit;
-  FBuffer.Width := ClientWidth;
-  FBuffer.Height := ClientHeight;
+  FBuffer.SetSize(ClientWidth, ClientHeight);
   //  Canvas.Brush.Color := Color;
   //  Canvas.FillRect(ClientRect);
   DrawPages(FBuffer.Canvas, Point(FScrollPos.X, FScrollPos.Y));
