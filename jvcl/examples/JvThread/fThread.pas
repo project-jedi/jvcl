@@ -26,6 +26,8 @@
 
 unit fThread;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -74,7 +76,12 @@ var
 implementation
 
 uses
-  JvDynControlEngineDevExpcx;
+  JvDynControlEngineVcl
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  ,JvDynControlEngineDevExpcx
+  {$ENDIF}
+  ;
+
 
 {$R *.dfm}
 
@@ -161,7 +168,6 @@ procedure TForm1.Button4Click(Sender: TObject);
 begin
   JvThread2.ThreadDialog := JvThreadAnimateDialog1;
   JvThread2.Execute(Self);
-  //(Sender as TButton).Enabled := False;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -180,12 +186,9 @@ begin
     Thread.ThreadDialog := ThreadDialog;
     Thread.OnExecute := OnThreadExecute;
     ThreadDialog.Name := 'ThreadDialog';
+    Thread.ThreadDialog.DialogOptions.Assign(JvThreadSimpleDialog1.DialogOptions);
     ThreadDialog.ChangeThreadDialogOptions :=  ThreadDialogChangeThreadDialogOptions;
     ThreadDialog.DialogOptions.Caption := 'Sizing Thread Sample';
-    ThreadDialog.DialogOptions.ShowCancelButton := False;
-    ThreadDialog.DialogOptions.ShowDialog := True;
-    ThreadDialog.DialogOptions.ShowModal := True;
-    ThreadDialog.DialogOptions.ShowProgressBar := True;
     Thread.ExecuteWithDialog(nil);
   finally
     Thread.Free;
