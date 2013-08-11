@@ -3648,6 +3648,7 @@ end;
 
 destructor TJvDynControlCxProgressBar.Destroy;
 begin
+  fTaskbarProgress.State := tbpsNoProgress;
   fTaskbarProgress.Active := False;
   FreeAndNil(fTaskbarProgress );
   inherited Destroy;
