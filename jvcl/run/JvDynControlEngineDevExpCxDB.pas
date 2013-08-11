@@ -40,12 +40,12 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  System.UITypes,
-  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Classes, ExtCtrls, ExtDlgs, Graphics, Buttons, Controls, Dialogs, FileCtrl,
   Forms, DBCtrls, DB, DBGrids, StdCtrls,
   cxDBEdit, cxDBNavigator,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineIntf,
   JvDynControlEngineDevExpCx, JvDynControlEngineDBIntf;
 
