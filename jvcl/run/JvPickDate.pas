@@ -955,6 +955,12 @@ const
 var
   Control, BackPanel: TWinControl;
 {$ENDIF JVCLThemesEnabled}
+
+  tmpF: TFont;
+   // need to get PPI for Windows default font for text, since
+   // global VCL.TScreen PPI may be different from this one, since
+   // user theme may have different fonts for different form elements.
+
 begin
   inherited Create(AOwner);
   FFourDigitYear := IsFourDigitYear;
@@ -962,7 +968,7 @@ begin
   Width := Max(PopupCalendarSize.X, 180);
 
   Color := clBtnFace;
-  FontSetDefault(Font);
+//  FontSetDefault(Font); // moved to bottom
   if AOwner is TControl then
     ShowHint := TControl(AOwner).ShowHint
   else
@@ -975,7 +981,7 @@ begin
   begin
     VertOffset := 0;
     HorzOffset := 0;
-    BtnSide := 16
+    BtnSide := 16;
   end
   else
   begin
@@ -1025,6 +1031,7 @@ begin
     CreateButtonGlyph(Glyph, 0);
     OnClick := PrevYearBtnClick;
     Hint := RsPrevYearHint;
+    Anchors := [akLeft, akTop]; // for ScaleBy later
   end;
 
   FBtns[1] := TJvTimerSpeedButton.Create(Self);
@@ -1035,6 +1042,7 @@ begin
     CreateButtonGlyph(Glyph, 1);
     OnClick := PrevMonthBtnClick;
     Hint := RsPrevMonthHint;
+    Anchors := [akLeft, akTop]; // for ScaleBy later
   end;
 
   FTitleLabel := TLabel.Create(Self);
@@ -1057,6 +1065,7 @@ begin
     CreateButtonGlyph(Glyph, 2);
     OnClick := NextMonthBtnClick;
     Hint := RsNextMonthHint;
+    Anchors := [akRight, akTop]; // for ScaleBy later
   end;
 
   FBtns[3] := TJvTimerSpeedButton.Create(Self);
@@ -1067,6 +1076,25 @@ begin
     CreateButtonGlyph(Glyph, 3);
     OnClick := NextYearBtnClick;
     Hint := RsNextYearHint;
+    Anchors := [akRight, akTop]; // for ScaleBy later
+  end;
+
+  tmpf := TFont.Create;
+  try
+    FontSetDefault(tmpF);
+     // controls coordinates are hardcoded for MS Sans Serif sz 8 ht -11
+    if tmpF.Height <> -11  then begin // default for sz 8 font
+       if tmpF.Height < 0  // MSDN LOGFONT: >0 and <0 are different beasts, can not be compared
+          then ScaleBy(tmpF.Height, -11)
+          else ScaleBy(tmpF.Size, 8); // much less precision
+
+       FBtns[1].Left := FBtns[0].Left + FBtns[0].Width + HorzOffset;
+       FBtns[2].Left := FBtns[3].Left - FBtns[2].Width - HorzOffset;
+    end;
+
+    Font.Assign(tmpF);
+  finally
+    tmpF.Free;
   end;
   //Polaris
   CheckButton;
@@ -1268,6 +1296,7 @@ type
 constructor TJvSelectDateDlg.Create(AOwner: TComponent);
 var
   Control: TWinControl;
+  tmpF: TFont;
 begin
   inherited CreateNew(AOwner, 0); // BCB compatible
   Caption := RsDateDlgCaption;
@@ -1276,7 +1305,7 @@ begin
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris
   ClientWidth := 222;
-  FontSetDefault(Font);
+//  FontSetDefault(Font); - doing it below, when all controls created
   Position := poScreenCenter;
   ShowHint := True;
   KeyPreview := True;
@@ -1425,6 +1454,22 @@ begin
     Options := Options - [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine];
     OnChange := CalendarChange;
     OnDblClick := CalendarDblClick;
+  end;
+
+
+  tmpf := TFont.Create;
+  try
+    FontSetDefault(tmpF);
+     // controls coordinates are hardcoded for MS Sans Serif sz 8 ht -11
+    if tmpF.Height <> -11  then begin // default for sz 8 font
+       if tmpF.Height < 0  // MSDN LOGFONT: >0 and <0 are different beasts, can not be compared
+          then ScaleBy(tmpF.Height, -11)
+          else ScaleBy(tmpF.Size, 8); // much less precision
+    end;
+
+    Font.Assign(tmpF);
+  finally
+    tmpF.Free;
   end;
 
   OnKeyDown := FormKeyDown;
