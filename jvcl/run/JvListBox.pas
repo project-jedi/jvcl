@@ -165,6 +165,8 @@ type
     FProviderIsActive: Boolean;
     FProviderToggle: Boolean;
     FMoving: Boolean;
+    FColorAlternate: TColor;
+    FColorBeforeChange:TColor;
 
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -196,7 +198,10 @@ type
     procedure SetFlat(const Value: Boolean);
     function GetParentFlat: Boolean;
     procedure SetParentFlat(const Value: Boolean);
+    procedure SetColorAlternate(const Value: TColor);
+    function IsColorAlternateAlternate: Boolean;
   protected
+    procedure ColorChanged; override;
     procedure FontChanged; override;
     function GetItemsClass: TJvListBoxStringsClass; virtual;
     procedure BeginRedraw;
@@ -300,6 +305,7 @@ type
     property SelectedColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
     property SelectedTextColor: TColor read FSelectedTextColor write SetSelectedTextColor default clHighlightText;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
+    property ColorAlternate: TColor read FColorAlternate write SetColorAlternate stored IsColorAlternateAlternate;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default True;
     property Background: TJvListBoxBackground read FBackground write SetBackground;
     property Flat: Boolean read GetFlat write SetFlat default False;
@@ -333,6 +339,7 @@ type
     property Items;
 
     property MultiLine;
+    property ColorAlternate;
     property SelectedColor;
     property SelectedTextColor;
     property DisabledTextColor;
@@ -747,6 +754,8 @@ begin
   FSelectedColor := clHighlight;
   FSelectedTextColor := clHighlightText;
   FDisabledTextColor := clGrayText;
+  FColorAlternate  := Color;
+  FColorBeforeChange := Color;
   FShowFocusRect := True;
   //  Style := lbOwnerDrawVariable;
 
@@ -832,6 +841,9 @@ begin
       begin
         Canvas.Brush.Color := FSelectedColor;
         Canvas.Font.Color := FSelectedTextColor;
+      end else begin
+        if Odd(itemID) and (Color <> FColorAlternate) then
+           Canvas.Brush.Color := FColorAlternate;
       end;
       if (([odDisabled, odGrayed] * State) <> []) or not Enabled then
         Canvas.Font.Color := FDisabledTextColor;
@@ -1043,8 +1055,8 @@ var
   ActualRect: TRect;
   AText: string;
 begin
-   if csDestroying in ComponentState then
-    Exit;
+  if csDestroying in ComponentState then
+     Exit;
  // JvBMPListBox:
   // draw text transparently
   if ScrollBars in [ssHorizontal, ssBoth] then
@@ -1074,8 +1086,13 @@ begin
 
   if Index < ItemsShowing.Count then
   begin
-    if not Background.DoDraw then
-      Canvas.FillRect(ActualRect);
+    if not Background.DoDraw then begin
+       if (ColorAlternate <> Color) then
+          if Odd(Index)
+             then Canvas.Brush.Color := ColorAlternate
+             else Canvas.Brush.Color := Color;
+       Canvas.FillRect(ActualRect);
+    end;
 
     if FMultiline then
       Flags := DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or
@@ -1276,6 +1293,15 @@ begin
   Windows.InvalidateRect(Handle, @R, True);
 end;
 
+procedure TJvCustomListBox.SetColorAlternate(const Value: TColor);
+begin
+  if FColorAlternate <> Value then
+  begin
+    FColorAlternate := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCustomListBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
@@ -1297,6 +1323,14 @@ begin
   if (Reason = ccrProviderSelect) and not IsProviderSelected and not FProviderToggle and
       not TJvListBoxStrings(Items).UseInternal then
     TJvListBoxStrings(Items).MakeListInternal;
+end;
+
+procedure TJvCustomListBox.ColorChanged;
+begin
+  inherited;
+  if FColorBeforeChange = FColorAlternate
+     then FColorAlternate := Color;
+  FColorBeforeChange := Color;
 end;
 
 procedure TJvCustomListBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
@@ -1348,6 +1382,11 @@ begin
     VL.AutoExpandLevel := -1;
     VL.RebuildView;
   end;
+end;
+
+function TJvCustomListBox.IsColorAlternateAlternate: Boolean;
+begin
+   Result := Color <> ColorAlternate;
 end;
 
 function TJvCustomListBox.IsProviderSelected: Boolean;
