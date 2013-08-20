@@ -64,6 +64,7 @@ type
     procedure SetShowModal(Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); virtual;
+    procedure Assign(Source: TPersistent); override;
   published
     property FormStyle: TFormStyle read FFormStyle write FFormStyle;
     // Delay in milliseconds for starting the thread dialog
@@ -361,6 +362,19 @@ begin
   FShowDialog := False;
   FShowModal := True;
   FShowDelay := 0;
+end;
+
+procedure TJvCustomThreadDialogOptions.Assign(Source: TPersistent);
+begin
+  if Source is TJvCustomThreadDialogOptions then
+    begin
+      FormStyle := TJvCustomThreadDialogOptions(Source).FormStyle;
+      ShowDialog := TJvCustomThreadDialogOptions(Source).ShowDialog;
+      ShowDelay := TJvCustomThreadDialogOptions(Source).ShowDelay;
+      ShowModal := TJvCustomThreadDialogOptions(Source).ShowModal;
+    end
+  else
+    Inherited Assign(Source);
 end;
 
 procedure TJvCustomThreadDialogOptions.SetShowDelay(const Value: Integer);

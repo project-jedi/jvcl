@@ -49,7 +49,7 @@ uses
   cxLookAndFeels, cxMaskEdit, cxLabel, cxButtons, cxListBox, cxDropDownEdit,
   cxButtonEdit, cxCalendar, cxCheckBox, cxMemo, cxRadioGroup, cxImage, cxTreeView,
   cxEdit, cxCalc, cxSpinEdit, cxTimeEdit, cxCheckListBox, cxGroupBox, cxRichEdit,
-  cxProgressBar, cxPC, cxColorComboBox, cxGraphics, cxCheckComboBox,
+  cxProgressBar, cxPC, cxColorComboBox, cxGraphics, cxCheckComboBox, dxTaskbarProgress,
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID}
   cxOi, cxVGrid, cxVGridViewInfo,
   {$ENDIF}
@@ -844,7 +844,11 @@ type
 
   TJvDynControlCxProgressBar = class(TcxProgressBar, IUnknown, IJvDynControl,
       IJvDynControlProgressBar, IJvDynControlAlign, IJvDynControlDevExpCx)
+  private
+    fTaskbarProgress: TdxTaskbarProgress ;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ControlSetAlign(Value: TAlign);
     procedure ControlSetAnchors(Value: TAnchors);
     procedure ControlSetCaption(const Value: string);
@@ -3635,6 +3639,21 @@ begin
   Selected := Value;
 end;
 
+constructor TJvDynControlCxProgressBar.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fTaskbarProgress  := TdxTaskbarProgress .Create(AOwner);
+  fTaskbarProgress.LinkedComponent := Self;
+end;
+
+destructor TJvDynControlCxProgressBar.Destroy;
+begin
+  fTaskbarProgress.State := tbpsNoProgress;
+  fTaskbarProgress.Active := False;
+  FreeAndNil(fTaskbarProgress );
+  inherited Destroy;
+end;
+
 procedure TJvDynControlCxProgressBar.ControlSetAlign(Value: TAlign);
 begin
   Align := Value;
@@ -3724,6 +3743,7 @@ end;
 procedure TJvDynControlCxProgressbar.ControlSetCxProperties(Value: TCxDynControlWrapper);
 begin
   LookAndFeel.Assign(Value.LookAndFeel);
+  fTaskbarProgress.Active := True;
 end;
 
 procedure TJvDynControlCxProgressBar.ControlSetMarquee(Value: Boolean);

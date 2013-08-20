@@ -3207,6 +3207,11 @@ begin
   end
   else
     inherited;
+
+  // This fixes the problem that the Button looses its border
+  if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) then
+    if (FBtnControl <> nil) and FBtnControl.Visible and FBtnControl.HandleAllocated then
+      Windows.InvalidateRect(FBtnControl.Handle, nil, False);
 end;
 {$ENDIF JVCLThemesEnabled}
 

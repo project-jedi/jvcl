@@ -1111,6 +1111,7 @@ begin
       APropertyStore.AppStoragePath := AAppStoragePath;
       APropertyStore.AppStorage := AppStorage;
       APropertyStore.StoreProperties;
+      AppStorage.Flush;
     finally
       APropertyStore.AppStoragePath := SaveAppStoragePath;
       APropertyStore.AppStorage := SaveAppStorage;

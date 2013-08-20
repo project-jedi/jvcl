@@ -280,15 +280,14 @@ begin
   inherited KeyPress(Key);
   if FMemoLoaded then
   begin
-    if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-      not FDataLink.Field.IsValidChar(Key) then
+    if (Key >= #32) and (FDataLink.Field <> nil) and not FDataLink.Field.IsValidChar(Key) then
     begin
       if BeepOnError then
         Beep;
       Key := #0;
     end;
     case Key of
-      CtrlH, CtrlI, CtrlJ, CtrlM, CtrlV, CtrlX, #32..#255:
+      CtrlH, CtrlI, CtrlJ, CtrlM, CtrlV, CtrlX, #32..High(Char):
         EditCanModify;
       Esc:
         FDataLink.Reset;

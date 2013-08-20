@@ -130,6 +130,11 @@ type
   protected
     function GetScreenDC: HDC;
     procedure Change;
+
+    // Handle backwards compatibility for previously published ReferenceHandle.
+    procedure ReadReferenceHandle(Reader: TReader);
+    procedure WriteReferenceHandle(Writer: TWriter);
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -142,8 +147,8 @@ type
     function MMToXPx(MM: Single): Integer;
     function MMToYPx(MM: Single): Integer;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
     property ReferenceHandle: HDC read FReferenceHandle write SetReferenceHandle;
+  published
     property LogPixelsX: Cardinal read FLogPixelsX write SetLogPixesX;
     property LogPixelsY: Cardinal read FLogPixelsY write SetLogPixelsY;
     property PhysicalWidth: Cardinal read FPhysicalWidth write SetPhysicalWidth;
@@ -877,6 +882,23 @@ end;
 function TJvDeviceInfo.YPxToMM(Pixels: Integer): Single;
 begin
   Result := YPxToInch(Pixels) * 25.4;
+end;
+
+procedure TJvDeviceInfo.ReadReferenceHandle(Reader: TReader);
+begin
+  // Do nothing; ReferenceHandle is no longer saved.
+  Reader.ReadInteger;
+end;
+
+procedure TJvDeviceInfo.WriteReferenceHandle(Writer: TWriter);
+begin
+  // Do nothing; ReferenceHandle is no longer saved.
+end;
+
+procedure TJvDeviceInfo.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('ReferenceHandle', ReadReferenceHandle, WriteReferenceHandle, False);
 end;
 
 //=== { TJvCustomPreviewControl } ============================================

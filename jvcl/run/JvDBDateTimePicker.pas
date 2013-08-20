@@ -414,15 +414,14 @@ begin
   end;
 
   inherited KeyPress(Key);
-  if CharInSet(Key, [#32..#255]) and ((Field <> nil) and
-    not (Field.IsValidChar(Key))) then
+  if (Key >= #32) and ((Field <> nil) and not (Field.IsValidChar(Key))) then
   begin
     if BeepOnError then
       Beep;
     Key := #0;
   end;
   case Key of
-    #32..#255:
+    #32..High(Char):
       FDataLink.Edit;
     Esc:
       begin
