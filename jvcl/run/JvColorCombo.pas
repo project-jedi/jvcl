@@ -88,6 +88,7 @@ type
     function GetDropDownWidth: Integer;
     procedure SetDropDownWidth(const Value: Integer);
     function GetColor(Index: Integer): TColor;
+    function IsColorNameMapStored: Boolean;
   protected
     procedure FontChanged; override;
     procedure DrawItem(Index: Integer; R: TRect; State: TOwnerDrawState); override;
@@ -142,7 +143,7 @@ type
     // with the value in the list, otherwise the default value wil be used
     // Example:
     // clBlack=Black
-    property ColorNameMap: TStrings read GetColorNameMap write SetColorNameMap;
+    property ColorNameMap: TStrings read GetColorNameMap write SetColorNameMap stored IsColorNameMapStored;
     property ColorValue: TColor read FColorValue write SetColorValue default clBlack;
     property ColorDialogText: string read FColorDialogText write SetColorDialogText;
     property ColorWidth: Integer read FColorWidth write SetColorWidth default 21;
@@ -825,6 +826,25 @@ begin
       FColorNameMap.Add(SysColorValues[I].Constant + '=' + SysColorValues[I].Description);
   finally
     FColorNameMap.EndUpdate;
+  end;
+end;
+
+function TJvColorComboBox.IsColorNameMapStored: Boolean;
+var
+  I, Offset: Integer;
+begin
+  Result := FColorNameMap.Count <> Length(ColorValues) + Length(SysColorValues);
+  if not Result then
+  begin
+    Result := True;
+    for I := Low(ColorValues) to High(ColorValues) do
+      if FColorNameMap[I - Low(ColorValues)] <> ColorValues[I].Constant + '=' + ColorValues[I].Description then
+        Exit;
+    Offset := High(ColorValues) - Low(ColorValues) + 1;
+    for I := Low(SysColorValues) to High(SysColorValues) do
+      if FColorNameMap[Offset + I - Low(SysColorValues)] <> SysColorValues[I].Constant + '=' + SysColorValues[I].Description then
+        Exit;
+    Result := False;
   end;
 end;
 
