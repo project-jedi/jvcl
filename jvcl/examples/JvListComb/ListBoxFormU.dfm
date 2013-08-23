@@ -219,17 +219,12 @@ object fmListBox: TfmListBox
     TabPosition = tpBottom
     object tsJVCL: TTabSheet
       Caption = 'JediVCL Listbox'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object lst1: TJvListBox
         Left = 0
         Top = 0
         Width = 395
         Height = 461
         Align = alClient
-        IntegralHeight = True
         Background.FillMode = bfmTile
         Background.Visible = False
         TabOrder = 0
@@ -238,10 +233,6 @@ object fmListBox: TfmListBox
     object tsVCL: TTabSheet
       Caption = 'Standard ListBox'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object lst2: TListBox
         Left = 0
         Top = 0

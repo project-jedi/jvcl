@@ -969,14 +969,18 @@ begin
     Style := Style and not (WS_HSCROLL or WS_VSCROLL) or ScrollBar[FScrollBars] or
       Sorted[FSorted];
   end;
-  if ItemsOfVariableHeight and (Style <> lbOwnerDrawVariable) then
+
+  if ItemsOfVariableHeight then
   begin
-    Params.Style := LBS_OWNERDRAWVARIABLE or
+    if Self.Style <> lbOwnerDrawVariable then
+       Params.Style := LBS_OWNERDRAWVARIABLE or
                      ( Params.Style and not LBS_OWNERDRAWFIXED);
-  end else
-    if ItemsDemandOwnerDraw then begin
-       Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
-    end;
+  end else begin
+       // only when NOT ItemsOfVariableHeight
+    if ItemsDemandOwnerDraw then
+       Params.Style := LBS_OWNERDRAWFIXED or
+                     ( Params.Style and not LBS_OWNERDRAWVARIABLE);
+  end;
   if IsProviderSelected then
   begin
     Params.Style := Params.Style and not (LBS_SORT or LBS_HASSTRINGS or LBS_NODATA);
@@ -1939,7 +1943,7 @@ begin
   end;
   FItemsHeightValid := True;
 
-  // Remeasure might be caleld from inside painter
+  // Remeasure might be called from inside painter
   // So it will need to initiate another paint cycle with different heights
   If ItemsHeightChanged and HandleAllocated
      then InvalidateRect(Handle, nil, True);
