@@ -112,13 +112,15 @@ object Form1: TForm1
   object JvThreadSimpleDialog1: TJvThreadSimpleDialog
     DialogOptions.FormStyle = fsNormal
     DialogOptions.ShowDialog = True
-    DialogOptions.ShowModal = False
     DialogOptions.CancelButtonCaption = 'Cancel'
     DialogOptions.Caption = '23423423423432'
     DialogOptions.InfoText = 'Infotext'#13#10'Multiline'#13#10'Third Line'
-    DialogOptions.InfoTextAlignment = taRightJustify
+    DialogOptions.InfoTextAlignment = taCenter
+    DialogOptions.ShowCancelButton = False
+    DialogOptions.ProgressBarMarquee = True
+    DialogOptions.ProgressBarSmooth = True
     DialogOptions.ShowProgressBar = True
-    Left = 260
+    Left = 280
     Top = 20
   end
   object JvThreadAnimateDialog1: TJvThreadAnimateDialog
@@ -128,7 +130,7 @@ object Form1: TForm1
     DialogOptions.Caption = 'Execute Thread'
     DialogOptions.InfoText = 'Infotext'#13#10'<yx<yx'#13#10'<y'#13#10'x'
     DialogOptions.CommonAVI = aviFindFile
-    Left = 260
+    Left = 280
     Top = 80
   end
 end

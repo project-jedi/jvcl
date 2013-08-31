@@ -819,14 +819,13 @@ end;
 procedure TJvDBMaskEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-    not FDataLink.Field.IsValidChar(Key) then
+  if (Key >= #32) and (FDataLink.Field <> nil) and not FDataLink.Field.IsValidChar(Key) then
   begin
     DoBeepOnError;
     Key := #0;
   end;
   case Key of
-    CtrlH, CtrlV, CtrlX, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..High(Char):
       FDataLink.Edit;
     Esc:
       begin
@@ -1154,14 +1153,13 @@ end;
 procedure TJvDBComboEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-    not FDataLink.Field.IsValidChar(Key) then
+  if (Key >= #32) and (FDataLink.Field <> nil) and not FDataLink.Field.IsValidChar(Key) then
   begin
     DoBeepOnError;
     Key := #0;
   end;
   case Key of
-    CtrlH, CtrlV, CtrlX, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..High(Char):
       FDataLink.Edit;
     Esc:
       begin
@@ -1444,8 +1442,8 @@ end;
 procedure TJvDBDateEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-    not CharInSet(Key, DigitChars) and (Key <> JclFormatSettings.DateSeparator) then
+  if (Key >= #32) and (FDataLink.Field <> nil) and not CharInSet(Key, DigitChars) and
+     (Key <> JclFormatSettings.DateSeparator) then
   begin
     DoBeepOnError;
     Key := #0;
@@ -1809,7 +1807,7 @@ procedure TJvDBCalcEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   case Key of
-    CtrlH, CtrlV, CtrlX, #32..#255:
+    CtrlH, CtrlV, CtrlX, #32..High(Char):
       if not PopupVisible then
         FDataLink.Edit;
     Esc:

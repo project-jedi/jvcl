@@ -63,6 +63,7 @@ type
     procedure SetShowElapsedTime(Value: Boolean);
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property CancelButtonCaption: string read FCancelButtonCaption write SetCancelButtonCaption;
     property Caption: string read FCaption write SetCaption;
@@ -87,6 +88,8 @@ type
     FCommonAVI: TCommonAVI;
     FFileName: string;
     FResName: string;
+  public
+    procedure Assign(Source: TPersistent); override;
   published
     property CommonAVI: TCommonAVI read FCommonAVI write FCommonAVI;
     property FileName: string read FFileName write FFileName;
@@ -118,6 +121,7 @@ type
     FShowProgressBar: Boolean;
   public
     constructor Create(AOwner: TJvCustomThreadDialog); override;
+    procedure Assign(Source: TPersistent); override;
   published
     property ProgressBarMarquee: Boolean read FProgressBarMarquee write FProgressBarMarquee default False;
     property ProgressBarMax: Integer read FProgressBarMax write FProgressBarMax default 100;
@@ -271,6 +275,21 @@ begin
   FInfoTextAlignment := taLeftJustify;
 end;
 
+procedure TJvThreadBaseDialogOptions.Assign(Source: TPersistent);
+begin
+  if Source is TJvThreadBaseDialogOptions then
+  begin
+    CancelButtonCaption := TJvThreadBaseDialogOptions(Source).CancelButtonCaption;
+    Caption := TJvThreadBaseDialogOptions(Source).Caption;
+    EnableCancelButton := TJvThreadBaseDialogOptions(Source).EnableCancelButton;
+    InfoText := TJvThreadBaseDialogOptions(Source).InfoText;
+    InfoTextAlignment := TJvThreadBaseDialogOptions(Source).InfoTextAlignment;
+    ShowCancelButton := TJvThreadBaseDialogOptions(Source).ShowCancelButton;
+    ShowElapsedTime := TJvThreadBaseDialogOptions(Source).ShowElapsedTime;
+  end;
+  Inherited Assign(Source);
+end;
+
 procedure TJvThreadBaseDialogOptions.SetCancelButtonCaption(Value: string);
 begin
   FCancelButtonCaption := Value;
@@ -382,6 +401,20 @@ begin
   FProgressBarMax := 100;
   FProgressBarMin := 0;
   FProgressBarMarquee := False;
+end;
+
+procedure TJvThreadSimpleDialogOptions.Assign(Source: TPersistent);
+begin
+  if Source is TJvThreadSimpleDialogOptions then
+  begin
+    ProgressBarMarquee := TJvThreadSimpleDialogOptions(Source).ProgressBarMarquee;
+    ProgressBarMax := TJvThreadSimpleDialogOptions(Source).ProgressBarMax;
+    ProgressBarMin := TJvThreadSimpleDialogOptions(Source).ProgressBarMin;
+    ProgressBarPosition := TJvThreadSimpleDialogOptions(Source).ProgressBarPosition;
+    ProgressBarSmooth := TJvThreadSimpleDialogOptions(Source).ProgressBarSmooth;
+    ShowProgressBar := TJvThreadSimpleDialogOptions(Source).ShowProgressBar;
+  end;
+  Inherited Assign(Source);
 end;
 
 function TJvThreadSimpleDialogForm.CalculateFormHeight: Integer;
@@ -816,6 +849,17 @@ end;
 procedure TJvThreadBaseDialogForm.SetDialogOptions(const Value: TJvThreadBaseDialogOptions);
 begin
   inherited DialogOptions := Value;
+end;
+
+procedure TJvThreadAnimateDialogOptions.Assign(Source: TPersistent);
+begin
+  if Source is TJvThreadAnimateDialogOptions then
+  begin
+    CommonAVI := TJvThreadAnimateDialogOptions(Source).CommonAVI;
+    FileName := TJvThreadAnimateDialogOptions(Source).FileName;
+    ResName := TJvThreadAnimateDialogOptions(Source).ResName;
+  end;
+  Inherited Assign(Source);
 end;
 
 {$IFDEF UNITVERSIONING}

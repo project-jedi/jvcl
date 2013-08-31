@@ -75,6 +75,7 @@
     <File Name="..\..\run\JvVersionControlActions.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionControlActionsEngine.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionControlActionsEngineFileListBox.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXMLBrowser.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\..\help\Common.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvActionsEngine.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvControlActions.dtx" Targets="help" Formname="" Condition=""/>

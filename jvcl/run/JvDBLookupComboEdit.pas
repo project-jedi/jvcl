@@ -254,8 +254,7 @@ end;
 procedure TJvDBLookupComboEdit.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
-  if CharInSet(Key, [#32..#255]) and (FDataLink.Field <> nil) and
-    not FDataLink.Field.IsValidChar(Key) then
+  if (Key >= #32) and (FDataLink.Field <> nil) and not FDataLink.Field.IsValidChar(Key) then
   begin
     if BeepOnError then
       SysUtils.Beep;
@@ -268,7 +267,7 @@ begin
 //  Key := #0;
   end
   else
-  if CharInSet(Key, [#8, #9, #24{Ctrl+X}, #32..#255]) then
+  if (Key >= #32) or CharInSet(Key, [#8, #9, #24{Ctrl+X}]) then
     if not EditCanModify then
       Key := #0;
 end;

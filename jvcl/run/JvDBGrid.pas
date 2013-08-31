@@ -2759,7 +2759,7 @@ end;
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 begin
   if Assigned(SelectedField) and EditWithBoolBox(SelectedField) and
-    CharInSet(Char(Msg.CharCode), [Backspace, #32..#255]) then
+    ((Char(Msg.CharCode) = Backspace) or (Msg.CharCode >= 32)) then
   begin
     if not DoKeyPress(Msg) then
       case Char(Msg.CharCode) of
@@ -4655,7 +4655,7 @@ begin
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
-  if ReadOnly or not (Control.Enabled and DataLink.DataSet.CanModify) then
+  if ReadOnly or (DataLink.DataSet = nil) or not (Control.Enabled and DataLink.DataSet.CanModify) then
   begin
     HideCurrentControl;
     Exit;
