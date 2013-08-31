@@ -2,40 +2,32 @@ object ListCombMainForm: TListCombMainForm
   Left = 276
   Top = 174
   Caption = 'JvComboBox sample'
-  ClientHeight = 561
-  ClientWidth = 694
+  ClientHeight = 456
+  ClientWidth = 564
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -14
+  Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
   OnCreate = FormCreate
-  PixelsPerInch = 120
-  TextHeight = 16
+  PixelsPerInch = 96
+  TextHeight = 13
   object Splitter1: TSplitter
-    Left = 348
-    Top = 86
-    Width = 6
-    Height = 475
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 283
+    Top = 75
+    Width = 5
+    Height = 381
     Align = alRight
-    ExplicitTop = 92
-    ExplicitHeight = 469
+    ExplicitTop = 70
+    ExplicitHeight = 386
   end
   object Panel2: TPanel
     Left = 0
-    Top = 86
-    Width = 348
-    Height = 475
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Top = 75
+    Width = 283
+    Height = 381
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 2
@@ -44,16 +36,12 @@ object ListCombMainForm: TListCombMainForm
     object JvListBox1: TJvImageListBox
       Left = 2
       Top = 2
-      Width = 344
-      Height = 471
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Width = 279
+      Height = 377
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -15
+      Font.Height = -12
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       Items = <>
@@ -67,72 +55,51 @@ object ListCombMainForm: TListCombMainForm
     end
   end
   object Panel3: TPanel
-    Left = 354
-    Top = 86
-    Width = 340
-    Height = 475
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 288
+    Top = 75
+    Width = 276
+    Height = 381
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 1
     DesignSize = (
-      340
-      475)
+      276
+      381)
     object Label1: TLabel
-      Left = 81
-      Top = 103
-      Width = 94
-      Height = 16
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
+      Left = 66
+      Top = 84
+      Width = 75
+      Height = 13
       Caption = 'a JvColorButton'
     end
     object Label2: TLabel
-      Left = 207
-      Top = 26
-      Width = 124
-      Height = 16
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
+      Left = 168
+      Top = 21
+      Width = 95
+      Height = 13
       Caption = 'a JvColorComboBox'
     end
     object Label3: TLabel
-      Left = 207
-      Top = 64
-      Width = 118
-      Height = 16
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
+      Left = 168
+      Top = 52
+      Width = 92
+      Height = 13
       Caption = 'a JvFontComboBox'
     end
     object Button2: TButton
-      Left = 20
-      Top = 153
-      Width = 92
-      Height = 30
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 16
+      Top = 124
+      Width = 75
+      Height = 25
       Caption = 'Toggle justify'
       TabOrder = 0
       OnClick = Button2Click
     end
     object CheckBox1: TCheckBox
-      Left = 20
-      Top = 128
-      Width = 119
-      Height = 21
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 16
+      Top = 104
+      Width = 97
+      Height = 17
       Caption = 'Images'
       Checked = True
       State = cbChecked
@@ -140,32 +107,24 @@ object ListCombMainForm: TListCombMainForm
       OnClick = CheckBox1Click
     end
     object JvColorComboBox1: TJvColorComboBox
-      Left = 20
-      Top = 20
-      Width = 178
-      Height = 23
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 16
+      Top = 16
+      Width = 145
+      Height = 20
       ColorValue = clWhite
       ColorDialogText = '(Custom...)'
-      DroppedDownWidth = 178
+      DroppedDownWidth = 145
       NewColorText = 'New Color '
       Options = [coText, coCustomColors]
       TabOrder = 2
       OnChange = JvColorComboBox1Change
     end
     object JvFontComboBox1: TJvFontComboBox
-      Left = 20
-      Top = 59
-      Width = 178
-      Height = 23
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
-      DroppedDownWidth = 178
+      Left = 16
+      Top = 48
+      Width = 145
+      Height = 22
+      DroppedDownWidth = 145
       MaxMRUCount = 0
       FontName = '@Arial Unicode MS'
       ItemIndex = 0
@@ -174,43 +133,39 @@ object ListCombMainForm: TListCombMainForm
       OnChange = JvFontComboBox1Change
     end
     object JvColorButton1: TJvColorButton
-      Left = 20
-      Top = 98
-      Width = 51
-      Height = 26
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 16
+      Top = 80
       OtherCaption = '&Other...'
       Options = []
       OnChange = JvColorButton1Change
       TabOrder = 4
     end
     object Button1: TButton
-      Left = 20
-      Top = 427
-      Width = 92
-      Height = 31
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 16
+      Top = 347
+      Width = 75
+      Height = 25
       Anchors = [akLeft, akBottom]
       Caption = 'Load...'
       TabOrder = 5
       OnClick = Button1Click
     end
+    object btnListBoxDemo: TButton
+      Left = 176
+      Top = 347
+      Width = 89
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = 'TJvListBox >>'
+      TabOrder = 6
+      OnClick = btnListBoxDemoClick
+    end
   end
   object JvComboBox1: TJvImageComboBox
     Left = 0
-    Top = 60
-    Width = 694
+    Top = 49
+    Width = 564
     Height = 26
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Style = csOwnerDrawVariable
     Align = alTop
     ButtonFrame = True
@@ -219,7 +174,7 @@ object ListCombMainForm: TListCombMainForm
     DropDownCount = 10
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
-    Font.Height = -15
+    Font.Height = -12
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ImageHeight = 0
@@ -234,17 +189,13 @@ object ListCombMainForm: TListCombMainForm
   object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 694
-    Height = 60
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Width = 564
+    Height = 49
     Align = alTop
     Caption = 'Here you can see some Combo and List Boxes from the JVCL'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -17
+    Font.Height = -15
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentFont = False

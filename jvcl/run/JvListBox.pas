@@ -1076,6 +1076,8 @@ end;
 
 { This procedure is a slightly modified version of TCustomListbox.DrawItem! }
 
+const JvCustomListBoxItemsSeparatorIndent = 6;
+
 procedure TJvCustomListBox.DefaultDrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
 const
@@ -1088,10 +1090,18 @@ var
   AColor: TColor;
 
  procedure DrawSeparatorBar(const ALine: byte);
+ var dX, Y: integer;
  begin
    Canvas.Pen.Color := AColor;
-   Canvas.MoveTo(ActualRect.Left, ActualRect.Bottom - 1 + ALine);
-   Canvas.LineTo(ActualRect.Right - 1, ActualRect.Bottom - 1 + ALine);
+   Y := ActualRect.Bottom - 1 + ALine;
+
+   dX := 0;
+   if Color = ColorAlternate then
+      if ActualRect.Right - ActualRect.Left > 4 * JvCustomListBoxItemsSeparatorIndent then
+         dX := JvCustomListBoxItemsSeparatorIndent;
+
+   Canvas.MoveTo( ActualRect.Left + dX, Y );
+   Canvas.LineTo( ActualRect.Right - dX, Y );
  end;
 begin
   if csDestroying in ComponentState then
@@ -1139,12 +1149,35 @@ begin
     else
       Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX or
         AlignFlags[FAlignment]);
+
+    If ItemHasSeparator(Index) then
+    begin
+      // This sequence has to be executed before "UseRightToLeftAlignment" check
+      //   below would cripple ActualRect horizontal coordinates!
+
+      Dec(ActualRect.Bottom, 3);
+
+      Canvas.Pen.Style := psSolid;
+      Canvas.Pen.Mode  := pmCopy;
+
+      if Odd(Index)
+         then AColor := ColorAlternate
+         else AColor := Color;
+      DrawSeparatorBar(+1);
+
+      AColor := clBlack;
+      DrawSeparatorBar(+2);
+
+      if not Odd(Index)
+         then AColor := ColorAlternate
+         else AColor := Color;
+      DrawSeparatorBar(+3);
+    end;
+
     if not UseRightToLeftAlignment then
       Inc(ActualRect.Left, 2)
     else
       Dec(ActualRect.Right, 2);
-
-    If ItemHasSeparator(Index) then Dec(ActualRect.Bottom, 3);
 
     if IsProviderSelected then
       DrawProviderItem(Canvas, ActualRect, Index, State)
@@ -1163,25 +1196,6 @@ begin
     if Background.DoDraw and (odSelected in State) then
       InvertRect(Canvas.Handle, ActualRect);
     // no need to draw focus rect, CNDrawItem does that for us
-
-    If ItemHasSeparator(Index) then
-    begin
-      Canvas.Pen.Style := psSolid;
-      Canvas.Pen.Mode  := pmCopy;
-
-      if Odd(Index)
-         then AColor := ColorAlternate
-         else AColor := Color;
-      DrawSeparatorBar(+1);
-
-      AColor := clBlack;
-      DrawSeparatorBar(+2);
-
-      if not Odd(Index)
-         then AColor := ColorAlternate
-         else AColor := Color;
-      DrawSeparatorBar(+3);
-    end;
   end;
 end;
 

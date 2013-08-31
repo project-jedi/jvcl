@@ -83,6 +83,8 @@ procedure TfmListBox.FormCreate(Sender: TObject);
 begin
   lst1.ColorAlternate := clLime;
   lst1.Color := clYellow;
+
+  btnTextGenClick(Self);
 end;
 
 procedure TfmListBox.FormShow(Sender: TObject);
