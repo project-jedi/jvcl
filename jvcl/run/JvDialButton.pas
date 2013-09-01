@@ -243,6 +243,12 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnMouseWheel;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseActivate; // VCL.TControl.OnMouseActivate - since which Delphi version ???
     property OnStartDrag;
   end;
 

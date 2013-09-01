@@ -52,7 +52,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    procedure TransparentButton1Click(Sender: TObject);
+    btnListBoxDemo: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
@@ -60,18 +60,23 @@ type
     procedure JvFontComboBox1Change(Sender: TObject);
     procedure JvColorButton1Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnListBoxDemoClick(Sender: TObject);
   end;
 
 var
   ListCombMainForm: TListCombMainForm;
 
-implementation
+implementation  uses ListBoxFormU;
 
 {$R *.DFM}
 
-procedure TListCombMainForm.TransparentButton1Click(Sender: TObject);
+procedure TListCombMainForm.btnListBoxDemoClick(Sender: TObject);
 begin
-  ShowMessage('Hej Simon!')
+  with fmListBox do begin
+    if Visible
+       then BringToFront
+       else Show;
+  end;
 end;
 
 procedure TListCombMainForm.Button1Click(Sender: TObject);

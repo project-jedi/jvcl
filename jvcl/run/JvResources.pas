@@ -517,7 +517,7 @@ resourcestring
   RsETableNameNotSet = 'TableName not specified';
   RsEGetMode = 'Invalid option to GetMode';
   RsENoTableName = 'TableName not specified';
-  RsETableNameRequired = 'LoadFromFile = True, so a TableName is required';
+  RsETableNameRequired = 'LoadsFromFile = True, so a TableName is required';
   RsEInternalCompare = 'InternalCompare. Nil value detected';
   RsEInvalidTableName = 'TJvCustomCsvDataSet.GetFileName - TableName property is not set';
 
