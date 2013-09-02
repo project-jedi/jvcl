@@ -1442,8 +1442,6 @@ procedure TJvCustomCsvDataSet.SetActive(Value: Boolean);
 begin
   inherited;
   FFileDirty := False;
-  if FUseSystemDecimalSeparator then
-    FData.DecimalSeparator := JclFormatSettings.DecimalSeparator;
 end;
 
 procedure TJvCustomCsvDataSet.SetAllUserData(Data: Pointer);
@@ -3817,6 +3815,9 @@ begin
     FCsvFileLoaded := False;
     raise;
   end;
+
+  if FUseSystemDecimalSeparator then
+    FData.DecimalSeparator := JclFormatSettings.DecimalSeparator;
 
   { clean up stream object }
   FreeAndNil(FCsvStream);
