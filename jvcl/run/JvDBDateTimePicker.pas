@@ -426,7 +426,8 @@ begin
     Esc:
       begin
         FDataLink.Reset;
-        SetFocus;
+        if CanFocus then
+          SetFocus;
         Key := #0;
       end;
   end;
