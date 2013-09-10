@@ -2435,6 +2435,8 @@ begin
     begin
       FStyleManager.RegisterChanges(FStyleLink);
       Colors := FStyleManager.Colors;
+      Font := FStyleManager.Fonts.NavPanelFont;
+      HotTrackFont := FStyleManager.Fonts.NavPanelHotTrackFont;
     end;
   end;
 end;
