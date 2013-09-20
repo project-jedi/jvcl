@@ -2,7 +2,7 @@
 		<PropertyGroup>
 			<ProjectGuid>{FEA976CC-DA02-4817-AA17-5B1CD552B39C}</ProjectGuid>
 			<MainSource>JvDotNetCtrls.dpk</MainSource>
-			<ProjectVersion>13.0</ProjectVersion>
+			<ProjectVersion>15.0</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<FrameworkType>VCL</FrameworkType>
@@ -29,7 +29,7 @@
 			<DCC_Description>JVCL DotNet Controls Runtime Package</DCC_Description>
 			<DCC_ImageBase>4D010000</DCC_ImageBase>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
-			<DllSuffix>180</DllSuffix>
+			<DllSuffix>190</DllSuffix>
 			<DCC_Platform>x86</DCC_Platform>
 			<DCC_UnitSearchPath>..\..\run;..\..\common;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_ResourcePath>..\..\resources;$(DCC_ResourcePath)</DCC_ResourcePath>
@@ -45,6 +45,7 @@
 			<DCC_UnitSearchPath>..\..\lib\d19\win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_DcpOutput>..\..\lib\d19\win64</DCC_DcpOutput>
 			<DCC_DcuOutput>..\..\lib\d19\win64</DCC_DcuOutput>
+			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;$(DCC_Namespace)</DCC_Namespace>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -52,6 +53,7 @@
 			<DCC_UnitSearchPath>..\..\lib\d19\win64\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_DcpOutput>..\..\lib\d19\win64\debug</DCC_DcpOutput>
 			<DCC_DcuOutput>..\..\lib\d19\win64\debug</DCC_DcuOutput>
+			<DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;$(DCC_Namespace)</DCC_Namespace>
 		</PropertyGroup>
 		<ItemGroup>
 			<DelphiCompile Include="JvDotNetCtrls.dpk">
@@ -112,7 +114,7 @@
 						<VersionInfoKeys Name="InternalName">JvDotNetCtrls</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
 						<VersionInfoKeys Name="LegalTrademarks"/>
-						<VersionInfoKeys Name="OriginalFilename">JvDotNetCtrls180.bpl</VersionInfoKeys>
+						<VersionInfoKeys Name="OriginalFilename">JvDotNetCtrls190.bpl</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
