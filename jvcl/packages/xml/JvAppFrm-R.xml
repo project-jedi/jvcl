@@ -14,7 +14,7 @@
     <Package Name="JEDI" Targets="help" Condition=""/>
     <Package Name="rtl" Targets="C,D" Condition=""/>
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
-    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11" Condition=""/>
+    <Package Name="vcljpg" Targets="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12" Condition=""/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
   </Requires>
   <Contains>
