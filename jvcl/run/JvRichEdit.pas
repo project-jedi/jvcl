@@ -1796,7 +1796,7 @@ begin
   Result := SendMessage(Wnd, EM_GETOLEINTERFACE, 0, LPARAM(@RichEditOle)) <> 0;
 end;
 
-function StreamSave(dwCookie: Longint; pbBuff: PByte;
+function StreamSave(dwCookie: {$IFDEF COMPILER19_UP}DWORD_PTR{$ELSE}Longint{$ENDIF}; pbBuff: PByte;
   cb: Longint; var pcb: Longint): Longint; stdcall;
 var
   Converter: TJvConversion;
@@ -1956,7 +1956,7 @@ begin
     Result := 2 * AdjustLineBreaksW(PWideChar(Buffer), PWideChar(pBuff), Result div 2);
 end;
 
-function StreamLoad(dwCookie: Longint; pbBuff: PByte;
+function StreamLoad(dwCookie: {$IFDEF COMPILER19_UP}DWORD_PTR{$ELSE}Longint{$ENDIF}; pbBuff: PByte;
   cb: Longint; var pcb: Longint): Longint; stdcall;
 begin
   Result := NoError;
@@ -1967,7 +1967,7 @@ begin
   end;
 end;
 
-function StreamLoadW(dwCookie: Longint; pbBuff: PByte;
+function StreamLoadW(dwCookie: {$IFDEF COMPILER19_UP}DWORD_PTR{$ELSE}Longint{$ENDIF}; pbBuff: PByte;
   cb: Longint; var pcb: Longint): Longint; stdcall;
 begin
   Result := NoError;
