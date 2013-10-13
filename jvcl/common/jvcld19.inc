@@ -29,7 +29,7 @@ Known Issues:
 {%hidden%}
 { The installer enables this define if you compile JVCL for Delphi and C++ Builder. It disables
   the class constructor/destructor support that is not supported by C++Builder. }
-{.$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
+{$DEFINE JVCL_GENERATE_CPP_PACKAGE_FILES}
 
 { Enable this define if you have the dxgettext (http://dxgettext.sourceforge.net)
 translation tool installed and want to use it with the JVCL. }

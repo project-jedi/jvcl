@@ -165,6 +165,11 @@ type
     FProviderIsActive: Boolean;
     FProviderToggle: Boolean;
     FMoving: Boolean;
+    FColorAlternate: TColor;
+    FColorBeforeChange: TColor;
+    FSeparateItems: Boolean;
+    FItemsHeightValid: Boolean;
+    FItemsHeightCache: array of Integer;
 
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
@@ -180,6 +185,8 @@ type
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETESTRING;
     { Override CN_DRAWITEM handling to be able to switch off focus rect. }
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SetAlignment(const Value: TAlignment);
     procedure SetMultiline(const Value: Boolean);
     procedure SetSelectedColor(const Value: TColor);
@@ -196,7 +203,15 @@ type
     procedure SetFlat(const Value: Boolean);
     function GetParentFlat: Boolean;
     procedure SetParentFlat(const Value: Boolean);
+    procedure SetColorAlternate(const Value: TColor);
+    function IsColorAlternateStored: Boolean;
+    procedure SetSeparateItems(const Value: Boolean);
+    function ItemsOfVariableHeight: Boolean;
+    function ItemsDemandOwnerDraw: Boolean;
+    procedure InvalidateItemsHeight;
+    procedure CheckItemsHeight;
   protected
+    procedure ColorChanged; override;
     procedure FontChanged; override;
     function GetItemsClass: TJvListBoxStringsClass; virtual;
     procedure BeginRedraw;
@@ -265,7 +280,9 @@ type
     destructor Destroy; override;
     function ItemRect(Index: Integer): TRect;
     function ItemsShowing: TStrings; virtual;
+    function ItemHasSeparator(Index: Integer): Boolean;
 
+    procedure MeasureItem2D(Index, WidthAvail: Integer; var ASize: TSize; WithSeps: Boolean);
     procedure MeasureProviderItem(Index, WidthAvail: Integer; var ASize: TSize);
     procedure MeasureString(const S: string; WidthAvail: Integer; var ASize: TSize);
 
@@ -300,6 +317,8 @@ type
     property SelectedColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
     property SelectedTextColor: TColor read FSelectedTextColor write SetSelectedTextColor default clHighlightText;
     property DisabledTextColor: TColor read FDisabledTextColor write SetDisabledTextColor default clGrayText;
+    property ColorAlternate: TColor read FColorAlternate write SetColorAlternate stored IsColorAlternateStored;
+    property SeparateItems: Boolean read FSeparateItems write SetSeparateItems default False;
     property ShowFocusRect: Boolean read FShowFocusRect write SetShowFocusRect default True;
     property Background: TJvListBoxBackground read FBackground write SetBackground;
     property Flat: Boolean read GetFlat write SetFlat default False;
@@ -333,6 +352,8 @@ type
     property Items;
 
     property MultiLine;
+    property SeparateItems;
+    property ColorAlternate;
     property SelectedColor;
     property SelectedTextColor;
     property DisabledTextColor;
@@ -747,6 +768,8 @@ begin
   FSelectedColor := clHighlight;
   FSelectedTextColor := clHighlightText;
   FDisabledTextColor := clGrayText;
+  FColorAlternate := Color;
+  FColorBeforeChange := Color;
   FShowFocusRect := True;
   //  Style := lbOwnerDrawVariable;
 
@@ -820,6 +843,7 @@ procedure TJvCustomListBox.CNDrawItem(var Msg: TWMDrawItem);
 var
   State: TOwnerDrawState;
 begin
+  CheckItemsHeight;
   with Msg.DrawItemStruct^ do
   begin
     State := TOwnerDrawState(Word(itemState and $FFFF));
@@ -832,7 +856,9 @@ begin
       begin
         Canvas.Brush.Color := FSelectedColor;
         Canvas.Font.Color := FSelectedTextColor;
-      end;
+      end
+      else if Odd(itemID) and (Color <> FColorAlternate) then
+        Canvas.Brush.Color := FColorAlternate;
       if (([odDisabled, odGrayed] * State) <> []) or not Enabled then
         Canvas.Font.Color := FDisabledTextColor;
     end;
@@ -940,11 +966,16 @@ begin
     Style := Style and not (WS_HSCROLL or WS_VSCROLL) or ScrollBar[FScrollBars] or
       Sorted[FSorted];
   end;
+  if ItemsOfVariableHeight and (Style <> lbOwnerDrawVariable) then
+    Params.Style := LBS_OWNERDRAWVARIABLE or (Params.Style and not LBS_OWNERDRAWFIXED)
+  else if ItemsDemandOwnerDraw then
+    Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
+
   if IsProviderSelected then
   begin
     Params.Style := Params.Style and not (LBS_SORT or LBS_HASSTRINGS or LBS_NODATA);
-    if Params.Style and (LBS_OWNERDRAWVARIABLE or LBS_OWNERDRAWFIXED) = 0 then
-      Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
+//    if Params.Style and (LBS_OWNERDRAWVARIABLE or LBS_OWNERDRAWFIXED) = 0 then
+//       Params.Style := Params.Style or LBS_OWNERDRAWFIXED;
   end;
 end;
 
@@ -953,6 +984,8 @@ begin
   if not (csLoading in ComponentState) then
   begin
     FMultiline := MultiLine and (Style = lbOwnerDrawVariable);
+    FSeparateItems := SeparateItems  and (Style = lbOwnerDrawVariable);
+    // TODO: disable DataProvider ?
 
     if not (Style in [lbOwnerDrawVariable, lbOwnerDrawFixed]) then
       FAlignment := taLeftJustify;
@@ -1042,8 +1075,16 @@ var
   Flags: Longint;
   ActualRect: TRect;
   AText: string;
+  AColor: TColor;
+
+ procedure DrawSeparatorBar(const ALine: byte);
+ begin
+   Canvas.Pen.Color := AColor;
+   Canvas.MoveTo(ActualRect.Left, ActualRect.Bottom - 1 + ALine);
+   Canvas.LineTo(ActualRect.Right - 1, ActualRect.Bottom - 1 + ALine);
+ end;
 begin
-   if csDestroying in ComponentState then
+  if csDestroying in ComponentState then
     Exit;
  // JvBMPListBox:
   // draw text transparently
@@ -1075,7 +1116,14 @@ begin
   if Index < ItemsShowing.Count then
   begin
     if not Background.DoDraw then
+    begin
+      if ColorAlternate <> Color then
+        if Odd(Index) then
+          Canvas.Brush.Color := ColorAlternate
+        else
+          Canvas.Brush.Color := Color;
       Canvas.FillRect(ActualRect);
+    end;
 
     if FMultiline then
       Flags := DrawTextBiDiModeFlags(DT_WORDBREAK or DT_NOPREFIX or
@@ -1087,6 +1135,9 @@ begin
       Inc(ActualRect.Left, 2)
     else
       Dec(ActualRect.Right, 2);
+
+    if ItemHasSeparator(Index) then
+      Dec(ActualRect.Bottom, 3);
 
     if IsProviderSelected then
       DrawProviderItem(Canvas, ActualRect, Index, State)
@@ -1105,6 +1156,27 @@ begin
     if Background.DoDraw and (odSelected in State) then
       InvertRect(Canvas.Handle, ActualRect);
     // no need to draw focus rect, CNDrawItem does that for us
+
+    if ItemHasSeparator(Index) then
+    begin
+      Canvas.Pen.Style := psSolid;
+      Canvas.Pen.Mode  := pmCopy;
+
+      if Odd(Index) then
+        AColor := ColorAlternate
+      else
+        AColor := Color;
+      DrawSeparatorBar(+1);
+
+      AColor := clBlack;
+      DrawSeparatorBar(+2);
+
+      if not Odd(Index) then
+        AColor := ColorAlternate
+      else
+        AColor := Color;
+      DrawSeparatorBar(+3);
+    end;
   end;
 end;
 
@@ -1276,6 +1348,16 @@ begin
   Windows.InvalidateRect(Handle, @R, True);
 end;
 
+procedure TJvCustomListBox.SetColorAlternate(const Value: TColor);
+begin
+  if FColorAlternate <> Value then
+  begin
+    FColorAlternate := Value;
+    UpdateStyle;
+    Invalidate;
+  end;
+end;
+
 procedure TJvCustomListBox.SetConsumerService(Value: TJvDataConsumer);
 begin
 end;
@@ -1297,6 +1379,14 @@ begin
   if (Reason = ccrProviderSelect) and not IsProviderSelected and not FProviderToggle and
       not TJvListBoxStrings(Items).UseInternal then
     TJvListBoxStrings(Items).MakeListInternal;
+end;
+
+procedure TJvCustomListBox.ColorChanged;
+begin
+  inherited ColorChanged;
+  if FColorBeforeChange = FColorAlternate then
+    FColorAlternate := Color;
+  FColorBeforeChange := Color;
 end;
 
 procedure TJvCustomListBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
@@ -1348,6 +1438,11 @@ begin
     VL.AutoExpandLevel := -1;
     VL.RebuildView;
   end;
+end;
+
+function TJvCustomListBox.IsColorAlternateStored: Boolean;
+begin
+  Result := Color <> ColorAlternate;
 end;
 
 function TJvCustomListBox.IsProviderSelected: Boolean;
@@ -1464,6 +1559,22 @@ end;
 function TJvCustomListBox.GetParentFlat: Boolean;
 begin
   Result := ParentCtl3D;
+end;
+
+procedure TJvCustomListBox.CheckItemsHeight;
+begin
+  if not FItemsHeightValid and ItemsOfVariableHeight and (WindowHandle <> 0) then
+    RemeasureAll;
+end;
+
+procedure TJvCustomListBox.InvalidateItemsHeight;
+begin
+  FItemsHeightValid := false;
+  if WindowHandle <> 0 then
+     InvalidateRect(WindowHandle, nil, True);
+// Width might had changed - affectting the heights.
+// That means both background and items
+// potentially need to be redrawn.
 end;
 
 procedure TJvCustomListBox.InvertSelection;
@@ -1601,13 +1712,18 @@ begin
     FOnGetText(Self, Index, AText);
 end;
 
+// TODO: think about calling event handler *AFTER* manual calculations
+// allowing developer to change the default values for provider, multi-line, etc
 procedure TJvCustomListBox.MeasureItem(Index: Integer;
   var Height: Integer);
 var
   AvailWidth: Integer;
   LSize: TSize;
 begin
-  if Assigned(OnMeasureItem) or (not MultiLine and not IsProviderSelected) or
+  CheckItemsHeight;
+// Win7 x64 / XE2: Index is almost always faaaar out of range (HWND? garbage?)
+// Thus "inherited" almost always called and almost never runs else-branch
+  if Assigned(OnMeasureItem) or not ItemsOfVariableHeight or
     (Index < 0) or (Index >= ItemsShowing.Count) then
     inherited MeasureItem(Index, Height)
   else
@@ -1617,13 +1733,31 @@ begin
     else
       AvailWidth := MaxInt;
 
-    if IsProviderSelected then
-      MeasureProviderItem(Index, AvailWidth, LSize)
-    else
-      MeasureString(ItemsShowing[Index], AvailWidth, LSize);
+    LSize.cy := Height;
+    LSize.cx := AvailWidth;
+    MeasureItem2D(Index, AvailWidth, LSize, False);
 
     Height := LSize.cy;
   end;
+
+  if ItemHasSeparator(Index) then
+    Inc(Height, 3);
+end;
+
+procedure TJvCustomListBox.MeasureItem2D(Index, WidthAvail: Integer;
+  var ASize: TSize; WithSeps: Boolean);
+begin
+  if (Index < 0) or (Index >= ItemsShowing.Count) then
+    Exit;
+
+  if IsProviderSelected then
+    MeasureProviderItem(Index, WidthAvail, ASize)
+  else
+    MeasureString(ItemsShowing[Index], WidthAvail, ASize);
+
+  if WithSeps then
+    if ItemHasSeparator(Index) then
+      Inc(ASize.cy, 3);
 end;
 
 procedure TJvCustomListBox.MeasureProviderItem(Index, WidthAvail: Integer; var ASize: TSize);
@@ -1766,23 +1900,47 @@ var
   I: Integer;
   LMaxWidth, cx: Integer;
   LItemSize: TSize;
+  DoLimitWidth: Boolean;
+  ItemsHeightChanged: Boolean;
+  ItemsCount: Integer;
 begin
   LMaxWidth := 0;
-  if LimitToClientWidth then
+  DoLimitWidth := LimitToClientWidth;
+  if DoLimitWidth then
     cx := ClientWidth
   else
     cx := 0;
 
-  for I := 0 to ItemsShowing.Count - 1 do
-  begin
-    MeasureString(ItemsShowing[I], cx, LItemSize);
-    if MultiLine then
-      Perform(LB_SETITEMHEIGHT, I, LItemSize.cy);
+  ItemsCount := ItemsShowing.Count;
 
-    if not LimitToClientWidth and (LItemSize.cx > LMaxWidth) then
+  ItemsHeightChanged := ItemsOfVariableHeight and (Length(FItemsHeightCache) <> ItemsCount);
+  if ItemsHeightChanged then
+    SetLength(FItemsHeightCache, ItemsCount);
+
+  for I := 0 to ItemsCount - 1 do
+  begin
+    MeasureItem2D(I, cx, LItemSize, True);
+    if ItemsOfVariableHeight then
+    begin
+      Perform(LB_SETITEMHEIGHT, I, LItemSize.cy);
+      if FItemsHeightCache[I] <> LItemSize.cy then
+      begin
+        FItemsHeightCache[I] := LItemSize.cy;
+        ItemsHeightChanged := true;
+      end;
+    end;
+
+    if not DoLimitWidth and (LItemSize.cx > LMaxWidth) then
       LMaxWidth := LItemSize.cx;
   end;
-  if not LimitToClientWidth then
+  FItemsHeightValid := True;
+
+  // Remeasure might be caleld from inside painter
+  // So it will need to initiate another paint cycle with different heights
+  If ItemsHeightChanged and HandleAllocated then
+    InvalidateRect(Handle, nil, True);
+
+  if not DoLimitWidth then
     MaxWidth := LMaxWidth;
 end;
 
@@ -1894,9 +2052,20 @@ begin
         ScrollBars := ssNone;
       FMaxWidth := 0;
       Perform(LB_SETHORIZONTALEXTENT, 0, 0);
-    end
-    else
-      RemeasureAll;
+    end;
+
+    InvalidateItemsHeight;
+  end;
+end;
+
+
+procedure TJvCustomListBox.SetSeparateItems(const Value: Boolean);
+begin
+  if SeparateItems <> Value then
+  begin
+    FSeparateItems := Value;
+    UpdateStyle;
+    InvalidateItemsHeight;
   end;
 end;
 
@@ -1978,31 +2147,46 @@ begin
   //    SendMessage(Handle, LB_SETHORIZONTALEXTENT, FHorizontalExtent, 0);
 end;
 
+function TJvCustomListBox.ItemsDemandOwnerDraw: boolean;
+begin
+  Result := ItemsOfVariableHeight or (Alignment <> taLeftJustify) or (Color <> ColorAlternate)
+  // Mantis 3477: Background requires the list to be ownerdrawn
+            or (Background.Visible and Assigned(Background.Image))
+            or (Style in [lbOwnerDrawVariable, lbOwnerDrawFixed]);
+end;
+
+
+function TJvCustomListBox.ItemsOfVariableHeight: boolean;
+begin
+  Result := MultiLine or SeparateItems or IsProviderSelected or (Style = lbOwnerDrawVariable);
+end;
+
+
 procedure TJvCustomListBox.UpdateStyle;
 const
   CShowFocusRect: array [Boolean] of Integer = (0, 2);
 var
-  PreviousStyle: TListBoxStyle;
+  PreviousStyle, NeededStyle: TListBoxStyle;
 begin
   if csLoading in ComponentState then
     Exit;
 
   PreviousStyle := Style;
+  NeededStyle := Style;
 
-  if MultiLine then
-    Style := lbOwnerDrawVariable
-  else
-  if Alignment <> taLeftJustify then
-    Style := lbOwnerDrawFixed;
+  if ItemsOfVariableHeight then
+    NeededStyle := lbOwnerDrawVariable
+  else if ItemsDemandOwnerDraw then
+    NeededStyle := lbOwnerDrawFixed;
 
-  // Mantis 3477: Background requires the list to be ownerdrawn
-  if Background.Visible and Assigned(Background.Image) and
-     not (Style in [lbOwnerDrawVariable, lbOwnerDrawFixed]) then
-    Style := lbOwnerDrawFixed;
+  Style := NeededStyle;
+  if NeededStyle = lbOwnerDrawVariable then
+    IntegralHeight := false;
 
   if (PreviousStyle = lbStandard) and (Style <> lbStandard) then
   begin
     ItemHeight := CanvasMaxTextHeight(Canvas) + CShowFocusRect[ShowFocusRect];
+    // calls RecreateWnd - why should we ???
     RemeasureAll;
   end;
 end;
@@ -2059,6 +2243,20 @@ begin
   end;
 end;
 
+procedure TJvCustomListBox.WMPaint(var Msg: TWMPaint);
+begin
+  CheckItemsHeight;
+  inherited;
+end;
+
+procedure TJvCustomListBox.WMSize(var Msg: TWMSize);
+begin
+  if WindowHandle <> 0 then
+    if ItemsOfVariableHeight then
+      InvalidateItemsHeight;
+  inherited;
+end;
+
 procedure TJvCustomListBox.WMVScroll(var Msg: TWMVScroll);
 var
   DontScroll: Boolean;
@@ -2084,6 +2282,11 @@ begin
     if DoUpdate then
       EndRedraw;
   end;
+end;
+
+function TJvCustomListBox.ItemHasSeparator(Index: Integer): Boolean;
+begin
+  Result := SeparateItems and (Index >= 0) and (Index < ItemsShowing.Count - 1);
 end;
 
 function TJvCustomListBox.ItemRect(Index: Integer): TRect;
