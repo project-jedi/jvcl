@@ -1708,6 +1708,7 @@ begin
         // HTML multiline comments
         lgComment1:
           begin
+            F := P;
             P := StrScanNil(P, Char('>'));
             if P <> nil then
               // check if the previous characters are
