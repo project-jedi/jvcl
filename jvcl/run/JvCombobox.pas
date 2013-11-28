@@ -1720,8 +1720,13 @@ function TJvCustomComboBox.IsItemHeightStored: Boolean;
 var
   Value: Integer;
 begin
-  Value := ItemHeight;
-  Result := (Value <> 16) and (Value <> 0);
+  if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+  begin
+    Value := ItemHeight;
+    Result := (Value <> 16) and (Value <> 0);
+  end
+  else
+    Result := False;
 end;
 
 function TJvCustomComboBox.IsProviderSelected: Boolean;
