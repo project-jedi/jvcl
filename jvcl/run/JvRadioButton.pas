@@ -69,6 +69,7 @@ type
     procedure SetLeftText(const Value: Boolean);
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure BMSetCheck(var Msg: TMessage); message BM_SETCHECK;
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
     procedure MouseEnter(AControl: TControl); override;
@@ -95,7 +96,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions
       default DefaultTrackFontOptions;
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
@@ -347,6 +348,11 @@ end;
 function TJvRadioButton.GetReadOnly: Boolean;
 begin
   Result := ClicksDisabled;
+end;
+
+function TJvRadioButton.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(FHotTrackFont, Font, FHotTrackFontOptions);
 end;
 
 procedure TJvRadioButton.CheckLinkedControls;
