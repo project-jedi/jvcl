@@ -69,6 +69,8 @@ type
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
     property Interval: Cardinal read GetInterval write SetInterval default 1000;
     property Status: Boolean read GetStatus write SetStatus default True;
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -100,6 +102,7 @@ type
     property Status;
     property Visible;
     property Width default 17;
+    property OnChange;
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -224,13 +227,17 @@ end;
 
 procedure TJvCustomLED.SetStatus(Value: Boolean);
 begin
-  FStatus := Value;
-  if Status then
-    Color := ColorOn
-  else
-    Color := ColorOff;
-  if Assigned(FOnChange) then
-    FOnChange(Self);
+  if Value <> FStatus then
+  begin
+    FStatus := Value;
+    if FStatus then
+      Color := ColorOn
+    else
+      Color := ColorOff;
+
+    if Assigned(FOnChange) then
+      FOnChange(Self);
+  end;
 end;
 
 function TJvCustomLED.GetStatus: Boolean;
