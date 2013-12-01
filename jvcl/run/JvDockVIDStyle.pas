@@ -106,7 +106,7 @@ type
     FInactiveFont: TFont;
     FInactiveSheetColor: TColor;
     FShowTabImages: Boolean;
-    FShowTabHints : Boolean;
+    FShowTabHints: Boolean;
     { NEW! if true, shows invididual close buttons on tabs. If false, you get the old VID behaviour. }
     FShowCloseButtonOnTabs: Boolean;
     {NEW! default is true, which is the old VID Style behaviour. False is a new behaviour added by Warren. }
@@ -117,7 +117,7 @@ type
     procedure SetInactiveFont(Value: TFont);
     procedure SetInactiveSheetColor(const Value: TColor);
     procedure SetShowTabImages(const Value: Boolean);
-    procedure SetShowTabHints(const Value : Boolean);
+    procedure SetShowTabHints(const Value: Boolean);
     procedure SetShowCloseButtonOnGrabber(const Value: Boolean);
     procedure SetShowCloseButtonOnTabs(const Value: Boolean);
   protected
@@ -451,7 +451,7 @@ type
     function GetShowTabImages: Boolean;
     procedure SetShowTabImages(const Value: Boolean);
     function GetShowTabHints: Boolean;
-    procedure SetShowTabHints(const Value : Boolean);
+    procedure SetShowTabHints(const Value: Boolean);
     function GetPage(Index: Integer): TJvDockVIDTabSheet;
     function GetActiveVIDPage: TJvDockVIDTabSheet;
     procedure SetActiveVIDPage(const Value: TJvDockVIDTabSheet);
@@ -3022,10 +3022,10 @@ end;
 
 function TJvDockVIDTabPageControl.GetShowTabHints: Boolean;
 begin
-  result := FPanel.FShowTabHints;
+  Result := FPanel.FShowTabHints;
 end;
 
-procedure TJvDockVIDTabPageControl.SetShowTabHints(const Value : Boolean);
+procedure TJvDockVIDTabPageControl.SetShowTabHints(const Value: Boolean);
 begin
   FPanel.ShowTabHints := Value;
 end;
@@ -3340,7 +3340,7 @@ var
   Index: Integer;
   Ctrl: TControl;
   ARect: TRect;
-  HintText : string;
+  HintText: string;
 begin
   inherited MouseMove(Shift, X, Y);
   Index := GetPageIndexFromMousePos(X, Y);
@@ -3348,10 +3348,10 @@ begin
   if ShowTabHints and (Index > -1) then
   begin
     HintText := StringReplace(Page.Pages[Index].Caption, '&', '', [rfReplaceAll]);
-    if (HintText <> Hint) then
+    if HintText <> Hint then
     begin
-        Hint := HintText;
-        Application.ActivateHint(ClientToScreen(Point(X, Y)));
+      Hint := HintText;
+      Application.ActivateHint(ClientToScreen(Point(X, Y)));
     end;
   end;
 
@@ -3806,13 +3806,13 @@ end;
 
 procedure TJvDockTabPanel.SetShowTabHints(const Value: Boolean);
 begin
-    if FShowTabHints <> Value then
-    begin
-      FShowTabHints := Value;
-      if not FShowTabHints then
-        Hint := '';
-      Invalidate;
-    end;
+  if FShowTabHints <> Value then
+  begin
+    FShowTabHints := Value;
+    if not FShowTabHints then
+      Hint := '';
+    Invalidate;
+  end;
 end;
 
 procedure TJvDockTabPanel.SetTabHeight(const Value: Integer);
