@@ -529,25 +529,28 @@ type
 procedure TJvCheckBox.SetFocus;
 var
   I: Integer;
-  FocusLinkedControl: TControl;
+  FocusLinkedControl: TJvLinkedControl;
+  FocusTargetControl: TControl;
 begin
   inherited SetFocus;
 
-  // we want to skip our own focus, either to our children or to a sibling
+  // we want to skip our own focus, either to our children or to
+  // a first accepting focus sibling,
   // depending on the direction that the user asked for
   if GetKeyState(VK_SHIFT) >= 0 then
   begin
-    FocusLinkedControl := nil;
-    I := 0;
-    while (I < LinkedControls.Count) and not Assigned(FocusLinkedControl) do
-    begin
-      if (loForceFocus in LinkedControls[I].Options) and (LinkedControls[I].Control is TWinControl) then
-        FocusLinkedControl := LinkedControls[I].Control;
-
-      Inc(I);
+    for I := 0 to LinkedControls.Count - 1 do begin
+      FocusLinkedControl := LinkedControls[I];
+      if (loForceFocus in FocusLinkedControl.Options) then begin
+         FocusTargetControl := FocusLinkedControl.Control;
+         if Assigned(FocusTargetControl) and (FocusTargetControl is TWinControl) then
+         with TWinControl(FocusTargetControl) do
+              if CanFocus then begin
+                 SetFocus;
+                 Break; // found the new focus owner
+              end;
+      end;
     end;
-    if Assigned(FocusLinkedControl) and TWinControl(FocusLinkedControl).CanFocus then
-      TWinControl(FocusLinkedControl).SetFocus;
   end
   else
     TWinControlAccess(Parent).SelectNext(Self, False, True);
