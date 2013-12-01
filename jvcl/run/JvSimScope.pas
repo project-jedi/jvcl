@@ -851,7 +851,7 @@ end;
 
 procedure TJvSimScope.SetUpdateTimeSteps(const Value: Integer);
 begin
-  if (FUpdateTimeSteps <> Value) and (FUpdateTimeSteps > 0) then
+  if (FUpdateTimeSteps <> Value) and (Value > 0) then
   begin
     FUpdateTimeSteps := Value;
   end;
