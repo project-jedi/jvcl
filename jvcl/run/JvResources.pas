@@ -56,7 +56,7 @@ resourcestring
   RsSelectAllItem = 'Select &All';
   {
   SWEDISH:
-  RsUndoItem = '&Еngra';
+  RsUndoItem = '&пїЅngra';
   RsCutItem = '&Klipp ut';
   RsCopyItem = 'K&opiera';
   RsPasteItem = 'Kl&istra in';
@@ -64,17 +64,17 @@ resourcestring
   RsSelectAllItem = '&Markera allt';
 
   GERMAN:
-  RsUndoItem = '&Rьckgдngig';
+  RsUndoItem = '&RпїЅckgпїЅngig';
   RsCutItem = '&Ausschneiden';
   RsCopyItem = '&Kopieren';
-  RsPasteItem = 'E&infьgen';
-  RsDeleteItem = '&Lцschen';
+  RsPasteItem = 'E&infпїЅgen';
+  RsDeleteItem = '&LпїЅschen';
   RsSelectAllItem = 'Alles &markieren';
 
   DUTCH:
   RsUndoItem = '&Ongedaan maken';
   RsCutItem = 'K&nippen';
-  RsCopyItem = '&Kopiлren';
+  RsCopyItem = '&KopiпїЅren';
   RsPasteItem = '&Plakken';
   RsDeleteItem = '&Wissen';
   RsSelectAllItem = '&Alles selecteren';
@@ -1073,8 +1073,8 @@ resourcestring
 //=== JvgXMLSerializer.pas ===================================================
 resourcestring
   { RUSSIAN
-  RsOpenXMLTagNotFound = 'Открывающий тег не найден: <%s>';
-  RsCloseXMLTagNotFound = 'Закрывающий тег не найден: </%s>';
+  RsOpenXMLTagNotFound = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: <%s>';
+  RsCloseXMLTagNotFound = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: </%s>';
   RsUncknownProperty = 'Uncknown property: %s'
   }
   RsOpenXMLTagNotFound = 'Open tag not found: <%s>';
@@ -1726,13 +1726,13 @@ resourcestring
   RSProgramVersionInfo_PropertyHint_ProgramLocationPath = 'Path where the installer of the version could be found. This could be a absolute path or a relative path to the location of the version list';
   RSProgramVersionInfo_PropertyHint_LocalInstallerParams = 'List of parameters for the execution of the installer file';
   RSProgramVersionInfo_PropertyHint_DownloadPassword = 'Flag to define whether a password is required for the download or not';
-  RSProgramVersionInfo_ObjectHint = 'Class to collect all informations about a program version'#13#10+
-    'These informations will be stored in a file on the remote site';
+  RSProgramVersionInfo_ObjectHint = 'Class to collect all information about a program version'#13#10+
+    'This information will be stored in a file on the remote site';
   RSProgramVersionHistory_PropertyHint_alpha = 'Auto calculated version number of the highest alpha version';
   RSProgramVersionHistory_PropertyHint_beta = 'Auto calculated version number of the highest beta version';
   RSProgramVersionHistory_PropertyHint_Production = 'Auto calculated version number of the highest production version';
-  RSProgramVersionHistory_ObjectHint = 'Class to define a list of program version informations. This class is used '+
-            'to detect which versions are available. Allso the informations will be used '+
+  RSProgramVersionHistory_ObjectHint = 'Class to define a list of program version information. This class is used '+
+            'to detect which versions are available. The information will also be used '+
             'in the version info dialog';
   RSProgramVersionHistory = 'Program Version History';
 
