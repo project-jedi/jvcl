@@ -97,6 +97,8 @@ begin
   RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);
 
+  RegisterComponentEditor(TJvImageList, TJvImageListEditor);
+
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomNumEdit, cText, nil);
