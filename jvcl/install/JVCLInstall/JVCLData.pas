@@ -1767,58 +1767,65 @@ begin
 
   FindFiles(BplDir, Mask, False, List,
     ['.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map']);  // do not localize
-  if CompareText(DcpDir, BplDir) <> 0 then
+  if AnsiCompareText(DcpDir, BplDir) <> 0 then
     FindFiles(DcpDir, 'Jv*.*', False, List,             // do not localize
       ['.dcp', '.lib', '.bpi', '.lsp']);                // do not localize
   // in Default directories
-  if CompareText(BplDir, Target.BplDir) <> 0 then
+  if AnsiCompareText(BplDir, Target.BplDir) <> 0 then
     FindFiles(Target.BplDir, Mask, False, List,
       ['.bpl', '.dcp', '.lib', '.bpi', '.tds', '.map']); // do not localize
-  if (CompareText(DcpDir, BplDir) <> 0) and
-     (CompareText(DcpDir, Target.DcpDir) <> 0) then
+  if (AnsiCompareText(DcpDir, BplDir) <> 0) and
+     (AnsiCompareText(DcpDir, Target.DcpDir) <> 0) then
     FindFiles(Target.DcpDir, 'Jv*.*', False, List,       // do not localize
       ['.dcp', '.lib', '.bpi', '.lsp']);                 // do not localize
 end;
 
 function TTargetConfig.GetPathEnvVar: string;
 
-  function ShortName(const Filename: string): string;
+  function LongName(const Filename: string): string;
   begin
-    Result := ExtractShortPathName(ExcludeTrailingPathDelimiter(Filename));
-    if Result = '' then
-      Result := ExcludeTrailingPathDelimiter(Filename);
-    Result := AnsiLowerCase(Result);
+    Result := Filename;
+    if Pos('~', Filename) > 0 then
+      Result := ExcludeTrailingPathDelimiter(PathGetLongName(Filename));
+  end;
+
+  function CompareDir(Dir: string; const LongNameDir: string): Boolean;
+  begin
+    Dir := LongName(Dir);
+    Result := AnsiSameText(Dir, LongNameDir);
   end;
 
 var
   List: TStrings;
   i, k: Integer;
-  ShortDir: string;
+  Dir: string;
 begin
   List := TStringList.Create;
   try
     StrToPathList(Target.EnvPath, List);
     for i := List.Count - 1 downto 0 do
     begin
-      ShortDir := ShortName(List[i]);
       if not DirectoryExists(ExcludeTrailingPathDelimiter(List[i])) then
         List.Delete(i)
       else
+      begin
+        Dir := LongName(List[i]);
         for k := 0 to Owner.Targets.Count - 1 do
         begin
-          if (ShortName(Owner.Targets[k].BplDir) = ShortDir) or
-             (ShortName(Owner.Targets[k].DcpDir) = ShortDir) then
+          if CompareDir(Owner.Targets[k].BplDir, Dir) or
+             CompareDir(Owner.Targets[k].DcpDir, Dir) then
           begin
-            if (ShortDir <> ShortName(Target.BplDir)) and
-               (ShortDir <> ShortName(Target.DcpDir)) and
-               (ShortDir <> ShortName(BplDir)) and
-               (ShortDir <> ShortName(DcpDir)) then
+            if not CompareDir(Target.BplDir, Dir) and
+               not CompareDir(Target.DcpDir, Dir) and
+               not CompareDir(BplDir, Dir) and
+               not CompareDir(DcpDir, Dir) then
             begin
               List.Delete(i);
               Break;
             end;
           end;
         end;
+      end;
     end;
     Result := PathListToStr(List);
   finally

@@ -32,11 +32,16 @@ interface
 
 uses
   JVCLData,
-  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  Consts;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Consts;
+
+const
+  WM_STATEMODIFIED = WM_USER + 1;
 
 type
   TCompileLineType = (clText, clFileProgress, clHint, clWarning, clError, clFatal);
+  TCompileStage = (csNone, csPreparing, csCompiling, csLinking, csDone);
+  TModifiedState = (msErrors, msHints, msWarnings, msCurrentLine);
+  TModifiedStates = set of TModifiedState;
 
   ICompileMessages = interface
     ['{C932390B-8DB6-4CAE-89D0-7BAB8A2E640B}']
@@ -92,8 +97,17 @@ type
     FCompileMessages: ICompileMessages;
     FAutoClearCompileMessages: Boolean;
     FCurrentTarget: TTargetConfig;
+    FCompileStage: TCompileStage;
+    FModifiedStates: TModifiedStates;
+    FStateModifiedMessageSent: Boolean;
     procedure SetCurrentLine(Line: Cardinal);
     function IsCompileFileLine(const Line: string): Boolean;
+    procedure SetCompileStage(AStage: TCompileStage);
+    procedure StateModified(AModifiedState: TModifiedState);
+    procedure HandleStateModified;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure WndProc(var Msg: TMessage); override;
   public
     procedure Init(const ProjectName: string; Clear: Boolean = True);
     procedure Compiling(const Filename: string);
@@ -147,7 +161,37 @@ resourcestring
   RsThereAreHints = 'There are hints.';
   RsCompiled = 'compiled.';
 
+var
+  sPreparing: string;
+  sCompilingColon: string;
+  sLinkingColon: string;
+  sDoneColon: string;
+
 { TFormCompile }
+
+procedure TFormCompile.CreateParams(var Params: TCreateParams);
+var
+  ParentForm: TWinControl;
+begin
+  inherited CreateParams(Params);
+
+  // Keep the form on top of the owning form
+  ParentForm := nil;
+  if Owner is TWinControl then
+  begin
+    ParentForm := TWinControl(Owner);
+    while (ParentForm <> nil) and not (ParentForm is TCustomForm) do
+      ParentForm := ParentForm.Parent;
+  end;
+
+  if ParentForm = nil then
+  begin
+    if Application.MainForm <> nil then
+      Params.WndParent := Application.MainForm.Handle;
+  end
+  else
+    Params.WndParent := ParentForm.Handle;
+end;
 
 procedure TFormCompile.BringToFront;
 begin
@@ -168,18 +212,19 @@ end;
 
 function TFormCompile.HandleLine(const Line: string): TCompileLineType;
 
-  function HasText(Text: string; const Values: array of string): Boolean;
+  function HasStr(const Text: string; const Values: array of string): Boolean;
   var
     i: Integer;
   begin
     Result := True;
-    Text := AnsiLowerCase(Text);
     for i := 0 to High(Values) do
       if Pos(Values[i], Text) > 0 then
         Exit;
     Result := False;
   end;
 
+var
+  LowerLine: string;
 begin
   Result := clText;
   if Line = '' then
@@ -191,33 +236,36 @@ begin
   if IsCompileFileLine(Line) then
     Result := clFileProgress
   else
-  if HasText(Line, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
   begin
-    Result := clHint;
-    IncHint;
-    if Assigned(FCompileMessages) then
-      FCompileMessages.AddHint(Line);
-  end
-  else if HasText(Line, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
-  begin
-    Result := clWarning;
-    IncWarning;
-    if Assigned(FCompileMessages) then
-      FCompileMessages.AddWarning(Line);
-  end
-  else if HasText(Line, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
-  begin
-    Result := clError;
-    IncError;
-    if Assigned(FCompileMessages) then
-      FCompileMessages.AddError(Line);
-  end
-  else if HasText(Line, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then // do not localize
-  begin
-    Result := clFatal;
-    IncError;
-    if Assigned(FCompileMessages) then
-      FCompileMessages.AddFatal(Line);
+    LowerLine := {Ansi}LowerCase(Line);
+    if HasStr(LowerLine, ['hint: ', 'hinweis: ', 'suggestion: ']) then // do not localize
+    begin
+      Result := clHint;
+      IncHint;
+      if Assigned(FCompileMessages) then
+        FCompileMessages.AddHint(Line);
+    end
+    else if HasStr(LowerLine, ['warning: ', 'warnung: ', 'avertissement: ']) then // do not localize
+    begin
+      Result := clWarning;
+      IncWarning;
+      if Assigned(FCompileMessages) then
+        FCompileMessages.AddWarning(Line);
+    end
+    else if HasStr(LowerLine, ['error: ', 'fehler: ', 'erreur: ']) then // do not localize
+    begin
+      Result := clError;
+      IncError;
+      if Assigned(FCompileMessages) then
+        FCompileMessages.AddError(Line);
+    end
+    else if HasStr(LowerLine, ['fatal: ', 'schwerwiegend: ', 'fatale: ']) then // do not localize
+    begin
+      Result := clFatal;
+      IncError;
+      if Assigned(FCompileMessages) then
+        FCompileMessages.AddFatal(Line);
+    end;
   end;
 end;
 
@@ -257,6 +305,27 @@ begin
   end;
 end;
 
+procedure TFormCompile.SetCompileStage(AStage: TCompileStage);
+var
+  S: string;
+begin
+  if FCompileStage <> AStage then
+  begin
+    FCompileStage := AStage;
+    case FCompileStage of
+      csPreparing:
+        S := sPreparing;
+      csCompiling:
+        S := sCompilingColon;
+      csLinking:
+        S := sLinkingColon;
+      csDone:
+        S := sDoneColon;
+    end;
+    LblStatusCaption.Caption := S;
+  end;
+end;
+
 procedure TFormCompile.Init(const ProjectName: string; Clear: Boolean);
 begin
   Tag := 0;
@@ -283,8 +352,12 @@ begin
   LblErrors.Caption := IntToStr(FErrors);
   LblCurrentLine.Caption := IntToStr(FCurrentLine);
   LblTotalLines.Caption := IntToStr(FTotalLines);
-  LblStatusCaption.Caption := RsPreparing;
+
+  SetCompileStage(csPreparing);
   LblStatus.Caption := '';
+
+  FStateModifiedMessageSent := False;
+  FModifiedStates := [];
 
   BtnOk.Enabled := True;
   BtnOk.Caption := SCancelButton;
@@ -303,10 +376,8 @@ begin
     CurrentLine := 0; // updates total lines and current lines
     LblStatusCaption.Font.Style := [];
     LblStatus.Font.Style := [];
-    LblStatusCaption.Caption := RsCompiling + ':';
     LblStatus.Caption := ExtractFileName(Filename);
-    BringToFront;
-    Application.ProcessMessages;
+    SetCompileStage(csCompiling);
   end;
 end;
 
@@ -317,10 +388,8 @@ begin
 
   LblStatusCaption.Font.Style := [];
   LblStatus.Font.Style := [];
-  LblStatusCaption.Caption := RsLinking + ':';
   LblStatus.Caption := ExtractFileName(Filename);
-  BringToFront;
-  Application.ProcessMessages;
+  SetCompileStage(csLinking);
 end;
 
 procedure TFormCompile.Done(const ErrorReason: string);
@@ -333,7 +402,7 @@ begin
   LblErrorReason.Visible := ErrorReason <> '';
   LblStatusCaption.Font.Style := [fsBold];
   LblStatus.Font.Style := [fsBold];
-  LblStatusCaption.Caption := RsDone + ':';
+  SetCompileStage(csDone);
 
   if Aborted then
     LblStatus.Caption := RsCompileAborted
@@ -354,34 +423,71 @@ begin
   end;
 end;
 
+procedure TFormCompile.StateModified(AModifiedState: TModifiedState);
+begin
+  Include(FModifiedStates, AModifiedState);
+  if not FStateModifiedMessageSent then
+  begin
+    FStateModifiedMessageSent := True;
+    PostMessage(Handle, WM_STATEMODIFIED, 0, 0);
+  end;
+end;
+
+procedure TFormCompile.HandleStateModified;
+var
+  States: TModifiedStates;
+begin
+  while FModifiedStates <> [] do
+  begin
+    States := FModifiedStates;
+    FModifiedStates := [];
+    FStateModifiedMessageSent := False;
+
+    if msErrors in States then
+      LblErrors.Caption := IntToStr(FErrors);
+    if msHints in States then
+      LblHints.Caption := IntToStr(FHints);
+    if msWarnings in States then
+      LblWarnings.Caption := IntToStr(FWarnings);
+
+    if msCurrentLine in States then
+    begin
+      LblCurrentLine.Caption := IntToStr(FCurrentLine);
+      LblTotalLines.Caption := IntToStr(FTotalLines + FCurrentLine);
+    end;
+  end;
+end;
+
+procedure TFormCompile.WndProc(var Msg: TMessage);
+begin
+  if Msg.Msg = WM_STATEMODIFIED then
+    HandleStateModified
+  else
+    inherited WndProc(Msg);
+end;
+
 procedure TFormCompile.IncError;
 begin
   Inc(FErrors);
-  LblErrors.Caption := IntToStr(FErrors);
-  Application.ProcessMessages;
+  StateModified(msErrors);
 end;
 
 procedure TFormCompile.IncHint;
 begin
   Inc(FHints);
-  LblHints.Caption := IntToStr(FHints);
-  Application.ProcessMessages;
+  StateModified(msHints);
 end;
 
 procedure TFormCompile.IncWarning;
 begin
   Inc(FWarnings);
-  LblWarnings.Caption := IntToStr(FWarnings);
-  Application.ProcessMessages;
+  StateModified(msWarnings);
 end;
 
 procedure TFormCompile.SetCurrentLine(Line: Cardinal);
 begin
   FCurrentLine := Line;
-  LblCurrentLine.Caption := IntToStr(Line);
-  LblTotalLines.Caption := IntToStr(FTotalLines + FCurrentLine);
-  BringToFront;
-  Application.ProcessMessages;
+  StateModified(msCurrentLine);
 end;
 
 procedure TFormCompile.SetCurrentTarget(ATarget: TTargetConfig);
@@ -393,5 +499,12 @@ procedure TFormCompile.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := Tag = 1;
 end;
+
+initialization
+  // Preload resourcestrings in order to not implicitly call LoadString for every UI update
+  sPreparing := RsPreparing;
+  sCompilingColon := RsCompiling + ':';
+  sLinkingColon := RsLinking + ':';
+  sDoneColon := RsDone + ':';
 
 end.
