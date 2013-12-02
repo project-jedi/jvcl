@@ -335,7 +335,14 @@ type
     hoPreserveHeight,   // don't change HotTrackFont.Height (affects Size as well)
     hoPreserveName,     // don't change HotTrackFont.Name
     hoPreservePitch,    // don't change HotTrackFont.Pitch
-    hoPreserveStyle);   // don't change HotTrackFont.Style
+    hoPreserveStyle     // don't change HotTrackFont.Style
+    {$IFDEF COMPILER10_UP}
+    , hoPreserveOrientation // don't change HotTrackFont.Orientation
+    {$ENDIF COMPILER10_UP}
+    {$IFDEF COMPILER15_UP}
+    , hoPreserveQuality // don't change HotTrackFont.Quality
+    {$ENDIF COMPILER15_UP}
+  );
   TJvTrackFontOptions = set of TJvTrackFontOption;
 
 const

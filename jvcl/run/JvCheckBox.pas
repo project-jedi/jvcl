@@ -96,6 +96,7 @@ type
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure ReadAssociated(Reader: TReader);
     procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
+    function IsHotTrackFontStored: Boolean;
   protected
     function CreateDataConnector: TJvCheckBoxDataConnector; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
@@ -130,7 +131,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions
       default DefaultTrackFontOptions;
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
@@ -423,6 +424,11 @@ begin
   Result := FCanvas;
 end;
 
+function TJvCheckBox.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
+end;
+
 procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
@@ -544,9 +550,7 @@ begin
       TWinControl(FocusLinkedControl).SetFocus;
   end
   else
-  begin
     TWinControlAccess(Parent).SelectNext(Self, False, True);
-  end;
 end;
 
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);

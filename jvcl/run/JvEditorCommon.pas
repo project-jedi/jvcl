@@ -710,6 +710,7 @@ type
 
     { mouse support }
     TimerScroll: TTimer;
+    MouseMoveX: Integer;
     MouseMoveY: Integer;
     MouseMoveXX: Integer;
     MouseMoveYY: Integer;
@@ -2867,19 +2868,37 @@ end;
 
 procedure TJvCustomEditorBase.ScrollTimer(Sender: TObject);
 begin
-  if (MouseMoveY < 0) or (MouseMoveY > ClientHeight) then
+  if (MouseMoveX < EditorClient.Left) or (MouseMoveX > ClientWidth) or
+     (MouseMoveY < 0) or (MouseMoveY > ClientHeight) then
   begin
-    if MouseMoveY < -20 then
-      Dec(MouseMoveYY, FVisibleRowCount)
-    else
-    if MouseMoveY < 0 then
-      Dec(MouseMoveYY)
-    else
-    if MouseMoveY > ClientHeight + 20 then
-      Inc(MouseMoveYY, FVisibleRowCount)
-    else
-    if MouseMoveY > ClientHeight then
-      Inc(MouseMoveYY);
+    if (MouseMoveY < 0) or (MouseMoveY > ClientHeight) then
+    begin
+      if MouseMoveY < -20 then
+        Dec(MouseMoveYY, FVisibleRowCount)
+      else
+      if MouseMoveY < 0 then
+        Dec(MouseMoveYY)
+      else
+      if MouseMoveY > ClientHeight + 20 then
+        Inc(MouseMoveYY, FVisibleRowCount)
+      else
+      if MouseMoveY > ClientHeight then
+        Inc(MouseMoveYY);
+    end;
+    if (MouseMoveX < FGutterWidth) or (MouseMoveX > ClientWidth) then
+    begin
+      if MouseMoveX < FGutterWidth - 20 then
+        Dec(MouseMoveXX, 16)
+      else
+      if MouseMoveX < FGutterWidth then
+        Dec(MouseMoveXX, 4)
+      else
+      if MouseMoveX > ClientWidth + 20 then
+        Inc(MouseMoveXX, 16)
+      else
+      if MouseMoveX > ClientWidth then
+        Inc(MouseMoveXX, 4);
+    end;
     PaintCaret(False);
     SetSel(MouseMoveXX, MouseMoveYY);
     SetCaret(MouseMoveXX, MouseMoveYY);
@@ -3002,7 +3021,7 @@ procedure TJvCustomEditorBase.ChangeAttr(Line, ColBeg, ColEnd: Integer);
       Color: TColor;
     begin
       if LineStyle = lssUnselected then
-        for I := iBeg to iEnd do
+        for I := iBeg to Min(iEnd, Max_X - 1) do
         begin
           LineAttrs[I+1].FC := SelForeColor;
           LineAttrs[I+1].BC := SelBackColor;
@@ -3010,7 +3029,7 @@ procedure TJvCustomEditorBase.ChangeAttr(Line, ColBeg, ColEnd: Integer);
         end
       else
        // exchange fore and background color
-        for I := iBeg to iEnd do
+        for I := iBeg to Min(iEnd, Max_X - 1) do
         begin
           Color := LineAttrs[I+1].FC;
           LineAttrs[I+1].FC := LineAttrs[I+1].BC;
@@ -3451,9 +3470,10 @@ end;
 
 procedure TJvCustomEditorBase.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if FMouseDown and (ssLeft in (Shift * [ssShift, ssLeft]) ) then
+  if FMouseDown and (ssLeft in (Shift * [ssShift, ssLeft])) then
   begin
     PaintCaret(False);
+    MouseMoveX := X;
     MouseMoveY := Y;
     Mouse2Caret(X, Y, MouseMoveXX, MouseMoveYY);
 
@@ -3462,7 +3482,7 @@ begin
       SetSel(MouseMoveXX, MouseMoveYY);
       SetCaret(MouseMoveXX, MouseMoveYY);
     end;
-    TimerScroll.Enabled := (Y < 0) or (Y > ClientHeight);
+    TimerScroll.Enabled := (Y < 0) or (Y > ClientHeight) or (X < FGutterWidth) or (X > ClientWidth);
     PaintCaret(True);
   end;
   inherited MouseMove(Shift, X, Y);

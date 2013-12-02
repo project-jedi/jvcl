@@ -92,6 +92,7 @@ type
     procedure SetVerticalAlignment(const Value: TVerticalAlignment);
     procedure SetFlatArrowColor(const Value: TColor);
     procedure SetFlatArrowDisabledColor(const Value: TColor);
+    procedure SetSplittedButton(const Value: Boolean);
   protected
     FState: TButtonState;
     function GetPalette: HPALETTE; override;
@@ -137,7 +138,7 @@ type
     property PressBoth: Boolean read FPressBoth write FPressBoth default True;
     property ShowHint;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
-    property SplittedButton: Boolean read FSplittedButton write FSplittedButton default True;
+    property SplittedButton: Boolean read FSplittedButton write SetSplittedButton default True;
     property VerticalAlignment: TVerticalAlignment read FVerticalAlignment write SetVerticalAlignment default taVerticalCenter;
     property Visible;
     property OnDrop: TNotifyEvent read FOnDrop write FOnDrop;
@@ -1346,6 +1347,15 @@ begin
   if Value <> FSpacing then
   begin
     FSpacing := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvArrowButton.SetSplittedButton(const Value: Boolean);
+begin
+  if Value <> FSplittedButton then
+  begin
+    FSplittedButton := Value;
     Invalidate;
   end;
 end;

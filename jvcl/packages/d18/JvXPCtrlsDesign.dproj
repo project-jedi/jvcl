@@ -42,16 +42,16 @@
 			<DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
 			<DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
 			<DCC_DebugInformation>false</DCC_DebugInformation>
-			<DCC_UnitSearchPath>..\..\lib\d17\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<DCC_DcpOutput>..\..\lib\d17\win32</DCC_DcpOutput>
-			<DCC_DcuOutput>..\..\lib\d17\win32</DCC_DcuOutput>
+			<DCC_UnitSearchPath>..\..\lib\d18\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_DcpOutput>..\..\lib\d18\win32</DCC_DcpOutput>
+			<DCC_DcuOutput>..\..\lib\d18\win32</DCC_DcuOutput>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
 			<DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
-			<DCC_UnitSearchPath>..\..\lib\d17\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-			<DCC_DcpOutput>..\..\lib\d17\win32\debug</DCC_DcpOutput>
-			<DCC_DcuOutput>..\..\lib\d17\win32\debug</DCC_DcuOutput>
+			<DCC_UnitSearchPath>..\..\lib\d18\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_DcpOutput>..\..\lib\d18\win32\debug</DCC_DcpOutput>
+			<DCC_DcuOutput>..\..\lib\d18\win32\debug</DCC_DcuOutput>
 		</PropertyGroup>
 		<ItemGroup>
 			<DelphiCompile Include="JvXPCtrlsDesign.dpk">

@@ -94,6 +94,7 @@ type
     procedure SetBorderColor(Value: TColor);
     procedure SetActiveFontOptions(const Value: TJvTrackFontOptions);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure DrawPageItem(ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer); virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -121,7 +122,7 @@ type
     property HotTrackCursor: TCursor read FHotTrackCursor write FHotTrackCursor default crHandPoint;
     property HotTrack: Boolean read FHotTrack write FHotTrack default True;
 
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property Image;
@@ -571,6 +572,11 @@ procedure TJvWizardRouteMapList.FontChanged;
 begin
   UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions);
+end;
+
+function TJvWizardRouteMapList.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 {$IFDEF UNITVERSIONING}

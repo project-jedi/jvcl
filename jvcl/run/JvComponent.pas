@@ -238,7 +238,7 @@ begin
   case Key of
     BackSpace, Esc:
       FSearchText := '';
-    #32..#255:
+    #32..High(Char):
       begin
         TickCount := GetTickCount;
         if TickCount < FSearchTickCount then

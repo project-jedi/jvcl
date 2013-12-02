@@ -511,7 +511,7 @@ begin
   if CharInSet(Key, ['.', ','] - [JclFormatSettings.ThousandSeparator]) then
     Key := JclFormatSettings.DecimalSeparator;
   inherited KeyPress(Key);
-  if CharInSet(Key, [#32..#255]) and not IsValidChar(Key) then
+  if (Key >= #32) and not IsValidChar(Key) then
   begin
     DoBeepOnError;
     Key := #0;

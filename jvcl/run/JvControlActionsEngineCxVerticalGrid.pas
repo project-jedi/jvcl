@@ -93,6 +93,8 @@ end;
 procedure TJvControlActioncxVerticalGridEngine.ExportGrid(aGrid: TcxVerticalGrid);
 var
   SaveDialog: TSaveDialog;
+  Extension: String;
+  FileName: String;
 begin
   if not Assigned(aGrid) then
     Exit;
@@ -100,20 +102,23 @@ begin
   try
     SaveDialog.Name    := 'SaveDialog';
     SaveDialog.DefaultExt := 'XLS';
-    SaveDialog.Filter  := 'MS-Excel-Files (*.XLS)|*.XLS|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
+    SaveDialog.Filter  := 'MS-Excel-Files (*.XLS;*.XLSX)|*.XLS;*.XLSX|XML-Files (*.XML)|*.HTM|HTML-Files (*.HTM)|*.HTM|Text-Files (*.TXT)|*.TXT|All Files (*.*)|*.*';
     SaveDialog.Options := [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist];
     if SaveDialog.Execute then
       if SaveDialog.FileName <> '' then
       begin
-        if (Pos('.XLS', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) then
-          cxExportVGToExcel(SaveDialog.FileName, aGrid)
-        else if (Pos('.XML', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) then
-          cxExportVGToXML(SaveDialog.FileName, aGrid)
-        else if ((Pos('.HTM', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 3) or
-          (Pos('.HTML', UpperCase(SaveDialog.FileName)) = Length(SaveDialog.FileName) - 4)) then
-          cxExportVGToHTML(SaveDialog.FileName, aGrid)
+        FileName := SaveDialog.Filename;
+        Extension := Uppercase(ExtractFileExt(FileName));
+        if Extension = '.XLS' then
+          cxExportVGToExcel(Filename, aGrid)
+        else if Extension = '.XLSX' then
+          cxExportVGToXLSX(Filename, aGrid)
+        else if Extension = 'XML' then
+          cxExportVGToXML(Filename, aGrid)
+        else if (Extension = '.HTM') or (Extension = '.HTML') then
+          cxExportVGToHTML(Filename, aGrid)
         else
-          cxExportVGToText(SaveDialog.FileName, aGrid);
+          cxExportVGToText(Filename, aGrid);
       end;
   finally
     SaveDialog.Free;

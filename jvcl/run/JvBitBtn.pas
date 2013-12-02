@@ -56,6 +56,7 @@ type
     procedure SetHotTrackFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
@@ -70,7 +71,7 @@ type
     property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
     property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HotGlyph: TBitmap read FHotGlyph write SetHotGlyph;
     property OnMouseEnter;
@@ -126,6 +127,11 @@ end;
 function TJvBitBtn.GetCanvas: TCanvas;
 begin
   Result := FCanvas;
+end;
+
+function TJvBitBtn.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvBitBtn.Click;

@@ -1152,7 +1152,7 @@ uses
 type
   TCustomMaskEditAccessPrivate = class(TCustomEdit)
   protected
-    {$IFDEF COMPILER19_UP}
+    {$IFDEF COMPILER20_UP}
       {$MESSAGE WARN 'Check if Vcl.Mask.TCustomMaskEdit still has the exact same fields and adjust the IFDEF'}
     {$ENDIF}
     // Do not remove these fields, although they are not used.
@@ -3207,6 +3207,11 @@ begin
   end
   else
     inherited;
+
+  // This fixes the problem that the Button looses its border
+  if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) then
+    if (FBtnControl <> nil) and FBtnControl.Visible and FBtnControl.HandleAllocated then
+      Windows.InvalidateRect(FBtnControl.Handle, nil, False);
 end;
 {$ENDIF JVCLThemesEnabled}
 

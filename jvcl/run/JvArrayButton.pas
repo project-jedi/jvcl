@@ -56,38 +56,36 @@ type
     FHints: THintStringList;
     FEnableds: array of Boolean;
     FDowns: array of Boolean;
-    {$IFDEF JVCLThemesEnabled}
     FMouseOverBtn: TPoint;
     FThemed: Boolean;
     procedure SetThemed(Value: Boolean);
-    {$ENDIF JVCLThemesEnabled}
+    procedure SetMouseOverBtn(Col, Row: Integer);
     function GetCaptions: TStrings;
     function GetColors: TStrings;
-    procedure SetCols(const Value: Integer);
-    procedure SetRows(const Value: Integer);
+    procedure SetCols(Value: Integer);
+    procedure SetRows(Value: Integer);
     procedure SetCaptions(const Value: TStrings);
     procedure SetColors(const Value: TStrings);
-    procedure MouseToCell(const X, Y: Integer; var ACol, ARow: Integer);
     function CellRect(ACol, ARow: Integer): TRect;
     procedure SetHints(const Value: THintStringList);
     function GetEnableds(Index: Integer): Boolean;
     procedure SetEnableds(Index: Integer; const Value: Boolean);
     function GetDowns(Index: Integer): Boolean;
     procedure SetDowns(Index: Integer; const Value: Boolean);
+    procedure InvalidateCell(Col, Row: Integer);
   protected
     procedure FontChanged; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    {$IFDEF JVCLThemesEnabled}
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    {$ENDIF JVCLThemesEnabled}
     procedure Paint; override;
     procedure SizeChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function MouseToCell(const X, Y: Integer; var ACol, ARow: Integer): Boolean;
+    function GetCellRect(ACol, ARow: Integer; var R: TRect): Boolean;
 
     {this procedure can be used in response to a Application.OnShowHint event
      button hints are stored in the hints property from array top-left to array bottom right
@@ -119,8 +117,6 @@ type
     property Cols: Integer read FCols write SetCols;
     {A List of button captions from the top-left to the bottom-right button}
     property Captions: TStrings read GetCaptions write SetCaptions;
-    {Buttons can be stay in pressed state}
-    property CanDown: Boolean read FDown write FDown default False;
     property Enabled;
     property Font;
     property Height default 35;
@@ -130,11 +126,13 @@ type
      values must be standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex Color triplets}
     property Colors: TStrings read GetColors write SetColors;
+    {$IFDEF RTL240_UP}
+    [Default(False)]  // for proper XE3 IDE work
+    {$ENDIF RTL240_UP}
+    property CanDown: Boolean read FDown write FDown default False;	
     property Hint;
     property ShowHint default True;
-    {$IFDEF JVCLThemesEnabled}
     property Themed: Boolean read FThemed write SetThemed default False;
-    {$ENDIF JVCLThemesEnabled}
     property Visible;
     property Width default 35;
     {provides you with the Column and Row of the clicked button
@@ -183,10 +181,9 @@ begin
   FCaptions := TStringList.Create;
   FHints := THintStringList.Create;
   FColors := TStringList.Create;
-  {$IFDEF JVCLThemesEnabled}
-  FThemed := False;
+  ControlStyle := ControlStyle + [csOpaque]; // reduce flicker, we paint everthing
   FMouseOverBtn := Point(-1, -1);
-  {$ENDIF JVCLThemesEnabled}
+  FThemed := False;
 end;
 
 destructor TJvArrayButton.Destroy;
@@ -195,190 +192,301 @@ begin
   FHints.Free;
   FColors.Free;
   SetLength(FEnableds, 0);
-  SetLength(FDowns, 0);
   inherited Destroy;
 end;
 
-procedure TJvArrayButton.MouseToCell(const X, Y: Integer; var ACol, ARow: Integer);
+function TJvArrayButton.MouseToCell(const X, Y: Integer; var ACol, ARow: Integer): Boolean;
 var
   DH, DW: Integer;
 begin
   DH := (Height - 2) div Rows;
   DW := (Width - 2) div Cols;
-  ACol := X div DW;
-  ARow := Y div DH;
+
+  ACol := -1;
+  ARow := -1;
+  Result := False;
+  if (X >= 0) and (X < Width) and (Y >= 0) and (Y < Height) then
+  begin
+    ACol := (X - 1) div DW;
+    ARow := (Y - 1) div DH;
+    if (ACol < 0) or (ARow < 0) or (ACol > Cols) or (ARow > Rows) then
+    begin
+      ACol := -1;
+      ARow := -1;
+    end
+    else
+      Result := True;
+  end;
 end;
 
-procedure TJvArrayButton.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+function TJvArrayButton.GetCellRect(ACol, ARow: Integer; var R: TRect): Boolean;
+begin
+  if (ACol >= 0) and (ACol < Cols) and (ARow >= 0) and (ARow < Rows) then
+  begin
+    R := CellRect(ACol, ARow);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+procedure TJvArrayButton.InvalidateCell(Col, Row: Integer);
+var
+  R: TRect;
+begin
+  if Visible and (Parent <> nil) and Parent.HandleAllocated then
+    if GetCellRect(Col, Row, R) then
+      InvalidateRect(Parent.Handle, R, False);
+end;
+
+procedure TJvArrayButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Col, Row: Integer;
   Index: Integer;
 begin
-  if Button = mbLeft then
+  if not (csDesigning in ComponentState) then
   begin
-    MouseToCell(X, Y, Col, Row);
-    Index := Row * Cols + Col;
-    if FEnableds[Index] then
+    if Button = mbLeft then
     begin
-      FPushDown := True;
-      if FDown then
-        FDowns[Index] := not FDowns[Index];
-      FPtDown := Point(Col, Row);
-      Invalidate;
+      if MouseToCell(X, Y, Col, Row) then
+      begin
+        Index := Row * Cols + Col;
+        if FEnableds[Index] then
+        begin
+          FPushDown := True;
+          FPtDown := Point(Col, Row);
+          InvalidateCell(Col, Row);
+        end;
+      end;
     end;
   end;
+  inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TJvArrayButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
+procedure TJvArrayButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  Col, Row: Integer;
+  Index: Integer;
 begin
-  if (Button = mbLeft) and FPushDown then
+  if not (csDesigning in ComponentState) then
   begin
-    if FEnableds[FPtDown.Y * Cols + FPtDown.X] then
+    if (Button = mbLeft) and FPushDown then
     begin
       FPushDown := False;
-      Invalidate;
-      if Assigned(FOnArrayButtonClicked) then
-        OnArrayButtonClicked(FPtDown.X, FPtDown.Y);
+      if MouseToCell(X, Y, Col, Row) and (Col = FPtDown.X) and (Row = FPtDown.Y) then
+      begin
+        Index := FPtDown.Y * Cols + FPtDown.X;
+        if FEnableds[Index] then
+        begin
+          if FDown then
+            FDowns[Index] := not FDowns[Index];
+          InvalidateCell(FPtDown.X, FPtDown.Y);
+          if Assigned(FOnArrayButtonClicked) then
+            OnArrayButtonClicked(FPtDown.X, FPtDown.Y);
+        end;
+      end;
     end;
-  end
+  end;
+  inherited MouseUp(BUtton, Shift, X, Y);
 end;
-
-{$IFDEF JVCLThemesEnabled}
 
 procedure TJvArrayButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Pt: TPoint;
 begin
-  inherited MouseMove(Shift, X, Y);
-  MouseToCell(X, Y, Pt.X, Pt.Y);
-  if (not FPushDown) and
-    ((Pt.X <> FMouseOverBtn.X) or (Pt.Y <> FMouseOverBtn.Y)) then
+  if not (csDesigning in ComponentState) then
   begin
-    FMouseOverBtn := Pt;
-    Invalidate;
+    MouseToCell(X, Y, Pt.X, Pt.Y);
+    SetMouseOverBtn(Pt.X, Pt.Y);
   end;
-end;
-
-procedure TJvArrayButton.MouseEnter(AControl: TControl);
-begin
-  inherited MouseEnter(AControl);
-  Repaint;
+  inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TJvArrayButton.MouseLeave(AControl: TControl);
 begin
   inherited MouseLeave(AControl);
-  Repaint;
+  if not (csDesigning in ComponentState) then
+    SetMouseOverBtn(-1, -1);
 end;
 
-{$ENDIF JVCLThemesEnabled}
+procedure TJvArrayButton.SetMouseOverBtn(Col, Row: Integer);
+begin
+  if (Col <> FMouseOverBtn.X) or (Row <> FMouseOverBtn.Y) then
+  begin
+    if (FMouseOverBtn.X <> -1) or (FMouseOverBtn.Y <> -1) then
+      if Themed or (FPushDown and (FMouseOverBtn.X = FPtDown.X) and (FMouseOverBtn.Y = FPtDown.Y)) then
+        InvalidateCell(FMouseOverBtn.X, FMouseOverBtn.Y);
+    FMouseOverBtn := Point(Col, Row);
+    if (FMouseOverBtn.X <> -1) or (FMouseOverBtn.Y <> -1) then
+      if Themed or (FPushDown and (FMouseOverBtn.X = FPtDown.X) and (FMouseOverBtn.Y = FPtDown.Y)) then
+        InvalidateCell(FMouseOverBtn.X, FMouseOverBtn.Y);
+  end;
+end;
 
 procedure TJvArrayButton.Paint;
 var
   R: TRect;
+  BackColor: TColor;
+  Cap: string;
+
+  procedure DrawThemedBkgrnd(ACanvas: TCanvas; ARect: TRect);
+  begin
+    ACanvas.Brush.Color := Color;
+    InflateRect(ARect, 1, 1);
+    SetBkMode(ACanvas.Handle, Windows.TRANSPARENT);
+    ACanvas.FillRect(ARect);
+  end;
+
+  procedure DrawBackground(ACanvas: TCanvas; AColor: TColor);
+  begin
+    ACanvas.Brush.Color := AColor;
+    DrawThemedBackground(Self, ACanvas, R);
+  end;
+
+  procedure DrawUp(ACanvas: TCanvas; AMouseOver: Boolean);
+  begin
+    {$IFDEF JVCLThemesEnabled}
+    if Themed and StyleServices.Enabled then
+    begin
+      DrawThemedBkgrnd(ACanvas, R);
+      R := DrawThemedButtonFace(Self, ACanvas, R, 0, bsAutoDetect, False, False, False, AMouseOver);
+      SetBkMode(ACanvas.Handle, Windows.TRANSPARENT);
+    end
+    else
+    {$ENDIF JVCLThemesEnabled}
+    begin
+      DrawBackground(ACanvas, BackColor);
+      Frame3D(ACanvas, R, clBtnHighlight, clBlack, 1);
+    end;
+    if Cap <> '' then
+      DrawText(ACanvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+  end;
+
+  procedure DrawDown(ACanvas: TCanvas; AMouseOver: Boolean);
+  begin
+    {$IFDEF JVCLThemesEnabled}
+    if Themed and StyleServices.Enabled then
+    begin
+      DrawThemedBkgrnd(ACanvas, R);
+      R := DrawThemedButtonFace(Self, ACanvas, R, 0, bsAutoDetect, False, True, False, AMouseOver);
+      SetBkMode(ACanvas.Handle, Windows.TRANSPARENT);
+    end
+    else
+    {$ENDIF JVCLThemesEnabled}
+    begin
+      DrawBackground(ACanvas, BackColor);
+      Frame3D(ACanvas, R, clBlack, clBtnHighlight, 1);
+    end;
+    if Cap <> '' then
+      DrawText(ACanvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+  end;
+
+var
   Col, Row: Integer;
   DH, DW: Integer;
   X0, Y0: Integer;
-  Cap: string;
-  BackColor: TColor;
   Index: Integer;
-
-  procedure DrawBackground(AColor: TColor);
-  begin
-    Canvas.Brush.Color := AColor;
-    DrawThemedBackground(Self, Canvas, R);
-  end;
-
-  procedure DrawUp;
-  begin
-    {$IFDEF JVCLThemesEnabled}
-    if Themed and StyleServices.Enabled then
-    begin
-      R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, False, False,
-        PtInRect(R, ScreenToClient(Mouse.CursorPos)));
-      SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    end
-    else
-    {$ENDIF JVCLThemesEnabled}
-    begin
-      DrawBackground(BackColor);
-      Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
-    end;
-    if Cap <> '' then
-      DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-  end;
-
-  procedure DrawDown;
-  begin
-    {$IFDEF JVCLThemesEnabled}
-    if Themed and StyleServices.Enabled then
-    begin
-      R := DrawThemedButtonFace(Self, Canvas, R, 0, bsAutoDetect, False, True, False,
-        PtInRect(R, ScreenToClient(Mouse.CursorPos)));
-      SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    end
-    else
-    {$ENDIF JVCLThemesEnabled}
-    begin
-      DrawBackground(BackColor);
-      Frame3D(Self.Canvas, R, clBlack, clBtnHighlight, 1);
-    end;
-    if Cap <> '' then
-      DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-  end;
-
+  l: Integer;
+  OldBmp, Bmp: HBITMAP;
+  BmpDC: HDC;
+  BmpCanvas: TCanvas;
 begin
   DH := (Height - 2) div Rows;
   DW := (Width - 2) div Cols;
-  for Row := 0 to Rows - 1 do
-  begin
-    Y0 := 1 + Row * DH;
-    for Col := 0 to Cols - 1 do
-    begin
-      X0 := 1 + Col * DW;
-      R := Rect(X0, Y0, X0 + DW, Y0 + DH);
-      Index := Row * Cols + Col;
-      if Index < Captions.Count then
-        Cap := Captions[Index]
-      else
-        Cap := '';
-      if Index < Colors.Count then
-        try
-          BackColor := StringToColor(Colors[Index]);
-        except
-          BackColor := clSilver;
-        end
-      else
-        BackColor := clSilver;
-      if (csDesigning in ComponentState) then
-        DrawUp
-      else
-      if (FPtDown.X = Col) and (FPtDown.Y = Row) then
-      begin
-        if FPushDown then
-          DrawDown;
-      end
-      else
-      if FDowns[Index] then
-        DrawDown
-      else
-        DrawUp;
 
+  // WinAPI is much faster than TBitmap that fills the rect and copies the image what we don't need.
+  OldBmp := 0;
+  R := Canvas.ClipRect;
+  Bmp := CreateCompatibleBitmap(Canvas.Handle, Width, Height);
+  BmpDC := CreateCompatibleDC(Canvas.Handle);
+  BmpCanvas := TCanvas.Create;
+  try
+    OldBmp := SelectObject(BmpDC, Bmp);
+    BmpCanvas.Handle := BmpDC;
+    IntersectClipRect(BmpDC, R.Left, R.Top, R.Right, R.Bottom);
+
+    if FThemed then
+
+    // Fill the border areas
+    BmpCanvas.Brush.Color := Color;
+    BmpCanvas.FillRect(Rect(0, 0, Width, 1));
+    BmpCanvas.FillRect(Rect(0, 0, 1, Height));
+    BmpCanvas.FillRect(Rect(DW * Cols, 1, Width, Height));
+    BmpCanvas.FillRect(Rect(0, DH * Rows, Width, Height));
+
+    // Draw the button cells
+    for Row := 0 to Rows - 1 do
+    begin
+      Y0 := 1 + Row * DH;
+      for Col := 0 to Cols - 1 do
+      begin
+        X0 := 1 + Col * DW;
+        R := Rect(X0, Y0, X0 + DW, Y0 + DH);
+        if RectVisible(BmpDC, R) then
+        begin
+          Index := Row * Cols + Col;
+          if Index < Captions.Count then
+            Cap := Captions[Index]
+          else
+            Cap := '';
+          if Index < Colors.Count then
+            try
+              BackColor := StringToColor(Colors[Index]);
+            except
+              BackColor := clSilver;
+            end
+          else
+            BackColor := clSilver;
+
+          MouseOver := (Col = FMouseOverBtn.X) and (Row = FMouseOverBtn.Y);
+          if (csDesigning in ComponentState) then
+            DrawUp(BmpCanvas, MouseOver)
+          else
+          if (FPtDown.X = Col) and (FPtDown.Y = Row) then
+          begin
+            if (FPushDown and MouseOver) or FDowns[Index] then
+              DrawDown(BmpCanvas, MouseOver)
+            else
+              DrawUp(BmpCanvas, MouseOver);
+          end
+          else
+          if FDowns[Index]  then
+            DrawDown(BmpCanvas, MouseOver)
+          else
+            DrawUp(BmpCanvas, MouseOver);
+
+          if Col = Cols -1 then
+          begin
+            l := Width - X0;
+            if l <> 0 then
+              DrawThemedBkgrnd(BmpCanvas, Rect(X0 + DW + 2, 0, R.Right + l, Height));
+          end;
+        end;
+      end;
     end;
+    BitBlt(Canvas, 0, 0, Width, Height, BmpCanvas, 0, 0, SRCCOPY);
+  finally
+    BmpCanvas.Handle := 0;
+    BmpCanvas.Free;
+    SelectObject(BmpDC, OldBmp);
+    DeleteDC(BmpDC);
+    DeleteObject(Bmp);
   end;
 end;
 
-procedure TJvArrayButton.SetCols(const Value: Integer);
+procedure TJvArrayButton.SetCols(Value: Integer);
 begin
   if FCols <> Value then
-    if (Value >= 1) and (Value <= 10) then
+  begin
+    if Value > 10 then
+      Value := 10;
+    if Value >= 1 then
     begin
       FCols := Value;
       Invalidate;
       SizeChanged;
     end;
+  end;
 end;
 
 procedure TJvArrayButton.SetEnableds(Index: Integer; const Value: Boolean);
@@ -399,15 +507,19 @@ begin
   end;
 end;
 
-procedure TJvArrayButton.SetRows(const Value: Integer);
+procedure TJvArrayButton.SetRows(Value: Integer);
 begin
   if FRows <> Value then
-    if (Value >= 1) and (Value <= 10) then
+  begin
+    if Value > 10 then
+      Value := 10;
+    if Value >= 1 then
     begin
       FRows := Value;
       Invalidate;
       SizeChanged;
     end;
+  end;
 end;
 
 procedure TJvArrayButton.SizeChanged;
@@ -451,20 +563,20 @@ begin
     FDowns[I] := False;
 end;
 
-{$IFDEF JVCLThemesEnabled}
 procedure TJvArrayButton.SetThemed(Value: Boolean);
 begin
   if Value <> FThemed then
   begin
     FThemed := Value;
-    if FThemed then
-      IncludeThemeStyle(Self, [csParentBackground])
-    else
-      ExcludeThemeStyle(Self, [csParentBackground]);
+    {$IFDEF JVCLThemesEnabled}
+//    if FThemed then
+//      IncludeThemeStyle(Self, [csParentBackground])
+//    else
+//      ExcludeThemeStyle(Self, [csParentBackground]);
     Invalidate;
+    {$ENDIF JVCLThemesEnabled}
   end;
 end;
-{$ENDIF JVCLThemesEnabled}
 
 function TJvArrayButton.GetCaptions: TStrings;
 begin
@@ -513,9 +625,6 @@ begin
   DW := (Width - 2) div Cols;
   Y0 := 1 + ARow * DH;
   X0 := 1 + ACol * DW;
-  //  pt1:=clienttoscreen(point(X0,Y0));
-  //  pt2:=clienttoscreen(point(X0+DW,Y0+DH));
-  //  result:=rect(pt1.X,pt1.Y,pt2.X,pt2.Y);
   Result := Rect(X0, Y0, X0 + DW, Y0 + DH);
 end;
 
@@ -529,16 +638,16 @@ begin
   begin
     X := HintInfo.CursorPos.X;
     Y := HintInfo.CursorPos.Y;
-    MouseToCell(X, Y, ACol, ARow);
-    if (ACol < 0) or (ARow < 0) then
-      Exit;
-    Index := ARow * Cols + ACol;
-    if Index < Hints.Count then
-      HintStr := Hints[Index]
-    else
-      HintStr := Hint;
-    HintInfo.CursorRect := CellRect(ACol, ARow);
-    CanShow := True;
+    if MouseToCell(X, Y, ACol, ARow) then
+    begin
+      Index := ARow * Cols + ACol;
+      if Index < Hints.Count then
+        HintStr := Hints[Index]
+      else
+        HintStr := Hint;
+      HintInfo.CursorRect := CellRect(ACol, ARow);
+      CanShow := True;
+    end;
   end;
 end;
 

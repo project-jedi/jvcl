@@ -1179,11 +1179,11 @@ var
   S: string;
 begin
   S := '';
-  if (FDisplayField <> nil) {and (FDisplayField.DataType = ftString)} then
+  if (FDisplayField <> nil) then
     case Key of
       Tab, Esc:
         FSearchText := '';
-      Backspace, #32..#255:
+      Backspace, #32..High(Char):
         if CanModify then
         begin
           if not FPopup then
@@ -2840,7 +2840,7 @@ begin
     if TabSelects and IsDropDown and (Key = Tab) then
       Key := Cr;
 
-    if CharInSet(Key, [Cr, Esc]) then
+    if (Key = Cr) or (Key = Esc) then
     begin
       CloseUp(Key = Cr);
       Key := #0;
@@ -2850,7 +2850,7 @@ begin
   end
   else
   begin
-    if CharInSet(Key, [#32..#255]) then
+    if Key >= #32 then
     begin
       DropDown;
       if FListVisible then
