@@ -534,21 +534,22 @@ var
 begin
   inherited SetFocus;
 
-  // we want to skip our own focus, either to our children or to
-  // a first accepting focus sibling,
-  // depending on the direction that the user asked for
+  // We want to transfer our own focus either to our children or to
+  // the first focus accepting sibling, depending on the direction
+  // that the user asked for.
   if GetKeyState(VK_SHIFT) >= 0 then
   begin
-    for I := 0 to LinkedControls.Count - 1 do begin
+    for I := 0 to LinkedControls.Count - 1 do
+    begin
       FocusLinkedControl := LinkedControls[I];
-      if (loForceFocus in FocusLinkedControl.Options) then begin
-         FocusTargetControl := FocusLinkedControl.Control;
-         if Assigned(FocusTargetControl) and (FocusTargetControl is TWinControl) then
-         with TWinControl(FocusTargetControl) do
-              if CanFocus then begin
-                 SetFocus;
-                 Break; // found the new focus owner
-              end;
+      if loForceFocus in FocusLinkedControl.Options then
+      begin
+        FocusTargetControl := FocusLinkedControl.Control;
+        if (FocusTargetControl is TWinControl) and TWinControl(FocusTargetControl).CanFocus then
+        begin
+          TWinControl(FocusTargetControl).SetFocus;
+          Break; // found the new focus owner
+        end;
       end;
     end;
   end
