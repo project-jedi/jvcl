@@ -5,73 +5,92 @@ unit crlfutils;
 interface
 
 procedure Run;
-implementation
-uses
-  Windows, SysUtils, Classes;
 
-function IsTextStream(Stream:TStream):Boolean;
+implementation
+
+uses
+  Windows, SysUtils, AnsiStrings, Classes;
+
+function FindLineEnd(const Buffer: TBytes; Offset: Integer): PByte;
+begin
+  if (Buffer <> nil) and (Offset >= 0) and (Offset < Length(Buffer)) then
+  begin
+    Result := PByte(Buffer) + Offset;
+    Offset := Length(Buffer) - Offset;
+    while Offset > 0 do
+    begin
+      case Result^ of
+        0: Break;
+        10, 13: Exit;
+      end;
+      Inc(Result);
+      Dec(Offset);
+    end;
+  end;
+  Result := nil;
+end;
+
+function IsTextStream(Stream: TStream): Boolean;
 const
-  MaxLineLength = 255;
+  MaxLineLength = 1024;
 var
-  LineBuffer:array[0..MaxLineLength] of Char;
-  CharFlags:array of Word;
-  I, Count:Integer;
-  P, S:PChar;
+  LineBuffer: TBytes;
+  CharFlags: array of Word;
+  I, Count: Integer;
+  P: PByte;
+  Offset: Integer;
+  Encoding: TEncoding;
+  Text: string;
 begin
   Result := False;
 
-  FillChar(LineBuffer, SizeOf(LineBuffer), 0);
+  SetLength(LineBuffer, MaxLineLength);
 
   Stream.Position := 0;
   if Stream.Size > MaxLineLength then
     Count := MaxLineLength
   else
     Count := Stream.Size;
-  Stream.Read(LineBuffer, Count);
+
+  if Count = 0 then
+    Exit;
+
+  Stream.Read(LineBuffer[0], Count);
+  Offset := TEncoding.GetBufferEncoding(LineBuffer, Encoding);
+
+  // if first character is $FF, then it's likely not text
+  if LineBuffer[Offset] = $FF then
+    Exit;
 
   // see if we can come up with an EOL (unless we read the whole file)
   if Count < Stream.Size then
   begin
-    P := StrPos(LineBuffer, #13);
-    // try the LF variant too
+    P := FindLineEnd(LineBuffer, Offset);
     if P = nil then
-    begin
-      P := StrPos(LineBuffer,#10);
-      if P = nil then
-        Exit;
-    end;
+      Exit;
 
     // terminate the string here
-    P^ := #0;
-
-    // check if there are any terminators prior to where we expect the EOL
-    S := @LineBuffer;
-    while S < P do
-    begin
-      if S^ = #0 then
-        Exit;
-      Inc(S);
-    end;
-
-  end;
-
-  Count := StrLen(LineBuffer);
-
-  // some editors place a $1A (26) as an EOF marker
-  if LineBuffer[Count - 1] = Char($1A) then
+    P^ := 0;
+    Count := P - PByte(LineBuffer);
+  end
+  else
   begin
-    LineBuffer[Count - 1] := #0;
-    Dec(Count);
+    Count := Length(LineBuffer);
+    // some editors place a $1A (26) as an EOF marker
+    if LineBuffer[Count - 1] = $1A then
+    begin
+      LineBuffer[Count - 1] := 0;
+      Dec(Count);
+    end;
   end;
+  Count := Count - Offset;
 
-  // if first character is $FF, then it's likely not text
-  if LineBuffer[0] = Char($FF) then
-    Exit;
+  Text := Encoding.GetString(LineBuffer, Offset, Count);
+  Count := Length(Text);
 
   // get the char flags
   SetLength(CharFlags, Count);
-  GetStringTypeEx(LOCALE_USER_DEFAULT, CT_CTYPE1, LineBuffer, Count,
-    CharFlags[0]);
+  GetStringTypeEx(LOCALE_USER_DEFAULT, CT_CTYPE1, PChar(Text), Count, CharFlags[0]);
 
   // check the CharFlags array to see if anything looks fishy
   for I := Low(CharFlags) to High(CharFlags) do
@@ -127,43 +146,162 @@ begin
   writeln('NOTE: if you compiled using Delphi 5 or earlier, CRLF->LF is NOT supported!');
 end;
 
-function ConvertFile(const Filename:string;ToWindows,CompareBeforeWrite,Quiet:boolean):boolean;
-const
-  cStyle:array[boolean] of TTextLineBreakStyle = (tlbsLF,tlbsCRLF);
+function AdjustByteBufferLineBreaks(Buffer: TBytes; Offset: Integer; out AdjustedBuffer: TBytes; Style: TTextLineBreakStyle): Boolean;
 var
-  F:TFileStream;
-  tmp,tmp2:string;
+  Source, SourceEnd, Dest: PByte;
+  SourceLen, DestLen: Integer;
+begin
+  if Buffer = nil then
+  begin
+    AdjustedBuffer := nil;
+    Result := False;
+    Exit;
+  end;
+
+  Source := PByte(Buffer);
+  SourceEnd := Source + Length(Buffer);
+  Inc(Source, Offset);
+  SourceLen := SourceEnd - Source;
+
+  DestLen := SourceLen;
+  while Source < SourceEnd do
+  begin
+    case Source^ of
+      10:
+        if Style = tlbsCRLF then
+          Inc(DestLen);
+      13:
+        if Style = tlbsCRLF then
+          if (Source + 1 < SourceEnd) and (Source[1] = 10) then
+            Inc(Source)
+          else
+            Inc(DestLen)
+        else
+          if (Source + 1 < SourceEnd) and (Source[1] = 10) then
+            Dec(DestLen);
+    end;
+    Inc(Source);
+  end;
+  if DestLen = SourceLen then
+  begin
+    if Offset = 0 then
+      AdjustedBuffer := Buffer
+    else
+      AdjustedBuffer := Copy(Buffer, Offset, MaxInt);
+    Result := False;
+  end
+  else
+  begin
+    SetLength(AdjustedBuffer, DestLen);
+    Source := PByte(Source) + Offset;
+    Dest := PByte(AdjustedBuffer);
+    while Source < SourceEnd do
+    begin
+      case Source^ of
+        10:
+          begin
+            if Style = tlbsCRLF then
+            begin
+              Dest^ := 13;
+              Inc(Dest);
+            end;
+            Dest^ := 10;
+            Inc(Dest);
+            Inc(Source);
+          end;
+        13:
+          begin
+            if Style = tlbsCRLF then
+            begin
+              Dest^ := 13;
+              Inc(Dest);
+            end;
+            Dest^ := 10;
+            Inc(Dest);
+            Inc(Source);
+            if Source^ = 10 then
+              Inc(Source);
+          end;
+      else
+        Dest^ := Source^;
+        Inc(Dest);
+        Inc(Source);
+      end;
+    end;
+    Result := True;
+  end;
+end;
+
+function ConvertFile(const Filename: string; ToWindows, CompareBeforeWrite, Quiet: Boolean): Boolean;
+const
+  cStyle: array[Boolean] of TTextLineBreakStyle = (tlbsLF,tlbsCRLF);
+var
+  F: TFileStream;
+  Buffer, WorkBuffer, Preamble: TBytes;
+  Encoding: TEncoding;
+  Offset: Integer;
+  WorkBufferConverted: Boolean;
+  Modified: Boolean;
 begin
   // don't convert binary files
-  Result := false;
-  if not IsTextFile(Filename) then Exit;
-  F := TFileStream.Create(Filename,fmOpenReadWrite or fmShareExclusive );
+  Result := False;
+  if not IsTextFile(Filename) then
+    Exit;
+
+  F := TFileStream.Create(Filename, fmOpenReadWrite or fmShareExclusive);
   try
-    SetLength(tmp,F.Size);
+    SetLength(Buffer, F.Size);
     if F.Size > 0 then
     begin
-      F.Read(tmp[1],F.Size);
-      if CompareBeforeWrite then
-        tmp2 := tmp;
-      tmp := AdjustLineBreaks(tmp, cStyle[ToWindows]);
-      if CompareBeforeWrite and (tmp = tmp2) then
+      F.Read(Buffer[0], F.Size);
+      Offset := TEncoding.GetBufferEncoding(Buffer, Encoding);
+      Preamble := nil;
+      if Offset > 0 then
+        Preamble := Copy(Buffer, 0, Offset);
+      WorkBufferConverted := False;
+      if (Encoding <> TEncoding.ASCII) and (Encoding <> TEncoding.Default) and (Encoding <> TEncoding.UTF8) then
       begin
-        if not Quiet then
+        WorkBufferConverted := True;
+        WorkBuffer := TEncoding.Convert(Encoding, TEncoding.UTF8, Buffer, Offset, Length(Buffer) - Offset);
+        Offset := 0;
+      end
+      else
+        WorkBuffer := Buffer;
+
+      Buffer := nil;
+      Modified := AdjustByteBufferLineBreaks(WorkBuffer, Offset, Buffer, cStyle[ToWindows]);
+      if not Modified then
+      begin
+        if CompareBeforeWrite and not Quiet then
           writeln(ExtractFilename(Filename), ' not converted');
-        Exit;
+      end
+      else
+      begin
+        WorkBuffer := nil; // release unused memory
+        F.Size := 0;
+        if WorkBufferConverted then
+        begin
+          WorkBuffer := Buffer;
+          Buffer := TEncoding.Convert(TEncoding.UTF8, Encoding, WorkBuffer, 0, Length(WorkBuffer));
+          WorkBuffer := nil; // release unused memory
+        end;
+
+        if Preamble <> nil then
+          F.Write(Preamble[0], Length(Preamble));
+        if Buffer <> nil then
+          F.Write(Buffer[0], Length(Buffer));
+
+        if not Quiet then
+          writeln(ExtractFilename(Filename), ' converted');
       end;
-      F.Size := 0;
-      F.Write(tmp[1],Length(tmp));
-      if not Quiet then
-        writeln(ExtractFilename(Filename), ' converted');
     end;
   finally
     F.Free;
   end;
-  Result := true;
+  Result := True;
 end;
 
-function ConvertFiles(const FileMask:string;ToWindows,CompareBeforeWrite,Recurse,Quiet:boolean):integer;
+function ConvertFiles(const FileMask: string; ToWindows, Recurse, CompareBeforeWrite, Quiet: Boolean): Integer;
 var
   SearchHandle:DWORD;
   FindData:TWin32FindData;
@@ -179,7 +317,7 @@ begin
       begin
         if (FindData.dwFileAttributes and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY) then
           writeln('ERROR: ',FindData.cFileName,' is read-only!')
-        else if ConvertFile(APath + FindData.cFileName,ToWindows,CompareBeforeWrite,Quiet) then
+        else if ConvertFile(APath + FindData.cFileName, ToWindows, CompareBeforeWrite, Quiet) then
             Inc(Result);
       end;
     until not FindNextFile(SearchHandle,FindData);
@@ -194,7 +332,7 @@ begin
     try
       repeat
         if (FindData.dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY = FILE_ATTRIBUTE_DIRECTORY) and (FindData.cFileName[0] <> '.') then
-          Inc(Result,ConvertFiles(IncludeTrailingPathdelimiter(APath + FindData.cFileName) + ExtractFilename(Filemask),ToWindows,CompareBeforeWrite,true,Quiet));
+          Inc(Result,ConvertFiles(IncludeTrailingPathdelimiter(APath + FindData.cFileName) + ExtractFilename(Filemask), ToWindows, True, CompareBeforeWrite, Quiet));
       until not FindNextFile(SearchHandle,FindData);
     finally
       Windows.FindClose(SearchHandle);
@@ -204,10 +342,14 @@ end;
 
 procedure Run;
 const
-  cCurrentOS:array[boolean] of PChar = ('(CRLF->LF)','(LF->CRLF)');
+  cCurrentOS:array[Boolean] of string = (
+    '(CRLF->LF)',
+    '(LF->CRLF)'
+  );
 var
-  ToWindows,CompareBeforeWrite,Recurse,Quiet:boolean;
-  i,Count:integer;
+  ToWindows, Recurse, CompareBeforeWrite, Quiet: Boolean;
+  i, Count: Integer;
+  Param: string;
 begin
   // cmd line: -l *.pas *.dfm *.txt -c -w *.xfm
   // where
@@ -216,7 +358,7 @@ begin
   // -c - check content: only write if file has changed (default)
   // -u - never check content: always write
   writeln('');
-  writeln('JEDI CR(LF) version 0.1: LF->CRLF and CRLF->LF converter.');
+  writeln('JEDI CR(LF) version 0.2: LF->CRLF and CRLF->LF converter.');
 
   Count := 0;
   if ParamCount = 0 then
@@ -224,58 +366,59 @@ begin
     ShowHelp;
     Exit;
   end;
-  CompareBeforeWrite := true;
-  Recurse := false;
+  Recurse := False;
   // set depending on target
-  ToWindows := true;
+  ToWindows := True;
   {$IFDEF LINUX}
-  ToWindows := false;
+  ToWindows := False;
   {$ENDIF}
-  Quiet := false;
+  CompareBeforeWrite := False;
+  Quiet := False;
   for i := 1 to ParamCount do
   begin
-    if SameText(ParamStr(i),'/l') or SameText(ParamStr(i),'-l') then
+    Param := ParamStr(i);
+    if SameText(Param, '/l') or SameText(Param, '-l') then
     begin
-      ToWindows := false;
+      ToWindows := False;
       if not Quiet then
         writeln('Converting ', cCurrentOS[ToWindows],':');
       Continue;
     end
-    else if SameText(ParamStr(i),'/w') or SameText(ParamStr(i),'-w') then
+    else if SameText(Param,'/w') or SameText(Param, '-w') then
     begin
-      ToWindows := true;
+      ToWindows := True;
       if not Quiet then
-        writeln('Converting ', cCurrentOS[ToWindows],':');
+        writeln('Converting ', cCurrentOS[ToWindows], ':');
       Continue;
     end
-    else if SameText(ParamStr(i),'/?') or SameText(ParamStr(i),'-?') or
-       SameText(ParamStr(i),'/h') or SameText(ParamStr(i),'-h')then
+    else if SameText(Param, '/?') or SameText(Param, '-?') or
+            SameText(Param, '/h') or SameText(Param, '-h')then
     begin
       ShowHelp;
       Exit;
     end
-    else if SameText(ParamStr(i),'/c') or SameText(ParamStr(i),'-c') then
+    else if SameText(Param, '/c') or SameText(Param, '-c') then
     begin
-      CompareBeforeWrite := true;
+      CompareBeforeWrite := True;
       Continue;
     end
-    else if SameText(ParamStr(i),'/u') or SameText(ParamStr(i),'-u') then
+    else if SameText(Param, '/u') or SameText(Param, '-u') then
     begin
-      CompareBeforeWrite := false;
+      CompareBeforeWrite := False;
       Continue;
     end
-    else if SameText(ParamStr(i),'/s') or SameText(ParamStr(i),'-s') then
+    else if SameText(Param, '/s') or SameText(Param, '-s') then
     begin
-      Recurse := true;
+      Recurse := True;
       Continue;
     end
-    else if SameText(ParamStr(i),'/q') or SameText(ParamStr(i),'-q') then
+    else if SameText(Param, '/q') or SameText(Param, '-q') then
     begin
-      Quiet := true;
+      Quiet := True;
       Continue;
     end
     else
-      Inc(Count,ConvertFiles(ExpandUNCFilename(ParamStr(i)),ToWindows,CompareBeforeWrite,Recurse,Quiet));
+      Inc(Count, ConvertFiles(ExpandUNCFilename(Param), ToWindows, Recurse, CompareBeforeWrite, Quiet));
   end;
   writeln('');
   writeln('Done: ', Count, ' files converted.');
