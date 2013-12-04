@@ -177,7 +177,7 @@ type
   {$ENDIF RTL230_UP}
   TJvBrowseForFolderDialog = class(TJvCommonDialog, IFolderFilter)
   private
-    { Handle to the owner form of the dialog, used if Position = fpFormCenter }
+    { Handle to the owner form of the dialog, used to help place with Position }
     FOwnerWindow: THandle;
     { Handle to the MS "Browse for folder" dialog }
     FDialogWindow: THandle;
@@ -813,12 +813,12 @@ begin
   begin
     //R.Right := R.Left + AWidth;
     //R.Bottom := R.Top + AHeight;
-    SystemParametersInfo(SPI_GETWORKAREA, 0, @SR, 0);
+    SR := Screen.MonitorFromWindow(AParentHandle).WorkareaRect;
     case Position of
       fpScreenCenter:
         begin
-          R.Left := ((SR.Right - SR.Left - (R.Right - R.Left)) div 2);
-          R.Top := (SR.Bottom - SR.Top - (R.Bottom - R.Top)) div 2;
+          R.Left := SR.Left + ((SR.Right - SR.Left - (R.Right - R.Left)) div 2);
+          R.Top := SR.Top + (SR.Bottom - SR.Top - (R.Bottom - R.Top)) div 2;
         end;
       fpFormCenter:
         begin
