@@ -579,6 +579,7 @@ type
     FCheckEventsDisabled: Boolean;
     FRecreateCheckedState: array of Boolean;
     FForceClickSelect: Boolean;
+    FLineColor: TColor;
 
     procedure InternalCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
@@ -2681,6 +2682,7 @@ begin
   FCheckBoxes := False;
   MultiSelectStyle := JvDefaultTreeViewMultiSelectStyle;
   FForceClickSelect := True; // to keep the backward compatibility as default
+  FLineColor := clDefault;
 
   // Since IsCustomDrawn method is not virtual we have to assign ancestor's
   // OnCustomDrawItem event to enable custom drawing
@@ -2738,6 +2740,8 @@ begin
     if (StateImages <> nil) and StateImages.HandleAllocated then
       TreeView_SetImageList(Handle, StateImages.Handle, TVSIL_STATE);
   end;
+  if FLineColor <> clDefault then
+    SendMessage(Handle, TVM_SETLINECOLOR, 0, ColorToRGB(FLineColor));
 end;
 
 procedure TJvTreeView.DestroyWnd;
@@ -3236,10 +3240,13 @@ end;
 
 function TJvTreeView.GetLineColor: TColor;
 begin
-  if HandleAllocated then
-    Result := SendMessage(Handle, TVM_GETLINECOLOR, 0, 0)
-  else
-    Result := clDefault;
+  Result := FLineColor;
+  {if HandleAllocated then
+  begin
+    Result := TColor(SendMessage(Handle, TVM_GETLINECOLOR, 0, 0));
+    if Result = TColor(CLR_DEFAULT) then
+      Result := clDefault;
+  end;}
 end;
 
 {$IFNDEF COMPILER15_UP} // Delphi XE fixed the OnAddition/OnDeletion bug
@@ -3372,11 +3379,17 @@ end;
 
 procedure TJvTreeView.SetLineColor(Value: TColor);
 begin
-  if HandleAllocated then
+  if Value <> FLineColor then
   begin
-    if Value = clDefault then
-      Value := Font.Color;
-    SendMessage(Handle, TVM_SETLINECOLOR, 0, ColorToRGB(Value));
+    FLineColor := Value;
+    if HandleAllocated then
+    begin
+      if Value <> clDefault then
+        Value := ColorToRGB(Value)
+      else
+        Value := TColor(CLR_DEFAULT);
+      SendMessage(Handle, TVM_SETLINECOLOR, 0, LPARAM(Value));
+    end;
   end;
 end;
 
