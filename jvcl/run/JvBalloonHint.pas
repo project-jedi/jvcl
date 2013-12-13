@@ -498,7 +498,7 @@ type
   TGlobalCtrl = class(TComponent)
   private
     FBkColor: TColor;
-    FCtrls: TList;
+    FMainCtrl: TJvBalloonHint;
     FDefaultImages: TImageList;
     FNeedUpdateBkColor: Boolean;
     FOldHintWindowClass: THintWindowClass;
@@ -510,9 +510,7 @@ type
     procedure GetDefaultSounds;
     procedure SetBkColor(const Value: TColor);
     procedure SetUseBalloonAsApplicationHint(const Value: Boolean);
-  protected
-    procedure Add(ABalloonHint: TJvBalloonHint);
-    procedure Remove(ABalloonHint: TJvBalloonHint);
+    procedure SetMainCtrl(const Value: TJvBalloonHint);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -525,7 +523,7 @@ type
     procedure PlaySound(const AIconKind: TJvIconKind);
 
     property BkColor: TColor read FBkColor write SetBkColor;
-    property MainCtrl: TJvBalloonHint read GetMainCtrl;
+    property MainCtrl: TJvBalloonHint read GetMainCtrl write SetMainCtrl;
     property UseBalloonAsApplicationHint: Boolean read FUseBalloonAsApplicationHint
       write SetUseBalloonAsApplicationHint;
   end;
@@ -1308,7 +1306,7 @@ begin
   FCustomAnimationStyle := atBlend;
   FMaxWidth := 0;
 
-  GlobalCtrl.Add(Self);
+  GlobalCtrl.MainCtrl := Self;
 end;
 
 destructor TJvBalloonHint.Destroy;
@@ -1319,8 +1317,8 @@ begin
   if FHandle <> 0 then
     DeallocateHWndEx(FHandle);
 
-  if GGlobalCtrl <> nil then
-    GlobalCtrl.Remove(Self);
+  if (GGlobalCtrl <> nil) and (GGlobalCtrl.MainCtrl = Self) then
+    GlobalCtrl.MainCtrl := nil;
 
   inherited Destroy;
 end;
@@ -1579,6 +1577,7 @@ var
   TmpMaxWidth: Integer;
   Pt: TPoint;
 begin
+  GlobalCtrl.MainCtrl := Self;
   with FData do
   begin
     { Use defaults if necessairy: }
@@ -1731,8 +1730,6 @@ constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FCtrls := TList.Create;
-
   if IsWinXP_UP then
   begin
     FDefaultImages := TImageList.Create(nil);
@@ -1761,16 +1758,7 @@ end;
 destructor TGlobalCtrl.Destroy;
 begin
   FDefaultImages.Free;
-  FCtrls.Free;
   inherited Destroy;
-end;
-
-procedure TGlobalCtrl.Add(ABalloonHint: TJvBalloonHint);
-begin
-  FCtrls.Add(ABalloonHint);
-  { Determine whether we are designing }
-  if Assigned(ABalloonHint) then
-    FDesigning := csDesigning in ABalloonHint.ComponentState;
 end;
 
 procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor);
@@ -1910,14 +1898,14 @@ end;
 
 function TGlobalCtrl.GetMainCtrl: TJvBalloonHint;
 begin
-  if FCtrls.Count = 0 then
+  if not Assigned(FMainCtrl) then
   begin
     if GMainCtrl = nil then
       GMainCtrl := TJvBalloonHint.Create(Self);
     Result := GMainCtrl;
   end
   else
-    Result := TJvBalloonHint(FCtrls[0]);
+    Result := FMainCtrl;
 end;
 
 function TGlobalCtrl.HintImageSize: TSize;
@@ -1960,20 +1948,6 @@ begin
     sndPlaySound(PChar(FSounds[AIconKind]), SND_NOSTOP or SND_ASYNC);
 end;
 
-procedure TGlobalCtrl.Remove(ABalloonHint: TJvBalloonHint);
-var
-  I: Integer;
-begin
-  I := FCtrls.IndexOf(ABalloonHint);
-  if I >= 0 then
-  begin
-    FCtrls.Delete(I);
-
-    if FCtrls.Count = 0 then
-      UseBalloonAsApplicationHint := False;
-  end;
-end;
-
 procedure TGlobalCtrl.SetBkColor(const Value: TColor);
 begin
   if FNeedUpdateBkColor and (FBkColor <> Value) then
@@ -1987,6 +1961,16 @@ begin
     FDefaultImages.BkColor := FBkColor;
     GetDefaultImages;
   end;
+end;
+
+procedure TGlobalCtrl.SetMainCtrl(const Value: TJvBalloonHint);
+begin
+  FMainCtrl := Value;
+  { Determine whether we are designing }
+  if Assigned(FMainCtrl) then
+    FDesigning := csDesigning in FMainCtrl.ComponentState
+  else
+    UseBalloonAsApplicationHint := False;
 end;
 
 procedure TGlobalCtrl.SetUseBalloonAsApplicationHint(const Value: Boolean);
