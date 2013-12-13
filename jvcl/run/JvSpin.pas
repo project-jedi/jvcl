@@ -3072,7 +3072,14 @@ begin
       FEdit.Text := ''
     end
     else
+    begin
+      // if field was null before (empty text), then force the edit to update
+      // its Text property by forcing a change to its Time property
+      if FEdit.Text = '' then
+        FEdit.Time := FEdit.Time + 1;
+
       FEdit.Time := Field.AsDateTime;
+    end;
   end
   else
   begin
