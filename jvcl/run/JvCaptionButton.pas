@@ -312,6 +312,7 @@ implementation
 
 uses
   CommCtrl, Buttons, SysUtils,
+  JclSysInfo,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
@@ -439,7 +440,7 @@ var
 
 function IsVistaOrNewer: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 0);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(6, 0);
 end;
 
 function GlobalXPData: TGlobalXPData;

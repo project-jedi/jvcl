@@ -496,6 +496,7 @@ implementation
 
 uses
   Types, Math,
+  JclSysInfo,
   JvConsts, JvJVCLUtils;
 
 {$R JvOutlookBar.res}
@@ -508,7 +509,7 @@ const
 
 function IsVista:Boolean;
 begin
-  Result := CheckWin32Version(6, 0);
+  Result := JclCheckWinVersion(6, 0);
 end;
 
 function MethodsEqual(const Method1, Method2: TMethod): Boolean;

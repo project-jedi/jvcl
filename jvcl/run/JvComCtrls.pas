@@ -44,6 +44,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  JclSysInfo,
   Windows, Messages, Graphics, Controls, Forms,
   Classes,
   Menus, ComCtrls, ImgList, Buttons, Types, CommCtrl,
@@ -729,7 +730,7 @@ const
   ComCtlVersionIE6 = $00060000;
 {$ENDIF ~COMPILER7_UP}
 begin
-  Result := (GetComCtlVersion < ComCtlVersionIE6) or not CheckWin32Version(6, 0);
+  Result := (GetComCtlVersion < ComCtlVersionIE6) or not JclCheckWinVersion(6, 0);
 end;
 
 //=== { TJvIPAddressRange } ==================================================

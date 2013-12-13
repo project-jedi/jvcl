@@ -689,6 +689,7 @@ implementation
 
 uses
   VDBConsts, DBConsts, SysUtils, Math, MultiMon,
+  JclSysInfo,
   JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources, JclSysUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
@@ -2401,7 +2402,7 @@ begin
     ExStyle := WS_EX_TOOLWINDOW;
     AddBiDiModeExStyle(ExStyle);
     WindowClass.Style := CS_SAVEBITS;
-    if CheckWin32Version(5, 1) then // Windows XP+
+    if JclCheckWinVersion(5, 1) then // Windows XP+
       WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
   end;
 end;

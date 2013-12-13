@@ -782,7 +782,7 @@ uses
   {$IFNDEF COMPILER7_UP}
   JvWin32,
   {$ENDIF ~COMPILER7_UP}
-  JclGraphUtils, JvConsts, JvJCLUtils, JvJVCLUtils;
+  JclSysInfo, JclGraphUtils, JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
   Separator = '-';
@@ -847,7 +847,7 @@ end;
 
 function IsWinXP_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 1);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(5, 1);
 end;
 
 function UseFlatMenubars: Boolean;

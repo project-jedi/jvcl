@@ -106,6 +106,9 @@ const
 
 implementation
 
+uses
+  JclSysInfo;
+
 {$IFNDEF COMPILER12_UP}
 const
   ECM_FIRST       = $1500;
@@ -160,7 +163,7 @@ end;
 function TJvExCustomMaskEdit.UserTextHint: Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  Result := not (CheckWin32Version(5, 1) and StyleServices.Enabled);
+  Result := not (JclCheckWinVersion(5, 1) and StyleServices.Enabled);
   {$ELSE}
   Result := True;
   {$ENDIF JVCLThemesEnabled}
@@ -172,7 +175,7 @@ begin
   inherited DoSetTextHint(Value);
   {$ELSE}
   {$IFDEF JVCLThemesEnabled}
-  if CheckWin32Version(5, 1) and StyleServices.Enabled and HandleAllocated then
+  if JclCheckWinVersion(5, 1) and StyleServices.Enabled and HandleAllocated then
     SendMessage(Handle, EM_SETCUEBANNER, WPARAM(0), LPARAM(PWideChar(UnicodeString(Value))));
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF COMPILER12_UP}
@@ -259,7 +262,7 @@ end;
 function TJvExMaskEdit.UserTextHint: Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  Result := not (CheckWin32Version(5, 1) and StyleServices.Enabled);
+  Result := not (JclCheckWinVersion(5, 1) and StyleServices.Enabled);
   {$ELSE}
   Result := True;
   {$ENDIF JVCLThemesEnabled}
@@ -271,7 +274,7 @@ begin
   inherited DoSetTextHint(Value);
   {$ELSE}
   {$IFDEF JVCLThemesEnabled}
-  if CheckWin32Version(5, 1) and StyleServices.Enabled and HandleAllocated then
+  if JclCheckWinVersion(5, 1) and StyleServices.Enabled and HandleAllocated then
     SendMessage(Handle, EM_SETCUEBANNER, WPARAM(0), LPARAM(PWideChar(UnicodeString(Value))));
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF COMPILER12_UP}

@@ -688,6 +688,7 @@ const
 implementation
 
 uses
+  JclSysInfo,
   JvResources;
 
 const
@@ -714,7 +715,7 @@ begin
       @SHChangeIcon := GetProcAddress(ShellHandle, PAnsiChar(62));
     @SHFormatDrive := GetProcAddress(ShellHandle, PAnsiChar('SHFormatDrive'));
     @FreePIDL := GetProcAddress(ShellHandle, PAnsiChar(155));
-    if CheckWin32Version(6, 0) then
+    if JclCheckWinVersion(6, 0) then
       @SHShutDownDialog6 := GetProcAddress(ShellHandle, PAnsiChar(60))
     else
       @SHShutDownDialog := GetProcAddress(ShellHandle, PAnsiChar(60));
@@ -1656,7 +1657,7 @@ end;
 
 function TJvOpenDialog2000.Execute{$IFDEF RTL180_UP}(ParentWnd: HWND){$ENDIF RTL180_UP}: Boolean;
 begin
-  if CheckWin32Version(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  if JclCheckWinVersion(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Result := DoExecute(@OpenInterceptor)
   else
     Result := inherited Execute{$IFDEF RTL180_UP}(ParentWnd){$ENDIF RTL180_UP};
@@ -1666,7 +1667,7 @@ end;
 
 function TJvSaveDialog2000.Execute{$IFDEF RTL180_UP}(ParentWnd: HWND){$ENDIF RTL180_UP}: Boolean;
 begin
-  if CheckWin32Version(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
+  if JclCheckWinVersion(5, 0) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
     Result := DoExecute(@SaveInterceptor)
   else
     Result := inherited Execute{$IFDEF RTL180_UP}(ParentWnd){$ENDIF RTL180_UP};

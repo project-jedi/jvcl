@@ -2161,6 +2161,7 @@ implementation
 
 uses
   SysUtils,
+  JclSysInfo,
   ModuleLoader;
 
 {$IFDEF HID_LINKONREQUEST}
@@ -2232,7 +2233,7 @@ begin
     @HidD_GetSerialNumberString := GetModuleSymbolEx(HidLib, 'HidD_GetSerialNumberString', Result);
     @HidD_GetPhysicalDescriptor := GetModuleSymbolEx(HidLib, 'HidD_GetPhysicalDescriptor', Result);
     @HidD_GetIndexedString := GetModuleSymbolEx(HidLib, 'HidD_GetIndexedString', Result);
-    if (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 1) then
+    if (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(5, 1) then
     begin
       @HidD_GetInputReport := GetModuleSymbolEx(HidLib, 'HidD_GetInputReport', Result);
       @HidD_SetOutputReport := GetModuleSymbolEx(HidLib, 'HidD_SetOutputReport', Result);
@@ -2262,7 +2263,7 @@ begin
     @HidP_SetUsageValueArray := GetModuleSymbolEx(HidLib, 'HidP_SetUsageValueArray', Result);
     @HidP_UsageListDifference := GetModuleSymbolEx(HidLib, 'HidP_UsageListDifference', Result);
     @HidP_TranslateUsagesToI8042ScanCodes := GetModuleSymbolEx(HidLib, 'HidP_TranslateUsagesToI8042ScanCodes', Result);
-    if (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 0) then
+    if (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(5, 0) then
     begin
       @HidP_GetExtendedAttributes := GetModuleSymbolEx(HidLib, 'HidP_GetExtendedAttributes', Result);
       @HidP_InitializeReportForID := GetModuleSymbolEx(HidLib, 'HidP_InitializeReportForID', Result);

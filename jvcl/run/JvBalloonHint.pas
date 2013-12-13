@@ -313,6 +313,7 @@ uses
   Types,
   {$ENDIF SUPPORTS_INLINE}
   ComCtrls, // needed for GetComCtlVersion
+  JclSysInfo,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
@@ -407,17 +408,17 @@ end;
 
 function IsWinXP_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 1);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(5, 1);
 end;
 
 function IsWinVista_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 0);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(6, 0);
 end;
 
 function IsWinSeven_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 1);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(6, 1);
 end;
 
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
