@@ -293,7 +293,7 @@ begin
       SizeHandle := GetParent(CalHandle);
       // The dropdown window uses a 'border' of..
       {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
+      if StyleServices.Enabled then
       begin
         // .. 3 pixels when themed
         Inc(MinWidth, 3*2);
