@@ -479,6 +479,7 @@ end;
 
 destructor TJvSimScope.Destroy;
 begin
+  FDrawTimer.Free;
   FDrawBuffer.Free;
   FLines.Free;
   inherited Destroy;
