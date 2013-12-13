@@ -1,9 +1,9 @@
 object frmSelectColumn: TfrmSelectColumn
   Left = 445
   Top = 244
-  ClientWidth = 189
-  ClientHeight = 217
-  BorderIcons = []
+  Width = 209
+  Height = 142
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   BorderWidth = 2
   Caption = 'Select columns'
@@ -15,7 +15,6 @@ object frmSelectColumn: TfrmSelectColumn
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  FormStyle = fsStayOnTop
   KeyPreview = True
   OldCreateOrder = False
   OnActivate = FormActivate
@@ -23,16 +22,20 @@ object frmSelectColumn: TfrmSelectColumn
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 163
-    Width = 185
+    Top = 50
+    Width = 189
     Height = 50
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      189
+      50)
     object cbWithFieldName: TCheckBox
       Left = 18
       Top = -2
@@ -58,11 +61,17 @@ object frmSelectColumn: TfrmSelectColumn
   object clbList: TCheckListBox
     Left = 0
     Top = 0
-    Width = 185
-    Height = 163
+    Width = 189
+    Height = 50
     OnClickCheck = clbListClickCheck
     Align = alClient
+    DragMode = dmAutomatic
     ItemHeight = 13
     TabOrder = 1
+    OnClick = clbListClick
+    OnDragOver = clbListDragOver
+    OnKeyDown = clbListKeyDown
+    OnMouseMove = clbListMouseMove
+    OnStartDrag = clbListStartDrag
   end
 end
