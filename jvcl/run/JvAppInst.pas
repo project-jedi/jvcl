@@ -69,7 +69,10 @@ type
     FMaxInstances: Integer;
     FActive: Boolean;
     FSendCmdLine: Boolean;
+    FAppInstances: TJclAppInstances; // don't free, it's a singleton
+
     function GetAppInstances: TJclAppInstances;
+    function GetUniqueAppId: string;
   protected
     procedure Loaded; override;
     procedure WndProc(var Msg: TMessage); virtual;
@@ -98,6 +101,7 @@ type
     property SendCmdLine: Boolean read FSendCmdLine write FSendCmdLine default True;
      { SendCmdLine: True means that the second process instance sends it's
        CmdLine to the first instance before it terminates. }
+    property UniqueAppId: string read GetUniqueAppId;
     property OnInstanceCreated: TInstanceChangeEvent read FOnInstanceCreated write FOnInstanceCreated;
     property OnInstanceDestroyed: TInstanceChangeEvent read FOnInstanceDestroyed write FOnInstanceDestroyed;
     property OnUserNotify: TUserNotifyEvent read FOnUserNotify write FOnUserNotify;
@@ -116,6 +120,8 @@ const
   );
 {$ENDIF UNITVERSIONING}
 
+procedure SetUniqueAppId(const AUniqueAppId: string);
+
 implementation
 
 uses
@@ -127,10 +133,14 @@ const
   AI_GETACTIVE = $0004;
   AI_SETACTIVE = $0005;
 
-
-
 var
   FirstJvAppInstance: Boolean = True;
+  FUniqueAppId: string;
+
+procedure SetUniqueAppId(const AUniqueAppId: string);
+begin
+  FUniqueAppId := AUniqueAppId;
+end;
 
 constructor TJvAppInstances.Create(AOwner: TComponent);
 begin
@@ -223,7 +233,12 @@ begin
   if csDesigning in ComponentState then
     Result := nil
   else
-    Result := JclAppInstances; // create AppInstance
+  begin
+    if not Assigned(FAppInstances) then
+      FAppInstances := JclAppInstances(FUniqueAppId); // create AppInstance
+
+    Result := FAppInstances;
+  end;
 end;
 
 procedure TJvAppInstances.Loaded;
@@ -347,6 +362,11 @@ begin
       Break;
   end;
   Result := Active;
+end;
+
+function TJvAppInstances.GetUniqueAppId: string;
+begin
+  Result := FUniqueAppId;
 end;
 
 {$IFDEF UNITVERSIONING}
