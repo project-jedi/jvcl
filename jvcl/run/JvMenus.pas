@@ -51,6 +51,7 @@ const
   DefaultXPSeparatorColor = TColor($A6A6A6);
   DefaultXPSFBrushColor = TColor($D2BDB6);
   DefaultXPSFPenColor = TColor($6A240A);
+  DefaultXPBorderColor = TColor($666666);
   DefaultXPShadowColor = TColor($9D8D88);
   DefaultXPCheckedImageBackColorSelected = TColor($B59285);
   DefaultXPCheckedImageBackColor = TColor($D8D5D4);
@@ -707,6 +708,7 @@ type
     // property fields
     FSelectionFrameBrush: TBrush;
     FSelectionFramePen: TPen;
+    FBorderColor: TColor;
     FShadowColor: TColor;
     FSeparatorColor: TColor;
     FCheckedImageBackColorSelected: TColor;
@@ -748,6 +750,7 @@ type
       State: TMenuOwnerDrawState); override;
   published
     property ImageBackgroundColor default DefaultXPImageBackgroundColor;
+    property BorderColor: TColor read FBorderColor write FBorderColor default DefaultXPBorderColor;
     property SelectionFrameBrush: TBrush read FSelectionFrameBrush write SetSelectionFrameBrush;
     property SelectionFramePen: TPen read FSelectionFramePen write SetSelectionFramePen;
     property SeparatorColor: TColor read FSeparatorColor write FSeparatorColor default DefaultXPSeparatorColor;
@@ -3165,6 +3168,7 @@ begin
   FCheckedPoint := Point(0, 0);
 
   // affect default values that are not 0
+  FBorderColor := DefaultXPBorderColor;
   FShadowColor := DefaultXPShadowColor;
   FImageBackgroundColor := DefaultXPImageBackgroundColor;
   FSelectionFrameBrush.Color := DefaultXPSFBrushColor;
@@ -3234,7 +3238,7 @@ begin
   begin
     Brush.Color := RGB(0, 0, 0);  // must set the color or the style might not be taken into account
     Brush.Style := bsClear;
-    Pen.Color := RGB(102, 102, 102);
+    Pen.Color := BorderColor;
     Pen.Style := psSolid;
 
       // dark contour
