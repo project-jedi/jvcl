@@ -2533,6 +2533,8 @@ begin
         if MultiSelect and DataLink.Active then
           with SelectedRows do
           begin
+            // must refresh the selected rows or we might have invalid bookmarks in it following record deletion
+            Refresh;
             FSelecting := False;
             if Shift * KeyboardShiftStates = [ssCtrl] then
               CurrentRowSelected := not CurrentRowSelected
