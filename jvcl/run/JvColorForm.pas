@@ -224,6 +224,7 @@ end;
 procedure TJvColorForm.FormActivate(Sender: TObject);
 var
   R: TRect;
+  Boundary: TRect;
   Pt: TPoint;
 begin
   { set placement }
@@ -231,10 +232,18 @@ begin
   begin
     R := FOwner.ClientRect;
     Pt.X := R.Left;
-    Pt.Y := R.Top + R.Bottom;
+    Pt.Y := R.Bottom;
     Pt := FOwner.ClientToScreen(Pt);
+    Boundary := Screen.MonitorFromPoint(Pt).WorkareaRect;
+
     Left := Pt.X;
+    if (Left + Width) > Boundary.Right then
+      Left := Boundary.Right - Width;
+
     Top := Pt.Y;
+    if (Top + Height) > Boundary.Bottom then
+      Top := Pt.Y - Height - (R.Bottom - R.Top);
+
     if FOwner is TJvColorButton then
       SelectedColor := TJvColorButton(FOwner).Color;
   end;
