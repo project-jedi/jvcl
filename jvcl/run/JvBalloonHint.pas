@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Controls, Graphics, Forms, ImgList,
+  Windows, Messages, Classes, Forms, Controls, Graphics, ImgList,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
@@ -301,7 +301,7 @@ const
 implementation
 
 uses
-  SysUtils, Math,
+  SysUtils, Math, AppEvnts,
   Registry, CommCtrl, MMSystem,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
@@ -505,12 +505,14 @@ type
     FSounds: array [TJvIconKind] of string;
     FUseBalloonAsApplicationHint: Boolean;
     FDesigning: Boolean;
+    FAppEvents: TApplicationEvents;
     function GetMainCtrl: TJvBalloonHint;
     procedure GetDefaultImages;
     procedure GetDefaultSounds;
     procedure SetBkColor(const Value: TColor);
     procedure SetUseBalloonAsApplicationHint(const Value: Boolean);
     procedure SetMainCtrl(const Value: TJvBalloonHint);
+    procedure AppEventsShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1726,9 +1728,19 @@ end;
 
 //=== { TGlobalCtrl } ========================================================
 
+procedure TGlobalCtrl.AppEventsShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+begin
+  if UseBalloonAsApplicationHint then
+    HintInfo.HintMaxWidth := MainCtrl.MaxWidth;
+end;
+
 constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  FAppEvents := TApplicationEvents.Create(Self);
+  FAppEvents.OnShowHint := AppEventsShowHint;
 
   if IsWinXP_UP then
   begin
@@ -1758,6 +1770,8 @@ end;
 destructor TGlobalCtrl.Destroy;
 begin
   FDefaultImages.Free;
+  FAppEvents.Free;
+
   inherited Destroy;
 end;
 
