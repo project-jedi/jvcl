@@ -361,7 +361,7 @@ procedure DownloadCallBack(Handle: HINTERNET; Context: DWORD;
 begin
   with TJvCustomUrlGrabberThread(Context) do
   begin
-    Status := AStatus;
+    APIStatus := AStatus;
     DoProgress;
     DoStatus;
   end;
@@ -509,7 +509,7 @@ end;
 procedure TJvHttpUrlGrabber.DoStatus;
 begin
   inherited DoStatus;
-  TriggerEventsFromStatus(Self, UrlGrabberThread.Status);
+  TriggerEventsFromStatus(Self, UrlGrabberThread.APIStatus);
 end;
 
 //=== { TJvFtpUrlGrabber } ===================================================
@@ -562,7 +562,7 @@ end;
 procedure TJvFtpUrlGrabber.DoStatus;
 begin
   inherited DoStatus;
-  TriggerEventsFromStatus(Self, UrlGrabberThread.Status);
+  TriggerEventsFromStatus(Self, UrlGrabberThread.APIStatus);
 end;
 
 //=== { TJvFtpUrlGrabberDefaultProperties } ==================================
@@ -1071,7 +1071,7 @@ begin
     try
       Grabber.SetSize(AFileStream.Size);
       Grabber.SetBytesRead(0);
-      Status := 0;
+      APIStatus := 0;
       DoProgress;
       TotalBytes := 0;
       BytesRead := 1;
@@ -1081,7 +1081,7 @@ begin
         BytesRead := AFileStream.Read(Buf, SizeOf(Buf));
         Inc(TotalBytes, BytesRead);
         Grabber.SetBytesRead(TotalBytes);
-        Status := Grabber.BytesRead;
+        APIStatus := Grabber.BytesRead;
         if BytesRead > 0 then
           Grabber.Stream.Write(Buf, BytesRead);
         DoProgress;
