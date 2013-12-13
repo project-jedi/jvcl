@@ -68,6 +68,7 @@ type
     procedure SetNullDate(const Value: TDateTime);
     procedure SetNullText(const Value: string);
     procedure UpdateCalendar(CalHandle: THandle);
+    function CheckNullDateEntry(const aKind: TDateTimeKind; const ADateTime, ANullDate: TDateTime): Boolean;
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or frac(NullDate) matches frac(Time) depending on Kind
@@ -175,6 +176,19 @@ begin
     inherited CheckEmptyDate;
 end;
 
+function TJvDateTimePicker.CheckNullDateEntry(Const aKind: TDateTimeKind;
+     Const ADateTime, ANullDate: TDateTime) : Boolean;
+begin
+  case aKind of
+    dtkDate :
+      Result := (Trunc(ADateTime) = Trunc(ANullDate));
+    dtkTime :
+      Result := WithinDelta(ADateTime, ANullDate);
+    else
+      raise Exception.CreateFmt('Unsupported datetime kind: %d', [Ord(aKind)]);
+  end;
+end;
+
 function TJvDateTimePicker.CheckNullValue(const ANullText, AFormat: string;
   AKind: TDateTimeKind; ADateTime, ANullDate: TDateTime): Boolean;
 begin
@@ -182,8 +196,7 @@ begin
   if ANullText = '' then
     Result := False
   else
-    Result := ((AKind = dtkDate) and (Trunc(ADateTime) = Trunc(ANullDate)) or
-      ((AKind = dtkTime) and WithinDelta(ADateTime, ANullDate)));
+    Result := CheckNullDateEntry(aKind, aDateTime, aNullDate);
 
   if Result then
     SendMessage(Handle, DTM_SETFORMAT, 0, LPARAM(PChar('''' + ANullText + '''')))
@@ -223,6 +236,10 @@ var
   LNullText: string;
 begin
   Result := inherited MsgSetDateTime(Value);
+  
+  if not Result then
+    Result := CheckNullDateEntry(Kind, SystemTimeToDateTime(Value), NullDate);
+
   if FMsgSetDateTimeEmptyNullText then
     LNullText := ''
   else
@@ -276,7 +293,7 @@ begin
       SizeHandle := GetParent(CalHandle);
       // The dropdown window uses a 'border' of..
       {$IFDEF JVCLThemesEnabled}
-      if StyleServices.Enabled then
+      if ThemeServices.{$IFDEF RTL230_UP}Enabled{$ELSE}ThemesEnabled{$ENDIF RTL230_UP} then
       begin
         // .. 3 pixels when themed
         Inc(MinWidth, 3*2);
