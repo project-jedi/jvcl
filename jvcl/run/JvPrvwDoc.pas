@@ -911,6 +911,7 @@ begin
   FPages := TList.Create;
   FPages.Capacity := 64;
   FBuffer := TBitmap.Create;
+  FBuffer.PixelFormat := pf32bit;  // force 32bits so that we get a DIB which is less likely to trigger windows memory limits
 
   FOptions := TJvPreviewPageOptions.Create;
   FOptions.OnChange := DoOptionsChange;
