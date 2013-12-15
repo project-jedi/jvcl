@@ -70,6 +70,7 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetDropArrow(const Value: Boolean);
     procedure SetDropDownMenu(const Value: TPopupMenu);
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer); virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
@@ -101,7 +102,7 @@ type
     property Pattern: TBitmap read GetPattern;
     property Flat: Boolean read FFlat write SetFlat default False;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFont: TFont read FHotFont write SetHotFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property Down: Boolean read FDown write SetDown default False;
@@ -136,6 +137,7 @@ type
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetDropArrow(const Value: Boolean);
     procedure SetDropDownMenu(const Value: TPopupMenu);
+    function IsHotTrackFontStored: Boolean;
   protected
     function DoDropDownMenu(X, Y: Integer): Boolean; virtual;
     procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
@@ -151,7 +153,7 @@ type
     property DropDownMenu: TPopupMenu read FDropDownMenu write SetDropDownMenu;
 
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotFont write SetHotFont;
+    property HotTrackFont: TFont read FHotFont write SetHotFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property HintColor;
@@ -347,6 +349,11 @@ end;
 function TJvCustomGraphicButton.InsideBtn(X, Y: Integer): Boolean;
 begin
   Result := PtInRect(Rect(0, 0, Width, Height), Point(X, Y));
+end;
+
+function TJvCustomGraphicButton.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvCustomGraphicButton.MouseDown(Button: TMouseButton;
@@ -773,6 +780,11 @@ begin
     Result := StringReplace(Caption, JvBtnLineSeparator, Lf, [rfReplaceAll])
   else
     Result := Caption;
+end;
+
+function TJvCustomButton.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvCustomButton.SetWordWrap(const Value: Boolean);

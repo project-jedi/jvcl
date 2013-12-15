@@ -1399,6 +1399,7 @@ uses
   Types,
   {$ENDIF SUPPORTS_INLINE}
   RTLConsts, Math, Clipbrd,
+  JclSysInfo,
   JvJCLUtils, JvThemes, JvResources;
 
 type
@@ -1425,7 +1426,7 @@ type
 
 function KeyPressed(VK: Integer): Boolean;
 begin
-  Result := GetKeyState(VK) and $8000 = $8000;
+  Result := Windows.GetKeyState(VK) and $8000 = $8000;
 end;
 
 //=== { TJvUndoBuffer } ======================================================
@@ -3258,7 +3259,7 @@ begin
           @RUpdate // address of structure for update rectangle
           );
         // (ahuser) WinNT seams to have problems with ScrollDC in vertical direction. (Mantis #2528)
-        if (Win32Platform = VER_PLATFORM_WIN32_NT) and not CheckWin32Version(5, 0) then
+        if (Win32Platform = VER_PLATFORM_WIN32_NT) and not JclCheckWinVersion(5, 0) then
           Dec(RUpdate.Top, CellRect.Height);
         Inc(RUpdate.Bottom, CellRect.Height);
         Windows.InvalidateRect(Handle, @RUpdate, False);

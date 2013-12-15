@@ -877,6 +877,7 @@ implementation
 
 uses
   Types, SysUtils,
+  JclSysInfo,
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
   JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle, JvJVCLUtils;
 
@@ -901,7 +902,7 @@ var
 
 function IsWinXP_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 1);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(5, 1);
 end;
 
 procedure ApplyShowingChanged;

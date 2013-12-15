@@ -96,6 +96,7 @@ type
     procedure SetLinkedControls(const Value: TJvLinkedControls);
     procedure ReadAssociated(Reader: TReader);
     procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
+    function IsHotTrackFontStored: Boolean;
   protected
     function CreateDataConnector: TJvCheckBoxDataConnector; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
@@ -130,7 +131,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HintColor;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions
       default DefaultTrackFontOptions;
     property Layout: TTextLayout read FLayout write SetLayout default tlCenter;
@@ -423,6 +424,11 @@ begin
   Result := FCanvas;
 end;
 
+function TJvCheckBox.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
+end;
+
 procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
@@ -523,30 +529,32 @@ type
 procedure TJvCheckBox.SetFocus;
 var
   I: Integer;
-  FocusLinkedControl: TControl;
+  FocusLinkedControl: TJvLinkedControl;
+  FocusTargetControl: TControl;
 begin
   inherited SetFocus;
 
-  // we want to skip our own focus, either to our children or to a sibling
-  // depending on the direction that the user asked for
+  // We want to transfer our own focus either to our children or to
+  // the first focus accepting sibling, depending on the direction
+  // that the user asked for.
   if GetKeyState(VK_SHIFT) >= 0 then
   begin
-    FocusLinkedControl := nil;
-    I := 0;
-    while (I < LinkedControls.Count) and not Assigned(FocusLinkedControl) do
+    for I := 0 to LinkedControls.Count - 1 do
     begin
-      if (loForceFocus in LinkedControls[I].Options) and (LinkedControls[I].Control is TWinControl) then
-        FocusLinkedControl := LinkedControls[I].Control;
-
-      Inc(I);
+      FocusLinkedControl := LinkedControls[I];
+      if loForceFocus in FocusLinkedControl.Options then
+      begin
+        FocusTargetControl := FocusLinkedControl.Control;
+        if (FocusTargetControl is TWinControl) and TWinControl(FocusTargetControl).CanFocus then
+        begin
+          TWinControl(FocusTargetControl).SetFocus;
+          Break; // found the new focus owner
+        end;
+      end;
     end;
-    if Assigned(FocusLinkedControl) and TWinControl(FocusLinkedControl).CanFocus then
-      TWinControl(FocusLinkedControl).SetFocus;
   end
   else
-  begin
     TWinControlAccess(Parent).SelectNext(Self, False, True);
-  end;
 end;
 
 procedure TJvCheckBox.DefineProperties(Filer: TFiler);

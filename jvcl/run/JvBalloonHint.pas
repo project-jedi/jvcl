@@ -38,7 +38,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Controls, Graphics, Forms, ImgList,
+  Windows, Messages, Classes, Forms, Controls, Graphics, ImgList,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
@@ -301,7 +301,7 @@ const
 implementation
 
 uses
-  SysUtils, Math,
+  SysUtils, Math, AppEvnts,
   Registry, CommCtrl, MMSystem,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
@@ -313,6 +313,7 @@ uses
   Types,
   {$ENDIF SUPPORTS_INLINE}
   ComCtrls, // needed for GetComCtlVersion
+  JclSysInfo,
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
@@ -407,17 +408,17 @@ end;
 
 function IsWinXP_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(5, 1);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(5, 1);
 end;
 
 function IsWinVista_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 0);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(6, 0);
 end;
 
 function IsWinSeven_UP: Boolean;
 begin
-  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and CheckWin32Version(6, 1);
+  Result := (Win32Platform = VER_PLATFORM_WIN32_NT) and JclCheckWinVersion(6, 1);
 end;
 
 function InternalClientToParent(AControl: TControl; const Point: TPoint;
@@ -498,21 +499,21 @@ type
   TGlobalCtrl = class(TComponent)
   private
     FBkColor: TColor;
-    FCtrls: TList;
+    FMainCtrl: TJvBalloonHint;
     FDefaultImages: TImageList;
     FNeedUpdateBkColor: Boolean;
     FOldHintWindowClass: THintWindowClass;
     FSounds: array [TJvIconKind] of string;
     FUseBalloonAsApplicationHint: Boolean;
     FDesigning: Boolean;
+    FAppEvents: TApplicationEvents;
     function GetMainCtrl: TJvBalloonHint;
     procedure GetDefaultImages;
     procedure GetDefaultSounds;
     procedure SetBkColor(const Value: TColor);
     procedure SetUseBalloonAsApplicationHint(const Value: Boolean);
-  protected
-    procedure Add(ABalloonHint: TJvBalloonHint);
-    procedure Remove(ABalloonHint: TJvBalloonHint);
+    procedure SetMainCtrl(const Value: TJvBalloonHint);
+    procedure AppEventsShowHint(var HintStr: string; var CanShow: Boolean; var HintInfo: THintInfo);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -525,7 +526,7 @@ type
     procedure PlaySound(const AIconKind: TJvIconKind);
 
     property BkColor: TColor read FBkColor write SetBkColor;
-    property MainCtrl: TJvBalloonHint read GetMainCtrl;
+    property MainCtrl: TJvBalloonHint read GetMainCtrl write SetMainCtrl;
     property UseBalloonAsApplicationHint: Boolean read FUseBalloonAsApplicationHint
       write SetUseBalloonAsApplicationHint;
   end;
@@ -1308,7 +1309,7 @@ begin
   FCustomAnimationStyle := atBlend;
   FMaxWidth := 0;
 
-  GlobalCtrl.Add(Self);
+  GlobalCtrl.MainCtrl := Self;
 end;
 
 destructor TJvBalloonHint.Destroy;
@@ -1319,8 +1320,8 @@ begin
   if FHandle <> 0 then
     DeallocateHWndEx(FHandle);
 
-  if GGlobalCtrl <> nil then
-    GlobalCtrl.Remove(Self);
+  if (GGlobalCtrl <> nil) and (GGlobalCtrl.MainCtrl = Self) then
+    GlobalCtrl.MainCtrl := nil;
 
   inherited Destroy;
 end;
@@ -1579,6 +1580,7 @@ var
   TmpMaxWidth: Integer;
   Pt: TPoint;
 begin
+  GlobalCtrl.MainCtrl := Self;
   with FData do
   begin
     { Use defaults if necessairy: }
@@ -1727,11 +1729,19 @@ end;
 
 //=== { TGlobalCtrl } ========================================================
 
+procedure TGlobalCtrl.AppEventsShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+begin
+  if UseBalloonAsApplicationHint then
+    HintInfo.HintMaxWidth := MainCtrl.MaxWidth;
+end;
+
 constructor TGlobalCtrl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FCtrls := TList.Create;
+  FAppEvents := TApplicationEvents.Create(Self);
+  FAppEvents.OnShowHint := AppEventsShowHint;
 
   if IsWinXP_UP then
   begin
@@ -1761,16 +1771,9 @@ end;
 destructor TGlobalCtrl.Destroy;
 begin
   FDefaultImages.Free;
-  FCtrls.Free;
-  inherited Destroy;
-end;
+  FAppEvents.Free;
 
-procedure TGlobalCtrl.Add(ABalloonHint: TJvBalloonHint);
-begin
-  FCtrls.Add(ABalloonHint);
-  { Determine whether we are designing }
-  if Assigned(ABalloonHint) then
-    FDesigning := csDesigning in ABalloonHint.ComponentState;
+  inherited Destroy;
 end;
 
 procedure TGlobalCtrl.DrawHintImage(Canvas: TCanvas; X, Y: Integer; const ABkColor: TColor);
@@ -1910,14 +1913,14 @@ end;
 
 function TGlobalCtrl.GetMainCtrl: TJvBalloonHint;
 begin
-  if FCtrls.Count = 0 then
+  if not Assigned(FMainCtrl) then
   begin
     if GMainCtrl = nil then
       GMainCtrl := TJvBalloonHint.Create(Self);
     Result := GMainCtrl;
   end
   else
-    Result := TJvBalloonHint(FCtrls[0]);
+    Result := FMainCtrl;
 end;
 
 function TGlobalCtrl.HintImageSize: TSize;
@@ -1960,20 +1963,6 @@ begin
     sndPlaySound(PChar(FSounds[AIconKind]), SND_NOSTOP or SND_ASYNC);
 end;
 
-procedure TGlobalCtrl.Remove(ABalloonHint: TJvBalloonHint);
-var
-  I: Integer;
-begin
-  I := FCtrls.IndexOf(ABalloonHint);
-  if I >= 0 then
-  begin
-    FCtrls.Delete(I);
-
-    if FCtrls.Count = 0 then
-      UseBalloonAsApplicationHint := False;
-  end;
-end;
-
 procedure TGlobalCtrl.SetBkColor(const Value: TColor);
 begin
   if FNeedUpdateBkColor and (FBkColor <> Value) then
@@ -1987,6 +1976,16 @@ begin
     FDefaultImages.BkColor := FBkColor;
     GetDefaultImages;
   end;
+end;
+
+procedure TGlobalCtrl.SetMainCtrl(const Value: TJvBalloonHint);
+begin
+  FMainCtrl := Value;
+  { Determine whether we are designing }
+  if Assigned(FMainCtrl) then
+    FDesigning := csDesigning in FMainCtrl.ComponentState
+  else
+    UseBalloonAsApplicationHint := False;
 end;
 
 procedure TGlobalCtrl.SetUseBalloonAsApplicationHint(const Value: Boolean);

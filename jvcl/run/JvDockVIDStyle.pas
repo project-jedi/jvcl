@@ -106,6 +106,7 @@ type
     FInactiveFont: TFont;
     FInactiveSheetColor: TColor;
     FShowTabImages: Boolean;
+    FShowTabHints: Boolean;
     { NEW! if true, shows invididual close buttons on tabs. If false, you get the old VID behaviour. }
     FShowCloseButtonOnTabs: Boolean;
     {NEW! default is true, which is the old VID Style behaviour. False is a new behaviour added by Warren. }
@@ -116,6 +117,7 @@ type
     procedure SetInactiveFont(Value: TFont);
     procedure SetInactiveSheetColor(const Value: TColor);
     procedure SetShowTabImages(const Value: Boolean);
+    procedure SetShowTabHints(const Value: Boolean);
     procedure SetShowCloseButtonOnGrabber(const Value: Boolean);
     procedure SetShowCloseButtonOnTabs(const Value: Boolean);
   protected
@@ -132,6 +134,8 @@ type
     property InactiveFont: TFont read FInactiveFont write SetInactiveFont;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default clBlue;
     property ShowTabImages: Boolean read FShowTabImages write SetShowTabImages default False;
+    { If true, shows the tab caption as a hint when you mouse over it }
+    property ShowTabHints: Boolean read FShowTabHints write SetShowTabHints default False;
     property TabPosition default tpBottom;
     { NEW! If true, shows invididual close buttons on tabs.
            If false, you get the old VID behaviour. }
@@ -356,6 +360,7 @@ type
     FTempPages: TList;
     FSelectHotIndex: Integer;
     FShowTabImages: Boolean;
+    FShowTabHints: Boolean;
     procedure SetPage(const Value: TJvDockVIDTabPageControl);
     function GetTotalTabWidth: Integer;
     procedure SetTotalTabWidth(const Value: Integer);
@@ -377,6 +382,7 @@ type
     function GetDockClientFromPageIndex(Index: Integer): TControl;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure SetShowTabImages(const Value: Boolean);
+    procedure SetShowTabHints(const Value: Boolean);
     procedure SetTabHeight(const Value: Integer);
   protected
     procedure Paint; override;
@@ -410,6 +416,7 @@ type
     property Page: TJvDockVIDTabPageControl read FPage write SetPage;
     property SelectSheet: TJvDockVIDTabSheet read FSelectSheet write FSelectSheet;
     property ShowTabImages: Boolean read FShowTabImages write SetShowTabImages;
+    property ShowTabHints: Boolean read FShowTabHints write SetShowTabHints;
     {NEW! If docked to a TJvDockPanel, this is it. if not (nil) then it is floating.}
     property DockPanel: TJvDockPanel read FDockPanel write FDockPanel;
   end;
@@ -443,6 +450,8 @@ type
     function GetHotTrackColor: TColor;
     function GetShowTabImages: Boolean;
     procedure SetShowTabImages(const Value: Boolean);
+    function GetShowTabHints: Boolean;
+    procedure SetShowTabHints(const Value: Boolean);
     function GetPage(Index: Integer): TJvDockVIDTabSheet;
     function GetActiveVIDPage: TJvDockVIDTabSheet;
     procedure SetActiveVIDPage(const Value: TJvDockVIDTabSheet);
@@ -498,6 +507,7 @@ type
     property InactiveFont: TFont read GetInactiveFont write SetInactiveFont;
     property HotTrackColor: TColor read GetHotTrackColor write SetHotTrackColor;
     property ShowTabImages: Boolean read GetShowTabImages write SetShowTabImages;
+    property ShowTabHints: Boolean read GetShowTabHints write SetShowTabHints;
     property ActivePage;
     property Align;
     property Anchors;
@@ -3010,6 +3020,16 @@ begin
   FPanel.ShowTabImages := Value;
 end;
 
+function TJvDockVIDTabPageControl.GetShowTabHints: Boolean;
+begin
+  Result := FPanel.FShowTabHints;
+end;
+
+procedure TJvDockVIDTabPageControl.SetShowTabHints(const Value: Boolean);
+begin
+  FPanel.ShowTabHints := Value;
+end;
+
 function TJvDockVIDTabPageControl.CustomUnDock(Source: TJvDockDragDockObject;
   NewTarget: TWinControl; Client: TControl): Boolean;
 var
@@ -3076,6 +3096,7 @@ begin
     InactiveFont := VIDTabServerOption.InactiveFont;
     InactiveSheetColor := VIDTabServerOption.InactiveSheetColor;
     ShowTabImages := VIDTabServerOption.ShowTabImages;
+    ShowTabHints := VIDTabServerOption.ShowTabHints;
     TabPosition := VIDTabServerOption.TabPosition;
   end;
 end;
@@ -3319,9 +3340,21 @@ var
   Index: Integer;
   Ctrl: TControl;
   ARect: TRect;
+  HintText: string;
 begin
   inherited MouseMove(Shift, X, Y);
   Index := GetPageIndexFromMousePos(X, Y);
+
+  if ShowTabHints and (Index > -1) then
+  begin
+    HintText := StringReplace(Page.Pages[Index].Caption, '&', '', [rfReplaceAll]);
+    if HintText <> Hint then
+    begin
+      Hint := HintText;
+      Application.ActivateHint(ClientToScreen(Point(X, Y)));
+    end;
+  end;
+
   if Page.HotTrack and (Index <> FSelectHotIndex) then
   begin
     FSelectHotIndex := Index;
@@ -3767,6 +3800,17 @@ begin
   begin
     FShowTabImages := Value;
     SetShowTabWidth;
+    Invalidate;
+  end;
+end;
+
+procedure TJvDockTabPanel.SetShowTabHints(const Value: Boolean);
+begin
+  if FShowTabHints <> Value then
+  begin
+    FShowTabHints := Value;
+    if not FShowTabHints then
+      Hint := '';
     Invalidate;
   end;
 end;
@@ -4319,6 +4363,7 @@ begin
   FInactiveFont.OnChange := FontChanged;
   FInactiveSheetColor := clBtnShadow;
   FShowTabImages := False;
+  FShowTabHints := False;
   FShowCloseButtonOnGrabber := True;
   FShowCloseButtonOnTabs := False;
 end;
@@ -4346,6 +4391,7 @@ begin
       InactiveFont := Src.InactiveFont;
       InactiveSheetColor := Src.InactiveSheetColor;
       ShowTabImages := Src.ShowTabImages;
+      ShowTabHints := Src.ShowTabHints;
 
       inherited Assign(Source);
     finally
@@ -4394,6 +4440,15 @@ begin
   if FInactiveSheetColor <> Value then
   begin
     FInactiveSheetColor := Value;
+    Changed;
+  end;
+end;
+
+procedure TJvDockVIDTabServerOption.SetShowTabHints(const Value: Boolean);
+begin
+  if FShowTabHints <> Value then
+  begin
+    FShowTabHints := Value;
     Changed;
   end;
 end;

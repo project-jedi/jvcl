@@ -539,6 +539,7 @@ uses
   AnsiStrings,
   {$ENDIF RTL250_UP}
   VarUtils, Variants,
+  JclSysInfo,
   JvConsts;
 
 type
@@ -2249,7 +2250,7 @@ begin
     Canvas.Font := TJvListItem(Item).Font;
     if ViewStyle in ViewStylesItemBrush then
     begin
-      if CheckWin32Version(6, 0) then
+      if JclCheckWinVersion(6, 0) then
         SetBkMode(Canvas.Handle, TRANSPARENT);
       Canvas.Brush := TJvListItem(Item).Brush;
     end;

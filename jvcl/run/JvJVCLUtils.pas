@@ -636,6 +636,8 @@ function JvMessageBox(const Text: string; Flags: DWORD): Integer; overload;
 { end JvCtrlUtils }
 
 procedure UpdateTrackFont(TrackFont, Font: TFont; TrackOptions: TJvTrackFontOptions);
+function IsHotTrackFontDfmStored(TrackFont, Font: TFont; TrackOptions: TJvTrackFontOptions): Boolean;
+
 // Returns the size of the image
 // used for checkboxes and radiobuttons.
 // Originally from Mike Lischke
@@ -5924,6 +5926,36 @@ begin
       TrackFont.Pitch := Font.Pitch;
     if not (hoPreserveStyle in TrackOptions) then
       TrackFont.Style := Font.Style;
+  end;
+end;
+
+function IsHotTrackFontDfmStored(TrackFont, Font: TFont; TrackOptions: TJvTrackFontOptions): Boolean;
+var
+  DefFont: TFont;
+begin
+  if hoFollowFont in TrackOptions then
+    DefFont := nil
+  else
+  begin
+    DefFont := TFont.Create;
+    Font := DefFont;
+    TrackOptions := []; // compare all
+  end;
+  try
+    Result := ((hoPreserveCharSet in TrackOptions) and (TrackFont.Charset <> Font.Charset)) or
+              ((hoPreserveColor in TrackOptions) and (TrackFont.Color <> Font.Color)) or
+              ((hoPreserveHeight in TrackOptions) and (TrackFont.Height <> Font.Height)) or
+              ((hoPreservePitch in TrackOptions) and (TrackFont.Pitch <> Font.Pitch)) or
+              ((hoPreserveStyle in TrackOptions) and (TrackFont.Style <> Font.Style)) or
+              {$IFDEF COMPILER10_UP}
+              ((hoPreserveOrientation in TrackOptions) and (TrackFont.Orientation <> Font.Orientation)) or
+              {$ENDIF COMPILER10_UP}
+              {$IFDEF COMPILER15_UP}
+              ((hoPreserveQuality in TrackOptions) and (TrackFont.Quality <> Font.Quality)) or
+              {$ENDIF COMPILER15_UP}
+              ((hoPreserveName in TrackOptions) and (TrackFont.Name <> Font.Name));
+  finally
+    DefFont.Free;
   end;
 end;
 

@@ -698,14 +698,14 @@ begin
     RequireCount := 0;
     for i := 0 to xml.RequireCount - 1 do
       if xml.Requires[i].IsIncluded(Target) then
-    begin
-      Inc(RequireCount);
-      reqPackName := BuildPackageName(xml.Requires[i], target);
-      if NoLinkPackageList = '' then
-        NoLinkPackageList := reqPackName
-      else
-        NoLinkPackageList := Format('%s;%s', [NoLinkPackageList, reqPackName]);
-    end;
+      begin
+        Inc(RequireCount);
+        reqPackName := BuildPackageName(xml.Requires[i], target);
+        if NoLinkPackageList = '' then
+          NoLinkPackageList := reqPackName
+        else
+          NoLinkPackageList := Format('%s;%s', [NoLinkPackageList, reqPackName]);
+      end;
 
     OutFileName := path + TargetToDir(target) + DirDelimiter +
                    ExpandPackageName(OutFileName, target)+
@@ -1035,12 +1035,11 @@ begin
         if Pos('%', curLine) > 0 then
         begin
           tmpStr := curLine;
-          StringsToStr(xml.C6Libs, ' ', False);
           if MacroReplace(curLine, '%', Replacements) then
-           begin
-             if Pos('%DATETIME%', tmpStr) > 0 then
-               TimeStampLine := I;
-           end;
+          begin
+            if Pos('%DATETIME%', tmpStr) > 0 then
+              TimeStampLine := I;
+          end;
         end;
         if IgnoreNextSemicolon then
         begin

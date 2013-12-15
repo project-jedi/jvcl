@@ -8436,9 +8436,9 @@ begin
   if ShowClassName then
   begin
     if Obj <> nil then
-      Result := Result + '(' + Obj.ClassName + ')'
+      Result := '(' + Obj.ClassName + ')'
     else
-      Result := Result + '(' + GetTypeData(Data.TypeInfo).ClassType.ClassName + ')';
+      Result := '(' + GetTypeData(Data.TypeInfo).ClassType.ClassName + ')';
   end
   else
   begin

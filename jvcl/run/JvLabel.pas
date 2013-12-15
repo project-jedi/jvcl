@@ -163,6 +163,7 @@ type
     procedure SetHotTrackOptions(Value: TJvLabelHotTrackOptions);
     procedure IJvHotTrack_Assign(Source: IJvHotTrack);
     procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer); virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer); virtual;
@@ -205,7 +206,7 @@ type
     property AutoOpenURL: Boolean read FAutoOpenURL write FAutoOpenURL default True;
 
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property HotTrackOptions: TJvLabelHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
@@ -340,7 +341,25 @@ const
   Alignments: array [TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
   WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 
-//=== { TJvCustomLabel } =====================================================
+procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+begin
+  // Draw Frame with round corners
+  Canvas.Pen.Color := AColor;
+  Dec(ARect.Right);
+  Dec(ARect.Bottom);
+  Canvas.Polygon(
+   [Point(ARect.Left  + R, ARect.Top       ),
+    Point(ARect.Right - R, ARect.Top       ),
+    Point(ARect.Right    , ARect.Top    + R),
+    Point(ARect.Right    , ARect.Bottom - R),
+    Point(ARect.Right - R, ARect.Bottom    ),
+    Point(ARect.Left  + R, ARect.Bottom    ),
+    Point(ARect.Left     , ARect.Bottom - R),
+    Point(ARect.Left     , ARect.Top    + R),
+    Point(ARect.Left  + R, ARect.Top       )]);
+  Inc(ARect.Right);
+  Inc(ARect.Bottom);
+end;
 
 function CalculateAlignment(Alignment: TAlignment; Angle: Integer; X, Y: Real; Info: TAngleInfo): TPoint;
 begin
@@ -489,6 +508,8 @@ begin
   DrawText(Canvas, Str, Count, RText, Format);
   UnionRect(Rect, RText, RShadow);
 end;
+
+//=== { TJvCustomLabel } =====================================================
 
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
@@ -1460,24 +1481,9 @@ begin
     end;
 end;
 
-procedure FrameRounded(Canvas: TCanvas; ARect: TRect; AColor: TColor; R: Integer);
+function TJvCustomLabel.IsHotTrackFontStored: Boolean;
 begin
-  // Draw Frame with round corners
-  Canvas.Pen.Color := AColor;
-  Dec(ARect.Right);
-  Dec(ARect.Bottom);
-  Canvas.Polygon(
-   [Point(ARect.Left  + R, ARect.Top       ),
-    Point(ARect.Right - R, ARect.Top       ),
-    Point(ARect.Right    , ARect.Top    + R),
-    Point(ARect.Right    , ARect.Bottom - R),
-    Point(ARect.Right - R, ARect.Bottom    ),
-    Point(ARect.Left  + R, ARect.Bottom    ),
-    Point(ARect.Left     , ARect.Bottom - R),
-    Point(ARect.Left     , ARect.Top    + R),
-    Point(ARect.Left  + R, ARect.Top       )]);
-  Inc(ARect.Right);
-  Inc(ARect.Bottom);
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 function TJvCustomLabel.IsValidImage: Boolean;

@@ -67,6 +67,7 @@ type
     FComboBox: TJvCustomDBComboBox;
     FOutfilteredItems: TStrings;
     FOutfilteredValues: TStrings;
+    FUseDisplayText: Boolean;
     procedure SetDataSource(const Value: TDataSource);
     procedure SetFilter(Value: string);
     function GetDataSource: TDataSource;
@@ -74,6 +75,7 @@ type
     procedure SetKeyField(const Value: string);
     procedure SetShowOutfilteredValue(const Value: Boolean);
     procedure SetOutfilteredValueFont(const Value: TFont);
+    procedure SetUseDisplayText(const Value: Boolean);
   protected
     procedure ListDataChange(Sender: TObject);
     procedure FontChange(Sender: TObject);
@@ -102,6 +104,9 @@ type
     { DataSource: The records of the data source are filtered and added to the
       ComboBox.Values/Items list. }
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+
+    { UseDisplayText: Use DisplayField.DisplayText instead of DisplayField.AsString. }
+    property UseDisplayText: Boolean read FUseDisplayText write SetUseDisplayText default False;
 
     { OnFilter is triggered for every record before the Filter property is applied. }
     property OnFilter: TJvComboBoxFilterEvent read FOnFilter write FOnFilter;
@@ -815,7 +820,7 @@ begin
     Items.BeginUpdate;
     Values.BeginUpdate;
     try
-      LastText := GetComboText();
+      LastText := GetComboText;
       Items.Clear;
       Values.Clear;
       if ListSettings.IsValid and ListSettings.DataSource.DataSet.Active and (ListSettings.KeyField <> '') then
@@ -840,12 +845,18 @@ begin
               begin
                 if FilterAccepted and ((FilterExpr = nil) or FilterExpr.Evaluate) then
                 begin
-                  Items.Add(LDisplayField.AsString);
+                  if ListSettings.UseDisplayText then
+                    Items.Add(LDisplayField.DisplayText)
+                  else
+                    Items.Add(LDisplayField.AsString);
                   Values.Add(LKeyField.AsString);
                 end
                 else
                 begin
-                  ListSettings.FOutfilteredItems.Add(LDisplayField.AsString);
+                  if ListSettings.UseDisplayText then
+                    ListSettings.FOutfilteredItems.Add(LDisplayField.DisplayText)
+                  else
+                    ListSettings.FOutfilteredItems.Add(LDisplayField.AsString);
                   ListSettings.FOutfilteredValues.Add(LKeyField.AsString);
                 end;
                 DataSet.Next;
@@ -941,6 +952,7 @@ begin
     FFilter := Src.FFilter;
     FKeyField := Src.FKeyField;
     FDisplayField := Src.FDisplayField;
+    FUseDisplayText := Src.FUseDisplayText;
     SetDataSource(Src.DataSource);
     FOnFilter := Src.FOnFilter;
 
@@ -1019,6 +1031,15 @@ begin
   begin
     FShowOutfilteredValue := Value;
     ComboBox.Invalidate;
+  end;
+end;
+
+procedure TJvDBComboBoxListSettings.SetUseDisplayText(const Value: Boolean);
+begin
+  if Value <> FUseDisplayText then
+  begin
+    FUseDisplayText := Value;
+    ComboBox.UpdateDropDownItems;
   end;
 end;
 

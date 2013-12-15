@@ -56,7 +56,7 @@ uses
   {$HPPEMIT '  #define JvDataProviderHpp_MANAGED_INTERFACE_OPERATORS'}
   {$HPPEMIT '#endif'}
 
-  {$HPPEMIT END '#ifdef JvDataProvider_MANAGED_INTERFACE_OPERATORS'}
+  {$HPPEMIT END '#ifdef JvDataProviderHpp_MANAGED_INTERFACE_OPERATORS'}
   {$HPPEMIT END '  #define MANAGED_INTERFACE_OPERATORS'}
   {$HPPEMIT END '  #undef JvDataProviderHpp_MANAGED_INTERFACE_OPERATORS'}
   {$HPPEMIT END '#endif'}

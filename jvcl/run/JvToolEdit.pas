@@ -1143,7 +1143,7 @@ uses
   {$IFDEF COMPILER16_UP} // VCL-Styles support
   Vcl.Themes,
   {$ENDIF COMPILER16_UP}
-  JclFileUtils, JclStrings,
+  JclSysInfo, JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JclSysUtils;
 
@@ -3190,7 +3190,7 @@ var
   Details: TThemedElementDetails;
 begin
   if StyleServices.Enabled and Ctl3D and (BorderStyle = bsSingle) and
-     not CheckWin32Version(6, 0) then // Vista draws the border animated and not with teEditTextNormal
+     not JclCheckWinVersion(6, 0) then // Vista draws the border animated and not with teEditTextNormal
   begin
     DC := GetWindowDC(Handle);
     try

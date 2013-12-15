@@ -1108,6 +1108,10 @@ begin
       begin
         S := InternalList[0];
         Obj := InternalList.Objects[0];
+        // Comclt32.dll version 5.0 or later: If CBS_LOWERCASE or CBS_UPPERCASE is set, the Unicode version of
+        // CB_ADDSTRING alters the string. If using read-only global memory, this causes the application to fail.
+        if ComboBox.CharCase <> ecNormal then
+          UniqueString(S);
         Index := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
         if Index < 0 then
           raise EOutOfResources.CreateRes(@SInsertLineError);
@@ -1125,13 +1129,20 @@ begin
 end;
 
 function TJvComboBoxStrings.Add(const S: string): Integer;
+var
+  Value: string;
 begin
   if (csLoading in ComboBox.ComponentState) and UseInternal then
     Result := InternalList.Add(S)
   else
   begin
     ComboBox.DeselectProvider;
-    Result := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, LPARAM(PChar(S)));
+    Value := S;
+    // Comclt32.dll version 5.0 or later: If CBS_LOWERCASE or CBS_UPPERCASE is set, the Unicode version of
+    // CB_ADDSTRING alters the string. If using read-only global memory, this causes the application to fail.
+    if ComboBox.CharCase <> ecNormal then
+      UniqueString(Value);
+    Result := SendMessage(ComboBox.Handle, CB_ADDSTRING, 0, LPARAM(PChar(Value)));
     if Result < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
@@ -1228,13 +1239,20 @@ begin
 end;
 
 procedure TJvComboBoxStrings.Insert(Index: Integer; const S: string);
+var
+  Value: string;
 begin
   if (csLoading in ComboBox.ComponentState) and UseInternal then
     InternalList.Insert(Index, S)
   else
   begin
     ComboBox.DeselectProvider;
-    if SendMessage(ComboBox.Handle, CB_INSERTSTRING, Index, LPARAM(PChar(S))) < 0 then
+    Value := S;
+    // Comclt32.dll version 5.0 or later: If CBS_LOWERCASE or CBS_UPPERCASE is set, the Unicode version of
+    // CB_ADDSTRING alters the string. If using read-only global memory, this causes the application to fail.
+    if ComboBox.CharCase <> ecNormal then
+      UniqueString(Value);
+    if SendMessage(ComboBox.Handle, CB_INSERTSTRING, Index, LPARAM(PChar(Value))) < 0 then
       raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
 end;
@@ -1720,8 +1738,13 @@ function TJvCustomComboBox.IsItemHeightStored: Boolean;
 var
   Value: Integer;
 begin
-  Value := ItemHeight;
-  Result := (Value <> 16) and (Value <> 0);
+  if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+  begin
+    Value := ItemHeight;
+    Result := (Value <> 16) and (Value <> 0);
+  end
+  else
+    Result := False;
 end;
 
 function TJvCustomComboBox.IsProviderSelected: Boolean;

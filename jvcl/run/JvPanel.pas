@@ -180,6 +180,7 @@ type
     procedure SetHotTrackOptions(Value: TJvHotTrackOptions);
     procedure IJvHotTrack_Assign(Source: IJvHotTrack);
     procedure IJvHotTrack.Assign = IJvHotTrack_Assign;
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure DrawCaption; dynamic;
     procedure DrawCaptionTo(ACanvas: TCanvas ); dynamic;
@@ -221,7 +222,7 @@ type
     property Canvas;
 
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
@@ -1462,6 +1463,11 @@ begin
     HotTrackFontOptions := Source.HotTrackFontOptions;
     HotTrackOptions := Source.HotTrackOptions;
   end;
+end;
+
+function TJvCustomArrangePanel.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvCustomArrangePanel.Rearrange;

@@ -494,7 +494,7 @@ type
   TJvCustomUrlGrabberThread = class(TJvCustomThread)
   private
     FErrorText: string; // the error string received from the server
-    FStatus: DWORD;
+    FAPIStatus: DWORD;
     FContinue: Boolean;
   protected
     FGrabber: TJvCustomUrlGrabber;
@@ -524,7 +524,7 @@ type
     constructor Create(Grabber: TJvCustomUrlGrabber); virtual;
     procedure DoProgress;
     procedure DoStatus;
-    property Status: DWORD read FStatus write FStatus;
+    property APIStatus: DWORD read FAPIStatus write FAPIStatus;
   end;
 
   // A list of instances of TJvUrlGrabber descendants

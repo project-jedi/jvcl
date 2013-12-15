@@ -635,13 +635,6 @@ end;
 
 // (rom) copied from JclStrings.pas
 
-function StrLeft(const S: string; Count: Integer): string;
-begin
-  Result := Copy(S, 1, Count);
-end;
-
-// (rom) copied from JclStrings.pas
-
 procedure StrToStrings(S, Sep: string; const List: TStrings; const AllowEmptyString: Boolean = True);
 var
   I, L: Integer;
@@ -655,7 +648,7 @@ begin
     I := Pos(Sep, S);
     while I > 0 do
     begin
-      Left := StrLeft(S, I - 1);
+      Left := Copy(S, 1, I - 1);
       if (Left <> '') or AllowEmptyString then
         List.Add(Left);
       Delete(S, 1, I + L - 1);

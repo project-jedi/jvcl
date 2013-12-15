@@ -2533,6 +2533,8 @@ begin
         if MultiSelect and DataLink.Active then
           with SelectedRows do
           begin
+            // must refresh the selected rows or we might have invalid bookmarks in it following record deletion
+            Refresh;
             FSelecting := False;
             if Shift * KeyboardShiftStates = [ssCtrl] then
               CurrentRowSelected := not CurrentRowSelected
@@ -2554,7 +2556,7 @@ begin
                       begin
                         GotoBookmark(Pointer(lLastSelected));
                         Next;
-                        while not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
+                        while not Eof and not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
                           CurrentRowSelected := True;
                           Next;
@@ -2565,7 +2567,7 @@ begin
                       begin
                         GotoBookmark(Pointer(lLastSelected));
                         Prior;
-                        while not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
+                        while not Bof and not (CurrentRowSelected and ({$IFDEF RTL200_UP}CompareBookmarks(Bookmark, lNewSelected) = 0{$ELSE}Bookmark = lNewSelected{$ENDIF RTL200_UP})) do
                         begin
                           CurrentRowSelected := True;
                           Prior;
@@ -3216,6 +3218,7 @@ var
   InBiDiMode: Boolean;
   DrawColumn: TColumn;
   DefaultDrawText, DefaultDrawSortMarker: Boolean;
+  OSOffset: Integer;
 
   function CalcTitleRect(Col: TColumn; ARow: Integer; var MasterCol: TColumn): TRect;
     { copied from CodeGear's DbGrids.pas }
@@ -3273,6 +3276,9 @@ var
       Result.Bottom := DrawInfo.Vert.FixedBoundary -
         DrawInfo.Vert.EffectiveLineWidth;
     end;
+    Result.Left := Result.Left + 1;
+    if Win32MajorVersion >= 6 then // Windows 7+
+      Result.Right := Result.Right - 1;
   end;
 
   procedure DrawExpandBtn(var TitleRect, TextRect: TRect; InBiDiMode: Boolean;
@@ -3385,8 +3391,12 @@ begin
       if Assigned(DrawColumn) and not DrawColumn.Showing then
         Exit;
       TitleRect := CalcTitleRect(DrawColumn, ARow, MasterCol);
-      if TitleRect.Right < ARect.Right then
-        TitleRect.Right := ARect.Right;
+      if Win32MajorVersion >= 6 then // Windows 7+
+        OSOffset := 1
+      else
+        OSOffset := 0;
+      if TitleRect.Right < ARect.Right - OSOffset then
+        TitleRect.Right := ARect.Right - OSOffset;
       if MasterCol = nil then
         Exit
       else
@@ -3500,7 +3510,7 @@ begin
             if IsRightToLeft then
               ALeft := TitleRect.Left + 3;
             {$IFDEF COMPILER14_UP}
-            DrawCellBackground(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom), FixedColor, AState, ACol, ARow - TitleOffset);
+            //DrawCellBackground(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom), FixedColor, AState, ACol, ARow - TitleOffset);
             {$ELSE}
               {$IFDEF JVCLThemesEnabled}
             if not (UseXPThemes and StyleServices.Enabled) then

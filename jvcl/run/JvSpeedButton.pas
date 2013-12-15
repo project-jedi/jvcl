@@ -133,6 +133,7 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMRButtonDown(var Msg: TWMRButtonDown); message WM_RBUTTONDOWN;
     procedure WMRButtonUp(var Msg: TWMRButtonUp); message WM_RBUTTONUP;
+    function IsHotTrackFontStored: Boolean;
   protected
     FState: TJvButtonState;
     function WantKey(Key: Integer; Shift: TShiftState): Boolean; override;
@@ -175,7 +176,7 @@ type
     property GrayNewStyle: Boolean read GetGrayNewStyle write SetGrayNewStyle default True;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
-    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read GetHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFontOptions read GetHotTrackFontOptions write SetHotTrackFontOptions default
       DefaultTrackFontOptions;
     property HotTrackOptions: TJvHotTrackOptions read GetHotTrackOptions write SetHotTrackOptions;
@@ -1515,6 +1516,11 @@ begin
     HotTrackFontOptions := Source.HotTrackFontOptions;
     HotTrackOptions := Source.HotTrackOptions;
   end;
+end;
+
+function TJvCustomSpeedButton.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
 procedure TJvCustomSpeedButton.SetInactiveGrayed(Value: Boolean);

@@ -990,7 +990,7 @@ uses
   {$IFDEF RTL200_UP}
   CommDlg,
   {$ENDIF RTL200_UP}
-  JclAnsiStrings,
+  JclAnsiStrings, JclSysInfo,
   JvThemes, JvConsts, JvResources, JvFixedEditPopUp;
 
 type
@@ -4622,7 +4622,7 @@ procedure TJvCustomRichEdit.WMRButtonUp(var Msg: TMessage);
 begin
   { RichEd20 does not pass the WM_RBUTTONUP message to defwndproc, }
   { so we get no WM_CONTEXTMENU message. Simulate message here.    }
-  if ((RichEditVersion <> 1) or not CheckWin32Version(5, 0)) and AllowObjects then
+  if ((RichEditVersion <> 1) or not JclCheckWinVersion(5, 0)) and AllowObjects then
     Perform(WM_CONTEXTMENU, Handle, {$IFDEF RTL230_UP}PointToLParam{$ELSE}LPARAM{$ENDIF RTL230_UP}(PointToSmallPoint(
       ClientToScreen(SmallPointToPoint(TWMMouse(Msg).Pos)))));
   inherited;

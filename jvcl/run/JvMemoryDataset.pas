@@ -1290,8 +1290,7 @@ end;
 function TJvMemoryData.BookmarkValid(Bookmark: TBookmark): Boolean;
 begin
   Result := (Bookmark <> nil) and FActive and
-   (TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) > Low(Integer)) and
-   (TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^) <= FLastID);
+    (FindRecordID(TJvBookmarkData({$IFDEF RTL200_UP}Pointer(@Bookmark[0]){$ELSE}Bookmark{$ENDIF RTL200_UP}^)) <> nil);
 end;
 
 function TJvMemoryData.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer;

@@ -86,6 +86,7 @@ type
     procedure SetWordWrap(const Value: Boolean);
     procedure DoMarginsChange(Sender: TObject);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+    function IsHotTrackFontStored: Boolean;
   protected
     procedure Resize; override;
     procedure Loaded; override;
@@ -106,7 +107,7 @@ type
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
-    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
+    property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont stored IsHotTrackFontStored;
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property Layout: TTextLayout read FLayout write SetLayout;
     property TextMargins: TJvTextMargins read FTextMargins write SetTextMargins;
@@ -468,6 +469,11 @@ begin
   DrawText(ADC, AText, Length(AText), ARect, Result or DT_CALCRECT);
 end;
 
+function TJvCustomStaticText.IsHotTrackFontStored: Boolean;
+begin
+  Result := IsHotTrackFontDfmStored(HotTrackFont, Font, HotTrackFontOptions);
+end;
+
 procedure TJvCustomStaticText.Resize;
 begin
   inherited Resize;
@@ -482,9 +488,6 @@ begin
     UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
   end;
 end;
-
-
-
 
 //=== { TJvTextMargins } =====================================================
 

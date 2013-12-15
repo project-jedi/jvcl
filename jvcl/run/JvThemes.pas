@@ -827,10 +827,11 @@ const
 
 implementation
 
-{$IFNDEF COMPILER10_UP}
 uses
-  JclSysUtils;
+{$IFNDEF COMPILER10_UP}
+  JclSysUtils,
 {$ENDIF ~COMPILER10_UP}
+  JclSysInfo;
 
 type
   TWinControlThemeInfo = class(TWinControl)
@@ -1353,7 +1354,7 @@ var
 {$ENDIF COMPILER11_UP}
 begin
   {$IFDEF COMPILER11_UP}
-  if StyleServices.Enabled and CheckWin32Version(6, 0) then
+  if StyleServices.Enabled and JclCheckWinVersion(6, 0) then
   begin
     FillChar(Options, SizeOf(Options), 0);
     Options.dwSize := SizeOf(Options);
@@ -1406,7 +1407,7 @@ var
 {$ENDIF COMPILER11_UP}
 begin
   {$IFDEF COMPILER11_UP}
-  if PaintOnGlass and CheckWin32Version(6, 0) then
+  if PaintOnGlass and JclCheckWinVersion(6, 0) then
   begin
     { TODO : Not working correctly on a JvSpeedButton. But it works if used direcly on
              a sheet of glass. Some optimizations could be done. }

@@ -355,7 +355,6 @@ begin
     FormCompileMessages.Top := ParentForm.BoundsRect.Bottom;
     FormCompileMessages.Left := ParentForm.Left + (ParentForm.Width - FormCompileMessages.Width) div 2;
 
-    SetWindowLong(FormCompile.Handle, GWL_HWNDPARENT, ParentForm.Handle);
     FormCompile.CompileMessages := FormCompileMessages;
 
     {$IFDEF USE_DXGETTEXT}

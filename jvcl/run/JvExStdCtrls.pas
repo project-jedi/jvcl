@@ -1114,6 +1114,9 @@ const
 
 implementation
 
+uses
+  JclSysInfo;
+
 {$IFNDEF COMPILER12_UP}
 const
   ECM_FIRST       = $1500;
@@ -2060,7 +2063,7 @@ end;
 function TJvExCustomEdit.UserTextHint: Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  Result := not (CheckWin32Version(5, 1) and StyleServices.Enabled);
+  Result := not (JclCheckWinVersion(5, 1) and StyleServices.Enabled);
   {$ELSE}
   Result := True;
   {$ENDIF JVCLThemesEnabled}
@@ -2072,7 +2075,7 @@ begin
   inherited DoSetTextHint(Value);
   {$ELSE}
   {$IFDEF JVCLThemesEnabled}
-  if CheckWin32Version(5, 1) and StyleServices.Enabled and HandleAllocated then
+  if JclCheckWinVersion(5, 1) and StyleServices.Enabled and HandleAllocated then
     SendMessage(Handle, EM_SETCUEBANNER, WPARAM(0), LPARAM(PWideChar(UnicodeString(Value))));
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF COMPILER12_UP}
@@ -3036,7 +3039,7 @@ end;
 function TJvExCustomComboBox.UserTextHint: Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  Result := not (CheckWin32Version(5, 1) and StyleServices.Enabled);
+  Result := not (JclCheckWinVersion(5, 1) and StyleServices.Enabled);
   {$ELSE}
   Result := True;
   {$ENDIF JVCLThemesEnabled}
@@ -3055,9 +3058,9 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled and HandleAllocated then
   begin
-    if CheckWin32Version(6) then
+    if JclCheckWinVersion(6, 0) then
       SendMessage(Handle, CB_SETCUEBANNER, WPARAM(0), LPARAM(PWideChar(UnicodeString(FTextHint))))
-    else if CheckWin32Version(5, 1) then
+    else if JclCheckWinVersion(5, 1) then
       SendMessage(FEditHandle, EM_SETCUEBANNER, WPARAM(0), LPARAM(PWideChar(UnicodeString(FTextHint))));
   end;
   {$ENDIF JVCLThemesEnabled}

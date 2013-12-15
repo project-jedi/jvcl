@@ -241,8 +241,16 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    {$IFDEF RTL180_UP}
+    property OnMouseActivate;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    {$ENDIF RTL180_UP}
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnStartDrag;
   end;
 
