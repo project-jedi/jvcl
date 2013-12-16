@@ -135,6 +135,7 @@ type
     property ProxyUserName;
     property ProxyPassword;
     property Port default 21;
+    property TimeOut;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -196,6 +197,7 @@ type
     property ProxyIgnoreList;
     property ProxyUserName;
     property ProxyPassword;
+    property TimeOut;
     property OnDoneFile;
     property OnDoneStream;
     property OnError;
@@ -652,6 +654,7 @@ begin
         InternetSetOption(hSession, INTERNET_OPTION_PROXY_USERNAME, PChar(Grabber.ProxyUserName), Length(Grabber.ProxyUserName)+1);
         InternetSetOption(hSession, INTERNET_OPTION_PROXY_PASSWORD, PChar(Grabber.ProxyPassword), Length(Grabber.ProxyPassword)+1);
       end;
+      Grabber.TimeOut.SetupSession(hSession);
 
 //      InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
@@ -799,6 +802,7 @@ begin
         Synchronize(Error);
         Exit;
       end;
+      Grabber.TimeOut.SetupSession(hSession);
       InternetSetStatusCallback(hSession, PFNInternetStatusCallback(@DownloadCallBack));
 
       // Connect to the host
