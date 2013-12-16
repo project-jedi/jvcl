@@ -6643,9 +6643,8 @@ begin
     begin
       { !! We can't use FileGetTempName; it /creates/ a file with extension TMP but
            we need to have a specific extension }
-      TmpFileName := SysUtils.IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate;
+      TmpFileName := SysUtils.IncludeTrailingPathDelimiter(PathGetTempPath) + cPictureFrameFileNameTemplate + '_' + IntToStr(Random(500)) + '_' + FormatDateTime('zzz', Now);
       TmpFileName := FindUnusedFileName(TmpFileName, MIMETypeToExt(string(MIMEType)), '');
-
       try
         SaveToFile(TmpFileName);
         try
