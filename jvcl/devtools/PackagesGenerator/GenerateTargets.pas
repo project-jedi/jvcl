@@ -82,7 +82,12 @@ const
                   (TargetName: 'd10'; Define: 'VER180'),
                   (TargetName: 'd11'; Define: 'VER180,VER185'),
                   (TargetName: 'd12'; Define: 'VER200'),
-                  (TargetName: 'd14'; Define: 'VER210')
+                  (TargetName: 'd14'; Define: 'VER210'),
+                  (TargetName: 'd15'; Define: 'VER220'),
+                  (TargetName: 'd16'; Define: 'VER230'),
+                  (TargetName: 'd17'; Define: 'VER240'),
+                  (TargetName: 'd18'; Define: 'VER250'),
+                  (TargetName: 'd19'; Define: 'VER260')
                 );
 
 { TTarget }
