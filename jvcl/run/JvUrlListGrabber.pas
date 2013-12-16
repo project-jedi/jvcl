@@ -1587,7 +1587,10 @@ procedure TJvUrlGrabberTimeOut.SetupSession(ASession: HINTERNET);
       -1:
         ; // nothing, leave default value
       0:
+      begin
+        Value := Integer($FFFFFFFF);
         InternetSetOption(ASession, Option, @Value, SizeOf(Value));
+      end
       else
         if Value > 0 then
           InternetSetOption(ASession, Option, @Value, SizeOf(Value));
