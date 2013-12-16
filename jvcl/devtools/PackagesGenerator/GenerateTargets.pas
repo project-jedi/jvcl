@@ -73,7 +73,7 @@ type
   end;
 
 const
-  TargetDefines: array [0..7] of TTargetDefine =
+  TargetDefines: array [0..12] of TTargetDefine =
                 (
                   (TargetName: 'c6'; Define: 'VER140'),
                   (TargetName: 'd6'; Define: 'VER140'),
@@ -130,7 +130,10 @@ begin
   if Assigned(Node.Properties.ItemNamed['IsDotNet']) then
     FIsDotNet := Node.Properties.ItemNamed['IsDotNet'].BoolValue;
 
-  FDefines.Add('WIN32');
+  if StrHasSuffix(Name, ['_x64']) then
+    FDefines.Add('WIN64')
+  else
+    FDefines.Add('WIN32');
   FDefines.Add('CONDITIONALEXPRESSIONS');
 
   for I := Low(TargetDefines) to High(TargetDefines) do
