@@ -196,6 +196,9 @@ type
     property MustDrawButtonFrame;
     property OwnerDraw;
     property Spacing;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
     property WordWrap;
 
     property OnMouseEnter;

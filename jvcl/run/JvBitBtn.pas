@@ -77,6 +77,9 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
 
     property SimpleFrame: Boolean read FSimpleFrame write FSimpleFrame default False;
   end;
