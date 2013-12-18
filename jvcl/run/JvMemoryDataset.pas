@@ -2007,7 +2007,7 @@ end;
 function TJvMemoryData.LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
   Mode: TLoadMode; DisableAllControls: Boolean = True): Integer;
 var
-  MovedCount, I: Integer;
+  MovedCount, I, FinalAutoInc: Integer;
   SB, DB: TBookmark;
 begin
   Result := 0;
@@ -2049,6 +2049,8 @@ begin
         Source.First;
         MovedCount := MaxInt;
       end;
+
+      FinalAutoInc := 0;
       FAutoIncField := nil;
       // FixReadOnlyFields also sets FAutoIncField if there is any
       FixReadOnlyFields(False);
@@ -2068,7 +2070,10 @@ begin
           AssignRecord(Source, Self, True);
           // assign AutoInc value manually (make user keep largest if source isn't sorted by autoinc field)
           if (FAutoIncField <> nil) and (FSrcAutoIncField <> nil) then
-            FAutoInc := Max(FAutoInc, FSrcAutoIncField.AsInteger);
+          begin
+            FinalAutoInc := Max(FinalAutoInc, FSrcAutoIncField.AsInteger);
+            FAutoInc := FSrcAutoIncField.AsInteger; //SetAutoIncFields will write this value to all fields with ftAutoInc
+          end;
           if (Mode = lmCopy) and (FApplyMode <> amNone) then
             FieldByName(FStatusName).AsInteger := Integer(rsOriginal);
           Post;
@@ -2085,6 +2090,8 @@ begin
           FRowsAffected := 0;
         end;
         FixReadOnlyFields(True);
+        if Mode = lmCopy then
+          FAutoInc := FinalAutoInc + 1;
         FAutoIncField := nil;
         FSrcAutoIncField := nil;
         First;
@@ -2467,7 +2474,7 @@ end;
 
 function TJvMemoryData.CopyFromDataSet: Integer;
 var
-  I, Len: Integer;
+  I, Len, FinalAutoInc: Integer;
   Original, StatusField: TField;
   OriginalFields: array of TField;
   FieldReadOnly: Boolean;
@@ -2494,6 +2501,7 @@ begin
     Exit;
   end;
 
+  FinalAutoInc := 0;
   FDataSet.DisableControls;
   DisableControls;
   FSaveLoadState := slsLoading;
@@ -2551,7 +2559,10 @@ begin
       end;
       // assign AutoInc value manually (make user keep largest if source isn't sorted by autoinc field)
       if (FAutoIncField <> nil) and (FSrcAutoIncField <> nil) then
-        FAutoInc := Max(FAutoInc, FSrcAutoIncField.AsInteger);
+      begin
+        FinalAutoInc := Max(FinalAutoInc, FSrcAutoIncField.AsInteger);
+        FAutoInc := FSrcAutoIncField.AsInteger; //SetAutoIncFields will write this value to all fields with ftAutoInc
+      end;
       if FApplyMode <> amNone then
         StatusField.AsInteger := Integer(rsOriginal);
       Post;
@@ -2561,6 +2572,7 @@ begin
     FRowsChanged := 0;
     FRowsAffected := 0;
   finally
+    FAutoInc := FinalAutoInc + 1;
     SetLength(FCopyFromDataSetFieldDefs, 0);
     FSaveLoadState := slsNone;
     EnableControls;
