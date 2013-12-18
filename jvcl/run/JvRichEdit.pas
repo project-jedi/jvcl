@@ -667,6 +667,7 @@ type
     function GetSelText: string; override;
     procedure SetSelLength(Value: Integer); override;
     procedure SetSelStart(Value: Integer); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     property AllowInPlace: Boolean read FAllowInPlace write FAllowInPlace default True;
     property AutoAdvancedTypography: Boolean read FAutoAdvancedTypography write FAutoAdvancedTypography default True;
     property AdvancedTypography: Boolean read GetAdvancedTypography write SetAdvancedTypography stored
@@ -3758,6 +3759,15 @@ end;
 function TJvCustomRichEdit.IsAdvancedTypographyStored: Boolean;
 begin
   Result := not AutoAdvancedTypography;
+end;
+
+procedure TJvCustomRichEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  // Mantis 6231: TCustomRichEdit from the VCL ignores WantReturns
+  if not WantReturns and (Key = $D) and (Shift = []) then
+    Key := 0;
+
+  inherited KeyDown(Key, Shift);
 end;
 
 function TJvCustomRichEdit.CharFromPos(X, Y: Integer): Integer;
