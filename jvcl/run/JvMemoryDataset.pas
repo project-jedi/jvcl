@@ -2661,7 +2661,7 @@ var
         begin
           FClient := Fields[J];
           FOriginal := FDataSet.FindField(FClient.FieldName);
-          if (FOriginal <> nil) and (FClient <> nil) then
+          if (FOriginal <> nil) and (FClient <> nil) and not FClient.ReadOnly then
           begin
             if FClient.IsNull then
               FOriginal.Clear
