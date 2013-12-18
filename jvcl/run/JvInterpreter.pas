@@ -8216,8 +8216,9 @@ begin
   begin
     if TJvInterpreterMethod(Item1).FClassType.InheritsFrom(TJvInterpreterMethod(Item2).FClassType) then
       Result := -1
+    else if TJvInterpreterMethod(Item1).FClassType = TJvInterpreterMethod(Item2).FClassType then
+      Result := 0
     else
-    if TJvInterpreterMethod(Item2).FClassType.InheritsFrom(TJvInterpreterMethod(Item1).FClassType) then
       Result := 1;
   end;
 end;
