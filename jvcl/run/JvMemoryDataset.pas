@@ -130,7 +130,6 @@ type
     FIndexList: TList;
     FCaseInsensitiveSort: Boolean;
     FDescendingSort: Boolean;
-    FAutoIncField: TField;
     FSrcAutoIncField: TField;
     FDataSet: TDataSet;
     FDataSetClosed: Boolean;
@@ -1980,8 +1979,6 @@ begin
     begin
       Fields[I].Tag := Ord(Fields[I].ReadOnly);
       Fields[I].ReadOnly := False;
-      if Fields[I].DataType = ftAutoInc then
-        FAutoIncField := Fields[I];
     end;
 end;
 
@@ -2051,8 +2048,6 @@ begin
       end;
 
       FinalAutoInc := 0;
-      FAutoIncField := nil;
-      // FixReadOnlyFields also sets FAutoIncField if there is any
       FixReadOnlyFields(False);
       // find first source autoinc field
       FSrcAutoIncField := nil;
@@ -2069,10 +2064,10 @@ begin
           Append;
           AssignRecord(Source, Self, True);
           // assign AutoInc value manually (make user keep largest if source isn't sorted by autoinc field)
-          if (FAutoIncField <> nil) and (FSrcAutoIncField <> nil) then
+          if FSrcAutoIncField <> nil then
           begin
             FinalAutoInc := Max(FinalAutoInc, FSrcAutoIncField.AsInteger);
-            FAutoInc := FSrcAutoIncField.AsInteger; //SetAutoIncFields will write this value to all fields with ftAutoInc
+            FAutoInc := FSrcAutoIncField.AsInteger;
           end;
           if (Mode = lmCopy) and (FApplyMode <> amNone) then
             FieldByName(FStatusName).AsInteger := Integer(rsOriginal);
@@ -2092,7 +2087,6 @@ begin
         FixReadOnlyFields(True);
         if Mode = lmCopy then
           FAutoInc := FinalAutoInc + 1;
-        FAutoIncField := nil;
         FSrcAutoIncField := nil;
         First;
       end;
@@ -2522,7 +2516,6 @@ begin
     if FApplyMode <> amNone then
       StatusField := FieldByName(FStatusName);
 
-    FAutoIncField := nil;
     // find first source autoinc field
     FSrcAutoIncField := nil;
     for I := 0 to FDataSet.FieldCount - 1 do
@@ -2531,8 +2524,6 @@ begin
         FSrcAutoIncField := FDataSet.Fields[I];
         Break;
       end;
-    if FSrcAutoIncField <> nil then
-      FAutoIncField := FindField(FSrcAutoIncField.FieldName);
 
     FDataSet.First;
     while not FDataSet.EOF do
@@ -2558,10 +2549,10 @@ begin
         end;
       end;
       // assign AutoInc value manually (make user keep largest if source isn't sorted by autoinc field)
-      if (FAutoIncField <> nil) and (FSrcAutoIncField <> nil) then
+      if FSrcAutoIncField <> nil then
       begin
         FinalAutoInc := Max(FinalAutoInc, FSrcAutoIncField.AsInteger);
-        FAutoInc := FSrcAutoIncField.AsInteger; //SetAutoIncFields will write this value to all fields with ftAutoInc
+        FAutoInc := FSrcAutoIncField.AsInteger;
       end;
       if FApplyMode <> amNone then
         StatusField.AsInteger := Integer(rsOriginal);
