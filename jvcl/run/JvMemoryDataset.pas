@@ -170,7 +170,6 @@ type
     procedure SetCapacity(Value: Integer);
     procedure ClearRecords;
     procedure InitBufferPointers(GetProps: Boolean);
-    procedure FixReadOnlyFields(MakeReadOnly: Boolean);
     procedure SetDataSet(ADataSet: TDataSet);
     procedure CheckStructure(UseAutoIncAsInteger: Boolean = False);
     procedure AddStatusField;
@@ -253,6 +252,7 @@ type
     function BookmarkValid(Bookmark: TBookmark): Boolean; override;
     function CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer; override;
     function CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream; override;
+    procedure FixReadOnlyFields(MakeReadOnly: Boolean);
     function GetFieldData(Field: TField; {$IFDEF RTL250_UP}var{$ENDIF} Buffer: TJvValueBuffer): Boolean; overload; override;
     {$IFNDEF NEXTGEN}
       {$IFDEF RTL240_UP}
