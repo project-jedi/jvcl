@@ -456,6 +456,8 @@ begin
         DestField.AsBCD := SourceField.AsBCD;
       ftString:
         DestField.AsString := SourceField.AsString;
+      ftWideString:
+        DestField.AsWideString := SourceField.AsWideString;
       ftFloat:
         DestField.AsFloat := SourceField.AsFloat;
       ftDateTime:
