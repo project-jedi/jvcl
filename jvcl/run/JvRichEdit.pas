@@ -3317,7 +3317,9 @@ end;
 {$IFDEF RTL220_UP}
 procedure TJvCustomRichEdit.DoContextPopup(MousePos: TPoint; var Handled: Boolean);
 begin
-  if not Assigned(PopupMenu) then
+  inherited DoContextPopup(MousePos, Handled);
+
+  if not Assigned(PopupMenu) and not Handled then
   begin
     MousePos := ClientToScreen(MousePos);
     FixedDefaultEditPopUp(Self).Popup(MousePos.X, MousePos.Y);
