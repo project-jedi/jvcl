@@ -47,6 +47,7 @@ uses
 const
   DefaultInitRepeatPause = 400; { pause before repeat timer (ms) }
   DefaultRepeatPause = 100;
+  WM_UPDOWNCLICK = WM_APP + $486;
 
 type
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
@@ -210,6 +211,7 @@ type
     procedure SetShowButton(Value: Boolean);
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
+    procedure WMUpDownClick(var Msg: TMessage); message WM_UPDOWNCLICK;
     procedure SetItems(const AValue: TStrings);
   protected
     FButtonKind: TSpinButtonKind;
@@ -856,6 +858,23 @@ begin
     inherited;
 end;
 
+procedure TJvCustomSpinEdit.WMUpDownClick(var Msg: TMessage);
+var
+  Sender: TObject;
+  Button: TUDBtnType;
+begin
+  Sender := TObject(Msg.WParam);
+  Button := TUDBtnType(Msg.LParam);
+  if TabStop and CanFocus then
+    SetFocus;
+  case Button of
+    btNext:
+      UpClick(Sender);
+    btPrev:
+      DownClick(Sender);
+  end;
+end;
+
 procedure TJvCustomSpinEdit.DoBottomClick;
 begin
   if Assigned(FOnBottomClick) then
@@ -1456,14 +1475,7 @@ end;
 
 procedure TJvCustomSpinEdit.UpDownClick(Sender: TObject; Button: TUDBtnType);
 begin
-  if TabStop and CanFocus then
-    SetFocus;
-  case Button of
-    btNext:
-      UpClick(Sender);
-    btPrev:
-      DownClick(Sender);
-  end;
+  PostMessage(Handle, WM_UPDOWNCLICK, WPARAM(Sender), LPARAM(Button));
 end;
 
 //=== { TJvSpinButton } ======================================================
