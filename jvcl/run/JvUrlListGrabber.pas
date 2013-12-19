@@ -35,7 +35,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Classes, SysUtils, Contnrs,
+  Windows, WinInet, Classes, SysUtils, Contnrs,
   JvComponentBase, JvTypes;
 
 type
@@ -48,6 +48,26 @@ type
   // A Grabber index, defined as a new type to allow to give it
   // a specific property editor
   TJvUrlGrabberIndex = type Integer;
+
+  // Timeout values
+  // -1 means do not change the current option.
+  //  0 means infinite
+  // Any other positive value is timeout in milliseconds.
+  TJvUrlGrabberTimeOut = class(TPersistent)
+  private
+    FConnect: Integer;
+    FReceive: Integer;
+    FSend: Integer;
+  public
+    constructor Create;
+
+    procedure Assign(Source : TPersistent); override;
+    procedure SetupSession(ASession: HINTERNET);
+  published
+    property Connect: Integer read FConnect write FConnect default -1;
+    property Receive: Integer read FReceive write FReceive default -1;
+    property Send: Integer read FSend write FSend default -1;
+  end;
 
   // The event triggered when a new grabber are created/added
   TJvGrabberCreatedEvent = procedure(Sender: TJvUrlListGrabber; Grabber: TJvCustomUrlGrabber) of object;
@@ -112,6 +132,8 @@ type
     FMaxSimultaneousGrabbers: Integer;
     FNextURLIndex: Integer;
     FOnGrabberAdded: TJvGrabberAddedEvent;
+
+    FTimeOut : TJvUrlGrabberTimeOut;
 
     // gets/sets the URLs property, assigning the given strings
     // to the internal FURLs field
@@ -205,6 +227,9 @@ type
 
     // Maximum number of grabbers running simultaneously. 0 means no limit.
     property MaxSimultaneousGrabbers: Integer read FMaxSimultaneousGrabbers write SetMaxSimultaneousGrabbers default 0;
+
+    // Timeout options
+    property TimeOut: TJvUrlGrabberTimeOut read FTimeOut;
 
     // The Urls to grab
     property URLs: TStrings read GetURLs write SetURLs;
@@ -339,7 +364,7 @@ type
   // Do not instanciate a TJvCustomUrlGrabber directly, simply use one
   // of its descendants. This family of classes is used by
   // TJvUrlListGrabber to allow downloading a list of URLs but can
-  // also be used on their own to grad one URL of a given type.
+  // also be used on their own to grab one URL of a given type.
   TJvCustomUrlGrabber = class(TJvComponent)
   private
     FId: Integer;
@@ -387,6 +412,8 @@ type
     FBytesRead: Int64;
     // True if data has been read
     FGrabbingStarted: Boolean;
+
+    FTimeOut: TJvUrlGrabberTimeOut;
   protected
     // Event callers
     procedure DoError(ErrorMsg: string);
@@ -467,6 +494,8 @@ type
     property Agent: string read FAgent write FAgent;
     // A numerical Id, to be freely used by the user of the component
     property Id: Integer read FId write FId;
+    // Timeout values
+    property TimeOut: TJvUrlGrabberTimeOut read FTimeOut;
     // Events
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
     property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
@@ -606,6 +635,8 @@ begin
   FURLs := TStringList.Create;
   FURLs.OnChanging := URLsChanging;
   FDefaultGrabberIndex := -1;
+
+  FTimeOut := TJvUrlGrabberTimeOut.Create;
 end;
 
 destructor TJvUrlListGrabber.Destroy;
@@ -614,6 +645,8 @@ begin
   FGrabbers.Free;
   FDefaultGrabbersProperties.Free;
   FCleanupList.Free;
+  FTimeOut.Free;
+
   inherited Destroy;
 end;
 
@@ -689,6 +722,8 @@ var
 begin
   NewGrabber := GetGrabberForUrl(FURLs[FNextUrlIndex]);
   Inc(FNextUrlIndex);  // Inc everytime to be thread safe
+
+  NewGrabber.TimeOut.Assign(FTimeOut);
   SetGrabberEvents(NewGrabber);
   DoGrabberAdded(NewGrabber, FGrabbers.Add(NewGrabber));
   NewGrabber.Start;
@@ -900,7 +935,8 @@ end;
 constructor TJvCustomUrlGrabber.Create(AOwner: TComponent; AUrl: string;
   DefaultProperties: TJvCustomUrlGrabberDefaultProperties);
 begin
-  inherited Create(AOwner);
+  Create(AOwner);
+
   FUrlGrabberThread := nil;
 
   // get values from the default properties
@@ -920,6 +956,8 @@ constructor TJvCustomUrlGrabber.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FTimeOut := TJvUrlGrabberTimeOut.Create;
+
   // Set default properties
   Agent := RsJediAgent;
   Port := 0;
@@ -932,6 +970,9 @@ end;
 destructor TJvCustomUrlGrabber.Destroy;
 begin
   Stop;  // Stop grabbing
+
+  FTimeOut.Free;
+
   inherited Destroy;
 end;
 
@@ -1512,6 +1553,53 @@ begin
     if FMaxSimultaneousGrabbers < 0 then
       FMaxSimultaneousGrabbers := 0;
   end;
+end;
+
+{ TJvUrlGrabberTimeout }
+
+procedure TJvUrlGrabberTimeout.Assign(Source: TPersistent);
+begin
+  if Source is TJvUrlGrabberTimeout Then
+  begin
+    FConnect := TJvUrlGrabberTimeout(Source).Connect;
+    FReceive := TJvUrlGrabberTimeout(Source).Receive;
+    FSend := TJvUrlGrabberTimeout(Source).Send;
+  end
+  else 
+  begin
+    inherited;
+  end;
+end;  
+
+constructor TJvUrlGrabberTimeOut.Create;
+begin
+  inherited Create;
+
+  FConnect := -1;
+  FReceive := -1;
+  FSend := -1;
+end;
+
+procedure TJvUrlGrabberTimeOut.SetupSession(ASession: HINTERNET);
+  procedure SetTimeout(Option: Cardinal; Value: Integer);
+  begin
+    case Value of
+      -1:
+        ; // nothing, leave default value
+      0:
+      begin
+        Value := Integer($FFFFFFFF);
+        InternetSetOption(ASession, Option, @Value, SizeOf(Value));
+      end
+      else
+        if Value > 0 then
+          InternetSetOption(ASession, Option, @Value, SizeOf(Value));
+    end;
+  end;
+begin
+   SetTimeout(INTERNET_OPTION_CONNECT_TIMEOUT, Connect);
+   SetTimeout(INTERNET_OPTION_RECEIVE_TIMEOUT, Receive);
+   SetTimeout(INTERNET_OPTION_SEND_TIMEOUT, Send);
 end;
 
 initialization

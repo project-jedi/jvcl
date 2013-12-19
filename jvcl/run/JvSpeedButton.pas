@@ -386,6 +386,9 @@ type
     property ShowHint default True;
     property Spacing;
     property Style;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
     property Transparent;
     property Visible;
     property WordWrap;

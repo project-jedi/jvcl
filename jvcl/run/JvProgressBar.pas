@@ -204,6 +204,9 @@ type
     property TaskbarState: TJvTaskBarProgressState read FTaskbarState write SetTaskbarState default tpsNormal;
   published
     property Width default 150;
+    {$IFDEF HAS_PROPERTY_STYLEELEMENTS}
+    property StyleElements;
+    {$ENDIF HAS_PROPERTY_STYLEELEMENTS}
   end;
 
   { For Windows >= Vista }

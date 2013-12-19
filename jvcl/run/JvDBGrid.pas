@@ -2063,9 +2063,9 @@ begin
           AFont.Color := AlternateRowFontColor;
       end;
     end;
-  end
+  end(*
   else
-    Background := FixedColor;
+    Background := FixedColor*);
 
   if Highlight then
   begin
@@ -2365,6 +2365,7 @@ var
   lCompare: Integer;
   WasAlwaysShowEditor: Boolean;
   WasRowResizing: Boolean;
+  InheritedCalled: Boolean;
 begin
   if not AcquireFocus then
     Exit;
@@ -2471,12 +2472,16 @@ begin
             Exit;
         end;
       end;
+      InheritedCalled := False;
       if Cell.Y >= 0 then
       begin
         if (Cell.X < FixedCols + IndicatorOffset) and DataLink.Active then
         begin
           if dgIndicator in Options then
-            inherited MouseDown(Button, Shift, 1, Y)
+          begin
+            inherited MouseDown(Button, Shift, 1, Y);
+            InheritedCalled := True;
+          end
           else
           if Cell.Y >= TitleOffset then
             if Cell.Y - Row <> 0 then
@@ -2504,13 +2509,17 @@ begin
                 // Disable goRowSizing without all the code that SetOptions executes.
                 TGridOptions(Pointer(@TCustomGridAccess(Self).Options)^) := TCustomGridAccess(Self).Options - [goRowSizing];
                 inherited MouseDown(Button, Shift, 1, Y);
+                InheritedCalled := True;
               finally
                 if WasRowResizing then
                   TGridOptions(Pointer(@TCustomGridAccess(Self).Options)^) := TCustomGridAccess(Self).Options + [goRowSizing];
               end;
             end
             else
+            begin
               inherited MouseDown(Button, Shift, X, Y);
+              InheritedCalled := True;
+            end;
             if (Col = LastCell.X) and (Row <> LastCell.Y) then
             begin
               { ColEnter is not invoked when switching between rows staying in the
@@ -2525,7 +2534,7 @@ begin
         end;
       end;
       MouseDownEvent := OnMouseDown;
-      if Assigned(MouseDownEvent) then
+      if Assigned(MouseDownEvent) and not InheritedCalled then
         MouseDownEvent(Self, Button, Shift, X, Y);
       if not (((csDesigning in ComponentState) or (dgColumnResize in Options)) and
         (Cell.Y < TitleOffset)) and (Button = mbLeft) then
@@ -3126,20 +3135,20 @@ begin
         // without the 3D border.
         Bmp := TBitmap.Create;
         try
-          Bmp.Canvas.Brush.Color := FixedColor;
+//          Bmp.Canvas.Brush.Color := FixedColor;
           Bmp.Width := lCellRect.Right - lCellRect.Left;
           Bmp.Height := lCellRect.Bottom - lCellRect.Top;
           DC := Canvas.Handle;
           try
             Canvas.Handle := Bmp.Canvas.Handle;
             IntersectClipRect(Canvas.Handle, 2, 2, Bmp.Width - 2, Bmp.Height - 2);
-            CallDrawCellEvent(ACol, ARow, Rect(0, 0, Bmp.Width - 1, Bmp.Height - 1), [gdFixed]);
+//            CallDrawCellEvent(ACol, ARow, Rect(0, 0, Bmp.Width - 1, Bmp.Height - 1), [gdFixed]);
           finally
             Canvas.Handle := DC;
           end;
-          Bmp.TransparentColor := FixedColor;
+//          Bmp.TransparentColor := FixedColor;
           Bmp.Transparent := True;
-          Canvas.Draw(lCellRect.Left, lCellRect.Top, Bmp);
+//          Canvas.Draw(lCellRect.Left, lCellRect.Top, Bmp);
         finally
           Bmp.Free;
         end;
@@ -3361,7 +3370,7 @@ begin
         Indicator := 0
       else
         Indicator := 1; { multiselected and current row }
-      FMsIndicators.BkColor := FixedColor;
+//      FMsIndicators.BkColor := FixedColor;
       ALeft := FixRect.Right - FMsIndicators.Width - FrameOffs;
       if InBiDiMode then
         Inc(ALeft);

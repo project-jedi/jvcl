@@ -244,8 +244,11 @@ end;
 
 function TJvDBSpinEdit.GetValue: Extended;
 begin
-  Result := inherited GetValue;
-  FIsNull := (Text = '') and (Result = 0.0);
+  FIsNull := (Text = '');
+  if FIsNull then
+    Result := 0.0
+  else
+    Result := inherited GetValue;
 end;
 
 function TJvDBSpinEdit.IsValidChar(Key: Char): Boolean;
