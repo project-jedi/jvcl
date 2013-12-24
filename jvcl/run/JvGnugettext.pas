@@ -2159,15 +2159,24 @@ begin
         end;
         {$endif}
         try
-          // Fix for Mantis #5917. TStringList doesn't release the objects in PutObject, so we
-          // use this to get sl.Clear to not destroy the objects in classes that inherit from
-          // TStringList but do a ClearObject in Clear.
-          if (sl.ClassType <> TStringList) and (sl is TStringList) then
-            for I := 0 to sl.Count - 1 do
-              sl.Objects[I] := nil;
-          // same here, we don't want to modify the properties of the orignal string list
-          sl.Clear;
-          sl.AddStrings(s);
+          if Assigned(slAsTStringList) and slAsTStringList.Sorted then
+          begin
+            // Fix for Mantis #5917. TStringList doesn't release the objects in PutObject, so we
+            // use this to get sl.Clear to not destroy the objects in classes that inherit from
+            // TStringList but do a ClearObject in Clear.
+            if sl.ClassType <> TStringList then
+              for I := 0 to sl.Count - 1 do
+                sl.Objects[I] := nil;
+
+            // same here, we don't want to modify the properties of the orignal string list
+            sl.Clear;
+            sl.AddStrings(s);
+          end
+          else
+          begin
+            for i := 0 to sl.Count - 1 do
+              sl[i] := s[i];
+          end;
         finally
           {$ifdef DELPHI2009OROLDER}
           if Assigned(slAsTStringList) then
