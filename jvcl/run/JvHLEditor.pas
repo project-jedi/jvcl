@@ -1468,18 +1468,26 @@ begin
                 case S[I] of
                   '<':
                     begin
-                      P := StrScanNil(F + I, Char('>'));
-                      if P = nil then
+                      // Multiline comments in HTML
+                      if (I + 3 <= L1) and (S[I + 1] = '!') and (S[I + 2] = '-') and (S[I + 3] = '-') then
                       begin
-                        // Multiline comments in HTML
-                        if (I + 3 <= L1) and (S[I + 1] = '!') and (S[I + 2] = '-') and (S[I + 3] = '-') then
-                          FLong := lgComment1
-                        else
-                          FLong := lgTag;
-                        Break;
+                        FLong := lgComment1;
+                        P := F + I + 4 - 1;
+                        while (P[0] <> #0) and not ((P[0] = '-') and (P[1] = '-') and (P[2] = '>')) do
+                          Inc(P);
+                        I := P - F; // point to "-->" so that case lgComment1 can handle it
                       end
                       else
-                        I := P - F + 1;
+                      begin
+                        P := StrScanNil(F + I, Char('>'));
+                        if P = nil then
+                        begin
+                          FLong := lgTag;
+                          Break;
+                        end
+                        else
+                          I := P - F + 1;
+                      end;
                     end;
                 end;
               // Multiline comments in HTML
