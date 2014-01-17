@@ -52,8 +52,7 @@ uses
   JvAppStorage, JvFormPlacement, JvComponent;
 
 type
-  TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer;
-    var Width: Integer) of object;
+  TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer; var Width: Integer) of object;
 
   TJvxCustomListBox = class(TJvWinControl)
   private
@@ -121,11 +120,10 @@ type
     function GetItemWidth(Index: Integer): Integer; virtual;
     procedure WndProc(var Msg: TMessage); override;
     procedure DragCanceled; override;
-    procedure DrawItem(Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); virtual;
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); virtual;
     procedure MeasureItem(Index: Integer; var Height: Integer); virtual;
-    function GetItemData(Index: Integer): Longint; dynamic;
-    procedure SetItemData(Index: Integer; AData: Longint); dynamic;
+    function GetItemData(Index: Integer): LPARAM; dynamic;
+    procedure SetItemData(Index: Integer; AData: LPARAM); dynamic;
     function GetItems: TStrings; virtual;
     procedure SetItems(Value: TStrings); virtual;
     procedure ResetContent; dynamic;
@@ -210,17 +208,15 @@ type
   protected
     procedure FontChanged; override;
     function CreateItemList: TStrings; override;
-    procedure DrawItem(Index: Integer; Rect: TRect;
-      State: TOwnerDrawState); override;
+    procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure DefineProperties(Filer: TFiler); override;
     function GetItemWidth(Index: Integer): Integer; override;
-    function GetItemData(Index: Integer): Longint; override;
-    procedure SetItemData(Index: Integer; AData: Longint); override;
+    function GetItemData(Index: Integer): LPARAM; override;
+    procedure SetItemData(Index: Integer; AData: LPARAM); override;
     procedure KeyPress(var Key: Char); override;
     procedure Loaded; override;
     procedure DrawCheck(R: TRect; AState: TCheckBoxState; Enabled: Boolean);
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure ResetContent; override;
     procedure DeleteString(Index: Integer); override;
     procedure ClickCheck; dynamic;
@@ -367,7 +363,7 @@ var
   Len: Integer;
   Text: array [0..4095] of Char;
 begin
-  Len := SendMessage(ListBox.Handle, LB_GETTEXT, Index, LPARAM(@Text));
+  Len := SendMessage(ListBox.Handle, LB_GETTEXT, WPARAM(Index), LPARAM(@Text));
   if Len < 0 then
     Error(SListIndexError, Index);
   SetString(Result, Text, Len);
@@ -394,7 +390,7 @@ end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
 begin
-  if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, LPARAM(PChar(S))) < 0 then
+  if SendMessage(ListBox.Handle, LB_INSERTSTRING, WPARAM(Index), LPARAM(PChar(S))) < 0 then
     raise EOutOfResources.CreateRes(@SInsertLineError);
 end;
 
@@ -410,7 +406,7 @@ end;
 
 procedure TJvListBoxStrings.SetUpdateState(Updating: Boolean);
 begin
-  SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(not Updating), 0);
+  SendMessage(ListBox.Handle, WM_SETREDRAW, WPARAM(Ord(not Updating)), 0);
   if not Updating then
     ListBox.Refresh;
 end;
@@ -468,24 +464,24 @@ begin
   Result := FCanvas;
 end;
 
-function TJvxCustomListBox.GetItemData(Index: Integer): Longint;
+function TJvxCustomListBox.GetItemData(Index: Integer): LPARAM;
 begin
-  Result := SendMessage(Handle, LB_GETITEMDATA, Index, 0);
+  Result := LPARAM(SendMessage(Handle, LB_GETITEMDATA, WPARAM(Index), 0));
 end;
 
-procedure TJvxCustomListBox.SetItemData(Index: Integer; AData: Longint);
+procedure TJvxCustomListBox.SetItemData(Index: Integer; AData: LPARAM);
 begin
-  SendMessage(Handle, LB_SETITEMDATA, Index, AData);
+  SendMessage(Handle, LB_SETITEMDATA, WPARAM(Index), LPARAM(AData));
 end;
 
 procedure TJvxCustomListBox.DeleteString(Index: Integer);
 begin
-  SendMessage(Handle, LB_DELETESTRING, Index, 0);
+  SendMessage(Handle, LB_DELETESTRING, WPARAM(Index), 0);
 end;
 
 procedure TJvxCustomListBox.SetHorizontalExtent;
 begin
-  SendMessage(Handle, LB_SETHORIZONTALEXTENT, FMaxItemWidth, 0);
+  SendMessage(Handle, LB_SETHORIZONTALEXTENT, WPARAM(FMaxItemWidth), 0);
 end;
 
 function TJvxCustomListBox.GetItemWidth(Index: Integer): Integer;
@@ -539,7 +535,7 @@ end;
 procedure TJvxCustomListBox.SetColumnWidth;
 begin
   if FColumns > 0 then
-    SendMessage(Handle, LB_SETCOLUMNWIDTH, (Width + FColumns - 3) div FColumns, 0);
+    SendMessage(Handle, LB_SETCOLUMNWIDTH, WPARAM((Width + FColumns - 3) div FColumns), 0);
 end;
 
 procedure TJvxCustomListBox.SetColumns(Value: Integer);
@@ -571,7 +567,7 @@ end;
 procedure TJvxCustomListBox.SetItemIndex(Value: Integer);
 begin
   if GetItemIndex <> Value then
-    SendMessage(Handle, LB_SETCURSEL, Value, 0);
+    SendMessage(Handle, LB_SETCURSEL, WPARAM(Value), 0);
 end;
 
 procedure TJvxCustomListBox.SetExtendedSelect(Value: Boolean);
@@ -686,9 +682,9 @@ end;
 
 function TJvxCustomListBox.GetSelected(Index: Integer): Boolean;
 var
-  R: Longint;
+  R: LRESULT;
 begin
-  R := SendMessage(Handle, LB_GETSEL, Index, 0);
+  R := SendMessage(Handle, LB_GETSEL, WPARAM(Index), 0);
   if R = LB_ERR then
     ListIndexError(Index);
   Result := LongBool(R);
@@ -1191,7 +1187,7 @@ end;
 type
   TJvCheckListBoxItem = class(TObject)
   private
-    FData: Longint;
+    FData: LPARAM;
     FState: TCheckBoxState;
     FEnabled: Boolean;
     function GetChecked: Boolean;
@@ -1932,7 +1928,7 @@ begin
     FOnClickCheck(Self);
 end;
 
-function TJvxCheckListBox.GetItemData(Index: Integer): Longint;
+function TJvxCheckListBox.GetItemData(Index: Integer): LPARAM;
 var
   Item: TJvCheckListBoxItem;
 begin
@@ -1954,7 +1950,7 @@ end;
 
 function TJvxCheckListBox.FindCheckObject(Index: Integer): TObject;
 var
-  ItemData: Longint;
+  ItemData: LPARAM;
 begin
   Result := nil;
   ItemData := inherited GetItemData(Index);
@@ -1979,16 +1975,16 @@ begin
   Result := FindCheckObject(Index) <> nil;
 end;
 
-procedure TJvxCheckListBox.SetItemData(Index: Integer; AData: Longint);
+procedure TJvxCheckListBox.SetItemData(Index: Integer; AData: LPARAM);
 var
   Item: TJvCheckListBoxItem;
-  L: Longint;
+  L: LPARAM;
 begin
   Item := TJvCheckListBoxItem(GetCheckObject(Index));
   Item.FData := AData;
   if (FSaveStates <> nil) and (FSaveStates.Count > 0) then
   begin
-    L := Longint(FSaveStates[0]);
+    L := LPARAM(FSaveStates[0]);
     Item.FState := TCheckBoxState(HiWord(L));
     Item.FEnabled := LoWord(L) <> 0;
     FSaveStates.Delete(0);
