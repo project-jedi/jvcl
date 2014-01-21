@@ -455,8 +455,10 @@ begin
         DestField.AsBCD := SourceField.AsBCD;
       ftString:
         DestField.AsString := SourceField.AsString;
+      {$IFDEF COMPILER10_UP}
       ftWideString:
         DestField.AsWideString := SourceField.AsWideString;
+      {$ENDIF COMPILER10_UP}
       ftFloat:
         DestField.AsFloat := SourceField.AsFloat;
       ftDateTime:
