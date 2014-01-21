@@ -2116,8 +2116,8 @@ var
   line: string;
   i: integer;
   s:TStringList;
-  {$ifdef DELPHI2009OROLDER}
   slAsTStringList:TStringList;
+  {$ifdef DELPHI2009OROLDER}
   originalOwnsObjects: Boolean;
   {$endif}
 begin
@@ -2129,11 +2129,11 @@ begin
     // only if sl is a TStringList instance and if using Delphi 2009 or upper.
     {$ifdef DELPHI2009OROLDER}
     originalOwnsObjects := False; // avoid warning
+    {$endif}
     if sl is TStringList then
       slAsTStringList := TStringList(sl)
     else
       slAsTStringList := nil;
-    {$endif}
 
     sl.BeginUpdate;
     try
