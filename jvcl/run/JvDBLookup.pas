@@ -690,7 +690,11 @@ implementation
 uses
   VDBConsts, DBConsts, SysUtils, Math, MultiMon,
   JclSysInfo,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources, JclSysUtils;
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources, JclSysUtils
+  {$IFDEF HAS_UNITSCOPE}
+  , System.RTLConsts
+  {$ENDIF HAS_UNITSCOPE}
+  ;
 
 procedure CheckLookupFormat(const AFormat: string);
   { AFormat is passed to a Format function, but the only allowed

@@ -423,7 +423,11 @@ implementation
 
 uses
   Types, SysUtils, Consts, RTLConsts, Variants,
-  JvDataProviderIntf, JvItemsSearchs, JvConsts, JvResources;
+  JvDataProviderIntf, JvItemsSearchs, JvConsts, JvResources
+  {$IFDEF HAS_UNITSCOPE}
+  , Vcl.CheckLst
+  {$ENDIF HAS_UNITSCOPE}
+  ;
 
 const
   MinDropLines = 2;

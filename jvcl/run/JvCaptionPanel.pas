@@ -204,7 +204,11 @@ const
 implementation
 
 uses
-  JvJCLUtils;
+  JvJCLUtils
+  {$IFDEF HAS_UNITSCOPE}
+  , System.Types
+  {$ENDIF HAS_UNITSCOPE}
+  ;
 
 //=== { TJvCapBtn } ==========================================================
 

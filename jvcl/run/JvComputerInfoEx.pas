@@ -1472,7 +1472,7 @@ implementation
 
 uses
   Registry,
-  JclShell, JclRegistry, JclFileUtils,
+  JclShell, JclRegistry, JclFileUtils, JclSysUtils,
   JvJCLUtils, // Include/ExcludeTrailingPathDelimiter
   JvResources;
 

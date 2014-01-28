@@ -94,7 +94,11 @@ const
 implementation
 
 uses
-  Math;
+  Math
+  {$IFDEF JVCLThemesEnabled}
+  , Vcl.Themes
+  {$ENDIF JVCLThemesEnabled}
+  ;
 
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin

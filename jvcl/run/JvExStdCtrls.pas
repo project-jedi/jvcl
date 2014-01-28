@@ -1115,7 +1115,11 @@ const
 implementation
 
 uses
-  JclSysInfo;
+  JclSysInfo
+  {$IFDEF JVCLThemesEnabled}
+  , Vcl.Themes
+  {$ENDIF JVCLThemesEnabled}
+  ;
 
 {$IFNDEF COMPILER12_UP}
 const

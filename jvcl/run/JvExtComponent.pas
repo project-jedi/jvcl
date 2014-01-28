@@ -78,6 +78,12 @@ const
 
 implementation
 
+uses
+
+{$IFDEF HAS_UNITSCOPE}
+  Vcl.Controls;
+{$ENDIF HAS_UNITSCOPE}
+
 { TJvCustomPanel }
 
 
