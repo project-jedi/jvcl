@@ -208,6 +208,8 @@ type
     function GetNextControlByTabOrder(ATabOrder: Integer): TWinControl;
     procedure SetSizeableCursor;
     procedure RestoreSizeableCursor;
+    function GetControlSize(Control: TControl): TSize;
+    procedure SetControlBounds(Control: TControl; const R: TRect);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -593,6 +595,7 @@ constructor TJvCustomArrangePanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   IncludeThemeStyle(Self, [csNeedsBorderPaint, csParentBackground]);
+  ControlStyle := ControlStyle - [csSetCaption];
   FMultiLine := False;
   FTransparent := False;
   FFlatBorder := False;
@@ -947,6 +950,26 @@ begin
     Screen.Cursor := FLastScreenCursor;
 end;
 
+function TJvCustomArrangePanel.GetControlSize(Control: TControl): TSize;
+begin
+  {$IFDEF COMPILER10_UP} // Delphi 2006+
+  Result.cx := Control.Margins.ControlWidth;
+  Result.cy := Control.Margins.ControlHeight;
+  {$ELSE}
+  Result.cx := Control.Width;
+  Result.cy := Control.Height;
+  {$ENDIF COMPILER10_UP}
+end;
+
+procedure TJvCustomArrangePanel.SetControlBounds(Control: TControl; const R: TRect);
+begin
+  {$IFDEF COMPILER10_UP} // Delphi 2006+
+  Control.Margins.SetControlBounds(R);
+  {$ELSE}
+  Control.BoundsRect := R;
+  {$ENDIF COMPILER10_UP}
+end;
+
 procedure TJvCustomArrangePanel.SetTransparent(const Value: Boolean);
 begin
   if Value <> FTransparent then
@@ -1178,6 +1201,7 @@ var
   LineOffsets: array of Integer;
   LineCount, Len: Integer;
   ArrS: TJvArrangeSettings;
+  ControlSize: TSize;
 begin
   if not ArrangeEnabled or FArrangeControlActive or (ControlCount = 0) or
      ([csLoading, csReading] * ComponentState <> []) then
@@ -1210,8 +1234,9 @@ begin
       begin
         if Controls[I] is TJvCustomArrangePanel then
           TJvCustomArrangePanel(Controls[I]).Rearrange;
-        if (Controls[I].Width + 2 * ArrS.BorderLeft > TmpWidth) then
-          TmpWidth := Controls[I].Width + 2 * ArrS.BorderLeft;
+        ControlSize := GetControlSize(Controls[I]);
+        if (ControlSize.cx + 2 * ArrS.BorderLeft > TmpWidth) then
+          TmpWidth := ControlSize.cx + 2 * ArrS.BorderLeft;
       end;
 
     if (TmpWidth > ArrS.MaxWidth) and (ArrS.MaxWidth > 0) then
@@ -1228,7 +1253,8 @@ begin
       if CurrControl.Visible or
         ((csDesigning in ComponentState) and ArrS.ShowNotVisibleAtDesignTime) then
       begin
-        NewMaxX := AktX + CurrControl.Width + ArrS.DistanceHorizontal + ArrS.BorderLeft;
+        ControlSize := GetControlSize(CurrControl);
+        NewMaxX := AktX + ControlSize.cx + ArrS.DistanceHorizontal + ArrS.BorderLeft;
         if ((ArrS.MaxControlsPerLine > 0) and (NumControlsPerLine >= ArrS.MaxControlsPerLine)) or
            ((((NewMaxX > TmpWidth) and not (ArrS.AutoSize in [asWidth, asBoth])) or
             ((NewMaxX > ArrS.MaxWidth) and (ArrS.MaxWidth > 0))) and
@@ -1250,14 +1276,14 @@ begin
           NewY := AktY;
           Inc(NumControlsPerLine);
         end;
-        AktX := AktX + CurrControl.Width;
+        AktX := AktX + ControlSize.cx;
         if AktX > ControlMaxX then
           ControlMaxX := AktX;
         AktX := AktX + ArrS.DistanceHorizontal;
         ControlRects[I].Control := CurrControl;
-        ControlRects[I].BoundsRect := Rect(NewX, NewY, NewX + CurrControl.Width, NewY + CurrControl.Height);
+        ControlRects[I].BoundsRect := Rect(NewX, NewY, NewX + ControlSize.cx, NewY + ControlSize.cy);
         if CurrControl.Height > MaxY then
-          MaxY := CurrControl.Height;
+          MaxY := ControlSize.cy;
         ControlMaxY := AktY + MaxY;
       end;
       CurrControl := GetNextControlByTabOrder(LastTabOrder + 1);
@@ -1322,7 +1348,7 @@ begin
             Inc(LineCount);
           OffsetRect(ControlRects[I].BoundsRect, LineOffsets[LineCount], 0);
         end;
-        ControlRects[I].Control.BoundsRect := ControlRects[I].BoundsRect;
+        SetControlBounds(ControlRects[I].Control, ControlRects[I].BoundsRect);
       end;
     end;
 
@@ -1348,7 +1374,7 @@ begin
     FArrangeWidth := ControlMaxX + 2 * ArrS.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * ArrS.BorderTop;
     if (OldWidth <> TmpWidth) or (OldHeight <> Height) then
-      UpdateWindow(GetFocus); //SendMessage(GetFocus, WM_PAINT, 0, 0);
+      UpdateWindow(GetFocus);
   finally
     FArrangeControlActive := False;
   end;
