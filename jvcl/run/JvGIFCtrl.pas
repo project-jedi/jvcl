@@ -59,7 +59,7 @@ type
     FOnChange: TNotifyEvent;
     FOnFrameChanged: TNotifyEvent;
     procedure TimerDeactivate;
-    function GetFrameBitmap(Index: Integer; var TransColor: TColor): TBitmap;
+    function GetFrameBitmap(Index: Integer; var TransColor: TColor): TBitmap; overload;
     function GetDelayTime(Index: Integer): Cardinal;
     procedure SetAsyncDrawing(Value: Boolean);
     procedure SetAnimate(Value: Boolean);
@@ -89,6 +89,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function GetFrameBitmap(Index: Integer; var TransColor: TColor; Bitmap: TBitmap): Boolean; overload;
   published
     property AsyncDrawing: Boolean read FAsyncDrawing write SetAsyncDrawing default False;
     property Animate: Boolean read FAnimate write SetAnimate default False;
@@ -214,6 +216,20 @@ begin
   FImage.Free;
   FreeAndNil(FTimer); // Note: not really required (VCL does it for us), but cleaner
   inherited Destroy;
+end;
+
+function TJvGIFAnimator.GetFrameBitmap(Index: Integer; var TransColor: TColor; Bitmap: TBitmap): Boolean;
+var
+  CacheBmp: TBitmap;
+begin
+  Result := (Bitmap <> nil) and (Index >= 0) and (Index < FImage.Count);
+  if Result then
+  begin
+    CacheBmp := GetFrameBitmap(Index, TransColor);
+    // Do not return the "Cache" bitmap as it will be destroyed the next time the next frame
+    // has to be painted.
+    Bitmap.Assign(CacheBmp);
+  end;
 end;
 
 procedure TJvGIFAnimator.DoPaintImage;
