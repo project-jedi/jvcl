@@ -43,7 +43,13 @@ uses
   {$IFDEF RTL240_UP}
   System.Generics.Collections,
   {$ENDIF RTL240_UP}
+  {$IFDEF JVCLStylesEnabled}
+  System.UITypes, // for TBrush.GetColor inline
+  {$ENDIF JVCLStylesEnabled}
   Types, Variants, Classes, Graphics, Controls, Forms, DB, DBCtrls,
+  {$IFDEF JVCLThemesEnabled}
+  Themes, 
+  {$ENDIF JVCLThemesEnabled}
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
 const
@@ -2629,14 +2635,27 @@ begin
   begin
     if Assigned(FOnDropDown) then
       FOnDropDown(Self);
-    SelValue := Value; // backup before anything invokes a OnDataCahange event
-    FDataList.Color := Color;
-    FDataList.Font := Font;
+    SelValue := Value; // backup before anything invokes a OnDataChange event
+
+    {$IFDEF JVCLStylesEnabled}
+    if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
+    begin
+      FDataList.Color := StyleServices.GetStyleColor(scComboBox);
+      FDataList.Font.Color  := StyleServices.GetStyleFontColor(sfComboBoxItemNormal);
+      FDataList.EmptyItemColor := FDataList.Color;
+    end
+    else
+    {$ENDIF JVCLStylesEnabled}
+    begin
+      FDataList.Color := Color;
+      FDataList.Font := Font;
+      FDataList.EmptyItemColor := EmptyItemColor;
+    end;
+
     FDataList.ItemHeight := ItemHeight;
     FDataList.ReadOnly := not CanModify;
     FDataList.EmptyValue := EmptyValue;
     FDataList.DisplayEmpty := DisplayEmpty;
-    FDataList.EmptyItemColor := EmptyItemColor;
     FDataList.UseRecordCount := UseRecordCount;
     if Assigned(FLookupLink.DataSet) and UseRecordCount then
     begin
@@ -3185,6 +3204,10 @@ end;
 procedure TJvDBLookupCombo.Paint;
 const
   TransColor: array [Boolean] of TColor = (clBtnFace, clWhite);
+  {$IFDEF JVCLStylesEnabled}
+  ColorStates: array[Boolean] of TStyleColor = (scComboBoxDisabled, scComboBox);
+  FontColorStates: array[Boolean] of TStyleFont = (sfComboBoxItemDisabled, sfComboBoxItemNormal);
+  {$ENDIF JVCLStylesEnabled}
 var
   W, X, Flags, TextMargin: Integer;
   AText: string;
@@ -3200,17 +3223,37 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  Canvas.Font := Font;
-  Canvas.Brush.Color := Color;
   Selected := FFocused and not FListVisible and  not (csPaintCopy in ControlState);
-  if Selected then
+
+  {$IFDEF JVCLStylesEnabled}
+  if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
   begin
-    Canvas.Font.Color := clHighlightText;
-    Canvas.Brush.Color := clHighlight;
+    if Selected then
+    begin
+      Canvas.Brush.Color := StyleServices.GetSystemColor(clHighlight);
+      Canvas.Font.Color  := StyleServices.GetSystemColor(clHighlightText);
+    end
+    else
+    begin
+      Canvas.Brush.Color := StyleServices.GetStyleColor(ColorStates[Enabled]);
+      Canvas.Font.Color  := StyleServices.GetStyleFontColor(FontColorStates[Enabled]);
+    end;
   end
   else
-  if not Enabled then
-    Canvas.Font.Color := clGrayText;
+  {$ENDIF JVCLStylesEnabled}
+  begin
+    Canvas.Font := Font;
+    Canvas.Brush.Color := Color;
+    if Selected then
+    begin
+      Canvas.Font.Color := clHighlightText;
+      Canvas.Brush.Color := clHighlight;
+    end
+    else
+      if not Enabled then
+        Canvas.Font.Color := clGrayText;
+  end;
+
   AText := inherited Text;
   Alignment := FAlignment;
   Image := nil;
@@ -3319,6 +3362,15 @@ begin
           ImageRect.Right := ImageRect.Left + TextMargin + 2;
         DrawPicture(Bmp.Canvas, ImageRect, Image);
       end;
+
+      {$IFDEF JVCLStylesEnabled}
+      if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
+      begin
+        Canvas.Pen.Color := Canvas.Brush.Color;
+        Canvas.Rectangle(TrueInflateRect(R, 1));
+      end;
+      {$ENDIF JVCLStylesEnabled}
+
       Canvas.Draw(R.Left, R.Top, Bmp);
     finally
       Bmp.Free;
@@ -3781,6 +3833,15 @@ begin
     begin
       Color := Self.Color;
       Font := Self.Font;
+
+      {$IFDEF JVCLStylesEnabled}
+      if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
+      begin
+        Color := StyleServices.GetStyleColor(scComboBox);
+        Font.Color  := StyleServices.GetStyleFontColor(sfComboBoxItemNormal);
+      end;
+      {$ENDIF JVCLStylesEnabled}
+
       if FDropDownWidth > 0 then
         Width := FDropDownWidth
       else
