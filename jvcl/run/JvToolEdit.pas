@@ -4940,6 +4940,7 @@ procedure TJvFilenameEdit.PopupDropDown(DisableEdit: Boolean);
 var
   Temp: string;
   Action: Boolean;
+  Path, Name: string;
 begin
   Action := True;
   Temp := FileName;
@@ -4948,12 +4949,24 @@ begin
     Exit;
   if ValidFileName(Temp) then
   try
-    if DirectoryExists(ExtractFilePath(Temp)) then
-      SetInitialDir(ExtractFilePath(Temp));
-    if (ExtractFileName(Temp) = '') or
-      not ValidFileName(ExtractFileName(Temp)) then
+    Path := ExtractFilePath(Temp);
+    Name := ExtractFileName(Temp);
+
+    if (Name = '') or not ValidFileName(Name) then
       Temp := '';
-    FDialog.FileName := Temp;
+
+    if DirectoryExists(Path) then
+    begin
+      SetInitialDir(Path);
+      // If we are in the FileName's directory we don't have to include the path in the edit field.
+      // After FDialog.Execute the FileName property will contains the expanded path.
+      if Temp <> '' then
+        FDialog.FileName := Name
+      else
+        FDialog.FileName := '';
+    end
+    else
+      FDialog.FileName := Temp;
   except
     { ignore any exceptions }
   end;
@@ -4975,7 +4988,8 @@ begin
       inherited Text := ExtFilename(Temp)
     else
       inherited Text := Temp;
-    SetInitialDir(ExtractFilePath(FDialog.FileName));
+    Path := ExtractFilePath(FDialog.FileName);
+    SetInitialDir(Path);
   end;
 end;
 
