@@ -47,7 +47,6 @@ type
     FPtDown: TPoint;
     FPushDown: Boolean;
     FDown: Boolean;
-    FColor: TColor;
     FRows: Integer;
     FCols: Integer;
     FOnArrayButtonClicked: TArrayButtonClicked;
@@ -104,8 +103,7 @@ type
      I could have set the Application.OnShowHint handler directly in this component,
      but if you have more components that do this then only the last one would work
      }
-    procedure DoShowHint(var HintStr: THintString;
-      var CanShow: Boolean; var HintInfo: THintInfo);
+    procedure DoShowHint(var HintStr: THintString; var CanShow: Boolean; var HintInfo: THintInfo);
 
     // A list of individual button Enabled state, from the top-left to the bottom-right button
     property Enableds[Index: Integer]: Boolean read GetEnableds write SetEnableds;
@@ -126,6 +124,7 @@ type
      values must be standard Delphi Color names like clRed, clBlue or hex Color strings like $0000ff for red.
      please note the hex order in Delphi is BGR i.s.o. the RGB order you may know from HTML hex Color triplets}
     property Colors: TStrings read GetColors write SetColors;
+    property Color default clSilver;
     {$IFDEF RTL240_UP}
     [Default(False)]  // for proper XE3 IDE work
     {$ENDIF RTL240_UP}
@@ -173,7 +172,7 @@ begin
   inherited Create(AOwner);
   Width := 35;
   Height := 35;
-  FColor := clSilver;
+  Color := clSilver;
   FPushDown := False;
   FCols := 1;
   FRows := 1;
@@ -405,8 +404,6 @@ begin
     BmpCanvas.Handle := BmpDC;
     IntersectClipRect(BmpDC, R.Left, R.Top, R.Right, R.Bottom);
 
-    if FThemed then
-
     // Fill the border areas
     BmpCanvas.Brush.Color := Color;
     BmpCanvas.FillRect(Rect(0, 0, Width, 1));
@@ -414,6 +411,7 @@ begin
     BmpCanvas.FillRect(Rect(DW * Cols, 1, Width, Height));
     BmpCanvas.FillRect(Rect(0, DH * Rows, Width, Height));
 
+    BmpCanvas.Font := Font;
     // Draw the button cells
     for Row := 0 to Rows - 1 do
     begin
@@ -433,10 +431,10 @@ begin
             try
               BackColor := StringToColor(Colors[Index]);
             except
-              BackColor := clSilver;
+              BackColor := Color;
             end
           else
-            BackColor := clSilver;
+            BackColor := Color;
 
           MouseOver := (Col = FMouseOverBtn.X) and (Row = FMouseOverBtn.Y);
           if (csDesigning in ComponentState) then
@@ -628,8 +626,7 @@ begin
   Result := Rect(X0, Y0, X0 + DW, Y0 + DH);
 end;
 
-procedure TJvArrayButton.DoShowHint(var HintStr: THintString;
-  var CanShow: Boolean; var HintInfo: THintInfo);
+procedure TJvArrayButton.DoShowHint(var HintStr: THintString; var CanShow: Boolean; var HintInfo: THintInfo);
 var
   ACol, ARow, X, Y: Integer;
   Index: Integer;
