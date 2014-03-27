@@ -909,45 +909,42 @@ var
   tmpCol: TColor;
   tmpR: TRect;
 begin
-  with Canvas do
+  tmpCol := Canvas.Brush.Color;
+  Canvas.Brush.Color := Self.Color;
+  Canvas.FillRect(Rect);
+  Canvas.Brush.Color := tmpCol;
+  if FImageAlign = iaCentered then
   begin
-    tmpCol := Canvas.Brush.Color;
-    Canvas.Brush.Color := Self.Color;
-    FillRect(Rect);
-    Canvas.Brush.Color := tmpCol;
-    if FImageAlign = iaCentered then
+    HOffset := (Rect.Right - Rect.Left) div 2 - FImageWidth div 2;
+    if FImages.Count > 0 then
     begin
-      HOffset := (Rect.Right - Rect.Left) div 2 - FImageWidth div 2;
-      if FImages.Count > 0 then
-      begin
-        I := Integer(Items.Objects[Index]);
-        FImages.Draw(Canvas, HOffset, Rect.Top, I);
-      end;
-      InflateRect(Rect, 1, -6);
-      tmpR := Rect;
-      DrawText(Canvas, Items[Index], -1, tmpR,
-        DT_SINGLELINE or DT_BOTTOM or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
-      Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
-      Rect.Left := (Rect.Right - Rect.Left) div 2 - Canvas.TextWidth(PChar(Items[Index])) div 2;
-      Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
-      DrawText(Canvas, Items[Index], -1, Rect, DT_SINGLELINE or DT_CENTER or DT_NOPREFIX);
-    end
-    else
-    begin
-      if FImages.Count > 0 then
-      begin
-        I := Integer(Items.Objects[Index]);
-        FImages.Draw(Canvas, Rect.Left + FOffset * 2, Rect.Top + FOffset * 2, I);
-      end;
-      tmpR := Rect;
-      DrawText(Canvas, Items[Index], -1, tmpR,
-        DT_SINGLELINE or DT_VCENTER or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
-      Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
-      Rect.Bottom := Rect.Top + CanvasMaxTextHeight(Canvas);
-      Rect.Left := FImageWidth + FOffset * 3;
-      Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
-      DrawText(Canvas, Items[Index], -1, Rect, DT_SINGLELINE or DT_TOP or DT_NOPREFIX);
+      I := Integer(Items.Objects[Index]);
+      FImages.Draw(Canvas, HOffset, Rect.Top, I);
     end;
+    InflateRect(Rect, 1, -6);
+    tmpR := Rect;
+    DrawText(Canvas, Items[Index], -1, tmpR,
+      DT_SINGLELINE or DT_BOTTOM or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
+    Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
+    Rect.Left := (Rect.Right - Rect.Left) div 2 - Canvas.TextWidth(PChar(Items[Index])) div 2;
+    Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
+    DrawText(Canvas, Items[Index], -1, Rect, DT_SINGLELINE or DT_CENTER or DT_NOPREFIX);
+  end
+  else
+  begin
+    if FImages.Count > 0 then
+    begin
+      I := Integer(Items.Objects[Index]);
+      FImages.Draw(Canvas, Rect.Left + FOffset * 2, Rect.Top + FOffset * 2, I);
+    end;
+    tmpR := Rect;
+    DrawText(Canvas, Items[Index], -1, tmpR,
+      DT_SINGLELINE or DT_VCENTER or DT_CENTER or DT_NOPREFIX or DT_CALCRECT);
+    Rect.Top := tmpR.Bottom - CanvasMaxTextHeight(Canvas);
+    Rect.Bottom := Rect.Top + CanvasMaxTextHeight(Canvas);
+    Rect.Left := FImageWidth + FOffset * 3;
+    Rect.Right := Rect.Left + Canvas.TextWidth(PChar(Items[Index]));
+    DrawText(Canvas, Items[Index], -1, Rect, DT_SINGLELINE or DT_TOP or DT_NOPREFIX);
   end;
   if odFocused in State then
     DrawFocusRect(Canvas.Handle, Rect);
@@ -1663,7 +1660,6 @@ begin
      (AnsiCompareFileName(ExcludeTrailingPathDelimiter(FileName), ExcludeTrailingPathDelimiter(Directory)) <> 0) then
   begin
     inherited ApplyFilePath(Value);
-    ReadFileNames;
   end;
 end;
 
@@ -1673,7 +1669,6 @@ begin
     (AnsiCompareFileName(ExtractFilePath(FileName), ExtractFilePath(EditText)) <> 0) then
   begin
     inherited ApplyFilePath(EditText);
-    ReadFileNames;
   end;
 end;
 
