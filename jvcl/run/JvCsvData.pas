@@ -456,7 +456,8 @@ type
     procedure SetBackslashCrLf(const Value: Boolean);
     function GetDecimalSeparator: Char;
     // ----------- THIS IS A DUMMY FUNCTION, DON'T USE IT!:
-    function LocateRecord(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions): Boolean;
+    function LocateRecord(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions;
+      SyncCursor: Boolean): Boolean;
     procedure SetDecimalSeparator(const Value: Char);
 
     function _CsvFloatToStr(Value: Double): string;
@@ -2082,8 +2083,8 @@ end;
 
 
 // XXX TODO: REMOVE HARD CODED LIMIT OF 20 FIELDS SEARCHABLE!!!
-function TJvCustomCsvDataSet.LocateRecord(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions):
-    Boolean;
+function TJvCustomCsvDataSet.LocateRecord(const KeyFields: string; const KeyValues: Variant; Options: TLocateOptions;
+  SyncCursor: Boolean): Boolean;
   // Options is    [loCaseInsensitive]
   //              or [loPartialKey]
   //              or [loPartialKey,loCaseInsensitive]
@@ -2161,7 +2162,10 @@ begin
           if VarIsStr(Value) then
           begin
             StrValueA := Value;
-            StrValueB := KeyValues[I + Lo];
+            if Lo < 0 then
+              StrValueB := KeyValues
+            else
+              StrValueB := KeyValues[I + Lo];
             if loCaseInsensitive in Options then
               CompareResult := {Ansi}CompareText(StrValueA, StrValueB) = 0
             else
@@ -2188,7 +2192,10 @@ begin
 
       if MatchCount = Count then
       begin
-        RecNo := RecIndex; // Move cursor position.
+        if SyncCursor then
+          RecNo := RecIndex // Move cursor position
+        else
+          FRecordPos := RecIndex;
         Result := True;
         Exit;
       end;
@@ -5741,7 +5748,7 @@ function TJvCustomCsvDataSet.Locate(const KeyFields: string; const KeyValues: Va
     Boolean;
 begin
   DoBeforeScroll;
-  Result := LocateRecord(KeyFields, KeyValues, Options);
+  Result := LocateRecord(KeyFields, KeyValues, Options, False);
   if Result then
   begin
     Resync([rmExact, rmCenter]);
@@ -5753,7 +5760,7 @@ function TJvCustomCsvDataSet.Lookup(const KeyFields: string; const KeyValues: Va
   const ResultFields: string): Variant;
 begin
   Result := Null;
-  if LocateRecord(KeyFields, KeyValues, []) then
+  if LocateRecord(KeyFields, KeyValues, [], True) then
     Result := FieldValues[ResultFields];
 end;
 
