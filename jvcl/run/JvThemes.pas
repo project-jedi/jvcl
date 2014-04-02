@@ -720,8 +720,23 @@ const
   twFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twFrameBottomSizingTemplate; {$EXTERNALSYM twFrameBottomSizingTemplate}
   twSmallFrameBottomSizingTemplate = {$IFDEF COMPILER7_UP}Themes{$ELSE}ThemeSrv{$ENDIF}.twSmallFrameBottomSizingTemplate; {$EXTERNALSYM twSmallFrameBottomSizingTemplate}
 
+
+{$IFNDEF COMPILER16_UP}
+type
+  TElementSize = (esMinimum, esActual, esStretch);
+{$ELSE}
+  esMinimum = TElementSize.esStretch;
+  esActual = TElementSize.esActual;
+  esStretch = TElementSize.esStretch;
+{$ENDIF ~COMPILER16_UP}
+
 type
   TThemeServicesEx = class(TThemeServices)
+  {$IFNDEF COMPILER16_UP}
+  private
+    function DoGetElementSize(DC: HDC; Details: TThemedElementDetails; Rect: PRect;
+      ElementSize: TElementSize; out Size: TSize): Boolean;
+  {$ENDIF ~COMPILER16_UP}
   public
     {$IFNDEF COMPILER7_UP}
     procedure ApplyThemeChange;
@@ -729,6 +744,10 @@ type
     {$IFNDEF COMPILER16_UP}
     function GetElementContentRect(DC: HDC; Details: TThemedElementDetails;
       const BoundingRect: TRect; out AContentRect: TRect): Boolean;
+    function GetElementSize(DC: HDC; Details: TThemedElementDetails; ElementSize: TElementSize;
+      out Size: TSize): Boolean; overload;
+    function GetElementSize(DC: HDC; Details: TThemedElementDetails; const Rect: TRect;
+      ElementSize: TElementSize; out Size: TSize): Boolean; overload;
     function IsSystemStyle: Boolean;
     function Enabled: Boolean;
     function Available: Boolean;
@@ -1462,6 +1481,27 @@ function TThemeServicesEx.GetElementContentRect(DC: HDC; Details: TThemedElement
 begin
   AContentRect := ContentRect(DC, Details, BoundingRect);
   Result := True;
+end;
+
+function TThemeServicesEx.DoGetElementSize(DC: HDC; Details: TThemedElementDetails; Rect: PRect;
+  ElementSize: TElementSize; out Size: TSize): Boolean;
+const
+  ElementSizes: array[TElementSize] of TThemeSize = (TS_MIN, TS_TRUE, TS_DRAW);
+begin
+  Result := GetThemePartSize(Theme[Details.Element], DC, Details.Part, Details.State, Rect,
+    ElementSizes[ElementSize], Size) = S_OK;
+end;
+
+function TThemeServicesEx.GetElementSize(DC: HDC; Details: TThemedElementDetails; ElementSize: TElementSize;
+  out Size: TSize): Boolean;
+begin
+  Result := DoGetElementSize(DC, Details, nil, ElementSize, Size);
+end;
+
+function TThemeServicesEx.GetElementSize(DC: HDC; Details: TThemedElementDetails; const Rect: TRect;
+  ElementSize: TElementSize; out Size: TSize): Boolean;
+begin
+  Result := DoGetElementSize(DC, Details, @Rect, ElementSize, Size);
 end;
 
 function TThemeServicesEx.IsSystemStyle: Boolean;

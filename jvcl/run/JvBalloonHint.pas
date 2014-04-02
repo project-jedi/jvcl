@@ -42,6 +42,9 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  {$IFDEF JVCLThemesEnabled}
+  UxTheme,
+  {$ENDIF JVCLThemesEnabled}
   JvComponentBase;
 
 const
@@ -220,12 +223,9 @@ type
     procedure Hook;
     procedure UnHook;
 
-    procedure HandleMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure HandleMouseMove(Sender: TObject; Shift: TShiftState;
-      X, Y: Integer);
+    procedure HandleMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure HandleMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure HandleMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure HandleClick(Sender: TObject);
     procedure HandleDblClick(Sender: TObject);
     function HandleCloseBtnClick: Boolean;
@@ -304,7 +304,6 @@ uses
   SysUtils, Math, AppEvnts,
   Registry, CommCtrl, MMSystem,
   {$IFDEF JVCLThemesEnabled}
-  UxTheme,
   {$IFNDEF COMPILER7_UP}
   TmSchema,
   {$ENDIF !COMPILER7_UP}
@@ -359,6 +358,9 @@ type
 
 var
   _DrawTextW: TDrawTextW = nil;
+  {$IFDEF JVCLStylesEnabled}
+  _ToolTipThemeHandle: HTHEME = 0;
+  {$ENDIF JVCLStylesEnabled}
 
 procedure InitUnicodeWrap;
 var
@@ -427,6 +429,34 @@ begin
   Result := AControl.ClientToParent(Point, AParent);
 end;
 
+{$IFDEF JVCLThemesEnabled}
+function GetToolTipThemeHandle: HTHEME;
+begin
+  {$IFDEF JVCLStylesEnabled}
+  if not StyleServices.IsSystemStyle then
+  begin
+    // Styles don't implement BaloonTips, so we use the System style
+    if (_ToolTipThemeHandle = 0) and Assigned(OpenThemeData) then
+      _ToolTipThemeHandle := OpenThemeData(Application.Handle, 'tooltip');
+    Result := _ToolTipThemeHandle;
+  end
+  else
+  {$ENDIF JVCLStylesEnabled}
+    Result := StyleServices.Theme[teToolTip];
+end;
+
+{$IFDEF JVCLStylesEnabled}
+procedure CloseToolTipThemeHandle;
+begin
+  if (_ToolTipThemeHandle <> 0) and Assigned(CloseThemeData) then
+  begin
+    CloseThemeData(_ToolTipThemeHandle);
+    _ToolTipThemeHandle := 0;
+  end;
+end;
+{$ENDIF JVCLStylesEnabled}
+{$ENDIF JVCLThemesEnabled}
+
 procedure GetHintMessageFont(AFont: TFont);
 begin
   AFont.Assign(Screen.HintFont);
@@ -444,12 +474,11 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if IsWinVista_UP and StyleServices.Enabled then
   begin
-    Result := GetThemeEnumValue(StyleServices.Theme[teToolTip], TTP_BALLOONTITLE, 0,
-      TMT_TEXTCOLOR, AThemedTextColor) = S_OK;
+    Result := GetThemeEnumValue(GetToolTipThemeHandle, TTP_BALLOONTITLE, 0, TMT_TEXTCOLOR, AThemedTextColor) = S_OK;
     if Result then
     begin
       // GetThemeFont is defined wrong; so cast it
-      Result := GetThemeFont(StyleServices.Theme[teToolTip], 0, TTP_BALLOONTITLE, 0,
+      Result := GetThemeFont(GetToolTipThemeHandle, 0, TTP_BALLOONTITLE, 0,
         TMT_FONT, {$IFDEF COMPILER12_UP}PLogFontW{$ELSE}PLogFontA{$ENDIF COMPILER12_UP}(@LogFontW)^) = S_OK;
 
       if Result then
@@ -476,13 +505,15 @@ begin
   while (Head^ <> WideNull) and (LineCount < 2) do
   begin
     Tail := Head;
-    {$IFDEF COMPILER12_UP}
-    while not CharInSet(Tail^, [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
-    {$ELSE}
-    while not (Tail^ in [WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed]) and
-    {$ENDIF COMPILER12_UP}
-      (Tail^ <> WideLineSeparator) and (Tail^ <> WideParagraphSeparator) do
+    while True do
+    begin
+      case Tail^ of
+        WideNull, WideLineFeed, WideCarriageReturn, WideVerticalTab, WideFormFeed,
+        WideLineSeparator, WideParagraphSeparator:
+          Break;
+      end;
       Inc(Tail);
+    end;
     Inc(LineCount);
     Head := Tail;
     if Head^ <> WideNull then
@@ -767,7 +798,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if IsWinVista_UP and StyleServices.Enabled and FIsMultiLineMsg then
   begin
-    GetThemePartSize(StyleServices.Theme[teToolTip], 0, TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition],
+    GetThemePartSize(GetToolTipThemeHandle, 0, TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition],
       nil, TS_TRUE, ASize);
     FStemRect := Rect(0, 0, ASize.cx, ASize.cy);
     FTipHeight := ASize.cy;
@@ -795,8 +826,7 @@ begin
   begin
     {$IFDEF JVCLThemesEnabled}
     if IsWinXP_UP and StyleServices.Enabled then
-      GetThemePartSize(StyleServices.Theme[teToolTip], 0, TTP_CLOSE, TTCS_NORMAL,
-        nil, TS_DRAW, ASize)
+      GetThemePartSize(GetToolTipThemeHandle, 0, TTP_CLOSE, TTCS_NORMAL, nil, TS_DRAW, ASize)
     else
     {$ENDIF JVCLThemesEnabled}
     begin
@@ -977,8 +1007,12 @@ begin
     begin
       WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
       {$IFDEF JVCLThemesEnabled}
-      if not IsWinSeven_UP and IsWinVista_UP and StyleServices.Enabled then
+      if IsWinVista_UP and StyleServices.Enabled then
+      begin
         ExStyle := ExStyle or WS_EX_LAYERED;
+        if FIsMultiLineMsg then
+          ExStyle := ExStyle or WS_EX_COMPOSITED;
+      end;
       {$ENDIF JVCLThemesEnabled}
     end
     else
@@ -1061,10 +1095,9 @@ var
   RegionRound, RegionTip: HRGN;
 begin
   Result := CreateRectRgn(0, 0, 1, 1);
-  if GetThemeBackgroundRegion(StyleServices.Theme[teToolTip], 0,
-    TTP_BALLOON, 0, FRoundRect, RegionRound) = S_OK then
+  if GetThemeBackgroundRegion(GetToolTipThemeHandle, 0, TTP_BALLOON, 0, FRoundRect, RegionRound) = S_OK then
   begin
-    if GetThemeBackgroundRegion(StyleServices.Theme[teToolTip], 0,
+    if GetThemeBackgroundRegion(GetToolTipThemeHandle, 0,
       TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition], FStemRect, RegionTip) = S_OK then
     begin
       CombineRgn(Result, RegionTip, RegionRound, RGN_OR);
@@ -1121,8 +1154,7 @@ begin
   begin
     R := Rect(0, 0, MaxWidth, 0);
     GetHintTitleFont(Canvas.Font);
-    DrawTextW(Canvas.Handle, FHeader, R,
-      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
+    DrawTextW(Canvas.Handle, FHeader, R, DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
     AWidth := R.Right - R.Left;
     AHeight := R.Bottom - R.Top;
   end
@@ -1138,12 +1170,11 @@ procedure TJvBalloonWindow.MeasureMsg(const MaxWidth: Integer;
 var
   R: TRect;
 begin
-  if FMsg > '' then
+  if FMsg <> '' then
   begin
     R := Rect(0, 0, MaxWidth, 0);
     GetHintMessageFont(Canvas.Font);
-    DrawTextW(Canvas.Handle, FMsg, R,
-      DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
+    DrawTextW(Canvas.Handle, FMsg, R, DT_CALCRECT or DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
     AWidth := R.Right - R.Left;
     AHeight := R.Bottom - R.Top;
   end
@@ -1169,7 +1200,7 @@ begin
       while not CharInSet(P^, [#0, #10, #13]) do
         P := StrNextChar(P);
       SetString(S, Start, P - Start);
-      W := Self.Canvas.TextWidth(S);
+      W := Canvas.TextWidth(S);
       if W > Result then
         Result := W;
       if P^ = #13 then Inc(P);
@@ -1187,7 +1218,7 @@ begin
   if FShowIcon then
     GlobalCtrl.DrawHintImage(Canvas, FIconPos.X, FIconPos.Y, Color);
 
-  if FMsg > '' then
+  if FMsg <> '' then
   begin
     GetHintMessageFont(Canvas.Font);
     DrawTextW(Canvas.Handle, FMsg, FMsgRect,
@@ -1240,16 +1271,14 @@ begin
   begin
     if FIsMultiLineMsg then
     begin
-      DrawThemeBackground(StyleServices.Theme[teToolTip], Msg.DC,
-        TTP_BALLOON, 0, FRoundRect, @FRoundRect);
-      DrawThemeBackground(StyleServices.Theme[teToolTip], Msg.DC,
-        TTP_BALLOONSTEM, cBalloonStemState[FCurrentPosition], FStemRect, @FStemRect);
+      DrawThemeBackground(GetToolTipThemeHandle, Msg.DC, TTP_BALLOON, 0, FRoundRect, @FRoundRect);
+      DrawThemeBackground(GetToolTipThemeHandle, Msg.DC, TTP_BALLOONSTEM,
+        cBalloonStemState[FCurrentPosition], FStemRect, @FStemRect);
     end
     else
     begin
       R := ClientRect;
-      DrawThemeBackground(StyleServices.Theme[teToolTip], Msg.DC,
-        TTP_BALLOON, 0, R, @R);
+      DrawThemeBackground(GetToolTipThemeHandle, Msg.DC, TTP_BALLOON, 0, R, @R);
       // draw black border
       BrushBlack := CreateSolidBrush(0);
       try
@@ -1732,7 +1761,7 @@ end;
 procedure TGlobalCtrl.AppEventsShowHint(var HintStr: string;
   var CanShow: Boolean; var HintInfo: THintInfo);
 begin
-  if UseBalloonAsApplicationHint then
+  if UseBalloonAsApplicationHint and (MainCtrl.MaxWidth > 0) then
     HintInfo.HintMaxWidth := MainCtrl.MaxWidth;
 end;
 
@@ -2056,7 +2085,7 @@ begin
     if FHeader = '' then
       FHeader := WideString(RUTF8Header);
 
-    FShowHeader := FHeader > '';
+    FShowHeader := FHeader <> '';
     FShowIcon := (FIconKind <> ikNone) and
       ((FIconKind <> ikCustom) or (FImageIndex <> -1));
     FShowCloseBtn := RShowCloseBtn;
@@ -2127,6 +2156,7 @@ begin
     ParentWindow := Application.Handle
   else
     ParentWindow := 0;
+  HandleNeeded;
 
   BoundRect(Rect, DesktopRect);
 
@@ -2200,8 +2230,7 @@ end;
 procedure TJvBalloonWindowEx.Paint;
 {$IFDEF JVCLThemesEnabled}
 var
-  Details: TThemedElementDetails;
-  Button: TThemedToolTip;
+  ButtonState: Cardinal;
 {$ENDIF JVCLThemesEnabled}
 begin
   if FShowIcon then
@@ -2214,18 +2243,17 @@ begin
     if StyleServices.Enabled then
     begin
       if (FCloseState and DFCS_PUSHED > 0) and (FCloseState and DFCS_HOT = 0) then
-        Button := tttCloseNormal
+        ButtonState := TTCS_NORMAL
       else
       if FCloseState and DFCS_PUSHED > 0 then
-        Button := tttClosePressed
+        ButtonState := TTCS_PRESSED
       else
       if (FCloseState and DFCS_HOT > 0) and not (csDesigning in ComponentState) then
-        Button := tttCloseHot
+        ButtonState := TTCS_HOT
       else
-        Button := tttCloseNormal;
+        ButtonState := TTCS_NORMAL;
 
-      Details := StyleServices.GetElementDetails(Button);
-      StyleServices.DrawElement(Canvas.Handle, Details, FCloseBtnRect);
+      DrawThemeBackground(GetToolTipThemeHandle, Canvas.Handle, TTP_CLOSE, ButtonState, FCloseBtnRect, nil);
     end
     else
     {$ENDIF JVCLThemesEnabled}
@@ -2233,7 +2261,8 @@ begin
         DFCS_CAPTIONCLOSE or FCloseState);
   end;
 
-  if FMsg > '' then
+  SetBkMode(Canvas.Handle, TRANSPARENT);
+  if FMsg <> '' then
   begin
     GetHintMessageFont(Canvas.Font);
     DrawTextW(Canvas.Handle, FMsg, FMsgRect,
@@ -2243,8 +2272,7 @@ begin
   if FShowHeader then
   begin
     GetHintTitleFont(Canvas.Font);
-    DrawTextW(Canvas.Handle, FHeader, FHeaderRect,
-      DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
+    DrawTextW(Canvas.Handle, FHeader, FHeaderRect, DefaultTextFlags or DrawTextBiDiModeFlagsReadingOnly);
   end;
 end;
 
@@ -2328,6 +2356,9 @@ initialization
 
 finalization
   FreeAndNil(GGlobalCtrl);
+  {$IFDEF JVCLStylesEnabled}
+  CloseToolTipThemeHandle;
+  {$ENDIF JVCLStylesEnabled}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
