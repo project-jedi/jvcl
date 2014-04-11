@@ -27,6 +27,13 @@ unit JvHidControllerClass;
 
 {$DEFINE DEFAULT_JVCL_INC}
 
+/// This feature uses a save way to convert the strings given by the Windows API.
+/// It fixes a case, where the device can not be opened, because the (converted)
+/// path is not valid.
+{$DEFINE FEATURE_SAVE_CONVERT_STRINGS}
+
+
+
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
@@ -398,6 +405,25 @@ type
   public
     // normal constructor/destructor
     constructor Create(AOwner: TComponent); override;
+
+
+    /// <summary> Constructor for the device manager.
+    /// </summary>
+    /// <see cref="TJvHidDevice"/>
+    /// <param name="AOwner"> The owner of this component.
+    /// </param>
+    /// <param name="inOnHidCtlDeviceCreateError"> Event method for device errors.
+    ///   You need this event handler for catching and handling of device errors.
+    ///   The constructor will start the search for devices, you could get
+    ///   device errors in this search, which will abort the search if no
+    ///   event method is given.
+    /// </param>
+    /// <param name="inOnDeviceChange"> Event method for device changes.
+    ///   (e.g. a new device is added)
+    /// </param>
+    constructor CreateInit( AOwner: TComponent;
+      inOnHidCtlDeviceCreateError : TJvHidDeviceCreateError;
+      inOnDeviceChange : TNotifyEvent = nil );
     destructor Destroy; override;
     // methods to hand out HID device objects
     procedure CheckIn(var HidDev: TJvHidDevice);
@@ -641,7 +667,11 @@ function TJvHidPnPInfo.GetRegistryPropertyStringList(PnPHandle: HDEVINFO;
 var
   BytesReturned: DWORD;
   RegDataType: DWORD;
+{$IFDEF FEATURE_SAVE_CONVERT_STRINGS}
+  Buffer: array [0..16383] of AnsiChar;
+{$ELSE FEATURE_SAVE_CONVERT_STRINGS}
   Buffer: array [0..16383] of Char;
+{$ENDIF FEATURE_SAVE_CONVERT_STRINGS}
   P: PChar;
 begin
   BytesReturned := 0;
@@ -1587,6 +1617,46 @@ begin
     FHidGuid := cHidGuid;
 end;
 
+constructor TJvHidDeviceController.CreateInit(AOwner: TComponent;
+    inOnHidCtlDeviceCreateError : TJvHidDeviceCreateError;
+    inOnDeviceChange : TNotifyEvent );
+const
+  cHidGuid: TGUID = '{4d1e55b2-f16f-11cf-88cb-001111000030}';
+begin
+  inherited Create(AOwner);
+  FDeviceChangeEvent := nil;
+  FEnumerateEvent := nil;
+  FDevUnplugEvent := nil;
+  FNumCheckedInDevices := 0;
+  FNumCheckedOutDevices := 0;
+  FNumUnpluggedDevices := 0;
+  FDevThreadSleepTime := 100;
+  FVersion := cHidControllerClassVersion;
+  FInDeviceChange := False;
+
+  FList := TList.Create;
+
+  if LoadSetupApi then
+    LoadHid;
+
+  OnDeviceChange := inOnDeviceChange;
+  OnDeviceCreateError := inOnHidCtlDeviceCreateError;
+
+  if IsHidLoaded then
+  begin
+    HidD_GetHidGuid(FHidGuid);
+    // only hook messages if there is a HID DLL
+    FHWnd := AllocateHWnd(EventPipe);
+    // this one executes after Create completed which ensures
+    // that all global elements like Application.MainForm are initialized
+    PostMessage(FHWnd, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, -1);
+  end
+  else
+    FHidGuid := cHidGuid;
+end;
+
+
+
 // unplug or kill all controlled TJvHidDevices on controller destruction
 
 destructor TJvHidDeviceController.Destroy;
@@ -1695,6 +1765,12 @@ var
     PnPInfo: TJvHidPnPInfo;
     Handled: Boolean;
     RetryCreate: Boolean;
+{$IFDEF FEATURE_SAVE_CONVERT_STRINGS}
+    PathString : AnsiString;
+    PathStringPChar : PChar;
+    PathStringChar : array[0..1024] of char;
+    myTmpIndex : DWORD;
+{$ENDIF FEATURE_SAVE_CONVERT_STRINGS}
   begin
     if not IsHidLoaded then
       Exit;
@@ -1712,6 +1788,7 @@ var
       begin
         DevData.cbSize := SizeOf(DevData);
         BytesReturned := 0;
+        //evalue size needed to store the detailed interface data in FunctionClassDeviceData
         SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData, nil, 0, BytesReturned, @DevData);
         if (BytesReturned <> 0) and (GetLastError = ERROR_INSUFFICIENT_BUFFER) then
         begin
@@ -1721,8 +1798,23 @@ var
             if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
               FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
             begin
+{$IFDEF FEATURE_SAVE_CONVERT_STRINGS}
+              // convert the path
+              SetLength( PathString, BytesReturned + 8 );
+
+              for myTmpIndex := 0 to BytesReturned - 1 do
+              begin
+                 PathStringChar[ myTmpIndex ] := Char( FunctionClassDeviceData.DevicePath[ myTmpIndex ] );
+              end;
+              PathStringChar[ BytesReturned ] := #0;
+
+              PathStringPChar := PathStringChar;
+              // fill in PnPInfo of device
+              PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PathStringPChar );
+{$ELSE FEATURE_SAVE_CONVERT_STRINGS}
               // fill in PnPInfo of device
               PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
+{$ENDIF FEATURE_SAVE_CONVERT_STRINGS}
               // create HID device object and add it to the device list
               RetryCreate := False;
               HidDev := nil;
