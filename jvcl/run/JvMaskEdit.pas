@@ -236,9 +236,40 @@ begin
 end;
 
 procedure TJvCustomMaskEdit.DefaultHandler(var Msg);
+
+  procedure HandlePastedLineBreaks;
+  var
+    F, P: PChar;
+    S: string;
+  begin
+    // Don't allow line breaks, like a single line EDIT control
+    S := inherited Text;
+    F := PChar(S);
+    P := F;
+    while True do
+    begin
+      case P^ of
+        #0, #10, #13: Break;
+      end;
+      Inc(P);
+    end;
+    if P <> F + Length(S) then
+    begin
+      SetString(S, F, P - F);
+      inherited Text := S;
+    end;
+  end;
+
 begin
   case TMessage(Msg).Msg of
-    WM_CUT, WM_PASTE, EM_SETPASSWORDCHAR, WM_GETTEXT, WM_GETTEXTLENGTH:
+    WM_PASTE:
+      if not ProtectPassword then
+      begin
+        inherited DefaultHandler(Msg);
+        HandlePastedLineBreaks;
+      end;
+
+    WM_CUT, EM_SETPASSWORDCHAR, WM_GETTEXT, WM_GETTEXTLENGTH:
       if not ProtectPassword then
         inherited DefaultHandler(Msg);
   else
