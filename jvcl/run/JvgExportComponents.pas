@@ -559,8 +559,12 @@ begin
     FieldType := DataSet.Fields[I].DataType;
     if FieldType = ftAutoInc then
       FieldType := ftInteger;
+    {$IFDEF HAS_AUTOMATIC_DB_FIELDS}
+    if DataSet.Fields.LifeCycles = [lcPersistent] then
+    {$ELSE}
     if not DataSet.DefaultFields then
-      Dest.FieldDefs.Add(DataSet.Fields[I].Name, FieldType,
+    {$ENDIF HAS_AUTOMATIC_DB_FIELDS}
+          Dest.FieldDefs.Add(DataSet.Fields[I].Name, FieldType,
         DataSet.Fields[I].Size, DataSet.Fields[I].Required);
   end;
 

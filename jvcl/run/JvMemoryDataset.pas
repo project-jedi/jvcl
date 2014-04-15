@@ -1648,7 +1648,9 @@ end;
 procedure TJvMemoryData.InternalOpen;
 begin
   BookmarkSize := SizeOf(TJvBookmarkData);
+  {$IFNDEF HAS_AUTOMATIC_DB_FIELDS}
   if DefaultFields then
+  {$ENDIF !HAS_AUTOMATIC_DB_FIELDS}
     CreateFields;
   BindFields(True);
   InitBufferPointers(True);
@@ -1738,7 +1740,9 @@ begin
   ClearRecords;
   FAutoInc := 1;
   BindFields(False);
+  {$IFNDEF HAS_AUTOMATIC_DB_FIELDS}
   if DefaultFields then
+  {$ENDIF !HAS_AUTOMATIC_DB_FIELDS}
     DestroyFields;
   FreeIndexList;
   FActive := False;

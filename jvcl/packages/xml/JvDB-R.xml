@@ -34,6 +34,7 @@
     <Package Name="SMExportXE3r" Targets="d17" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXE4r" Targets="d18" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXE5r" Targets="d19" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExportXE6r" Targets="d20" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -47,6 +48,7 @@
     <Package Name="SMImportXE3r" Targets="d17" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXE4r" Targets="d18" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXE5r" Targets="d19" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImportXE6r" Targets="d20" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>
@@ -67,6 +69,7 @@
     <Package Name="ODAC170" Targets="d17_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODAC180" Targets="d18_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODAC190" Targets="d19_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODAC200" Targets="d20_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODACVCL60" Targets="d6,c6" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODACVCL70" Targets="d7" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODACVCL90" Targets="d9" Condition="USE_3RDPARTY_DEVART_ODAC"/>
@@ -79,6 +82,7 @@
     <Package Name="ODACVCL170" Targets="d17_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODACVCL180" Targets="d18_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="ODACVCL190" Targets="d19_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
+    <Package Name="ODACVCL200" Targets="d20_all" Condition="USE_3RDPARTY_DEVART_ODAC"/>
     <Package Name="UNIDAC70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
@@ -90,6 +94,7 @@
     <Package Name="UNIDAC170" Targets="d17_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC180" Targets="d18_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDAC190" Targets="d19_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDAC200" Targets="d20_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDACVCL70" Targets="d7" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDACVCL90" Targets="d9" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDACVCL100" Targets="d10" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
@@ -101,6 +106,7 @@
     <Package Name="UNIDACVCL170" Targets="d17_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDACVCL180" Targets="d18_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="UNIDACVCL190" Targets="d19_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
+    <Package Name="UNIDACVCL200" Targets="d20_all" Condition="USE_3RDPARTY_DEVART_UNIDAC"/>
     <Package Name="vclimg" Targets="allv12up" Condition=""/>
     <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
     <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
@@ -161,6 +167,11 @@
     <Package Name="cxGridd19" Targets="d19_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
     <Package Name="cxTreeListd19" Targets="d19_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
     <Package Name="cxPivotGridd19" Targets="d19_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
+    <Package Name="cxEditorsd20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_NON_SHARED"/>
+    <Package Name="cxDatad20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxGridd20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_NON_SHARED"/>
+    <Package Name="cxTreeListd20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_NON_SHARED"/>
+    <Package Name="cxPivotGridd20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_NON_SHARED"/>
     <Package Name="cxEditorsVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
     <Package Name="cxDataVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxGridVCLC6" Targets="c6" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
@@ -220,6 +231,11 @@
     <Package Name="cxGridRS19" Targets="d19_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
     <Package Name="cxTreeListRS19" Targets="d19_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
     <Package Name="cxPivotGridRS19" Targets="d19_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
+    <Package Name="cxEditorsRS20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED"/>
+    <Package Name="cxDataRS20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXVERTICALGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED || USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxGridRS20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED"/>
+    <Package Name="cxTreeListRS20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXTREELIST_SHARED"/>
+    <Package Name="cxPivotGridRS20" Targets="d20_all" Condition="USE_3RDPARTY_DEVEXPRESS_CXPIVOTGRID_SHARED"/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="DB,help" Formname="" Condition=""/>

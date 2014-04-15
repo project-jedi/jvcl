@@ -3426,7 +3426,9 @@ begin
 
   Flush;
   BindFields(False);
+  {$IFNDEF HAS_AUTOMATIC_DB_FIELDS}
   if DefaultFields then
+  {$ENDIF !HAS_AUTOMATIC_DB_FIELDS}
     DestroyFields;
   FData.Clear;
   FCursorOpen := False;
@@ -3733,10 +3735,16 @@ begin
     FOpenFileName := '';
 
     // Create TField components when no persistent fields have been created
+  {$IFNDEF HAS_AUTOMATIC_DB_FIELDS}
   if DefaultFields then
+  {$ENDIF !HAS_AUTOMATIC_DB_FIELDS}
     CreateFields  // InternalInitFieldDefs is called inside
+  {$IFDEF HAS_AUTOMATIC_DB_FIELDS}
+    ;
+  {$ELSE}
   else
     InternalInitFieldDefs; // initialize FieldDef objects.
+  {$ENDIF HAS_AUTOMATIC_DB_FIELDS}
 
   BindFields(True); // bind FieldDefs to actual Data
 

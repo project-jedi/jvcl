@@ -2299,7 +2299,9 @@ end;
 
 procedure TDataSet_Read_DefaultFields(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$WARNINGS OFF}
   Value := TDataSet(Args.Obj).DefaultFields;
+  {$WARNINGS ON}
 end;
 
 { property Read Designer: TDataSetDesigner }
