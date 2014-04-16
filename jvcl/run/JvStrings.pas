@@ -69,7 +69,7 @@ function SetIntersect(const Set1, Set2: string): string;
 function SetExclude(const Set1, Set2: string): string;
 
 {replace any <,> etc by &lt; &gt;}
-function XMLSafe(const AText: string): string;
+function XMLSafe(const AText: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.EntityEncode' {$ENDIF} ; {$ENDIF}
 
 {simple hash, Result can be used in Encrypt}
 function Hash(const AText: string): Integer;
@@ -232,7 +232,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JvConsts, JvResources, JvTypes;
+  JvConsts, JvResources, JvTypes, JclSimpleXml;
 
 const
   B64Table: AnsiString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -1543,27 +1543,8 @@ end;
 {replace any <,> etc by &lt; &gt;}
 
 function XMLSafe(const AText: string): string;
-var
-  I: Integer;
 begin
-  Result := '';
-  for I := 1 to Length(AText) do
-    if AText[I] = '<' then
-      Result := Result + '&lt;'
-    else
-    if AText[I] = '>' then
-      Result := Result + '&gt;'
-    else
-    if AText[I] = '&' then
-      Result := Result + '&amp;'
-    else
-    if (Ord(AText[I]) >= 32) and (Ord(AText[I]) < 128) then
-      Result := Result + AText[I]
-    else
-    if Ord(AText[I]) > 127 then
-      Result := Result + '&#' + IntToStr(Ord(AText[I])) + ';'
-    else
-      Result := Result + ' ';
+  Result := JclSimpleXml.EntityEncode(AText);
 end;
 
 function FirstOfSet(const AText: string): string;
