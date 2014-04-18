@@ -737,7 +737,11 @@ implementation
 uses
   FMTBcd,
   Variants, SysUtils, Math, Forms,
-  JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources, JclSysUtils;
+  JvJCLUtils, JvJVCLUtils, JvCalc, JvTypes, JvConsts, JvResources, JclSysUtils
+  {$IFDEF HAS_UNITSCOPE}
+  , Vcl.Mask
+  {$ENDIF HAS_UNITSCOPE}
+  ;
 
 {$R JvDBControls.res}
 

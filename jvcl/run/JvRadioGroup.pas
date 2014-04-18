@@ -92,7 +92,18 @@ const
 implementation
 
 uses
-  Math;
+  Math
+  {$IFDEF JVCLThemesEnabled}
+  , Vcl.Themes
+  {$ENDIF JVCLThemesEnabled}
+  {$IFDEF HAS_UNITSCOPE}
+  , System.Types
+  {$ENDIF HAS_UNITSCOPE}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  , System.UITypes
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  ;
+
 
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin

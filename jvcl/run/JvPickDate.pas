@@ -152,7 +152,11 @@ implementation
 uses
   Math, MultiMon,
   JvThemes, JvResources, JvJCLUtils, JvToolEdit, JvSpeedButton,
-  JvComponent, JvJVCLUtils, JclSysUtils;
+  JvComponent, JvJVCLUtils, JclSysUtils
+  {$IFDEF HAS_UNITSCOPE}
+  , System.UiTypes
+  {$ENDIF HAS_UNITSCOPE}
+  ;
 
 procedure FontSetDefault(AFont: TFont);
 

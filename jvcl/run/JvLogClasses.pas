@@ -47,6 +47,11 @@ function GetSeverityFromString( const SeverityString : string) : TJvLogEventSeve
 
 implementation
 
+uses
+  {$IFDEF HAS_UNITSCOPE}
+  System.Classes;
+  {$ENDIF HAS_UNITSCOPE}
+
 resourcestring
   STR_SEVERITY_INFORMATION = 'Information';
   STR_SEVERITY_WARNING     = 'Warning';

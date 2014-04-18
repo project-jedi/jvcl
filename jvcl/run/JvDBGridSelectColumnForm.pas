@@ -94,7 +94,7 @@ implementation
 
 uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  System.UITypes,
+  System.UITypes, System.Types,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   SysUtils,
   JvJCLUtils, JvConsts, Math;
