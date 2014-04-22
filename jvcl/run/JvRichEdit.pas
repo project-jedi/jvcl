@@ -13,12 +13,12 @@ The Original Code is: JvRichEd.PAS, released on 2002-07-04.
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
-Portions created by S�bastien Buysse are Copyright (C) 2001 S�bastien Buysse.
+Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
   Polaris Software
-  S�bastien Buysse [sbuysse att buypin dott com] (original code in JvRichEdit.pas)
+  Sébastien Buysse [sbuysse att buypin dott com] (original code in JvRichEdit.pas)
   Michael Beck [mbeck att bigfoot dott com] (contributor to JvRichEdit.pas)
   Roman Kovbasiouk [roko att users dott sourceforge dott net] (merging JvRichEdit.pas)
   Remko Bonte [remkobonte att myrealbox dott com] (insert image procedures, MS Text converters)
@@ -553,7 +553,7 @@ type
     FOnURLHover: TRichEditURLHoverEvent;
     FOnTextNotFound: TRichEditFindErrorEvent;
     FOnCloseFindDialog: TRichEditFindCloseEvent;
-    // From JvRichEdit.pas by S�bastien Buysse
+    // From JvRichEdit.pas by Sébastien Buysse
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
     FOnConversionProgress: TRichEditProgressEvent;
@@ -625,7 +625,7 @@ type
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
     procedure WMSetText(var Msg: TMessage); message WM_SETTEXT;
-    // From JvRichEdit.pas by S�bastien Buysse
+    // From JvRichEdit.pas by Sébastien Buysse
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     function GetFlat: Boolean;
@@ -740,7 +740,7 @@ type
     property OnCloseFindDialog: TRichEditFindCloseEvent read FOnCloseFindDialog
       write FOnCloseFindDialog;
     property OnConversionProgress: TRichEditProgressEvent read FOnConversionProgress write FOnConversionProgress;
-    // From JvRichEdit.pas by S�bastien Buysse
+    // From JvRichEdit.pas by Sébastien Buysse
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
     property OnDragAllowed: TRichEditDragAllowedEvent read FOnDragAllowed write FOnDragAllowed;
@@ -1990,7 +1990,7 @@ begin
   //       set is explicitly negotiated using RegisterApp).
   //
   //  For example: CharToOem will translate the copyright (c) symbol (=1 char)
-  //  to C� (or something). Not doing so will result in errors.
+  //  to C¸ (or something). Not doing so will result in errors.
 
   StrLCopyA(Buffer, PAnsiChar(AFileName), Length(Buffer));
   CharToOemA(Buffer, Buffer);
@@ -2709,7 +2709,7 @@ begin
   Paragraph.SetAttributes(AParagraph);
 end;
 
-// From JvRichEdit.pas by S�bastien Buysse
+// From JvRichEdit.pas by Sébastien Buysse
 
 procedure TJvCustomRichEdit.CMDocWindowActivate(var Msg: TMessage);
 begin
