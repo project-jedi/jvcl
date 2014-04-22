@@ -263,6 +263,35 @@ begin
     Result := False;
 end;
 {$ENDIF DELPHI7}
+{$IFDEF DELPHI8_UP}
+type
+  /// Optimization: TMemIniFile should overwrite this methods by itself
+  TMemIniFileHelper = class helper for TMemIniFile
+  public
+    function SectionExists(const Section: string): Boolean;
+    function ValueExists(const Section, Ident: string): Boolean;
+  end;
+
+function TMemIniFileHelper.SectionExists(const Section: string): Boolean;
+begin
+  Result := self.FSections.IndexOf(Section) >= 0;
+end;
+
+function TMemIniFileHelper.ValueExists(const Section, Ident: string): Boolean;
+var
+  I: Integer;
+  Strings: TStrings;
+begin
+  I := self.FSections.IndexOf(Section);
+  if I >= 0 then
+  begin
+    Strings := TStringList(self.FSections.Objects[I]);
+    I := Strings.IndexOfName(Ident);
+    Result := I >= 0;
+  end else
+    Result := False;
+end;
+{$ENDIF DELPHI8_UP}
 
 //=== { TJvCustomAppIniStorage } =============================================
 
@@ -580,7 +609,6 @@ begin
     Strings.EndUpdate;
   end;
 end;
-
 
 function TJvCustomAppIniStorage.CalcDefaultSection(Section: string): string;
 begin

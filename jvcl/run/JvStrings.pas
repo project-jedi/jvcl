@@ -69,7 +69,7 @@ function SetIntersect(const Set1, Set2: string): string;
 function SetExclude(const Set1, Set2: string): string;
 
 {replace any <,> etc by &lt; &gt;}
-function XMLSafe(const AText: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.EntityEncode' {$ENDIF} ; {$ENDIF}
+function XMLSafe(const AText: string): string; {$IFDEF SUPPORTS_DEPRECATED} deprecated {$IFDEF SUPPORTS_DEPRECATED_DETAILS} 'Use JclSimpleXml.SimpleXMLEncode' {$ENDIF} ; {$ENDIF}
 
 {simple hash, Result can be used in Encrypt}
 function Hash(const AText: string): Integer;
@@ -1544,7 +1544,7 @@ end;
 
 function XMLSafe(const AText: string): string;
 begin
-  Result := JclSimpleXml.EntityEncode(AText);
+  Result := JclSimpleXml.SimpleXMLEncode(AText);
 end;
 
 function FirstOfSet(const AText: string): string;
