@@ -151,7 +151,6 @@ type
     FAfterApplyRecord: TApplyRecordEvent;
     FFilterParser: TExprParser; // CSchiffler. June 2009.  See JvExprParser.pas
     FFilterExpression: TJvDBFilterExpression; // ahuser. Same filter expression parser that ClientDataSet uses
-    FCopyFromDataSetFieldDefs: array of Integer; // only valid while CopyFromDataSet is executed
     FClearing: Boolean;
     FUseDataSetFilter: Boolean;
     FTrimEmptyString: Boolean;
@@ -809,6 +808,7 @@ var
   I: Integer;
   Offset: Word;
   Field: TField;
+  FieldDefsUpdated: Boolean;
 begin
   if FieldDefs.Count = 0 then
   begin
@@ -824,11 +824,19 @@ begin
   inherited InitFieldDefsFromFields;
   { Calculate fields offsets }
   SetLength(FOffsets, FieldDefList.Count);
-  for I := 0 to FieldDefList.Count - 1 do
-  begin
-    FOffsets[I] := Offset;
-    if FieldDefList[I].DataType in ftSupported - ftBlobTypes then
-      Inc(Offset, CalcFieldLen(FieldDefList[I].DataType, FieldDefList[I].Size) + 1);
+
+  FieldDefList.Update;
+  FieldDefsUpdated := FieldDefs.Updated;
+  try
+    FieldDefs.Updated := True; // Performance optimization: FieldDefList.Updated returns False is FieldDefs.Updated is False
+    for I := 0 to FieldDefList.Count - 1 do
+    begin
+      FOffsets[I] := Offset;
+      if FieldDefList[I].DataType in ftSupported - ftBlobTypes then
+        Inc(Offset, CalcFieldLen(FieldDefList[I].DataType, FieldDefList[I].Size) + 1);
+    end;
+  finally
+    FieldDefs.Updated := FieldDefsUpdated;
   end;
 end;
 
@@ -838,10 +846,7 @@ var
   DataType: TFieldType;
 begin
   Result := nil;
-  if Length(FCopyFromDataSetFieldDefs) > 0 then
-    Index := FCopyFromDataSetFieldDefs[Field.Index]
-  else
-    Index := FieldDefList.IndexOf(Field.FullName);
+  Index := Field.FieldNo - 1; // FieldDefList index (-1 and 0 become less than zero => ignored)
   if (Index >= 0) and (Buffer <> nil) then
   begin
     DataType := FieldDefList[Index].DataType;
@@ -1648,6 +1653,9 @@ end;
 procedure TJvMemoryData.InternalOpen;
 begin
   BookmarkSize := SizeOf(TJvBookmarkData);
+  FieldDefs.Updated := False;
+  FieldDefs.Update;
+  FieldDefList.Update;
   {$IFNDEF HAS_AUTOMATIC_DB_FIELDS}
   if DefaultFields then
   {$ENDIF !HAS_AUTOMATIC_DB_FIELDS}
@@ -2507,16 +2515,10 @@ begin
   FSaveLoadState := slsLoading;
   try
     SetLength(OriginalFields, Fields.Count);
-    SetLength(FCopyFromDataSetFieldDefs, Fields.Count);
     for I := 0 to Fields.Count - 1 do
     begin
       if Fields[I].FieldKind <> fkCalculated then
-      begin
         OriginalFields[I] := FDataSet.FindField(Fields[I].FieldName);
-        FCopyFromDataSetFieldDefs[I] := FieldDefList.IndexOf(Fields[I].FullName);
-      end
-      else
-        FCopyFromDataSetFieldDefs[I] := -1;
     end;
     StatusField := nil;
     if FApplyMode <> amNone then
@@ -2570,7 +2572,6 @@ begin
     FRowsAffected := 0;
   finally
     FAutoInc := FinalAutoInc + 1;
-    SetLength(FCopyFromDataSetFieldDefs, 0);
     FSaveLoadState := slsNone;
     EnableControls;
     FDataSet.EnableControls;
