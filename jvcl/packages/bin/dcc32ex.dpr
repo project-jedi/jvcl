@@ -558,8 +558,10 @@ begin
           6: Result.Name := 'CodeGear RAD Studio 2009';
           7: Result.Name := 'Embarcadero RAD Studio 2010';
           8: Result.Name := 'Embarcadero RAD Studio XE';
+          9..12: Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 9));
+          //13: "Appmethod 1.0"
        else
-         Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 9));
+         Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(6 + Result.IDEVersion - 14);
        end;
     end;
 
