@@ -558,10 +558,11 @@ begin
           6: Result.Name := 'CodeGear RAD Studio 2009';
           7: Result.Name := 'Embarcadero RAD Studio 2010';
           8: Result.Name := 'Embarcadero RAD Studio XE';
-          9..12: Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 9));
-          //13: "Appmethod 1.0"
        else
-         Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(6 + Result.IDEVersion - 14);
+         if Result.IDEVersion > 13  then
+           Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 10))
+         else
+           Result.Name := 'Embarcadero RAD Studio XE' + IntToStr(2 + (Result.IDEVersion - 9));
        end;
     end;
 
@@ -1201,7 +1202,7 @@ begin
   begin
     WriteLn;
     WriteLn('Additional options (must be specified before any dcc32 parameter):');
-    WriteLn('  --delphi-version=d18   Prefer this version, overrides environment variable');
+    WriteLn('  --delphi-version=d20   Prefer this version, overrides environment variable');
     WriteLn('  --verbose              Show warnings and errors during the compiler detection');
     WriteLn('  --use-search-paths     Use the IDE''s search paths');
     WriteLn('  --preserve-config      Keep the dcc32.cfg file and create a dcc32_command.cmd');
@@ -1213,8 +1214,8 @@ begin
     WriteLn('  --runtime-package-vcl  Link the executable against the vcl package');
     WriteLn;
     WriteLn('Environment variables:');
-    WriteLn('  DELPHIVERSION = d18    Prefer this Delphi/BCB/BDS version');
-    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, ..., d18, ...)');
+    WriteLn('  DELPHIVERSION = d20    Prefer this Delphi/BCB/BDS version');
+    WriteLn('                         (d6, d7, c6, d9, d10, d11, d12, d14, ..., d20, ...)');
   end;
 
   ExitCode := Status;
