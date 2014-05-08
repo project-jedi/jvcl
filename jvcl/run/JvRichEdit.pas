@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -6010,7 +6010,7 @@ var
 begin
   with EditStream do
   begin
-    dwCookie := DWORD_PTR(AConverter);
+    dwCookie := {$IFDEF COMPILER19_UP}DWORD_PTR{$ELSE}Longint{$ENDIF}(AConverter);
     pfnCallBack := StreamSave;
     dwError := 0;
   end;
@@ -6062,7 +6062,7 @@ begin
   try
     with EditStream do
     begin
-      dwCookie := DWORD_PTR(Cookie);
+      dwCookie := {$IFDEF COMPILER19_UP}DWORD_PTR{$ELSE}Longint{$ENDIF}(Cookie);
       pfnCallBack := StreamLoad;
       dwError := 0;
     end;
