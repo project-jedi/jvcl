@@ -189,6 +189,7 @@ type
     FLanguageStrings: TStringList;
     FNumInputBuffers: Integer;
     FNumOverlappedBuffers: Integer;
+    FPollingDelayTime: Integer;
     FThreadSleepTime: Integer;
     FLinkCollection: array of THIDPLinkCollectionNode;
     FMaxDataListLength: ULONG;
@@ -226,6 +227,7 @@ type
     procedure SetNumInputBuffers(const Num: Integer);
     procedure SetNumOverlappedBuffers(const Num: Integer);
     procedure SetReportTypeParam(const ReportType: THIDPReportType);
+    procedure SetPollingDelayTime(const DelayTime: Integer);
     procedure SetThreadSleepTime(const SleepTime: Integer);
     procedure SetUsagePageParam(const UsagePage: TUsage);
     procedure StartThread;
@@ -336,6 +338,7 @@ type
     property NumOverlappedBuffers: Integer read FNumOverlappedBuffers write SetNumOverlappedBuffers;
     property ReportTypeParam: THIDPReportType read FReportTypeParam write SetReportTypeParam;
     property Tag: Integer read FTag write FTag;
+    property PollingDelayTime: Integer read FPollingDelayTime write SetPollingDelayTime;
     property ThreadSleepTime: Integer read FThreadSleepTime write SetThreadSleepTime;
     property UsagePageParam: TUsage read FUsagePageParam write SetUsagePageParam;
     property UsageParam: TUsage read FUsageParam write FUsageParam;
@@ -366,6 +369,7 @@ type
     FDevUnplugEvent: TJvHidUnplugEvent;
     FRemovalEvent: TJvHidUnplugEvent;
     FOnDeviceCreateError: TJvHidDeviceCreateError;
+    FDevPollingDelayTime: Integer;
     FDevThreadSleepTime: Integer;
     FVersion: string;
     FDummy: string;
@@ -386,6 +390,7 @@ type
     // internal event implementors
     procedure SetDeviceChangeEvent(const Notifier: TNotifyEvent);
     procedure SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
+    procedure SetDevPollingDelayTime(const DevTime: Integer);
     procedure SetDevThreadSleepTime(const DevTime: Integer);
     procedure SetDevData(const DataEvent: TJvHidDataEvent);
     procedure SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
@@ -423,6 +428,7 @@ type
     property NumCheckedOutDevices: Integer read FNumCheckedOutDevices;
     property NumUnpluggedDevices: Integer read FNumUnpluggedDevices;
   published
+    property DevPollingDelayTime: Integer read FDevPollingDelayTime write SetDevPollingDelayTime default 0;
     property DevThreadSleepTime: Integer read FDevThreadSleepTime write SetDevThreadSleepTime default 100;
     property Version: string read FVersion write FDummy stored False;
     property OnArrival: TJvHidPlugEvent read FArrivalEvent write FArrivalEvent;
@@ -534,6 +540,8 @@ begin
               DoData
             else
               Synchronize(DoData);
+          if Device.PollingDelayTime > 0 then  // Throttle device polling
+            SleepEx(Device.PollingDelayTime, True);
         end;
       end
       else
@@ -715,7 +723,8 @@ begin
   FMaxUsageListLength := 0;
   FMaxButtonListLength := 0;
   FReportTypeParam := HIDP_Input;
-  FThreadSleepTime := 100;
+  FPollingDelayTime := Controller.DevPollingDelayTime;
+  FThreadSleepTime := Controller.DevThreadSleepTime;
   FUsagePageParam := 0;
   FLinkCollectionParam := 0;
   FUsageParam := 0;
@@ -785,6 +794,7 @@ begin
               // make it a complete clone
               Dev.OnData := TmpOnData;
               Dev.OnUnplug := TmpOnUnplug;
+              Dev.PollingDelayTime := PollingDelayTime;
               Dev.ThreadSleepTime := ThreadSleepTime;
               FList.Items[I] := Dev;
               // the FPnPInfo has been handed over to the new object
@@ -963,6 +973,13 @@ procedure TJvHidDevice.SetReportTypeParam(const ReportType: THIDPReportType);
 begin
   FReportTypeParam := ReportType;
   GetMax;
+end;
+
+procedure TJvHidDevice.SetPollingDelayTime(const DelayTime: Integer);
+begin
+  // limit to 0 sec .. 10 sec
+  if (DelayTime >= 0) and (DelayTime <= 10000) then
+    FPollingDelayTime := DelayTime;
 end;
 
 procedure TJvHidDevice.SetThreadSleepTime(const SleepTime: Integer);
@@ -1566,6 +1583,7 @@ begin
   FNumCheckedInDevices := 0;
   FNumCheckedOutDevices := 0;
   FNumUnpluggedDevices := 0;
+  FDevPollingDelayTime := 0;
   FDevThreadSleepTime := 100;
   FVersion := cHidControllerClassVersion;
   FInDeviceChange := False;
@@ -1884,6 +1902,26 @@ end;
 procedure TJvHidDeviceController.SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
 begin
   FEnumerateEvent := Enumerator;
+end;
+
+// assign DevPollingDelayTime
+
+procedure TJvHidDeviceController.SetDevPollingDelayTime(const DevTime: Integer);
+var
+  I: Integer;
+  Dev: TJvHidDevice;
+begin
+  if DevTime <> FDevPollingDelayTime then
+  begin
+    // change all DevPollingDelayTime with the same old value
+    for I := 0 to FList.Count - 1 do
+    begin
+      Dev := FList.Items[I];
+      if Dev.PollingDelayTime = FDevPollingDelayTime then
+        Dev.PollingDelayTime := DevTime;
+    end;
+    FDevPollingDelayTime := DevTime;
+  end;
 end;
 
 // assign DevThreadSleepTime
