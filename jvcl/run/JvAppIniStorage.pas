@@ -236,34 +236,7 @@ end;
   Note that this is a dirty hack, a better way would be to rewrite TMemIniFile;
   especially expose FSections, but other optimizations can be done also.
   For example TCustomIniFile.SectionExists}
-{$IFDEF DELPHI7}
-type
-  TJvMemIniFile = class(TMemIniFile)
-  public
-    function DoesValueExists(const Section, Ident: string): Boolean;
-  end;
-
-  TMemIniFileAccessPrivate = class(TCustomIniFile)
-  public
-    FSections: TStringList;
-  end;
-
-function TJvMemIniFile.DoesValueExists(const Section, Ident: string): Boolean;
-var
-  I: Integer;
-  Strings: TStrings;
-begin
-  I := TMemIniFileAccessPrivate(Self).FSections.IndexOf(Section);
-  if I >= 0 then
-  begin
-    Strings := TStrings(TMemIniFileAccessPrivate(Self).FSections.Objects[I]);
-    I := Strings.IndexOfName(Ident);
-    Result := I >= 0;
-  end else
-    Result := False;
-end;
-{$ENDIF DELPHI7}
-{$IFDEF DELPHI8_UP}
+{$IFDEF DELPHI2009_UP}
 type
   /// Optimization: TMemIniFile should overwrite this methods by itself
   TMemIniFileHelper = class helper for TMemIniFile
@@ -291,18 +264,44 @@ begin
   end else
     Result := False;
 end;
-{$ENDIF DELPHI8_UP}
+{$ELSE}
+type
+  TJvMemIniFile = class(TMemIniFile)
+  public
+    function DoesValueExists(const Section, Ident: string): Boolean;
+  end;
+
+  TMemIniFileAccessPrivate = class(TCustomIniFile)
+  public
+    FSections: TStringList;
+  end;
+
+function TJvMemIniFile.DoesValueExists(const Section, Ident: string): Boolean;
+var
+  I: Integer;
+  Strings: TStrings;
+begin
+  I := TMemIniFileAccessPrivate(Self).FSections.IndexOf(Section);
+  if I >= 0 then
+  begin
+    Strings := TStrings(TMemIniFileAccessPrivate(Self).FSections.Objects[I]);
+    I := Strings.IndexOfName(Ident);
+    Result := I >= 0;
+  end else
+    Result := False;
+end;
+{$ENDIF DELPHI2009_UP}
 
 //=== { TJvCustomAppIniStorage } =============================================
 
 constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF DELPHI7}
-  FIniFile := TJvMemIniFile.Create(Name);
-  {$ELSE}
+  {$IFDEF DELPHI2009_UP}
   FIniFile := TMemIniFile.Create(Name);
-  {$ENDIF DELPHI7}
+  {$ELSE}
+  FIniFile := TJvMemIniFile.Create(Name);
+  {$ENDIF DELPHI2009_UP}
 end;
 
 destructor TJvCustomAppIniStorage.Destroy;
