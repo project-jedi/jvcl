@@ -259,8 +259,8 @@ begin
     if Result then
       PropertyStore.Assign(SavePropertyStore);
   finally
-    SavePropertyStore.Free;
     JvPropertyStoreEditorForm.Free;
+    SavePropertyStore.Free;
   end;
 end;
 
@@ -343,12 +343,14 @@ type tAccessCustomPanel = class(tCustomPanel);
 
 destructor TJvPropertyStoreEditorControl.Destroy;
 begin
+  FPropertyStore := nil;
   DestroyControls;
   inherited Destroy;
 end;
 
 procedure TJvPropertyStoreEditorControl.ChangeInspectedObjectListEditorHandlerIntf(iObject: TObject);
 begin
+  FInspectedObjectListEditorHandlerIntf := nil;
   Supports(iObject, IJvPropertyListEditorHandler, FInspectedObjectListEditorHandlerIntf);
   InspectedObjectListEditorHandlerIntf := FInspectedObjectListEditorHandlerIntf; // Wegen dem Set-Aufruf
 end;
@@ -967,8 +969,8 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = FPropertyStore) then
   begin
-    PropertyStore := nil;
     InspectedObject := nil;
+    PropertyStore := nil;
   end;
 end;
 
@@ -1277,8 +1279,6 @@ end;
 
 procedure TJvPropertyStoreEditorControl.SetPropertyStore(const Value: TComponent);
 begin
-  if csDestroying in Componentstate then
-    Exit;
   if Assigned(Value) and not Supports(Value, IJvPropertyEditorHandler) then
     Raise Exception.Create ('TJvPropertyStoreEditorControl.SetPropertyStore : PropertyStore must support IJvPropertyEditorHandler');
   ReplaceComponentReference(Self, Value, TComponent(FPropertyStore));
