@@ -115,7 +115,6 @@ implementation
 {$IFDEF USE_3RDPARTY_DEVART_DAC}
 uses
   SysUtils, StdCtrls, Dialogs,
-  OraClasses, OraError, OraCall, OraServices,
   JvDSADialogs,  JvResources;
 
 //=== { TJvDBBaseDevartConnectDialog } =============================================
