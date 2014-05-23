@@ -75,8 +75,7 @@ type
     destructor Destroy; override;
   published
     property Popup: TPopupMenu read FPopup write SetPopup;
-    property PositionInMenu: TJvPositionInMenu read FPositionInMenu write
-      SetPositionInMenu default pmTop;
+    property PositionInMenu: TJvPositionInMenu read FPositionInMenu write SetPositionInMenu default pmTop;
     property Position: TJvPopupPosition read FPosition write SetPosition default ppNone;
   end;
 
@@ -93,7 +92,7 @@ const
 implementation
 
 uses
-  JvWndProcHook, JvConsts, JvResources, JvJVCLUtils;
+  JclSysInfo, JvWndProcHook, JvConsts, JvResources, JvJVCLUtils;
 
 type
   TMenuItemAccessProtected = class(TMenuItem);
@@ -182,8 +181,7 @@ begin
               try
                 Handle := hDC;
                 Font := Screen.MenuFont;
-                Menus.DrawMenuItem(MenuItem, Canvas, rcItem,
-                  TOwnerDrawState(LongRec(itemState).Lo));
+                Menus.DrawMenuItem(MenuItem, Canvas, rcItem, TOwnerDrawState(LongRec(itemState).Lo));
               finally
                 Handle := 0;
                 RestoreDC(hDC, SaveIndex)
@@ -211,8 +209,7 @@ begin
                 try
                   Handle := DC;
                   Font := Screen.MenuFont;
-                  TMenuItemAccessProtected(MenuItem).MeasureItem(Canvas,
-                    Integer(itemWidth), Integer(itemHeight));
+                  TMenuItemAccessProtected(MenuItem).MeasureItem(Canvas, Integer(itemWidth), Integer(itemHeight));
                 finally
                   Handle := 0;
                   RestoreDC(DC, SaveIndex);
@@ -285,6 +282,7 @@ begin
   if not Result then
     Exit;
 
+  FillChar(MenuItemInfo, SizeOf(MenuItemInfo), 0);
   Caption := AMenuItem.Caption;
   if AMenuItem.Count > 0 then
   begin
@@ -295,9 +293,14 @@ begin
   if (AMenuItem.ShortCut <> scNone) and ((AMenuItem.Parent = nil) or
     (AMenuItem.Parent.Parent <> nil) or not (AMenuItem.Parent.Owner is TMainMenu)) then
     Caption := Caption + Tab + ShortCutToText(AMenuItem.ShortCut);
-  if Lo(GetVersion) >= 4 then
+
+  if JclCheckWinVersion(4, 0) then
   begin
-    MenuItemInfo.cbSize := 44; // Required for Windows 95
+    if Win32MajorVersion >= 5 then
+      MenuItemInfo.cbSize := SizeOf(MenuItemInfo)
+    else
+      MenuItemInfo.cbSize := 44; // Required for Windows 95
+
     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or MIIM_ID or
       MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
     ParentMenu := AMenuItem.GetParentMenu;
@@ -317,9 +320,7 @@ begin
     MenuItemInfo.hbmpUnchecked := 0;
     MenuItemInfo.dwTypeData := PChar(Caption);
     if AMenuItem.Count > 0 then
-    begin
       MenuItemInfo.hSubMenu := SubMenu;
-    end;
     InsertMenuItem(Menu, DWORD(InsertAt), True, MenuItemInfo);
   end
   else
@@ -328,11 +329,9 @@ begin
       Enables[AMenuItem.Enabled] or
       Separators[AMenuItem.Caption = cLineCaption] or MF_BYPOSITION;
     if AMenuItem.Count > 0 then
-      InsertMenu(Menu, DWORD(InsertAt), MF_POPUP or NewFlags,
-        SubMenu, PChar(AMenuItem.Caption))
+      InsertMenu(Menu, DWORD(InsertAt), MF_POPUP or NewFlags, SubMenu, PChar(AMenuItem.Caption))
     else
-      InsertMenu(Menu, DWORD(InsertAt), NewFlags, AMenuItem.Command,
-        PChar(AMenuItem.Caption));
+      InsertMenu(Menu, DWORD(InsertAt), NewFlags, AMenuItem.Command, PChar(AMenuItem.Caption));
   end;
 end;
 
