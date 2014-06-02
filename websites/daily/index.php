@@ -117,7 +117,7 @@ developers.<br>
 As a result, from time to time, the content of those files may not
 compile. We will do everything we can to prevent that but we can't
 avoid all errors. As an additional information, you may want to have a
-look at the <a href="Build%20status.html">Build Status</a> page. <br>
+look at the <a href="http://sourceforge.net/p/projectjedi/mailman/projectjedi-automatic-builds/">Build machine</a> archive. <br>
 <br>
 <font color="red">Note: If you use one of the archives below, you SHOULD use a daily version of
 the JCL as well. You can get it here: <a href="http://jcl.sf.net/daily/">http://jcl.sf.net/daily/</a></font><br>
