@@ -216,7 +216,6 @@ implementation
 {$IFDEF USE_3RDPARTY_DEVART_UNIDAC}
 uses
   SysUtils, StdCtrls, Dialogs,
-  OraClasses, OraError, OraCall, OraServices,
   JvDSADialogs, JvResources, JvJVCLUtils;
 
 //=== { TJvDBOdacLogonDialogOptions } ========================================
