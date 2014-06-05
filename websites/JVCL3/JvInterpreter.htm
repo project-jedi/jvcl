@@ -1,126 +1,159 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head>
-  <meta http-equiv="Content-Type"
- content="text/html; charset=windows-1252">
-  <link rel="STYLESHEET" href="styles/default.css" type="text/css">
-  <title>JVCL Interpreter</title>
-</head>
-<body>
-<h1>JVCL Interpreter</h1>
-<p>&nbsp;</p>
-<p>JvInterpreter allows you to embed powerful command language into
-your Delphi/C++Builder application. You can use it to create macros,
-scripts, reports, custom forms and other means to make your application
-more flexible and powerful. JvInterpreter has the following features:</p>
-<ul>
-  <li> simple Pascal syntax, with support for procedures, local and
-global variables of simple data types, variant and array types in your
-script </li>
-  <li> allows to manipulate published properties and standard events
-from script without any additional work </li>
-  <li> support for OLE automation calls (control Excel, Word and other
-OLE enabled applications from your script) </li>
-  <li> support for calls to DLLs </li>
-  <li> support for assigning of script procedures to your application
-events </li>
-  <li> allows binding of your application procedures, classes, records
-and enum types to interpreter language </li>
-  <li> ready bindings to most standard VCL components</li>
-</ul>
-<p>The future version will have even more features (many of them are
-already implemented in JVCL SVN, download <a
- href="http://jvcl.sourceforge.net/daily"> daily SVN snapshots</a> to
-have a look at them):</p>
-<ul>
-  <li> support for record, classes and dynamic arrays declaration from
-script </li>
-  <li> allows binding of your application interfaces (IInterface and
-IUnknown descendants) to interpreter language </li>
-  <li> debugger </li>
-  <li> support for declaring new datatypes, specific to your application</li>
-</ul>
-<p>JvInterpreter was first developed by Andrei Prygounkov as a part of
-RALib library. Now it is developed as a part of <a
- href="http://jvcl.sourceforge.net">JEDI-VCL (JVCL)</a> library by JVCL
-developers. Refer to <a href="http://jvcl.sourceforge.net"> JVCL page</a>
-for information about license, downloading, bug reporting, contributing
-and so on. Please note that JvInterpreter is broken in JVCL 2.10, so
-you should patch it with updated JvInterpreter files. </p>
-<p>As our help team is overdriven and help is incomplete, here are
-answers for most common questions. Also take a look at JvInterpreter
-examples (you can find them in examples\RALib folder of your JVCL
-installation).</p>
-<h3>&nbsp;</h3>
-<h3>How can I embed JvInterpreter into my program?</h3>
-<p>Drop a JvInterpreterProgram component on your form/datamodule.
-Assign script text to Pas property. Call Run method. It will look for a
-procedure named 'main' in your script and run it. Use this script for
-testing:</p>
-<pre>unit HelloWorldFromJvInterpreter;<br><br>procedure Main;<br>begin<br>  ShowMessage('Hello world!');<br>end;<br><br>end.</pre>
-<p>If you don't use "Build with runtime packages" option then it will
-most likely complain about undeclared identifier ShowMessage. You can
-manually add unit JvInterpreter_all.pas from your JVCL installation to
-your project to correct the problem.</p>
-<h3>&nbsp;</h3>
-<h3>How can I tell JvInterpreter to run specific procedure/function
-from a user script?</h3>
-<p>Use a CallFunction method. Suppose you need to call this script
-function:</p>
-<p></p>
-<pre>unit JvInterpreterFunctionCall;<br><br>function MyPlus(A, B: Integer): Integer;<br>begin<br>  Result := A + B;<br>end;<br><br>end.</pre>
-<p>Then in Delphi write:</p>
-<pre>FuncResult := JvInterpreterProgram1.CallFunction('MyPlus', nil, [10, 20]);</pre>
-<p>You should get 30 in FuncResult.<br>
-<br>
-</p>
-<p></p>
-<h3>How can I supply some arguments/parameters from my application to a
-user script?</h3>
-<p>Use OnGetValue event. Suppose you need to supply some object as a
-variable named 'MyApplication' in your script. Then write:</p>
-<pre>procedure TForm1.JvInterpreterProgram1GetValue(Sender: TObject; Identifier: string;<br>  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);<br>begin<br>  if AnsiSameText(Identifier, 'MyApplication') then<br>  begin<br>    Value := O2V(MyApplicationObject);<br>    Done := True;<br>  end;<br>end;</pre>
-<h3>&nbsp;</h3>
-<h3>How can I access the objects on a given form from a user script?</h3>
-<p>Use OnGetValue event. If you want not to have to type the name of
-the form in the script, name the variable 'Self'. Here is an example:</p>
-<pre>procedure TForm1.JvInterpreterProgram1GetValue(Sender: TObject; Identifier: string;<br>  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);<br>var<br>&nbsp; I: Integer;<br>begin<br>&nbsp; if AnsiSameText(Identifier, 'Self') then<br>&nbsp; begin<br>&nbsp;&nbsp;&nbsp; Value := O2V(DesignedForm);<br>&nbsp;&nbsp;&nbsp; Done := True;<br>&nbsp;&nbsp;&nbsp; Exit;<br>&nbsp; end;<br><br>&nbsp; for I := 0 to DesignedForm.ComponentCount - 1 do<br>&nbsp; begin<br>&nbsp;&nbsp;&nbsp; if AnsiSameText(Identifier, DesignedForm.Components[I].Name) then<br>&nbsp;&nbsp;&nbsp; begin<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value := O2V(DesignedForm.Components[I]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Done := True;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit;<br>&nbsp;&nbsp;&nbsp; end;<br>&nbsp; end;<br>end;<br><br></pre>
-Then, in your script, if you want to access a TEdit component named
-'Edit1', do this:&nbsp; <br>
-<br>
-<pre>unit Unit1;<br><br>procedure Main;<br>begin<br>&nbsp; Edit1.Text := 'aaaa';<br>end;<br></pre>
-<br>
-<h3>How can I bind procedures/class methods from my application for use
-in a script?</h3>
-<p>There is a global variable GlobalJvInterpreterAdapter in unit
-JvInterpreter. You should use its methods such as AddGet, AddClass,
-AddSet and so on from initialization part of your unit. See units that
-implement binding for standart VCL components as examples. Start with
-JvInterpreter_all.pas and then study, for example,
-JvInterpreter_StdCtrls.pas from your JVCL installation.</p>
-<h3>&nbsp;</h3>
-<h3>I need an editor component with syntax highlighting for script
-editing</h3>
-<p>Use JvHLEditor, that is also a part of JVCL library. Also take a
-look at <a href="http://jediedit.sourceforge.net"> JEDI-Editor</a>.</p>
-<h3>&nbsp;</h3>
-<h3>I need a form designer &amp; object inspector for use in
-conjunction with JvInterpreter</h3>
-<p>JvInspector is the perfect object inspector. It is also a part of
-JVCL library. Unfortunately, JVCL doesn't contain a form designer yet.
-I use ExtLib 2.1 (<a href="http://www.torry.net/packslite.htm##7695">info</a>
-on torry.net, <a href="http://www.torry.net/vcl/packs/lite/extlib.zip">download</a>).
-Some hints of using JvInterpreter with form designer:</p>
-<p>1. Describe a 'Self' variable using OnGetValue event. It should
-point to a form. Also describe in OnGetValue all components owned by
-form. Here is the sample:</p>
-<pre>procedure TForm1.JvInterpreterProgram1GetValue(Sender: TObject; Identifier: string;<br>  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);<br>var<br>  I: Integer;<br>begin<br>  if AnsiSameText(Identifier, 'Self') then<br>  begin<br>    Value := O2V(DesignedForm);<br>    Done := True;<br>    Exit;<br>  end;<br>  <br>  for I := 0 to DesignedForm.ComponentCount - 1 do<br>  begin<br>    if AnsiSameText(Identifier, DesignedForm.Components[I].Name) then<br>    begin<br>      Value := O2V(DesignedForm.Components[I]);<br>      Done := True;<br>      Exit;<br>    end;<br>  end;<br>end;</pre>
-<p>2. As ExtLib doesn't support visual event editing, assign events in
-a main procedure of the script. Here is a sample script:</p>
-<pre>unit SampleJvInterpreterFormWithACloseButton;<br><br>procedure CloseButtonClick(Sender: TObject);<br>begin<br>  Self.Close;<br>end;<br><br>procedure Main;<br>begin<br>  CloseButton.OnClick := CloseButtonClick;<br>end;<br><br>end.</pre>
-<p>Should you develop a better way, please e-mail it to me :) My
-e-mail: ode !at! prbank !dot! ru.</p>
-<p>Dmitry</p>
-&nbsp;
-</body>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;
+      charset=windows-1252">
+    <link rel="STYLESHEET" href="styles/default.css" type="text/css">
+    <title>JVCL Interpreter</title>
+  </head>
+  <body>
+    <h1>JVCL Interpreter</h1>
+    <p>&nbsp;</p>
+    <p>JvInterpreter allows you to embed powerful command language into
+      your Delphi/C++Builder application. You can use it to create
+      macros,
+      scripts, reports, custom forms and other means to make your
+      application
+      more flexible and powerful. JvInterpreter has the following
+      features:</p>
+    <ul>
+      <li> simple Pascal syntax, with support for procedures, local and
+        global variables of simple data types, variant and array types
+        in your
+        script </li>
+      <li> allows to manipulate published properties and standard events
+        from script without any additional work </li>
+      <li> support for OLE automation calls (control Excel, Word and
+        other
+        OLE enabled applications from your script) </li>
+      <li> support for calls to DLLs </li>
+      <li> support for assigning of script procedures to your
+        application
+        events </li>
+      <li> allows binding of your application procedures, classes,
+        records
+        and enum types to interpreter language </li>
+      <li> ready bindings to most standard VCL components</li>
+    </ul>
+    <p>The future version will have even more features (many of them are
+      already implemented in JVCL GIT, download <a
+        href="http://jvcl.sourceforge.net/daily"> daily GIT snapshots</a>
+      to
+      have a look at them):</p>
+    <ul>
+      <li> support for record, classes and dynamic arrays declaration
+        from
+        script </li>
+      <li> allows binding of your application interfaces (IInterface and
+        IUnknown descendants) to interpreter language </li>
+      <li> debugger </li>
+      <li> support for declaring new datatypes, specific to your
+        application</li>
+    </ul>
+    <p>JvInterpreter was first developed by Andrei Prygounkov as a part
+      of
+      RALib library. Now it is developed as a part of <a
+        href="http://jvcl.sourceforge.net">JEDI-VCL (JVCL)</a> library
+      by JVCL
+      developers. Refer to <a href="http://jvcl.sourceforge.net"> JVCL
+        page</a>
+      for information about license, downloading, bug reporting,
+      contributing
+      and so on. Please note that JvInterpreter is broken in JVCL 2.10,
+      so
+      you should patch it with updated JvInterpreter files. </p>
+    <p>As our help team is overdriven and help is incomplete, here are
+      answers for most common questions. Also take a look at
+      JvInterpreter
+      examples (you can find them in examples\RALib folder of your JVCL
+      installation).</p>
+    <h3>&nbsp;</h3>
+    <h3>How can I embed JvInterpreter into my program?</h3>
+    <p>Drop a JvInterpreterProgram component on your form/datamodule.
+      Assign script text to Pas property. Call Run method. It will look
+      for a
+      procedure named 'main' in your script and run it. Use this script
+      for
+      testing:</p>
+    <pre>unit HelloWorldFromJvInterpreter;<br><br>procedure Main;<br>begin<br>  ShowMessage('Hello world!');<br>end;<br><br>end.</pre>
+    <p>If you don't use "Build with runtime packages" option then it
+      will
+      most likely complain about undeclared identifier ShowMessage. You
+      can
+      manually add unit JvInterpreter_all.pas from your JVCL
+      installation to
+      your project to correct the problem.</p>
+    <h3>&nbsp;</h3>
+    <h3>How can I tell JvInterpreter to run specific procedure/function
+      from a user script?</h3>
+    <p>Use a CallFunction method. Suppose you need to call this script
+      function:</p>
+    <p></p>
+    <pre>unit JvInterpreterFunctionCall;<br><br>function MyPlus(A, B: Integer): Integer;<br>begin<br>  Result := A + B;<br>end;<br><br>end.</pre>
+    <p>Then in Delphi write:</p>
+    <pre>FuncResult := JvInterpreterProgram1.CallFunction('MyPlus', nil, [10, 20]);</pre>
+    <p>You should get 30 in FuncResult.<br>
+      <br>
+    </p>
+    <p></p>
+    <h3>How can I supply some arguments/parameters from my application
+      to a
+      user script?</h3>
+    <p>Use OnGetValue event. Suppose you need to supply some object as a
+      variable named 'MyApplication' in your script. Then write:</p>
+    <pre>procedure TForm1.JvInterpreterProgram1GetValue(Sender: TObject; Identifier: string;<br>  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);<br>begin<br>  if AnsiSameText(Identifier, 'MyApplication') then<br>  begin<br>    Value := O2V(MyApplicationObject);<br>    Done := True;<br>  end;<br>end;</pre>
+    <h3>&nbsp;</h3>
+    <h3>How can I access the objects on a given form from a user script?</h3>
+    <p>Use OnGetValue event. If you want not to have to type the name of
+      the form in the script, name the variable 'Self'. Here is an
+      example:</p>
+    <pre>procedure TForm1.JvInterpreterProgram1GetValue(Sender: TObject; Identifier: string;<br>  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);<br>var<br>&nbsp; I: Integer;<br>begin<br>&nbsp; if AnsiSameText(Identifier, 'Self') then<br>&nbsp; begin<br>&nbsp;&nbsp;&nbsp; Value := O2V(DesignedForm);<br>&nbsp;&nbsp;&nbsp; Done := True;<br>&nbsp;&nbsp;&nbsp; Exit;<br>&nbsp; end;<br><br>&nbsp; for I := 0 to DesignedForm.ComponentCount - 1 do<br>&nbsp; begin<br>&nbsp;&nbsp;&nbsp; if AnsiSameText(Identifier, DesignedForm.Components[I].Name) then<br>&nbsp;&nbsp;&nbsp; begin<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Value := O2V(DesignedForm.Components[I]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Done := True;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit;<br>&nbsp;&nbsp;&nbsp; end;<br>&nbsp; end;<br>end;<br><br></pre>
+    Then, in your script, if you want to access a TEdit component named
+    'Edit1', do this:&nbsp; <br>
+    <br>
+    <pre>unit Unit1;<br><br>procedure Main;<br>begin<br>&nbsp; Edit1.Text := 'aaaa';<br>end;<br></pre>
+    <br>
+    <h3>How can I bind procedures/class methods from my application for
+      use
+      in a script?</h3>
+    <p>There is a global variable GlobalJvInterpreterAdapter in unit
+      JvInterpreter. You should use its methods such as AddGet,
+      AddClass,
+      AddSet and so on from initialization part of your unit. See units
+      that
+      implement binding for standart VCL components as examples. Start
+      with
+      JvInterpreter_all.pas and then study, for example,
+      JvInterpreter_StdCtrls.pas from your JVCL installation.</p>
+    <h3>&nbsp;</h3>
+    <h3>I need an editor component with syntax highlighting for script
+      editing</h3>
+    <p>Use JvHLEditor, that is also a part of JVCL library. Also take a
+      look at <a href="http://jediedit.sourceforge.net"> JEDI-Editor</a>.</p>
+    <h3>&nbsp;</h3>
+    <h3>I need a form designer &amp; object inspector for use in
+      conjunction with JvInterpreter</h3>
+    <p>JvInspector is the perfect object inspector. It is also a part of
+      JVCL library. Unfortunately, JVCL doesn't contain a form designer
+      yet.
+      I use ExtLib 2.1 (<a
+        href="http://www.torry.net/packslite.htm##7695">info</a>
+      on torry.net, <a
+        href="http://www.torry.net/vcl/packs/lite/extlib.zip">download</a>).
+Some
+      hints of using JvInterpreter with form designer:</p>
+    <p>1. Describe a 'Self' variable using OnGetValue event. It should
+      point to a form. Also describe in OnGetValue all components owned
+      by
+      form. Here is the sample:</p>
+    <pre>procedure TForm1.JvInterpreterProgram1GetValue(Sender: TObject; Identifier: string;<br>  var Value: Variant; Args: TJvInterpreterArgs; var Done: Boolean);<br>var<br>  I: Integer;<br>begin<br>  if AnsiSameText(Identifier, 'Self') then<br>  begin<br>    Value := O2V(DesignedForm);<br>    Done := True;<br>    Exit;<br>  end;<br>  <br>  for I := 0 to DesignedForm.ComponentCount - 1 do<br>  begin<br>    if AnsiSameText(Identifier, DesignedForm.Components[I].Name) then<br>    begin<br>      Value := O2V(DesignedForm.Components[I]);<br>      Done := True;<br>      Exit;<br>    end;<br>  end;<br>end;</pre>
+    <p>2. As ExtLib doesn't support visual event editing, assign events
+      in
+      a main procedure of the script. Here is a sample script:</p>
+    <pre>unit SampleJvInterpreterFormWithACloseButton;<br><br>procedure CloseButtonClick(Sender: TObject);<br>begin<br>  Self.Close;<br>end;<br><br>procedure Main;<br>begin<br>  CloseButton.OnClick := CloseButtonClick;<br>end;<br><br>end.</pre>
+    <p>Should you develop a better way, please e-mail it to me :) My
+      e-mail: ode !at! prbank !dot! ru.</p>
+    <p>Dmitry</p>
+    &nbsp;
+  </body>
 </html>
