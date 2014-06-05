@@ -152,10 +152,6 @@ cd $DAILYDIR
 # delete old zips (we only keep 3 at a time)
 $FINDBIN . \( -daystart -mtime +2 -type f -name J\* \) -exec rm -f {} \;
 
-# copy the status docs
-$ECHOBIN `CurrentTimeTag` "copying build status page"
-$CPBIN -p -u -f "$ZIPPED_DIR/help/Build status.html" "$DAILYDIR/Build status.html"
-
 # Extract the index.php page styles folder
 $ECHOBIN `CurrentTimeTag` "Extracting the index.php page and styles folder"
 $CPBIN $INDEX_PHP_DIR/index.php .
