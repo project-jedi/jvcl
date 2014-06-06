@@ -388,38 +388,35 @@ procedure TJvCustomPage.DoPaint(ACanvas: TCanvas; ARect: TRect);
 var
   S: string;
 begin
-  with ACanvas do
+  ACanvas.Font := Font;
+  ACanvas.Brush.Style := bsSolid;
+  ACanvas.Brush.Color := Color;
+  DrawThemedBackground(Self, ACanvas, ARect);
+  if csDesigning in ComponentState then
   begin
-    Font := Self.Font;
-    Brush.Style := bsSolid;
-    Brush.Color := Self.Color;
-    DrawThemedBackground(Self, Canvas, ARect);
-    if (csDesigning in ComponentState) then
+    ACanvas.Pen.Style := psDot;
+    ACanvas.Pen.Color := clBlack;
+    ACanvas.Brush.Style := bsClear;
+    ACanvas.Rectangle(ARect);
+    ACanvas.Brush.Style := bsSolid;
+    ACanvas.Brush.Color := Color;
+    if (PageList <> nil) and (PageList.ShowDesignCaption <> sdcNone) then
     begin
-      Pen.Style := psDot;
-      Pen.Color := clBlack;
-      Brush.Style := bsClear;
-      Rectangle(ARect);
-      Brush.Style := bsSolid;
-      Brush.Color := Color;
-      if (PageList <> nil) and (PageList.ShowDesignCaption <> sdcNone) then
+      S := Caption;
+      if S = '' then
+        S := Name;
+      // make some space around the edges
+      InflateRect(ARect, -4, -4);
+      if not Enabled then
       begin
-        S := Caption;
-        if S = '' then
-          S := Name;
-        // make some space around the edges
-        InflateRect(ARect, -4, -4);
-        if not Enabled then
-        begin
-          SetBkMode(Handle, Windows.TRANSPARENT);
-          Canvas.Font.Color := clHighlightText;
-          DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
-          OffsetRect(ARect, -1, -1);
-          Canvas.Font.Color := clGrayText;
-        end;
-        DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
-        InflateRect(ARect, 4, 4);
+        SetBkMode(ACanvas.Handle, Windows.TRANSPARENT);
+        ACanvas.Font.Color := clHighlightText;
+        DrawText(ACanvas.Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
+        OffsetRect(ARect, -1, -1);
+        ACanvas.Font.Color := clGrayText;
       end;
+      DrawText(ACanvas.Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
+      InflateRect(ARect, 4, 4);
     end;
   end;
   if Assigned(FOnPaint) then
@@ -625,13 +622,12 @@ end;
 procedure TJvCustomPageList.Paint;
 begin
   if (csDesigning in ComponentState) and (PageCount = 0) then
-    with Canvas do
-    begin
-      Pen.Color := clBlack;
-      Pen.Style := psDot;
-      Brush.Style := bsClear;
-      Rectangle(ClientRect);
-    end;
+  begin
+    Canvas.Pen.Color := clBlack;
+    Canvas.Pen.Style := psDot;
+    Canvas.Brush.Style := bsClear;
+    Canvas.Rectangle(ClientRect);
+  end;
 end;
 
 procedure TJvCustomPageList.RemovePage(APage: TJvCustomPage);

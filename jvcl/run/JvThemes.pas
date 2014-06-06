@@ -874,7 +874,7 @@ begin
      (Control.Parent <> nil) and
      ((Color = TWinControlThemeInfo(Control.Parent).Color) or
       (ColorToRGB(Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
-     ((not NeedsParentBackground) or (csParentBackground in GetThemeStyle(Control))) then
+     (not NeedsParentBackground or (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin
@@ -890,6 +890,10 @@ begin
   else
   {$ENDIF JVCLThemesEnabled}
   begin
+    {$IFDEF JVCLStylesEnabled}
+    if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
+      Color := StyleServices.GetSystemColor(Color);
+    {$ENDIF JVCLStylesEnabled}
     Cl := Canvas.Brush.Color;
     if Cl <> Color then
       Canvas.Brush.Color := Color;
@@ -911,8 +915,7 @@ begin
   if StyleServices.Enabled and
      (Control.Parent <> nil) and
      (LogBrush.lbColor = Cardinal(ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
-     ((not NeedsParentBackground) or
-     (csParentBackground in GetThemeStyle(Control))) then
+     (not NeedsParentBackground or (csParentBackground in GetThemeStyle(Control))) then
   begin
     if Control is TWinControl then
     begin

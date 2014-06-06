@@ -118,7 +118,7 @@ begin
     Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
-    DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);
+    DrawThemedBackground(Self, Canvas, ClientRect, Color);
     Result := True;
   end;
 end;

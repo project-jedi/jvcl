@@ -64,7 +64,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property CaptionVisible: Boolean read FCaptionVisible write SetCaptionVisible;
+    property CaptionVisible: Boolean read FCaptionVisible write SetCaptionVisible default True;
     property EdgeBorders: TEdgeBorders read FEdgeBorders write SetEdgeBorders default [ebLeft, ebTop, ebRight, ebBottom];
     property EdgeInner: TEdgeStyle read FEdgeInner write SetEdgeInner default esRaised;
     property EdgeOuter: TEdgeStyle read FEdgeOuter write SetEdgeOuter default esLowered;
