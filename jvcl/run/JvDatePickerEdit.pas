@@ -795,7 +795,10 @@ end;
   {$IFDEF COMPILER12_UP}
 function TJvCustomDatePickerEdit.GetDatePickerThemeButtonMinTextSize: Integer;
 begin
-  Result := Canvas.TextWidth(DateToText(Now));
+  if HandleAllocated then
+    Result := Canvas.TextWidth(DateToText(Now))
+  else
+    Result := inherited GetDatePickerThemeButtonMinTextSize;
 end;
   {$ENDIF COMPILER12_UP}
 {$ENDIF JVCLThemesEnabled}
