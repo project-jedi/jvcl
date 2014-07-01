@@ -168,6 +168,11 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure CMExit(var Msg: TMessage); message CM_EXIT;
   protected
+    {$IFDEF JVCLThemesEnabled}
+      {$IFDEF COMPILER12_UP}
+    function GetDatePickerThemeButtonMinTextSize: Integer; override;
+      {$ENDIF COMPILER12_UP}
+    {$ENDIF JVCLThemesEnabled}
     function ValidateEditText: string;
     procedure CalChanged; virtual;
     procedure RestoreMaskForKeyPress;
@@ -785,6 +790,15 @@ begin
     PopupCloseUp(Self, False);
   inherited DoKillFocus(ANextControl);
 end;
+
+{$IFDEF JVCLThemesEnabled}
+  {$IFDEF COMPILER12_UP}
+function TJvCustomDatePickerEdit.GetDatePickerThemeButtonMinTextSize: Integer;
+begin
+  Result := Canvas.TextWidth(DateToText(Now));
+end;
+  {$ENDIF COMPILER12_UP}
+{$ENDIF JVCLThemesEnabled}
 
 //procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
 //begin

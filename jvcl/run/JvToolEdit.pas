@@ -315,6 +315,7 @@ type
       {$IFDEF COMPILER12_UP}
     procedure AutoSizeEditButton;
     function GetDatePickerThemeButtonWidth: Integer;
+    function GetDatePickerThemeButtonMinTextSize: Integer; virtual; // overridden by TJvCustomDatePickerEdit
     procedure Resize; override;
     procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
       {$ENDIF COMPILER12_UP}
@@ -1902,9 +1903,14 @@ end;
 
 {$IFDEF JVCLThemesEnabled}
   {$IFDEF COMPILER12_UP}
+function TJvCustomComboEdit.GetDatePickerThemeButtonMinTextSize: Integer;
+begin
+  Result := 0;
+end;
+
 function TJvCustomComboEdit.GetDatePickerThemeButtonWidth: Integer;
 begin
-  if Width - DefDatePickerThemeButtonWidth <= TextWidth(Text) + 8 then
+  if Width - DefDatePickerThemeButtonWidth <= GetDatePickerThemeButtonMinTextSize + 8 then
     Result := GetSystemMetrics(SM_CXVSCROLL)
   else
     Result := DefDatePickerThemeButtonWidth;
