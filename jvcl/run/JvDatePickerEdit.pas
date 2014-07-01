@@ -209,7 +209,7 @@ type
     property DateSeparator: Char read FDateSeparator write SetDateSeparator stored FStoreDateFormat;
     property Dropped: Boolean read GetDropped;
     property EnableValidation: Boolean read GetEnableValidation write FEnableValidation default True;
-    property ImageKind default ikDropDown;
+    property ImageKind default ikDatePicker;
     //    property MaxYear: Word read FMaxYear write FMaxYear;
     //    property MinYear: Word read FMinYear write FMinYear;
     property NoDateShortcut: TShortcut read FNoDateShortcut write FNoDateShortcut stored IsNoDateShortcutStored;
@@ -643,7 +643,7 @@ begin
 
   ControlState := ControlState + [csCreating];
   try
-    ImageKind := ikDropDown; { force update }
+    ImageKind := ikDatePicker; { force update }
     ShowButton := True;
   finally
     ControlState := ControlState - [csCreating];
@@ -1280,14 +1280,15 @@ procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvDropCalendar then
   begin
-    TJvDropCalendar(FPopup).Show;
+    //TJvDropCalendar(FPopup).Show;
+    ShowWindow(TJvDropCalendar(FPopup).Handle, SW_SHOWNOACTIVATE);
+    TJvDropCalendar(FPopup).Visible := True; // triggers DoShow
+
     if Assigned(OnPopupShown) then
       OnPopupShown(Self);
   end
   else
-  begin
     inherited ShowPopup(Origin);
-  end;
 end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
