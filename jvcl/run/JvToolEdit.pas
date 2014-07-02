@@ -138,12 +138,14 @@ type
   TJvEditButton = class(TJvImageSpeedButton)
   private
     FNoAction: Boolean;
+    FPopupVisible: Boolean;
     procedure WMContextMenu(var Msg: TWMContextMenu); message WM_CONTEXTMENU;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: TJvNumGlyphs;
     function GetUseGlyph: Boolean;
     procedure SetGlyph(const Value: TBitmap);
     procedure SetNumGlyphs(Value: TJvNumGlyphs);
+    procedure SetPopupVisible(const Value: Boolean);
   protected
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
@@ -157,6 +159,7 @@ type
     procedure PaintImage(Canvas: TCanvas; ARect: TRect; const Offset: TPoint;
       AState: TJvButtonState; DrawMark: Boolean; PaintOnGlass: Boolean); override;
     procedure Paint; override;
+    property PopupVisible: Boolean read FPopupVisible write SetPopupVisible;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
@@ -2575,6 +2578,8 @@ begin
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
     AValue := GetPopupValue;
+    if FButton <> nil then
+      FButton.PopupVisible := False;
     HidePopup;
     try
       try
@@ -2662,6 +2667,8 @@ begin
     if CanFocus then
       SetFocus;
     ShowPopup(Point(P.X, Y));
+    if FButton <> nil then
+      FButton.PopupVisible := True;
     FPopupVisible := True;
     if DisableEdit then
     begin
@@ -4497,13 +4504,18 @@ begin
 end;
 
 procedure TJvEditButton.Paint;
-{$IFDEF JVCLThemesEnabled}
 var
+  DrawState: TJvButtonState;
+{$IFDEF JVCLThemesEnabled}
   ThemedState: TThemedComboBox;
   Details: TThemedElementDetails;
   R: TRect;
 {$ENDIF JVCLThemesEnabled}
 begin
+  DrawState := FState;
+  if FPopupVisible then
+    DrawState := rbsDown;
+
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
@@ -4515,7 +4527,7 @@ begin
       if not Enabled then
         Details.State := DPSCBR_DISABLED
       else
-      if FState in [rbsDown, rbsExclusive] then
+      if DrawState in [rbsDown, rbsExclusive] then
         Details.State := DPSCBR_PRESSED
       else
       if MouseOver or IsDragging then
@@ -4524,7 +4536,7 @@ begin
         Details.State := DPSCBR_NORMAL;
 
       R := ClientRect;
-      DrawThemeParentBackground(Parent.Handle, Canvas.Handle, @R);
+      FillRect(Canvas.Handle, R, Parent.Brush.Handle);
       if Width < DefDatePickerThemeButtonWidth then
         R.Left := R.Right - 15; // paint without the dropdown arrow
       DrawThemeBackground(GDatePickerThemeData, Canvas.Handle, Details.Part, Details.State, R, nil);
@@ -4544,8 +4556,8 @@ begin
       else
         ThemedState := tcDropDownButtonNormal;
       R := ClientRect;
-      Details := StyleServices.GetElementDetails(ThemedState);
-      StyleServices.DrawElement(Canvas.Handle, Details, R);
+      Details := ThemeServices.GetElementDetails(ThemedState);
+      ThemeServices.DrawElement(Canvas.Handle, Details, R);
     end
     else
       inherited Paint;
@@ -4592,6 +4604,15 @@ begin
   if Value <> ButtonGlyph.NumGlyphs then
   begin
     ButtonGlyph.NumGlyphs := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvEditButton.SetPopupVisible(const Value: Boolean);
+begin
+  if Value <> FPopupVisible then
+  begin
+    FPopupVisible := Value;
     Invalidate;
   end;
 end;
