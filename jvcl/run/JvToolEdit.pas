@@ -317,7 +317,6 @@ type
     function GetDatePickerThemeButtonWidth: Integer;
     function GetDatePickerThemeButtonMinTextSize: Integer; virtual; // overridden by TJvCustomDatePickerEdit
     procedure Resize; override;
-    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
       {$ENDIF COMPILER12_UP}
     {$ENDIF JVCLThemesEnabled}
     procedure DoCtl3DChanged; virtual;
@@ -1940,12 +1939,6 @@ end;
 procedure TJvCustomComboEdit.Resize;
 begin
   inherited Resize;
-  AutoSizeEditButton;
-end;
-
-procedure TJvCustomComboEdit.CMTextchanged(var Message: TMessage);
-begin
-  inherited;
   AutoSizeEditButton;
 end;
   {$ENDIF COMPILER12_UP}
