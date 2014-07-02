@@ -1958,9 +1958,9 @@ begin
     {$IFDEF COMPILER12_UP}
   if (FImageKind = ikDatePicker) and ThemeServices.ThemesEnabled and IsDatePickerThemeDataAvailable then
     Result := ButtonWidth <> GetDatePickerThemeButtonWidth
+  else
     {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
-  else
   if FImageKind in [ikDropDown, ikDatePicker] then
     Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL)
   else
