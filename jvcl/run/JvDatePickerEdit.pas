@@ -794,9 +794,26 @@ end;
 {$IFDEF JVCLThemesEnabled}
   {$IFDEF COMPILER12_UP}
 function TJvCustomDatePickerEdit.GetDatePickerThemeButtonMinTextSize: Integer;
+var
+  DC: HDC;
+  SaveFont: HFONT;
+  Size: TSize;
+  S: string;
 begin
   if HandleAllocated then
-    Result := Canvas.TextWidth(DateToText(Now))
+  begin
+    S := DateToText(FDate);
+    Size.cx := 0;
+    Size.cy := 0;
+
+    DC := GetDC(HWND_DESKTOP);
+    SaveFont := SelectObject(DC, Font.Handle);
+    Windows.GetTextExtentPoint32(DC, S, Length(S), Size);
+    SelectObject(DC, SaveFont);
+    ReleaseDC(HWND_DESKTOP, DC);
+
+    Result := Size.cx;
+  end
   else
     Result := inherited GetDatePickerThemeButtonMinTextSize;
 end;

@@ -2527,6 +2527,11 @@ begin
   end;
 
   UpdateControls;
+  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF COMPILER12_UP}
+  AutoSizeEditButton;
+    {$ENDIF COMPILER12_UP}
+  {$ENDIF JVCLThemesEnabled}
   UpdateMargins;
 end;
 
