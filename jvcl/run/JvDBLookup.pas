@@ -3271,8 +3271,8 @@ const
 var
   State: TThemedComboBox;
   Details: TThemedElementDetails;
-  DrawRect, R: TRect;
   DrawRect, R, CR: TRect;
+  DC: HDC;
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
