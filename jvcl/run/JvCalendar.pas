@@ -164,6 +164,7 @@ type
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
   protected
     procedure GetDlgCode(var Code: TDlgCodes); override;
+    procedure LButtonDownFocus; virtual;
     procedure ColorChanged; override;
     procedure FontChanged; override;
     procedure ConstrainedResize(var MinWidth: Integer;
@@ -1239,9 +1240,14 @@ begin
   Code := [dcWantArrows];
 end;
 
-procedure TJvCustomMonthCalendar.WMLButtonDown(var Msg: TWMLButtonDown);
+procedure TJvCustomMonthCalendar.LButtonDownFocus;
 begin
   SetFocus;
+end;
+
+procedure TJvCustomMonthCalendar.WMLButtonDown(var Msg: TWMLButtonDown);
+begin
+  LButtonDownFocus;
   inherited;
 end;
 

@@ -66,7 +66,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Windows, Messages, Classes, Controls, ImgList,
+  Windows, Messages, Types, Classes, Controls, ImgList,
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
@@ -82,6 +82,12 @@ type
     Index: Byte;
   end;
   TJvDateFigures = array[0..2] of TJvDateFigureInfo;
+
+  TJvPopupMonthCalendar2 = class(TJvMonthCalendar2)
+  protected
+    procedure LButtonDownFocus; override;
+    procedure WndProc(var Msg: TMessage); override;
+  end;
 
   {A dropdown form with an embedded calendar control.}
   TJvDropCalendar = class(TJvCustomDropDownForm)
@@ -102,6 +108,8 @@ type
     procedure DoShow; override;
     function GetSelDate: TDateTime;
     procedure SetSelDate(const AValue: TDateTime);
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CMShowingChanged(var Msg: TMessage); override;
   public
     constructor CreateWithAppearance(AOwner: TComponent;
       const AAppearance: TJvMonthCalAppearance);
@@ -180,6 +188,7 @@ type
     function GetValidDateString(const Text: string): string; virtual;
     procedure AcceptValue(const Value: Variant); override;
     function AcceptPopup(var Value: Variant): Boolean; override;
+    procedure ResetPopupValue; override;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
     function IsNoDateValueStored: Boolean;
@@ -362,7 +371,7 @@ const
 implementation
 
 uses
-  Variants, SysUtils, Menus,
+  Variants, SysUtils, Menus, Forms,
   {$IFDEF HAS_UNIT_CHARACTER}
   Character, // for inline
   {$ENDIF HAS_UNIT_CHARACTER}
@@ -663,7 +672,7 @@ begin
     FPopup := TJvDropCalendar.CreateWithAppearance(Self, FCalAppearance);
     with TJvDropCalendar(FPopup) do
     begin
-//      SelDate := Self.Date;
+//      SelDate := ;
       //OnChange := Self.CalChange;
       OnSelect := Self.CalSelect;
       OnDestroy := Self.CalDestroy;
@@ -1337,9 +1346,11 @@ procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvDropCalendar then
   begin
-    //TJvDropCalendar(FPopup).Show;
-    ShowWindow(TJvDropCalendar(FPopup).Handle, SW_SHOWNOACTIVATE);
-    TJvDropCalendar(FPopup).Visible := True; // triggers DoShow
+    FPopup.Visible := True; // overriden CM_SHOWINGCHANGED will take care of SW_SHOWNOACTIVATE
+
+    // Emulate a LButton-Click to give the month calendar the look of being focused
+    SendMessage(TJvDropCalendar(FPopup).FCal.Handle, WM_LBUTTONDOWN, MK_LBUTTON, MakeLong(Word(-1), Word(-1)));
+    SendMessage(TJvDropCalendar(FPopup).FCal.Handle, WM_LBUTTONUP, 0, MakeLong(Word(-1), Word(-1)));
 
     if Assigned(OnPopupShown) then
       OnPopupShown(Self);
@@ -1417,6 +1428,29 @@ begin
   end;
 end;
 
+procedure TJvCustomDatePickerEdit.ResetPopupValue;
+begin
+  // do nothing and keep the current value
+end;
+
+
+//=== { TJvPopupMonthCalendar2 } =============================================
+
+procedure TJvPopupMonthCalendar2.LButtonDownFocus;
+begin
+  // no inherited, as it would lead to an endless SetFocus recursion
+end;
+
+procedure TJvPopupMonthCalendar2.WndProc(var Msg: TMessage);
+begin
+  case Msg.Msg of
+    WM_MOUSEACTIVATE:
+      Msg.Result := MA_NOACTIVATE;
+  else
+    inherited WndProc(Msg);
+  end;
+end;
+
 //=== { TJvDropCalendar } ====================================================
 
 procedure TJvDropCalendar.CalKeyPress(Sender: TObject; var Key: Char);
@@ -1458,15 +1492,43 @@ begin
   DoSelect;
 end;
 
+procedure TJvDropCalendar.CMShowingChanged(var Msg: TMessage);
+begin
+  // Override TCustomForm.CMShowingChanged so that we can use SW_SHOWNOACTIVATE
+
+  if not Showing then
+  begin
+    inherited;
+    Exit;
+  end;
+
+  Include(FFormState, fsShowing);
+  try
+    try
+      DoShow;
+    except
+      Application.HandleException(Self);
+    end;
+    ShowWindow(Handle, SW_SHOWNOACTIVATE);
+  finally
+    Exclude(FFormState, fsShowing);
+  end;
+end;
+
+procedure TJvDropCalendar.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style and not WS_BORDER; // MonthCal2 has its own border
+end;
+
 constructor TJvDropCalendar.CreateWithAppearance(AOwner: TComponent;
   const AAppearance: TJvMonthCalAppearance);
 begin
   inherited Create(AOwner);
   FWithBeep := False;
-  FCal := TJvMonthCalendar2.CreateWithAppearance(Self, AAppearance);
-  with TJvMonthCalendar2(FCal) do
+  FCal := TJvPopupMonthCalendar2.CreateWithAppearance(Self, AAppearance);
+  with TJvPopupMonthCalendar2(FCal) do
   begin
-    Parent := Self;
     ParentFont := True;
     OnSelChange := CalSelChange;
     OnSelect := CalSelect;
@@ -1474,6 +1536,7 @@ begin
     OnKeyPress := CalKeyPress;
     Visible := True;
     AutoSize := True;
+    Parent := Self;
   end;
 end;
 

@@ -85,7 +85,7 @@ implementation
 
 uses
   SysUtils,
-  JvResources, JvJVCLUtils;
+  JvResources, JvJVCLUtils, JclSysInfo;
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);
@@ -107,16 +107,24 @@ begin
   FCloseOnLeave := True;
 end;
 
-
 procedure TJvCustomDropDownForm.CreateParams(var AParams: TCreateParams);
+{$IFDEF COMPILER6}
+const
+  CS_DROPSHADOW = $20000;
+{$ENDIF COMPILER6}
 begin
   inherited CreateParams(AParams);
   AParams.Style := AParams.Style or WS_BORDER;
+  AParams.ExStyle := AParams.ExStyle or WS_EX_TOOLWINDOW;
+  AddBiDiModeExStyle(AParams.ExStyle);
+
+  AParams.WindowClass.style := AParams.WindowClass.style or CS_SAVEBITS;
+  if JclCheckWinVersion(5, 1) then // Windows XP+
+    AParams.WindowClass.style := AParams.WindowClass.style or CS_DROPSHADOW;
 
   // Fixing the Window Ghosting "bug"
   // This also fixes mantis 3409 where the popup would not appear if its
   // associated control was placed on a form with fsStayOnTop form style.
-  AParams.Style := Aparams.Style or WS_POPUP;
   if Assigned(Screen.ActiveForm) then
     AParams.WndParent := Screen.ActiveForm.Handle
   else
@@ -126,9 +134,6 @@ begin
     AParams.WndParent := Application.Handle;
 end;
 
-
-
-
 procedure TJvCustomDropDownForm.DoClose(var Action: TCloseAction);
 begin
   Action := caFree;
@@ -137,35 +142,35 @@ end;
 
 procedure TJvCustomDropDownForm.DoShow;
 var
-  LScreenRect: TRect;
+  WR, LScreenRect: TRect;
+  X, Y: Integer;
 begin
   inherited DoShow;
 
   // Mantis 3357: Always reposition ourselves with respect to the owner
   // as it may have moved between two of our apparitions.
-  with TWinControl(Owner) do
-  begin
-    Self.Left := ClientOrigin.X;
-    Self.Top := ClientOrigin.Y + Height;
-  end;
+  GetWindowRect(TWinControl(Owner).Handle, WR);
+  X := WR.Left;
+  Y := WR.Bottom;
 
   if Screen.MonitorCount > 0 then
   begin
     LScreenRect := Monitor.WorkareaRect;
-    if (Left + Width > LScreenRect.Right) then
-      Left := LScreenRect.Right - Width;
-    if (Top + Height > LScreenRect.Bottom) then
-      Top := Self.Edit.ClientOrigin.Y - Height;
+    if X + Width > LScreenRect.Right then
+      X := LScreenRect.Right - Width;
+    if Y + Height > LScreenRect.Bottom then
+      Y := WR.Top - Height;
   end
   else
   begin
     if not SystemParametersInfo(SPI_GETWORKAREA, 0, @LScreenRect, 0) then
       LScreenRect := Rect(0, 0, Screen.Width, Screen.Height);
-    if (Left + Width > LScreenRect.Right) then
-      Left := LScreenRect.Right - Width;
-    if (Top + Height > LScreenRect.Bottom) then
-      Top := Self.Edit.ClientOrigin.Y - Height;
+    if Left + Width > LScreenRect.Right then
+      X := LScreenRect.Right - Width;
+    if Top + Height > LScreenRect.Bottom then
+      Y := WR.Top - Height;
   end;
+  SetBounds(X, Y, Width, Height);
 end;
 
 function TJvCustomDropDownForm.GetEdit: TCustomEdit;
