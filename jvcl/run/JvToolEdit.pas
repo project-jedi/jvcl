@@ -356,6 +356,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PopupChange; virtual;
+    procedure ResetPopupValue; virtual;
     procedure PopupCloseUp(Sender: TObject; Accept: Boolean); virtual;
     procedure AsyncPopupCloseUp(Accept: Boolean); virtual;
     procedure PopupDropDown(DisableEdit: Boolean); virtual;
@@ -2336,10 +2337,8 @@ begin
 end;
 
 procedure TJvCustomComboEdit.GetInternalMargins(var ALeft, ARight: Integer);
-const
-  CPixelsBetweenEditAndButton = 2;
 begin
-  ARight := ARight + FBtnControl.Width + CPixelsBetweenEditAndButton;
+  ARight := ARight + FBtnControl.Width;
 end;
 
 function TJvCustomComboEdit.GetMinHeight: Integer;
@@ -2567,6 +2566,11 @@ begin
     FOnPopupChange(Self);
 end;
 
+procedure TJvCustomComboEdit.ResetPopupValue;
+begin
+  Reset;
+end;
+
 procedure TJvCustomComboEdit.PopupCloseUp(Sender: TObject; Accept: Boolean);
 var
   AValue: Variant;
@@ -2600,9 +2604,9 @@ begin
             inherited SelectAll;
         end
         else
-          Reset;
+          ResetPopupValue;
       except
-        Reset;
+        ResetPopupValue;
         raise;
       end;
     finally
@@ -3205,6 +3209,8 @@ begin
 end;
 
 procedure TJvCustomComboEdit.UpdateMargins;
+const
+  CPixelsBetweenEditAndButton = 3;
 var
   LLeft, LRight, LTop: Integer;
   Loc: TRect;
@@ -3254,7 +3260,7 @@ begin
 
   GetInternalMargins(LLeft, LRight);
 
-  SetRect(Loc, LLeft, LTop, Width - LRight-3, ClientHeight - 1);
+  SetRect(Loc, LLeft, LTop, Width - LRight - CPixelsBetweenEditAndButton, ClientHeight - 1);
   SendRectMessage(Handle, EM_SETRECTNP, 0, Loc);
   // (rb) EM_SETMARGINS necessary?
   //SendMessage(Handle, EM_SETMARGINS, EC_RIGHTMARGIN or EC_LEFTMARGIN, MakeLong(LLeft, LRight));
