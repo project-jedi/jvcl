@@ -391,6 +391,7 @@ type
     FOnCloseUp: TNotifyEvent;
     FLastValue: Variant;
     FInListDataSetChanged: Boolean;
+    FMouseOverButton: Boolean;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
@@ -413,8 +414,13 @@ type
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMNCPaint(var Message: TWMNCPaint); message WM_NCPAINT;
     procedure ReadEscapeClear(Reader: TReader);
+    procedure SetMouseOverButton(Value: Boolean);
   protected
+    function GetDropDownButtonRect: TRect;
+    procedure InvalidateFrame;
+    procedure InvalidateDropDownButton;
     function GetDataLink: TDataLink; virtual;
     procedure FocusKilled(NextWnd: THandle); override;
     procedure BoundsChanged; override;
@@ -2530,6 +2536,7 @@ begin
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     FListVisible := False;
     FDataList.LookupSource := nil;
+    InvalidateDropDownButton;
     Invalidate;
     FSearchText := '';
     FDataList.FSearchText := '';
@@ -2741,6 +2748,7 @@ begin
 
     FListVisible := True;
     InvalidateText;
+    InvalidateDropDownButton;
     Repaint;
   end;
 end;
@@ -3073,6 +3081,7 @@ var
   ListPos: TPoint;
   MousePos: TSmallPoint;
 begin
+  SetMouseOverButton(PtInRect(GetDropDownButtonRect, Point(X, Y)));
   if FTracking then
   begin
     TrackButton(X, Y);
@@ -3096,6 +3105,54 @@ procedure TJvDBLookupCombo.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   StopTracking;
   inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TJvDBLookupCombo.SetMouseOverButton(Value: Boolean);
+begin
+  if Value <> FMouseOverButton then
+  begin
+    FMouseOverButton := Value;
+    InvalidateDropDownButton;
+  end;
+end;
+
+function TJvDBLookupCombo.GetDropDownButtonRect: TRect;
+begin
+  Result := Rect(ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+end;
+
+procedure TJvDBLookupCombo.InvalidateFrame;
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if StyleServices.Enabled and HandleAllocated then
+    RedrawWindow(Handle, nil, 0, RDW_INVALIDATE or RDW_FRAME);
+  {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvDBLookupCombo.InvalidateDropDownButton;
+{$IFDEF JVCLThemesEnabled}
+var
+  R: TRect;
+{$ENDIF JVCLThemesEnabled}
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if StyleServices.Enabled and HandleAllocated then
+  begin
+    if JclCheckWinVersion(6, 0) then
+    begin
+      // Parts of the button are painted in the border
+      GetWindowRect(Handle, R);
+      OffsetRect(R, -R.Left, -R.Top);
+      R.Left := R.Right - FButtonWidth;
+      RedrawWindow(Handle, R, 0, RDW_INVALIDATE or RDW_FRAME);
+    end
+  end
+  else
+  begin
+    R := GetDropDownButtonRect;
+    Windows.InvalidateRect(Handle, @R, True);
+  end;
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvDBLookupCombo.UpdateCurrentImage;
@@ -3199,6 +3256,90 @@ begin
       SelectClipRgn(Message.DC, 0);
     DeleteObject(SaveRgn);
   end;
+end;
+
+procedure TJvDBLookupCombo.WMNCPaint(var Message: TWMNCPaint);
+{$IFDEF JVCLThemesEnabled}
+const
+  CP_BACKGROUND            = 2;
+  //CP_TRANSPARENTBACKGROUND = 3;
+  CP_BORDER                = 4;
+  CP_READONLY              = 5;
+  CP_DROPDOWNBUTTONRIGHT   = 6;
+  //CP_DROPDOWNBUTTONLEFT    = 7;
+  //CP_CUEBANNER             = 8;
+var
+  State: TThemedComboBox;
+  Details: TThemedElementDetails;
+  DrawRect, R: TRect;
+  DrawRect, R, CR: TRect;
+{$ENDIF JVCLThemesEnabled}
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if StyleServices.Enabled and JclCheckWinVersion(6, 0) then
+  begin
+    GetWindowRect(Handle, DrawRect);
+    CR := DrawRect;
+    CR.Right := CR.Right - FButtonWidth;
+    MapWindowPoints(HWND_DESKTOP, Handle, CR, 2);
+    CR.Left := Abs(CR.Left);
+    CR.Top := Abs(CR.Top);
+
+    OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
+    R := DrawRect;
+    R.Left := R.Right - FButtonWidth;
+
+
+    DC := GetWindowDC(Handle);
+    try
+      ExcludeClipRect(DC, CR.Left, CR.Top, CR.Right, CR.Bottom);
+      if not FListActive or not Enabled or ReadOnly then
+        State := tcDropDownButtonDisabled
+      else
+      if FPressed or FListVisible then
+        State := tcDropDownButtonPressed
+      else
+      if MouseOver and not FListVisible then
+        State := tcDropDownButtonHot
+      else
+        State := tcDropDownButtonNormal;
+
+      Details := StyleServices.GetElementDetails(State);
+
+      Details.Part := CP_BACKGROUND;
+      StyleServices.DrawElement(DC, Details, DrawRect);
+
+      if Enabled then
+      begin
+        Details.Part := CP_BORDER;
+        StyleServices.DrawElement(DC, Details, DrawRect);
+      end;
+
+      if ReadOnly then
+      begin
+        Details.Part := CP_READONLY;
+        StyleServices.DrawElement(DC, Details, DrawRect, @R);
+      end;
+
+      if State = tcDropDownButtonHot then
+      begin
+        if MouseOver and FMouseOverButton and not FListVisible then
+          State := tcDropDownButtonHot
+        else
+          State := tcDropDownButtonNormal;
+      end;
+      Details := StyleServices.GetElementDetails(State);
+
+      Details.Part := CP_DROPDOWNBUTTONRIGHT;
+      StyleServices.DrawElement(DC, Details, R);
+    finally
+      ReleaseDC(Handle, DC);
+    end;
+    Message.Result := 0;
+  end
+  else
+  {$ENDIF JVCLThemesEnabled}
+    inherited;
 end;
 
 procedure TJvDBLookupCombo.Paint;
@@ -3350,10 +3491,8 @@ begin
           PaintDisplayValues(Bmp.Canvas, ImageRect, TextMargin);
       end
       else
-      begin
-        Bmp.Canvas.TextRect(ImageRect, X, Max(0, (RectHeight(R) -
-          Canvas.TextHeight(AText)) div 2), AText);
-      end;
+        Bmp.Canvas.TextRect(ImageRect, X, Max(0, (RectHeight(R) - Canvas.TextHeight(AText)) div 2), AText);
+
       if Image <> nil then
       begin
         if BidiMode = bdRightToLeft then
@@ -3387,18 +3526,21 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
-    if not FListActive or not Enabled or ReadOnly then
-      State := tcDropDownButtonDisabled
-    else
-    if FPressed then
-      State := tcDropDownButtonPressed
-    else
-    if MouseOver and not FListVisible then
-      State := tcDropDownButtonHot
-    else
-      State := tcDropDownButtonNormal;
-    Details := StyleServices.GetElementDetails(State);
-    StyleServices.DrawElement(Canvas.Handle, Details, R);
+    if not JclCheckWinVersion(6, 0) then // for Vista and newer the WM_NCPAINT handler paints the button
+    begin
+      if not FListActive or not Enabled or ReadOnly then
+        State := tcDropDownButtonDisabled
+      else
+      if FPressed or FListVisible then
+        State := tcDropDownButtonPressed
+      else
+      if MouseOver and FMouseOverButton and not FListVisible then
+        State := tcDropDownButtonHot
+      else
+        State := tcDropDownButtonNormal;
+      Details := StyleServices.GetElementDetails(State);
+      StyleServices.DrawElement(Canvas.Handle, Details, R);
+    end;
   end
   else
   {$ENDIF JVCLThemesEnabled}
@@ -3406,7 +3548,7 @@ begin
     if not FListActive or not Enabled or ReadOnly then
       Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
     else
-    if FPressed then
+    if FPressed then // Classic Style doesn't keep the button pressed while the popup is visible
       Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
     else
       Flags := DFCS_SCROLLCOMBOBOX;
@@ -3437,11 +3579,11 @@ procedure TJvDBLookupCombo.TrackButton(X, Y: Integer);
 var
   NewState: Boolean;
 begin
-  NewState := PtInRect(Rect(ClientWidth - FButtonWidth, 0, ClientWidth,
-    ClientHeight), Point(X, Y));
+  NewState := PtInRect(GetDropDownButtonRect, Point(X, Y));
   if FPressed <> NewState then
   begin
     FPressed := NewState;
+    InvalidateDropDownButton;
     Repaint;
   end;
 end;
@@ -3507,7 +3649,7 @@ begin
   if StyleServices.Enabled and not MouseOver then
   begin
     inherited MouseEnter(Control);
-    Invalidate;
+    InvalidateFrame;
   end;
 end;
 
@@ -3516,7 +3658,8 @@ begin
   if MouseOver then
   begin
     inherited MouseLeave(Control);
-    Invalidate;
+    SetMouseOverButton(False);
+    InvalidateFrame; // border also needs a repaint
   end;
 end;
 
@@ -3656,7 +3799,7 @@ procedure TJvPopupDataWindow.PopupMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then
-    CloseUp(PtInRect(Self.ClientRect, Point(X, Y)));
+    CloseUp(PtInRect(ClientRect, Point(X, Y)));
 end;
 
 procedure TJvPopupDataWindow.CloseUp(Accept: Boolean);
