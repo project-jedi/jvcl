@@ -167,6 +167,9 @@ type
     procedure SetText(const AValue: TCaption);
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure CMExit(var Msg: TMessage); message CM_EXIT;
+    procedure WMKeyDown(var Message: TMessage); message WM_KEYDOWN;
+    procedure WMKeyUp(var Message: TMessage); message WM_KEYUP;
+    procedure WMChar(var Message: TMessage); message WM_CHAR;
   protected
     {$IFDEF JVCLThemesEnabled}
       {$IFDEF COMPILER12_UP}
@@ -789,6 +792,30 @@ begin
      (ANextControl.Owner <> FPopup))) and not FDateError then
     PopupCloseUp(Self, False);
   inherited DoKillFocus(ANextControl);
+end;
+
+procedure TJvCustomDatePickerEdit.WMKeyDown(var Message: TMessage);
+begin
+  if PopupVisible and (FPopup is TJvDropCalendar) and FPopup.Visible and (Message.LParam <> 1) then // protect against TCustomMaskEdit.SetCursor
+    TJvDropCalendar(FPopup).FCal.Perform(WM_KEYDOWN, Message.WParam, Message.LParam)
+  else
+    inherited;
+end;
+
+procedure TJvCustomDatePickerEdit.WMKeyUp(var Message: TMessage);
+begin
+  if PopupVisible and (FPopup is TJvDropCalendar) and FPopup.Visible and (Message.LParam <> 1) then // protect against TCustomMaskEdit.SetCursor
+    TJvDropCalendar(FPopup).FCal.Perform(WM_KEYUP, Message.WParam, Message.LParam)
+  else
+    inherited;
+end;
+
+procedure TJvCustomDatePickerEdit.WMChar(var Message: TMessage);
+begin
+  if PopupVisible and (FPopup is TJvDropCalendar) and FPopup.Visible then
+    TJvDropCalendar(FPopup).FCal.Perform(WM_CHAR, Message.WParam, Message.LParam)
+  else
+    inherited;
 end;
 
 {$IFDEF JVCLThemesEnabled}
