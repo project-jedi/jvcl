@@ -149,9 +149,7 @@ type
   protected
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
-      {$IFDEF COMPILER12_UP}
     FDrawThemedDatePickerBtn: Boolean;
-      {$ENDIF COMPILER12_UP}
     {$ENDIF JVCLThemesEnabled}
     FStandard: Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -315,12 +313,10 @@ type
     procedure DoEnter; override;
     procedure DoExit; override;
     {$IFDEF JVCLThemesEnabled}
-      {$IFDEF COMPILER12_UP}
     procedure AutoSizeEditButton;
     function GetDatePickerThemeButtonWidth: Integer;
     function GetDatePickerThemeButtonMinTextSize: Integer; virtual; // overridden by TJvCustomDatePickerEdit
     procedure Resize; override;
-      {$ENDIF COMPILER12_UP}
     {$ENDIF JVCLThemesEnabled}
     procedure DoCtl3DChanged; virtual;
     function DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean; override;
@@ -1155,9 +1151,7 @@ uses
   RTLConsts, Math, MaskUtils,
   MultiMon,
   {$IFDEF JVCLThemesEnabled}
-    {$IFDEF COMPILER12_UP}
   UxTheme,
-    {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF COMPILER16_UP} // VCL-Styles support
   Vcl.Themes,
@@ -1291,18 +1285,14 @@ var
   {$IFDEF JVCLThemesEnabled}
   GDirImageIndexXP: TImageIndex = -1;
   GFileImageIndexXP: TImageIndex = -1;
-    {$IFDEF COMPILER12_UP}
   GDatePickerThemeDataAvailable: Integer = -1;
   GDatePickerThemeData: HTHEME;
-    {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
   GCoInitialized: Integer = 0;
 
 {$IFDEF JVCLThemesEnabled}
-  {$IFDEF COMPILER12_UP}
 const
   DefDatePickerThemeButtonWidth = 34;
-  {$ENDIF COMPILER12_UP}
 {$ENDIF JVCLThemesEnabled}
 
 //=== Local procedures =======================================================
@@ -1315,10 +1305,20 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-  {$IFDEF COMPILER12_UP}
+  {$IFNDEF COMPILER12_UP}
+const
+  // Vista+
+  VSCLASS_DATEPICKER = 'DATEPICKER';
+  DP_SHOWCALENDARBUTTONRIGHT = 3;
+  DPSCBR_NORMAL   = 1;
+  DPSCBR_HOT      = 2;
+  DPSCBR_PRESSED  = 3;
+  DPSCBR_DISABLED = 4;
+  {$ENDIF ~COMPILER12_UP}
+
 function IsDatePickerThemeDataAvailable: Boolean;
 begin
-  if GDatePickerThemeDataAvailable = -1 then
+  if (GDatePickerThemeDataAvailable = -1) and ThemeServices.Available and Assigned(OpenThemeData) then
   begin
     GDatePickerThemeData := OpenThemeData(Application.Handle, VSCLASS_DATEPICKER);
     if GDatePickerThemeData = 0 then
@@ -1328,7 +1328,6 @@ begin
   end;
   Result := GDatePickerThemeDataAvailable = 1;
 end;
-  {$ENDIF COMPILER12_UP}
 {$ENDIF JVCLThemesEnabled}
 
 function ClipFilename(const FileName: string; const Clip: Boolean): string;
@@ -1904,7 +1903,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-  {$IFDEF COMPILER12_UP}
 function TJvCustomComboEdit.GetDatePickerThemeButtonMinTextSize: Integer;
 begin
   Result := 0;
@@ -1944,7 +1942,6 @@ begin
   inherited Resize;
   AutoSizeEditButton;
 end;
-  {$ENDIF COMPILER12_UP}
 {$ENDIF JVCLThemesEnabled}
 
 procedure TJvCustomComboEdit.AsyncPopupCloseUp(Accept: Boolean);
@@ -1958,11 +1955,9 @@ begin
     Result := ButtonWidth <> Max(DefaultImages.Width + 6, DefEditBtnWidth)
   else
   {$IFDEF JVCLThemesEnabled}
-    {$IFDEF COMPILER12_UP}
   if (FImageKind = ikDatePicker) and ThemeServices.ThemesEnabled and IsDatePickerThemeDataAvailable then
     Result := ButtonWidth <> GetDatePickerThemeButtonWidth
   else
-    {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
   if FImageKind in [ikDropDown, ikDatePicker] then
     Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL)
@@ -2528,9 +2523,7 @@ begin
 
   UpdateControls;
   {$IFDEF JVCLThemesEnabled}
-    {$IFDEF COMPILER12_UP}
   AutoSizeEditButton;
-    {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
   UpdateMargins;
 end;
@@ -2753,9 +2746,7 @@ begin
   end;
   {$IFDEF JVCLThemesEnabled}
   FButton.FDrawThemedDropDownBtn := FImageKind = ikDropDown;
-    {$IFDEF COMPILER12_UP}
   FButton.FDrawThemedDatePickerBtn := FImageKind = ikDatePicker;
-    {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
 
   case FImageKind of
@@ -2860,10 +2851,8 @@ begin
   if (ButtonWidth <> Value) {or ((Value > 0) <> ShowButton)} then
   begin
     {$IFDEF JVCLThemesEnabled}
-      {$IFDEF COMPILER12_UP}
     if (ImageKind = ikDatePicker) and (Value = DefDatePickerThemeButtonWidth) then
       Value := GetDatePickerThemeButtonWidth;
-      {$ENDIF COMPILER12_UP}
     {$ENDIF JVCLThemesEnabled}
 
     if Value > 1 then
@@ -2991,10 +2980,8 @@ begin
         begin
           SysButtonWidth := GetSystemMetrics(SM_CXVSCROLL);
           {$IFDEF JVCLThemesEnabled}
-            {$IFDEF COMPILER12_UP}
           if (FImageKind = ikDatePicker) and ThemeServices.ThemesEnabled and IsDatePickerThemeDataAvailable then
             SysButtonWidth := DefDatePickerThemeButtonWidth;
-            {$ENDIF COMPILER12_UP}
           {$ENDIF JVCLThemesEnabled}
 
           if csLoading in ComponentState then
@@ -4524,7 +4511,6 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
-    {$IFDEF COMPILER12_UP}
     if FDrawThemedDatePickerBtn and IsDatePickerThemeDataAvailable then
     begin
       Details.Part := DP_SHOWCALENDARBUTTONRIGHT;
@@ -4547,7 +4533,6 @@ begin
       DrawThemeBackground(GDatePickerThemeData, Canvas.Handle, Details.Part, Details.State, R, nil);
     end
     else
-    {$ENDIF COMPILER12_UP}
     if FDrawThemedDropDownBtn then
     begin
       if not Enabled then
@@ -5339,10 +5324,8 @@ finalization
   FreeAndNil(GDateHook);
   FreeAndNil(GDefaultComboEditImagesList);
   {$IFDEF JVCLThemesEnabled}
-    {$IFDEF COMPILER12_UP}
-  if GDatePickerThemeData <> 0 then
+  if (GDatePickerThemeData <> 0) and Assigned(CloseThemeData) then
     CloseThemeData(GDatePickerThemeData);
-    {$ENDIF COMPILER12_UP}
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);

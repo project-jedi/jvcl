@@ -172,9 +172,7 @@ type
     procedure WMChar(var Message: TMessage); message WM_CHAR;
   protected
     {$IFDEF JVCLThemesEnabled}
-      {$IFDEF COMPILER12_UP}
     function GetDatePickerThemeButtonMinTextSize: Integer; override;
-      {$ENDIF COMPILER12_UP}
     {$ENDIF JVCLThemesEnabled}
     function ValidateEditText: string;
     procedure CalChanged; virtual;
@@ -819,7 +817,6 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-  {$IFDEF COMPILER12_UP}
 function TJvCustomDatePickerEdit.GetDatePickerThemeButtonMinTextSize: Integer;
 var
   DC: HDC;
@@ -844,7 +841,6 @@ begin
   else
     Result := inherited GetDatePickerThemeButtonMinTextSize;
 end;
-  {$ENDIF COMPILER12_UP}
 {$ENDIF JVCLThemesEnabled}
 
 //procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
