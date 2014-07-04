@@ -418,6 +418,7 @@ type
     procedure ReadEscapeClear(Reader: TReader);
     procedure SetMouseOverButton(Value: Boolean);
   protected
+    procedure SetReadOnly(Value: Boolean); override;
     function GetDropDownButtonRect: TRect;
     procedure InvalidateFrame;
     procedure InvalidateDropDownButton;
@@ -3116,6 +3117,12 @@ begin
   end;
 end;
 
+procedure TJvDBLookupCombo.SetReadOnly(Value: Boolean);
+begin
+  inherited SetReadOnly(Value);
+  InvalidateFrame;
+end;
+
 function TJvDBLookupCombo.GetDropDownButtonRect: TRect;
 begin
   Result := Rect(ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
@@ -3243,7 +3250,12 @@ begin
     IsClipped := GetClipRgn(Message.DC, SaveRgn) = 1;
     { Exclude the edit rectangle and the drop down button. }
     ExcludeClipRect(Message.DC, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
-    ExcludeClipRect(Message.DC, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+    {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
+      ExcludeClipRect(Message.DC, Width - FButtonWidth, 0, Width, Height)
+    else
+    {$ENDIF JVCLThemesEnabled}
+      ExcludeClipRect(Message.DC, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
   end;
   inherited;
 
@@ -3442,7 +3454,13 @@ begin
   end;
   if UseRightToLeftAlignment then
     ChangeBiDiModeAlignment(Alignment);
-  W := ClientWidth - FButtonWidth;
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
+    W := Width - FButtonWidth
+  else
+  {$ENDIF JVCLThemesEnabled}
+    W := ClientWidth - FButtonWidth;
+
   if W > 4 then
   begin
     SetRect(R, 1, 1, W - 1, ClientHeight - 1);
