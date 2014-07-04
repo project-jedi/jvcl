@@ -4531,7 +4531,10 @@ begin
         Details.State := DPSCBR_NORMAL;
 
       R := ClientRect;
-      FillRect(Canvas.Handle, R, Parent.Brush.Handle);
+      if Enabled then
+        FillRect(Canvas.Handle, R, HBRUSH(COLOR_WINDOW + 1))
+      else
+        FillRect(Canvas.Handle, R, HBRUSH(COLOR_BTNFACE + 1));
       if Width < DefDatePickerThemeButtonWidth then
         R.Left := R.Right - 15; // paint without the dropdown arrow
       DrawThemeBackground(GDatePickerThemeData, Canvas.Handle, Details.Part, Details.State, R, nil);
