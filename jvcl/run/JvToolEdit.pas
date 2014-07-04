@@ -1955,12 +1955,10 @@ begin
   if (FImageKind = ikDefault) and (DefaultImages <> nil) and (DefaultImageIndex >= 0) then
     Result := ButtonWidth <> Max(DefaultImages.Width + 6, DefEditBtnWidth)
   else
-  {$IFDEF JVCLThemesEnabled}
-  if (FImageKind = ikDatePicker) and ThemeServices.ThemesEnabled and IsDatePickerThemeDataAvailable then
-    Result := ButtonWidth <> GetDatePickerThemeButtonWidth
+  if FImageKind = ikDatePicker then
+    Result := False
   else
-  {$ENDIF JVCLThemesEnabled}
-  if FImageKind in [ikDropDown, ikDatePicker] then
+  if FImageKind = ikDropDown then
     Result := ButtonWidth <> GetSystemMetrics(SM_CXVSCROLL)
   else
     Result := ButtonWidth <> DefEditBtnWidth;
