@@ -3125,7 +3125,7 @@ end;
 
 function TJvDBLookupCombo.GetDropDownButtonRect: TRect;
 begin
-  Result := Rect(ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+  Result := Rect(ClientWidth - (FButtonWidth - (Width - ClientWidth) div 2), 0, Width, ClientHeight);
 end;
 
 procedure TJvDBLookupCombo.InvalidateFrame;
@@ -3145,7 +3145,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled and HandleAllocated then
   begin
-    if JclCheckWinVersion(6, 0) then
+    if StyleServices.IsSystemStyle and JclCheckWinVersion(6, 0) then
     begin
       // Parts of the button are painted in the border
       GetWindowRect(Handle, R);
@@ -3153,11 +3153,11 @@ begin
       R.Left := R.Right - FButtonWidth;
       RedrawWindow(Handle, R, 0, RDW_INVALIDATE or RDW_FRAME);
     end
-  end
-  else
-  begin
-    R := GetDropDownButtonRect;
-    Windows.InvalidateRect(Handle, @R, True);
+    else
+    begin
+      R := GetDropDownButtonRect;
+      Windows.InvalidateRect(Handle, @R, True);
+    end;
   end;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -3166,8 +3166,7 @@ procedure TJvDBLookupCombo.UpdateCurrentImage;
 begin
   FSelImage.Assign(nil);
   FSelMargin := 0;
-  FSelImage.Graphic := inherited GetPicture(False, ValueIsEmpty(Value),
-    FSelMargin);
+  FSelImage.Graphic := inherited GetPicture(False, ValueIsEmpty(Value), FSelMargin);
 end;
 
 function TJvDBLookupCombo.GetPicture(Current, Empty: Boolean;
@@ -3177,8 +3176,7 @@ begin
   begin
     TextMargin := 0;
     Result := nil;
-    if (FSelImage <> nil) and (FSelImage.Graphic <> nil) and
-      not FSelImage.Graphic.Empty then
+    if (FSelImage <> nil) and (FSelImage.Graphic <> nil) and not FSelImage.Graphic.Empty then
     begin
       Result := FSelImage.Graphic;
       TextMargin := FSelMargin;
@@ -3237,6 +3235,7 @@ procedure TJvDBLookupCombo.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 var
   IsClipped: Boolean;
   SaveRgn: HRGN;
+  ButtonLeft: Integer;
 begin
   IsClipped := False;
   SaveRgn := 0;
@@ -3249,13 +3248,14 @@ begin
     SaveRgn := CreateRectRgn(0, 0, 1, 1);
     IsClipped := GetClipRgn(Message.DC, SaveRgn) = 1;
     { Exclude the edit rectangle and the drop down button. }
-    ExcludeClipRect(Message.DC, 1, 1, ClientWidth - FButtonWidth - 1, ClientHeight - 1);
     {$IFDEF JVCLThemesEnabled}
-    if ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
-      ExcludeClipRect(Message.DC, Width - FButtonWidth, 0, Width, Height)
+    if StyleServices.Enabled and CheckWin32Version(6, 0) then
+      ButtonLeft := ClientWidth - (FButtonWidth - (Width - ClientWidth) div 2) - 1{gab}
     else
     {$ENDIF JVCLThemesEnabled}
-      ExcludeClipRect(Message.DC, ClientWidth - FButtonWidth, 0, ClientWidth, ClientHeight);
+      ButtonLeft := ClientWidth - FButtonWidth;
+    ExcludeClipRect(Message.DC, 1, 1, ButtonLeft - 1, ClientHeight - 1);
+    ExcludeClipRect(Message.DC, ButtonLeft, 0, ClientWidth, ClientHeight);
   end;
   inherited;
 
@@ -3288,7 +3288,7 @@ var
 {$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
-  if StyleServices.Enabled and JclCheckWinVersion(6, 0) then
+  if StyleServices.Enabled and StyleServices.IsSystemStyle and JclCheckWinVersion(6, 0) then
   begin
     GetWindowRect(Handle, DrawRect);
     CR := DrawRect;
@@ -3301,10 +3301,8 @@ begin
     R := DrawRect;
     R.Left := R.Right - FButtonWidth;
 
-
     DC := GetWindowDC(Handle);
     try
-      ExcludeClipRect(DC, CR.Left, CR.Top, CR.Right, CR.Bottom);
       if not FListActive or not Enabled or ReadOnly then
         State := tcDropDownButtonDisabled
       else
@@ -3318,11 +3316,13 @@ begin
 
       Details := StyleServices.GetElementDetails(State);
 
+      ExcludeClipRect(DC, CR.Left, CR.Top, R.Right - FButtonWidth - 1{gab}, CR.Bottom);
       Details.Part := CP_BACKGROUND;
       StyleServices.DrawElement(DC, Details, DrawRect);
 
       if Enabled then
       begin
+        ExcludeClipRect(DC, CR.Left, CR.Top, R.Right - FButtonWidth - 1{gab}, CR.Bottom);
         Details.Part := CP_BORDER;
         StyleServices.DrawElement(DC, Details, DrawRect);
       end;
@@ -3455,8 +3455,8 @@ begin
   if UseRightToLeftAlignment then
     ChangeBiDiModeAlignment(Alignment);
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
-    W := Width - FButtonWidth
+  if StyleServices.Enabled and CheckWin32Version(6, 0) then
+    W := ClientWidth - (FButtonWidth - (Width - ClientWidth) div 2) - 1{gab}
   else
   {$ENDIF JVCLThemesEnabled}
     W := ClientWidth - FButtonWidth;
@@ -3544,7 +3544,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
-    if not JclCheckWinVersion(6, 0) then // for Vista and newer the WM_NCPAINT handler paints the button
+    if not (StyleServices.IsSystemStyle and JclCheckWinVersion(6, 0)) then // for Vista and newer the WM_NCPAINT handler paints the button
     begin
       if not FListActive or not Enabled or ReadOnly then
         State := tcDropDownButtonDisabled
