@@ -2256,7 +2256,7 @@ end;
 
 procedure TJvCustomComboEdit.EditButtonClick(Sender: TObject);
 begin
-  if (not FReadOnly) or AlwaysEnableButton then
+  if not FReadOnly or AlwaysEnableButton then
     ButtonClick;
 end;
 
@@ -2269,7 +2269,7 @@ procedure TJvCustomComboEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
   Invalidate;
-  FButton.Enabled := Enabled;
+  FButton.Enabled := Enabled and (not FReadOnly or AlwaysEnableButton);
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
@@ -3056,6 +3056,8 @@ begin
   if Value <> FReadOnly then
   begin
     FReadOnly := Value;
+    if FButton <> nil then
+      FButton.Enabled := Enabled and (not FReadOnly or AlwaysEnableButton);
     inherited ReadOnly := Value or not FDirectInput;
   end;
 end;
