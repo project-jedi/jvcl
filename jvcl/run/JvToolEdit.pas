@@ -1743,7 +1743,11 @@ type
 
 procedure TJvBtnWinControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  Message.Result := 1; // the button is alClient and paints everything, reduces flicker
+  if ((Owner as TJvCustomComboEdit).ImageKind in [ikDropDown, ikDatePicker]) and
+     StyleServices.Enabled and not TJvCustomComboEdit(Owner).ButtonFlat then
+    Message.Result := 1 // the button is alClient and paints everything, reduces flicker
+  else
+    inherited;
 end;
 
 //=== { TJvCustomComboEdit } =================================================
