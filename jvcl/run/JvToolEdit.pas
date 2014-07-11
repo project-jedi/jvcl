@@ -291,6 +291,8 @@ type
     {$ENDIF JVCLThemesEnabled}
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure CMFixCaretPosition(var Msg: TMessage); message CM_FIXCARETPOSITION;
+    procedure SetAlwaysEnableButton(const Value: Boolean);
+    procedure UpdateButtonEnabled;
   protected
     FButton: TJvEditButton;
     FBtnControl: TWinControl;
@@ -370,7 +372,7 @@ type
     procedure UpdatePopupVisible;
     procedure CMExit(var Message: TCMExit); message CM_EXIT;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
+    property AlwaysEnableButton: Boolean read FAlwaysEnableButton write SetAlwaysEnableButton default False;
     property AlwaysShowPopup: Boolean read FAlwaysShowPopup write FAlwaysShowPopup default False;
     property AutoCompleteItems: TStrings read FAutoCompleteItems write SetAutoCompleteItems;
     property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions default [];
@@ -2273,7 +2275,7 @@ procedure TJvCustomComboEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
   Invalidate;
-  FButton.Enabled := Enabled and (not FReadOnly or AlwaysEnableButton);
+  UpdateButtonEnabled;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
@@ -2532,6 +2534,7 @@ begin
         ControlStyle := ControlStyle + [csFixedWidth];
   end;
 
+  UpdateButtonEnabled;
   UpdateControls;
   {$IFDEF JVCLThemesEnabled}
   AutoSizeEditButton;
@@ -2818,6 +2821,21 @@ begin
   end;
 end;
 
+procedure TJvCustomComboEdit.SetAlwaysEnableButton(const Value: Boolean);
+begin
+  if Value <> FAlwaysEnableButton then
+  begin
+    FAlwaysEnableButton := Value;
+    UpdateButtonEnabled;
+  end;
+end;
+
+procedure TJvCustomComboEdit.UpdateButtonEnabled;
+begin
+  if FButton <> nil then
+    FButton.Enabled := Enabled and (not FReadOnly or AlwaysEnableButton);
+end;
+
 procedure TJvCustomComboEdit.SetAutoCompleteItems(Strings: TStrings);
 begin
   FAutoCompleteItems.Assign(Strings);
@@ -3060,8 +3078,7 @@ begin
   if Value <> FReadOnly then
   begin
     FReadOnly := Value;
-    if FButton <> nil then
-      FButton.Enabled := Enabled and (not FReadOnly or AlwaysEnableButton);
+    UpdateButtonEnabled;
     inherited ReadOnly := Value or not FDirectInput;
   end;
 end;
