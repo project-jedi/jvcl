@@ -145,6 +145,7 @@ type
     FName: string;
     FAppendLogFile: Boolean;
     FIsLoaded: Boolean;
+    FExceptionStringList: TStrings;
 
     FOnOtherDestination: TNotifyEvent;
     procedure SetUnhandled(Value: Boolean);
@@ -154,9 +155,9 @@ type
   protected
     procedure Loaded; override;
   public
-    ExceptionStringList: TStringList;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property ExceptionStringList: TStrings read FExceptionStringList;
   published
     property ExceptionLogging: Boolean read FExceptionLogging write FExceptionLogging default True;
     property StackTrackingEnable: Boolean read FStackTrackingEnable write SetStackTracking default True;
@@ -243,7 +244,7 @@ procedure TJvDebugHandler.ExceptionNotifier(ExceptObj: TObject; ExceptAddr: Poin
   OSException: Boolean);
 var
   I: Integer;
-  PreviousExceptionStringList: TStringList;
+  PreviousExceptionStringList: TStrings;
   FileName: string;
   UnitName: string;
   ProcedureName: string;
@@ -256,7 +257,7 @@ begin
   Loc := '';
   if FExceptionLogging and not (csDesigning in ComponentState) then
   begin
-    ExceptionStringList := TStringList.Create;
+    FExceptionStringList := TStringList.Create;
     try
       // (rom) literals instead of resourcestrings are acceptable here
       if MapOfAddr(ExceptAddr, FileName, UnitName, ProcedureName, Line) then
@@ -264,8 +265,7 @@ begin
       else
         Loc := Format('at address %p', [ExceptAddr]);
 
-      ExceptionStringList.Add(DateTimeToStr(now) + ' Exception ' +
-        ExceptObj.ClassName + ' occured ' + Loc);
+      ExceptionStringList.Add(DateTimeToStr(Now) + ' Exception ' + ExceptObj.ClassName + ' occured ' + Loc);
       if ExceptObj is Exception then
         ExceptionStringList.Add('Message: ' + Exception(ExceptObj).Message);
 
@@ -308,7 +308,7 @@ begin
       else
         Application.ShowException(Exception(ExceptObj));
     finally
-      ExceptionStringList.Free;
+      FreeAndNil(FExceptionStringList);
     end;
   end;
 end;
