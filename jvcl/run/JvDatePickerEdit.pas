@@ -841,7 +841,7 @@ begin
 
     DC := GetDC(HWND_DESKTOP);
     SaveFont := SelectObject(DC, Font.Handle);
-    Windows.GetTextExtentPoint32(DC, S, Length(S), Size);
+    Windows.GetTextExtentPoint32(DC, PChar(S), Length(S), Size);
     SelectObject(DC, SaveFont);
     ReleaseDC(HWND_DESKTOP, DC);
 
