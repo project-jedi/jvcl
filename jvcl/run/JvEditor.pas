@@ -2671,24 +2671,29 @@ var
   I: Integer;
   S: string;
 begin
-  Items.Clear;
-  case Mode of
-    cmIdentifiers:
-      for I := 0 to FIdentifiers.Count - 1 do
-        Items.Add(FIdentifiers[I]);
-    cmTemplates:
-      begin
-        with TJvCustomEditor(JvEditor) do
-          if FLines.Count > CaretY then
-            S := GetWordOnPos(FLines[CaretY], CaretX)
-          else
-            S := '';
-        for I := 0 to FTemplates.Count - 1 do
-          if StrLIComp(PChar(FTemplates[I]), PChar(S), Length(S)) = 0 then
-            Items.Add(FTemplates[I]);
-        if Items.Count = 0 then
-          Items.Assign(FTemplates);
-      end;
+  Items.BeginUpdate;
+  try
+    Items.Clear;
+    case Mode of
+      cmIdentifiers:
+        for I := 0 to FIdentifiers.Count - 1 do
+          Items.Add(FIdentifiers[I]);
+      cmTemplates:
+        begin
+          with TJvCustomEditor(JvEditor) do
+            if FLines.Count > CaretY then
+              S := GetWordOnPos(FLines[CaretY], CaretX)
+            else
+              S := '';
+          for I := 0 to FTemplates.Count - 1 do
+            if StrLIComp(PChar(FTemplates[I]), PChar(S), Length(S)) = 0 then
+              Items.Add(FTemplates[I]);
+          if Items.Count = 0 then
+            Items.Assign(FTemplates);
+        end;
+    end;
+  finally
+    Items.EndUpdate;
   end;
 end;
 
