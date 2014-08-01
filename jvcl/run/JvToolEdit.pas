@@ -3336,7 +3336,7 @@ begin
     try
       GetWindowRect(Handle, DrawRect);
       OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
-      ExcludeClipRect(DC, DrawRect.Left + 1, DrawRect.Top + 1, DrawRect.Right - 1, DrawRect.Bottom - 1);
+      ExcludeClipRect(DC, DrawRect.Left + 2, DrawRect.Top + 2, DrawRect.Right - 2, DrawRect.Bottom - 2);
 
       Details := StyleServices.GetElementDetails(teEditTextNormal);
       StyleServices.DrawElement(DC, Details, DrawRect);
