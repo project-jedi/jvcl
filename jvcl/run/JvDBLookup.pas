@@ -3151,7 +3151,7 @@ begin
       GetWindowRect(Handle, R);
       OffsetRect(R, -R.Left, -R.Top);
       R.Left := R.Right - FButtonWidth;
-      RedrawWindow(Handle, R, 0, RDW_INVALIDATE or RDW_FRAME);
+      RedrawWindow(Handle, @R, 0, RDW_INVALIDATE or RDW_FRAME);
     end
     else
     begin
