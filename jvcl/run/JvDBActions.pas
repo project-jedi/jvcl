@@ -1274,7 +1274,7 @@ begin
   else
     for I := 0 to DataSet.FieldCount - 1 do
       if (Dataset.Fields[i].FieldName <> 'ROWID') and
-         not Dataset.Fields[i].ReadOnly then
+         (not Dataset.Fields[i].ReadOnly or Dataset.Fields[i].Required) then
         DataSet.Fields[I].AsVariant := Values[I];
   if Assigned(FAfterCopyRecord) then
     FAfterCopyRecord(DataSet);
@@ -1573,7 +1573,7 @@ begin
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   SMEEngineCx := nil;
   {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-  SMEWizardDlg := TSMEWizardDlg.Create(Self);
+  SMEWizardDlg := TSMEWizardDlg.Create(nil);
   try
     SMEWizardDlg.ColumnSource := csDataSet;
     SMEWizardDlg.OnGetCellParams := Options.SMEWizardDlgGetCellParams;
@@ -1624,10 +1624,10 @@ begin
     SMEWizardDlg.Execute;
     SMEWizardDlg.SaveSpecification('Last Export', SMEWizardDlg.SpecificationDir + cLastExport, False);
   finally
+    FreeAndNil(SMEWizardDlg);
     {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
     FreeAndNil(SMEEngineCx);
     {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-    FreeAndNil(SMEWizardDlg);
   end;
 end;
 
