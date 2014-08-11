@@ -562,7 +562,11 @@ begin
   ClientWidth := 242;
   SetDefaultFont(Font, clDialog);
   KeyPreview := True;
+  {$IFDEF COMPILER7_UP}
+  Position := poOwnerFormCenter;
+  {$ELSE}
   Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
   OnKeyPress := FormKeyPress;
   Items[0] := NewItem(RsCopyItem, scCtrl + VK_INSERT, False, True, CopyItemClick, 0, '');
   Items[1] := NewItem(RsPasteItem, scShift + VK_INSERT, False, True, PasteItemClick, 0, '');

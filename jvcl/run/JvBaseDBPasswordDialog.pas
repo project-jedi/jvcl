@@ -246,7 +246,11 @@ begin
   aForm.Caption := RsChangePassword;
   aForm.ClientHeight := 415;
   aForm.ClientWidth := 317;
+  {$IFDEF COMPILER7_UP}
+  aForm.Position := poOwnerFormCenter;
+  {$ELSE}
   aForm.Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
   aForm.OnClose := FormClose;
   aForm.OnShow := FormShow;
 

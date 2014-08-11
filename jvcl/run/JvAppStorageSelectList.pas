@@ -189,7 +189,11 @@ begin
   FDialog.DefaultMonitor := dmActiveForm;
   FDialog.BorderStyle := bsDialog;
   FDialog.FormStyle := fsNormal;
+  {$IFDEF COMPILER7_UP}
+  FDialog.Position := poOwnerFormCenter;
+  {$ELSE}
   FDialog.Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
   FDialog.OnDestroy := DialogOnDestroy;
 
   if ACaption <> '' then

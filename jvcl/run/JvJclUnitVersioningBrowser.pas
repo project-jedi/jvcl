@@ -164,7 +164,11 @@ begin
   UnitVersionForm := DynEngine.CreateForm('Unit Versioning', '');
   try
     if UnitVersionForm is TForm then
+      {$IFDEF COMPILER7_UP}
+      TForm(UnitVersionForm).Position := poOwnerFormCenter;
+      {$ELSE}
       TForm(UnitVersionForm).Position := poScreenCenter;
+      {$ENDIF COMPILER7_UP};  
     UnitVersionForm.Width := 500;
     UnitVersionForm.Height := 500;
     ButtonPanel := DynEngine.CreatePanelControl(UnitVersionForm, UnitVersionForm, 'ButtonPanel', '', alBottom);

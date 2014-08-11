@@ -169,7 +169,7 @@ type
     property Smooth: Boolean read FSmooth write FSmooth default False;
     property Text: string read FText write SetText;
     property Transparent: Boolean read FTransparent write FTransparent default False;
-    property ScreenPosition: TPosition read FScreenPosition write FScreenPosition default poScreenCenter;
+    property ScreenPosition: TPosition read FScreenPosition write FScreenPosition default {$IFDEF COMPILER7_UP} poOwnerFormCenter {$ELSE} poScreenCenter{$ENDIF COMPILER7_UP};
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnProgress: TJvProgressDialogEvent read FOnProgress write FOnProgress;
@@ -202,7 +202,11 @@ begin
   FInterval := 200;
   FTransparent := False;
   FShowCancel := True;
+  {$IFDEF COMPILER7_UP}
+  FScreenPosition := poOwnerFormCenter;
+  {$ELSE}
   FScreenPosition := poScreenCenter;
+  {$ENDIF COMPILER7_UP};
 end;
 
 destructor TJvProgressDialog.Destroy;

@@ -1277,7 +1277,11 @@ begin
   ClientHeight := 158; // Polaris
   ClientWidth := 222;
   FontSetDefault(Font);
+  {$IFDEF COMPILER7_UP}
+  Position := poOwnerFormCenter;
+  {$ELSE}
   Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};
   ShowHint := True;
   KeyPreview := True;
 

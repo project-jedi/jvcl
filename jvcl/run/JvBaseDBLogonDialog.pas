@@ -689,7 +689,11 @@ begin
   AForm.Caption := RsLogonToDatabase;
   AForm.ClientHeight := 440;
   AForm.ClientWidth := 680;
-  AForm.Position := poScreenCenter;
+  {$IFDEF COMPILER7_UP}
+  aForm.Position := poOwnerFormCenter;
+  {$ELSE}
+  aForm.Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
   AForm.KeyPreview := True;
   AForm.OnClose := FormClose;
   AForm.OnKeyDown := FormKeyDown;

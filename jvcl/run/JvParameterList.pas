@@ -1495,7 +1495,11 @@ begin
   TForm(ParameterDialog).DefaultMonitor := dmActiveForm;
   TForm(ParameterDialog).BorderStyle := bsDialog;
   TForm(ParameterDialog).FormStyle := fsNormal;
+  {$IFDEF COMPILER7_UP}
+  TForm(ParameterDialog).Position := poOwnerFormCenter;
+  {$ELSE}
   TForm(ParameterDialog).Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
   TForm(ParameterDialog).ShowHint := True;
   TForm(ParameterDialog).OnShow := DialogShow;
 

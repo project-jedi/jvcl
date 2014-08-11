@@ -394,8 +394,11 @@ begin
     ClientHeight := 267;
     ClientWidth := 347;
 
-    // Maybe poMainFormCenter? If so check if whe're at design-time
+    {$IFDEF COMPILER7_UP}
+    Position := poOwnerFormCenter;
+    {$ELSE}
     Position := poScreenCenter;
+    {$ENDIF COMPILER7_UP};
 
     with TShape.Create(AForm) do
     begin

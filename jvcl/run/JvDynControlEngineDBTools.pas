@@ -107,7 +107,7 @@ type
     property DynControlEngineDB: TJvDynControlEngineDB read GetDynControlEngineDB write FDynControlEngineDB;
     property IncludeNavigator: Boolean read FIncludeNavigator write FIncludeNavigator;
     property BorderStyle: TFormBorderStyle read FBorderStyle write FBorderStyle default bsDialog;
-    property Position: TPosition read FPosition write FPosition default poScreenCenter;
+    property Position: TPosition read FPosition write FPosition default {$IFDEF COMPILER7_UP} poOwnerFormCenter {$ELSE} poScreenCenter{$ENDIF COMPILER7_UP};
     property Top: Integer read FTop write FTop default 0;
     property Left: Integer read FLeft write FLeft default 0;
     property Width: Integer read FWidth write FWidth default 0;
@@ -204,7 +204,11 @@ begin
   FLeft := 0;
   FWidth := 0;
   FHeight := 0;
+  {$IFDEF COMPILER7_UP}
+  FPosition := poOwnerFormCenter;
+  {$ELSE}
   FPosition := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
   FDynControlEngineDB := nil;
   FDataSource := nil;
   FArrangeSettings := TJvArrangeSettings.Create(Self);

@@ -299,6 +299,11 @@ begin
   FPropertyStoreEditorControl.Align := alClient;
 
   Caption := RSPropertyStoreEditorDialogCaptionEditProperties;
+  {$IFDEF COMPILER7_UP}
+  Position := poOwnerFormCenter;
+  {$ELSE}
+  Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
 
 end;
 

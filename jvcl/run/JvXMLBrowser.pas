@@ -247,6 +247,12 @@ begin
   FXMLBrowserControl := TJvXMLBrowserControl.Create(Self);
   FXMLBrowserControl.Parent := Self;
   FXMLBrowserControl.Align := alClient;
+
+  {$IFDEF COMPILER7_UP}
+  Position := poOwnerFormCenter;
+  {$ELSE}
+  Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
 end;
 
 procedure TJvXMLBrowserForm.DestroyFormControls;
@@ -340,6 +346,7 @@ var
   end;
 
 begin
+
   TreePanel := DefaultDynControlEngine.CreatePanelControl(Self, Self, 'TreePanel', '', alLeft);
   TreePanel.Width := 250;
   if TreePanel is tCustomPanel then

@@ -124,7 +124,11 @@ begin
     try
       Form.BorderStyle := bsDialog;
       Form.BorderIcons := [biSystemMenu];
+      {$IFDEF COMPILER7_UP}
+      Form.Position := poOwnerFormCenter;
+      {$ELSE}
       Form.Position := poScreenCenter;
+      {$ENDIF COMPILER7_UP};  
       Image1 := TImage.Create(Form);
       Image1.Picture.Assign(Picture);
       Image1.Parent := Form;

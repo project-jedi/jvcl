@@ -71,13 +71,14 @@ begin
   else
     DynControlEngine := DefaultDynControlEngine;
   Form := DynControlEngine.CreateForm(AFormCaption, '');
-  with TForm(Form) do
-  begin
-    FormStyle := fsNormal;
-    Position := poScreenCenter;
-    BorderIcons := [];
-    BorderStyle := bsDialog;
-  end;
+  TForm(Form).FormStyle := fsNormal;
+  {$IFDEF COMPILER7_UP}
+  TForm(Form).Position := poOwnerFormCenter;
+  {$ELSE}
+  TForm(Form).Position := poScreenCenter;
+  {$ENDIF COMPILER7_UP};  
+  TForm(Form).BorderIcons := [];
+  TForm(Form).BorderStyle := bsDialog;
 
   ButtonPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alBottom);
   AMainPanel := DynControlEngine.CreatePanelControl(Form, Form, '', '', alClient);
