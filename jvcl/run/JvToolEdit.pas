@@ -1153,11 +1153,13 @@ uses
   RTLConsts, Math, MaskUtils,
   MultiMon,
   {$IFDEF JVCLThemesEnabled}
+  {$IFDEF HAS_UNIT_UXTHEME}
   UxTheme,
+  {$ENDIF HAS_UNIT_UXTHEME}
   {$ENDIF JVCLThemesEnabled}
-  {$IFDEF COMPILER16_UP} // VCL-Styles support
-  Vcl.Themes,
-  {$ENDIF COMPILER16_UP}
+  {$IFDEF HAS_UNIT_VCL_THEMES} // VCL-Styles support
+  Vcl.Themes, 
+  {$ENDIF HAS_UNIT_VCL_THEMES}
   JclSysInfo, JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
   JvThemes, JvResources, JclSysUtils;
@@ -1307,7 +1309,7 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-  {$IFNDEF COMPILER12_UP}
+  {$IFNDEF HAS_UNIT_UXTHEME}
 const
   // Vista+
   VSCLASS_DATEPICKER = 'DATEPICKER';
@@ -1316,10 +1318,11 @@ const
   DPSCBR_HOT      = 2;
   DPSCBR_PRESSED  = 3;
   DPSCBR_DISABLED = 4;
-  {$ENDIF ~COMPILER12_UP}
+  {$ENDIF ~HAS_UNIT_UXTHEME}
 
 function IsDatePickerThemeDataAvailable: Boolean;
 begin
+  {$IFDEF HAS_UNIT_VCL_THEMES}
   if (GDatePickerThemeDataAvailable = -1) and StyleServices.Available and Assigned(OpenThemeData) then
   begin
     GDatePickerThemeData := OpenThemeData(Application.Handle, VSCLASS_DATEPICKER);
@@ -1329,6 +1332,9 @@ begin
       GDatePickerThemeDataAvailable := 1;
   end;
   Result := (GDatePickerThemeDataAvailable = 1) and StyleServices.IsSystemStyle; // CustomStyles don't support the DatePicker theme
+  {$ELSE}
+  Result := False;
+  {$ENDIF ~HAS_UNIT_VCL_THEMES}
 end;
 {$ENDIF JVCLThemesEnabled}
 
@@ -1745,10 +1751,12 @@ type
 
 procedure TJvBtnWinControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
+  {$IFDEF HAS_UNIT_VCL_THEMES}
   if ((Owner as TJvCustomComboEdit).ImageKind in [ikDropDown, ikDatePicker]) and
      StyleServices.Enabled and not TJvCustomComboEdit(Owner).ButtonFlat then
     Message.Result := 1 // the button is alClient and paints everything, reduces flicker
   else
+  {$ENDIF HAS_UNIT_VCL_THEMES}
     inherited;
 end;
 
@@ -4520,21 +4528,21 @@ begin
 end;
 
 procedure TJvEditButton.Paint;
+{$IFDEF JVCLThemesEnabled}
 var
   DrawState: TJvButtonState;
-{$IFDEF JVCLThemesEnabled}
   ThemedState: TThemedComboBox;
   Details: TThemedElementDetails;
   R: TRect;
 {$ENDIF JVCLThemesEnabled}
 begin
-  DrawState := FState;
-  if FPopupVisible then
-    DrawState := rbsDown;
-
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
+    DrawState := FState;
+    if FPopupVisible then
+      DrawState := rbsDown;
+  
     if FDrawThemedDatePickerBtn and IsDatePickerThemeDataAvailable then
     begin
       Details.Part := DP_SHOWCALENDARBUTTONRIGHT;
