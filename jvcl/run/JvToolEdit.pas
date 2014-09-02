@@ -1158,7 +1158,7 @@ uses
   {$ENDIF HAS_UNIT_UXTHEME}
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF HAS_UNIT_VCL_THEMES} // VCL-Styles support
-  Vcl.Themes, 
+  Vcl.Themes,
   {$ENDIF HAS_UNIT_VCL_THEMES}
   JclSysInfo, JclFileUtils, JclStrings,
   JvPickDate, JvJCLUtils, JvJVCLUtils,
@@ -1187,6 +1187,12 @@ type
   TCustomEditAccessProtected = class(TCustomEdit);
   TCustomFormAccessProtected = class(TCustomForm);
   TWinControlAccessProtected = class(TWinControl);
+
+{$IFDEF JVCLThemesEnabled}
+{$IFNDEF HAS_UNIT_UXTHEME}
+  HTHEME = THANDLE;
+{$ENDIF ~HAS_UNIT_UXTHEME}
+{$ENDIF JVCLThemesEnabled}
 
 const
   sDirBmp = 'JvDirectoryEditGLYPH';    { Directory editor button glyph }
@@ -1290,7 +1296,9 @@ var
   GDirImageIndexXP: TImageIndex = -1;
   GFileImageIndexXP: TImageIndex = -1;
   GDatePickerThemeDataAvailable: Integer = -1;
+  {$IFDEF HAS_UNIT_VCL_THEMES}
   GDatePickerThemeData: HTHEME;
+  {$ENDIF HAS_UNIT_VCL_THEMES}
   {$ENDIF JVCLThemesEnabled}
   GCoInitialized: Integer = 0;
 
@@ -4565,7 +4573,9 @@ begin
         FillRect(Canvas.Handle, R, HBRUSH(COLOR_BTNFACE + 1));
       if Width < DefDatePickerThemeButtonWidth then
         R.Left := R.Right - 15; // paint without the dropdown arrow
+      {$IFDEF HAS_UNIT_VCL_THEMES}
       DrawThemeBackground(GDatePickerThemeData, Canvas.Handle, Details.Part, Details.State, R, nil);
+      {$ENDIF HAS_UNIT_VCL_THEMES}
     end
     else
     if FDrawThemedDropDownBtn then
@@ -5359,8 +5369,10 @@ finalization
   FreeAndNil(GDateHook);
   FreeAndNil(GDefaultComboEditImagesList);
   {$IFDEF JVCLThemesEnabled}
+  {$IFDEF HAS_UNIT_VCL_THEMES}
   if (GDatePickerThemeData <> 0) and Assigned(CloseThemeData) then
     CloseThemeData(GDatePickerThemeData);
+  {$ENDIF HAS_UNIT_VCL_THEMES}
   {$ENDIF JVCLThemesEnabled}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
