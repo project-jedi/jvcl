@@ -1007,7 +1007,7 @@ begin
     begin
       WindowClass.Style := WindowClass.Style or CS_DROPSHADOW;
       {$IFDEF JVCLThemesEnabled}
-      if IsWinVista_UP and StyleServices.Enabled then
+      if not IsWinSeven_UP and IsWinVista_UP and StyleServices.Enabled then
       begin
         ExStyle := ExStyle or WS_EX_LAYERED;
         if FIsMultiLineMsg then
