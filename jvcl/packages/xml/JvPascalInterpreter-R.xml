@@ -15,7 +15,7 @@
     <Package Name="rtl" Targets="C,D" Condition=""/>
     <Package Name="vcl" Targets="C,D,help" Condition=""/>
     <Package Name="dbrtl" Targets="DB" Condition=""/>
-    <Package Name="bdertl" Targets="BDE" Condition=""/>
+    <Package Name="bdertl" Targets="BDE" Condition="USE_BDE"/>
     <Package Name="qrpt" Targets="DB" Condition="!QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund6" Targets="D6" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
     <Package Name="qr4rund7" Targets="D7" Condition="QREPORT4 &amp; JVCL_UseQuickReport"/>
@@ -38,7 +38,7 @@
     <File Name="..\..\run\JvInterpreter_Db.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_DbCtrls.pas" Targets="DB,help" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_DbGrids.pas" Targets="DB,help" Formname="" Condition=""/>
-    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="BDE,help" Formname="" Condition=""/>
+    <File Name="..\..\run\JvInterpreter_DBTables.pas" Targets="BDE,help" Formname="" Condition="USE_BDE"/>
     <File Name="..\..\run\JvInterpreter_Dialogs.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_ExtCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvInterpreter_Forms.pas" Targets="all" Formname="" Condition=""/>
@@ -69,7 +69,7 @@
     <File Name="..\..\..\help\JvInterpreter_Db.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreter_DbCtrls.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreter_DbGrids.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\..\help\JvInterpreter_DBTables.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvInterpreter_DBTables.dtx" Targets="help" Formname="" Condition="USE_BDE"/>
     <File Name="..\..\..\help\JvInterpreter_Dialogs.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreter_ExtCtrls.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvInterpreter_Forms.dtx" Targets="help" Formname="" Condition=""/>

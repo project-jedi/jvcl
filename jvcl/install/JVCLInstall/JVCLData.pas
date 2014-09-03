@@ -1457,6 +1457,7 @@ begin
     // set (hidden) configurations
     JVCLConfig.Enabled['DelphiPersonalEdition'] := Target.IsPersonal; // do not localize
     JVCLConfig.Enabled['JVCL_GENERATE_CPP_PACKAGE_FILES'] := Target.IsBDS and (persBCB in Target.SupportedPersonalities);
+    JVCLConfig.Enabled['USE_BDE'] := Target.HasBDE;
 
     JVCLRegistryConfig.LoadFromRegistry(Target.RegistryKey + '\Jedi\JVCL');
 

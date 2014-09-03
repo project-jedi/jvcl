@@ -35,7 +35,7 @@ uses
   Windows, SysUtils, Classes, Contnrs, Registry, PackageInformation;
 
 const
-  BDSVersions: array[1..14] of record
+  BDSVersions: array[1..15] of record
                                 Name: string;
                                 VersionStr: string;
                                 Version: Integer;
@@ -56,7 +56,8 @@ const
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE4'; Version: 18; CIV: '180'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE5'; Version: 19; CIV: '190'; Supported: True),
     (Name: 'skipped'; VersionStr: 'skipped'; Version: 19; CIV: '190'; Supported: False),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE6'; Version: 20; CIV: '200'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE6'; Version: 20; CIV: '200'; Supported: True),
+    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE7'; Version: 21; CIV: '210'; Supported: True)
   );
 
 type
@@ -197,6 +198,7 @@ type
     function IsDelphi: Boolean;
     function IsPersonal: Boolean;
     function DisplayName: string;
+    function HasBDE: Boolean;
 
     function IsInEnvPath(const Dir: string): Boolean;
       { IsInEnvPath returns True if Dir is in the EnvPath. (ShortPaths and
@@ -1410,6 +1412,11 @@ end;
 function TCompileTarget.GetTlib: string;
 begin
   Result := RootDir + '\Bin\tlib.exe'; // do not localize
+end;
+
+function TCompileTarget.HasBDE: Boolean;
+begin
+  Result := (Platform = ctpWin32) and ((Version < 21) or FileExists(PathAddSeparator(RootLibReleaseDir) + 'bdertl.dcp'));
 end;
 
 function TCompileTarget.GetDcpDir: string;
