@@ -45,7 +45,7 @@ procedure DestroyPage(Page: TJvWizardInteriorPage);
 implementation
 
 uses
-  Main, Utils;
+  Math, Main, Utils;
 
 function CreateWelcomePage(Page: TJvWizardInteriorPage; Inst: IWelcomePage): TWinControl; forward;
   { returns the active control }
@@ -254,8 +254,8 @@ begin
       else
         X := Parent.ClientWidth - 8 - Width;
 
-      // create radion buttons
-      AbsH := (Parent.ClientHeight - 8) div Options.Count;
+      // create radio buttons
+      AbsH := Max((Parent.ClientHeight - 8) div Options.Count, GetDefaultCheckBoxSize.cy + 2 * 8);
       Y := 8;
       for i := 0 to Options.Count - 1 do
       begin
@@ -359,7 +359,7 @@ begin
         X := Parent.ClientWidth - 8 - Width;
 
       // create check boxes
-      AbsH := (Parent.ClientHeight - 8) div CheckBoxes.Count;
+      AbsH := Max((Parent.ClientHeight - 8) div CheckBoxes.Count, GetDefaultCheckBoxSize.cy + 2 * 8);
       Y := 8;
       for i := 0 to CheckBoxes.Count - 1 do
       begin
@@ -442,23 +442,33 @@ end;
 function CreateSingleChoosePage(Page: TJvWizardInteriorPage; Inst: ISingleChoosePage): TWinControl;
 var
   PageClient: TPanel;
+  ScrollBox: TScrollBox;
   HortOrientation: THorzOrientation;
 begin
   PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
+  ScrollBox := TScrollBox.Create(PageClient);
+  ScrollBox.Align := alClient;
+  ScrollBox.BorderStyle := bsNone;
+  ScrollBox.Parent := PageClient;
 
   HortOrientation := hoDefault;
-  Result := CreateSingleChooseControls(PageClient, Inst, HortOrientation);
+  Result := CreateSingleChooseControls(ScrollBox, Inst, HortOrientation);
 end;
 
 function CreateMultiChoosePage(Page: TJvWizardInteriorPage; Inst: IMultiChoosePage): TWinControl;
 var
   PageClient: TPanel;
+  ScrollBox: TScrollBox;
   HortOrientation: THorzOrientation;
 begin
   PageClient := TPanel(Page.FindComponent('piPageClient')); // do not localize
+  ScrollBox := TScrollBox.Create(PageClient);
+  ScrollBox.Align := alClient;
+  ScrollBox.BorderStyle := bsNone;
+  ScrollBox.Parent := PageClient;
 
   HortOrientation := hoDefault;
-  Result := CreateMultiChooseControls(PageClient, Inst, HortOrientation);
+  Result := CreateMultiChooseControls(ScrollBox, Inst, HortOrientation);
 end;
 
 function CreateSummaryPage(Page: TJvWizardInteriorPage; Inst: ISummaryPage): TWinControl;

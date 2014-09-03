@@ -144,15 +144,27 @@ procedure TIDESelectionPage.SetupCheckBox(Index: Integer; Control: TCheckBox);
 var
   Lbl: TLabel;
   Config: TTargetConfig;
+  FirstLabel: TLabel;
 begin
-  Config := Installer.SelTargets[Index];
-
-  Lbl := TLabel.Create(Control);
-  Lbl.Left := Control.Parent.BoundsRect.Right - 10 - Lbl.Width;
+  Lbl := TLabel.Create(Control.Parent);
+  Lbl.Name := 'lblDetails' + IntToStr(Index);
+  if Index = 0 then
+  begin
+    Lbl.Left := Control.Parent.BoundsRect.Right - 10 - Lbl.Width;
+  end
+  else
+  begin
+    FirstLabel := TLabel(Control.Parent.FindComponent('lblDetails0'));
+    Lbl.Left := FirstLabel.Left;
+    Lbl.Width := FirstLabel.Width;
+  end;
+  Lbl.Anchors := [akTop, akRight];
   Lbl.Alignment := taRightJustify;
   Lbl.Top := Control.Top;
   Lbl.ShowHint := True;
   Lbl.Parent := Control.Parent;
+
+  Config := Installer.SelTargets[Index];
 
   if Installer.InstallType <> itUninstall then
   begin
@@ -224,16 +236,16 @@ function TIDESelectionPage.SetupPage(Client: TWinControl): TWinControl;
 var
   Panel: TPanel;
 begin
+  Panel := TPanel.Create(Client);
+  with Panel do
+  begin
+    Height := 40;
+    BevelOuter := bvNone;
+    Parent := Client;
+    Align := alBottom;
+  end;
   if Installer.InstallType = itUninstall then
   begin
-    Panel := TPanel.Create(Client);
-    with Panel do
-    begin
-      Height := 40;
-      BevelOuter := bvNone;
-      Parent := Client;
-      Align := alBottom;
-    end;
     with TCheckBox.Create(Panel) do
     begin
       Parent := Panel;
@@ -247,13 +259,13 @@ begin
   end
   else
   begin
-    with TButton.Create(Client) do
+    with TButton.Create(Panel) do
     begin
       Width := Width * Font.PixelsPerInch div 96;
-      Left := Client.ClientWidth - Width - 8;
-      Top := Client.ClientHeight - Height - 8;
+      Left := Panel.ClientWidth - Width - 8;
+      Top := Panel.ClientHeight - Height - 8;
       Anchors := [akRight, akBottom];
-      Parent := Client;
+      Parent := Panel;
       Caption := RsUpdateData;
       OnClick := DoUpdateData;
     end;
