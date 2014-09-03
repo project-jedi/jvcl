@@ -4538,7 +4538,9 @@ end;
 procedure TJvEditButton.Paint;
 {$IFDEF JVCLThemesEnabled}
 var
+  {$IFDEF HAS_UNIT_VCL_THEMES}
   DrawState: TJvButtonState;
+  {$ENDIF HAS_UNIT_VCL_THEMES}
   ThemedState: TThemedComboBox;
   Details: TThemedElementDetails;
   R: TRect;
@@ -4547,13 +4549,13 @@ begin
   {$IFDEF JVCLThemesEnabled}
   if StyleServices.Enabled then
   begin
-    DrawState := FState;
-    if FPopupVisible then
-      DrawState := rbsDown;
-  
     if FDrawThemedDatePickerBtn and IsDatePickerThemeDataAvailable then
     begin
       {$IFDEF HAS_UNIT_VCL_THEMES}
+      DrawState := FState;
+      if FPopupVisible then
+        DrawState := rbsDown;
+    
       Details.Part := DP_SHOWCALENDARBUTTONRIGHT;
 
       if not Enabled then
