@@ -4553,6 +4553,7 @@ begin
   
     if FDrawThemedDatePickerBtn and IsDatePickerThemeDataAvailable then
     begin
+      {$IFDEF HAS_UNIT_VCL_THEMES}
       Details.Part := DP_SHOWCALENDARBUTTONRIGHT;
 
       if not Enabled then
@@ -4573,7 +4574,6 @@ begin
         FillRect(Canvas.Handle, R, HBRUSH(COLOR_BTNFACE + 1));
       if Width < DefDatePickerThemeButtonWidth then
         R.Left := R.Right - 15; // paint without the dropdown arrow
-      {$IFDEF HAS_UNIT_VCL_THEMES}
       DrawThemeBackground(GDatePickerThemeData, Canvas.Handle, Details.Part, Details.State, R, nil);
       {$ENDIF HAS_UNIT_VCL_THEMES}
     end
