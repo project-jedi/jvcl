@@ -95,6 +95,9 @@ const
   {$IFDEF DELPHI20}
   SDelphiKey = 'Software\Embarcadero\BDS\14.0';
   {$ENDIF DELPHI20}
+  {$IFDEF DELPHI21}
+  SDelphiKey = 'Software\Embarcadero\BDS\15.0';
+  {$ENDIF DELPHI21}
 
   {$IF not declared(SDelphiKey)}
     {$MESSAGE FATAL 'Declaration for SDelphiKey is missing'}
