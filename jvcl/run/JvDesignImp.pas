@@ -205,6 +205,7 @@ type
     // IDesignerNotify interface
     procedure Modified;
     procedure Notification(AnObject: TPersistent; Operation: TOperation); reintroduce;
+    procedure CanInsertComponent(AComponent: TComponent);
 
     // IDesigner, IDesignerHook interface
     function GetCustomForm: TCustomForm;
@@ -1259,6 +1260,11 @@ end;
 
 procedure TJvDesignDesigner.Notification(AnObject: TPersistent;
   Operation: TOperation);
+begin
+  //
+end;
+
+procedure TJvDesignDesigner.CanInsertComponent(AComponent: TComponent);
 begin
   //
 end;
