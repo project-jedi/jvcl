@@ -148,6 +148,7 @@ var
 begin
   Lbl := TLabel.Create(Control.Parent);
   Lbl.Name := 'lblDetails' + IntToStr(Index);
+  Lbl.Caption := '';
   if Index = 0 then
   begin
     Lbl.Left := Control.Parent.BoundsRect.Right - 10 - Lbl.Width;
