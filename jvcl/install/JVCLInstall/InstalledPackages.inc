@@ -163,12 +163,12 @@ begin
 
   EnableOption('USE_3RDPARTY_DOA', Opt_DOAComponents(Target));
 
-  EnableOption('USE_3RDPARTY_CORELAB_ODAC', Opt_ODACComponents(Target));
+  EnableOption('USE_3RDPARTY_DEVART_ODAC', Opt_ODACComponents(Target));
 
   EnableOption('USE_3RDPARTY_SMIMPORT', Opt_SMImportComponents(Target));
   EnableOption('USE_3RDPARTY_SMEXPORT', Opt_SMExportComponents(Target));
 
-  EnableOption('USE_3RDPARTY_DEVEXPRESS_CXEDITOR', Opt_CXEditorComponents(Target));
-  EnableOption('USE_3RDPARTY_DEVEXPRESS_CXGRID', Opt_CXGridComponents(Target));
+//  EnableOption('USE_3RDPARTY_DEVEXPRESS_CXEDITOR_SHARED', Opt_CXEditorComponents(Target));
+//  EnableOption('USE_3RDPARTY_DEVEXPRESS_CXGRID_SHARED', Opt_CXGridComponents(Target));
 end;
 

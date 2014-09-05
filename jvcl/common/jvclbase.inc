@@ -167,18 +167,3 @@ For further informations have a look at http://www.devart.com }
 { Activates Support for the DevArt VCL Universal Data Access Components
 For further informations have a look at http://www.devart.com }
 {.$DEFINE USE_3RDPARTY_DEVART_UNIDAC}
-
-{ Activates Support for the Corelab VCL Oracle Data Access Components
-For further informations have a look at http://www.devart.com/news/2008/changename.html }
-{.$DEFINE USE_3RDPARTY_CORELAB_ODAC}
-
-{ Activates Support for the DevExpress CxEditor
-For further informations have a look at https://www.devexpress.com/Products/VCL/ }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
-
-{ Activates Support for the DevExpress CxGrid
-For further informations have a look at https://www.devexpress.com/Products/VCL/ }
-{.$DEFINE USE_3RDPARTY_DEVEXPRESS_CXGRID}
-
-
-

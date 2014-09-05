@@ -167,6 +167,3 @@ For further informations have a look at http://www.devart.com }
 { Activates Support for the DevArt VCL Universal Data Access Components
 For further informations have a look at http://www.devart.com }
 {.$DEFINE USE_3RDPARTY_DEVART_UNIDAC}
-
-
-
