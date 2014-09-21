@@ -72,6 +72,7 @@ type
   public
     procedure ClearControlInterfaceObjects; override;
     procedure ConnectSession; override;
+    procedure DisconnectSession; override;
     function SessionIsConnected: Boolean; override;
   published
     property Options: TJvDBDoaLogonDialogOptions read GetOptions write SetOptions;
@@ -131,6 +132,12 @@ begin
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
     end;
   end;
+end;
+
+procedure TJvDBDoaLogonDialog.DisconnectSession;
+begin
+  if Assigned(Session) then
+    Session.LogOff;
 end;
 
 procedure TJvDBDoaLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent;

@@ -114,6 +114,7 @@ type
   public
     procedure ClearControlInterfaceObjects; override;
     procedure ConnectSession; override;
+    procedure DisconnectSession; override;
     function SessionIsConnected: Boolean; override;
   published
     property Options: TJvDBOdacLogonDialogOptions read GetOptions write SetOptions;
@@ -221,6 +222,12 @@ begin
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
     end;
   end;
+end;
+
+procedure TJvDBOdacLogonDialog.DisconnectSession;
+begin
+  if Assigned(Session) then
+    OraSession.DisConnect;
 end;
 
 procedure TJvDBOdacLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl: TWinControl);

@@ -179,6 +179,7 @@ type
     destructor Destroy; override;
     procedure ClearControlInterfaceObjects; override;
     procedure ConnectSession; override;
+    procedure DisconnectSession; override;
     function SessionIsConnected: Boolean; override;
     property CurrentConnectionInfo: TJvUniDacConnectionInfo read GetCurrentConnectionInfo;
   published
@@ -294,6 +295,12 @@ begin
           0, mbDefault, mbDefault, mbDefault, DynControlEngine);
     end;
   end;
+end;
+
+procedure TJvDBUniDacLogonDialog.DisconnectSession;
+begin
+  if Assigned(UniConnection) then
+    UniConnection.DisConnect;
 end;
 
 procedure TJvDBUniDacLogonDialog.CreateAdditionalConnectDialogControls(AOwner: TComponent; AParentControl: TWinControl);
