@@ -2216,10 +2216,12 @@ end;
 procedure TJvCustomOutlookBar.Paint;
 var
   I: Integer;
+  R: TRect;
   {$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
-  R, ClipRect: TRect;
+  ClipRect: TRect;
   {$ENDIF JVCLThemesEnabled}
+  Rgn: HRGN;
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -2245,13 +2247,32 @@ begin
   end;
 
   if IsVista then { Warren Vista paint bug workaround }
-      Canvas.FillRect(ClientRect);
+    Canvas.FillRect(ClientRect);
 
 
   SetBkMode(Canvas.Handle, TRANSPARENT);
   I := DrawTopPages;
   if I >= 0 then
-    DrawCurrentPage(I);
+  begin
+    Rgn := 0;
+    try
+      if Pages.Count > 1 then
+      begin
+        // Button icons are not allowed to be painted into the bottom pages panels
+        R := GetPageButtonRect(I + 1);
+        Rgn := CreateRectRgn(0, 0, 1, 1);
+        GetClipRgn(Canvas.Handle, Rgn);
+        ExcludeClipRect(Canvas.Handle, R.Left, R.Top, R.Right, ClientHeight);
+      end;
+      DrawCurrentPage(I);
+    finally
+      if Rgn <> 0 then
+      begin
+        SelectClipRgn(Canvas.Handle, Rgn);
+        DeleteObject(Rgn);
+      end;
+    end;
+  end;
   DrawBottomPages(I + 1);
 end;
 
