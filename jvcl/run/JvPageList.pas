@@ -129,6 +129,7 @@ type
     FShowDesignCaption: TJvShowDesignCaption;
     FHiddenPages: TList;
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure UpdateEnabled;
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
@@ -298,6 +299,11 @@ const
 implementation
 
 uses
+  {$IFDEF JVCLStylesEnabled}
+    {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes, // for inline
+    {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  {$ENDIF JVCLStylesEnabled}
   Forms;
 
 function GetUniqueName(AOwner: TComponent; const AClassName: string): string;
@@ -475,15 +481,35 @@ begin
 end;
 
 function TJvCustomPage.DoEraseBackground(Canvas: TCanvas; Param: LPARAM): Boolean;
+{$IFDEF JVCLStylesEnabled}
+var
+  BrushRecall: TBrushRecall;
+{$ENDIF JVCLStylesEnabled}
 begin
   if DoubleBuffered then
-    Result := inherited DoEraseBackground(Canvas, Param)
+  begin
+    {$IFDEF JVCLStylesEnabled}
+    BrushRecall := nil;
+    try
+      if StyleServices.Enabled and not StyleServices.IsSystemStyle then
+      begin
+        BrushRecall := TBrushRecall.Create(Brush);
+        Brush.Color := StyleServices.GetSystemColor(Brush.Color);
+      end;
+    {$ENDIF JVCLStylesEnabled}
+      Result := inherited DoEraseBackground(Canvas, Param);
+    {$IFDEF JVCLStylesEnabled}
+    finally
+      BrushRecall.Free;
+    end;
+    {$ENDIF JVCLStylesEnabled}
+  end
   else
   begin
-    {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLStylesEnabled}
     if StyleServices.Enabled then
       DrawThemedBackground(Self, Canvas, ClientRect, Color, ParentBackground);
-    {$ENDIF JVCLThemesEnabled}
+    {$ENDIF JVCLStylesEnabled}
     Result := True;
   end;
 end;
@@ -567,6 +593,29 @@ begin
   Pt := SmallPointToPoint(Msg.Pos);
   if Assigned(ActivePage) and PtInRect(ActivePage.BoundsRect, Pt) then
     Msg.Result := 1;
+end;
+
+procedure TJvCustomPageList.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+{$IFDEF JVCLStylesEnabled}
+var
+  BrushRecall: TBrushRecall;
+{$ENDIF JVCLStylesEnabled}
+begin
+  {$IFDEF JVCLStylesEnabled}
+  BrushRecall := nil;
+  try
+    if StyleServices.Enabled and not StyleServices.IsSystemStyle then
+    begin
+      BrushRecall := TBrushRecall.Create(Brush);
+      Brush.Color := StyleServices.GetSystemColor(Brush.Color);
+    end;
+  {$ENDIF JVCLStylesEnabled}
+  inherited;
+  {$IFDEF JVCLStylesEnabled}
+  finally
+    BrushRecall.Free;
+  end;
+  {$ENDIF JVCLStylesEnabled}
 end;
 
 procedure TJvCustomPageList.GetChildren(Proc: TGetChildProc;

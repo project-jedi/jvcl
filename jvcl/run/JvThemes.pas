@@ -751,6 +751,7 @@ type
     function IsSystemStyle: Boolean;
     function Enabled: Boolean;
     function Available: Boolean;
+    function GetSystemColor(Color: TColor): TColor;
     {$ENDIF ~COMPILER16_UP}
   end;
 
@@ -1505,6 +1506,11 @@ function TThemeServicesEx.GetElementSize(DC: HDC; Details: TThemedElementDetails
   ElementSize: TElementSize; out Size: TSize): Boolean;
 begin
   Result := DoGetElementSize(DC, Details, @Rect, ElementSize, Size);
+end;
+
+function TThemeServicesEx.GetSystemColor(Color: TColor): TColor;
+begin
+  Result := Color;
 end;
 
 function TThemeServicesEx.IsSystemStyle: Boolean;
