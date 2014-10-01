@@ -275,7 +275,7 @@ const
 
 type
   PICOPEN = ^TICOPEN;
-  TICOPEN = packed record
+  TICOPEN = record
     dwSize                  : DWORD   ; // sizeof(ICOPEN)
     fccType                 : DWORD   ; // 'vidc'
     fccHandler              : DWORD   ; //
@@ -291,7 +291,7 @@ type
 ************************************************************************)
 
   PICINFO = ^TICINFO;
-  TICINFO = packed record
+  TICINFO = record
     dwSize                  : DWORD;    // sizeof(ICINFO)
     fccType                 : DWORD;    // compressor type     'vidc' 'audc'
     fccHandler              : DWORD;    // compressor sub-type 'rle ' 'jpeg' 'pcm '
@@ -327,7 +327,7 @@ const
 
 type
   PICCOMPRESS = ^TICCOMPRESS;
-  TICCOMPRESS = packed record
+  TICCOMPRESS = record
     dwFlags                 : DWORD;                // flags
 
     lpbiOutput              : PBITMAPINFOHEADER ;   // output format
@@ -359,7 +359,7 @@ type
   TICCompressProc    = function(lInputOutput: LPARAM; lFrame: DWORD; lpBits: PVOID; len: LONG): LONG; stdcall;
 
   PICCOMPRESSFRAMES  = ^TICCOMPRESSFRAMES;
-  TICCOMPRESSFRAMES  = packed record
+  TICCOMPRESSFRAMES  = record
     dwFlags                 : DWORD ;               // flags
 
     lpbiOutput              : PBITMAPINFOHEADER ;   // output format
@@ -399,7 +399,7 @@ type
   TICStatusProc    = function(lParam: LPARAM; message: UINT; l: LONG): LONG; stdcall;
 
   PICSETSTATUSPROC = ^TICSETSTATUSPROC;
-  TICSETSTATUSPROC = packed record
+  TICSETSTATUSPROC = record
     dwFlags                 : DWORD ;
     lParam                  : LPARAM ;
     Status                  : TICStatusProc;
@@ -417,7 +417,7 @@ const
 
 type
   PICDECOMPRESS = ^TICDECOMPRESS;
-  TICDECOMPRESS = packed record
+  TICDECOMPRESS = record
     dwFlags                 : DWORD ;               // flags (from AVI index...)
     lpbiInput               : PBITMAPINFOHEADER ;   // BITMAPINFO of compressed data
                                                         // biSizeImage has the chunk size
@@ -428,7 +428,7 @@ type
   end;
 
   PICDECOMPRESSEX = ^TICDECOMPRESSEX;
-  TICDECOMPRESSEX = packed record
+  TICDECOMPRESSEX = record
 
     //
     // same as ICM_DECOMPRESS
@@ -471,7 +471,7 @@ const
 
 type
   PICDRAWBEGIN = ^TICDRAWBEGIN;
-  TICDRAWBEGIN = packed record
+  TICDRAWBEGIN = record
     dwFlags                 : DWORD ;       // flags
 
     hpal                    : HPALETTE ;    // palette to draw with
@@ -507,7 +507,7 @@ const
 
 type
     PICDRAW                     = ^TICDRAW;
-    TICDRAW                     = packed record
+    TICDRAW                     = record
         dwFlags                 : DWORD ;   // flags
         lpFormat                : PVOID ;   // format of frame to decompress
         lpData                  : PVOID ;   // frame data to decompress
@@ -516,7 +516,7 @@ type
     end;
 
     PICDRAWSUGGEST              = ^TICDRAWSUGGEST;
-    TICDRAWSUGGEST              = packed record
+    TICDRAWSUGGEST              = record
         lpbiIn                  : PBITMAPINFOHEADER ;   // format to be drawn
         lpbiSuggest             : PBITMAPINFOHEADER ;   // location for suggested format (or NULL to get size)
         dxSrc                   : int ;                 // source extent or 0
@@ -530,7 +530,7 @@ type
 ************************************************************************)
 
     PICPALETTE                  = ^TICPALETTE;
-    TICPALETTE                  = packed record
+    TICPALETTE                  = record
         dwFlags                 : DWORD ;           // flags (from AVI index...)
         iStart                  : int ;             // first palette to change
         iLen                    : int ;             // count of entries to change.
@@ -958,7 +958,7 @@ function    ICImageDecompress(
 
 type
   PCOMPVARS       = ^TCOMPVARS;
-  TCOMPVARS       = packed record
+  TCOMPVARS       = record
         cbSize      : DWORD;            // set to sizeof(COMPVARS) before
                                         // calling ICCompressorChoose
         dwFlags     : DWORD;            // see below...
@@ -1139,7 +1139,7 @@ function    DrawDibEnd(hdd: HDRAWDIB): BOOL; stdcall;
 
 type
     PDRAWDIBTIME        = ^TDRAWDIBTIME;
-    TDRAWDIBTIME        = packed record
+    TDRAWDIBTIME        = record
         timeCount       : LONG;
         timeDraw        : LONG;
         timeDecompress  : LONG;
@@ -1308,7 +1308,7 @@ const
 
 type
     PMainAVIHeader              = ^TMainAVIHeader;
-    TMainAVIHeader              = packed record
+    TMainAVIHeader              = record
         dwMicroSecPerFrame      : DWORD;        // frame display rate (or 0L)
         dwMaxBytesPerSec        : DWORD;        // max. transfer rate
         dwPaddingGranularity    : DWORD;        // pad to multiples of this
@@ -1334,7 +1334,7 @@ const
 
 type
     PAVIStreamHeader            = ^TAVIStreamHeader;
-    TAVIStreamHeader            = packed record
+    TAVIStreamHeader            = record
         fccType                 : FOURCC;
         fccHandler              : FOURCC;
         dwFlags                 : DWORD;        // Contains AVITF_* flags
@@ -1359,7 +1359,7 @@ const
 
 type
     PAVIINDEXENTRY              = ^TAVIINDEXENTRY;
-    TAVIINDEXENTRY              = packed record
+    TAVIINDEXENTRY              = record
         ckid                    : DWORD;
         dwFlags                 : DWORD;
         dwChunkOffset           : DWORD;        // Position of chunk
@@ -1369,7 +1369,7 @@ type
 {-- Palette change chunk (used in video streams) -----------------------------}
 
     PAVIPALCHANGE               = ^TAVIPALCHANGE;
-    TAVIPALCHANGE               = packed record
+    TAVIPALCHANGE               = record
         bFirstEntry             : BYTE;         // first entry to change
         bNumEntries             : BYTE;         // # entries to change (0 if 256)
         wFlags                  : WORD;         // Mostly to preserve alignment...
@@ -1419,7 +1419,7 @@ const
 
 type
     PAVIStreamInfoW             = ^TAVIStreamInfoW;
-    TAVIStreamInfoW             = packed record
+    TAVIStreamInfoW             = record
         fccType                 : DWORD;
         fccHandler              : DWORD;
         dwFlags                 : DWORD;        // Contains AVITF_* flags
@@ -1441,7 +1441,7 @@ type
     end;
 
     PAVIStreamInfoA             = ^TAVIStreamInfoA;
-    TAVIStreamInfoA             = packed record
+    TAVIStreamInfoA             = record
         fccType                 : DWORD;
         fccHandler              : DWORD;
         dwFlags                 : DWORD;        // Contains AVITF_* flags
@@ -1477,7 +1477,7 @@ const
 
 type
     PAVIFileInfoW               = ^TAVIFileInfoW;
-    TAVIFileInfoW               = packed record
+    TAVIFileInfoW               = record
         dwMaxBytesPerSec        : DWORD;        // max. transfer rate
         dwFlags                 : DWORD;        // the ever-present flags
         dwCaps                  : DWORD;
@@ -1498,7 +1498,7 @@ type
     end;
 
     PAVIFileInfoA               = ^TAVIFileInfoA;
-    TAVIFileInfoA               = packed record
+    TAVIFileInfoA               = record
         dwMaxBytesPerSec        : DWORD;        // max. transfer rate
         dwFlags                 : DWORD;        // the ever-present flags
         dwCaps                  : DWORD;
@@ -1550,7 +1550,7 @@ type
 
 type
     PAVICOMPRESSOPTIONS             = ^TAVICOMPRESSOPTIONS;
-    TAVICOMPRESSOPTIONS             = packed record
+    TAVICOMPRESSOPTIONS             = record
         fccType                     : DWORD;    // stream type, for consistency
         fccHandler                  : DWORD;    // compressor
         dwKeyFrameEvery             : DWORD;    // keyframe rate
