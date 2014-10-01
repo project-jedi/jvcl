@@ -97,6 +97,7 @@ type
     procedure ReadAssociated(Reader: TReader);
     procedure SetDataConnector(const Value: TJvCheckBoxDataConnector);
     function IsHotTrackFontStored: Boolean;
+    procedure SetClientSize(W, H: Integer);
   protected
     function CreateDataConnector: TJvCheckBoxDataConnector; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
@@ -365,6 +366,14 @@ begin
   CalcAutoSize;
 end;
 
+procedure TJvCheckBox.SetClientSize(W, H: Integer);
+var
+  Client: TRect;
+begin
+  Client := GetClientRect;
+  SetBounds(Left, Top, Width - Client.Right + W, Height - Client.Bottom + H);
+end;
+
 procedure TJvCheckBox.CalcAutoSize;
 const
   Flags: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
@@ -380,12 +389,11 @@ begin
   // add some spacing
   Inc(ASize.cy, 4);
   FCanvas.Font := Font;
-  R := Rect(0, 0, ClientWidth, ClientHeight);
   // This is slower than GetTextExtentPoint but it does consider hotkeys
   if Caption <> '' then
   begin
-    DrawText(FCanvas, Caption, -1, R,
-      Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    R := ClientRect;
+    DrawText(FCanvas, Caption, -1, R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
     AWidth := (R.Right - R.Left) + ASize.cx + 8;
     AHeight := R.Bottom - R.Top;
   end
@@ -398,8 +406,7 @@ begin
     AWidth := ASize.cx;
   if AHeight < ASize.cy then
     AHeight := ASize.cy;
-  ClientWidth := AWidth;
-  ClientHeight := AHeight;
+  SetClientSize(AWidth, AHeight);
 end;
 
 procedure TJvCheckBox.SetHotTrackFont(const Value: TFont);
