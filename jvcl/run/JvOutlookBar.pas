@@ -356,8 +356,7 @@ type
     function GetPageButtonRect(Index: Integer): TRect;
     function GetPageTextRect(Index: Integer): TRect;
     function GetPageRect(Index: Integer): TRect;
-    function GetTextWidth(PageIndex, ButtonIndex: Integer): Integer;
-    function GetTextHeight(PageIndex, ButtonIndex: Integer): Integer;
+    function GetTextSize(PageIndex, ButtonIndex: Integer): TSize;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -2056,35 +2055,31 @@ begin
   InflateRect(Result, -2, -2);
 end;
 
-function TJvCustomOutlookBar.GetTextHeight(PageIndex,
-  ButtonIndex: Integer): Integer;
+function TJvCustomOutlookBar.GetTextSize(PageIndex, ButtonIndex: Integer): TSize;
 var
   R: TRect;
+  DC: HDC;
+  S: string;
+  OldFont: HFONT;
 begin
-  if (Pages[PageIndex].ButtonSize = olbsLarge) and FWordWrap then
-  begin
-    R := Rect(0, 0, Max(ClientWidth - (2 * cTextMargins), cMinTextWidth), 0);
-    Result := DrawText(Canvas.Handle, PChar(Pages[PageIndex].Buttons[ButtonIndex].Caption),
-                       -1, R, DT_WORDBREAK or DT_CALCRECT or DT_CENTER or DT_VCENTER);
-  end
-  else
-    Result := Abs(Pages[PageIndex].Font.Height);
-end;
-
-function TJvCustomOutlookBar.GetTextWidth(PageIndex,
-  ButtonIndex: Integer): Integer;
-var
-  R: TRect;
-begin
-  if (Pages[PageIndex].ButtonSize = olbsLarge) and FWordWrap then
-  begin
-    R := Rect(0, 0, Max(ClientWidth - (2 * cTextMargins), cMinTextWidth), 0);
-    DrawText(Canvas.Handle, PChar(Pages[PageIndex].Buttons[ButtonIndex].Caption),
-             -1, R, DT_WORDBREAK or DT_CALCRECT or DT_CENTER or DT_VCENTER);
-    Result := R.Right;
-  end
-  else
-    Result := Canvas.TextWidth(Pages[PageIndex].Buttons[ButtonIndex].Caption);
+  DC := Canvas.Handle;
+  OldFont := SelectObject(DC, Pages[PageIndex].Font.Handle);
+  try
+    S := Pages[PageIndex].Buttons[ButtonIndex].Caption;
+    if (Pages[PageIndex].ButtonSize = olbsLarge) and FWordWrap then
+    begin
+      R := Rect(0, 0, Max(ClientWidth - (2 * cTextMargins), cMinTextWidth), 0);
+      Result.cy := DrawText(DC, PChar(S), Length(S), R, DT_WORDBREAK or DT_CALCRECT or DT_CENTER or DT_VCENTER);
+      Result.cx := R.Right;
+    end
+    else
+    begin
+      GetTextExtentPoint32(DC, S, Length(S), Result);
+      Result.cy := Abs(Pages[PageIndex].Font.Height);
+    end;
+  finally
+    SelectObject(DC, OldFont);
+  end;
 end;
 
 function TJvCustomOutlookBar.GetPageRect(Index: Integer): TRect;
@@ -2132,7 +2127,7 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result := Rect(0, 0, Max(LargeImages.Width, GetTextWidth(PageIndex, ButtonIndex)) +
+        Result := Rect(0, 0, Max(LargeImages.Width, GetTextSize(PageIndex, ButtonIndex).cx) +
           4, H);
         OffsetRect(Result, (ClientWidth - (Result.Right - Result.Left)) div 2, cButtonTopOffset);
       end
@@ -2141,7 +2136,7 @@ begin
     olbsSmall:
       if SmallImages <> nil then
       begin
-        Result := Rect(0, 0, SmallImages.Width + GetTextWidth(PageIndex, ButtonIndex) + 8,
+        Result := Rect(0, 0, SmallImages.Width + GetTextSize(PageIndex, ButtonIndex).cx + 8,
           H);
         OffsetRect(Result, cButtonLeftOffset, cButtonTopOffset);
       end
@@ -2187,8 +2182,10 @@ begin
   end;
 end;
 
-function TJvCustomOutlookBar.GetButtonTextRect(PageIndex,
-  ButtonIndex: Integer): TRect;
+function TJvCustomOutlookBar.GetButtonTextRect(PageIndex, ButtonIndex: Integer): TRect;
+var
+  TextSize: TSize;
+  ButtonHeight: Integer;
 begin
   Result := Rect(0, 0, 0, 0);
   if Pages[PageIndex].Buttons.Count <= ButtonIndex then
@@ -2198,17 +2195,19 @@ begin
     olbsLarge:
       if LargeImages <> nil then
       begin
-        Result.Top := Result.Bottom - GetTextHeight(PageIndex, ButtonIndex) - 2;
+        Result.Top := Result.Bottom - GetTextSize(PageIndex, ButtonIndex).cy - 2;
         OffsetRect(Result, 0, -4);
       end;
     olbsSmall:
       if SmallImages <> nil then
       begin
+        TextSize := GetTextSize(PageIndex, ButtonIndex);
+        ButtonHeight := GetButtonHeight(PageIndex, ButtonIndex);
         Result.Left := SmallImages.Width + 10;
-        Result.Top := Result.Top + (GetButtonHeight(PageIndex, ButtonIndex) - GetTextHeight(PageIndex, ButtonIndex)) div 2;
-        Result.Bottom := Result.Top + GetTextHeight(PageIndex, ButtonIndex) + 2;
-        Result.Right := Result.Left + GetTextWidth(PageIndex, ButtonIndex) + 4;
-        OffsetRect(Result, 0, -(GetButtonHeight(PageIndex, ButtonIndex) - (Result.Bottom - Result.Top)) div 4);
+        Result.Top := Result.Top + (ButtonHeight - TextSize.cy) div 2;
+        Result.Bottom := Result.Top + TextSize.cy + 2;
+        Result.Right := Result.Left + TextSize.cx + 4;
+        OffsetRect(Result, 0, -(ButtonHeight - (Result.Bottom - Result.Top)) div 4);
       end;
   end;
 end;
@@ -2642,24 +2641,26 @@ const
   cSmallOffset = 4;
 var
   TM: TTextMetric;
+  TextSize: TSize;
 begin
   GetTextMetrics(Canvas.Handle, TM);
   Result := TM.tmHeight + TM.tmExternalLeading;
   if (PageIndex >= 0) and (PageIndex < Pages.Count) then
   begin
+    TextSize := GetTextSize(PageIndex, ButtonIndex);
     case Pages[PageIndex].ButtonSize of
       olbsLarge:
       begin
         if LargeImages <> nil then
-          Result := Max(Result, LargeImages.Height + GetTextHeight(PageIndex, ButtonIndex) + cLargeOffset)
+          Result := Max(Result, LargeImages.Height + TextSize.cy + cLargeOffset)
         else
-          Result := GetTextHeight(PageIndex, ButtonIndex) + cLargeOffset;
+          Result := TextSize.cy + cLargeOffset;
       end;
       olbsSmall:
         if SmallImages <> nil then
-          Result := Max(SmallImages.Height, GetTextHeight(PageIndex, ButtonIndex)) + cSmallOffset
+          Result := Max(SmallImages.Height, TextSize.cy) + cSmallOffset
         else
-          Result := GetTextHeight(PageIndex, ButtonIndex) + cSmallOffset;
+          Result := TextSize.cy + cSmallOffset;
     end;
   end;
   Inc(Result, 4);
