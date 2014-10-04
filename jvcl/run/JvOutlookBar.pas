@@ -2074,7 +2074,7 @@ begin
     end
     else
     begin
-      GetTextExtentPoint32(DC, S, Length(S), Result);
+      GetTextExtentPoint32(DC, PChar(S), Length(S), Result);
       Result.cy := Abs(Pages[PageIndex].Font.Height);
     end;
   finally
