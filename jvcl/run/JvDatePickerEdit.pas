@@ -1346,6 +1346,7 @@ procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
 begin
   if FPopup is TJvDropCalendar then
   begin
+    FPopup.SetBounds(Origin.X, Origin.Y, FPopup.Width, FPopup.Height);
     FPopup.Visible := True; // overriden CM_SHOWINGCHANGED will take care of SW_SHOWNOACTIVATE
 
     // Emulate a LButton-Click to give the month calendar the look of being focused
