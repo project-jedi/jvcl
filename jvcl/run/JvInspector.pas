@@ -5619,6 +5619,8 @@ var
   I: Integer;
   IH: Integer;
   MH: Integer;
+  R: TRect;
+  EditMonitor: TMonitor;
 begin
   if (not DroppedDown) and (ListBox <> nil) then
   begin
@@ -5682,11 +5684,29 @@ begin
     P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Right - ListBox.Width, EditCtrl.Top));
     if P.X < 0 then
       P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
+
     Y := P.Y + RectHeight(Rects[iprValueArea]);
-    if Y + ListBox.Height > Screen.DesktopHeight then
-      Y := P.Y - TListBox(ListBox).Height;
-    if P.X + ListBox.Width > Screen.DesktopWidth then
-      P.X := Screen.DesktopWidth - ListBox.Width;
+    GetWindowRect(EditCtrl.Handle, R);
+    EditMonitor := Screen.MonitorFromRect(R);
+    if EditMonitor <> nil then
+    begin
+      R := EditMonitor.BoundsRect;
+      if P.X + ListBox.Width > R.Right then
+        P.X := R.Right - ListBox.Width;
+      if P.X < R.Left then
+        P.X := R.Left;
+      if Y + ListBox.Height > R.Bottom then
+        Y := P.Y - TListBox(ListBox).Height;
+      if Y < R.Top then
+        Y := R.Top;
+    end
+    else
+    begin
+      if Y + ListBox.Height > Screen.DesktopHeight then
+        Y := P.Y - TListBox(ListBox).Height;
+      if P.X + ListBox.Width > Screen.DesktopWidth then
+        P.X := Screen.DesktopWidth - ListBox.Width;
+    end;
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or {SWP_NOACTIVATE or }SWP_SHOWWINDOW);
     InvalidateItem;
