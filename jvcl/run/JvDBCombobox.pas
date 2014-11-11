@@ -122,6 +122,7 @@ type
     FListSettings: TJvDBComboBoxListSettings;
     FValues: TStringList;
     FEnableValues: Boolean;
+    FPreserveItemSelectionOnInsert: Boolean;
     procedure SetEnableValues(Value: Boolean);
     function GetValues: TStrings;
     procedure SetValues(Value: TStrings);
@@ -186,6 +187,7 @@ type
     property Items write SetItems;
     property Text;
     property UpdateFieldImmediatelly: Boolean read FUpdateFieldImmediatelly write FUpdateFieldImmediatelly default False;
+    property PreserveItemSelectionOnInsert: Boolean read FPreserveItemSelectionOnInsert write FPreserveItemSelectionOnInsert default False;
   end;
 
   {$IFDEF RTL230_UP}
@@ -229,6 +231,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property PreserveItemSelectionOnInsert;
     property ReadOnly;
     property ShowHint;
     property Sorted;
