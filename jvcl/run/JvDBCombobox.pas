@@ -534,6 +534,8 @@ begin
 end;
 
 procedure TJvCustomDBComboBox.WndProc(var Msg: TMessage);
+var
+  OldItemIndex: Integer;
 begin
   if not (csDesigning in ComponentState) then
     case Msg.Msg of
@@ -541,12 +543,22 @@ begin
         if TWMCommand(Msg).NotifyCode = CBN_SELCHANGE then
         begin
           try
+            if FPreserveItemSelectionOnInsert and FDataLink.Active and FDataLink.CanModify and (FDataLink.DataSet.State = dsBrowse) then
+              OldItemIndex := ItemIndex
+            else
+              OldItemIndex := -1;
+
             if not FDataLink.Edit then
             begin
               if Style <> csSimple then
                 PostMessage(Handle, CB_SHOWDROPDOWN, 0, 0);
               Exit;
             end;
+
+            // Restore ItemIndex if FDataLink.Edit has triggered OnNewRecord that changed the associated field value.
+            // Otherwise the user's selection is reverted to the value in OnNewRecord when the dropdown list is closed
+            if FPreserveItemSelectionOnInsert and (OldItemIndex <> -1) and (OldItemIndex <> ItemIndex) and (FDataLink.DataSet.State = dsInsert) then
+              ItemIndex := OldItemIndex;
           except
             Reset;
             raise;
