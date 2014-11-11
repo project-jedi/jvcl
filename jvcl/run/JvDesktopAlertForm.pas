@@ -291,10 +291,12 @@ begin
 
   lblText := TJvLabel.Create(Self);
   lblText.Parent := Self;
+  lblText.AutoSize := False;
   lblText.SetBounds(56, 24, 67, 13);
   lblText.Transparent := True;
   lblText.WordWrap := True;
   lblText.Anchors := [akLeft..akBottom];
+  lblText.TextEllipsis := teEndEllipsis;
 
   acClose := TAction.Create(Self);
   acClose.Caption := RsClose;
