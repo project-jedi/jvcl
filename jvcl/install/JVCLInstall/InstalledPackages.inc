@@ -53,17 +53,19 @@ end;
 { Indy Components }
 function Opt_Indy9Components(Target: TCompileTarget): Boolean;
 begin
-  Result := FileExists(Target.RootDir + Target.VersionedDCP('\lib\indy.dcp')) or
-            FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy9\indy.dcp')) or
-            FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy10\IndyCore.dcp')) or
-            FileExists(Target.RootDir + Target.VersionedDCP('\lib\IndyCore.dcp'))
+//  Result := FileExists(Target.RootDir + Target.VersionedDCP('\lib\indy.dcp')) or
+//            FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy9\indy.dcp')) or
+//            FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy10\IndyCore.dcp')) or
+//            FileExists(Target.RootDir + Target.VersionedDCP('\lib\IndyCore.dcp'))
+  Result := true;
 end;
 
 function Opt_Indy10Components(Target: TCompileTarget): Boolean;
 begin
-  Result := (FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy10\IndyCore.dcp')) or
-             FileExists(Target.RootDir + Target.VersionedDCP('\lib\IndyCore.dcp'))) and
-            (Target.FindPackageEx('dclIndyCore') <> nil);
+//  Result := (FileExists(Target.RootDir + Target.VersionedDCP('\lib\Indy10\IndyCore.dcp')) or
+//             FileExists(Target.RootDir + Target.VersionedDCP('\lib\IndyCore.dcp'))) and
+//            (Target.FindPackageEx('dclIndyCore') <> nil);
+  Result := true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -120,20 +122,21 @@ end;
 { ODAC Components }
 function Opt_ODACComponents(Target: TCompileTarget): Boolean;
 begin
-  if Target.Version = 10 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl100.bpl')
-  else if Target.Version = 11 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl105.bpl')
-  else if Target.Version = 12 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl120.bpl')
-  else if Target.Version = 14 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl140.bpl')
-  else if Target.Version = 15 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl150.bpl')
-  else if Target.Version = 16 then
-    Result := FileExists(Target.RootDir + '\Bin\OdacVcl160.bpl')
-  else
-    Result := FileExists(Target.RootDir + Format('\Odac\Bin\OdacVcl%d.bpl', [Target.Version]));
+//  if Target.Version = 10 then
+//    Result := FileExists(Target.RootDir + '\Bin\OdacVcl100.bpl')
+//  else if Target.Version = 11 then
+//    Result := FileExists(Target.RootDir + '\Bin\OdacVcl105.bpl')
+//  else if Target.Version = 12 then
+//    Result := FileExists(Target.RootDir + '\Bin\OdacVcl120.bpl')
+//  else if Target.Version = 14 then
+//    Result := FileExists(Target.RootDir + '\Bin\OdacVcl140.bpl')
+//  else if Target.Version = 15 then
+//    Result := FileExists(Target.RootDir + '\Bin\OdacVcl150.bpl')
+//  else if Target.Version = 16 then
+//    Result := FileExists(Target.RootDir + '\Bin\OdacVcl160.bpl')
+//  else
+//    Result := FileExists(Target.RootDir + Format('\Odac\Bin\OdacVcl%d.bpl', [Target.Version]));
+  Result := true;
 end;
 
 
