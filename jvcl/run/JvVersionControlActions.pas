@@ -47,12 +47,14 @@ type
   {$ENDIF RTL230_UP}
   TJvVersionControlActionList = class(TActionList)
   private
+    FValidateVersionControlDriveList: string;
     FDisableActions: Boolean;
     FHideActions: Boolean;
     FIconType: Integer;
     FOnChangeVersionControlComponent: TJvChangeVersionControlComponent;
     FVersionControlComponent: TComponent;
     FVersionControlFilename: string;
+    procedure SetValidateVersionControlDriveList(const Value: string);
     procedure SetDisableActions(const Value: Boolean);
     procedure SetHideActions(const Value: Boolean);
     procedure SetIconType(const Value: Integer);
@@ -63,7 +65,15 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   published
+    //1 If this property is filled then only the drives listed in the property will be checked and disabled
+    property ValidateVersionControlDriveList: string read FValidateVersionControlDriveList write SetValidateVersionControlDriveList;
+    // This property defines that actions will be disabled based on the supporting
+    // version control system.
     property DisableActions: Boolean read FDisableActions write SetDisableActions default true;
+    // This property defines that the actions will be hidden when they are disabled
+    // ATTENTION : THIS FUNCTIONALITY IS ONLY WORKING WHEN THE VersionControlFilename IS CHANGED MANUALLY
+    //             AND NOT AUTOMATICLY CALCULATED VIA THE VersionControlComponent
+    //             Explanation : For an hidden action the update procedures of the action are not called and so the visibiliy will not be changed.
     property HideActions: Boolean read FHideActions write SetHideActions default false;
     property IconType: Integer read FIconType write SetIconType default -1;
     property VersionControlComponent: TComponent read FVersionControlComponent write SetVersionControlComponent;
@@ -77,22 +87,32 @@ type
   private
     FActionType: TJclVersionControlActionType;
     FAfterExecute: TJvVersionControlActionExecuteEvent;
+    FCurrentCache: TJclVersionControlCache;
+    FCurrentPlugin: TJclVersionControlPlugin;
     FDisableAction: Boolean;
     FHideAction: Boolean;
     FIconType: Integer;
+    FLastVersionControlFilename: string;
     FOnChangeVersionControlComponent: TJvChangeVersionControlComponent;
     FOnCheckEnabled: TJvVersionControlActionCheckEnabledEvent;
     FOnExecute: TJvVersionControlActionExecuteEvent;
+    FValidateVersionControlDriveList: string;
     FVersionControlActionEngine: TjvVersionControlActionEngine;
     FVersionControlFilename: string;
+    procedure CheckVisibility;
     function GetCurrentCache: TJclVersionControlCache;
     function GetCurrentPlugin: TJclVersionControlPlugin;
     function GetCurrentVersionControlFilename: string;
+    function HideActionAllowed: Boolean;
     procedure SetActionType(const Value: TJclVersionControlActionType);
+    procedure SetValidateVersionControlDriveList(const Value: string);
+    procedure SetVersionControlFilename(const Value: string);
+    procedure ValidateCurrentCachePlugin;
   protected
     //1 This Procedure is called when the ActionComponent is changed
     procedure ChangeActionComponent(const AActionComponent: TComponent); override;
     procedure CheckEnabled(var AEnabled: Boolean); override;
+    function ValidateActionForFileDrive(const AFileName: string): Boolean;
     function GetEngineList: TJvActionEngineList; override;
     function GetVersionControlComponent: TComponent;
     procedure SetVersionControlComponent(Value: TComponent);
@@ -110,10 +130,11 @@ type
     property CurrentVersionControlFilename: string read GetCurrentVersionControlFilename;
     property DisableAction: Boolean read FDisableAction write FDisableAction default true;
     property HideAction: Boolean read FHideAction write FHideAction default false;
-    property VersionControlFilename: string read FVersionControlFilename write FVersionControlFilename;
   published
     property IconType: Integer read FIconType write FIconType default -1;
+    property ValidateVersionControlDriveList: string read FValidateVersionControlDriveList write SetValidateVersionControlDriveList;
     property VersionControlComponent: TComponent read GetVersionControlComponent write SetVersionControlComponent;
+    property VersionControlFilename: string read FVersionControlFilename write SetVersionControlFilename;
     property AfterExecute: TJvVersionControlActionExecuteEvent read FAfterExecute write FAfterExecute;
     property OnChangeVersionControlComponent: TJvChangeVersionControlComponent read FOnChangeVersionControlComponent
         write FOnChangeVersionControlComponent;
@@ -357,7 +378,7 @@ const
 implementation
 
 uses
-  JvJVCLUtils;
+  JvJVCLUtils, SysUtils;
 
 constructor TJvVersionControlActionList.Create(AOwner: TComponent);
 begin
@@ -373,6 +394,16 @@ begin
   if Operation = opRemove then
     if AComponent = FVersionControlComponent then
       VersionControlComponent := nil;
+end;
+
+procedure TJvVersionControlActionList.SetValidateVersionControlDriveList(const Value: string);
+var
+  I: Integer;
+begin
+  FValidateVersionControlDriveList := UpperCase(trim(Value));
+  for I := 0 to ActionCount - 1 do
+    if Actions[I] is TJvVersionControlBaseAction then
+      TJvVersionControlBaseAction(Actions[I]).FValidateVersionControlDriveList := Value;
 end;
 
 procedure TJvVersionControlActionList.SetDisableActions(const Value: Boolean);
@@ -474,6 +505,29 @@ begin
 //    fOnCheckEnabled (DataSet, VersionControlComponent, VersionControlActionEngine, aEnabled);
 end;
 
+procedure TJvVersionControlBaseAction.CheckVisibility;
+var  AFileCache: TJclVersionControlCache;
+begin
+  if ValidateActionForFileDrive(CurrentVersionControlFilename) then
+  begin
+    AFileCache := CurrentCache;
+    if HideActionAllowed and HideAction and not VersionControlActionInfo(ActionType).AllPlugins then
+      SetVisible(Assigned(AFileCache) and Assigned(AFileCache.Plugin) and (ActionType in AFileCache.Plugin.SupportedActionTypes))
+    else
+      SetVisible(True);
+  end
+  else
+    SetVisible(True);
+end;
+
+function TJvVersionControlBaseAction.ValidateActionForFileDrive(const AFileName: string): Boolean;
+begin
+  if ValidateVersionControlDriveList = '' then
+    Result := True
+  else
+    Result := Pos(UpperCase(Copy(AFileName,1,1)),ValidateVersionControlDriveList) > 0;
+end;
+
 function TJvVersionControlBaseAction.Execute: Boolean;
 var
   Index: Integer;
@@ -561,37 +615,15 @@ begin
 end;
 
 function TJvVersionControlBaseAction.GetCurrentCache: TJclVersionControlCache;
-var
-  Index: Integer;
-  AFileName: string;
-  APlugin: TJclVersionControlPlugin;
 begin
-  AFileName := CurrentVersionControlFilename;
-  for Index := 0 to VersionControlPluginList.Count - 1 do
-  begin
-    APlugin := TJclVersionControlPlugin(VersionControlPluginList.Plugins[Index]);
-    Result := VersionControlPluginList.GetFileCache(AFileName, APlugin);
-    if Result.Supported then
-      Exit;
-  end;
-  Result := nil;
+  ValidateCurrentCachePlugin;
+  Result := fCurrentCache;
 end;
 
 function TJvVersionControlBaseAction.GetCurrentPlugin: TJclVersionControlPlugin;
-var
-  Index: Integer;
-  AFileCacheInfo: TJclVersionControlCache;
-  AFileName: string;
 begin
-  AFileName := CurrentVersionControlFilename;
-  for Index := 0 to VersionControlPluginList.Count - 1 do
-  begin
-    Result := TJclVersionControlPlugin(VersionControlPluginList.Plugins[Index]);
-    AFileCacheInfo := VersionControlPluginList.GetFileCache(AFileName, Result);
-    if AFileCacheInfo.Supported then
-      Exit;
-  end;
-  Result := nil;
+  ValidateCurrentCachePlugin;
+  Result := fCurrentPlugin;
 end;
 
 function TJvVersionControlBaseAction.GetCurrentVersionControlFilename: string;
@@ -623,6 +655,11 @@ begin
     Result := Inherited HandlesTarget(Target);
 end;
 
+function TJvVersionControlBaseAction.HideActionAllowed: Boolean;
+begin
+  Result := (VersionControlFileName <> '') or not Assigned(VersionControlComponent);
+end;
+
 procedure TJvVersionControlBaseAction.SetActionType(const Value: TJclVersionControlActionType);
 begin
   FActionType := Value;
@@ -643,9 +680,24 @@ begin
   end;
 end;
 
+procedure TJvVersionControlBaseAction.SetValidateVersionControlDriveList(const Value: string);
+begin
+  FValidateVersionControlDriveList := UpperCase(trim(Value));
+end;
+
 procedure TJvVersionControlBaseAction.SetVersionControlComponent(Value: TComponent);
 begin
   ActionComponent := Value;
+  CheckVisibility;
+end;
+
+procedure TJvVersionControlBaseAction.SetVersionControlFilename(const Value: string);
+begin
+  if Value <> FVersionControlFilename then
+  begin
+    FVersionControlFilename := Value;
+    CheckVisibility;
+  end;
 end;
 
 procedure TJvVersionControlBaseAction.UpdateTarget(Target: TObject);
@@ -654,16 +706,12 @@ var
   AFileCache: TJclVersionControlCache;
   AFileName: string;
 begin
-  AFileCache := CurrentCache;
 
-  if HideAction and not VersionControlActionInfo(ActionType).AllPlugins then
-    SetVisible (Assigned(AFileCache) and Assigned(AFileCache.Plugin)
-                and (ActionType in AFileCache.Plugin.SupportedActionTypes))
-  else
-    SetVisible (True);
+  CheckVisibility;
 
-  if DisableAction then
+  if DisableAction and ValidateActionForFileDrive(CurrentVersionControlFilename) then
   begin
+    AFileCache := CurrentCache;
     if VersionControlActionInfo(ActionType).Sandbox then
     begin
       if VersionControlActionInfo(ActionType).AllPlugins then
@@ -728,6 +776,35 @@ begin
   end
   else
     SetEnabled(True);
+end;
+
+procedure TJvVersionControlBaseAction.ValidateCurrentCachePlugin;
+var
+  Index: Integer;
+  AFileName: string;
+  APlugin: TJclVersionControlPlugin;
+  ACache: TJclVersionControlCache;
+begin
+  AFileName := CurrentVersionControlFilename;
+  if AFileName = FLastVersionControlFilename then
+    if Assigned(FCurrentCache) and not FCurrentCache.GetValid (Now) then
+    begin
+      FCurrentCache := nil;
+      FCurrentPlugin := nil;
+    end;
+  for Index := 0 to VersionControlPluginList.Count - 1 do
+  begin
+    APlugin := TJclVersionControlPlugin(VersionControlPluginList.Plugins[Index]);
+    ACache := VersionControlPluginList.GetFileCache(AFileName, APlugin);
+    if ACache.Supported then
+    begin
+      FCurrentCache := ACache;
+      FCurrentPlugin := APlugin;
+      Exit;
+    end;
+  end;
+  FCurrentCache := nil;
+  FCurrentPlugin := nil;
 end;
 
 //=== { TJvVersionControlAddAction } ==============================================
