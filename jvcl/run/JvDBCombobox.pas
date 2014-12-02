@@ -357,7 +357,10 @@ begin
     ComboText := Name
   else
   if FDataLink <> nil then
-    FDataLink.UpdateRecord
+  begin
+    FDataLink.UpdateRecord;
+    ComboText := '';
+  end
   else
     ComboText := '';
 end;
