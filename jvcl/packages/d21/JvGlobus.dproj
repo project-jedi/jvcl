@@ -46,7 +46,7 @@
         <DCC_UnitSearchPath>..\..\lib\d19\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_DcpOutput>..\..\lib\d19\win32</DCC_DcpOutput>
         <DCC_DcuOutput>..\..\lib\d19\win32</DCC_DcuOutput>
-        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -54,7 +54,7 @@
         <DCC_UnitSearchPath>..\..\lib\d19\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_DcpOutput>..\..\lib\d19\win32\debug</DCC_DcpOutput>
         <DCC_DcuOutput>..\..\lib\d19\win32\debug</DCC_DcuOutput>
-        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -68,6 +68,7 @@
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
         <DCCReference Include="vclx.dcp"/>
+        <DCCReference Include="bdertl.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
         <DCCReference Include="..\..\run\JvgReportParamsEditor.pas"/>
         <DCCReference Include="..\..\run\JvgShade.pas"/>
