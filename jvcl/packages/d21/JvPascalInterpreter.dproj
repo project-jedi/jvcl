@@ -68,7 +68,6 @@
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
-        <DCCReference Include="bdertl.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
         <DCCReference Include="vclx.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
@@ -83,7 +82,6 @@
         <DCCReference Include="..\..\run\JvInterpreter_Db.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_DbCtrls.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_DbGrids.pas"/>
-        <DCCReference Include="..\..\run\JvInterpreter_DBTables.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_Dialogs.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_ExtCtrls.pas"/>
         <DCCReference Include="..\..\run\JvInterpreter_Forms.pas"/>

@@ -68,7 +68,6 @@
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
         <DCCReference Include="vclx.dcp"/>
-        <DCCReference Include="bdertl.dcp"/>
         <DCCReference Include="vclimg.dcp"/>
         <DCCReference Include="..\..\run\JvgReportParamsEditor.pas"/>
         <DCCReference Include="..\..\run\JvgShade.pas"/>
