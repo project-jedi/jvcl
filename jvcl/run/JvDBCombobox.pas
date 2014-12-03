@@ -359,7 +359,8 @@ begin
   if FDataLink <> nil then
   begin
     FDataLink.UpdateRecord;
-    ComboText := '';
+    if (FDataLink.DataSource <> nil) and not FDataLink.DataSource.Enabled then
+      ComboText := '';
   end
   else
     ComboText := '';
