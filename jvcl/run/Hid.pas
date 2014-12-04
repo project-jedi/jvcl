@@ -2167,6 +2167,7 @@ uses
 {$IFDEF HID_LINKONREQUEST}
 var
   HidLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+  HidLoadCount: Integer = 0;
 {$ENDIF HID_LINKONREQUEST}
 
 // (rom) this function is a macro and cannot be implemented with the original name
@@ -2213,6 +2214,9 @@ end;
 function LoadHid: Boolean;
 begin
   {$IFDEF HID_LINKONREQUEST}
+  Inc(HidLoadCount);
+  if HidLoadCount > 1 then
+    Exit;
   Result := LoadModule(HidLib, HidModuleName);
   if Result then
   begin
@@ -2279,6 +2283,9 @@ end;
 procedure UnloadHid;
 begin
   {$IFDEF HID_LINKONREQUEST}
+  Dec(HidLoadCount);
+  if HidLoadCount > 0 then
+    Exit;
   UnloadModule(HidLib);
   @HidD_Hello := nil;
   @HidD_GetHidGuid := nil;
