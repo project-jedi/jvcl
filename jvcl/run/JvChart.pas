@@ -470,6 +470,7 @@ type
     FXAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
     FXAxisHeader: string;
     FMarkerSize:Integer;
+    FFillUnderLine : Boolean;
     FXLegends: TStringList; // Text labels.
     FXLegendMaxTextWidth: Integer; // runtime: display width (pixels) of widest string in FXLegends[1:X].
     FXAxisValuesPerDivision: Integer;
@@ -603,6 +604,7 @@ type
     { Y Range }
     { plotting markers }
     property MarkerSize: Integer read FMarkerSize write FMarkerSize default JvChartDefaultMarkerSize;
+    property FillUnderLine : Boolean read FFillUnderLine write FFillUnderLine default False;
     { !! New: Primary (left side) Y axis, and Secondary (right side) Y Axis !!}
     property PrimaryYAxis: TJvChartYAxisOptions read FPrimaryYAxis write SetPrimaryYAxis;
     property SecondaryYAxis: TJvChartYAxisOptions read FSecondaryYAxis write SetSecondaryYAxis;
@@ -3336,6 +3338,26 @@ var
       Result := Options.YStartOffset - 2; // Not quite good enough, but better than before.
   end;
 
+  function GetUnderLineFillColor(const A, B: TColor) : TColor;
+  const
+    Lerp = 0.85; // 0-1, where 0 is fully A and 1 is fully B. This value seems good
+  var
+    AR, AG, AB, BR, BG, BB: Byte;
+  begin
+    AR := GetRValue(A);
+    AG := GetGValue(A);
+    AB := GetBValue(A);
+    BR := GetRValue(B);
+    BG := GetGValue(B);
+    BB := GetBValue(B);
+
+    Result := RGB(
+      Round(AR + Lerp * (BR - AR)),
+      Round(AG + Lerp * (BG - AG)),
+      Round(AB + Lerp * (BB - AB))
+    );
+  end;
+
   procedure PlotGraphChartLine;
   var
     I, I2, J, Y1: Integer;
@@ -3415,6 +3437,103 @@ var
     PlotGraphChartMarkers;
     // MARKERS:
     SetLineColor(ACanvas, jvChartAxisColorIndex);
+  end;
+
+  procedure PlotGraphChartLineFill;
+  var
+    I, I2, J, Y1: Integer;
+    V, LineXPixelGap: Double;
+    NanFlag: Boolean;
+    VC: Integer;
+    FillPoints : array of TPoint;
+    FillPolyIndex : Integer;
+  begin
+    Assert(Assigned(ACanvas));
+    Assert(Assigned(ACanvas.Brush));
+
+    SetLength(FillPoints, 0); // Not set to 0 by compiler
+    try
+      VC := Options.XValueCount;
+      if VC < 2 then
+        VC := 2;
+      LineXPixelGap := ((Options.XEnd - 2) - Options.XStartOffset) / (VC - 1);
+
+      for I := 0 to Options.PenCount - 1 do
+      begin
+        // No line types?
+        if Options.PenStyle[I] = psClear then
+          Continue;
+
+        SetLength(FillPoints, FData.ValueCount + 2 {start and end points});
+        FillPolyIndex := 0;
+
+        J := 0;
+        V := GraphConstrainedLineY(I, J);
+        NanFlag := IsNaN(V);
+        if not NanFlag then
+        begin
+          Y := Round(V);
+          FillPoints[FillPolyIndex] := Point(Round(XOrigin)+1, Round(YOrigin)); // start at origin
+          Inc(FillPolyIndex);
+          FillPoints[FillPolyIndex] := Point(Round(XOrigin)+1, Y); // add first point
+          Inc(FillPolyIndex);
+        end;
+
+        for J := 1 to Options.XValueCount - 1 do
+        begin
+          V := GraphConstrainedLineY(I, J);
+          if IsNaN(V) then
+          begin
+            NanFlag := True; // skip.
+            FillPoints[FillPolyIndex] := Point(Round(XOrigin + J * LineXPixelGap), Round(YOrigin)); // !!! DEBUG
+            Inc(FillPolyIndex);
+          end
+          else
+          begin
+            if NanFlag then
+            begin // resume, valid value.
+              NanFlag := False;
+              Y := Round(V);
+              // pick up the pen and slide forward
+              FillPoints[FillPolyIndex] := Point(Round(XOrigin + J * LineXPixelGap), Y);
+              Inc(FillPolyIndex);
+            end
+            else
+            begin
+              Y := Round(V);
+              if I > 0 then
+              begin
+                for I2 := 0 to I - 1 do
+                begin
+                  V := GraphConstrainedLineY(I2, J);
+                  if IsNaN(V) then
+                    Continue;
+                end;
+              end;
+
+              FillPoints[FillPolyIndex] := Point(Round(XOrigin + J * LineXPixelGap), Y); // add next point
+              Inc(FillPolyIndex);
+            end;
+          end;
+        end;
+
+        // Add a final point which is the same as the last, but at the bottom
+        if FillPolyIndex > 0 then begin
+          FillPoints[FillPolyIndex] := Point(FillPoints[FillPolyIndex-1].X, Round(YOrigin));
+          Inc(FillPolyIndex);
+          SetLength(FillPoints, FillPolyIndex); // Trim to the actual usage
+
+          // First draw the fill
+          ACanvas.Pen.Style := psClear;
+          ACanvas.Brush.Color := GetUnderLineFillColor(Options.PenColor[I],
+            Options.PenColor[jvChartPaperColorIndex]);
+          ACanvas.Brush.Style := bsSolid;
+          ACanvas.Polygon(FillPoints);
+        end;
+      end;
+    finally
+      SetLength(FillPoints, 0);
+    end;
   end;
 
   procedure PlotGraphStackedBarAverage;
@@ -3622,7 +3741,11 @@ begin { Enough local functions for ya? -WP }
     ckChartStackedBar:
       PlotGraphStackedBar;
     ckChartLine: //, ckChartLineWithMarkers:
+    begin
+      if Options.FillUnderLine then
+        PlotGraphChartLineFill; // Do this before drawing lines, so lines are always visible
       PlotGraphChartLine;
+    end;
     ckChartMarkers:
       PlotGraphChartMarkers;
     ckChartStackedBarAverage:
