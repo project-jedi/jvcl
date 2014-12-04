@@ -2732,18 +2732,21 @@ begin
   ACanvas.Brush.Style := bsClear;
 
   { NEW: Box around entire chart area. }
-  X1 := Round(XOrigin);
-  X2 := Round(Options.XStartOffset + Options.XPixelGap * VC);
-  Y1 := Options.YStartOffset - 1;
-  Y2 := Round(YOrigin) + 1; // was YTempOrigin
-
-  if Y2 > Height then
+  if Options.AxisLineWidth <> 0 then
   begin
-    // I suspect that the value of YPixelGap is too large in some cases.
-    Options.PrimaryYAxis.Normalize;
-    //OutputDebugString( PChar('Y2 is bogus. PYVC='+IntToStr(PYVC)) );
+    X1 := Round(XOrigin);
+    X2 := Round(Options.XStartOffset + Options.XPixelGap * VC);
+    Y1 := Options.YStartOffset - 1;
+    Y2 := Round(YOrigin) + 1; // was YTempOrigin
+
+    if Y2 > Height then
+    begin
+      // I suspect that the value of YPixelGap is too large in some cases.
+      Options.PrimaryYAxis.Normalize;
+      //OutputDebugString( PChar('Y2 is bogus. PYVC='+IntToStr(PYVC)) );
+    end;
+    MyRectangle(ACanvas, X1, Y1, X2, Y2);
   end;
-  MyRectangle(ACanvas, X1, Y1, X2, Y2);
 
   ACanvas.Brush.Style := bsSolid;
 end;
@@ -2754,6 +2757,9 @@ procedure TJvChart.GraphYAxis;
 var
   ACanvas: TCanvas;
 begin
+  if Options.AxisLineWidth = 0 then
+    Exit;
+
   ACanvas := GetChartCanvas(false);
   ACanvas.Pen.Style := psSolid;
   ACanvas.Pen.Color := Options.AxisLineColor;
@@ -2769,8 +2775,10 @@ procedure TJvChart.GraphXAxis;
 var
   LCanvas: TCanvas;
 begin
-  LCanvas := GetChartCanvas(false);
+  if Options.AxisLineWidth = 0 then
+    Exit;
 
+  LCanvas := GetChartCanvas(false);
   LCanvas.Pen.Style := psSolid;
   LCanvas.Pen.Color := Options.AxisLineColor;
   LCanvas.Pen.Width := Options.AxisLineWidth; // was missing. Added Feb 2005. -WPostma.
@@ -5346,6 +5354,9 @@ end;
 
 procedure TJvChart.MyAxisLineTo(ACanvas: TCanvas; X, Y: Integer);
 begin
+  if Options.AxisLineWidth = 0 then
+    Exit;
+
   ACanvas.Pen.Width := Options.AxisLineWidth;
   ACanvas.LineTo(X, Y);
   ACanvas.Pen.Width := 1;
