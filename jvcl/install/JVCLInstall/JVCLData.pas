@@ -398,7 +398,7 @@ type
 implementation
 
 uses
-  JclFileUtils,
+  JclFileUtils, JclStrings,
   Utils, CmdLineUtils, PackageInformation, JediRegInfo;
 
 resourcestring
@@ -690,8 +690,13 @@ begin
 
   FInstallMode := [pkVcl];
   if Target.IsBDS and (Target.IDEVersion >= 5) then // Delphi 2007+ have global include path
-    FDefaultHppDir := GetJVCLDir + Format('\include\%s%d', [Target.TargetType, Target.Version]) // do not localize
+  begin
+    if Target.IDEVersion >= 11 then  // bcc64 appeared with XE3, we must distinguish output directories
+      FDefaultHppDir := GetJVCLDir + Format('\include\%s%d\%s', [Target.TargetType, Target.Version, LowerCase(Target.PlatformName)]) // do not localize
+    else
+      FDefaultHppDir := GetJVCLDir + Format('\include\%s%d', [Target.TargetType, Target.Version]) // do not localize
     //FDefaultHppDir := Target.ExpandDirMacros('$(BDSCOMMONDIR)\Hpp') // do not localize
+  end
   else
     FDefaultHppDir := Format(sBCBIncludeDir, [Target.RootDir]);
   FHppDir := FDefaultHppDir;
@@ -1702,6 +1707,11 @@ begin
       ['run', 'common', 'Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize, clean up because we had browsing and library path wrong
     AddPaths(Target.GlobalCppLibraryPaths, {Add:=}False, Owner.JVCLDir,
       ['Resources', Target.InsertDirMacros(UnitOutDir)]); // do not localize
+
+    // remove non suffixed hppdir as there was a time when the JVCL did not create the win32/win64 subdirs for HPP files
+    if Target.IDEVersion >= 11 then
+      AddPaths(Target.GlobalIncludePaths, {Add:=}False, Owner.JVCLDir,
+       [Target.InsertDirMacros(StrEnsureNoSuffix(DirDelimiter + LowerCase(Target.PlatformName), HppDir))]);
   end;
   Target.SavePaths;
 
