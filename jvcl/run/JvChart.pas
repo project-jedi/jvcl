@@ -3449,7 +3449,7 @@ var
 
   procedure PlotGraphChartLineFill;
   var
-    I, I2, J, Y1: Integer;
+    I, I2, J: Integer;
     V, LineXPixelGap: Double;
     NanFlag: Boolean;
     VC: Integer;
