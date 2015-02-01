@@ -296,7 +296,9 @@ begin
   lblText.Transparent := True;
   lblText.WordWrap := True;
   lblText.Anchors := [akLeft..akBottom];
+  {$IFDEF RTL170_UP} // 2005+
   lblText.TextEllipsis := teEndEllipsis;
+  {$ENDIF RTL170_UP}
 
   acClose := TAction.Create(Self);
   acClose.Caption := RsClose;
