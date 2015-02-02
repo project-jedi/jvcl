@@ -182,7 +182,7 @@ uses
   {$IFNDEF COMPILER12_UP}
   JvJCLUtils,
   {$ENDIF ~COMPILER12_UP}
-  JclSimpleXML, JclStreams, JclSysUtils,
+  JclSimpleXML, JclStreams, JclSysUtils, JclFileUtils, JclStrings,
   CmdLineUtils, JvConsts, Utils, Core, Dcc32FileAgePatch;
 
 resourcestring
@@ -1575,6 +1575,15 @@ begin
         if not Found then
           DeleteFile(Filename);
       end;
+    end;
+
+    // remove non suffixed hppdir content as there was a time when the JVCL did not create the win32/win64 subdirs for HPP files
+    if TargetConfig.Target.IDEVersion >= 11 then
+    begin
+      Files.Clear;
+      BuildFileList(StrEnsureNoSuffix(LowerCase(TargetConfig.Target.PlatformName), OutputDirs.HppDir) + '*.hpp', faAnyFile, Files, True);
+      for FileIndex := 0 to Files.Count - 1 do
+        DeleteFile(Files[FileIndex]);
     end;
   finally
     Files.Free;

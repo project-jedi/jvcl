@@ -1,4 +1,4 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{E00CE13F-DE42-43C5-AEC9-57C655403758}</ProjectGuid>
         <MainSource>JvAppFrm.dpk</MainSource>
@@ -47,7 +47,7 @@
         <DCC_UnitSearchPath>..\..\lib\d19\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_DcpOutput>..\..\lib\d19\win32</DCC_DcpOutput>
         <DCC_DcuOutput>..\..\lib\d19\win32</DCC_DcuOutput>
-        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -55,7 +55,7 @@
         <DCC_UnitSearchPath>..\..\lib\d19\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_DcpOutput>..\..\lib\d19\win32\debug</DCC_DcpOutput>
         <DCC_DcuOutput>..\..\lib\d19\win32\debug</DCC_DcuOutput>
-        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
