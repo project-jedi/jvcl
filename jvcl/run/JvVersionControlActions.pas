@@ -92,7 +92,6 @@ type
     FDisableAction: Boolean;
     FHideAction: Boolean;
     FIconType: Integer;
-    FLastVersionControlFilename: string;
     FOnChangeVersionControlComponent: TJvChangeVersionControlComponent;
     FOnCheckEnabled: TJvVersionControlActionCheckEnabledEvent;
     FOnExecute: TJvVersionControlActionExecuteEvent;
@@ -785,13 +784,9 @@ var
   APlugin: TJclVersionControlPlugin;
   ACache: TJclVersionControlCache;
 begin
+  FCurrentCache := nil;
+  FCurrentPlugin := nil;
   AFileName := CurrentVersionControlFilename;
-  if AFileName = FLastVersionControlFilename then
-    if Assigned(FCurrentCache) and not FCurrentCache.GetValid (Now) then
-    begin
-      FCurrentCache := nil;
-      FCurrentPlugin := nil;
-    end;
   for Index := 0 to VersionControlPluginList.Count - 1 do
   begin
     APlugin := TJclVersionControlPlugin(VersionControlPluginList.Plugins[Index]);
@@ -803,8 +798,6 @@ begin
       Exit;
     end;
   end;
-  FCurrentCache := nil;
-  FCurrentPlugin := nil;
 end;
 
 //=== { TJvVersionControlAddAction } ==============================================
