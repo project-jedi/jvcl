@@ -693,7 +693,7 @@ begin
     if AreEventsEnabled and Assigned(FOnActiveChanged) then
       FOnActiveChanged(Self);
   finally
-    if (DataSet <> nil) and DataSet.Active then
+    if (inherited DataSet <> nil) and inherited DataSet.Active then
       DataSetScrolled;
   end;
 end;
