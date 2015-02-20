@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+ï»¿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -10,8 +10,8 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvMagnet.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is SÃ©bastien Buysse [sbuysse att buypin dott com]
+Portions created by SÃ©bastien Buysse are Copyright (C) 2001 SÃ©bastien Buysse.
 All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
@@ -48,6 +48,7 @@ type
     FFormGlue: Boolean;
     FArea: Cardinal;
     FMainFormMagnet: Boolean;
+    FFormMagnet: Boolean;
     FLastRightDock: TDateTime;
     FLastLeftDock: TDateTime;
     FLastTopDock: TDateTime;
@@ -66,6 +67,7 @@ type
     property Area: Cardinal read FArea write FArea default 15;
     property FormGlue: Boolean read FFormGlue write FFormGlue default True;
     property MainFormMagnet: Boolean read FMainFormMagnet write FMainFormMagnet default False;
+    property FormMagnet: Boolean read FFormMagnet write FFormMagnet default False;
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -352,7 +354,7 @@ begin
     begin
       if Application.Components[I] is TForm then 
       begin
-        with Application.Components[I] as TForm do 
+        with Application.Components[I] as TForm do
         begin
           if (Left = FForm.Left + FForm.Width) then 
           begin
@@ -667,6 +669,8 @@ var
   DesktopWorkRect, PreviousRect: TRect;
   Monitor: HMONITOR;
   MonInfo: TMonitorInfo;
+  I, J: Integer;
+  Form, ParentForm: TCustomForm;
 begin
   PreviousRect := SrcRect;
 
@@ -689,13 +693,36 @@ begin
   if FFormGlue then
     GlueForms(Rect);
 
-  // Magnet to main form?
-  if FMainFormMagnet and (Application.MainForm <> nil) then
+  // Magnet to (main-)form?
+  if FFormMagnet then
   begin
-    DesktopWorkRect.Left := Application.MainForm.Left;
-    DesktopWorkRect.Top := Application.MainForm.Top;
-    DesktopWorkRect.Right := Application.MainForm.Left + Application.MainForm.Width;
-    DesktopWorkRect.Bottom := Application.MainForm.Top + Application.MainForm.Height;
+    ParentForm := nil;
+    if Owner is TCustomForm then
+      ParentForm := TCustomForm(Owner);
+
+    for I := 0 to Screen.CustomFormCount - 1 do
+    begin
+      Form := Screen.CustomForms[I];
+      if TForm(Form).Visible and (Form <> ParentForm) then // Visible is protected in TCustomForm
+      begin
+        for J := 0 to Form.ComponentCount - 1 do
+        begin
+          if Form.Components[J] is TJvFormMagnet then
+          begin
+            if TJvFormMagnet(Form.Components[J]).Active then
+            begin
+              DesktopWorkRect := Form.BoundsRect;
+              MagnetToMain(PreviousRect, Rect, DesktopWorkRect);
+            end;
+            Break;
+          end;
+        end;
+      end;
+    end;
+  end
+  else if FMainFormMagnet and (Application.MainForm <> nil) then
+  begin
+    DesktopWorkRect := Application.MainForm.BoundsRect;
     MagnetToMain(PreviousRect, Rect, DesktopWorkRect);
   end;
 end;
