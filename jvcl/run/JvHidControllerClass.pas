@@ -27,13 +27,6 @@ unit JvHidControllerClass;
 
 {$DEFINE DEFAULT_JVCL_INC}
 
-/// This feature uses a save way to convert the strings given by the Windows API.
-/// It fixes a case, where the device can not be opened, because the (converted)
-/// path is not valid.
-{$DEFINE FEATURE_SAVE_CONVERT_STRINGS}
-
-
-
 {$I jvcl.inc}
 {$I windowsonly.inc}
 
@@ -150,7 +143,7 @@ type
     property Service: string read FService;
     property UINumber: DWORD read FUINumber;
     property UINumberFormat: string read FUINumberFormat;
-    constructor Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; ADevicePath: PChar);
+    constructor Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; const ADevicePath: string);
     destructor Destroy; override;
   end;
 
@@ -188,11 +181,17 @@ type
     // internal properties part
     FAttributes: THIDDAttributes;
     FPnPInfo: TJvHidPnPInfo;
+    {$IFDEF UNICODE}
+    FVendorName: string;
+    FProductName: string;
+    FSerialNumber: string;
+    {$ELSE}
     FVendorName: WideString;
     FProductName: WideString;
+    FSerialNumber: WideString;
+    {$ENDIF UNICODE}
     FPhysicalDescriptor: TJvPhysicalDescriptor;
     FPreparsedData: PHIDPPreparsedData;
-    FSerialNumber: WideString;
     FLanguageStrings: TStringList;
     FNumInputBuffers: Integer;
     FNumOverlappedBuffers: Integer;
@@ -206,9 +205,9 @@ type
     FUsagePageParam: TUsage;
     FLinkCollectionParam: WORD;
     FUsageParam: TUsage;
-    FData: TJvHidDataEvent;
-    FDataError: TJvHidDataErrorEvent;
-    FUnplug: TJvHidUnplugEvent;
+    FOnData: TJvHidDataEvent;
+    FOnDataError: TJvHidDataErrorEvent;
+    FOnUnplug: TJvHidUnplugEvent;
     FHasReadWriteAccess: Boolean;
     FDataThread: TJvHidDeviceReadThread;
     FTag: Integer;
@@ -216,21 +215,23 @@ type
     function IsAccessible: Boolean;
     procedure GetMax;
     // internal property implementors
-    function GetDeviceStringAnsi(Idx: Byte): string;
-    function GetDeviceStringUnicode(Idx: Byte): WideString;
+    function GetDeviceString(Idx: Byte): string;
+    {$IFNDEF UNICODE}
+    function GetDeviceStringWideString(Idx: Byte): WideString;
+    {$ENDIF ~UNICODE}
     function GetLinkCollectionNode(Idx: WORD): THIDPLinkCollectionNode;
     function GetConfiguration: THIDDConfiguration;
     function GetPreparsedData: PHIDPPreparsedData;
     function GetCaps: THIDPCaps;
-    function GetVendorName: WideString;
-    function GetProductName: WideString;
-    function GetSerialNumber: WideString;
+    function GetVendorName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF};
+    function GetProductName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF};
+    function GetSerialNumber: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF};
     function GetPhysicalDescriptor: TJvPhysicalDescriptor;
     function GetLanguageStrings: TStrings;
     function GetOverlappedReadResult: DWORD;
     function GetOverlappedWriteResult: DWORD;
     procedure SetConfiguration(const Config: THIDDConfiguration);
-    procedure SetDataEvent(const DataEvent: TJvHidDataEvent);
+    procedure SetOnData(const DataEvent: TJvHidDataEvent);
     procedure SetNumInputBuffers(const Num: Integer);
     procedure SetNumOverlappedBuffers(const Num: Integer);
     procedure SetReportTypeParam(const ReportType: THIDPReportType);
@@ -244,8 +245,7 @@ type
     // even if this call raises an exception.
     // The destructor of this class will take care of the cleanup even when an exception
     // is raised (as specified by the Delphi language)
-    constructor CtlCreate(const APnPInfo: TJvHidPnPInfo;
-      const Controller: TJvHidDeviceController);
+    constructor CtlCreate(const APnPInfo: TJvHidPnPInfo; const Controller: TJvHidDeviceController);
   protected
     // internal event implementor
     procedure DoUnplug;
@@ -335,9 +335,15 @@ type
     property PhysicalDescriptor: TJvPhysicalDescriptor read GetPhysicalDescriptor;
     property PnPInfo: TJvHidPnPInfo read FPnPInfo;
     property PreparsedData: PHIDPPreparsedData read GetPreparsedData;
+    {$IFDEF UNICODE}
+    property ProductName: string read GetProductName;
+    property SerialNumber: string read GetSerialNumber;
+    property VendorName: string read GetVendorName;
+    {$ELSE}
     property ProductName: WideString read GetProductName;
     property SerialNumber: WideString read GetSerialNumber;
     property VendorName: WideString read GetVendorName;
+    {$ENDIF UNICODE}
     // read write properties
     property Configuration: THIDDConfiguration read GetConfiguration write SetConfiguration;
     property LinkCollectionParam: WORD read FLinkCollectionParam write FLinkCollectionParam;
@@ -350,13 +356,17 @@ type
     property UsagePageParam: TUsage read FUsagePageParam write SetUsagePageParam;
     property UsageParam: TUsage read FUsageParam write FUsageParam;
     // indexed properties
-    property DeviceStrings[Idx: Byte]: string read GetDeviceStringAnsi;
-    property DeviceStringsUnicode[Idx: Byte]: WideString read GetDeviceStringUnicode;
+    property DeviceStrings[Idx: Byte]: string read GetDeviceString;
+    {$IFDEF UNICODE}
+    property DeviceStringsUnicode[Idx: Byte]: string read GetDeviceString;
+    {$ELSE}
+    property DeviceStringsUnicode[Idx: Byte]: WideString read GetDeviceStringWideString;
+    {$ENDIF UNICODE}
     property LinkCollectionNodes[Idx: WORD]: THIDPLinkCollectionNode read GetLinkCollectionNode;
     // event properties
-    property OnData: TJvHidDataEvent read FData write SetDataEvent;
-    property OnDataError: TJvHidDataErrorEvent read FDataError write FDataError;
-    property OnUnplug: TJvHidUnplugEvent read FUnplug write FUnplug;
+    property OnData: TJvHidDataEvent read FOnData write SetOnData;
+    property OnDataError: TJvHidDataErrorEvent read FOnDataError write FOnDataError;
+    property OnUnplug: TJvHidUnplugEvent read FOnUnplug write FOnUnplug;
   end;
 
   // controller class to manage all HID devices
@@ -368,13 +378,13 @@ type
   private
     // internal properties part
     FHidGuid: TGUID;
-    FArrivalEvent: TJvHidPlugEvent;
-    FDeviceChangeEvent: TNotifyEvent;
-    FEnumerateEvent: TJvHidEnumerateEvent;
-    FDevDataEvent: TJvHidDataEvent;
-    FDevDataErrorEvent: TJvHidDataErrorEvent;
-    FDevUnplugEvent: TJvHidUnplugEvent;
-    FRemovalEvent: TJvHidUnplugEvent;
+    FOnArrival: TJvHidPlugEvent;
+    FOnDeviceChange: TNotifyEvent;
+    FOnEnumerate: TJvHidEnumerateEvent;
+    FOnDeviceData: TJvHidDataEvent;
+    FOnDeviceDataError: TJvHidDataErrorEvent;
+    FOnDeviceUnplug: TJvHidUnplugEvent;
+    FOnRemoval: TJvHidUnplugEvent;
     FOnDeviceCreateError: TJvHidDeviceCreateError;
     FDevPollingDelayTime: Integer;
     FDevThreadSleepTime: Integer;
@@ -395,13 +405,12 @@ type
     function CheckThisOut(var HidDev: TJvHidDevice; Idx: Integer; Check: Boolean): Boolean;
     procedure EventPipe(var Msg: TMessage);
     // internal event implementors
-    procedure SetDeviceChangeEvent(const Notifier: TNotifyEvent);
-    procedure SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
+    procedure SetOnDeviceChange(const Notifier: TNotifyEvent);
     procedure SetDevPollingDelayTime(const DevTime: Integer);
     procedure SetDevThreadSleepTime(const DevTime: Integer);
-    procedure SetDevData(const DataEvent: TJvHidDataEvent);
-    procedure SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
-    procedure SetDevUnplug(const Unplugger: TJvHidUnplugEvent);
+    procedure SetOnDeviceData(const DataEvent: TJvHidDataEvent);
+    procedure SetOnDeviceDataError(const DataErrorEvent: TJvHidDataErrorEvent);
+    procedure SetOnDeviceUnplug(const Unplugger: TJvHidUnplugEvent);
   protected
     procedure DoArrival(HidDev: TJvHidDevice);
     procedure DoRemoval(HidDev: TJvHidDevice);
@@ -409,26 +418,24 @@ type
     function DoEnumerate(HidDev: TJvHidDevice; Idx: Integer): Boolean;
   public
     // normal constructor/destructor
-    constructor Create(AOwner: TComponent); override;
-
+    constructor Create(AOwner: TComponent); overload; override;
 
     /// <summary> Constructor for the device manager.
     /// </summary>
     /// <see cref="TJvHidDevice"/>
     /// <param name="AOwner"> The owner of this component.
     /// </param>
-    /// <param name="inOnHidCtlDeviceCreateError"> Event method for device errors.
+    /// <param name="AOnHidCtlDeviceCreateError"> Event method for device errors.
     ///   You need this event handler for catching and handling of device errors.
     ///   The constructor will start the search for devices, you could get
     ///   device errors in this search, which will abort the search if no
     ///   event method is given.
     /// </param>
-    /// <param name="inOnDeviceChange"> Event method for device changes.
+    /// <param name="AOnDeviceChange"> Event method for device changes.
     ///   (e.g. a new device is added)
     /// </param>
-    constructor CreateInit( AOwner: TComponent;
-      inOnHidCtlDeviceCreateError : TJvHidDeviceCreateError;
-      inOnDeviceChange : TNotifyEvent = nil );
+    constructor Create(AOwner: TComponent; AOnHidCtlDeviceCreateError: TJvHidDeviceCreateError;
+      AOnDeviceChange: TNotifyEvent = nil); reintroduce; overload;
     destructor Destroy; override;
     // methods to hand out HID device objects
     procedure CheckIn(var HidDev: TJvHidDevice);
@@ -436,14 +443,14 @@ type
     function CheckOutByClass(var HidDev: TJvHidDevice; const ClassName: string): Boolean;
     function CheckOutByID(var HidDev: TJvHidDevice; const Vid, Pid: Integer): Boolean;
     function CheckOutByIndex(var HidDev: TJvHidDevice; const Idx: Integer): Boolean;
-    function CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: WideString): Boolean;
-    function CheckOutByVendorName(var HidDev: TJvHidDevice; const VendorName: WideString): Boolean;
+    function CheckOutByProductName(var HidDev: TJvHidDevice; const ProductName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Boolean; overload;
+    function CheckOutByVendorName(var HidDev: TJvHidDevice; const VendorName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Boolean; overload;
     function CheckOutByCallback(var HidDev: TJvHidDevice; Check: TJvHidCheckCallback): Boolean;
     // methods to count HID device objects
     function CountByClass(const ClassName: string): Integer;
     function CountByID(const Vid, Pid: Integer): Integer;
-    function CountByProductName(const ProductName: WideString): Integer;
-    function CountByVendorName(const VendorName: WideString): Integer;
+    function CountByProductName(const ProductName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Integer;
+    function CountByVendorName(const VendorName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Integer;
     function CountByCallback(Check: TJvHidCheckCallback): Integer;
     // iterate over the HID devices
     function Enumerate: Integer;
@@ -457,18 +464,18 @@ type
     property DevPollingDelayTime: Integer read FDevPollingDelayTime write SetDevPollingDelayTime default 0;
     property DevThreadSleepTime: Integer read FDevThreadSleepTime write SetDevThreadSleepTime default 100;
     property Version: string read FVersion write FDummy stored False;
-    property OnArrival: TJvHidPlugEvent read FArrivalEvent write FArrivalEvent;
+    property OnArrival: TJvHidPlugEvent read FOnArrival write FOnArrival;
     // the iterator event
-    property OnEnumerate: TJvHidEnumerateEvent read FEnumerateEvent write SetEnumerate;
+    property OnEnumerate: TJvHidEnumerateEvent read FOnEnumerate write FOnEnumerate;
     // the central event for HID device changes
-    property OnDeviceChange: TNotifyEvent read FDeviceChangeEvent write SetDeviceChangeEvent;
+    property OnDeviceChange: TNotifyEvent read FOnDeviceChange write SetOnDeviceChange;
     // this event is triggered when an error occured while creating a given TJvHidDevice
     property OnDeviceCreateError: TJvHidDeviceCreateError read FOnDeviceCreateError write FOnDeviceCreateError;
     // these events are copied to TJvHidDevices on creation
-    property OnDeviceData: TJvHidDataEvent read FDevDataEvent write SetDevData;
-    property OnDeviceDataError: TJvHidDataErrorEvent read FDevDataErrorEvent write SetDevDataError;
-    property OnDeviceUnplug: TJvHidUnplugEvent read FDevUnplugEvent write SetDevUnplug;
-    property OnRemoval: TJvHidUnplugEvent read FRemovalEvent write FRemovalEvent;
+    property OnDeviceData: TJvHidDataEvent read FOnDeviceData write SetOnDeviceData;
+    property OnDeviceDataError: TJvHidDataErrorEvent read FOnDeviceDataError write SetOnDeviceDataError;
+    property OnDeviceUnplug: TJvHidUnplugEvent read FOnDeviceUnplug write SetOnDeviceUnplug;
+    property OnRemoval: TJvHidUnplugEvent read FOnRemoval write FOnRemoval;
     // to be callable at design time
     procedure DeviceChange;
   end;
@@ -530,8 +537,8 @@ end;
 
 procedure TJvHidDeviceReadThread.DoDataError;
 begin
-  if Assigned(Device.FDataError) then
-    Device.FDataError(Device, FErr);
+  if Assigned(Device.FOnDataError) then
+    Device.FOnDataError(Device, FErr);
 end;
 
 procedure DummyReadCompletion(ErrorCode: DWORD; Count: DWORD; Ovl: POverlapped); stdcall;
@@ -587,7 +594,7 @@ end;
 
 //=== { TJvHidPnPInfo } ======================================================
 
-constructor TJvHidPnPInfo.Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; ADevicePath: PChar);
+constructor TJvHidPnPInfo.Create(APnPHandle: HDEVINFO; ADevData: TSPDevInfoData; const ADevicePath: string);
 begin
   inherited Create;
   FDeviceID := ADevData.DevInst;
@@ -660,14 +667,34 @@ function TJvHidPnPInfo.GetRegistryPropertyString(PnPHandle: HDEVINFO;
 var
   BytesReturned: DWORD;
   RegDataType: DWORD;
-  Buffer: array [0..1023] of Char;
+  Buffer: PChar;
+  StackBuffer: array[0..1023] of Char;
 begin
   BytesReturned := 0;
   RegDataType := 0;
-  Buffer[0] := #0;
-  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
-    RegDataType, PByte(@Buffer[0]), SizeOf(Buffer), BytesReturned);
-  Result := Buffer;
+  Result := '';
+  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop, RegDataType, nil, 0, BytesReturned);
+  if BytesReturned > 0 then
+  begin
+    if BytesReturned + SizeOf(Char) <= SizeOf(StackBuffer) then
+    begin
+      Buffer := @StackBuffer;
+      // enforce terminator
+      Buffer[BytesReturned] := #0;
+    end
+    else
+      Buffer := AllocMem((BytesReturned + 1) * SizeOf(Char));
+
+    try
+      Buffer[0] := #0;
+      SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop, RegDataType, PByte(@Buffer[0]),
+        BytesReturned, BytesReturned);
+      Result := Buffer;
+    finally
+      if Buffer <> @StackBuffer then
+        FreeMem(Buffer);
+    end;
+  end;
 end;
 
 function TJvHidPnPInfo.GetRegistryPropertyStringList(PnPHandle: HDEVINFO;
@@ -675,24 +702,43 @@ function TJvHidPnPInfo.GetRegistryPropertyStringList(PnPHandle: HDEVINFO;
 var
   BytesReturned: DWORD;
   RegDataType: DWORD;
-{$IFDEF FEATURE_SAVE_CONVERT_STRINGS}
-  Buffer: array [0..16383] of AnsiChar;
-{$ELSE FEATURE_SAVE_CONVERT_STRINGS}
-  Buffer: array [0..16383] of Char;
-{$ENDIF FEATURE_SAVE_CONVERT_STRINGS}
+  Buffer: PChar;
   P: PChar;
+  StackBuffer: array[0..16383] of Char;
 begin
   BytesReturned := 0;
   RegDataType := 0;
-  Buffer[0] := #0;
-  SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop,
-    RegDataType, PBYTE(@Buffer[0]), SizeOf(Buffer), BytesReturned);
   Result := TStringList.Create;
-  P := @Buffer[0];
-  while P[0] <> #0 do
-  begin
-    Result.Add(P);
-    P := P + StrLen(P) + 1;
+  try
+    SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop, RegDataType, nil, 0, BytesReturned);
+    if BytesReturned > 0 then
+    begin
+      if BytesReturned + 2 * SizeOf(Char) <= SizeOf(StackBuffer) then
+      begin
+        Buffer := @StackBuffer;
+        // enforce terminators
+        Buffer[BytesReturned] := #0;
+        Buffer[BytesReturned + 1] := #0;
+      end
+      else
+        Buffer := AllocMem((BytesReturned + 2) * SizeOf(Char));
+      try
+        SetupDiGetDeviceRegistryProperty(PnPHandle, DevData, Prop, RegDataType, PByte(@Buffer[0]),
+          BytesReturned, BytesReturned);
+        P := @Buffer[0];
+        while P[0] <> #0 do
+        begin
+          Result.Add(P);
+          P := P + StrLen(P) + 1;
+        end;
+      finally
+        if Buffer <> @StackBuffer then
+          FreeMem(Buffer);
+      end;
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -928,20 +974,27 @@ begin
   CloseFileEx(omhWrite);
   FIsPluggedIn := False;
   // event even for checked in devices
-  if Assigned(FUnplug) then
-    FUnplug(Self);
+  if Assigned(FOnUnplug) then
+    FOnUnplug(Self);
   // guarantees that event is only called once
   OnUnplug := nil;
 end;
 
 // implementing indexed properties read
 
-function TJvHidDevice.GetDeviceStringAnsi(Idx: Byte): string;
+function TJvHidDevice.GetDeviceString(Idx: Byte): string;
+var
+  Buffer: array [0..253] of WideChar;
 begin
-  Result := WideCharToString(PWideChar(GetDeviceStringUnicode(Idx)));
+  Result := '';
+  if Idx <> 0 then
+    if OpenFile then
+      if HidD_GetIndexedString(HidFileHandle, Idx, Buffer, SizeOf(Buffer)) then
+        Result := WideCharToString(Buffer);
 end;
 
-function TJvHidDevice.GetDeviceStringUnicode(Idx: Byte): WideString;
+{$IFNDEF UNICODE}
+function TJvHidDevice.GetDeviceStringWideString(Idx: Byte): WideString;
 var
   Buffer: array [0..253] of WideChar;
 begin
@@ -951,6 +1004,7 @@ begin
       if HidD_GetIndexedString(HidFileHandle, Idx, Buffer, SizeOf(Buffer)) then
         Result := Buffer;
 end;
+{$ENDIF ~UNICODE}
 
 function TJvHidDevice.GetLinkCollectionNode(Idx: WORD): THIDPLinkCollectionNode;
 var
@@ -1051,7 +1105,7 @@ begin
   HidP_GetCaps(PreparsedData, Result);
 end;
 
-function TJvHidDevice.GetVendorName: WideString;
+function TJvHidDevice.GetVendorName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF};
 var
   Buffer: array [0..253] of WideChar;
 begin
@@ -1066,7 +1120,7 @@ begin
   Result := FVendorName;
 end;
 
-function TJvHidDevice.GetProductName: WideString;
+function TJvHidDevice.GetProductName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF};
 var
   Buffer: array [0..253] of WideChar;
 begin
@@ -1081,7 +1135,7 @@ begin
   Result := FProductName;
 end;
 
-function TJvHidDevice.GetSerialNumber: WideString;
+function TJvHidDevice.GetSerialNumber: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF};
 var
   I: Integer;
   Len: Integer;
@@ -1203,20 +1257,20 @@ begin
     HidD_SetConfiguration(HidFileHandle, Config, SizeOf(THIDDConfiguration));
 end;
 
-procedure TJvHidDevice.SetDataEvent(const DataEvent: TJvHidDataEvent);
+procedure TJvHidDevice.SetOnData(const DataEvent: TJvHidDataEvent);
 begin
   // this assignment is a bit tricky because a thread may be running
   // kill the thread with the old event still in effect
   if not Assigned(DataEvent) then
     StopThread;
   // assign the new event and start the thread if needed
-  FData := DataEvent;
+  FOnData := DataEvent;
   StartThread;
 end;
 
 procedure TJvHidDevice.StartThread;
 begin
-  if Assigned(FData) and IsPluggedIn and IsCheckedOut and
+  if Assigned(FOnData) and IsPluggedIn and IsCheckedOut and
     HasReadWriteAccess and not Assigned(FDataThread) then
   begin
     FDataThread := TJvHidDeviceReadThread.CtlCreate(Self);
@@ -1603,62 +1657,26 @@ end;
 //=== { TJvHidDeviceController } =============================================
 
 constructor TJvHidDeviceController.Create(AOwner: TComponent);
-const
-  cHidGuid: TGUID = '{4d1e55b2-f16f-11cf-88cb-001111000030}';
 begin
-  inherited Create(AOwner);
-  FDeviceChangeEvent := nil;
-  FEnumerateEvent := nil;
-  FDevUnplugEvent := nil;
-  FNumCheckedInDevices := 0;
-  FNumCheckedOutDevices := 0;
-  FNumUnpluggedDevices := 0;
-  FDevPollingDelayTime := 0;
-  FDevThreadSleepTime := 100;
-  FVersion := cHidControllerClassVersion;
-  FInDeviceChange := False;
-
-  FList := TList.Create;
-
-  if LoadSetupApi then
-    LoadHid;
-  if IsHidLoaded then
-  begin
-    HidD_GetHidGuid(FHidGuid);
-    // only hook messages if there is a HID DLL
-    FHWnd := AllocateHWnd(EventPipe);
-    // this one executes after Create completed which ensures
-    // that all global elements like Application.MainForm are initialized
-    PostMessage(FHWnd, WM_DEVICECHANGE, DBT_DEVNODES_CHANGED, -1);
-  end
-  else
-    FHidGuid := cHidGuid;
+  Create(AOwner, TJvHidDeviceCreateError(nil)); // work around compiler issue with method overloading and method pointers
 end;
 
-constructor TJvHidDeviceController.CreateInit(AOwner: TComponent;
-    inOnHidCtlDeviceCreateError : TJvHidDeviceCreateError;
-    inOnDeviceChange : TNotifyEvent );
+constructor TJvHidDeviceController.Create(AOwner: TComponent;
+  AOnHidCtlDeviceCreateError: TJvHidDeviceCreateError; AOnDeviceChange: TNotifyEvent);
 const
   cHidGuid: TGUID = '{4d1e55b2-f16f-11cf-88cb-001111000030}';
 begin
   inherited Create(AOwner);
-  FDeviceChangeEvent := nil;
-  FEnumerateEvent := nil;
-  FDevUnplugEvent := nil;
-  FNumCheckedInDevices := 0;
-  FNumCheckedOutDevices := 0;
-  FNumUnpluggedDevices := 0;
   FDevThreadSleepTime := 100;
   FVersion := cHidControllerClassVersion;
-  FInDeviceChange := False;
 
   FList := TList.Create;
 
   if LoadSetupApi then
     LoadHid;
 
-  OnDeviceChange := inOnDeviceChange;
-  OnDeviceCreateError := inOnHidCtlDeviceCreateError;
+  SetOnDeviceChange(AOnDeviceChange);
+  FOnDeviceCreateError := AOnHidCtlDeviceCreateError;
 
   if IsHidLoaded then
   begin
@@ -1672,8 +1690,6 @@ begin
   else
     FHidGuid := cHidGuid;
 end;
-
-
 
 // unplug or kill all controlled TJvHidDevices on controller destruction
 
@@ -1683,9 +1699,9 @@ var
   HidDev: TJvHidDevice;
 begin
   // to prevent strange problems
-  FDeviceChangeEvent := nil;
-  FDevUnplugEvent := nil;
-  OnEnumerate := nil;
+  SetOnDeviceChange(nil);
+  SetOnDeviceUnplug(nil);
+  FOnEnumerate := nil;
   // unhook event pipe
   if IsHidLoaded then
     DeallocateHWnd(FHWnd);
@@ -1714,20 +1730,20 @@ end;
 
 procedure TJvHidDeviceController.DoArrival(HidDev: TJvHidDevice);
 begin
-  if Assigned(FArrivalEvent) then
+  if Assigned(FOnArrival) then
   begin
     HidDev.FIsEnumerated := True;
-    FArrivalEvent(HidDev);
+    FOnArrival(HidDev);
     HidDev.FIsEnumerated := False;
   end;
 end;
 
 procedure TJvHidDeviceController.DoRemoval(HidDev: TJvHidDevice);
 begin
-  if Assigned(FRemovalEvent) then
+  if Assigned(FOnRemoval) then
   begin
     HidDev.FIsEnumerated := True;
-    FRemovalEvent(HidDev);
+    FOnRemoval(HidDev);
     HidDev.FIsEnumerated := False;
   end;
 end;
@@ -1736,8 +1752,8 @@ end;
 
 procedure TJvHidDeviceController.DoDeviceChange;
 begin
-  if Assigned(FDeviceChangeEvent) then
-    FDeviceChangeEvent(Self);
+  if Assigned(FOnDeviceChange) then
+    FOnDeviceChange(Self);
 end;
 
 // gets all the Windows events/messages directly
@@ -1783,12 +1799,7 @@ var
     PnPInfo: TJvHidPnPInfo;
     Handled: Boolean;
     RetryCreate: Boolean;
-{$IFDEF FEATURE_SAVE_CONVERT_STRINGS}
-    PathString : AnsiString;
-    PathStringPChar : PChar;
-    PathStringChar : array[0..1024] of char;
-    myTmpIndex : DWORD;
-{$ENDIF FEATURE_SAVE_CONVERT_STRINGS}
+    DevicePath: string;
   begin
     if not IsHidLoaded then
       Exit;
@@ -1816,23 +1827,10 @@ var
             if SetupDiGetDeviceInterfaceDetail(PnPHandle, @DeviceInterfaceData,
               FunctionClassDeviceData, BytesReturned, BytesReturned, @DevData) then
             begin
-{$IFDEF FEATURE_SAVE_CONVERT_STRINGS}
-              // convert the path
-              SetLength( PathString, BytesReturned + 8 );
-
-              for myTmpIndex := 0 to BytesReturned - 1 do
-              begin
-                 PathStringChar[ myTmpIndex ] := Char( FunctionClassDeviceData.DevicePath[ myTmpIndex ] );
-              end;
-              PathStringChar[ BytesReturned ] := #0;
-
-              PathStringPChar := PathStringChar;
+              // Win64: Don't include the padding bytes into the string length calculation
+              SetString(DevicePath, PChar(@FunctionClassDeviceData.DevicePath), (BytesReturned - (SizeOf(FunctionClassDeviceData.cbSize) + SizeOf(FunctionClassDeviceData.DevicePath))) div SizeOf(Char));
               // fill in PnPInfo of device
-              PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PathStringPChar );
-{$ELSE FEATURE_SAVE_CONVERT_STRINGS}
-              // fill in PnPInfo of device
-              PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, PChar(@FunctionClassDeviceData.DevicePath));
-{$ENDIF FEATURE_SAVE_CONVERT_STRINGS}
+              PnPInfo := TJvHidPnPInfo.Create(PnPHandle, DevData, DevicePath);
               // create HID device object and add it to the device list
               RetryCreate := False;
               HidDev := nil;
@@ -1960,11 +1958,12 @@ end;
 
 // assign OnDeviceChange and immediately fire it
 
-procedure TJvHidDeviceController.SetDeviceChangeEvent(const Notifier: TNotifyEvent);
+procedure TJvHidDeviceController.SetOnDeviceChange(const Notifier: TNotifyEvent);
 begin
-  if @FDeviceChangeEvent <> @Notifier then
+  if (TMethod(Notifier).Code <> TMethod(FOnDeviceChange).Code) or
+     (TMethod(Notifier).Data <> TMethod(FOnDeviceChange).Data) then
   begin
-    FDeviceChangeEvent := Notifier;
+    FOnDeviceChange := Notifier;
     if not (csLoading in ComponentState) then
       DeviceChange;
   end;
@@ -1975,10 +1974,10 @@ end;
 function TJvHidDeviceController.DoEnumerate(HidDev: TJvHidDevice; Idx: Integer): Boolean;
 begin
   Result := False;
-  if Assigned(FEnumerateEvent) then
+  if Assigned(FOnEnumerate) then
   begin
     HidDev.FIsEnumerated := True;
-    Result := FEnumerateEvent(HidDev, Idx);
+    Result := FOnEnumerate(HidDev, Idx);
     HidDev.FIsEnumerated := False;
     if not HidDev.IsCheckedOut then
     begin
@@ -1987,13 +1986,6 @@ begin
       HidDev.CloseFileEx(omhWrite);
     end;
   end;
-end;
-
-// assign OnEnumerate event
-
-procedure TJvHidDeviceController.SetEnumerate(const Enumerator: TJvHidEnumerateEvent);
-begin
-  FEnumerateEvent := Enumerator;
 end;
 
 // assign DevPollingDelayTime
@@ -2036,63 +2028,69 @@ begin
   end;
 end;
 
-// assign OnDevData event
+// assign OnOnDeviceData event
 
-procedure TJvHidDeviceController.SetDevData(const DataEvent: TJvHidDataEvent);
+procedure TJvHidDeviceController.SetOnDeviceData(const DataEvent: TJvHidDataEvent);
 var
   I: Integer;
   Dev: TJvHidDevice;
 begin
-  if @DataEvent <> @FDevDataEvent then
+  if (TMethod(DataEvent).Code <> TMethod(FOnDeviceData).Code) or
+     (TMethod(DataEvent).Data <> TMethod(FOnDeviceData).Data) then
   begin
     // change all OnData events with the same old value
     for I := 0 to FList.Count - 1 do
     begin
       Dev := FList.Items[I];
-      if @Dev.OnData = @FDevDataEvent then
+      if (TMethod(Dev.OnData).Code = TMethod(FOnDeviceData).Code) and
+         (TMethod(Dev.OnData).Data = TMethod(FOnDeviceData).Data) then
         Dev.OnData := DataEvent;
     end;
-    FDevDataEvent := DataEvent;
+    FOnDeviceData := DataEvent;
   end;
 end;
 
-// assign OnDevDataError event
+// assign OnDeviceDataError event
 
-procedure TJvHidDeviceController.SetDevDataError(const DataErrorEvent: TJvHidDataErrorEvent);
+procedure TJvHidDeviceController.SetOnDeviceDataError(const DataErrorEvent: TJvHidDataErrorEvent);
 var
   I: Integer;
   Dev: TJvHidDevice;
 begin
-  if @DataErrorEvent <> @FDevDataErrorEvent then
+  if (TMethod(DataErrorEvent).Code <> TMethod(FOnDeviceDataError).Code) or
+     (TMethod(DataErrorEvent).Data <> TMethod(FOnDeviceDataError).Data) then
   begin
     // change all OnDataError events with the same old value
     for I := 0 to FList.Count - 1 do
     begin
       Dev := FList.Items[I];
-      if @Dev.OnDataError = @FDevDataErrorEvent then
+      if (TMethod(Dev.OnDataError).Code = TMethod(FOnDeviceDataError).Code) and
+         (TMethod(Dev.OnDataError).Data = TMethod(FOnDeviceDataError).Data) then
         Dev.OnDataError := DataErrorEvent;
     end;
-    FDevDataErrorEvent := DataErrorEvent;
+    FOnDeviceDataError := DataErrorEvent;
   end;
 end;
 
-// assign OnDevUnplug event
+// assign OnDeviceUnplug event
 
-procedure TJvHidDeviceController.SetDevUnplug(const Unplugger: TJvHidUnplugEvent);
+procedure TJvHidDeviceController.SetOnDeviceUnplug(const Unplugger: TJvHidUnplugEvent);
 var
   I: Integer;
   Dev: TJvHidDevice;
 begin
-  if @Unplugger <> @FDevUnplugEvent then
+  if (TMethod(Unplugger).Code <> TMethod(FOnDeviceUnplug).Code) or
+     (TMethod(Unplugger).Data <> TMethod(FOnDeviceUnplug).Data) then
   begin
     // change all OnUnplug events with the same old value
     for I := 0 to FList.Count - 1 do
     begin
       Dev := FList.Items[I];
-      if @Dev.OnUnplug = @FDevUnplugEvent then
+      if (TMethod(Dev.OnUnplug).Code = TMethod(FOnDeviceUnplug).Code) and
+         (TMethod(Dev.OnUnplug).Data = TMethod(FOnDeviceUnplug).Data) then
         Dev.OnUnplug := Unplugger;
     end;
-    FDevUnplugEvent := Unplugger;
+    FOnDeviceUnplug := Unplugger;
   end;
 end;
 
@@ -2131,7 +2129,7 @@ end;
 // method CheckOutByProductName hands out the first HidDevice with a matching ProductName
 
 function TJvHidDeviceController.CheckOutByProductName(var HidDev: TJvHidDevice;
-  const ProductName: WideString): Boolean;
+  const ProductName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Boolean;
 var
   I: Integer;
 begin
@@ -2149,7 +2147,7 @@ end;
 // method CheckOutByVendorName hands out the first HidDevice with a matching VendorName
 
 function TJvHidDeviceController.CheckOutByVendorName(var HidDev: TJvHidDevice;
-  const VendorName: WideString): Boolean;
+  const VendorName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Boolean;
 var
   I: Integer;
 begin
@@ -2308,7 +2306,7 @@ begin
       Inc(Result);
 end;
 
-function TJvHidDeviceController.CountByProductName(const ProductName: WideString): Integer;
+function TJvHidDeviceController.CountByProductName(const ProductName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Integer;
 var
   I: Integer;
 begin
@@ -2319,7 +2317,7 @@ begin
       Inc(Result);
 end;
 
-function TJvHidDeviceController.CountByVendorName(const VendorName: WideString): Integer;
+function TJvHidDeviceController.CountByVendorName(const VendorName: {$IFDEF UNICODE}string{$ELSE}WideString{$ENDIF}): Integer;
 var
   I: Integer;
 begin
