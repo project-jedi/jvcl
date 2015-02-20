@@ -2132,7 +2132,7 @@ var
 begin
   ResolvePath(Path, TargetStore, TargetPath);
   if not TargetStore.ReadOnly then
-    TargetStore.DeleteSubTreeInt(Path);
+    TargetStore.DeleteSubTreeInt(TargetPath);
 end;
 
 function TJvCustomAppStorage.ReadInteger(const Path: string; Default: Integer): Integer;
