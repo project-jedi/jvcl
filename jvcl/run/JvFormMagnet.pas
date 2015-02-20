@@ -1,4 +1,4 @@
-{-----------------------------------------------------------------------------
+﻿{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -669,7 +669,8 @@ var
   DesktopWorkRect, PreviousRect: TRect;
   Monitor: HMONITOR;
   MonInfo: TMonitorInfo;
-  i, j : integer;
+  I, J: Integer;
+  Form, ParentForm: TCustomForm;
 begin
   PreviousRect := SrcRect;
 
@@ -694,38 +695,36 @@ begin
 
   // Magnet to (main-)form?
   if FFormMagnet then
+  begin
+    ParentForm := nil;
+    if Owner is TCustomForm then
+      ParentForm := TCustomForm(Owner);
+
+    for I := 0 to Screen.CustomFormCount - 1 do
     begin
-    for i := 0 to Application.ComponentCount-1 do
+      Form := Screen.CustomForms[I];
+      if TForm(Form).Visible and (Form <> ParentForm) then // Visible is protected in TCustomForm
       begin
-        if (Application.Components[i] is TForm) then
+        for J := 0 to Form.ComponentCount - 1 do
+        begin
+          if Form.Components[J] is TJvFormMagnet then
           begin
-          for j := 0 to Application.Components[i].ComponentCount-1 do
+            if TJvFormMagnet(Form.Components[J]).Active then
             begin
-            if (Application.Components[i].Components[j] is TJvFormMagnet) then
-              begin
-              if ( (Application.Components[i].Components[j] as TJvFormMagnet ).Active ) then
-                begin
-                DesktopWorkRect.Left   := (Application.Components[i] as TForm).Left;
-                DesktopWorkRect.Top    := (Application.Components[i] as TForm).Top;
-                DesktopWorkRect.Right  := (Application.Components[i] as TForm).Left + (Application.Components[i] as TForm).Width;
-                DesktopWorkRect.Bottom := (Application.Components[i] as TForm).Top + (Application.Components[i] as TForm).Height;
-                MagnetToMain(PreviousRect, Rect, DesktopWorkRect);
-                end;
-              Break;
-              end;
+              DesktopWorkRect := Form.BoundsRect;
+              MagnetToMain(PreviousRect, Rect, DesktopWorkRect);
             end;
+            Break;
           end;
+        end;
       end;
-    end
+    end;
+  end
   else if FMainFormMagnet and (Application.MainForm <> nil) then
   begin
-    DesktopWorkRect.Left := Application.MainForm.Left;
-    DesktopWorkRect.Top := Application.MainForm.Top;
-    DesktopWorkRect.Right := Application.MainForm.Left + Application.MainForm.Width;
-    DesktopWorkRect.Bottom := Application.MainForm.Top + Application.MainForm.Height;
+    DesktopWorkRect := Application.MainForm.BoundsRect;
     MagnetToMain(PreviousRect, Rect, DesktopWorkRect);
   end;
-
 end;
 
 {$IFDEF UNITVERSIONING}
