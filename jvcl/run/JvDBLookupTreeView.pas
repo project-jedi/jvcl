@@ -195,6 +195,7 @@ type
     FHotTrack: Boolean;
     FRowSelect: Boolean;
     FToolTips: Boolean;
+    FAlwaysAcceptOnCloseUp: Boolean;
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnGetImageIndex: TTVExpandedEvent;
@@ -205,11 +206,9 @@ type
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     {added by zelen}
     {$IFDEF JVCLThemesEnabled}
     procedure MouseEnter(Control: TControl); override;
@@ -294,6 +293,7 @@ type
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property RowSelect: Boolean read FRowSelect write FRowSelect default False;
     property ToolTips: Boolean read FToolTips write FToolTips default False;
+    property AlwaysAcceptOnCloseUp: Boolean read FAlwaysAcceptOnCloseUp write FAlwaysAcceptOnCloseUp default False;
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
@@ -1206,7 +1206,7 @@ begin
     if not FFocused then
       Exit;
     if FListVisible then
-      CloseUp(False)
+      CloseUp(AlwaysAcceptOnCloseUp)
     else
     if FListActive then
     begin
@@ -1302,31 +1302,35 @@ begin
   if (Msg.Sender <> Self) and (Msg.Sender <> FDataList) and
      ((FDataList <> nil) and
     not FDataList.ContainsControl(Msg.Sender)) then
-      PopupCloseUp(FDataList, False);
+      PopupCloseUp(FDataList, AlwaysAcceptOnCloseUp);
 end;
 
-procedure TJvDBLookupTreeViewCombo.PopupCloseUp(Sender: TObject;
-  Accept: Boolean);
+procedure TJvDBLookupTreeViewCombo.PopupCloseUp(Sender: TObject; Accept: Boolean);
 var
   AValue: Variant;
 begin
   if (FDataList <> nil) and FListVisible then
   begin
-    if GetCapture <> 0 then
-      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    AValue := FDataList.GetValue;
-    FDataList.Hide;
-    try
+    if Accept then
+      CloseUp(True)
+    else
+    begin
+      if GetCapture <> 0 then
+        SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+      AValue := FDataList.GetValue;
+      FDataList.Hide;
       try
-        if CanFocus then
-          SetFocus;
-      except
-        { ignore exceptions }
+        try
+          if CanFocus then
+            SetFocus;
+        except
+          { ignore exceptions }
+        end;
+  //      SetDirectInput(DirectInput);
+        Invalidate;
+      finally
+        FListVisible := False;
       end;
-//      SetDirectInput(DirectInput);
-      Invalidate;
-    finally
-      FListVisible := False;
     end;
   end;
 end;
@@ -1742,7 +1746,7 @@ procedure TJvDBLookupTreeViewCombo.FocusKilled(NextWnd: THandle);
 begin
   if (Handle <> NextWnd) and (FDataList.Handle <> NextWnd) and
     (FDataList.FTree.Handle <> NextWnd) then
-    CloseUp(False);
+    CloseUp(AlwaysAcceptOnCloseUp);
 
   inherited FocusKilled(NextWnd);
 end;
