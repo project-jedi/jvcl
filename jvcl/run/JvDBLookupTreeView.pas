@@ -100,6 +100,7 @@ type
     FListActive: Boolean;
     FFocused: Boolean;
     FSearchTickCount: Integer;
+    FOnKeyValueChange: TNotifyEvent;
     function CanModify: Boolean;
     procedure CheckNotCircular;
     procedure CheckNotLookup;
@@ -143,6 +144,7 @@ type
     property ParentColor default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabStop default True;
+    property OnKeyValueChange: TNotifyEvent read FOnKeyValueChange write FOnKeyValueChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -296,6 +298,7 @@ type
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
+    property OnKeyValueChange;
     property FullExpand: Boolean read FFullExpand write FFullExpand default False;
   end;
 
@@ -793,6 +796,8 @@ begin
   begin
     FKeyValue := Value;
     KeyValueChanged;
+    if Assigned(FOnKeyValueChange) then
+      FOnKeyValueChange(Self);
   end;
 end;
 
