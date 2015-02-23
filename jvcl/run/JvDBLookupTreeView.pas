@@ -131,8 +131,7 @@ type
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property DataField: string read FDataFieldName write SetDataFieldName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property KeyField: string read GetKeyFieldName write SetKeyFieldName;
@@ -140,7 +139,7 @@ type
     property ListField: string read FListFieldName write SetListFieldName;
     property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
     property ListSource: TDataSource read GetListSource write SetListSource;
-    property UseFilter: Boolean read FUseFilter write FUseFilter;
+    property UseFilter: Boolean read FUseFilter write FUseFilter default False;
     property ParentColor default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabStop default True;
@@ -290,11 +289,11 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    property AutoExpand: Boolean read FAutoExpand write FAutoExpand;
-    property ChangeDelay: Integer read FChangeDelay write FChangeDelay;
-    property HotTrack: Boolean read FHotTrack write FHotTrack;
-    property RowSelect: Boolean read FRowSelect write FRowSelect;
-    property ToolTips: Boolean read FToolTips write FToolTips;
+    property AutoExpand: Boolean read FAutoExpand write FAutoExpand default False;
+    property ChangeDelay: Integer read FChangeDelay write FChangeDelay default 0;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property RowSelect: Boolean read FRowSelect write FRowSelect default False;
+    property ToolTips: Boolean read FToolTips write FToolTips default False;
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
@@ -432,26 +431,27 @@ type
     property OnEndDock;
     property OnStartDock;
 
-    property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand;
-    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay;
-    property HotTrack: Boolean read GetHotTrack write SetHotTrack;
-    property RowSelect: Boolean read GetRowSelect write SetRowSelect;
-    property ToolTips: Boolean read GetToolTips write SetToolTips;
+    property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
+    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay default 0;
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property RowSelect: Boolean read GetRowSelect write SetRowSelect default False;
+    property ToolTips: Boolean read GetToolTips write SetToolTips default True;
     property OnCustomDraw: TTVCustomDrawEvent read GetOnCustomDraw write SetOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read GetOnCustomDrawItem write SetOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read GetOnGetImageIndex write SetOnGetImageIndex;
+    property OnKeyValueChange;
     {Tree}
     property MasterField: string read GetMasterField write SetMasterField;
     property DetailField: string read GetDetailField write SetDetailField;
     property IconField: string read GetIconField write SetIconField;
     property StartMasterValue: string read GetStartMasterValue write SetStartMasterValue;
-    property ShowButtons: Boolean read GetShowButtons write SetShowButtons;
-    property ShowLines: Boolean read GetShowLines write SetShowLines;
-    property ShowRoot: Boolean read GetShowRoot write SetShowRoot;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property RightClickSelect: Boolean read GetRightClickSelect write SetRightClickSelect;
-    property HideSelection: Boolean read GetHideSelection write SetHideSelection;
-    property Indent: Integer read GetIndent write SetIndent;
+    property ShowButtons: Boolean read GetShowButtons write SetShowButtons default True;
+    property ShowLines: Boolean read GetShowLines write SetShowLines default True;
+    property ShowRoot: Boolean read GetShowRoot write SetShowRoot default True;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default True;
+    property RightClickSelect: Boolean read GetRightClickSelect write SetRightClickSelect default False;
+    property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
+    property Indent: Integer read GetIndent write SetIndent {default 19};
   end;
 
 {$IFDEF UNITVERSIONING}
