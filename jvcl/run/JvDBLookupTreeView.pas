@@ -100,6 +100,7 @@ type
     FListActive: Boolean;
     FFocused: Boolean;
     FSearchTickCount: Integer;
+    FOnKeyValueChange: TNotifyEvent;
     function CanModify: Boolean;
     procedure CheckNotCircular;
     procedure CheckNotLookup;
@@ -130,8 +131,7 @@ type
     procedure FocusKilled(NextWnd: THandle); override;
     procedure FocusSet(PrevWnd: THandle); override;
     procedure GetDlgCode(var Code: TDlgCodes); override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property DataField: string read FDataFieldName write SetDataFieldName;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property KeyField: string read GetKeyFieldName write SetKeyFieldName;
@@ -139,10 +139,11 @@ type
     property ListField: string read FListFieldName write SetListFieldName;
     property ListFieldIndex: Integer read FListFieldIndex write FListFieldIndex default 0;
     property ListSource: TDataSource read GetListSource write SetListSource;
-    property UseFilter: Boolean read FUseFilter write FUseFilter;
+    property UseFilter: Boolean read FUseFilter write FUseFilter default False;
     property ParentColor default False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabStop default True;
+    property OnKeyValueChange: TNotifyEvent read FOnKeyValueChange write FOnKeyValueChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -194,6 +195,7 @@ type
     FHotTrack: Boolean;
     FRowSelect: Boolean;
     FToolTips: Boolean;
+    FAlwaysAcceptOnCloseUp: Boolean;
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnGetImageIndex: TTVExpandedEvent;
@@ -204,11 +206,9 @@ type
     procedure Paint; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     {added by zelen}
     {$IFDEF JVCLThemesEnabled}
     procedure MouseEnter(Control: TControl); override;
@@ -288,14 +288,16 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    property AutoExpand: Boolean read FAutoExpand write FAutoExpand;
-    property ChangeDelay: Integer read FChangeDelay write FChangeDelay;
-    property HotTrack: Boolean read FHotTrack write FHotTrack;
-    property RowSelect: Boolean read FRowSelect write FRowSelect;
-    property ToolTips: Boolean read FToolTips write FToolTips;
+    property AutoExpand: Boolean read FAutoExpand write FAutoExpand default False;
+    property ChangeDelay: Integer read FChangeDelay write FChangeDelay default 0;
+    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property RowSelect: Boolean read FRowSelect write FRowSelect default False;
+    property ToolTips: Boolean read FToolTips write FToolTips default False;
+    property AlwaysAcceptOnCloseUp: Boolean read FAlwaysAcceptOnCloseUp write FAlwaysAcceptOnCloseUp default False;
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read FOnGetImageIndex write FOnGetImageIndex;
+    property OnKeyValueChange;
     property FullExpand: Boolean read FFullExpand write FFullExpand default False;
   end;
 
@@ -429,26 +431,27 @@ type
     property OnEndDock;
     property OnStartDock;
 
-    property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand;
-    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay;
-    property HotTrack: Boolean read GetHotTrack write SetHotTrack;
-    property RowSelect: Boolean read GetRowSelect write SetRowSelect;
-    property ToolTips: Boolean read GetToolTips write SetToolTips;
+    property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
+    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay default 0;
+    property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
+    property RowSelect: Boolean read GetRowSelect write SetRowSelect default False;
+    property ToolTips: Boolean read GetToolTips write SetToolTips default True;
     property OnCustomDraw: TTVCustomDrawEvent read GetOnCustomDraw write SetOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read GetOnCustomDrawItem write SetOnCustomDrawItem;
     property OnGetImageIndex: TTVExpandedEvent read GetOnGetImageIndex write SetOnGetImageIndex;
+    property OnKeyValueChange;
     {Tree}
     property MasterField: string read GetMasterField write SetMasterField;
     property DetailField: string read GetDetailField write SetDetailField;
     property IconField: string read GetIconField write SetIconField;
     property StartMasterValue: string read GetStartMasterValue write SetStartMasterValue;
-    property ShowButtons: Boolean read GetShowButtons write SetShowButtons;
-    property ShowLines: Boolean read GetShowLines write SetShowLines;
-    property ShowRoot: Boolean read GetShowRoot write SetShowRoot;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property RightClickSelect: Boolean read GetRightClickSelect write SetRightClickSelect;
-    property HideSelection: Boolean read GetHideSelection write SetHideSelection;
-    property Indent: Integer read GetIndent write SetIndent;
+    property ShowButtons: Boolean read GetShowButtons write SetShowButtons default True;
+    property ShowLines: Boolean read GetShowLines write SetShowLines default True;
+    property ShowRoot: Boolean read GetShowRoot write SetShowRoot default True;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default True;
+    property RightClickSelect: Boolean read GetRightClickSelect write SetRightClickSelect default False;
+    property HideSelection: Boolean read GetHideSelection write SetHideSelection default False;
+    property Indent: Integer read GetIndent write SetIndent {default 19};
   end;
 
 {$IFDEF UNITVERSIONING}
@@ -793,6 +796,8 @@ begin
   begin
     FKeyValue := Value;
     KeyValueChanged;
+    if Assigned(FOnKeyValueChange) then
+      FOnKeyValueChange(Self);
   end;
 end;
 
@@ -1201,7 +1206,7 @@ begin
     if not FFocused then
       Exit;
     if FListVisible then
-      CloseUp(False)
+      CloseUp(AlwaysAcceptOnCloseUp)
     else
     if FListActive then
     begin
@@ -1297,31 +1302,35 @@ begin
   if (Msg.Sender <> Self) and (Msg.Sender <> FDataList) and
      ((FDataList <> nil) and
     not FDataList.ContainsControl(Msg.Sender)) then
-      PopupCloseUp(FDataList, False);
+      PopupCloseUp(FDataList, AlwaysAcceptOnCloseUp);
 end;
 
-procedure TJvDBLookupTreeViewCombo.PopupCloseUp(Sender: TObject;
-  Accept: Boolean);
+procedure TJvDBLookupTreeViewCombo.PopupCloseUp(Sender: TObject; Accept: Boolean);
 var
   AValue: Variant;
 begin
   if (FDataList <> nil) and FListVisible then
   begin
-    if GetCapture <> 0 then
-      SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    AValue := FDataList.GetValue;
-    FDataList.Hide;
-    try
+    if Accept then
+      CloseUp(True)
+    else
+    begin
+      if GetCapture <> 0 then
+        SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+      AValue := FDataList.GetValue;
+      FDataList.Hide;
       try
-        if CanFocus then
-          SetFocus;
-      except
-        { ignore exceptions }
+        try
+          if CanFocus then
+            SetFocus;
+        except
+          { ignore exceptions }
+        end;
+  //      SetDirectInput(DirectInput);
+        Invalidate;
+      finally
+        FListVisible := False;
       end;
-//      SetDirectInput(DirectInput);
-      Invalidate;
-    finally
-      FListVisible := False;
     end;
   end;
 end;
@@ -1737,7 +1746,7 @@ procedure TJvDBLookupTreeViewCombo.FocusKilled(NextWnd: THandle);
 begin
   if (Handle <> NextWnd) and (FDataList.Handle <> NextWnd) and
     (FDataList.FTree.Handle <> NextWnd) then
-    CloseUp(False);
+    CloseUp(AlwaysAcceptOnCloseUp);
 
   inherited FocusKilled(NextWnd);
 end;
