@@ -1657,8 +1657,13 @@ end;
 //=== { TJvHidDeviceController } =============================================
 
 constructor TJvHidDeviceController.Create(AOwner: TComponent);
+var
+  Method: TMethod;
 begin
-  Create(AOwner, TJvHidDeviceCreateError(nil)); // work around compiler issue with method overloading and method pointers
+  Method.Code := nil;
+  Method.Data := nil;
+  
+  Create(AOwner, TJvHidDeviceCreateError(Method)); // work around compiler issue with method overloading and method pointers
 end;
 
 constructor TJvHidDeviceController.Create(AOwner: TComponent;
