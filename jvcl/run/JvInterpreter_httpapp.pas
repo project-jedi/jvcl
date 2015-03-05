@@ -54,6 +54,9 @@ implementation
 uses
   {$IFDEF HAS_UNITSCOPE}
   Web.HTTPApp,
+    {$IFDEF RTL280_UP}
+  System.NetEncoding,
+    {$ENDIF RTL280_UP}
   {$ELSE}
   HTTPApp,
   {$ENDIF HAS_UNITSCOPE}
@@ -933,14 +936,22 @@ end;
 
 procedure JvInterpreter_HTTPDecode(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$IFDEF RTL280_UP} // XE7+
+  Value := AnsiString(TNetEncoding.URL.Decode(string(Args.Values[0])));
+  {$ELSE}
   Value := HTTPDecode(AnsiString(string(Args.Values[0])));
+  {$ENDIF RTL280_UP}
 end;
 
 { function HTTPEncode(const AStr: String): string; }
 
 procedure JvInterpreter_HTTPEncode(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  {$IFDEF RTL280_UP} // XE7+
+  Value := AnsiString(TNetEncoding.URL.Encode(string(Args.Values[0])));
+  {$ELSE}
   Value := HTTPEncode(AnsiString(string(Args.Values[0])));
+  {$ENDIF RTL280_UP}
 end;
 
 { function ParseDate(const DateStr: string): TDateTime; }
