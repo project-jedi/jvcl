@@ -561,6 +561,7 @@ begin
     end;
   end
   else
+  if LinkedControls.Count > 0 then
     TWinControlAccess(Parent).SelectNext(Self, False, True);
 end;
 
