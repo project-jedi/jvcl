@@ -24,7 +24,7 @@ located at http://jvcl.delphi-jedi.org
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvWndProcHook_Mod;
+unit JvWndProcHook;
 
 {$I jvcl.inc}
 
