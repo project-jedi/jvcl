@@ -127,7 +127,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure InitializeImageList; virtual; // called by Initialize (VCL and VCLX)
     procedure Initialize; override;
-    procedure Change; override;
     procedure DataChanged(Sender: TObject); virtual;
     procedure UpdateImageList;
     {$IFNDEF COMPILER12_UP}
@@ -139,6 +138,7 @@ type
   public
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    procedure Change; override;
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure DrawIndirect(ImageListDrawParams: TImageListDrawParams);

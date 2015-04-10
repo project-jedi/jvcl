@@ -66,6 +66,9 @@ del /S lib\d20\win64\debug\*.dcp lib\d20\win64\debug\*.bpl lib\d20\win64\debug\*
 del /S lib\d21\win64\*.dcp lib\d21\win64\*.bpl lib\d21\win64\*.dfm lib\d21\win64\*.obj lib\d21\win64\*.bpi lib\d21\win64\*.lib >NUL
 del /S lib\d21\win64\debug\*.dcp lib\d21\win64\debug\*.bpl lib\d21\win64\debug\*.dfm lib\d21\win64\debug\*.obj lib\d21\win64\debug\*.bpi lib\d21\win64\debug\*.lib >NUL
 
+del /S lib\d22\win64\*.dcp lib\d22\win64\*.bpl lib\d22\win64\*.dfm lib\d22\win64\*.obj lib\d22\win64\*.bpi lib\d22\win64\*.lib >NUL
+del /S lib\d22\win64\debug\*.dcp lib\d22\win64\debug\*.bpl lib\d22\win64\debug\*.dfm lib\d22\win64\debug\*.obj lib\d22\win64\debug\*.bpi lib\d22\win64\debug\*.lib >NUL
+
 del /S run\*.hpp >NUL
 del /S design\*.hpp >NUL
 del /S common\*.hpp >NUL
