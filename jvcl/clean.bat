@@ -54,17 +54,32 @@ del /S lib\d17\win32\debug\*.dcp lib\d17\win32\debug\*.bpl lib\d17\win32\debug\*
 del /S lib\d17\win64\*.dcp lib\d17\win64\*.bpl lib\d17\win64\*.dfm lib\d17\win64\*.obj lib\d17\win64\*.bpi lib\d17\win64\*.lib >NUL
 del /S lib\d17\win64\debug\*.dcp lib\d17\win64\debug\*.bpl lib\d17\win64\debug\*.dfm lib\d17\win64\debug\*.obj lib\d17\win64\debug\*.bpi lib\d17\win64\debug\*.lib >NUL
 
+del /S lib\d18\win32\*.dcp lib\d18\win32\*.bpl lib\d18\win32\*.dfm lib\d18\win32\*.obj lib\d18\win32\*.bpi lib\d18\win32\*.lib >NUL
+del /S lib\d18\win32\debug\*.dcp lib\d18\win32\debug\*.bpl lib\d18\win32\debug\*.dfm lib\d18\win32\debug\*.obj lib\d18\win32\debug\*.bpi lib\d18\win32\debug\*.lib >NUL
+
 del /S lib\d18\win64\*.dcp lib\d18\win64\*.bpl lib\d18\win64\*.dfm lib\d18\win64\*.obj lib\d18\win64\*.bpi lib\d18\win64\*.lib >NUL
 del /S lib\d18\win64\debug\*.dcp lib\d18\win64\debug\*.bpl lib\d18\win64\debug\*.dfm lib\d18\win64\debug\*.obj lib\d18\win64\debug\*.bpi lib\d18\win64\debug\*.lib >NUL
+
+del /S lib\d19\win32\*.dcp lib\d19\win32\*.bpl lib\d19\win32\*.dfm lib\d19\win32\*.obj lib\d19\win32\*.bpi lib\d19\win32\*.lib >NUL
+del /S lib\d19\win32\debug\*.dcp lib\d19\win32\debug\*.bpl lib\d19\win32\debug\*.dfm lib\d19\win32\debug\*.obj lib\d19\win32\debug\*.bpi lib\d19\win32\debug\*.lib >NUL
 
 del /S lib\d19\win64\*.dcp lib\d19\win64\*.bpl lib\d19\win64\*.dfm lib\d19\win64\*.obj lib\d19\win64\*.bpi lib\d19\win64\*.lib >NUL
 del /S lib\d19\win64\debug\*.dcp lib\d19\win64\debug\*.bpl lib\d19\win64\debug\*.dfm lib\d19\win64\debug\*.obj lib\d19\win64\debug\*.bpi lib\d19\win64\debug\*.lib >NUL
 
+del /S lib\d20\win32\*.dcp lib\d20\win32\*.bpl lib\d20\win32\*.dfm lib\d20\win32\*.obj lib\d20\win32\*.bpi lib\d20\win32\*.lib >NUL
+del /S lib\d20\win32\debug\*.dcp lib\d20\win32\debug\*.bpl lib\d20\win32\debug\*.dfm lib\d20\win32\debug\*.obj lib\d20\win32\debug\*.bpi lib\d20\win32\debug\*.lib >NUL
+
 del /S lib\d20\win64\*.dcp lib\d20\win64\*.bpl lib\d20\win64\*.dfm lib\d20\win64\*.obj lib\d20\win64\*.bpi lib\d20\win64\*.lib >NUL
 del /S lib\d20\win64\debug\*.dcp lib\d20\win64\debug\*.bpl lib\d20\win64\debug\*.dfm lib\d20\win64\debug\*.obj lib\d20\win64\debug\*.bpi lib\d20\win64\debug\*.lib >NUL
 
+del /S lib\d21\win32\*.dcp lib\d21\win32\*.bpl lib\d21\win32\*.dfm lib\d21\win32\*.obj lib\d21\win32\*.bpi lib\d21\win32\*.lib >NUL
+del /S lib\d21\win32\debug\*.dcp lib\d21\win32\debug\*.bpl lib\d21\win32\debug\*.dfm lib\d21\win32\debug\*.obj lib\d21\win32\debug\*.bpi lib\d21\win32\debug\*.lib >NUL
+
 del /S lib\d21\win64\*.dcp lib\d21\win64\*.bpl lib\d21\win64\*.dfm lib\d21\win64\*.obj lib\d21\win64\*.bpi lib\d21\win64\*.lib >NUL
 del /S lib\d21\win64\debug\*.dcp lib\d21\win64\debug\*.bpl lib\d21\win64\debug\*.dfm lib\d21\win64\debug\*.obj lib\d21\win64\debug\*.bpi lib\d21\win64\debug\*.lib >NUL
+
+del /S lib\d22\win32\*.dcp lib\d22\win32\*.bpl lib\d22\win32\*.dfm lib\d22\win32\*.obj lib\d22\win32\*.bpi lib\d22\win32\*.lib >NUL
+del /S lib\d22\win32\debug\*.dcp lib\d22\win32\debug\*.bpl lib\d22\win32\debug\*.dfm lib\d22\win32\debug\*.obj lib\d22\win32\debug\*.bpi lib\d22\win32\debug\*.lib >NUL
 
 del /S lib\d22\win64\*.dcp lib\d22\win64\*.bpl lib\d22\win64\*.dfm lib\d22\win64\*.obj lib\d22\win64\*.bpi lib\d22\win64\*.lib >NUL
 del /S lib\d22\win64\debug\*.dcp lib\d22\win64\debug\*.bpl lib\d22\win64\debug\*.dfm lib\d22\win64\debug\*.obj lib\d22\win64\debug\*.bpi lib\d22\win64\debug\*.lib >NUL
