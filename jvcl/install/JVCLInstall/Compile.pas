@@ -1894,6 +1894,10 @@ begin
     if not DebugUnits and not TargetConfig.DeveloperInstall then
       DccOpt := DccOpt + ' -DJVCL_NO_DEBUGINFO';
 
+    ForceDirectoriesEx(TargetConfig.UnitOutDir);
+    ForceDirectoriesEx(TargetConfig.BplDir);
+    ForceDirectoriesEx(TargetConfig.DcpDir);
+    //ForceDirectoriesEx(TargetConfig.HppDir);
     if DebugUnits then
     begin
       ForceDirectoriesEx(TargetConfig.DebugUnitOutDir);
