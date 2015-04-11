@@ -19,5 +19,8 @@ begin
   WriteLn(f, '#define Include_Delphi', Version);
   WriteLn(f, '#define JclVersionStr "', JclVersionMajor, '.', JclVersionMinor, '.', JclVersionRelease, '.', JclVersionBuild, '"');
   WriteLn(f, '#define JvclVersionStr "', sJVCLVersion, '"');
+  {$IF CompilerVersion < 27.0} // XE6 and older
+  WriteLn(f, '#define BDESupport');
+  {$IFEND}
   CloseFile(f);
 end.

@@ -150,7 +150,9 @@ Name: "Packages\JvWizards"; Description: "Wizard Controls"; Types: full prefered
 
 Name: "Packages\DB"; Description: "Database Packages"
 Name: "Packages\DB\JvDB"; Description: "DB-Aware Controls (Grids, Lookups, ComboBox, TreeViews, Edits)"; Types: full prefered
+#ifdef BDESupport
 Name: "Packages\DB\JvBDE"; Description: "BDE Component"; Types: full
+#endif
 
 Name: "Packages\JvMM"; Description: "Multimedia and Images (Animated Images, ID3v1, WavePlayer, WaitingProgress)"; Types: full
 Name: "Packages\JvTimeFramework"; Description: "Time Framework Controls"; Types: full
