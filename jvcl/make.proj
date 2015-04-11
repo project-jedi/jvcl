@@ -57,6 +57,7 @@
 		
 		<LibDirVersion>$(EditionDirVersion)\$(Platform)</LibDirVersion>
 		<LibDirVersion Condition=" '$(EditionDirVersion)' == 'd12' or '$(EditionDirVersion)' == 'd14' or '$(EditionDirVersion)' == 'd15' ">$(EditionDirVersion)</LibDirVersion>
+		<BDESupport Condition=" '$(Platform)' == 'win32' and (Exists('$(LibDirVersion)\bdertl.dcp') or Exists('$(LibDirVersion)\debug\bdertl.dcp')) ">true</BDESupport>
 		<EditionDirVersionPlatform>$(EditionDirVersion)</EditionDirVersionPlatform>
 		<EditionDirVersionPlatform Condition=" '$(Platform)' == 'win64' ">$(EditionDirVersion)_x64</EditionDirVersionPlatform>
 	</PropertyGroup>
@@ -91,7 +92,7 @@
 			JvDotNetCtrls;
 			JvRuntimeDesign;
 			" />
-		<Packages Condition=" '$(Platform)' == 'win32' " Include="
+		<Packages Condition=" '$(BDESupport)' == 'true' " Include="
 			JvBDE;
 			" />
 		<DesignPackages Condition=" '$(Platform)' == 'win32' " Include="
@@ -107,7 +108,6 @@
 			JvNetDesign;		
 			JvAppFrmDesign;		
 			JvDBDesign;		
-			JvBDEDesign;		
 			JvPascalInterpreterDesign;		
 			JvBandsDesign;		
 			JvPluginSystemDesign;		
@@ -123,6 +123,9 @@
 			JvDockingDesign;		
 			JvDotNetCtrlsDesign;		
 			JvRuntimeDesignDesign;		
+			" />
+		<DesignPackages Condition=" '$(BDESupport)' == 'true' " Include="
+			JvBDEDesign;		
 			" />
 	</ItemGroup>
 
