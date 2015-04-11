@@ -2,7 +2,7 @@ JEDI Visual Component Library
 =============================
 
 JVCL is a library of over 600 Delphi visual and non-visual Delphi/C++Builder components.
-It supports Delphi/C++Builder 6 to XE7.
+It supports Delphi/C++Builder 6 to XE8.
 
 The library is built upon code donated from the JEDI community. It is reformatted to achieve
 a common look-and-feel, tested and merged into the library. The library is grouped into several
