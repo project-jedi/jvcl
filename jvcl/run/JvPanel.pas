@@ -1374,7 +1374,7 @@ begin
     FArrangeWidth := ControlMaxX + 2 * ArrS.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * ArrS.BorderTop;
     if (OldWidth <> TmpWidth) or (OldHeight <> Height) then
-      UpdateWindow(GetFocus);
+      UpdateWindow(Handle);
   finally
     FArrangeControlActive := False;
   end;
