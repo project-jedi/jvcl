@@ -1001,7 +1001,6 @@ begin
     FListDataLink.DataSource := Value;
     if DataSource <> nil then
       DataSource.FreeNotification(ComboBox);
-    ComboBox.UpdateDropDownItems;
   end;
 end;
 
