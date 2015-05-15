@@ -701,7 +701,7 @@ var
   GridBitmaps: array [TGridPicture] of TJvDBGridBitmap =
     (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   FirstGridBitmaps: Boolean = True;
-  MsIndicators := TImageList;
+  MsIndicators: TImageList;
 
 procedure FinalizeGridBitmaps;
 var
