@@ -238,7 +238,6 @@ type
     FIniLink: TJvIniLink;
     FDisableCount: Integer;
     FFixedCols: Integer;
-    FMsIndicators: TImageList;
     FOnCheckButton: TCheckTitleBtnEvent;
     FOnGetCellProps: TGetCellPropsEvent;
     FOnGetCellParams: TGetCellParamsEvent;
@@ -702,11 +701,13 @@ var
   GridBitmaps: array [TGridPicture] of TJvDBGridBitmap =
     (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   FirstGridBitmaps: Boolean = True;
+  MsIndicators := TImageList;
 
 procedure FinalizeGridBitmaps;
 var
   I: TGridPicture;
 begin
+  FreeAndNil(MsIndicators);
   for I := Low(TGridPicture) to High(TGridPicture) do
     FreeAndNil(GridBitmaps[I]);
 end;
@@ -1058,15 +1059,18 @@ begin
 
   FAutoSort := True;
   FBeepOnError := True;
-  Bmp := TBitmap.Create;
-  try
-    Bmp.Handle := LoadBitmap(HInstance, bmMultiDot);
-    FMsIndicators := TImageList.CreateSize(Bmp.Width, Bmp.Height);
-    FMsIndicators.AddMasked(Bmp, clWhite);
-    Bmp.Handle := LoadBitmap(HInstance, bmMultiArrow);
-    FMsIndicators.AddMasked(Bmp, clWhite);
-  finally
-    Bmp.Free;
+  if MsIndicators = nil then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Handle := LoadBitmap(HInstance, bmMultiDot);
+      MsIndicators := TImageList.CreateSize(Bmp.Width, Bmp.Height);
+      MsIndicators.AddMasked(Bmp, clWhite);
+      Bmp.Handle := LoadBitmap(HInstance, bmMultiArrow);
+      MsIndicators.AddMasked(Bmp, clWhite);
+    finally
+      Bmp.Free;
+    end;
   end;
   FIniLink := TJvIniLink.Create;
   FIniLink.OnSave := IniSave;
@@ -1126,7 +1130,6 @@ begin
   FControls.Free;
 
   FIniLink.Free;
-  FMsIndicators.Free;
   FSelectColumnsDialogStrings.Free;
 
   FChangeLinks.Free;
@@ -3370,12 +3373,12 @@ begin
         Indicator := 0
       else
         Indicator := 1; { multiselected and current row }
-//      FMsIndicators.BkColor := FixedColor;
-      ALeft := FixRect.Right - FMsIndicators.Width - FrameOffs;
+//      MsIndicators.BkColor := FixedColor;
+      ALeft := FixRect.Right - MsIndicators.Width - FrameOffs;
       if InBiDiMode then
         Inc(ALeft);
-      FMsIndicators.Draw(Self.Canvas, ALeft, (FixRect.Top +
-        FixRect.Bottom - FMsIndicators.Height) shr 1, Indicator);
+      MsIndicators.Draw(Self.Canvas, ALeft, (FixRect.Top +
+        FixRect.Bottom - MsIndicators.Height) shr 1, Indicator);
     end;
   end
   else
