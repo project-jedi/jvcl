@@ -39,6 +39,9 @@ uses
   {$IFDEF RTL250_UP}
   AnsiStrings, // must be included before SysUtils
   {$ENDIF RTL250_UP}
+  {$IFDEF DELPHIXE_UP}
+  System.TypInfo, System.Rtti,
+  {$ENDIF}
   SysUtils,
   JvInterpreter;
 
@@ -1740,6 +1743,10 @@ end;
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
   cSysUtils = 'SysUtils';
+{$IFDEF DELPHIXE_UP}
+var
+  rctx : TRttiContext;
+{$ENDIF}
 begin
   with JvInterpreterAdapter do
   begin
@@ -2031,6 +2038,17 @@ begin
     AddConst(cSysUtils, 'faArchive', Ord(faArchive));
     AddConst(cSysUtils, 'faAnyFile', Ord(faAnyFile));
 
+    {$IFDEF DELPHIXE_UP}
+    AddRec(cSysUtils, 'TSearchRec', SizeOf(TSearchRec), [
+      RFD('Time', rctx.GetType(TypeInfo(TSearchRec)).GetField('Time').Offset, varInteger),
+      RFD('Size', rctx.GetType(TypeInfo(TSearchRec)).GetField('Size').Offset, varInt64),
+      RFD('Attr', rctx.GetType(TypeInfo(TSearchRec)).GetField('Attr').Offset, varInteger),
+      RFD('Name', rctx.GetType(TypeInfo(TSearchRec)).GetField('Name').Offset, varString),
+      RFD('ExcludeAttr', rctx.GetType(TypeInfo(TSearchRec)).GetField('ExcludeAttr').Offset, varInteger),
+      RFD('FindHandle', rctx.GetType(TypeInfo(TSearchRec)).GetField('FindHandle').Offset, varInteger)
+      ],
+      JvInterpreter_NewTSearchRec, JvInterpreter_DisposeTSearchRec, nil);
+    {$ELSE}
     AddRec(cSysUtils, 'TSearchRec', SizeOf(TSearchRec), [
       RFD('Time', 0, varInteger),
       RFD('Size', 4, varInteger),     // Supports only integer size
@@ -2047,6 +2065,7 @@ begin
       {$ENDIF}
       ],
       JvInterpreter_NewTSearchRec, JvInterpreter_DisposeTSearchRec, nil);
+    {$ENDIF}
     { regional options }
     { global variables are not supported by JvInterpreter :( }
   end;
