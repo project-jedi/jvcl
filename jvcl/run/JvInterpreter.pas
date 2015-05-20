@@ -580,6 +580,7 @@ type
     PrevFunContext: PFunctionContext;
     LocalVars: TJvInterpreterVarList;
     Fun: TJvInterpreterSrcFunction;
+    FunctionIdentifier: string;
   end;
 
   { TJvInterpreterAdapter - route JvInterpreter calls to Delphi functions }
@@ -1138,48 +1139,48 @@ procedure ClearList(List: TList);
 
 { additional variant types - TVarData.VType }
 
-function varRecord: TVarType;
-function varObject: TVarType;
-function varClass: TVarType;
-function varPointer: TVarType;
-function varSet: TVarType;
-function varArray: TVarType;
+function varRecord: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
+function varObject: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
+function varClass: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
+function varPointer: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
+function varSet: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
+function varArray: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 type
   TJvInterpreterShiftStateCastType = {$IFDEF COMPILER14_UP}Word{$ELSE}Byte{$ENDIF};
 
 { V2O - converts variant to object }
-function V2O(const V: Variant): TObject;
+function V2O(const V: Variant): TObject; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { O2V - converts object to variant }
-function O2V(O: TObject): Variant;
+function O2V(O: TObject): Variant; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { V2C - converts variant to class }
-function V2C(const V: Variant): TClass;
+function V2C(const V: Variant): TClass; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { O2V - converts class to variant }
-function C2V(C: TClass): Variant;
+function C2V(C: TClass): Variant; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { V2P - converts variant to pointer }
-function V2P(const V: Variant): Pointer;
+function V2P(const V: Variant): Pointer; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { P2V - converts pointer to variant }
-function P2V(P: Pointer): Variant;
+function P2V(P: Pointer): Variant; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { R2V - create record holder and put it into variant }
-function R2V(const ARecordType: string; ARec: Pointer): Variant;
+function R2V(const ARecordType: string; ARec: Pointer): Variant; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { V2R - returns pointer to record from variant, containing record holder }
-function V2R(const V: Variant): Pointer;
+function V2R(const V: Variant): Pointer; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { P2R - returns pointer to record from record holder, typically Args.Obj }
-function P2R(const P: Pointer): Pointer;
+function P2R(const P: Pointer): Pointer; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { S2V - converts Integer to set and put it into variant }
-function S2V(const I: Integer): Variant;
+function S2V(const I: Integer): Variant; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { V2S - give a set from variant and converts it to Integer }
-function V2S(V: Variant): Integer;
+function V2S(V: Variant): Integer; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 procedure V2OA(V: Variant; var OA: TOpenArray; var OAValues: TValueArray;
   var Size: Integer);
@@ -1187,7 +1188,7 @@ procedure V2OA(V: Variant; var OA: TOpenArray; var OAValues: TValueArray;
 function TypeName2VarTyp(const TypeName: string): Word;
 
 { copy variant variable with all JvInterpreter variant extension }
-procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant);
+procedure JvInterpreterVarCopy(var Dest: Variant; const Source: Variant); {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { copy variant variable for assignment }
 procedure JvInterpreterVarAssignment(var Dest: Variant; const Source: Variant);
@@ -1198,7 +1199,7 @@ function JvInterpreterVarAsType(const V: Variant; const VarType: Integer): Varia
 procedure JvInterpreterVarFree(var V: Variant);
 
 { compare strings }
-function Cmp(const S1, S2: string): Boolean;
+function Cmp(const S1, S2: string): Boolean; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
 
 { For dynamic array support}
 procedure JvInterpreterArraySetLength(AArray: Variant; ASize: Integer);
@@ -2362,6 +2363,13 @@ begin
             OA[I].VInteger := ElementVariant;
             OA[I].VType := vtInteger;
           end;
+        varInt64:
+          begin
+            OAValues[i] := V[i];
+            VarCast(OAValues[I], OAValues[I], varInt64);
+            OA[i].VInt64 := @TVarData(OAValues[i]).VInt64;
+            OA[i].VType := vtInt64;
+          end;
         varString, varOleStr:
           begin
             // OA[I].vPChar := PChar(string(V[I]));
@@ -2376,7 +2384,14 @@ begin
             OA[I].VBoolean := ElementVariant;
             OA[I].VType := vtBoolean;
           end;
-        varDouble, varCurrency:
+        varDouble:
+          begin
+            OAValues[i] := V[i];
+            VarCast(OAValues[I], OAValues[I], varDouble);
+            OA[i].VExtended := @TVarData(OAValues[i]).VDouble;
+            OA[i].VType := vtExtended;
+          end;
+        varCurrency:
           begin
             OAValues[i] := V[i];
             VarCast(OAValues[I], OAValues[I], varCurrency);
@@ -2402,6 +2417,13 @@ begin
             OA[I].VInteger := V[I];
             OA[I].VType := vtInteger;
           end;
+        varInt64:
+          begin
+            OAValues[I] := V[I];
+            VarCast(OAValues[I], OAValues[I], varInt64);
+            OA[I].VInt64 := @TVarData(OAValues[i]).VInt64;
+            OA[I].VType := vtInt64;
+          end;
         varString, varOleStr:
           begin
             OAValues[I] := V[I];
@@ -2414,7 +2436,14 @@ begin
             OA[I].VBoolean := V[I];
             OA[I].VType := vtBoolean;
           end;
-        varDouble, varCurrency:
+        varDouble:
+          begin
+            OAValues[i] := V[i];
+            VarCast(OAValues[I], OAValues[I], varDouble);
+            OA[i].VExtended := @TVarData(OAValues[i]).VDouble;
+            OA[i].VType := vtExtended;
+          end;
+        varCurrency:
           begin
             OAValues[i] := V[i];
             VarCast(OAValues[I], OAValues[I], varCurrency);
@@ -2450,6 +2479,8 @@ begin
         Result := 0.0;
       varVariant:
         Result := Null;
+      varEmpty:
+        Result := V;
     else
       Result := VarAsType(V, VarType);
     end;
@@ -2787,12 +2818,18 @@ begin
       JvInterpreterRecord.DestroyFunc(Rec)
     else
     begin
-      for I := 0 to JvInterpreterRecord.FieldCount - 1 do
+      if Assigned(Rec) then
       begin
-        if JvInterpreterRecord.Fields[I].Typ = varEmpty then
-          JvInterpreterVarFree(Variant(PVarData(PAnsiChar(Rec) + JvInterpreterRecord.Fields[I].Offset)^));
-      end;
-      FreeMem(Rec, JvInterpreterRecord.RecordSize);
+        for I := 0 to JvInterpreterRecord.FieldCount - 1 do
+        begin
+          if JvInterpreterRecord.Fields[I].Typ = varEmpty then
+            JvInterpreterVarFree(Variant(PVarData(PAnsiChar(Rec) + JvInterpreterRecord.Fields[I].Offset)^));
+        end;
+        FreeMem(Rec, JvInterpreterRecord.RecordSize);
+        Rec := nil;
+      end
+      else
+        exit;
     end;
   end
   else
@@ -2982,6 +3019,9 @@ begin
   FIntfSetList.Duplicates := dupAccept;
   FIntfIGetList.Duplicates := dupAccept;
   FIntfISetList.Duplicates := dupAccept;
+  FIntfIDGetList.Duplicates := dupAccept;
+  FIntfIDSetList.Duplicates := dupAccept;
+
   FGetList.Duplicates := dupAccept;
   FSetList.Duplicates := dupAccept;
   FIGetList.Duplicates := dupAccept;
@@ -4198,6 +4238,7 @@ var
     JvInterpreterRecord: TJvInterpreterRecord;
     Rec: PAnsiChar;
     JvInterpreterRecMethod: TJvInterpreterRecMethod;
+    Field : TJvInterpreterRecField;
   begin
     Result := False;
     JvInterpreterRecord := (Args.Obj as TJvInterpreterRecHolder).JvInterpreterRecord;
@@ -4205,31 +4246,41 @@ var
       if Cmp(JvInterpreterRecord.Fields[I].Identifier, Identifier) then
       begin
         Rec := P2R(Args.Obj);
-        with JvInterpreterRecord.Fields[I] do
-          case Typ of
-            varSmallint:
-              Value := Smallint(PWord(Rec + Offset)^);
-            varInteger:
-              Value := PInteger(Rec + Offset)^;
-            varSingle:
-              Value := PSingle(Rec + Offset)^;
-            varDouble:
-              Value := PDouble(Rec + Offset)^;
-            varCurrency:
-              Value := PCurrency(Rec + Offset)^;
-            varDate:
-              Value := PDateTime(Rec + Offset)^;
-            varOleStr:
-              Value := PWideString(Rec + Offset)^;
-            varBoolean:
-              Value := PBool(Rec + Offset)^;
-            varVariant:
-              Value := PVariant(Rec + Offset)^;
-            varString:
-              Value := PString(Rec + Offset)^;
-            varEmpty:
-              JvInterpreterVarCopy(Value, Variant(PVarData(Rec + Offset)^));
-          end;
+        Field := JvInterpreterRecord.Fields[I];
+        case Field.Typ of
+          varShortInt:
+            Value := PShortInt(Rec+Field.Offset)^;
+          varByte:
+            Value := PByte(Rec+Field.Offset)^;
+          varSmallint:
+            Value := Smallint(PWord(Rec + Field.Offset)^);
+          varWord:
+            Value := Word(PWord(Rec + Field.Offset)^);
+          varInteger:
+            Value := PInteger(Rec + Field.Offset)^;
+          {$IFDEF DELPHIXE_UP}
+          varInt64:
+            Value := PInt64(Rec + Field.Offset)^;
+          {$ENDIF}
+          varSingle:
+            Value := PSingle(Rec + Field.Offset)^;
+          varDouble:
+            Value := PDouble(Rec + Field.Offset)^;
+          varCurrency:
+            Value := PCurrency(Rec + Field.Offset)^;
+          varDate:
+            Value := PDateTime(Rec + Field.Offset)^;
+          varOleStr:
+            Value := PWideString(Rec + Field.Offset)^;
+          varBoolean:
+            Value := PBool(Rec + Field.Offset)^;
+          varVariant:
+            Value := PVariant(Rec + Field.Offset)^;
+          varString:
+            Value := PString(Rec + Field.Offset)^;
+          varEmpty:
+            JvInterpreterVarCopy(Value, Variant(PVarData(Rec + Field.Offset)^));
+        end;
         Result := True;
         Exit;
       end;
@@ -4674,7 +4725,13 @@ var
         Rec := P2R(Args.Obj);
         with JvInterpreterRecord.Fields[I] do
           case Typ of
+            varShortInt:
+              PShortInt(Rec+Offset)^ := ShortInt(Value);
+            varByte:
+              PByte(Rec + Offset)^ := Byte(Value);
             varSmallint:
+              PWord(Rec + Offset)^ := Word(Value);
+            varWord:
               PWord(Rec + Offset)^ := Word(Value);
             varInteger:
               PInteger(Rec + Offset)^ := Value;
@@ -4727,17 +4784,21 @@ begin
 
   if Args.Indexed then
   begin
-    if (Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass)) then
+    if (Args.Obj <> nil) then
     begin
-      if ISetMethod then
-        Exit;
+      if ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass)) then
+      begin
+        if ISetMethod then
+          Exit;
+      end
+      else
+      if Args.ObjTyp = varUnknown then
+      begin
+        if IntfISetMethod then
+          Exit;
+      end;
     end
-    else
-    if Args.ObjTyp = varUnknown then
-    begin
-      if IntfISetMethod then
-        Exit;
-    end;
+
   end
   else
   begin
@@ -5008,6 +5069,14 @@ var
           Poin := V2P(Param);
           AddParam1(varStrArg, SizeOf(Poin), Poin);
         end;
+    {$IFDEF SUPPORTS_UNICODE}
+      varUString:
+        begin
+          //  atUString  = $4A;  System.Variants.GetDispatchInvokeArgs
+          Poin := V2P(Param);
+          AddParam1($4A, SizeOf(Poin), Poin);
+        end;
+    {$ENDIF}
       varBoolean:
         begin
           Wrd := WordBool(Param);
@@ -5083,6 +5152,8 @@ begin
     Exit;
   PropTyp := PropInf.PropType^.Kind;
   case PropTyp of
+    tkInt64:
+      Value := GetInt64Prop(Args.Obj, PropInf);
     tkInteger, tkEnumeration:
       Value := GetOrdProp(Args.Obj, PropInf);
     tkChar, tkWChar:
@@ -5097,7 +5168,9 @@ begin
     tkSet:
       Value := S2V(GetOrdProp(Args.Obj, PropInf));
     tkInterface:
-      Value := GetInterfaceProp(Args.Obj, PropInf)
+      Value := GetInterfaceProp(Args.Obj, PropInf);
+    tkVariant:
+      Value := GetVariantProp(Args.Obj, PropInf);
   else
     Exit;
   end;
@@ -5126,6 +5199,8 @@ begin
     Exit;
   PropTyp := PropInf.PropType^.Kind;
   case PropTyp of
+    tkInt64:
+      SetInt64Prop(Args.Obj, PropInf, Value);
     tkInteger, tkEnumeration:
       SetOrdProp(Args.Obj, PropInf, Var2Type(Value, varInteger));
     tkChar, tkWChar:
@@ -5141,6 +5216,8 @@ begin
       SetOrdProp(Args.Obj, PropInf, V2S(Value));
     tkInterface:
       SetInterfaceProp(Args.Obj, PropInf, Value);
+    tkVariant:
+      SetVariantProp(Args.Obj, PropInf, Value);
   else
     Exit;
   end;
@@ -6118,7 +6195,7 @@ begin
     if TVarData(Variable).VType = varArray then
     begin
       {Get array value}
-      PP := PJvInterpreterArrayRec(NativeInt(JvInterpreterVarAsType(Variable, varInteger)));
+      PP := PJvInterpreterArrayRec(NativeInt(JvInterpreterVarAsType(Variable, {$IFDEF WIN64}varInt64{$ELSE}varInteger{$ENDIF})));
       if Args.Count > PP.Dimension then
         JvInterpreterError(ieArrayTooManyParams, -1)
       else
@@ -6197,7 +6274,7 @@ begin
     if TVarData(Variable).VType = varArray then
     begin
       { Get array value }
-      PP := PJvInterpreterArrayRec(NativeInt(JvInterpreterVarAsType(Variable, varInteger)));
+      PP := PJvInterpreterArrayRec(NativeInt(JvInterpreterVarAsType(Variable, {$IFDEF WIN64}varInt64{$ELSE}varInteger{$ENDIF})));
       if Args.Count > PP.Dimension then
         JvInterpreterError(ieArrayTooManyParams, -1)
       else
@@ -6390,6 +6467,10 @@ var
     PFunctionContext(FC).PrevFunContext := FFunctionContext;
     FFunctionContext := FC;
     PFunctionContext(FFunctionContext).LocalVars := TJvInterpreterVarList.Create;
+    if Assigned(FunctionDesc) then
+      FC.FunctionIdentifier := FunctionDesc.Identifier
+    else
+      FC.FunctionIdentifier := '';
     FFunctionStack.Add(FFunctionContext);
     JvInterpreterVarFree(FVResult);
     if FunctionDesc <> nil then
@@ -6470,6 +6551,7 @@ var
 
       FCurrArgs.Count := C;
     end;
+    PFunctionContext(FFunctionContext).FunctionIdentifier := '';
     FC := PFunctionContext(FFunctionContext).PrevFunContext;
     LocalVars.Free;
     Dispose(PFunctionContext(FFunctionContext));
@@ -6837,6 +6919,7 @@ var
   Method: TMethod;
   T: TObject;
   Event: TJvInterpreterEvent;
+  Tmp: Variant;
 begin
   { may be event assignment }
   if (FCurrArgs.Obj <> nil) and (FCurrArgs.ObjTyp = varObject) then
@@ -6908,13 +6991,14 @@ begin
     end;
   end;
   { normal (not method) assignmnent }
-  JvInterpreterVarFree(FVResult);
+  //JvInterpreterVarFree(FVResult);
+  Tmp := Unassigned;
   { push args }
   MyArgs := FCurrArgs;
   FCurrArgs := TJvInterpreterArgs.Create;
   try
     FCurrArgs.Assignment := True;
-    JvInterpreterVarCopy(FVResult, Expression1);
+    JvInterpreterVarCopy(Tmp, Expression1);
   finally
     { pop args }
     FCurrArgs.Free;
@@ -6928,7 +7012,7 @@ begin
     try
       if GetValue(Identifier, Variable, MyArgs) then
       begin
-        if not SetElement(Variable, FVResult, FCurrArgs) then
+        if not SetElement(Variable, Tmp, FCurrArgs) then
           { problem }
           JvInterpreterError(ieArrayRequired, PosBeg);
         if (TVarData(Variable).VType = varString) and
@@ -6939,15 +7023,18 @@ begin
           JvInterpreterErrorN(ieUnknownIdentifier, PosBeg, Identifier);
       end
       else
-      if not SetValue(Identifier, FVResult, FCurrArgs) then
+      if not SetValue(Identifier, Tmp, FCurrArgs) then
         JvInterpreterErrorN(ieUnknownIdentifier, PosBeg, Identifier);
     finally
       MyArgs.Free;
     end;
   end
   else
-  if not SetValue(Identifier, FVResult, FCurrArgs) then
-    JvInterpreterErrorN(ieUnknownIdentifier, PosBeg, Identifier);
+    if not SetValue(Identifier, Tmp, FCurrArgs) then
+      JvInterpreterErrorN(ieUnknownIdentifier, PosBeg, Identifier);
+  //backward compat
+  if not (TVarData(Tmp).VType = varRecord) then
+    FVResult := Tmp;
 end;
 
 procedure TJvInterpreterFunction.InterpretIdentifier;
@@ -7966,12 +8053,14 @@ var
   OldUnitName: string;
   OldSource: string;
   S: string;
+  OldUnitSection: TUnitSection;
 begin
   if FAdapter.UnitExists(UnitName) then
     Exit;
   FAdapter.AddSrcUnit(FCurUnitName, '', '');
   OldUnitName := FCurUnitName;
   OldSource := Source;
+  OldUnitSection := FUnitSection;
   PushState;
   try
     try
@@ -7993,6 +8082,7 @@ begin
   finally
     FCurUnitName := OldUnitName;
     Source := OldSource;
+    FUnitSection := OldUnitSection;
     PopState;
   end;
 end;
