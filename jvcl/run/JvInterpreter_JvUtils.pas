@@ -57,7 +57,7 @@ uses
   {$IFDEF SUPPORTS_INLINE}
   Windows,
   {$ENDIF SUPPORTS_INLINE}
-  JvJVCLUtils, JvJCLUtils, JvInterpreter_Windows;
+  JvJVCLUtils, JvJCLUtils, JvInterpreter_Types;
 
 { function ReplaceAllStrings(S: string; Words, Frases: TStrings): string; }
 

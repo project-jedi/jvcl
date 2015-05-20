@@ -53,7 +53,7 @@ implementation
 
 uses
   Classes,
-  JvEditor, JvEditorCommon, JvHLEditor, JvInterpreter_Windows;
+  JvEditor, JvEditorCommon, JvHLEditor, JvInterpreter_Windows, JvInterpreter_Types;
 
 { TJvKeyboard }
 

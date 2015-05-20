@@ -54,7 +54,7 @@ implementation
 uses
   Classes,
   Graphics, Controls, Menus, ImgList,
-  JvInterpreter_Windows;
+  JvInterpreter_Types;
 
 { TControl }
 

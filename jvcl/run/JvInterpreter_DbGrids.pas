@@ -53,7 +53,7 @@ implementation
 
 uses
   Classes, Graphics, Menus, Grids, DB, DBGrids,
-  JvInterpreter_Windows;
+  JvInterpreter_Types;
 
 { TColumnTitle }
 

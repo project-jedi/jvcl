@@ -49,7 +49,7 @@ const
 implementation
 
 uses
-  JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes,
+  JvInterpreter_System, JvInterpreter_SysUtils, JvInterpreter_Classes, JvInterpreter_Types, JvInterpreter_Math,
   JvInterpreter_Graphics, JvInterpreter_Controls, JvInterpreter_Dialogs,
   JvInterpreter_Windows, JvInterpreter_Buttons,
   JvInterpreter_StdCtrls, JvInterpreter_ComCtrls, JvInterpreter_ExtCtrls,
@@ -73,6 +73,8 @@ begin
   JvInterpreter_System.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_SysUtils.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   JvInterpreter_Classes.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+  JvInterpreter_Types.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+  JvInterpreter_Math.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 //  JvInterpreter_JvRegAuto.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
   JvInterpreter_Windows.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);

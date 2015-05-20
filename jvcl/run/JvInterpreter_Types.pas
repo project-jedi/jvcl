@@ -80,7 +80,7 @@ end;
 
 procedure JvInterpreter_Point(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Point2Var(Point(Args.Values[0], Args.Values[1]));
+  JvInterpreterVarCopy(Value, Point2Var(Point(Args.Values[0], Args.Values[1])));
 end;
 
 { TRect }
@@ -101,12 +101,12 @@ end;
 
 procedure JvInterpreter_Rect(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Rect2Var(Rect(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]));
+  JvInterpreterVarCopy(Value, Rect2Var(Rect(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3])));
 end;
 
 procedure JvInterpreter_Bounds(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := Rect2Var(Bounds(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3]));
+  JvInterpreterVarCopy(Value, Rect2Var(Bounds(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3])));
 end;
 
 { Read Field TopLeft: Integer; }

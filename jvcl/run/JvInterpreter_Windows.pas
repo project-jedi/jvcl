@@ -38,11 +38,6 @@ uses
   Windows, Types,
   JvInterpreter;
 
-function Point2Var(const Point: TPoint): Variant;
-function Var2Point(const Point: Variant): TPoint;
-function Rect2Var(const Rect: TRect): Variant;
-function Var2Rect(const Rect: Variant): TRect;
-
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 {$IFDEF UNITVERSIONING}
@@ -60,81 +55,6 @@ implementation
 uses
   Classes;
 
-{ TPoint }
-
-function Point2Var(const Point: TPoint): Variant;
-var
-  Rec: ^TPoint;
-begin
-  New(Rec);
-  Rec^ := Point;
-  Result := R2V('TPoint', Rec);
-end;
-
-function Var2Point(const Point: Variant): TPoint;
-begin
-  Result := TPoint(V2R(Point)^);
-end;
-
-procedure JvInterpreter_Point(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  JvInterpreterVarCopy(Value, Point2Var(Point(Args.Values[0], Args.Values[1])));
-end;
-
-{ TRect }
-
-function Rect2Var(const Rect: TRect): Variant;
-var
-  Rec: ^TRect;
-begin
-  New(Rec);
-  Rec^ := Rect;
-  Result := R2V('TRect', Rec);
-end;
-
-function Var2Rect(const Rect: Variant): TRect;
-begin
-  Result := TRect(V2R(Rect)^);
-end;
-
-procedure JvInterpreter_Rect(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  JvInterpreterVarCopy(Value, Rect2Var(Rect(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3])));
-end;
-
-procedure JvInterpreter_Bounds(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  JvInterpreterVarCopy(Value, Rect2Var(Bounds(Args.Values[0], Args.Values[1], Args.Values[2], Args.Values[3])));
-end;
-
-{ Read Field TopLeft: Integer; }
-
-procedure TRect_Read_TopLeft(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := Point2Var(TRect(P2R(Args.Obj)^).TopLeft);
-end;
-
-{ Write Field TopLeft: Integer; }
-
-procedure TRect_Write_TopLeft(const Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TRect(P2R(Args.Obj)^).TopLeft := Var2Point(Value);
-end;
-
-{ Read Field BottomRight: Integer; }
-
-procedure TRect_Read_BottomRight(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := Point2Var(TRect(P2R(Args.Obj)^).BottomRight);
-end;
-
-{ Write Field Right: Integer; }
-
-procedure TRect_Write_BottomRight(const Value: Variant; Args: TJvInterpreterArgs);
-begin
-  TRect(P2R(Args.Obj)^).BottomRight := Var2Point(Value);
-end;
-
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 const
   cWindows = 'Windows';
@@ -142,22 +62,16 @@ begin
   with JvInterpreterAdapter do
   begin
     AddExtUnit(cWindows);
-    { TPoint }
-    AddRec(cWindows, 'TPoint', SizeOf(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
-    AddFunction(cWindows, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
-    { TRect }
-    AddRec(cWindows, 'TRect', SizeOf(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger), RFD('Right', 8,
-      varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
-    AddFunction(cWindows, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddFunction(cWindows, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddRecGet(cWindows, 'TRect', 'TopLeft', TRect_Read_TopLeft, 0, [varEmpty], varRecord);
-    AddRecSet(cWindows, 'TRect', 'TopLeft', TRect_Write_TopLeft, 0, [varEmpty]);
-    AddRecGet(cWindows, 'TRect', 'BottomRight', TRect_Read_BottomRight, 0, [varEmpty], varRecord);
-    AddRecSet(cWindows, 'TRect', 'BottomRight', TRect_Write_BottomRight, 0, [varEmpty]);
 
+  {$IFDEF SUPPORTS_UNICODE}
+    AddExtFun(cWindows, 'MessageBox', 0, user32, 'MessageBoxW', -1, 4, [varInteger, varString, varString, varInteger],
+      varInteger);
+  {$ELSE}
     AddExtFun(cWindows, 'MessageBox', 0, user32, 'MessageBoxA', -1, 4, [varInteger, varString, varString, varInteger],
       varInteger);
-    { MessageBox(, nil) Flags }
+  {$ENDIF}
+
+  { MessageBox(, nil) Flags }
     AddConst(cWindows, 'MB_OK', MB_OK);
     AddConst(cWindows, 'MB_OKCANCEL', MB_OKCANCEL);
     AddConst(cWindows, 'MB_ABORTRETRYIGNORE', MB_ABORTRETRYIGNORE);
