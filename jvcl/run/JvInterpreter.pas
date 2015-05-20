@@ -1139,12 +1139,12 @@ procedure ClearList(List: TList);
 
 { additional variant types - TVarData.VType }
 
-function varRecord: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
-function varObject: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
-function varClass: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
-function varPointer: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
-function varSet: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
-function varArray: TVarType; {$IFDEF SUPPORTS_INLINE}inline{$ENDIF};
+function varRecord: TVarType;
+function varObject: TVarType;
+function varClass: TVarType;
+function varPointer: TVarType;
+function varSet: TVarType;
+function varArray: TVarType;
 
 type
   TJvInterpreterShiftStateCastType = {$IFDEF COMPILER14_UP}Word{$ELSE}Byte{$ENDIF};
