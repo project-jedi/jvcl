@@ -1587,8 +1587,15 @@ end;
 
 procedure TJvCustomWideEditor.ClipboardCopy;
 begin
-  Clipboard.AsText := GetSelText;
-  SetClipboardBlockFormat(SelBlockFormat);
+  // Set both clipboard formats with one clipboard lock, otherwise clipboard viewers may have
+  // a hard time and even mess up the clipboard content (like mRemote).
+  Clipboard.Open;
+  try
+    Clipboard.AsText := GetSelText;
+    SetClipboardBlockFormat(SelBlockFormat);
+  finally
+    Clipboard.Close;
+  end;
 end;
 
 procedure TJvCustomWideEditor.InsertText(const Text: WideString);
