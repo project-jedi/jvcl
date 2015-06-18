@@ -310,6 +310,7 @@ type
     {$IFNDEF COMPILER14_UP}
     FUseXPThemes: Boolean;
     {$ENDIF ~COMPILER14_UP}
+    FUseThemedHighlighting: Boolean;
     FPaintInfo: TJvGridPaintInfo;
     FCell: TGridCoord; // currently selected cell
 
@@ -406,7 +407,6 @@ type
 
     function GetMaxDisplayText: string;
     function GetColumnMaxWidth: Integer;
-
   protected
     FCurrentDrawRow: Integer;
     procedure MouseLeave(Control: TControl); override;
@@ -427,6 +427,7 @@ type
     procedure DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); virtual;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField; State: TGridDrawState); override; { obsolete from Delphi 2.0 }
+    function DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean;
     function GetPaintInfo: TJvGridPaintInfo;
 
     function BeginColumnDrag(var Origin: Integer; var Destination: Integer; const MousePt: TPoint): Boolean; override;
@@ -632,6 +633,8 @@ type
     property BooleanEditor: Boolean read FBooleanEditor write SetBooleanEditor default True;
     { UseXPThemes: if true, the grid is painted in the active XP theme style }
     property UseXPThemes: Boolean read GetUseXPThemes write SetUseXPThemes {$IFDEF COMPILER14_UP} stored False{$ENDIF} default True;
+    { UseThemedHighlighting: if true, the grid's cell selection is painted with the styling color }
+    property UseThemedHighlighting: Boolean read FUseThemedHighlighting write FUseThemedHighlighting default True;
     { OnCheckIfBooleanField: event used to treat integer fields and string fields as boolean fields }
     property OnCheckIfBooleanField: TJvDBCheckIfBooleanFieldEvent read FOnCheckIfBooleanField write FOnCheckIfBooleanField;
     { OnColumnResized: event triggered each time a column is resized with the mouse }
@@ -666,6 +669,9 @@ uses
   Variants, SysUtils, Math, TypInfo, Dialogs, DBConsts, StrUtils,
   JvDBLookup,
   JvConsts, JvResources, JvThemes, JvJCLUtils, JvJVCLUtils,
+  {$IFDEF COMPILER16_UP}
+  Themes,
+  {$ENDIF COMPILER16_UP}
   {$IFDEF COMPILER7_UP}
   // => TScrollDirection, DrawArray(must be after JvJVCLUtils)
   {$ENDIF COMPILER7_UP}
@@ -1110,6 +1116,8 @@ begin
   {$IFNDEF COMPILER14_UP}
   FUseXPThemes := True;
   {$ENDIF ~COMPILER14_UP}
+  FUseThemedHighlighting := True;
+
   FPaintInfo.ColPressed := False;
   FPaintInfo.MouseInCol := -1;
   FPaintInfo.ColPressedIdx := -1;
@@ -2956,7 +2964,11 @@ begin
       UseRightToLeftAlignmentForField(Column.Field, Column.Alignment), False);
   end
   else if GetImageIndex(Column.Field) < 0 then  // Mantis 5013: Must not call inherited drawer, or the text will be painted over
+  begin
+    if DrawThemedHighlighting(Canvas, Rect) then
+      Canvas.Brush.Style := bsClear;
     inherited DefaultDrawColumnCell(Rect, DataCol, Column, State);
+  end;
 end;
 
 procedure TJvDBGrid.DefaultDataCellDraw(const Rect: TRect; Field: TField;
@@ -2983,6 +2995,39 @@ begin
   Result := AnsiSameText(AFieldName, SortedField);
 end;
 
+function TJvDBGrid.DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean;
+begin
+  {$IFDEF JVCLThemesEnabled}
+  if UseThemedHighlighting and UseXPThemes and StyleServices.Enabled and (ACanvas.Brush.Color = clHighlight) then
+  begin
+    if ACanvas.Brush.Style <> bsSolid then
+      ACanvas.Brush.Style := bsSolid;
+    {$IFDEF COMPILER16_UP}
+    if CheckWin32Version(6, 0) then
+    begin
+      ACanvas.Brush.Color := Self.Color;
+      ACanvas.FillRect(R);
+      if MultiSelect and ActiveRowSelected then
+        InflateRect(R, 1, 0);
+      StyleServices.DrawElement(ACanvas.Handle, StyleServices.GetElementDetails(tmPopupItemHot), R, nil);
+    end
+    else
+    {$ENDIF COMPILER16_UP}
+    begin
+      ACanvas.Brush.Color := $FFEFDE;
+      ACanvas.Pen.Color := $ECB57F;
+      ACanvas.Rectangle(R);
+    end;
+    ACanvas.Brush.Color := clHighlight;
+    if ACanvas.Font.Color = clHighlightText then
+      ACanvas.Font.Color := StyleServices.GetSystemColor(clWindowText);
+    Result := True;
+  end
+  else
+  {$ENDIF JVCLThemesEnabled}
+    Result := False;
+end;
+
 procedure TJvDBGrid.WriteCellText(ARect: TRect; DX, DY: Integer; const Text: string;
   Alignment: TAlignment; ARightToLeft: Boolean; FixCell: Boolean; Options: Integer = 0);
 const
@@ -2999,27 +3044,25 @@ var
 
   procedure DrawAText(CellCanvas: TCanvas);
   begin
-    with CellCanvas do
-    begin
-      DrawOptions := DT_EXPANDTABS or DT_NOPREFIX;
-      if Options <> 0 then
-        DrawOptions := DrawOptions or Options;
-      if WordWrap then
-        DrawOptions := DrawOptions or DT_WORDBREAK;
-      {$IFDEF JVCLThemesEnabled}
-      if not FixCell or not (UseXPThemes and StyleServices.Enabled) then
-      {$ENDIF JVCLThemesEnabled}
-        {$IFDEF COMPILER14_UP}
-        if not FixCell or (DrawingStyle in [gdsClassic, gdsThemed]) then
-        {$ENDIF COMPILER14_UP}
-        begin
-          if Brush.Style <> bsSolid then
-            Brush.Style := bsSolid;
-          FillRect(B);
-        end;
-      SetBkMode(Handle, TRANSPARENT);
-      DrawBiDiText(Handle, Text, R, DrawOptions, Alignment, ARightToLeft, Canvas.CanvasOrientation);
-    end;
+    DrawOptions := DT_EXPANDTABS or DT_NOPREFIX;
+    if Options <> 0 then
+      DrawOptions := DrawOptions or Options;
+    if WordWrap then
+      DrawOptions := DrawOptions or DT_WORDBREAK;
+    {$IFDEF JVCLThemesEnabled}
+    if not FixCell or not (UseXPThemes and StyleServices.Enabled) then
+    {$ENDIF JVCLThemesEnabled}
+      {$IFDEF COMPILER14_UP}
+      if not FixCell or (DrawingStyle in [gdsClassic, gdsThemed]) then
+      {$ENDIF COMPILER14_UP}
+      begin
+        if CellCanvas.Brush.Style <> bsSolid then
+          CellCanvas.Brush.Style := bsSolid;
+        if not DrawThemedHighlighting(CellCanvas, B) then
+          CellCanvas.FillRect(B);
+      end;
+    SetBkMode(CellCanvas.Handle, TRANSPARENT);
+    DrawBiDiText(CellCanvas.Handle, Text, R, DrawOptions, Alignment, ARightToLeft, Canvas.CanvasOrientation);
   end;
 
 begin
@@ -3572,6 +3615,7 @@ var
   Highlight: Boolean;
   Bmp: TBitmap;
   Field, ReadOnlyTestField: TField;
+  R: TRect;
 begin
   Field := Column.Field;
   if Assigned(DataSource) and Assigned(DataSource.DataSet) and DataSource.DataSet.Active and
@@ -3623,7 +3667,28 @@ begin
   if DefaultDrawing and (gdFocused in State) and not (csDesigning in ComponentState) and
     not (dgRowSelect in Options) and
     (ValidParentForm(Self).ActiveControl = Self) then
-    Canvas.DrawFocusRect(Rect);
+  begin
+    R := Rect;
+    {$IFDEF JVCLThemesEnabled}
+    if UseThemedHighlighting and UseXPThemes and StyleServices.Enabled then
+    begin
+      InflateRect(R, -1, -1);
+      Bmp := TBitmap.Create;
+      try
+        Bmp.Canvas.Brush.Color := clWhite;
+        Bmp.SetSize(R.Right - R.Left, R.Bottom - R.Top);
+        Bmp.Canvas.DrawFocusRect(Types.Rect(0, 0, Bmp.Width, Bmp.Height));
+        Bmp.TransparentColor := clWhite;
+        Bmp.Transparent := True;
+        Canvas.Draw(R.Left, R.Top, Bmp);
+      finally
+        Bmp.Free;
+      end;
+    end
+    else
+    {$ENDIF JVCLThemesEnabled}
+      Canvas.DrawFocusRect(R);
+  end;
 end;
 
 procedure TJvDBGrid.DrawDataCell(const Rect: TRect; Field: TField;
