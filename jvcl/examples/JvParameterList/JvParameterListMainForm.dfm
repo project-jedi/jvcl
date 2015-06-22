@@ -1689,11 +1689,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Top = 15
       Width = 272
       Height = 189
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'Tahoma'
-      HotTrackFont.Style = []
       ArrangeSettings.BorderLeft = 5
       ArrangeSettings.BorderTop = 5
       ArrangeSettings.DistanceVertical = 3
@@ -1790,11 +1785,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Top = 15
         Width = 171
         Height = 69
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
         ArrangeSettings.DistanceVertical = 3
@@ -1836,11 +1826,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Top = 15
         Width = 167
         Height = 69
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
         ArrangeSettings.DistanceVertical = 3
@@ -1882,11 +1867,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Top = 15
         Width = 347
         Height = 134
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
         ArrangeSettings.BorderLeft = 5
         ArrangeSettings.BorderTop = 5
         ArrangeSettings.DistanceVertical = 3
@@ -2035,11 +2015,6 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
       Top = 15
       Width = 272
       Height = 129
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'Tahoma'
-      HotTrackFont.Style = []
       ArrangeSettings.BorderLeft = 5
       ArrangeSettings.BorderTop = 5
       ArrangeSettings.DistanceVertical = 3
@@ -2103,6 +2078,16 @@ object JvParameterListDemoMainFrm: TJvParameterListDemoMainFrm
         Caption = 'BeforeAfterParameter'
         TabOrder = 5
         OnClick = Button20Click
+      end
+      object Button21: TButton
+        Left = 5
+        Top = 89
+        Width = 120
+        Height = 25
+        Hint = 'Demonstrates the LabelArrangeMode '
+        Caption = 'Multiple Tabs'
+        TabOrder = 6
+        OnClick = Button21Click
       end
     end
   end
