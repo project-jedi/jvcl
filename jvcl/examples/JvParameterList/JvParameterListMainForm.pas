@@ -132,6 +132,7 @@ type
     Button19: TButton;
     Button20: TButton;
     NativeCheckBox: TCheckBox;
+    Button21: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -159,6 +160,7 @@ type
     procedure Button18Click(Sender: TObject);
     procedure Button19Click(Sender: TObject);
     procedure Button20Click(Sender: TObject);
+    procedure Button21Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
   private
     procedure ShowTest3ButttonClick(const ParameterList: TJvParameterList; const Parameter: TJvBaseParameter);
@@ -887,7 +889,7 @@ begin
       Width := 160;
       Height := 80;
       VariantAsItemIndex := True;
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Gparameter := TJvGroupBoxParameter.Create(ParameterList);
     with TJvGroupBoxParameter(Gparameter) do
@@ -898,7 +900,7 @@ begin
       Height := 30;
       ArrangeSettings.AutoSize := asHeight;
       //BorderLeft := 5;
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Gparameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
     with TJvCheckBoxParameter(Parameter) do
@@ -908,7 +910,7 @@ begin
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeTable';
       Caption := 'TABLE';
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
     with TJvCheckBoxParameter(Parameter) do
@@ -918,7 +920,7 @@ begin
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeALLCOLUMNS';
       Caption := 'ALL COLUMNS';
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
     with TJvCheckBoxParameter(Parameter) do
@@ -928,7 +930,7 @@ begin
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeALLINDEXEDCOLUMNS';
       Caption := 'ALL INDEXED COLUMNS';
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
     with TJvCheckBoxParameter(Parameter) do
@@ -938,7 +940,7 @@ begin
       AsBoolean := True;
       SearchName := 'AnalyzeAddTypeAllIndexes';
       Caption := 'ALL INDEXES';
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
     with TJvIntegerEditParameter(Parameter) do
@@ -953,7 +955,7 @@ begin
       LabelArrangeMode := lamBefore;
       Width := 280;
       EditWidth := 40;
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
     with Parameter do
@@ -961,7 +963,7 @@ begin
       SearchName := 'UseDBMSStats';
       Caption := '&Use DBMS_STATS';
       Width := 160;
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvCheckBoxParameter.Create(ParameterList);
     with TJvCheckBoxParameter(Parameter) do
@@ -970,7 +972,7 @@ begin
       AsBoolean := False;
       SearchName := 'ExecuteAsJob';
       Caption := 'Execute as DBMS-Job';
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(TJvGroupBoxParameter.Create(ParameterList));
     with TJvGroupBoxParameter(Parameter) do
@@ -982,7 +984,7 @@ begin
       //BorderLeft := 5;
       DisableReasons.AddReason('ExecuteAsJob', False);
 //      ArrangeSettings.AutoSize := asHeight;
-    end; {*** WITH BaseParameter DO ***}
+    end; {*** WITH Parameter DO ***}
     ParameterList.AddParameter(Parameter);
     Parameter := TJvBaseParameter(tJvDateTimeParameter.Create(ParameterList));
     with tJvDateTimeParameter(Parameter) do
@@ -1028,15 +1030,15 @@ end;
 procedure TJvParameterListDemoMainFrm.Button16Click(Sender: TObject);
 var
   ParameterList: TJvParameterList;
-  BaseParameter: TJvBaseParameter;
+  Parameter: TJvBaseParameter;
 begin
   ParameterList := TJvParameterList.Create(self);
   {$IFDEF INCLUDE_DEVEXP_CX}
   SetDevExpressDynControlEngineProperties(ParameterList);
   {$ENDIF INCLUDE_DEVEXP_CX}
   try
-    BaseParameter := TJvBaseParameter(tJvMemoParameter.Create(ParameterList));
-    with tJvMemoParameter(BaseParameter) do
+    Parameter := TJvBaseParameter(tJvMemoParameter.Create(ParameterList));
+    with tJvMemoParameter(Parameter) do
     begin
       SearchName := 'Memo';
       Caption := 'Simple Memo';
@@ -1048,8 +1050,8 @@ begin
       WantReturns := False;
       Scrollbars := ssBoth;
       ReadOnly := TRUE;
-    end; {*** WITH BaseParameter DO ***}
-    ParameterList.AddParameter(BaseParameter);
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
     ParameterList.Messages.OkButton := 'C&opy';
     ParameterList.Messages.CancelButton := '&Cancel';
     if ParameterList.ShowParameterDialog then
@@ -1277,6 +1279,458 @@ begin
     ParameterList.Messages.OkButton := '&Ok';
     ParameterList.Messages.CancelButton := '&Cancel';
     ParameterList.MaxWidth := 310;
+    ParameterList.ShowParameterDialog;
+  finally
+    FreeAndNil(ParameterList);
+  end;
+end;
+
+procedure TJvParameterListDemoMainFrm.Button21Click(Sender: TObject);
+var
+  ParameterList: TJvParameterList;
+  Parameter: TJvBaseParameter;
+begin
+  ParameterList := TJvParameterList.Create(Self);
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  SetDevExpressDynControlEngineProperties(ParameterList);
+  {$ENDIF INCLUDE_DEVEXP_CX}
+  try
+    Parameter := TJvBaseParameter(TJvPageControlParameter.Create(ParameterList));
+    Parameter.SearchName := 'PageControl';
+    TJvPageControlParameter(Parameter).Pages.Add('Parameter');
+    TJvPageControlParameter(Parameter).Pages.Add('Script Header/Footer');
+    TJvPageControlParameter(Parameter).ArrangeSettings.AutoSize := asHeight;
+    Parameter.Width := 530;
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    Parameter.Caption := 'Include Script Header';
+    Parameter.SearchName := 'IncludeScriptHeader';
+    Parameter.ParentParameterName := 'PageControl.Script Header/Footer';
+    Parameter.Width := 160;
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    Parameter.Caption := 'Include Script Footer';
+    Parameter.SearchName := 'IncludeScriptFooter';
+    Parameter.ParentParameterName := 'PageControl.Script Header/Footer';
+    Parameter.Width := 160;
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
+    Parameter.Caption := 'Script Header';
+    Parameter.SearchName := 'ScriptHeader';
+    Parameter.ParentParameterName := 'PageControl.Script Header/Footer';
+    Parameter.Width := 520;
+    Parameter.Height := 80;
+    Parameter.DisableReasons.AddReason('IncludeScriptHeader', False);
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := TJvBaseParameter(TJvMemoParameter.Create(ParameterList));
+    Parameter.Caption := 'Script Footer';
+    Parameter.SearchName := 'ScriptFooter';
+    Parameter.ParentParameterName := 'PageControl.Script Header/Footer';
+    Parameter.Width := 520;
+    Parameter.Height := 80;
+    Parameter.DisableReasons.AddReason('IncludeScriptFooter', False);
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := TJvBaseParameter(TJvGroupBoxParameter.Create(ParameterList));
+    with TJvGroupBoxParameter(Parameter) do
+    begin
+      Caption := 'Destination';
+      SearchName := 'Destination';
+      Width := 510;
+      Height := 40;
+      Height := Height + 25;
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'CopyToClipboard';
+      Caption := 'Clipboard';
+      ParentParameterName := 'Destination';
+      Width := 80;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'File';
+      SearchName := 'SaveToFile';
+      ParentParameterName := 'Destination';
+      Width := 50;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'Append';
+      SearchName := 'AppendToFile';
+      ParentParameterName := 'Destination';
+      DisableReasons.AddReason('SaveToFile', False);
+      Width := 60;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'Add Spool';
+      SearchName := 'AddSpool';
+      ParentParameterName := 'Destination';
+      Width := 75;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'Add Echo Off';
+      SearchName := 'AddEchoOff';
+      ParentParameterName := 'Destination';
+      Width := 90;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'Add Define Off';
+      SearchName := 'AddDefineOff';
+      ParentParameterName := 'Destination';
+      Width := 95;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(tJvFileNameParameter.Create(ParameterList));
+    with tJvFileNameParameter(Parameter) do
+    begin
+      Caption := 'Filename:';
+      SearchName := 'Filename';
+      ParentParameterName := 'Destination';
+      AsString := FileName;
+      DialogKind := jdkSave;
+      DefaultExt := 'sql';
+      Filter := 'SQL-Files (*.sql)|*.sql|All Files (*.*)|*.*';
+      FilterIndex := 0;
+      DisableReasons.AddReason('SaveToFile', False);
+      DialogOptions := [ofNoChangeDir, ofNoReadOnlyReturn, ofNoTestFileCreate,
+        ofPathMustExist, ofHideReadOnly, ofOverwritePrompt];
+      Width := 495;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with (Parameter) do
+    begin
+      Caption := 'Include DBMS_APPLICATION_INFO';
+      SearchName := 'IncludeDBMSApplicationInfo';
+      Width := 230;                 
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with (Parameter) do
+    begin
+      Caption := 'Include PROMPT';
+      SearchName := 'IncludePrompt';
+      Width := 220;           
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with (Parameter) do
+    begin
+      Caption := 'Oracle 7 Compatible Mode';
+      SearchName := 'Oracle7Compatible';
+      Width := 450;        
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'NotNullFieldsFirst';
+      Caption := 'Not Null Fields First';
+      DisableReasons.AddReason('IncludeFieldList', False);
+      Width := 160;       
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeTableSpace';
+      Caption := 'Include Tablespace';
+      Width := 160;             
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeStorage';
+      Caption := 'Include Storage Clause';
+      Width := 160;            
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludePartitions';
+      Caption := 'Include Partitions';
+      Width := 160;           
+      ParentParameterName := 'PageControl.Parameter';
+      DisableReasons.AddReason('Oracle7Compatible', True);
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeParallel';
+      Caption := 'Include Parallel Clause';
+      Width := 160;               
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeLogging';
+      Caption := 'Include Logging Clause';
+      Width := 160;          
+      ParentParameterName := 'PageControl.Parameter';
+      DisableReasons.AddReason('Oracle7Compatible', True);
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeCompress';
+      Caption := 'Include Compress';
+      Width := 160;               
+      ParentParameterName := 'PageControl.Parameter';
+      DisableReasons.AddReason('Oracle7Compatible', True);
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeMonitoring';
+      Caption := 'Include Monitoring Clause';
+      Width := 160;               
+      ParentParameterName := 'PageControl.Parameter';
+      DisableReasons.AddReason('Oracle7Compatible', True);
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeLobSegments';
+      Caption := 'Include Lob Segments';
+      Width := 160;                
+      ParentParameterName := 'PageControl.Parameter';
+      DisableReasons.AddReason('Oracle7Compatible', True);
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeIndexes';
+      Caption := 'Include Indexes';
+      Width := 160;              
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeConstraints';
+      Caption := 'Include Constraints';
+      Width := 160;             
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeConstraintIndexes';
+      Caption := 'Include Constraint Indexes';
+      DisableReasons.AddReason('IncludeConstraints', False);
+      Width := 160;                
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeRefConstraints';
+      Caption := 'Include Ref. Constraints';
+      DisableReasons.AddReason('IncludeConstraints', False);
+      Width := 160;         
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeTriggers';
+      Caption := 'Include Triggers';
+      Width := 160;          
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeSequences';
+      Caption := 'Include Sequences';
+      Width := 160;             
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeSnapshotLogs';
+      Caption := 'Include Snapshot Logs';
+      Width := 160;           
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      SearchName := 'IncludeTableComments';
+      Caption := 'Include Table Comments';
+      Width := 160;           
+      ParentParameterName := 'PageControl.Parameter';
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    Parameter.SearchName := 'StorageOptimize';
+    Parameter.Caption := 'Optimize Storage Parameter';
+    Parameter.DisableReasons.AddReason('IncludeStorage', False);
+    Parameter.ParentParameterName := 'PageControl.Parameter';
+    Parameter.Width := 160;
+    ParameterList.AddParameter(Parameter);
+
+    Parameter := ParameterList.ParameterByName('PageControl');
+    if Assigned(Parameter) then
+      TJvPageControlParameter(Parameter).Pages.Insert(1,'Storage Optimization');
+    Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
+    with TJvIntegerEditParameter(Parameter) do
+    begin
+      SearchName := 'StorageNoOfBaseExtents';
+      Caption := 'No Of Extents: ';
+      ParentParameterName := 'PageControl.Storage Optimization';
+      DisableReasons.AddReason('IncludeStorage', False);
+      DisableReasons.AddReason('StorageOptimize', False);
+      LabelArrangeMode := lamBefore;
+      MinValue := 1;
+      Width := 160;
+      LabelWidth := 95;
+      EditWidth := 30;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvDoubleEditParameter.Create(ParameterList));
+    with TJvDoubleEditParameter(Parameter) do
+    begin
+      SearchName := 'StorageSizeFactor';
+      Caption := 'Size Factor: ';
+      ParentParameterName := 'PageControl.Storage Optimization';
+      DisableReasons.AddReason('IncludeStorage', False);
+      DisableReasons.AddReason('StorageOptimize', False);
+      LabelArrangeMode := lamBefore;
+      Width := 160;
+      LabelWidth := 95;
+      EditWidth := 30;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvDoubleEditParameter.Create(ParameterList));
+    with TJvIntegerEditParameter(Parameter) do
+    begin
+      SearchName := 'StorageNextExtentFactor';
+      Caption := 'Next Extent Factor: ';
+      ParentParameterName := 'PageControl.Storage Optimization';
+      DisableReasons.AddReason('IncludeStorage', False);
+      DisableReasons.AddReason('StorageOptimize', False);
+      LabelArrangeMode := lamBefore;
+      MinValue := 0;
+      Width := 160;
+      LabelWidth := 95;
+      EditWidth := 30;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
+    with TJvIntegerEditParameter(Parameter) do
+    begin
+      SearchName := 'StorageBaseExtentFactor';
+      Caption := 'Base Extent Factor (K): ';
+      ParentParameterName := 'PageControl.Storage Optimization';
+      DisableReasons.AddReason('IncludeStorage', False);
+      DisableReasons.AddReason('StorageOptimize', False);
+      LabelArrangeMode := lamBefore;
+      MinValue := 1;
+      Width := 160;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
+    with TJvIntegerEditParameter(Parameter) do
+    begin
+      SearchName := 'StorageMinExtentSize';
+      Caption := 'Min Extent Size (K): ';
+      DisableReasons.AddReason('StorageOptimize', False);
+      DisableReasons.AddReason('IncludeStorage', False);
+      ParentParameterName := 'PageControl.Storage Optimization';
+      LabelArrangeMode := lamBefore;
+      MinValue := 1;
+      Width := 160;
+      LabelWidth := 95;
+      EditWidth := 60;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvIntegerEditParameter.Create(ParameterList));
+    with TJvIntegerEditParameter(Parameter) do
+    begin
+      SearchName := 'StorageMaxExtentSize';
+      Caption := 'Max Extent Size (K): ';
+      DisableReasons.AddReason('StorageOptimize', False);
+      DisableReasons.AddReason('IncludeStorage', False);
+      ParentParameterName := 'PageControl.Storage Optimization';
+      LabelArrangeMode := lamBefore;
+      MinValue := 0;
+      Width := 160;
+      LabelWidth := 95;
+      EditWidth := 60;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'Remove PCT Increase';
+      SearchName := 'StorageRemovePCTIncrease';
+      DisableReasons.AddReason('StorageOptimize', False);
+      DisableReasons.AddReason('IncludeStorage', False);
+      ParentParameterName := 'PageControl.Storage Optimization';
+      Width := 160;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    Parameter := TJvBaseParameter(TJvCheckBoxParameter.Create(ParameterList));
+    with Parameter do
+    begin
+      Caption := 'Size 2^X K Based';
+      SearchName := 'StorageOptimize2xBased';
+      DisableReasons.AddReason('IncludeStorage', False);
+      DisableReasons.AddReason('StorageOptimize', False);
+      ParentParameterName := 'PageControl.Storage Optimization';
+      Width := 160;
+    end; {*** WITH Parameter DO ***}
+    ParameterList.AddParameter(Parameter);
+    
+    ParameterList.Messages.OkButton := '&Ok';
+    ParameterList.Messages.CancelButton := '&Cancel';
+    ParameterList.MaxWidth := 610;
     ParameterList.ShowParameterDialog;
   finally
     FreeAndNil(ParameterList);
