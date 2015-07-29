@@ -2575,7 +2575,7 @@ function LoadOLEDragCursors: Boolean;
 const
   cOle32DLL = 'ole32.dll';
 var
-  Handle: Cardinal;
+  Handle: HMODULE;
 begin
   if OLEDragCursorsLoaded then
   begin
