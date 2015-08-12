@@ -3676,7 +3676,8 @@ begin
       Bmp := TBitmap.Create;
       try
         Bmp.Canvas.Brush.Color := clWhite;
-        Bmp.SetSize(R.Right - R.Left, R.Bottom - R.Top);
+        Bmp.Width := R.Right - R.Left;
+        Bmp.Height := R.Bottom - R.Top;
         Bmp.Canvas.DrawFocusRect(Types.Rect(0, 0, Bmp.Width, Bmp.Height));
         Bmp.TransparentColor := clWhite;
         Bmp.Transparent := True;
