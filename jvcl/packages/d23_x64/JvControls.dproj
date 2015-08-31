@@ -1,0 +1,195 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{FA36E6EE-9969-480E-B60D-09412CA9B183}</ProjectGuid>
+        <MainSource>JvControls.dpk</MainSource>
+        <ProjectVersion>17.3</ProjectVersion>
+        <Config Condition="'$(Config)'==''">Release</Config>
+        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+        <FrameworkType>VCL</FrameworkType>
+        <Base>True</Base>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <AppType>Package</AppType>
+        <TargetedPlatforms>2</TargetedPlatforms>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <SanitizedProjectName>JvControls</SanitizedProjectName>
+        <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <DCC_Description>JVCL Visual Controls Runtime Package</DCC_Description>
+        <DCC_ImageBase>4B000000</DCC_ImageBase>
+        <DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DllSuffix>230</DllSuffix>
+        <DCC_Platform>x86</DCC_Platform>
+        <DCC_UnitSearchPath>..\..\run;..\..\common;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_ResourcePath>..\..\resources;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <GenDll>true</GenDll>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <GenPackage>true</GenPackage>
+        <DCC_DependencyCheckOutputName>$(_EnvPackageOutput)\JvControls.bpl</DCC_DependencyCheckOutputName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_UnitSearchPath>..\..\lib\d23\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win32</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win32</DCC_DcuOutput>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+        <DCC_UnitSearchPath>..\..\lib\d23\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win32\debug</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win32\debug</DCC_DcuOutput>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="JvCore.dcp"/>
+        <DCCReference Include="JvStdCtrls.dcp"/>
+        <DCCReference Include="JvSystem.dcp"/>
+        <DCCReference Include="Jcl.dcp"/>
+        <DCCReference Include="JclVcl.dcp"/>
+        <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="vcl.dcp"/>
+        <DCCReference Include="vclx.dcp"/>
+        <DCCReference Include="..\..\run\JvActionsEngine.pas"/>
+        <DCCReference Include="..\..\run\JvControlActions.pas"/>
+        <DCCReference Include="..\..\run\JvControlActionsEngine.pas"/>
+        <DCCReference Include="..\..\run\JvControlActionsEngineStringGrid.pas"/>
+        <DCCReference Include="..\..\run\JvControlActionsEngineTreeView.pas"/>
+        <DCCReference Include="..\..\run\JvCharMap.pas"/>
+        <DCCReference Include="..\..\run\JvClock.pas"/>
+        <DCCReference Include="..\..\run\JvColorBox.pas"/>
+        <DCCReference Include="..\..\run\JvColorButton.pas"/>
+        <DCCReference Include="..\..\run\JvColorForm.pas"/>
+        <DCCReference Include="..\..\run\JvComboListBox.pas"/>
+        <DCCReference Include="..\..\run\JvComponentPanel.pas"/>
+        <DCCReference Include="..\..\run\JvContentScroller.pas"/>
+        <DCCReference Include="..\..\run\JvDice.pas"/>
+        <DCCReference Include="..\..\run\JvDriveCtrls.pas"/>
+        <DCCReference Include="..\..\run\JvFooter.pas"/>
+        <DCCReference Include="..\..\run\JvGroupHeader.pas"/>
+        <DCCReference Include="..\..\run\JvHint.pas"/>
+        <DCCReference Include="..\..\run\JvHtControls.pas"/>
+        <DCCReference Include="..\..\run\JvImageDrawThread.pas"/>
+        <DCCReference Include="..\..\run\JvInstallLabel.pas"/>
+        <DCCReference Include="..\..\run\JvItemsPanel.pas"/>
+        <DCCReference Include="..\..\run\JvListComb.pas"/>
+        <DCCReference Include="..\..\run\JvMovableBevel.pas"/>
+        <DCCReference Include="..\..\run\JvPageScroller.pas"/>
+        <DCCReference Include="..\..\run\JvPlaylist.pas"/>
+        <DCCReference Include="..\..\run\JvRegistryTreeview.pas"/>
+        <DCCReference Include="..\..\run\JvRollOut.pas"/>
+        <DCCReference Include="..\..\run\JvScrollMax.pas"/>
+        <DCCReference Include="..\..\run\JvScrollPanel.pas"/>
+        <DCCReference Include="..\..\run\JvScrollText.pas"/>
+        <DCCReference Include="..\..\run\JvSpacer.pas"/>
+        <DCCReference Include="..\..\run\JvSpeedbar.pas"/>
+        <DCCReference Include="..\..\run\JvSpeedbarSetupForm.pas"/>
+        <DCCReference Include="..\..\run\JvSplit.pas"/>
+        <DCCReference Include="..\..\run\JvSplitter.pas"/>
+        <DCCReference Include="..\..\run\JvSwitch.pas"/>
+        <DCCReference Include="..\..\run\JvSyncSplitter.pas"/>
+        <DCCReference Include="..\..\run\JvTransparentButton.pas"/>
+        <DCCReference Include="..\..\run\JvUninstallControls.pas"/>
+        <DCCReference Include="..\..\run\JvWinampLabel.pas"/>
+        <DCCReference Include="..\..\run\JvZoom.pas"/>
+        <DCCReference Include="..\..\run\JvArrowButton.pas"/>
+        <DCCReference Include="..\..\run\JvaScrollText.pas"/>
+        <DCCReference Include="..\..\run\JvBehaviorLabel.pas"/>
+        <DCCReference Include="..\..\run\JvButtons.pas"/>
+        <DCCReference Include="..\..\run\JvCaptionButton.pas"/>
+        <DCCReference Include="..\..\run\JvCaptionPanel.pas"/>
+        <DCCReference Include="..\..\run\JvOfficeColorButton.pas"/>
+        <DCCReference Include="..\..\run\JvOfficeColorPanel.pas"/>
+        <DCCReference Include="..\..\run\JvOfficeColorForm.pas"/>
+        <DCCReference Include="..\..\run\JvNetscapeSplitter.pas"/>
+        <DCCReference Include="..\..\run\JvRuler.pas"/>
+        <DCCReference Include="..\..\run\JvVersionControlActions.pas"/>
+        <DCCReference Include="..\..\run\JvVersionControlActionsEngine.pas"/>
+        <DCCReference Include="..\..\run\JvVersionControlActionsEngineFileListBox.pas"/>
+        <DCCReference Include="..\..\run\JvXMLBrowser.pas"/>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType>Package</Borland.ProjectType>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Parameters>
+                    <Parameters Name="UseLauncher">False</Parameters>
+                    <Parameters Name="LoadAllSymbols">True</Parameters>
+                    <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                </Parameters>
+                <VersionInfo>
+                    <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+                    <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+                    <VersionInfo Name="MajorVer">3</VersionInfo>
+                    <VersionInfo Name="MinorVer">41</VersionInfo>
+                    <VersionInfo Name="Release">0</VersionInfo>
+                    <VersionInfo Name="Build">0</VersionInfo>
+                    <VersionInfo Name="Debug">False</VersionInfo>
+                    <VersionInfo Name="PreRelease">False</VersionInfo>
+                    <VersionInfo Name="Special">False</VersionInfo>
+                    <VersionInfo Name="Private">False</VersionInfo>
+                    <VersionInfo Name="DLL">False</VersionInfo>
+                    <VersionInfo Name="Locale">1033</VersionInfo>
+                    <VersionInfo Name="CodePage">1252</VersionInfo>
+                </VersionInfo>
+                <VersionInfoKeys>
+                    <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileDescription">JVCL Visual Controls Runtime Package</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="InternalName">JvControls</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalTrademarks"/>
+                    <VersionInfoKeys Name="OriginalFilename">JvControls230.bpl</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
+                </VersionInfoKeys>
+                <Source>
+                    <Source Name="MainSource">JvControls.dpk</Source>
+                </Source>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="Android">False</Platform>
+                <Platform value="iOSDevice">False</Platform>
+                <Platform value="iOSSimulator" ActiveMobileDevice="iPhone">False</Platform>
+                <Platform value="OSX32">False</Platform>
+                <Platform value="Win32">False</Platform>
+                <Platform value="Win64">True</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+</Project>

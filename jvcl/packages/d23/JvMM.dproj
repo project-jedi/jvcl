@@ -1,0 +1,174 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{934525BD-4F63-48DA-AA9E-027E6E6BC560}</ProjectGuid>
+        <MainSource>JvMM.dpk</MainSource>
+        <ProjectVersion>17.3</ProjectVersion>
+        <Config Condition="'$(Config)'==''">Release</Config>
+        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+        <FrameworkType>VCL</FrameworkType>
+        <Base>True</Base>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <AppType>Package</AppType>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <SanitizedProjectName>JvMM</SanitizedProjectName>
+        <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <DCC_Description>JVCL Multimedia and Image Components Runtime Package</DCC_Description>
+        <DCC_ImageBase>49900000</DCC_ImageBase>
+        <DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DllSuffix>230</DllSuffix>
+        <DCC_Platform>x86</DCC_Platform>
+        <DCC_UnitSearchPath>..\..\run;..\..\common;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_ResourcePath>..\..\resources;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <GenDll>true</GenDll>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <GenPackage>true</GenPackage>
+        <DCC_DependencyCheckOutputName>$(_EnvPackageOutput)\JvMM.bpl</DCC_DependencyCheckOutputName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_UnitSearchPath>..\..\lib\d23\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win32</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win32</DCC_DcuOutput>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+        <DCC_UnitSearchPath>..\..\lib\d23\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win32\debug</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win32\debug</DCC_DcuOutput>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="JvCore.dcp"/>
+        <DCCReference Include="JvControls.dcp"/>
+        <DCCReference Include="JvSystem.dcp"/>
+        <DCCReference Include="JvStdCtrls.dcp"/>
+        <DCCReference Include="Jcl.dcp"/>
+        <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="vcl.dcp"/>
+        <DCCReference Include="vclx.dcp"/>
+        <DCCReference Include="..\..\run\JvAVICapture.pas"/>
+        <DCCReference Include="..\..\run\JvBmpAnimator.pas"/>
+        <DCCReference Include="..\..\run\JvGIF.pas"/>
+        <DCCReference Include="..\..\run\JvGIFCtrl.pas"/>
+        <DCCReference Include="..\..\run\JvGradient.pas"/>
+        <DCCReference Include="..\..\run\JvGradientHeaderPanel.pas"/>
+        <DCCReference Include="..\..\run\JvIconList.pas"/>
+        <DCCReference Include="..\..\run\JvId3v1.pas"/>
+        <DCCReference Include="..\..\run\JvId3v2.pas"/>
+        <DCCReference Include="..\..\run\JvID3v2Base.pas"/>
+        <DCCReference Include="..\..\run\JvId3v2Types.pas"/>
+        <DCCReference Include="..\..\run\JvImageRotate.pas"/>
+        <DCCReference Include="..\..\run\JvImageTransform.pas"/>
+        <DCCReference Include="..\..\run\JvImageSquare.pas"/>
+        <DCCReference Include="..\..\run\JvPcx.pas"/>
+        <DCCReference Include="..\..\run\JvPicClip.pas"/>
+        <DCCReference Include="..\..\run\JvSlider.pas"/>
+        <DCCReference Include="..\..\run\JvSpecialImage.pas"/>
+        <DCCReference Include="..\..\run\JvSpecialProgress.pas"/>
+        <DCCReference Include="..\..\run\JvSplashWindow.pas"/>
+        <DCCReference Include="..\..\run\JvStarfield.pas"/>
+        <DCCReference Include="..\..\run\JvVirtualKeySelectionFrame.pas"/>
+        <DCCReference Include="..\..\run\JvWaitingGradient.pas"/>
+        <DCCReference Include="..\..\run\JvWaitingProgress.pas"/>
+        <DCCReference Include="..\..\run\JvWavePlayer.pas"/>
+        <DCCReference Include="..\..\run\JvAni.pas"/>
+        <DCCReference Include="..\..\run\JvCursor.pas"/>
+        <DCCReference Include="..\..\run\JvAnimate.pas"/>
+        <DCCReference Include="..\..\run\JvAnimatedImage.pas"/>
+        <DCCReference Include="..\..\run\JvColorTrackbar.pas"/>
+        <DCCReference Include="..\..\run\JvFullColorSpaces.pas"/>
+        <DCCReference Include="..\..\run\JvFullColorCtrls.pas"/>
+        <DCCReference Include="..\..\run\JvFullColorDialogs.pas"/>
+        <DCCReference Include="..\..\run\JvFullColorRotate.pas"/>
+        <DCCReference Include="..\..\run\JvFullColorForm.pas"/>
+        <DCCReference Include="..\..\run\JvFullColorCircleForm.pas"/>
+        <DCCReference Include="..\..\run\VFW.pas"/>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType>Package</Borland.ProjectType>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Parameters>
+                    <Parameters Name="UseLauncher">False</Parameters>
+                    <Parameters Name="LoadAllSymbols">True</Parameters>
+                    <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                </Parameters>
+                <VersionInfo>
+                    <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+                    <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+                    <VersionInfo Name="MajorVer">3</VersionInfo>
+                    <VersionInfo Name="MinorVer">41</VersionInfo>
+                    <VersionInfo Name="Release">0</VersionInfo>
+                    <VersionInfo Name="Build">0</VersionInfo>
+                    <VersionInfo Name="Debug">False</VersionInfo>
+                    <VersionInfo Name="PreRelease">False</VersionInfo>
+                    <VersionInfo Name="Special">False</VersionInfo>
+                    <VersionInfo Name="Private">False</VersionInfo>
+                    <VersionInfo Name="DLL">False</VersionInfo>
+                    <VersionInfo Name="Locale">1033</VersionInfo>
+                    <VersionInfo Name="CodePage">1252</VersionInfo>
+                </VersionInfo>
+                <VersionInfoKeys>
+                    <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileDescription">JVCL Multimedia and Image Components Runtime Package</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="InternalName">JvMM</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalTrademarks"/>
+                    <VersionInfoKeys Name="OriginalFilename">JvMM230.bpl</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
+                </VersionInfoKeys>
+                <Source>
+                    <Source Name="MainSource">JvMM.dpk</Source>
+                </Source>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="Android">False</Platform>
+                <Platform value="iOSDevice">False</Platform>
+                <Platform value="iOSSimulator" ActiveMobileDevice="iPhone">False</Platform>
+                <Platform value="OSX32">False</Platform>
+                <Platform value="Win32">True</Platform>
+                <Platform value="Win64">False</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+</Project>

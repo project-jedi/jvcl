@@ -1,0 +1,32 @@
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 3,41,0,0
+PRODUCTVERSION 3,41,0,0
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS VOS__WINDOWS32
+ FILETYPE VFT_DLL
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+         BLOCK "040904E4"
+         BEGIN
+              VALUE "CompanyName", "Project JEDI\0"
+              VALUE "FileDescription", "JVCL Band Objects Runtime Package\0"
+              VALUE "FileVersion", "3.41.0.0\0"
+              VALUE "InternalName", "JvBands\0"
+              VALUE "LegalCopyright", "Copyright (C) 1999, 2013 Project JEDI\0"
+              VALUE "OriginalFilename", "JvBands230.bpl\0"
+              VALUE "ProductName", "JEDI Visual Component Library\0"
+              VALUE "ProductVersion", "3.41 Build 0\0"
+         END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+         VALUE "Translation", 0x0409, 1252
+    END
+END

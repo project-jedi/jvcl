@@ -1,0 +1,674 @@
+	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{f398f145-41ba-4b0b-a9a1-dff93054d01c}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="D23\JvCore.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCoreDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvSystem.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvSystemDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvStdCtrls.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvStdCtrlsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvControls.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvControlsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCmp.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCmpDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCustom.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCustomDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDlgs.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDlgsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCrypt.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvCryptDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvMM.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvMMDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvNet.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvNetDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvAppFrm.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvAppFrmDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDB.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDBDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPascalInterpreter.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPascalInterpreterDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvBands.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvBandsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPluginSystem.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPluginSystemDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvJans.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvJansDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvGlobus.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvGlobusDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPrintPreview.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPrintPreviewDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPageComps.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvPageCompsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvWizards.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvWizardsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvTimeFramework.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvTimeFrameworkDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvHMI.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvHMIDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvManagedThreads.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvManagedThreadsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvXPCtrls.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvXPCtrlsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDocking.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDockingDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDotNetCtrls.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvDotNetCtrlsDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvRuntimeDesign.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="D23\JvRuntimeDesignDesign.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<BorlandProject>
+					<Default.Personality/>
+				</BorlandProject>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="JvCore">
+			<MSBuild Projects="D23\JvCore.dproj"/>
+		</Target>
+		<Target Name="JvCore:Clean">
+			<MSBuild Projects="D23\JvCore.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCore:Make">
+			<MSBuild Projects="D23\JvCore.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCoreDesign">
+			<MSBuild Projects="D23\JvCoreDesign.dproj"/>
+		</Target>
+		<Target Name="JvCoreDesign:Clean">
+			<MSBuild Projects="D23\JvCoreDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCoreDesign:Make">
+			<MSBuild Projects="D23\JvCoreDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvSystem">
+			<MSBuild Projects="D23\JvSystem.dproj"/>
+		</Target>
+		<Target Name="JvSystem:Clean">
+			<MSBuild Projects="D23\JvSystem.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvSystem:Make">
+			<MSBuild Projects="D23\JvSystem.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvSystemDesign">
+			<MSBuild Projects="D23\JvSystemDesign.dproj"/>
+		</Target>
+		<Target Name="JvSystemDesign:Clean">
+			<MSBuild Projects="D23\JvSystemDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvSystemDesign:Make">
+			<MSBuild Projects="D23\JvSystemDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvStdCtrls">
+			<MSBuild Projects="D23\JvStdCtrls.dproj"/>
+		</Target>
+		<Target Name="JvStdCtrls:Clean">
+			<MSBuild Projects="D23\JvStdCtrls.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvStdCtrls:Make">
+			<MSBuild Projects="D23\JvStdCtrls.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvStdCtrlsDesign">
+			<MSBuild Projects="D23\JvStdCtrlsDesign.dproj"/>
+		</Target>
+		<Target Name="JvStdCtrlsDesign:Clean">
+			<MSBuild Projects="D23\JvStdCtrlsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvStdCtrlsDesign:Make">
+			<MSBuild Projects="D23\JvStdCtrlsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvControls">
+			<MSBuild Projects="D23\JvControls.dproj"/>
+		</Target>
+		<Target Name="JvControls:Clean">
+			<MSBuild Projects="D23\JvControls.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvControls:Make">
+			<MSBuild Projects="D23\JvControls.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvControlsDesign">
+			<MSBuild Projects="D23\JvControlsDesign.dproj"/>
+		</Target>
+		<Target Name="JvControlsDesign:Clean">
+			<MSBuild Projects="D23\JvControlsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvControlsDesign:Make">
+			<MSBuild Projects="D23\JvControlsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCmp">
+			<MSBuild Projects="D23\JvCmp.dproj"/>
+		</Target>
+		<Target Name="JvCmp:Clean">
+			<MSBuild Projects="D23\JvCmp.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCmp:Make">
+			<MSBuild Projects="D23\JvCmp.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCmpDesign">
+			<MSBuild Projects="D23\JvCmpDesign.dproj"/>
+		</Target>
+		<Target Name="JvCmpDesign:Clean">
+			<MSBuild Projects="D23\JvCmpDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCmpDesign:Make">
+			<MSBuild Projects="D23\JvCmpDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCustom">
+			<MSBuild Projects="D23\JvCustom.dproj"/>
+		</Target>
+		<Target Name="JvCustom:Clean">
+			<MSBuild Projects="D23\JvCustom.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCustom:Make">
+			<MSBuild Projects="D23\JvCustom.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCustomDesign">
+			<MSBuild Projects="D23\JvCustomDesign.dproj"/>
+		</Target>
+		<Target Name="JvCustomDesign:Clean">
+			<MSBuild Projects="D23\JvCustomDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCustomDesign:Make">
+			<MSBuild Projects="D23\JvCustomDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDlgs">
+			<MSBuild Projects="D23\JvDlgs.dproj"/>
+		</Target>
+		<Target Name="JvDlgs:Clean">
+			<MSBuild Projects="D23\JvDlgs.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDlgs:Make">
+			<MSBuild Projects="D23\JvDlgs.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDlgsDesign">
+			<MSBuild Projects="D23\JvDlgsDesign.dproj"/>
+		</Target>
+		<Target Name="JvDlgsDesign:Clean">
+			<MSBuild Projects="D23\JvDlgsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDlgsDesign:Make">
+			<MSBuild Projects="D23\JvDlgsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCrypt">
+			<MSBuild Projects="D23\JvCrypt.dproj"/>
+		</Target>
+		<Target Name="JvCrypt:Clean">
+			<MSBuild Projects="D23\JvCrypt.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCrypt:Make">
+			<MSBuild Projects="D23\JvCrypt.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvCryptDesign">
+			<MSBuild Projects="D23\JvCryptDesign.dproj"/>
+		</Target>
+		<Target Name="JvCryptDesign:Clean">
+			<MSBuild Projects="D23\JvCryptDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvCryptDesign:Make">
+			<MSBuild Projects="D23\JvCryptDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvMM">
+			<MSBuild Projects="D23\JvMM.dproj"/>
+		</Target>
+		<Target Name="JvMM:Clean">
+			<MSBuild Projects="D23\JvMM.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvMM:Make">
+			<MSBuild Projects="D23\JvMM.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvMMDesign">
+			<MSBuild Projects="D23\JvMMDesign.dproj"/>
+		</Target>
+		<Target Name="JvMMDesign:Clean">
+			<MSBuild Projects="D23\JvMMDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvMMDesign:Make">
+			<MSBuild Projects="D23\JvMMDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvNet">
+			<MSBuild Projects="D23\JvNet.dproj"/>
+		</Target>
+		<Target Name="JvNet:Clean">
+			<MSBuild Projects="D23\JvNet.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvNet:Make">
+			<MSBuild Projects="D23\JvNet.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvNetDesign">
+			<MSBuild Projects="D23\JvNetDesign.dproj"/>
+		</Target>
+		<Target Name="JvNetDesign:Clean">
+			<MSBuild Projects="D23\JvNetDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvNetDesign:Make">
+			<MSBuild Projects="D23\JvNetDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvAppFrm">
+			<MSBuild Projects="D23\JvAppFrm.dproj"/>
+		</Target>
+		<Target Name="JvAppFrm:Clean">
+			<MSBuild Projects="D23\JvAppFrm.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvAppFrm:Make">
+			<MSBuild Projects="D23\JvAppFrm.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvAppFrmDesign">
+			<MSBuild Projects="D23\JvAppFrmDesign.dproj"/>
+		</Target>
+		<Target Name="JvAppFrmDesign:Clean">
+			<MSBuild Projects="D23\JvAppFrmDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvAppFrmDesign:Make">
+			<MSBuild Projects="D23\JvAppFrmDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDB">
+			<MSBuild Projects="D23\JvDB.dproj"/>
+		</Target>
+		<Target Name="JvDB:Clean">
+			<MSBuild Projects="D23\JvDB.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDB:Make">
+			<MSBuild Projects="D23\JvDB.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDBDesign">
+			<MSBuild Projects="D23\JvDBDesign.dproj"/>
+		</Target>
+		<Target Name="JvDBDesign:Clean">
+			<MSBuild Projects="D23\JvDBDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDBDesign:Make">
+			<MSBuild Projects="D23\JvDBDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPascalInterpreter">
+			<MSBuild Projects="D23\JvPascalInterpreter.dproj"/>
+		</Target>
+		<Target Name="JvPascalInterpreter:Clean">
+			<MSBuild Projects="D23\JvPascalInterpreter.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPascalInterpreter:Make">
+			<MSBuild Projects="D23\JvPascalInterpreter.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPascalInterpreterDesign">
+			<MSBuild Projects="D23\JvPascalInterpreterDesign.dproj"/>
+		</Target>
+		<Target Name="JvPascalInterpreterDesign:Clean">
+			<MSBuild Projects="D23\JvPascalInterpreterDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPascalInterpreterDesign:Make">
+			<MSBuild Projects="D23\JvPascalInterpreterDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvBands">
+			<MSBuild Projects="D23\JvBands.dproj"/>
+		</Target>
+		<Target Name="JvBands:Clean">
+			<MSBuild Projects="D23\JvBands.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvBands:Make">
+			<MSBuild Projects="D23\JvBands.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvBandsDesign">
+			<MSBuild Projects="D23\JvBandsDesign.dproj"/>
+		</Target>
+		<Target Name="JvBandsDesign:Clean">
+			<MSBuild Projects="D23\JvBandsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvBandsDesign:Make">
+			<MSBuild Projects="D23\JvBandsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPluginSystem">
+			<MSBuild Projects="D23\JvPluginSystem.dproj"/>
+		</Target>
+		<Target Name="JvPluginSystem:Clean">
+			<MSBuild Projects="D23\JvPluginSystem.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPluginSystem:Make">
+			<MSBuild Projects="D23\JvPluginSystem.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPluginSystemDesign">
+			<MSBuild Projects="D23\JvPluginSystemDesign.dproj"/>
+		</Target>
+		<Target Name="JvPluginSystemDesign:Clean">
+			<MSBuild Projects="D23\JvPluginSystemDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPluginSystemDesign:Make">
+			<MSBuild Projects="D23\JvPluginSystemDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvJans">
+			<MSBuild Projects="D23\JvJans.dproj"/>
+		</Target>
+		<Target Name="JvJans:Clean">
+			<MSBuild Projects="D23\JvJans.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvJans:Make">
+			<MSBuild Projects="D23\JvJans.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvJansDesign">
+			<MSBuild Projects="D23\JvJansDesign.dproj"/>
+		</Target>
+		<Target Name="JvJansDesign:Clean">
+			<MSBuild Projects="D23\JvJansDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvJansDesign:Make">
+			<MSBuild Projects="D23\JvJansDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvGlobus">
+			<MSBuild Projects="D23\JvGlobus.dproj"/>
+		</Target>
+		<Target Name="JvGlobus:Clean">
+			<MSBuild Projects="D23\JvGlobus.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvGlobus:Make">
+			<MSBuild Projects="D23\JvGlobus.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvGlobusDesign">
+			<MSBuild Projects="D23\JvGlobusDesign.dproj"/>
+		</Target>
+		<Target Name="JvGlobusDesign:Clean">
+			<MSBuild Projects="D23\JvGlobusDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvGlobusDesign:Make">
+			<MSBuild Projects="D23\JvGlobusDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPrintPreview">
+			<MSBuild Projects="D23\JvPrintPreview.dproj"/>
+		</Target>
+		<Target Name="JvPrintPreview:Clean">
+			<MSBuild Projects="D23\JvPrintPreview.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPrintPreview:Make">
+			<MSBuild Projects="D23\JvPrintPreview.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPrintPreviewDesign">
+			<MSBuild Projects="D23\JvPrintPreviewDesign.dproj"/>
+		</Target>
+		<Target Name="JvPrintPreviewDesign:Clean">
+			<MSBuild Projects="D23\JvPrintPreviewDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPrintPreviewDesign:Make">
+			<MSBuild Projects="D23\JvPrintPreviewDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPageComps">
+			<MSBuild Projects="D23\JvPageComps.dproj"/>
+		</Target>
+		<Target Name="JvPageComps:Clean">
+			<MSBuild Projects="D23\JvPageComps.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPageComps:Make">
+			<MSBuild Projects="D23\JvPageComps.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvPageCompsDesign">
+			<MSBuild Projects="D23\JvPageCompsDesign.dproj"/>
+		</Target>
+		<Target Name="JvPageCompsDesign:Clean">
+			<MSBuild Projects="D23\JvPageCompsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvPageCompsDesign:Make">
+			<MSBuild Projects="D23\JvPageCompsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvWizards">
+			<MSBuild Projects="D23\JvWizards.dproj"/>
+		</Target>
+		<Target Name="JvWizards:Clean">
+			<MSBuild Projects="D23\JvWizards.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvWizards:Make">
+			<MSBuild Projects="D23\JvWizards.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvWizardsDesign">
+			<MSBuild Projects="D23\JvWizardsDesign.dproj"/>
+		</Target>
+		<Target Name="JvWizardsDesign:Clean">
+			<MSBuild Projects="D23\JvWizardsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvWizardsDesign:Make">
+			<MSBuild Projects="D23\JvWizardsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvTimeFramework">
+			<MSBuild Projects="D23\JvTimeFramework.dproj"/>
+		</Target>
+		<Target Name="JvTimeFramework:Clean">
+			<MSBuild Projects="D23\JvTimeFramework.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvTimeFramework:Make">
+			<MSBuild Projects="D23\JvTimeFramework.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvTimeFrameworkDesign">
+			<MSBuild Projects="D23\JvTimeFrameworkDesign.dproj"/>
+		</Target>
+		<Target Name="JvTimeFrameworkDesign:Clean">
+			<MSBuild Projects="D23\JvTimeFrameworkDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvTimeFrameworkDesign:Make">
+			<MSBuild Projects="D23\JvTimeFrameworkDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvHMI">
+			<MSBuild Projects="D23\JvHMI.dproj"/>
+		</Target>
+		<Target Name="JvHMI:Clean">
+			<MSBuild Projects="D23\JvHMI.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvHMI:Make">
+			<MSBuild Projects="D23\JvHMI.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvHMIDesign">
+			<MSBuild Projects="D23\JvHMIDesign.dproj"/>
+		</Target>
+		<Target Name="JvHMIDesign:Clean">
+			<MSBuild Projects="D23\JvHMIDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvHMIDesign:Make">
+			<MSBuild Projects="D23\JvHMIDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvManagedThreads">
+			<MSBuild Projects="D23\JvManagedThreads.dproj"/>
+		</Target>
+		<Target Name="JvManagedThreads:Clean">
+			<MSBuild Projects="D23\JvManagedThreads.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvManagedThreads:Make">
+			<MSBuild Projects="D23\JvManagedThreads.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvManagedThreadsDesign">
+			<MSBuild Projects="D23\JvManagedThreadsDesign.dproj"/>
+		</Target>
+		<Target Name="JvManagedThreadsDesign:Clean">
+			<MSBuild Projects="D23\JvManagedThreadsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvManagedThreadsDesign:Make">
+			<MSBuild Projects="D23\JvManagedThreadsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvXPCtrls">
+			<MSBuild Projects="D23\JvXPCtrls.dproj"/>
+		</Target>
+		<Target Name="JvXPCtrls:Clean">
+			<MSBuild Projects="D23\JvXPCtrls.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvXPCtrls:Make">
+			<MSBuild Projects="D23\JvXPCtrls.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvXPCtrlsDesign">
+			<MSBuild Projects="D23\JvXPCtrlsDesign.dproj"/>
+		</Target>
+		<Target Name="JvXPCtrlsDesign:Clean">
+			<MSBuild Projects="D23\JvXPCtrlsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvXPCtrlsDesign:Make">
+			<MSBuild Projects="D23\JvXPCtrlsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDocking">
+			<MSBuild Projects="D23\JvDocking.dproj"/>
+		</Target>
+		<Target Name="JvDocking:Clean">
+			<MSBuild Projects="D23\JvDocking.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDocking:Make">
+			<MSBuild Projects="D23\JvDocking.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDockingDesign">
+			<MSBuild Projects="D23\JvDockingDesign.dproj"/>
+		</Target>
+		<Target Name="JvDockingDesign:Clean">
+			<MSBuild Projects="D23\JvDockingDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDockingDesign:Make">
+			<MSBuild Projects="D23\JvDockingDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDotNetCtrls">
+			<MSBuild Projects="D23\JvDotNetCtrls.dproj"/>
+		</Target>
+		<Target Name="JvDotNetCtrls:Clean">
+			<MSBuild Projects="D23\JvDotNetCtrls.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDotNetCtrls:Make">
+			<MSBuild Projects="D23\JvDotNetCtrls.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvDotNetCtrlsDesign">
+			<MSBuild Projects="D23\JvDotNetCtrlsDesign.dproj"/>
+		</Target>
+		<Target Name="JvDotNetCtrlsDesign:Clean">
+			<MSBuild Projects="D23\JvDotNetCtrlsDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvDotNetCtrlsDesign:Make">
+			<MSBuild Projects="D23\JvDotNetCtrlsDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvRuntimeDesign">
+			<MSBuild Projects="D23\JvRuntimeDesign.dproj"/>
+		</Target>
+		<Target Name="JvRuntimeDesign:Clean">
+			<MSBuild Projects="D23\JvRuntimeDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvRuntimeDesign:Make">
+			<MSBuild Projects="D23\JvRuntimeDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="JvRuntimeDesignDesign">
+			<MSBuild Projects="D23\JvRuntimeDesignDesign.dproj"/>
+		</Target>
+		<Target Name="JvRuntimeDesignDesign:Clean">
+			<MSBuild Projects="D23\JvRuntimeDesignDesign.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="JvRuntimeDesignDesign:Make">
+			<MSBuild Projects="D23\JvRuntimeDesignDesign.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="JvCore;JvCoreDesign;JvSystem;JvSystemDesign;JvStdCtrls;JvStdCtrlsDesign;JvControls;JvControlsDesign;JvCmp;JvCmpDesign;JvCustom;JvCustomDesign;JvDlgs;JvDlgsDesign;JvCrypt;JvCryptDesign;JvMM;JvMMDesign;JvNet;JvNetDesign;JvAppFrm;JvAppFrmDesign;JvDB;JvDBDesign;JvPascalInterpreter;JvPascalInterpreterDesign;JvBands;JvBandsDesign;JvPluginSystem;JvPluginSystemDesign;JvJans;JvJansDesign;JvGlobus;JvGlobusDesign;JvPrintPreview;JvPrintPreviewDesign;JvPageComps;JvPageCompsDesign;JvWizards;JvWizardsDesign;JvTimeFramework;JvTimeFrameworkDesign;JvHMI;JvHMIDesign;JvManagedThreads;JvManagedThreadsDesign;JvXPCtrls;JvXPCtrlsDesign;JvDocking;JvDockingDesign;JvDotNetCtrls;JvDotNetCtrlsDesign;JvRuntimeDesign;JvRuntimeDesignDesign"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="JvCore:Clean;JvCoreDesign:Clean;JvSystem:Clean;JvSystemDesign:Clean;JvStdCtrls:Clean;JvStdCtrlsDesign:Clean;JvControls:Clean;JvControlsDesign:Clean;JvCmp:Clean;JvCmpDesign:Clean;JvCustom:Clean;JvCustomDesign:Clean;JvDlgs:Clean;JvDlgsDesign:Clean;JvCrypt:Clean;JvCryptDesign:Clean;JvMM:Clean;JvMMDesign:Clean;JvNet:Clean;JvNetDesign:Clean;JvAppFrm:Clean;JvAppFrmDesign:Clean;JvDB:Clean;JvDBDesign:Clean;JvPascalInterpreter:Clean;JvPascalInterpreterDesign:Clean;JvBands:Clean;JvBandsDesign:Clean;JvPluginSystem:Clean;JvPluginSystemDesign:Clean;JvJans:Clean;JvJansDesign:Clean;JvGlobus:Clean;JvGlobusDesign:Clean;JvPrintPreview:Clean;JvPrintPreviewDesign:Clean;JvPageComps:Clean;JvPageCompsDesign:Clean;JvWizards:Clean;JvWizardsDesign:Clean;JvTimeFramework:Clean;JvTimeFrameworkDesign:Clean;JvHMI:Clean;JvHMIDesign:Clean;JvManagedThreads:Clean;JvManagedThreadsDesign:Clean;JvXPCtrls:Clean;JvXPCtrlsDesign:Clean;JvDocking:Clean;JvDockingDesign:Clean;JvDotNetCtrls:Clean;JvDotNetCtrlsDesign:Clean;JvRuntimeDesign:Clean;JvRuntimeDesignDesign:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="JvCore:Make;JvCoreDesign:Make;JvSystem:Make;JvSystemDesign:Make;JvStdCtrls:Make;JvStdCtrlsDesign:Make;JvControls:Make;JvControlsDesign:Make;JvCmp:Make;JvCmpDesign:Make;JvCustom:Make;JvCustomDesign:Make;JvDlgs:Make;JvDlgsDesign:Make;JvCrypt:Make;JvCryptDesign:Make;JvMM:Make;JvMMDesign:Make;JvNet:Make;JvNetDesign:Make;JvAppFrm:Make;JvAppFrmDesign:Make;JvDB:Make;JvDBDesign:Make;JvPascalInterpreter:Make;JvPascalInterpreterDesign:Make;JvBands:Make;JvBandsDesign:Make;JvPluginSystem:Make;JvPluginSystemDesign:Make;JvJans:Make;JvJansDesign:Make;JvGlobus:Make;JvGlobusDesign:Make;JvPrintPreview:Make;JvPrintPreviewDesign:Make;JvPageComps:Make;JvPageCompsDesign:Make;JvWizards:Make;JvWizardsDesign:Make;JvTimeFramework:Make;JvTimeFrameworkDesign:Make;JvHMI:Make;JvHMIDesign:Make;JvManagedThreads:Make;JvManagedThreadsDesign:Make;JvXPCtrls:Make;JvXPCtrlsDesign:Make;JvDocking:Make;JvDockingDesign:Make;JvDotNetCtrls:Make;JvDotNetCtrlsDesign:Make;JvRuntimeDesign:Make;JvRuntimeDesignDesign:Make"/>
+		</Target>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
+	</Project>

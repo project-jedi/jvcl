@@ -1,0 +1,192 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{E63D1285-7625-4EFA-9DD7-632D72CF633C}</ProjectGuid>
+        <MainSource>JvDB.dpk</MainSource>
+        <ProjectVersion>17.3</ProjectVersion>
+        <Config Condition="'$(Config)'==''">Release</Config>
+        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+        <FrameworkType>VCL</FrameworkType>
+        <Base>True</Base>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <AppType>Package</AppType>
+        <TargetedPlatforms>2</TargetedPlatforms>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base)'!=''">
+        <SanitizedProjectName>JvDB</SanitizedProjectName>
+        <RuntimeOnlyPackage>true</RuntimeOnlyPackage>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <DCC_Description>JVCL Database Components Runtime Package</DCC_Description>
+        <DCC_ImageBase>4B200000</DCC_ImageBase>
+        <DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DllSuffix>230</DllSuffix>
+        <DCC_Platform>x86</DCC_Platform>
+        <DCC_UnitSearchPath>..\..\run;..\..\common;..\..\resources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_ResourcePath>..\..\resources;$(DCC_ResourcePath)</DCC_ResourcePath>
+        <GenDll>true</GenDll>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <GenPackage>true</GenPackage>
+        <DCC_DependencyCheckOutputName>$(_EnvPackageOutput)\JvDB.bpl</DCC_DependencyCheckOutputName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
+        <DCC_DebugInformation>0</DCC_DebugInformation>
+        <DCC_UnitSearchPath>..\..\lib\d23\win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win32</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win32</DCC_DcuOutput>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+        <DCC_UnitSearchPath>..\..\lib\d23\win32\debug;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcpOutput>..\..\lib\d23\win32\debug</DCC_DcpOutput>
+        <DCC_DcuOutput>..\..\lib\d23\win32\debug</DCC_DcuOutput>
+        <DCC_Namespace>System;System.Win;WinApi;Vcl;Vcl.Imaging;Data;Data.Win;$(DCC_Namespace)</DCC_Namespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <DelphiCompile Include="$(MainSource)">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="JvCore.dcp"/>
+        <DCCReference Include="JvDlgs.dcp"/>
+        <DCCReference Include="JvStdCtrls.dcp"/>
+        <DCCReference Include="JvSystem.dcp"/>
+        <DCCReference Include="JvControls.dcp"/>
+        <DCCReference Include="Jcl.dcp"/>
+        <DCCReference Include="JclVcl.dcp"/>
+        <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="vcl.dcp"/>
+        <DCCReference Include="dbrtl.dcp"/>
+        <DCCReference Include="vcldb.dcp"/>
+        <DCCReference Include="adortl.dcp"/>
+        <DCCReference Include="vclx.dcp"/>
+        <DCCReference Include="vclimg.dcp"/>
+        <DCCReference Include="..\..\run\JvAppStoragePropertyEngineDB.pas"/>
+        <DCCReference Include="..\..\run\JvMemoryDataset.pas"/>
+        <DCCReference Include="..\..\run\JvExprParser.pas"/>
+        <DCCReference Include="..\..\run\JvCsvData.pas"/>
+        <DCCReference Include="..\..\run\JvCsvParse.pas"/>
+        <DCCReference Include="..\..\run\JvDBActions.pas"/>
+        <DCCReference Include="..\..\run\JvDBActionsEngine.pas"/>
+        <DCCReference Include="..\..\run\JvDBActionsEngineDatasetCSVDataset.pas"/>
+        <DCCReference Include="..\..\run\JvDBCombobox.pas"/>
+        <DCCReference Include="..\..\run\JvDBControls.pas"/>
+        <DCCReference Include="..\..\run\JvDBDatePickerEdit.pas"/>
+        <DCCReference Include="..\..\run\JvDBDateTimePicker.pas"/>
+        <DCCReference Include="..\..\run\JvDBLookup.pas"/>
+        <DCCReference Include="..\..\run\JvDBLookupComboEdit.pas"/>
+        <DCCReference Include="..\..\run\JvBaseDBThreadedDataset.pas"/>
+        <DCCReference Include="..\..\run\JvBaseDBDialog.pas"/>
+        <DCCReference Include="..\..\run\JvBaseDBPasswordDialog.pas"/>
+        <DCCReference Include="..\..\run\JvBaseDBLogonDialog.pas"/>
+        <DCCReference Include="..\..\run\JvDBLookupTreeView.pas"/>
+        <DCCReference Include="..\..\run\JvDBProgressBar.pas"/>
+        <DCCReference Include="..\..\run\JvDBQueryParamsForm.pas"/>
+        <DCCReference Include="..\..\run\JvDBRadioPanel.pas"/>
+        <DCCReference Include="..\..\run\JvDBRemoteLogin.pas"/>
+        <DCCReference Include="..\..\run\JvDBRichEdit.pas"/>
+        <DCCReference Include="..\..\run\JvDBSpinEdit.pas"/>
+        <DCCReference Include="..\..\run\JvDBTreeView.pas"/>
+        <DCCReference Include="..\..\run\JvDBUtils.pas"/>
+        <DCCReference Include="..\..\run\JvDBGrid.pas"/>
+        <DCCReference Include="..\..\run\JvDBGridExport.pas"/>
+        <DCCReference Include="..\..\run\JvDBGridSelectColumnForm.pas"/>
+        <DCCReference Include="..\..\run\JvDBUltimGrid.pas"/>
+        <DCCReference Include="..\..\run\JvDBGridFooter.pas"/>
+        <DCCReference Include="..\..\run\JvDynControlEngineDBTools.pas"/>
+        <DCCReference Include="..\..\run\JvExDBGrids.pas"/>
+        <DCCReference Include="..\..\run\JvDBHTLabel.pas"/>
+        <DCCReference Include="..\..\run\JvDBSearchEdit.pas"/>
+        <DCCReference Include="..\..\run\JvDBSearchComboBox.pas"/>
+        <DCCReference Include="..\..\run\JvAppDBStorage.pas"/>
+        <DCCReference Include="..\..\run\JvDBFindEdit.pas"/>
+        <DCCReference Include="..\..\run\JvDBImage.pas"/>
+        <DCCReference Include="..\..\run\JvDataSource.pas"/>
+        <DCCReference Include="..\..\run\JvDynControlEngineDB.pas"/>
+        <DCCReference Include="..\..\run\JvDynControlEngineDBIntf.pas"/>
+        <DCCReference Include="..\..\run\JvDynControlEngineVCLDB.pas"/>
+        <DCCReference Include="..\..\run\JvDynControlEngineJVCLDB.pas"/>
+        <DCCReference Include="..\..\run\JvDBCheckBox.pas"/>
+        <DCCReference Include="..\..\run\JvDBFilterExpr.pas"/>
+        <DCCReference Include="..\..\run\JvADOQuery.pas"/>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Base">
+            <Key>Base</Key>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Release">
+            <Key>Cfg_1</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+    </ItemGroup>
+    <Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
+        <Borland.ProjectType>Package</Borland.ProjectType>
+        <BorlandProject>
+            <Delphi.Personality>
+                <Parameters>
+                    <Parameters Name="UseLauncher">False</Parameters>
+                    <Parameters Name="LoadAllSymbols">True</Parameters>
+                    <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                </Parameters>
+                <VersionInfo>
+                    <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+                    <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+                    <VersionInfo Name="MajorVer">3</VersionInfo>
+                    <VersionInfo Name="MinorVer">41</VersionInfo>
+                    <VersionInfo Name="Release">0</VersionInfo>
+                    <VersionInfo Name="Build">0</VersionInfo>
+                    <VersionInfo Name="Debug">False</VersionInfo>
+                    <VersionInfo Name="PreRelease">False</VersionInfo>
+                    <VersionInfo Name="Special">False</VersionInfo>
+                    <VersionInfo Name="Private">False</VersionInfo>
+                    <VersionInfo Name="DLL">False</VersionInfo>
+                    <VersionInfo Name="Locale">1033</VersionInfo>
+                    <VersionInfo Name="CodePage">1252</VersionInfo>
+                </VersionInfo>
+                <VersionInfoKeys>
+                    <VersionInfoKeys Name="CompanyName">Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileDescription">JVCL Database Components Runtime Package</VersionInfoKeys>
+                    <VersionInfoKeys Name="FileVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="InternalName">JvDB</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalCopyright">Copyright (C) 1999, 2013 Project JEDI</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalTrademarks"/>
+                    <VersionInfoKeys Name="OriginalFilename">JvDB230.bpl</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductName">JEDI Visual Component Library</VersionInfoKeys>
+                    <VersionInfoKeys Name="ProductVersion">3.41.0.0</VersionInfoKeys>
+                    <VersionInfoKeys Name="Comments">3.41 Build 0</VersionInfoKeys>
+                </VersionInfoKeys>
+                <Source>
+                    <Source Name="MainSource">JvDB.dpk</Source>
+                </Source>
+            </Delphi.Personality>
+            <Platforms>
+                <Platform value="Android">False</Platform>
+                <Platform value="iOSDevice">False</Platform>
+                <Platform value="iOSSimulator" ActiveMobileDevice="iPhone">False</Platform>
+                <Platform value="OSX32">False</Platform>
+                <Platform value="Win32">False</Platform>
+                <Platform value="Win64">True</Platform>
+            </Platforms>
+        </BorlandProject>
+        <ProjectFileVersion>12</ProjectFileVersion>
+    </ProjectExtensions>
+    <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
+</Project>
