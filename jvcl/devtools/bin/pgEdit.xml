@@ -84,14 +84,16 @@
         <target name="d21_x64"/>
         <target name="d22"/>
         <target name="d22_x64"/>
+        <target name="d23"/>
+        <target name="d23_x64"/>
         <target name="help" defines="HELP"/>
       </targets>
       <aliases>
-        <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64"/>
-        <alias name="C" value="c6,c6p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64"/>
-        <alias name="DB" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64"/>
-        <alias name="DB_win32" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22"/>
-        <alias name="BDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22"/>
+        <alias name="D" value="d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64"/>
+        <alias name="C" value="c6,c6p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64"/>
+        <alias name="DB" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64"/>
+        <alias name="DB_win32" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23"/>
+        <alias name="BDE" value="c6,d6,d7,d9,d10,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21"/>
         <alias name="d16_all" value="d16,d16_x64"/>
         <alias name="d17_all" value="d17,d17_x64"/>
         <alias name="d18_all" value="d18,d18_x64"/>
@@ -99,10 +101,11 @@
         <alias name="d20_all" value="d20,d20_x64"/>
         <alias name="d21_all" value="d21,d21_x64"/>
         <alias name="d22_all" value="d22,d22_x64"/>
-        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64"/>
-        <alias name="allv9up" value="d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64"/>
-        <alias name="allv12up" value="d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64"/>
-        <alias name="all_win32" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22"/>
+        <alias name="d23_all" value="d23,d23_x64"/>
+        <alias name="allv7up" value="d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64"/>
+        <alias name="allv9up" value="d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64"/>
+        <alias name="allv12up" value="d12,d14,d15,d16,d16_x64,d17,d17_x64,d18,d18_x64,d19,d19_x64,d20,d20_x64,d21,d21_x64,d22,d22_x64,d23,d23_x64"/>
+        <alias name="all_win32" value="c6,c6p,d6,d6p,d7,d7p,d9,d9p,d10,d10p,d11,d12,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23"/>
       </aliases>
       <ProjectProperties>
         <ProjectProperty name="VersionMajorNumber" value="3"/>

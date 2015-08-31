@@ -1078,8 +1078,8 @@ end;
 //-------------------------------------------------------------------------
 // TJvCsvStream METHODS
 //-------------------------------------------------------------------------
-function GetFileSizeEx(h: THandle; FileSize: PULargeInteger): BOOL; stdcall;
-  external kernel32;
+function GetFileSizeEx(h: HFILE; FileSize: PULargeInteger): BOOL; stdcall;
+  external Kernel32;
 
 procedure TJvCsvStream.Append; 
 begin

@@ -18,6 +18,8 @@ copy ..\..\common\jvclbase.inc  ..\..\common\jvcld21.inc
 copy ..\..\common\jvclbase.inc  ..\..\common\jvcld21_x64.inc
 copy ..\..\common\jvclbase.inc  ..\..\common\jvcld22.inc
 copy ..\..\common\jvclbase.inc  ..\..\common\jvcld22_x64.inc
+copy ..\..\common\jvclbase.inc  ..\..\common\jvcld23.inc
+copy ..\..\common\jvclbase.inc  ..\..\common\jvcld23_x64.inc
 copy ..\..\common\jvclbase.inc  ..\..\common\jvcld6.inc
 copy ..\..\common\jvclbase.inc  ..\..\common\jvcld7.inc
 copy ..\..\common\jvclbase.inc  ..\..\common\jvcld9.inc
