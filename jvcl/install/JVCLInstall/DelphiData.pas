@@ -654,6 +654,8 @@ begin
      // available macros
       if (S = 'delphi') or (S = 'bcb') or (S = 'bds') then // do not localize
         NewS := FRootDir
+      else if S = 'bdslib' then // don't trust the env-var for this as it may be the wrong version
+        NewS := FRootDir + '\lib'
       else if IsBDS and (S = 'bdsprojectsdir') then // do not localize
         NewS := BDSProjectsDir
       else if IsBDS and (IDEVersion >= 5) and (S = 'bdscommondir') then
