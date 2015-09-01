@@ -59,7 +59,7 @@ const
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE6'; Version: 20; CIV: '200'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE7'; Version: 21; CIV: '210'; Supported: True),
     (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE8'; Version: 22; CIV: '220'; Supported: True),
-    (Name: 'Embarcadero RAD Studio'; VersionStr: 'XE10'; Version: 23; CIV: '230'; Supported: True)
+    (Name: 'Embarcadero RAD Studio'; VersionStr: '10'; Version: 23; CIV: '230'; Supported: True)
   );
 
 type

@@ -37,7 +37,7 @@
     <Package Name="SMExportXE6r" Targets="d20" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXE7r" Targets="d21" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMExportXE8r" Targets="d22" Condition="USE_3RDPARTY_SMEXPORT"/>
-    <Package Name="SMExportXE10r" Targets="d23" Condition="USE_3RDPARTY_SMEXPORT"/>
+    <Package Name="SMExport10r" Targets="d23" Condition="USE_3RDPARTY_SMEXPORT"/>
     <Package Name="SMImportC6" Targets="c6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD6" Targets="d6" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportD7" Targets="d7" Condition="USE_3RDPARTY_SMIMPORT"/>
@@ -54,7 +54,7 @@
     <Package Name="SMImportXE6r" Targets="d20" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXE7r" Targets="d21" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="SMImportXE8r" Targets="d22" Condition="USE_3RDPARTY_SMIMPORT"/>
-    <Package Name="SMImportXE10r" Targets="d23" Condition="USE_3RDPARTY_SMIMPORT"/>
+    <Package Name="SMImport10r" Targets="d23" Condition="USE_3RDPARTY_SMIMPORT"/>
     <Package Name="DOA41C6" Targets="c6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D6" Targets="d6" Condition="USE_3RDPARTY_DOA"/>
     <Package Name="DOA41D7" Targets="d7" Condition="USE_3RDPARTY_DOA"/>

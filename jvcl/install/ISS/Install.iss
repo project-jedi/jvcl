@@ -378,7 +378,7 @@ Source: {#JvclBpl22}\Win64\*; DestDir: "{code:GetDelphiBplDir|22}\Win64"; Compon
 Source: {#JvclHpp22}\*; DestDir: "{app}\include\d22"; Components: "IDE\Delphi22"; Flags: ignoreversion sortfilesbyextension
 #endif
 #ifdef Include_Delphi23
-; SolidBreak; lib\Delphi XE10
+; SolidBreak; lib\Delphi 10
 Source: {#JvclLib23}\*; DestDir: "{app}\lib\d23"; Excludes: "__history,*.txt"; Components: "IDE\Delphi23"; Flags: ignoreversion recursesubdirs sortfilesbyextension createallsubdirs solidbreak
 Source: {#JvclBpl23}\*; DestDir: "{code:GetDelphiBplDir|23}"; Components: "IDE\Delphi23"; Flags: ignoreversion sortfilesbyextension
 Source: {#JvclBpl23}\Win64\*; DestDir: "{code:GetDelphiBplDir|23}\Win64"; Components: "IDE\Delphi23"; Flags: ignoreversion sortfilesbyextension
@@ -529,7 +529,7 @@ Root: HKCU; Subkey: "{code:GetDelphiRegKey|22}\Globals"; ValueType: string; Valu
 #endif
 
 #ifdef Include_Delphi23
-; Delphi XE10
+; Delphi 10
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JVCL"; ValueType: string; ValueName: "BplDir"; ValueData: {code:GetDelphiBplDir|23}; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JVCL"; ValueType: string; ValueName: "DcpDir"; ValueData: {app}\lib\d23; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
 Root: HKCU; Subkey: "{code:GetDelphiRegKey|23}\Jedi\JVCL"; ValueType: string; ValueName: "RootDir"; ValueData: {app}; Components: "IDE\Delphi23"; Flags: uninsdeletevalue;
@@ -644,7 +644,7 @@ Type: files; Name: "{app}\lib\d22\win64\debug\*"
 Type: files; Name: "{app}\include\d22\*"
 Type: files; Name: "{code:GetDelphiBplDir|22}\Jv*.*"
 Type: files; Name: "{code:GetDelphiBplDir|22}\Win64\Jv*.*"
-; lib\Delphi/C++Builder XE10
+; lib\Delphi/C++Builder 10
 Type: files; Name: "{app}\lib\d23\win32\*"
 Type: files; Name: "{app}\lib\d23\win32\debug\*"
 Type: files; Name: "{app}\lib\d23\win64\*"
