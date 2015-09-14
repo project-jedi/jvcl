@@ -96,7 +96,10 @@ uses
   {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
-  SysUtils,
+  {$IFDEF RTL240_UP}
+  System.Generics.Collections,  // required for TShadowedCollection
+  {$ENDIF RTL240_UP}
+  SysUtils, Types,
   JvJCLUtils, JvConsts, Math;
 
 {$R *.dfm}
@@ -311,7 +314,7 @@ type
   TShadowedCollection = class(TPersistent)
   private
     FItemClass: TCollectionItemClass;
-    FItems: TList;
+    FItems: TList{$IFDEF RTL240_UP}<TCollectionItem>{$ENDIF RTL240_UP};
   end;
 {$HINTS ON}
 
