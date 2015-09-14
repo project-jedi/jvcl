@@ -1979,7 +1979,8 @@ end;
 
 procedure TJvCustomComboEdit.AsyncPopupCloseUp(Accept: Boolean);
 begin
-  PostMessage(Handle, CM_POPUPCLOSEUP, Ord(Accept), 0);
+  if not (csDestroying in ComponentState) then
+    PostMessage(Handle, CM_POPUPCLOSEUP, Ord(Accept), 0);
 end;
 
 function TJvCustomComboEdit.BtnWidthStored: Boolean;
