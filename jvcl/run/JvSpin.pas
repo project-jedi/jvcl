@@ -1851,7 +1851,7 @@ begin
         Result := StrToIntDef('$' + Text, Round(FMinValue));
       vtString:
         begin
-          Result := FItems.IndexOf(Text) + Round(FMinValue);
+          Result := FItems.IndexOf(Text);
           if Result < 0 then
             Result := 0;
         end
@@ -1890,8 +1890,11 @@ begin
           Text := IntToHex(Round(CheckValue(NewValue)), 1);
       vtString:
       begin
+        NewValue := CheckValue(NewValue);
         if NewValue < 0 then
           NewValue := 0;
+        if NewValue >= Items.Count then
+          NewValue := Items.Count - 1;
         Text := Items[Trunc(NewValue)];
       end
     else {vtInteger}
