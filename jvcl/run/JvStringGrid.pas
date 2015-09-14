@@ -218,8 +218,8 @@ type
 
     procedure SaveToFile(const FileName: string {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
     procedure LoadFromFile(const FileName: string {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
-    procedure LoadFromCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
-    procedure SaveToCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"');
+    procedure LoadFromCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
+    procedure SaveToCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"' {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
     procedure LoadFromStream(Stream: TStream {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
     procedure SaveToStream(Stream: TStream {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
   published
@@ -612,7 +612,7 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.LoadFromCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True);
+procedure TJvStringGrid.LoadFromCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"'; StripQuotes: Boolean = True {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
 var
   I: Longint;
   Lines, Fields: TStringList;
@@ -681,7 +681,7 @@ begin
   Lines := TStringList.Create;
   Fields := TStringList.Create;
   try
-    Lines.LoadFromFile(FileName);
+    Lines.LoadFromFile(FileName {$IFDEF UNICODE}, Encoding{$ENDIF});
     DoLoadProgress(0, Lines.Count);
     RowCount := Lines.Count;
     ColCount := FixedCols + 1;
@@ -803,7 +803,7 @@ begin
   end;
 end;
 
-procedure TJvStringGrid.SaveToCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"');
+procedure TJvStringGrid.SaveToCSV(const FileName: string; Separator: Char = ';'; QuoteChar: Char = '"' {$IFDEF UNICODE}; Encoding: TEncoding = nil{$ENDIF});
 var
   I, J: Longint;
   BufStr, Value: string;
@@ -829,7 +829,7 @@ begin
       Lines.Add(BufStr);
     end;
     DoSaveProgress(RowCount, RowCount);
-    Lines.SaveToFile(FileName);
+    Lines.SaveToFile(FileName {$IFDEF UNICODE}, Encoding{$ENDIF});
   finally
     Lines.Free;
   end;
