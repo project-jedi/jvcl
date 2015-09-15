@@ -10,7 +10,7 @@ L'équipe JVCL est fière d'annoncer la sortie de la version stable de la biblioth
 
 La JVCL est une bibliothèque comprenant environ 600 composants visuels et non-visuels pour Delphi 6, 7, 2006, 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5, XE6, XE7, XE8 and 10 Seattle; C++Builder 6, 2006, 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5, XE6, XE7, XE8 and 10 Seattle. La JVCL est distribué sous licence Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html), est entièrement gratuite pour toute utilisation (open source, shareware ou commerciale) et inclus le code source de tous les composants.
 
-Cette version corrige un problème de compilation de l'installeur si aucune version supérieure à XE n'est installée.
+Cette version apporte la compatibilité avec les dernières versions de l'IDE.
 
 Cette version est disponible en quatre distributions :
 - Installation complète + dernière JCL
