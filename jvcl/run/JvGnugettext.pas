@@ -473,7 +473,9 @@ type
 
 const
   LOCALE_SISO639LANGNAME = $59;    // Used by Lazarus software development tool
+  {$NODEFINE LOCALE_SISO639LANGNAME}
   LOCALE_SISO3166CTRYNAME = $5A;   // Used by Lazarus software development tool
+  {$NODEFINE LOCALE_SISO3166CTRYNAME }
 
 var
   DefaultInstance:TGnuGettextInstance;  /// Default instance of the main API for singlethreaded applications.
