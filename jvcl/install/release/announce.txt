@@ -7,11 +7,11 @@ UK-BUG (bug@richplum.co.uk)
 eLists Delphi (delphi@elists.org)
 
 Subject: 
-ANN: JVCL 3.48 Released!
+ANN: JVCL 3.49 Released!
 Body:
-The JVCL Team is proud to announce that the stable release of JVCL 3.48 is available for download. 
+The JVCL Team is proud to announce that the stable release of JVCL 3.49 is available for download. 
 
-JVCL is a library of more than 600 visual and non-visual components for Delphi 6, 7, 2006, 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5 and XE6; C++Builder 6, 2006, 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5 and XE6. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
+JVCL is a library of more than 600 visual and non-visual components for Delphi 6, 7, 2006, 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5, XE6, XE7, XE8 and 10 Seattle; C++Builder 6, 2006, 2007, 2009, 2010, XE, XE2, XE3, XE4, XE5, XE6, XE7, XE8 and 10 Seattle. JVCL is distributed subject to the Mozilla Public License Version 1.1 (http://www.mozilla.org/MPL/MPL-1.1.html) and is completely free for all developers (open source, shareware or commercial) and includes the full source to all components.
 
 This release fixes an issue in compiling the installer if no version after XE is installed.
 
@@ -21,7 +21,7 @@ This release is available in four different flavors:
 - Source and examples only
 - Source only
 
-The current version is JVCL 3.48.
+The current version is JVCL 3.49.
 
 
 The JVCL Team

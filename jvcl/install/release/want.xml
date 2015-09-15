@@ -3,9 +3,9 @@
 <project name="JVCL" default="help">
   <property name="version.major"    value="3"/>
   <property name="version.minor"    value="4"/>
-  <property name="version.release"  value="8"/>
+  <property name="version.release"  value="9"/>
   <property name="version.build"    value=" "/>
-  <property name="jclversion"       value="26-Build5178" />
+  <property name="jclversion"       value="27-Build5676" />
   <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
   <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
   <!-- JVCL releases -->
