@@ -190,7 +190,7 @@ type
     //procedure CheckRange(const AOption: TJvCheckOption);
 
     //function TryGetValue(var Value: Extended): Boolean; // New
-    function GetAsInteger: Longint;
+    function GetAsInteger: Int64;
     function GetButtonKind: TSpinButtonKind;
     function GetButtonWidth: Integer;
     function GetMinHeight: Integer;
@@ -202,7 +202,7 @@ type
     procedure ResizeButton;
     procedure SetAlignment(Value: TAlignment);
     procedure SetArrowKeys(Value: Boolean);
-    procedure SetAsInteger(NewValue: Longint);
+    procedure SetAsInteger(const NewValue: Int64);
     procedure SetButtonKind(Value: TSpinButtonKind);
     procedure SetDecimal(NewValue: Byte);
     procedure SetEditRect;
@@ -253,7 +253,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property AsInteger: Longint read GetAsInteger write SetAsInteger default 0;
+    property AsInteger: Int64 read GetAsInteger write SetAsInteger default 0;
     property Text;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
@@ -996,7 +996,7 @@ begin
   end;
 end;}
 
-function TJvCustomSpinEdit.GetAsInteger: Longint;
+function TJvCustomSpinEdit.GetAsInteger: Int64;
 begin
   Result := Trunc(GetValue);
 end;
@@ -1274,7 +1274,7 @@ begin
   ResizeButton;
 end;
 
-procedure TJvCustomSpinEdit.SetAsInteger(NewValue: Longint);
+procedure TJvCustomSpinEdit.SetAsInteger(const NewValue: Int64);
 begin
   SetValue(NewValue);
 end;
@@ -1848,7 +1848,7 @@ begin
             Result := FMinValue;
         end;
       vtHex:
-        Result := StrToIntDef('$' + Text, Round(FMinValue));
+        Result := StrToInt64Def('$' + Text, Round(FMinValue));
       vtString:
         begin
           Result := FItems.IndexOf(Text);
@@ -1856,7 +1856,7 @@ begin
             Result := 0;
         end
     else {vtInteger}
-      Result := StrToIntDef(RemoveThousands(Text), Round(FMinValue));
+      Result := StrToInt64Def(RemoveThousands(Text), Round(FMinValue));
     end;
   except
     if ValueType = vtFloat then
