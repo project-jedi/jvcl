@@ -58,6 +58,7 @@ type
 
     FItemList: TObjectList;
     FForceInstall: Boolean;
+    FForceUninstall: Boolean;
     procedure ShowHelp;
   protected
     procedure AddBool(const Name, Help: string; var Value: Boolean);
@@ -77,6 +78,7 @@ type
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
     property AutoInstall: Boolean read FAutoInstall write FAutoInstall;
     property ForceInstall: Boolean read FForceInstall write FForceInstall;
+    property ForceUninstall: Boolean read FForceUninstall write FForceUninstall;
     property AutoCloseAfterSuccess: Boolean read FAutoCloseAfterSuccess write FAutoCloseAfterSuccess;
     property AutoCloseAfterError: Boolean read FAutoCloseAfterError write FAutoCloseAfterError;
     property ContinueOnError: Boolean read FContinueOnError write FContinueOnError;
@@ -111,6 +113,7 @@ begin
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddBool('--autoinstall', 'Installs JVCL 3 for all installed IDEs.', FAutoInstall);
   AddBool('--forceinstall', 'Force installing JVCL 3 for all installed IDEs.', FForceInstall);
+  AddBool('--forceuninstall', 'Force uninstalling JVCL 3 for all installed IDEs.', FForceUninstall);
   AddBool('--build', 'Rebuilds the packages by default', FRebuildPackages);
   AddBool('--autoclose', 'Automatically close the installer after a successfull installation', FAutoCloseAfterSuccess);
   AddBool('--autoclose-error', 'Automatically close the installer after a failed installation', FAutoCloseAfterError);

@@ -154,9 +154,16 @@ begin
   else
   begin
     if Data.IsJVCLInstalledAnywhere(3) then
-      InstallType := itUpdate
+    begin
+      if CmdOptions.ForceUninstall then
+        InstallType := itUninstall
+      else
+        InstallType := itUpdate;
+    end
     else
+    begin
       CmdOptions.AutoUpdate := False; // auto update not possible
+    end;
   end;
 
   if CmdOptions.AutoInstall then
