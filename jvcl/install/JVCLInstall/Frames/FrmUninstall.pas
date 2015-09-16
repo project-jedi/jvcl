@@ -160,6 +160,8 @@ begin
       else
         Installer.SelTargets[i].DeinstallJVCL(EvProgress, nil, True);
     end;
+
+  ExitCode := 0;
 end;
 
 end.

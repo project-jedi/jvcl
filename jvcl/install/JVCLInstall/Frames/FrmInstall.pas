@@ -414,9 +414,14 @@ begin
 
   FFinished := True;
   if Success then
-    Installer.PackageInstaller.ForcedFinish // this is the last page so we want the installer to show the finished state
+  begin
+    ExitCode := 0;
+    Installer.PackageInstaller.ForcedFinish; // this is the last page so we want the installer to show the finished state
+  end
   else
+  begin
     Installer.PackageInstaller.ForcedFinishError;
+  end;
 end;
 
 procedure TFrameInstall.BtnDetailsClick(Sender: TObject);
