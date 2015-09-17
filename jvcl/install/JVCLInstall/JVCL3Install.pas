@@ -287,7 +287,16 @@ end;
 
 function TWelcomePage.GetSelectedOption: Integer;
 begin
-  Result := Integer(Installer.InstallType);
+  case Installer.InstallType of
+    itFreshInstall:
+      Result := 0;
+    itUpdate:
+      Result := 1;
+    itUninstall:
+      Result := 3;
+    else
+      Result := -1;
+  end;
 end;
 
 function TWelcomePage.NextPage: IInstallerPage;
