@@ -641,7 +641,7 @@ begin
     AddConst(cSystem, 'varUnknown', Ord(varUnknown));
     AddConst(cSystem, 'varByte', Ord(varByte));
     AddConst(cSystem, 'varStrArg', Ord(varStrArg));
-    AddConst(cSystem, 'varSrting', Ord(varString));
+    AddConst(cSystem, 'varString', Ord(varString));
     AddConst(cSystem, 'varAny', Ord(varAny));
     AddConst(cSystem, 'varTypeMask', Ord(varTypeMask));
     AddConst(cSystem, 'varArray', Ord(varArray));
