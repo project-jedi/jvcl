@@ -3,8 +3,8 @@
 ; CONDITIONAL COMPILATION
 ;    Include_Binaries    Create an installer that can install a precompiled JVCL
 ;    Include_Examples    Add the Examples directory to the installer (user can then select the component)
-;    DEBUGGING           Development. Will only use Delphi 5 BPLs as files with a fast compression (script debugging)
-;    Include_DelphiX     Include the binaries for Delphi X (X in 5..12)
+;    DEBUGGING           Development. Fast compression (script debugging)
+;    Include_DelphiX     Include the binaries for Delphi X (X in 6..23)
 
 #ifndef CmdLineBuild
 #define JvclRoot "..\.."
@@ -72,6 +72,9 @@
 #define JvclLib22    JvclLib
 #define   JvclBpl22  JvclBpl
 #define   JvclHpp22  JvclHpp
+#define JvclLib23    JvclLib
+#define   JvclBpl23  JvclBpl
+#define   JvclHpp23  JvclHpp
 #endif
 
 ;---------------------------------------------------
@@ -644,7 +647,7 @@ Type: files; Name: "{app}\lib\d22\win64\debug\*"
 Type: files; Name: "{app}\include\d22\*"
 Type: files; Name: "{code:GetDelphiBplDir|22}\Jv*.*"
 Type: files; Name: "{code:GetDelphiBplDir|22}\Win64\Jv*.*"
-; lib\Delphi/C++Builder 10
+; lib\Delphi/C++Builder 10 Seattle
 Type: files; Name: "{app}\lib\d23\win32\*"
 Type: files; Name: "{app}\lib\d23\win32\debug\*"
 Type: files; Name: "{app}\lib\d23\win64\*"
