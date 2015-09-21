@@ -3659,7 +3659,7 @@ begin
       begin
         GetWindowRect(CanvasWindow, WRect);
 
-        DefProc := Pointer(GetWindowLongPtr(CanvasWindow, GWL_WNDPROC));
+        DefProc := Pointer(GetWindowLongPtr(CanvasWindow, GWLP_WNDPROC));
         if (DefProc <> nil) and
            (DefProc <> @XPMenuItemPainterWndProc) and
            not (csDesigning in Menu.ComponentState) then
@@ -3994,7 +3994,7 @@ procedure TWindowList.AddHook(AHandle: THandle; OldProc, NewProc: Pointer);
 begin
   FWindowList.Add(Pointer(AHandle));
   FPrevProcList.Add(OldProc);
-  SetWindowLongPtr(AHandle, GWL_WNDPROC, LONG_PTR(NewProc));
+  SetWindowLongPtr(AHandle, GWLP_WNDPROC, LONG_PTR(NewProc));
 end;
 
 function TWindowList.CallPrevWindowProc(hwnd: THandle; uMsg: UINT;
@@ -4030,12 +4030,7 @@ begin
   Index := FWindowList.IndexOf(Pointer(AHandle));
   if Index >= 0 then
   begin
-    {$IFDEF RTL230_UP}
-    SetWindowLongPtr(AHandle, GWL_WNDPROC, LONG_PTR(FPrevProcList[Index]));
-    {$ELSE}
-    SetWindowLong(AHandle, GWL_WNDPROC, Integer(FPrevProcList[Index]));
-    {$ENDIF RTL230_UP}
-
+    SetWindowLongPtr(AHandle, GWLP_WNDPROC, LONG_PTR(FPrevProcList[Index]));
     FWindowList.Delete(Index);
     FPrevProcList.Delete(Index);
   end;

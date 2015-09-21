@@ -6046,7 +6046,7 @@ begin
   begin
     SetWindowLongPtr(Result, 0, LONG_PTR(TMethod(Method).Code));
     SetWindowLongPtr(Result, SizeOf(TMethod(Method).Code), LONG_PTR(TMethod(Method).Data));
-    SetWindowLongPtr(Result, GWL_WNDPROC, LONG_PTR(@StdWndProc));
+    SetWindowLongPtr(Result, GWLP_WNDPROC, LONG_PTR(@StdWndProc));
   end;
 end;
 

@@ -36,7 +36,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Graphics, Controls, Forms, Classes, Dialogs,
-  ActiveX, ComObj, ShlObj, FileCtrl;
+  ActiveX, ComObj, ShlObj, FileCtrl, JclBase, JclWin32;
 
 type
 { TBrowseFolderDialog }
@@ -137,8 +137,8 @@ begin
   begin
     if TBrowseFolderDialog(Data).Position = dpScreenCenter then CenterWindow(wnd);
     TBrowseFolderDialog(Data).FHandle := wnd;
-    TBrowseFolderDialog(Data).FDefWndProc := Pointer(SetWindowLong(wnd, GWL_WNDPROC,
-      Longint(TBrowseFolderDialog(Data).FObjectInstance)));
+    TBrowseFolderDialog(Data).FDefWndProc := Pointer(SetWindowLongPtr(wnd, GWLP_WNDPROC,
+     LONG_PTR(TBrowseFolderDialog(Data).FObjectInstance)));
     TBrowseFolderDialog(Data).DoInitialized;
    end
    else if Msg = BFFM_SELCHANGED then

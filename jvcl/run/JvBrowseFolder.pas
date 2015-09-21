@@ -1191,7 +1191,7 @@ end;
 procedure TJvBrowseForFolderDialog.HookDialog;
 begin
   if FDialogWindow <> 0 then
-    FDefWndProc := Pointer(SetWindowLongPtr(FDialogWindow, GWL_WNDPROC, LONG_PTR(FObjectInstance)));
+    FDefWndProc := Pointer(SetWindowLongPtr(FDialogWindow, GWLP_WNDPROC, LONG_PTR(FObjectInstance)));
 end;
 
 function TJvBrowseForFolderDialog.IsRootDirectoryPathStored: Boolean;

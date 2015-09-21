@@ -1421,7 +1421,7 @@ end;
 
 function SizeSort(Item1, Item2: Pointer): Integer;
 begin
-  Result := Integer(Item1) - Integer(Item2);
+  Result := Integer(Item1) - Integer(Item2); // The list contains integers, casted to pointers
 end;
 
 function TJvFontComboBox.IsTrueType: Boolean;

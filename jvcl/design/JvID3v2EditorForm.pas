@@ -107,7 +107,7 @@ type
     function GetFrameDescription(const FrameID: TJvID3FrameID): string;
   public
     destructor Destroy; override;
-    procedure ID3Event(Event: TJvID3Event; Info: Longint); override;
+    procedure ID3Event(Event: TJvID3Event; Info: TObject); override;
     property FramesEditor: TJvID3FramesEditor read FFramesEditor;
     property FrameDescription[const FrameID: TJvID3FrameID]: string read GetFrameDescription;
   end;
@@ -786,7 +786,7 @@ begin
   Result := cFrameDescriptions[FrameID];
 end;
 
-procedure TFSDesigner.ID3Event(Event: TJvID3Event; Info: Longint);
+procedure TFSDesigner.ID3Event(Event: TJvID3Event; Info: TObject);
 begin
   if Event in [ideFrameListChange, ideID3Change] then
     FFramesEditor.UpdateFrameList;

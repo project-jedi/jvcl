@@ -280,7 +280,7 @@ begin
       SWP_FRAMECHANGED or SWP_DRAWFRAME or SWP_NOCOPYBITS);
     SysMenu := GetSystemMenu(ParentWnd, False);
     InsertMenu(SysMenu, SC_CLOSE, MF_BYCOMMAND, SC_SIZE, PChar(GetLocalizedSizeCommand));
-    FOldParentWndInstance := Pointer(SetWindowLongPtr(FParentWnd, GWL_WNDPROC, LONG_PTR(FParentWndInstance)));
+    FOldParentWndInstance := Pointer(SetWindowLongPtr(FParentWnd, GWLP_WNDPROC, LONG_PTR(FParentWndInstance)));
     UpdateControlPos;
   end;
   UpdateCaptions;

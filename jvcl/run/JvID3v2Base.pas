@@ -1033,7 +1033,7 @@ type
     constructor Create(Controller: TJvID3Controller);
     destructor Destroy; override;
     procedure BeginDesign;
-    procedure ID3Event(Event: TJvID3Event; Info: Longint); virtual;
+    procedure ID3Event(Event: TJvID3Event; Info: TObject); virtual;
     procedure EndDesign;
     property Controller: TJvID3Controller read FController;
   end;
@@ -1089,7 +1089,7 @@ type
     procedure SendActivateEvent(Activated: Boolean);
     procedure UnRegisterClient(Client: TObject); virtual;
 
-    procedure ID3Event(Event: TJvID3Event; Info: Longint); virtual;
+    procedure ID3Event(Event: TJvID3Event; Info: TObject); virtual;
 
     procedure BeginReading;
     procedure EndReading;
@@ -3413,7 +3413,7 @@ procedure TJvID3Controller.EndUpdate;
 begin
   Dec(FUpdateCount);
   if FUpdateCount = 0 then
-    ID3Event(ideID3Change, 0);
+    ID3Event(ideID3Change, nil);
 end;
 
 procedure TJvID3Controller.EndUseTempStream;
@@ -3608,7 +3608,7 @@ begin
   Result := Assigned(Frames.FindFrame(AFrameID));
 end;
 
-procedure TJvID3Controller.ID3Event(Event: TJvID3Event; Info: Integer);
+procedure TJvID3Controller.ID3Event(Event: TJvID3Event; Info: TObject);
 begin
   if (Event in [ideFrameChange, ideFrameListChange]) and
     (FState * [icsReading, icsWriting] = []) then
@@ -4004,7 +4004,7 @@ begin
   Controller.EndUpdate;
 end;
 
-procedure TJvID3ControllerDesigner.ID3Event(Event: TJvID3Event; Info: Integer);
+procedure TJvID3ControllerDesigner.ID3Event(Event: TJvID3Event; Info: TObject);
 begin
 end;
 
@@ -5065,7 +5065,7 @@ end;
 procedure TJvID3Frame.DataChanged;
 begin
   if Assigned(FController) then
-    FController.ID3Event(ideFrameChange, Longint(Self));
+    FController.ID3Event(ideFrameChange, Self);
 end;
 
 procedure TJvID3Frame.Error(const Msg: string);
@@ -5660,7 +5660,7 @@ end;
 procedure TJvID3Frames.Changed;
 begin
   if (FController <> nil) and not (csDestroying in FController.ComponentState) then
-    FController.ID3Event(ideFrameListChange, 0);
+    FController.ID3Event(ideFrameListChange, nil);
   {if Assigned(OnChange) then OnChange(Self);}
 end;
 

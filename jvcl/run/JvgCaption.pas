@@ -216,22 +216,22 @@ procedure TJvgCaption.SetParentWindowHook;
 var
   P: Pointer;
 begin
-  P := Pointer(GetWindowLongPtr(TForm(Owner).Handle, GWL_WNDPROC));
+  P := Pointer(GetWindowLongPtr(TForm(Owner).Handle, GWLP_WNDPROC));
   if P <> FNewWndProc then
   begin
     FPrevWndProc := P;
     FNewWndProc := JvMakeObjectInstance(ParentWindowHookProc);
-    SetWindowLongPtr(TForm(Owner).Handle, GWL_WNDPROC, LONG_PTR(FNewWndProc));
+    SetWindowLongPtr(TForm(Owner).Handle, GWLP_WNDPROC, LONG_PTR(FNewWndProc));
   end;
 end;
 
 procedure TJvgCaption.FreeParentWindowHook;
 begin
   if (FNewWndProc <> nil) and (FPrevWndProc <> nil) and
-    (Pointer(GetWindowLongPtr(TForm(Owner).Handle, GWL_WNDPROC)) = FNewWndProc) then
+    (Pointer(GetWindowLongPtr(TForm(Owner).Handle, GWLP_WNDPROC)) = FNewWndProc) then
   begin
     //Repaint;
-    SetWindowLongPtr(TForm(Owner).Handle, GWL_WNDPROC, LONG_PTR(FPrevWndProc));
+    SetWindowLongPtr(TForm(Owner).Handle, GWLP_WNDPROC, LONG_PTR(FPrevWndProc));
     // (rom) JvFreeObjectInstance call added
     JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;

@@ -902,12 +902,12 @@ begin
   if Value <> FHandle then
   begin
     if FHandle <> 0 then
-      SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(FOrgWndProc));
+      SetWindowLongPtr(FHandle, GWLP_WNDPROC, LONG_PTR(FOrgWndProc));
 
     FHandle := Value;
 
     if FHandle <> 0 then
-      FOrgWndProc := Pointer(SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(FInstance)));
+      FOrgWndProc := Pointer(SetWindowLongPtr(FHandle, GWLP_WNDPROC, LONG_PTR(FInstance)));
   end;
 end;
 

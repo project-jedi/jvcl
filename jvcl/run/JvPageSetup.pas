@@ -278,7 +278,7 @@ begin
     CenterWindow(Wnd);
     THackCommonDialog(CreationControl).FHandle := Wnd;
     THackCommonDialog(CreationControl).FDefWndProc :=
-      Pointer(SetWindowLongPtr(Wnd, GWL_WNDPROC, LONG_PTR(THackCommonDialog(CreationControl).FObjectInstance)));
+      Pointer(SetWindowLongPtr(Wnd, GWLP_WNDPROC, LONG_PTR(THackCommonDialog(CreationControl).FObjectInstance)));
     CallWindowProc(THackCommonDialog(CreationControl).FObjectInstance, Wnd, Msg, AWParam, ALParam);
     CreationControl := nil;
   end;

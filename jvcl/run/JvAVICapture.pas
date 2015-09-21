@@ -602,7 +602,7 @@ begin
   Result := 0;
 
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
   begin
     // send the message to the containing window, except for WM_NCHITTEST
@@ -636,7 +636,7 @@ begin
   end;
 
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoError(ErrId, Str);
 
@@ -651,7 +651,7 @@ var
   SelfObj: TJvAVICapture;
 begin
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoStatus(nId, Str);
 
@@ -666,7 +666,7 @@ var
   SelfObj: TJvAVICapture;
 begin
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoYield;
 
@@ -682,7 +682,7 @@ var
   SelfObj: TJvAVICapture;
 begin
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoFrame(videoHdr);
 
@@ -698,7 +698,7 @@ var
   SelfObj: TJvAVICapture;
 begin
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoVideoStream(videoHdr);
 
@@ -714,7 +714,7 @@ var
   SelfObj: TJvAVICapture;
 begin
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoWaveStream(waveHdr);
 
@@ -731,7 +731,7 @@ var
 begin
   res := True;
   // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWL_USERDATA));
+  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
   if SelfObj <> nil then
     SelfObj.DoCapControl(nState, res);
 
@@ -1116,10 +1116,10 @@ begin
     0);                  // window identifier
 
   // place the Pointer to Self in the user data
-  SetWindowLongPtr(FHWnd, GWL_USERDATA, LONG_PTR(Self));
+  SetWindowLongPtr(FHWnd, GWLP_USERDATA, LONG_PTR(Self));
   // replace the WndProc to be ours
-  FPreviousWndProc := Pointer(GetWindowLongPtr(FHWnd, GWL_WNDPROC));
-  SetWindowLongPtr(FHWnd, GWL_WNDPROC, LONG_PTR(@CustomWndProc));
+  FPreviousWndProc := Pointer(GetWindowLongPtr(FHWnd, GWLP_WNDPROC));
+  SetWindowLongPtr(FHWnd, GWLP_WNDPROC, LONG_PTR(@CustomWndProc));
   // updates the FHWnd member of audio format, capture settings, palette and video format
   // yes, they are private members, but they can still be accessed by a foreign class
   // because the access is done in the same pas file !
@@ -1134,7 +1134,7 @@ end;
 procedure TJvAVICapture.DestroyWindowHandle;
 begin
   // restore the window proc
-  SetWindowLongPtr(FHWnd, GWL_WNDPROC, LONG_PTR(FPreviousWndProc));
+  SetWindowLongPtr(FHWnd, GWLP_WNDPROC, LONG_PTR(FPreviousWndProc));
   // destroy the AviCap Window
   DestroyWindow(FHWnd);
   // let the TWinControl window be destroyed

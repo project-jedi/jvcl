@@ -620,7 +620,7 @@ begin
   else
   begin
     FOldWndProc := nil;
-    FOldWndProcHandle := TFarProc(SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(MakeObjectInstance(WindowProc))));
+    FOldWndProcHandle := TFarProc(SetWindowLongPtr(FHandle, GWLP_WNDPROC, LONG_PTR(MakeObjectInstance(WindowProc))));
     FHooked := True;
   end;
 end;
@@ -664,7 +664,7 @@ begin
   end
   else
   begin
-    Ptr := TFarProc(SetWindowLongPtr(FHandle, GWL_WNDPROC, LONG_PTR(FOldWndProcHandle)));
+    Ptr := TFarProc(SetWindowLongPtr(FHandle, GWLP_WNDPROC, LONG_PTR(FOldWndProcHandle)));
     FreeObjectInstance(Ptr);
     FHooked := False;
   end;

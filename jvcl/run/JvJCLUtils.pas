@@ -86,6 +86,18 @@ type
   {$EXTERNALSYM DWORD_PTR}
   DWORD_PTR = ULONG_PTR;
 
+const
+  GWLP_WNDPROC    = -4;
+  {$EXTERNALSYM GWLP_WNDPROC}
+  GWLP_HINSTANCE  = -6;
+  {$EXTERNALSYM GWLP_HINSTANCE}
+  GWLP_HWNDPARENT = -8;
+  {$EXTERNALSYM GWLP_HWNDPARENT}
+  GWLP_USERDATA   = -21;
+  {$EXTERNALSYM GWLP_USERDATA}
+  GWLP_ID         = -12;
+  {$EXTERNALSYM GWLP_ID}
+
 {$EXTERNALSYM GetWindowLongPtr}
 function GetWindowLongPtr(hWnd: HWND; nIndex: Integer): LONG_PTR; stdcall;
 {$EXTERNALSYM SetWindowLongPtr}
@@ -7912,7 +7924,7 @@ end;
 
 function GetWindowParent(Wnd: THandle): THandle;
 begin
-  Result := THandle(GetWindowLongPtr(Wnd, GWL_HWNDPARENT));
+  Result := THandle(GetWindowLongPtr(Wnd, GWLP_HWNDPARENT));
 end;
 
 procedure ActivateWindow(Wnd: THandle);

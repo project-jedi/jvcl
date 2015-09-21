@@ -1,10 +1,10 @@
 object JvID3FramesEditor: TJvID3FramesEditor
   Left = 214
   Top = 191
-  ClientWidth = 173
-  ClientHeight = 239
   BorderStyle = bsSizeToolWin
   Caption = 'Frame Editor'
+  ClientHeight = 239
+  ClientWidth = 173
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -32,7 +32,7 @@ object JvID3FramesEditor: TJvID3FramesEditor
     Left = 0
     Top = 0
     Width = 173
-    Height = 236
+    Height = 239
     Align = alClient
     DragMode = dmAutomatic
     ItemHeight = 13

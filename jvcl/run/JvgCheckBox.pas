@@ -537,12 +537,12 @@ procedure TJvgCheckBox.HookFocusControlWndProc;
 var
   P: Pointer;
 begin
-  P := Pointer(GetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC));
+  P := Pointer(GetWindowLongPtr(FocusControl.Handle, GWLP_WNDPROC));
   if (P <> FNewWndProc) then
   begin
     FPrevWndProc := P;
     FNewWndProc := JvMakeObjectInstance(FocusControlWndHookProc);
-    SetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC, LONG_PTR(FNewWndProc));
+    SetWindowLongPtr(FocusControl.Handle, GWLP_WNDPROC, LONG_PTR(FNewWndProc));
   end;
 end;
 
@@ -550,9 +550,9 @@ procedure TJvgCheckBox.UnhookFocusControlWndProc;
 begin
   //  if not(csDesigning in ComponentState) then Exit;
   if (FNewWndProc <> nil) and (FPrevWndProc <> nil) and
-    (Pointer(GetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
+    (Pointer(GetWindowLongPtr(FocusControl.Handle, GWLP_WNDPROC)) = FNewWndProc) then
   begin
-    SetWindowLongPtr(FocusControl.Handle, GWL_WNDPROC, LONG_PTR(FPrevWndProc));
+    SetWindowLongPtr(FocusControl.Handle, GWLP_WNDPROC, LONG_PTR(FPrevWndProc));
     // (rom) JvFreeObjectInstance call added
     JvFreeObjectInstance(FNewWndProc);
     FNewWndProc := nil;
