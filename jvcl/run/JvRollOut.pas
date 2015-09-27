@@ -69,6 +69,8 @@ const
 type
   TJvPlacement = (plTop, plLeft);
 
+  TJvRollOutButtonStyle = (bsButton, bsHeader);
+
   TJvRollOutColors = class(TPersistent)
   private
     FFrameBottom: TColor;
@@ -160,6 +162,10 @@ type
     FOldWidthHeight: TPoint;
     FOldAlign: TAlign;
 
+    FButtonStyle: TJvRollOutButtonStyle;
+    FCollapseCtrlsOnButton: Boolean;
+    FUseGroupBoxCaptionColor: Boolean;
+
     procedure SetGroupIndex(Value: Integer);
     procedure SetPlacement(Value: TJvPlacement);
 
@@ -177,6 +183,9 @@ type
     procedure SetChildOffset(Value: Integer);
     procedure RedrawControl(DrawAll: Boolean);
     procedure DrawButtonFrame;
+    {$IFDEF RTL230_UP}
+    procedure DrawThemedButtonFrame;
+    {$ENDIF RTL230_UP}
     procedure UpdateGroup;
     procedure SetExpandedSize(const Value: Integer);
     procedure CMExpanded(var Msg: TMessage); message CM_EXPANDED;
@@ -190,6 +199,7 @@ type
     procedure RestoreFromTopForm;
     procedure PutOnForm;
     function IsButtonFontStored: Boolean;
+    procedure SetButtonStyle(const Value: TJvRollOutButtonStyle);
   protected
     // When the rollout-panel is collaped all contained controls are hidden
     //   to avoid tabbing into the child when the child is not visible or the
@@ -222,7 +232,9 @@ type
     procedure DoButtonFontChange(Sender: TObject);
     property ButtonFont: TFont read FButtonFont write SetButtonFont stored IsButtonFontStored;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 20;
+    property ButtonStyle: TJvRollOutButtonStyle read FButtonStyle write SetButtonStyle default bsHeader;
     property ChildOffset: Integer read FChildOffset write SetChildOffset default 0;
+    property CollapseCtrlsOnButton: Boolean read FCollapseCtrlsOnButton write FCollapseCtrlsOnButton default True;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Colors: TJvRollOutColors read FColors write FColors;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -232,6 +244,7 @@ type
     property ToggleAnywhere: Boolean read FToggleAnywhere write FToggleAnywhere default True;
     property SmartExpand: Boolean read FSmartExpand write SetSmartExpand default True;
     property SmartShow: Boolean read FSmartShow write FSmartShow default True;
+    property UseGroupBoxCaptionColor: Boolean read FUseGroupBoxCaptionColor write FUseGroupBoxCaptionColor default False;
 
     property OnCollapse: TNotifyEvent read FOnCollapse write FOnCollapse;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
@@ -276,9 +289,11 @@ type
     property BorderWidth;
     property ButtonFont;
     property ButtonHeight;
+    property ButtonStyle;
     property Caption;
     property ChildOffset;
     property Placement;
+    property CollapseCtrlsOnButton;
     property Collapsed;
     property Colors;
     property DragCursor;
@@ -301,6 +316,7 @@ type
     property TabOrder;
     property TabStop;
     property ToggleAnywhere;
+    property UseGroupBoxCaptionColor;
     property Visible;
     property OnClick;
     property OnDragDrop;
@@ -329,15 +345,11 @@ const
 implementation
 
 uses
+  {$IFDEF RTL230_UP}
+  Vcl.Themes, Vcl.Styles,
+  {$ENDIF RTL230_UP}
   Types,
   JvJVCLUtils; // for IsAccel()
-
-
-// (p3) not used
-// const
-//  cIncrement = 24;
-//  cSmooth = False;
-
 
 procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
 var
@@ -545,12 +557,9 @@ begin
   FColors := TJvRollOutColors.Create;
   FColors.OnChange := DoColorsChange;
   FToggleAnywhere := True;
-  FGroupIndex := 0;
-  FCollapsed := False;
-  FMouseDown := False;
-  FInsideButton := False;
-  FChildOffset := 0;
   FButtonHeight := 20;
+  FButtonStyle := bsHeader;
+  FCollapseCtrlsOnButton := True;
   FPlacement := plTop;
   SetBounds(0, 0, 145, 170);
   FAWidth := 145;
@@ -578,7 +587,6 @@ begin
     OnDeactivate := OnTopDeactivate;
     Position := poDesigned;
   end;
-  FOldParent := nil;
 
   ControlStyle := ControlStyle - [csDoubleClicks];    // Doubleclicks are converted into single clicks
 end;
@@ -655,6 +663,11 @@ begin
   if DrawAll then
     Invalidate
   else
+  {$IFDEF RTL230_UP}
+  if StyleServices.Enabled then
+    DrawThemedButtonFrame
+  else
+  {$ENDIF RTL230_UP}
     DrawButtonFrame;
 end;
 
@@ -946,6 +959,16 @@ begin
   end;
 end;
 
+
+procedure TJvCustomRollOut.SetButtonStyle(const Value: TJvRollOutButtonStyle);
+begin
+  if Value <> FButtonStyle then
+  begin
+    FButtonStyle := Value;
+    RedrawControl(False);
+  end;
+end;
+
 procedure TJvCustomRollOut.SetChildOffset(Value: Integer);
 begin
   if FChildOffset <> Value then
@@ -1141,6 +1164,127 @@ begin
   end;
 end;
 
+{$IFDEF RTL230_UP}
+procedure TJvCustomRollOut.DrawThemedButtonFrame;
+var
+  R: TRect;
+  State1: TThemedHeader;
+  State2: TThemedButton;
+  FIndex: Integer;
+begin
+  if FPlacement = plTop then
+    FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
+  else
+    FButtonRect := Rect(BevelWidth, BevelWidth, FButtonHeight + BevelWidth, Height - BevelWidth);
+
+  //Draw button
+  if FButtonStyle = bsHeader then
+  begin
+    if not Enabled then
+      State1 := thHeaderDontCare
+    else
+      if FMouseDown and FInsideButton then
+        State1 := thHeaderItemPressed
+      else
+        if FInsideButton then
+          State1 := thHeaderItemHot
+        else
+          State1 := thHeaderItemNormal;
+    R := FButtonRect;
+    StyleServices.DrawElement(Canvas.Handle, StyleServices.GetElementDetails(State1), R);
+  end
+  else //FButtonStyle = bsButton
+  begin
+    if not Enabled then
+      State2 := tbPushButtonDisabled
+    else
+      if FMouseDown and FInsideButton then
+        State2 := tbPushButtonPressed
+      else
+        if FInsideButton then
+          State2 := tbPushButtonHot
+        else
+          if ShowFocus and Focused then
+            State2 := tbPushButtonDefaulted
+          else
+            State2 := tbPushButtonNormal;
+    R := FButtonRect;
+    StyleServices.DrawElement(Canvas.Handle, StyleServices.GetElementDetails(State2), R);
+  end;
+
+  if Collapsed then
+    FIndex := ImageOptions.IndexCollapsed
+  else
+    FIndex := ImageOptions.IndexExpanded;
+
+  R := FButtonRect;
+  if FPlacement = plTop then
+  begin
+    if Assigned(ImageOptions.Images) then
+    begin
+      ImageOptions.Images.Draw(Canvas, ImageOptions.Offset + BevelWidth,
+        BevelWidth + (FButtonHeight - ImageOptions.Images.Height) div 2 - Integer(FButtonStyle = bsHeader) + Integer(FButtonStyle = bsButton), FIndex);
+      R.Left := ImageOptions.Images.Width + ImageOptions.Offset * 2 + BevelWidth;
+    end
+    else
+      R.Left := ImageOptions.Offset * 2 + BevelWidth;
+    R.Top := R.Top - (Canvas.TextHeight(Caption) - (FButtonRect.Bottom - FButtonRect.Top)) div 2 + BevelWidth div 2 - 2*Integer(FButtonStyle = bsHeader);
+  end
+  else
+  begin
+    if Assigned(ImageOptions.Images) then
+    begin
+      ImageOptions.Images.Draw(Canvas, BevelWidth + (FButtonHeight - ImageOptions.Images.Width) div 2,
+        ImageOptions.Offset + BevelWidth, FIndex);
+      R.Top := ImageOptions.Images.Height + ImageOptions.Offset * 2 + BevelWidth;
+    end
+    else
+      R.Top := ImageOptions.Offset * 2 + BevelWidth;
+    R.Left := R.Left + (Canvas.TextHeight(Caption) + (FButtonRect.Right - FButtonRect.Left)) div 2 + BevelWidth div 2 +2;
+  end;
+
+  //Draw caption
+  Canvas.Font.Assign(FButtonFont);
+  if FUseGroupBoxCaptionColor then
+  begin
+    if not Enabled then
+      Canvas.Font.Color  := StyleServices.GetStyleFontColor(sfGroupBoxTextDisabled)
+    else
+      Canvas.Font.Color  := StyleServices.GetStyleFontColor(sfGroupBoxTextNormal);
+  end
+  else
+  if not Enabled then
+    Canvas.Font.Color  := StyleServices.GetStyleFontColor(sfHeaderSectionTextDisabled)
+  else
+  if FMouseDown and FInsideButton then
+    Canvas.Font.Color  := StyleServices.GetStyleFontColor(sfHeaderSectionTextPressed)
+  else
+  if FInsideButton then
+    Canvas.Font.Color  := StyleServices.GetStyleFontColor(sfHeaderSectionTextHot)
+  else
+    Canvas.Font.Color  := StyleServices.GetStyleFontColor(sfHeaderSectionTextNormal);
+
+  if Length(Caption) > 0 then
+  begin
+    SetBkMode(Canvas.Handle, Transparent);
+    if FMouseDown and FInsideButton then
+      OffsetRect(R, 1, 1);
+    if Placement = plLeft then
+      SetTextAngle(Canvas, 270);
+    DrawText(Canvas.Handle, PChar(Caption), -1, R, DT_NOCLIP);
+    if Placement = plLeft then
+      SetTextAngle(Canvas, 0);
+  end;
+
+  if ShowFocus and Focused then
+  begin
+    R := FButtonRect;
+    InflateRect(R, -2, -2);
+    Canvas.DrawFocusRect(R);
+  end;
+end;
+{$ENDIF RTL230_UP}
+
 procedure TJvCustomRollOut.Paint;
 var
   R: TRect;
@@ -1151,18 +1295,29 @@ begin
     Canvas.Brush.Color := Colors.Color;
     DrawThemedBackground(Self, Canvas, R);
   end;
-  InternalFrame3D(Canvas, R, Colors.FrameTop, Colors.FrameBottom, BevelWidth);
-  if Colors.FrameTop = clNone then
+
+  {$IFDEF RTL230_UP}
+  if StyleServices.Enabled then
   begin
-    Dec(R.Left);
-    Dec(R.Top);
-  end;
-  if Colors.FrameBottom = clNone then
+    DrawThemedBorder(Self);
+    DrawThemedButtonFrame;
+  end
+  else
+  {$ENDIF RTL230_UP}
   begin
-    Inc(R.Right);
-    Inc(R.Bottom);
+    InternalFrame3D(Canvas, R, Colors.FrameTop, Colors.FrameBottom, BevelWidth);
+    if Colors.FrameTop = clNone then
+    begin
+      Dec(R.Left);
+      Dec(R.Top);
+    end;
+    if Colors.FrameBottom = clNone then
+    begin
+      Inc(R.Right);
+      Inc(R.Bottom);
+    end;
+    DrawButtonFrame;
   end;
-  DrawButtonFrame;
 end;
 
 procedure TJvCustomRollOut.Collapse;
@@ -1204,17 +1359,6 @@ begin
     end;
   end;
 end;
-
-(*
-function IsAccel(VK: Word; const Str: string): Boolean;
-var
-  P: Integer;
-begin
-  P := Pos('&', Str);
-  Result := (P <> 0) and (P < Length(Str)) and
-    (AnsiCompareText(Str[P + 1], Char(VK)) = 0);
-end;
-*)
 
 function TJvCustomRollOut.WantKey(Key: Integer; Shift: TShiftState): Boolean;
 begin
@@ -1311,7 +1455,8 @@ procedure TJvCustomRollOut.CheckChildVisibility;
       if (Controls[I] is TWinControl) and (TWinControl(Controls[I]).Visible) then
       begin
         FChildControlVisibility.AddObject(Controls[I].Name, Controls[I]);
-        TWinControl(Controls[I]).Visible := False;
+        if CollapseCtrlsOnButton or (TWinControl(Controls[I]).Top > ButtonHeight) then
+          TWinControl(Controls[I]).Visible := False;
       end;
   end;
 
