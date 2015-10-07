@@ -1931,7 +1931,9 @@ begin
       //Text := IntToStr(Round(CheckValue(NewValue)));
       Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
     end;
-    if FIsNegative and (Text <> '') and (Text[1] <> '-') then
+    if FIsNegative and (Text <> '') and (Text[1] <> '-') and (NewValue = 0) then
+      // If the user types something like "-0" while entering -0.5, don't
+      // discard the minus sign.
       Text := '-' + Text;
     DataChanged;
   finally
