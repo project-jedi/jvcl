@@ -809,7 +809,7 @@ begin
   begin
     ParentForm := GetParentForm(Self);
     if (ParentForm <> nil) and (FActivePage <> nil) and
-      FActivePage.ContainsControl(ParentForm.ActiveControl) then
+      FActivePage.ContainsControl(ParentForm.ActiveControl) and not (csDesigning in ComponentState) then
     begin
       ParentForm.ActiveControl := FActivePage;
       if ParentForm.ActiveControl <> FActivePage then
@@ -819,14 +819,15 @@ begin
       end;
     end;
 
-    Page.BringToFront;
     Page.Visible := True;
     {$IFDEF COMPILER9_UP}
     for I := 0 to PageCount - 1 do
       if Pages[i] <> Page then
         Pages[i].Visible := False;
+    {$ELSE}
+    Page.BringToFront;
     {$ENDIF COMPILER9_UP}
-    if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) then
+    if (ParentForm <> nil) and (FActivePage <> nil) and (ParentForm.ActiveControl = FActivePage) and not (csDesigning in ComponentState) then
     begin
       if Page.CanFocus then
         ParentForm.ActiveControl := Page
@@ -844,7 +845,7 @@ begin
         Change;
     end;
     if (ParentForm <> nil) and (FActivePage <> nil) and
-      (ParentForm.ActiveControl = FActivePage) then
+      (ParentForm.ActiveControl = FActivePage) and not (csDesigning in ComponentState) then
     begin
       FActivePage.SelectFirst;
     end;

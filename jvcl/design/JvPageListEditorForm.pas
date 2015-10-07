@@ -69,6 +69,7 @@ type
     procedure lbPagesKeyPress(Sender: TObject; var Key: Char);
   private
     FPageList: TJvCustomPageList;
+    FIgnoreEvents: Boolean;
     procedure SetPageList(const Value: TJvCustomPageList);
     procedure UpdateList(ItemIndex: Integer);
     procedure SelectPage(const Index: Integer);
@@ -200,7 +201,6 @@ begin
   if Assigned(FPageList) and Assigned(FPageList.ActivePage) and
     (TJvCustomPageAccess(FPageList.ActivePage).PageIndex <> lbPages.ItemIndex) then
     lbPages.ItemIndex := TJvCustomPageAccess(FPageList.ActivePage).PageIndex;
-  SelectPage(lbPages.ItemIndex);
 end;
 
 procedure TfrmPageListEditor.DesignerClosed(const Designer: IDesigner;
@@ -222,7 +222,7 @@ end;
 
 procedure TfrmPageListEditor.ItemsModified(const Designer: IDesigner);
 begin
-  if not (csDestroying in ComponentState) then
+  if not (csDestroying in ComponentState) and not FIgnoreEvents then
     UpdateList(lbPages.ItemIndex);
 end;
 
@@ -246,7 +246,7 @@ begin
   Page.PageList := PageList;
   PageList.ActivePage := Page;
   Designer.SelectComponent(Page);
-  //Designer.Modified; 
+  //Designer.Modified;
   lbPages.ItemIndex := lbPages.Items.Add(Page.Name);
 end;
 
@@ -256,12 +256,17 @@ var
 begin
   if Assigned(FPageList) and Active then
   begin
-    Page := nil;
-    if (Index >= 0) and (Index < FPageList.PageCount) then
-      Page := TJvCustomPageAccess(FPageList.Pages[Index]);
-    PageList.ActivePage := Page;
-    Designer.SelectComponent(Page);
-    Designer.Modified;
+    FIgnoreEvents := True;
+    try
+      Page := nil;
+      if (Index >= 0) and (Index < FPageList.PageCount) then
+        Page := TJvCustomPageAccess(FPageList.Pages[Index]);
+      PageList.ActivePage := Page;
+      Designer.SelectComponent(Page);
+      Designer.Modified;
+    finally
+      FIgnoreEvents := False;
+    end;
   end;
 end;
 
@@ -271,6 +276,7 @@ var
 begin
   if Assigned(FPageList) then
   begin
+    FIgnoreEvents := True;
     lbPages.Items.BeginUpdate;
     try
       lbPages.Items.Clear;
@@ -282,6 +288,7 @@ begin
         lbPages.ItemIndex := -1;
     finally
       lbPages.Items.EndUpdate;
+      FIgnoreEvents := False;
     end;
   end;
 end;
@@ -325,9 +332,11 @@ end;
 
 procedure TfrmPageListEditor.FormCreate(Sender: TObject);
 begin
-  {$IFDEF COMPILER9_UP}
+  {$IFNDEF COMPILER11_UP} // 2007 has MainFormOnTaskbar
+    {$IFDEF COMPILER9_UP}
   FormStyle := fsStayOnTop;
-  {$ENDIF COMPILER9_UP}
+    {$ENDIF COMPILER9_UP}
+  {$ENDIF ~COMPILER11_UP}
 end;
 
 end.
