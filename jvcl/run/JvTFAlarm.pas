@@ -221,7 +221,7 @@ begin
 
     // Now release all schedules no longer needed.  (Cross check CurrentSchedules
     // against Schedules list.)
-    for I := 0 to ScheduleCount - 1 do
+    for I := ScheduleCount - 1 downto 0 do
     begin
       Schedule := Schedules[I];
       if CurrentSchedules.IndexOfObject(Schedule) = -1 then
