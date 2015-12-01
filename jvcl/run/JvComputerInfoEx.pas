@@ -1113,6 +1113,8 @@ type
     function GetStickyKeys: TJvStickyKeysFlags;
     function GetToggleKeys: TJvToggleKeysFlags;
     function GetWorkArea: TJvRect;
+    function GetDWORDInfo(const Index: Integer): DWORD;
+    function GetUINTInfo(const Index: Integer): UINT;
     function GetIntInfo(const Index: Integer): Integer;
     function GetNativeIntInfo(const Index: Integer): NativeInt;
     function GetBoolInfo(const Index: Integer): Boolean;
@@ -1123,7 +1125,9 @@ type
     function GetFontSmoothingType: TJvFontSmoothingType;
     function GetIconSpacing(const Index: Integer): Integer;
     procedure SetBoolInfo(const Index: Integer; const Value: Boolean);
+    procedure SetDWORDInfo(const Index: Integer; const Value: DWORD);
     procedure SetIntInfo(const Index, Value: Integer);
+    procedure SetUINTInfo(const Index: Integer; const Value: UINT);
     procedure SetNativeIntInfo(const Index: Integer; const Value: NativeInt);
     procedure SetAccessTimeOut(const Value: TJvAccessTimeOut);
     procedure SetFilterKeys(const Value: TJvFilterKeys);
@@ -1165,7 +1169,7 @@ type
     property IconTitleWrap: Boolean index SPI_GETICONTITLEWRAP read GetBoolInfo write SetBoolInfo stored False;
     property KeyboardDelay: Integer index SPI_GETKEYBOARDDELAY read GetIntInfo write SetIntInfo stored False;
     property KeyboardPreferred: Boolean index SPI_GETKEYBOARDPREF read GetBoolInfo write SetBoolInfo stored False;
-    property KeyboardSpeed: Integer index SPI_GETKEYBOARDSPEED read GetIntInfo write SetIntInfo stored False;
+    property KeyboardSpeed: DWORD index SPI_GETKEYBOARDSPEED read GetDWORDInfo write SetDWORDInfo stored False;
     property KeyboardLayoutName: string read GetKeyboardLayoutName write SetKeyboardLayoutName stored False;
     property LowPowerActive: Boolean index SPI_GETLOWPOWERACTIVE read GetBoolInfo write SetBoolInfo stored False;
     property LowPowerTimeOut: Integer index SPI_GETLOWPOWERTIMEOUT read GetIntInfo write SetIntInfo stored False;
@@ -1174,9 +1178,9 @@ type
     property MouseSpeed: Integer index SPI_GETMOUSESPEED read GetIntInfo write SetIntInfo stored False;
     property MouseThreshold1: Integer index 0 read GetMouseInfo write SetMouseInfo stored False;
     property MouseThreshold2: Integer index 1 read GetMouseInfo write SetMouseInfo stored False;
-    property MouseHoverHeight: Integer index SPI_GETMOUSEHOVERHEIGHT read GetIntInfo write SetIntInfo stored False;
-    property MouseHoverTime: Integer index SPI_GETMOUSEHOVERTIME read GetIntInfo write SetIntInfo stored False;
-    property MouseHoverWidth: Integer index SPI_GETMOUSEHOVERWIDTH read GetIntInfo write SetIntInfo stored False;
+    property MouseHoverHeight: UINT index SPI_GETMOUSEHOVERHEIGHT read GetUINTInfo write SetUINTInfo stored False;
+    property MouseHoverTime: UINT index SPI_GETMOUSEHOVERTIME read GetUINTInfo write SetUINTInfo stored False;
+    property MouseHoverWidth: UINT index SPI_GETMOUSEHOVERWIDTH read GetUINTInfo write SetUINTInfo stored False;
     property MouseKeys: TJvMouseKeys read GetMouseKeys write SetMouseKeys stored False;
     property MouseTrails: Integer index SPI_GETMOUSETRAILS read GetIntInfo write SetIntInfo stored False;
     property NonClientMetrics: TJvNonClientMetrics read GetNonClientMetrics write SetNonClientMetrics stored False;
@@ -1191,25 +1195,25 @@ type
     property SoundSentry: TJvSoundSentry read GetSoundSentry write SetSoundSentry stored False;
     property StickyKeys: TJvStickyKeysFlags read GetStickyKeys write SetStickyKeys stored False;
     property ToggleKeys: TJvToggleKeysFlags read GetToggleKeys write SetToggleKeys stored False;
-    property WheelScrollLines: Integer index SPI_GETWHEELSCROLLLINES read GetIntInfo write SetIntInfo stored False;
+    property WheelScrollLines: UINT index SPI_GETWHEELSCROLLLINES read GetUINTInfo write SetUINTInfo stored False;
     property WindowsExtensions: Boolean index SPI_GETWINDOWSEXTENSION read GetBoolInfo write SetBoolInfo stored False;
     property WorkArea: TJvRect read GetWorkArea write SetWorkArea stored False;
     property ScreenSaverRunning: Boolean index SPI_GETSCREENSAVERRUNNING read GetBoolInfo write SetBoolInfo stored
       False;
     // New (W2k, XP and up)
-    property FocusBorderHeight: Integer index SPI_GETFOCUSBORDERHEIGHT read GetIntInfo write SetIntInfo stored False;
-    property FocusBorderWidth: Integer index SPI_GETFOCUSBORDERWIDTH read GetIntInfo write SetIntInfo stored False;
+    property FocusBorderHeight: UINT index SPI_GETFOCUSBORDERHEIGHT read GetUINTInfo write SetUINTInfo stored False;
+    property FocusBorderWidth: UINT index SPI_GETFOCUSBORDERWIDTH read GetUINTInfo write SetUINTInfo stored False;
     property MouseClickLock: Boolean index SPI_GETMOUSECLICKLOCK read GetBoolInfo write SetBoolInfo stored False;
-    property MouseClickLockTime: Integer index SPI_GETMOUSECLICKLOCKTIME read GetIntInfo write SetIntInfo stored False;
+    property MouseClickLockTime: DWORD index SPI_GETMOUSECLICKLOCKTIME read GetDWORDInfo write SetDWORDInfo stored False;
     property MouseSonar: Boolean index SPI_GETMOUSESONAR read GetBoolInfo write SetBoolInfo stored False;
     property MouseVanish: Boolean index SPI_GETMOUSEVANISH read GetBoolInfo write SetBoolInfo stored False;
     property DeskWallpaper: string read GetDeskWallpaper write SetDeskWallpaper stored False;
     property DropShadow: Boolean index SPI_GETDROPSHADOW read GetBoolInfo write SetBoolInfo stored False;
     property FlatMenu: Boolean index SPI_GETFLATMENU read GetBoolInfo write SetBoolInfo stored False;
-    property FontSmoothingContrast: Integer index SPI_GETFONTSMOOTHINGCONTRAST read GetIntInfo write SetIntInfo stored
+    property FontSmoothingContrast: UINT index SPI_GETFONTSMOOTHINGCONTRAST read GetUINTInfo write SetUINTInfo stored
       False;
     property FontSmoothingType: TJvFontSmoothingType read GetFontSmoothingType write SetFontSmoothingType stored False;
-    property MenuShowDelay: Integer index SPI_GETMENUSHOWDELAY read GetIntInfo write SetIntInfo stored False;
+    property MenuShowDelay: DWORD index SPI_GETMENUSHOWDELAY read GetDWORDInfo write SetDWORDInfo stored False;
     property ShowIMEUI: Boolean index SPI_GETSHOWIMEUI read GetBoolInfo write SetBoolInfo stored False;
     property ActiveWindowTracking: Boolean index SPI_GETACTIVEWINDOWTRACKING read GetBoolInfo write SetBoolInfo stored
       False;
@@ -1228,13 +1232,13 @@ type
     property ToolTipFade: Boolean index SPI_GETTOOLTIPFADE read GetBoolInfo write SetBoolInfo stored False;
     property CursorShadow: Boolean index SPI_GETCURSORSHADOW read GetBoolInfo write SetBoolInfo stored False;
     property UIEffects: Boolean index SPI_GETUIEFFECTS read GetBoolInfo write SetBoolInfo stored False;
-    property ForegroundLockTimeOut: Integer index SPI_GETFOREGROUNDLOCKTIMEOUT read GetIntInfo write SetIntInfo stored
+    property ForegroundLockTimeOut: DWORD index SPI_GETFOREGROUNDLOCKTIMEOUT read GetDWORDInfo write SetDWORDInfo stored
       False;
-    property ActiveWindowTrackTimeOut: Integer index SPI_GETACTIVEWNDTRKTIMEOUT read GetIntInfo write SetIntInfo stored
+    property ActiveWindowTrackTimeOut: DWORD index SPI_GETACTIVEWNDTRKTIMEOUT read GetDWORDInfo write SetDWORDInfo stored
       False;
     property ForegroundFlashCount: Integer index SPI_GETFOREGROUNDFLASHCOUNT read GetIntInfo write SetIntInfo stored
       False;
-    property CaretWidth: Integer index SPI_GETCARETWIDTH read GetIntInfo write SetIntInfo stored False;
+    property CaretWidth: DWORD index SPI_GETCARETWIDTH read GetDWORDInfo write SetDWORDInfo stored False;
     property IconHorizontalSpacing: Integer index 0 read GetIconSpacing write SetIconSpacing stored False;
     property IconVerticalSpacing: Integer index 1 read GetIconSpacing write SetIconSpacing stored False;
   end;
@@ -5102,6 +5106,18 @@ begin
   Result := FIconTitleFont;
 end;
 
+function TJvSystemParametersInfo.GetUINTInfo(const Index: Integer): UINT;
+begin
+  if not SystemParametersInfo(Index, 0, @Result, 0) then
+    Result := 0;
+end;
+
+function TJvSystemParametersInfo.GetDWORDInfo(const Index: Integer): DWORD;
+begin
+  if not SystemParametersInfo(Index, 0, @Result, 0) then
+    Result := 0;
+end;
+
 function TJvSystemParametersInfo.GetIntInfo(const Index: Integer): Integer;
 begin
   if not SystemParametersInfo(Index, 0, @Result, 0) then
@@ -5364,6 +5380,32 @@ begin
   begin
     UpdateToLogFont(Value, ALogFont);
     SystemParametersInfo(SPI_SETICONTITLELOGFONT, SizeOf(ALogFont), @ALogFont, 0);
+  end
+  else
+    RaiseReadOnly;
+end;
+
+procedure TJvSystemParametersInfo.SetUINTInfo(const Index: Integer; const Value: UINT);
+begin
+  if not IsDesigning and not ReadOnly and (Index <> SPI_GETSCREENSAVERRUNNING) then
+  begin
+    if Index >= SPI_GETACTIVEWINDOWTRACKING then // new values use new style
+      SystemParametersInfo(MapToSet(Index), 0, @Value, DEFAULT_SPIF_SENDCHANGE)
+    else
+      SystemParametersInfo(MapToSet(Index), Value, nil, DEFAULT_SPIF_SENDCHANGE);
+  end
+  else
+    RaiseReadOnly;
+end;
+
+procedure TJvSystemParametersInfo.SetDWORDInfo(const Index: Integer; const Value: DWORD);
+begin
+  if not IsDesigning and not ReadOnly and (Index <> SPI_GETSCREENSAVERRUNNING) then
+  begin
+    if Index >= SPI_GETACTIVEWINDOWTRACKING then // new values use new style
+      SystemParametersInfo(MapToSet(Index), 0, @Value, DEFAULT_SPIF_SENDCHANGE)
+    else
+      SystemParametersInfo(MapToSet(Index), Value, nil, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
