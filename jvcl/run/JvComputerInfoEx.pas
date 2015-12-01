@@ -1114,6 +1114,7 @@ type
     function GetToggleKeys: TJvToggleKeysFlags;
     function GetWorkArea: TJvRect;
     function GetIntInfo(const Index: Integer): Integer;
+    function GetNativeIntInfo(const Index: Integer): NativeInt;
     function GetBoolInfo(const Index: Integer): Boolean;
     function GetMouseInfo(const Index: Integer): Integer;
     function GetAnimationInfo: Boolean;
@@ -1123,6 +1124,7 @@ type
     function GetIconSpacing(const Index: Integer): Integer;
     procedure SetBoolInfo(const Index: Integer; const Value: Boolean);
     procedure SetIntInfo(const Index, Value: Integer);
+    procedure SetNativeIntInfo(const Index: Integer; const Value: NativeInt);
     procedure SetAccessTimeOut(const Value: TJvAccessTimeOut);
     procedure SetFilterKeys(const Value: TJvFilterKeys);
     procedure SetHighContrast(const Value: TJvHighContrast);
@@ -1152,7 +1154,7 @@ type
     property Animation: Boolean read GetAnimationInfo write SetAnimationInfo stored False;
     property Beep: Boolean index SPI_GETBEEP read GetBoolInfo write SetBoolInfo stored False;
     property BorderMultiplier: Integer index SPI_GETBORDER read GetIntInfo write SetIntInfo stored False;
-    property DefaultInputLanguage: Integer index SPI_GETDEFAULTINPUTLANG read GetIntInfo write SetIntInfo stored False;
+    property DefaultInputLanguage: NativeInt index SPI_GETDEFAULTINPUTLANG read GetNativeIntInfo write SetNativeIntInfo stored False;
     property DragFullWindows: Boolean index SPI_GETDRAGFULLWINDOWS read GetBoolInfo write SetBoolInfo stored False;
     property FilterKeys: TJvFilterKeys read GetFilterKeys write SetFilterKeys stored False;
     property FontSmoothing: Boolean index SPI_GETFONTSMOOTHING read GetBoolInfo write SetBoolInfo stored False;
@@ -5116,6 +5118,12 @@ begin
     Result := '';
 end;
 
+function TJvSystemParametersInfo.GetNativeIntInfo(const Index: Integer): NativeInt;
+begin
+  if not SystemParametersInfo(Index, 0, @Result, 0) then
+    Result := 0;
+end;
+
 function TJvSystemParametersInfo.GetMinimizedMetrics: TJvMinimizedMetrics;
 begin
   if FMinimizedMetrics = nil then
@@ -5362,6 +5370,19 @@ begin
 end;
 
 procedure TJvSystemParametersInfo.SetIntInfo(const Index, Value: Integer);
+begin
+  if not IsDesigning and not ReadOnly and (Index <> SPI_GETSCREENSAVERRUNNING) then
+  begin
+    if Index >= SPI_GETACTIVEWINDOWTRACKING then // new values use new style
+      SystemParametersInfo(MapToSet(Index), 0, @Value, DEFAULT_SPIF_SENDCHANGE)
+    else
+      SystemParametersInfo(MapToSet(Index), Value, nil, DEFAULT_SPIF_SENDCHANGE);
+  end
+  else
+    RaiseReadOnly;
+end;
+
+procedure TJvSystemParametersInfo.SetNativeIntInfo(const Index: Integer; const Value: NativeInt);
 begin
   if not IsDesigning and not ReadOnly and (Index <> SPI_GETSCREENSAVERRUNNING) then
   begin
