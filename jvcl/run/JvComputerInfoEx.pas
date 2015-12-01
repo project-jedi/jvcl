@@ -54,7 +54,7 @@ uses
   System.UITypes,
   {$ENDIF HAS_UNIT_SYSTEM_UITYPES}  
   JclWin32, JclSysInfo,
-  JvJVCLUtils, JvComponentBase, JvTypes;
+  JvJCLUtils, JvJVCLUtils, JvComponentBase, JvTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas
@@ -1479,7 +1479,6 @@ implementation
 uses
   Registry,
   JclShell, JclRegistry, JclFileUtils,
-  JvJCLUtils, // Include/ExcludeTrailingPathDelimiter
   JvResources;
 
 var
