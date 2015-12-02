@@ -633,7 +633,7 @@ type
     property DockInfo: TJvHWDockInfo read GetDockInfo write SetDockInfo stored False;
   end;
 
-  TJvWallpaperStyle = (wsCenter, wsUnused, wsStretch);
+  TJvWallpaperStyle = (wsCenter, wsStretch, wsFit, wsFill, wsUnknown);
   TJvMiscInfo = class(TJvWriteableInfo)
     // writeable: ScreenSaver, Pattern, Wallpaper, WallpaperStyle, WallpaperTiled
     // CurrentColorScheme
@@ -3307,7 +3307,19 @@ end;
 
 function TJvMiscInfo.GetWallpaperStyle: TJvWallpaperStyle;
 begin
-  Result := TJvWallpaperStyle(StrToInt(RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', '0')));
+  // http://blogs.technet.com/b/askperf/archive/2011/12/13/wallpaper-deployment-troubleshooting.aspx
+  case StrToInt(RegReadStringDef(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', '0')) of
+    0:
+      Result := wsCenter;
+    2:
+      Result := wsStretch;
+    6:
+      Result := wsFit;
+    10:
+      Result := wsFill;
+    else
+      Result := wsUnknown;
+  end;
 end;
 
 function TJvMiscInfo.GetWallpaperTiled: Boolean;
@@ -3388,11 +3400,26 @@ begin
 end;
 
 procedure TJvMiscInfo.SetWallpaperStyle(const Value: TJvWallpaperStyle);
+var
+  IntValue: Integer;
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    if Value <> wsUnused then
-      RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', IntToStr(Ord(Value)));
+    case Value of
+      wsCenter:
+        IntValue := 0;
+      wsStretch:
+        IntValue := 2;
+      wsFit:
+        IntValue := 6;
+      wsFill:
+        IntValue := 10;
+      else
+        IntValue := -1;
+    end;
+
+    if IntValue >= 0 then
+      RegWriteString(HKCU, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', IntToStr(IntValue));
   end
   else
     RaiseReadOnly;
