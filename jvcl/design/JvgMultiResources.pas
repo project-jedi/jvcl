@@ -146,8 +146,8 @@ begin
 
       if NameOfC <> '' then
         for J := 0 to Comps.Count - 1 do
-          if Pos(NameOfC + '.', Comps[I]) = 1 then
-            Comps.Objects[I] := C;
+          if Pos(NameOfC + '.', Comps[J]) = 1 then
+            Comps.Objects[J] := C;
 
       if C.Name = '' then
         Continue;
