@@ -922,31 +922,28 @@ begin
     // get capture settings from window
     capCaptureGetSetup(FHWnd, @Parms, SizeOf(Parms));
 
-    // udapte internal settings
-    with Parms do
-    begin
-      FFrameDelay := dwRequestMicroSecPerFrame;
+  // update internal settings
+    FFrameDelay := Parms.dwRequestMicroSecPerFrame;
 //      FFramesPerSec             := 1/dwRequestMicroSecPerFrame*1E6;
-      FConfirmCapture := fMakeUserHitOKToCapture;
-      FPercentDropForError := wPercentDropForError;
-      FYield := FYield;
-      FNumVideoBuffer := wNumVideoRequested;
-      FCaptureAudio := FCaptureAudio;
-      FNumAudioBuffer := wNumAudioRequested;
-      FAbortLeftMouse := FAbortLeftMouse;
-      FAbortRightMouse := FAbortRightMouse;
-      FKeyAbort := vKeyAbort;
-      FLimitEnabled := FLimitEnabled;
-      FTimeLimit := wTimeLimit;
-      FStepCapture2x := fStepCaptureAt2x;
-      FStepCaptureAverageFrames := wStepCaptureAverageFrames;
-      FAudioBufferSize := dwAudioBufferSize;
-      FAudioMaster := (AVStreamMaster = AVSTREAMMASTER_AUDIO);
-      FMCIControl := FMCIControl;
-      FMCIStep := fStepMCIDevice;
-      FMCIStartTime := dwMCIStartTime;
-      FMCIStopTime := dwMCIStopTime;
-    end;
+    FConfirmCapture := Parms.fMakeUserHitOKToCapture;
+    FPercentDropForError := Parms.wPercentDropForError;
+    FYield := Parms.FYield;
+    FNumVideoBuffer := Parms.wNumVideoRequested;
+    FCaptureAudio := Parms.FCaptureAudio;
+    FNumAudioBuffer := Parms.wNumAudioRequested;
+    FAbortLeftMouse := Parms.FAbortLeftMouse;
+    FAbortRightMouse := Parms.FAbortRightMouse;
+    FKeyAbort := Parms.vKeyAbort;
+    FLimitEnabled := Parms.FLimitEnabled;
+    FTimeLimit := Parms.wTimeLimit;
+    FStepCapture2x := Parms.fStepCaptureAt2x;
+    FStepCaptureAverageFrames := Parms.wStepCaptureAverageFrames;
+    FAudioBufferSize := Parms.dwAudioBufferSize;
+    FAudioMaster := (Parms.AVStreamMaster = AVSTREAMMASTER_AUDIO);
+    FMCIControl := Parms.FMCIControl;
+    FMCIStep := Parms.fStepMCIDevice;
+    FMCIStartTime := Parms.dwMCIStartTime;
+    FMCIStopTime := Parms.dwMCIStopTime;
   end;
 end;
 

@@ -689,8 +689,8 @@ begin
       Left := 200; Top := 100;
     end;
   }
+  glLogicsEditor := TJvgLogicsEditorMain.Create(nil);
   try
-    glLogicsEditor := TJvgLogicsEditorMain.Create(nil);
     glLogicsEditor.Execute(LogicProducer);
   finally
     FreeAndNil(glLogicsEditor);
