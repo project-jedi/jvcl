@@ -45,7 +45,10 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Classes,
   Messages,
-  Windows, Graphics, Controls, Forms, StdCtrls,
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
+  Windows, Types, Graphics, Controls, Forms, StdCtrls,
   JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree,
   JvTypes, JvComponent;
 
@@ -201,6 +204,7 @@ const
 implementation
 
 uses
+  Math,
   JvThemes, JvResources;
 
 const
@@ -509,7 +513,6 @@ var
   TmpBmp: TBitmap;
   TmpRect: TRect;
 begin
-  TmpBmp := nil;
   if Assigned(FNodeTree) then
   begin
     if not Transparent then
@@ -518,14 +521,14 @@ begin
       DrawThemedBackground(Self, Canvas, ClientRect);
     end;
 
+    Canvas.Font := Font;
+    TmpBmp := TBitmap.Create;
     try
-      Canvas.Font := Font;
-      TmpBmp := TBitmap.Create;
       TmpRect := ClientRect;
       TmpBmp.Canvas.Brush.Color := Color;
       TmpBmp.Canvas.Brush.Style := bsSolid;
-      TmpBmp.Height := TmpRect.Bottom - (FMarginHeight shl 1) + 1;  // TmpRect.Top = 0, ignore it
-      TmpBmp.Width  := TmpRect.Right - (FMarginWidth shl 1) + 1;    // TmpRect.left = 0, ignore it
+      TmpBmp.Height := Max(0, TmpRect.Bottom - (FMarginHeight div 2) + 1);  // TmpRect.Top = 0, ignore it
+      TmpBmp.Width  := Max(0, TmpRect.Right - (FMarginWidth div 2) + 1);    // TmpRect.left = 0, ignore it
       TmpBmp.Canvas.Font.Assign(Canvas.Font);
       TmpBmp.Canvas.Pen.Assign(Canvas.Pen);
 
