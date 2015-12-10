@@ -265,7 +265,7 @@ begin
       else
         Loc := Format('at address %p', [ExceptAddr]);
 
-      ExceptionStringList.Add(DateTimeToStr(Now) + ' Exception ' + ExceptObj.ClassName + ' occured ' + Loc);
+      ExceptionStringList.Add(DateTimeToStr(Now) + ' Exception ' + ExceptObj.ClassName + ' occurred ' + Loc);
       if ExceptObj is Exception then
         ExceptionStringList.Add('Message: ' + Exception(ExceptObj).Message);
 

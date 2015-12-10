@@ -232,7 +232,7 @@ begin
         end;
       end;
     end;
-    // We only need to assign the new picture if it occured after having
+    // We only need to assign the new picture if it occurred after having
     // changed one of the local properties: Mirrored, Brightness, Inverted,
     // Flipped. This way we prevent freeing the graphic used by the inherited
     // procedures with the following assignment.

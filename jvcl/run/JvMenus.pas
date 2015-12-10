@@ -2581,7 +2581,7 @@ begin
     JvMessageBox('!!! asked to draw nil item !!!'#13#10 +
       'Please report this to the JVCL team, ' +
       'detailing the precise conditions in ' +
-      'which this error occured.'#13#10 +
+      'which this error occurred.'#13#10 +
       'Thank you for your cooperation.',
       'error in menu painter',
       MB_ICONERROR);

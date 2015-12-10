@@ -373,7 +373,7 @@ type
     // events
     FOnDoneFile: TJvDoneFileEvent; // file is done
     FOnDoneStream: TJvDoneStreamEvent; // stream is done
-    FOnError: TJvErrorEvent; // error occured
+    FOnError: TJvErrorEvent; // error occurred
     FOnProgress: TJvUrlGrabberProgressEvent; // download progressed a bit
     FOnClosed: TNotifyEvent; // connection is closed
     FOnReceiving: TNotifyEvent; // beginning to receive

@@ -469,7 +469,7 @@ type
     property OnEnumerate: TJvHidEnumerateEvent read FOnEnumerate write FOnEnumerate;
     // the central event for HID device changes
     property OnDeviceChange: TNotifyEvent read FOnDeviceChange write SetOnDeviceChange;
-    // this event is triggered when an error occured while creating a given TJvHidDevice
+    // this event is triggered when an error occurred while creating a given TJvHidDevice
     property OnDeviceCreateError: TJvHidDeviceCreateError read FOnDeviceCreateError write FOnDeviceCreateError;
     // these events are copied to TJvHidDevices on creation
     property OnDeviceData: TJvHidDataEvent read FOnDeviceData write SetOnDeviceData;

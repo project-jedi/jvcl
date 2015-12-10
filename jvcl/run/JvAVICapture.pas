@@ -135,7 +135,7 @@ type
     // value, it may not be fully respected by the driver when capturing
     FFrameDelay: Cardinal;
     // the percentage of frames dropped above which the capture will end
-    // in an error state (too many drops having occured)
+    // in an error state (too many drops having occurred)
     FPercentDropForError: TJvPercent;
     // if True the capture session will be launched in a separate background
     // thread, not disabling the caller. Reentrance issues must then be
@@ -722,7 +722,7 @@ begin
 end;
 
 // this is the callback called when a precise capture control event has
-// occured. Only called if user chose so with ueCapControl
+// occurred. Only called if user chose so with ueCapControl
 
 function CapControlCallback(hWnd: HWND; nState: Integer): LRESULT; stdcall;
 var

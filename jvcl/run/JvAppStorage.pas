@@ -688,7 +688,7 @@ type
     property OnEncryptPropertyValue: TJvAppStorageCryptEvent read FOnEncryptPropertyValue write FOnEncryptPropertyValue;
     property OnDecryptPropertyValue: TJvAppStorageCryptEvent read FOnDecryptPropertyValue write FOnDecryptPropertyValue;
 
-    // called when an error occured in one of the methods.
+    // called when an error occurred in one of the methods.
     property OnError: TJvAppStorageErrorEvent read FOnError write FOnError;
   end;
 
