@@ -9,12 +9,13 @@ ROOT = $(MAKEDIR)\..
 !endif
 
 !ifndef JCLROOT
-JCLROOT = ..\..\..\jcl
+JCLROOT = ..\..\..\..\jcl\jcl
 !endif
 
 .path.exe=bin
 
 #---------------------------------------------------------------------------------------------------
+NAMESPACE = -nsSystem;System.Win;Winapi;Vcl
 SRC = ..\..\Run
 ARCH = ..\..\Archive
 COM = ..\Common;..\..\Common
@@ -28,11 +29,11 @@ SRCH = ..\$(SRC);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = "$(ROOT)\bin\make.exe" -l+ $(QUIET)
 #-$(MAKEFLAGS)
-DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
-DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M 
-DCCex  = "..\..\packages\bin\dcc32ex.exe" --requires-jcl -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m
+DCC  = "$(ROOT)\bin\dcc32.exe" -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m $(NAMESPACE)
+DCCx = "$(ROOT)\bin\dcc32.exe" -Q -M $(NAMESPACE)
+DCCex  = "..\..\packages\bin\dcc32ex.exe" --requires-jcl -e"$(BIN)" -i"$(SRCP)" -n"$(DCU)" -r"$(SRCP)" -u"$(SRCP)" -u"$(ROOT)\Lib\Obj" -q -w -h -m $(NAMESPACE)
 #-I$(COM) -U$(SRC) -U$(COM)
-DCCH = "$(ROOT)\bin\dcc32.exe" -e"..\$(BIN)" -i"$(SRCH)" -n"..\$(DCU)" -r"$(SRCH)" -u"$(SRCH)" -q -w -h -m
+DCCH = "$(ROOT)\bin\dcc32.exe" -e"..\$(BIN)" -i"$(SRCH)" -n"..\$(DCU)" -r"$(SRCH)" -u"$(SRCH)" -q -w -h -m $(NAMESPACE)
 BRCC = "$(ROOT)\bin\brcc32.exe" $**
 #---------------------------------------------------------------------------------------------------
 default: \
@@ -151,7 +152,6 @@ pg.exe: PackagesGenerator\pg.dpr \
   @cd ..
 
 pgEdit.exe: PackagesGenerator\pgEdit.dpr \
-		PackagesGenerator\AdvancedOptionsForm.pas \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\CmdLineUtils.pas \
 		PackagesGenerator\FileUtils.pas \
