@@ -493,6 +493,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
   public
     {$IFDEF SUPPORTS_CLASS_CTORDTORS}
     class destructor Destroy;
@@ -4112,7 +4113,8 @@ var
   I, ALeftCol, LastColIndex: Integer;
   ScaleFactor: Double;
 begin
-  if not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or (FGridState = gsColSizing) then
+  if not HandleAllocated or not AutoSizeColumns or FInAutoSize or (Columns.Count = 0) or
+     (FGridState = gsColSizing) or (csLoading in ComponentState) then
     Exit;
   FInAutoSize := True;
   ALeftCol := LeftCol;
@@ -4992,6 +4994,12 @@ begin
   if FScrollBars = ssVertical then
     Params.Style := Params.Style and not WS_HSCROLL;
   {$ENDIF COMPILER9_UP}
+end;
+
+procedure TJvDBGrid.CreateWnd;
+begin
+  inherited CreateWnd;
+  DoAutoSizeColumns;
 end;
 
 {$IFDEF COMPILER9_UP}
