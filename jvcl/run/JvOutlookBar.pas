@@ -218,9 +218,6 @@ type
     property Enabled: Boolean read FEnabled write SetEnabled default True;
   end;
 
-
-
-
   TJvOutlookBarPages = class(TOwnedCollection)
   private
     function GetItem(Index: Integer): TJvOutlookBarPage;
@@ -332,6 +329,7 @@ type
     procedure DoDwnClick(Sender: TObject);
     procedure DoUpClick(Sender: TObject);
     procedure RedrawRect(R: TRect; Erase: Boolean = False);
+    procedure CMHintShow(var Msg: TCMHintShow); message CM_HINTSHOW;
     procedure CMCaptionEditing(var Msg: TMessage); message CM_CAPTION_EDITING;
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
@@ -406,13 +404,10 @@ type
     property OnEditButton: TOutlookBarEditCaption read FOnEditButton write FOnEditButton;
     property OnEditPage: TOutlookBarEditCaption read FOnEditPage write FOnEditPage;
     property OnCustomDraw: TJvOutlookBarCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
-
     property Themed:Boolean read FThemed write SetThemed;
     property PageBtnProps:TJvPageBtnProps read FPageBtnProps;
-
     property DisabledFontColor1:TColor read FDisabledFontColor1 write SetDisabledFontColor1; //clWhite;
     property DisabledFontColor2:TColor read FDisabledFontColor2 write SetDisabledFontColor2; //clGrayText;
-
   public
     property ActivePage: TJvOutlookBarPage read GetActivePage;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
@@ -424,14 +419,10 @@ type
   TJvOutlookBar = class(TJvCustomOutlookBar)
   public
     property PopUpObject;
-
     property Themed;
-
     property DisabledFontColor1;
     property DisabledFontColor2;
-
     property PageBtnProps;
-
   published
     property Align;
     property Pages;
@@ -2441,6 +2432,19 @@ begin
   end;
 end;
 
+procedure TJvCustomOutlookBar.CMHintShow(var Msg: TCMHintShow);
+var
+  B: TJvOutlookBarButton;
+begin
+  inherited;
+  B := GetButtonAtPos(Msg.HintInfo.CursorPos);
+  if (B <> nil) and B.Enabled and (ActivePageIndex <> -1) and Pages[ActivePageIndex].Enabled then
+  begin
+    if (B.Action is TAction) and (TAction(B.Action).Hint <> '') then
+      Msg.HintInfo.HintStr := TAction(B.Action).Hint;
+  end;
+end;
+
 procedure TJvCustomOutlookBar.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -2469,7 +2473,7 @@ begin
     FPressedPageBtn := -1;
   end;
   B := GetButtonAtPos(Point(X, Y));
-  if (B <> nil) and B.Enabled and (Pages[ActivePageIndex].Enabled) then
+  if (B <> nil) and B.Enabled and Pages[ActivePageIndex].Enabled then
   begin
     FLastButtonIndex := B.Index;
     FPressedButtonIndex := B.Index;
@@ -2516,6 +2520,8 @@ begin
   begin
     if (P = nil) or (P.Index <> FPressedPageBtn) then
     begin
+      if ShowHint then
+        Application.CancelHint;
       R := GetPageButtonRect(FPressedPageBtn);
       RedrawRect(R);
       FPressedPageBtn := -1;
@@ -2533,10 +2539,15 @@ begin
   end;
   // TODO: check for button highlight
   B := GetButtonAtPos(Point(X, Y));
-  if (B <> nil) and B.Enabled and (Pages[ActivePageIndex].Enabled) then
+  if (B <> nil) and B.Enabled and Pages[ActivePageIndex].Enabled then
   begin
     if B.Index <> FLastButtonIndex then
     begin
+      if ShowHint then
+      begin
+        if not ((FLastButtonIndex = -1) and (B.Action is TAction) and (TAction(B.Action).Hint = '')) then
+          Application.CancelHint;
+      end;
       RedrawRect(FButtonRect, True);
       FButtonRect := GetButtonFrameRect(ActivePageIndex, B.Index);
       RedrawRect(FButtonRect);
@@ -2546,7 +2557,15 @@ begin
   else
   begin
     if FLastButtonIndex > -1 then
+    begin
       RedrawRect(FButtonRect);
+      if ShowHint and (FLastButtonIndex < Pages[ActivePageIndex].Buttons.Count) then
+      begin
+        B := Pages[ActivePageIndex].Buttons[FLastButtonIndex];
+        if (B.Action is TAction) and (TAction(B.Action).Hint <> '') then
+          Application.CancelHint;
+      end;
+    end;
     FLastButtonIndex := -1;
     FButtonRect := Rect(0, 0, 0, 0);
   end;
