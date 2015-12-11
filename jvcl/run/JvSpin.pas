@@ -237,6 +237,7 @@ type
     //    procedure DefinePropertyes(Filer: TFiler); override;
 
     function IsValidChar(Key: Char): Boolean; virtual;
+    function IsMinusValid(AllowedPosition: Integer): Boolean;
     procedure Change; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
@@ -1068,11 +1069,35 @@ begin
   Result := MinValue <> 0.0;
 end;
 
+// Checks if the minus key is a legal keystroke, given that minus is allowed at
+// AllowedPosition.
+function TJvCustomSpinEdit.IsMinusValid(AllowedPosition: Integer): Boolean;
+begin
+  if SelStart + 1 <> AllowedPosition then
+    Result := False
+  else if AllowedPosition > Length(Text) then
+    Result := True
+  else if (Text[AllowedPosition] <> '-') or (SelLength > 0) then
+    // Check SelLength to try to handle a minus already being present but part
+    // of the selection (so it would be overwritten).  This check is imperfect;
+    // there are several possibilities for selected text that should be
+    // permitted but aren't or that are permitted but would make the text
+    // invalid.
+    Result := True
+  else
+    Result := False;
+end;
+
 function TJvCustomSpinEdit.IsValidChar(Key: Char): Boolean;
 var
   ValidChars: TSysCharSet;
+  EPosition: Integer;
 begin
-  ValidChars := DigitChars + ['+', '-'];
+  ValidChars := DigitChars;
+
+  if (not FCheckMinValue or (FMinValue < 0)) and IsMinusValid(1) then
+    ValidChars := ValidChars + ['-'];
+
   if ValueType = vtFloat then
   begin
     if Pos(JclFormatSettings.DecimalSeparator, Text) = 0 then
@@ -1082,8 +1107,13 @@ begin
       else
         ValidChars := ValidChars + [JclFormatSettings.DecimalSeparator];
     end;
-    if Pos('E', AnsiUpperCase(Text)) = 0 then
-      ValidChars := ValidChars + ['e', 'E'];
+
+    EPosition := Pos('E', AnsiUpperCase(Text));
+    if EPosition = 0 then
+      ValidChars := ValidChars + ['e', 'E']
+    else if IsMinusValid(EPosition + 1) then
+      // Permit negative exponents.
+      ValidChars := ValidChars + ['-'];
   end
   else
   if ValueType = vtHex then
@@ -1901,7 +1931,9 @@ begin
       //Text := IntToStr(Round(CheckValue(NewValue)));
       Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
     end;
-    if FIsNegative and (Text <> '') and (Text[1] <> '-') then
+    if FIsNegative and (Text <> '') and (Text[1] <> '-') and (NewValue = 0) then
+      // If the user types something like "-0" while entering -0.5, don't
+      // discard the minus sign.
       Text := '-' + Text;
     DataChanged;
   finally
