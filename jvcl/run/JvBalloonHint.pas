@@ -995,6 +995,12 @@ begin
 end;
 
 procedure TJvBalloonWindow.CreateParams(var Params: TCreateParams);
+{$IFDEF JVCLThemesEnabled}
+  {$IFNDEF COMPILER7_UP}
+const
+  WS_EX_COMPOSITED = $02000000;
+  {$ENDIF ~COMPILER7_UP}
+{$ENDIF JVCLThemesEnabled}
 begin
   inherited CreateParams(Params);
   { Drop shadow in combination with custom animation may cause blurry effect,

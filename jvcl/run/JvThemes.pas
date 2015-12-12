@@ -41,10 +41,11 @@ uses
   {$ENDIF}
   {$IFDEF JVCLThemesEnabled}
     {$IFDEF COMPILER7_UP}
-  Themes, UxTheme,
+  Themes,
     {$ELSE}
   ThemeSrv,
     {$ENDIF COMPILER7_UP}
+  UxTheme,
   {$ENDIF JVCLThemesEnabled}
   Controls, Forms, Graphics, Buttons;
 

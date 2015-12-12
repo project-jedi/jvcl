@@ -48,7 +48,10 @@ uses
   {$ENDIF JVCLStylesEnabled}
   Types, Variants, Classes, Graphics, Controls, Forms, DB, DBCtrls,
   {$IFDEF JVCLThemesEnabled}
-  Themes, 
+  {$IFDEF COMPILER7_UP}
+  Themes,
+  {$ENDIF COMPILER7_UP}
+  JvThemes,
   {$ENDIF JVCLThemesEnabled}
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
@@ -703,7 +706,7 @@ implementation
 uses
   VDBConsts, DBConsts, SysUtils, Math, MultiMon,
   JclSysInfo,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvTypes, JvConsts, JvResources, JclSysUtils;
+  JvJCLUtils, JvJVCLUtils, JvTypes, JvConsts, JvResources, JclSysUtils;
 
 procedure CheckLookupFormat(const AFormat: string);
   { AFormat is passed to a Format function, but the only allowed
