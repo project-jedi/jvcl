@@ -38,7 +38,7 @@ uses
   Controls,
   DesignEditors, DesignIntf,
   JvDsgnConsts,
-  JvCreateProcess, JvWinHelp,
+  JvCreateProcess, JvCpuUsage, JvWinHelp,
   JvAlarms, JvConverter, JvDataEmbedded, JvEnterTab, JvMergeManager,
   JvPageManager, JvPatchFile, JvStringHolder, JvTimeLimit,
   JvTranslator, JvPrint, JvEasterEgg, JvMouseGesture, JvLogFile,
@@ -63,7 +63,7 @@ begin
     TJvStrHolder, TJvMultiStringHolder, TJvTimeLimit, TJvTranslator, TJvTranslatorStrings,
     TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile,
     TJvSpellChecker, TJvSpeller]);
-  RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvWinHelp]);
+  RegisterComponents(RsPaletteNonVisual, [TJvCreateProcess, TJvCpuUsage, TJvWinHelp]);
 
   RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
     'ApplicationName', TJvExeNameProperty);

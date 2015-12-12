@@ -79,6 +79,7 @@
         <DCCReference Include="..\..\run\JvAlarms.pas"/>
         <DCCReference Include="..\..\run\JvConverter.pas"/>
         <DCCReference Include="..\..\run\JvCreateProcess.pas"/>
+        <DCCReference Include="..\..\run\JvCpuUsage.pas"/>
         <DCCReference Include="..\..\run\JvDataEmbedded.pas"/>
         <DCCReference Include="..\..\run\JvEasterEgg.pas"/>
         <DCCReference Include="..\..\run\JvEnterTab.pas"/>

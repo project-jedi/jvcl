@@ -27,6 +27,7 @@
     <File Name="..\..\run\JvAlarms.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvConverter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCreateProcess.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCpuUsage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataEmbedded.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEasterEgg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvEnterTab.pas" Targets="all" Formname="" Condition=""/>
@@ -51,6 +52,7 @@
     <File Name="..\..\..\help\JvAlarms.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvConverter.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvCreateProcess.dtx" Targets="help" Formname="" Condition=""/>
+    <File Name="..\..\..\help\JvCpuUsage.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvDataEmbedded.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvEasterEgg.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvEnterTab.dtx" Targets="help" Formname="" Condition=""/>
