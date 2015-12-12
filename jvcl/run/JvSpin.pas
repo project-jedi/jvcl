@@ -162,7 +162,6 @@ type
     FIncrement: Extended;
     FDecimal: Byte;
     FChanging: Boolean;
-    //FOldValue: Extended; // New
     FEditorEnabled: Boolean;
     FValueType: TValueType;
     FButton: TJvSpinButton;
@@ -170,9 +169,8 @@ type
     FArrowKeys: Boolean;
     FOnTopClick: TNotifyEvent;
     FOnBottomClick: TNotifyEvent;
-    // FButtonKind: TSpinButtonKind;
     FUpDown: TCustomUpDown;
-    FThousands: Boolean; // New
+    FThousands: Boolean;
     FIsNegative: Boolean;
     FItems: TStrings;
     function StoreCheckMaxValue: Boolean;
@@ -185,11 +183,8 @@ type
     function CheckDefaultRange(CheckMax: Boolean): Boolean;
     procedure SetDisplayFormat(const Value: string);
     function IsFormatStored: Boolean;
-    //function TextToValText(const AValue: string): string;
     procedure SetFocused(Value: Boolean);
-    //procedure CheckRange(const AOption: TJvCheckOption);
 
-    //function TryGetValue(var Value: Extended): Boolean; // New
     function GetAsInteger: Longint;
     function GetButtonKind: TSpinButtonKind;
     function GetButtonWidth: Integer;
@@ -234,7 +229,6 @@ type
 
     function DefaultDisplayFormat: string; virtual;
     property DisplayFormat: string read FDisplayFormat write SetDisplayFormat stored IsFormatStored;
-    //    procedure DefinePropertyes(Filer: TFiler); override;
 
     function IsValidChar(Key: Char): Boolean; virtual;
     procedure Change; override;
@@ -972,29 +966,6 @@ begin
   ResizeButton;
   SetEditRect;
 end;
-
-{function TJvCustomSpinEdit.TryGetValue(var Value: Extended): Boolean;
-var
-  S: string;
-begin
-  try
-    S := StringReplace(Text, ThousandSeparator, '', [rfReplaceAll]);
-    if ValueType = vtFloat then
-      Value := StrToFloat(S)
-    else
-      if ValueType = vtHex then
-        Value := StrToInt('$' + Text)
-      else
-        Value := StrToInt(S);
-    Result := True;
-  except
-    if ValueType = vtFloat then
-      Value := FMinValue
-    else
-      Value := Trunc(FMinValue);
-    Result := False;
-  end;
-end;}
 
 function TJvCustomSpinEdit.GetAsInteger: Longint;
 begin
@@ -1870,6 +1841,7 @@ procedure TJvSpinEdit.SetValue(NewValue: Extended);
 var
   FloatFormat: TFloatFormat;
   WasModified: Boolean;
+  S: string;
 begin
   if Thousands then
     FloatFormat := ffNumber
@@ -1877,17 +1849,18 @@ begin
     FloatFormat := ffFixed;
 
   { Changing EditText sets Modified to false }
+  S := Text;
   WasModified := Modified;
   try
     case ValueType of
       vtFloat:
         if FDisplayFormat <> '' then
-          Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
+          S := FormatFloat(FDisplayFormat, CheckValue(NewValue))
         else
-          Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
+          S := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
       vtHex:
         if ValueType = vtHex then
-          Text := IntToHex(Round(CheckValue(NewValue)), 1);
+          S := IntToHex(Round(CheckValue(NewValue)), 1);
       vtString:
       begin
         NewValue := CheckValue(NewValue);
@@ -1895,14 +1868,18 @@ begin
           NewValue := 0;
         if NewValue >= Items.Count then
           NewValue := Items.Count - 1;
-        Text := Items[Trunc(NewValue)];
+        S := Items[Trunc(NewValue)];
       end
     else {vtInteger}
-      //Text := IntToStr(Round(CheckValue(NewValue)));
-      Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
+      //S := IntToStr(Round(CheckValue(NewValue)));
+      S := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
     end;
-    if FIsNegative and (Text <> '') and (Text[1] <> '-') then
-      Text := '-' + Text;
+    if FIsNegative and (S <> '') and (S[1] <> '-') then
+    begin
+      if -NewValue >= MinValue then
+        S := '-' + S;
+    end;
+    Text := S;
     DataChanged;
   finally
     Modified := WasModified;
