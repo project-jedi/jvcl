@@ -3086,7 +3086,11 @@ begin
     // This finds the correct procedure if a virtual jump has been inserted
     // at the procedure address
     Inc(patchPosition, 2); // skip the jump
+    {$IFDEF CPUX64}
+    patchPosition := pansiChar(Pointer(patchPosition + 4 + PInteger(patchPosition)^)^);
+    {$ELSE}
     patchPosition := pansiChar(Pointer(pointer(patchPosition)^)^);
+    {$ENDIF CPUX64}
   end;
   offset:=pansiChar(NewProc)-pansiChar(pointer(patchPosition))-5;
 
