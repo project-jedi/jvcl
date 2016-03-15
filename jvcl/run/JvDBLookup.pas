@@ -51,8 +51,8 @@ uses
   {$IFDEF COMPILER7_UP}
   Themes,
   {$ENDIF COMPILER7_UP}
-  JvThemes,
   {$ENDIF JVCLThemesEnabled}
+  JvThemes,
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
 const
