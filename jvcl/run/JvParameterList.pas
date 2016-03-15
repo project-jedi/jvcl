@@ -288,6 +288,7 @@ type
 
   TJvParameterList = class(TJvComponent)
   private
+    FHandleParameterEnabledCnt: Integer;
     FMessages: TJvParameterListMessages;
     FIntParameterList: TStringList;
     FArrangeSettings: TJvArrangeSettings;
@@ -314,7 +315,10 @@ type
     FShowParameterValidState: Boolean;
     function GetIntParameterList: TStrings;
     function AddObject(const S: string; AObject: TObject): Integer;
+    procedure DisableHandleParameterEnabled;
+    procedure EnableHandleParameterEnabled;
     function GetVisibleCount: Integer;
+    function IsHandleParameterEnabledDisabled: Boolean;
     procedure OnOkButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
     procedure ShowParameterDialogThread;
@@ -386,7 +390,7 @@ type
     { Creates the ParameterDialog }
     procedure CreateParameterDialog;
     { Checks the Disable/Enable-Reason of all Parameters }
-    procedure HandleEnableDisable;
+    procedure HandleParameterEnabled;
     {creates the components of all parameters on any WinControl}
     procedure CreateWinControlsOnParent(ParameterParent: TWinControl);
     {Destroy the WinControls of all parameters}
@@ -824,6 +828,7 @@ begin
   FEnableReasons := TJvParameterListEnableDisableReasonList.Create;
   FDisableReasons := TJvParameterListEnableDisableReasonList.Create;
   FValue := null;
+  FAfterWincontrolPropertiesChangedDisabledCnt := 0;
 end;
 
 destructor TJvBaseParameter.Destroy;
@@ -1129,14 +1134,16 @@ end;
 
 procedure TJvBaseParameter.DisableAfterWincontrolPropertiesChanged;
 begin
-  Dec(FAfterWincontrolPropertiesChangedDisabledCnt);
-  if FAfterWincontrolPropertiesChangedDisabledCnt = 0 then SetAfterWincontrolPropertiesChangedDisabled(False);
+  Inc(FAfterWincontrolPropertiesChangedDisabledCnt);
+  if FAfterWincontrolPropertiesChangedDisabledCnt = 1 then
+    SetAfterWincontrolPropertiesChangedDisabled(False);
 end;
 
 procedure TJvBaseParameter.EnableAfterWincontrolPropertiesChanged;
 begin
-  Inc(FAfterWincontrolPropertiesChangedDisabledCnt);
-  if FAfterWincontrolPropertiesChangedDisabledCnt = 1 then SetAfterWincontrolPropertiesChangedDisabled(True);
+  Dec(FAfterWincontrolPropertiesChangedDisabledCnt);
+  if FAfterWincontrolPropertiesChangedDisabledCnt = 0 then
+    SetAfterWincontrolPropertiesChangedDisabled(True);
 end;
 
 function TJvBaseParameter.Validate(var AData: Variant): Boolean;
@@ -1255,6 +1262,7 @@ begin
   FOkButtonDisableReasons := TJvParameterListEnableDisableReasonList.Create;
   FOkButtonEnableReasons := TJvParameterListEnableDisableReasonList.Create;
   FShowParameterValidState := False;
+  FHandleParameterEnabledCnt := 0;
 end;
 
 destructor TJvParameterList.Destroy;
@@ -1455,7 +1463,7 @@ begin
           OnExitParameter(Parameters[I]);
         Break;
       end;
-  HandleEnableDisable;
+  HandleParameterEnabled;
   HandleShowValidState;
 end;
 
@@ -1473,7 +1481,7 @@ begin
           OnChangeParameter(Parameters[I]);
         Break;
       end;
-  HandleEnableDisable;
+  HandleParameterEnabled;
   HandleShowValidState;
 end;
 
@@ -1838,24 +1846,33 @@ begin
   Result := IEnable;
 end;
 
-procedure TJvParameterList.HandleEnableDisable;
+procedure TJvParameterList.HandleParameterEnabled;
 var
   I: Integer;
   Parameter: TJvBaseParameter;
   IEnable: Integer;
 begin
-  for I := 0 to Count - 1 do
-    if Assigned(ParameterByIndex(I).WinControl) then
+  if IsHandleParameterEnabledDisabled then
+    Exit;
+  try
+    DisableHandleParameterEnabled;
+    for I := 0 to Count - 1 do
     begin
       Parameter := ParameterByIndex(I);
-      IEnable := GetEnableDisableReasonState(Parameter.DisableReasons, Parameter.EnableReasons);
-      case IEnable of
-        -1:
-          Parameter.Enabled := False;
-        1:
-          Parameter.Enabled := True;
+      if Assigned(Parameter.WinControl) then
+      begin
+        IEnable := GetEnableDisableReasonState(Parameter.DisableReasons, Parameter.EnableReasons);
+        case IEnable of
+          -1:
+            Parameter.Enabled := False;
+          1:
+            Parameter.Enabled := True;
+        end;
       end;
     end;
+  finally
+    EnableHandleParameterEnabled;
+  end;
 end;
 
 procedure TJvParameterList.CreateWinControlsOnParent(ParameterParent: TWinControl);
@@ -1863,6 +1880,7 @@ begin
   FreeAndNil(ScrollBox);
   ScrollBox := TScrollBox.Create(Self);
   ScrollBox.Parent := ParameterParent;
+  ScrollBox.Name := 'ParameterList_Scrollbox';
   ScrollBox.AutoScroll := False;
   ScrollBox.BorderStyle := bsNone;
   {$IFDEF COMPILER10_UP}
@@ -1873,6 +1891,7 @@ begin
   ScrollBox.Align := alClient;
   ScrollBox.Width := ParameterParent.Width;
   RightPanel := TJvPanel.Create(Self);
+  RightPanel.Name := 'ParameterList_RightPanel';
   RightPanel.Parent := ScrollBox;
   RightPanel.Align := alRight;
   RightPanel.BorderStyle := bsNone;
@@ -1883,7 +1902,7 @@ begin
   FreeAndNil(ArrangePanel);
   ArrangePanel := TJvPanel.Create(Self);
   ArrangePanel.Parent := ScrollBox;
-  ArrangePanel.Name := 'MainArrangePanel';
+  ArrangePanel.Name := 'ParameterList_MainArrangePanel';
   ArrangePanel.Align := alNone;
   ArrangePanel.BorderStyle := bsNone;
   ArrangePanel.BevelInner := bvNone;
@@ -1911,10 +1930,13 @@ var
   I: Integer;
   BeforeAfterParameterNames : TStringList;
 begin
+  if ParameterParent is TJvCustomArrangePanel then
+    TJvCustomArrangePanel(ParameterParent).DisableArrange;
   BeforeAfterParameterNames := TStringList.Create;
   BeforeAfterParameterNames.Sorted := True;
   BeforeAfterParameterNames.Duplicates := dupError;
   try
+    DisableHandleParameterEnabled;
     for I := 0 to Count - 1 do
       if (Parameters[I] is TJvBasePanelEditParameter) then
       begin
@@ -1955,15 +1977,19 @@ begin
         TJvArrangeParameter(Parameters[I]).EnableArrange;
         TJvArrangeParameter(Parameters[I]).ArrangeControls;
       end;
-    HandleEnableDisable;
-    HandleShowValidState;
   finally
     if ParameterParent is TJvCustomArrangePanel then
       TJvCustomArrangePanel(ParameterParent).EnableArrange;
     BeforeAfterParameterNames.Free;
+    EnableHandleParameterEnabled;
   end;
+  HandleParameterEnabled;
+  HandleShowValidState;
   if ParameterParent is TJvCustomArrangePanel then
+  begin
+    TJvCustomArrangePanel(ParameterParent).EnableArrange;
     TJvCustomArrangePanel(ParameterParent).ArrangeControls;
+  end;
 end;
 
 
@@ -2143,6 +2169,16 @@ end;
 type
   TAccessControl = class(TControl);
 
+procedure TJvParameterList.DisableHandleParameterEnabled;
+begin
+  Inc(FHandleParameterEnabledCnt);
+end;
+
+procedure TJvParameterList.EnableHandleParameterEnabled;
+begin
+  Dec(FHandleParameterEnabledCnt);
+end;
+
 procedure TJvParameterList.HandleShowValidState;
 var
   I: Integer;
@@ -2195,6 +2231,11 @@ end;
 function TJvParameterList.IndexOfParameter(AParameter: TJvBaseParameter): Integer;
 begin
   Result := IntParameterList.IndexOfObject(AParameter);
+end;
+
+function TJvParameterList.IsHandleParameterEnabledDisabled: Boolean;
+begin
+  Result := FHandleParameterEnabledCnt > 0;
 end;
 
 //=== { TJvParameterListPropertyStore } ======================================

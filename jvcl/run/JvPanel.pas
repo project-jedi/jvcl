@@ -156,6 +156,7 @@ type
     FHotTrackFontOptions: TJvTrackFontOptions;
     FHotTrackOptions: TJvHotTrackOptions;
     FLastScreenCursor: TCursor;
+    FLastBoundsRect: TRect;
     FPainting: Integer;
     function GetArrangeSettings: TJvArrangeSettings;
     function GetHeight: Integer;
@@ -606,6 +607,7 @@ begin
   FHotTrackOptions := TJvPanelHotTrackOptions.Create(Self);
   FArrangeSettings := TJvArrangeSettings.Create(Self); // "Self" is a must, otherwise the ObjectInspector has problems
   FArrangeSettings.OnChangedProperty := DoArrangeSettingsPropertyChanged;
+  FLastBoundsRect.Left := -1;
 end;
 
 destructor TJvCustomArrangePanel.Destroy;
@@ -1121,6 +1123,7 @@ end;
 
 procedure TJvCustomArrangePanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
+
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if Transparent then
     Invalidate;
@@ -1128,10 +1131,12 @@ end;
 
 procedure TJvCustomArrangePanel.Resize;
 begin
-  if Assigned(FArrangeSettings) then // (asn)
-    if FArrangeSettings.AutoArrange then
-      ArrangeControls;
+  if not EqualRect(FLastBoundsRect, BoundsRect) then
+    if Assigned(FArrangeSettings) then // (asn)
+      if FArrangeSettings.AutoArrange then
+        ArrangeControls;
   inherited Resize;
+  FLastBoundsRect := BoundsRect;
 end;
 
 procedure TJvCustomArrangePanel.EnableArrange;
@@ -1368,8 +1373,10 @@ begin
           TmpHeight := ControlMaxY + ArrS.BorderTop
         else
           TmpHeight := 0;
-      Width := TmpWidth;
-      Height := TmpHeight;
+      if Width <> TmpWidth then
+        Width := TmpWidth;
+      if Height <> TmpHeight then
+        Height := TmpHeight;
     end;
     FArrangeWidth := ControlMaxX + 2 * ArrS.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * ArrS.BorderTop;
@@ -1430,7 +1437,15 @@ procedure TJvCustomArrangePanel.SetArrangeSettings(const Value:
     TJvArrangeSettings);
 begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
-    FArrangeSettings.Assign(Value);
+  begin
+    try
+      DisableArrange;
+      FArrangeSettings.Assign(Value);
+    finally
+      EnableArrange;
+      ArrangeControls;
+    end;
+  end;
 end;
 
 function TJvCustomArrangePanel.GetHotTrack: Boolean;
@@ -1498,7 +1513,7 @@ end;
 
 procedure TJvCustomArrangePanel.Rearrange;
 begin
-  if FArrangeSettings.AutoArrange and not (csLoading in ComponentState) then
+  if FArrangeSettings.AutoArrange then
     ArrangeControls;
 end;
 
