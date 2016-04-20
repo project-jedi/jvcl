@@ -238,6 +238,16 @@ end;
   For example TCustomIniFile.SectionExists}
 {$IFDEF DELPHI2009_UP}
 type
+  TMemIniFileAccess = class(TCustomIniFile)
+  {$IFDEF RTL310_UP}
+  {$IFDEF RTL320_UP}
+  {$MESSAGE WARN 'Check that the new RTL still has FSections as the first member of TMemIniFile'}
+  {$ENDIF RTL320_UP}
+  private
+    FSections: TStringList;
+  {$ENDIF RTL310_UP}
+  end;
+
   /// Optimization: TMemIniFile should overwrite this methods by itself
   TMemIniFileHelper = class helper for TMemIniFile
   public
@@ -247,7 +257,7 @@ type
 
 function TMemIniFileHelper.SectionExists(const Section: string): Boolean;
 begin
-  Result := self.FSections.IndexOf(Section) >= 0;
+  Result := TMemIniFileAccess(self).FSections.IndexOf(Section) >= 0;
 end;
 
 function TMemIniFileHelper.ValueExists(const Section, Ident: string): Boolean;
@@ -255,10 +265,10 @@ var
   I: Integer;
   Strings: TStrings;
 begin
-  I := self.FSections.IndexOf(Section);
+  I := TMemIniFileAccess(self).FSections.IndexOf(Section);
   if I >= 0 then
   begin
-    Strings := TStringList(self.FSections.Objects[I]);
+    Strings := TStringList(TMemIniFileAccess(self).FSections.Objects[I]);
     I := Strings.IndexOfName(Ident);
     Result := I >= 0;
   end else
