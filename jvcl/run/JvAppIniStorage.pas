@@ -231,18 +231,16 @@ begin
   FPreserveLeadingTrailingBlanks := Value;
 end;
 
-{ Optimalization of TCustomIniFile.ValueExists is only done for Delphi 7; Probably
-  works the same for other versions, but I can't check that.
+{ Optimization of TCustomIniFile.ValueExists.
   Note that this is a dirty hack, a better way would be to rewrite TMemIniFile;
-  especially expose FSections, but other optimizations can be done also.
-  For example TCustomIniFile.SectionExists}
+  especially expose FSections. }
 {$IFDEF DELPHI2009_UP}
 type
   TMemIniFileAccess = class(TCustomIniFile)
-  {$IFDEF RTL310_UP}
-  {$IFDEF RTL320_UP}
-  {$MESSAGE WARN 'Check that the new RTL still has FSections as the first member of TMemIniFile'}
-  {$ENDIF RTL320_UP}
+  {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
+    {$IFDEF RTL320_UP}
+      {$MESSAGE WARN 'Check that the new RTL still has FSections as the first member of TMemIniFile'}
+    {$ENDIF RTL320_UP}
   private
     FSections: TStringList;
   {$ENDIF RTL310_UP}
@@ -257,18 +255,28 @@ type
 
 function TMemIniFileHelper.SectionExists(const Section: string): Boolean;
 begin
-  Result := TMemIniFileAccess(self).FSections.IndexOf(Section) >= 0;
+  {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
+  Result := TMemIniFileAccess(Self).FSections.IndexOf(Section) >= 0;
+  {$ELSE}
+  Result := Self.FSections.IndexOf(Section) >= 0;
+  {$ENDIF RTL310_UP}
 end;
 
 function TMemIniFileHelper.ValueExists(const Section, Ident: string): Boolean;
 var
   I: Integer;
   Strings: TStrings;
+  Sections: TStringList;
 begin
-  I := TMemIniFileAccess(self).FSections.IndexOf(Section);
+  {$IFDEF RTL310_UP} // 10.1 Berlin removed the access to private fields
+  Sections := TMemIniFileAccess(Self).FSections;
+  {$ELSE}
+  Sections := Self.FSections;
+  {$ENDIF RTL310_UP}
+  I := Sections.IndexOf(Section);
   if I >= 0 then
   begin
-    Strings := TStringList(TMemIniFileAccess(self).FSections.Objects[I]);
+    Strings := TStringList(Sections.Objects[I]);
     I := Strings.IndexOfName(Ident);
     Result := I >= 0;
   end else
