@@ -1187,7 +1187,7 @@ function DP_FindItemsImages(AItem: IJvDataItem; out Images: IJvDataItemsImages):
 { Generate items list to emulate trees in a flat list control }
 procedure DP_GenItemsList(RootList: IJvDataItems; ItemList: TStrings);
 { Convert TOwnerDrawState to TProviderDrawStates }
-function DP_OwnerDrawStateToProviderDrawState(State: TOwnerDrawState): TProviderDrawStates;
+function DP_OwnerDrawStateToProviderDrawState(const State: TOwnerDrawState): TProviderDrawStates;
 { Atomically select a consumer/context pair, pushing the current consumer/context onto their
   internal stacks. }
 procedure DP_SelectConsumerContext(Provider: IJvDataProvider; Consumer: IJvDataConsumer; Context: IJvDataContext);
@@ -1346,9 +1346,26 @@ begin
   AddItemsToList(RootList, ItemList, 0);
 end;
 
-function DP_OwnerDrawStateToProviderDrawState(State: TOwnerDrawState): TProviderDrawStates;
+function DP_OwnerDrawStateToProviderDrawState(const State: TOwnerDrawState): TProviderDrawStates;
+var
+  S: TOwnerDrawState;
 begin
-  Move(State, Result, SizeOf(State));
+  Result := [];
+  S := State; // Help the 64-bit compiler with the optimization
+  if odSelected in S then
+    Include(Result, pdsSelected);
+  if odGrayed in S then
+    Include(Result, pdsGrayed);
+  if odDisabled in S then
+    Include(Result, pdsDisabled);
+  if odChecked in S then
+    Include(Result, pdsChecked);
+  if odFocused in S then
+    Include(Result, pdsFocused);
+  if odDefault in S then
+    Include(Result, pdsDefault);
+  if odHotLight in S then
+    Include(Result, pdsHot);
 end;
 
 procedure DP_SelectConsumerContext(Provider: IJvDataProvider; Consumer: IJvDataConsumer; Context: IJvDataContext);
