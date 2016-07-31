@@ -761,7 +761,7 @@ begin
     List := Owner.Owner;
     if Assigned(List) then
     begin
-      ZeroMemory(@Infos, sizeof(Infos));
+      ZeroMemory(@Infos, SizeOf(Infos));
       Infos.mask := LVIF_GROUPID;
       Infos.iItem := Index;
       Infos.iGroupId := FGroupId;
@@ -1789,7 +1789,7 @@ begin
   FillChar(ItemInfo, SizeOf(ItemInfo), 0);
   ItemInfo.Mask := HDI_TEXT;
   ItemInfo.pszText := Buffer;
-  ItemInfo.cchTextMax := SizeOf(Buffer) - 1;
+  ItemInfo.cchTextMax := Length(Buffer) - 1;
   Header_GetItem(HwndHeader, ItemIndex, ItemInfo);
   if CompareStr(Columns[ItemIndex].Caption, ItemInfo.pszText) = 0 then
   begin

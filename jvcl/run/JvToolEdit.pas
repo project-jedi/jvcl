@@ -4865,7 +4865,7 @@ end;
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
 var
-  AFileName: array [0..255] of Char;
+  AFileName: array [0..MAX_PATH] of Char;
   I, Num: Cardinal;
 begin
   Msg.Result := 0;
@@ -4876,7 +4876,7 @@ begin
       ClearFileList;
       for I := 0 to Num - 1 do
       begin
-        DragQueryFile(Msg.Drop, I, PChar(@AFileName[0]), Pred(SizeOf(AFileName)));
+        DragQueryFile(Msg.Drop, I, PChar(@AFileName[0]), Length(AFileName) - 1);
         ReceptFileDir(StrPas(AFileName));
         if not FMultipleDirs then
           Break;

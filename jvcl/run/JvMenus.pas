@@ -3408,7 +3408,7 @@ var
   ItemRect: TRect;
   LocalWRect: TRect;
 begin
-  ItemInfo.cbSize := sizeof(ItemInfo);
+  ItemInfo.cbSize := SizeOf(ItemInfo);
   ItemInfo.fMask := MIIM_STATE;
   if GetMenuItemInfo(Item.Parent.Handle, Item.MenuIndex, True, ItemInfo) then
   begin

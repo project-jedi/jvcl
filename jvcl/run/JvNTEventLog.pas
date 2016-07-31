@@ -449,7 +449,7 @@ var
       // (rom) memory leak fixed
       if FormatMessage(
         FORMAT_MESSAGE_FROM_HMODULE or FORMAT_MESSAGE_ARGUMENT_ARRAY,
-        Pointer(DllModule), ID, 0, Buffer, SizeOf(Buffer), Args) > 0 then
+        Pointer(DllModule), ID, 0, Buffer, Length(Buffer), Args) > 0 then
       begin
         Buffer[StrLen(Buffer) - 2] := #0;
         St := Buffer;
@@ -518,8 +518,8 @@ begin
   UserSID := SID;
   if Assigned(UserSID) then
   begin
-    UserNameLen := SizeOf(UserName);
-    DomainNameLen := SizeOf(DomainName);
+    UserNameLen := Length(UserName);
+    DomainNameLen := Length(DomainName);
     if LookupAccountSID(nil, UserSID, UserName, UserNameLen, DomainName, DomainNameLen, Use) then
       Result := string(DomainName) + '\' + string(UserName);
   end

@@ -2698,7 +2698,7 @@ begin
   HandleNeeded; { we REALLY need the handle for BiDi }
   inherited;
 
-  BiDiOptions.cbSize := sizeof(BiDiOptions);
+  BiDiOptions.cbSize := SizeOf(BiDiOptions);
   BiDiOptions.wMask := BOM_NEUTRALOVERRIDE or BOM_CONTEXTREADING or BOM_CONTEXTALIGNMENT;
   BiDiOptions.wEffects := BOE_NEUTRALOVERRIDE or BOE_CONTEXTREADING or BOE_CONTEXTALIGNMENT;
   SendMessage(Handle, EM_SETBIDIOPTIONS, 0, LPARAM(@BiDiOptions));
@@ -3588,13 +3588,7 @@ end;
 function TJvCustomRichEdit.InsertObjectDialog: Boolean;
 var
   Data: TOleUIInsertObject;
-  {$IFDEF UNICODE}
-  { Mantis #4738: OleUIInsertObjectW() returns with OLEUI_IOERR_LPCLSIDEXCLUDEINVALID }
-  { Probably windows error; cchFile must be exactly MAXPATH }
-  NameBuffer: array[0..MAX_PATH div SizeOf(Char) - 1] of Char;
-  {$ELSE}
-  NameBuffer: array[0..255] of Char;
-  {$ENDIF UNICODE}
+  NameBuffer: array[0..MAX_PATH - 1] of Char; // MSDN: cchFile must not exceed MAX_PATH
   OleClientSite: IOleClientSite;
   Storage: IStorage;
   OleObject: IOleObject;
@@ -3618,7 +3612,7 @@ begin
           IOF_CREATENEWOBJECT or IOF_CREATEFILEOBJECT or IOF_CREATELINKOBJECT;
         hWndOwner := Handle;
         lpszFile := NameBuffer;
-        cchFile := SizeOf(NameBuffer);
+        cchFile := Length(NameBuffer);
         iid := IOleObject;
         oleRender := OLERENDER_DRAW;
         lpIOleClientSite := OleClientSite;
@@ -3651,11 +3645,9 @@ begin
           OleCheck(IRichEditOle(FRichEditOle).InsertObject(ReObject));
           SendMessage(Handle, EM_EXSETSEL, 0, LPARAM(@Selection));
           SendMessage(Handle, Messages.EM_SCROLLCARET, 0, 0);
-          IRichEditOle(FRichEditOle).SetDvaspect(
-            Longint(REO_IOB_SELECTION), ReObject.dvAspect);
+          IRichEditOle(FRichEditOle).SetDvaspect(Longint(REO_IOB_SELECTION), ReObject.dvAspect);
           if IsNewObject then
-            OleObject.DoVerb(OLEIVERB_SHOW, nil,
-              OleClientSite, 0, Handle, ClientRect);
+            OleObject.DoVerb(OLEIVERB_SHOW, nil, OleClientSite, 0, Handle, ClientRect);
         finally
           ReleaseObject(OleObject);
         end;

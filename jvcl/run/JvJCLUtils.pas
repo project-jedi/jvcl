@@ -4820,7 +4820,7 @@ var
 begin
   DateTimeToSystemTime(Value, SystemTime);
   SetString(Result, Buffer, GetDateFormat(GetThreadLocale, DATE_LONGDATE,
-    @SystemTime, nil, Buffer, SizeOf(Buffer) - 1));
+    @SystemTime, nil, Buffer, Length(Buffer) - 1));
   Result := TrimRight(Result);
 end;
 {$ENDIF MSWINDOWS}
@@ -5991,16 +5991,16 @@ end;
 
 function GetWindowsDir: string;
 var
-  Buffer: array [0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH - 1] of Char;
 begin
-  SetString(Result, Buffer, GetWindowsDirectory(Buffer, SizeOf(Buffer)));
+  SetString(Result, Buffer, GetWindowsDirectory(Buffer, Length(Buffer) - 1));
 end;
 
 function GetSystemDir: string;
 var
-  Buffer: array [0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH - 1] of Char;
 begin
-  SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
+  SetString(Result, Buffer, GetSystemDirectory(Buffer, Length(Buffer) - 1));
 end;
 
 {$ENDIF MSWINDOWS}
@@ -6723,7 +6723,7 @@ begin
   Child := GetWindow(Tray, GW_CHILD);
   while Child <> 0 do
   begin
-    if GetClassName(Child, C, SizeOf(C)) > 0 then
+    if GetClassName(Child, C, Length(C)) > 0 then
     begin
       S := StrPas(C);
       if UpperCase(S) = 'BUTTON' then
@@ -6895,11 +6895,10 @@ var
 begin
   if Windows.IsWindowVisible(Handle) then
   begin
-    GetWindowText(Handle, St, SizeOf(St));
+    GetWindowText(Handle, St, Length(St));
     St2 := St;
     if St2 <> '' then
-      with TStrings(LParam) do
-        AddObject(St2, TObject(Handle));
+      TStrings(LParam).AddObject(St2, TObject(Handle));
   end;
   Result := True;
 end;
@@ -7871,10 +7870,8 @@ function WindowClassName(Wnd: THandle): string;
 var
   Buffer: array [0..255] of Char;
 begin
-  SetString(Result, Buffer, GetClassName(Wnd, Buffer, SizeOf(Buffer) - 1));
+  SetString(Result, Buffer, GetClassName(Wnd, Buffer, Length(Buffer) - 1));
 end;
-
-
 
 function GetAnimation: Boolean;
 var

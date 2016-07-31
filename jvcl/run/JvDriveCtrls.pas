@@ -521,7 +521,7 @@ begin
   LastErrorMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
   try
     FillChar(Tmp[0], SizeOf(Tmp), #0);
-    GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+    GetLogicalDriveStrings(Length(Tmp) - 1, Tmp);
     P := Tmp;
     while P^ <> #0 do
     begin

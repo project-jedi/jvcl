@@ -91,11 +91,11 @@ end;
 function TJvDiskPrompt.Execute: TJvDiskRes;
 var
   Required: DWORD;
-  Res: array [0..255] of Char;
+  Res: array [0..MAX_PATH] of Char;
 begin
   case SetupPromptForDisk(OwnerWindow, Pointer(Title), Pointer(DiskName),
       Pointer(PathToSource), PChar(FileSought), Pointer(TagFile),
-      JvDiskStylesToDWORD(Style), Res, SizeOf(Res), Required) of
+      JvDiskStylesToDWORD(Style), Res, Length(Res), Required) of
     DPROMPT_SUCCESS:
       begin
         FNewPath := Res;
