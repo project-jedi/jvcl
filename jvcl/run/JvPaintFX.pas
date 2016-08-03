@@ -1653,7 +1653,7 @@ type
     Weight: Single; // Pixel Weight
   end;
 
-  TContributorList = array [0..0] of TContributor;
+  TContributorList = array [0..MaxInt div SizeOf(TContributor) - 1] of TContributor;
   PContributorList = ^TContributorList;
 
   // List of source pixels contributing to a destination pixel
@@ -1662,7 +1662,7 @@ type
     P: PContributorList;
   end;
 
-  TCListList = array [0..0] of TCList;
+  TCListList = array [0..MaxInt div SizeOf(TCList) - 1] of TCList;
   PCListList = ^TCListList;
 
   TRGB = packed record
@@ -1680,7 +1680,7 @@ type
   PColorRGB = ^TColorRGB;
 
   // Physical bitmap ScanLine (row)
-  TRGBList = packed array [0..0] of TColorRGB;
+  TRGBList = packed array [0..MaxInt div SizeOf(TColorRGB) - 1] of TColorRGB;
   PRGBList = ^TRGBList;
 
 class procedure TJvPaintFX.Stretch(Src, Dst: TBitmap; Filter: TFilterProc;
