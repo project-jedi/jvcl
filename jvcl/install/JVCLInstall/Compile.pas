@@ -586,6 +586,7 @@ var
   BplFilename, BplBakFilename, Filename, Args, CmdLine, S, PathEnvVar: string;
   OutDirs: TOutputDirs;
   ExistingBplRenamed: Boolean;
+  ProcessInjectionProc: TInjectionProc;
 begin
   OutDirs := TargetConfig.GetOutputDirs(DebugUnits);
   PrjFilename := Project.SourceDir + PathDelim + ExtractFileName(Project.SourceName);
@@ -652,13 +653,13 @@ begin
       try
         { Compile the project }
         if TargetConfig.Target.Version <= 9 then
-          Result := CaptureExecute('"' + DccBinary + '"', Args,
-                                   ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
-                                   False, PathEnvVar, Dcc32SpeedInjection)
+          ProcessInjectionProc := Dcc32SpeedInjection
         else
-          Result := CaptureExecute('"' + DccBinary + '"', Args,
-                                   ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
-                                   False, PathEnvVar, nil);
+          ProcessInjectionProc := GetCompilerSpeedPackInjection(TargetConfig.Target);
+
+        Result := CaptureExecute('"' + DccBinary + '"', Args,
+                                 ExtractFileDir(PrjFilename), CaptureLinePackageCompilation, DoIdle,
+                                 False, PathEnvVar, ProcessInjectionProc);
       finally
         { Restore original file if there was an error or an exception }
         if ExistingBplRenamed then

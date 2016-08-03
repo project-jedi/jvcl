@@ -115,6 +115,7 @@ var
   Line: AnsiString;
   StatusLine: AnsiString;
   OrgEnvPath: string;
+  Flags: DWORD;
 begin
   Result := -2;
   if not Assigned(CaptureLine) then
@@ -154,12 +155,18 @@ begin
       if EnvPath <> '' then
         SetEnvironmentVariable('PATH', Pointer(EnvPath));
       try
+        Flags := CREATE_DEFAULT_ERROR_MODE;
+        if Assigned(InjectionProc) then
+          Flags := Flags or CREATE_SUSPENDED;
+
         if CreateProcess(nil, PChar(App + ' ' + Args), @SecAttrib, nil, True,
-          CREATE_SUSPENDED, nil, PChar(Dir), StartupInfo, ProcessInfo) then
+           Flags, nil, PChar(Dir), StartupInfo, ProcessInfo) then
         begin
           if Assigned(InjectionProc) then
+          begin
             InjectionProc(ProcessInfo);
-          ResumeThread(ProcessInfo.hThread);
+            ResumeThread(ProcessInfo.hThread);
+          end;
 
           CloseHandle(ProcessInfo.hThread);
           try
