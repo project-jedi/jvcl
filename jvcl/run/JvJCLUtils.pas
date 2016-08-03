@@ -8166,22 +8166,17 @@ begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
 
-
-  // (p3) duplicated from JvTypes to avoid JVCL dependencies
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin, XFinal, YFinal: Integer);
 type
+  // (p3) duplicated from JvTypes to avoid JVCL dependencies
   TJvRGBTriple = packed record
     rgbBlue: Byte;
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
 
-type
   PJvRGBArray = ^TJvRGBArray;
-  TJvRGBArray = array [0..32766] of TJvRGBTriple;
-
-
-procedure AntiAliasRect(Clip: TBitmap;
-  XOrigin, YOrigin, XFinal, YFinal: Integer);
+  TJvRGBArray = array [0..MaxInt div SizeOf(TJvRGBTriple) - 1] of TJvRGBTriple;
 var
   Tmp, X, Y: Integer;
   Line0, Line1, Line2: PJvRGBArray;
@@ -8208,6 +8203,7 @@ begin
   Clip.PixelFormat := pf24bit;
   for Y := YOrigin to YFinal do
   begin
+{$RANGECHECKS OFF}
     Line0 := Clip.ScanLine[Y - 1];
     Line1 := Clip.ScanLine[Y];
     Line2 := Clip.ScanLine[Y + 1];
@@ -8218,6 +8214,9 @@ begin
         4;
       Line1[X].rgbBlue := (Line0[X].rgbBlue + Line2[X].rgbBlue + Line1[X - 1].rgbBlue + Line1[X + 1].rgbBlue) div 4;
     end;
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
   end;
   Clip.PixelFormat := OPF;
 end;

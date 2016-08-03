@@ -361,19 +361,6 @@ var
   (*SourcePixel, *)DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
-
-  function Color2RGB(Color: TColor): TColorRGB;
-  begin
-    Result.R := Color and $000000FF;
-    Result.G := (Color and $0000FF00) shr 8;
-    Result.B := (Color and $00FF0000) shr 16;
-  end;
-
-  function RGB2Color(Color: TColorRGB): TColor;
-  begin
-    Result := Color.R or (Color.G shl 8) or (Color.B shl 16);
-  end;
-
 begin
   DstWidth := Dst.Width;
   DstHeight := Dst.Height;
@@ -408,6 +395,7 @@ begin
     // Pre-calculate filter contributions for a row
     // -----------------------------------------------
     GetMem(Contrib, DstWidth * SizeOf(TCList));
+{$RANGECHECKS OFF}
     // Horizontal sub-sampling
     // Scales from bigger to smaller Width
     if XScale < 1.0 then
@@ -656,13 +644,16 @@ begin
         DestPixel^ := Color;
         Inc(PAnsiChar(DestPixel), DestDelta);
       end;
-      Inc(SourceLine, 1);
-      Inc(DestLine, 1);
+      Inc(PColorRGB(SourceLine), 1);
+      Inc(PColorRGB(DestLine), 1);
     end;
 
     // Free the memory allocated for vertical filter weights
     for I := 0 to DstHeight - 1 do
       FreeMem(Contrib^[I].P);
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
 
     FreeMem(Contrib);
   finally

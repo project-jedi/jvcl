@@ -1700,19 +1700,6 @@ var
   (*SourcePixel, *)DestPixel: PColorRGB;
   Delta, DestDelta: Integer;
   SrcWidth, SrcHeight, DstWidth, DstHeight: Integer;
-
-  function Color2RGB(Color: TColor): TColorRGB;
-  begin
-    Result.R := Color and $000000FF;
-    Result.G := (Color and $0000FF00) shr 8;
-    Result.B := (Color and $00FF0000) shr 16;
-  end;
-
-  function RGB2Color(Color: TColorRGB): TColor;
-  begin
-    Result := Color.R or (Color.G shl 8) or (Color.B shl 16);
-  end;
-
 begin
   DstWidth := Dst.Width;
   DstHeight := Dst.Height;
@@ -1747,6 +1734,7 @@ begin
     // Pre-calculate filter contributions for a row
     // -----------------------------------------------
     GetMem(Contrib, DstWidth * SizeOf(TCList));
+{$RANGECHECKS OFF}
     // Horizontal sub-sampling
     // Scales from bigger to smaller Width
     if (xscale < 1.0) then
@@ -1954,17 +1942,17 @@ begin
     // --------------------------------------------------
     SourceLine := Work.ScanLine[0];
     if Work.Height > 1 then
-      Delta := Integer(Work.ScanLine[1]) - Integer(SourceLine)
+      Delta := PAnsiChar(Work.ScanLine[1]) - PAnsiChar(SourceLine)
     else
       Delta := 0;
     DestLine := Dst.ScanLine[0];
     if Dst.Height > 1 then
-      DestDelta := Integer(Dst.ScanLine[1]) - Integer(DestLine)
+      DestDelta := PAnsiChar(Dst.ScanLine[1]) - PAnsiChar(DestLine)
     else
       DestDelta := 0;
     for k := 0 to DstWidth - 1 do
     begin
-      DestPixel := pointer(DestLine);
+      DestPixel := Pointer(DestLine);
       for I := 0 to DstHeight - 1 do
       begin
         RGB.R := 0;
@@ -1973,7 +1961,7 @@ begin
         // Weight := 0.0;
         for J := 0 to Contrib^[I].N - 1 do
         begin
-          Color := PColorRGB(Integer(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
+          Color := PColorRGB(PAnsiChar(SourceLine) + Contrib^[I].P^[J].Pixel * Delta)^;
           Weight := Contrib^[I].P^[J].Weight;
           if (Weight = 0.0) then
             Continue;
@@ -2003,15 +1991,18 @@ begin
         else
           Color.B := Round(RGB.B);
         DestPixel^ := Color;
-        Inc({$IFDEF RTL230_UP}INT_PTR{$ELSE}Integer{$ENDIF RTL230_UP}(DestPixel), DestDelta);
+        Inc(PAnsiChar(DestPixel), DestDelta);
       end;
-      Inc(SourceLine, 1);
-      Inc(DestLine, 1);
+      Inc(PColorRGB(SourceLine));
+      Inc(PColorRGB(DestLine));
     end;
 
     // Free the memory allocated for vertical filter weights
     for I := 0 to DstHeight - 1 do
       FreeMem(Contrib^[I].P);
+{$IFDEF RANGECHECKS_ON}
+{$RANGECHECKS ON}
+{$ENDIF RANGECHECKS_ON}
 
     FreeMem(Contrib);
   finally
