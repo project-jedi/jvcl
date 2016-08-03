@@ -688,6 +688,9 @@ const
 implementation
 
 uses
+  {$IFDEF RTL250_UP}
+  AnsiStrings,
+  {$ENDIF RTL250_UP}
   JclSysInfo,
   JvResources;
 
@@ -1613,7 +1616,7 @@ begin
   else
   if Assigned(SHChangeIcon) then
   begin
-    StrPCopy(Buf, AnsiString(FileName));
+    {$IFDEF RTL250_UP}AnsiStrings.{$ENDIF}StrLCopy(Buf, PAnsiChar(AnsiString(FileName)), MAX_PATH);
     Result := SHChangeIcon(ParentWnd, Buf, Length(Buf), FIconIndex) = 1;
     if Result then
       FileName := string(Buf);
