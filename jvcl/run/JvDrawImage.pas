@@ -35,6 +35,12 @@ uses
   {$ENDIF UNITVERSIONING}
   Windows,
   Messages,
+  {$IFDEF HAS_UNIT_TYPES}
+  Types, // inline hints
+  {$ENDIF HAS_UNIT_TYPES}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes, // inline hints
+  {$ENDIF HAS_UNIT_SYSTEM_UITYPES}
   Classes, Graphics, Controls, ExtCtrls,
   JvAirBrush, JvPaintFX;
 
@@ -45,6 +51,12 @@ type
   TColorPicked = procedure(Sender: TObject; AColor: TColor) of object;
   TGonio = array [0..180, 0..1] of Extended;
   TSinPix = array [0..255] of Byte;
+
+  TJvDrawImageMyBezier = array [0..3] of TPoint;
+  Tmyskew = array [0..4] of TPoint;
+  Tmychord = array [1..8] of Integer;
+  Tpointarray = array [0..12] of TPoint;
+  Tfreepoly = array [0..100] of TPoint;
 
   {$IFDEF RTL230_UP}
   [ComponentPlatformsAttribute(pidWin32 or pidWin64)]
@@ -63,6 +75,55 @@ type
     FStars: Integer;
     FStarPoints: Integer;
     FSpirals: Integer;
+    FClip: TBitmap;
+    FTraceB: Byte;
+
+    { former global variables }
+    PainterEffectsF: TObject; //TPainterEffectsForm;
+    QuickPreviewF: TObject; //TQuickPreviewForm;
+    PainterQBF: TObject; //TPainterQBForm;
+
+    mycliprect: TRect;
+    UserFilter: TDigitalFilter;
+
+    RangeTransColor: TColor;
+
+    NSpiro: Integer;
+    Wavepen, Wavebrush: TColor;
+    decoX, decoY: Integer;
+
+    mybezier: TJvDrawImageMyBezier;
+    myskew: Tmyskew;
+    mychord: Tmychord;
+    myorigin, myprevpoint: TPoint;
+    myslinedir: string;
+    myslinetol: Integer;
+    myDraw: Boolean;
+    mypen: TPenMode;
+    mypenstyle: TPenStyle;
+    myoldbrushstyle: TBrushStyle;
+    myoldpenwidth: Integer;
+    myround: Integer;
+
+    clipcm: TCopyMode;
+
+    pointarray: Tpointarray;
+    spiralfactor: Real;
+    spiraldir: Integer;
+    TargetPoint: TPoint;
+    zoomrect: TRect;
+    freepoly: Tfreepoly;
+    freepolycount: Integer;
+    bezierfix1, bezierfix2: Boolean;
+    function GetPainterEffectsFEBarPosition: Integer;
+    function GetPainterEffectsFExtraBarPosition: Integer;
+    procedure SetPainterEffectsFExtraBarPosition(Value: Integer);
+
+    property PainterEffectsFEBarPosition: Integer read GetPainterEffectsFEBarPosition;
+    property PainterEffectsFExtraBarPosition: Integer read GetPainterEffectsFExtraBarPosition
+      write SetPainterEffectsFExtraBarPosition;
+    {}
+
     function GetShapes: TStrings;
     procedure EscapePaint(X, Y: Integer; Shift: TShiftState);
     procedure CopyClip;
@@ -75,26 +136,20 @@ type
     procedure SetSyms(X, Y: Integer);
     function Rotate(Origin, Endpoint: TPoint; Angle: Real): TPoint;
     procedure DrawPlasma(X, Y: Integer; Amount: Extended);
-    procedure DrawEffectBrush(X, Y, Radius: Integer; Amount: Extended;
-      Style: TLightBrush);
+    procedure DrawEffectBrush(X, Y, Radius: Integer; Amount: Extended; Style: TLightBrush);
     procedure Rimple(Src, Dst: TBitmap; Amount: Extended);
-    procedure DrawStretchBrush(X, Y, Radius: Integer; Amount: Extended;
-      Style: TMorphBrush);
+    procedure DrawStretchBrush(X, Y, Radius: Integer; Amount: Extended; Style: TMorphBrush);
     procedure SampleStretch(Src, Dst: TBitmap);
-    procedure DrawLightBrush(X, Y, Radius, Amount: Integer;
-      Style: TLightBrush);
+    procedure DrawLightBrush(X, Y, Radius, Amount: Integer; Style: TLightBrush);
     procedure DrawColorCircle(X, Y, Mode: Integer);
-    procedure ColorCircle(var bm: TBitmap; center: TPoint; Radius,
-      Mode: Integer);
+    procedure ColorCircle(var bm: TBitmap; center: TPoint; Radius, Mode: Integer);
     procedure DrawDarkerCircle(X, Y, Mode: Integer);
     procedure DrawLighterCircle(X, Y, Mode: Integer);
-    procedure DrawGradientBrush(Color1, Color2: TColor; X1, X2,
-      Y: Integer);
+    procedure DrawGradientBrush(Color1, Color2: TColor; X1, X2, Y: Integer);
     procedure HorGradientLine(Bitmap: TBitmap; XOrigin, XFinal, Y: Integer;
       R1, G1, B1, R2, G2, B2: Byte; Smooth: Boolean);
     procedure SmoothPnt(Bitmap: TBitmap; xk, yk: Integer);
-    procedure DrawVGradientBrush(Color1, Color2: TColor; Y1, Y2,
-      X: Integer);
+    procedure DrawVGradientBrush(Color1, Color2: TColor; Y1, Y2, X: Integer);
     procedure VerGradientLine(Bitmap: TBitmap; YOrigin, YFinal, X: Integer;
       R1, G1, B1, R2, G2, B2: Byte; Smooth: Boolean);
     procedure DrawCube;
@@ -104,8 +159,7 @@ type
     procedure PutClip(M: TRect);
     procedure DrawSyms(X, Y: Integer);
     procedure DrawTexLines(X0, Y0, X, Y: Integer);
-    function BlendColors(const Color1, Color2: Integer;
-      Opacity: Integer): Longint;
+    function BlendColors(const Color1, Color2: Integer; Opacity: Integer): Longint;
     function TexHighlight(Colr: Integer): Longint;
     function TexShadow(Colr: Integer): Longint;
     procedure DrawTexOvals(X0, Y0, X, Y: Integer);
@@ -125,14 +179,10 @@ type
     procedure DrawSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
     procedure Sphere(Bitmap: TBitmap; xcenter, a, ycenter, b: Integer; R1,
       G1, B1, R2, G2, B2: Byte; Smooth: Boolean);
-    procedure DrawMultiSphere(Color1, Color2: TColor; X1, Y1, X2,
-      Y2: Integer);
-    procedure DrawDropletSphere(Color1, Color2: TColor; X1, Y1, X2,
-      Y2: Integer);
-    procedure DrawWaveSphere(Color1, Color2: TColor; X1, Y1, X2,
-      Y2: Integer);
-    procedure DrawRisingWaveSphere(Color1, Color2: TColor; X1, Y1, X2,
-      Y2: Integer);
+    procedure DrawMultiSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
+    procedure DrawDropletSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
+    procedure DrawWaveSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
+    procedure DrawRisingWaveSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
 //    function GetAngle(Origin, Endpoint: TPoint): Integer;
 //    procedure TextRotate(X, Y, Angle: Integer; AText: string; AFont: TFont);
     function ReduceVector(Origin, Endpoint: TPoint; Factor: Real): TPoint;
@@ -144,7 +194,6 @@ type
     procedure SetonColorPicked(const Value: TColorPicked);
     procedure SetShape(const Value: string);
     procedure SetAirBrush(const Value: TJvAirBrush);
-    procedure SetTransformer(const Value: TJvPaintFX);
     procedure BuildShapeList;
     procedure SetBlocks(const Value: Integer);
     procedure SetSpirals(const Value: Integer);
@@ -161,9 +210,6 @@ type
     procedure ColorPicked(AColor: TColor);
     procedure Loaded; override;
   public
-    Clip: TBitmap;
-    TraceB: Byte;
-    FX: TJvPaintFX;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ClipAll;
@@ -227,8 +273,9 @@ type
     procedure XFormABarChange;
     procedure Trace;
     property AirBrush: TJvAirBrush read FAirBrush write SetAirBrush;
-    property Transformer: TJvPaintFX read FX write SetTransformer;
     property Shapes: TStrings read GetShapes;
+    property Clip: TBitmap read FClip;
+    property TraceB: Byte read FTraceB;
   published
     property Shape: string read FShape write SetShape;
     property PolygonChecked: Boolean read FPolygonChecked write SetPolygonChecked;
@@ -253,7 +300,7 @@ implementation
 
 uses
   SysUtils, Math, Dialogs, Clipbrd,
-  JvResample, JvPainterEffectsForm, JvQuickPreviewForm, JvPainterQBForm,
+  JvPainterEffectsForm, JvQuickPreviewForm, JvPainterQBForm,
   JvTypes, JvResources;
 
 const
@@ -275,50 +322,6 @@ type
     G: Byte;
     R: Byte;
   end;
-
-  Tmybezier = array [0..3] of TPoint;
-  Tmyskew = array [0..4] of TPoint;
-  Tmychord = array [1..8] of Integer;
-  Tpointarray = array [0..12] of TPoint;
-  Tfreepoly = array [0..100] of TPoint;
-
-var
-  PainterEffectsF: TPainterEffectsForm;
-  QuickPreviewF: TQuickPreviewForm;
-  PainterQBF: TPainterQBForm;
-
-  mycliprect: TRect;
-  UserFilter: TDigitalFilter;
-
-  RangeTransColor: TColor;
-
-  NSpiro: Integer;
-  Wavepen, Wavebrush: TColor;
-  decoX, decoY: Integer;
-                           
-  mybezier: Tmybezier;
-  myskew: Tmyskew;
-  mychord: Tmychord;
-  myorigin, myprevpoint: TPoint;
-  myslinedir: string;
-  myslinetol: Integer;
-  myDraw: Boolean;
-  mypen: TPenMode;
-  mypenstyle: TPenStyle;
-  myoldbrushstyle: TBrushStyle;
-  myoldpenwidth: Integer;
-  myround: Integer;
-
-  clipcm: TCopyMode;
-
-  pointarray: Tpointarray;
-  spiralfactor: Real;
-  spiraldir: Integer;
-  TargetPoint: TPoint;
-  zoomrect: TRect;
-  freepoly: Tfreepoly;
-  freepolycount: Integer;
-  bezierfix1, bezierfix2: Boolean;
 
 function TrimInt(N, Min, Max: Integer): Integer;
 begin
@@ -342,15 +345,17 @@ begin
     Result := N;
 end;
 
+{ TJvDrawImage }
+
 constructor TJvDrawImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Width := 256;
   Height := 256;
-  Clip := TBitmap.Create;
+  FClip := TBitmap.Create;
   FZoomClip := TBitmap.Create;
   FAirBrush := TJvAirBrush.Create(Self);
-  FX := TJvPaintFX.Create(Self);
+
   TargetPoint := Point(0, 0);
   NSpiro := 40;
   RangeTransColor := clWhite;
@@ -375,15 +380,15 @@ begin
   Shape := 'line';
   FillSinPixs;
   FillGonio;
-  TraceB := $00;
+  FTraceB := $00;
   FShapes := TStringList.Create;
   BuildShapeList;
   PainterEffectsF := TPainterEffectsForm.Create(Self);
-  PainterEffectsF.setDrawImage(Self);
+  TPainterEffectsForm(PainterEffectsF).SetDrawImage(Self);
   QuickPreviewF := TQuickPreviewForm.Create(Self);
-  QuickPreviewF.SetDrawImage(Self);
+  TQuickPreviewForm(QuickPreviewF).SetDrawImage(Self);
   PainterQBF := TPainterQBForm.Create(Self);
-  PainterQBF.setDrawImage(Self);
+  TPainterQBForm(PainterQBF).setDrawImage(Self);
 end;
 
 destructor TJvDrawImage.Destroy;
@@ -392,7 +397,6 @@ begin
   Clip.Free;
   FZoomClip.Free;
   FAirBrush.Free;
-  FX.Free;
   PainterEffectsF.Free;
   QuickPreviewF.Free;
   PainterQBF.Free;
@@ -664,7 +668,7 @@ var
   R1, G1, B1, R2, G2, B2: Byte;
   i, dx, dy, xo, yo, r, bl: Integer;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   if X1 > X2 then
@@ -735,7 +739,7 @@ var
   R1, G1, B1, R2, G2, B2: Byte;
   i, dx, dy, xo, yo, r, bl: Integer;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   if X1 > X2 then
@@ -806,7 +810,7 @@ var
   R1, G1, B1, R2, G2, B2: Byte;
   i, dx, dy, bl: Integer;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   if X1 > X2 then
@@ -867,7 +871,7 @@ var
   R1, G1, B1, R2, G2, B2: Byte;
   i, dx, dy, bl: Integer;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   if X1 > X2 then
@@ -957,7 +961,7 @@ var
   t, xcenter, a, ycenter, b: Integer;
   R1, G1, B1, R2, G2, B2: Byte;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   if X1 > X2 then
@@ -1002,7 +1006,7 @@ var
   R1, G1, B1, R2, G2, B2: Byte;
   line: pbytearray;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   if X1 > X2 then
@@ -1034,9 +1038,6 @@ procedure TJvDrawImage.InterpolateRect(Bmp: TBitmap; X1, Y1, X2, Y2: Integer);
 // will blend from one Color to another
 // ( c[0,0]    c[1,0]
 //   c[0,1]    c[1,1] )
-type
-  TFColor = record b, g, r: Byte
-  end;
 var
   xCount, yCount,
     t, t2, z, iz,
@@ -1112,7 +1113,7 @@ end;
 
 procedure TJvDrawImage.InterpRect(X1, Y1, X2, Y2: Integer);
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   Interpolaterect(Clip, X1, Y1, X2, Y2);
@@ -1126,7 +1127,7 @@ begin
   Clip.PixelFormat := pf24bit;
   //GaussianBlur(4);
   UserFilter := Blurfilter;
-  applyfilter(Clip, UserFilter);
+  ApplyFilter(FClip, UserFilter);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -1135,9 +1136,9 @@ begin
   DrawTexRects(X0, Y0, X, Y);
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.GaussianBlur(Clip, 4);
+  TJvPaintFX.GaussianBlur(Clip, 4);
   UserFilter := Blurfilter;
-  applyfilter(Clip, UserFilter);
+  ApplyFilter(FClip, UserFilter);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -1171,10 +1172,10 @@ begin
       for i := 1 to 3 do
         with Canvas do
         begin
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           Pen.Color := scolor;
           Brush.Color := scolor;
           Rectangle(X1, Y1, X2 + 2, Y2 + 2);
@@ -1200,7 +1201,7 @@ begin
   Clip.PixelFormat := pf24bit;
   //GaussianBlur(4);
   UserFilter := Blurfilter;
-  applyfilter(Clip, UserFilter);
+  ApplyFilter(FClip, UserFilter);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -1232,16 +1233,16 @@ begin
       for i := 1 to 10 do
         with Canvas do
         begin
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           points[0] := Point(X1, Y1);
           points[3] := Point(X2, Y2);
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           points[1] := Point(X1, Y1);
           points[2] := Point(X2, Y2);
           Pen.Color := pcolor;
@@ -1261,7 +1262,7 @@ begin
   Clip.PixelFormat := pf24bit;
   //GaussianBlur(4);
   UserFilter := Blurfilter;
-  applyfilter(Clip, UserFilter);
+  ApplyFilter(FClip, UserFilter);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -1293,16 +1294,16 @@ begin
       for i := 1 to 10 do
         with Canvas do
         begin
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           points[0] := Point(X1, Y1);
           points[3] := Point(X2, Y2);
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           points[1] := Point(X1, Y1);
           points[2] := Point(X2, Y2);
           Pen.Color := pcolor;
@@ -1329,7 +1330,7 @@ var
   R: TRect;
 begin
   bm := TBitmap.Create;
-  bm.pixelformat := pf24bit;
+  bm.PixelFormat := pf24bit;
   bm.Width := Dst.Width;
   bm.Height := Dst.Height;
   R := Rect(0, 0, bm.Width, bm.Height);
@@ -1379,11 +1380,10 @@ begin
   DrawTexOvals(X0, Y0, X, Y);
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.GaussianBlur(Clip, 4);
+  TJvPaintFX.GaussianBlur(Clip, 4);
   UserFilter := Blurfilter;
-  applyfilter(Clip, UserFilter);
+  ApplyFilter(FClip, UserFilter);
   Picture.Bitmap.Assign(Clip);
-
 end;
 
 procedure TJvDrawImage.DrawTexOvals(X0, Y0, X, Y: Integer);
@@ -1416,10 +1416,10 @@ begin
       for i := 1 to 3 do
         with Canvas do
         begin
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           Pen.Color := scolor;
           Brush.Color := scolor;
           Ellipse(X1, Y1, X2 + 2, Y2 + 2);
@@ -1513,10 +1513,10 @@ begin
       for i := 1 to 10 do
         with Canvas do
         begin
-          X1 := xi + random(xr);
-          Y1 := yi + random(yr);
-          X2 := xi + random(xr);
-          Y2 := yi + random(yr);
+          X1 := xi + Random(xr);
+          Y1 := yi + Random(yr);
+          X2 := xi + Random(xr);
+          Y2 := yi + Random(yr);
           Pen.Color := pcolor;
           MoveTo(X1, Y1);
           LineTo(X2, Y2);
@@ -1564,7 +1564,7 @@ begin
   Clip.Height := (m.Bottom - m.Top + 1);
   dest := Rect(0, 0, Clip.Width, Clip.Height);
   Clip.Canvas.CopyMode := cmsrccopy;
-  Clip.pixelformat := Picture.Bitmap.pixelformat;
+  Clip.PixelFormat := Picture.Bitmap.PixelFormat;
   Clip.Canvas.CopyRect(dest, Canvas, m);
 end;
 
@@ -1736,7 +1736,7 @@ procedure TJvDrawImage.DrawVGradientBrush(Color1, Color2: TColor; Y1, Y2, X: Int
 var
   R1, G1, B1, R2, G2, B2: Byte;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   Color1 := ColorToRGB(Color1);
@@ -1752,9 +1752,6 @@ begin
 end;
 
 procedure TJvDrawImage.SmoothPnt(Bitmap: TBitmap; xk, yk: Integer);
-type
-  TFColor = record b, g, r: Byte
-  end;
 var
   Bleu, Vert, Rouge: Integer;
   Color: TFColor;
@@ -1875,7 +1872,7 @@ procedure TJvDrawImage.DrawGradientBrush(Color1, Color2: TColor; X1, X2, Y: Inte
 var
   R1, G1, B1, R2, G2, B2: Byte;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   Color1 := ColorToRGB(Color1);
@@ -1897,7 +1894,7 @@ begin
   r := Canvas.Pen.Width;
   if r < 5 then
     r := 5;
-  ColorCircle(Clip, Point(X, Y), r, Mode);
+  ColorCircle(FClip, Point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -1908,7 +1905,7 @@ begin
   r := Canvas.Pen.Width;
   if r < 5 then
     r := 5;
-  ColorCircle(Clip, Point(X, Y), r, Mode);
+  ColorCircle(FClip, Point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 
 end;
@@ -2040,13 +2037,13 @@ procedure TJvDrawImage.DrawColorCircle(X, Y, Mode: Integer);
 var
   r: Integer;
 begin
-  Picture.Bitmap.pixelformat := pf24bit;
+  Picture.Bitmap.PixelFormat := pf24bit;
   Clip.Assign(Picture.Bitmap);
   Clip.PixelFormat := pf24bit;
   r := Canvas.Pen.Width;
   if r < 5 then
     r := 5;
-  ColorCircle(Clip, Point(X, Y), r, Mode);
+  ColorCircle(FClip, Point(X, Y), r, Mode);
   Picture.Bitmap.Assign(Clip);
 end;
 
@@ -2075,9 +2072,9 @@ begin
   Rsrc := Rect(0, 0, Src.Width, Src.Height);
   Dst.Canvas.CopyRect(Rsrc, Clip.Canvas, Rclip);
   case Style of
-    lbBrightness: FX.lightness(Dst, Amount);
-    lbSaturation: FX.saturation(Dst, Amount);
-    lbContrast: FX.contrast(Dst, Amount);
+    lbBrightness: TJvPaintFX.Lightness(Dst, Amount);
+    lbSaturation: TJvPaintFX.Saturation(Dst, Amount);
+    lbContrast: TJvPaintFX.Contrast(Dst, Amount);
   end;
   // mask code
   Src.Canvas.Brush.Color := clWhite;
@@ -2099,8 +2096,7 @@ end;
 procedure TJvDrawImage.SampleStretch(Src, Dst: TBitmap);
 begin
   // use mitchelfilter from resample unit
-  ImgStretch(Src, Dst,
-    ResampleFilters[6].Filter, ResampleFilters[6].Width);
+  TJvPaintFX.Stretch(Src, Dst, ResampleFilters[6].Filter, ResampleFilters[6].Width);
 end;
 
 procedure TJvDrawImage.DrawStretchBrush(X, Y, Radius: Integer; Amount: Extended; Style: TMorphBrush);
@@ -2230,14 +2226,14 @@ begin
   Rsrc := Rect(0, 0, Src.Width, Src.Height);
   Src.Canvas.CopyRect(Rsrc, Clip.Canvas, Rclip);
   case Style of
-    lbfisheye: FX.fisheye(Src, Dst, Amount);
-    lbrotate: FX.smoothrotate(Src, Dst, Src.Width div 2, Src.Height div 2, Amount);
-    lbtwist: FX.twist(Src, Dst, Round(Amount));
+    lbfisheye: TJvPaintFX.Fisheye(Src, Dst, Amount);
+    lbrotate: TJvPaintFX.Smoothrotate(Src, Dst, Src.Width div 2, Src.Height div 2, Amount);
+    lbtwist: TJvPaintFX.Twist(Src, Dst, Round(Amount));
     lbrimple: Rimple(Src, Dst, Amount);
     mbHor, mbTop, mbBottom, mbDiamond, mbWaste, mbRound, mbRound2:
-      FX.SqueezeHor(Src, Dst, Round(Amount), Style);
+      TJvPaintFX.SqueezeHor(Src, Dst, Round(Amount), Style);
     mbSplitRound, mbSplitWaste:
-      FX.SplitRound(Src, Dst, Round(Amount), Style);
+      TJvPaintFX.SplitRound(Src, Dst, Round(Amount), Style);
   end;
   // mask code
   Src.Canvas.Brush.Color := clWhite;
@@ -2370,7 +2366,7 @@ begin
   dest := Rect(0, 0, Clip.Width, Clip.Height);
   Clip.Canvas.CopyMode := clipcm;
   Clip.Canvas.CopyRect(dest, Canvas, m);
-  Clip.pixelformat := pf24bit;
+  Clip.PixelFormat := pf24bit;
 end;
 
 procedure TJvDrawImage.ClipAll;
@@ -2421,12 +2417,11 @@ begin
   TargetPoint := Point(X, Y);
 end;
 
-procedure TJvDrawImage.MouseDown(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TJvDrawImage.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   Wavepen := Canvas.Pen.Color;
   Wavebrush := Canvas.Brush.Color;
-  if button = mbright then
+  if Button = mbright then
   begin
     EscapePaint(X, Y, Shift);
     Exit;
@@ -3084,18 +3079,16 @@ begin
     if Shape = 'spray' then
       for i := 1 to 10 do
       begin
-        xp := random(30) - 15;
-        yp := random(30) - 15;
+        xp := Random(30) - 15;
+        yp := Random(30) - 15;
         Canvas.Pixels[X + xp, Y + yp] := Canvas.Brush.Color;
       end;
 
-    if (Shape = 'Waveline') or (Shape = 'fastWaveline') or
-      (Shape = 'colorWaveline') then
-      with Canvas do
-      begin
-        Canvas.LineTo(X, Y);
-        myprevpoint := Point(X, Y);
-      end;
+    if (Shape = 'Waveline') or (Shape = 'fastWaveline') or (Shape = 'colorWaveline') then
+    begin
+      Canvas.LineTo(X, Y);
+      myprevpoint := Point(X, Y);
+    end;
 
     if Shape = 'borderWaveline' then
     begin
@@ -3127,11 +3120,10 @@ begin
     end;
 
     if (Shape = 'freehand') or (Shape = 'mixbrush') then
-      with Canvas do
-      begin
-        Canvas.LineTo(X, Y);
-        myprevpoint := Point(X, Y)
-      end;
+    begin
+      Canvas.LineTo(X, Y);
+      myprevpoint := Point(X, Y)
+    end;
     if Shape = 'cloneall' then
       with Canvas do
       begin
@@ -3912,7 +3904,7 @@ begin
     clipcm := cmsrccopy;
     SetClip(clWhite);
     CopyClip;
-    FX.ExtractColor(Clip, Canvas.Brush.Color);
+    TJvPaintFX.ExtractColor(Clip, Canvas.Brush.Color);
     Canvas.Draw(X, Y, Clip);
     Clip.Transparent := False;
   end;
@@ -3922,7 +3914,7 @@ begin
     clipcm := cmsrccopy;
     SetClip(clWhite);
     CopyClip;
-    FX.ExcludeColor(Clip, Canvas.Brush.Color);
+    TJvPaintFX.ExcludeColor(Clip, Canvas.Brush.Color);
     Canvas.Draw(X, Y, Clip);
     Clip.Transparent := False;
   end;
@@ -4089,7 +4081,7 @@ end;
 procedure TJvDrawImage.Loaded;
 begin
   inherited Loaded;
-  autosize := True;
+  AutoSize := True;
   Picture.Bitmap.Height := 256;
   Picture.Bitmap.Width := 256;
   Canvas.Brush.Color := clWhite;
@@ -4104,11 +4096,6 @@ end;
 procedure TJvDrawImage.SetAirBrush(const Value: TJvAirBrush);
 begin
   FAirBrush.Assign(Value);
-end;
-
-procedure TJvDrawImage.SetTransformer(const Value: TJvPaintFX);
-begin
-  FX.Assign(Value);
 end;
 
 procedure TJvDrawImage.SetBlocks(const Value: Integer);
@@ -4135,85 +4122,69 @@ procedure TJvDrawImage.contrastBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.contrast(Clip, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.Contrast(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.saturationBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.saturation(Clip, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.Saturation(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.lightnessBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.lightness(Clip, painterEffectsF.Ebar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.Lightness(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.BlurBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.GaussianBlur(Clip, painterEffectsF.Ebar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.GaussianBlur(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.splitBlurBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.SplitBlur(Clip, painterEffectsF.Ebar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.SplitBlur(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.colornoiseBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.AddColorNoise(Clip, painterEffectsF.Ebar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.AddColorNoise(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.mononoiseBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.AddmonoNoise(Clip, painterEffectsF.Ebar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.AddmonoNoise(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.smoothBarChange(Sender: TObject);
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.Smooth(Clip, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.Smooth(Clip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.Effects;
 begin
-  with PainterEffectsF do
+  with PainterEffectsF as TPainterEffectsForm do
   begin
     cxbar.Max := Width;
     cybar.Max := Height;
@@ -4227,10 +4198,8 @@ procedure TJvDrawImage.seamBarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.MakeSeamlessClip(Clip, painterEffectsF.Ebar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.MakeSeamlessClip(FClip, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.mosaicBarChange;
@@ -4239,11 +4208,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.mosaic(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.Mosaic(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.twistBarChange;
@@ -4254,15 +4221,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.twist(Clip, bm2, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.Twist(FClip, bm2, am);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.FisheyeBarChange;
@@ -4273,15 +4241,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position / 100;
-  FX.Fisheye(Clip, bm2, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition / 100;
+    TJvPaintFX.Fisheye(FClip, bm2, am);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.WaveBarChange;
@@ -4290,11 +4259,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.Wave(Clip, am, 0, 0);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.Wave(Clip, am, 0, 0);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.WaveExtraChange;
@@ -4303,11 +4270,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.EBar.Position;
-  FX.Wave(Clip, am, 0, 1);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.Wave(Clip, am, 0, 1);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.WaveInfChange;
@@ -4316,12 +4281,10 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  inf := painterEffectsF.Ebar.Position;
-  wa := paintereffectsF.ExtraBar.Position;
-  FX.Wave(Clip, wa, inf, 2);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  inf := PainterEffectsFEBarPosition;
+  wa := PainterEffectsFExtraBarPosition;
+  TJvPaintFX.Wave(Clip, wa, inf, 2);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.RotateBar;
@@ -4333,20 +4296,21 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  Dst.pixelformat := pf24bit;
-  with PainterEffectsF do
-  begin
-    am := Ebar.Position;
-    dx := cxBar.Position;
-    dy := cyBar.Position;
+  try
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    Dst.PixelFormat := pf24bit;
+    with PainterEffectsF as TPainterEffectsForm do
+    begin
+      am := EBar.Position;
+      dx := cxBar.Position;
+      dy := cyBar.Position;
+    end;
+    TJvPaintFX.SmoothRotate(FClip, Dst, dx, dy, am);
+    Preview(Clip);
+  finally
+    Dst.Free;
   end;
-  FX.SmoothRotate(Clip, Dst, dx, dy, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
 end;
 
 procedure TJvDrawImage.XFormABarChange;
@@ -4355,11 +4319,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
+  am := PainterEffectsFEBarPosition;
   XFormA(am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.MarbleBarChange;
@@ -4371,16 +4333,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble2BarChange;
@@ -4392,16 +4355,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble2(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble2(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble3BarChange;
@@ -4413,16 +4377,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble3(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble3(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble4BarChange;
@@ -4434,16 +4399,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble4(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble4(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble5BarChange;
@@ -4455,16 +4421,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.EBar.Position;
-  FX.Marble5(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble5(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble6barChange;
@@ -4476,16 +4443,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble6(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble6(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble7barChange;
@@ -4497,16 +4465,17 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble7(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble7(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Marble8barChange;
@@ -4518,86 +4487,73 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   Dst := TBitmap.Create;
-  Dst.PixelFormat := pf24bit;
-  Dst.Width := Clip.Width;
-  Dst.Height := Clip.Height;
-  scale := painterEffectsF.ExtraBar.Position;
-  turbulence := painterEffectsF.Ebar.Position;
-  FX.Marble8(Clip, Dst, scale, turbulence);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.PixelFormat := pf24bit;
+    Dst.Width := Clip.Width;
+    Dst.Height := Clip.Height;
+    scale := PainterEffectsFExtraBarPosition;
+    turbulence := PainterEffectsFEBarPosition;
+    TJvPaintFX.Marble8(Clip, Dst, scale, turbulence);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.embossbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.Emboss(Clip);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.Emboss(FClip);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.filterRedbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.filterRed(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.FilterRed(Clip, PainterEffectsFExtraBarPosition, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.filterGreenbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.filterGreen(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.FilterGreen(Clip, PainterEffectsFExtraBarPosition, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.filterBluebarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.filterBlue(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.FilterBlue(Clip, PainterEffectsFExtraBarPosition, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.FilterXRedbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.FilterXRed(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.FilterXRed(Clip, PainterEffectsFExtraBarPosition, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.FilterXGreenbarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.FilterXGreen(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.FilterXGreen(Clip, PainterEffectsFExtraBarPosition, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.FilterXBluebarChange;
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  FX.FilterXBlue(Clip, paintereffectsF.ExtraBar.Position, painterEffectsF.EBar.Position);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.FilterXBlue(Clip, PainterEffectsFExtraBarPosition, PainterEffectsFEBarPosition);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.SqueezeHorbarChange;
@@ -4608,15 +4564,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbHor);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbHor);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SqueezeTopbarChange;
@@ -4627,15 +4584,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbTop);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbTop);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SqueezeBotbarChange;
@@ -4646,15 +4604,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbBottom);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbBottom);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SqueezeDiamondbarChange;
@@ -4665,15 +4624,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbDiamond);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbDiamond);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SqueezeWastebarChange;
@@ -4684,15 +4644,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbwaste);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbwaste);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SqueezeRoundbarChange;
@@ -4703,15 +4664,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbRound);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbRound);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SqueezeRound2barChange;
@@ -4722,15 +4684,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SqueezeHor(Clip, bm2, am, mbround2);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SqueezeHor(Clip, bm2, am, mbround2);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SplitRoundbarChange;
@@ -4741,15 +4704,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SplitRound(Clip, bm2, am, mbSplitRound);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SplitRound(Clip, bm2, am, mbSplitRound);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.SplitWastebarChange;
@@ -4760,15 +4724,16 @@ begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
   bm2 := TBitmap.Create;
-  bm2.Width := Clip.Width;
-  bm2.Height := Clip.Height;
-  bm2.pixelformat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.SplitRound(Clip, bm2, am, mbSplitWaste);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(bm2);
-  QuickPreviewF.PreviewImage.Update;
-  bm2.Free;
+  try
+    bm2.Width := Clip.Width;
+    bm2.Height := Clip.Height;
+    bm2.PixelFormat := pf24bit;
+    am := PainterEffectsFEBarPosition;
+    TJvPaintFX.SplitRound(Clip, bm2, am, mbSplitWaste);
+    Preview(Clip);
+  finally
+    bm2.Free;
+  end;
 end;
 
 procedure TJvDrawImage.ShearbarChange;
@@ -4777,11 +4742,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
+  am := PainterEffectsFEBarPosition;
   Shear(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.plasmabarChange;
@@ -4793,29 +4756,32 @@ begin
   Clip.PixelFormat := pf24bit;
   w := Clip.Width;
   h := Clip.Height;
+  Src2 := nil;
   src1 := TBitmap.Create;
-  src1.Width := w;
-  src1.Height := h;
-  src1.PixelFormat := pf24bit;
-  src1.Canvas.Draw(0, 0, Clip);
-  src2 := TBitmap.Create;
-  src2.Width := w;
-  src2.Height := h;
-  src2.PixelFormat := pf24bit;
-  src2.Canvas.Draw(0, 0, Clip);
-  am := painterEffectsF.Ebar.Position;
-  turb := painterEffectsF.ExtraBar.Position;
-  if turb < 10 then
-  begin
-    painterEffectsF.ExtraBar.Position := 10;
-    turb := 10;
+  try
+    src1.Width := w;
+    src1.Height := h;
+    src1.PixelFormat := pf24bit;
+    src1.Canvas.Draw(0, 0, Clip);
+
+    src2 := TBitmap.Create;
+    src2.Width := w;
+    src2.Height := h;
+    src2.PixelFormat := pf24bit;
+    src2.Canvas.Draw(0, 0, Clip);
+    am := PainterEffectsFEBarPosition;
+    turb := PainterEffectsFExtraBarPosition;
+    if turb < 10 then
+    begin
+      PainterEffectsFExtraBarPosition := 10;
+      turb := 10;
+    end;
+    TJvPaintFX.Plasma(src1, src2, Clip, am, turb);
+    Preview(Clip);
+  finally
+    src2.Free;
+    src1.Free;
   end;
-  FX.Plasma(src1, src2, Clip, am, turb);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
-  src2.Free;
-  src1.Free;
 end;
 
 procedure TJvDrawImage.DrawMandelJulia(Mandel: Boolean);
@@ -4825,16 +4791,14 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  xr := painterEffectsF.Ebar.Position * 0.028;
-  yr := painterEffectsF.ExtraBar.Position * 0.009;
+  xr := PainterEffectsFEBarPosition * 0.028;
+  yr := PainterEffectsFExtraBarPosition * 0.009;
   X0 := -2.25 + xr;
   X1 := 0.75;
   Y0 := -1.5 + yr;
   Y1 := 1.5;
-  FX.DrawMandelJulia(Clip, X0, Y0, X1, Y1, 16, Mandel);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  TJvPaintFX.DrawMandelJulia(Clip, X0, Y0, X1, Y1, 16, Mandel);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.DrawTriangles;
@@ -4843,11 +4807,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.Triangles(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.Triangles(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.RippleTooth;
@@ -4856,11 +4818,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.RippleTooth(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.RippleTooth(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.RippleTriangle;
@@ -4869,11 +4829,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.RippleTooth(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.RippleTooth(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.RippleRandom;
@@ -4882,11 +4840,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.RippleRandom(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.RippleRandom(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.TexturizeTile;
@@ -4895,11 +4851,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.TexturizeTile(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.TexturizeTile(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.TexturizeOverlap;
@@ -4908,11 +4862,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.TexturizeOverlap(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.TexturizeOverlap(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.DrawMap;
@@ -4921,11 +4873,9 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
-  FX.HeightMap(Clip, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Clip);
-  QuickPreviewF.PreviewImage.Update;
+  am := PainterEffectsFEBarPosition;
+  TJvPaintFX.HeightMap(Clip, am);
+  Preview(Clip);
 end;
 
 procedure TJvDrawImage.DrawBlend;
@@ -4935,29 +4885,28 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
+  am := PainterEffectsFEBarPosition;
   w := Clip.Width;
   h := Clip.Height;
   if not Clipboard.HasFormat(CF_BITMAP) then
     Exit;
+  Dst := nil;
   src2 := TBitmap.Create;
-  src2.Assign(Clipboard);
-  src2.PixelFormat := pf24bit;
-  if ((src2.Width <> w) or (src2.Height <> h)) then
-  begin
+  try
+    src2.Assign(Clipboard);
+    src2.PixelFormat := pf24bit;
+    if (src2.Width <> w) or (src2.Height <> h) then
+      Exit;
+    Dst := TBitmap.Create;
+    Dst.Width := w;
+    Dst.Height := h;
+    Dst.PixelFormat := pf24bit;
+    TJvPaintFX.Blend(Clip, src2, Dst, am / 100);
+    Preview(Clip);
+  finally
     src2.Free;
-    Exit;
+    Dst.Free;
   end;
-  Dst := TBitmap.Create;
-  Dst.Width := w;
-  Dst.Height := h;
-  Dst.PixelFormat := pf24bit;
-  FX.Blend(Clip, src2, Dst, am / 100);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  src2.Free;
-  Dst.Free;
 end;
 
 procedure TJvDrawImage.DrawSolarize;
@@ -4967,18 +4916,19 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
+  am := PainterEffectsFEBarPosition;
   w := Clip.Width;
   h := Clip.Height;
   Dst := TBitmap.Create;
-  Dst.Width := w;
-  Dst.Height := h;
-  Dst.PixelFormat := pf24bit;
-  FX.Solarize(Clip, Dst, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.Width := w;
+    Dst.Height := h;
+    Dst.PixelFormat := pf24bit;
+    TJvPaintFX.Solarize(Clip, Dst, am);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Posterize;
@@ -4988,42 +4938,62 @@ var
 begin
   ClipAll;
   Clip.PixelFormat := pf24bit;
-  am := painterEffectsF.Ebar.Position;
+  am := PainterEffectsFEBarPosition;
   w := Clip.Width;
   h := Clip.Height;
   Dst := TBitmap.Create;
-  Dst.Width := w;
-  Dst.Height := h;
-  Dst.PixelFormat := pf24bit;
-  FX.Posterize(Clip, Dst, am);
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(Dst);
-  QuickPreviewF.PreviewImage.Update;
-  Dst.Free;
+  try
+    Dst.Width := w;
+    Dst.Height := h;
+    Dst.PixelFormat := pf24bit;
+    TJvPaintFX.Posterize(Clip, Dst, am);
+    Preview(Clip);
+  finally
+    Dst.Free;
+  end;
 end;
 
 procedure TJvDrawImage.Backgrounds;
 begin
-  PainterQBF.Show;
-  PainterQBF.BringToFront;
+  TPainterQBForm(PainterQBF).Show;
+  TPainterQBForm(PainterQBF).BringToFront;
 end;
 
 procedure TJvDrawImage.Preview(ABitmap: TBitmap);
 begin
-  QuickPreviewF.Show;
-  QuickPreviewF.PreviewImage.Picture.Bitmap.Assign(abitmap);
+  TQuickPreviewForm(QuickPreviewF).Show;
+  TQuickPreviewForm(QuickPreviewF).PreviewImage.Picture.Bitmap.Assign(ABitmap);
+  TQuickPreviewForm(QuickPreviewF).PreviewImage.Update;
 end;
 
 procedure TJvDrawImage.Trace;
 var
-  BitMap: TBitmap;
+  Bitmap: TBitmap;
 begin
-  BitMap := TBitmap.Create;
-  Bitmap.Assign(Picture.Bitmap);
-  FX.Trace(BitMap, 1);
-  Picture.Bitmap.Assign(Bitmap);
-  BitMap.Free;
+  Bitmap := TBitmap.Create;
+  try
+    Bitmap.Assign(Picture.Bitmap);
+    TJvPaintFX.Trace(BitMap, 1);
+    Picture.Bitmap.Assign(Bitmap);
+  finally
+    Bitmap.Free;
+  end;
   Update;
+end;
+
+function TJvDrawImage.GetPainterEffectsFEBarPosition: Integer;
+begin
+  Result := (PainterEffectsF as TPainterEffectsForm).EBar.Position;
+end;
+
+function TJvDrawImage.GetPainterEffectsFExtraBarPosition: Integer;
+begin
+  Result := (PainterEffectsF as TPainterEffectsForm).ExtraBar.Position;
+end;
+
+procedure TJvDrawImage.SetPainterEffectsFExtraBarPosition(Value: Integer);
+begin
+  (PainterEffectsF as TPainterEffectsForm).ExtraBar.Position := Value;
 end;
 
 {$IFDEF UNITVERSIONING}

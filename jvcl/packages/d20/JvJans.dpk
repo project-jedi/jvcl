@@ -54,7 +54,6 @@ contains
   JvPainterQBForm in '..\..\run\JvPainterQBForm.pas' {PainterQBF},
   JvPaintFX in '..\..\run\JvPaintFX.pas' ,
   JvQuickPreviewForm in '..\..\run\JvQuickPreviewForm.pas' {QuickPreviewF},
-  JvResample in '..\..\run\JvResample.pas' ,
   JvSAL in '..\..\run\JvSAL.pas' ,
   JvSALCore in '..\..\run\JvSALCore.pas' ,
   JvSALHashList in '..\..\run\JvSALHashList.pas' ,

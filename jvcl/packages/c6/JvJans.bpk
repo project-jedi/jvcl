@@ -21,7 +21,6 @@
       ..\..\lib\c6\JvPainterQBForm.obj
       ..\..\lib\c6\JvPaintFX.obj
       ..\..\lib\c6\JvQuickPreviewForm.obj
-      ..\..\lib\c6\JvResample.obj
       ..\..\lib\c6\JvSAL.obj
       ..\..\lib\c6\JvSALCore.obj
       ..\..\lib\c6\JvSALHashList.obj
@@ -126,7 +125,6 @@
       <FILE FILENAME="..\..\run\JvPainterQBForm.pas" FORMNAME="PainterQBF" UNITNAME="JvPainterQBForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvPaintFX.pas" FORMNAME="" UNITNAME="JvPaintFX" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvQuickPreviewForm.pas" FORMNAME="QuickPreviewF" UNITNAME="JvQuickPreviewForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvResample.pas" FORMNAME="" UNITNAME="JvResample" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvSAL.pas" FORMNAME="" UNITNAME="JvSAL" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvSALCore.pas" FORMNAME="" UNITNAME="JvSALCore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvSALHashList.pas" FORMNAME="" UNITNAME="JvSALHashList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

@@ -23,7 +23,6 @@
     <File Name="..\..\run\JvPainterQBForm.pas" Targets="all" Formname="PainterQBF" Condition=""/>
     <File Name="..\..\run\JvPaintFX.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvQuickPreviewForm.pas" Targets="all" Formname="QuickPreviewF" Condition=""/>
-    <File Name="..\..\run\JvResample.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSAL.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSALCore.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSALHashList.pas" Targets="all" Formname="" Condition=""/>
@@ -58,7 +57,6 @@
     <File Name="..\..\..\help\JvPainterQBForm.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvPaintFX.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvQuickPreviewForm.dtx" Targets="help" Formname="" Condition=""/>
-    <File Name="..\..\..\help\JvResample.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvSAL.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvSALCore.dtx" Targets="help" Formname="" Condition=""/>
     <File Name="..\..\..\help\JvSALHashList.dtx" Targets="help" Formname="" Condition=""/>
