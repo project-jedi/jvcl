@@ -1992,9 +1992,20 @@ begin
         begin
           if ValueIsEmpty(FValue) then
           begin
-            Canvas.Font.Color := clHighlightText;
-            Canvas.Brush.Color := clHighlight;
-            Selected := True;
+            {$IFDEF JVCLStylesEnabled}
+            if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
+            begin
+              Canvas.Font.Color := StyleServices.GetSystemColor(clHighlightText);
+              Canvas.Brush.Color := StyleServices.GetSystemColor(clHighlight);
+              Selected := True;
+            end
+            else
+            {$ENDIF JVCLStylesEnabled}
+            begin
+              Canvas.Font.Color := clHighlightText;
+              Canvas.Brush.Color := clHighlight;
+              Selected := True;
+            end;
           end
           else
             Canvas.Brush.Color := EmptyItemColor;
@@ -2024,9 +2035,20 @@ begin
           FLookupLink.ActiveRecord := J;
           if not ValueIsEmpty(FValue) and (FKeyField.AsString = FValue) then
           begin
-            Canvas.Font.Color := clHighlightText;
-            Canvas.Brush.Color := clHighlight;
-            Selected := True;
+            {$IFDEF JVCLStylesEnabled}
+            if StyleServices.Enabled and TStyleManager.IsCustomStyleActive then
+            begin
+              Canvas.Font.Color := StyleServices.GetSystemColor(clHighlightText);
+              Canvas.Brush.Color := StyleServices.GetSystemColor(clHighlight);
+              Selected := True;
+            end
+            else
+            {$ENDIF JVCLStylesEnabled}
+            begin
+              Canvas.Font.Color := clHighlightText;
+              Canvas.Brush.Color := clHighlight;
+              Selected := True;
+            end;
           end;
           R.Left := 0;
           R.Right := ClientWidth;
