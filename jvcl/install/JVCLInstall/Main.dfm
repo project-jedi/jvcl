@@ -29,7 +29,7 @@ object FormMain: TFormMain
     Width = 201
     Height = 14
     Cursor = crHandPoint
-    Hint = '<c:blue>http://jvcl.sourceforge.net'
+    Hint = '<c:blue>https://github.com/project-jedi/jvcl'
     Anchors = [akLeft, akBottom]
     Caption = 'JEDI Visual Component Library Homepage'
     Font.Charset = DEFAULT_CHARSET

@@ -25,4 +25,4 @@ The current version is JVCL 3.49.
 
 
 The JVCL Team
-http://jvcl.sourceforge.net
+http://jvcl.delphi-jedi.org

@@ -78,7 +78,7 @@ resourcestring
 
   RsDockAuthorName = 'zhouyibo';
   RsDockCompanyName = '';
-  RsDockHomePage = 'http://jvcl.sourceforge.net';
+  RsDockHomePage = 'https://github.com/project-jedi/jvcl';
   // (rom) split against harvesters
   RsDockEmail = 'jvcl' + '@' + 'jvcl' + '.' + 'sf' + '.' + 'net';
 

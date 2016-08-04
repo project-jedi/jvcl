@@ -210,7 +210,7 @@ msgstr ""
 msgid "LblComment"
 msgstr ""
 
-msgid "http://projectjedi.sourceforge.net"
+msgid "http://www.delphi-jedi.org"
 msgstr ""
 
 msgid "TJv"
@@ -267,7 +267,7 @@ msgstr ""
 msgid "Version: 1.00"
 msgstr ""
 
-msgid "http://jvcl.sourceforge.net "
+msgid "https://github.com/project-jedi/jvcl "
 msgstr ""
 
 msgid "http://groups.yahoo.com/group/JEDI-VCL"
@@ -671,7 +671,7 @@ msgstr ""
 msgid "zhouyibo"
 msgstr ""
 
-msgid "http://jvcl.sourceforge.net"
+msgid "https://github.com/project-jedi/jvcl"
 msgstr ""
 
 msgid "jvcl@jvcl.sf.net"
@@ -1007,7 +1007,7 @@ msgstr ""
 msgid "@Jcldebug@InsertDebugDataIntoExecutableFile$qqrpct1rit3"
 msgstr ""
 
-msgid "<c:blue>http://jvcl.sourceforge.net"
+msgid "<c:blue>https://github.com/project-jedi/jvcl"
 msgstr ""
 
 msgid "CommCtrlAsInvoker.manifest"

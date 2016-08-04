@@ -24,7 +24,7 @@
 #define MyAppName "JEDI Visual Component Library"
 #define MyAppVerName "JEDI Visual Component Library " + JvclVersionStr
 #define MyAppPublisher "JVCL Team"
-#define MyAppURL "http://jvcl.sourceforge.net"
+#define MyAppURL "https://github.com/project-jedi/jvcl"
 
 ;---------------------------------------------------
 ; Setup the preprocessor defines for the binary files
