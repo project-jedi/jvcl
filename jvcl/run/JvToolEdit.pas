@@ -2249,23 +2249,21 @@ begin
   if csDestroying in ComponentState then
     { (rb) Implementation diffs; some return True other False }
     Exit;
-  if Enabled or (FDisabledColor = clNone) or (FDisabledColor = clDefault) or (FDisabledColor = clWindow) then
+  {$IFDEF COMPILER16_UP}
+  if StyleServices.Enabled and not StyleServices.IsSystemStyle then
+  begin
+    // Ignore FDisabledColor. The Style dictates the color
+    Result := inherited DoEraseBackground(Canvas, Param);
+  end
+  else
+  {$ENDIF COMPILER16_UP}
+  if Enabled then
     Result := inherited DoEraseBackground(Canvas, Param)
   else
   begin
-    {$IFDEF COMPILER16_UP}
-    if StyleServices.Enabled and not StyleServices.IsSystemStyle then
-    begin
-      // Ignore FDisabledColor. The Style dictates the color
-      Result := inherited DoEraseBackground(Canvas, Param);
-    end
-    else
-    {$ENDIF COMPILER16_UP}
-    begin
-      Canvas.Brush.Color := FDisabledColor;
-      Canvas.Brush.Style := bsSolid;
-      Canvas.FillRect(ClientRect);
-    end;
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
   end;
 end;
 
