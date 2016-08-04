@@ -430,7 +430,7 @@ type
     procedure DoDrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); virtual;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
     procedure DrawDataCell(const Rect: TRect; Field: TField; State: TGridDrawState); override; { obsolete from Delphi 2.0 }
-    function DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean;
+    function DrawThemedHighlighting(ACanvas: TCanvas; R: TRect): Boolean; virtual;
     function GetPaintInfo: TJvGridPaintInfo;
 
     function BeginColumnDrag(var Origin: Integer; var Destination: Integer; const MousePt: TPoint): Boolean; override;
