@@ -386,6 +386,9 @@ end;
 
 function GetCompilerSpeedPackInjection(Target: TCompileTarget): TInjectionProc;
 const
+  {$IFNDEF DELPHI2007_UP}
+  CSIDL_COMMON_DOCUMENTS = $002e;
+  {$ENDIF ~DELPHI2007_UP}
   ExpertsDirStudio = 'Embarcadero\Studio\%s\Experts'; // XE6+
   ExpertsDirRADStudio = 'RAD Studio\%s\Experts';
 var
