@@ -16,8 +16,10 @@ if EXIST JVCLInstall.cfg  del JVCLInstall.cfg
 if ERRORLEVEL 1 goto Failed
 
 if EXIST JVCLCmdStarter.cfg  del JVCLCmdStarter.cfg
-..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin -n..\..\dcu JVCLCmdStarter.dpr >NUL
+if EXIST bin\JVCLCmdStarter.exe goto SkipCmdStarter
+..\..\packages\bin\dcc32ex.exe -Q -B -E..\..\bin -n..\..\dcu JVCLCmdStarter.dpr >NUL 2>NUL
 ::if ERRORLEVEL 1 goto Failed
+:SkipCmdStarter
 cd ..\..
 
 :: delete the generated DCU files so that users don't get confused
@@ -48,7 +50,7 @@ cd ..
 echo.
 echo [Starting installer...]
 echo bin\JVCLInstall.exe %*
-if not exist bin\JVCLCmdStarter.exe goto :FailStart
+if not exist bin\JVCLCmdStarter.exe goto FailStart
 bin\JVCLCmdStarter.exe bin\JVCLInstall.exe %*
 if ERRORLEVEL 1 goto FailStart
 goto Leave
