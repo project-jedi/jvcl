@@ -125,6 +125,7 @@ type
   private
     FDragNode: TTreeNode;
     FTreeView: TCustomTreeView;
+    procedure RecreateTreeView(ATreeViewClass: TComponentClass);
   public
     class function Edit(TreeView: TCustomTreeView): Boolean;
   end;
@@ -300,6 +301,32 @@ begin
   acNodeMoveDown.Enabled := bSel and ((nSel.getNextSibling <> nil) or (nSel.Parent <> nil));
 end;
 
+procedure TfrmTreeViewItems.RecreateTreeView(ATreeViewClass: TComponentClass);
+var
+  R: TRect;
+begin
+  // Replace tvItems with the same treeview class so that Assign() calls copy all data
+  // Needed for JvPageListTreeView
+  R := tvItems.BoundsRect;
+  tvItems.Free;
+  tvItems := TTreeView(TComponentClass(ATreeViewClass).Create(Self) as TCustomTreeView);
+  tvItems.BoundsRect := R;
+  tvItems.Align := alLeft;
+  tvItems.Parent := Self;
+  tvItems.DragMode := dmAutomatic;
+  tvItems.HideSelection := False;
+  tvItems.Indent := 19;
+  tvItems.PopupMenu := PopupMenu1;
+  tvItems.ReadOnly := True;
+  tvItems.TabOrder := 1;
+  tvItems.OnChange := tvItemsChange;
+  tvItems.OnDragDrop := tvItemsDragDrop;
+  tvItems.OnDragOver := tvItemsDragOver;
+  tvItems.OnStartDrag := tvItemsStartDrag;
+
+  Splitter1.Left := tvItems.Left + tvItems.Width;
+end;
+
 class function TfrmTreeViewItems.Edit(TreeView: TCustomTreeView): Boolean;
 const
   cNegItem = '-1';
@@ -312,6 +339,9 @@ begin
   F := Self.Create(Application);
   try
     F.FTreeView := TreeView;
+
+    F.RecreateTreeView(TComponentClass(TreeView.ClassType));
+
     F.tvItems.Items.Assign(THackTreeView(TreeView).Items);
     IL := THackTreeView(TreeView).Images;
     if IL <> nil then

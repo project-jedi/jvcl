@@ -60,6 +60,7 @@ begin
     TJvPageListTreeView, TJvPageList]);
 
   RegisterPropertyEditor(TypeInfo(TTreeNodes), TCustomTreeView, cItems, TJvTreeItemsProperty);
+  RegisterPropertyEditor(TypeInfo(TTreeNodes), TJvCustomPageListTreeView, cItems, TJvTreeItemsProperty);
   RegisterPropertyEditor(TypeInfo(TJvShowDesignCaption), nil, '', TJvShowDesignCaptionProperty);
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);

@@ -63,6 +63,8 @@ type
     procedure WriteData(Stream: TStream);
   protected
     procedure DefineProperties(Filer: TFiler); override;
+  public
+    procedure Assign(Source: TPersistent); override;
   end;
 
   // this is  a "fake" class so we have something to anchor the design-time editor with
@@ -594,6 +596,28 @@ begin
 end;
 
 //=== { TJvPageIndexNodes } ==================================================
+
+
+procedure TJvPageIndexNodes.Assign(Source: TPersistent);
+var
+  Node, DstNode: TJvPageIndexNode;
+begin
+  inherited Assign(Source);
+  // We need to copy the FPageIndex ourself because TTreeNodes.Assign
+  // doesn't use TTreeNode.Assign. It uses non-virtual streaming methods.
+  if Source is TJvPageIndexNodes then
+  begin
+    DstNode := GetFirstNode as TJvPageIndexNode;
+    Node := TJvPageIndexNodes(Source).GetFirstNode as TJvPageIndexNode;
+    while Node <> nil do
+    begin
+      DstNode.FPageIndex := Node.FPageIndex;
+
+      DstNode := DstNode.GetNext as TJvPageIndexNode;
+      Node := Node.GetNext as TJvPageIndexNode;
+    end;
+  end;
+end;
 
 procedure TJvPageIndexNodes.DefineProperties(Filer: TFiler);
 begin
