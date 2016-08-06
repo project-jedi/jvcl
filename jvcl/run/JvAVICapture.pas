@@ -67,7 +67,6 @@ type
     FPixelFormat: TPixelFormat; // pixel format (RGB, BGR, YUV...)
     FCompression: Integer;      // compression used
   public
-    constructor Create; // Create the video format
     procedure Update;   // Update from the AVICap window
     function Apply: Boolean; // apply the format to the window, returns True if successfull
 
@@ -91,8 +90,6 @@ type
     FExtraSize: Cardinal;      // size of the extra data
     FExtra: Pointer;           // extra data for formats other than PCM
   public
-    // creates the audio format object and initializes it
-    constructor Create;
     // updates from the AVICap window
     procedure Update;
     // apply the format to the window, returns True if successfull
@@ -231,14 +228,12 @@ type
   protected
     FHWnd: HWND; // the AVICap window that will use these settings
   public
-    // create the object
-    constructor Create;
     // save the palette associated with the driver into the given file
     // and returns True upon success.
-    function Save(FileName: string): Boolean;
+    function Save(const FileName: string): Boolean;
     // loads the palette from the given file and returns True upon success
     // FHWnd must not be null
-    function Load(FileName: string): Boolean;
+    function Load(const FileName: string): Boolean;
     // paste the palette from the clipboard
     function PasteFromClipboard: Boolean;
     // automatically create the best palette from the first nbFrames frames with
@@ -348,7 +343,6 @@ type
     FPreviewFrameDelay: Cardinal;         // the time between two preview frames (ms)
     FPreviewing: Boolean;                 // True if previewing
     FSingleFrameCapturing: Boolean;       // True if capturing using single frame capture
-    FTitle: string;                       // the title of the AVICap window
     FVideoLeft: Integer;                  // the left coordinate of the displayed video
     FVideoTop: Integer;                   // the top coordinate of the displayed video
     // the user supplied event handlers
@@ -371,8 +365,6 @@ type
     FPalette: TJvPalette;         // the palette in use
     FDriverIndex: TJvDriverIndex; // the driver index (-1 if not connected)
 
-    // the Pointer to the previous WndProc of the AviCap window
-    FPreviousWndProc: Pointer;
     // window creation stuff, where the AviCap window is created:
     // what is done is that the component inherits from TWinControl and as such
     // has its own handle. We then create the AviCap window and set it as a child
@@ -383,14 +375,14 @@ type
     // destroys the AviCap window just before letting the VCL destroy the handle
     // for the TWinControl
     procedure DestroyWindowHandle; override;
-    // Resizes the internal window that is used to display the AviCap content.
-    procedure ResizeAviCapWindow(Width, Height: Integer);
     // We enforce the size of the window to be equal to the
     // video frame in this method as it is the place where it
     // should be done, rather than doing it in SetBounds
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
+    // gets the title of the AviCap window
+    function GetTitle: TCaption;
     // sets the title of the AviCap window
-    procedure SetTitle(nTitle: string);
+    procedure SetTitle(const nTitle: TCaption);
     // sets the preview frame delay (the time between two frames)
     procedure SetPreviewFrameDelay(nPreviewFrameDelay: Cardinal);
     // sets and gets the preview frame rate in frames per second
@@ -534,7 +526,7 @@ type
     property PreviewFPS: Double read GetPreviewFPS write SetPreviewFPS;
     property Previewing: Boolean read FPreviewing write SetPreviewing default False;
     property ScrollPos: TJvScrollPos read FScrollPos write SetScrollPos;
-    property Title: string read FTitle write SetTitle;
+    property Title: TCaption read GetTitle write SetTitle;
     property UsedEvents: TJvUsedEvents read FUsedEvents write SetUsedEvents default [];
     property VideoLeft: Integer read FVideoLeft write SetVideoLeft default 0;
     property VideoTop: Integer read FVideoTop write SetVideoTop default 0;
@@ -586,37 +578,6 @@ var
   TmpName: array [0..MAX_PATH] of Char;
 begin
   Result := capDriverGetName(hWnd, TmpName, SizeOf(TmpName));
-end;
-
-{ This is the custom window procedure, which replaces the one originally associated
-  with the AviCap window. all we do is pass the messages to the TWinControl
-  containing the AviCap window so that it can resize and move itself.
-  Then we pass the message to the original window procedure for it to handle the
-  messages it needs to perform the video capture
-}
-
-function CustomWndProc(hWnd: HWND; Msg: UINT; wParam: WPARAM; lParam: LPARAM): LRESULT; stdcall;
-var
-  SelfObj: TJvAVICapture;
-begin
-  Result := 0;
-
-  // get the Pointer to self from the window user data
-  SelfObj := TJvAVICapture(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-  if SelfObj <> nil then
-  begin
-    // send the message to the containing window, except for WM_NCHITTEST
-    // This will prevent 100% processor usage when the mouse is kept over
-    // the control during design time or run time
-    // Note: We MUST convert SelfObj to a TWinControl as the Handle
-    // property of TJvAVICapture returns the handle of the AVICap window
-    // thus leading to an infinite loop if we were to use it...
-    if Msg <> WM_NCHITTEST then
-      PostMessage(TWinControl(SelfObj).Handle, Msg, wParam, lParam);
-
-    // sending the message to the original window proc
-    Result := CallWindowProc(SelfObj.FPreviousWndProc, hWnd, Msg, wParam, lParam);
-  end;
 end;
 
 { Callbacks }
@@ -756,12 +717,6 @@ begin
   end;
 end;
 
-constructor TJvVideoFormat.Create;
-begin
-  inherited Create;
-  FHWnd := 0;
-end;
-
 procedure TJvVideoFormat.Update;
 var
   BmpInfo: BITMAPINFOHEADER;
@@ -799,13 +754,6 @@ begin
 end;
 
 //=== { TJvAudioFormat } =====================================================
-
-constructor TJvAudioFormat.Create;
-begin
-  inherited Create;
-  FHWnd := 0;
-  FExtra := nil;
-end;
 
 procedure TJvAudioFormat.Update;
 var
@@ -886,7 +834,6 @@ end;
 constructor TJvCaptureSettings.Create;
 begin
   inherited Create;
-  FHWnd := 0;
   FFrameDelay := 1;
 end;
 
@@ -1012,18 +959,12 @@ end;
 
 //=== { TJvPalette } =========================================================
 
-constructor TJvPalette.Create;
-begin
-  inherited Create;
-  FHWnd := 0;
-end;
-
-function TJvPalette.Load(FileName: string): Boolean;
+function TJvPalette.Load(const FileName: string): Boolean;
 begin
   Result := (FHWnd <> 0) and capPaletteOpen(FHWnd, PChar(FileName));
 end;
 
-function TJvPalette.Save(FileName: string): Boolean;
+function TJvPalette.Save(const FileName: string): Boolean;
 begin
   Result := (FHWnd <> 0) and capPaletteSave(FHWnd, PChar(FileName));
 end;
@@ -1092,31 +1033,24 @@ end;
 
 procedure TJvAVICapture.CreateWindowHandle(const Params: TCreateParams);
 begin
-  // ensure the TWinControl is fully created first
-  inherited CreateWindowHandle(Params);
-  // no hint to show
-  //ParentShowHint := False;
-  //ShowHint := False;
-
   // create the AviCap window
   FHWnd := capCreateCaptureWindow(
-    PChar(Title),        // use the user defined title
-    WS_VISIBLE or        // window is visible
-      WS_CHILD and       // it is a child window
-      not WS_CAPTION and // it has no caption
-      not WS_BORDER,     // it has no border
-    0,                   // 0 left coordinate
-    0,                   // 0 top coordinate
-    320,                 // width defaults to 320
-    240,                 // height defaults to 240
-    inherited Handle,    // child of the TWinControl
-    0);                  // window identifier
+    Params.Caption,
+    Params.Style,
+    Params.X,
+    Params.Y,
+    Params.Width,
+    Params.Height,
+    Params.WndParent,
+    0 // window identifier
+  );
 
   // place the Pointer to Self in the user data
   SetWindowLongPtr(FHWnd, GWLP_USERDATA, LONG_PTR(Self));
   // replace the WndProc to be ours
-  FPreviousWndProc := Pointer(GetWindowLongPtr(FHWnd, GWLP_WNDPROC));
-  SetWindowLongPtr(FHWnd, GWLP_WNDPROC, LONG_PTR(@CustomWndProc));
+  DefWndProc := Pointer(GetWindowLongPtr(FHWnd, GWLP_WNDPROC));
+  SetWindowLongPtr(FHWnd, GWLP_WNDPROC, LONG_PTR(@InitWndProc));
+
   // updates the FHWnd member of audio format, capture settings, palette and video format
   // yes, they are private members, but they can still be accessed by a foreign class
   // because the access is done in the same pas file !
@@ -1126,25 +1060,33 @@ begin
   FVideoFormat.FHWnd := FHWnd;
   // sets the callbacks
   UsedEvents := FUsedEvents;
+
+  WindowHandle := FHWND;
 end;
 
 procedure TJvAVICapture.DestroyWindowHandle;
 begin
   // restore the window proc
-  SetWindowLongPtr(FHWnd, GWLP_WNDPROC, LONG_PTR(FPreviousWndProc));
-  // destroy the AviCap Window
-  DestroyWindow(FHWnd);
+  SetWindowLongPtr(FHWnd, GWLP_WNDPROC, LONG_PTR(DefWndProc));
+
+  FHWND := 0;
+  FAudioFormat.FHWnd := 0;
+  FCaptureSettings.FHWnd := 0;
+  FPalette.FHWnd := 0;
+  FVideoFormat.FHWnd := 0;
+
   // let the TWinControl window be destroyed
   inherited DestroyWindowHandle;
 end;
 
-procedure TJvAVICapture.SetTitle(nTitle: string);
+function TJvAVICapture.GetTitle: TCaption;
 begin
-  if FHWnd <> 0 then
-  begin
-    FTitle := nTitle;
-    SetWindowText(FHWnd, PChar(FTitle));
-  end;
+  Result := Text;
+end;
+
+procedure TJvAVICapture.SetTitle(const nTitle: TCaption);
+begin
+  Text := nTitle;
 end;
 
 procedure TJvAVICapture.SetPreviewFrameDelay(nPreviewFrameDelay: Cardinal);
@@ -1359,22 +1301,24 @@ var
 begin
   if FHWnd <> 0 then
   begin
-    // get value from the window
-    capDriverGetCaps(FHWnd, @Caps, SizeOf(Caps));
-    // update internal value
     FDriverCaps := [];
-    if Caps.fHasOverlay then
-      FDriverCaps := FDriverCaps + [dcOverlay];
-    if Caps.fHasDlgVideoSource then
-      FDriverCaps := FDriverCaps + [dcDlgVideoSource];
-    if Caps.fHasDlgVideoFormat then
-      FDriverCaps := FDriverCaps + [dcDlgVideoFormat];
-    if Caps.fHasDlgVideoDisplay then
-      FDriverCaps := FDriverCaps + [dcDlgVideoDisplay];
-    if Caps.fCaptureInitialized then
-      FDriverCaps := FDriverCaps + [dcCaptureInitialized];
-    if Caps.fDriverSuppliesPalettes then
-      FDriverCaps := FDriverCaps + [dcSuppliesPalettes];
+    // get value from the window
+    if capDriverGetCaps(FHWnd, @Caps, SizeOf(Caps)) then
+    begin
+      // update internal value
+      if Caps.fHasOverlay then
+        FDriverCaps := FDriverCaps + [dcOverlay];
+      if Caps.fHasDlgVideoSource then
+        FDriverCaps := FDriverCaps + [dcDlgVideoSource];
+      if Caps.fHasDlgVideoFormat then
+        FDriverCaps := FDriverCaps + [dcDlgVideoFormat];
+      if Caps.fHasDlgVideoDisplay then
+        FDriverCaps := FDriverCaps + [dcDlgVideoDisplay];
+      if Caps.fCaptureInitialized then
+        FDriverCaps := FDriverCaps + [dcCaptureInitialized];
+      if Caps.fDriverSuppliesPalettes then
+        FDriverCaps := FDriverCaps + [dcSuppliesPalettes];
+    end;
   end;
 end;
 
@@ -1405,11 +1349,6 @@ begin
   end;
 end;
 
-procedure TJvAVICapture.ResizeAviCapWindow(Width, Height: Integer);
-begin
-  MoveWindow(FHwnd, 0, 0, Width, Height, True);
-end;
-
 procedure TJvAVICapture.RestartCallbacks;
 begin
   UsedEvents := FUsedEvents;
@@ -1428,10 +1367,6 @@ begin
   // Autosizing will have been enforced in the CanAutoSize procedure
   lHeight := Max(Min(nHeight, FVideoFormat.Height), cMinHeight);
   lWidth := Max(Min(nWidth, FVideoFormat.Width), cMinWidth);
-
-  // If we changed the size here, force the resize of the internal window.
-  if (lHeight <> nHeight) or (lWidth <> nWidth) then
-    ResizeAviCapWindow(lWidth, lHeight);
 
   inherited SetBounds(nLeft, nTop, lWidth, lHeight);
 end;
@@ -1792,10 +1727,6 @@ begin
   // in case there is no video yet)
   NewHeight := Max(cMinHeight, FVideoFormat.Height);
   NewWidth := Max(cMinWidth, FVideoFormat.Width);
-
-  // We must call ResizeAviCapWindow here as well as in SetBounds because
-  // CanAutoSize might be call without a call to SetBounds.
-  ResizeAviCapWindow(NewWidth, NewHeight);
 end;
 
 procedure TJvAVICapture.SetSingleFrameCapturing(const Value: Boolean);
